@@ -1,0 +1,191 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFindRegexlibExpressions</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa78577.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="dataquality-tExtractRegexFields.html" title="tExtractRegexFields"><link rel="next" href="tFirstnameMatch.html" title="tFirstnameMatch"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tFindRegexlibExpressions"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFindRegexlibExpressions"></a>tFindRegexlibExpressions</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFindRegexlibExpressions_icon32_gif.png" width="27"></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component will be available in the </em></span>
+					<span class="bold"><strong>Palette</strong></span>
+					<span class="emphasis"><em> of the studio on the condition that you have subscribed to the
+						relevant edition of </em></span>
+					<span class="bluebold">
+						Talend Enterprise Data Quality
+					</span>
+					<span class="emphasis"><em>.</em></span>
+				</p></td></tr></table></div><div class="section" title="tFindRegexlibExpressions"><div class="titlepage"><div><div><h3 class="title"><a name="d0e186194"></a>tFindRegexlibExpressions</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Data Quality</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tFindRegexlibExpressions</strong></span><a class="link" href="http://regexlib.com" target="_top"> connects to a web
+											service at </a><span class="webblue">http://regexlib.com</span> to get a list of regular
+										expressions for all languages, even those that are not
+										supported by <span class="bold"><strong>Talend</strong></span>.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tFindRegexlibExpressions</strong></span>
+										returns a data set holding information about all of the
+										regular expressions that match the request sent to the web
+										server. Then you can keep this information</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											Schema</em></span></p>
+								</td><td valign="top">
+									<p>These fields are read-only. The schema of this component
+										contains the following fields: <span class="emphasis"><em>Title, Expression,
+											Description, Matches, Non-Matches, Author,
+											Rating</em></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Regexp Substring</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Define a regular expression substring you want to use as a
+										filter on the regular expression list.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Key Words</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Enter the key word(s) you want to use as a filter on the
+										regular expression list. Key words are separated by
+										commas.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Min Rate</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Define a regular expression rating you want to use as a
+										filter on the regular expression list.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Relative path</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Type in the relative path pointing to the pattern folder
+										you need to create under the <span class="bold"><strong>Patterns
+											&gt; Regex</strong></span> node in the <span class="bold"><strong>DQ Repository</strong></span> tree view for keeping the
+										retrieved patterns. For example, you need to create a folder
+										called <span class="emphasis"><em>phone</em></span> with a sub-folder
+											<span class="emphasis"><em>uk</em></span> for the phone patterns used in
+										the U.K., then type in <code class="code">&#8220;phone/uk&#8221;</code> in this
+											<span class="bold"><strong>Relative path</strong></span>
+										field.</p>
+									<p> </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>In order to create definitely the pattern folder in
+											the DQ Repository, you must import therein the retrieved
+											regular expressions that have been stored in a
+												<span class="emphasis"><em>.csv</em></span> file. For further
+											information about how to import regular expression from
+											a <span class="emphasis"><em>.csv</em></span> file, see the <span class="bluebold">Talend Enterprise Data Quality</span>
+											<span class="bold"><strong>User Guide</strong></span>.</p></td></tr></table></div>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStat</em></span>
+										<span class="emphasis"><em>Catcher</em></span>
+										<span class="emphasis"><em>Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is a start component. It requires an output
+										flow, usually a csv file. You can later import all collected
+										expressions from a well formatted csv file into <span class="bluebold">Talend Enterprise Data Quality</span> studio.</p>
+									<p> For more information about importing patterns, see
+											<span class="bluebold">Talend Enterprise Data Quality</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>n/a</p>
+								</td></tr></tbody></table></div></div><div class="section" title="Scenario: Connecting to a web service and returning a list of regular expressions"><div class="titlepage"><div><div><h3 class="title"><a name="Raa13351"></a>Scenario: Connecting to a web service and returning a list of regular
+					expressions</h3></div></div></div><p>This scenario is a three-component Java Job created in <span class="bluebold">Talend Enterprise Studio</span>.</p><p>This scenario:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>uses the <span class="bold"><strong>tFindRegexlibExpression</strong></span>
+							component to connect to a web server and collects all regular
+							expressions that have the word &#8220;email&#8221; in their description
+							field,</p></li><li class="listitem"><p>uses the <span class="bold"><strong>tMap</strong></span> component to reorganize
+							the incoming data in the output flow and also to concatenate the two
+							fields from the incoming data flow in one output column,</p></li><li class="listitem"><p>and finally writes all collected expressions in an csv file.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="435"><tr><td><img src="../images/Use_Case_tFindRegexlibExpressions.png" width="435"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This Job can also be generated automatically from the <span class="bold"><strong>Patterns &gt; Regex</strong></span> node in the <span class="bold"><strong>DQ Repository</strong></span> tree view. For further information
+						about how to generate a Job to recuperate regular expressions, see the
+							<span class="bluebold">Talend Enterprise Data Quality</span>
+						<span class="bold"><strong>User Guide</strong></span>.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Drop the following components from the <span class="bold"><strong>Palette</strong></span> onto the design workspace: <span class="bold"><strong>tFindRegexlibExpressions</strong></span>, <span class="bold"><strong>tMap</strong></span>, and <span class="bold"><strong>tFileOutputDelimited</strong></span>.</p></li><li class="listitem"><p> Double-click the <span class="bold"><strong>tFindRegexlibExpressions</strong></span> component to open its <span class="bold"><strong>Basic settings</strong></span> view and define its
+							properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="415"><tr><td><img src="../images/Use_Case_tFindRegexlibExpressions1.png" width="415"></td></tr></table></div><p>The schema of this component is read-only and it contains the following
+					fields: <span class="emphasis"><em>Title</em></span>, <span class="emphasis"><em>Expression</em></span>,
+						<span class="emphasis"><em>Description</em></span>, <span class="emphasis"><em>Matches</em></span>,
+						<span class="emphasis"><em>Non-Matches</em></span>, <span class="emphasis"><em>Author</em></span>,
+						<span class="emphasis"><em>Rating</em></span> and <span class="emphasis"><em>Relative_path</em></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Regexp Substring</strong></span> field, define
+							a regular expression substring you want to use as a filter on the
+							regular expression list.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Key Words</strong></span> field, define the
+							key word(s) you want to use as a filter on the regular expression
+							list.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Min Rate</strong></span> field, define a
+							regular expression rating you want to use as a filter on the regular
+							expression list.</p></li><li class="listitem"><p>In the Relative path field, type in the relative path pointing to the
+							folder to be created in the <span class="bold"><strong>Patterns &gt;
+								Regex</strong></span> node of the <span class="bold"><strong>DQ
+								Repository</strong></span> tree view for the retrieved patterns. In this
+							example, this folder is <span class="emphasis"><em>email</em></span>.</p></li></ul></div><p>In this scenario we want <span class="bold"><strong>tFindRegexlibExpressions</strong></span> to collect all regular expressions on
+					the web server that have the word &#8220;email&#8221; in their
+						<span class="emphasis"><em>Description</em></span> field and those which rate is at least
+					1.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connect <span class="bold"><strong>tFindRegexlibExpressions</strong></span> and
+								<span class="bold"><strong>tMap</strong></span> using a <span class="bold"><strong>Main</strong></span> row link.</p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tMap</strong></span> component to
+							open the <span class="bold"><strong>Map Editor</strong></span> and do necessary
+							fields reorganization and concatenation.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="489"><tr><td><img src="../images/Use_Case_tFindRegexlibExpressions2.png" width="489"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Map Editor</strong></span>, click the plus
+							button in the upper-right corner to open a dialog box where you can give
+							a name to the new output table, <span class="emphasis"><em>regex</em></span> in this
+							scenario.</p><p> This will create a new link in the <span class="bold"><strong>tMap</strong></span> component holding the same name and that you can
+							use to connect <span class="bold"><strong>tMap</strong></span> to the next
+							component.</p></li><li class="listitem"><p>In the lower-right corner of the map Editor, click the plus button to
+							define the fields in the <span class="emphasis"><em>regex</em></span> output table.
+						</p></li><li class="listitem"><p>In the upper half of the Map Editor, drop fields from the input table
+							to fill the fields of the output schema as necessary. For more
+							information regarding data mapping, see <span class="bluebold">Talend Enterprise Studio</span>
+							<span class="bold"><strong>User Guide</strong></span>.</p></li></ul></div><p>In this scenario, we want to concatenate the <span class="emphasis"><em>Matches, </em></span>and
+						<span class="emphasis"><em>Non-Matches </em></span>fields from the incoming data flow in one
+					output column: <span class="emphasis"><em>Purpose.</em></span> We want as well to have a new
+					column in the output schema called <span class="emphasis"><em>Path</em></span>. And finally, we do
+					not want to have any rating-related information in the output schema.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>Ok</strong></span> to validate and close the
+							Map Editor.</p></li><li class="listitem"><p>Right-click <span class="bold"><strong>tMap</strong></span> and select the
+								<span class="bold"><strong>regex</strong></span> link to connect <span class="bold"><strong>tMap</strong></span> to <span class="bold"><strong>tFileOutputDelimited</strong></span>.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tFileOutputDelimited </strong></span>to
+							display its <span class="bold"><strong>Basic settings</strong></span> and define
+							its properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="431"><tr><td><img src="../images/Use_Case_tFindRegexlibExpressions3.png" width="431"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next o the <span class="bold"><strong>File
+								Name</strong></span> field to browse to the file where you want to write
+							the output data.</p></li><li class="listitem"><p>Define the row and field separators in the corresponding
+							fields.</p></li><li class="listitem"><p>Select the <span class="bold"><strong>Append</strong></span> check box if you
+							want to add the new rows at the end of the records.</p></li><li class="listitem"><p>Select the <span class="bold"><strong>Include Header</strong></span> check box
+							to include column headers in the output data.</p></li><li class="listitem"><p>If needed, click <span class="bold"><strong>Edit schema</strong></span> to view
+							the input and output data flows.</p></li><li class="listitem"><p>Save your Job an press <span class="bold"><strong>F6</strong></span> to execute
+							it.</p></li></ul></div><p><span class="bold"><strong>tFindRegexlibExpressions</strong></span> connects to the web
+					server and collects all regular expressions that match the request, <span class="bold"><strong>tMap</strong></span> does all defined filed reorganization and
+					concatenation and passes the output flow to <span class="bold"><strong>tFileOutptdelimited</strong></span>. The output file will look something like
+					the following:</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tFindRegexlibExpressions4.png" width="100%"></td></tr></table></div><p>You can later import all collected regular expressions from a well formatted
+					csv file into <span class="bluebold">Talend Enterprise Data Quality</span>
+					studio. for more information about importing patterns, see <span class="bluebold">Talend Enterprise Data Quality</span>
+					<span class="bold"><strong>User Guide</strong></span>.</p></div></div></body></html>

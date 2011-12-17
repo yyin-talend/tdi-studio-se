@@ -1,0 +1,147 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tAssert</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch11.html" title="Chapitre&nbsp;11.&nbsp;Composants Logs &amp; Errors"><link rel="prev" href="ch11.html" title="Chapitre&nbsp;11.&nbsp;Composants Logs &amp; Errors"><link rel="next" href="tAssertCatcher.html" title="tAssertCatcher"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tAssert"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tAssert"></a>tAssert</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tAssert_icon32_white.png" width="27"></td></tr></table></div><a name="Xaa2752034"></a><div class="section" title="Propri&eacute;t&eacute;s du tAssert"><div class="titlepage"><div><div><h3 class="title"><a name="tXSLT-dup-2"></a>Propri&eacute;t&eacute;s du tAssert</h3></div></div></div><p>Le composant <span class="bold"><strong>tAssert</strong></span> est &eacute;troitement li&eacute; au <span class="bold"><strong>tAssertCatcher </strong></span>pour tester une ex&eacute;cution de Job. Il g&eacute;n&egrave;re
+            une assertion bool&eacute;enne &agrave; partir d&#8217;une instruction conditionnelle, dans le but
+            d&#8217;alimenter le statut d&#8217;ex&eacute;cution pr&eacute;sent&eacute; par le <span class="bold"><strong>tAssertCatcher</strong></span>.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Logs &amp; Errors </p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Envoie le message de statut du Job au <span class="bold"><strong>tAssertCatcher</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>G&eacute;n&egrave;re l&#8217;assertion bool&eacute;enne relative &agrave; l&#8217;analyse du Job.</p>
+                            <p> Le statut peut &ecirc;tre&nbsp;:</p>
+                            <p>
+                                <span class="bold"><strong>Ok</strong></span>&nbsp;: l&#8217;ex&eacute;cution du Job a
+                                r&eacute;ussi.</p>
+                            <p>
+                                <span class="bold"><strong>Fail</strong></span>&nbsp;: l&#8217;ex&eacute;cution a &eacute;chou&eacute;. Les
+                                r&eacute;sultats du Job test&eacute; ne correspondent pas &agrave; ce qui &eacute;tait attendu,
+                                ou une erreur est survenue lors de l&#8217;ex&eacute;cution.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Description</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Saisissez votre message descriptif afin d'identifier l'assertion
+                                du <span class="bold"><strong>tAssert</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Expression</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Saisissez l&#8217;instruction conditionnelle sur laquelle baser votre
+                                assertion.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant suit l'action &agrave; laquelle est li&eacute;e directement la
+                                condition assertive. Il peut &ecirc;tre utilis&eacute; comme composant
+                                interm&eacute;diaire ou final du Job principal, ou bien en tant que
+                                composant de d&eacute;but, interm&eacute;diaire ou de fin du Job
+                                secondaire.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>L&#8217;&eacute;valuation du <span class="bold"><strong>tAssert</strong></span> est
+                                captur&eacute;e par le <span class="bold"><strong>tAssertCatcher</strong></span>.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Param&eacute;trer une condition assertive pour l&#8217;ex&eacute;cution d&#8217;un Job"><div class="titlepage"><div><div><h3 class="title"><a name="Raa63149"></a>Sc&eacute;nario&nbsp;: Param&eacute;trer une condition assertive pour l&#8217;ex&eacute;cution d&#8217;un Job</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit comment param&eacute;trer une condition assertive dans le composant
+                <span class="bold"><strong>tAssert</strong></span> afin d&#8217;&eacute;valuer si l&#8217;ex&eacute;cution du Job a
+            r&eacute;ussi ou non. De plus, vous pouvez &eacute;galement trouver comment deux r&eacute;sultats diff&eacute;rents
+            d&#8217;&eacute;valuation s&#8217;affichent et comment les lire. Le sc&eacute;nario utilise un <span class="bold"><strong>tAssert</strong></span>, mais aussi&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>un<span class="bold"><strong> tFileInputDelimited</strong></span> et un <span class="bold"><strong>tFileOutputDelimited</strong></span>. Les deux composants constituent
+                    le Job principal, duquel le statut d&#8217;ex&eacute;cution est &eacute;valu&eacute;. Pour plus
+                    d&#8217;informations sur ces deux composants, consultez <a class="xref" href="tMDMOutput.html" title="tMDMOutput">la section intitul&eacute;e &laquo;&nbsp;tMDMOutput&nbsp;&raquo;</a> et
+                    <a class="xref" href="tFileOutputDelimited.html" title="tFileOutputDelimited">la section intitul&eacute;e &laquo;&nbsp;tFileOutputDelimited&nbsp;&raquo;</a>.</p></li><li class="listitem"><p>un <span class="bold"><strong>tFileCompare</strong></span>. Il r&eacute;alise la comparaison
+                    entre le fichier de sortie du Job principal et un fichier de r&eacute;f&eacute;rence standard.
+                    Le r&eacute;sultat comparatif est &eacute;valu&eacute; par le <span class="bold"><strong>tAssert</strong></span> par rapport &agrave; la condition assertive configur&eacute;e dans ses
+                    param&egrave;tres. Pour plus d&#8217;informations &agrave; propos du <span class="bold"><strong>tFileCompare</strong></span>, consultez <a class="xref" href="tFileCompare.html" title="tFileCompare">la section intitul&eacute;e &laquo;&nbsp;tFileCompare&nbsp;&raquo;</a>.</p></li><li class="listitem"><p>un <span class="bold"><strong>tAssertCatcher</strong></span>. Il capture l&#8217;&eacute;valuation
+                    g&eacute;n&eacute;r&eacute;e par le <span class="bold"><strong>tAssert</strong></span>. Pour plus
+                    d&#8217;informations &agrave; propos du composant <span class="bold"><strong>tAssertCatcher</strong></span>, consultez <a class="xref" href="tAssertCatcher.html" title="tAssertCatcher">la section intitul&eacute;e &laquo;&nbsp;tAssertCatcher&nbsp;&raquo;</a>.</p></li><li class="listitem"><p>un <span class="bold"><strong>tLogRow</strong></span>. Il vous permet de lire
+                    l&#8217;&eacute;valuation captur&eacute;e. Pour plus d&#8217;informations &agrave; propos du <span class="bold"><strong>tLogRow</strong></span>, consultez <a class="xref" href="tLogRow.html" title="tLogRow">la section intitul&eacute;e &laquo;&nbsp;tLogRow&nbsp;&raquo;</a>.</p></li></ul></div><p>Afin de cr&eacute;er le Job principal, proc&eacute;dez comme suit&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Pr&eacute;parez un fichier d&eacute;limit&eacute; <span class="emphasis"><em>.csv</em></span> comme fichier source lu
+                    par votre Job principal.</p></li><li class="listitem"><p>Editez deux lignes dans ce fichier. Les modifications n&#8217;ont pas d&#8217;importance,
+                    vous pouvez uniquement simplifier le contenu.</p></li><li class="listitem"><p>Nommez-le <span class="emphasis"><em>source.csv</em></span>.</p></li><li class="listitem"><p>Dans <span class="bluebold">Talend Open Studio</span>, cr&eacute;ez un nouveau
+                    Job, que vous appellerez <span class="emphasis"><em>JobAssertion</em></span>.</p></li><li class="listitem"><p>Placez un <span class="bold"><strong>tFileInputDelimited</strong></span> et un <span class="bold"><strong>tFileOutputDelimited</strong></span> dans l&#8217;espace de mod&eacute;lisation
+                    graphique.</p></li><li class="listitem"><p>Connectez- les &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row Main
+                    </strong></span>afin de cr&eacute;er le Job principal.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="271"><tr><td><img src="../images/Use_Case_tAssert1.png" width="271"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tFileInputDelimited</strong></span>
+                    afin d&#8217;ouvrir sa vue <span class="bold"><strong>Component</strong></span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>File Name</strong></span> de la vue <span class="bold"><strong>Component</strong></span>, renseignez le chemin d&#8217;acc&egrave;s &agrave; votre
+                    fichier <span class="emphasis"><em>source.csv</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="507"><tr><td><img src="../images/Use_Case_tAssert2.png" width="507"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>S&eacute;lectionnez dans la liste <span class="bold"><strong>Property Type</strong></span> le
+                    mode <span class="bold"><strong>Built-In</strong></span> et cliquez sur le bouton
+                        <span class="bold"><strong>[...]</strong></span> de l&#8217;option <span class="bold"><strong>Edit schema</strong></span> afin de d&eacute;finir les donn&eacute;es &agrave; passer au <span class="bold"><strong>tFileOutputDelimited</strong></span>. Dans ce sc&eacute;nario, s&eacute;lectionnez
+                    les donn&eacute;es pr&eacute;sent&eacute;es dans le fichier <span class="emphasis"><em>source.csv</em></span> que vous
+                    avez cr&eacute;&eacute;. </p></li></ul></div><p>Pour plus d&#8217;informations &agrave; propos des types de sch&eacute;ma, consultez le <span class="bold"><strong>Guide Utilisateur</strong></span>
+            <span class="bluebold">Talend Open Studio</span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>D&eacute;finissez les autres param&egrave;tres dans les champs correspondants, selon le
+                    fichier <span class="emphasis"><em>source.csv</em></span> que vous avez cr&eacute;&eacute;.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tFileOutputDelimited</strong></span>
+                    afin d&#8217;ouvrir sa vue <span class="bold"><strong>Component</strong></span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>File Name</strong></span> de la vue <span class="bold"><strong>Component</strong></span>, renseignez le chemin d&#8217;acc&egrave;s &agrave; votre
+                    fichier de sortie, et laissez les autres champs comme d&eacute;finis par d&eacute;faut.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="439"><tr><td><img src="../images/Use_Case_tAssert4.png" width="439"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Appuyez sur <span class="bold"><strong>F6</strong></span> afin d&#8217;ex&eacute;cuter le Job
+                    principal. Il lit votre fichier <span class="emphasis"><em>source.csv</em></span>, passe les
+                    donn&eacute;es au<span class="bold"><strong> tFileOutputDelimited</strong></span> et &eacute;crit un
+                    fichier d&eacute;limit&eacute; de sortie, <span class="emphasis"><em>out.csv</em></span>.</p></li></ul></div><p>Continuez &agrave; modifier votre Job, afin de voir comment le <span class="bold"><strong>tAssert</strong></span> &eacute;value le statut d&#8217;ex&eacute;cution du Job principal.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Renommez le fichier <span class="emphasis"><em>out.csv</em></span> en
+                        <span class="emphasis"><em>reference.csv</em></span>. Ce fichier est le r&eacute;sultat attendu de
+                    l&#8217;&eacute;criture du Job principal.</p></li><li class="listitem"><p>Placez un <span class="bold"><strong>tFileCompare</strong></span>, un <span class="bold"><strong>tAssert</strong></span> et un<span class="bold"><strong>
+                        tLogRow</strong></span> dans l&#8217;espace de mod&eacute;lisation graphique.</p></li><li class="listitem"><p>Connectez-les avec un lien <span class="bold"><strong>Row Main</strong></span>.</p></li><li class="listitem"><p>Connectez le <span class="bold"><strong>tFileInputDelimited</strong></span> au <span class="bold"><strong>tFileCompare</strong></span> avec un lien <span class="bold"><strong>OnSubjobOk</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="360"><tr><td><img src="../images/Use_Case_tAssert5.png" width="360"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tFileCompare</strong></span> afin
+                    d&#8217;ouvrir sa vue <span class="bold"><strong>Component</strong></span>.</p></li><li class="listitem"><p>Dans la vue <span class="bold"><strong>Component</strong></span>, renseignez les chemins
+                    d&#8217;acc&egrave;s dans les champs <span class="bold"><strong>File to compare</strong></span> et
+                        <span class="bold"><strong>Reference file</strong></span> correspondants, et laissez
+                    les autres champs comme d&eacute;finis par d&eacute;faut.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="370"><tr><td><img src="../images/Use_Case_tAssert6.png" width="370"></td></tr></table></div><p>Pour plus d&#8217;informations &agrave; propos du composant <span class="bold"><strong>tFileCompare</strong></span>, consultez <a class="xref" href="tFileCompare.html" title="tFileCompare">la section intitul&eacute;e &laquo;&nbsp;tFileCompare&nbsp;&raquo;</a>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez ensuite sur le <span class="bold"><strong>tAssert</strong></span>, puis cliquez
+                    sur l&#8217;onglet <span class="bold"><strong>Component</strong></span>, au bas de l&#8217;espace de
+                    mod&eacute;lisation graphique.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="466"><tr><td><img src="../images/Use_Case_tAssert7.png" width="466"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la vue <span class="bold"><strong>Component</strong></span>, &eacute;ditez la condition
+                        <code class="code">row2.differ==0</code>, dans le champ <span class="bold"><strong>expression</strong></span> ainsi que la <span class="bold"><strong>description</strong></span> de l&#8217;assertion.</p></li></ul></div><p>Dans le champ <span class="bold"><strong>expression</strong></span>, <code class="code">row2 </code>constitue
+            le flux de donn&eacute;es transmis du <span class="bold"><strong>tFileCompare</strong></span> au<span class="bold"><strong> tAssert</strong></span>, <code class="code">differ</code> est une colonne du sch&eacute;ma du
+                <span class="bold"><strong>tFileCompare</strong></span> qui affiche si les fichiers compar&eacute;s
+            sont identiques. 0 signifie qu&#8217;aucune diff&eacute;rence n&#8217;a &eacute;t&eacute; d&eacute;tect&eacute;e entre le fichier
+                <span class="emphasis"><em>out.csv</em></span> et le fichier <span class="emphasis"><em>reference.csv</em></span> par le
+                <span class="bold"><strong>tFileCompare</strong></span>. Les fichiers compar&eacute;s sont donc
+            identiques, la condition assertive est remplie, le <span class="bold"><strong>tAssert</strong></span> conclut que le Job principal a &eacute;t&eacute; ex&eacute;cut&eacute; avec succ&egrave;s. Sinon,
+            il conclut qu&#8217;il a &eacute;chou&eacute;.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>La colonne <span class="emphasis"><em>differ</em></span> fait partie du sch&eacute;ma, en lecture seule, du
+                    <span class="bold"><strong>tFileCompare</strong></span>. Pour plus d&#8217;informations sur son
+                sch&eacute;ma, consultez <a class="xref" href="tFileCompare.html" title="tFileCompare">la section intitul&eacute;e &laquo;&nbsp;tFileCompare&nbsp;&raquo;</a>.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Appuyez sur <span class="bold"><strong>F6</strong></span> afin d&#8217;ex&eacute;cuter votre
+                    Job.</p></li><li class="listitem"><p>V&eacute;rifiez le r&eacute;sultat retourn&eacute; dans la vue <span class="bold"><strong>Run</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="520"><tr><td><img src="../images/Use_Case_tAssert8.png" width="520"></td></tr></table></div><p>La console affiche les r&eacute;sultats de la comparaison du <span class="bold"><strong>tFileCompare</strong></span>&nbsp;: <code class="code">Files are identical</code>. Mais l&#8217;&eacute;valuation du
+                <span class="bold"><strong>tAssert</strong></span> n&#8217;est visible nulle part.</p><p>Vous avez donc besoin du composant <span class="bold"><strong>tAssertCatcher</strong></span>
+            pour capturer l&#8217;&eacute;valuation.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Placez un <span class="bold"><strong>tAssertCatcher</strong></span> et un <span class="bold"><strong>tLogRow</strong></span> dans l&#8217;espace de mod&eacute;lisation
+                    graphique.</p></li><li class="listitem"><p>Connectez-les &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row
+                    Main</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="377"><tr><td><img src="../images/Use_Case_tAssert9.png" width="377"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Utilisez la configuration par d&eacute;faut du <span class="bold"><strong>tAssertCatcher</strong></span> dans sa vue <span class="bold"><strong>Component</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="354"><tr><td><img src="../images/Use_Case_tAssert10.png" width="354"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Appuyez sur <span class="bold"><strong>F6</strong></span> afin d&#8217;ex&eacute;cuter votre
+                    Job.</p></li><li class="listitem"><p>V&eacute;rifiez les r&eacute;sultats pr&eacute;sent&eacute;s dans la vue <span class="bold"><strong>Run</strong></span>. Vous pouvez voir que les informations sur le statut du Job
+                    ont &eacute;t&eacute; ajout&eacute;es&nbsp;:</p><p><code class="code">2010-01-29 15:37:33|fAvAzH|TASSERT|JobAssertion|java|tAssert_1|Ok|--|
+                        The output file should be identical with the reference file</code>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="450"><tr><td><img src="../images/use_case_tAssert11.png" width="450"></td></tr></table></div><p>La description du <span class="emphasis"><em>JobAssertion</em></span> dans la console est organis&eacute;e
+            selon le sch&eacute;ma du <span class="bold"><strong>tAssertCatcher</strong></span>, lequel comprend des
+            colonnes correspondant au temps d&#8217;ex&eacute;cution, &agrave; l&#8217;ID trait&eacute;, au nom du projet, au langage
+            du code, l&#8217;origine de l&#8217;&eacute;valuation, le r&eacute;sultat de l&#8217;&eacute;valuation, les informations
+            d&eacute;taill&eacute;es de l&#8217;&eacute;valuation, et le message descriptif de l&#8217;assertion. Pour plus
+            d&#8217;informations &agrave; propos du sch&eacute;ma du <span class="bold"><strong>tAssertCatcher</strong></span>,
+            consultez <a class="xref" href="tAssertCatcher.html" title="tAssertCatcher">la section intitul&eacute;e &laquo;&nbsp;tAssertCatcher&nbsp;&raquo;</a>.</p><p>La console indique que le statut d&#8217;ex&eacute;cution du Job <span class="emphasis"><em>JobAssertion</em></span>
+            est <span class="emphasis"><em>Ok</em></span>. En plus de l&#8217;&eacute;valuation, vous pouvez toujours voir les
+            informations descriptives du <span class="emphasis"><em>JobAssertion</em></span>, parmi lesquelles la
+            description que vous avez saisie dans les <span class="bold"><strong>Basic
+                settings</strong></span> du <span class="bold"><strong>tAssert</strong></span>. </p><p>Effectuez ensuite quelques op&eacute;rations pour que le Job principal ne puisse g&eacute;n&eacute;rer le
+            fichier attendu. Pour ce faire, proc&eacute;dez comme suit&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Effacez une ligne de votre fichier <span class="emphasis"><em>reference.csv</em></span>.</p></li><li class="listitem"><p>Appuyez sur <span class="bold"><strong>F6</strong></span> pour ex&eacute;cuter votre Job &agrave;
+                    nouveau.</p></li><li class="listitem"><p>V&eacute;rifiez les r&eacute;sultats retourn&eacute;s dans la vue <span class="bold"><strong>Run</strong></span>.</p><p>
+                    </p><pre class="programlisting">2010-02-01 19:47:43|GeHJNO|TASSERT|JobAssertion|tAssert_1|Failed|Test
+logically failed|The output file should be identical with the reference
+file</pre><p>
+                </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="452"><tr><td><img src="../images/use_case_tassert12.png" width="452"></td></tr></table></div><p>La console indique que le statut d&#8217;ex&eacute;cution du Job principal est
+                <span class="emphasis"><em>Failed</em></span> (a &eacute;chou&eacute;). L&#8217;explication d&eacute;taill&eacute;e suit peu apr&egrave;s,
+                <span class="emphasis"><em>Test logically failed</em></span> (&eacute;chec logique du test).</p><p>Vous pouvez avoir une id&eacute;e du statut de votre Job&nbsp;: il a &eacute;chou&eacute; lors de la g&eacute;n&eacute;ration
+            du fichier attendu &agrave; cause d&#8217;un &eacute;chec logique. Cet &eacute;chec logique peut provenir d&#8217;une
+            erreur logique lors de la cr&eacute;ation du Job. </p><p>Le statut et ses explications sont pr&eacute;sent&eacute;s respectivement dans les colonnes de
+            statut et de sous-statut du sch&eacute;ma du <span class="bold"><strong>tAssertCatcher</strong></span>.
+            Pour plus d&#8217;informations &agrave; propos de cette colonne, consultez <a class="xref" href="tAssertCatcher.html" title="tAssertCatcher">la section intitul&eacute;e &laquo;&nbsp;tAssertCatcher&nbsp;&raquo;</a>. </p></div></div></body></html>

@@ -1,0 +1,123 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tGreenplumSCD</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch02.html" title="Chapitre&nbsp;2.&nbsp;Composants Business Intelligence"><link rel="prev" href="tDB2SCDELT.html" title="tDB2SCDELT"><link rel="next" href="tInformixSCD.html" title="tInformixSCD"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tGreenplumSCD"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tGreenplumSCD"></a>tGreenplumSCD</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tGreenplumSCD_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tGreenplumSCD"><div class="titlepage"><div><div><h3 class="title"><a name="d0e20559"></a>Propri&eacute;t&eacute;s du tGreenplumSCD</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille du
+									composant</strong></span></p>
+						</td><td valign="top"><p>Databases/Business Intelligence/Greenplum</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Le composant<span class="bold"><strong> tGreenplumSCD</strong></span> refl&egrave;te et traque les
+								modifications d&#8217;une table Greenplum SCD d&eacute;di&eacute;e. </p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tGreenplumSCD</strong></span> adresse des besoins en transformation
+								Slowly Changing Dimension, en lisant r&eacute;guli&egrave;rement une source de
+								donn&eacute;es et en r&eacute;pertoriant les modifications dans une table SCD
+								d&eacute;di&eacute;e. </p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+								settings</strong></span></p>
+						</td><td valign="top"><p><span class="emphasis"><em>Property type</em></span></p>
+						</td><td valign="top"><p>Peut &ecirc;tre Built-in ou Repository. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>:
+								Propri&eacute;t&eacute;s utilis&eacute;es ponctuellement. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>&nbsp;:
+								S&eacute;lectionnez le fichier de propri&eacute;t&eacute;s du composant. Les champs
+								suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es collect&eacute;es.
+							</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Use an existing
+								connection</em></span></p>
+						</td><td valign="top"><p>Cochez cette case lorsque vous utilisez un
+									<span class="bold"><strong>tGreenplumConnection</strong></span>.</p><p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Lorsqu&#8217;un Job contient un Job parent et un Job enfant, la
+									liste <span class="bold"><strong>Component List</strong></span> pr&eacute;sente
+									uniquement les composants de connexion du Job du m&ecirc;me niveau. Si
+									vous souhaitez utiliser une connexion existant dans un autre
+									niveau, v&eacute;rifiez que les composants de connexion disponibles
+									partagent la m&ecirc;me connexion.</p><p>Pour plus d&#8217;informations concernant le partage d&#8217;une connexion
+									&agrave; travers diff&eacute;rents niveaux de Jobs, consultez <span class="bold"><strong>Use or register a shared DB
+										connection</strong></span> dans tous les composants de base de
+									donn&eacute;es que vous utilisez.</p></td></tr></table></div>
+							<p>Sinon, vous pouvez &eacute;galement d&eacute;sactiver le composant de connexion
+								et utiliser les <span class="bold"><strong>Dynamic settings</strong></span> du
+								composant, afin de param&eacute;trer manuellement la connexion. Dans ce
+								cas, v&eacute;rifiez que le nom de la connexion est unique et distinct tout
+								au long des deux niveaux de Jobs. Pour plus d&#8217;informations
+								concernant les param&egrave;tres dynamiques (<span class="bold"><strong>Dynamic
+									settings</strong></span>), consultez le <span class="bold"><strong>Guide
+									Utilisateur</strong></span> de votre Studio. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Host</em></span></p>
+						</td><td valign="top"><p>Adresse IP du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Port</em></span></p>
+						</td><td valign="top"><p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur de base de
+								donn&eacute;es. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Database</em></span></p>
+						</td><td valign="top"><p>Nom de la base de donn&eacute;es. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Schema</em></span></p>
+						</td><td valign="top"><p>Nom du sch&eacute;ma de la base de donn&eacute;es.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Username</em></span> et
+									<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top"><p>Informations d&#8217;authentification de l&#8217;utilisateur
+								de la base de donn&eacute;es. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Table</em></span></p>
+						</td><td valign="top"><p>Nom de la table &agrave; cr&eacute;er. Vous ne pouvez cr&eacute;er
+								qu&#8217;une seule table &agrave; la fois. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+									schema</em></span></p>
+						</td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+								d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+								suivant. Le sch&eacute;ma est soit local (built-in) soit distant dans le
+								Repository. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le
+								sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; ponctuellement pour ce composant
+								seulement. Voir &eacute;galement&nbsp;: <span class="bold"><strong>Guide
+									Utilisateur</strong></span>
+								<span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le
+								sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut
+								&ecirc;tre r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;: <span class="bold"><strong>Guide
+									Utilisateur</strong></span>
+								<span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>SCD Editor</em></span></p>
+						</td><td valign="top"><p>L&#8217;&eacute;diteur SCD Editor permet de constuire et de
+								configurer les donn&eacute;es du flux de sortie vers la table Slowly
+								Changing Dimension.</p><p>Pour plus d&#8217;informations, consultez
+									<a class="xref" href="tMysqlSCD.html#Raa67018" title="M&eacute;thodologie de gestion du SCD">la section intitul&eacute;e &laquo;&nbsp;M&eacute;thodologie de gestion du SCD&nbsp;&raquo;</a>.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Use memory saving Mode</em></span></p>
+						</td><td valign="top"><p>Cochez cette case pour am&eacute;liorer les performances
+								du syst&egrave;me.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Die on error</em></span></p>
+						</td><td valign="top"><p>Cette case est d&eacute;coch&eacute;e par d&eacute;faut, ce qui vous
+								permet de terminer le traitement avec les lignes sans erreur, et
+								ignorer les lignes en erreur. </p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+								settings</strong></span></p>
+						</td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+								Statistics</em></span></p>
+						</td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+								log au niveau du composant.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Debug mode</em></span></p>
+						</td><td valign="top"><p>Cochez cette case pour afficher chaque &eacute;tape du
+								processus de d&#8217;&eacute;criture dans la base de donn&eacute;es.</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Ce composant est un
+								composant de sortie. Par cons&eacute;quent, il requiert un composant et une
+								connexion de type Row Main en entr&eacute;e. </p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e20926"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez le <a class="xref" href="tMysqlSCD.html#Raa91665" title="Sc&eacute;nario&nbsp;: Traquer des modifications avec les Slowly Changing Dimensions de type 0 &agrave; 3">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Traquer des modifications avec les Slowly Changing Dimensions de type 0 &agrave;
+			3&nbsp;&raquo;</a>.</p></div></div></body></html>

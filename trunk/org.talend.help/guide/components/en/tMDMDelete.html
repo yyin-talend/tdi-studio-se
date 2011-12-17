@@ -1,0 +1,238 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMDMDelete</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch16.html" title="Chapter&nbsp;16.&nbsp;Talend MDM components"><link rel="prev" href="tMDMConnection.html" title="tMDMConnection"><link rel="next" href="tMDMInput.html" title="tMDMInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tMDMDelete"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMDMDelete"></a>tMDMDelete</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tMDMDelete_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tMDMDelete properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e231763"></a>tMDMDelete properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Component family</strong></span></p>
+                                                </td><td valign="top"><p>Talend MDM</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Function</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p><span class="bold"><strong>tMDMDelete</strong></span>
+                                                  deletes data records from specific entities in the
+                                                  MDM hub (XML repository).</p>
+                                                </td></tr><tr><td valign="top"><p><span class="bold"><strong>Purpose</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p>This component deletes master data in an
+                                                  MDM hub.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic settings</strong></span></p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> and
+                                                  <span class="emphasis"><em>Edit Schema</em></span></p>
+                                                </td><td valign="top"><p>A schema is a row
+                                                  description, i.e., it defines the number of fields
+                                                  that will be processed and passed on to the next
+                                                  component. The schema is either built-in or remote
+                                                  in the Repository.</p><p> Click <span class="bold"><strong>Edit Schema</strong></span> to modify the
+                                                  schema.</p>
+                                                  <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>If you modify the schema, it automatically
+                                                  becomes built-in.</p></td></tr></table></div>
+                                                  <p>Click <span class="bold"><strong>Sync
+                                                  columns</strong></span> to collect the schema from the
+                                                  previous component.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: You create the schema and
+                                                  store it locally for this component only. Related
+                                                  topic: see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>: You have already created
+                                                  the schema and stored it in the Repository. You
+                                                  can reuse it in various projects and job designs.
+                                                  Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>&nbsp;</td><td><span class="emphasis"><em>Use an existing
+                                                  connection</em></span></td><td valign="top">Select this check box if you
+                                                  want to use a configured <span class="bold"><strong>tMDMConnection</strong></span> component.</td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>URL</em></span></p>
+                                                </td><td valign="top"><p>Type in the URL required
+                                                  to access the MDM server.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Username</em></span> and
+                                                  <span class="emphasis"><em>Password</em></span></p>
+                                                </td><td valign="top"><p>Type in the user
+                                                  authentication data for the MDM server.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Version</em></span></p>
+                                                </td><td valign="top"><p>Type in the name of the
+                                                  Version of master data you want to connect to, for
+                                                  which you have the required user
+                                                  rights.</p><p> Leave this field empty if you
+                                                  want to display the default Version of master
+                                                  data.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Entity</em></span></p>
+                                                </td><td valign="top"><p>Type in the name of the
+                                                  entity that holds the data record(s) you want to
+                                                  delete.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Data
+                                                  Container</em></span></p>
+                                                </td><td valign="top"><p>Type in the name of the
+                                                  data container that holds the data record(s) you
+                                                  want to delete.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Keys</em></span></p>
+                                                </td><td valign="top"><p>Specify the field(s) (in
+                                                  sequence order) composing the key when the entity
+                                                  have a multiple key.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Logical
+                                                  delete</em></span></p>
+                                                </td><td valign="top"><p>Select this check box to
+                                                  send the master data to the Recycle bin and fill
+                                                  in the <span class="bold"><strong>Recycle bin
+                                                  path</strong></span>. Once in the Recycle bin, the
+                                                  master data can be definitely deleted or restored.
+                                                  If you leave this check box clear, the master data
+                                                  will be permanently deleted.</p>
+                                                </td></tr><tr><td><p>&nbsp;</p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>Die on
+                                                  error</em></span></p>
+                                                </td><td valign="top"><p>Select this check box to
+                                                  skip the row in error and complete the process for
+                                                  error-free rows. If needed, you can retrieve the
+                                                  rows in error via a <span class="bold"><strong>Row
+                                                  </strong></span>&gt; <span class="bold"><strong>Rejects
+                                                  </strong></span>link.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced settings</strong></span></p>
+                                                </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                                  Statistics</em></span></p>
+                                                </td><td valign="top"><p>Select this check box to
+                                                  gather the processing metadata at the Job level as
+                                                  well as at each component level.</p>
+                                                </td></tr><tr><td valign="top"><p><span class="bold"><strong>Usage</strong></span></p>
+                                                </td><td colspan="2" valign="top"><p>Use this component to write a file and
+                                                  separate the fields using a specific
+                                                  separator.</p>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Scenario: Deleting master data from an MDM hub"><div class="titlepage"><div><div><h3 class="title"><a name="zhang-20111102-mdm-tmdmdelete"></a>Scenario: Deleting master data from an MDM hub</h3></div></div></div><p>This scenario describes a four-component Job that deletes the specified data
+                        record from the MDM XML repository. </p><div class="mediaobject"><img src="../images/Use_Case_tMDMDelete1.png"></div><div class="section" title="Dropping and linking the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e232053"></a>Dropping and linking the components</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Drop <span class="bold"><strong>tMDMConnection</strong></span>,
+                                                  <span class="bold"><strong>tMDMInput</strong></span>,
+                                                  <span class="bold"><strong>tMDMDelete</strong></span>, and
+                                                  <span class="bold"><strong>tMDMClose</strong></span> of the
+                                                  <span class="bold"><strong>Talend MDM</strong></span>
+                                                family from the <span class="bold"><strong>Palette</strong></span> onto the design
+                                                workspace.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tMDMInput</strong></span> to
+                                                  <span class="bold"><strong>tMDMDelete</strong></span> using
+                                                a <span class="bold"><strong>Row</strong></span> &gt;
+                                                  <span class="bold"><strong>Main</strong></span> link.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tMDMConnection</strong></span> to <span class="bold"><strong>tMDMInput</strong></span>, and <span class="bold"><strong>tMDMInput</strong></span> to <span class="bold"><strong>tMDMClose</strong></span> using <span class="bold"><strong>Trigger</strong></span> &gt; <span class="bold"><strong>OnSubjobOK</strong></span> links.</p></li></ol></div></div><div class="section" title="Configuring the MDM server connection"><div class="titlepage"><div><div><h4 class="title"><a name="d0e232116"></a>Configuring the MDM server connection</h4></div></div></div><p>In this scenario, a <span class="bold"><strong>tMDMConnection</strong></span>
+                                component is used to open an MDM server connection for convenient
+                                reuse in the subsequent subjob that performs the data record
+                                deletion task.</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-click <span class="bold"><strong>tMDMConnection</strong></span> to display its
+                                                  <span class="bold"><strong>Basic settings</strong></span>
+                                                view and define the component properties.</p><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td align="center"><img src="../images/use_case-tmdmdelete-tmdmconnection.png" align="middle" width="100%"></td></tr></table></div></li><li class="listitem"><p>In the <span class="bold"><strong>URL</strong></span> field,
+                                                enter the MDM server URL, between quotation marks:
+                                                for example,
+                                                  <span class="emphasis"><em>"http://localhost:8180/talend/TalendPort"</em></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Username</strong></span> and
+                                                  <span class="bold"><strong>Password</strong></span> fields,
+                                                enter your login user name and password to connect
+                                                to the MDM server.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Version</strong></span> field,
+                                                enter the name of the master data Version you want
+                                                to access, between quotation marks. Leave this field
+                                                empty to access the default master data
+                                                Version.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tMDMClose</strong></span> to display its <span class="bold"><strong>Basic settings</strong></span> view and
+                                                define the component properties.</p><p>This component closes the opened MDM server connection
+                                                after the successful execution of the proceeding
+                                                subjob.</p><div class="mediaobject"><img src="../images/use_case-tmdmdelete-tmdmclose.png"></div></li><li class="listitem"><p>From the <span class="bold"><strong>Component
+                                                  List</strong></span> list, select the component for the
+                                                server connection you want to close if you have
+                                                configured more than one MDM server connection. In
+                                                this use case, there is only one MDM server
+                                                connection opened, so simply use the default
+                                                setting.</p></li></ol></div></div><div class="section" title="Configuring data retrieval"><div class="titlepage"><div><div><h4 class="title"><a name="d0e232184"></a>Configuring data retrieval</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-click <span class="bold"><strong>tMDMInput</strong></span> to display its <span class="bold"><strong>Basic settings</strong></span> view and
+                                                define the component properties.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tMDMDelete2.png" width="100%"></td></tr></table></div></li><li class="listitem"><p>From the <span class="bold"><strong>Property
+                                                  Type</strong></span> list, select <span class="bold"><strong>Built-in</strong></span> to complete the fields
+                                                manually. </p><p>If you have stored the MDM connection information in
+                                                the repository metadata, select <span class="bold"><strong>Repository</strong></span> from the list
+                                                and the fields will be completed
+                                                automatically.</p></li><li class="listitem"><p>From the <span class="bold"><strong>Schema</strong></span> list,
+                                                select <span class="bold"><strong>Built-in</strong></span> and
+                                                click <span class="bold"><strong>[...]</strong></span> next to
+                                                  <span class="bold"><strong>Edit schema</strong></span> to
+                                                open a dialog box. </p><p>Here you can define the structure of the master data
+                                                you want to read in the MDM hub.</p><div class="mediaobject"><img src="../images/Use_Case_tMDMDelete3.png"></div></li><li class="listitem"><p>The master data is collected in a four column schema
+                                                of the type <span class="bold"><strong>String</strong></span>:
+                                                  <span class="emphasis"><em>Id</em></span>,
+                                                <span class="emphasis"><em>Name</em></span>, <span class="emphasis"><em>City</em></span>
+                                                and <span class="emphasis"><em>State</em></span>. Click <span class="bold"><strong>OK</strong></span> to close the dialog box
+                                                and proceed to the next step.</p></li><li class="listitem"><p>Select the <span class="bold"><strong>Use an existing
+                                                  connection</strong></span> check box, and from the
+                                                  <span class="bold"><strong>Component List</strong></span>
+                                                list that appears, select the component you have
+                                                configured to open your MDM server connection. </p><p>In this scenario, only one MDM server connection
+                                                exists, so simply use the default selection.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Entity</strong></span> field,
+                                                enter the name of the business entity that holds the
+                                                data record(s) you want to read, between quotation
+                                                marks. Here, we want to access the
+                                                  <span class="emphasis"><em>Agency</em></span> entity.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Data Container</strong></span>
+                                                field, enter the name of the data container that
+                                                holds the master data you want to read, between
+                                                quotation marks. In this example, we use the
+                                                  <span class="emphasis"><em>DStar</em></span> container.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The <span class="bold"><strong>Use multiple
+                                                  conditions</strong></span> check box is selected by
+                                                  default.</p></td></tr></table></div></li><li class="listitem"><p>In the <span class="bold"><strong>Operations</strong></span>
+                                                table, define the conditions to filter the master
+                                                data you want to delete as follows:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the plus button to add a new
+                                                  line.</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Xpath</strong></span> column, enter the Xpath and the
+                                                  tag of the XML node on which you want to apply the
+                                                  filter, between quotation marks. In this example,
+                                                  we work with the <span class="bold"><strong>Agency</strong></span> entity, so enter
+                                                  <span class="emphasis"><em>&#8220;Agency/Id&#8221;</em></span>.</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Function</strong></span> column, select the function
+                                                  you want to use. In this scenario, we use the
+                                                  <span class="emphasis"><em>Starts With</em></span> function.</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the <span class="bold"><strong>Value</strong></span> column, enter the value of your
+                                                  filter. Here, we want to filter the master data
+                                                  which Id starts with
+                                                  <span class="emphasis"><em>TA.</em></span></p></li></ul></div></li><li class="listitem"><p>In the <span class="bold"><strong>Component</strong></span>
+                                                view, click <span class="bold"><strong>Advanced
+                                                  settings</strong></span> to set the advanced
+                                                parameters. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tMDMDelete4.png" width="100%"></td></tr></table></div></li><li class="listitem"><p>In the <span class="bold"><strong>Loop XPath
+                                                  query</strong></span> field, enter the structure and
+                                                the name of the XML node on which the loop is to be
+                                                carried out, between quotation marks.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Mapping</strong></span> table
+                                                and in the <span class="bold"><strong>XPath
+                                                  query</strong></span> column, enter the name of the XML
+                                                tag in which you want to collect the master data,
+                                                next to the corresponding output column name,
+                                                between quotation marks.</p></li></ol></div></div><div class="section" title="Configuring data record deletion"><div class="titlepage"><div><div><h4 class="title"><a name="d0e232359"></a>Configuring data record deletion</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>In the design workspace, double-click the <span class="bold"><strong>tMDMDelete</strong></span> component to
+                                                display the <span class="bold"><strong>Basic
+                                                  settings</strong></span> view and set the component
+                                                properties.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tMDMDelete5.png" width="100%"></td></tr></table></div></li><li class="listitem"><p>From the <span class="bold"><strong>Schema</strong></span> list,
+                                                select <span class="bold"><strong>Built-in</strong></span> and
+                                                click the three-dot button next to the <span class="bold"><strong>Edit Schema</strong></span> field to
+                                                describe the structure of the master data in the MDM
+                                                hub.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tMDMDelete6.png" width="100%"></td></tr></table></div></li><li class="listitem"><p>Click the plus button to the right to add one column
+                                                of the type <span class="bold"><strong>String</strong></span>.
+                                                In this example, name this column
+                                                  <span class="emphasis"><em>outputXML</em></span>. Click <span class="bold"><strong>OK</strong></span> to close the dialog box
+                                                and proceed to the next step.</p></li><li class="listitem"><p>Select the <span class="bold"><strong>Use an existing
+                                                  connection</strong></span> check box, and from the
+                                                  <span class="bold"><strong>Component List</strong></span>
+                                                list that appears, select the component you have
+                                                configured to open your MDM server connection. </p><p>In this scenario, only one MDM server connection
+                                                exists, so simply use the default selection.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Entity</strong></span> field,
+                                                enter the name of the business entity that holds the
+                                                master data you want to delete, the
+                                                  <span class="emphasis"><em>Agency</em></span> entity in this
+                                                example.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Data
+                                                Container</strong></span>, enter the name of the data
+                                                container that holds the data to be deleted,
+                                                  <span class="emphasis"><em>DStar</em></span> in this example.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Keys</strong></span> table,
+                                                click the plus button to add a new line. In the
+                                                  <span class="bold"><strong>Keys</strong></span> column,
+                                                select the column that holds the key of the
+                                                  <span class="emphasis"><em>Agency</em></span> entity. Here, the key
+                                                of the <span class="emphasis"><em>Agency</em></span> entity is set on
+                                                the <span class="emphasis"><em>Id</em></span> field. </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>If the entity has multiple keys, add as many
+                                                  line as required for the keys and select them in
+                                                  sequential order.</p></td></tr></table></div></li><li class="listitem"><p>Select the <span class="bold"><strong>Logical
+                                                  delete</strong></span> check box if you do not want to
+                                                delete the master data permanently. This will send
+                                                the deleted data to the Recycle bin. Once in the
+                                                Recycle bin, the master data can be restored or
+                                                permanently deleted. If you leave this check box
+                                                clear, the master data will be permanently
+                                                deleted.</p></li><li class="listitem"><p>Fill in the <span class="bold"><strong>Recycle bin
+                                                  path</strong></span> field. Here, we left the default
+                                                path but if your recycle bin is in a path different
+                                                from the default, specify the path. </p></li></ol></div></div><div class="section" title="Saving and executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e232464"></a>Saving and executing the Job</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Press <span class="bold"><strong>Ctrl+S</strong></span> to save
+                                                your Job to ensure that all the parameters you have
+                                                configured take effect.</p></li><li class="listitem"><p>Press <span class="bold"><strong>F6</strong></span> to execute
+                                                your Job.</p></li></ol></div><p>The master data with the Id starting with &#8220;TA&#8221; have been deleted and
+                                sent to MDM Recycle bin. </p></div></div></div></body></html>

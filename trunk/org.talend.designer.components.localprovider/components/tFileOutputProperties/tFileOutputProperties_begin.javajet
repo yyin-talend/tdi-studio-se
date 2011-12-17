@@ -1,0 +1,41 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.ElementParameterParser
+        org.talend.core.model.process.INode
+        org.talend.designer.codegen.config.CodeGeneratorArgument
+	" 
+%>
+<% 
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();	
+String fileFormat = ElementParameterParser.getValue(node,"__FILE_FORMAT__");
+String filename = ElementParameterParser.getValue(node,"__FILENAME__");
+String append = ElementParameterParser.getValue(node,"__APPEND__");
+String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+%>
+java.io.File file_<%=cid%> = new java.io.File(<%=filename%>);
+<%
+if(("false").equals(append)){
+%>
+	file_<%=cid%>.delete();
+<%
+}
+%>
+file_<%=cid%>.createNewFile();
+<%
+if(("PROPERTIES_FORMAT").equals(fileFormat)){
+%>
+	java.io.InputStream fis_<%=cid%> = new java.io.FileInputStream(file_<%=cid%>);
+	java.util.Properties properties_<%=cid%> = new java.util.Properties();
+	properties_<%=cid%>.load(fis_<%=cid%>);
+	fis_<%=cid%>.close();
+<%
+}else if(("INI_FORMAT").equals(fileFormat)){
+	
+%>
+	org.ini4j.Wini ini_<%=cid%> = new org.ini4j.Wini(new java.io.File(<%=filename%>));
+	ini_<%=cid%>.getConfig().setFileEncoding(java.nio.charset.Charset.forName(<%=encoding %>));
+<%
+}
+%>

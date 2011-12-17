@@ -1,0 +1,225 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tAccessBulkExec</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa29876.html" title="Chapter&nbsp;6.&nbsp;Database components"><link rel="prev" href="Raa29876.html" title="Chapter&nbsp;6.&nbsp;Database components"><link rel="next" href="tAccessCommit.html" title="tAccessCommit"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tAccessBulkExec"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tAccessBulkExec"></a>tAccessBulkExec</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tAccessBulkExec_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tAccessBulkExec properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e51425"></a>tAccessBulkExec properties</h3></div></div></div><p>The <span class="bold"><strong>tAccessOutputBulk</strong></span> and <span class="bold"><strong>tAccessBulkExec</strong></span> components are generally used together to output data to
+			a delimited file and then to perform various actions on the file in an Access database,
+			in a two step process. These two steps are fused together in the <span class="bold"><strong>tAccessOutputBulkExec</strong></span> component, detailed in a separate section. The
+			advantage of using a two step process is that it makes it possible to carry out
+			transformations on the data before loading it in the database. </p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/Access</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component executes an Insert action on the data
+								provided.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>As a dedicated component,<span class="bold"><strong>
+									tAccessBulkExec</strong></span> offers gains in performance when
+								carrying out Insert operations in an Access database.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Either <span class="bold"><strong>Built-in</strong></span> or <span class="bold"><strong>Repository</strong></span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>: No property data is
+								stored centrally.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>: Select the repository
+								file in which the properties are stored. The fields that follow are
+								completed automatically using the data retrieved.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box and select the appropriate <span class="bold"><strong>tAccessConnection</strong></span> component from the
+									<span class="bold"><strong>Component list </strong></span>if you want to
+								re-use connection parameters that you have already defined.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>When a Job contains the parent Job and the child Job, <span class="bold"><strong>Component
+										list</strong></span> presents only the connection components in
+									the same Job level, so if you need to use an existing connection
+									from the other level, make sure that the available connection
+									components are sharing the intended connection.</p><p>For more information on how to share a DB connection across Job levels, see <span class="bold"><strong>Use or register a shared DB
+										connection</strong></span> in any database connection component
+									corresponding to the database you are using.</p><p>Otherwise, you can as well deactivate the connection components and use <span class="bold"><strong>Dynamic settings</strong></span> of the component to
+									specify the intended connection manually. In this case, make
+									sure the connection name is unique and distinctive all over
+									through the two Job levels. For more information about <span class="bold"><strong>Dynamic settings</strong></span>, see your studio
+									user guide.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>DB version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select the version of your database.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in the directory where your database is stored.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> and
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>DB user authentication data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Action on table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>On the table defined, you can perform one of the following
+								operations:</p>
+							<p>
+								<span class="bold"><strong>None</strong></span>: No operation is carried
+								out.</p>
+							<p>
+								<span class="bold"><strong>Drop and create table</strong></span>: The table is
+								removed and created again.</p>
+							<p>
+								<span class="bold"><strong>Create table</strong></span>: The table does not
+								exist and gets created.</p>
+							<p>
+								<span class="bold"><strong>Create table if not exists</strong></span>: The
+								table is created if it does not exist.</p>
+							<p>
+								<span class="bold"><strong>Clear table</strong></span>: The table content is
+								deleted.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the table to be written. Note that only one table can be
+								written at a time and that the table must exist already for the
+								insert operation to succeed.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Local filename</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Browse to the delimited file to be loaded into your
+								database.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Action on data</em></span>
+							</p>
+						</td><td valign="top">
+							<p>On the data of the table defined, you can perform:</p>
+							<p>
+								<span class="bold"><strong>Insert</strong></span>: Add new entries to the
+								table.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields to be processed and passed on to the next component. The
+								schema is either <span class="bold"><strong>Built-in</strong></span> or stored
+								remotely in the <span class="bold"><strong>Repository</strong></span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>: The schema is created
+								and stored locally for this component only. Related topic: see
+									<span class="bluebold">Talend Open Studio</span>
+								<span class="bold"><strong>User Guide</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>: The schema already
+								exists and is stored in the Repository, hence can be reused. Related
+								topic: see <span class="bluebold">Talend Open Studio</span>
+								<span class="bold"><strong>User Guide</strong></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Additional JDBC parameters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Specify additional connection properties for the DB connection you
+								are creating. This option is not available if you have selected the
+									<span class="bold"><strong>Use an existing connection</strong></span>
+								check box in the <span class="bold"><strong>Basic</strong></span>
+								settings.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Include header</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to include the column header.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect log data at the component
+								level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component is to be used along with <span class="bold"><strong>tAccessOutputBulk</strong></span> component. Used together, they can
+								offer gains in performance while feeding an Access database.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e51929"></a>Related scenarios</h3></div></div></div><p>For use cases in relation with <span class="bold"><strong>tAccessBulkExec</strong></span>, see
+			the following scenarios:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+					<span class="bold"><strong> tMysqlOutputBulk</strong></span>
+					<a class="xref" href="tMysqlOutputBulk.html#Raa15985" title="Scenario: Inserting transformed data in MySQL database">the section called &#8220;Scenario: Inserting transformed data in MySQL database&#8221;</a>
+				</p></li><li class="listitem"><p>
+					<span class="bold"><strong> tMysqlOutputBulkExec</strong></span>
+					<a class="xref" href="tMysqlOutputBulkExec.html#Raa97924" title="Scenario: Inserting data in MySQL database">the section called &#8220;Scenario: Inserting data in MySQL
+                database&#8221;</a>
+				</p></li></ul></div></div></div></body></html>

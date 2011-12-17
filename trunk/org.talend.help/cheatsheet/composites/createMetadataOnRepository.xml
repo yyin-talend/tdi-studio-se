@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compositeCheatsheet name="Create Metadatas on the Repository">
+      <taskGroup name="Create Metadatas on the Repository" kind="sequence">
+         <intro>
+	         The Repository is used to manage all elements of the current project, in particular the metadatas.
+         </intro>
+         <onCompletion>
+            Congratulations you can now manage your metadatas on the Repository.
+         </onCompletion>
+         
+		   <task kind="cheatsheet" name="Prepare the Repository" id="prepareRepository" skip="true">
+		   <param name="id" value="org.talend.help.cheatsheet.prepare.repository" />
+		   <param name="showIntro" value="false" />
+		   <intro>
+		      This tutorial guides you through the organization of the Repository.
+		   </intro>
+		   <onCompletion>
+		      Finished to prepare the Repository. You can now create metadata.
+		   </onCompletion>
+		   </task>
+
+		   <taskGroup name="Create metadata DbConnection" kind="sequence" skip="true">
+			   <intro>
+			      This tutorial guides you through the creation of metadata DbConnection.
+			   </intro>
+			   <task kind="cheatsheet" name="Create a metadata DbConnection"
+				   id="createDbConnection">
+			   <param name="id" value="org.talend.help.cheatsheet.metadata.dbconnection"/>
+			   <param name="showIntro" value="false" />
+			   <intro>
+			      This tutorial guides you through the creation of metadata DbConnection.
+			   </intro>
+			   <onCompletion>
+			      Finished creating a metadata DbConnection. You must now create the associated metadata table.
+			   </onCompletion>
+			   </task>
+
+			   <task kind="cheatsheet" name="Create a metadata table"
+				   id="createDbConnectionTable" skip="true">
+			   <param name="id" value="org.talend.help.cheatsheet.metadata.dbconnection.table"/>
+			   <param name="showIntro" value="false" />
+			   <intro>
+			      This tutorial guides you through the creation of metadata table of a DbConnection.
+			   </intro>
+			   <onCompletion>
+			      Congratulation, you can now create metadata DbConnection !
+			   </onCompletion>
+			   </task>
+
+           </taskGroup>
+
+      </taskGroup>
+</compositeCheatsheet>

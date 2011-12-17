@@ -1,0 +1,277 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tIngresCDC</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch05.html" title="Chapitre&nbsp;5.&nbsp;Composants Databases"><link rel="prev" href="tInformixSP.html" title="tInformixSP"><link rel="next" href="tIngresClose.html" title="tIngresClose"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tIngresCDC"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tIngresCDC"></a>tIngresCDC</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tIngresCDC_icon32.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tIngresCDC"><div class="titlepage"><div><div><h3 class="title"><a name="d0e89219"></a>Propri&eacute;t&eacute;s du tIngresCDC</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/Ingres</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tIngresCDC </strong></span>extrait
+								les donn&eacute;es d&#8217;un syst&egrave;me source qui ont &eacute;t&eacute; modifi&eacute;es depuis la
+								derni&egrave;re extraction et transf&egrave;re ces donn&eacute;es vers un ou plusieurs
+								autre(s) syst&egrave;me(s). </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant permet l&#8217;extraction et la migration de donn&eacute;es, il
+								extrait uniquement les changements apport&eacute;s aux donn&eacute;es source et
+								les met &agrave; disposition de(s) syst&egrave;me(s) cible(s) en utilisant
+								l&#8217;aper&ccedil;u de base de donn&eacute;es CDC. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic Settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case et s&eacute;lectionnez le composant <span class="bold"><strong>tIngresCDC</strong></span> ad&eacute;quat &agrave; partir de la liste
+									<span class="bold"><strong>Component</strong></span> pour r&eacute;utiliser les
+								param&egrave;tres d&#8217;une connexion que vous avez d&eacute;j&agrave; d&eacute;finie.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Lorsqu&#8217;un Job contient un Job parent et un Job enfant, la
+									liste <span class="bold"><strong>Component List</strong></span> pr&eacute;sente
+									uniquement les composants de connexion du Job du m&ecirc;me niveau. Si
+									vous souhaitez utiliser une connexion existant dans un autre
+									niveau, v&eacute;rifiez que les composants de connexion disponibles
+									partagent la m&ecirc;me connexion.</p><p>Pour plus d&#8217;informations concernant le partage d&#8217;une connexion
+									&agrave; travers diff&eacute;rents niveaux de Jobs, consultez <span class="bold"><strong>Use or register a shared DB
+										connection</strong></span> dans tous les composants de base de
+									donn&eacute;es que vous utilisez.</p></td></tr></table></div>
+							<p>Sinon, vous pouvez &eacute;galement d&eacute;sactiver le composant de connexion
+								et utiliser les <span class="bold"><strong>Dynamic settings</strong></span> du
+								composant, afin de param&eacute;trer manuellement la connexion. Dans ce
+								cas, v&eacute;rifiez que le nom de la connexion est unique et distinct tout
+								au long des deux niveaux de Jobs. Pour plus d&#8217;informations
+								concernant les param&egrave;tres dynamiques (<span class="bold"><strong>Dynamic
+									settings</strong></span>), consultez le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de votre Studio.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Peut-&ecirc;tre Built-in ou Repository.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Propri&eacute;t&eacute;s utilis&eacute;es
+								ponctuellement.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>&nbsp;: S&eacute;lectionnez le
+								fichier de propri&eacute;t&eacute;s du composant dans le Repository. Les champs
+								suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
+								collect&eacute;es.</p>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+									<span class="emphasis"><em>R&eacute;initialisez le type de base de donn&eacute;es en cliquant
+										sur le bouton ad&eacute;quat afin de s&eacute;lectionner la connexion CDC.
+									</em></span>
+								</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Adresse IP du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Informations d&#8217;authentification sur l&#8217;utilisateur de base de
+								donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema using CDC</em></span> et <span class="emphasis"><em>Edit
+									schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (built-in) soit distant dans le
+								Repository.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma sera cr&eacute;&eacute; et
+								conserv&eacute; pour ce composant uniquement. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+								dans divers projets et Jobs. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+									<span class="emphasis"><em>R&eacute;initialisez le type de base de donn&eacute;es en cliquant
+										sur le bouton ad&eacute;quat afin de s&eacute;lectionner la connexion
+										CDC</em></span>
+								</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table using CDC</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la table source dans laquelle seront captur&eacute;s les
+								changements apport&eacute;s aux donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Subscriber</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nom de l&#8217;application qui utilisera la table de
+								modifications.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Events to catch</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Insert</strong></span>&nbsp;: Cochez cette case pour
+								capturer les donn&eacute;es ins&eacute;r&eacute;es dans la table de modifications depuis
+								la derni&egrave;re extraction.</p>
+							<p><span class="bold"><strong>Update&nbsp;</strong></span>: Cochez cette case pour
+								capturer les donn&eacute;es mises &agrave; jour dans la table de modifications
+								depuis la derni&egrave;re extraction.</p>
+							<p><span class="bold"><strong>Delete</strong></span>&nbsp;: Cochez cette case pour
+								capturer les donn&eacute;es supprim&eacute;es dans la table de modifications
+								depuis la derni&egrave;re extraction.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Limit</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nombre maximum de lignes pouvant &ecirc;tre consomm&eacute;es par un
+								souscripteur dans la table de modifications.</p>
+						</td></tr><tr><td valign="top">
+							<p><a name="Xaa4941485"></a>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Choisissez dans la liste le type d&#8217;encodage &agrave; utiliser.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<span class="italic">Keep data in CDC table</span>
+						</td><td valign="top">Cochez cette case pour garder les changements &agrave;
+							disposition d&#8217;un ou plusieurs syst&egrave;me(s) cible m&ecirc;me apr&egrave;s qu&#8217;ils aient
+							&eacute;t&eacute; consult&eacute;s.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim all the String/Char columns</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour supprimer les espaces en d&eacute;but et en fin de
+								champ dans toutes les colonnes contenant des cha&icirc;nes de caract&egrave;res.
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim column</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Supprimez les espaces en d&eacute;but et en fin de champ dans les
+								colonnes s&eacute;lectionn&eacute;es.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>D&eacute;cochez la case <span class="bold"><strong>Trim all the
+										String/Char columns</strong></span> pour activer ce champ.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="italic">tStat Catcher Statistics </span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Enable parallel execution</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cocher cette case permet de traiter plusieurs flux de donn&eacute;es
+								simultan&eacute;ment. Cela permet de traiter les donn&eacute;es plus
+								rapidement.</p>
+							<p>Dans le champ <span class="bold"><strong>Number of parallel
+									executions</strong></span>, vous pouvez&nbsp;:</p>
+							<p>- Saisir le nombre d&#8217;ex&eacute;cutions parall&egrave;les d&eacute;sir&eacute;</p>
+							<p>- Appuyer sur <span class="bold"><strong>Ctrl+Espace </strong></span>et
+								s&eacute;lectionner la variable de contexte dans la liste.</p>
+							<p>Pour plus d&#8217;informations, consultez le<span class="bold"><strong> Guide
+									utilisateur</strong></span>
+								<span class="bluebold">Talend Enterprise Studio</span>.</p>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+									<span class="emphasis"><em>Les actions sur la table (</em></span>
+									<span class="bold"><strong>Action on table</strong></span>
+									<span class="emphasis"><em>) ne sont pas disponibles avec la fonction de
+										parall&eacute;lisation. Ainsi, pour cr&eacute;er une table, vous devez
+										utiliser un composant </em></span>
+									<span class="bold"><strong>tCreateTable</strong></span>
+									<span class="emphasis"><em>. </em></span>
+								</p></td></tr></table></div>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+									<span class="emphasis"><em>Lorsque l&#8217;ex&eacute;cution parall&egrave;le est activ&eacute;e, il n&#8217;est
+										pas possible d&#8217;utiliser les variables globales pour
+										retrouver les valeurs de retour dans un sous-job.</em></span>
+								</p></td></tr></table></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est g&eacute;n&eacute;ralement utilis&eacute; comme composant de d&eacute;but. Il
+								n&eacute;cessite un composant de sortie et une connexion de type <span class="bold"><strong>Row &gt; Main</strong></span>.</p>
+						</td></tr></tbody></table></div><p>
+			<span>&nbsp;</span>
+		</p></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e89820"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez <a class="xref" href="tMysqlCDC.html#Raa46443" title="Sc&eacute;nario&nbsp;2&nbsp;: Extraire les modifications &agrave; l&#8217;aide du CDC">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Extraire les modifications &agrave; l&#8217;aide du CDC&nbsp;&raquo;</a>
+			du composant <span class="bold"><strong>tMysqlCDC</strong></span>.</p></div></div></body></html>

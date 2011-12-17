@@ -1,0 +1,199 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tAccessConnection</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tAccessCommit.html" title="tAccessCommit"><link rel="next" href="tAccessInput.html" title="tAccessInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tAccessConnection"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tAccessConnection"></a>tAccessConnection</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tAccessConnection_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tAccessConnection"><div class="titlepage"><div><div><h3 class="title"><a name="d0e52587"></a>Propri&eacute;t&eacute;s du tAccessConnection</h3></div></div></div><p>Ce composant est &eacute;troitement li&eacute; aux composants <span class="bold"><strong>tAccessCommit,
+				tAccessInput</strong></span> et <span class="bold"><strong>tAccessoutput</strong></span>. Ils sont
+			g&eacute;n&eacute;ralement utilis&eacute;s avec un composant <span class="bold"><strong>tAccessConnection</strong></span> car il permet d&#8217;ouvrir une connexion pour la
+			transaction en cours.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/Access</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tAccessConnection</strong></span>
+								ouvre une connexion vers une base de donn&eacute;es afin d&#8217;effectuer une
+								transaction. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant permet de commiter les donn&eacute;es d&#8217;un Job entier en une
+								seule transaction vers une base de donn&eacute;es de sortie. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Peut &ecirc;tre <span class="bold"><strong>Built-in</strong></span> ou <span class="bold"><strong>Repository</strong></span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Propri&eacute;t&eacute;s utilis&eacute;es
+								ponctuellement.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository&nbsp;</strong></span>: S&eacute;lectionnez le
+								fichier de propri&eacute;t&eacute;s du composant. Les champs suivants sont alors
+								pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es collect&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>DB Version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez la version d&#8217;Access que vous utilisez (Access 2003 ou versions
+								sup&eacute;rieures.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la base de donn&eacute;es. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Informations d&#8217;authentification de l&#8217;utilisateur de base de
+								donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use or register a shared DB Connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour partager votre connexion ou r&eacute;cup&eacute;rer une
+								connexion mise en partage dans un Job p&egrave;re ou un Job fils. Cette
+								option vous permet de partager une seule connexion &agrave; une base de
+								donn&eacute;es dans plusieurs composants de connexion &agrave; des bases de
+								donn&eacute;es, dans diff&eacute;rents niveaux de Jobs, qui peuvent &ecirc;tre des Jobs
+								parent ou enfant..<span class="bold"><strong> Shared DB Connection
+									Name&nbsp;:</strong></span> d&eacute;finissez ou saisissez le nom de la connexion
+								partag&eacute;e.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Additional JDBC parameters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Ajoutez des informations de connexion suppl&eacute;mentaires n&eacute;cessaires
+								&agrave; la connexion &agrave; la base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est g&eacute;n&eacute;ralement utilis&eacute; avec des composants Access
+								et notamment avec les composants <span class="bold"><strong>tAccessCommit</strong></span> et <span class="bold"><strong>tAccessRollback</strong></span>. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario: Ins&eacute;rer des donn&eacute;es dans des tables parent/enfant"><div class="titlepage"><div><div><h3 class="title"><a name="d0e52872"></a>Sc&eacute;nario: Ins&eacute;rer des donn&eacute;es dans des tables parent/enfant</h3></div></div></div><p>Le Job suivant est d&eacute;di&eacute; &agrave; des utilisateurs avanc&eacute;s de base de donn&eacute;es qui souhaitent
+			effectuer des insertions dans des tables multiples en utilisant une table parent
+				<span class="emphasis"><em>Table1</em></span> pour g&eacute;n&eacute;rer deux tables enfant&nbsp;:
+				<span class="emphasis"><em>Name</em></span> et <span class="emphasis"><em>Birthday</em></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cr&eacute;ez une base de donn&eacute;es connect&eacute;e &agrave; Access 2007 que vous appellerez
+						<span class="emphasis"><em>Database1</em></span>.</p></li><li class="listitem"><p>Une fois la base de donn&eacute;es Access cr&eacute;&eacute;e, cr&eacute;ez une table appel&eacute;e
+						<span class="emphasis"><em>Table1</em></span> avec les deux en-t&ecirc;tes de colonne suivants&nbsp;:
+						<span class="emphasis"><em>Name</em></span> et <span class="emphasis"><em>Birthday</em></span>. </p></li></ul></div><p>Dans <span class="bluebold">Talend Open Studio</span>, le Job est constitu&eacute; de douze
+			composants, parmi lesquels des composants <span class="bold"><strong>tAccessConnection</strong></span>, <span class="bold"><strong>tAccessCommit</strong></span>,
+				<span class="bold"><strong>tAccessInput</strong></span>, <span class="bold"><strong>tAccessOutput</strong></span> et<span class="bold"><strong> tAccessClose</strong></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="439"><tr><td><img src="../images/Use_Case_tAccessConnection1.png" width="439"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A partir de la <span class="bold"><strong>Palette</strong></span>, cliquez et d&eacute;posez les composants
+					suivants dans l&#8217;espace de mod&eacute;lisation graphique&nbsp;: <span class="bold"><strong>tFileList</strong></span>, <span class="bold"><strong>tFileInputDelimited</strong></span>,
+						<span class="bold"><strong>tMap</strong></span>, <span class="bold"><strong>tAccessOutput</strong></span> (x2), <span class="bold"><strong>tAccessInput</strong></span> (x2), <span class="bold"><strong>tAccessCommit</strong></span>, <span class="bold"><strong>tAccessClose</strong></span> et
+						<span class="bold"><strong>tLogRow</strong></span> (x2).</p></li><li class="listitem"><p>Connectez le composant <span class="bold"><strong>tFileList</strong></span> au composant d&#8217;entr&eacute;e
+						<span class="bold"><strong>tFileInputDelimited</strong></span> &agrave; l&#8217;aide d&#8217;une
+					connexion de type <span class="bold"><strong>Iterate</strong></span>. Ainsi, le nom du
+					fichier &agrave; traiter sera automatiquement renseign&eacute; &agrave; partir de la liste de
+					fichiers du <span class="bold"><strong>tFileList</strong></span> en utilisant une variable
+					globale. </p></li><li class="listitem"><p>Connectez le composant <span class="bold"><strong>tFileInputDelimited</strong></span> au <span class="bold"><strong>tMap</strong></span> et s&eacute;parez le flux vers les deux composants de
+					sortie <span class="bold"><strong>tAccessOutput</strong></span>. Utilisez des connexions
+					de type <span class="bold"><strong>Row</strong></span> pour chacune de ces connexions
+					repr&eacute;sentant un flux de donn&eacute;es principal.</p></li><li class="listitem"><p>D&eacute;finissez les propri&eacute;t&eacute;s du composant <span class="bold"><strong>tFileList</strong></span>,
+					notamment le r&eacute;pertoire dans lequel sont stock&eacute;s les fichiers.</p></li><li class="listitem"><p>Ajoutez le composant <span class="bold"><strong>tAccessConnection</strong></span> et connectez-le au
+					composant de d&eacute;part de ce Job (dans cet exemple, le composant <span class="bold"><strong>tFileList</strong></span>), &agrave; l&#8217;aide d&#8217;une connexion <span class="bold"><strong>OnComponentOk</strong></span> afin de d&eacute;finir l&#8217;ordre
+					d&#8217;ex&eacute;cution.</p></li><li class="listitem"><p>Dans la vue <span class="bold"><strong>Component</strong></span> du composant <span class="bold"><strong>tAccessConnection</strong></span>, d&eacute;finissez manuellement les informations de
+					connexion ou r&eacute;cup&eacute;rez-les dans le <span class="bold"><strong>Repository</strong></span>
+					si vous les avez pr&eacute;alablement stock&eacute;es dans le dossier <span class="bold"><strong>DB
+						connection</strong></span> du r&eacute;pertoire <span class="bold"><strong>Metadata</strong></span>. Pour plus d&#8217;informations concernant les M&eacute;tadonn&eacute;es,
+					consultez&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span>
+					<span class="bluebold">Talend Open Studio</span> .</p></li><li class="listitem"><p>Dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> du composant <span class="bold"><strong>tFileInputDelimited</strong></span>, appuyez sur les touches
+						<span class="bold"><strong>Ctrl+Espace</strong></span> pour acc&eacute;der &agrave; la liste des
+					variables. D&eacute;finissez le champ <span class="bold"><strong>File Name</strong></span> avec
+					la variable globale&nbsp;: <span class="emphasis"><em>tFileList_1.CURRENT_FILEPATH</em></span>. Pour
+					plus d&#8217;informations concernant l&#8217;utilisation des variables, consultez&nbsp;le
+						<span class="bold"><strong>Guide Utilisateur</strong></span>
+					<span class="bluebold">Talend Open Studio</span> .</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="504"><tr><td><img src="../images/Use_Case_tAccessConnection2.png" width="504"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Param&eacute;trez les autres champs comme vous le souhaitez, d&eacute;finissez les s&eacute;parateurs de lignes
+					et de champs (<span class="bold"><strong>Row</strong></span> et <span class="bold"><strong>Field Separator</strong></span>) en fonction de la structure de votre
+					document.</p></li><li class="listitem"><p>Puis d&eacute;finissez manuellement le sch&eacute;ma du fichier &agrave; l&#8217;aide du bouton<span class="bold"><strong>
+						Edit schema</strong></span> ou s&eacute;lectionnez le sch&eacute;ma dans le <span class="bold"><strong>Repository</strong></span>. Assurez-vous que le type de donn&eacute;es est
+					correctement d&eacute;fini, conform&eacute;ment &agrave; la nature des donn&eacute;es trait&eacute;es.</p></li><li class="listitem"><p>Dans la zone Output du <span class="bold"><strong>tMap</strong></span>, ajoutez deux tables de
+					sortie, une que vous nommerez <span class="emphasis"><em>Name</em></span> pour la table
+						<span class="emphasis"><em>Name</em></span>, et une deuxi&egrave;me que vous nommerez
+						<span class="emphasis"><em>Birthday</em></span>, pour la table <span class="emphasis"><em>Birthday</em></span>.
+					Pour plus d&#8217;informations concernant le composant <span class="bold"><strong>tMap</strong></span>, consultez le <span class="bold"><strong>Guide
+						utilisateur</strong></span>
+					<span class="bluebold">Talend Open Studio</span>.</p></li><li class="listitem"><p>Cliquez sur la colonne <span class="emphasis"><em>Name</em></span> de la zone <span class="bold"><strong>Input</strong></span>, et glissez-la dans la table
+					<span class="emphasis"><em>Name</em></span>.</p></li><li class="listitem"><p>Cliquez sur la colonne <span class="emphasis"><em>Birthday</em></span> de la zone <span class="bold"><strong>Input</strong></span>, et glissez-la dans la table
+					<span class="emphasis"><em>Birthday</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="445"><tr><td><img src="../images/Use_Case_tAccessConnection3.png" width="445"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Puis s&eacute;lectionnez une connexion de sortie de type <span class="bold"><strong>Row</strong></span>
+					pour acheminer correctement le flux vers les composants Database de sortie
+					correspondants.</p></li><li class="listitem"><p>Dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> des deux composants
+						<span class="bold"><strong>tAccessOutput</strong></span>, cochez la case <span class="bold"><strong>Use an existing connection</strong></span> pour r&eacute;cup&eacute;rer les
+					informations du composant <span class="bold"><strong>tAccessConnection</strong></span>. </p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Ignorez le champ <span class="bold"><strong>Commit every</strong></span> puisque cette commande sera
+				annul&eacute;e par le composant <span class="bold"><strong>tAccessCommit</strong></span>.</p></td></tr></table></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="516"><tr><td><img src="../images/Use_Case_tAccessConnection4.png" width="516"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Nommez votre table dans le champ <span class="bold"><strong>Table</strong></span> en vous assurant
+					que vous saisissez la bonne table. Dans cet exemple, la table est soit
+						<span class="emphasis"><em>Name,</em></span> soit <span class="emphasis"><em>Birthday</em></span>.</p></li><li class="listitem"><p>Ne d&eacute;finissez aucune action dans le champ <span class="bold"><strong>Action on table</strong></span>
+					puisque les tables ont d&eacute;j&agrave; &eacute;t&eacute; cr&eacute;&eacute;es.</p></li><li class="listitem"><p>S&eacute;lectionnez <span class="bold"><strong>Insert</strong></span> dans le champ <span class="bold"><strong>Action on data</strong></span> pour les deux composants de sortie (<span class="bold"><strong>tAccessOutput</strong></span>).</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Sync columns</strong></span> pour r&eacute;cup&eacute;rer le
+					sch&eacute;ma d&eacute;fini dans le <span class="bold"><strong>tMap</strong></span>.</p></li><li class="listitem"><p>Connectez ensuite le premier composant <span class="bold"><strong>tAccessOutput</strong></span> au
+					premier composant <span class="bold"><strong>tAccessInput</strong></span> &agrave; l&#8217;aide d&#8217;une
+					connexion <span class="bold"><strong>OnComponentOk</strong></span>.</p></li><li class="listitem"><p>Dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> des deux composants
+						<span class="bold"><strong>tAccessInput</strong></span>, cochez la case <span class="bold"><strong>Use an existing connection</strong></span> pour r&eacute;cup&eacute;rer le flux de
+					donn&eacute;es distribu&eacute;. Puis d&eacute;finissez manuellement le sch&eacute;ma du fichier &agrave; l&#8217;aide du
+					bouton <span class="bold"><strong>Edit schema</strong></span>. </p></li><li class="listitem"><p>Nommez ensuite votre table dans le champ <span class="bold"><strong>Table Name</strong></span>. Le
+					nom du <span class="bold"><strong>tAccessInput_1</strong></span> sera
+						<span class="emphasis"><em>Name</em></span>. </p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Guess Query</strong></span>.</p></li><li class="listitem"><p>Connectez les deux composants <span class="bold"><strong>tAccessInput</strong></span> au composant
+						<span class="bold"><strong>tLogRow</strong></span> &agrave; l&#8217;aide d&#8217;une connexion de
+						type<span class="bold"><strong> Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>. Dans l&#8217;onglet <span class="bold"><strong>Basic
+						settings</strong></span> des deux composants <span class="bold"><strong>tLogRow</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Table</strong></span>
+					dans le champ <span class="bold"><strong>Mode</strong></span>.</p></li><li class="listitem"><p>Ajoutez le composant <span class="bold"><strong>tAccessConnection</strong></span> sous le composant
+						<span class="bold"><strong>tFileList</strong></span> et connectez-les &agrave; l&#8217;aide d&#8217;une
+					connexion <span class="bold"><strong>OnComponentOk</strong></span> afin d&#8217;arr&ecirc;ter le Job
+					avec les commits de transaction. </p></li><li class="listitem"><p>A partir de l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> du composant
+						<span class="bold"><strong>tAccessCommit</strong></span>, s&eacute;lectionnez dans la liste
+					d&eacute;roulante <span class="bold"><strong>Component list </strong></span>la connexion &agrave;
+					utiliser, <span class="bold"><strong>tAccessConnection_1</strong></span> dans ce
+					sc&eacute;nario.</p></li><li class="listitem"><p>Enregistrez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+					l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="355"><tr><td><img src="../images/Use_Case_tAccessConnection5.png" width="355"></td></tr></table></div><p>La table parent <span class="emphasis"><em>Table1</em></span> est utilis&eacute;e &agrave; la fois pour g&eacute;n&eacute;rer la
+			table <span class="emphasis"><em>Name</em></span> et la table <span class="emphasis"><em>Birthday</em></span>.</p></div></div></body></html>

@@ -1,0 +1,169 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tQASBatchAddressRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tQASAddressVerified.html" title="tQASAddressVerified"><link rel="next" href="tRecordMatching.html" title="tRecordMatching"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="fr" class="section" title="tQASBatchAddressRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tQASBatchAddressRow"></a>tQASBatchAddressRow</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tQASBatchAddressRow_icon32-white.png" width="27"></td></tr></table></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Ce composant est disponible dans la Palette du studio uniquement si vous avez
+				souscrit &agrave; l&#8217;&eacute;dition correspondante de </em></span><span class="bluebold">Talend Enterprise Data Quality</span><span class="emphasis"><em>.</em></span>
+		</p></td></tr></table></div><p>Les composants de gestion d&#8217;adresse dont il est question ici
+		sont le r&eacute;sultat de la collaboration de <span class="bold"><strong>Talend</strong></span> et Experian QAS, l&#8217;un des leaders
+		mondiaux en gestion et de v&eacute;rification d&#8217;adresses internationales. </p><p>Pour plus d&#8217;informations &agrave; propos de l&#8217;entreprise et de ses
+		outils logiciels, visitez le site&nbsp;: <a class="link" href="http://www.qas.com" target="_top">http://www.qas.com.</a></p><div class="section" title="Propri&eacute;t&eacute;s du tQASBatchAddressRow"><div class="titlepage"><div><div><h3 class="title"><a name="d0e187399"></a>Propri&eacute;t&eacute;s du tQASBatchAddressRow</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Data Quality</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tQASBatchAddressRow</strong></span>
+								v&eacute;rifie les adresses dans une colonne. Il fait une boucle sur chaque
+								ligne et lit des adresses en entr&eacute;e par rapport &agrave; des donn&eacute;es dans
+								une Biblioth&egrave;que de Liens Dynamiques (Dynamic Link Library, DLL)
+								fournie par QAS install&eacute;e localement.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Le <span class="bold"><strong>tQASBatchAddressRow</strong></span> utilise Batch 4.70. L&#8217;avantage
+									de ce composant par rapport au <a class="xref" href="tQASAddressRow.html" title="tQASAddressRow">la section intitul&eacute;e &laquo;&nbsp;tQASAddressRow&nbsp;&raquo;</a>
+									est qu&#8217;il n&#8217;appelle pas de Service Web afin de v&eacute;rifier les
+									donn&eacute;es des adresses postales. Ce composant utilise la
+									biblioth&egrave;que DLL install&eacute;e localement pour v&eacute;rifier les donn&eacute;es
+									des adresses postales et optimise ainsi les performances,
+									particuli&egrave;rement lorsqu&#8217;il s&#8217;agit de larges volumes de
+									donn&eacute;es.</p></td></tr></table></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le<span class="bold"><strong> tQASBatchAddressRow</strong></span> corrige
+								toute erreur de format ou d&#8217;orthographe, ajoute les donn&eacute;es
+								manquantes et donne le statut de v&eacute;rification pour chaque ligne
+								puisque l&#8217;adresse peut ne pas avoir assez d&#8217;informations pour
+								correspondre &agrave; un seul r&eacute;sultat livrable dans les donn&eacute;es
+								DLL.</p>
+							<p> Pour plus d&#8217;informations concernant les statuts de v&eacute;rification,
+									consultez&nbsp;<a class="xref" href="tQASAddressRow.html#Raa87008" title="Niveaux de v&eacute;rifications de QuickAccess (statut de v&eacute;rification)">la section intitul&eacute;e &laquo;&nbsp;Niveaux de v&eacute;rifications de QuickAccess (statut de v&eacute;rification)&nbsp;&raquo;</a>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (built-in) soit distant dans le Repository.
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+								conserv&eacute; ponctuellement pour ce composant seulement. Voir
+									&eacute;galement&nbsp;le<span class="bold"><strong>Guide utilisateur</strong></span>
+								de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+								r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Country</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez dans la liste le pays correspondant &agrave; vos adresses
+								d&#8217;entr&eacute;e.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Choose the address column</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez dans la liste la colonne d&#8217;adresse que vous souhaitez
+								analyser.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Specify the configuration file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> et
+								parcourez votre r&eacute;pertoire afin de d&eacute;finir le chemin d&#8217;acc&egrave;s &agrave; la
+								biblioth&egrave;que DLL, fournie par Experian QAS et install&eacute;e
+								localement.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du
+								Job, aussi bien au niveau du Job qu&#8217;au niveau de chaque composant.
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est un composant interm&eacute;diaire, il n&eacute;cessite un
+								composant d&#8217;entr&eacute;e et un composant de sortie.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation/prerequisite</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Avant de pouvoir utiliser ce composant, vous devez installer la
+								biblioth&egrave;que DLL fournie par Experian QAS.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Editer des adresses par rapport &agrave; une biblioth&egrave;que DLL et donner le statut de v&eacute;rification"><div class="titlepage"><div><div><h3 class="title"><a name="d0e187654"></a>Sc&eacute;nario&nbsp;: Editer des adresses par rapport &agrave; une biblioth&egrave;que DLL et donner le statut
+			de v&eacute;rification</h3></div></div></div><p>Le sc&eacute;nario Java ci-dessous comprend un Job &agrave; trois
+			composants, cr&eacute;&eacute; dans <span class="bluebold">Talend Enterprise Studio</span>.</p><p>Ce Job&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>g&eacute;n&egrave;re des informations client al&eacute;atoires,</p></li><li class="listitem"><p>utilise le composant <span class="bold"><strong>tQASBatchAddressRow</strong></span> pour analyser
+					les colonnes de sortie, afficher les adresses format&eacute;es correctement avec leur
+					statut de v&eacute;rification dans la console,</p></li></ul></div><p>Proc&eacute;dez comme suit pour cr&eacute;er et ex&eacute;cuter le
+			sc&eacute;nario&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>D&eacute;posez les composants suivants de la <span class="bold"><strong>Palette</strong></span> dans
+					l&#8217;espace de mod&eacute;lisation graphique&nbsp;: <span class="bold"><strong>tFixedFlowInput</strong></span>, <span class="bold"><strong>tQASBatchAddressRow</strong></span> et <span class="bold"><strong>tLogRow</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="379"><tr><td><img src="../images/Use_Case_tQASBatchAddressRow.png" width="379"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Reliez les composants &agrave; l&#8217;aide de liens <span class="bold"><strong>Row</strong></span> &gt;
+						<span class="bold"><strong>Main</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tFixedFlowInput</strong></span> afin d&#8217;afficher sa
+					vue <span class="bold"><strong>Basic settings</strong></span> et d&eacute;finir ses
+					propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="500"><tr><td><img src="../images/Use_Case_tQASBatchAddressRow2.png" width="500"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la liste <span class="bold"><strong>Schema</strong></span>, d&eacute;finissez le type de sch&eacute;ma comme
+						<span class="bold"><strong>Built-In</strong></span> puis cliquez sur le
+						bouton&nbsp;<span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit Schema </strong></span>Une bo&icirc;te de dialogue s&#8217;ouvre.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="407"><tr><td><img src="../images/Use_Case_tQASBatchAddressRow3.png" width="407"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span>
+					pour ajouter autant de lignes que n&eacute;cessaire dans le sch&eacute;ma d&#8217;entr&eacute;e que vous
+					souhaitez cr&eacute;er pour les variables internes. </p><p> Dans cet exemple, le sch&eacute;ma se compose d&#8217;une colonne&nbsp;:
+						<span class="emphasis"><em>addr</em></span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la
+					bo&icirc;te de dialogue.</p><p> Les colonnes d&eacute;finies s&#8217;affichent dans le tableau <span class="bold"><strong>Values</strong></span> de la vue <span class="bold"><strong>Basic
+					settings</strong></span>.</p></li><li class="listitem"><p>Dans la zone <span class="bold"><strong>Mode</strong></span>,
+					s&eacute;lectionnez l&#8217;option <span class="bold"><strong>Use Inline Table</strong></span>.</p><p> Le tableau <span class="bold"><strong>Value</strong></span> s&#8217;affiche comme <span class="bold"><strong>Inline Table</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="386"><tr><td><img src="../images/Use_Case_tQASBatchAddressRow4.png" width="386"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> pour ajouter autant de lignes
+					que n&eacute;cessaire puis cliquez dans chacune des lignes afin de d&eacute;finir les donn&eacute;es
+					pour la colonne d&#8217;entr&eacute;e, trois lignes d&#8217;adresses dans cet exemple.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tQASBatchAddressRow</strong></span> pour
+					afficher ses <span class="bold"><strong>Basic settings</strong></span> pour d&eacute;finir ses
+					propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="501"><tr><td><img src="../images/Use_Case_tQASBatchAddressRow5.png" width="501"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>S&eacute;lectionnez <span class="bold"><strong>Built-in</strong></span> dans la liste <span class="bold"><strong>Schema</strong></span> puis cliquez sur <span class="bold"><strong>Edit
+						schema</strong></span>, si besoin, pour visualiser les flux de donn&eacute;es d&#8217;entr&eacute;e
+					et de sortie. Le sch&eacute;ma de sortie doit inclure la
+						colonne&nbsp;<span class="emphasis"><em>addr</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="528"><tr><td><img src="../images/Use_Case_tQASBatchAddressRow6.png" width="528"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Les sch&eacute;mas de sortie des composants QuickAddress d&eacute;pendent du pays s&eacute;lectionn&eacute; dans la
+				liste <span class="bold"><strong>Country</strong></span> puisque chaque pays poss&egrave;de des
+				normes diff&eacute;rentes concernant les adresses.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de dialogue.</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Country</strong></span>, s&eacute;lectionnez le pays correspondant
+					&agrave; vos adresses d&#8217;entr&eacute;e.</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Choose the address column</strong></span>, s&eacute;lectionnez la
+					colonne d&#8217;adresses que vous souhaitez analyser, <span class="emphasis"><em>addr</em></span> dans
+					cet exemple.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave;
+					c&ocirc;t&eacute; du champ <span class="bold"><strong>Specify the configuration file</strong></span> et
+					parcourez votre r&eacute;pertoire jusqu&#8217;au fichier DLL install&eacute; localement.</p><p> Le chemin d&#8217;acc&egrave;s au fichier DLL est d&eacute;fini dans le champ.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tLogRow</strong></span> afin d&#8217;afficher
+					sa vue <span class="bold"><strong>Basic settings</strong></span> et d&eacute;finir ses
+					propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="495"><tr><td><img src="../images/Use_Case_tQASBatchAddressRow7.png" width="495"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Si n&eacute;cessaire, cliquez sur le bouton <span class="bold"><strong>Sync columns</strong></span> pour
+					r&eacute;cup&eacute;rer le sch&eacute;ma du composant <span class="bold"><strong>tQASBatchAddressRow</strong></span>.</p></li><li class="listitem"><p>Sauvegardez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour l&#8217;ex&eacute;cuter
+					et afficher le r&eacute;sultat dans la console.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="504"><tr><td><img src="../images/Use_Case_tQASBatchAddressRow8.png" width="504"></td></tr></table></div><p>Dans les exemples de r&eacute;sultats ci-dessus, le <span class="bold"><strong>tQASBatchAddressRow</strong></span> lit les lignes d&#8217;entr&eacute;e, corrige et
+			formate les adresses, donne les r&eacute;sultats dans les colonnes&nbsp;<span class="emphasis"><em>ADDRESS</em></span>
+				et&nbsp;<span class="emphasis"><em>ZIP_CODE_CITY</em></span>, puis fournit le statut de v&eacute;rification dans
+			la ligne&nbsp;<span class="emphasis"><em>STATUS</em></span>. Pour plus d&#8217;informations concernant la colonne de
+			statut, v&eacute;rifiez la documentation correspondante sur <a class="link" href="http://www.qas.com" target="_top">http://www.qas.com.</a></p></div></div></body></html>

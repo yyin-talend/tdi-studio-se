@@ -1,0 +1,274 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tStewardshipTaskInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch18.html" title="Chapitre&nbsp;18.&nbsp;Composants Talend MDM"><link rel="prev" href="tMDMViewSearch.html" title="tMDMViewSearch"><link rel="next" href="tStewardshipTaskOutput.html" title="tStewardshipTaskOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tStewardshipTaskInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tStewardshipTaskInput"></a>tStewardshipTaskInput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tStewardshipTaskInput_icon32_white.png" width="27"></td></tr></table></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Ce composant est disponible dans la </em></span><span class="bold"><strong>Palette</strong></span><span class="emphasis"><em> de </em></span><span class="bluebold">Talend Enterprise Studio</span><span class="emphasis"><em> mais vous pourrez l&#8217;utiliser uniquement si vous
+                avez souscrit &agrave; l&#8217;&eacute;dition correspondante de </em></span><span class="bluebold">Talend Enterprise MDM Studio</span><span class="emphasis"><em>.</em></span>
+        </p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tStewardshipTaskInput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e306881"></a>Propri&eacute;t&eacute;s du tStewardshipTaskInput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Talend MDM</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tStewardshipTaskInput</strong></span> lit des ensembles de donn&eacute;es
+                                ma&icirc;tre stock&eacute;s dans la base de donn&eacute;es de la console d&#8217;arbitrage
+                                sous forme de t&acirc;ches. Ce composant peut r&eacute;cup&eacute;rer des t&acirc;ches selon
+                                certains crit&egrave;res de recherche ou sans crit&egrave;re de recherche, &agrave;
+                                condition que le sch&eacute;ma de sortie soit le m&ecirc;me pour toutes les
+                                t&acirc;ches r&eacute;cup&eacute;r&eacute;es.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Afin de mieux comprendre l&#8217;objectif de ce composant, consultez
+                                    le <span class="bold"><strong>Guide utilisateur</strong></span> de
+                                        <span class="bluebold">Talend Data Stewardship Console</span>.</p></td></tr></table></div>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant lit des donn&eacute;es ma&icirc;tre dans la console d&#8217;arbitrage et
+                                permet le traitement de ces donn&eacute;es, c&#8217;est-&agrave;-dire d&#8217;utiliser tout
+                                composant <span class="bold"><strong>Talend</strong></span> de sortie et
+                                d&#8217;&eacute;crire les donn&eacute;es r&eacute;cup&eacute;r&eacute;es &agrave; partir de la base de donn&eacute;es
+                                d&#8217;arbitrage dans l&#8217;application cible ou dans la base de
+                                donn&eacute;es.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic Settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+                                sch&eacute;ma est soit local (built-in) soit distant dans le <span class="bold"><strong>Repository</strong></span>.</p>
+                            <p>Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> pour
+                                modifier le sch&eacute;ma.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Si vous modifiez le sch&eacute;ma, il devient automatiquement
+                                        <span class="bold"><strong>Built-In</strong></span>.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma sera cr&eacute;&eacute; et
+                                conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+                                r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+                                    utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Host</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Adresse IP du serveur de la base de donn&eacute;es de la console
+                                d&#8217;arbitrage.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Port</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span> et
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>Saisissez les informations d&#8217;authentification de l&#8217;utilisateur
+                                pour la base de donn&eacute;es de la console d&#8217;arbitrage.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Type</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Si n&eacute;cessaire, s&eacute;lectionnez le type des t&acirc;ches que vous souhaitez
+                                lire&nbsp;:</p>
+                            <p><span class="bold"><strong>Resolution&nbsp;</strong></span>: les t&acirc;ches de
+                                r&eacute;solution de donn&eacute;es repr&eacute;sentent les r&eacute;sultats des processus de
+                                mise en correspondance des donn&eacute;es effectu&eacute;s sur les donn&eacute;es de
+                                diff&eacute;rentes sources.</p>
+                            <p><span class="bold"><strong>Data&nbsp;</strong></span>: les t&acirc;ches d&#8217;int&eacute;grit&eacute; de
+                                donn&eacute;es sont le r&eacute;sultat des processus d&#8217;int&eacute;grit&eacute; de donn&eacute;es
+                                effectu&eacute;s sur les donn&eacute;es.</p>
+                            <p>Pour plus d&#8217;informations concernant les types de t&acirc;ches et la
+                                gestion des t&acirc;ches, consultez le <span class="bold"><strong>Guide
+                                    utilisateur </strong></span>de<span class="bold"><strong> </strong></span><span class="bluebold">Talend Data Stewardship Console</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Owner</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Au besoin, saisissez le nom du propri&eacute;taire de la t&acirc;che. Cela
+                                filtrera les t&acirc;ches &agrave; lire par nom de propri&eacute;taires.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Tag</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Si n&eacute;cessaire, saisissez le nom de la cat&eacute;gorie du tag associ&eacute; aux
+                                t&acirc;ches que vous souhaitez lire.</p>
+                            <p>Pour plus d&#8217;informations, consultez le <span class="bold"><strong>Guide
+                                    utilisateur</strong></span> de <span class="bluebold">Talend Data Stewardship Console</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Start Date</em></span>/<span class="emphasis"><em>End
+                                Date</em></span></p>
+                        </td><td valign="top">
+                            <p>Au besoin, saisissez une plage de dates de cr&eacute;ation de t&acirc;ches dans
+                                laquelle vous pourrez lire les t&acirc;ches comprises das cet intervalle.
+                                Suivez le format suivant&nbsp;: <code class="code">yyyy-mm-dd hh:mm:ss</code>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Status</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Au besoin, s&eacute;lectionnez dans la liste le statut de la t&acirc;che selon
+                                lequel vous souhaitez filtrer les t&acirc;ches r&eacute;cup&eacute;r&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Star ranking</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Au besoin, s&eacute;lectionnez le nombre d&#8217;&eacute;toiles, de 0 &agrave; 5, affect&eacute;e(s)
+                                aux t&acirc;ches, comme un classement num&eacute;rique mettant en valeur
+                                l&#8217;importance des t&acirc;ches. Ce classement permet de filtrer les t&acirc;ches
+                                selon leur importance.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Limit</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Au besoin, saisissez le nombre maximum de t&acirc;ches &agrave; r&eacute;cup&eacute;rer. Si
+                                Limit = 0, aucune t&acirc;che n&#8217;est lue.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Target record only</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cette case est coch&eacute;e par d&eacute;faut.</p>
+                            <p>Lorsque cette case est coch&eacute;e, le composant r&eacute;cup&egrave;re uniquement
+                                l&#8217;enregistrement cible de la t&acirc;che. Lorsque la case est d&eacute;coch&eacute;e, le
+                                composant r&eacute;cup&egrave;re l&#8217;(les) enregistrement(s) source en plus de
+                                l&#8217;enregistrement cible dans la t&acirc;che.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                composant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est un composant d&#8217;entr&eacute;e. Il n&eacute;cessite un flux de
+                                sortie.</p>
+                        </td></tr></tbody></table></div><p>
+            <span>&nbsp;</span>
+        </p></div><div class="section" title="Sc&eacute;nario&nbsp;: Lire des donn&eacute;es dans la base de donn&eacute;es de la console d&#8217;arbitrage"><div class="titlepage"><div><div><h3 class="title"><a name="d0e307330"></a>Sc&eacute;nario&nbsp;: Lire des donn&eacute;es dans la base de donn&eacute;es de la console d&#8217;arbitrage</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job a deux composants qui lit des ensembles de donn&eacute;es
+            (enregistrements de donn&eacute;es) &agrave; partir des t&acirc;ches stock&eacute;es dans la base de donn&eacute;es de
+                <span class="bluebold">Talend Data Stewardship Console</span>, selon les crit&egrave;res que vous avez
+            d&eacute;finis dans la vue <span class="bold"><strong>Basic settings</strong></span> du composant
+                <span class="bold"><strong>tStewardshipTaskInput</strong></span>. </p><p>Vous pouvez utiliser n&#8217;importe quel composant <span class="bold"><strong>Talend</strong></span> de sortie pour
+            &eacute;crire les donn&eacute;es r&eacute;cup&eacute;r&eacute;es de la base de donn&eacute;es d&#8217;arbitrage dans l&#8217;application ou la
+            base de donn&eacute;es.</p><p>Dans ce sc&eacute;nario, les donn&eacute;es ma&icirc;tre filtr&eacute;es sont r&eacute;cup&eacute;r&eacute;es et affich&eacute;es dans la
+            console de log.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tStewardshipTaskInput.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>D&eacute;posez les composants <span class="bold"><strong>tStewardshipTaskInput</strong></span>
+                    et <span class="bold"><strong>tLogRow</strong></span> de la <span class="bold"><strong>Palette
+                    </strong></span>dans l&#8217;espace de mod&eacute;lisation graphique.</p></li><li class="listitem"><p>Connectez les deux composants &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row
+                    </strong></span>&gt; <span class="bold"><strong>Main</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tStewardshipTaskInput</strong></span>
+                    afin d&#8217;ouvrir sa vue <span class="bold"><strong>Basic settings</strong></span> et d&eacute;finir
+                    ses propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tStewardshipTaskInput2.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la liste <span class="bold"><strong>Schema</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Built-In</strong></span> et cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit
+                        schema</strong></span> afin d&#8217;ouvrir une bo&icirc;te de dialogue. </p><p>Vous pouvez d&eacute;finir la structure des donn&eacute;es que vous souhaitez lire dans la
+                    base de donn&eacute;es de <span class="bluebold">Talend Data Stewardship Console</span>.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Les colonnes par d&eacute;faut dans la bo&icirc;te de dialogue du sch&eacute;ma varient selon si la
+                case <span class="bold"><strong>Target record only</strong></span> est coch&eacute;e ou non.</p></td></tr></table></div><p>Si la case <span class="bold"><strong>Target record only </strong></span>est coch&eacute;e, le sch&eacute;ma
+            par d&eacute;faut ressemble &agrave;&nbsp;:</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tStewardshipTaskInput6.png" align="middle"></div><p>Si la case <span class="bold"><strong>Target record only</strong></span> n&#8217;est pas coch&eacute;e, le
+            sch&eacute;ma par d&eacute;faut contient deux colonnes suppl&eacute;mentaires&nbsp;:&nbsp;<span class="emphasis"><em>TARGET</em></span>
+                et&nbsp;<span class="emphasis"><em>SOURCE</em></span>.</p><div class="mediaobject" align="center"><img src="../images/Use_Case_tStewardshipTaskInput3.png" align="middle"></div><p>La colonne&nbsp;<span class="emphasis"><em>TARGET</em></span> indique quel ensemble de donn&eacute;es est
+            l&#8217;enregistrement cible dans chacune des t&acirc;ches de la base de donn&eacute;es. La
+                colonne&nbsp;<span class="emphasis"><em>SOURCE</em></span> indique le nom de l&#8217;application source pour
+            chaque enregistrement source dans les t&acirc;ches.</p><p>Dans ce sc&eacute;nario, les donn&eacute;es sont collect&eacute;es depuis les trois colonnes d&#8217;entr&eacute;e
+                d&eacute;finies&nbsp;:&nbsp;<span class="emphasis"><em>Firstname</em></span>, <span class="emphasis"><em>Lastname</em></span>
+                et&nbsp;<span class="emphasis"><em>DOB</em></span> (pr&eacute;nom, nom et date de naissance), ainsi que des
+            colonnes par d&eacute;faut.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                    dialogue et passer &agrave; l&#8217;&eacute;tape suivante.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Host</strong></span>, saisissez entre
+                    guillemets l&#8217;adresse IP du serveur de la base de donn&eacute;es de la console
+                    d&#8217;arbitrage.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Port</strong></span>, saisissez entre
+                    guillemets le num&eacute;ro du port d&#8217;&eacute;coute du serveur de la base de donn&eacute;es.</p></li><li class="listitem"><p>Dans les champs <span class="bold"><strong>Username</strong></span> et <span class="bold"><strong>Password</strong></span>, saisissez votre identifiant et votre mot de
+                    passe de connexion au serveur MDM.</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Type</strong></span>, s&eacute;lectionnez le type de
+                    t&acirc;ches desquelles vous souhaitez r&eacute;cup&eacute;rer les enregistrements de donn&eacute;es&nbsp;:
+                        <span class="bold"><strong>Resolution</strong></span> ou <span class="bold"><strong>Data</strong></span>. Dans cet exemple, seules les t&acirc;ches de r&eacute;solution sont
+                    r&eacute;cup&eacute;r&eacute;es.</p><p>Pour plus d&#8217;informations concernant les types de t&acirc;ches, consultez&nbsp;le
+                        <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Data Stewardship Console</span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Owner</strong></span>, saisissez entre
+                    guillemets le nom du propri&eacute;taire de la t&acirc;che, c&#8217;est-&agrave;-dire l&#8217;utilisateur auquel
+                    est assign&eacute;e la t&acirc;che,&nbsp;<span class="emphasis"><em>Administrator</em></span> dans cet
+                    exemple.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Une t&acirc;che peut &ecirc;tre assign&eacute;e &agrave; un utilisateur sp&eacute;cifique soit &agrave; partir de la vue
+                    <span class="bold"><strong>Basic settings </strong></span>du composant <span class="bold"><strong>tStewardshipTaskOutput</strong></span>, soit directement &agrave; partir de la
+                console d&#8217;arbitrage par un administrateur. Pour plus d&#8217;informations, consultez&nbsp;<a class="xref" href="tStewardshipTaskOutput.html" title="tStewardshipTaskOutput">la section intitul&eacute;e &laquo;&nbsp;tStewardshipTaskOutput&nbsp;&raquo;</a> ainsi que&nbsp;le <span class="bold"><strong>Guide
+                    utilisateur</strong></span> de <span class="bluebold">Talend Data Stewardship Console</span>.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Tag</strong></span>, saisissez entre guillemets
+                    nom de la cat&eacute;gorie du tag associ&eacute; aux t&acirc;ches que vous souhaitez lire. Ce champ
+                    n&#8217;est pas utilis&eacute; dans ce sc&eacute;nario. </p><p>Pour plus d&#8217;informations, consultez&nbsp;le <span class="bold"><strong>Guide
+                        Utilisateur</strong></span> de <span class="bluebold">Talend Data Stewardship Console</span>.</p></li><li class="listitem"><p>Dans les champs <span class="bold"><strong>Start Date</strong></span> et <span class="bold"><strong>End Date</strong></span>, saisissez entre guillemets une plage de
+                    dates de cr&eacute;ation de t&acirc;ches durant laquelle vous souhaitez lire les t&acirc;ches. Ce
+                    champ n&#8217;est pas utilis&eacute; dans ce sc&eacute;nario.</p></li><li class="listitem"><p>Dans la champ <span class="bold"><strong>Status</strong></span>, s&eacute;lectionnez le statut
+                    de la t&acirc;che selon lequel vous souhaitez filtrez les donn&eacute;es r&eacute;cup&eacute;r&eacute;es. Dans ce
+                    sc&eacute;nario, seules les t&acirc;ches r&eacute;solues sont r&eacute;cup&eacute;r&eacute;es.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Star ranking</strong></span>, s&eacute;lectionnez dans
+                    la liste le nombre d&#8217;&eacute;toiles, de&nbsp;0 &agrave;&nbsp;5, assign&eacute; aux t&acirc;ches dans la console
+                    d&#8217;arbitrage. Cela permet de filtrer les t&acirc;ches desquelles vous souhaitez
+                    r&eacute;cup&eacute;rer les donn&eacute;es selon leur nombre d&#8217;&eacute;toiles.</p><p>Dans cet exemple, s&eacute;lectionnez&nbsp;<span class="emphasis"><em>2</em></span> dans la liste. Les
+                    donn&eacute;es seront r&eacute;cup&eacute;r&eacute;es de toutes les t&acirc;ches ayant deux &eacute;toiles ou plus. </p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Si vous s&eacute;lectionnez&nbsp; <span class="emphasis"><em>All</em></span> dans la liste, vous r&eacute;cup&eacute;rerez les
+                donn&eacute;es de toutes les t&acirc;ches, quel que soit leur nombre d&#8217;&eacute;toiles.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ<span class="bold"><strong> Limit</strong></span>, saisissez un nombre afin
+                    de limiter les t&acirc;ches &agrave; r&eacute;cup&eacute;rer dans la base de donn&eacute;es d&#8217;arbitrage.</p></li><li class="listitem"><p>Laissez coch&eacute;e la case <span class="bold"><strong>Target record only</strong></span>
+                    afin de r&eacute;cup&eacute;rer uniquement l&#8217;enregistrement cible &agrave; partir des t&acirc;ches.</p></li><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, double-cliquez sur le composant
+                        <span class="bold"><strong>tLogRow</strong></span> afin d&#8217;afficher sa vue <span class="bold"><strong>Basic settings</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> pour ouvrir la bo&icirc;te
+                    de dialogue du sch&eacute;ma et v&eacute;rifier que le sch&eacute;ma a bien &eacute;t&eacute; re&ccedil;u du composant
+                    pr&eacute;c&eacute;dent. Si ce n&#8217;est pas le cas, cliquez sur <span class="bold"><strong>Sync
+                        Columns</strong></span>.</p></li><li class="listitem"><p>Sauvegardez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tStewardshipTaskInput4.png" align="middle"></div><p>Le composant <span class="bold"><strong>tStewardshipTaskInput</strong></span> a r&eacute;cup&eacute;r&eacute; de la
+            base de donn&eacute;es de la console d&#8217;arbitrage &agrave; la fois les enregistrements de donn&eacute;es cible
+            et source de toutes les t&acirc;ches r&eacute;solues ayant&nbsp;0, 1 ou&nbsp;2 &eacute;toile(s). Le sch&eacute;ma de sortie
+            est le m&ecirc;me pour tous les enregistrements r&eacute;cup&eacute;r&eacute;s. </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>D&eacute;cochez la case <span class="bold"><strong>Target record only</strong></span> afin de
+                    r&eacute;cup&eacute;rer tous les enregistrements source et cible &agrave; partir des t&acirc;ches.</p><p>Vous allez r&eacute;cup&eacute;rer plus d&#8217;une ligne pour chaque t&acirc;che.</p></li><li class="listitem"><p>Dans la vue <span class="bold"><strong>Basic settings</strong></span> du composant
+                        <span class="bold"><strong>tLogRow</strong></span>, cliquez sur le bouton <span class="bold"><strong>Sync columns</strong></span> afin de synchroniser le sch&eacute;ma du lien
+                    d&#8217;entr&eacute;e (qui poss&egrave;de &agrave; pr&eacute;sent deux colonnes suppl&eacute;mentaires) et celui du
+                        <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Sauvegardez le Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter.</p><p>Le composant <span class="bold"><strong>tStewardshipTaskInput</strong></span> r&eacute;cup&egrave;re
+                    les enregistrements cible et source de la base de donn&eacute;es de la console
+                    d&#8217;arbitrage &agrave; partir de toutes les t&acirc;ches r&eacute;solues ayant 0, 1 ou&nbsp;2
+                    &eacute;toile(s).</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tStewardshipTaskInput5.png" align="middle"></div><p>La capture d&#8217;&eacute;cran ci-dessus montre un exemple des donn&eacute;es r&eacute;cup&eacute;r&eacute;es de l&#8217;une des
+            t&acirc;ches de la base de donn&eacute;es de la console d&#8217;arbitrage. Trois lignes ont &eacute;t&eacute; &eacute;crites en
+            sortie pour cette t&acirc;che&nbsp;: l&#8217;enregistrement cible, pour lequel <code class="code">TARGET = true</code>
+            et deux enregistrements d&#8217;entr&eacute;e pour lesquels <code class="code">TARGET = false</code> et
+                <code class="code">SOURCE = CRM</code>.</p></div></div></body></html>

@@ -1,0 +1,119 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnectionCategory    
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.ArrayList
+    java.util.HashMap
+    java.util.LinkedList
+    java.util.List
+    java.util.Map
+" 
+%>
+
+<%
+// 1. in begin.javajet, we output the part of the acp xml up to its documents (i.e. rows)
+
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+    
+    	%>        
+      fr.openwide.talendalfresco.acpxml.TalendAcpXmlWriter talendAcpXmlWriter_<%=cid%> = new fr.openwide.talendalfresco.acpxml.TalendAcpXmlWriter();
+    	<%
+    	
+	    // getting useful parameters
+	    String alfrescoServerUrl = ElementParameterParser.getValue(node, "__ALFRESCO_SERVER_URL__");
+	    String alfrescoUserLogin = ElementParameterParser.getValue(node, "__ALFRESCO_USER_LOGIN__");
+	    String alfrescoUserPassword = ElementParameterParser.getValue(node, "__ALFRESCO_USER_PASSWORD__");
+    	
+        String restEncodingString = ElementParameterParser.getValue(node, "__REST_ENCODING__");
+        
+	    String targetLocationBase = ElementParameterParser.getValue(node, "__TARGET_LOCATION_BASE__");
+	    boolean mapTargetLocationFromColumn = Boolean.valueOf(ElementParameterParser.getValue(node, "__MAP_TARGET_LOCATION_FROM_COLUMN__"));
+	    String targetLocationColumn = ElementParameterParser.getValue(node, "__TARGET_LOCATION_COLUMN__");
+	    String documentMode = ElementParameterParser.getValue(node, "__DOCUMENT_MODE__");
+	    String containerMode = ElementParameterParser.getValue(node, "__CONTAINER_MODE__");
+	    
+	    List<Map<String, String>> alfrescoNamespaces = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__AVAILABLE_ALFRESCO_NAMESPACES__");
+	    String alfrescoType = ElementParameterParser.getValue(node, "__ALFRESCO_TYPE_NAME__");
+	    List<Map<String, String>> alfrescoAspects = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ALFRESCO_ASPECT_NAMES__");
+	    
+	    boolean configureTargetLocationContainer = Boolean.valueOf(ElementParameterParser.getValue(node, "__CONFIGURE_TARGET_LOCATION_CONTAINER__"));
+	    String targetLocationContainerType = ElementParameterParser.getValue(node, "__TARGET_LOCATION_CONTAINER_TYPE__");
+	    String targetLocationChildAssociationType = ElementParameterParser.getValue(node, "__TARGET_LOCATION_CHILD_ASSOCIATION_TYPE__");
+	    
+	    boolean configurePermissions = Boolean.valueOf(ElementParameterParser.getValue(node, "__CONFIGURE_PERMISSIONS__"));
+	    String permissionsTarget = ElementParameterParser.getValue(node, "__PERMISSIONS_TARGET__");
+	    boolean permissionOnDocumentAndNotContainer = "Document".equals(permissionsTarget);
+	    boolean inheritPermissions = Boolean.valueOf(ElementParameterParser.getValue(node, "__INHERIT_PERMISSIONS__"));
+	    List<Map<String, String>> permissionMappings = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__PERMISSIONS__");
+	    
+        %>
+      talendAcpXmlWriter_<%=cid%>.setRestEncoding(<%=restEncodingString%>);
+      
+      talendAcpXmlWriter_<%=cid%>.setAlfrescoType("<%=alfrescoType%>");
+      talendAcpXmlWriter_<%=cid%>.setAlfrescoAspects(new java.util.ArrayList<String>() { {
+         <%
+         for (Map<String, String> alfrescoAspect : alfrescoAspects) {
+             String alfrescoAspectName = alfrescoAspect.get("NAME");
+	         %>
+	         add("<%=alfrescoAspectName%>");
+	         <%
+         }
+         %>
+         } });
+      if (<%=configureTargetLocationContainer%>) {
+      	talendAcpXmlWriter_<%=cid%>.setContainerType("<%=targetLocationContainerType%>");
+      	talendAcpXmlWriter_<%=cid%>.setContainerChildAssociationType("<%=targetLocationChildAssociationType%>");
+      }
+      talendAcpXmlWriter_<%=cid%>.setConfigurePermission(<%=configurePermissions%>);
+      if (<%=configurePermissions%>) {
+	      talendAcpXmlWriter_<%=cid%>.setPermissionOnDocumentAndNotContainer(<%=permissionOnDocumentAndNotContainer%>);
+	      talendAcpXmlWriter_<%=cid%>.setInheritPermissions(<%=inheritPermissions%>);
+      }
+      
+      try {
+         talendAcpXmlWriter_<%=cid%>.start();
+         <%
+         for (Map<String, String> alfrescoNamespace : alfrescoNamespaces) {
+            String contentNsPrefix = alfrescoNamespace.get("PREFIX");
+            String contentNsUri = alfrescoNamespace.get("URI");
+	         %> 
+	         talendAcpXmlWriter_<%=cid%>.writeNamespace("<%=contentNsPrefix%>", "<%=contentNsUri%>");
+	         <%
+         }
+         %> 
+      } catch (fr.openwide.talendalfresco.acpxml.AcpXmlException e) {
+         throw new fr.openwide.talendalfresco.rest.client.RestClientException("Error creating XML result", e);
+      }
+      
+	  fr.openwide.talendalfresco.rest.client.AlfrescoRestClient alfrescoRestClient_<%=cid%> = null;
+      try {
+	      alfrescoRestClient_<%=cid%> = new fr.openwide.talendalfresco.rest.client.AlfrescoRestClient(<%=alfrescoServerUrl%>, <%=restEncodingString%>);
+	      alfrescoRestClient_<%=cid%>.setTimeout(5000);
+	      // default server : localhost
+          alfrescoRestClient_<%=cid%>.login(<%=alfrescoUserLogin%>, <%=alfrescoUserPassword%>);
+      } catch (fr.openwide.talendalfresco.rest.client.RestClientException e) {
+         throw new fr.openwide.talendalfresco.rest.client.RestClientException("Error initing client", e);
+      }
+      
+      int nbLine_<%=cid%> = 0;
+        
+            
+        <%
+        
+        
+    }
+}
+%>

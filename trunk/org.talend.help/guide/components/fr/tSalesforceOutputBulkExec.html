@@ -1,0 +1,238 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSalesforceOutputBulkExec</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch01.html" title="Chapitre&nbsp;1.&nbsp;Composants Business"><link rel="prev" href="tSalesforceOutputBulk.html" title="tSalesforceOutputBulk"><link rel="next" href="tSAPCommit.html" title="tSAPCommit"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tSalesforceOutputBulkExec"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSalesforceOutputBulkExec"></a>tSalesforceOutputBulkExec</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="29"><tr><td><img src="../images/tSalesforceOutputBulkExec_icon32_white.png" width="29"></td></tr></table></div><a name="Xaa2966948"></a><p>Les composants <span class="bold"><strong>tSalesforceOutputBulk</strong></span> et <span class="bold"><strong>tSalesforceBulkExec</strong></span> sont g&eacute;n&eacute;ralement utilis&eacute;s ensemble pour
+		g&eacute;n&eacute;rer en sortie le fichier d&eacute;fini et ex&eacute;cuter ensuite les actions souhait&eacute;es sur votre
+		fichier, dans votre Salesforce.com. Cette ex&eacute;cution en deux &eacute;tapes est unifi&eacute;e dans le
+		composant <span class="bold"><strong>tSalesforceOutputBulkExec</strong></span>. L&#8217;int&eacute;r&ecirc;t de proposer
+		deux composants s&eacute;par&eacute;s r&eacute;side dans le fait que cela permet de proc&eacute;der &agrave; des
+		transformations avant le changement des donn&eacute;es dans la base de donn&eacute;es.</p><div class="section" title="Propri&eacute;t&eacute;s du tSalesforceOutputBulkExec"><div class="titlepage"><div><div><h3 class="title"><a name="d0e14060"></a>Propri&eacute;t&eacute;s du tSalesforceOutputBulkExec</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Business/Cloud</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tSalesforceOutputBulkExec</strong></span> ex&eacute;cute les actions
+								d&eacute;finies sur les donn&eacute;es <span class="emphasis"><em>.csv</em></span> pour
+								Salesforce.com.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>En tant que composant d&eacute;di&eacute;, le <span class="bold"><strong>tSalesforceOutpuBulkExec</strong></span> permet d&#8217;optimiser les
+								performances lors des op&eacute;rations d&eacute;finies sur les donn&eacute;es, dans
+								votre Salesforce.com.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour utiliser une connexion &eacute;tablie &agrave; partir du
+									<span class="bold"><strong>tSalesforceConnection</strong></span>. Une fois
+								coch&eacute;e, la liste <span class="bold"><strong>Component List
+								</strong></span>appara&icirc;t, et vous permet de s&eacute;lectionner le composant
+									<span class="bold"><strong>tSalesforceConnection</strong></span> devant
+								&ecirc;tre utilis&eacute;.</p>
+							<p>Pour plus d&#8217;informations, consultez <a class="xref" href="tSalesforceConnection.html#Raa97882" title="Propri&eacute;t&eacute;s du tSalesforceConnection">la section intitul&eacute;e &laquo;&nbsp;Propri&eacute;t&eacute;s du tSalesforceConnection&nbsp;&raquo;</a>. </p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Lorsqu&#8217;un Job contient le Job parent et le Job enfant, la
+									liste <span class="bold"><strong>Component list</strong></span> pr&eacute;sente
+									uniquement les composants de connexion du m&ecirc;me niveau de Job. Si
+									vous souhaitez utiliser une connexion existant dans un autre
+									niveau de Job, vous pouvez utiliser l&#8217;onglet <span class="bold"><strong>Dynamic settings</strong></span>, afin de partager la
+									connexion en question. Dans ce cas, v&eacute;rifiez que le nom de la
+									connexion est unique et distinct. Pour plus d&#8217;informations
+									concernant l&#8217;onglet <span class="bold"><strong>Dynamic
+										settings</strong></span>, consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de votre Studio.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Salesforce Webservice URL</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez l&#8217;URL du service Web permettant de se connecter &agrave; la
+								base de donn&eacute;es Salesforce.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Saisissez les informations d&#8217;authentification de l&#8217;utilisateur au
+								service Web.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Salesforce Version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez la version de Salesforce que vous utilisez.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Bulk file path</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Chemin d&#8217;acc&egrave;s au r&eacute;pertoire o&ugrave; sont stock&eacute;es les donn&eacute;es de masse
+								&agrave; traiter.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Action </em></span>
+							</p>
+						</td><td valign="top">
+							<p>Vous pouvez effectuer l&#8217;une des op&eacute;rations suivantes sur les
+								donn&eacute;es de l&#8217;objet Salesforce&nbsp;: </p>
+							<p><span class="bold"><strong>Insert</strong></span>&nbsp;: ins&eacute;rer les
+								donn&eacute;es.</p>
+							<p><span class="bold"><strong>Update</strong></span>&nbsp;: mettre les donn&eacute;es &agrave;
+								jour.</p>
+							<p><span class="bold"><strong>Upsert</strong></span>&nbsp;: mettre &agrave; jour et ins&eacute;rer
+								les donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Module</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;objet ad&eacute;quat dans la liste.</p>
+							<p><span class="bold"><strong>Custom Object</strong></span>&nbsp;: cette option fait
+								appara&icirc;tre le champ <span class="bold"><strong>Custom Module
+									Name</strong></span> dans lequel vous pouvez saisir l&#8217;objet auquel
+								vous souhaitez vous connecter.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (built-in) soit distant dans le <span class="bold"><strong>Repository</strong></span>.</p>
+							<p>Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> pour
+								modifier le sch&eacute;ma. Notez que si vous modifiez le sch&eacute;ma, il devient
+								automatiquement built-in.</p>
+							<p>Cliquez sur <span class="bold"><strong>Sync columns</strong></span> pour
+								r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Rows to commit</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nombre de lignes devant &ecirc;tre trait&eacute;es par lot de
+								donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Bytes to commit</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nombre d&#8217;octets par lot de donn&eacute;es devant &ecirc;tre
+								trait&eacute;s.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use Socks Proxy</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case si vous souhaitez utiliser un proxy. Dans ce
+								cas, vous devez renseigner les param&egrave;tres du proxy dans les champs
+								qui apparaissent, une fois la case coch&eacute;e.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est utilis&eacute; comme composant de sortie. Il n&eacute;cessite
+								un composant d&#8217;entr&eacute;e. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Les donn&eacute;es de masse &agrave; traiter dans Salesforce.com doivent &ecirc;tre au
+								format .<span class="emphasis"><em>csv</em></span></p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es de masse dans votre Salesforce.com"><div class="titlepage"><div><div><h3 class="title"><a name="d0e14458"></a>Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es de masse dans votre Salesforce.com</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; quatre composants qui charge des donn&eacute;es en masse dans
+			Salesforce.com, ex&eacute;cute les actions d&eacute;finies, et affiche les r&eacute;sultats d&#8217;ex&eacute;cution du
+			Job dans la console.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="379"><tr><td><img src="../images/Use_Case_tSalesforceOutputBulkExec1.png" width="379"></td></tr></table></div><p>Avant de r&eacute;aliser ce Job, vous devez pr&eacute;parer votre fichier d&#8217;entr&eacute;e, contenant les
+			donn&eacute;es devant &ecirc;tre trait&eacute;es par le Job. Dans cet exemple, le fichier
+				<span class="emphasis"><em>sforcebulk.txt</em></span>, contient des informations relatives aux
+			clients. </p><p>Afin de cr&eacute;er et ex&eacute;cuter le Job, proc&eacute;dez comme suit&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Glissez-d&eacute;posez de la Palette dans l&#8217;espace de mod&eacute;lisation graphique un
+					composant <span class="bold"><strong>tFileInputDelimited</strong></span>, un <span class="bold"><strong>tSalesforceOutputBulkExec</strong></span>, et deux <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Utilisez un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> pour connecter le <span class="bold"><strong>tFileInputDelimited</strong></span> au <span class="bold"><strong>tSalesforceOutputBulkExec</strong></span>.</p></li><li class="listitem"><p>Utilisez un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> et un lien <span class="bold"><strong>Row</strong></span>
+					&gt; <span class="bold"><strong>Reject</strong></span> afin de connecter le <span class="bold"><strong>tSalesforceOutputBulkExec</strong></span> aux deux <span class="bold"><strong>tLogRow</strong></span> respectifs.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tFileInputDelimited</strong></span>
+					afin d&#8217;afficher sa vue <span class="bold"><strong>Component</strong></span> et d&eacute;finir ses
+					propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="529"><tr><td><img src="../images/Use_Case_tSalesforceOutputBulk1.png" width="529"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la liste <span class="bold"><strong>Property Type</strong></span>, s&eacute;lectionnez
+						<span class="bold"><strong>Repository</strong></span> si vous avez d&eacute;j&agrave; stock&eacute; votre
+					connexion au serveur Salesforce dans le n&#339;ud <span class="bold"><strong>Metadata</strong></span> de la vue <span class="bold"><strong>Repository</strong></span>.
+					Les propri&eacute;t&eacute;s sont automatiquement renseign&eacute;es. Si vous n&#8217;avez pas d&eacute;fini la
+					connexion au serveur localement dans le Repository, remplissez les champs
+					manuellement, apr&egrave;s avoir s&eacute;lectionn&eacute; <span class="bold"><strong>Built-in</strong></span>
+					dans la liste <span class="bold"><strong>Property Type</strong></span>.</p><p>Pour plus d&#8217;informations concernant la cr&eacute;ation des m&eacute;tadonn&eacute;es de fichier
+					d&eacute;limit&eacute;, consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de
+						<span class="bluebold">Talend Open Studio</span>.</p></li><li class="listitem"><p>A c&ocirc;t&eacute; du champ <span class="bold"><strong>File name/Stream</strong></span>, cliquez sur
+					le bouton <span class="inlinemediaobject"><img src="../images/DotButton.png" width="21"></span> afin de s&eacute;lectionner votre fichier d&#8217;entr&eacute;e, par exemple
+						<span class="emphasis"><em>sforcebulk.txt</em></span>.</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Schema</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Repository</strong></span>, puis cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> pour ouvrir une bo&icirc;te de dialogue dans laquelle
+					vous pourrez s&eacute;lectionner le sch&eacute;ma &agrave; utiliser pour ce composant. Si vous n&#8217;avez
+					pas d&eacute;fini votre sch&eacute;ma localement dans les m&eacute;tadonn&eacute;es, s&eacute;lectionnez <span class="bold"><strong>Built-in</strong></span> dans la liste <span class="bold"><strong>Schema</strong></span>, puis cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit
+						schema</strong></span>, afin d&#8217;ouvrir une bo&icirc;te de dialogue o&ugrave; vous pourrez
+					d&eacute;finir le sch&eacute;ma manuellement. dans ce sc&eacute;nario, le sch&eacute;ma se compose de quatre
+					colonnes&nbsp;: <span class="emphasis"><em>Name</em></span>, <span class="emphasis"><em>ParentId</em></span>,
+						<span class="emphasis"><em>Phone</em></span> et <span class="emphasis"><em>Fax</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="451"><tr><td><img src="../images/Use_Case_tSalesforceOutputBulk_schema.png" width="451"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Configurez les autres propri&eacute;t&eacute;s selon votre fichier d&#8217;entr&eacute;e, comme <span class="bold"><strong>Row Separator</strong></span>, <span class="bold"><strong>Field
+						Separator</strong></span>...</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tSalesforceOutputBulkExec</strong></span> afin d&#8217;afficher sa vue <span class="bold"><strong>Component</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="504"><tr><td><img src="../images/Use_Case_tSalesforceOutputBulkExec2.png" width="504"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Salesforce WebService URL</strong></span>,
+					utilisez l&#8217;URL par d&eacute;faut du service Web Salesforce, ou saisissez l&#8217;URL &agrave;
+					laquelle vous souhaitez acc&eacute;der.</p></li><li class="listitem"><p>Dans les champs <span class="bold"><strong>Username</strong></span> et <span class="bold"><strong>Password</strong></span>, saisissez votre identifiant et votre mot de
+					passe de connexion au service Web.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Bulk file path</strong></span>, parcourez votre
+					r&eacute;pertoire jusqu&#8217;&agrave; l&#8217;emplacement o&ugrave; vous stockez les donn&eacute;es
+						<span class="emphasis"><em>.csv</em></span> devant &ecirc;tre trait&eacute;es.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Le fichier de masse &agrave; traiter doit &ecirc;tre au format<span class="emphasis"><em>
+				.csv</em></span>.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la liste <span class="bold"><strong>Action</strong></span>, s&eacute;lectionnez l&#8217;action &agrave;
+					effectuer sur les donn&eacute;es de masse, <span class="bold"><strong>insert</strong></span> dans
+					cet exemple.</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Module</strong></span>, s&eacute;lectionnez l&#8217;&eacute;lement
+					auquel vous souhaitez acc&eacute;der, <span class="bold"><strong>Account</strong></span> dans cet
+					exemple.</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Schema</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Repository</strong></span>, puis cliquez sur le bouton<span class="bold"><strong> [...] </strong></span>afin d&#8217;ouvrir une bo&icirc;te de dialogue dans
+					laquelle vous pourrez s&eacute;lectionner le sch&eacute;ma du Repository &agrave; utiliser pour ce
+					composant. Si vous n&#8217;avez pas d&eacute;fini votre sch&eacute;ma localement dans les
+					m&eacute;tadonn&eacute;es, s&eacute;lectionnez <span class="bold"><strong>Built-in</strong></span> dans la
+					liste <span class="bold"><strong>Schema</strong></span>, puis cliquez sur le
+						bouton<span class="bold"><strong> [...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit schema</strong></span> afin d&#8217;ouvrir une bo&icirc;te de dialogue o&ugrave;
+					vous pourrez d&eacute;finir manuellement le sch&eacute;ma. Dans cet exemple, d&eacute;finissez le
+					sch&eacute;ma comme pr&eacute;c&eacute;demment.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tLogRow_1</strong></span> afin
+					d&#8217;afficher sa vue <span class="bold"><strong>Component</strong></span> et d&eacute;finir ses
+					propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="514"><tr><td><img src="../images/Use_Case_tSalesforceOutputBulk4.png" width="514"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Sync columns</strong></span> afin de
+					r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p></li><li class="listitem"><p>S&eacute;lectionnez le mode <span class="bold"><strong>Table</strong></span> afin d&#8217;afficher
+					les r&eacute;sultats d&#8217;ex&eacute;cution dans un tableau.</p></li><li class="listitem"><p>R&eacute;p&eacute;tez l&#8217;op&eacute;ration pour le <span class="bold"><strong>tLogRow_2</strong></span>.</p></li><li class="listitem"><p>Sauvegardez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> afin
+					de l&#8217;ex&eacute;cuter.</p></li></ul></div><p>Dans la console de la vue <span class="bold"><strong>Run</strong></span>, vous pouvez v&eacute;rifier
+			les r&eacute;sultats d&#8217;ex&eacute;cution.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="504"><tr><td><img src="../images/Use_Case_tSalesforceOutputBulkExec3.png" width="504"></td></tr></table></div><p>Dans le tableau du <span class="bold"><strong>tLogRow_1</strong></span>, vous pouvez lire les
+			donn&eacute;es ins&eacute;r&eacute;es dans Salesforce.com.</p><p>Dans le tableau du <span class="bold"><strong>tLogRow_2</strong></span>, vous pouvez lire les
+			donn&eacute;es rejet&eacute;es &agrave; cause d&#8217;une incompatibilit&eacute; avec les &eacute;l&eacute;ments <span class="bold"><strong>Account</strong></span> auxquels vous avez acc&eacute;d&eacute;.</p><p>Si vous souhaitez transformer les donn&eacute;es d&#8217;entr&eacute;e avant de les charger, vous devez
+			utiliser un <span class="bold"><strong>tSalesforceOutputBulk</strong></span> et un <span class="bold"><strong>tSalesforceBulkExec</strong></span> pour r&eacute;aliser le Job complet. Pour plus
+			d&#8217;informations &agrave; propos de l&#8217;utilisation de ces deux composants, consultez <a class="xref" href="tSalesforceOutputBulk.html#Raa23013" title="Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es de masse transform&eacute;es dans votre Salesforce.com">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es de masse transform&eacute;es dans votre
+			Salesforce.com&nbsp;&raquo;</a>.</p></div></div></body></html>

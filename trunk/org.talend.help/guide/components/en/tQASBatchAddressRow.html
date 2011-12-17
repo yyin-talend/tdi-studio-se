@@ -1,0 +1,176 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tQASBatchAddressRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa78577.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tQASAddressVerified.html" title="tQASAddressVerified"><link rel="next" href="tRecordMatching.html" title="tRecordMatching"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tQASBatchAddressRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tQASBatchAddressRow"></a>tQASBatchAddressRow</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tQASBatchAddressRow_icon32-white.png" width="27"></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component will be available in the </em></span>
+					<span class="bold"><strong>Palette</strong></span>
+					<span class="emphasis"><em> of the studio on the condition that you have subscribed to the
+						relevant edition of </em></span>
+					<span class="bluebold">
+						Talend Enterprise Data Quality
+					</span>
+					<span class="emphasis"><em>.</em></span>
+				</p></td></tr></table></div><p>The address management components discussed here are the result of <span class="bold"><strong>Talend</strong></span> collaboration with Experian QAS, one of the world
+				leaders for global address data quality. </p><p>For more information about the enterprise and its software tools, visit <a class="link" href="http://www.qas.com" target="_top">http://www.qas.com.</a></p><div class="section" title="tQASBatchAddressRow properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e201103"></a>tQASBatchAddressRow properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Data Quality</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p> verifies addresses in a column. It iterates on each row
+										and reads input addresses against data in a Dynamic Link
+										Library (DLL) provided by QAS and installed locally. </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+											<span class="bold"><strong>tQASBatchAddressRow</strong></span>
+											uses Batch 4.70. The advantages of this component over
+												<a class="xref" href="tQASAddressRow.html" title="tQASAddressRow">the section called &#8220;tQASAddressRow&#8221;</a> is that it does not
+											call a web service to be able to verify postal address
+											data. This component uses the DLL library installed
+											locally to verify the postal address data and thus
+											optimize performance, especially when dealing with large
+											amounts of data.</p></td></tr></table></div>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tQASBatchAddressRow</strong></span>
+										corrects any formatting or spelling errors, adds missing
+										data and gives the verification status for each row since
+										the address may not always have enough information to be
+										matched to a single deliverable result in the DLL
+										data.</p>
+									<p> For more information about the verification status, see
+											<a class="xref" href="tQASAddressRow.html#Raa87008" title="QuickAccess verification levels (verification status)">the section called &#8220;QuickAccess verification levels (verification status)&#8221;</a>.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. The schema is either built-in or remote in the
+										Repository. </p>
+									<p> Click <span class="bold"><strong>Sync columns</strong></span> to
+										retrieve the schema from the previous component in the
+										Job.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: You create the
+										schema and store it locally for this component only. Related
+										topic: see <span class="bluebold">Talend Enterprise Studio</span> User Guide.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: You have
+										already created the schema and stored it in the Repository.
+										You can reuse it in various projects and job designs.
+										Related topic: see <span class="bluebold">Talend Enterprise Studio</span> User Guide.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Country</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select from the list the country corresponding to your
+										input addresses.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Choose the address column</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select from the list the address column you want to
+										analyze.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Specify the configuration file</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Click the three-dot button and browse to set the path to
+										the DLL library, provided by Experian QAS and installed
+										locally.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStat</em></span>
+										<span class="emphasis"><em>Catcher</em></span>
+										<span class="emphasis"><em>Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is an intermediary step. It requires an
+										input flow as well as an output.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation/prerequisite</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>Before being able to use this component, you must install
+										the DLL provided by Experioan QAS.</p>
+								</td></tr></tbody></table></div><p>
+					<span>&nbsp;</span>
+				</p></div><div class="section" title="Scenario: Editing addresses against a DLL library and giving the verification status"><div class="titlepage"><div><div><h3 class="title"><a name="d0e201362"></a>Scenario: Editing addresses against a DLL library and giving the verification
+					status</h3></div></div></div><p>Below is a three-component java scenario created in <span class="bluebold">Talend Enterprise Studio</span>.</p><p>This Job:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> generates random address information,</p></li><li class="listitem"><p> uses the <span class="bold"><strong>tQASBatchAddressRow</strong></span>
+							component to analyze the output columns and display the correct
+							formatted address along with their verification status on the
+							console,</p></li></ul></div><p>Complete the following to design and execute the above scenario:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Drop the following components from the <span class="bold"><strong>Palette</strong></span> onto the design workspace: <span class="bold"><strong>tFixedFlowInput</strong></span>, <span class="bold"><strong>tQASBatchAddressRow</strong></span> and <span class="bold"><strong>tLogRow</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="379"><tr><td><img src="../images/Use_Case_tQASBatchAddressRow.png" width="379"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Connect the component together using <span class="bold"><strong>Main</strong></span> links.</p></li><li class="listitem"><p> Double-click <span class="bold"><strong>tFixedFlowInput</strong></span> to
+							display its <span class="bold"><strong>Basic settings</strong></span> view and
+							define the component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="500"><tr><td><img src="../images/Use_Case_tQASBatchAddressRow2.png" width="500"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> From the <span class="bold"><strong>Schema</strong></span> list, set the schema
+							type to <span class="bold"><strong>Built-In</strong></span> and click the
+							three-dot button next to <span class="bold"><strong>Edit Schema </strong></span>A
+							dialog box displays.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="407"><tr><td><img src="../images/Use_Case_tQASBatchAddressRow3.png" width="407"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Click the plus button to add as many lines as needed for the input
+							schema you want to create from internal variables. </p><p> In this example, the schema is made of one column:
+								<span class="emphasis"><em>addr</em></span>.</p></li><li class="listitem"><p> Click <span class="bold"><strong>OK</strong></span> to close the dialog
+							box.</p><p> The defined columns display in the <span class="bold"><strong>Values</strong></span> table of the component basic settings
+							view.</p></li><li class="listitem"><p> In the <span class="bold"><strong>Mode</strong></span> area, select the
+								<span class="bold"><strong>Use Inline Table</strong></span> option.</p><p> The <span class="bold"><strong>Value</strong></span> table displays as
+								<span class="bold"><strong>Inline Table</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="386"><tr><td><img src="../images/Use_Case_tQASBatchAddressRow4.png" width="386"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Click the plus button to add as many line as needed and then click in
+							each of the lines to define the data for the input column, three address
+							rows in this example.</p></li><li class="listitem"><p> Double-click the <span class="bold"><strong>tQASBatchAddressRow</strong></span>
+							component to display its <span class="bold"><strong>Basic settings</strong></span>
+							and define the component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="501"><tr><td><img src="../images/Use_Case_tQASBatchAddressRow5.png" width="501"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Select <span class="bold"><strong>Built-in</strong></span> from the <span class="bold"><strong>Schema</strong></span> list and click <span class="bold"><strong>Edit schema</strong></span>, if required, to view the input and output
+							data flow. The output schema should include the <span class="emphasis"><em>addr
+							</em></span>column.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="528"><tr><td><img src="../images/Use_Case_tQASBatchAddressRow6.png" width="528"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> The output schema of any of the QuickAddress components depends on the
+						selected country in the <span class="bold"><strong>Country</strong></span> list since
+						every country has different address norms.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Click <span class="bold"><strong>OK</strong></span> to close the dialog
+							box.</p></li><li class="listitem"><p> Select from the <span class="bold"><strong>Country</strong></span> list the
+							country corresponding to your input addresses.</p></li><li class="listitem"><p> Select from the <span class="bold"><strong>Choose the address column
+							</strong></span>list the address column you want to analyze,
+								<span class="emphasis"><em>addr</em></span> in this example.</p></li><li class="listitem"><p> Click the three-dot button next to the <span class="bold"><strong>Specify
+								the configuration file</strong></span> field and browse to the DLL file
+							installed locally.</p><p> The path to the DLL file is set in the field.</p></li><li class="listitem"><p> Double-click the <span class="bold"><strong>tLogRow</strong></span> component
+							to display its <span class="bold"><strong>Basic settings</strong></span> view and
+							define the component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="495"><tr><td><img src="../images/Use_Case_tQASBatchAddressRow7.png" width="495"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> If required, click <span class="bold"><strong>Sync columns</strong></span> to
+							retrieve the schema from <span class="bold"><strong>tQASBatchAddressRow</strong></span>.</p></li><li class="listitem"><p> Save your Job and press <span class="bold"><strong>F6</strong></span> to
+							execute it and display the result on the console.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tQASBatchAddressRow8.png" width="100%"></td></tr></table></div><p>In the above result, the <span class="bold"><strong>tQASBatchAddressRow</strong></span>
+					reads the input rows, corrects and formats the addresses, gives the result in
+					the <span class="emphasis"><em>ADDRESS</em></span> and <span class="emphasis"><em>ZIP_CODE_CITY</em></span> columns,
+					and gives the verification status in the <span class="emphasis"><em>STATUS</em></span> row. For
+					further information on the status column, check the corresponding documentation
+					at <a class="link" href="http://www.qas.com" target="_top">http://www.qas.com.</a></p></div></div></body></html>

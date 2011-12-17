@@ -1,0 +1,150 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tCombinedSQLFilter</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa48933.html" title="Chapitre&nbsp;7.&nbsp;Composants ELT"><link rel="prev" href="tCombinedSQLAggregate.html" title="tCombinedSQLAggregate"><link rel="next" href="tCombinedSQLInput.html" title="tCombinedSQLInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tCombinedSQLFilter"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tCombinedSQLFilter"></a>tCombinedSQLFilter</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tCombinedSQLFilter_icon32_white.png" width="27"></td></tr></table></div><a name="Xaa4731980"></a><div class="section" title="Propri&eacute;t&eacute;s du tCombinedSQLFilter"><div class="titlepage"><div><div><h3 class="title"><a name="d0e160827"></a>Propri&eacute;t&eacute;s du tCombinedSQLFilter</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>ELT/CombinedSQL</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tCombinedSQLFilter
+                                </strong></span>vous permet de modifier le sch&eacute;ma de la table source via
+                                le mapping des colonnes et de d&eacute;finir un filtre sur cette table. Ce
+                                composant peut donc filtrer des colonnes et des lignes en m&ecirc;me
+                                temps. Il filtre en temps r&eacute;el les donn&eacute;es dans le SGBD
+                                lui-m&ecirc;me.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant permet de filtrer des donn&eacute;es en r&eacute;organisant,
+                                supprimant ou ajoutant des colonnes &agrave; partir de la table source et
+                                de filtrer la source de donn&eacute;es &agrave; l&#8217;aide de conditions de
+                                filtre.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+                                sch&eacute;ma est soit local (built-in) soit distant dans le
+                                Repository.</p>
+                            <p> Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> pour
+                                modifier le sch&eacute;ma. Notez que si vous modifiez le sch&eacute;ma, il devient
+                                automatiquement built-in.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma sera cr&eacute;&eacute; et
+                                conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le Guide
+                                Utilisateur de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+                                dans divers projets et Jobs. Voir &eacute;galement&nbsp;le Guide Utilisateur de
+                                    <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Logical operator between conditions</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez l&#8217;op&eacute;rateur logique &agrave; ajouter entre les conditions de
+                                filtre d&eacute;finies dans le tableau <span class="bold"><strong>Conditions</strong></span> .</p>
+                            <p> Les deux op&eacute;rateurs disponibles sont&nbsp;: <span class="bold"><strong>Or</strong></span> et <span class="bold"><strong>And</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Conditions</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> pour
+                                ajouter autant de conditions que voulu. Les conditions sont
+                                ex&eacute;cut&eacute;es les unes apr&egrave;s les autres pour chaque ligne. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Input Column</strong></span>&nbsp;: S&eacute;lectionnez la
+                                colonne &agrave; filtrer.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Operator&nbsp;</strong></span>: S&eacute;lectionnez le type
+                                de clause WHERE&nbsp;: <span class="bold"><strong>=</strong></span>, <span class="bold"><strong>&lt; &gt;</strong></span>,<span class="bold"><strong>
+                                    &gt;</strong></span>, <span class="bold"><strong>&lt;</strong></span>,
+                                    <span class="bold"><strong>&gt;=</strong></span>, <span class="bold"><strong>&lt;=</strong></span>, <span class="bold"><strong>LIKE</strong></span>,
+                                    <span class="bold"><strong>IN</strong></span>, <span class="bold"><strong>NOT
+                                    IN</strong></span>, et <span class="bold"><strong>EXIST
+                                IN</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Value&nbsp;</strong></span>: Saisissez les valeurs &agrave;
+                                utiliser dans la clause WHERE.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Negate</strong></span>&nbsp;: Cochez cette case pour
+                                activer la condition contraire &agrave; celle d&eacute;finie.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use custom SQL</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case afin de personnaliser une clause WHERE en
+                                &eacute;ditant le code dans le champ <span class="bold"><strong>SQL
+                                    Condition</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                Job ainsi qu&#8217;au niveau de chaque composant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est utilis&eacute; en tant que composant interm&eacute;diaire avec
+                                d&#8217;autres composants de bases de donn&eacute;es, en particulier les
+                                composants de connexion et de commit.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e161182"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez&nbsp;<a class="xref" href="tSQLTemplateAggregate.html#Raa22184" title="Sc&eacute;nario&nbsp;: Filtrer et agr&eacute;ger les colonnes d&#8217;une table directement dans le SGBD">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Filtrer et agr&eacute;ger les colonnes d&#8217;une table directement dans le
+            SGBD&nbsp;&raquo;</a>.</p></div></div></body></html>

@@ -1,0 +1,100 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tDenormalizeSortedRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch14.html" title="Chapter&nbsp;14.&nbsp;Processing components"><link rel="prev" href="tDenormalize.html" title="tDenormalize"><link rel="next" href="tExternalSortRow.html" title="tExternalSortRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tDenormalizeSortedRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tDenormalizeSortedRow"></a>tDenormalizeSortedRow</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tDenormalizeSortedRow_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tDenormalizeSortedRow properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e218467"></a>tDenormalizeSortedRow properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Processing/Fields</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tDenormalizeSortedRow </strong></span>combines in
+                                a group all input sorted rows. Distinct values of the denormalized
+                                sorted row are joined with item separators.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tDenormalizeSortedRow </strong></span>helps
+                                synthesizing sorted input flow to save memory.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. </p>
+                            <p> Click <span class="bold"><strong>Edit Schema</strong></span> to make
+                                changes to the schema. Note that if you make changes, the schema
+                                automatically becomes built-in. </p>
+                            <p> Click <span class="bold"><strong>Sync columns</strong></span> to retrieve
+                                the schema from the previous component in the Job.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: You create the schema
+                                and store it locally for the relevant component. Related topic: see
+                                    <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: You have already
+                                created the schema and stored it in the Repository. You can reuse it
+                                in various projects and Job flowcharts. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Input rows count</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the number of input rows.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>To denormalize</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the name of the column to denormalize.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component handles flows of data therefore it requires input
+                                and output components.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Regrouping sorted rows"><div class="titlepage"><div><div><h3 class="title"><a name="tSortRow-dup-3"></a>Scenario: Regrouping sorted rows</h3></div></div></div><p>This Java scenario describes a four-component Job. It aims at reading a given
+            delimited file row by row, sorting input data by sort type and order, denormalizing all
+            input sorted rows and displaying the output on the <span class="bold"><strong>Run
+            </strong></span>log console.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Drop the following components from the <span class="bold"><strong>Palette</strong></span> onto the design workspace: <span class="bold"><strong>tFileInputDelimited</strong></span>, <span class="bold"><strong>tSortRow</strong></span>,
+                        <span class="bold"><strong>tDenormalizeSortedRow</strong></span>, and <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p> Connect the four components using <span class="bold"><strong>Row Main</strong></span>
+                    links.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="467"><tr><td><img src="../images/Use_Case_tDenormalizeSortedRow.png" width="467"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the design workspace, select <span class="bold"><strong>tFileInputDelimited</strong></span>.</p></li><li class="listitem"><p> Click the <span class="bold"><strong>Component</strong></span> tab to define the basic
+                    settings for <span class="bold"><strong>tFileInputDelimited</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="408"><tr><td><img src="../images/Use_Case_tDenormalizeSortedRow1.png" width="408"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Set <span class="bold"><strong>Property Type</strong></span> to <span class="bold"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p> Fill in a path to the processed file in the <span class="bold"><strong>File
+                        Name</strong></span> field. The <span class="emphasis"><em>name_list </em></span>file used in this
+                    example holds two columns, id and first name.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="120"><tr><td><img src="../images/Use_Case_tDenormalizeSortedRow2.png" width="120"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> If needed, define row and field separators, header and footer, and the number
+                    of processed rows.</p></li><li class="listitem"><p> Set <span class="bold"><strong>Schema</strong></span> to <span class="bold"><strong>Built
+                        in</strong></span> and click the three-dot button next to <span class="bold"><strong>Edit Schema </strong></span>to define the data to pass on to the next component.
+                    The schema in this example consists of two columns, <span class="emphasis"><em>id</em></span> and
+                        <span class="emphasis"><em>name.</em></span></p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="467"><tr><td><img src="../images/Use_Case_tDenormalizeSortedRow3.png" width="467"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the design workspace, select <span class="bold"><strong>tSortRow</strong></span>.</p></li><li class="listitem"><p> Click the <span class="bold"><strong>Component</strong></span> tab to define the basic
+                    settings for <span class="bold"><strong>tSortRow</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="516"><tr><td><img src="../images/Use_Case_tDenormalizeSortedRow4.png" width="516"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Set the <span class="bold"><strong>Schema Type</strong></span> to <span class="bold"><strong>Built-In</strong></span> and click <span class="bold"><strong>Sync columns</strong></span>
+                    to retrieve the schema from the <span class="bold"><strong>tFileInputDelimited</strong></span> component.</p></li><li class="listitem"><p> In the <span class="bold"><strong>Criteria</strong></span> panel, use the plus button
+                    to add a line and set the sorting parameters for the schema column to be
+                    processed. In this example we want to sort the <span class="emphasis"><em>id</em></span> columns
+                    in ascending order.</p></li><li class="listitem"><p> In the design workspace, select <span class="bold"><strong>tDenormalizeSortedRow</strong></span>.</p></li><li class="listitem"><p> Click the <span class="bold"><strong>Component</strong></span> tab to define the basic
+                    settings for <span class="bold"><strong>tDenormalizeSortedRow</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="518"><tr><td><img src="../images/Use_Case_tDenormalizeSortedRow5.png" width="518"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Set the <span class="bold"><strong>Schema Type</strong></span> to <span class="bold"><strong>Built-In</strong></span> and click <span class="bold"><strong>Sync columns</strong></span>
+                    to retrieve the schema from the <span class="bold"><strong>tSortRow</strong></span>
+                    component.</p></li><li class="listitem"><p> In the <span class="bold"><strong>Input rows count</strong></span>field, enter the
+                    number of the input rows to be processed or press <span class="bold"><strong>Ctrl+Space </strong></span>to access the context variable list and select the
+                    variable: <code class="code">tDenormalize</code>SortedRow_1.NB_LINE<code class="code">.</code></p></li><li class="listitem"><p> In the <span class="bold"><strong>To denormalize</strong></span> panel, use the plus
+                    button to add a line and set the parameters to the column to be denormalize. In
+                    this example we want to denormalize the <span class="emphasis"><em>name</em></span> column.</p></li><li class="listitem"><p> In the design workspace, select <span class="bold"><strong>tLogRow</strong></span> and
+                    click the <span class="bold"><strong>Component</strong></span> tab to define its basic
+                    settings. For more information about <span class="bold"><strong>tLogRow</strong></span>,
+                    see <a class="xref" href="tLogRow.html" title="tLogRow">the section called &#8220;tLogRow&#8221;</a>.</p></li><li class="listitem"><p> Save your Job and press <span class="bold"><strong>F6</strong></span> to execute
+                    it.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="429"><tr><td><img src="../images/Use_Case_tDenormalizeSortedRow6.png" width="429"></td></tr></table></div><p>The result displayed on the console shows how the <span class="emphasis"><em>name</em></span> column was
+            denormalize.</p></div></div></body></html>

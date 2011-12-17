@@ -1,0 +1,213 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tLineChart</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch02.html" title="Chapter&nbsp;2.&nbsp;Business Intelligence components"><link rel="prev" href="tJasperOutputExec.html" title="tJasperOutputExec"><link rel="next" href="tMondrianInput.html" title="tMondrianInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tLineChart"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tLineChart"></a>tLineChart</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="35"><tr><td><img src="../images/tLineChart_icon32_white.png" width="35"></td></tr></table></div><div class="section" title="tLineChart properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e21861"></a>tLineChart properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Business Intelligence/Charts</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tLineChart</strong></span> reads data from an
+                                input flow and transforms the data into a line chart in a PNG image
+                                file.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tLineChart</strong></span> generates a line chart
+                                from the input data to ease technical analysis. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields to be processed and passed on to the next component. The
+                                schema is either built-in or remotely stored in the Repository. </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The schema of <span class="bold"><strong>tLineChart</strong></span>
+                                    contains three read-only columns named <span class="bold"><strong>series</strong></span> (string), <span class="bold"><strong>x</strong></span> (integer), and <span class="bold"><strong>y</strong></span> (integer) respectively, in a fixed order. The
+                                    data in any extra columns will be only passed to the next
+                                    component, if any, without being presented in the generated line
+                                    chart.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: The schema is created
+                                and stored locally for this component only. Related topic: see
+                                    <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: The schema already
+                                exists and is stored in the Repository, hence can be reused. Related
+                                topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Sync columns</em></span></p>
+                        </td><td valign="top">
+                            <p>Click to synchronize the output file schema with the input file
+                                schema. The Sync function only displays once the <span class="bold"><strong>Row</strong></span> connection is linked with the output
+                                component.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Generated image path</em></span></p>
+                        </td><td valign="top">
+                            <p>Name and path of the output image file. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Chart title</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the title of the line chart to be generated.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Domain axis label</em></span> and <span class="emphasis"><em>Range axis
+                                    label</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the domain axis (X axis) and range axis (Y axis)
+                                labels.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Plot orientation</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the plot orientation of the range axis: <span class="bold"><strong>Vertical</strong></span> or <span class="bold"><strong>Horizontal</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Include legend</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box if you want your line chart to include a
+                                legend, indicating the lines of different series in different
+                                colors.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Image width</em></span> and <span class="emphasis"><em>Image
+                                    height</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Enter the width and height of the image, in pixels.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Moving average</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to show a moving average for each series on
+                                your line chart. With this check box selected, the <span class="bold"><strong>Period</strong></span> field appears, letting you define
+                                a period of which you want to show the moving average.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Lower bound</em></span> and <span class="emphasis"><em>Upper
+                                    bound</em></span></p>
+                        </td><td valign="top">
+                            <p>Define the lowest and highest values to be displayed on the range
+                                axis. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Chart background</em></span> and <span class="emphasis"><em>Plot
+                                    background</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the chart background color and the plot area background
+                                color.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStat</em></span><span class="emphasis"><em>Catcher
+                                Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to collect log data at the component
+                                level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component is mainly used as Output component. It requires an
+                                Input component and <span class="bold"><strong>Row</strong></span> main link
+                                as input.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Creating a line chart to ease trend analysis"><div class="titlepage"><div><div><h3 class="title"><a name="d0e22228"></a>Scenario: Creating a line chart to ease trend analysis</h3></div></div></div><p>This scenario describes a simple Job that reads data from a CSV file and
+                transforms the data into a line chart to facilitate trend analysis. The input file
+                records how long (in minutes) per week a person watches different TV channels over
+                ten weeks, as shown below:</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="329"><tr><td><img src="../images/Use_Case_tLineChart01.png" width="329"></td></tr></table></div><p>Because the input file has a different structure than required by the
+                <span class="bold"><strong>tLineChart</strong></span> component, this use case uses
+            the <span class="bold"><strong>tMap</strong></span> component to map the data to a CSV file that
+            meets the structure requirement before using the <span class="bold"><strong>tLineChart</strong></span> component to generate a line chart file. </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>You will usually use the <span class="bold"><strong>tMap</strong></span>
+                component to adjust the input schema in accordance with the schema structure of the
+                    <span class="bold"><strong>tLineChart</strong></span> component. For more information
+                about how to use the <span class="bold"><strong>tMap</strong></span> component, see <span class="bluebold">Talend Open Studio</span>
+                <span class="bold"><strong>User Guide</strong></span> and the section related to the <a class="xref" href="tMap.html" title="tMap">the section called &#8220;tMap&#8221;</a>.</p></td></tr></table></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="377"><tr><td><img src="../images/Use_Case_tLineChart02.png" width="377"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> to the design workspace: two <span class="bold"><strong>tFileInputDelimited</strong></span> components, a <span class="bold"><strong>tMap</strong></span>, three <span class="bold"><strong>tFileOutputDelimited</strong></span> components, and a <span class="bold"><strong>tLineChart</strong></span>. Relabel the components to best describe their
+                    functionality.</p></li><li class="listitem"><p>Double-click the first <span class="bold"><strong>tFileInputDelimited</strong></span>
+                    component to display its <span class="bold"><strong>Basic settings</strong></span>
+                    view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="403"><tr><td><img src="../images/Use_Case_tLineChart03.png" width="403"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Fill in the <span class="bold"><strong>File name</strong></span> field by browsing to
+                    the input file.</p></li><li class="listitem"><p>Specify the header row. In this use case, the first row of the input file is
+                    the header row.</p></li><li class="listitem"><p>Leave the other parameters as they are.</p></li><li class="listitem"><p>Click <span class="bold"><strong>Edit schema</strong></span> to describe the data
+                    structure of the input file. In this use case, the input schema is made of four
+                    columns: <span class="emphasis"><em>Week</em></span>, <span class="emphasis"><em>Mins_TVA</em></span>,
+                        <span class="emphasis"><em>Mins_TVB</em></span>, and <span class="emphasis"><em>Mins_TVC</em></span>. Upon
+                    defining the column names and data type, click <span class="bold"><strong>OK</strong></span> to close the schema dialog box.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="349"><tr><td><img src="../images/Use_Case_tLineChart04.png" width="349"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connect the <span class="bold"><strong>tFileInputDelimited</strong></span> to the
+                        <span class="bold"><strong>tMap</strong></span> using a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>
+                    connection.</p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tMap</strong></span> to open the <span class="bold"><strong>Map Editor</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="495"><tr><td><img src="../images/Use_Case_tLineChart05.png" width="495"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the green plus button on top of the output panel to add three output
+                    tables: <span class="emphasis"><em>TV_A</em></span>, <span class="emphasis"><em>TV_B</em></span>, and
+                        <span class="emphasis"><em>TV_C</em></span>. These output table names will appear as the
+                    labels of the connections linking the <span class="bold"><strong>tMap</strong></span> to
+                    the output components on the design workspace.</p></li><li class="listitem"><p>Use the <span class="bold"><strong>Schema editor</strong></span> to add three columns to
+                    each output table: <span class="emphasis"><em>series</em></span> (string), <span class="emphasis"><em>x</em></span>
+                    (integer), and <span class="emphasis"><em>y</em></span> (integer).</p></li><li class="listitem"><p>In the relevant <span class="bold"><strong>Expression</strong></span> field of the
+                    output tables, enter the series names, as shown above. These series names will
+                    appear in the legend of your line chart. </p></li><li class="listitem"><p>Drop the <span class="emphasis"><em>Week</em></span> column of the input table onto the
+                        <span class="emphasis"><em>x</em></span> column of each output table. </p></li><li class="listitem"><p>Drop the <span class="emphasis"><em>Mins_TVA</em></span> column of the input table onto the
+                        <span class="emphasis"><em>y</em></span> column of the <span class="emphasis"><em>TV_A</em></span> table.
+                </p></li><li class="listitem"><p>Drop the <span class="emphasis"><em>Mins_TVB</em></span> column of the input table onto the
+                        <span class="emphasis"><em>y</em></span> column of the <span class="emphasis"><em>TV_B</em></span> table.
+                </p></li><li class="listitem"><p>Drop the <span class="emphasis"><em>Mins_TVC</em></span> column of the input table onto the
+                        <span class="emphasis"><em>y</em></span> column of the <span class="emphasis"><em>TV_C</em></span> table.
+                </p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to save the mappings and close the
+                        <span class="bold"><strong>Map Editor</strong></span>.</p></li><li class="listitem"><p>Right-click the <span class="bold"><strong>tMap</strong></span> component and select
+                        <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>TV_A</strong></span> to connect it to the first <span class="bold"><strong>tFileOutputDelimited</strong></span> component. </p></li><li class="listitem"><p>Connect the <span class="bold"><strong>tMap</strong></span> to the other <span class="bold"><strong>tFileOutputDelimited</strong></span> components in the same way but
+                    by selecting <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>TV_B</strong></span> and <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>TV_C</strong></span> respectively</p></li><li class="listitem"><p>Double-click the first <span class="bold"><strong>tFileOutputDelimited</strong></span>
+                    component to display its <span class="bold"><strong>Basic settings</strong></span>
+                    view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="417"><tr><td><img src="../images/Use_Case_tLineChart06.png" width="417"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>File Name</strong></span> field, define a CSV file to
+                    send the mapped data flows to. In this use case, we name the the output file to
+                    be created <span class="emphasis"><em>InputTV.csv</em></span>. This file will be used as the input
+                    to the <span class="bold"><strong>tLineChart</strong></span> component. If an existing
+                    file name is specified, make sure that the <span class="bold"><strong>Append</strong></span> check box is cleared.</p></li><li class="listitem"><p>Leave the other parameters as they are.</p></li><li class="listitem"><p>For the other <span class="bold"><strong>tFileOutputDelimited</strong></span>
+                    components, use the same file path as defined for the first <span class="bold"><strong>tFileOutputDelimited</strong></span> component, and select the
+                        <span class="bold"><strong>Append</strong></span> check box.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>.Make sure that the <span class="bold"><strong>Append</strong></span> check box is selected
+                so that the mapped data flows will go to the same file without overwriting the
+                existing data.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connect the first <span class="bold"><strong>tFileInputDelimited</strong></span>
+                    component to the second <span class="bold"><strong>tFileInputDelimited</strong></span>
+                    component using a <span class="bold"><strong>Trigger</strong></span> &gt; <span class="bold"><strong>OnSubjobOK</strong></span> connection.</p></li><li class="listitem"><p>Connect the second <span class="bold"><strong>tFileInputDelimited</strong></span>
+                    component to the <span class="bold"><strong>tLineChart</strong></span> using a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>
+                    connection. </p></li><li class="listitem"><p>Double-click the second <span class="bold"><strong>tFileInputDelimited</strong></span>
+                    component to display its <span class="bold"><strong>Basic settings</strong></span>
+                    view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="418"><tr><td><img src="../images/Use_Case_tLineChart07.png" width="418"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Fill in the <span class="bold"><strong>File name</strong></span> field with the file
+                    path and name defined in the <span class="bold"><strong>Basic settings</strong></span>
+                    view of each of the <span class="bold"><strong>tFileOutputDelimited</strong></span>
+                    components. In this use case, the input file to the <span class="bold"><strong>tLineChart</strong></span> is <span class="emphasis"><em>InputTV.csv</em></span>.</p></li><li class="listitem"><p>Leave the other parameters as they are. </p><p> As the input schema needs to have a structure required by the <span class="bold"><strong>tLineChart</strong></span> component, we will copy the structure from
+                    the schema of the <span class="bold"><strong>tLineChart</strong></span> component. </p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tLineChart</strong></span> component to
+                    display its <span class="bold"><strong>Basic settings</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="422"><tr><td><img src="../images/Use_Case_tLineChart08.png" width="422"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>Edit schema</strong></span> to open the schema dialog
+                    box.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="444"><tr><td><img src="../images/Use_Case_tLineChart09.png" width="444"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Copy all the columns from the output schema to the input schema by clicking
+                    the left-pointing double arrow button. Then, click <span class="bold"><strong>OK</strong></span> to close the schema dialog box.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Generated image path</strong></span> field, define the
+                    path of the image file to be generated. </p></li><li class="listitem"><p>In the <span class="bold"><strong>Chart title</strong></span> field, define a title for
+                    the line chart. In this use case, the chart title is <span class="emphasis"><em>Average Weekly
+                        Viewing (per person)</em></span>.</p></li><li class="listitem"><p>Define the domain (X) and range (Y) axis labels. In this use case, the axis
+                    labels are <span class="emphasis"><em>Week</em></span> and <span class="emphasis"><em>Minutes</em></span>
+                    respectively.</p></li><li class="listitem"><p>Define the image size, the moving average period, the lower and upper bounds,
+                    the chart background color, and the background color of the plot area, as you
+                    prefer.</p><p> In this use case, we set the image size to <span class="emphasis"><em>450 by 450</em></span>,
+                    set the lower and upper bounds to <span class="emphasis"><em>210</em></span> and
+                        <span class="emphasis"><em>340</em></span> respectively, select <span class="emphasis"><em>light
+                        gray</em></span> as the chart background color, and keep the rest settings
+                    are they are.</p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to launch it. </p><p> A line chart is generated as defined, showing a comparison of the average
+                    weekly viewing time and the viewing trends of different TV channels over the
+                    past ten weeks.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="379"><tr><td><img src="../images/Use_Case_tLineChart10.png" width="379"></td></tr></table></div></div></div></body></html>

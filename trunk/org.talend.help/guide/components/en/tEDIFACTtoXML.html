@@ -1,0 +1,88 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tEDIFACTtoXML</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch18.html" title="Chapter&nbsp;18.&nbsp;XML components"><link rel="prev" href="tDTDValidator.html" title="tDTDValidator"><link rel="next" href="tExtractXMLField.html" title="tExtractXMLField"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tEDIFACTtoXML"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tEDIFACTtoXML"></a>tEDIFACTtoXML</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tEDIFACTtoXML_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tEDIFACTtoXML Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e239672"></a>tEDIFACTtoXML Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>XML/Unstructured &gt; EDIFACT</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component reads a United Nations/Electronic Data Interchange
+                                For Administration, Commerce and Transport (UN/EDIFACT) message and
+                                transforms it into the XML format according to the EDIFACT version
+                                and the EDIFACT family.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component is used to transform an EDIFACT message file into
+                                the XML format for better readability to users and compatibility
+                                with processing tools.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields to be processed and passed on to the next component. </p>
+                            <p> The schema of this component is fixed and read-only, with only
+                                one column: <span class="emphasis"><em>document</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>EDI filename</em></span></p>
+                        </td><td valign="top">
+                            <p>Filepath to the EDIFACT message file to be transformed.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>EDI version</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the EDIFACT version of the input file.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Ignore new line</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to skip carriage returns in the input
+                                file.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to stop Job execution when an error is
+                                encountered. By default, this check box is cleared, and therefore
+                                illegal rows are skipped and the process is completed for the error
+                                free rows.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component is usually linked to an output component to gather
+                                the transformation result. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: From EDIFACT to XML"><div class="titlepage"><div><div><h3 class="title"><a name="d0e239855"></a>Scenario: From EDIFACT to XML</h3></div></div></div><p>This scenario describes a simple Job that reads a UN/EDIFACT Customs Cargo (CUSCAR)
+            message file and saves it as an XML file.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="385"><tr><td><img src="../images/Use_Case_tEDIFACTtoXML1.png" width="385"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the <span class="bold"><strong>tEDIFACTtoXML</strong></span> component and the
+                        <span class="bold"><strong>tFileOutputXML</strong></span> component from the <span class="bold"><strong>Palette</strong></span> to the design workspace.</p></li><li class="listitem"><p>Connect the <span class="bold"><strong>tEDIFACTtoXML</strong></span> component and the
+                        <span class="bold"><strong>tFileOutputXML</strong></span> component using a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main
+                    </strong></span>connection.</p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tEDIFACTtoXML</strong></span> component to
+                    show its <span class="bold"><strong>Basic settings</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="439"><tr><td><img src="../images/Use_Case_tEDIFACTtoXML2.png" width="439"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Fill the <span class="bold"><strong>EDI filename</strong></span> field with the full
+                    path to the input EDIFACT message file.</p><p> In this use case, the input file is
+                    <span class="emphasis"><em>99a_cuscar.edi</em></span>.</p></li><li class="listitem"><p>From <span class="bold"><strong>EDI version</strong></span> list, select the EDIFACT
+                    version of the input file, <span class="emphasis"><em>D99A</em></span> in this use case.</p></li><li class="listitem"><p>Select the <span class="bold"><strong>Ignore new line</strong></span> check box to skip
+                    the carriage return characters in the input file during the
+                    transformation.</p></li><li class="listitem"><p>Leave the other parameters as they are.</p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tFileOutputXML</strong></span> component to
+                    show its <span class="bold"><strong>Basic settings</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="418"><tr><td><img src="../images/Use_Case_tEDIFACTtoXML3.png" width="418"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Fill the <span class="bold"><strong>File Name</strong></span> field with the full path
+                    to the output XML file you want to generate.</p><p> In this use case, the output XML is
+                    <span class="emphasis"><em>99a_cuscar.xml</em></span>.</p></li><li class="listitem"><p>Leave the other parameters as they are.</p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to run it.</p><p> The input EDIFACT CUSCAR message file is transformed into the XML format and
+                    the output XML file is generated as defined.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="461"><tr><td><img src="../images/Use_Case_tEDIFACTtoXML4_and_5.png" width="461"></td></tr></table></div></div></div></body></html>

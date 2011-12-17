@@ -1,0 +1,113 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tOpenbravoERPInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch01.html" title="Chapter&nbsp;1.&nbsp;Business components"><link rel="prev" href="tMSAXOutput.html" title="tMSAXOutput"><link rel="next" href="tOpenbravoERPOutput.html" title="tOpenbravoERPOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tOpenbravoERPInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tOpenbravoERPInput"></a>tOpenbravoERPInput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tOpenbravoERPInput_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tOpenbravoERPInput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7830"></a>tOpenbravoERPInput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component Family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Business </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tOpenbravoERPInput</strong></span> connects to an
+                                OpenbravoERP database entity via the appropriate webservice. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component allows you to extract data from OpenBravoERP
+                                database according to the conditions defined in specific
+                                columns.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Openbravo REST WebService URL</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the URL of the Web service that allows you to connect to the
+                                OpenbravoERP database.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span> et
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>User authentication information.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Entity</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the appropriate entity from the drop-down list. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. </p>
+                            <p> Click <span class="bold"><strong>Edit Schema</strong></span> to make
+                                changes to the schema.. </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>If you make any changes, the schema will au&shy;tomatically become
+                                    built-in. </p></td></tr></table></div>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>For this component, the schema corresponds to a selected
+                                    entity.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>WHERE Clause</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter your WHERE clause.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Order by</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check bow to define how to order the results (the
+                                elements in the drop-down list depend on the entity selected)</p>
+                            <p>
+                                <span class="bold"><strong>Sort</strong></span>: Choose whether to organise
+                                the results in either <span class="bold"><strong>Ascending</strong></span> or
+                                    <span class="bold"><strong>Descending</strong></span> order.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>First result</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the row number you want to retrieve first.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Max result</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the maximum number of results you want to retrieve.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Advanced separator (for numbers)</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to modify the separators to be used for the
+                                numbers. Either:</p>
+                            <p>
+                                <span class="bold"><strong>Thousands separator</strong></span>
+                            </p>
+                            <p> or</p>
+                            <p>
+                                <span class="bold"><strong>Decimal separator</strong></span></p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to collect the log data at a component
+                                level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component is generally used as an input component. An output
+                                component is required. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related Scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e8120"></a>Related Scenario</h3></div></div></div><p>For a scenario in which <span class="bold"><strong>tOpenbravoERPInput</strong></span> might be
+            used, see <a class="xref" href="tMicrosoftCRMInput.html#Raa70068" title="Scenario: Writing data in a Microsoft CRM database and putting conditions on columns to extract specified rows">the section called &#8220;Scenario: Writing data in a Microsoft CRM database and putting conditions on columns
+            to extract specified rows&#8221;</a></p></div></div></body></html>

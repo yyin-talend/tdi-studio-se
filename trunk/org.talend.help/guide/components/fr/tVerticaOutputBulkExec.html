@@ -1,0 +1,141 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tVerticaOutputBulkExec</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tVerticaOutputBulk.html" title="tVerticaOutputBulk"><link rel="next" href="tVerticaRollback.html" title="tVerticaRollback"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tVerticaOutputBulkExec"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tVerticaOutputBulkExec"></a>tVerticaOutputBulkExec</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tVerticaOutputBulkExec_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tVerticaOutputBulkExec"><div class="titlepage"><div><div><h3 class="title"><a name="d0e158811"></a>Propri&eacute;t&eacute;s du tVerticaOutputBulkExec</h3></div></div></div><p>Les composants <span class="bold"><strong>tVerticaOutputBulk</strong></span> et <span class="bold"><strong>tVerticaBulkExec</strong></span> sont g&eacute;n&eacute;ralement utilis&eacute;s ensemble comme
+			deux parties d&#8217;un processus en deux &eacute;tapes. Dans la premi&egrave;re &eacute;tape, un fichier de sortie
+			est g&eacute;n&eacute;r&eacute;. Dans la deuxi&egrave;me &eacute;tape, ce fichier est utilis&eacute; lors de l&#8217;op&eacute;ration d&#8217;INSERT
+			afin de populer une base de donn&eacute;es. Cette ex&eacute;cution en deux &eacute;tapes est unifi&eacute;e dans le
+			composant <span class="bold"><strong>tVerticaOutputBulkExec</strong></span>.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+									composant</strong></span></p>
+						</td><td valign="top"><p>Databases/Vertica</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tVerticaOutputBulkExec</strong></span> effectue une
+								action d&#8217;Insert sur les donn&eacute;es fournies.</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tVerticaOutputBulkExec</strong></span> est un composant d&eacute;di&eacute; qui
+								permet un gain de performance pendant les op&eacute;rations d&#8217;Insert dans
+								une base de donn&eacute;es Vertica.</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+								settings</strong></span></p>
+						</td><td valign="top"><p><span class="emphasis"><em>Property Type</em></span></p>
+						</td><td valign="top"><p>Peut &ecirc;tre Built-in ou Repository.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>:
+								Propri&eacute;t&eacute;s utilis&eacute;es ponctuellement.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>:
+								S&eacute;lectionnez le fichier de propri&eacute;t&eacute;s du composant. Les champs
+								suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
+								collect&eacute;es.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>DB Version</em></span></p>
+						</td><td valign="top"><p>S&eacute;lectionnez dans la liste la version de Vertica
+								que vous utilisez.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Host</em></span></p>
+						</td><td valign="top"><p>Adresse IP du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Port</em></span></p>
+						</td><td valign="top"><p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur de base de
+								donn&eacute;es.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>DB Name</em></span></p>
+						</td><td valign="top"><p>Nom de la base de donn&eacute;es.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Username</em></span> et
+									<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top"><p>Informations d&#8217;authentification de l&#8217;utilisateur
+								de base de donn&eacute;es.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Table</em></span></p>
+						</td><td valign="top"><p>Nom de la table &agrave; &eacute;crire. Notez qu&#8217;une seule table
+								peut &ecirc;tre &eacute;crite &agrave; la fois et la table doit d&eacute;j&agrave; exister pour que
+								l&#8217;op&eacute;ration d&#8217;insert soit autoris&eacute;e.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Action on table</em></span></p>
+						</td><td valign="top"><p>Vous pouvez effectuer l&#8217;une des op&eacute;rations
+								suivantes sur les donn&eacute;es de la table s&eacute;lectionn&eacute;e&nbsp;: </p><p>
+								<span class="bold"><strong>None&nbsp;</strong></span>: n&#8217;effectuer aucune op&eacute;ration
+								de table. </p><p>
+								<span class="bold"><strong>Drop and create the table</strong></span>&nbsp;:
+								supprimer la table puis en cr&eacute;er une nouvelle. </p><p>
+								<span class="bold"><strong>Create a table&nbsp;</strong></span>: cr&eacute;er une table
+								qui n&#8217;existe pas encore. </p><p>
+								<span class="bold"><strong>Create table if doesn&#8217;t exist</strong></span>&nbsp;:
+								cr&eacute;er la table si n&eacute;cessaire. </p><p>
+								<span class="bold"><strong>Clear a table&nbsp;</strong></span>: supprimer le
+								contenu de la table. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+									Schema</em></span></p>
+						</td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+								d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+								suivant. Le sch&eacute;ma est soit local (built-in) soit distant dans le
+								Repository. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le
+								sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour ce composant seulement. Voir
+								&eacute;galement :<span class="bold"><strong> Guide Utilisateur</strong></span> de
+									<span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le
+								sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut
+								&ecirc;tre r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;:<span class="bold"><strong> Guide
+									utilisateur </strong></span>de <span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>File Name</em></span></p>
+						</td><td valign="top"><p>Nom du fichier &agrave; traiter. </p><p> Voir
+									&eacute;galement&nbsp;:<span class="bold"><strong> Guide utilisateur</strong></span>
+								de <span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Append</em></span></p>
+						</td><td valign="top"><p>Cochez cette option pour ajouter des nouvelles
+								lignes &agrave; la fin du fichier.</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+								settings</strong></span></p>
+						</td><td valign="top"><p><span class="emphasis"><em>Write to ROS (Read Optimized
+									Store)</em></span></p>
+						</td><td valign="top"><p>Cochez cette case pour stocker les donn&eacute;es dans
+								une m&eacute;moire physique, et ainsi optimiser la lecture de ces donn&eacute;es,
+								puisqu&#8217;elles seront compress&eacute;es et pr&eacute;-tri&eacute;es.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Exit job if no row was
+								loaded</em></span></p>
+						</td><td valign="top"><p>Le Job s&#8217;arr&ecirc;te automatiquement si aucune ligne
+								n&#8217;a &eacute;t&eacute; charg&eacute;e. </p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Field Separator</em></span></p>
+						</td><td valign="top"><p>Caract&egrave;re, cha&icirc;ne ou expression r&eacute;guli&egrave;re s&eacute;parant
+								les champs.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Null string</em></span></p>
+						</td><td valign="top"><p>Cha&icirc;ne de caract&egrave;res affich&eacute;e pour signifier que
+								la valeur est nulle.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Include header</em></span></p>
+						</td><td valign="top"><p>Cochez cette case pour inclure l&#8217;en-t&ecirc;te des
+								colonnes dans le fichier.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>Encoding</em></span></p>
+						</td><td valign="top"><p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste ou
+								s&eacute;lectionnez <span class="bold"><strong>Custom</strong></span> et
+								d&eacute;finissez-le manuellement. Ce champ est obligatoire pour la
+								manipulation des donn&eacute;es de base de donn&eacute;es.</p>
+						</td></tr><tr><td><p>&nbsp;</p>
+						</td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+								Statistics</em></span></p>
+						</td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+								log au niveau du composant.</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+						</td><td colspan="2" valign="top"><p>Ce composant est
+								principalement utilis&eacute; lorsqu&#8217;aucune transformation particuli&egrave;re
+								n&#8217;est requise sur les donn&eacute;es &agrave; charger dans la base de
+								donn&eacute;es.</p>
+						</td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+						</td><td colspan="2" valign="top"><p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;narios associ&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d0e159259"></a>Sc&eacute;narios associ&eacute;s</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute; au <span class="bold"><strong>tVerticaOutputBulkExec</strong></span>,
+			consultez&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tMysqlOutputBulk.html#Raa15985" title="Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es transform&eacute;es dans une base MySQL">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es transform&eacute;es dans une base MySQL&nbsp;&raquo;</a> du composant <span class="bold"><strong>tMysqlOutputBulk</strong></span>. </p></li><li class="listitem"><p><a class="xref" href="tMysqlOutputBulkExec.html#Raa97924" title="Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es dans une base MySQL">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es dans une base
+				MySQL&nbsp;&raquo;</a> du <span class="bold"><strong>tMysqlOutputBulkExec</strong></span>. </p></li></ul></div></div></div></body></html>

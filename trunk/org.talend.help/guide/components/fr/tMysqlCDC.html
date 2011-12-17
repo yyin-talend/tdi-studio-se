@@ -1,0 +1,399 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMysqlCDC</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch05.html" title="Chapitre&nbsp;5.&nbsp;Composants Databases"><link rel="prev" href="tMysqlBulkExec.html" title="tMysqlBulkExec"><link rel="next" href="tMysqlClose.html" title="tMysqlClose"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tMysqlCDC"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMysqlCDC"></a>tMysqlCDC</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tMySQLCDC_white.png" width="27"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Ce composant n&#8217;est pas disponible dans la <span class="bold"><strong>Palette</strong></span> de
+				<span class="bold"><strong>Talend
+				Integration Express Studio</strong></span>.</p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tMysqlCDC"><div class="titlepage"><div><div><h3 class="title"><a name="d0e111168"></a>Propri&eacute;t&eacute;s du tMysqlCDC</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/MySQL</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tMysqlCDC </strong></span>extrait
+								les donn&eacute;es modifi&eacute;es d&#8217;une table source &agrave; partir de la derni&egrave;re
+								extraction et migration de donn&eacute;es vers un ou plusieurs autre(s)
+								syst&egrave;me(s).</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="bold"><strong>tMysqlCDC</strong></span> permet l&#8217;extraction
+								et la migration de donn&eacute;es. Le <span class="bold"><strong>tMysqlCDC</strong></span> extrait uniquement les changements
+								apport&eacute;s aux donn&eacute;es source et les met &agrave; disposition de(s)
+								syst&egrave;me(s) cible(s) utilisant l&#8217;aper&ccedil;u de base de donn&eacute;es
+								CDC.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Peut-&ecirc;tre Built-in ou Repository.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Propri&eacute;t&eacute;s utilis&eacute;es
+								ponctuellement.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>&nbsp;: S&eacute;lectionnez le
+								fichier de propri&eacute;t&eacute;s du composant dans le Repository. Les champs
+								suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
+								collect&eacute;es.</p>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>R&eacute;initialisez le type de base de donn&eacute;es en cliquant sur le bouton ad&eacute;quat
+										afin de s&eacute;lectionner la connexion CDC.</em></span>
+								</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case lorsque vous utilisez un composant <span class="bold"><strong>tMysqlConnection</strong></span>.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Lorsqu&#8217;un Job contient un Job parent et un Job enfant, la
+									liste <span class="bold"><strong>Component List</strong></span> pr&eacute;sente
+									uniquement les composants de connexion du Job du m&ecirc;me niveau. Si
+									vous souhaitez utiliser une connexion existant dans un autre
+									niveau, v&eacute;rifiez que les composants de connexion disponibles
+									partagent la m&ecirc;me connexion.</p><p>Pour plus d&#8217;informations concernant le partage d&#8217;une connexion
+									&agrave; travers diff&eacute;rents niveaux de Jobs, consultez <span class="bold"><strong>Use or register a shared DB
+										connection</strong></span> dans tous les composants de base de
+									donn&eacute;es que vous utilisez.</p></td></tr></table></div>
+							<p>Sinon, vous pouvez &eacute;galement d&eacute;sactiver le composant de connexion
+								et utiliser les <span class="bold"><strong>Dynamic settings</strong></span> du
+								composant, afin de param&eacute;trer manuellement la connexion. Dans ce
+								cas, v&eacute;rifiez que le nom de la connexion est unique et distinct tout
+								au long des deux niveaux de Jobs. Pour plus d&#8217;informations
+								concernant les param&egrave;tres dynamiques (<span class="bold"><strong>Dynamic
+									settings</strong></span>), consultez le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de votre Studio. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Adresse IP du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Informations d&#8217;authentification sur l&#8217;utilisateur de base de
+								donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema using CDC</em></span> et <span class="emphasis"><em>Edit
+									Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (built-in) soit distant dans le
+								Repository.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour ce
+								composant uniquement. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+									utilisateur</strong></span>
+								<span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans
+								le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute; dans divers projets et
+								Jobs. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+									utilisateur</strong></span>
+								<span class="bluebold">Talend Enterprise Studio</span>.</p>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>R&eacute;initialisez le type de base de donn&eacute;es en cliquant sur le bouton ad&eacute;quat
+										afin de s&eacute;lectionner la connexion CDC.</em></span>
+								</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table Using CDC</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la table source dans laquelle capturer les changements
+								apport&eacute;s aux donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Subscriber</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nom du souscripteur ayant acc&egrave;s &agrave; la table de
+								modifications.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Events to catch</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Insert</strong></span>&nbsp;: Cochez cette case pour
+								capturer les donn&eacute;es ins&eacute;r&eacute;es dans la table de modifications depuis
+								la derni&egrave;re extraction.</p>
+							<p><span class="bold"><strong>Update&nbsp;</strong></span>: Cochez cette case pour
+								capturer les donn&eacute;es mises &agrave; jour dans la table de modifications
+								depuis la derni&egrave;re extraction.</p>
+							<p><span class="bold"><strong>Delete</strong></span>&nbsp;: Cochez cette case pour
+								capturer les donn&eacute;es supprim&eacute;es dans la table de modifications
+								depuis la derni&egrave;re extraction.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Limit</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nombre maximum de lignes pouvant &ecirc;tre consomm&eacute;es par un
+								souscripteur dans la table de modifications.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Keep data in CDC Table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour garder les changements &agrave; disposition d&#8217;un
+								ou plusieurs syst&egrave;me(s) cible m&ecirc;me apr&egrave;s qu&#8217;ils aient &eacute;t&eacute;
+								consult&eacute;s.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Enable Streaming Result</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour activer le mode flux. Cette option
+								optimisera les performances.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim all the String/Char columns</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour supprimer les espaces en d&eacute;but et en fin de
+								champ dans toutes les colonnes contenant des cha&icirc;nes de
+								caract&egrave;res.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim column</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Supprimez les espaces en d&eacute;but et en fin de champ dans les
+								colonnes s&eacute;lectionn&eacute;es.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>D&eacute;cochez <span class="bold"><strong>Trim all the String/Char columns</strong></span> pour
+									activer le tableau <span class="bold"><strong>Trim
+										column</strong></span>.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">Enable parallel
+								execution</span></td><td valign="top">
+							<p>Cocher cette case permet de
+								traiter plusieurs flux de donn&eacute;es simultan&eacute;ment. Cela permet de
+								traiter les donn&eacute;es plus rapidement.</p>
+							<p> Dans le champ <span class="bold"><strong>Number of parallel executions</strong></span>, vous
+								pouvez&nbsp;:</p>
+							<p>- Saisir le nombre
+								d&#8217;ex&eacute;cutions parall&egrave;les d&eacute;sir&eacute;</p>
+							<p>- Appuyer sur <span class="bold"><strong>Ctrl+Espace </strong></span>et s&eacute;lectionner la variable
+								de contexte dans la liste.</p>
+							<p> </p>
+							<p>Pour plus d&#8217;informations, consultez le <span class="bold"><strong>Guide
+									utilisateur</strong></span>
+								<span class="bluebold">Talend Enterprise Studio</span>.</p>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Les actions sur la table (</em></span><span class="bold"><strong>Action on table</strong></span><span class="emphasis"><em>) ne sont
+										pas disponibles avec la fonction de parall&eacute;lisation. Ainsi,
+										pour cr&eacute;er une table, vous devez utiliser un composant
+										</em></span><span class="bold"><strong>tCreateTable</strong></span><span class="emphasis"><em>. </em></span></p></td></tr></table></div>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Lorsque l&#8217;ex&eacute;cution parall&egrave;le est activ&eacute;e, il n&#8217;est
+										pas possible d&#8217;utiliser les variables globales pour
+										retrouver les valeurs de retour dans un
+									sous-job.</em></span></p></td></tr></table></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est g&eacute;n&eacute;ralement utilis&eacute; comme composant de d&eacute;but. Il
+								n&eacute;cessite un composant de sortie et une connexion de type Row
+								Main.</p>
+						</td></tr></tbody></table></div><p>
+			<span>&nbsp;</span>
+		</p></div><div class="section" title="Sc&eacute;nario&nbsp;1&nbsp;: Alimenter un entrep&ocirc;t de donn&eacute;es"><div class="titlepage"><div><div><h3 class="title"><a name="d0e111766"></a>Sc&eacute;nario&nbsp;1&nbsp;: Alimenter un entrep&ocirc;t de donn&eacute;es</h3></div></div></div><p>Ce sc&eacute;nario Java suivant permet d&#8217;alimenter un entrep&ocirc;t de
+			donn&eacute;es. Il est constitu&eacute; de trois composants&nbsp;: le composant <span class="bold"><strong>tMysqlInput</strong></span> correspond aux donn&eacute;es de vos clients contenues dans la base
+				<span class="emphasis"><em>Customers</em></span>. Ces donn&eacute;es sont modifi&eacute;es &agrave; l&#8217;aide d&#8217;un composant
+				<span class="bold"><strong>tMap</strong></span> et les modifications sont transmises &agrave; la
+			table <span class="emphasis"><em>Leadfact</em></span> de votre entrep&ocirc;t de donn&eacute;es CRM &agrave; l&#8217;aide du
+			composant de sortie <span class="bold"><strong>tMysqlOutput</strong></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="359"><tr><td><img src="../images/Use_Case_tMysqlCDC_CRM1.png" width="359"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez et d&eacute;posez ces trois composants dans l&#8217;espace de mod&eacute;lisation et
+					connectez-les &agrave; l&#8217;aide de lien de type <span class="bold"><strong>Row
+					Main</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tMysqlInput</strong></span>
+					pour param&eacute;trer ses propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="476"><tr><td><img src="../images/Use_Case_tMysqlCDC_CRM2.png" width="476"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Property Type</strong></span>, s&eacute;lectionnez
+					l&#8217;option <span class="bold"><strong>Repository</strong></span> puis la connexion &agrave; la base
+					de donn&eacute;es <span class="emphasis"><em>Customers</em></span> contenant les informations sur vos
+					clients. Les informations de connexion seront renseign&eacute;es
+					automatiquement.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Si vous n&#8217;avez pas cr&eacute;&eacute; de connexion &agrave; votre base de donn&eacute;es dans les m&eacute;tadonn&eacute;es,
+				s&eacute;lectionnez <span class="bold"><strong>Built-in</strong></span> dans le champ <span class="bold"><strong>Property Type</strong></span> et renseignez les champs
+				manuellement.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Schema</strong></span>, s&eacute;lectionnez l&#8217;option
+						<span class="bold"><strong>Repository</strong></span> puis le sch&eacute;ma de la base
+						<span class="emphasis"><em>Customers</em></span> stock&eacute; dans les m&eacute;tadonn&eacute;es.</p></li></ul></div><p>Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide
+				utilisateur</strong></span>
+			<span class="bluebold">Talend Enterprise Studio</span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Table name</strong></span>, renseignez le nom
+					de la table contenant les informations &agrave; modifier.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Guess Query</strong></span> pour
+					r&eacute;cup&eacute;rer toutes les donn&eacute;es de votre table.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tMap</strong></span> pour
+					acc&eacute;der au <span class="bold"><strong>Map Editor</strong></span>. La zone input est d&eacute;j&agrave;
+					renseign&eacute;e avec le sch&eacute;ma du composant d&#8217;entr&eacute;e.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="439"><tr><td><img src="../images/Use_Case_tMysqlCDC_CRM3.png" width="439"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>S&eacute;lectionnez les champs de la zone input et glissez-les jusqu&#8217;&agrave; la table
+						<span class="emphasis"><em>Leadfact</em></span> de la zone output. Pour plus d&#8217;informations
+					concernant le mapping de donn&eacute;es, consultez le <span class="bold"><strong>Guide
+						Utilisateur</strong></span>
+					<span class="bluebold">Talend Enterprise Studio</span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Ok</strong></span> pour valider.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tMysqlOutput</strong></span>
+					pour param&eacute;trer ses propri&eacute;t&eacute;s. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="403"><tr><td><img src="../images/Use_Case_tMysqlCDC_CRM4.png" width="403"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Property Type</strong></span>, s&eacute;lectionnez
+					l&#8217;option <span class="bold"><strong>Repository</strong></span> puis la connexion &agrave; votre
+					entrep&ocirc;t de donn&eacute;es <span class="emphasis"><em>CRM</em></span>. Les informations de connexion
+					seront renseign&eacute;es automatiquement.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Si vous n&#8217;avez pas cr&eacute;&eacute; de connexion &agrave; votre entrep&ocirc;t dans les m&eacute;tadonn&eacute;es,
+				s&eacute;lectionnez <span class="bold"><strong>Built-in</strong></span> et renseignez les champs
+				manuellement.</p></td></tr></table></div><p>Voir &eacute;galement&nbsp;le<span class="bold"><strong> Guide
+				utilisateur</strong></span>
+			<span class="bluebold">Talend Enterprise Studio</span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Table name</strong></span>, renseignez le nom
+					de la table &agrave; alimenter, ici <span class="emphasis"><em>Leadfact</em></span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Action on table</strong></span>, s&eacute;lectionnez
+						<span class="bold"><strong>Create table</strong></span> pour cr&eacute;er la table.</p></li><li class="listitem"><p>Appuyez sur <span class="bold"><strong>F6</strong></span> pour cr&eacute;er et alimenter la
+					table <span class="emphasis"><em>Leadfact</em></span> de l&#8217;entrep&ocirc;t de donn&eacute;es
+						<span class="emphasis"><em>CRM</em></span>.</p></li></ul></div></div><div class="section" title="Sc&eacute;nario&nbsp;2&nbsp;: Extraire les modifications &agrave; l&#8217;aide du CDC"><div class="titlepage"><div><div><h3 class="title"><a name="Raa46443"></a>Sc&eacute;nario&nbsp;2&nbsp;: Extraire les modifications &agrave; l&#8217;aide du CDC</h3></div></div></div><p>Ce sc&eacute;nario est bas&eacute; sur le sc&eacute;nario pr&eacute;c&eacute;dent. Il
+			alimente et modifie, au fil de l&#8217;eau, les donn&eacute;es stock&eacute;es dans l&#8217;entrep&ocirc;t
+				<span class="emphasis"><em>CRM</em></span> et r&eacute;cup&egrave;re et enregistre, toutes les nuits, ces
+			modifications &agrave; l&#8217;aide de la fonction CDC dans une table d&eacute;di&eacute;e. Et ces modifications
+			sont ensuite extraites par les diff&eacute;rents services int&eacute;ress&eacute;s&nbsp;: le service Marketing, le
+			service Ventes et le service Finance.</p><div class="section" title="Etape&nbsp;1&nbsp;: Configurer le CDC"><div class="titlepage"><div><div><h4 class="title"><a name="d0e111970"></a>Etape&nbsp;1&nbsp;: Configurer le CDC</h4></div></div></div><p>Avant d&#8217;extraire les modifications apport&eacute;es &agrave; votre
+				entrep&ocirc;t de donn&eacute;es <span class="emphasis"><em>CRM</em></span>, vous devez&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>configurer la connexion &agrave; la base de donn&eacute;es d&eacute;di&eacute;e au CDC,</p></li><li class="listitem"><p>configurer la connexion &agrave; la base de donn&eacute;es source et identifier la table
+						&agrave; surveiller,</p></li><li class="listitem"><p>configurer la connexion entre le CDC et les donn&eacute;es.</p></li></ul></div><p>Pour cela&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le <span class="bold"><strong>Repository</strong></span>, sous le n&#339;ud
+							<span class="bold"><strong>Metadata</strong></span>, cr&eacute;ez une connexion &agrave; votre
+						base de donn&eacute;es d&eacute;di&eacute;e au CDC, ici
+						<span class="emphasis"><em>CDC_connection</em></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>V&eacute;rifiez que la connexion au CDC est sur le m&ecirc;me serveur que la source
+							de donn&eacute;es pour laquelle les changements seront captur&eacute;s.</p></td></tr></table></div></li><li class="listitem"><p>Dans le <span class="bold"><strong>Repository</strong></span>, sous le n&#339;ud
+							<span class="bold"><strong>Metadata</strong></span>, cr&eacute;ez une connexion &agrave; votre
+						entrep&ocirc;t de donn&eacute;es dont vous souhaitez extraire les changements, ici
+							<span class="emphasis"><em>CRM_connection</em></span>.</p></li><li class="listitem"><p>Cliquez-droit sur la connexion &agrave; votre <span class="emphasis"><em>CRM</em></span> et
+						s&eacute;lectionnez l&#8217;option <span class="bold"><strong>Retrieve schema</strong></span> pour
+						r&eacute;cup&eacute;rer le sch&eacute;ma de la table &agrave; surveiller.</p></li><li class="listitem"><p>Cliquez-droit sur le sous-dossier <span class="bold"><strong>CDC
+							Foundation</strong></span> de votre <span class="emphasis"><em>CRM</em></span> et s&eacute;lectionnez
+						l&#8217;option <span class="bold"><strong>Create CDC</strong></span> dans le menu
+						contextuel.</p></li></ul></div><p>La bo&icirc;te de dialogue <span class="bold"><strong>[Create
+					change data capture]</strong></span> appara&icirc;t.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="354"><tr><td><img src="../images/Use_Case_tMysqlCDC_Create_Sub1.png" width="354"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Set link Connection</strong></span>,
+						s&eacute;lectionnez la connexion <span class="emphasis"><em>CDC_connection</em></span>.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Create Subscriber</strong></span>.
+						La bo&icirc;te de dialogue <span class="bold"><strong>[Create subscriber and Execute
+							SQL Script]</strong></span> appara&icirc;t.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="514"><tr><td><img src="../images/Use_Case_tMysqlCDC_Create_Sub2.png" width="514"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Execute</strong></span>, puis sur <span class="bold"><strong>Close</strong></span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Finish</strong></span> pour valider la
+						cr&eacute;ation de la table des souscripteurs.</p></li></ul></div><p>Dans le sous-dossier <span class="bold"><strong>CDC
+					Foundation</strong></span>, la table des souscripteurs appara&icirc;t.</p><p>Vous devez pr&eacute;cisez &agrave; quelle table les souscripteurs
+				doivent souscrire puis activer leur souscription. Pour cela&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez-droit sur le sch&eacute;ma de la table <span class="emphasis"><em>Leadfact</em></span> &agrave;
+						surveiller dans votre entrep&ocirc;t de donn&eacute;es <span class="emphasis"><em>CRM</em></span> et
+						s&eacute;lectionnez l&#8217;option <span class="bold"><strong>add CDC</strong></span> dans le menu
+						contextuel. La bo&icirc;te de dialogue <span class="bold"><strong>[Create Subscriber
+							and Execute SQL Script]</strong></span> appara&icirc;t.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="403"><tr><td><img src="../images/Use_Case_tMysqlCDC_Create_Sub3.png" width="403"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans les champs <span class="bold"><strong>Events to catch</strong></span>, cochez
+						les cases <span class="bold"><strong>Insert</strong></span>, <span class="bold"><strong>Update</strong></span> et <span class="bold"><strong>Delete</strong></span> pour
+						surveiller les insertions, mises &agrave; jours et suppression.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Subscriber Name</strong></span>, saisissez
+						le nom du souscripteur ayant acc&egrave;s &agrave; ces modifications, ici
+							<span class="emphasis"><em>Sub_Mktg</em></span> pour le service Marketing.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Execute</strong></span>, puis sur <span class="bold"><strong>Close</strong></span> pour valider la souscription.</p></li></ul></div><p>Dans le sous-dossier <span class="bold"><strong>CDC
+					Foundation</strong></span>, deux nouvelles tables apparaissent et le sch&eacute;ma de la
+				table surveill&eacute;e est marqu&eacute; d&#8217;un symbole CDC vert.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="218"><tr><td><img src="../images/Use_Case_tMysqlCDC_arbo.png" width="218"></td></tr></table></div><p>Cr&eacute;ez de nouveaux souscripteurs pour les services
+				Finance et Ventes, respectivement <span class="emphasis"><em>Sub_Finance</em></span> et
+					<span class="emphasis"><em>Sub_Sales</em></span>&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez-droit sur la table <span class="emphasis"><em>Leadfact</em></span> par le CDC et
+						s&eacute;lectionnez l&#8217;option <span class="bold"><strong>Edit CDC Subscribers</strong></span>.
+						La bo&icirc;te de dialogue <span class="bold"><strong>[Edit CDC]</strong></span>
+						appara&icirc;t.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Add</strong></span>. La bo&icirc;te de
+						dialogue <span class="bold"><strong>[Input subscriber name]</strong></span>
+						appara&icirc;t.</p></li><li class="listitem"><p>Saisissez le nom du souscripteur, ici <span class="emphasis"><em>Sub_Finance</em></span> et
+							<span class="emphasis"><em>Sub_Sales</em></span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Execute</strong></span> puis <span class="bold"><strong>Close</strong></span> pour valider la cr&eacute;ation.</p></li></ul></div></div><div class="section" title="Etape&nbsp;2&nbsp;: Modifier les donn&eacute;es de votre CRM"><div class="titlepage"><div><div><h4 class="title"><a name="d0e112201"></a>Etape&nbsp;2&nbsp;: Modifier les donn&eacute;es de votre CRM</h4></div></div></div><p>Modifiez les donn&eacute;es de vos clients dans votre
+					<span class="emphasis"><em>CRM</em></span>, par exemple, mettre tous les noms de vos clients en
+				majuscule dans un soucis d&#8217;harmonisation.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tMap</strong></span> et
+						saisissez <code class="code">row1.CustomerName.toUpperCase()</code>devant la colonne
+							<span class="bold"><strong>CustomerName</strong></span> pour mettre tous les noms
+						de vos clients en majuscule.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Ok</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tMysqlOutput</strong></span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Action on table</strong></span>,
+						s&eacute;lectionnez <span class="bold"><strong>None</strong></span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Action on data</strong></span>,
+						s&eacute;lectionnez <span class="bold"><strong>Insert or update</strong></span> pour ins&eacute;rer
+						ou mettre &agrave; jour les donn&eacute;es de la table.</p></li><li class="listitem"><p>Appuyez sur <span class="bold"><strong>F6</strong></span> pour ex&eacute;cuter le Job de
+						modification de donn&eacute;es.</p></li></ul></div><p>Pour visualiser toutes les modifications apport&eacute;es,
+				cliquez-droit sur la table <span class="emphasis"><em>Leadfact et s&eacute;lectionnez l&#8217;option
+					</em></span><span class="bold"><strong>View All Changes</strong></span>.</p></div><div class="section" title="Etape&nbsp;3&nbsp;: Extraire les modifications apport&eacute;es aux donn&eacute;es"><div class="titlepage"><div><div><h4 class="title"><a name="d0e112265"></a>Etape&nbsp;3&nbsp;: Extraire les modifications apport&eacute;es aux donn&eacute;es</h4></div></div></div><p>Apr&egrave;s avoir mis en place l&#8217;environnement CDC, vous
+				pouvez cr&eacute;er un Job utilisant le composant MySQL CDC pour extraire les modifications
+				apport&eacute;es aux donn&eacute;es de la table <span class="emphasis"><em>Leadfact</em></span>. Pour cela:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la <span class="bold"><strong>Palette</strong></span>, cliquez-d&eacute;posez les composants
+							<span class="bold"><strong>tMysqlCDC</strong></span> et <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Reliez ces deux composants &agrave; l&#8217;aide d&#8217;une connexion de type <span class="bold"><strong>Row Main</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="334"><tr><td><img src="../images/Use_Case_tMysqlCDC1.png" width="334"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tMysqlCDC</strong></span>
+						pour param&eacute;trer ses propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="389"><tr><td><img src="../images/Use_Case_tMysqlCDC2.png" width="389"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Property Type</strong></span>, s&eacute;lectionnez
+						l&#8217;option <span class="bold"><strong>Repository</strong></span> puis la connexion
+							<span class="emphasis"><em>CDC_connection</em></span> &agrave; la base de donn&eacute;es CDC. Les
+						informations de connexion seront renseign&eacute;es automatiquement.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Si vous n&#8217;avez pas cr&eacute;&eacute; de connexion &agrave; votre base de donn&eacute;es de modifications
+					dans les m&eacute;tadonn&eacute;es, s&eacute;lectionnez <span class="bold"><strong>Built-in</strong></span>
+					dans le champ <span class="bold"><strong>Property Type</strong></span> et renseignez les
+					champs manuellement.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Schema using CDC</strong></span>,
+						s&eacute;lectionnez l&#8217;option <span class="bold"><strong>Repository</strong></span> puis le
+						sch&eacute;ma de votre table <span class="emphasis"><em>Leadfact</em></span> stock&eacute;e dans les
+						m&eacute;tadonn&eacute;es.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Table using CDC</strong></span>, renseignez
+						le nom de la table surveill&eacute;e par le CDC.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Subscriber</strong></span>, renseignez le
+						nom du souscripteur qui va extraire les modifications&nbsp;:
+							<span class="emphasis"><em>Sub_Mktg</em></span> pour le service Marketing,
+							<span class="emphasis"><em>Sub_Sales</em></span> pour le service Ventes ou
+							<span class="emphasis"><em>Sub_Finance</em></span> pour le service Finance.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Events to catch</strong></span>, cochez les
+						cases correspondant au type de modifications que le souscripteur va
+						extraire, ici cochez les trois cases pour les trois souscripteurs.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tLogRow</strong></span>
+						pour param&eacute;trer ses propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="309"><tr><td><img src="../images/Use_Case_tMysqlCDC3.png" width="309"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Sync columns</strong></span> pour
+						r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p></li><li class="listitem"><p>Enregistrez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span>
+						pour l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="431"><tr><td><img src="../images/Use_Case_tMysqlCDC4.png" width="431"></td></tr></table></div><p>Le nom des clients est donc mis en majuscule et le
+				type de modification appara&icirc;t ici sous la forme d&#8217;un <span class="emphasis"><em>U</em></span> pour
+					<span class="bold"><strong>Update</strong></span>.</p><p>Une fois, ces modifications extraites, elles ne sont
+				plus disponibles dans la table des modifications. Pour v&eacute;rifier leur extraction,
+				faites un clic-droit sur la table <span class="emphasis"><em>Leadfact</em></span> surveill&eacute;e par le
+				CDC et s&eacute;lectionnez l&#8217;option <span class="bold"><strong>Views All Changes</strong></span>. Les
+				modifications extraites n&#8217;y apparaissent plus.</p></div></div></div></body></html>

@@ -1,0 +1,90 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tRSSInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch10.html" title="Chapter&nbsp;10.&nbsp;Internet components"><link rel="prev" href="tREST.html" title="tREST"><link rel="next" href="tRSSOutput.html" title="tRSSOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tRSSInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tRSSInput"></a>tRSSInput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tRSSInput.png" width="27"></td></tr></table></div><div class="section" title="tRSSInput Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e198119"></a>tRSSInput Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Internet </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tRSSInput</strong></span> reads RSS-Feeds using
+                                URLs.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tRSSInput</strong></span> makes it possible to
+                                keep track of blog entries on websites to gather and organize
+                                information for quick and easy access.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>Basic settings</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. </p>
+                            <p> In the context of <span class="bold"><strong>tRSSInput</strong></span>
+                                usage, the schema is made of four columns: <span class="bold"><strong>TITLE</strong></span>, <span class="bold"><strong>DESCRIPTION</strong></span>,
+                                    <span class="bold"><strong>PUBDATE</strong></span>, and <span class="bold"><strong>Link</strong></span>. The parameter titles are read-only
+                                while their type and length are not.</p>
+                            <p> </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>RSS URL</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the URL for the RSS_Feed to read.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Read articles from</em></span></p>
+                        </td><td valign="top">
+                            <p>If selected, <span class="bold"><strong>tRSSInput</strong></span> reads
+                                articles on the RSS_Feed from the date set through the three-dot
+                                [...] button next to the <span class="bold"><strong>date time</strong></span>
+                                field. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Max number of articles</em></span></p>
+                        </td><td valign="top">
+                            <p>If selected, <span class="bold"><strong>tRSSInput</strong></span> reads as
+                                many articles as the number entered in the <span class="bold"><strong>max
+                                    amount</strong></span> field.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top">
+                            <p>This check box is selected by default. Clear the check box to skip
+                                the row on error and complete the process for error-free
+                                rows.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component is generally used as an input component. It
+                                requires an output component.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Fetching frequently updated blog entries."><div class="titlepage"><div><div><h3 class="title"><a name="d0e198314"></a>Scenario: Fetching frequently updated blog entries.</h3></div></div></div><p>This two-component scenario aims at retrieving frequently updated blog entries from a
+                <span class="bold"><strong>Talend</strong></span> local news RSS feed using the <span class="bold"><strong>tRSSInput</strong></span> component.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> onto the design workspace: <span class="bold"><strong>tRSSInput</strong></span> and <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Right-click to connect them using a <span class="bold"><strong>Row Main
+                    </strong></span>link.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="344"><tr><td><img src="../images/Use_Case_tRSSInput.png" width="344"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the design workspace, select <span class="bold"><strong>tRSSInput</strong></span>.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>Component</strong></span> tab to define the basic
+                    settings for <span class="bold"><strong>tRSSInput</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="476"><tr><td><img src="../images/Use_Case_tRSSInput2.png" width="476"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Set the <span class="bold"><strong>Schema Type</strong></span> to <span class="bold"><strong>Built-In</strong></span> and click the three-dot [...] button next to <span class="bold"><strong>Edit Schema </strong></span>to change the type and length of the
+                    schema parameters if necessary.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to close the dialog box.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="408"><tr><td><img src="../images/Use_Case_tRSSInput1.png" width="408"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The scheme for <span class="bold"><strong>tRSSInput</strong></span> is made up of four
+                columns, <span class="emphasis"><em>TITLE</em></span>, <span class="emphasis"><em>Description</em></span>,
+                    <span class="emphasis"><em>PUBDATE</em></span>, and LINK, and it is read-only apart from the type
+                and length of parameters.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Basic settings </strong></span>view of <span class="bold"><strong>tRSSInput</strong></span>, enter the URL for the RSS_Feed to access.
+                    In this scenario, <span class="bold"><strong>tRSSInput</strong></span> links to the
+                        <span class="bold"><strong>Talend</strong></span> RSS_Feed: <span class="webblue">http://feeds.feedburner.com/Talend</span>.</p></li><li class="listitem"><p>Select/clear the other check boxes as required. In this scenario, we want to
+                    display the information about two articles dated from July 20, 2008.</p></li><li class="listitem"><p>In the design workspace, select <span class="bold"><strong>tLogRow</strong></span> and
+                    click the <span class="bold"><strong>Component</strong></span> tab to define its basic
+                    settings. For more information about <span class="bold"><strong>tLogRow</strong></span>
+                    properties, see <a class="xref" href="tLogRow.html#Raa83212" title="tLogRow properties">the section called &#8220;tLogRow properties&#8221;</a>.</p></li><li class="listitem"><p>Save the Job and press <span class="bold"><strong>F6</strong></span> to execute
+                    it.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="503"><tr><td><img src="../images/Use_Case_tRSSInput3.png" width="503"></td></tr></table></div><p>The <span class="bold"><strong>tRSSInput</strong></span> component accessed the RSS feed of
+                <span class="bold"><strong>Talend</strong></span> website on your behalf and organized the information for
+            you.</p><p>Two blog entries are displayed on the console. Each entry has its own title,
+            description, publication date, and the corresponding RSS feed URL address. Blogs show
+            the last entry first, and you can scroll down to read earlier entries.</p></div></div></body></html>

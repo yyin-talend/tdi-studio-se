@@ -1,0 +1,119 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tXSDValidator</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch18.html" title="Chapter&nbsp;18.&nbsp;XML components"><link rel="prev" href="xml-tXMLMap.html" title="tXMLMap"><link rel="next" href="tXSLT.html" title="tXSLT"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tXSDValidator"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tXSDValidator"></a>tXSDValidator</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tXSDValidator.png" width="27"></td></tr></table></div><div class="section" title="tXSDValidator Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e242924"></a>tXSDValidator Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>XML</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Validates an input XML file or an input XML flow against an XSD
+                                file and sends the validation log to the defined output.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Helps at controlling data and structure quality of the file or
+                                flow to be processed </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Mode</em></span></p>
+                        </td><td valign="top">
+                            <p>From this dropdown list, select:</p>
+                            <p> - <span class="bold"><strong>File</strong></span>, to validate an input
+                                file </p>
+                            <p> - <span class="bold"><strong>Flow</strong></span>, to validate an input
+                                flow</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema </em></span>and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields to be processed and passed on to the next component. The
+                                schema is either built-in or remotely stored in the Repository but
+                                in this case, the schema is read-only. It contains standard
+                                information regarding the file validation.</p>
+                        </td></tr><tr><td valign="top">
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>File mode only</em></span></p></td></tr></table></div>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>XSD file</em></span></p>
+                        </td><td valign="top">
+                            <p>Filepath to the reference XSD file. HTTP URL also supported, e.g.
+                                    <span class="emphasis"><em>http://localhost:8080/book.xsd</em></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>File mode only</em></span></p></td></tr></table></div>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>XML file</em></span></p>
+                        </td><td valign="top">
+                            <p>Filepath to the XML file to be validated.</p>
+                        </td></tr><tr><td valign="top">
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>File mode only</em></span></p></td></tr></table></div>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>If XML is valid, display </em></span><span class="emphasis"><em>If XML is
+                                    invalid, display</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in a message to be displayed in the <span class="bold"><strong>Run</strong></span> console based on the result of the
+                                comparison.</p>
+                        </td></tr><tr><td valign="top">
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>File mode only</em></span></p></td></tr></table></div>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Print to console</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to display the validation message.</p>
+                        </td></tr><tr><td valign="top">
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Flow mode only</em></span></p></td></tr></table></div>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Allocate</em></span></p>
+                        </td><td valign="top">
+                            <p>Specify the column or columns to be validated and the path to the
+                                reference XSD file.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>When used in <span class="bold"><strong>File</strong></span> mode, this
+                                component can be used as standalone component but it is usually
+                                linked to an output component to gather the log data. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Validating data flows against an XSD file"><div class="titlepage"><div><div><h3 class="title"><a name="d0e243168"></a>Scenario: Validating data flows against an XSD file</h3></div></div></div><p>This scenario describes a Job that validates an XML column in an input file against a
+            reference XSD file and outputs the log information for the invalid rows of the column
+            into a delimited file. For the <span class="bold"><strong>tXSDValidator</strong></span> use case
+            that validates an XML file<a class="xref" href="tDTDValidator.html#Raa71042" title="Scenario: Validating XML files">the section called &#8220;Scenario: Validating XML files&#8221;</a></p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop a <span class="bold"><strong>tFileInputDelimited</strong></span> component, a
+                        <span class="bold"><strong>tXSDValidator </strong></span>component, and two <span class="bold"><strong>FileOutputDelimited</strong></span> components from the <span class="bold"><strong>Palette</strong></span> to the design workspace. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="401"><tr><td><img src="../images/Use_Case_tXSDValidator1.png" width="401"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-click the <span class="bold"><strong>tFileInputDelimited</strong></span> to open
+                    its <span class="bold"><strong>Component</strong></span> view and set its
+                    properties:</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="441"><tr><td><img src="../images/Use_Case_tXSDValidator2.png" width="441"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Use the <span class="bold"><strong>Built-In</strong></span> property type for this
+                    scenario.</p></li><li class="listitem"><p>Browse to the input file, and define the number of rows to be skipped in the
+                    beginning of the file. </p></li><li class="listitem"><p>Use a <span class="bold"><strong>Built-In</strong></span> schema for this scenario. This
+                    means that it is available for this Job only. </p></li><li class="listitem"><p>Click Edit schema and edit the schema according to the input file. In this
+                    scenario, the input file has only two columns: <span class="emphasis"><em>ID</em></span> and
+                        <span class="emphasis"><em>ShipmentInfo</em></span>. The <span class="emphasis"><em>ShipmentInfo</em></span>
+                    column is an XML column and needs to be validated.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="365"><tr><td><img src="../images/Use_Case_tXSDValidator3.png" width="365"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>On your design workspace, connect the <span class="bold"><strong>tFileInputDelimited</strong></span> component to the <span class="bold"><strong>tXSDValidator</strong></span> component using a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> link.</p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tXSDValidator</strong></span> component, and
+                    set its properties: </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="471"><tr><td><img src="../images/Use_Case_tXSDValidator4.png" width="471"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>From the <span class="bold"><strong>Mode</strong></span> dropdown list, select <span class="bold"><strong>Flow Mode</strong></span>.</p></li><li class="listitem"><p>Use a <span class="bold"><strong>Built-In</strong></span> schema for this scenario.
+                    Click <span class="bold"><strong>Sync columns</strong></span> to retrieve the schema from
+                    the preceding component. To view or modify the schema, click the three-dot
+                    button next to <span class="bold"><strong>Edit schema</strong></span>.</p></li><li class="listitem"><p>Add a line in the <span class="bold"><strong>Allocate</strong></span> table by clicking
+                    the plus button. The name of the first column of the input file automatically
+                    appears in the <span class="bold"><strong>Input Column</strong></span> field. Click in the
+                    field and select the column you want to validate. </p></li><li class="listitem"><p>In the <span class="bold"><strong>XSD File</strong></span> field, fill in the path to
+                    your reference XSD file.</p></li><li class="listitem"><p>On your design workspace, connect the <span class="bold"><strong>tXSDValidator</strong></span> component to one <span class="bold"><strong>tFileOutputDelimited</strong></span> component using a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> link to output
+                    the information about valid XML rows. </p></li><li class="listitem"><p>Connect the <span class="bold"><strong>tXSDValidator</strong></span> component to the
+                    other <span class="bold"><strong>tFileOutputDelimited</strong></span> component using a
+                        <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Rejects</strong></span> link to output the information about invalid XML
+                    rows.</p></li><li class="listitem"><p>Double-click each of the two <span class="bold"><strong>tFileOutputDelimited</strong></span> components and configure the component
+                    properties.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Property Type</strong></span> field, select
+                    Built-In.</p></li><li class="listitem"><p>In the <span class="bold"><strong>File Name</strong></span> field, enter or, if you want
+                    to use an existing output file, browse to the output file path.</p></li><li class="listitem"><p>Select <span class="bold"><strong>Built-In </strong></span>from the <span class="bold"><strong>Schema</strong></span> list and click <span class="bold"><strong>Sync
+                        columns</strong></span> to retrieve the schema from the preceding
+                    component.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="473"><tr><td><img src="../images/Use_Case_tXSDValidator5.png" width="473"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to run it.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="470"><tr><td><img src="../images/Use_Case_tXSDValidator6.png" width="470"></td></tr></table></div><p>The output files contain the validation information about the valid and invalid XML
+            rows of the specified column respectively.</p></div></div></body></html>

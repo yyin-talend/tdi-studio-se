@@ -1,0 +1,89 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2011 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+package org.talend.repository.ftp.ui.wizards.pags;
+
+import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.widgets.Composite;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.repository.ftp.ui.wizards.froms.FTPFrom;
+import org.talend.repository.ui.swt.utils.AbstractForm;
+
+/**
+ * DOC hwang class global comment. Detailled comment
+ */
+public class FTPPage extends WizardPage {
+
+    private FTPFrom ftpForm;
+
+    private ConnectionItem connectionItem;
+
+    private String[] existingNames;
+
+    private boolean isRepositoryObjectEditable;
+
+    /**
+     * DOC Administrator FTPPage constructor comment.
+     * 
+     * @param pageName
+     */
+    public FTPPage(ConnectionItem connectionItem, boolean isRepositoryObjectEditable, String[] existingNames) {
+        super("Talend_FTP"); //$NON-NLS-1$
+        this.connectionItem = connectionItem;
+        this.existingNames = existingNames;
+        this.isRepositoryObjectEditable = isRepositoryObjectEditable;
+        this.setTitle("Talend_FTP"); //$NON-NLS-1$
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+     */
+
+    public void createControl(Composite parent) {
+        ftpForm = new FTPFrom(parent, connectionItem, existingNames, this);
+        ftpForm.setReadOnly(!isRepositoryObjectEditable);
+
+        AbstractForm.ICheckListener listener = new AbstractForm.ICheckListener() {
+
+            public void checkPerformed(final AbstractForm source) {
+                if (source.isStatusOnError()) {
+                    FTPPage.this.setPageComplete(false);
+                    setErrorMessage(source.getStatus());
+                } else {
+                    FTPPage.this.setPageComplete(isRepositoryObjectEditable);
+                    setErrorMessage(null);
+                    setMessage(source.getStatus(), source.getStatusLevel());
+                }
+            }
+        };
+        ftpForm.setListener(listener);
+        setControl(ftpForm);
+        if (connectionItem.getProperty().getLabel() != null && !connectionItem.getProperty().getLabel().equals("")) { //$NON-NLS-1$
+            ftpForm.checkFieldsValue();
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.wizard.WizardPage#getNextPage()
+     */
+
+    public IWizardPage getNextPage() {
+        ftpForm.removeHideValue();
+        return super.getNextPage();
+    }
+
+}

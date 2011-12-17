@@ -1,0 +1,342 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileInputXML</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch18.html" title="Chapitre&nbsp;18.&nbsp;Composants XML"><link rel="prev" href="tExtractXMLField.html" title="tExtractXMLField"><link rel="next" href="tFileOutputXML.html" title="tFileOutputXML"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tFileInputXML"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileInputXML"></a>tFileInputXML</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFileInputXML.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tFileInputXML"><div class="titlepage"><div><div><h3 class="title"><a name="d0e252170"></a>Propri&eacute;t&eacute;s du tFileInputXML</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille du composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>File/Input</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tFileInputXML</strong></span> lit un
+                                fichier XML structur&eacute; ou un flux de donn&eacute;es et extrait les donn&eacute;es
+                                ligne par ligne.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant lit un fichier XML structur&eacute; ou un flux de donn&eacute;es
+                                ligne par ligne pour le scinder en champs et envoie les champs tel
+                                que d&eacute;finis dans le sch&eacute;ma au composant suivant du Job via une
+                                connexion <span class="bold"><strong>Row</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Property type</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Peut &ecirc;tre Built-in ou Repository.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Propri&eacute;t&eacute;s utilis&eacute;es
+                                ponctuellement.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository&nbsp;</strong></span>: S&eacute;lectionnez le
+                                fichier de propri&eacute;t&eacute;s du composant. Les champs suivants sont alors
+                                pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es collect&eacute;es.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+                                sch&eacute;ma est soit local (built-in) soit distant dans le
+                                Repository.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma est cr&eacute;&eacute; et
+                                conserv&eacute; ponctuellement pour ce composant seulement. Voir
+                                &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de
+                                    <span class="bluebold">Talend Open Studio</span>. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+                                dans divers projets et Job designs. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>File name/Stream</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>File name</strong></span>&nbsp;: Chemin d&#8217;acc&egrave;s et nom
+                                du fichier &agrave; traiter.</p>
+                            <p><span class="bold"><strong>Stream</strong></span>&nbsp;: Flux de donn&eacute;es &agrave;
+                                traiter. Les donn&eacute;es doivent pr&eacute;alablement &ecirc;tre mises en flux afin
+                                d&#8217;&ecirc;tre r&eacute;cup&eacute;r&eacute;es par le <span class="bold"><strong>tFileInputXML</strong></span> via la variable repr&eacute;sentative
+                                correspondante.</p>
+                            <p>Cette variable peut &ecirc;tre pr&eacute;d&eacute;finie dans votre Studio ou fournie
+                                par le contexte ou les composants utilis&eacute;(s) avec ce composant, par
+                                exemple la variable&nbsp;I<span class="emphasis"><em>NPUT_STREAM</em></span> du <span class="bold"><strong>tFileFetch</strong></span>. Sinon, vous pouvez la d&eacute;finir
+                                manuellement et l&#8217;utiliser selon votre Job, par exemple &agrave; l&#8217;aide
+                                d&#8217;un <span class="bold"><strong>tJava</strong></span> ou d&#8217;un <span class="bold"><strong>tJavaFlex</strong></span>.</p>
+                            <p>Afin d&#8217;&eacute;viter les d&eacute;sagr&eacute;ments de la saisie, vous pouvez
+                                s&eacute;lectionner la variable qui vous int&eacute;resse dans la liste
+                                d&#8217;autocompl&eacute;tion (<span class="bold"><strong>Ctrl+Espace</strong></span>) afin
+                                de remplir le champ, si cette variable a &eacute;t&eacute; correctement
+                                d&eacute;finie.</p>
+                            <p>Pour plus d&#8217;informations concernant les flux d&#8217;entr&eacute;e, consultez
+                                    <a class="xref" href="tFileInputDelimited.html#Raa47862" title="Sc&eacute;nario&nbsp;2&nbsp;: Lire les donn&eacute;es d&#8217;un fichier distant en mode stream">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Lire les donn&eacute;es d&#8217;un fichier distant en mode stream&nbsp;&raquo;</a>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Loop XPath query</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>N&#339;ud de l&#8217;arborescence sur lequel la boucle est bas&eacute;e.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Mapping </em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Column</strong></span>&nbsp;: Colonnes &agrave; mapper. Elles
+                                refl&egrave;tent le sch&eacute;ma d&eacute;fini par le champ <span class="bold"><strong>Schema
+                                    type</strong></span>.</p>
+                            <p><span class="bold"><strong>XPath Query&nbsp;</strong></span>: Saisissez les
+                                champs &agrave; extraire de l&#8217;entr&eacute;e structur&eacute;e.</p>
+                            <p><span class="bold"><strong>Get nodes</strong></span>&nbsp;: Cochez cette case
+                                pour r&eacute;cup&eacute;rer le contenu XML de tous les n&#339;uds courants sp&eacute;cifi&eacute;s
+                                dans le champ <span class="bold"><strong>Xpath Query</strong></span>, ou
+                                cochez la case correspondant &agrave; un n&#339;ud sp&eacute;cifique pour ne r&eacute;cup&eacute;rer
+                                que le contenu du n&#339;ud s&eacute;lectionn&eacute;. Ces n&#339;uds sont importants
+                                lorsque le flux de sortie de ce composant doit utiliser la structure
+                                XML, par exemple pour le type de donn&eacute;es <span class="bold"><strong>Document</strong></span>.</p>
+                            <p>Pour plus d'informations, consultez le <span class="bold"><strong>Guide
+                                    utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>L&#8217;option <span class="bold"><strong>Get Nodes</strong></span> fonctionne
+                                    en mode <span class="bold"><strong>DOM4j</strong></span> et <span class="bold"><strong>SAX</strong></span>, cependant avec le mode <span class="bold"><strong>SAX</strong></span>, les espaces de nommage ne sont
+                                    pas support&eacute;s. Pour plus d&#8217;informations concernant les modes
+                                        <span class="bold"><strong>DOM4j</strong></span> et <span class="bold"><strong>SAX</strong></span>, consultez les propri&eacute;t&eacute;s de la
+                                    liste <span class="bold"><strong>Generation mode</strong></span> de
+                                    l&#8217;onglet <span class="bold"><strong>Advanced settings</strong></span>.
+                                </p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Limit</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Nombre maximum de lignes &agrave; traiter. Si Limit&nbsp;=&nbsp;0, aucune ligne
+                                n&#8217;est lue ou trait&eacute;e. Si -1, toutes les lignes sont lues ou
+                                trait&eacute;es, quelque soit le nombre.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Die on error</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cette case est coch&eacute;e par d&eacute;faut et stoppe le Job en cas d&#8217;erreur.
+                                D&eacute;cochez cette case pour terminer le traitement avec les lignes sans
+                                erreurs, et ignorer les lignes en erreur. Vous pouvez r&eacute;cup&eacute;rer les
+                                lignes en erreur, si vous le souhaitez. Pour cela, utilisez un lien
+                                    <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Reject</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <span class="bold"><strong>Advanced settings</strong></span>
+                        </td><td valign="top">
+                            <span class="italic">Ignore DTD file</span>
+                        </td><td valign="top">Cochez cette case afin d'ignorer le fichier DTD indiqu&eacute;
+                            dans le fichier XML trait&eacute;.</td></tr><tr><td valign="top">
+                            <p> </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Advanced separator (for number)</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette option pour modifier les s&eacute;parateurs utilis&eacute;s pour
+                                les nombres&nbsp;:</p>
+                            <p><span class="bold"><strong>Thousands separator</strong></span>&nbsp;: d&eacute;finissez
+                                le s&eacute;parateur utilis&eacute; pour les milliers.</p>
+                            <p><span class="bold"><strong>Decimal separator</strong></span>&nbsp;: d&eacute;finissez le
+                                s&eacute;parateur utilis&eacute; pour les d&eacute;cimaux. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Ignore the namespaces</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour ignorer les espaces de noms.</p>
+                            <p><span class="bold"><strong>Generate a temporary file</strong></span>&nbsp;:
+                                renseignez le chemin d&#8217;acc&egrave;s et le nom du fichier temporaire XML.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use Separator for mode Xerces</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour s&eacute;parer les valeurs des n&#339;uds fils
+                                concat&eacute;n&eacute;es.</p>
+                            <p> </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Ce champ ne peut &ecirc;tre utilis&eacute; que si vous avez s&eacute;lectionn&eacute; le
+                                    mode <span class="bold"><strong>Xerces</strong></span> dans le champ
+                                        <span class="bold"><strong>Generation mode</strong></span>.</p></td></tr></table></div>
+                            <p>Le champs <span class="bold"><strong>Field separator</strong></span>
+                                appara&icirc;t&nbsp;: d&eacute;finissez le s&eacute;parateur &agrave; utiliser pour s&eacute;parer les
+                                valeurs</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Encoding</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez l&#8217;encodage &agrave; partir de la liste ou s&eacute;lectionnez
+                                    <span class="bold"><strong>Custom</strong></span> et d&eacute;finissez-le
+                                manuellement. Ce champ est obligatoire pour la manipulation des
+                                donn&eacute;es de base de donn&eacute;es. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Generation mode</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez dans la liste d&eacute;roulante le mode de g&eacute;n&eacute;ration du
+                                fichier XML en fonction de la disponibilit&eacute; de votre m&eacute;moire et de
+                                la rapidit&eacute; souhait&eacute;e.</p>
+                            <p>-<span class="bold"><strong>Fast and memory-consuming
+                                    (Dom4j)</strong></span>&nbsp;: plus rapide mais consommateur de
+                                m&eacute;moire,</p>
+                            <p>-<span class="bold"><strong>Memory-consuming (Xerces)</strong></span>&nbsp;:
+                                consommateur de m&eacute;moire,</p>
+                            <p>-<span class="bold"><strong>Less memory consumed
+                                (SAX)</strong></span>&nbsp;:moins consommateur de m&eacute;moire.</p>
+                            <p> </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Lorsque que vous utilisez l&#8217;option <span class="bold"><strong>Get
+                                        Nodes</strong></span> du tableau <span class="bold"><strong>Mapping</strong></span> de l&#8217;onglet <span class="bold"><strong>Basic
+                                        settings</strong></span> avec le mode de g&eacute;n&eacute;ration <span class="bold"><strong>SAX</strong></span>, les noms d&#8217;espace ne sont pas
+                                    support&eacute;s. </p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Validate date</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour v&eacute;rifier strictement le format de la date
+                                par rapport au sch&eacute;ma d&#8217;entr&eacute;e.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log du Job, aussi
+                                bien au niveau du Job qu&#8217;au niveau de chaque composant. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant doit &ecirc;tre utilis&eacute; en tant que composant d&#8217;entr&eacute;e. Il
+                                permet de cr&eacute;er un flux de donn&eacute;es XML &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>, ainsi que de cr&eacute;er un flux de rejet avec un
+                                lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Reject</strong></span> filtrant les donn&eacute;es dont le type ne
+                                correspond pas au type d&eacute;fini. Pour un exemple d&#8217;utilisation de ces
+                                deux liens, consultez <a class="xref" href="tFileInputXML.html#Raa68027" title="Sc&eacute;nario&nbsp;2&nbsp;: Extraire les donn&eacute;es XML erron&eacute;es dans un flux de rejet">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Extraire les donn&eacute;es XML erron&eacute;es dans un flux de rejet&nbsp;&raquo;</a>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;1&nbsp;: Extraire des adresses XML"><div class="titlepage"><div><div><h3 class="title"><a name="d0e252815"></a>Sc&eacute;nario&nbsp;1&nbsp;: Extraire des adresses XML</h3></div></div></div><p>Ce sc&eacute;nario tr&egrave;s basique est constitu&eacute; de deux composants&nbsp;: un composant <span class="bold"><strong>tFileInputXML</strong></span> qui extrait des donn&eacute;es du fichier XML
+            contenant des adresses et un composant <span class="bold"><strong>tLogRow</strong></span> qui
+            affiche le r&eacute;sultat de cette op&eacute;ration dans la console <span class="bold"><strong>Run</strong></span> via le composant <span class="bold"><strong>tLogRow</strong></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="351"><tr><td><img src="../images/Use_Case_tFileInputXML.png" width="351"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>S&eacute;lectionnez un composant <span class="bold"><strong>tFileInputXML</strong></span> dans
+                    le dossier <span class="bold"><strong>File</strong></span> de la <span class="bold"><strong>Palette</strong></span>. Cliquez et d&eacute;posez &eacute;galement un composant <span class="bold"><strong>tLogRow</strong></span> et connectez ces deux composants.</p></li><li class="listitem"><p>Dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> du composant
+                        <span class="bold"><strong>tFileInputXML</strong></span>, d&eacute;finissez les
+                    propri&eacute;t&eacute;s&nbsp;:</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="472"><tr><td><img src="../images/Use_Case_tFileInputXML2.png" width="472"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Le fichier XML contenant les adresses a &eacute;t&eacute; pr&eacute;alablement d&eacute;fini dans la zone
+                        <span class="bold"><strong>Metadata</strong></span>, par cons&eacute;quent r&eacute;cup&eacute;rez ses
+                    propri&eacute;t&eacute;s en s&eacute;lectionnant <span class="bold"><strong>Repository</strong></span> dans
+                        <span class="bold"><strong>Property type</strong></span>. De cette mani&egrave;re, les
+                    propri&eacute;t&eacute;s sont automatiquement r&eacute;cup&eacute;r&eacute;es et le reste des champs est renseign&eacute;
+                    (&agrave; l&#8217;exception du Sch&eacute;ma). Pour plus d&#8217;informations concernant l&#8217;assistant de
+                    cr&eacute;ation de m&eacute;tadonn&eacute;es, consultez le <span class="bold"><strong>Guide
+                        utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p></li><li class="listitem"><p>De la m&ecirc;me mani&egrave;re, s&eacute;lectionnez le sch&eacute;ma appropri&eacute; dans la liste de
+                    m&eacute;tadonn&eacute;es du <span class="bold"><strong>Repository</strong></span>. Cliquez sur
+                        <span class="bold"><strong>Edit schema</strong></span> si vous souhaitez modifier le
+                    sch&eacute;ma charg&eacute;.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Filename</strong></span>, indiquez le fichier
+                    structur&eacute; d&#8217;entr&eacute;e.</p></li><li class="listitem"><p>Dans le champ<span class="bold"><strong> Loop XPath query</strong></span>, modifiez le
+                    n&#339;ud de boucle si n&eacute;cessaire.</p></li><li class="listitem"><p>Dans la table de <span class="bold"><strong>Mapping</strong></span>, renseignez les
+                    champs &agrave; extraire et &agrave; afficher dans la sortie.</p></li><li class="listitem"><p>Si le fichier est volumineux, d&eacute;finissez un nombre de ligne maximum &agrave; traiter
+                    dans le champ <span class="bold"><strong>Limit</strong></span>.</p></li><li class="listitem"><p>Saisissez l&#8217;encodage si n&eacute;cessaire, puis double-cliquez sur <span class="bold"><strong>tLogRow</strong></span> pour d&eacute;finir le caract&egrave;re s&eacute;parateur.</p></li><li class="listitem"><p>Enfin, appuyez sur <span class="bold"><strong>F6</strong></span> ou cliquez sur le
+                    bouton <span class="bold"><strong>Run</strong></span> dans la vue <span class="bold"><strong>Run</strong></span> pour ex&eacute;cuter le Job. Dans la console, les champs d&eacute;finis
+                    sont extraits du fichier XML structur&eacute; et sont affich&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="384"><tr><td><img src="../images/Use_Case_tFileInputXML3.png" width="384"></td></tr></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;2&nbsp;: Extraire les donn&eacute;es XML erron&eacute;es dans un flux de rejet"><div class="titlepage"><div><div><h3 class="title"><a name="Raa68027"></a>Sc&eacute;nario&nbsp;2&nbsp;: Extraire les donn&eacute;es XML erron&eacute;es dans un flux de rejet</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; trois composants qui permet de lire un fichier XML et&nbsp;: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>d&#8217;une part, de retourner les donn&eacute;es XML correctes dans un autre fichier
+                    XML,</p></li><li class="listitem"><p>et d&#8217;autre part, d&#8217;afficher dans la console de log les donn&eacute;es erron&eacute;es dont
+                    le type ne correspond pas au type d&eacute;fini.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="286"><tr><td><img src="../images/Use_Case_tFileInputXML2_1.png" width="286"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A partir de la <span class="bold"><strong>Palette</strong></span>, glissez les
+                    composants <span class="bold"><strong>tFileInputXML</strong></span>, <span class="bold"><strong>tFileOutputXML</strong></span> et <span class="bold"><strong>tLogRow</strong></span> dans
+                    l&#8217;espace de mod&eacute;lisation.</p></li><li class="listitem"><p>Cliquez-droit sur le composant <span class="bold"><strong>tFileInputXML</strong></span>,
+                    s&eacute;lectionnez <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> dans le menu contextuel, et cliquez sur le composant
+                        <span class="bold"><strong>tFileOutputXML</strong></span> pour cr&eacute;er le lien.</p></li><li class="listitem"><p>Cliquez-droit sur le composant <span class="bold"><strong>tFileInputXML</strong></span>,
+                    s&eacute;lectionnez <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Reject</strong></span> dans le menu contextuel, et cliquez sur le composant
+                        <span class="bold"><strong>tLogRow</strong></span> pour cr&eacute;er le lien de rejet.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tFileInputXML</strong></span>
+                    pour afficher l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de la vue
+                        <span class="bold"><strong>Component</strong></span> et param&eacute;trer ses
+                    propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="527"><tr><td><img src="../images/Use_Case_tFileInputXML2_2.png" width="527"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la liste <span class="bold"><strong>Property Type</strong></span>, s&eacute;lectionnez
+                        <span class="bold"><strong>Repository</strong></span> et cliquez sur le bouton
+                        <span class="bold"><strong>[...]</strong></span> pour afficher la bo&icirc;te de dialogue
+                        <span class="bold"><strong>[Repository Content]</strong></span> &agrave; partir de laquelle
+                    vous pouvez s&eacute;lectionner la m&eacute;tadonn&eacute;e relative &agrave; votre fichier si vous l&#8217;avez
+                    stock&eacute; sous le n&#339;ud <span class="bold"><strong>File&nbsp;xml</strong></span> du r&eacute;pertoire
+                        <span class="bold"><strong>Metadata</strong></span> du <span class="bold"><strong>Repository</strong></span>. Les champs suivants seront renseign&eacute;s
+                    automatiquement. Sinon, s&eacute;lectionnez le mode <span class="bold"><strong>Built-in</strong></span> et renseignez ces champs manuellement.</p><p>Pour plus d&#8217;informations sur le stockage des sch&eacute;mas de m&eacute;tadonn&eacute;es dans le
+                        <span class="bold"><strong>Repository</strong></span>, consultez le <span class="bold"><strong>Guide Utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Schema Type</strong></span>, s&eacute;lectionnez
+                        <span class="bold"><strong>Repository</strong></span> et cliquez sur le bouton
+                        <span class="bold"><strong>[...]</strong></span> pour s&eacute;lectionner le sch&eacute;ma d&eacute;crivant
+                    la structure de votre fichier si vous l&#8217;avez stock&eacute; dans le <span class="bold"><strong>Repository</strong></span>. Sinon, cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit
+                        schema</strong></span> et d&eacute;finissez le sch&eacute;ma manuellement.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="338"><tr><td><img src="../images/Use_Case_tFileInputXML2_3.png" width="338"></td></tr></table></div><p>Dans cet exemple, le sch&eacute;ma comprend cinq colonnes&nbsp;:<span class="emphasis"><em> id, CustomerName,
+                CustomerAddress, idState</em></span> et <span class="emphasis"><em>id2</em></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+                        <span class="bold"><strong>Filename</strong></span> et indiquez le chemin d&#8217;acc&egrave;s au
+                    fichier XML.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Loop XPath query</strong></span>, saisissez,
+                    entre guillemets, le chemin du n&#339;ud sur lequel effectuer une boucle.</p></li></ul></div><p>Dans la table <span class="bold"><strong>Mapping</strong></span>, la colonne <span class="bold"><strong>Column</strong></span> est automatiquement renseign&eacute;e avec les colonnes
+            d&eacute;finies dans le sch&eacute;ma.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la colonne <span class="bold"><strong>XPath query</strong></span>, saisissez entre
+                    guillemets le n&#339;ud du fichier XML contenant les donn&eacute;es que vous voulez extraire
+                    dans la colonne correspondante.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Limit</strong></span>, saisissez le nombre de
+                    lignes &agrave; traiter. Dans ce sc&eacute;nario, l&#8217;objectif est de traiter les 10&nbsp;premi&egrave;res
+                    lignes.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tFileOutputXML</strong></span> pour afficher l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de la vue <span class="bold"><strong>Component</strong></span> et param&eacute;trer ses propri&eacute;t&eacute;s. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="443"><tr><td><img src="../images/Use_Case_tFileInputXML2_4.png" width="443"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+                        <span class="bold"><strong>File Name</strong></span> pour s&eacute;lectionner le r&eacute;pertoire
+                    de destination du fichier et saisissez le nom du fichier. Dans ce sc&eacute;nario,
+                    appelez le fichier <span class="emphasis"><em>customer_data.xml</em></span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Row tag</strong></span>, saisissez entre
+                    guillemets le nom que vous souhaitez donner &agrave; la balise contenant les
+                    donn&eacute;es.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Edit schema</strong></span> et assurez-vous que
+                    le sch&eacute;ma est r&eacute;cup&eacute;r&eacute; du sch&eacute;ma d&#8217;entr&eacute;e. Si n&eacute;cessaire, cliquez sur <span class="bold"><strong>Sync columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma du composant
+                    pr&eacute;c&eacute;dent.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tLogRow</strong></span> pour
+                    afficher l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de la vue
+                        <span class="bold"><strong>Component</strong></span> et param&eacute;trer ses
+                    propri&eacute;t&eacute;s.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Edit schema</strong></span> et assurez-vous que
+                    le sch&eacute;ma est r&eacute;cup&eacute;r&eacute; du sch&eacute;ma d&#8217;entr&eacute;e. Si n&eacute;cessaire, cliquez sur <span class="bold"><strong>Sync columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma du composant
+                    pr&eacute;c&eacute;dent.</p></li><li class="listitem"><p>Dans la zone <span class="bold"><strong>Mode</strong></span>, s&eacute;lectionnez l&#8217;option
+                        <span class="bold"><strong>Vertical</strong></span>.</p></li><li class="listitem"><p>Enregistrez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="399"><tr><td><img src="../images/Use_Case_tFileInputXML2_5.png" width="399"></td></tr></table></div><p>Le fichier <span class="emphasis"><em>customer_data.xml</em></span> contenant les donn&eacute;es correctes est
+            cr&eacute;&eacute; et les donn&eacute;es erron&eacute;es sont affich&eacute;es dans la console de la vue <span class="bold"><strong>Run</strong></span>.</p></div></div></body></html>

@@ -1,0 +1,220 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSSH</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch15.html" title="Chapter&nbsp;15.&nbsp;System components"><link rel="prev" href="tSetEnv.html" title="tSetEnv"><link rel="next" href="tSystem.html" title="tSystem"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tSSH"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSSH"></a>tSSH</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tSSH_icon32.png" width="27"></td></tr></table></div><div class="section" title="tSSH Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e229369"></a>tSSH Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>System</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Returns data from a remote computer, based on the secure shell
+                                command defined. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Allows to establish a communication with distant server and return
+                                securely sensible information.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. </p>
+                            <p> Click <span class="bold"><strong>Edit Schema </strong></span>to make
+                                changes to the schema. Note that if you make changes, the schema
+                                automatically becomes built-in.</p>
+                            <p> Click <span class="bold"><strong>Sync columns</strong></span> to retrieve
+                                the schema from the preceding component in the Job.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: You create and store
+                                the schema locally for this component only. Related topic: see
+                                    <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: You have already
+                                created the schema and stored it in the Repository. You can reuse it
+                                in various projects and job flowcharts. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span></p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Host</em></span></p>
+                        </td><td valign="top">
+                            <p>IP address</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Port</em></span></p>
+                        </td><td valign="top">
+                            <p>Listening port number</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>User</em></span></p>
+                        </td><td valign="top">
+                            <p>User authentication information</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><em>Authentication method</em></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Public Key</em></span>/<span class="emphasis"><em>Key
+                                    Passphrase</em></span>/<span class="emphasis"><em>Private Key</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the relevant option.</p>
+                            <p> In case of <span class="bold"><strong>Public Key</strong></span>, type in
+                                the passphrase, if required, in the<span class="bold"><strong> Key
+                                    Passphrase</strong></span> field and then in the <span class="bold"><strong>Private key</strong></span> field, type in the private
+                                key or click the three dot button next to the <span class="bold"><strong>Private key</strong></span> field to browse to it. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><em>Authentication method</em></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Password/Password</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the relevant option.</p>
+                            <p> In case of <span class="bold"><strong>Password</strong></span>,type in the
+                                required password in the <span class="bold"><strong>Password</strong></span>
+                                field.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="emphasis"><em>Authentication method</em></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Keyboard Interactive/Password</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the relevant option.</p>
+                            <p> In case of <span class="bold"><strong>Keyboard Interactive</strong></span>,
+                                type in the required password in the <span class="bold"><strong>Password</strong></span> field.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Pseudo terminal</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to call the interactive shell that performs
+                                the terminal operations.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Command separator</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the command separator required. Once the <span class="bold"><strong>Pseudo terminal</strong></span> check box is selected,
+                                this field becomes unavailable.</p>
+                        </td></tr><tr><td>
+                            <p></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Commands</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the command for the relevant information to be returned
+                                from the remote computer. When you select the <span class="bold"><strong>Pseudo terminal</strong></span> check box, this table becomes a
+                                terminal emulator and each row in this table is a single
+                                command.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use timeout</em></span>/<span class="emphasis"><em>timeout in
+                                    seconds</em></span></p>
+                        </td><td valign="top">
+                            <p>Define the timeout time period. A timeout message will be
+                                generated if the actual response time exceeds this expected
+                                processing time. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Standard Output</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the destination to which the standard output is returned.
+                                The output may be returned to:</p>
+                            <p> -<span class="bold"><strong> to console</strong></span>: the output is
+                                displayed in the console of the <span class="bold"><strong>Run</strong></span>
+                                view.</p>
+                            <p> - <span class="bold"><strong>to global variable</strong></span>: the output
+                                is indicated by the corresponding global variable.</p>
+                            <p> - <span class="bold"><strong>both to console and global
+                                    variable</strong></span>: the output is indicated both of the two
+                                means.</p>
+                            <p> - <span class="bold"><strong>normal</strong></span>: the output is a
+                                standard ssh output.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Error Output</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the destination to which the error output is returned. The
+                                output may be returned to:</p>
+                            <p> -<span class="bold"><strong> to console</strong></span>: the output is
+                                displayed in the console of the <span class="bold"><strong>Run</strong></span>
+                                view.</p>
+                            <p> - <span class="bold"><strong>to global variable</strong></span>: the output
+                                is indicated by the corresponding global variable.</p>
+                            <p> - <span class="bold"><strong>both to console and global
+                                    variable</strong></span>: the output is indicated both of the two
+                                means.</p>
+                            <p> - <span class="bold"><strong>normal</strong></span>: the output is a
+                                standard ssh output.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component can be used as standalone component.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Global variables</strong></span></p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Standard Output</strong></span>: Indicates the
+                                standard execution output of the remote command. It is available as
+                                an <span class="bold"><strong>After</strong></span> variable.</p>
+                            <p> Returns a String.</p>
+                            <p>
+                                <span class="bold"><strong>Error output</strong></span>: Indicates the error
+                                execution output of the remote command. It is available as an
+                                    <span class="bold"><strong>After</strong></span> variable.</p>
+                            <p> Returns a String.</p>
+                            <p>
+                                <span class="bold"><strong>Exit value</strong></span>: Indicates the exit
+                                status of the remote command. It is available as an <span class="bold"><strong>After</strong></span> variable.</p>
+                            <p> Returns an Integer.</p>
+                            <p> For further information about variables, see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Connections</strong></span></p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>Outgoing links (from one component to another):</p>
+                            <p>
+                                <span class="bold"><strong>Row</strong></span>: Main</p>
+                            <p>
+                                <span class="bold"><strong>Trigger</strong></span>: Run if; On Component Ok;
+                                On Component Error; On Subjob Ok; On Subjob Error.</p>
+                            <p> </p>
+                            <p> Incoming links (from one component to another):</p>
+                            <p>
+                                <span class="bold"><strong>Row</strong></span>: Main; Iterate</p>
+                            <p>
+                                <span class="bold"><strong>Trigger</strong></span>: Run if; On Component Ok;
+                                On Component Error; On Subjob Ok; On Subjob Error. </p>
+                            <p> </p>
+                            <p> For further information regarding connections, see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>The component use is optimized for Unix-like systems.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Remote system information display via SSH"><div class="titlepage"><div><div><h3 class="title"><a name="d0e229942"></a>Scenario: Remote system information display via SSH</h3></div></div></div><p>The following use case describes a basic Job that uses SSH command to display the
+            hostname of the distant server being connected to, and the current date on this remote
+            system. </p><p>The <span class="bold"><strong>tSSH</strong></span> component is sufficient for this Job. Drop
+            it from the <span class="bold"><strong>Palette</strong></span> to the design workspace.</p><p>Double-click on the <span class="bold"><strong>tSSH</strong></span> component and select the
+                <span class="bold"><strong>Basic settings </strong></span>view tab.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="467"><tr><td><img src="../images/Use_Case_tSSH2.png" width="467"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Type in the name of the <span class="bold"><strong>Host</strong></span> to be accessed
+                    through SSH as well as the <span class="bold"><strong>Port</strong></span> number.</p></li><li class="listitem"><p>Fill in the <span class="bold"><strong>User</strong></span> identification name on the
+                    remote machine. </p></li><li class="listitem"><p>Select the <span class="bold"><strong>Authentication method</strong></span> on the list.
+                    For this use case, the authentication method used is the public key. </p></li><li class="listitem"><p>Thus fill in the corresponding <span class="bold"><strong>Private
+                    key</strong></span>.</p></li><li class="listitem"><p>On the <span class="bold"><strong>Command</strong></span> field, type in the following
+                    command. For this use case, type in <code class="code">hostname; date</code> between double
+                    quotes.</p></li><li class="listitem"><p>Select the <span class="bold"><strong>Use timeout</strong></span> check box and set the
+                    time before falling in error to 5 seconds.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="328"><tr><td><img src="../images/Use_Case_tSSH3.png" width="328"></td></tr></table></div><p>The remote machine returns the host name and the current date and time as defined on
+            its system. </p></div></div></body></html>

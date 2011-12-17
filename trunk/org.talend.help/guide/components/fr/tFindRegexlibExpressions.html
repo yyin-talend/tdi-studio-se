@@ -1,0 +1,183 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFindRegexlibExpressions</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="dataquality_tExtractRegexFields.html" title="tExtractRegexFields"><link rel="next" href="tFirstnameMatch.html" title="tFirstnameMatch"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tFindRegexlibExpressions"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFindRegexlibExpressions"></a>tFindRegexlibExpressions</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="35"><tr><td><img src="../images/tFindRegexlibExpressions_icon32_gif.png" width="35"></td></tr></table></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+			<span class="emphasis"><em>Ce composant est disponible dans la </em></span>
+			<span class="bold"><strong>Palette </strong></span>
+			<span class="emphasis"><em>du studio uniquement si vous avez souscrit &agrave; l&#8217;&eacute;dition correspondante de </em></span>
+			<span class="bluebold">
+				Talend Enterprise Data Quality
+			</span>
+			<span class="emphasis"><em>.</em></span>
+		</p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tFindRegexlibExpressions"><div class="titlepage"><div><div><h3 class="title"><a name="d0e172665"></a>Propri&eacute;t&eacute;s du tFindRegexlibExpressions</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Data Quality</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="bold"><strong>tFindRegexlibExpressions</strong></span> se
+								connecte &agrave; un service Web, sur <a class="link" href="http://regexlib.com" target="_top"><span class="webblue">http://regexlib.com</span></a> afin d&#8217;obtenir une liste
+									d&#8217;expressions r&eacute;guli&egrave;res dans tous les langages, m&ecirc;me ceux qui
+									ne sont pas support&eacute;s par Talend.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="bold"><strong>tFindRegexlibExpressions</strong></span>
+								retourne un ensemble de donn&eacute;es contenant des informations &agrave; propos
+								des expressions r&eacute;guli&egrave;res qui correspondent &agrave; la requ&ecirc;te envoy&eacute;e au
+								serveur Web.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Ces champs sont en lecture seule. Le sch&eacute;ma du composant contient
+								les champs suivants&nbsp;: <span class="emphasis"><em>Title, Expression, Description,
+									Matches, Non-Matches, Author, Rating</em></span>
+									(<span class="emphasis"><em>Titre, Expression, Description, Correspondances,
+									Non-correspondances, Auteur, Note</em></span>).</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Regexp Substring</em></span>
+							</p>
+						</td><td valign="top">
+							<p>D&eacute;finissez l&#8217;expression r&eacute;guli&egrave;re que vous souhaitez utiliser
+								comme filtre sur la liste des expressions r&eacute;guli&egrave;res &agrave;
+								retourner.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Key Words</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le(s) mot(s)-cl&eacute; que vous souhaitez utiliser comme
+								filtre sur la liste des expressions r&eacute;guli&egrave;res &agrave; retourner. Les
+								mots-cl&eacute;s doivent &ecirc;tre s&eacute;par&eacute;s par une virgule.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Min Rate</em></span>
+							</p>
+						</td><td valign="top">
+							<p>D&eacute;finissez la note d&#8217;expression r&eacute;guli&egrave;re que vous souhaitez
+								utiliser comme filtre sur la liste des expressions r&eacute;guli&egrave;res &agrave;
+								retourner.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Relative path</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le chemin d&#8217;acc&egrave;s relatif au dossier du mod&egrave;le que vous
+								voulez cr&eacute;er sous le noeud <span class="bold"><strong>Pattern</strong></span>
+								&gt; <span class="bold"><strong>Regex</strong></span> dans la vue <span class="bold"><strong>DQ Repository</strong></span> afin de conserver les
+								mod&egrave;les r&eacute;cup&eacute;r&eacute;s. Par exemple, vous devez cr&eacute;er un dossier
+									nomm&eacute;&nbsp;<span class="emphasis"><em>phone</em></span> avec un
+									sous-dossier&nbsp;<span class="emphasis"><em>uk</em></span> pour les mod&egrave;les de num&eacute;ros
+								de t&eacute;l&eacute;phone utilis&eacute;s au Royaume-Uni.
+									Saisissez&nbsp;&#8220;<code class="code">phone/uk</code>&#8220; dans le champ <span class="bold"><strong>Relative path</strong></span>.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Afin de cr&eacute;er d&eacute;finitivement le dossier du mod&egrave;le dans la vue <span class="bold"><strong>DQ
+										Repository</strong></span>, vous devez importer l&#8217;expression
+									r&eacute;guli&egrave;re r&eacute;cup&eacute;r&eacute;e ayant &eacute;t&eacute; stock&eacute;e dans un fichier .csv. Pour
+									plus d&#8217;informations concernant l&#8217;import d&#8217;expressions r&eacute;guli&egrave;res
+									&agrave; partir d&#8217;un fichier .csv, consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Data Quality</span>.</p></td></tr></table></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="italic">tStatCatcher Statistics </span></p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du
+								Job, aussi bien au niveau du Job qu&#8217;au niveau de chaque composant.
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est un composant d&#8217;entr&eacute;e. Il requiert un flux de
+								sortie, habituellement un fichier .csv. Vous pourrez importer
+								ensuite toutes les expressions collect&eacute;es depuis un fichier .csv
+								avec un format correct dans le studio de <span class="bluebold">Talend Enterprise Data Quality</span>.</p>
+							<p>Pour plus d&#8217;informations sur l&#8217;import des mod&egrave;les, consultez le<span class="bold"><strong>
+									Guide utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Data Quality</span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Se connecter &agrave; un service Web et retourner une liste d&#8217;expressions r&eacute;guli&egrave;res"><div class="titlepage"><div><div><h3 class="title"><a name="Raa13351"></a>Sc&eacute;nario&nbsp;: Se connecter &agrave; un service Web et retourner une liste d&#8217;expressions
+			r&eacute;guli&egrave;res</h3></div></div></div><p>Ce sc&eacute;nario comporte un Job Java &agrave; trois composants, cr&eacute;&eacute;
+			dans <span class="bluebold">Talend Enterprise Studio</span>.</p><p>Ce sc&eacute;nario&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>utilise le composant <span class="bold"><strong>tFindRegexlibExpression</strong></span>
+					pour se connecter &agrave; un serveur Web et collecter toutes les expressions
+					r&eacute;guli&egrave;res qui contiennent le mot &#8220;email&#8221; dans leur description,</p></li><li class="listitem"><p>utilise le composant <span class="bold"><strong>tMap</strong></span> afin de r&eacute;organiser
+					les donn&eacute;es d&#8217;entr&eacute;e dans le flux de sortie et &eacute;galement de concat&eacute;ner les deux
+					champs du flux d&#8217;entr&eacute;e en une seule colonne de sortie,</p></li><li class="listitem"><p>et &eacute;crit ensuite toutes les expressions collect&eacute;es dans un fichier
+					.csv.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="435"><tr><td><img src="../images/Use_Case_tFindRegexlibExpressions.png" width="435"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Ce Job peut &ecirc;tre g&eacute;n&eacute;r&eacute; automatiquement depuis le noeud <span class="bold"><strong>Patterns</strong></span> &gt; <span class="bold"><strong>Regex</strong></span> dans la vue
+					<span class="bold"><strong>DQ Repository</strong></span>. Pour plus d&#8217;informations
+				concernant la g&eacute;n&eacute;ration d&#8217;un Job afin de r&eacute;cup&eacute;rer des expressions r&eacute;guli&egrave;res,
+				consultez le <span class="bold"><strong>Guide Utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Data Quality</span>.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Glissez les composants suivants de la <span class="bold"><strong>Palette</strong></span>
+					dans l&#8217;espace de mod&eacute;lisation graphique&nbsp;: <span class="bold"><strong>tFindRegexlibExpressions</strong></span>, <span class="bold"><strong>tMap</strong></span>
+					et <span class="bold"><strong>tFileOutputDelimited</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tFindRegexlibExpressions</strong></span> afin d&#8217;ouvrir sa vue <span class="bold"><strong>Basic settings</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="415"><tr><td><img src="../images/Use_Case_tFindRegexlibExpressions1.png" width="415"></td></tr></table></div><p>Le sch&eacute;ma de ce composant est en lecture seule et contient
+			les champs suivants&nbsp;: <span class="emphasis"><em>Title</em></span>, <span class="emphasis"><em>Expression</em></span>,
+				<span class="emphasis"><em>Description</em></span>, <span class="emphasis"><em>Matches</em></span>,
+				<span class="emphasis"><em>Non-Matches</em></span>, <span class="emphasis"><em>Author</em></span>, <span class="emphasis"><em>Rating
+			</em></span>et <span class="emphasis"><em>Relative_path</em></span>
+			<span class="emphasis"><em>(Titre, Expression, Description, Correspondances, Non-correspondances, Auteur,
+				Note</em></span> et <span class="emphasis"><em>Chemin_relatif</em></span><span class="emphasis"><em>).</em></span></p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Regexp Substring</strong></span>, d&eacute;finissez
+					l&#8217;expression r&eacute;guli&egrave;re que vous souhaitez utiliser comme filtre sur la liste des
+					expressions r&eacute;guli&egrave;res.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Key Words</strong></span>, d&eacute;finissez le(s)
+					mot(s)-cl&eacute; que vous souhaitez utiliser comme filtre sur la liste des expressions
+					r&eacute;guli&egrave;res.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Min Rate</strong></span>, d&eacute;finissez la note
+					d&#8217;expression r&eacute;guli&egrave;re que vous souhaitez utiliser comme filtre sur la liste des
+					expressions r&eacute;guli&egrave;res.</p></li></ul></div><p>Dans ce sc&eacute;nario, l&#8217;objectif est de faire en sorte que le
+				<span class="bold"><strong>tFindRegexlibExpressions</strong></span> collecte toutes les
+			expressions r&eacute;guli&egrave;res du serveur Web ayant le mot &#8220;email&#8221; dans leur champ
+				<span class="emphasis"><em>Description</em></span>, et celles dont la note est de&nbsp;1 minimum.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connectez le <span class="bold"><strong>tFindRegexlibExpressions</strong></span> et le
+						<span class="bold"><strong>tMap</strong></span>, &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row Main</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tMap</strong></span> afin
+					d&#8217;ouvrir son &eacute;diteur et d&#8217;effectuer la r&eacute;organisation n&eacute;cessaire des champs,
+					ainsi que leur concat&eacute;nation.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="489"><tr><td><img src="../images/Use_Case_tFindRegexlibExpressions2.png" width="489"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;&eacute;diteur du <span class="bold"><strong>tMap</strong></span>, cliquez sur le bouton <span class="bold"><strong>[+]</strong></span>, en haut &agrave; droite, pour ouvrir une bo&icirc;te de dialogue o&ugrave; vous
+					pourrez nommer la nouvell table de sortie, <span class="emphasis"><em>regex</em></span> dans ce
+					sc&eacute;nario.</p><p> Cela va cr&eacute;er un nouveau lien au <span class="bold"><strong>tMap</strong></span>,
+					portant le m&ecirc;me nom, que vous allez utiliser pour connecter le <span class="bold"><strong>tMap</strong></span> au composant suivant.</p></li><li class="listitem"><p>Dans le coin en bas &agrave; droite de l&#8217;&eacute;diteur, cliquez sur le bouton <span class="bold"><strong>[+]</strong></span>, afin de d&eacute;finir les champs de la table de sortie
+						<span class="emphasis"><em>regex</em></span>. </p></li><li class="listitem"><p>Dans la moiti&eacute; sup&eacute;rieure de l&#8217;&eacute;diteur, glissez les champs de la table
+					d&#8217;entr&eacute;e afin de remplir les champs du sch&eacute;ma de sortie, comme n&eacute;cessaire. Pour
+					plus d&#8217;informations &agrave; propos du mapping de donn&eacute;es, consultez&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p></li></ul></div><p>Dans ce sc&eacute;nario, l&#8217;objectif est de concat&eacute;ner les champs
+				<span class="emphasis"><em>Matches</em></span> et <span class="emphasis"><em>Non-Matches </em></span>du flux d&#8217;entr&eacute;e en
+			une seule colonne de sortie&nbsp;: <span class="emphasis"><em>Purpose </em></span>(Objectif) et &eacute;galement
+			d&#8217;obtenir une nouvelle colonne dans le sch&eacute;ma de sortie, appel&eacute;e <span class="emphasis"><em>Path
+			</em></span>(chemin d&#8217;acc&egrave;s). Par ailleurs, le but n&#8217;est pas d&#8217;avoir d&#8217;informations sur
+			les notes dans le sch&eacute;ma de sortie.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider et fermer
+					l&#8217;&eacute;diteur du <span class="bold"><strong>tMap</strong></span>.</p></li><li class="listitem"><p>Cliquez-droit sur le <span class="bold"><strong>tMap</strong></span>, et s&eacute;lectionnez le
+					lien <span class="bold"><strong>regex</strong></span> pour connecter le <span class="bold"><strong>tMap</strong></span> au <span class="bold"><strong>tFileOutputDelimited</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tFileOutputDelimited
+					</strong></span>afin d&#8217;afficher ses <span class="bold"><strong>Basic settings</strong></span>
+					et d&eacute;finir ses propri&eacute;t&eacute;s.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="431"><tr><td><img src="../images/Use_Case_tFindRegexlibExpressions3.png" width="431"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span>, &agrave; c&ocirc;t&eacute; du champ
+						<span class="bold"><strong>File Name</strong></span>, pour s&eacute;lectionner le fichier
+					dans lequel vous souhaitez &eacute;crire les donn&eacute;es de sortie.</p></li><li class="listitem"><p>D&eacute;finissez les s&eacute;parateurs de lignes et de champs, dans les champs <span class="bold"><strong>Row Separator</strong></span> et <span class="bold"><strong>Field
+						Separator</strong></span>, respectivement.</p></li><li class="listitem"><p>Cochez la case <span class="bold"><strong>Append</strong></span> si vous voulez ajouter
+					les nouvelles lignes &agrave; la fin des enregistrements.</p></li><li class="listitem"><p>Cochez la case <span class="bold"><strong>Include Header</strong></span> si vous
+					souhaitez inclure les libell&eacute;s des colonnes dans les donn&eacute;es de sortie.</p></li><li class="listitem"><p>Au besoin, cliquez sur le bouton <span class="bold"><strong>Edit schema</strong></span>
+					pour voir les flux d&#8217;entr&eacute;e et de sortie.</p></li><li class="listitem"><p>Sauvegardez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> afin
+					de l&#8217;ex&eacute;cuter.</p></li></ul></div><p>Le <span class="bold"><strong>tFindRegexlibExpressions</strong></span> se connecte au serveur Web et collecte les
+			expressions r&eacute;guli&egrave;res qui correspondent &agrave; la requ&ecirc;te, le <span class="bold"><strong>tMap</strong></span> r&eacute;organise et concat&egrave;ne les fichiers, puis passe le flux de sortie
+			au <span class="bold"><strong>tFileOutptDelimited</strong></span>. Le fichier de sortie
+			ressemblera &agrave; ceci&nbsp;:</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="504"><tr><td><img src="../images/Use_Case_tFindRegexlibExpressions4.png" width="504"></td></tr></table></div><p>Vous pourrez ensuite importer toutes les expressions
+			r&eacute;guli&egrave;res collect&eacute;es depuis un fichier .csv bien format&eacute;, dans le studio de <span class="bluebold">Talend Enterprise Data Quality</span>. Pour plus d&#8217;informations sur l&#8217;import de mod&egrave;les,
+			consultez le <span class="bold"><strong>Guide utilisateur </strong></span>de <span class="bluebold">Talend Enterprise Data Quality</span>.</p></div></div></body></html>

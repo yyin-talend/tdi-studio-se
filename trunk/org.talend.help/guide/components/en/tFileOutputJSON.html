@@ -1,0 +1,144 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileOutputJSON</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapter&nbsp;9.&nbsp;File components"><link rel="prev" href="tFileOutputExcel.html" title="tFileOutputExcel"><link rel="next" href="tFileOutputLDIF.html" title="tFileOutputLDIF"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tFileOutputJSON"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileOutputJSON"></a>tFileOutputJSON</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFileOutputJSON_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tFileOutputJSON properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e183210"></a>tFileOutputJSON properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Component
+                                                  Family</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p>File</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Function</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p><span class="bold"><strong>tFileOutputJSON</strong></span> writes data to a JSON
+                                                  structured output file.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Purpose</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p><span class="bold"><strong>tFileOutputJSON</strong></span> receives data and
+                                                  rewrites it in a JSON structured data block in an
+                                                  output file.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Basic
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>File Name</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Name and path of the output file.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Name of data
+                                                  block</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Enter a name for the data block to be
+                                                  written, between double quotation marks.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Schema</em></span> and
+                                                  <span class="emphasis"><em>Edit Schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>A schema is a row description, i.e., it
+                                                  defines the number of fields that will be
+                                                  processed and passed on to the next component. The
+                                                  schema is either built-in or remote in the
+                                                  <span class="bold"><strong>Repository</strong></span>. </p>
+                                                  <p> Click <span class="bold"><strong>Edit
+                                                  Schema</strong></span> to make changes to the schema.
+                                                  Note that if you make changes, the schema
+                                                  automatically becomes built-in.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Built-in</strong></span>:
+                                                  The schema will be created and stored locally for
+                                                  this component only. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Repository</strong></span>:
+                                                  The schema already exists and is stored in the
+                                                  Repository, hence can be reused in various
+                                                  projects and Job flowcharts. Related topic: see
+                                                  <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Sync columns</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Click to synchronize the output file schema
+                                                  with the input file schema. The Sync function only
+                                                  displays once the Row connection is linked with
+                                                  the Output component.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Advanced
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Create directory if not
+                                                  exists</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>This check box is selected by default. This
+                                                  option creates the directory that will hold the
+                                                  output files if it does not already exist.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>tStatCatcher
+                                                  Statistics</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select this check box to gather the Job
+                                                  processing metadata at a Job level as well as at
+                                                  each component level.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Usage</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Use this component to rewrite received data
+                                                  in a JSON structured output file.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Limitation</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>n/a</p>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Scenario: Writing a JSON structured file"><div class="titlepage"><div><div><h3 class="title"><a name="Raascenariowritingajsonstructuredfile"></a>Scenario: Writing a JSON structured file</h3></div></div></div><p>This is a 2 component scenario in which a<span class="bold"><strong>
+                                tRowGenerator</strong></span> component generates random data which a
+                                <span class="bold"><strong>tFileOutputJSON</strong></span> component then
+                        writes to a JSON structured output file. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="295"><tr><td><img src="../images/Use_Case_tFileOutputJSON1.png" width="295"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop a <span class="bold"><strong>tRowGenerator</strong></span> and a
+                                                <span class="bold"><strong>tFileOutputJSON</strong></span>
+                                        component onto the workspace from the <span class="bold"><strong>Palette</strong></span>.</p></li><li class="listitem"><p>Link the components using a <span class="bold"><strong>Row &gt;
+                                                Main</strong></span> connection.</p></li><li class="listitem"><p>Double click <span class="bold"><strong>tRowGenerator</strong></span> to
+                                        define its<span class="bold"><strong> Basic Settings</strong></span>
+                                        properties in the <span class="bold"><strong>Component</strong></span>
+                                        view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="359"><tr><td><img src="../images/Use_Case_tFileOutputJSON2.png" width="359"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>If the schema you require is already stored under the
+                                                <span class="bold"><strong>Db Connections</strong></span> node
+                                        in the <span class="bold"><strong>Repository</strong></span>, select
+                                                <span class="bold"><strong>Repository</strong></span> in the
+                                                <span class="bold"><strong>Schema field</strong></span> and
+                                        choose the metadata from the list.</p></li><li class="listitem"><p>Otherwise, click <span class="bold"><strong>[...]</strong></span> next
+                                        to <span class="bold"><strong>Edit Schema</strong></span> to display
+                                        the corresponding dialog box and define the schema.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="367"><tr><td><img src="../images/Use_Case_tFileOutputJSON3.png" width="367"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>[+]</strong></span> to add the number
+                                        of columns desired.</p></li><li class="listitem"><p>Under <span class="bold"><strong>Columns</strong></span> type in the
+                                        column names.</p></li><li class="listitem"><p>Under <span class="bold"><strong>Type</strong></span>, select the data
+                                        type from the list.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK </strong></span>to close the dialog
+                                        box.</p></li><li class="listitem"><p>Click <span class="bold"><strong>[+]</strong></span> next to <span class="bold"><strong>RowGenerator Editor</strong></span> to open
+                                        the corresponding dialog box.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="493"><tr><td><img src="../images/Use_Case_tFileOutputJSON4.png" width="493"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Under <span class="bold"><strong>Functions</strong></span>, select
+                                        pre-defined functions for the columns, if required, or
+                                        select <span class="bold"><strong>[...]</strong></span> to set
+                                        customized function parameters in the <span class="bold"><strong>Function parameters</strong></span> tab.</p></li><li class="listitem"><p>Enter the number of rows to be generated in the corresponding
+                                        field.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to close the dialog
+                                        box.</p></li><li class="listitem"><p>Click <span class="bold"><strong>tFileOutputJSON</strong></span> to set
+                                        its <span class="bold"><strong>Basic Settings</strong></span>
+                                        properties in the <span class="bold"><strong>Component</strong></span>
+                                        view. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="477"><tr><td><img src="../images/Use_Case_tFileOutputJSON5.png" width="477"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>[...]</strong></span> to browse to
+                                        where you want the output JSON file to be generated and
+                                        enter the file name.</p></li><li class="listitem"><p>Enter a name for the data block to be generated in the
+                                        corresponding field, between double quotation marks.</p></li><li class="listitem"><p>Select <span class="bold"><strong>Built-In </strong></span>as the
+                                                <span class="bold"><strong>Schema</strong></span> type.</p></li><li class="listitem"><p>Click <span class="bold"><strong>Sync Columns</strong></span> to
+                                        retrieve the schema from the preceding component. </p></li><li class="listitem"><p>Press <span class="bold"><strong>F6</strong></span> to run the
+                                        Job.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="269"><tr><td><img src="../images/Use_Case_tFileOutputJSON6.png" width="269"></td></tr></table></div><p>The data from the input schema is written in a JSON structured data block in
+                        the output file.</p></div></div></body></html>

@@ -1,0 +1,114 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSQLTemplateRollback</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa48933.html" title="Chapitre&nbsp;7.&nbsp;Composants ELT"><link rel="prev" href="tSQLTemplateMerge.html" title="tSQLTemplateMerge"><link rel="next" href="ch08.html" title="Chapitre&nbsp;8.&nbsp;Composants ESB"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tSQLTemplateRollback"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSQLTemplateRollback"></a>tSQLTemplateRollback</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tSQLTemplateRollback_icon32.png" width="27"></td></tr></table></div><a name="Xaa3942584"></a><div class="section" title="Propri&eacute;t&eacute;s du tSQLTemplateRollback"><div class="titlepage"><div><div><h3 class="title"><a name="d0e172319"></a>Propri&eacute;t&eacute;s du tSQLTemplateRollback</h3></div></div></div><p>Ce composant est &eacute;troitement li&eacute; au composant <span class="bold"><strong>tSQLTemplateCommit</strong></span> et au composant ELT de connexion correspondant &agrave; la
+            base de donn&eacute;es sur laquelle vous travaillez. Ils sont g&eacute;n&eacute;ralement utilis&eacute;s ensemble
+            lors de transactions.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille du composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>ELT/SQLTemplate</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="bold"><strong>tSQLTemplateRollback</strong></span> annule la
+                                transaction dans une base de donn&eacute;es connect&eacute;e. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant &eacute;vite le commit de transaction involontaire. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Database Type</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez dans le menu d&eacute;roulant le type de base de donn&eacute;es sur
+                                lequel vous voulez travailler.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Component List</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez le composant ELT de connexion le plus pertinent dans
+                                la liste si vous pr&eacute;voyez d&#8217;ajouter plus d&#8217;une connexion &agrave; votre Job
+                                en cours. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Close Connection</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>D&eacute;cochez cette case pour continuer &agrave; utiliser la connexion une
+                                fois que le composant a ex&eacute;cut&eacute; sa t&acirc;che. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                composant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>SQL Template</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>SQLTemplate List</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cliquez sur le bouton <span class="bold"><strong>Add</strong></span> pour
+                                ajouter un ou plusieurs mod&egrave;le SQL du syst&egrave;me &agrave; la liste <span class="bold"><strong>SQLTemplateList</strong></span>. Cliquez dans la cellule
+                                de la colonne <span class="bold"><strong>SQLTemplate List</strong></span> que
+                                vous venez d&#8217;ajouter et s&eacute;lectionnez le mod&egrave;le SQL du syst&egrave;me
+                                ad&eacute;quat dans la liste de mod&egrave;les fournis par <span class="bold"><strong>Talend</strong></span>. </p>
+                            <p><span class="bold"><strong>Note&nbsp;:</strong></span> Vous pouvez cr&eacute;er vos
+                                propres mod&egrave;les SQL et les ajouter &agrave; la liste <span class="bold"><strong>SQLTemplate List</strong></span>.</p>
+                            <p> </p>
+                            <p>Pour cr&eacute;er un nouveau mod&egrave;le SQL&nbsp;:</p>
+                            <p>1- S&eacute;lectionnez un mod&egrave;le d&eacute;j&agrave; existant dans la liste <span class="bold"><strong>SQLTemplate list</strong></span> et cliquez dans son code
+                                dans le champ de code. Une bo&icirc;te de dialogue s&#8217;ouvrira vous
+                                demandant de cr&eacute;er un nouveau mod&egrave;le.</p>
+                            <p>2- Cliquez sur <span class="bold"><strong>Yes</strong></span> pour ouvrir la
+                                bo&icirc;te de dialogue <span class="bold"><strong>New
+                                SQLTemplate</strong></span>.</p>
+                            <p>3- Renseignez les informations de votre mod&egrave;le SQL et cliquez sur
+                                    <span class="bold"><strong>Finish</strong></span> pour fermer la bo&icirc;te de
+                                dialogue. Un &eacute;diteur de mod&egrave;le SQL appara&icirc;t dans lequel vous pouvez
+                                saisir votre code.</p>
+                            <p>4- Cliquez sur le bouton <span class="bold"><strong>Add</strong></span> pour
+                                ajouter le nouveau mod&egrave;le dans la liste <span class="bold"><strong>SQLTemplate list</strong></span>.</p>
+                            <p>Pour plus d&#8217;informations, consultez le <span class="bold"><strong>Guide
+                                    Utilisateur </strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Il faut utiliser ce composant en association avec des composants
+                                ELT, notamment avec le <span class="bold"><strong>tSQLTemplateCommit</strong></span> et le composant ELT de connexion
+                                correspondant &agrave; la base de donn&eacute;es avec laquelle vous
+                                travaillez.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e172581"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute; au <span class="bold"><strong>tSQLTemplateRollback</strong></span>,
+                consultez&nbsp;<a class="xref" href="tSQLTemplateAggregate.html#Raa22184" title="Sc&eacute;nario&nbsp;: Filtrer et agr&eacute;ger les colonnes d&#8217;une table directement dans le SGBD">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Filtrer et agr&eacute;ger les colonnes d&#8217;une table directement dans le
+            SGBD&nbsp;&raquo;</a>.</p></div></div></body></html>

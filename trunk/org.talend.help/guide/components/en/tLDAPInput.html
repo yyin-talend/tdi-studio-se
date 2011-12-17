@@ -1,0 +1,166 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tLDAPInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa29876.html" title="Chapter&nbsp;6.&nbsp;Database components"><link rel="prev" href="tLDAPConnection.html" title="tLDAPConnection"><link rel="next" href="tLDAPOutput.html" title="tLDAPOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tLDAPInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tLDAPInput"></a>tLDAPInput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tLDAPInput_icon32.png" width="27"></td></tr></table></div><div class="section" title="tLDAPInput Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e92424"></a>tLDAPInput Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Component
+                                family</strong></span></p>
+                        </td><td valign="top"><p>Databases/LDAP</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tLDAPInput</strong></span> reads a directory and extracts data based
+                                on the defined filter. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tLDAPInput</strong></span> executes an LDAP query based on the given
+                                filter and corresponding to the schema definition. Then it passes on
+                                the field list to the next component via a <span class="bold"><strong>Main row </strong></span>link.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top"><p>Either <span class="bold"><strong>Built-in</strong></span>
+                                or <span class="bold"><strong>Repository</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: No
+                                property data stored centrally.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>:
+                                Select the repository file in which the properties are stored. The
+                                fields that follow are completed automatically using the data
+                                retrieved.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="18"><tr><td><img src="../images/Save_Icon.png" width="18"></td></tr></table></div>
+                        </td><td valign="top"><p>Click this icon to open a database connection
+                                wizard and store the database connection parameters you set in the
+                                component <span class="bold"><strong>Basic settings
+                                </strong></span>view.</p><p> For more information about setting up
+                                and storing database connection parameters, see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use an existing
+                                connection</em></span></p>
+                        </td><td valign="top"><p>Select this check box and click the relevant
+                                    <span class="bold"><strong>tLDAPConnection </strong></span>component on
+                                    the<span class="bold"><strong> Component list</strong></span> to reuse the
+                                connection details you already defined.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Host</em></span></p>
+                        </td><td valign="top"><p>LDAP Directory server IP address.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Port</em></span></p>
+                        </td><td valign="top"><p>Listening port number of server.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Base DN</em></span></p>
+                        </td><td valign="top"><p>Path to the user&#8217;s authorised tree leaf.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> To retrieve the full DN information, enter a field named
+                                        <span class="emphasis"><em>DN</em></span> in the schema, in either upper case
+                                    or lower case. </p></td></tr></table></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Protocol</em></span></p>
+                        </td><td valign="top"><p>Select the protocol type on the list.</p><p>
+                                <span class="bold"><strong>LDAP</strong></span> : no encryption is used</p><p>
+                                <span class="bold"><strong>LDAPS</strong></span>: secured LDAP. When this
+                                option is chosen, the <span class="bold"><strong>Advanced CA</strong></span>
+                                check box appears. Once selected, the advanced mode allows you to
+                                specify the directory and the keystore password of the certificate
+                                file for storing a specific CA. However, you can still deactivate
+                                this certificate validation by selecting the <span class="bold"><strong>Trust all certs</strong></span> check box.</p><p>
+                                <span class="bold"><strong>TLS</strong></span>: certificate is used When this
+                                option is chosen, the <span class="bold"><strong>Advanced CA</strong></span>
+                                check box appears and is used the same way as that of the <span class="bold"><strong>LDAPS</strong></span> type.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Authentication User</em></span> and
+                                    <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top"><p>Select the <span class="bold"><strong>Authentication</strong></span> check box if LDAP login is required.
+                                Note that the login must match the LDAP syntax requirement to be
+                                valid. e.g.: &#8220;cn=Directory Manager&#8221;.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Filter</em></span></p>
+                        </td><td valign="top"><p>Type in the filter as expected by the LDAP
+                                directory db. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Multi valued field
+                                separator</em></span></p>
+                        </td><td valign="top"><p>Type in the value separator in multi-value
+                                fields.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Alias dereferencing</em></span></p>
+                        </td><td valign="top"><p>Select the option on the list. <span class="bold"><strong>Never </strong></span>improves search performance if you
+                                are sure that no alias is to be dereferenced. By default, <span class="bold"><strong>Always</strong></span> is to be used:</p><p>
+                                <span class="bold"><strong>Always</strong></span>: Always dereference
+                                aliases</p><p>
+                                <span class="bold"><strong>Never</strong></span>: Never dereferences
+                                aliases.</p><p>
+                                <span class="bold"><strong>Searching</strong></span>:Dereferences aliases only
+                                after name resolution.</p><p>
+                                <span class="bold"><strong>Finding</strong></span>: Dereferences aliases only
+                                during name resolution</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Referral handling</em></span></p>
+                        </td><td valign="top"><p>Select the option on the list:</p><p>
+                                <span class="bold"><strong>Ignore</strong></span>: does not handle request
+                                redirections </p><p>
+                                <span class="bold"><strong>Follow</strong></span>:does handle request
+                                redirections</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Limit</em></span></p>
+                        </td><td valign="top"><p>Fill in a limit number of records to be read If
+                                needed.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Time Limit</em></span></p>
+                        </td><td valign="top"><p>Fill in a timeout period for the directory. access
+                            </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Paging</em></span></p>
+                        </td><td valign="top"><p>Specify the number of entries returned at a time
+                                by the LDAP server.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top"><p>This check box is selected by default. Clear the
+                                check box to skip the row on error and complete the process for
+                                error-free rows. If needed, you can retrieve the rows on error via a
+                                    <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Rejects</strong></span> link.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                    schema</em></span></p>
+                        </td><td valign="top"><p>A schema is a row description, i.e., it defines
+                                the number of fields to be processed and passed on to the next
+                                component. The schema is either <span class="bold"><strong>Built-in</strong></span> or stored remotely in the <span class="bold"><strong>Repository</strong></span>. </p><p> </p>
+                            
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: The
+                                schema is created and stored locally for this component only.
+                                Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>: The
+                                schema already exists and is stored in the Repository, hence can be
+                                reused. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component covers all
+                                possible LDAP queries. </p><p> Note: Press <span class="bold"><strong>Ctrl + Space bar</strong></span> to access the global
+                                variable list, including the <span class="bold"><strong>GetResultName</strong></span> variable to retrieve automatically the
+                                relevant Base. </p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Displaying LDAP directory&#8217;s filtered content"><div class="titlepage"><div><div><h3 class="title"><a name="Raa22008"></a>Scenario: Displaying LDAP directory&#8217;s filtered content</h3></div></div></div><p>The Job described below simply filters the LDAP directory and displays the
+                result on the console.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="293"><tr><td><img src="../images/Use_Case_tLDAPInput1.png" width="293"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Drop the <span class="bold"><strong>tLDAPInput</strong></span> component along with a
+                        <span class="bold"><strong>tLogRow</strong></span> from the <span class="bold"><strong>Palette</strong></span> to the design workspace.</p></li><li class="listitem"><p> Set the <span class="bold"><strong>tLDAPInput</strong></span> properties.</p></li><li class="listitem"><p> Set the <span class="bold"><strong>Property type </strong></span>on <span class="bold"><strong>Repository</strong></span> if you stored the LDAP connection details
+                    in the <span class="bold"><strong>Metadata Manager </strong></span>in the <span class="bold"><strong>Repository</strong></span>. Then select the relevant entry on the
+                    list. </p></li><li class="listitem"><p> In <span class="bold"><strong>Built-In</strong></span> mode, fill in the <span class="bold"><strong>Host</strong></span> and <span class="bold"><strong>Port</strong></span>
+                    information manually. Host can be the IP address of the LDAP directory server or
+                    its DNS name.</p></li><li class="listitem"><p> No particular <span class="bold"><strong>Base DN </strong></span>is to be set.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="502"><tr><td><img src="../images/Use_Case_tLDAPInput2.png" width="502"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Then select the relevant <span class="bold"><strong>Protocol</strong></span> on the
+                    list. In this example: a simple <span class="bold"><strong>LDAP</strong></span> protocol
+                    is used.</p></li><li class="listitem"><p> Select the <span class="bold"><strong>Authentication</strong></span> check box and fill
+                    in the login information if required to read the directory. In this use case, no
+                    authentication is needed.</p></li><li class="listitem"><p> In the <span class="bold"><strong>Filter</strong></span> area, type in the command, the
+                    data selection is based on. In this example, the filter is:
+                    </p><pre class="programlisting">(&amp;(objectClass=inetorgperson)&amp;(uid=PIERRE
+DUPONT)). </pre></li><li class="listitem"><p> Fill in <span class="bold"><strong>Multi-valued field separator </strong></span>with a
+                    comma as some fields may hold more than one value, separated by a comma. </p></li><li class="listitem"><p> As we don&#8217;t know if some aliases are used in the LDAP directory, select
+                        <span class="bold"><strong>Always </strong></span>on the list.</p></li><li class="listitem"><p> Set <span class="bold"><strong>Ignore</strong></span> as <span class="bold"><strong>Referral
+                        handling</strong></span>.</p></li><li class="listitem"><p> Set the limit to <span class="bold"><strong>100</strong></span> for this use
+                    case.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="457"><tr><td><img src="../images/Use_Case_tLDAPInput3.png" width="457"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Set the <span class="bold"><strong>Schema</strong></span> as required by your LDAP
+                    directory. In this example, the schema is made of 6 columns including the
+                            <code class="code">objectClass and </code><code class="code">uid
+                        columns which get filtered on.</code></p></li><li class="listitem"><p> In the <span class="bold"><strong>tLogRow</strong></span> component, no particular
+                    setting is required.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tLDAPInput4.png" width="100%"></td></tr></table></div><p>Only one entry of the directory corresponds to the filter criteria given in
+                the <span class="bold"><strong>tLDAPInput</strong></span> component.</p></div></div></body></html>

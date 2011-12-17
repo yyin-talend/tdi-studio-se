@@ -1,0 +1,298 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMatchGroup</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa78577.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tLaunchDQReports.html" title="tLaunchDQReports"><link rel="next" href="tMatchGroupHadoop.html" title="tMatchGroupHadoop"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tMatchGroup"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMatchGroup"></a>tMatchGroup</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tGroup_icon32_white.png" width="27"></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component will be available in the </em></span>
+					<span class="bold"><strong>Palette</strong></span>
+					<span class="emphasis"><em> of the studio on the condition that you have subscribed to the
+						relevant edition of </em></span>
+					<span class="bluebold">
+						Talend Enterprise Data Quality
+					</span>
+					<span class="emphasis"><em>.</em></span>
+				</p></td></tr></table></div><div class="section" title="tMatchGroup properties"><div class="titlepage"><div><div><h3 class="title"><a name="Raa75287"></a>tMatchGroup properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Data Quality</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tMatchGroup </strong></span>compares
+										columns in the input flow by using a defined matching method
+										and groups similar encountered duplicates together.</p>
+									<p>In defining a group, the first processed record of each
+										group is the master record of the group; the other records
+										are computed as to their distances from the master records
+										and then are distributed to the due master record
+										accordingly.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component helps ensuring the data quality of any
+										source data.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. The schema is either built-in or remote in the
+										Repository.</p>
+									<p> Click <span class="bold"><strong>Sync columns</strong></span> to
+										retrieve the schema from the previous component in the
+										Job.</p>
+									<p> The output schema of this component contains the
+										following fields:</p>
+									<p>
+										<span class="emphasis"><em>GID</em></span>: represents the group
+										identifier.</p>
+									<p>
+										<span class="emphasis"><em>GRP_SIZE</em></span>: counts the number of records
+										in the group, computed only on the master record.</p>
+									<p>
+										<span class="emphasis"><em>MASTER</em></span>: identifies the record used in
+										the matching comparisons. There is only one master record
+										per group.</p>
+									<p> Each input record will be compared to a master record, if
+										they match, it will be in the group.</p>
+									<p>
+										<span class="emphasis"><em>SCORE</em></span>: measures the distance between
+										the input record and the master record according to the
+										matching algorithm used.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: You create and
+										store the schema locally for this component only. Related
+										topic: see <span class="bluebold">Talend Enterprise Studio</span> User Guide.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: You have
+										already created and stored the schema in the Repository. You
+										can reuse it in other projects and job designs. Related
+										topic: see <span class="bluebold">Talend Enterprise Studio</span> User Guide.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><em>Key Definition</em></span>
+										</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>A configuration wizard is available to help you
+												complete this table. For further information, see
+												<a class="xref" href="tMatchGroup.html#ychen-20111011-dataquality-configuration_wizard" title="Configuration wizard">the section called &#8220;Configuration wizard&#8221;</a></p></td></tr></table></div><p>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Input Key Attribute</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select the column(s) from the input flow on which you want
+										to apply a matching algorithm.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Matching Type</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select the relevant matching algorithm from the
+										list:</p>
+									<p><span class="bold"><strong>Exact Match</strong></span>: matches each
+										processed entry to all possible reference entries with
+										exactly the same value.</p>
+									<p><span class="bold"><strong>Exact - ignore case</strong></span>:
+										matches each processed entry to all possible reference
+										entries with exactly the same value while ignoring the value
+										case.</p>
+									<p><span class="bold"><strong>Soundex</strong></span>: matches
+										processed entries according to a standard English phonetic
+										algorithm.</p>
+									<p><span class="bold"><strong>Levenshtein</strong></span>: Based on the
+										edit distance theory. It calculates the number of insertion,
+										deletion or substitution required for an entry to match the
+										reference entry. </p>
+									<p><span class="bold"><strong>Metaphone</strong></span>: Based on a
+										phonetic algorithm for indexing entries by their
+										pronunciation. It first loads the phonetics of all entries
+										of the lookup reference and checks all entries of the main
+										flow against the entries of the reference flow.</p>
+									<p><span class="bold"><strong>Double Metaphone</strong></span>: a new
+										version of the Metaphone phonetic algorithm, that produces
+										more accurate results than the original algorithm. It can
+										return both a primary and a secondary code for a string.
+										This accounts for some ambiguous cases as well as for
+										multiple variants of surnames with common ancestry.</p>
+									<p><span class="bold"><strong>Soundex FR</strong></span>: matches
+										processed entries according to a standard French phonetic
+										algorithm.</p>
+									<p><span class="bold"><strong>Jaro-Winkler</strong></span>: matches
+										processed entries according to spelling deviations.</p>
+									<p><span class="bold"><strong>q-grams</strong></span>: matches
+										processed entries by dividing strings into letter blocks of
+										length <code class="code">q</code> in order to create a number of <code class="code">q
+										</code>length grams. The matching result is given as the
+										number of q-gram matches over possible q-grams.</p>
+									<p><span class="bold"><strong>custom...</strong></span>: enables you to
+										load an external matching algorithm from a Java library. The
+											<span class="bold"><strong>custom matcher class</strong></span>
+										column alongside is activated when you selected this
+										option.</p>
+									<p> For further information about how to load an external
+										Java library, see <a class="xref" href="tLibraryLoad.html" title="tLibraryLoad">the section called &#8220;tLibraryLoad&#8221;</a>.</p>
+									<p> For further information about how to create a custom
+										matching algorithm, see <a class="xref" href="tRecordMatching.html#Raa71983" title="Creating a custom matching algorithm">the section called &#8220;Creating a custom matching algorithm&#8221;</a>.</p>
+									<p> For the related scenario about how to use a custom
+										matching algorithm, see <a class="xref" href="tRecordMatching.html#Raa86106" title="Scenario 2: Using a custom matching algorithm to match entries">the section called &#8220;Scenario 2: Using a custom matching algorithm to match entries&#8221;</a>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Confidence Weight</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Set a numerical weight for each attribute (column) of the
+										key definition. The values can be anything &gt;= 0.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><em>Blocking Definition</em></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Input Column</em></span>
+									</p>
+								</td><td valign="top">
+									<p>If required, select the column(s) from the input flow
+										according to which you want to partition the processed data
+										in blocks, this is usually referred to as &#8220;blocking&#8221;. </p>
+									<p>Blocking reduces the number of pairs of records that needs
+										to be examined. In blocking, input data is partitioned into
+										exhaustive blocks designed to increase the proportion of
+										matches observed while decreasing the number of pairs to
+										compare. Comparisons are restricted to record pairs within
+										each block.</p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Using blocking column(s) is very useful when you are
+											processing very big data.</p></td></tr></table></div>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Store on disk</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box if you want to store processed data
+										blocks on the disk to maximize system performance.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Matching Algorithm</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select an algorithm from the list - only one is available
+										for the time being. </p>
+									<p><span class="bold"><strong>Simple VSR Matcher</strong></span>: This
+										algorithm is based on a Vector Space Retrieval method that
+										specifies how two records may match.</p>
+									<p><span class="bold"><strong>Match Interval</strong></span>: Enter the
+										match probability. Two data records match when the
+										probability is above the set value.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Sort the output data by GID</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to group the output data by the
+										group ID.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Output distance details</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to add a fixed output column
+											<span class="emphasis"><em>MATCHING_DISTANCES</em></span> which gives the
+										details of the distance between each column.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is an intermediary step. It requires an
+										input flow as well as an output flow.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation/prerequisite</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>n/a</p>
+								</td></tr></tbody></table></div></div><div class="section" title="Configuration wizard"><div class="titlepage"><div><div><h3 class="title"><a name="ychen-20111011-dataquality-configuration_wizard"></a>Configuration wizard</h3></div></div></div><p>The configuration wizard is used to help you create the matching rule that
+					best fulfills your needs. Once you have configured the input data and linked the
+					data to the <span class="bold"><strong>tMatchGroup</strong></span> component, you can
+					right-click it on the workspace and from the contextual menu, select <span class="bold"><strong>Configuration Wizard</strong></span> to open it.</p><p>The following figure presents an example of accessing this wizard.</p><div class="mediaobject"><img src="../images/tmatchgroup-wizard_config.png"></div><p>In this example, the input component and the <span class="bold"><strong>tMatchGroup</strong></span> component are already configured and linked
+					together, so when you open the configuration wizard, this wizard retrieves the
+						<span class="bold"><strong>Key definition</strong></span> table as well as its
+					contents inside from the <span class="bold"><strong>Component</strong></span> view of
+						<span class="bold"><strong>tMatchGroup</strong></span>, executes it and displays the
+					matching results.</p><p>If there are no contents in the <span class="bold"><strong>Key
+						definition</strong></span> table, this wizard retrieves only the table.</p><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This <span class="bold"><strong>Configuration wizard</strong></span> cannot be
+						enabled until you have linked the input data to the <span class="bold"><strong>tMatchGroup</strong></span> component.</p></td></tr></table></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/match_studio.png" width="100%"></td></tr></table></div><p>This <span class="bold"><strong>Configuration wizard</strong></span> is composed of
+					three areas: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>the <span class="bold"><strong>Component</strong></span> view, which
+								reproduces the key fields of the <span class="bold"><strong>Basic
+									settings</strong></span> and the <span class="bold"><strong>Advanced
+									settings</strong></span> views of <span class="bold"><strong>tMatchGroup</strong></span>,</p></li><li class="listitem"><p>the matching chart, which presents the graphic matching
+								result,</p></li><li class="listitem"><p>the matching table, which presents the details of the matching
+								result.</p></li></ul></div><p>From the <span class="bold"><strong>Component</strong></span> view, you can edit an
+					existing matching rule or create a matching rule from scratch. The parameters
+					required to edit or create a matching rule are: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>The <span class="bold"><strong>Schema</strong></span> and the <span class="bold"><strong>Key definition</strong></span> parameters are the same as
+								those you can specify in the <span class="bold"><strong>Basic
+									settings</strong></span> view of the component.</p></li><li class="listitem"><p>The<span class="bold"><strong> Limit</strong></span> field indicates the
+								maximum number of rows to be processed by the matching rule(s) in
+								this wizard.</p></li><li class="listitem"><p>The <span class="bold"><strong>Match threshold</strong></span> field
+								corresponds to the <span class="bold"><strong>Match interval</strong></span>
+								field of the <span class="bold"><strong>Advanced settings</strong></span>
+								view.</p></li></ul></div><p>When you need to create alternative rules in the same configuration wizard,
+					you have to open other <span class="bold"><strong>Component</strong></span> views in
+					addition to the default one. In this situation, simply click the plus button as
+					many times as needed on the up-right corner of this <span class="bold"><strong>Component</strong></span> view and enter the required parameters in each
+					view.</p><p>Once a given matching rule is defined, click the <span class="bold"><strong>Refresh</strong></span> button to execute it. Then the matching result is
+					displayed in the matching chart and the matching table.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>To implement one of the alternative rules into the <span class="bold"><strong>tMatchGroup</strong></span> component, click the <span class="bold"><strong>Component</strong></span> view containing this rule to display it and click
+							<span class="bold"><strong>OK</strong></span> to validate this rule and close this
+						wizard.</p></td></tr></table></div><p>From the matching chart, you can have a global picture about the existing
+					duplicates of the analyzed data. </p><div class="mediaobject"><img src="../images/tmatchgroup-wizard_chart.png"></div><p>For example, in this figure, the matching chart indicates that: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>100 items in total are analyzed and arranged into 84 groups
+								according to the given rule.</p></li><li class="listitem"><p>When a group has no items, this chart does not display it.</p></li><li class="listitem"><p>75 groups have 1 item in each. These items are unique.</p></li><li class="listitem"><p>8 groups have 2 items in each. In each group, the 2 items are
+								duplicates of each other according to the given rule.</p></li><li class="listitem"><p>1 group has 9 items. They are duplicates of one another according
+								to the given rule.</p></li></ul></div><p>From the matching table, you can read details about the different
+					duplicates.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/tmatchgroup-wizard_table.png" width="100%"></td></tr></table></div><p>For example, the table in this figure indicates the details of each item and
+					colors each of them corresponding to the groups presented in the matching
+					chart.</p><p>You can click the <span class="bold"><strong>first</strong></span>, the <span class="bold"><strong>previous</strong></span>, the <span class="bold"><strong>next</strong></span>
+					or the <span class="bold"><strong>last</strong></span> buttons under the table to run
+					through all of the pages of the matching details.</p><p>At the end of the configuration, to implement the rule that satisfies you,
+					click the <span class="bold"><strong>Component</strong></span> view of this rule to
+					display it and then click <span class="bold"><strong>OK</strong></span>. The contents of
+					the active view is loaded into the corresponding fields of the <span class="bold"><strong>Component</strong></span> view of <span class="bold"><strong>tMatchGroup</strong></span> on the Design workspace.</p></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e193750"></a>Related scenarios</h3></div></div></div><p>For a related scenario, see <a class="xref" href="tGenKey.html#Raa99658" title="Scenario&nbsp;2: Comparing columns and grouping in the output flow duplicate records that have the same functional key">the section called &#8220;Scenario&nbsp;2: Comparing columns and grouping in the output flow duplicate
+					records that have the same functional key&#8221;</a>.</p></div></div></body></html>

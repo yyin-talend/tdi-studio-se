@@ -1,0 +1,142 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileInputMSDelimited</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapter&nbsp;9.&nbsp;File components"><link rel="prev" href="tFileInputMail.html" title="tFileInputMail"><link rel="next" href="tFileInputMSPositional.html" title="tFileInputMSPositional"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tFileInputMSDelimited"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileInputMSDelimited"></a>tFileInputMSDelimited</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFileInputMSDelimited_icon32.png" width="27"></td></tr></table></div><div class="section" title="tFileInputMSDelimited properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e176632"></a>tFileInputMSDelimited properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>File/Input</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tFileInputMSDelimited</strong></span> reads a
+                                complex multi-structured delimited file.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tFileInputMSDelimited</strong></span> opens a
+                                complex multi-structured file, reads its data structures (schemas)
+                                and then uses <span class="bold"><strong>Row</strong></span> links to send
+                                fields as defined in the different schemas to the next Job
+                                components.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Multi Schema Editor</em></span></p>
+                        </td><td valign="top">
+                            <p>The <span class="bold"><strong>[Multi Schema Editor]</strong></span> helps
+                                to build and configure the data flow in a multi-structure delimited
+                                file to associate one schema per output.</p>
+                            <p> For more information, see <a class="xref" href="tFileInputMSDelimited.html#Raa13068" title="The Multi Schema Editor">the section called &#8220;The Multi Schema Editor&#8221;</a>. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Output</em></span></p>
+                        </td><td valign="top">
+                            <p>Lists all the schemas you define in the <span class="bold"><strong>[Multi Schema Editor]</strong></span>, along with the related record
+                                type and the field separator that corresponds to every schema, if
+                                different field separators are used.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to stop the execution of the Job when an
+                                error occurs. Clear the check box to skip the row on error and
+                                complete the process for error-free rows.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Trim all column</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to remove leading and trailing whitespaces
+                                from defined columns.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Validate date</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to check the date format strictly against
+                                the input schema.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Advanced separator (for numbers)</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to modify the separators used for
+                                numbers:</p>
+                            <p>
+                                <span class="bold"><strong>Thousands separator</strong></span>: define
+                                separators for thousands.</p>
+                            <p>
+                                <span class="bold"><strong>Decimal separator</strong></span>: define
+                                separators for decimals.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Use this component to read multi-structured delimited files and
+                                separate fields contained in these files using a defined
+                                separator.</p>
+                        </td></tr></tbody></table></div><div class="section" title="The Multi Schema Editor"><div class="titlepage"><div><div><h4 class="title"><a name="Raa13068"></a>The Multi Schema Editor</h4></div></div></div><p>The <span class="bold"><strong>[Multi Schema Editor]</strong></span> enables you to:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> set the path to the source file,</p></li><li class="listitem"><p> define the source file properties,</p></li><li class="listitem"><p> define data structure for each of the output schemas.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> When you define data structure for each of the output schemas in the
+                        <span class="bold"><strong>[Multi Schema Editor]</strong></span>, column names in the
+                    different data structures automatically appear in the input schema lists of the
+                    components that come after <span class="bold"><strong>tFileInputMSDelimited</strong></span>. However, you can still define data
+                    structures directly in the <span class="bold"><strong>Basic settings</strong></span> view
+                    of each of these components.</p></td></tr></table></div><p>The <span class="bold"><strong>[Multi Schema Editor]</strong></span> also helps to declare
+                the schema that should act as the source schema (primary key) from the incoming data
+                to insure its unicity.The editor uses this mapping to associate all schemas
+                processed in the delimited file to the source schema in the same file.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> The editor opens with the first column, that usually holds the record type
+                    indicator, selected by default. However, once the editor is open, you can select
+                    the check box of any of the schema columns to define it as a primary key.</p></td></tr></table></div><p>The below figure illustrates an example of the <span class="bold"><strong>[Multi Schema
+                    Editor]</strong></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="521"><tr><td><img src="../images/Use_Case_tFileInputMSDelimeted1.png" width="521"></td></tr></table></div><p>For detailed information about the usage of the <span class="bold"><strong>Multi Schema
+                    Editor</strong></span>, see <a class="xref" href="tFileInputMSDelimited.html#Raa65005" title="Scenario: Reading a multi structure delimited file">the section called &#8220;Scenario: Reading a multi structure delimited file&#8221;</a>.</p></div></div><div class="section" title="Scenario: Reading a multi structure delimited file"><div class="titlepage"><div><div><h3 class="title"><a name="Raa65005"></a>Scenario: Reading a multi structure delimited file</h3></div></div></div><p>The following scenario creates a Java Job which aims at reading three schemas in a
+            delimited file and displaying their data structure on the <span class="bold"><strong>Run Job
+            </strong></span>console.</p><p>The delimited file processed in this example looks like the following:</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="285"><tr><td><img src="../images/Use_Case_tFileInputMSDelimeted2.png" width="285"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Drop a <span class="bold"><strong>tFileInputMSDelimited</strong></span> and <span class="bold"><strong>tLogRow </strong></span>(X3) components from the <span class="bold"><strong>Palette </strong></span>onto the design workspace.</p></li><li class="listitem"><p> Double-click <span class="bold"><strong>tFileInputMSDelimited </strong></span>to open
+                    the <span class="bold"><strong>Multi Schema Editor</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="528"><tr><td><img src="../images/Use_Case_tFileInputMSDelimeted.png" width="528"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Click <span class="bold"><strong>Browse...</strong></span> next to the <span class="bold"><strong>File name </strong></span>field to locate the multi schema delimited
+                    file you need to process.</p></li><li class="listitem"><p> In the <span class="bold"><strong>File Settings</strong></span> area:</p><p> -Select from the list the encoding type the source file is encoded in. This
+                    setting is meant to ensure encoding consistency throughout all input and output
+                    files.</p><p> -Select the field and row separators used in the source file.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Select the <span class="bold"><strong>Use Multiple Separator</strong></span> check box and
+                define the fields that follow accordingly if different field separators are used to
+                separate schemas in the source file.</p></td></tr></table></div><p>A preview of the source file data displays automatically in the <span class="bold"><strong>Preview</strong></span> panel.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tFileInputMSDelimeted1.png" width="100%"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+                <span class="bold"><strong>Column 0</strong></span> that usually holds the record type
+                indicator is selected by default. However, you can select the check box of any of
+                the other columns to define it as a primary key.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Click <span class="bold"><strong>Fetch Codes </strong></span>to the right of the
+                        <span class="bold"><strong>Preview </strong></span>panel to list the type of schema
+                    and records you have in the source file. In this scenario, the source file has
+                    three schema types (<span class="emphasis"><em>A, B, C</em></span>).</p></li><li class="listitem"><p> Click each schema type in the <span class="bold"><strong>Fetch Codes</strong></span>
+                    panel to display its data structure below the <span class="bold"><strong>Preview
+                    </strong></span>panel.</p></li><li class="listitem"><p> Click in the name cells and set column names for each of the selected
+                    schema.</p><p> In this scenario, column names read as the following:</p><p> -Schema <span class="emphasis"><em>A</em></span>: <span class="emphasis"><em>Type, DiscName, Author,
+                        Date</em></span>,</p><p> -Schema <span class="emphasis"><em>B</em></span>: <span class="emphasis"><em>Type, SongName</em></span>,</p><p> -Schema <span class="emphasis"><em>C</em></span>: <span class="emphasis"><em>Type,
+                    LibraryName</em></span>.</p></li></ul></div><p>You need now to set the primary key from the incoming data to insure its unicity
+                (<span class="emphasis"><em>DiscName</em></span> in this scenario). To do that:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the <span class="bold"><strong>Fetch Codes</strong></span> panel, select the schema
+                    holding the column you want to set as the primary key (schema
+                        <span class="emphasis"><em>A</em></span> in this scenario) to display its data
+                    structure.</p></li><li class="listitem"><p> Click in the <span class="emphasis"><em>Key</em></span> cell that corresponds to the
+                        <span class="emphasis"><em>DiscName</em></span> column and select the check box that
+                    displays.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="224"><tr><td><img src="../images/Use_Case_tFileInputMSDelimeted4.png" width="224"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Click anywhere in the editor and the <span class="emphasis"><em>false</em></span> in the
+                        <span class="emphasis"><em>Key</em></span> cell will become <span class="emphasis"><em>true</em></span>.</p></li></ul></div><p>You need now to declare the parent schema by which you want to group the other
+            &#8220;children&#8221; schemas (<span class="emphasis"><em>DiscName</em></span> in this scenario). To do that:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the <span class="bold"><strong>Fetch Codes</strong></span> panel, select schema
+                        <span class="emphasis"><em>B</em></span> and click the right arrow button to move it to the
+                    right.</p></li><li class="listitem"><p> Do the same with schema <span class="emphasis"><em>C</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="142"><tr><td><img src="../images/Use_Case_tFileInputMSDelimeted3.png" width="142"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> The <span class="bold"><strong>Cardinality</strong></span> field is not compulsory. It
+                helps you to define the number (or range) of fields in &#8220;children&#8221; schemas attached
+                to the parent schema. However, if you set the wrong number or range and try to
+                execute the Job, an error message will display.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the <span class="bold"><strong>[Multi Schema Editor]</strong></span>, click
+                        <span class="bold"><strong>OK</strong></span> to validate all the changes you did and
+                    close the editor.</p></li></ul></div><p>The three defined schemas along with the corresponding record types and field
+            separators display automatically in the <span class="bold"><strong>Basic settings</strong></span>
+            view of <span class="bold"><strong>tFileInputMSDelimited</strong></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="487"><tr><td><img src="../images/Use_Case_tFileInputMSDelimeted6.png" width="487"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the design workspace, right-click <span class="bold"><strong>tFileInputMSDelimited</strong></span> and connect it to <span class="bold"><strong>tLogRow1</strong></span>, <span class="bold"><strong>tLogRow2</strong></span>, and
+                        <span class="bold"><strong>tLogRow3</strong></span> using the <span class="bold"><strong>row_A_1</strong></span>, <span class="bold"><strong>row_B_1</strong></span>, and <span class="bold"><strong>row_C_1</strong></span> links respectively.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="339"><tr><td><img src="../images/Use_Case_tFileInputMSDelimeted5.png" width="339"></td></tr></table></div><p>The three schemas you defined in the <span class="bold"><strong>[Multi Schema
+                Editor]</strong></span> are automatically passed to the three <span class="bold"><strong>tLogRow</strong></span> components.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> If needed, click the <span class="bold"><strong>Edit schema</strong></span> button in
+                    the <span class="bold"><strong>Basic settings</strong></span> view of each of the
+                        <span class="bold"><strong>tLogRow</strong></span> components to view the input and
+                    output data structures you defined in the <span class="bold"><strong>Multi Schema
+                        Editor</strong></span> or to modify them.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="527"><tr><td><img src="../images/Use_Case_tFileInputMSDelimeted7.png" width="527"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Save your Job and click <span class="bold"><strong>F6</strong></span> to execute
+                    it.</p></li></ul></div><p>The multi schema delimited file is read row by row and the extracted fields are
+            displayed on the <span class="bold"><strong>Run Job</strong></span> console as defined in the
+                [<span class="bold"><strong>Multi Schema Editor]</strong></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="296"><tr><td><img src="../images/Use_Case_tFileInputMSDelimeted8.png" width="296"></td></tr></table></div></div></div></body></html>

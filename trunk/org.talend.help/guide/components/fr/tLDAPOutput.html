@@ -1,0 +1,303 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tLDAPOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tLDAPInput.html" title="tLDAPInput"><link rel="next" href="tLDAPRenameEntry.html" title="tLDAPRenameEntry"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tLDAPOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tLDAPOutput"></a>tLDAPOutput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tLDAPOutput_icon32.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tLDAPOutput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e97314"></a>Propri&eacute;t&eacute;s du tLDAPOutput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/LDAP</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tLDAPOutput</strong></span> &eacute;crit
+								dans un annuaire LDAP.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="bold"><strong>tLDAPOutput</strong></span> ex&eacute;cute une
+								requ&ecirc;te LDAP bas&eacute;e sur un filtre pr&eacute;d&eacute;fini et correspondant &agrave; un
+								sch&eacute;ma d&eacute;fini. Puis la liste de champ est transmise au composant
+								suivant via une connexion <span class="bold"><strong>Main
+								row</strong></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Peut &ecirc;tre Built-in ou Repository.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Propri&eacute;t&eacute;s utilis&eacute;es
+								ponctuellement.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository&nbsp;</strong></span>: S&eacute;lectionnez le
+								fichier dans lequel sont stock&eacute;es les propri&eacute;t&eacute;s du composant. Les
+								champs suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
+								collect&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="18"><tr><td><img src="../images/Save_Icon.png" width="18"></td></tr></table></div>
+						</td><td valign="top">
+							<p>Cliquez sur cette ic&ocirc;ne pour ouvrir l&#8217;assistant de configuration
+								de connexion &agrave; la base de donn&eacute;es et enregistrer les param&egrave;tres de
+								connexion que vous avez d&eacute;finis dans la vue <span class="bold"><strong>Basic settings </strong></span>du composant. </p>
+							<p>Pour plus d&#8217;informations sur comment d&eacute;finir et stocker des param&egrave;tres de connexion de
+								base de donn&eacute;es, consultez le<span class="bold"><strong> Guide
+									utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case et cliquez sur le composant <span class="bold"><strong>tLDAPConnection</strong></span> dans la liste <span class="bold"><strong>Component List</strong></span>, afin de r&eacute;utiliser les
+								informations de la connexion que vous avez pr&eacute;c&eacute;demment
+								d&eacute;finie.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Adresse IP du serveur d&#8217;annuaire LDAP.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Num&eacute;ro de port d&#8217;&eacute;coute du serveur.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Base DN</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Chemin d&#8217;acc&egrave;s &agrave; l&#8217;arborescence de l&#8217;utilisateur autoris&eacute;.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Protocol</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez le type de protocole dans la liste.</p>
+							<p><span class="bold"><strong>LDAP</strong></span>&nbsp;: aucun codage n&#8217;est utilis&eacute;</p>
+							<p><span class="bold"><strong>LDAPS&nbsp;</strong></span>: LDAP s&eacute;curis&eacute;. Quand cette option est
+								s&eacute;lectionn&eacute;e, la case <span class="bold"><strong>Advanced CA</strong></span>
+								appara&icirc;t. Une fois s&eacute;lectionn&eacute;, le mode avanc&eacute; vous permet de
+								sp&eacute;cifier le r&eacute;pertoire et le mot de passe de la cl&eacute; secr&egrave;te du
+								certificat pour le stockage d&#8217;un CA sp&eacute;cifique. Cependant, vous
+								pouvez toujours d&eacute;sactiver la validation du certificat, en cochant
+								la case <span class="bold"><strong>Trust all certs</strong></span>. </p>
+							<p><span class="bold"><strong>TLS</strong></span>&nbsp;: le certificat est utilis&eacute;. Quand cette option
+								est s&eacute;lectionn&eacute;e, la case <span class="bold"><strong>Advanced
+									CA</strong></span> appara&icirc;t et est utilis&eacute;e de la m&ecirc;me fa&ccedil;on que pour
+								le type <span class="bold"><strong>LPDAPS</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>User</em></span> et <span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Renseignez les champs <span class="bold"><strong>User</strong></span>
+								(utilisateur) et <span class="bold"><strong>Password</strong></span> (mot de
+								passe) conform&eacute;ment &agrave; l&#8217;annuaire.</p>
+							<p>Notez que le login doit correspondre &agrave; la syntaxe LDAP pour &ecirc;tre valide. Par exemple&nbsp;:
+								&#8220;cn=Directory Manager&#8221;.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Multi valued field separator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Caract&egrave;re, cha&icirc;ne ou expression r&eacute;guli&egrave;re s&eacute;parant les
+								informations dans un champ multi-valu&eacute;.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Alias dereferencing</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;option dans la liste. <span class="bold"><strong>Never
+								</strong></span>permet l&#8217;am&eacute;lioration des performances de recherche si
+								vous &ecirc;tes s&ucirc;r qu&#8217;aucun alias n&#8217;est d&eacute;r&eacute;f&eacute;renc&eacute;. Par d&eacute;faut, utilisez
+									<span class="bold"><strong>Always</strong></span>.</p>
+							<p><span class="bold"><strong>Always&nbsp;</strong></span>: les alias sont toujours d&eacute;r&eacute;f&eacute;renc&eacute;s.</p>
+							<p><span class="bold"><strong>Never&nbsp;</strong></span>: les alias ne sont jamais d&eacute;r&eacute;f&eacute;renc&eacute;s.</p>
+							<p><span class="bold"><strong>Searching&nbsp;</strong></span>: cette option d&eacute;r&eacute;f&eacute;rence les alias
+								uniquement apr&egrave;s la r&eacute;solution du nom.</p>
+							<p><span class="bold"><strong>Finding</strong></span>&nbsp;: cette option d&eacute;r&eacute;f&eacute;rence les alias
+								uniquement lors de la r&eacute;solution du nom.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Referral handling</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;option dans la liste&nbsp;:</p>
+							<p><span class="bold"><strong>Ignore</strong></span>&nbsp;: ne tient pas compte des redirections des
+								requ&ecirc;tes.</p>
+							<p><span class="bold"><strong>Follow&nbsp;</strong></span>: tient compte des redirections des
+								requ&ecirc;tes.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Insert mode</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;action dans la liste&nbsp;:</p>
+							<p><span class="bold"><strong>Add&nbsp;</strong></span>: ajoute une valeur dans un attribut
+									multi-valu&eacute;<span class="bold"><strong> </strong></span><span class="bold"><strong>Insert&nbsp;</strong></span>: ins&egrave;re de nouvelles
+								donn&eacute;es</p>
+							<p><span class="bold"><strong>Update&nbsp;</strong></span>: met &agrave; jour les donn&eacute;es existantes</p>
+							<p><span class="bold"><strong>Delete&nbsp;</strong></span>: supprime les donn&eacute;es s&eacute;lectionn&eacute;es de
+								l&#8217;annuaire</p>
+							<p><span class="bold"><strong>Insert or Update</strong></span>&nbsp;: ins&egrave;re et met &agrave; jour les
+								donn&eacute;es</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>DN Column Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez, &agrave; partir de la liste d&eacute;roulante, le type d&#8217;entr&eacute;e
+								LDAP utilis&eacute;. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (<span class="bold"><strong>Built-in</strong></span>)
+								soit distant dans le Repository.</p>
+							<p> </p>
+							
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+								conserv&eacute; ponctuellement pour ce composant seulement. Voir
+									&eacute;galement&nbsp;:<span class="bold"><strong> Guide Utilisateur</strong></span>
+								de <span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+								r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;:<span class="bold"><strong> Guide
+									Utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Die on error</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cette case est coch&eacute;e par d&eacute;faut et stoppe le Job en cas d&#8217;erreur.
+								D&eacute;cochez cette case pour terminer le traitement avec les lignes sans
+								erreur, et ignorer les lignes en erreur. Vous pouvez r&eacute;cup&eacute;rer les
+								lignes en erreur, si vous le souhaitez. Pour cela, utilisez un lien
+									<span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Reject</strong></span>.</p>
+						</td></tr><tr><td><span class="bold"><strong>Advanced settings</strong></span>
+						</td><td valign="top"><span class="italic">Use Attribute Options (for
+								update mode)</span></td><td valign="top">Cochez cette case afin de s&eacute;lectionner l'attribut
+							souhait&eacute; (y compris <span class="bold"><strong>dn</strong></span>, <span class="bold"><strong>dc</strong></span>, <span class="bold"><strong>ou</strong></span>,
+								<span class="bold"><strong>objectClass</strong></span>, <span class="bold"><strong>mail</strong></span> et <span class="bold"><strong>uid</strong></span>) et
+							l'op&eacute;ration correspondante (notamment <span class="bold"><strong>Add</strong></span>, <span class="bold"><strong>Replace</strong></span>, <span class="bold"><strong>Remove Attribute</strong></span>, et <span class="bold"><strong>Remove Value</strong></span>)</td></tr><tr><td valign="top">
+							<p> </p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant couvre toutes les requ&ecirc;tes LDAP possibles.</p>
+							<p>Note&nbsp;: Appuyez sur <span class="bold"><strong>Ctrl + Espace</strong></span> pour acc&eacute;der &agrave; la
+								liste des variables globales, inclus la variable <span class="bold"><strong>GetResultName</strong></span> permettant de r&eacute;cup&eacute;rer
+								automatiquement la base correspondante. Ce composant permet de faire
+								des actions sur une table ou les donn&eacute;es d&#8217;une table d&#8217;une base de
+								donn&eacute;es Oracle. Il permet aussi de cr&eacute;er un flux de rejet avec un
+								lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Reject</strong></span> filtrant les donn&eacute;es en erreur. Pour un
+								exemple d&#8217;utilisation, consultez <a class="xref" href="tMysqlOutput.html#Raa73790" title="Sc&eacute;nario&nbsp;3&nbsp;: R&eacute;cup&eacute;rer les donn&eacute;es erron&eacute;es &agrave; l&#8217;aide d&#8217;un lien Reject">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;3&nbsp;: R&eacute;cup&eacute;rer les donn&eacute;es erron&eacute;es &agrave; l&#8217;aide d&#8217;un lien Reject&nbsp;&raquo;</a> du
+								composant <span class="bold"><strong>tMysqlOutput</strong></span>.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Editer des donn&eacute;es dans un annuaire LDAP"><div class="titlepage"><div><div><h3 class="title"><a name="Raa38371"></a>Sc&eacute;nario&nbsp;: Editer des donn&eacute;es dans un annuaire LDAP</h3></div></div></div><p>Le sc&eacute;nario suivant d&eacute;crit un Job qui lit un annuaire LDAP, met &agrave; jour l&#8217;e-mail d&#8217;une entr&eacute;e
+			s&eacute;lectionn&eacute;e et affiche la sortie avant de mettre &agrave; jour l&#8217;annuaire LDAP en sortie.
+			C&#8217;est-&agrave;-dire qu&#8217;aucun alias n&#8217;est d&eacute;r&eacute;f&eacute;renc&eacute; et qu&#8217;aucune requ&ecirc;te n&#8217;est redirig&eacute;e. Ce
+			sc&eacute;nario est bas&eacute; sur le sc&eacute;nario du <span class="bold"><strong>LDAPInput</strong></span> (cf.
+				<a class="xref" href="tLDAPInput.html#Raa32404" title="Sc&eacute;nario&nbsp;: Afficher le contenu filtr&eacute; d&#8217;un annuaire LDAP">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Afficher le contenu filtr&eacute; d&#8217;un annuaire LDAP&nbsp;&raquo;</a>). Le r&eacute;sultat obtenu est une entr&eacute;e simple, correspondant
+			&agrave; une personne organisationnelle dont l&#8217;e-mail est mis &agrave; jour.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="512"><tr><td><img src="../images/Use_Case_tLDAPOutput1.png" width="512"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez et d&eacute;posez les composants <span class="bold"><strong>tLDAPInput</strong></span>,
+						<span class="bold"><strong>tLDAPOutput</strong></span>, <span class="bold"><strong>tMap</strong></span> et <span class="bold"><strong>tLogRow</strong></span> dans l&#8217;espace
+					de mod&eacute;lisation.</p></li><li class="listitem"><p>Connectez le composant d&#8217;entr&eacute;e au <span class="bold"><strong>tMap</strong></span> puis
+					au <span class="bold"><strong>tLogRow</strong></span> puis au composant de sortie.</p></li><li class="listitem"><p>Dans la vue <span class="bold"><strong>Component</strong></span> du <span class="bold"><strong>tLDAPInput</strong></span>, param&eacute;trez les informations de connexion au serveur
+					d&#8217;annuaire LDAP, ainsi que les filtres tel que d&eacute;crit dans <a class="xref" href="tLDAPInput.html#Raa32404" title="Sc&eacute;nario&nbsp;: Afficher le contenu filtr&eacute; d&#8217;un annuaire LDAP">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Afficher le contenu filtr&eacute; d&#8217;un annuaire LDAP&nbsp;&raquo;</a>.</p></li><li class="listitem"><p>Simplifiez le sch&eacute;ma en enlevant les champs suivants&nbsp;:
+					<span class="emphasis"><em>dc</em></span>, <span class="emphasis"><em>ou</em></span>,
+						<span class="emphasis"><em>objectclass</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="457"><tr><td><img src="../images/Use_Case_tLDAPOutput2.png" width="457"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Puis ouvrez le mapper pour d&eacute;finir les changements &agrave; ex&eacute;cuter.</p></li><li class="listitem"><p>Glissez et d&eacute;posez la colonne <span class="emphasis"><em>uid</em></span> de la table d&#8217;entr&eacute;e
+					(input) &agrave; la table de sortie (output) puisque aucune modification n&#8217;est
+					n&eacute;cessaire pour cette colonne.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="513"><tr><td><img src="../images/Use_Case_tLDAPOutput3.png" width="513"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Expression</strong></span> de la colonne
+						<span class="emphasis"><em>dn</em></span> de la table de sortie (output), saisissez
+					l&#8217;expression exacte attendue par le serveur LDAP afin qu&#8217;il atteigne
+					l&#8217;arborescence souhait&eacute;e et permette d&#8217;&eacute;crire dans l&#8217;annuaire, &agrave; condition que
+					vous n&#8217;ayez pas d&eacute;j&agrave; renseign&eacute; le champ <span class="bold"><strong>Base DN</strong></span>
+					du composant <span class="bold"><strong>tLDAPOutput</strong></span>.</p></li><li class="listitem"><p>Dans cet exemple, la variable globale <span class="bold"><strong>GetResultName</strong></span> est utilis&eacute;e pour r&eacute;cup&eacute;rer automatiquement le
+					chemin d&#8217;acc&egrave;s. Appuyez sur <span class="bold"><strong>Ctrl+Espace</strong></span> pour
+					acc&eacute;der &agrave; la liste de variable et s&eacute;lectionnez
+						<code class="code">tLDAPInput_1_RESULT_NAME</code>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Expression</strong></span> de la colonne
+						<span class="emphasis"><em>mail</em></span>, saisissez l&#8217;adresse e-mail qui remplacera celle
+					obsol&egrave;te dans l&#8217;annuaire LDAP. Dans cet exemple, le nouvel e-mail est&nbsp;:
+						<span class="emphasis"><em>Pierre.Dupont@talend.com</em></span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider les
+					modifications.</p></li><li class="listitem"><p>Le composant <span class="bold"><strong>tLogRow</strong></span> ne n&eacute;cessite pas de
+					param&eacute;trage particulier.</p></li><li class="listitem"><p>Puis s&eacute;lectionnez le composant <span class="bold"><strong>tLDAPOutput</strong></span>
+					pour d&eacute;finir les propri&eacute;t&eacute;s d&#8217;&eacute;criture dans l&#8217;annuaire.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="478"><tr><td><img src="../images/Use_Case_tLDAPOutput5.png" width="478"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>D&eacute;finissez manuellement les champs <span class="bold"><strong>Port</strong></span> et
+						<span class="bold"><strong>Host</strong></span> si ces informations ne sont pas
+					stock&eacute;es dans le <span class="bold"><strong>Repository</strong></span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Base DN</strong></span>, d&eacute;finissez la plus
+					haute arborescence &agrave; laquelle vous avez acc&egrave;s. Si vous n&#8217;avez pas d&eacute;fini le
+					chemin complet et exact au DN cible, d&eacute;finissez-le ici. Dans cet exemple, le DN
+					complet est fournit par la sortie <span class="emphasis"><em>dn</em></span> du composant <span class="bold"><strong>tMap</strong></span>, Ainsi, seule la plus haute arborescence
+					accessible est fournie&nbsp;: <span class="emphasis"><em>o=directoryRoot</em></span>.</p></li><li class="listitem"><p>S&eacute;lectionnez le protocole &agrave; utiliser&nbsp;: <span class="bold"><strong>LDAP</strong></span>
+					pour cet exemple.</p></li><li class="listitem"><p>Puis renseignez les champs <span class="bold"><strong>User</strong></span> et <span class="bold"><strong>Password</strong></span> attendus par l&#8217;annuaire LDAP.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Multi-valued field separator</strong></span>,
+					saisissez une virgule afin de s&eacute;parer les champs contenant plusieurs valeurs
+					s&eacute;par&eacute;es par des virgules.</p></li><li class="listitem"><p>Laissez les param&egrave;tres par d&eacute;faut des champs <span class="bold"><strong>Alias
+						Dereferencing</strong></span> et <span class="bold"><strong>Referral
+						Handling</strong></span>, c&#8217;est-&agrave;-dire respectivement <span class="bold"><strong>Always</strong></span> et <span class="bold"><strong>Ignore</strong></span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Insert mode</strong></span>, s&eacute;lectionnez
+					l&#8217;option <span class="bold"><strong>Update</strong></span> pour cet exemple (l&#8217;adresse
+					email).</p></li><li class="listitem"><p>Le sch&eacute;ma est r&eacute;cup&eacute;r&eacute; du composant pr&eacute;c&eacute;dent &agrave; l&#8217;aide d&#8217;une op&eacute;ration de
+					propagation.</p></li><li class="listitem"><p>Enregistrez le Job et ex&eacute;cutez-le en appuyant sur la touche <span class="bold"><strong>F6</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="522"><tr><td><img src="../images/Use_Case_tLDAPOutput4.png" width="522"></td></tr></table></div><p>La sortie montre les champs suivants&nbsp;: <span class="emphasis"><em>dn</em></span>,
+				<span class="emphasis"><em>uid</em></span> et <span class="emphasis"><em>mail</em></span> comme d&eacute;fini dans le
+			Job.</p></div></div></body></html>

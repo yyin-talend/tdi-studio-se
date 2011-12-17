@@ -1,0 +1,178 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFSSort</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa55271.html" title="Chapitre&nbsp;11.&nbsp;Composants FileScale"><link rel="prev" href="tFSPartitionFile.html" title="tFSPartitionFile"><link rel="next" href="tFSTransform.html" title="tFSTransform"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tFSSort"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFSSort"></a>tFSSort</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFSSort_icon32.png" width="27"></td></tr></table></div><a name="Xaa1712901"></a><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+            <span class="emphasis"><em>Ce composant est disponible dans la </em></span><span class="bold"><strong>Palette
+            </strong></span><span class="emphasis"><em>du studio uniquement si vous avez souscrit &agrave; l&#8217;&eacute;dition
+                de</em></span>
+            <span class="bluebold">Talend Enterprise MDM Studio</span>. <span class="emphasis"><em>Pour plus
+                        d&#8217;informations concernant le mode Massively Parallel eXtension, consultez le
+                    </em></span><span class="bold"><strong>Guide Utilisateur</strong></span><span class="emphasis"><em> de
+                    </em></span><span class="bluebold">Talend Enterprise MDM Studio</span><span class="emphasis"><em>.</em></span></p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tFSSort"><div class="titlepage"><div><div><h3 class="title"><a name="d0e246093"></a>Propri&eacute;t&eacute;s du tFSSort</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>FileScale</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tFSSort </strong></span>trie des donn&eacute;es d&#8217;entr&eacute;e sur
+                                certains crit&egrave;res et dans un certain ordre en fonction d&#8217;une ou
+                                plusieurs colonnes. Ce composant permet de trier tr&egrave;s rapidement les
+                                fichiers volumineux.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tFSSort</strong></span> d&#8217;&eacute;tablir des m&eacute;triques et des tables de
+                                classification. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. Le sch&eacute;ma est soit local (built-in) soit distant dans le
+                                Repository.</p><p> Cliquez sur <span class="bold"><strong>Edit
+                                    Schema</strong></span> pour modifier le sch&eacute;ma.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Si vous modifiez le sch&eacute;ma, il se met au&shy;tomatiquement en
+                                    built-in.</p></td></tr></table></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le
+                                sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut
+                                &ecirc;tre r&eacute;utilis&eacute; dans divers projets et job designs. Voir &eacute;galement&nbsp;le
+                                    <span class="bold"><strong>Guide Utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le
+                                sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; pour ce composant uniquement. Voir
+                                &eacute;galement&nbsp;le <span class="bold"><strong>Guide Utilisateur</strong></span> de
+                                    <span class="bluebold">Talend Enterprise Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top"><p>Peut &ecirc;tre Built-in ou Repository. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>:
+                                Propri&eacute;t&eacute;s utilis&eacute;es ponctuellement.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>&nbsp;:
+                                S&eacute;lectionnez le fichier de propri&eacute;t&eacute;s du composant. Les champs
+                                suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
+                                collect&eacute;es.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Input File Name</em></span></p>
+                        </td><td valign="top"><p>Nom du fichier contenant les donn&eacute;es que vous
+                                souhaitez filtrer.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Output File Name</em></span></p>
+                        </td><td valign="top"><p>Nom du fichier dans lequel vous souhaitez &eacute;crire
+                                les donn&eacute;es filtr&eacute;es.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Record separator</em></span>
+                                (char)</p>
+                        </td><td valign="top"><p>Caract&egrave;re, cha&icirc;ne ou expression r&eacute;guli&egrave;re s&eacute;parant
+                                les lignes.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Field separator</em></span> (char)</p>
+                        </td><td valign="top"><p>Caract&egrave;re, cha&icirc;ne ou expression r&eacute;guli&egrave;re s&eacute;parant
+                                les champs.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Header</em></span></p>
+                        </td><td valign="top"><p>Nombre de lignes d&#8217;en-t&ecirc;te &agrave; ignorer en d&eacute;but de
+                                fichier.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Footer</em></span></p>
+                        </td><td valign="top"><p>Nombre de lignes &agrave; ignorer en fin de
+                                fichier.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Criteria</em></span></p>
+                        </td><td valign="top"><p>Cliquez sur le bouton plus (+) pour ajouter autant
+                                de lignes que n&eacute;cessaire pour v&eacute;rifier que le fichier source est
+                                bien tri&eacute;.</p><p>
+                                <span class="bold"><strong>Schema column</strong></span>&nbsp;: Cliquez dans la
+                                cellule est s&eacute;lectionn&eacute; le nom de la colonne sur laquelle vous
+                                souhaitez vous baser pour trier le fichier </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> L&#8217;ordre est essentiel puisqu&#8217;il d&eacute;termine la priorit&eacute; de
+                                    tri.</p></td></tr></table></div>
+                            <p><span class="bold"><strong>Sort type</strong></span>&nbsp;: Cliquez dans le
+                                cellule et s&eacute;lectionnez le type de tri&nbsp;: num&eacute;rique ou
+                                alphab&eacute;tique.</p><p>
+                                <span class="bold"><strong>Order type&nbsp;</strong></span>: Cliquez dans la
+                                cellule et s&eacute;lectionnez l&#8217;ordre de tri&nbsp;: ascendant ou
+                                descendant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Generate FSLang File</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour g&eacute;n&eacute;rer le fichier FSLang
+                                correspondant &agrave; votre Job et cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>FSLang File Name</strong></span> pour sp&eacute;cifier son
+                                chemin d&#8217;acc&egrave;s et son nom.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Assign FileScale Path</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case puis cliquez sur le bouton
+                                    <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>FileScale Path</strong></span> pour s&eacute;lectionner le
+                                fichier ex&eacute;cutable correspondant au programme FileScale permettant
+                                d&#8217;ex&eacute;cuter le composant.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Specify Number of Process
+                                    Child</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case et saisissez le nombre de
+                                process fils &agrave; utiliser pour l&#8217;ex&eacute;cution de l&#8217;agr&eacute;gation.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Custom FileScale Parameter (separated by
+                                    ,)</em></span></p>
+                        </td><td valign="top"><p>Saisissez les param&egrave;tres pour chaque op&eacute;ration
+                                sp&eacute;cifique que vous souhaitez ajouter &agrave; l&#8217;appel de l&#8217;ex&eacute;cutable
+                                FileScale.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant traite des
+                                fichiers, ainsi il ne n&eacute;cessite pas de flux de donn&eacute;es en entr&eacute;e ou
+                                en sortie. Il sert &agrave; v&eacute;rifier les donn&eacute;es contenues dans des
+                                fichiers volumineux.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>La limitation d&eacute;pend des
+                                limites de la m&eacute;moire physique et de l&#8217;architecture du processeur.
+                                Par exemple, la taille totale des fichiers trait&eacute;s ne peut pas
+                                exc&eacute;der la limite du syst&egrave;me de fichiers pour supporter les fichiers
+                                tr&egrave;s volumineux (maximum de la valeur 64&nbsp;bits sign&eacute;e).</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Trier les entr&eacute;es d&#8217;un fichier volumineux"><div class="titlepage"><div><div><h3 class="title"><a name="Raa72636"></a>Sc&eacute;nario&nbsp;: Trier les entr&eacute;es d&#8217;un fichier volumineux</h3></div></div></div><p>Ce sc&eacute;nario a &eacute;t&eacute; cr&eacute;&eacute; en Java et d&eacute;crit un Job triant, en quelques minutes, un tr&egrave;s
+            gros volume de donn&eacute;es (10 000 000 lignes) d&#8217;un fichier volumineux en fonction de deux
+            crit&egrave;res.</p><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+                <span class="emphasis"><em>Assurez-vous d&#8217;avoir bien enregistr&eacute; localement le fichier ex&eacute;cutable
+                    correspondant &agrave; votre syst&egrave;me d&#8217;exploitation afin de pouvoir indiquer son chemin
+                    d&#8217;acc&egrave;s dans </em></span><span class="bluebold">Talend Enterprise Studio</span><span class="emphasis"><em>.</em></span></p></td></tr></table></div><p>Dans ce sc&eacute;nario, vous avez d&eacute;j&agrave; centralis&eacute; le sch&eacute;ma du fichier d&#8217;entr&eacute;e dans le
+                <span class="bold"><strong>Repository</strong></span>. Pour plus d&#8217;informations concernant la
+            cr&eacute;ation et l&#8217;utilisation de m&eacute;tadonn&eacute;es de sch&eacute;mas dans le <span class="bold"><strong>Repository</strong></span>, consultez le <span class="bold"><strong>Guide
+                Utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p><p>Le fichier d&#8217;entr&eacute;e contient 10&nbsp;colonnes&nbsp;: <span class="emphasis"><em>id, surname, firstname, zipcode,
+                city, dateofbirth, streetname, streetnr, statecode,</em></span> et
+                <span class="emphasis"><em>state</em></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="449"><tr><td><img src="../images/Use_Case_tFSSort1.png" width="449"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans le <span class="bold"><strong>Repository</strong></span>, d&eacute;veloppez le noeud
+                        <span class="bold"><strong>Metadata</strong></span> et le noeud de la m&eacute;tadonn&eacute;e que
+                    vous venez de cr&eacute;er contenant les sch&eacute;mas d&#8217;entr&eacute;e et glissez ce noeud dans le
+                    Job designer.</p><p> La bo&icirc;te de dialogue <span class="bold"><strong>[Components]</strong></span>
+                    appara&icirc;t.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="205"><tr><td><img src="../images/Use_Case_tFSSort2.png" width="205"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> S&eacute;lectionnez le composant <span class="bold"><strong>tFSSort</strong></span> dans la
+                    liste et cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                    dialogue.</p><p> Le composant <span class="bold"><strong>tFSSort</strong></span> appara&icirc;t dans le Job
+                    designer.</p></li><li class="listitem"><p> Double-cliquez sur le composant <span class="bold"><strong>tFSSort</strong></span> pour
+                    param&eacute;trer ses propri&eacute;t&eacute;s dans l&#8217;onglet <span class="bold"><strong>Basic
+                        settings</strong></span> de la vue <span class="bold"><strong>Component</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="518"><tr><td><img src="../images/Use_Case_tFSSort.png" width="518"></td></tr></table></div><p>Tous les champs de propri&eacute;t&eacute;s du <span class="bold"><strong>tFSSort</strong></span> sont
+            automatiquement renseign&eacute;s. Si vous n&#8217;avez pas d&eacute;fini le sch&eacute;ma d&#8217;entr&eacute;e dans les
+            m&eacute;tadonn&eacute;es du Repository, renseignez manuellement ces informations apr&egrave;s avoir
+            s&eacute;lectionn&eacute; le mode <span class="bold"><strong>Built-in</strong></span> dans les listes <span class="bold"><strong>Schema Type</strong></span> et <span class="bold"><strong>Property
+            Type</strong></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans le champ <span class="bold"><strong>Output File Name</strong></span>, indiquez le
+                    nom et le chemin d&#8217;acc&egrave;s au fichier de sortie contenant les donn&eacute;es
+                    tri&eacute;es.</p></li><li class="listitem"><p> Dans la zone <span class="bold"><strong>Criteria</strong></span>, cliquez sur le bouton
+                        <span class="bold"><strong>[+]</strong></span> pour ajouter des colonnes &agrave; la liste,
+                    puis s&eacute;lectionnez les colonnes du sch&eacute;ma sur lesquels vous souhaitez baser votre
+                    tri.</p><p> Dans ce sc&eacute;nario, l&#8217;objectif est de trier les donn&eacute;es en fonction des
+                    colonnes <span class="emphasis"><em>city</em></span> et <span class="emphasis"><em>surname</em></span> et de trier
+                    les donn&eacute;es par ordre alphab&eacute;tique ascendant.</p></li><li class="listitem"><p> Dans les colonnes <span class="bold"><strong>Sort type</strong></span>, cliquez dans la
+                    cellule et s&eacute;lectionnez <span class="bold"><strong>alpha</strong></span> pour indiquer que
+                    vous souhaitez trier les donn&eacute;es par ordre alphab&eacute;tique</p></li><li class="listitem"><p> Dans la colonne <span class="bold"><strong>Order type</strong></span>, cliquez dans la
+                    cellule et s&eacute;lectionnez <span class="bold"><strong>asc</strong></span> pour indiquer que
+                    les donn&eacute;es seront tri&eacute;es par ordre ascendant.</p></li><li class="listitem"><p> Cliquez sur l&#8217;onglet <span class="bold"><strong>Advanced settings</strong></span> pour
+                    param&eacute;trer les propri&eacute;t&eacute;s avanc&eacute;es du composant et cochez la case <span class="bold"><strong>Assign FileScale Path</strong></span> et dans le champ <span class="bold"><strong>FileScale Path</strong></span>, indiquez le chemin d&#8217;acc&egrave;s au fichier
+                    ex&eacute;cutable correspondant &agrave; votre syst&egrave;me d&#8217;exploitation.</p></li><li class="listitem"><p> Enregistrez le Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="321"><tr><td><img src="../images/Use_Case_tFSSort3.png" width="321"></td></tr></table></div><p>Une barre de progression appara&icirc;t sous le composant <span class="bold"><strong>tFSSort</strong></span> dans le Job designer pour montrer le pourcentage de progression
+            de l&#8217;op&eacute;ration de tri. Cette barre de progression vous montrera la rapidit&eacute; de
+            l&#8217;ex&eacute;cution de l&#8217;op&eacute;ration de tri sur un tr&egrave;s grand volume de donn&eacute;es.</p><p>Lorsque le pourcentage de progression atteint les 100%, les donn&eacute;es tri&eacute;es en fonction
+            des colonnes <span class="emphasis"><em>city</em></span> et <span class="emphasis"><em>surname</em></span> sont &eacute;crites dans
+            le fichier de sortie sp&eacute;cifi&eacute;.</p></div></div></body></html>

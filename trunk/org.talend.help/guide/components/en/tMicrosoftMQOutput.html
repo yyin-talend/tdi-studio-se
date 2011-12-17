@@ -1,0 +1,88 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMicrosoftMQOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch10.html" title="Chapter&nbsp;10.&nbsp;Internet components"><link rel="prev" href="tMicrosoftMQInput.html" title="tMicrosoftMQInput"><link rel="next" href="tMomCommit.html" title="tMomCommit"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tMicrosoftMQOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMicrosoftMQOutput"></a>tMicrosoftMQOutput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tMicrosoftMQOutput_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tMicrosoftMQOutput Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e195082"></a>tMicrosoftMQOutput Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Internet/MOM and JMS </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component writes a defined column of given inflow data to
+                                Microsoft message queue (only support String type).</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component makes it possible to write messages to Microsoft
+                                message queue.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>PROPERTY</em></span></p>
+                        </td><td valign="top">
+                            <p>Either<span class="bold"><strong> Built-in</strong></span> or <span class="bold"><strong>Repository</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: No property data stored
+                                centrally. Enter properties manually</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: Select the repository
+                                file where properties are stored. The fields that come after are
+                                pre-filled in using the fetched data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Host</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the Host name or the IP address of the host server.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Queue</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the name of the queue which you want write a given message
+                                in. This queue can be created automatically on the fly if it does
+                                not exist then.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Message column</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the column as message to be written to Microsoft message
+                                queue. The selected column must be of String type.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component must be linked to an input or intermediary
+                                component.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Connections</strong></span></p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>Outgoing links (from one component to another):</p>
+                            <p>
+                                <span class="bold"><strong>Row</strong></span>: Main, Iterate</p>
+                            <p>
+                                <span class="bold"><strong>Trigger</strong></span>: Run if, On Component Ok;
+                                On Component Error.</p>
+                            <p> </p>
+                            <p> Incoming links (from one component to another):</p>
+                            <p>
+                                <span class="bold"><strong>Row</strong></span>: Main; Reject; Iterate;</p>
+                            <p>
+                                <span class="bold"><strong>Trigger</strong></span>: Run if, On Subjob Ok, On
+                                Subjob Error; On Component Ok, On Component Error.</p>
+                            <p> </p>
+                            <p> For further information regarding connections, see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>The message to be output cannot be null.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e195320"></a>Related scenario</h3></div></div></div><p>For a related scenario<a class="xref" href="tMicrosoftMQInput.html#Raa92810" title="Scenario: Writing and fetching queuing messages from Microsoft message queue">the section called &#8220;Scenario: Writing and fetching queuing messages from Microsoft message queue&#8221;</a></p></div></div></body></html>

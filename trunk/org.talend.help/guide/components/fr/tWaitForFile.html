@@ -1,0 +1,178 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tWaitForFile</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch13.html" title="Chapitre&nbsp;13.&nbsp;Composants Orchestration"><link rel="prev" href="tSleep.html" title="tSleep"><link rel="next" href="tWaitForSocket.html" title="tWaitForSocket"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tWaitForFile"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tWaitForFile"></a>tWaitForFile</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tWaitForFile_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tWaitForFile"><div class="titlepage"><div><div><h3 class="title"><a name="d0e225706"></a>Propri&eacute;t&eacute;s du tWaitForFile</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Orchestration</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tWaitForFile</strong></span> fait une boucle sur un
+                                r&eacute;pertoire donn&eacute; &agrave; la recherche d&#8217;ajout ou de suppression de fichier
+                                puis d&eacute;clenche un sous-Job lorsque la condition est
+                                rencontr&eacute;e.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant permet de
+                                d&eacute;clencher un Job en fonction d&#8217;une condition li&eacute;e &agrave; la pr&eacute;sence ou
+                                au retrait d&#8217;un fichier.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Time (in seconds) between
+                                    iterations</em></span></p>
+                        </td><td valign="top"><p>Param&eacute;trez l&#8217;intervalle de temps entre chaque
+                                v&eacute;rification du fichier (en secondes).</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Max. number of iterations (infinite loop
+                                    if empty)</em></span></p>
+                        </td><td valign="top"><p>Nombre de v&eacute;rifications &agrave; effectuer avant que le
+                                Job ne s&#8217;arr&ecirc;te.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Directory to scan</em></span></p>
+                        </td><td valign="top"><p>Nom du r&eacute;pertoire &agrave; v&eacute;rifier.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>File mask</em></span></p>
+                        </td><td valign="top"><p>Masque du fichier recherch&eacute;.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Include subdirectories</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour inclure les
+                                sous-dossiers.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Case sensitive</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour tenir compte de la
+                                casse.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Include present file</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour inclure le fichier
+                                courant.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Trigger action when </em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez la condition &agrave; remplir pour effectuer
+                                l&#8217;action&nbsp;:</p><p>
+                                <span class="bold"><strong>A file is created</strong></span>&nbsp;: un fichier est
+                                cr&eacute;&eacute;.</p><p>
+                                <span class="bold"><strong>A file is deleted</strong></span>&nbsp;: un fichier est
+                                supprim&eacute;.</p><p>
+                                <span class="bold"><strong>A file is updated</strong></span>&nbsp;: un fichier est
+                                mis &agrave; jour</p><p>
+                                <span class="bold"><strong>A file is created or updated or
+                                    deleted</strong></span>&nbsp;: un fichier est cr&eacute;&eacute;, supprim&eacute; ou mis &agrave;
+                                jour.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Then</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez l&#8217;action &agrave; effectuer&nbsp;: soit stopper
+                                l&#8217;it&eacute;ration lorsque la condition est rencontr&eacute;e (<span class="bold"><strong>exit loop</strong></span>) soit continuer la boucle
+                                jusqu&#8217;&agrave; ce que le nombre maximum d&#8217;it&eacute;rations soit atteint
+                                    (<span class="bold"><strong>continue loop</strong></span>).</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. Le sch&eacute;ma est soit local (built-in) soit distant dans le
+                                Repository.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le
+                                sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; pour ce composant uniquement. Voir
+                                &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de
+                                    <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le
+                                sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut
+                                &ecirc;tre r&eacute;utilisable dans divers projets et Job designs. Voir &eacute;galement
+                                    le<span class="bold"><strong>Guide utilisateur </strong></span>de
+                                    <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Wait for file to be
+                                released</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case afin que le sous-job ne se
+                                d&eacute;clenche qu&#8217;apr&egrave;s la fin de l&#8217;insertion/de la mise &agrave; jour/de la
+                                suppression. Si l&#8217;op&eacute;ration n&#8217;est pas termin&eacute;e, le sous-job ne se
+                                d&eacute;clenchera pas.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant est un
+                                composant de d&eacute;but (ou de d&eacute;clenchement) pour le sous-Job ex&eacute;cut&eacute; en
+                                fonction de la condition &eacute;tablie. Ainsi, ce composant doit &ecirc;tre
+                                connect&eacute; &agrave; un sous-job via un lien Iterate.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Global
+                                Variables</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Current</strong></span>
+                                <span class="bold"><strong>iteration</strong></span>&nbsp;: indique le nombre
+                                d&#8217;it&eacute;rations. Disponible comme variable <span class="bold"><strong>Flow</strong></span>.</p><p> Retourne un
+                                entier.</p><p> </p><p>
+                                <span class="bold"><strong>Present File</strong></span>&nbsp;: indique le nom du
+                                fichier courant dans l&#8217;it&eacute;ration ayant activ&eacute; le d&eacute;clenchement.
+                                Disponible comme variable <span class="bold"><strong>Flow</strong></span>.</p><p> Retourne une cha&icirc;ne de
+                                caract&egrave;res.</p><p> </p><p>
+                                <span class="bold"><strong>Deleted File</strong></span>&nbsp;: indique le nom et le
+                                chemin d&#8217;acc&egrave;s du fichier supprim&eacute; qui a activ&eacute; le d&eacute;clenchement.
+                                Disponible comme variable <span class="bold"><strong>Flow</strong></span>.</p><p> Retourne une cha&icirc;ne de
+                                caract&egrave;res.</p><p> </p><p>
+                                <span class="bold"><strong>Created File Name</strong></span>&nbsp;: indique le nom
+                                et le chemin d&#8217;acc&egrave;s du fichier nouvellement cr&eacute;&eacute; ayant activ&eacute; le
+                                d&eacute;clenchement. Disponible comme variable <span class="bold"><strong>Flow</strong></span>.</p><p> Retourne une cha&icirc;ne de
+                                caract&egrave;res.</p><p> </p><p>
+                                <span class="bold"><strong>Updated File</strong></span>&nbsp;: indique le nom et le
+                                chemin d&#8217;acc&egrave;s du fichier mis &agrave; jour, activant ainsi le
+                                d&eacute;clenchement. Disponible comme variable <span class="bold"><strong>Flow</strong></span>.</p><p> Retourne une cha&icirc;ne de
+                                caract&egrave;res.</p><p> </p><p>
+                                <span class="bold"><strong>File Name</strong></span>&nbsp;: indique le nom d&#8217;un
+                                fichier cr&eacute;&eacute;, supprim&eacute; ou mis &agrave; jour, activant ainsi le
+                                d&eacute;clenchement. Disponible comme variable <span class="bold"><strong>Flow</strong></span>.</p><p> Retourne une cha&icirc;ne de
+                                caract&egrave;res.</p><p> </p><p>
+                                <span class="bold"><strong>Not Updated File Name</strong></span>&nbsp;: indique les
+                                noms des fichiers n&#8217;ayant pas &eacute;t&eacute; mis &agrave; jour, activant ainsi le
+                                d&eacute;clenchement. Disponible comme variable <span class="bold"><strong>Flow</strong></span>.</p><p> Retourne une cha&icirc;ne de
+                                caract&egrave;res.</p><p> </p><p> Pour plus d&#8217;informations
+                                concernant les variables, consultez le <span class="bold"><strong>Guide
+                                    Utilisateur</strong></span>
+                                <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Connections</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p>Liens de sortie (d&#8217;un composant &agrave; un
+                                autre)&nbsp;:</p><p>
+                                <span class="bold"><strong>Row</strong></span>&nbsp;: Main, Iterate.</p><p>
+                                <span class="bold"><strong>Trigger</strong></span>&nbsp;: OnSubjobOk, Run if,
+                                OnComponentOk, OnComponentError.</p><p> </p><p> Liens
+                                d&#8217;entr&eacute;e (d&#8217;un composant &agrave; un autre)&nbsp;:</p><p>
+                                <span class="bold"><strong>Row</strong></span>&nbsp;: Iterate.</p><p>
+                                <span class="bold"><strong>Trigger</strong></span>&nbsp;: OnSubjobOk, Run if,
+                                OnComponentOk, OnComponentError, Synchronize, Parallelize.
+                                </p><p> </p><p> Pour plus d&#8217;informations concernant les
+                                liens, consultez le <span class="bold"><strong>Guide
+                                    Utilisateur</strong></span>
+                                <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Attendre la suppression d&#8217;un fichier"><div class="titlepage"><div><div><h3 class="title"><a name="d0e226155"></a>Sc&eacute;nario&nbsp;: Attendre la suppression d&#8217;un fichier</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job permettant de scanner un r&eacute;pertoire &agrave; la recherche d&#8217;un
+            fichier qui sera supprim&eacute; de ce r&eacute;pertoire, pour ensuite lancer un sous-Job. Ainsi,
+            lorsqu&#8217;un fichier est supprim&eacute;, le sous-Job affiche un message indiquant cette
+            suppression.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="305"><tr><td><img src="../images/Use_Case_tWaitForFile1.png" width="305"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Ce Job est constitu&eacute; de deux composants&nbsp;: le <span class="bold"><strong>tWaitForFile</strong></span> et le <span class="bold"><strong>tMsgBox</strong></span>.</p></li><li class="listitem"><p> Cliquez et d&eacute;posez ces composants dans l&#8217;espace de mod&eacute;lisation et
+                    connectez-les &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Iterate</strong></span> pour
+                    effectuer la boucle.</p></li><li class="listitem"><p> Puis s&eacute;lectionnez le composant <span class="bold"><strong>tWaitForFile</strong></span>,
+                    et dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de la vue
+                        <span class="bold"><strong>Component</strong></span>, param&eacute;trez les propri&eacute;t&eacute;s de la
+                    condition et de la boucle&nbsp;:</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="398"><tr><td><img src="../images/Use_Case_tWaitForFile2.png" width="398"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans le champ <span class="bold"><strong>Time (in seconds) between
+                        iterations</strong></span>, param&eacute;trez la dur&eacute;e en secondes entre chaque
+                    it&eacute;ration. Dans cet exemple, le r&eacute;pertoire sera scann&eacute; toutes les
+                        <span class="emphasis"><em>5&nbsp;</em></span>secondes.</p></li><li class="listitem"><p> Dans le champ <span class="bold"><strong>Max. number of iterations (infinite loop
+                        if empty)</strong></span>, saisissez le nombre d&#8217;it&eacute;ration &agrave; effectuer avant que
+                    le Job ne soit arr&ecirc;t&eacute;. Dans cet exemple, le r&eacute;pertoire est scann&eacute;
+                        <span class="emphasis"><em>5</em></span>&nbsp;fois maximum.</p></li><li class="listitem"><p> Dans le champ <span class="bold"><strong>Directory to scan</strong></span>, renseignez
+                    le chemin d&#8217;acc&egrave;s au r&eacute;pertoire devant &ecirc;tre scann&eacute;.</p></li><li class="listitem"><p> Dans le champ <span class="bold"><strong>Trigger action when</strong></span>,
+                    s&eacute;lectionnez la condition &agrave; rencontrer pour que le sous-Job soit lanc&eacute;. Dans cet
+                    exemple, la condition est la suppression (ou le d&eacute;placement) d&#8217;un fichier du
+                    r&eacute;pertoire.</p></li><li class="listitem"><p> Dans le champ <span class="bold"><strong>Then</strong></span>, s&eacute;lectionnez l&#8217;action &agrave;
+                    effectuer lorsque la condition est rencontr&eacute;e avant que le nombre d&#8217;it&eacute;rations
+                    d&eacute;fini ne soit atteint. Dans cet exemple, la boucle s&#8217;arr&ecirc;te d&egrave;s que la
+                    condition est rencontr&eacute;e.</p></li><li class="listitem"><p> Puis d&eacute;finissez le sous-Job &agrave; effectuer lorsque la condition est rencontr&eacute;e.
+                    Dans cet exemple, le sous-Job affiche une bo&icirc;te de dialogue.</p></li><li class="listitem"><p> S&eacute;lectionnez le composant <span class="bold"><strong>tMsgBox</strong></span>, et dans
+                    l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de la vue <span class="bold"><strong>Component</strong></span>, saisissez le message &agrave; afficher.</p></li><li class="listitem"><p> Dans les champs <span class="bold"><strong>Title</strong></span> et <span class="bold"><strong>Message</strong></span>, renseignez le titre et le message.</p></li><li class="listitem"><p> Dans les champs <span class="bold"><strong>Buttons</strong></span> et <span class="bold"><strong>Icon</strong></span>, renseignez le type de boutons et d&#8217;ic&ocirc;nes &agrave;
+                    utiliser.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="495"><tr><td><img src="../images/Use_Case_tWaitForFile3.png" width="495"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans le champ <span class="bold"><strong>Message</strong></span>, vous pouvez saisir
+                    n&#8217;importe quel type de message que vous souhaitez faire appara&icirc;tre et utiliser
+                    des variables globales disponibles dans la liste d&#8217;auto-compl&eacute;tion via le
+                    raccourci <span class="bold"><strong>Ctrl+Espace</strong></span>.</p></li><li class="listitem"><p> Le message de cet exemple est
+                    :</p><pre class="programlisting">"Deleted file: "+((String)globalMap.get("tWaitForFile_1_DELETED_FILE"))+"
+on iteration Nr:"+((Integer)globalMap.get("tWaitForFile_1_CURRENT_ITERATION"))</pre></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="486"><tr><td><img src="../images/Use_Case_tWaitForFile4.png" width="486"></td></tr></table></div><p>Ex&eacute;cutez le Job via la raccourci <span class="bold"><strong>F6</strong></span>. Pendant que la
+            boucle s&#8217;effectue, supprimez un fichier du r&eacute;pertoire d&eacute;fini et la bo&icirc;te de dialogue
+            contenant le message d&eacute;fini appara&icirc;t.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="345"><tr><td><img src="../images/Use_Case_tWaitForFile5.png" width="345"></td></tr></table></div></div></div></body></html>

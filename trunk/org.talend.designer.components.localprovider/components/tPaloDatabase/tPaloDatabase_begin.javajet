@@ -1,0 +1,94 @@
+<%@ jet
+	imports="
+	java.util.ArrayList
+	java.util.HashMap
+	java.util.List
+	java.util.Map
+	
+	org.talend.core.model.metadata.IMetadataColumn
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.process.IConnectionCategory
+	org.talend.core.model.process.INode
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+
+    boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+
+
+    String sServer = ElementParameterParser.getValue(node, "__SERVER__");
+    String sServerport = ElementParameterParser.getValue(node, "__SERVERPORT__");
+    String sUsername = ElementParameterParser.getValue(node, "__USERNAME__");
+    String sPassword = ElementParameterParser.getValue(node, "__PASS__");
+
+    String sDatabaseName = ElementParameterParser.getValue(node,"__DATABASE__");
+    String sDatabaseAction = ElementParameterParser.getValue(node,"__DATABASE_ACTION__");
+    
+
+    String sDeploypalolibs = ElementParameterParser.getValue(node, "__DEPLOY_PALO_LIBS__");
+    boolean bDeploypalolibs=false;
+    if(sDeploypalolibs.equals("true"))bDeploypalolibs=true;
+
+%>
+
+org.talend.jpalo.palo p_<%=cid %> = null;
+org.talend.jpalo.paloconnection pConn_<%=cid %> = null;
+
+<%
+if(useExistingConnection){
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	String p = "p_" + connection;
+	String pConn = "pConn_" + connection;
+
+%>
+	// Use Existing
+	p_<%=cid %> = (org.talend.jpalo.palo)globalMap.get("<%=p%>");
+	pConn_<%=cid %> =  (org.talend.jpalo.paloconnection)globalMap.get("<%=pConn%>");
+<%
+}else{
+%>
+	// Initialize jpalo
+	p_<%=cid %> = new org.talend.jpalo.palo(<%=bDeploypalolibs%>);
+	// Open the connection
+	pConn_<%=cid %> = p_<%=cid %>.connect(<%=sUsername%>, <%=sPassword%>, <%=sServer%>, <%=sServerport%>);
+<%
+}
+%>
+
+<%
+if(("CREATE").equals(sDatabaseAction)){
+%>
+	org.talend.jpalo.palodatabases pDBs_<%=cid %> = pConn_<%=cid %>.getDatabases();
+	pDBs_<%=cid %>.createDatabase(<%=sDatabaseName%>);
+<%
+}else if(("CREATE_IF_NOT_EXISTS").equals(sDatabaseAction)){
+%>
+	org.talend.jpalo.palodatabases pDBs_<%=cid %> = pConn_<%=cid %>.getDatabases();
+	if(null==pDBs_<%=cid %>.getDatabase(<%=sDatabaseName%>)) pDBs_<%=cid %>.createDatabase(<%=sDatabaseName%>);
+<%
+}else if(("DELETE_IF_EXISTS_AND_CREATE").equals(sDatabaseAction)){
+%>
+	org.talend.jpalo.palodatabases pDBs_<%=cid %> = pConn_<%=cid %>.getDatabases();
+	if(null!=pDBs_<%=cid %>.getDatabase(<%=sDatabaseName%>)) pDBs_<%=cid %>.deleteDatabase(<%=sDatabaseName%>);
+	pDBs_<%=cid %>.createDatabase(<%=sDatabaseName%>);
+<%
+}else if(("DELETE").equals(sDatabaseAction)){
+%>
+	org.talend.jpalo.palodatabases pDBs_<%=cid %> = pConn_<%=cid %>.getDatabases();
+	org.talend.jpalo.palodatabase pDB_<%=cid %> = pDBs_<%=cid %>.getDatabase(<%=sDatabaseName%>);
+	if(null != pDB_<%=cid %>)
+	    pDBs_<%=cid %>.deleteDatabase(<%=sDatabaseName%>);	
+	else
+		 throw new RuntimeException ("Database '" + <%=sDatabaseName%> + "' not found. exiting...");
+<%	
+}
+%>
+globalMap.put("<%=cid %>_DATABASENAME",<%=sDatabaseName%>);

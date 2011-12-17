@@ -1,0 +1,124 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMDMTriggerOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch16.html" title="Chapitre&nbsp;16.&nbsp;Composants Talend MDM"><link rel="prev" href="tMDMTriggerInput.html" title="tMDMTriggerInput"><link rel="next" href="tMDMViewSearch.html" title="tMDMViewSearch"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="fr" class="section" title="tMDMTriggerOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMDMTriggerOutput"></a>tMDMTriggerOutput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tMDMTriggerOutput_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tMDMTriggerOutput"><div class="titlepage"><div><div><h3 class="title"><a name="ychen-20111109-tmdm-tmdmtriggeroutput_prop"></a>Propri&eacute;t&eacute;s du tMDMTriggerOutput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Talend MDM</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tMDMTriggerOutput</strong></span> re&ccedil;oit un flux XML (de
+								type <span class="bold"><strong>Document</strong></span>) du composant
+								pr&eacute;c&eacute;dent.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Ce composant fonctionne avec le nouveau service de d&eacute;clenchement et le plug-in de
+									traitement en version 5.0 et sup&eacute;rieure de MDM. Les Jobs, les
+									d&eacute;clencheurs et les processus MDM d&eacute;velopp&eacute;s dans les versions
+									pr&eacute;c&eacute;dentes de MDM restent support&eacute;s. Il est cependant
+									recommand&eacute; d'utiliser ce composant lors de la cr&eacute;ation de
+									nouveau Jobs MDM.</p></td></tr></table></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant re&ccedil;oit un flux XML afin de configurer le message MDM pour que MDM r&eacute;cup&egrave;re
+								le message lors de l'ex&eacute;cution. Avec ce composant, il n'est pas
+								n&eacute;cessaire de configurer votre Job afin de le faire communiquer les
+								modifications de donn&eacute;es de MDM vers votre Job.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property Type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Peut &ecirc;tre <span class="bold"><strong>Built-in</strong></span> ou <span class="bold"><strong>Repository</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span> : No property data stored centrally. </p>
+							<p>Le composant <span class="bold"><strong>tMDMTriggerOutput</strong></span> doit utiliser cette
+								option pour appliquer le sch&eacute;ma en lecture seule par d&eacute;faut. La
+								colonne <span class="bold"><strong>MDM_message</strong></span> est l'unique
+								colonne de ce sch&eacute;ma.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span> : S&eacute;lectionnez le fichier du Repository
+								dans lequel les propri&eacute;t&eacute;s sont stock&eacute;es. Les champs qui suivent
+								sont automatiquement renseign&eacute;s via les donn&eacute;es r&eacute;cup&eacute;r&eacute;es.</p>
+							<p>Comme le <span class="bold"><strong>tMDMTriggerOutput</strong></span> fournit un sch&eacute;ma fixe en
+								lecture seule, vous devez utiliser l'option <span class="bold"><strong>Built-in</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (built-in) soit distant dans le <span class="bold"><strong>Repository</strong></span>.</p>
+							<p>Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> pour
+								modifier le sch&eacute;ma.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Notez que si vous modifiez le sch&eacute;ma, il passe automatiquement
+									en mode <span class="bold"><strong>Built-In</strong></span>.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span> : Le sch&eacute;ma sera cr&eacute;&eacute; et
+								conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p>
+							<p>C'est l'option par d&eacute;faut pour le <span class="bold"><strong>tMDMTriggerOutput</strong></span>. Avec cette option, le sch&eacute;ma en
+								lecture seule est utilis&eacute; pour traiter le sch&eacute;ma du message MDM au
+								format XML.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span> : Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+								dans divers projets et Jobs. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+							<p>Comme le composant <span class="bold"><strong>tMDMTriggerOutput</strong></span> fournit un sch&eacute;ma fixe en lecture
+								seule, vous devez utiliser l'option <span class="bold"><strong>Built-in</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est un composant de fin. Il requiert un flux d'entr&eacute;e.</p>
+							<p>Pour envoyer un message au MDM, vous devez d&eacute;ployer le Job &agrave; l'aide de ce composant sur
+								votre serveur MDM et g&eacute;n&eacute;rer le d&eacute;clencheur et le processus
+								correspondants afin d'invoquer ce Job dans MDM. </p>
+							<p>Pour plus d'informations concernant le d&eacute;ploiement d'un Job sur le serveur MDM et la
+								g&eacute;n&eacute;ration d'un d&eacute;clencheur ou d'un processus, consultez le
+									<span class="bold"><strong>Guide administrateur</strong></span> de
+									<span class="bluebold">Talend Master Data Management</span>.</p>
+						</td></tr><tr><td valign="top">
+							<span class="bold"><strong>Limitation</strong></span>
+						</td><td colspan="2" valign="top">Durant le d&eacute;ploiement de ce composant sur le
+							serveur MDM, vous devez s&eacute;lectionner le type <span class="bold"><strong>Hosted (Zip)</strong></span> comme format du Job d&eacute;ploy&eacute;. Si vous le
+							d&eacute;ployez dans le type <span class="bold"><strong>Distributed
+							(War)</strong></span>, le Job relatif ne peut &ecirc;tre invoqu&eacute;. Pour plus
+							d'informations concernant les types disponibles, consultez le <span class="bold"><strong>Guide administrateur</strong></span> de <span class="bluebold">Talend Master Data Management</span> Studio.</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="ychen-20111109-tmdm-tmdmtriggeroutput_scenario"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>
+			Aucun sc&eacute;nario n'est disponible pour ce composant.
+		</p></div></div></body></html>

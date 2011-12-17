@@ -1,0 +1,789 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tStandardizeRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tStandardizePhoneNumber.html" title="tStandardizePhoneNumber"><link rel="next" href="tStem.html" title="tStem"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tStandardizeRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tStandardizeRow"></a>tStandardizeRow</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="28"><tr><td><img src="../images/tStandardizeRow_icon32.png" width="28"></td></tr></table></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Ce composant est disponible dans la </em></span><span class="bold"><strong>Palette</strong></span><span class="emphasis"><em> du studio uniquement si vous avez souscrit &agrave; l&#8217;&eacute;dition
+				correspondante de</em></span><span class="bluebold">
+				Talend Enterprise Data Quality</span><span class="emphasis"><em>.</em></span>
+		</p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tStandardizeRow"><div class="titlepage"><div><div><h3 class="title"><a name="d0e192443"></a>Propri&eacute;t&eacute;s du tStandardizeRow</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Data Quality</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tStandardizeRow</strong></span>
+								segmente le flux de donn&eacute;es re&ccedil;u du composant pr&eacute;c&eacute;dent et applique
+								des r&egrave;gles personnalis&eacute;es pour analyser les donn&eacute;es. En se fondant
+								sur cette analyse, ce composant normalise et &eacute;crit les donn&eacute;es dans
+								un flux de donn&eacute;es XML s&eacute;par&eacute;. Les balises XML utilis&eacute;es sont celles
+								d&eacute;finis par les noms des r&egrave;gles. </p>
+							<p>L'option de standardisation ajoute une colonne suppl&eacute;mentaire au flux de sortie dans
+								laquelle les donn&eacute;es sont standardis&eacute;es apr&egrave;s normalisation.</p>
+							<p>ANTLR est utilis&eacute; pour analyser et segmenter les donn&eacute;es d&#8217;entr&eacute;e.</p>
+							<p>Pour plus d&#8217;informations, consultez le site&nbsp;<a class="link" href="http://www.antlr.org/" target="_top">http://www.antlr.org/</a>
+								(en anglais).</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Ce composant ne modifie pas vos donn&eacute;es brutes.</p></td></tr></table></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="bold"><strong>tStandardizeRow</strong></span> normalise les
+								donn&eacute;es d&#8217;entr&eacute;e dans un flux de donn&eacute;es XML distinct. Cela vous
+								permet de s&eacute;parer (et de standardiser si besoin) les donn&eacute;es
+								conformes &agrave; la r&egrave;gle des donn&eacute;es non conformes.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (built-in) soit distant dans le <span class="bold"><strong>Repository</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+								conserv&eacute; ponctuellement pour ce composant seulement. Voir
+								&eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de
+									<span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+								r&eacute;utilisable dans divers projets et Job designs. Voir &eacute;galement&nbsp;le
+									<span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Column to parse</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez la colonne &agrave; analyser &agrave; partir du flux de donn&eacute;es
+								re&ccedil;u </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Standardize this field</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour standardiser les donn&eacute;es identifi&eacute;es comme
+								conformes &agrave; la r&egrave;gle, c&#8217;est-&agrave;-dire remplacer les doublons de donn&eacute;es
+								identifi&eacute;s par les donn&eacute;es standardis&eacute;es correspondantes &agrave; partir
+								d&#8217;un index donn&eacute;.</p>
+							<p>Pour plus d&#8217;informations concernant l&#8217;index de ces donn&eacute;es
+								standardis&eacute;es, consultez&nbsp;<a class="xref" href="tUnite.html" title="tUnite">la section intitul&eacute;e &laquo;&nbsp;tUnite&nbsp;&raquo;</a>.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Chaque fois que vous cochez ou d&eacute;cochez cette case, le sch&eacute;ma
+									de ce composant est modifi&eacute; automatiquement. De ce fait, dans un
+									Job donn&eacute;, vous devez cliquer sur le bouton <span class="bold"><strong>Sync columns</strong></span> afin de r&eacute;gler les
+									probl&egrave;mes d&#8217;incoh&eacute;rence du sch&eacute;ma.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Conversion rules</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Compl&eacute;tez ce tableau pour d&eacute;finir les r&egrave;gles que vous souhaitez
+								appliquer. Les colonnes de la table &agrave; remplir sont&nbsp;:</p>
+							<p>- <span class="bold"><strong>Name</strong></span>&nbsp;: dans cette colonne,
+								saisissez le nom que vous souhaitez utiliser. Ce nom est &eacute;galement
+								utilis&eacute; comme nom balise pour les donn&eacute;es de sortie en XML et comme
+								nom de segment pour &eacute;tiqueter les donn&eacute;es d&#8217;entr&eacute;e identifi&eacute;es par
+								cette r&egrave;gle.</p>
+							<p>- <span class="bold"><strong>Type&nbsp;</strong></span>: dans cette colonne,
+								s&eacute;lectionnez le type de la r&egrave;gle que vous souhaiter
+								appliquer.</p>
+							<p>Pour plus d&#8217;informations concernant les types de r&egrave;gles
+								disponibles, consultez&nbsp;<a class="xref" href="tStandardizeRow.html#Raa20651" title="Types de r&egrave;gles">la section intitul&eacute;e &laquo;&nbsp;Types de r&egrave;gles&nbsp;&raquo;</a>.</p>
+							<p>- <span class="bold"><strong>Value&nbsp;</strong></span>: dans cette colonne,
+								saisissez la r&egrave;gle que vous souhaitez d&eacute;finir.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Une vue de test est fournie pour vous permettre de cr&eacute;er les analyseurs syntaxiques
+									qui vous int&eacute;ressent. Pour plus d'informations, consultez le
+										<span class="bold"><strong>Guide utilisateur</strong></span> de
+										<span class="bluebold">Talend Enterprise Data Quality</span>.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Generate parser code in Routines</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cliquez sur ce bouton pour permettre &agrave; l&#8217;analyseur de donn&eacute;es de
+								votre Studio de g&eacute;n&eacute;rer le code des r&egrave;gles d&eacute;finies dans le tableau
+									<span class="bold"><strong>Conversion rules</strong></span>.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Dans un Job donn&eacute;, lorsqu&#8217;une r&egrave;gle est cr&eacute;&eacute;e, cette op&eacute;ration
+									est n&eacute;cessaire pour son ex&eacute;cution. En revanche, si une simple
+									modification est effectu&eacute;e sur la r&egrave;gle existante, cette
+									op&eacute;ration est n&eacute;cessaire uniquement lorsque la r&egrave;gle modifi&eacute;e
+									est de type <span class="bold"><strong>Enumeration</strong></span>,
+										<span class="bold"><strong>Format</strong></span> ou <span class="bold"><strong>Combination</strong></span>. Pour plus d&#8217;informations
+									concernant les types de r&egrave;gles, consultez&nbsp;<a class="xref" href="tStandardizeRow.html#Raa20651" title="Types de r&egrave;gles">la section intitul&eacute;e &laquo;&nbsp;Types de r&egrave;gles&nbsp;&raquo;</a></p></td></tr></table></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="italic">tStatCatcherStatistics </span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du
+								Job, aussi bien au niveau du Job qu&#8217;au niveau de chaque
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est un composant interm&eacute;diaire. Il requiert des
+								composants d&#8217;entr&eacute;e et de sortie.</p>
+							<p>Ce composant g&eacute;n&egrave;re du code Java dans le n&#339;ud <span class="bold"><strong>Routines</strong></span> du <span class="bold"><strong>Repository</strong></span>. Ce code impl&eacute;mente la grammaire d&eacute;finie
+								dans les r&egrave;gles. Il est compil&eacute; automatiquement pour &ecirc;tre utilis&eacute;
+								par le composant.</p>
+							<p>Lorsque vous modifiez/ajoutez/supprimez une r&egrave;gle, le code doit
+								&ecirc;tre g&eacute;n&eacute;r&eacute; &agrave; nouveau, afin que le Job puisse prendre en compte les
+								modifications et s&#8217;ex&eacute;cuter.</p>
+							<p>Pour le g&eacute;n&eacute;rer, cliquez sur le bouton <span class="bold"><strong>Generate parser code in Routines</strong></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Connections</strong></span>
+							</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>Liens de sortie (d&#8217;un composant &agrave; un autre)&nbsp;:</p>
+							<p><span class="bold"><strong>Row&nbsp;</strong></span>: Main; Reject</p>
+							<p><span class="bold"><strong>Trigger&nbsp;</strong></span>: Run if; On Component
+								Ok; On Component Error.</p>
+							<p> </p>
+							<p>Liens d&#8217;entr&eacute;e (d&#8217;un composant &agrave; un autre)&nbsp;:</p>
+							<p><span class="bold"><strong>Row&nbsp;</strong></span>: Main; Reject </p>
+							<p> </p>
+							<p>Pour plus d&#8217;informations concernant les connexions, consultez le
+									<span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div><div class="section" title="Types de r&egrave;gles"><div class="titlepage"><div><div><h4 class="title"><a name="Raa20651"></a>Types de r&egrave;gles</h4></div></div></div><p>Les types de r&egrave;gles fournies sont divis&eacute;es en deux
+				groupes&nbsp;: les types de r&egrave;gles simples et les types de r&egrave;gles avanc&eacute;es.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Les types de r&egrave;gles simples sont&nbsp;: <span class="bold"><strong>Enumeration</strong></span>, <span class="bold"><strong>Format</strong></span> et
+							<span class="bold"><strong>Combination</strong></span>. Les r&egrave;gles de ce type se
+						composent de certains symboles ANTLR donn&eacute;s.</p></li><li class="listitem"><p>Les types de r&egrave;gles avanc&eacute;es sont&nbsp;: <span class="bold"><strong>Regex</strong></span>, <span class="bold"><strong>Index</strong></span> et <span class="bold"><strong>Shape</strong></span>. Les r&egrave;gles de ce type correspondent aux
+						donn&eacute;es segment&eacute;es et standardisent ces donn&eacute;es si n&eacute;cessaire.</p></li></ul></div><p>Pour cr&eacute;er les r&egrave;gles de tout type, <span class="bold"><strong>Talend</strong></span> fourni les &eacute;l&eacute;ments suivants
+				pr&eacute;d&eacute;finis et sensibles &agrave; la casse (&eacute;l&eacute;ments ANTLR)  pour d&eacute;finir la composition
+				d'une cha&icirc;ne de caract&egrave;res &agrave; mettre en correspondance :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>INT : integer (nombre entier),</p></li><li class="listitem"><p>WORD : word,</p></li><li class="listitem"><p>WORD+ : XXX de plusieurs mots,</p></li><li class="listitem"><p>CAPWORD : mot en majuscules,</p></li><li class="listitem"><p>DECIMAL : float d&eacute;cimal,</p></li><li class="listitem"><p>FRACTION : float fraction,</p></li><li class="listitem"><p>CURRENCY : devises,</p></li><li class="listitem"><p>ROMAIN_NUMERAL : chiffres romains,</p></li><li class="listitem"><p>ALPHANUM : nombres alphanum&eacute;riques (combinaison de caract&egrave;res
+							alphab&eacute;tiques et num&eacute;riques)</p></li><li class="listitem"><p>WHITESPACE : espace blanc,</p></li><li class="listitem"><p>UNDEFINED : cha&icirc;nes de caract&egrave;res non attendues, comme les codes ASCII
+							qui ne sont reconnus par aucun autre &eacute;l&eacute;ment.</p></li></ul></div><p>Les trois tableaux suivants pr&eacute;sentent successivement
+				les informations d&eacute;taill&eacute;es concernant les types de r&egrave;gles simples, les types de
+				r&egrave;gles avanc&eacute;es et les symboles ANTLR utilis&eacute;s par les types de r&egrave;gles simples. Ces
+				trois tableaux vous aident &agrave; compl&eacute;ter le tableau <span class="bold"><strong>Conversion
+					rules</strong></span> dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span>
+				de ce composant.</p><p>Pour les types de r&egrave;gles simples&nbsp;:</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"></colgroup><thead><tr><th valign="top">
+								<p>Type de r&egrave;gle simple</p>
+							</th><th valign="top">
+								<p>Utilisation</p>
+							</th><th valign="top">
+								<p>Exemple</p>
+							</th><th valign="top">
+								<p>Avertissement</p>
+							</th></tr></thead><tbody><tr><td valign="top">
+								<p>
+									<span class="bold"><strong>Enumeration</strong></span>
+								</p>
+							</td><td valign="top">
+								<p>Une r&egrave;gle de ce type fournit une liste de crit&egrave;res
+									facultatifs.</p>
+							</td><td valign="top">
+								<p><span class="emphasis"><em>RuleName</em></span>&nbsp;: <code class="code">Gender<span></span>
+									</code><span class="emphasis"><em>RuleValue&nbsp;: </em></span><code class="code">&#8220; &#8216;Male&#8217; |
+										&#8216;Female&#8217;&#8221;</code></p>
+							</td><td valign="top">
+								<p>- Chaque option doit &ecirc;tre &eacute;crite entre guillemets
+									doubles.</p>
+								<p> </p>
+								<p> - Les options d&eacute;finies doivent &ecirc;tre s&eacute;par&eacute;es par le symbole
+									|.</p>
+								<p> </p>
+								<p> - Le nom de la r&egrave;gle doit commencer par une majuscule.</p>
+							</td></tr><tr><td valign="top">
+								<p>
+									<span class="bold"><strong>Format</strong></span>
+								</p>
+								<p> (Le nom de la r&egrave;gle commence par une majuscule)</p>
+							</td><td valign="top">
+								<p>Une r&egrave;gle de ce type d&eacute;finit la composition d&#8217;une cha&icirc;ne de
+									caract&egrave;res en sp&eacute;cifiant le type de chaque &eacute;l&eacute;ment de cette
+									cha&icirc;ne. </p>
+							</td><td valign="top">
+								<p><span class="emphasis"><em>RuleName</em></span>&nbsp;: <code class="code">ProductNumber<span></span>
+									</code><span class="emphasis"><em>RuleValue&nbsp;</em></span>:<code class="code"> &#8220; DIGIT DIGIT
+										LETTER &#8216;-&#8216; DIGIT DIGIT &#8221;<span></span>
+										<span></span>
+									</code>Cette r&egrave;gle correspond aux cha&icirc;nes de caract&egrave;res telles
+										que&nbsp;<span class="emphasis"><em>13A-74</em></span>.</p>
+							</td><td valign="top">
+								<p>- Seuls les types d&#8217;&eacute;l&eacute;ments pr&eacute;-d&eacute;finis (les segments ANTLR)
+									sont accept&eacute;s pour d&eacute;finir les &eacute;l&eacute;ments de cha&icirc;ne de caract&egrave;res.
+									Ils sont sensibles &agrave; la casse &nbsp;: <span class="emphasis"><em>DIGIT, LETTER,
+										CAPWORD, WORD, INT, ALPHANUM, DECIMAL, FRACTION, CURRENCY,
+										ROMAN_NUMERAL</em></span>.</p>
+							</td></tr><tr><td valign="top">
+								<p><span class="bold"><strong>Format </strong></span>(Le nom de la r&egrave;gle
+									commence par une minuscule)</p>
+							</td><td valign="top">
+								<p>Une r&egrave;gle de ce type d&eacute;finit la composition d&#8217;une cha&icirc;ne de
+									caract&egrave;res en sp&eacute;cifiant le type de chaque &eacute;l&eacute;ment de cette
+									cha&icirc;ne.</p>
+								<p>En plus des types d&#8217;&eacute;l&eacute;ment pr&eacute;d&eacute;finis, une r&egrave;gle <span class="bold"><strong>Enumeration</strong></span> est applicable pour d&eacute;finir le type
+									d&#8217;un &eacute;l&eacute;ment d&#8217;une cha&icirc;ne de caract&egrave;res. </p>
+							</td><td valign="top">
+								<p><span class="emphasis"><em>RuleName</em></span>&nbsp;: <code class="code">length<span></span>
+									</code><span class="emphasis"><em>RuleValue&nbsp;</em></span>: <code class="code">&#8220;DECIMAL
+										LengthUnit &#8221;<span></span>
+										<span></span>
+									</code>Cette r&egrave;gle correspond aux cha&icirc;nes telles
+										que&nbsp;<span class="emphasis"><em>1.4 cm</em></span>, o&ugrave;
+										<code class="code">DecimalFloat</code> est un des types d&#8217;&eacute;l&eacute;ments
+									pr&eacute;-d&eacute;finis et <code class="code">LengthUnit</code> est une r&egrave;gle <span class="bold"><strong>Enumeration</strong></span> d&eacute;fnissant <code class="code">&#8220; &#8216;inch&#8217;
+										| &#8217;cm&#8217; &#8221;</code>.</p>
+							</td><td>
+								<p>&nbsp;</p>
+							</td></tr><tr><td valign="top">
+								<p>
+									<span class="bold"><strong>Combination</strong></span>
+								</p>
+							</td><td valign="top">
+								<p>Une r&egrave;gle de ce type d&eacute;finit la composition d&#8217;une cha&icirc;ne de
+									caract&egrave;res en sp&eacute;cifiant le type de chaque &eacute;l&eacute;ment de cette
+									cha&icirc;ne.</p>
+								<p>Celle-ci utilise une r&egrave;gle <span class="bold"><strong>Enumeration</strong></span> ou <span class="bold"><strong>Format</strong></span> ou les deux.</p>
+							</td><td valign="top">
+								<p><span class="emphasis"><em>RuleNam&nbsp;e</em></span>: <code class="code">Size</code> (or
+										<code class="code">size</code>)</p>
+								<p>
+									<span class="emphasis"><em>RuleValue&nbsp;</em></span>: <code class="code">&#8220;length BY length&#8221;<span></span>
+										<span></span>
+									</code>Cette r&egrave;gle correspond aux cha&icirc;nes de caract&egrave;re telles
+										que&nbsp;<span class="emphasis"><em>1.4 cm by 1.4 cm</em></span>, o&ugrave;
+										<code class="code">length</code> est une r&egrave;gle <span class="bold"><strong>Format</strong></span> (commen&ccedil;ant par une minuscule) et
+										<code class="code">BY</code> est une r&egrave;gle <span class="bold"><strong>Enumeration</strong></span> d&eacute;finissant <code class="code">&#8220; &#8216;By&#8217; | &#8217;by&#8217; |
+										&#8216;x&#8217; | &#8216;X&#8217; &#8221;</code>.</p>
+							</td><td valign="top">
+								<p>- Pour la r&egrave;gle <span class="bold"><strong>Combination</strong></span>,
+									le texte ou les caract&egrave;res litt&eacute;raux ne sont pas accept&eacute;s comme
+									faisant partie de la valeur de la r&egrave;gle.</p>
+								<p> Au besoin, vous devez cr&eacute;er une r&egrave;gle <span class="bold"><strong>Enumeration</strong></span> pour d&eacute;finir ces textes ou ces
+									caract&egrave;res et utiliser ensuite cette r&egrave;gle &agrave; la place de la
+									premi&egrave;re.</p>
+							</td></tr></tbody></table></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Tout caract&egrave;re ou cha&icirc;ne de caract&egrave;res constant(e) (string literals), s&#8217;ils sont
+						accept&eacute;s par un type de r&egrave;gle, doivent &ecirc;tre plac&eacute;s entre guillemets simples.
+						Autrement, ils seront trait&eacute;s comme des symboles grammaticaux ou des
+						variables ANTLR et g&eacute;n&eacute;reront des erreurs ou des r&eacute;sultats non souhait&eacute;s
+						lors de l&#8217;ex&eacute;cution.</em></span>
+				</p></td></tr></table></div><p>Pour les types de r&egrave;gles avanc&eacute;es&nbsp;:</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"></colgroup><thead><tr><th valign="top">
+								<p>Type de r&egrave;gle avanc&eacute;e</p>
+							</th><th valign="top">
+								<p>Utilisation</p>
+							</th><th valign="top">
+								<p>Exemple</p>
+							</th><th valign="top">
+								<p>Avertissement</p>
+							</th></tr></thead><tbody><tr><td valign="top">
+								<p>
+									<span class="bold"><strong>Regex</strong></span>
+								</p>
+							</td><td valign="top">
+								<p>Une r&egrave;gle de ce type utilise des expressions r&eacute;guli&egrave;res pour
+									mettre en correspondance les donn&eacute;es entrantes segment&eacute;es par
+									ANTLR.</p>
+							</td><td valign="top">
+								<p><span class="emphasis"><em>RuleName&nbsp;</em></span>: <code class="code">ZipCode<span></span>
+									</code><span class="emphasis"><em>RuleValue&nbsp;</em></span>: <code class="code">&#8220;\\d{5}&#8221;<span></span>
+										<span></span>
+									</code>Cette r&egrave;gle correspond aux cha&icirc;nes de caract&egrave;res telles
+									que <span class="emphasis"><em>&#8220;92150&#8221;</em></span>.</p>
+							</td><td valign="top">
+								<p>Les expressions r&eacute;guli&egrave;res doivent &ecirc;tre compatibles avec
+									Java.</p>
+							</td></tr><tr><td valign="top">
+								<p>
+									<span class="bold"><strong>Index</strong></span>
+								</p>
+							</td><td valign="top">
+								<p>Une r&egrave;gle de ce type utilise un index de synonymes comme
+									r&eacute;f&eacute;rence pour rechercher les donn&eacute;es entrantes mises en
+									correspondance.</p>
+								<p>Pour plus d'informations concernant les index de synonymes
+									disponibles, consultez l'annexe relative aux dictionnaires de
+									synonymes de donn&eacute;es, dans le <span class="bold"><strong>Guide
+										utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Data Quality</span>.</p>
+								<p>Pour plus d&#8217;informations concernant l&#8217;index de synonymes, consultez&nbsp;<a class="xref" href="tSynonymOutput.html" title="tSynonymOutput">la section intitul&eacute;e &laquo;&nbsp;tSynonymOutput&nbsp;&raquo;</a>.</p>
+							</td><td valign="top">
+								<p>Un sc&eacute;nario est disponible dans&nbsp;<a class="xref" href="tStandardizeRow.html#Raa90078" title="Sc&eacute;nario&nbsp;2&nbsp;: Standardiser des adresses provenant de donn&eacute;es non structur&eacute;es">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Standardiser des adresses provenant de donn&eacute;es non structur&eacute;es&nbsp;&raquo;</a>.</p>
+							</td><td valign="top">
+								<p>Sous Windows, les barres obliques inverses <code class="code">&#8220;\&#8221;</code>
+									doivent &ecirc;tre remplac&eacute;es par des barres obliques <code class="code">&#8220;/&#8221;</code>
+									si le chemin d&#8217;acc&egrave;s est copi&eacute; &agrave; partir du fichier
+									syst&egrave;me.</p>
+							</td></tr><tr><td valign="top">
+								<p>
+									<span class="bold"><strong>Shape</strong></span>
+								</p>
+							</td><td valign="top">
+								<p>Une r&egrave;gle de ce type utilise des segments pr&eacute;-d&eacute;finis ainsi
+									que des r&egrave;gles &eacute;tablies <span class="bold"><strong>Regex</strong></span>
+									ou <span class="bold"><strong>Index</strong></span> ou les deux pour faire
+									correspondre les donn&eacute;es entrantes.</p>
+							</td><td valign="top">
+								<p><span class="emphasis"><em>RuleName&nbsp;</em></span>: <code class="code">Address<span></span>
+									</code><span class="emphasis"><em>RuleValue&nbsp;</em></span>:
+										<code class="code">&#8220;&lt;INT&gt;&lt;WORD&gt;&lt;StreetType&gt;&#8221;</code>
+								</p>
+								<p> Cette r&egrave;gle correspond aux adresses telles que&nbsp;<span class="emphasis"><em>12
+										main street</em></span>, o&ugrave;&nbsp;<span class="emphasis"><em>StreetType</em></span>
+									est une r&egrave;gle <span class="bold"><strong>Index</strong></span> que vous
+									devez d&eacute;finir avec cette r&egrave;gle d&#8217;exemple dans la vue <span class="bold"><strong>Basic settings</strong></span> de ce
+									composant.</p>
+								<p> Pour plus d&#8217;informations concernant le type de r&egrave;gle
+										<span class="bold"><strong>Shape</strong></span>, consultez <a class="xref" href="tStandardizeRow.html#Raa90078" title="Sc&eacute;nario&nbsp;2&nbsp;: Standardiser des adresses provenant de donn&eacute;es non structur&eacute;es">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Standardiser des adresses provenant de donn&eacute;es non structur&eacute;es&nbsp;&raquo;</a>.</p>
+							</td><td valign="top">
+								<p>- Les segments pr&eacute;-d&eacute;finis sont&nbsp;: </p>
+								<p><code class="code">-INT</code> pour un entier&nbsp;; <code class="code">-WORD</code> pour un mot&nbsp;; -WORD+ pour les
+									caract&egrave;res litt&eacute;raux de plusieurs mots&nbsp;;</p>
+								<p> -<code class="code">CAPWORD</code> pour les mots en majuscule&nbsp;; </p>
+								<p>
+									<code class="code">-DECIMAL</code> pour les types de donn&eacute;es Float
+									d&eacute;cimales&nbsp;; </p>
+								<p> -<code class="code">FRACTION</code> pour les types de donn&eacute;es Float de
+									fraction, </p>
+								<p> -<code class="code">CURRENCY</code> pour les monnaies,
+										-<code class="code">ROMAIN_NUMERAL</code> pour les chiffres/nombres
+									romains, </p>
+								<p>
+									<code class="code">-ALPHANUM</code> pour les nombres alphab&eacute;tiques,</p>
+								<p> - UNDEFINED pour les cha&icirc;nes de caract&egrave;res contenant des
+									codes ASCII inattendus, qu&#8217;aucun autre segment ne peut
+									reconna&icirc;tre.</p>
+								<p> - Seul le contenu plac&eacute; entre <code class="code">&lt; &gt;</code> est reconnu. Autrement, le
+									contenu est consid&eacute;r&eacute; comme une erreur ou est omis.</p>
+							</td></tr></tbody></table></div><p>Pour les symboles ANTLR donn&eacute;s&nbsp;:</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"></colgroup><thead><tr><th valign="top">
+								<p>Symboles</p>
+							</th><th valign="top">
+								<p>Signification</p>
+							</th></tr></thead><tbody><tr><td valign="top">
+								<p>
+									<code class="code">|</code>
+								</p>
+							</td><td valign="top">
+								<p>alternative</p>
+							</td></tr><tr><td valign="top">
+								<p>
+									<code class="code">'s'</code>
+								</p>
+							</td><td valign="top">
+								<p>caract&egrave;re litt&eacute;ral ou cha&icirc;ne de caract&egrave;res constante (string
+									literal)</p>
+							</td></tr><tr><td valign="top">
+								<p>
+									<code class="code">+</code>
+								</p>
+							</td><td valign="top">
+								<p>1 ou plus</p>
+							</td></tr><tr><td valign="top">
+								<p>
+									<code class="code">*</code>
+								</p>
+							</td><td valign="top">
+								<p>0 ou plus</p>
+							</td></tr><tr><td valign="top">
+								<p>
+									<code class="code">?</code>
+								</p>
+							</td><td valign="top">
+								<p>facultatif ou pr&eacute;dicat s&eacute;mantique</p>
+							</td></tr><tr><td valign="top">
+								<p>
+									<code class="code">~</code>
+								</p>
+							</td><td valign="top">
+								<p>ne correspond pas</p>
+							</td></tr></tbody></table></div><p>Les sc&eacute;narios suivants pr&eacute;sentent des exemples
+				d&#8217;utilisation de ces symboles, mais vous pouvez &eacute;galement trouver d&#8217;autres exemples
+				en consultant ce site&nbsp;:</p><p>
+				<a class="link" href="http://www.antlr.org/wiki/display/ANTLR3/ANTLR+Cheat+Sheet" target="_top">http://www.antlr.org/wiki/display/ANTLR3/ANTLR+Cheat+Sheet</a>.</p></div></div><div class="section" title="Sc&eacute;nario&nbsp;1&nbsp;: Normaliser les donn&eacute;es &agrave; l&#8217;aide de r&egrave;gles de type simple"><div class="titlepage"><div><div><h3 class="title"><a name="d0e193558"></a>Sc&eacute;nario&nbsp;1&nbsp;: Normaliser les donn&eacute;es &agrave; l&#8217;aide de r&egrave;gles de type simple</h3></div></div></div><p>Dans ce sc&eacute;nario, deux &eacute;tapes successives sont effectu&eacute;es
+			afin de&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>normaliser les donn&eacute;es entrantes (s&eacute;parer les donn&eacute;es conformes des donn&eacute;es
+					non conformes)&nbsp;;</p></li><li class="listitem"><p>extraire les donn&eacute;es souhait&eacute;es et les afficher.</p></li></ul></div><p>Avant de reproduire ces &eacute;tapes, vous devez analyser les
+			donn&eacute;es source afin de d&eacute;terminer les r&egrave;gles &agrave; r&eacute;diger. Pour ce sc&eacute;nario, les donn&eacute;es
+			source sont stock&eacute;es dans un fichier&nbsp;<span class="emphasis"><em>.csv</em></span>
+				appel&eacute;&nbsp;<span class="emphasis"><em>partsmaster</em></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="450"><tr><td><img src="../images/Use_Case_tStandardizeRow_rawdata.png" width="450"></td></tr></table></div><p>Le fichier contient un total de&nbsp;59 lignes de donn&eacute;es
+			brutes, mais certaines d&#8217;entre elles n&#8217;apparaissent pas sur la capture ci-dessus.</p><p>En observant les donn&eacute;es, vous pouvez anticiper que la
+			troisi&egrave;me ligne ne sera pas reconnue car elle contient des caract&egrave;res asiatiques. De
+			plus, vous pouvez d&eacute;terminer que&nbsp;: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>les donn&eacute;es&nbsp;<span class="emphasis"><em>SKU</em></span> contiennent&nbsp;34-9923, pb710125, etc. De ce
+					fait, la r&egrave;gle utilis&eacute;e pour analyser les donn&eacute;es&nbsp;<span class="emphasis"><em>SKU</em></span> peut
+					&ecirc;tre&nbsp;:</p></li></ul></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><thead><tr><th valign="top">
+							<p>Nom</p>
+						</th><th valign="top">
+							<p>Type</p>
+						</th><th valign="top">
+							<p>Valeur</p>
+						</th></tr></thead><tbody><tr><td valign="top">
+							<p>
+								<code class="code">&#8220;SKU&#8221;</code>
+							</p>
+						</td><td valign="top">
+							<p>
+								<code class="code">&#8220;Format&#8221;</code>
+							</p>
+						</td><td valign="top">
+							<p><code class="code">"(DIGIT DIGIT|LETTER LETTER'-'? DIGIT DIGIT DIGIT DIGIT (DIGIT
+								DIGIT?)?"</code></p>
+						</td></tr></tbody></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>pour les donn&eacute;es&nbsp;<span class="emphasis"><em>Size</em></span>, le format correct est la
+					multiplication de deux ou trois longueurs (length) ajout&eacute;e aux unit&eacute;s de
+					longueur (length unit). De ce fait, les r&egrave;gles utilis&eacute;es pour les
+						donn&eacute;es&nbsp;<span class="emphasis"><em>Size</em></span> peuvent &ecirc;tre&nbsp;: </p></li></ul></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><thead><tr><th valign="top">
+							<p>Name</p>
+						</th><th valign="top">
+							<p>Type</p>
+						</th><th valign="top">
+							<p>Value</p>
+						</th></tr></thead><tbody><tr><td valign="top">
+							<p>
+								<code class="code">&#8220;LengthUnit&#8221;</code>
+							</p>
+						</td><td valign="top">
+							<p>
+								<code class="code">&#8220;Enumeration&#8221;</code>
+							</p>
+						</td><td valign="top">
+							<p>
+								<code class="code">&#8220; 'm' | '\'' | 'inch' | 'inches' | '\"'&#8221;</code>
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<code class="code">&#8220;BY&#8221;</code>
+							</p>
+						</td><td valign="top">
+							<p>
+								<code class="code">&#8220;Enumeration&#8221;</code>
+							</p>
+						</td><td valign="top">
+							<p>
+								<code class="code">&#8220;'X' | 'x' | 'by' &#8221;</code>
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<code class="code">&#8220;Length&#8221;</code>
+							</p>
+						</td><td valign="top">
+							<p>
+								<code class="code">&#8220;Format&#8221;</code>
+							</p>
+						</td><td valign="top">
+							<p>
+								<code class="code">&#8220;(INT | FRACTION | DECIMAL) WHITESPACE* LengthUnit &#8221;</code>
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<code class="code">&#8220;Size&#8221;</code>
+							</p>
+						</td><td valign="top">
+							<p>
+								<code class="code">&#8220;Combination&#8221;</code>
+							</p>
+						</td><td valign="top">
+							<p>
+								<code class="code">&#8220;Length BY Length BY Length&#8221;</code>
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<code class="code">&#8220;Size&#8221;</code>
+							</p>
+						</td><td valign="top">
+							<p>
+								<code class="code">&#8220;Combination&#8221;</code>
+							</p>
+						</td><td valign="top">
+							<p>
+								<code class="code">&#8220;Length BY Length&#8221;</code>
+							</p>
+						</td></tr></tbody></table></div><p>Puisque deux r&egrave;gles <span class="bold"><strong>Combination</strong></span> utilisent le m&ecirc;me nom, elles seront ex&eacute;cut&eacute;es par ordre
+			descendant comme pr&eacute;sent&eacute; dans ce tableau.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>pour les donn&eacute;es&nbsp;<span class="emphasis"><em>Weight</em></span>, le format correct est le poids
+					(weight) ajout&eacute; &agrave; l&#8217;unit&eacute; de poids (weight unit). De ce fait, les r&egrave;gles
+					utilis&eacute;es pour analyser les donn&eacute;es &nbsp;<span class="emphasis"><em>Weight</em></span> peuvent &ecirc;tre&nbsp;:
+				</p></li></ul></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><thead><tr><th valign="top">
+							<p>Name</p>
+						</th><th valign="top">
+							<p>Type</p>
+						</th><th valign="top">
+							<p>Value</p>
+						</th></tr></thead><tbody><tr><td valign="top">
+							<p>
+								<code class="code">&#8220;WeightUnit&#8221;</code>
+							</p>
+						</td><td valign="top">
+							<p>
+								<code class="code">&#8220;Enumeration&#8221;</code>
+							</p>
+						</td><td valign="top">
+							<p>
+								<code class="code">&#8220; 'lb' | 'lbs' | 'pounds' | 'Kg' | 'pinds'&#8221;</code>
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<code class="code">&#8220;Weight&#8221;</code>
+							</p>
+						</td><td valign="top">
+							<p>
+								<code class="code">&#8220;Format&#8221;</code>
+							</p>
+						</td><td valign="top">
+							<p>
+								<code class="code">&#8220;(INT | FRACTION | DECIMAL) WHITESPACE* WeightUnit &#8221;</code>
+							</p>
+						</td></tr></tbody></table></div><p>Vous pouvez &agrave; pr&eacute;sent commencer &agrave; reproduire les deux
+			&eacute;tapes de ce sc&eacute;nario.</p><div class="section" title="S&eacute;parer les donn&eacute;es conformes des donn&eacute;es non conformes"><div class="titlepage"><div><div><h4 class="title"><a name="Raa71772"></a>S&eacute;parer les donn&eacute;es conformes des donn&eacute;es non conformes</h4></div></div></div><p>Pour cette premi&egrave;re &eacute;tape, quatre composants sont
+				utilis&eacute;s&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>un <span class="bold"><strong>tFileInputDelimited</strong></span>
+							(<span class="emphasis"><em>partsmaster</em></span>)&nbsp;: ce composant charge et passe les
+						donn&eacute;es source au composant suivant.</p></li><li class="listitem"><p>un <span class="bold"><strong>tStandardizeRow</strong></span>&nbsp;: ce composant
+						normalise les donn&eacute;es entrantes et rejette les exceptions non
+						reconnues.</p></li><li class="listitem"><p>un <span class="bold"><strong>tLogRow&nbsp;</strong></span>: ce composant est utilis&eacute; &agrave;
+						deux reprises pour afficher respectivement les exceptions et les donn&eacute;es XML
+						de sortie.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow_Normalization.png"></div><p>Pour reproduire cette &eacute;tape, proc&eacute;dez comme indiqu&eacute; dans les sections suivantes.</p><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h5 class="title"><a name="d0e193921"></a>D&eacute;poser et relier les composants</h5></div></div></div><p>Pour reproduire cette &eacute;tape, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Configurez votre sch&eacute;ma File Delimited pour le
+							fichier&nbsp;<span class="emphasis"><em>partsmaster.csv</em></span> dans la vue <span class="bold"><strong>Repository</strong></span> de votre Studio. Pour plus
+						d&#8217;informations concernant cette proc&eacute;dure, consultez le <span class="bold"><strong>Guide utilisateur </strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p></li><li class="listitem"><p>Sous le n&#339;ud <span class="bold"><strong>Metadata</strong></span> de la vue <span class="bold"><strong>Repository</strong></span> de votre Studio, s&eacute;lectionnez le
+						sch&eacute;ma File Delimited de&nbsp;<span class="emphasis"><em>partsmaster.csv</em></span> et d&eacute;posez-le
+						dans l&#8217;espace de mod&eacute;lisation graphique.</p></li><li class="listitem"><p>A partir de la bo&icirc;te de dialogue qui appara&icirc;t, s&eacute;lectionnez <span class="bold"><strong>tFileInputDelimited</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow2.png"></div><p>Le composant <span class="bold"><strong>tFileInputDelimited</strong></span> (<span class="emphasis"><em>partsmaster</em></span>) s&#8217;affiche
+				dans l&#8217;espace de mod&eacute;lisation graphique.</p></li><li class="listitem"><p>A partir de la<span class="bold"><strong> Palette</strong></span>, d&eacute;posez le
+						composant <span class="bold"><strong>tStandardizeRow</strong></span> ainsi que deux
+							<span class="bold"><strong>tLogRow</strong></span> dans l&#8217;espace de mod&eacute;lisation
+						graphique.</p></li><li class="listitem"><p>Cliquez-droit sur le <span class="bold"><strong>tFileInputDelimited</strong></span>
+							(<span class="emphasis"><em>partsmaster</em></span>) pour afficher son menu
+						contextuel.</p></li><li class="listitem"><p>A partir de ce menu, s&eacute;lectionnez un lien <span class="bold"><strong>Row &gt;
+							Main</strong></span> pour connecter ce composant au <span class="bold"><strong>tStandardizeRow</strong></span>.</p></li><li class="listitem"><p>Acceptez la propagation du sch&eacute;ma dans la bo&icirc;te de dialogue qui appara&icirc;t
+						en cliquant sur <span class="bold"><strong>Yes</strong></span>.</p></li><li class="listitem"><p>A partir du <span class="bold"><strong>tStandardizeRow</strong></span>, proc&eacute;dez de
+						m&ecirc;me pour connecter ce composant au premier <span class="bold"><strong>tLogRow</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row &gt;
+							Main</strong></span> et au second &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row&nbsp;&gt;&nbsp;Reject</strong></span> puis acceptez la propagation du
+						sch&eacute;ma.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Vous avez la possibilit&eacute; de modifier le libell&eacute; de chaque composant, comme
+					cela a &eacute;t&eacute; fait pour le composant <span class="bold"><strong>tLogRow</strong></span>,
+						renomm&eacute;&nbsp;<span class="emphasis"><em>Exception</em></span> pour ce sc&eacute;nario. Pour plus
+					d&#8217;informations, consultez le <span class="bold"><strong>Guide utilisateur </strong></span>
+					de <span class="bluebold">Talend Enterprise Studio</span> .</p></td></tr></table></div></li></ol></div></div><div class="section" title="Configurer la normalisation des lignes"><div class="titlepage"><div><div><h5 class="title"><a name="d0e194039"></a>Configurer la normalisation des lignes</h5></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Cliquez sur le <span class="bold"><strong>tStandardizeRow</strong></span> pour
+						ouvrir l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de sa vue
+							<span class="bold"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow3.png"></div></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Column to parse</strong></span>,
+							s&eacute;lectionnez&nbsp;<span class="emphasis"><em>SKU_Description_Size_Weight</em></span>. C&#8217;est
+						l&#8217;unique colonne que contient le sch&eacute;ma d&#8217;entr&eacute;e.</p></li><li class="listitem"><p>Sous le tableau <span class="bold"><strong>Conversion rules</strong></span>, cliquez
+						sur le bouton <span class="bold"><strong>[+]</strong></span> &agrave; huit reprises pour
+						ajouter huit lignes &agrave; ce tableau.</p></li><li class="listitem"><p>Pour remplir ces lignes, saisissez les r&egrave;gles d&eacute;termin&eacute;es lors de
+						l&#8217;analyse des donn&eacute;es brutes effectu&eacute;e au d&eacute;but de ce sc&eacute;nario.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Les deux r&egrave;gles&nbsp;<span class="emphasis"><em>Size</em></span> sont ex&eacute;cut&eacute;es par ordre descendant puisqu&#8217;elles
+					font partie du m&ecirc;me type de r&egrave;gle. Dans ce sc&eacute;nario, l'ordre des r&egrave;gles permet
+					au composant de mettre d'abord en correspondance la r&egrave;gle <span class="italic">Size</span> compos&eacute;e de trois nombres puis celles de deux
+					nombres. Si vous inversez cet ordre, le composant met en correspondance les deux
+					premiers nombres avec la premi&egrave;re r&egrave;gle <span class="italic">Size</span>
+					(Length BY Length) et traite ensuite le dernier nombre de la cha&icirc;ne est ignor&eacute;
+					car il ne correspondant pas.</p></td></tr></table></div></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Generate parser code in
+						routines</strong></span> afin de g&eacute;n&eacute;rer le code d&#8217;analyse syntaxique dans
+						des routines.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter la normalisation du Job"><div class="titlepage"><div><div><h5 class="title"><a name="d0e194099"></a>Ex&eacute;cuter la normalisation du Job</h5></div></div></div><p>Appuyez sur <span class="bold"><strong>F6</strong></span> pour ex&eacute;cuter ce
+						Job.</p><p>Dans la console de la vue <span class="bold"><strong>Run</strong></span>, vous pouvez observer la structure des donn&eacute;es de sortie. </p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow4.png"></div><p>Un segment XML correspondant aux donn&eacute;es brutes telles
+					que&nbsp;<span class="emphasis"><em>34-9923, Monolithic Membrance, 4&#8217; x 8&#8217;, 26 lbs</em></span> est
+				g&eacute;n&eacute;r&eacute; l&agrave; o&ugrave; les donn&eacute;es conformes sont s&eacute;par&eacute;es des donn&eacute;es non conformes (qui ne
+				correspondent pas). Les donn&eacute;es brutes sont donc normalis&eacute;es.</p><p>Toujours &agrave; partir de cette console, vous pouvez
+				observer qu&#8217;une ligne est rejet&eacute;e car elle contient des donn&eacute;es non
+				reconnaissables.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow5.png"></div></div></div><div class="section" title="Extraire les donn&eacute;es souhait&eacute;es &agrave; partir des donn&eacute;es XML normalis&eacute;es"><div class="titlepage"><div><div><h4 class="title"><a name="d0e194125"></a>Extraire les donn&eacute;es souhait&eacute;es &agrave; partir des donn&eacute;es XML normalis&eacute;es</h4></div></div></div><p>Cette section pr&eacute;sente la deuxi&egrave;me &eacute;tape de ce
+				sc&eacute;nario. Quatre composants sont ajout&eacute;s pour recevoir les donn&eacute;es XML normalis&eacute;es &agrave;
+				la place du composant <span class="bold"><strong>tLogRow</strong></span> d&eacute;fini pour cette
+				action lors de la premi&egrave;re &eacute;tape&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>le <span class="bold"><strong>tExtractXMLField&nbsp;</strong></span>: ce composant lit un
+						champ d&#8217;entr&eacute;e en XML et extrait les donn&eacute;es souhait&eacute;es&nbsp;;</p></li><li class="listitem"><p>le <span class="bold"><strong>tFilterRow</strong></span>&nbsp;: ce composant filtre les
+						lignes d&#8217;entr&eacute;e en d&eacute;finissant des conditions sur les colonnes
+						s&eacute;lectionn&eacute;es&nbsp;;</p></li><li class="listitem"><p>le <span class="bold"><strong>tLogRow</strong></span> (deux fois)&nbsp;: ces deux
+						composants re&ccedil;oivent et affichent respectivement les donn&eacute;es valides ou
+						invalides conform&eacute;ment aux conditions &eacute;tablies dans le <span class="bold"><strong>tFilterRow</strong></span>.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow1.png"></div><p>Pour reproduire la deuxi&egrave;me &eacute;tape, proc&eacute;dez comme dans les sections suivantes&nbsp;:</p><div class="section" title="D&eacute;poser et relier les composants suppl&eacute;mentaires"><div class="titlepage"><div><div><h5 class="title"><a name="d0e194160"></a>D&eacute;poser et relier les composants suppl&eacute;mentaires</h5></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, supprimez le composant <span class="bold"><strong>tLogRow</strong></span> connect&eacute; au <span class="bold"><strong>tStandardizeRow</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>.</p></li><li class="listitem"><p>A partir de la <span class="bold"><strong>Palette</strong></span>, d&eacute;posez un
+							<span class="bold"><strong>tExtractXMLField</strong></span>, un <span class="bold"><strong>tFilterRow</strong></span> ainsi que deux <span class="bold"><strong>tLogRow</strong></span> dans l&#8217;espace de mod&eacute;lisation graphique. Pour ce
+						sc&eacute;nario, les deux composants <span class="bold"><strong>tLogRow</strong></span> sont
+						nomm&eacute;s respectivement&nbsp;<span class="emphasis"><em>ValidSize</em></span>
+							et&nbsp;<span class="emphasis"><em>InvalidSize</em></span>.</p><p>Pour plus d&#8217;informations concernant le renommage d&#8217;un composant, consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span> .</p></li><li class="listitem"><p>Connectez le <span class="bold"><strong>tExtractXMLField</strong></span> au
+							<span class="bold"><strong>tFilterRow</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>
+						comme vous l&#8217;avez fait lors de la premi&egrave;re &eacute;tape pour
+							connecter&nbsp;<span class="emphasis"><em>partsmaster</em></span> au <span class="bold"><strong>tStandardizeRow</strong></span>.</p></li><li class="listitem"><p>Proc&eacute;dez de la m&ecirc;me fa&ccedil;on pour connecter le <span class="bold"><strong>tFilterRow</strong></span> au&nbsp;<span class="emphasis"><em>ValidSize </em></span>&agrave; l&#8217;aide d&#8217;un
+						lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Filter</strong></span>.</p></li><li class="listitem"><p>Connectez le <span class="bold"><strong>tFilterRow</strong></span> au
+							composant&nbsp;<span class="emphasis"><em>InvalidSize</em></span> &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Reject</strong></span>
+						comme vous l&#8217;avez fait lors de la premi&egrave;re &eacute;tape pour connecter le <span class="bold"><strong>tSandardizeRow</strong></span> au
+							composant&nbsp;<span class="emphasis"><em>Exception</em></span>.</p></li></ol></div></div><div class="section" title="Configurer l'extraction des champs XML"><div class="titlepage"><div><div><h5 class="title"><a name="d0e194269"></a>Configurer l'extraction des champs XML</h5></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tExtractXMLField</strong></span> pour ouvrir
+							l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de sa vue
+								<span class="bold"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow6.png"></div></li><li class="listitem"><p>A c&ocirc;t&eacute; de <span class="bold"><strong>Edit schema</strong></span>, cliquez sur
+							<span class="bold"><strong>[...]</strong></span> pour ouvrir l&#8217;&eacute;diteur de
+						sch&eacute;ma.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow7.png"></div></li><li class="listitem"><p>A gauche de cet &eacute;diteur, s&eacute;lectionnez la
+							ligne&nbsp;<span class="emphasis"><em>SKU_Description_Size_Weight</em></span>.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="inlinemediaobject"><img src="../images/Schema_icon_RightArrow.png" width="21"></span> pour passer cette ligne &agrave; la droite de
+						l&#8217;&eacute;diteur.</p></li><li class="listitem"><p>A droite de cet &eacute;diteur, cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> &agrave; trois reprises pour ajouter trois lignes.</p></li><li class="listitem"><p>Renommez les trois lignes ainsi&nbsp;:&nbsp;<span class="emphasis"><em>SKU</em></span>,
+							<span class="emphasis"><em>Size</em></span>, <span class="emphasis"><em>Weight</em></span>, chacune d&#8217;entre
+						elles &eacute;tant des balises des donn&eacute;es XML normalis&eacute;es.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider cette
+						configuration et acceptez la propagation du sch&eacute;ma demand&eacute;e dans la bo&icirc;te de
+						dialogue qui appara&icirc;t. Observez que quatre lignes sont automatiquement
+						remplies dans le tableau <span class="bold"><strong>Mapping</strong></span> de la vue
+							<span class="bold"><strong>Component</strong></span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>XML field</strong></span> de la vue
+							<span class="bold"><strong>Component</strong></span>, s&eacute;lectionnez le champ XML
+						souhait&eacute; des donn&eacute;es d&#8217;entr&eacute;e. Pour ce sc&eacute;nario, il s&#8217;agit
+							de&nbsp;<span class="emphasis"><em>Normalized_field</em></span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Loop XPath Query</strong></span>, saisissez
+						le nom de la balise racine de l&#8217;arborescence XML pour remplacer sa valeur
+						par d&eacute;faut. Pour ce sc&eacute;nario, saisissez <code class="code">&#8220;/record&#8221;</code>.</p></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>XPath query</strong></span> du tableau
+							<span class="bold"><strong>Mapping</strong></span>, saisissez entre guillemets
+						doubles les balises de l&#8217;arborescence XML correspondant aux donn&eacute;es
+						normalis&eacute;es souhait&eacute;es. Pour ce sc&eacute;nario, il s&#8217;agit de<code class="code"> &#8220;SKU&#8221;</code>,
+							<code class="code">&#8220;Size&#8221;</code>, et <code class="code">&#8220;Weight&#8221;</code>.</p></li></ol></div></div><div class="section" title="Configurer le filtrage des lignes"><div class="titlepage"><div><div><h5 class="title"><a name="d0e194384"></a>Configurer le filtrage des lignes</h5></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tFilterRow</strong></span> pour
+						ouvrir l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> de sa vue
+							<span class="bold"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow8.png"></div></li><li class="listitem"><p>Sous le tableau <span class="bold"><strong>Conditions</strong></span>, cliquez sur
+						le bouton <span class="bold"><strong>[+]</strong></span> pour ajouter une
+						ligne.</p></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>InputColumn</strong></span> de cette
+						ligne, s&eacute;lectionnez&nbsp;<span class="emphasis"><em>Size</em></span> &agrave; partir de la liste
+						d&eacute;roulante.</p></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>Function</strong></span>, s&eacute;lectionnez
+							<span class="bold"><strong>Empty</strong></span>.</p></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>Operator</strong></span>, s&eacute;lectionnez
+							<span class="bold"><strong>Not equal to</strong></span>.</p></li><li class="listitem"><p>Dans la colonne <span class="bold"><strong>Value</strong></span>, saisissez des
+						guillemets doubles <code class="code">&#8220;&#8221;</code>. </p><p>La condition est d&eacute;finie. Les donn&eacute;es normalis&eacute;es qui
+				ne contiennent pas de valeurs nulles dans la balise&nbsp;<span class="emphasis"><em>Size</em></span> seront
+				pass&eacute;es au composant de sortie tandis que celles qui contiennent des valeurs nulles
+				dans la balise&nbsp;<span class="emphasis"><em>Size</em></span> seront rejet&eacute;es.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h5 class="title"><a name="d0e194458"></a>Ex&eacute;cuter le Job</h5></div></div></div><p>Appuyez sur <span class="bold"><strong>F6</strong></span> pour ex&eacute;cuter ce
+						Job.</p><p>Dans la console de la vue <span class="bold"><strong>Run</strong></span>, vous pouvez observez les donn&eacute;es souhait&eacute;es s&eacute;lectionn&eacute;es &agrave;
+				partir du flux de donn&eacute;es XML normalis&eacute;es.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow9.png"></div><p>Ce Job liste les donn&eacute;es normalis&eacute;es souhait&eacute;es en
+				parall&egrave;le avec les donn&eacute;es brutes.</p><p>Vous pouvez &eacute;galement observer les donn&eacute;es rejet&eacute;es
+				par le composant <span class="bold"><strong>tFilterRow</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow10.png"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Pour des raisons d&#8217;espace, tous les r&eacute;sultats ne sont pas affich&eacute;s.</p></td></tr></table></div></div></div></div><div class="section" title="Sc&eacute;nario&nbsp;2&nbsp;: Standardiser des adresses provenant de donn&eacute;es non structur&eacute;es"><div class="titlepage"><div><div><h3 class="title"><a name="Raa90078"></a>Sc&eacute;nario&nbsp;2&nbsp;: Standardiser des adresses provenant de donn&eacute;es non structur&eacute;es</h3></div></div></div><p>Dans ce sc&eacute;nario, six composants sont utilis&eacute;s pour
+			standardiser des adresses provenant de donn&eacute;es non structur&eacute;es r&eacute;cup&eacute;r&eacute;es (copi&eacute;es) d&#8217;un
+			site Web en les rapprochant des donn&eacute;es contenues dans un index, pr&eacute;c&eacute;demment g&eacute;n&eacute;r&eacute; par
+			un Job.</p><p>Pour plus d&#8217;informations concernant la cr&eacute;ation d&#8217;index,
+			consultez&nbsp;<a class="xref" href="tUnite.html" title="tUnite">la section intitul&eacute;e &laquo;&nbsp;tUnite&nbsp;&raquo;</a>.</p><p>Glissez-d&eacute;posez de la <span class="bold"><strong>Palette</strong></span> dans l&#8217;espace de mod&eacute;lisation graphique les composants
+			suivants&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>un <span class="bold"><strong>tFixedFlowInput</strong></span>&nbsp;: ce composant contient
+					les donn&eacute;es non structur&eacute;es desquelles extraire les adresses.</p></li><li class="listitem"><p>un <span class="bold"><strong>tStandardizeRow</strong></span>&nbsp;: ce composant d&eacute;finit les
+					r&egrave;gles de l&#8217;adresse et g&eacute;n&egrave;re les adresses au format XML avec les balises
+					d&eacute;finies.</p></li><li class="listitem"><p>un <span class="bold"><strong>tFilterColumns&nbsp;</strong></span>: ce composant filtre
+					l&#8217;adresse standardis&eacute;e.</p></li><li class="listitem"><p>un <span class="bold"><strong>tExtractXMLField</strong></span>&nbsp;: ce composant extrait les attributs
+					du n&#339;ud&nbsp;<span class="emphasis"><em>Address</em></span> de l&#8217;arborescence XML pour renvoyer en
+					sortie chaque composante de l&#8217;adresse dans une colonne typ&eacute;e.</p></li><li class="listitem"><p>deux <span class="bold"><strong>tLogRow</strong></span>&nbsp;: ces composants servent &agrave;
+					afficher les donn&eacute;es en sortie. Le premier <span class="bold"><strong>tLogRow</strong></span> retourne les erreurs s&#8217;il y en a. Le second <span class="bold"><strong>tLogRow</strong></span> affiche le r&eacute;sultat dans la console.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow1_s2.png"></div><p>Avant de reproduire ce sc&eacute;nario, vous devez avoir r&eacute;cup&eacute;r&eacute;
+			le contenu d&#8217;un index afin de mettre en correspondance les donn&eacute;es non structur&eacute;es avec
+			les donn&eacute;es de l&#8217;index. Cet index se pr&eacute;sente comme suit&nbsp;:</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow_s2_Index.png"></div><p>Les noms des rues de Paris s&#8217;affichent &agrave; gauche et leurs
+			synonymes utilis&eacute;s dans les donn&eacute;es s&#8217;affichent &agrave; droite.</p><p>Pour reproduire ce sc&eacute;nario, proc&eacute;dez comme dans les sections suivantes.</p><div class="section" title="Pr&eacute;parer les donn&eacute;es non structur&eacute;es"><div class="titlepage"><div><div><h4 class="title"><a name="d0e194553"></a>Pr&eacute;parer les donn&eacute;es non structur&eacute;es</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tFixedFlowInput</strong></span> pour afficher sa vue <span class="bold"><strong>Basic
+						settings</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow2_s2.png"></div></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Schema</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Built-In</strong></span> puis cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> afin de d&eacute;finir le sch&eacute;ma.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow_s2_SchemaFixedFlow.png"></div></li><li class="listitem"><p>Dans l&#8217;&eacute;diteur du sch&eacute;ma, cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> pour
+						ajouter une colonne de type <span class="bold"><strong>String</strong></span>.
+							Nommez-la&nbsp;<span class="emphasis"><em>input</em></span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider et fermer
+					l&#8217;&eacute;diteur.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Number of rows</strong></span>,
+						saisissez&nbsp;<span class="emphasis"><em>1</em></span>.</p></li><li class="listitem"><p>Dans la zone <span class="bold"><strong>Mode</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Use Inline Content (delimited file)</strong></span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Row Separator</strong></span>, saisissez le
+					s&eacute;parateur de lignes &#8220;\n&#8221;.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Field Separator</strong></span>, saisissez le
+					s&eacute;parateur de champs &#8220;;&#8221;.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Content</strong></span>, collez les donn&eacute;es copi&eacute;es du site
+						Web. Ces donn&eacute;es ne sont pas structur&eacute;es.</p></li></ol></div><p>Configurez la standardisation.</p></div><div class="section" title="Configurez la standardisation des donn&eacute;es non structur&eacute;es"><div class="titlepage"><div><div><h4 class="title"><a name="d0e194642"></a>Configurez la standardisation des donn&eacute;es non structur&eacute;es</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Reliez le <span class="bold"><strong>tFixedFlowInput</strong></span> au <span class="bold"><strong>tStandardizeRow</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>.</p></li><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, double-cliquez sur le composant
+						<span class="bold"><strong>tStandardizeRow</strong></span> pour afficher sa vue
+						<span class="bold"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow3_s2.png"></div></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Schema</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Column to parse</strong></span>, s&eacute;lectionnez
+						<span class="bold"><strong>input</strong></span>.</p></li><li class="listitem"><p>Cochez la case <span class="bold"><strong>Standardize this field</strong></span>.</p></li><li class="listitem"><p>Dans le tableau <span class="bold"><strong>Conversion rules</strong></span>, cliquez six fois sur le
+						bouton <span class="bold"><strong>[+]</strong></span> afin d&#8217;ajouter six
+						colonnes.</p><p>Pour la colonne <span class="emphasis"><em>&#8220;StreetName&#8221;</em></span>, saisissez dans le champ
+							<span class="bold"><strong>Value</strong></span> le chemin d&#8217;acc&egrave;s &agrave; votre index.
+						Configurez les autres r&egrave;gles comme suit :</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><thead><tr><th valign="top">
+											<p>Name</p>
+										</th><th valign="top">
+											<p>Type</p>
+										</th><th valign="top">
+											<p>Value</p>
+										</th></tr></thead><tbody><tr><td valign="top">
+											<p>
+												<span class="italic">"Zip"</span>
+											</p>
+										</td><td valign="top">
+											<p>
+												<span class="bold"><strong>Format</strong></span>
+											</p>
+										</td><td valign="top">
+											<p>
+												<code class="code">" DIGIT DIGIT DIGIT DIGIT DIGIT "</code>
+											</p>
+										</td></tr><tr><td valign="top">
+											<span class="italic">"City"</span>
+										</td><td valign="top">
+											<span class="bold"><strong>Enumeration</strong></span>
+										</td><td valign="top">
+											<p>
+												<code class="code"> " 'Paris' | 'Paris' | 'PARIS' | 'Bagnolet'
+												"</code>
+											</p>
+										</td></tr><tr><td valign="top">
+											<span class="italic">"SpecialStreetNumber"</span>
+										</td><td valign="top">
+											<span class="bold"><strong>Format</strong></span>
+										</td><td valign="top">
+											<p>
+												<code class="code">" (INT ('bis'|'ter')) | ( INT '-' INT)
+												"</code>
+											</p>
+										</td></tr><tr><td valign="top">"<span class="italic">INT"</span></td><td valign="top">
+											<span class="bold"><strong>Shape</strong></span>
+										</td><td valign="top">
+											<p>
+												<code class="code">"&lt;SpecialStreetNumber&gt;"</code>
+											</p>
+										</td></tr><tr><td valign="top">
+											<span class="italic">"Address"</span>
+										</td><td valign="top">
+											<span class="bold"><strong>Shape</strong></span>
+										</td><td valign="top">
+											<p>
+												<code class="code">" &lt;INT&gt; &lt;StreetName&gt; &lt;Zip&gt; &lt;City&gt;
+												"</code>
+											</p>
+										</td></tr></tbody></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Parmi ces r&egrave;gles, les premi&egrave;res &agrave; &ecirc;tre ex&eacute;cut&eacute;es sont <span class="italic">"Zip"</span>, <span class="italic">"City"</span> et <span class="italic">"SpecialStreetNumber"</span>. Les suivantes sont <span class="italic">"StreetName"</span>, <span class="italic">"INT"</span> et <span class="italic">"Address"</span>.
+							Les r&egrave;gles simples sont ex&eacute;cut&eacute;es premier et sont suivies par les r&egrave;gles
+							avanc&eacute;es.</p></td></tr></table></div></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Generate parser code in
+						Routines</strong></span> afin de g&eacute;n&eacute;rer le code dans les <span class="bold"><strong>Routines</strong></span>.</p><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Si vous ne cliquez pas sur ce bouton, le Job ne pourra pas s&#8217;ex&eacute;cuter.</em></span>
+			</p></td></tr></table></div></li><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, cliquez-droit sur le <span class="bold"><strong>tStandardizeRow</strong></span> afin de le relier au <span class="bold"><strong>tLogRow</strong></span> du dessous, &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Reject</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tLogRow</strong></span> li&eacute; au
+						<span class="bold"><strong>tStandardizeRow</strong></span> afin d&#8217;afficher sa vue
+						<span class="bold"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow6_s2.png"></div></li><li class="listitem"><p>Dans la zone <span class="bold"><strong>Mode</strong></span>, s&eacute;lectionnez l&#8217;option
+						<span class="bold"><strong>Table (print values in cells of a
+					table)</strong></span>.</p></li></ol></div><p>Configurez le filtrage et l'extraction des donn&eacute;es qui vous int&eacute;ressent.</p></div><div class="section" title="Configurer le filtrage et l'extraction des donn&eacute;es"><div class="titlepage"><div><div><h4 class="title"><a name="d0e194915"></a>Configurer le filtrage et l'extraction des donn&eacute;es</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, reliez le <span class="bold"><strong>tStandardizeRow</strong></span> au <span class="bold"><strong>tFilterColumns</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>.</p></li><li class="listitem"><p>Dans la vue <span class="bold"><strong>Basic settings</strong></span> du <span class="bold"><strong>tFilterColumns</strong></span>, cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit
+						schema</strong></span> pour ouvrir l&#8217;&eacute;diteur du sch&eacute;ma.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow_s2_FilterColumnsschema.png"></div></li><li class="listitem"><p>Dans cet &eacute;diteur, cliquez sur la
+						colonne&nbsp;<span class="emphasis"><em>STANDARDIZED_FIELD</em></span>, puis cliquez sur la fl&egrave;che
+					simple pointant vers la droite, afin de filtrer cette colonne.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer l&#8217;&eacute;diteur et
+					valider vos modifications.</p></li><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation graphique, reliez le <span class="bold"><strong>tFilterColumns</strong></span> au <span class="bold"><strong>tExtractXMLField</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tExtractXMLField</strong></span> afin
+					d&#8217;afficher sa vue<span class="bold"><strong> Basic settings</strong></span>.</p></li><li class="listitem"><p>Dans les listes <span class="bold"><strong>Property Type</strong></span> et <span class="bold"><strong>Schema</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+						<span class="bold"><strong>Edit schema</strong></span> afin d&#8217;ouvrir l&#8217;&eacute;diteur du
+					sch&eacute;ma.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow_s2_SchemaExtractXML.png"></div></li><li class="listitem"><p>Dans cet &eacute;diteur, cliquez quatre fois sur le bouton <span class="bold"><strong>[+]</strong></span>
+						afin d&#8217;ajouter quatre colonnes. Nommez-les
+							respectivement&nbsp;<span class="emphasis"><em>number</em></span>,&nbsp;<span class="emphasis"><em>street</em></span>,&nbsp;<span class="emphasis"><em>zip</em></span>
+							et&nbsp;<span class="emphasis"><em>city</em></span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider et fermer
+					l&#8217;&eacute;diteur.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>XML field</strong></span>, v&eacute;rifiez que la
+						colonne&nbsp;<span class="emphasis"><em>STANDARDIZED_FIELD</em></span> est bien
+					s&eacute;lectionn&eacute;e.</p><p>Le contenu de la
+				colonne&nbsp;<span class="emphasis"><em>STANDARDIZED_FIELD</em></span> est un champ XML ayant pour racine
+			la balise <code class="code">&lt;record&gt;</code>. Sous cette balise, la structure d&eacute;finie par les
+			normes des r&egrave;gles configur&eacute;es dans le composant <span class="bold"><strong>tStandardizeRow</strong></span> permet d&#8217;extraire chaque composante de l&#8217;adresse tel que
+			vous pouvez le voir dans l&#8217;exemple ci-dessous.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow_s2_Result1.png"></div></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Loop XPath query</strong></span>,
+						saisissez&nbsp;<span class="emphasis"><em>&#8220;/record/Address&#8221;</em></span>.</p></li><li class="listitem"><p>Dans le tableau <span class="bold"><strong>Mapping</strong></span>, dans le champ
+						<span class="bold"><strong>XPath query</strong></span>, saisissez
+						<span class="emphasis"><em>&#8220;INT&#8221;</em></span> pour la colonne&nbsp;<span class="emphasis"><em>number</em></span>,
+						<span class="emphasis"><em>&#8220;StreetName&#8221;</em></span> pour la
+						colonne&nbsp;<span class="emphasis"><em>street</em></span>, <span class="emphasis"><em>&#8220;Zip&#8221;</em></span> pour la
+						colonne&nbsp;<span class="emphasis"><em>zip</em></span> et<span class="emphasis"><em> &#8220;City&#8221;</em></span> pour la
+						colonne&nbsp;<span class="emphasis"><em>city</em></span>.</p></li></ol></div><p>Vous pouvez maintenant ex&eacute;cuter votre Job.</p></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e195105"></a>Ex&eacute;cuter le Job</h4></div></div></div><p>Avant d'ex&eacute;cuter le Job, vous devez ajouter un composant <span class="bold"><strong>tLogRow</strong></span>, afin d'afficher les r&eacute;sultats d'ex&eacute;cution.</p><p>Pour ce faire, effectuez les op&eacute;rations suivantes :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation, reliez le <span class="bold"><strong>tExtractXMLField</strong></span> au second <span class="bold"><strong>tLogRow</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Row</strong></span>
+					&gt; <span class="bold"><strong>Main</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur ce <span class="bold"><strong>tLogRow</strong></span> afin d&#8217;ouvrir
+					sa vue <span class="bold"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow6_s2.png"></div></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Schema</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit
+						schema</strong></span> et v&eacute;rifiez que les sch&eacute;mas en entr&eacute;e et en sortie dans le
+						<span class="bold"><strong>tLogRow</strong></span> sont synchronis&eacute;s.</p><p> S&#8217;ils ne le sont pas, cliquez sur le bouton <span class="bold"><strong>Sync
+						columns</strong></span>.</p></li><li class="listitem"><p>Dans la zone <span class="bold"><strong>Mode</strong></span>, s&eacute;lectionnez l&#8217;option
+						<span class="bold"><strong>Table (print values in cells of a table)</strong></span>.
+				</p></li><li class="listitem"><p>Appuyez sur <span class="bold"><strong>F6</strong></span> pour ex&eacute;cuter ce Job.</p><div class="mediaobject"><img src="../images/Use_Case_tStandardizeRow8_s2.png"></div><p>Le second <span class="bold"><strong>tLogRow</strong></span> affiche
+			dans la console les adresses normalis&eacute;es et standardis&eacute;es par rapport &agrave; l&#8217;index.</p><p>Par exemple, vous pouvez constater que l&#8217;adresse des Champs Elys&eacute;es a &eacute;t&eacute; corrig&eacute;e et
+					format&eacute;e.</p><p>Le premier <span class="bold"><strong>tLogRow</strong></span> ne retourne rien dans ce sc&eacute;nario, car
+					aucune erreur n&#8217;est g&eacute;n&eacute;r&eacute;e.</p></li></ol></div></div></div></div></body></html>

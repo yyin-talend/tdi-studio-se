@@ -1,0 +1,19 @@
+public class CLASS {
+
+	void getAllLeaf(TreeNode node,List<TreeNode> allLeaf) {
+		EList<TreeNode> children = node.getChildren();
+		if(children==null || children.size() == 0) {
+			allLeaf.add(node);
+		} else {
+			for(TreeNode child : children) {
+				if(child!=null) {
+					getAllLeaf(child,allLeaf);
+				}
+			}
+		}
+	}
+	
+    public String generate(Object argument) {
+        return "";
+    }
+}

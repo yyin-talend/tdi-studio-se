@@ -1,0 +1,213 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tELTOracleOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa48933.html" title="Chapitre&nbsp;7.&nbsp;Composants ELT"><link rel="prev" href="tELTOracleMap.html" title="tELTOracleMap"><link rel="next" href="tELTPostgresqlInput.html" title="tELTPostgresqlInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tELTOracleOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tELTOracleOutput"></a>tELTOracleOutput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tELTOracleOutput.png" width="27"></td></tr></table></div><a name="Xaa2979851"></a><div class="section" title="Propri&eacute;t&eacute;s de tELTOracleOutput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e166210"></a>Propri&eacute;t&eacute;s de tELTOracleOutput</h3></div></div></div><p>Les composants <span class="bold"><strong>tELTOracleInput</strong></span>, <span class="bold"><strong>tELTOracleOutput</strong></span>, et <span class="bold"><strong>tELTOracleMap</strong></span> sont
+            tr&egrave;s proches dans leurs conditions de fonctionnement. En effet, ces trois composants
+            sont con&ccedil;us pour manipuler des sch&eacute;mas de donn&eacute;es d&#8217;une base Oracle afin de g&eacute;n&eacute;rer des
+            commandes Insert, Update ou Delete y compris des clauses, et ces commandes devront &ecirc;tre
+            ex&eacute;cut&eacute;es dans la table de sortie d&eacute;finie.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille du composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>ELT/Map/Oracle</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Effectue l&#8217;action sur la table telle que sp&eacute;cifi&eacute;e et ins&egrave;re les
+                                donn&eacute;es selon le sch&eacute;ma de sortie d&eacute;fini dans le Mapper ELT.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ex&eacute;cute la requ&ecirc;te Insert ou Update dans la base de donn&eacute;es
+                                Oracle</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Action on data</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Sur les donn&eacute;es de la table d&eacute;finie, vous pouvez effectuer les
+                                op&eacute;rations suivantes&nbsp;:</p>
+                            <p><span class="bold"><strong>Insert&nbsp;</strong></span>: Ajoute de nouvelles
+                                lignes &agrave; la table. Si des doublons sont identifi&eacute;s, le Job
+                                s&#8217;arr&ecirc;te.</p>
+                            <p><span class="bold"><strong>Update&nbsp;</strong></span>: Met &agrave; jour des lignes
+                                existantes.</p>
+                            <p><span class="bold"><strong>Delete</strong></span>&nbsp;: Supprime les entr&eacute;es
+                                correspondantes au flux d&#8217;entr&eacute;e.</p>
+                            <p><span class="bold"><strong>MERGE</strong></span>&nbsp;: met &agrave; jour ou ins&egrave;re les
+                                donn&eacute;es dans la table.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Les options disponibles pour l&#8217;op&eacute;ration MERGE diff&egrave;rent de
+                                    celles disponibles pour les op&eacute;rations Insert, Update et
+                                    Delete.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+                                sch&eacute;ma est soit local (built-in) soit distant dans le
+                                Repository.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma sera cr&eacute;&eacute; et
+                                conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide Utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+                                dans divers projets et Jobs. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide Utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Where clauses for (for UPDATE and DELETE
+                                only</em></span>)</p>
+                        </td><td valign="top">
+                            <p>Saisissez la clause permettant de filtrer les donn&eacute;es &agrave; mettre &agrave;
+                                jour ou &agrave; supprimer lors des op&eacute;rations de mise &agrave; jour ou de
+                                suppression.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>Use Merge Update</em></span> (pour <span class="bold"><strong>MERGE</strong></span>)</p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour mettre &agrave; jour des donn&eacute;es de votre table de
+                                sortie.</p>
+                            <p><span class="bold"><strong>Column</strong></span>&nbsp;: Liste des colonnes du
+                                flux d&#8217;entr&eacute;e.</p>
+                            <p><span class="bold"><strong>Update</strong></span>&nbsp;: Cochez la case
+                                correspondant au nom de la colonne que vous souhaitez mettre &agrave;
+                                jour.</p>
+                            <p><span class="bold"><strong>Use Merge Update Where Clause</strong></span>&nbsp;:
+                                Cochez cette case et saisissez la clause WHERE permettant de filtrer
+                                les donn&eacute;es &agrave; mettre &agrave; jour, si n&eacute;cessaire.</p>
+                            <p><span class="bold"><strong>Use Merge Update Delete Clause</strong></span>&nbsp;:
+                                Cochez cette case et saisissez la clause WHERE permettant de filtrer
+                                les donn&eacute;es &agrave; supprimer et mettre &agrave; jour, si n&eacute;cessaire.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>Use Merge Insert</em></span> (pour <span class="bold"><strong>MERGE</strong></span>)</p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour ins&eacute;rer des donn&eacute;es dans la table.</p>
+                            <p><span class="bold"><strong>Column</strong></span>&nbsp;: Liste des colonnes du
+                                flux d&#8217;entr&eacute;e.</p>
+                            <p><span class="bold"><strong>Check All</strong></span>&nbsp;: Cochez la case
+                                correspondant au nom de la colonne que vous souhaitez
+                                ins&eacute;rer.</p>
+                            <p><span class="bold"><strong>Use Merge Update Where Clause</strong></span>&nbsp;:
+                                Cochez cette case et saisissez la clause WHERE permettant de filtrer
+                                les donn&eacute;es &agrave; ins&eacute;rer.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Default Table Name</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Saisissez le nom de la table par d&eacute;faut.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Default Schema Name</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Saisissez le nom du sch&eacute;ma Oracle par d&eacute;faut.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use different table name</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case afin de d&eacute;finir le nom d&#8217;une table de sortie
+                                diff&eacute;rente, entre guillemets doubles, dans le champ <span class="bold"><strong>Table name</strong></span> qui appara&icirc;t.</p>
+                        </td></tr><tr><td>
+                            <span class="bold"><strong>Advanced settings</strong></span>
+                        </td><td valign="top">
+                            <span class="italic">Use Hint Options</span>
+                        </td><td valign="top"><p>Cochez cette case pour activer la zone de configuration
+                            des hints lorsque vous souhaitez utiliser un hint pour optimiser
+                            l'ex&eacute;cution d'une requ&ecirc;te. Dans cette zone, les param&egrave;tres sont :</p><p>-
+                                    <span class="bold"><strong>HINT</strong></span> : sp&eacute;cifiez l'hint dont
+                                vous avez besoin dans une instruction SQL.</p><p>- <span class="bold"><strong>POSITION</strong></span> : sp&eacute;cifiez o&ugrave; mettre l'hint
+                                dans une instruction SQL.</p><p>- <span class="bold"><strong>SQL
+                                    STMT</strong></span> : s&eacute;lectionnez l'instruction SQL dont vous avez
+                                    besoin.</p></td></tr><tr><td valign="top">
+                            <p> </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                composant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>L&#8217;utilisation du composant <span class="bold"><strong>tELTOracleOutput</strong></span> est &eacute;troitement li&eacute;e &agrave; celle des
+                                composants <span class="bold"><strong>tELTOracleInput</strong></span> et
+                                    <span class="bold"><strong>tELTOracleMap</strong></span>. Notez que le
+                                lien de sortie (output) &agrave; utiliser avec ces deux composants doit
+                                respecter strictement la syntaxe du nom de la table. </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Les composants ELT ne traitent pas le flux de donn&eacute;es lui-m&ecirc;me
+                                    mais uniquement les informations du sch&eacute;ma.</p></td></tr></table></div>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Utiliser la fonction MERGE d&#8217;Oracle pour mettre &agrave; jour et ins&eacute;rer simultan&eacute;ment des donn&eacute;es"><div class="titlepage"><div><div><h3 class="title"><a name="d0e166608"></a>Sc&eacute;nario&nbsp;: Utiliser la fonction MERGE d&#8217;Oracle pour mettre &agrave; jour et ins&eacute;rer
+            simultan&eacute;ment des donn&eacute;es</h3></div></div></div><p>Le sc&eacute;nario suivant d&eacute;crit un Job permettant d'ajouter de nouvelles informations
+            client dans une table de base de donn&eacute;es gr&acirc;ce &agrave; la commande MERGE d&#8217;Oracle.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="446"><tr><td><img src="../images/Use_Case_tELTOracleOutput1.png" width="446"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>De la <span class="bold"><strong>Palette</strong></span> dans l'espace de mod&eacute;lisation
+                    graphique, glissez-d&eacute;posez les composants suivants : <span class="bold"><strong>tELTOracleInput</strong></span>, <span class="bold"><strong>tELTOracleMap</strong></span>
+                    ainsi qu'un <span class="bold"><strong>tELTOracleOutput</strong></span> et nommez-les de
+                    mani&egrave;re &agrave; pouvoir identifier leur fonction.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tELTOracleInput</strong></span> afin
+                    d'afficher sa vue <span class="bold"><strong>Basic settings</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tELTOracleOutput2.png"></div></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la liste <span class="bold"><strong>Schema</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Repository</strong></span>, cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit
+                        Schema</strong></span> puis s&eacute;lectionnez votre connexion de base de donn&eacute;es ainsi
+                    que le sch&eacute;ma souhait&eacute; dans la bo&icirc;te de dialogue <span class="bold"><strong>[Repository Content]</strong></span>.</p><p>Le nom du sch&eacute;ma s&eacute;lectionn&eacute; appara&icirc;t automatiquement dans le champ <span class="bold"><strong>Default Table Name</strong></span>.</p><p>Dans ce sc&eacute;nario, la connexion &agrave; la base de donn&eacute;es est <span class="italic">Talend_Oracle</span> et le sch&eacute;ma est <span class="italic">new_customers</span>.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Dans ce sc&eacute;nario, le sch&eacute;ma d'entr&eacute;e est stock&eacute; sous le n&#339;ud <span class="bold"><strong>Metadata</strong></span> du <span class="bold"><strong>Repository</strong></span> afin de le
+                retrouver facilement. Pour plus d'informations concernant les m&eacute;tadonn&eacute;es, consultez
+                le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p><p>Vous pouvez &eacute;galement s&eacute;lectionner le composant d'entr&eacute;e en d&eacute;posant le sch&eacute;ma
+                correspondant de la zone <span class="bold"><strong>Metadata</strong></span> dans l'espace de
+                mod&eacute;lisation graphique et en double-cliquant sur le <span class="bold"><strong>tELTOracleInput</strong></span> dans la bo&icirc;te de dialogue <span class="bold"><strong>[Components]</strong></span>. Cela vous permet d'&eacute;viter les &eacute;tapes de nommage du
+                composant d'entr&eacute;e ainsi que la d&eacute;finition manuelle de son sch&eacute;ma. </p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connectez le composant <span class="bold"><strong>tELTOracleInput</strong></span> au
+                        <span class="bold"><strong>tELTOracleMap</strong></span> &agrave; l'aide d'un lien nomm&eacute;
+                    strictement selon le nom de la table de base de donn&eacute;es, <span class="italic">new_customers</span> dans cet exemple.</p></li><li class="listitem"><p>Reliez le <span class="bold"><strong>tELTOracleMap</strong></span> au <span class="bold"><strong>tELTOracleOutput</strong></span> et nommez le lien <span class="italic">customers_merge</span>, c'est-&agrave;-dire comme le nom de la
+                    table dans laquelle vous souhaitez sauvegarder les r&eacute;sultats du MERGE.</p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le composant <span class="bold"><strong>tELTOracleMap</strong></span> afin
+                    d'afficher sa vue <span class="bold"><strong>Basic settings</strong></span>.</p></li></ul></div><p>Le sch&eacute;ma est configur&eacute; comme suit&nbsp;:</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="319"><tr><td><img src="../images/use_case-tetloracleoutput3half.png" width="319"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>S&eacute;lectionnez <span class="bold"><strong>Repository</strong></span> dans la liste
+                        <span class="bold"><strong>Property Type</strong></span> et choisissez la connexion &agrave;
+                    la base de donn&eacute;es que vous avez utilis&eacute;e pour les composants d'entr&eacute;e.</p><p>Les informations relatives &agrave; la base de donn&eacute;es sont automatiquement
+                    r&eacute;cup&eacute;r&eacute;es.</p></li><li class="listitem"><p>Laissez les autres champs tels qu'ils sont.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tELTOracleMap</strong></span>
+                    afin d'ouvrir le <span class="bold"><strong>Map Editor</strong></span> et configurer le
+                    flux de transformation de donn&eacute;es.</p></li><li class="listitem"><p>Affichez la table d'entr&eacute;e en cliquant sur le bouton <span class="bold"><strong>[+]</strong></span> dans le coin sup&eacute;rieur gauche du <span class="bold"><strong>Map
+                        Editor</strong></span> et en s&eacute;lectionnant le nom de la table correspondante dans
+                    le bo&icirc;te de dialogue <span class="bold"><strong>[Add a new alias]</strong></span>.</p><p>Dans ce sc&eacute;nario, la seule table d'entr&eacute;e est <span class="italic">new_customers</span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="337"><tr><td><img src="../images/UseCase_tetloracleoutput4.png" width="337"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>S&eacute;lectionnez toutes les colonnes de la table d'entr&eacute;e et d&eacute;posez-les dans la
+                    table de sortie. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="525"><tr><td><img src="../images/UseCase_teltoracleoutput5_top.png" width="525"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Generated SQL Select query</strong></span> pour
+                    afficher l'instruction de la requ&ecirc;te &agrave; ex&eacute;cuter. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="531"><tr><td><img src="../images/Use_Case_tELTOracleOutput5_query.png" width="531"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider les param&egrave;tres
+                        <span class="bold"><strong>ELT Map</strong></span> et fermer le <span class="bold"><strong>Map Editor</strong></span>.</p></li><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation, double-cliquez sur le composant <span class="bold"><strong>tELTOracleOutput</strong></span> pour param&eacute;trer ses propri&eacute;t&eacute;s dans
+                    la vue <span class="bold"><strong>Component</strong></span>.</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Action on data</strong></span>, s&eacute;lectionnez
+                        <span class="bold"><strong>MERGE</strong></span>.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Sync columns</strong></span> afin de
+                    r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p></li><li class="listitem"><p>Cochez la case <span class="bold"><strong>Use Merge Update</strong></span> pour mettre &agrave;
+                    jour les donn&eacute;es via la fonction MERGE d'Oracle.</p></li><li class="listitem"><p>Dans le tableau qui appara&icirc;t, cochez les cases correspondant aux colonnes que
+                    vous souhaitez mettre &agrave; jour. L&#8217;objectif est de mettre &agrave; jour les donn&eacute;es client
+                    en fonction de leur ID. Ainsi, cochez toutes les cases sauf celle correspondant
+                    &agrave; la colonne ID.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="504"><tr><td><img src="../images/use_case-tetloracleoutput8half.png" width="504"></td></tr></table></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+                <span class="emphasis"><em>Les colonnes d&eacute;finies comme cl&eacute; primaire NE PEUVENT PAS et NE DOIVENT PAS
+                    faire l&#8217;objet d&#8217;une mise &agrave; jour.</em></span>
+            </p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cochez la case <span class="bold"><strong>Use Merge Insert</strong></span> afin
+                    d'ins&eacute;rer de nouvelles donn&eacute;es lors de la mise &agrave; jour des donn&eacute;es existantes en
+                    utilisant la fonction MERGE d'Oracle.</p></li><li class="listitem"><p>Dans le tableau qui appara&icirc;t, cochez la case des colonnes dans lesquelles vous
+                    souhaitez ins&eacute;rer une nouvelle date.</p><p>Dans ce sc&eacute;nario, vous allez ins&eacute;rer de nouvelles donn&eacute;es client. Cochez donc
+                    toutes les cases en cliquant sur la case <span class="bold"><strong>Check
+                        All</strong></span>.</p></li><li class="listitem"><p>Renseignez le champ <span class="bold"><strong>Default Table Name</strong></span> en
+                    saisissant le nom de la table cible d&eacute;j&agrave; existante dans votre base de donn&eacute;es.
+                    Dans cet exemple, saisissez <span class="italic">customers_merge</span>.</p></li><li class="listitem"><p>Laissez les autres param&egrave;tres tels qu'ils sont.</p></li></ul></div><div class="mediaobject"><img src="../images/UseCase_teltoracleoutput6_bot.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Enregistrez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter.</p><p>Les donn&eacute;es sont mises &agrave; jour et ins&eacute;r&eacute;es dans la base de donn&eacute;es. La requ&ecirc;te
+                    utilis&eacute;e est affich&eacute;e dans la console.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="516"><tr><td><img src="../images/Use_Case_tELTOracleOutput7.png" width="516"></td></tr></table></div></div></div></body></html>

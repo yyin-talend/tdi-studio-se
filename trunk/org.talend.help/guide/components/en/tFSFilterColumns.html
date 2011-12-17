@@ -1,0 +1,365 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFSFilterColumns</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa55271.html" title="Chapter&nbsp;11.&nbsp;FileScale components"><link rel="prev" href="tFSCode.html" title="tFSCode"><link rel="next" href="tFSFilterRows.html" title="tFSFilterRows"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tFSFilterColumns"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFSFilterColumns"></a>tFSFilterColumns</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFSFilterColumns_icon32.png" width="27"></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>This component will be available in the </em></span><span class="bold"><strong>Palette</strong></span><span class="emphasis"><em> of the studio on the condition that
+						you have subscribed to the relevant edition of </em></span><span class="bluebold">Talend Enterprise Data Integration Big Data
+				edition</span><span class="emphasis"><em>.</em></span> For further information
+					about the Massively Parallel eXtention mode, see <span class="bluebold">Talend Enterprise Data Integration Big Data
+				edition</span><span class="emphasis"><em> User Guide.</em></span></p></td></tr></table></div><div class="section" title="tFSFilterColumns Properties"><div class="titlepage"><div><div><h3 class="title"><a name="Raa83276"></a>tFSFilterColumns Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>FileScale</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tFSFilterColumns </strong></span>makes
+										specified changes to the defined table based on column name
+										mapping. This component has real-time capabilities for
+										filtering large scale files. To optimize performance, the
+										component usually sorts data before processing it.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>Helps homogenizing schemas in a file either by removing
+										unwanted columns or adding new ones. </p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema type</em></span> and <span class="emphasis"><em>Edit
+											Schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. The schema is either built-in or remote in the
+										Repository. </p>
+									<p> Click <span class="bold"><strong>Edit Schema </strong></span>to
+										make changes to the schema. </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>If you make changes to the schema, it au&shy;tomatically
+											becomes built-in.</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: You have
+										already created the schema and stored it in the Repository.
+										You can reuse it in various projects and job flowcharts.
+										Related topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: You create and
+										store the schema locally for this component only. Related
+										topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Property type</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Either <span class="bold"><strong>Built-in</strong></span> or
+											<span class="bold"><strong>Repository</strong></span>. </p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: No property
+										data stored centrally.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: Select the
+										repository file where Properties are stored. The fields that
+										follow are pre-filled using the fetched data.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Input File Name</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Name of the file holding the data you want to
+										filter.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Output File Name</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Name of the file where you want to write the filtered
+										data.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Record separator</em></span> (char)</p>
+								</td><td valign="top">
+									<p>Character, string or regular expression to separate
+										records (lines).</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Field separator</em></span> (char)</p>
+								</td><td valign="top">
+									<p>Character, string or regular expression to separate fields
+										in a record.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Header</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Number of records to be skipped in the beginning of the
+										file.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Footer</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Number of records to be skipped at the end of the
+										file.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Column configuration</em></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Column</strong></span>: List of the
+										columns to be filtered.</p>
+									<p>
+										<span class="bold"><strong>Keep it</strong></span>: Select the check
+										box next to the column name you want to maintain in the
+										file. If you clear the check box, the column will be
+										deleted.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Generate FSLang File</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to generate the FSLang file
+										corresponding to your Job and click the three-dot button
+										next to the <span class="bold"><strong>FSLang File
+											Name</strong></span> field to specify its path and its
+										name.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Assign FileScale Path</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box and then click the three-dot button
+										next to the <span class="bold"><strong>FileScale Path</strong></span>
+										field to select the FileScale program executable file
+										required to execute the component.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Specify Number of Process Child</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box and enter the number of child
+										processes to use for carrying out the aggregation.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Sort results</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to sort the results.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Custom FileScale Parameter (separated
+											by,)</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Enter the parameters for any specific operation you want
+										to add to the FileScale executable call.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to gather the job processing
+										metadata at a job level as well as at each component
+										level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component handles files therefore it does not require
+										input and output data flows. It is used to filter columns in
+										large scale files.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>Limitation is imposed by limits of physical memory and CPU
+										architectures. For example, total length of processed files
+										cannot exceed file system limit for LargeFile support
+										(maximum value of 64 signed bits).</p>
+								</td></tr></tbody></table></div></div><div class="section" title="Scenario: Combining filtering and sorting processes in a large scale file"><div class="titlepage"><div><div><h3 class="title"><a name="Raa86396"></a>Scenario: Combining filtering and sorting processes in a large scale
+					file</h3></div></div></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+						<span class="emphasis"><em>Make sure that you have unzipped and saved locally the FileScale
+							executable file delivered by </em></span>
+						<span class="bold"><strong>
+							Talend
+						</strong></span>
+						<span class="emphasis"><em>. You must define the path of this executable file in the </em></span>
+						<span class="bold"><strong>Advanced settings </strong></span>
+						<span class="emphasis"><em>view of each of the FileScale components.</em></span>
+					</p></td></tr></table></div><p>This scenario describes a Job that uses several FileScale components which are
+					connected with the <span class="bold"><strong>FS Combine</strong></span> link. Using this
+					link, the different FileScale components will process data simultaneously and
+					thus optimize performance. This scenario uses the following FileScale
+					components:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong>tFSFilterColumns</strong></span>:<span class="bold"><strong> </strong></span>to filter columns in a table based on column
+							name mapping,</p></li><li class="listitem"><p><span class="bold"><strong>tFSFilterRows</strong></span>:<span class="bold"><strong> </strong></span>to define a row filter on the table to keep only the rows
+							that have a value greater than or equal to 5000.0,</p></li><li class="listitem"><p><span class="bold"><strong>tFSUnique</strong></span>: to recuperate only one
+							occurrence of the <span class="emphasis"><em>name</em></span> record, in case duplicates
+							are present,</p></li><li class="listitem"><p><span class="bold"><strong>tFSSort</strong></span>: to sort data in alphabetical
+							order based on the <span class="emphasis"><em>name</em></span> column.</p></li></ul></div><p>To design such a scenario, complete the following:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> to the design workspace: <span class="bold"><strong>tRowGenerator</strong></span>, <span class="bold"><strong>tFileOutputDelimited</strong></span>, <span class="bold"><strong>tFSFilterColumns</strong></span>, <span class="bold"><strong>tFSFilterRows</strong></span>, <span class="bold"><strong>tFSUnique</strong></span> and <span class="bold"><strong>tFSSort</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="505"><tr><td><img src="../images/Use_Case_FSFilterColumns.png" width="505"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connect <span class="bold"><strong>tRowGenerator</strong></span> first to
+								<span class="bold"><strong>tFileOutputDelimited</strong></span> using a
+								<span class="bold"><strong>Row &gt; Main</strong></span> link and then to
+								<span class="bold"><strong>tFSFilterColumns</strong></span> using an <span class="bold"><strong>OnSubjobOk</strong></span> link.</p></li><li class="listitem"><p>Connect all the FileScale components together using the <span class="bold"><strong>Row &gt; FS Combine</strong></span> link.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>As the <span class="bold"><strong>FS Combine</strong></span> link joins all data
+						processes designed in the Job and executes them simultaneously, the sequence
+						of the FileScale components is of no importance. You can order them the way
+						you like.</p></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+						<span class="emphasis"><em>In order for such scenario to execute correctly, you must define
+							the same input and output files in all the FileScale
+							components.</em></span>
+					</p></td></tr></table></div><p>In this scenario, the <span class="bold"><strong>tRowGenerator</strong></span> component
+					will generate data according to the schema you define in the component <span class="bold"><strong>Basic settings</strong></span> view and send it to the input file. If
+					data generation is errorless, data in the input file will be processed
+					simultaneously by the four FileScale components and thus optimize
+					performance.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>tRowGenerator</strong></span> to display its
+								<span class="bold"><strong>Basic settings</strong></span> view and define the
+							component properties. </p></li><li class="listitem"><p>Click the three-dot button next to <span class="bold"><strong>RowGenerator
+								Editor</strong></span> to open the component editor where you can define
+							your schema.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="505"><tr><td><img src="../images/Use_Case_FSFilterColumns1.png" width="505"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the upper half of the editor, click the plus button to add the
+							columns you want to write in the input file.</p></li><li class="listitem"><p>Define the schema and set the parameters of the columns.</p><p> In this scenario, the input file contains nine columns:
+								<span class="emphasis"><em>id</em></span>, <span class="emphasis"><em>name</em></span>,
+								<span class="emphasis"><em>dateOfBirth</em></span>, <span class="emphasis"><em>amount</em></span> and
+							five other columns that hold extra information.</p></li><li class="listitem"><p>If required, click the <span class="bold"><strong>Preview</strong></span> tab in
+							the lower half of the editor to display the corresponding view and then
+							click the <span class="bold"><strong>View</strong></span> button to display a
+							sample of the generated data.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate your schema and
+							close the <span class="bold"><strong>tRowGenerator</strong></span> editor. </p></li><li class="listitem"><p>Click <span class="bold"><strong>tFileOutputDelimited</strong></span> to display
+							its <span class="bold"><strong>Basic settings</strong></span> view and define the
+							component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="489"><tr><td><img src="../images/Use_Case_FSFilterColumns2.png" width="489"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Set the <span class="bold"><strong>tFileOutputDelimited</strong></span>
+							properties.</p></li></ul></div><p>For this scenario, we have defined two context variables:
+						<span class="emphasis"><em>filename</em></span> for the input file name and
+						<span class="emphasis"><em>folder</em></span> for the input file path. For more information
+					about context variables, check <span class="bluebold">Talend Enterprise Studio</span> User
+					Guide.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Put your pointer in the <span class="bold"><strong>File Name</strong></span>
+							field and then press <span class="bold"><strong>Ctrl + Space</strong></span> and
+							select the context variable for the file path
+								(<span class="emphasis"><em>context.folder</em></span>).</p></li><li class="listitem"><p>Enter <code class="code">+&#8221;/&#8221;+</code> to separate the file path from the file name
+							and then press <span class="bold"><strong>Ctrl+Space</strong></span> to display
+							the context variable list.</p></li><li class="listitem"><p>Select the context variable for the file name
+								(<span class="emphasis"><em>context.filename</em></span>).</p></li><li class="listitem"><p>If required, click the <span class="bold"><strong>Edit schema</strong></span>
+							button to view the schema you defined in the editor or modify it.</p></li><li class="listitem"><p>Click <span class="bold"><strong>tFSFilterColumns</strong></span> to open its
+								<span class="bold"><strong>Basic settings</strong></span> view and define the
+							component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="489"><tr><td><img src="../images/Use_Case_FSFilterColumns3.png" width="489"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Set schema and property type to <span class="bold"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>Edit schema</strong></span> button to
+							display a dialog box. Here you can define your column schema. This
+							schema must corresponds to the input file schema.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to close the schema dialog
+							box.</p><p> The defined column schema displays in the <span class="bold"><strong>Column configuration</strong></span> table.</p></li><li class="listitem"><p>Set the input file path and name using the variable contexts you
+							define earlier by pressing <span class="bold"><strong>Ctrl + Space</strong></span>
+							and selecting the variables from the list. Separate the two variables by
+								<code class="code">+&#8221;/&#8221;+</code>.</p></li><li class="listitem"><p>Click the three-dot button next to the <span class="bold"><strong>Output
+								File Name</strong></span> and browse to the output file where you want to
+							write the processed data.</p><p> In this example, we have defined a context variable for the output
+							file the same way we did for the input file.</p></li><li class="listitem"><p>Define the record and field separators and then the header and footer
+							of the file, if any.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Column configuration</strong></span> table,
+							select the check boxes of the columns you want to write in the output
+							file, <span class="emphasis"><em>id, name, dateOfBirth</em></span> and <span class="emphasis"><em>amount
+							</em></span>in this scenario.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>Advanced settings</strong></span> tab to
+							display the advanced settings view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="489"><tr><td><img src="../images/Use_Case_FSFilterColumns4.png" width="489"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select the <span class="bold"><strong>Generate FSLang File</strong></span> check
+							box to display the <span class="bold"><strong>FSLang File Name</strong></span>
+							field and then browse to where you want to generate the FSLang file
+							corresponding to your Job. </p><p> In this example, we have defined a context variable for the FSLang
+							output file as we did for the input and output files.</p></li><li class="listitem"><p>Select the <span class="bold"><strong>Assign FileScale Path</strong></span>
+							check box to display the <span class="bold"><strong>FileScale Path</strong></span>
+							field and then browse to the FileScale executable file delivered by
+								<span class="bold"><strong>Talend</strong></span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>tFSFilterRows</strong></span> to display the
+								<span class="bold"><strong>Basic settings</strong></span> view and define the
+							component properties. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="489"><tr><td><img src="../images/Use_Case_FSFilterColumns5.png" width="489"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the <span class="bold"><strong>Edit schema</strong></span> button to
+							display the schema dialog box. Here you can define your column schema.
+							This schema must corresponds to the input file schema.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="528"><tr><td><img src="../images/Use_Case_FSFilterColumns7.png" width="528"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>From the panel to the right, delete the output column that do not map
+							to the column filter you defined in <span class="bold"><strong>tFSFilterColumns</strong></span>, all <span class="emphasis"><em>extraInfo</em></span>
+							columns in this scenario.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to close the schema dialog
+							box.</p></li><li class="listitem"><p>Define the components properties as you did with<span class="bold"><strong>
+								tFSFilterColumns</strong></span>. Use the same input and output
+							files.</p></li><li class="listitem"><p>Select a logical operator from the corresponding list, <span class="bold"><strong>And</strong></span> in this scenario.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Conditions</strong></span> table, click the
+							plus button to add a line to the table.</p></li><li class="listitem"><p>Click in the line and then select the column on which you want to base
+							your row filter.</p><p> In this scenario, we want write out only the rows where the
+								<span class="emphasis"><em>amount</em></span> value is greater than or equal to
+							5000.0.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>Advanced settings</strong></span> tab to
+							display the advanced settings view.</p></li><li class="listitem"><p>Select the <span class="bold"><strong>Assign FileScale Path</strong></span>
+							check box to display the <span class="bold"><strong>FileScale Path</strong></span>
+							field and then browse to the FileScale executable file delivered by
+								<span class="bold"><strong>Talend</strong></span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>tFSUnique</strong></span> to display the
+								<span class="bold"><strong>Basic settings</strong></span> view and define the
+							component properties. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="480"><tr><td><img src="../images/Use_Case_FSFilterColumns6.png" width="480"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Define the components properties as you did with<span class="bold"><strong>
+								tFSFilterRows</strong></span>. Use the same input and output
+							files.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Unique key</strong></span> table, select the
+							check box of the column you want to use as a key attribute.</p><p> In this scenario, we want to recuperate only one occurrence of each
+							name in the <span class="emphasis"><em>name</em></span> column.</p></li><li class="listitem"><p>If you want to take into account upper and lower cases, select the
+							corresponding <span class="bold"><strong>Case Sensitive</strong></span> check
+							box.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>Advanced settings</strong></span> tab to
+							display the advanced settings view.</p></li><li class="listitem"><p>Select the <span class="bold"><strong>Assign FileScale Path</strong></span>
+							check box to display the <span class="bold"><strong>FileScale Path</strong></span>
+							field and then browse to the FileScale executable file delivered by
+								<span class="bold"><strong>Talend</strong></span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>tFSSort</strong></span> to display its
+								<span class="bold"><strong>Basic settings</strong></span> view and define the
+							component properties. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="480"><tr><td><img src="../images/Use_Case_FSFilterColumns8.png" width="480"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Define the components properties as you did with<span class="bold"><strong>
+								tFSUnique</strong></span>. Use the same input and output files.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Criteria</strong></span> table, click the plus
+							button to add a line to the table.</p></li><li class="listitem"><p>Click in the <span class="bold"><strong>Schema column</strong></span> and then
+							select the column by which you want to sort data.</p></li><li class="listitem"><p>Click in the <span class="bold"><strong>Sort type</strong></span> column and
+							select the sort type.</p></li><li class="listitem"><p>Click in the <span class="bold"><strong>Order type</strong></span> column and
+							select the order type.</p></li></ul></div><p>In this scenario, you want to output data alphabetically in ascending order
+					based on the <span class="emphasis"><em>name</em></span> column.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the <span class="bold"><strong>Advanced settings</strong></span> tab to
+							display the advanced settings view.</p></li><li class="listitem"><p>Select the <span class="bold"><strong>Assign FileScale Path</strong></span>
+							check box to display the <span class="bold"><strong>FileScale Path</strong></span>
+							field and then browse to the FileScale executable file delivered by
+								<span class="bold"><strong>Talend</strong></span>.</p></li><li class="listitem"><p>Save your job and press <span class="bold"><strong>F6</strong></span> to execute
+							it. </p></li></ul></div><p>A progress bar displays in the design workspace to show the completed
+					percentage of the simultaneous operations. This progress bar will make it
+					evident how the huge input data is processed at a very high speed.</p><p>When the percentage progress bar reaches 100%, the data is written in the
+					output file. A simple comparison between the input data and the processed data
+					will show us that:</p><p>The output file has only the <span class="emphasis"><em>id, name, dateOfBirth</em></span> and
+						<span class="emphasis"><em>amount</em></span> columns. Only the rows where the
+						<span class="emphasis"><em>amount</em></span> value is greater than or equal to 5000.0 are
+					listed. There is only one occurrence of each of the names and data records are
+					written in an alphabetical ascending order.</p><p>The below two captures show a sample of the large scale data before and after
+					processing.</p><p>Input data:</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_FSFilterColumns10.png" width="100%"></td></tr></table></div><p>Output data:</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="262"><tr><td><img src="../images/Use_Case_FSFilterColumns9.png" width="262"></td></tr></table></div></div></div></body></html>

@@ -1,0 +1,98 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tHDFSConnection</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch10.html" title="Chapitre&nbsp;10.&nbsp;Composants File"><link rel="prev" href="tGPGDecrypt.html" title="tGPGDecrypt"><link rel="next" href="tHDFSGet.html" title="tHDFSGet"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="fr" class="section" title="tHDFSConnection"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHDFSConnection"></a>tHDFSConnection</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="29"><tr><td><img src="../images/thdfsconnection_icon32_white.png" width="29"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tHDFSConnection"><div class="titlepage"><div><div><h3 class="title"><a name="d0e236827"></a>Propri&eacute;t&eacute;s du tHDFSConnection</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>File/Hadoop</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tHDFSConnection</strong></span>
+								fournit une connexion au syst&egrave;me de fichiers distribu&eacute;s Hadoop
+								(HDFS) lors de l'ex&eacute;cution.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tHDFSConnection</strong></span> se
+								connecte &agrave; un HDFS donn&eacute; afin que d'autres composants Hadoop
+								puissent r&eacute;utiliser la connexion cr&eacute;&eacute;e pour communiquer avec
+								HDFS.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Hadoop version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez la version correspondant au syst&egrave;me Hadoop auquel
+								vous souhaitez vous connecter.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>NameNode URI</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez l'URI du NameNode correspondand &agrave; l'Hadoop Apache ou
+								Cloudera &agrave; utiliser.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>User name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom d'utilisateur de HDFS.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="italic">Group</span></td><td valign="top">
+							<p>Identifiant de l&#8217;utilisateur et nom du groupe sous lesquels les
+								instances HDFS ont &eacute;t&eacute; lanc&eacute;es. Ce champ est disponible uniquement
+								lorsque vous avez s&eacute;lectionn&eacute; la version correspondante de
+								Hadoop.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Hadoop properties</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Si vous devez utiliser la configuration personnalis&eacute;e pour votre
+								Hadoop,  renseignez dans cette table la ou les propri&eacute;t&eacute;(s) &agrave;
+								personnaliser. Lors de l'ex&eacute;cution, la ou les propri&eacute;t&eacute;(s)
+								personnalis&eacute;e(s) vont &eacute;craser celles d&eacute;finies pr&eacute;c&eacute;demment pour
+								Hadoop. </p>
+							<p>Pour plus d'informations concernant les propri&eacute;t&eacute;s requises par
+								Hadoop, consultez la documentation Hadoop. </p>
+						</td></tr><tr><td>
+							<p><span class="bold"><strong>Advanced settings</strong></span></p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant s'utilise avec d'autres composants Hadoop.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>La version 1.6+ de JRE est requise pour ex&eacute;cuter le composant
+									<span class="bold"><strong>tHDFSConnection</strong></span>.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e237029"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>
+			Aucun sc&eacute;nario n'est disponible pour ce composant.
+		</p></div></div></body></html>

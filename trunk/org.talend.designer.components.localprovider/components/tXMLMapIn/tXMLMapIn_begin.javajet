@@ -1,0 +1,14 @@
+<%@ jet 
+	imports="
+			org.talend.designer.codegen.config.CodeGeneratorArgument
+			org.talend.designer.xmlmap.XmlMapComponent
+	"
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	XmlMapComponent node = (XmlMapComponent) codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	
+	String uniqueNameComponent = cid.replaceAll("_TXMLMAP_IN", "");
+%>
+for(Object  row_out_<%=cid %> : allOutsForAggregate_<%=uniqueNameComponent %>) {//TD512

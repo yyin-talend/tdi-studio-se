@@ -1,0 +1,89 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFixedFlowInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch12.html" title="Chapter&nbsp;12.&nbsp;Misc group components"><link rel="prev" href="tContextLoad.html" title="tContextLoad"><link rel="next" href="tMemorizeRows.html" title="tMemorizeRows"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tFixedFlowInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFixedFlowInput"></a>tFixedFlowInput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFixedFlowInput_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tFixedFlowInput properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e210955"></a>tFixedFlowInput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Misc </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tFixedFlowInput</strong></span> generates as many
+                                lines and columns as you want using the context variables. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tFixedFlowInput </strong></span>allows you to
+                                generate fixed flow from internal variables. </p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema type</em></span> and <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: The schema will be
+                                created and stored locally for this component only. Related topic:
+                                see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: You have already
+                                created the schema and stored it in the Repository, hence can be
+                                reused in various projects and job designs. Related topic: see
+                                    <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Mode</em></span></p>
+                        </td><td valign="top">
+                            <p>From the three options, select the mode that you want to
+                                use.</p>
+                            <p>
+                                <span class="bold"><strong>Use Single Table&nbsp;: </strong></span>Enter the data
+                                that you want to generate in the relevant value field.</p>
+                            <p>
+                                <span class="bold"><strong>Use Inline Table&nbsp;: </strong></span>Add the row(s)
+                                that you want to generate.</p>
+                            <p>
+                                <span class="bold"><strong>Use Inline Content&nbsp;: </strong></span>SEnter the
+                                data that you want to generate, separated by the separators that you
+                                have already defined in the <span class="bold"><strong>Row</strong></span> et
+                                    <span class="bold"><strong>Field Separator</strong></span> fields.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Number of rows</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the number of lines to be generated.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Values</em></span></p>
+                        </td><td valign="top">
+                            <p>Between inverted commas, enter the values corresponding to the
+                                columns you defined in the schema dialog box via the <span class="bold"><strong>Edit schema</strong></span> button.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStat</em></span><span class="emphasis"><em>Catcher
+                                Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component can be used as a start or intermediate component
+                                and thus requires an output component.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e211186"></a>Related scenarios</h3></div></div></div><p>For related scenarios, see:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tBufferOutput.html#Raa69313" title="Scenario 2: Buffering output data on the webapp server">the section called &#8220;Scenario 2: Buffering output data on the webapp server&#8221;</a>, and,</p></li><li class="listitem"><p><a class="xref" href="tMysqlColumnList.html#Raa94771" title="Scenario: Iterating on a DB table and listing its column names">the section called &#8220;Scenario: Iterating on a DB table and listing its column names&#8221;</a>.</p></li></ul></div></div></div></body></html>

@@ -1,0 +1,36 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tVectorWiseRollback</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa29876.html" title="Chapter&nbsp;6.&nbsp;Database components"><link rel="prev" href="tVectorWiseOutput.html" title="tVectorWiseOutput"><link rel="next" href="tVectorWiseRow.html" title="tVectorWiseRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tVectorWiseRollback"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tVectorWiseRollback"></a>tVectorWiseRollback</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tVectorWiseOutput_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tVectorWiseRollback Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e147705"></a>tVectorWiseRollback Properties</h3></div></div></div><p>This component is closely related to <span class="bold"><strong>tVectorWiseCommit</strong></span> and <span class="bold"><strong>tVectorWiseConnection</strong></span>. It usually doesn&#8217;t make much sense to use these
+            components independently in a transaction.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Component
+                                family</strong></span></p>
+                        </td><td valign="top"><p>Databases/VectorWise</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tVectorWiseRollback</strong></span> cancels transactions commited to
+                                the DB connected. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component prevents
+                                involuntary commits.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Component list</em></span></p>
+                        </td><td valign="top"><p>Select the <span class="bold"><strong>tVectorWiseConnection</strong></span> component from the list if
+                                more than one connection is planned for the current job.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Close Connection</em></span></p>
+                        </td><td valign="top"><p>Clear this check box to continue to use the
+                                selected connection once the component has performed its
+                                task.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Select this check box to collect log data at the
+                                component level.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component is to be
+                                used along with Teradata components, especially with <span class="bold"><strong>tVectorWiseConnection</strong></span> and <span class="bold"><strong>tVectorWiseCommit</strong></span> components.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e147828"></a>Related scenario</h3></div></div></div><p>For a <span class="bold"><strong>tVectorWiseRollback</strong></span> related
+            scenario, see <a class="xref" href="tMysqlRollback.html#Raa14463" title="Scenario: Rollback from inserting data in mother/daughter tables">the section called &#8220;Scenario: Rollback from inserting data in
+                mother/daughter tables&#8221;</a>.</p></div></div></body></html>

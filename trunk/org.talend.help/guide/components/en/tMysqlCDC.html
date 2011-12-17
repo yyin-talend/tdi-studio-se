@@ -1,0 +1,395 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMysqlCDC</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa29876.html" title="Chapter&nbsp;5.&nbsp;Database components"><link rel="prev" href="tMysqlBulkExec.html" title="tMysqlBulkExec"><link rel="next" href="tMysqlClose.html" title="tMysqlClose"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tMysqlCDC"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMysqlCDC"></a>tMysqlCDC</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tMySQLCDC_white.png" width="27"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> This component is not available in the <span class="bold"><strong>Palette</strong></span> of the <span class="bold"><strong>Talend Integration Express
+						Studio</strong></span>.</p></td></tr></table></div><div class="section" title="tMysqlCDC properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e119902"></a>tMysqlCDC properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Databases/MySQL</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tMysqlCDC </strong></span>extracts source
+										system data that has changed since the last extraction and
+										transports it to another system(s). </p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tMysqlCDC</strong></span> addresses data
+										extraction and transportation needs. tMysqlCDC only extracts
+										the changes made to the source operational data and makes
+										them available to the target system(s) using database CDC
+										views. </p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Property type</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Either <span class="bold"><strong>Built-in</strong></span> or
+											<span class="bold"><strong>Repository</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: No property
+										data stored centrally.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: Select the
+										repository file in which the properties are stored. The
+										fields that follow are completed automatically using the
+										data retrieved.</p>
+									<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+											<span class="emphasis"><em>Reset the DB type by clicking the relevant
+												button to select the CDC connection.</em></span>
+										</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Use an existing connection</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box when using a configured <span class="bold"><strong>tMysqlConnection</strong></span>
+										component.</p>
+									<p> </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> When a Job contains the parent Job and the child Job,
+												<span class="bold"><strong>Component list</strong></span>
+											presents only the connection components in the same Job
+											level, so if you need to use an existing connection from
+											the other level, make sure that the available connection
+											components are sharing the intended connection.</p><p> For more information on how to share a DB connection
+											across Job levels, see <span class="bold"><strong>Use or
+												register a shared DB connection</strong></span> in any
+											database connection component corresponding to the
+											database you are using.</p><p> Otherwise, you can as well deactivate the connection
+											components and use <span class="bold"><strong>Dynamic
+												settings</strong></span> of the component to specify the
+											intended connection manually. In this case, make sure
+											the connection name is unique and distinctive all over
+											through the two Job levels. For more information about
+												<span class="bold"><strong>Dynamic settings</strong></span>,
+											see your studio user guide.</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Host</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Database server IP address.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Port</em></span>
+									</p>
+								</td><td valign="top">
+									<p>DB server listening port number.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Database</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Name of the database.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Username</em></span> and
+											<span class="emphasis"><em>Password</em></span></p>
+								</td><td valign="top">
+									<p>DB user authentication data.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema using CDC</em></span> and <span class="emphasis"><em>Edit
+											Schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields to be processed and passed on to the next
+										component. The schema is either <span class="bold"><strong>Built-in</strong></span> or stored remotely in the <span class="bold"><strong>Repository</strong></span>. </p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: The schema is
+										created and stored locally for this component only. Related
+										topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: The schema
+										already exists and is stored in the Repository, hence can be
+										reused. Related topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+									<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+											<span class="emphasis"><em>Reset the DB type by clicking the relevant
+												button to select the schema of the CDC
+												connection.</em></span>
+										</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Table using CDC</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select the source table from which changes made to data
+										are to be captured. </p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Subscriber</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Enter the name of the application that will use the change
+										table.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Events to catch</em></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Insert</strong></span>: Select this check
+										box to catch the data inserted in the change table since the
+										last extraction.</p>
+									<p>
+										<span class="bold"><strong>Update</strong></span>: Select this check
+										box to catch the data updated in the change table since the
+										last extraction.</p>
+									<p>
+										<span class="bold"><strong>Delete</strong></span>: Select this check
+										box to catch the data deleted in the change table since the
+										last extraction.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Limit</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Maximum number of consumed rows a subscriber can recover
+										from the change table, per execution.</p>
+								</td></tr><tr><td>
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<span class="emphasis"><em>Keep data in CDC table</em></span>
+								</td><td valign="top">Select this check box to keep the changes made
+									available to one or more target systems, even after they have
+									been consulted.</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<span class="emphasis"><em>Enable Streaming Result</em></span>
+								</td><td valign="top">Select this check box to enables streaming over
+									buffering which allows the code to read from a large table
+									without consuming a large amount of memory in order to optimize
+									the performance.</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Trim all the String/Char columns</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to remove leading and trailing
+										whitespace from all the String/Char columns.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Trim column</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Remove leading and trailing whitespace from defined
+										columns.</p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Deselect <span class="bold"><strong>Trim all the
+												String/Char columns</strong></span> to enable Trim
+											columns in this field.</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td>&nbsp;</td><td valign="top">
+									<span class="emphasis"><em>Enable parallel execution</em></span>
+								</td><td valign="top">
+									<p>Select this check box to perform high-speed data
+										processing, by treating multiple data flows simultaneously. </p>
+									<p> In the <span class="bold"><strong>Number of parallel
+											executions</strong></span> field, either:</p>
+									<p> - Enter the number of parallel executions desired.</p>
+									<p> - Press <span class="bold"><strong>Ctrl + Space</strong></span> and
+										select the appropriate context variable from the
+										list.</p>
+									<p> </p>
+									<p> For further information, see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+									<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+											<span class="emphasis"><em>The </em></span>
+											<span class="bold"><strong>Action on table</strong></span>
+											<span class="emphasis"><em> field is not available with the
+												parallelization function. Therefore, you must use a </em></span>
+											<span class="bold"><strong>tCreateTable</strong></span>
+											<span class="emphasis"><em> component if you want to create a
+												table.</em></span>
+										</p></td></tr></table></div>
+									<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+											<span class="emphasis"><em>When parallel execution is enabled, it is not
+												possible to use global variables to retrieve return
+												values in a SubJob.</em></span>
+										</p></td></tr></table></div>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is used as a start component. It requires
+										an output component and row Main link.</p>
+								</td></tr></tbody></table></div><p>
+					<span>&nbsp;</span>
+				</p></div><div class="section" title="Scenario 1: Populating a data warehouse"><div class="titlepage"><div><div><h3 class="title"><a name="d0e120498"></a>Scenario 1: Populating a data warehouse</h3></div></div></div><p>The following Java scenario creates a three-component Job that populates a
+					data warehouse. A <span class="bold"><strong>tMysqlInput</strong></span> component reads
+					your customer data stored in the Customer base. A <span class="bold"><strong>tMap</strong></span> component allows you to modify this data and the
+					modifications are transmitted to the <span class="emphasis"><em>Leadfact</em></span> table in the
+					CRM database through a <span class="bold"><strong>tMysqlOutput</strong></span>
+					component.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Drop the following components from the <span class="bold"><strong>Palette</strong></span> onto the design workspace: <span class="bold"><strong>tMysqlInput</strong></span>, <span class="bold"><strong>tMap</strong></span>, and
+								<span class="bold"><strong>tMysqlOutput</strong></span>.</p></li><li class="listitem"><p> Connect the three components using <span class="bold"><strong>Row Main
+							</strong></span>links.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="359"><tr><td><img src="../images/Use_Case_tMysqlCDC_CRM1.png" width="359"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the design workspace, select <span class="bold"><strong>tMysqlInput</strong></span> and click the <span class="bold"><strong>Component</strong></span> tab to define its basic settings. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="476"><tr><td><img src="../images/Use_Case_tMysqlCDC_CRM2.png" width="476"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Set <span class="bold"><strong>Property Type</strong></span> to <span class="bold"><strong>Repository</strong></span> and then select the connection to
+							the Customer database that holds the information about your clients. The
+							connection details will display automatically in the corresponding
+							fields.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> If you have not stored the DB connection details in the <span class="bold"><strong>Metadata</strong></span> entry in the Repository, select
+							<span class="bold"><strong>Built-in </strong></span>in the property type list and
+						set the connection details manually.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Set <span class="bold"><strong>Schema</strong></span> to <span class="bold"><strong>Repository</strong></span> and click the three-dot button to select the
+							schema of the Customer database stored in the <span class="bold"><strong>Metadata</strong></span> entry.</p></li></ul></div><p>Related topics: see <span class="bluebold">Talend Enterprise Studio</span>
+					<span class="bold"><strong>User Guide</strong></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the <span class="bold"><strong>Table Name</strong></span> field, enter the
+							name of the table holding the information you want to modify, in this
+							example: <span class="emphasis"><em>customers</em></span>. </p></li><li class="listitem"><p> Click <span class="bold"><strong>Guess Query</strong></span> to retrieve all
+							data from your table.</p></li><li class="listitem"><p> Double-click the <span class="bold"><strong>tMap</strong></span> component to
+							open the <span class="bold"><strong>Map Editor</strong></span>. Notice that the
+							Input area is already filled with the metadata of the input component.
+						</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="438"><tr><td><img src="../images/Use_Case_tMysqlCDC_CRM3.png" width="438"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Drag the fields in the input zone to the fields in the
+								<span class="emphasis"><em>Leadfact </em></span>table in the output zone. For more
+							information regarding data mapping, see <span class="bluebold">Talend Enterprise Studio</span>
+							<span class="bold"><strong>User Guide</strong></span>.</p></li><li class="listitem"><p> Click <span class="bold"><strong>OK</strong></span> to validate the
+							operation.</p></li><li class="listitem"><p> In the design workspace, select <span class="bold"><strong>tMySqlOutput</strong></span> and click the <span class="bold"><strong>Component</strong></span> tab to define its basic settings.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="403"><tr><td><img src="../images/Use_Case_tMysqlCDC_CRM4.png" width="403"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Set <span class="bold"><strong>Property Type</strong></span> to <span class="bold"><strong>Repository</strong></span> and then select the connection to
+							the CRM data warehouse. The connection details will display
+							automatically in the corresponding fields</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> If you have not stored the CRM data warehouse connection details in the
+							<span class="bold"><strong>Metadata</strong></span> entry in the Repository,
+						select <span class="bold"><strong>Built-in </strong></span>in the property type list
+						and set the connection details manually.</p></td></tr></table></div><p>Related topics: see <span class="bluebold">Talend Enterprise Studio</span>
+					<span class="bold"><strong>User Guide</strong></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the <span class="bold"><strong>Table Name</strong></span> field, enter the
+							name of the table you want to populate with modified data, in this
+							example: <span class="emphasis"><em>leadfact</em></span>. </p></li><li class="listitem"><p> Save your job and press <span class="bold"><strong>F6</strong></span> to create
+							and populate the table <span class="emphasis"><em>Leadfact </em></span>in the CRM data
+							warehouse.</p></li></ul></div></div><div class="section" title="Scenario 2: Retrieving modified data using CDC"><div class="titlepage"><div><div><h3 class="title"><a name="Raa37041"></a>Scenario 2: Retrieving modified data using CDC</h3></div></div></div><p>This scenario is based on the preceding one. It continuously populates and
+					modifies the data stored in the CRM warehouse, and retrieves and saves, every
+					night, these modifications in a dedicated table using the CDC function. These
+					modifications could be then extracted by the various concerned
+					departments.</p><div class="section" title="Step&nbsp;1: Configuring CDC"><div class="titlepage"><div><div><h4 class="title"><a name="d0e120706"></a>Step&nbsp;1: Configuring CDC</h4></div></div></div><p>Before being able to retrieve modified data from the CRM data warehouse,
+						you must:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> first set up the DB connection dedicated to CDC,</p></li><li class="listitem"><p> second, set up a DB connection to the source data and identify
+								the table to catch,</p></li><li class="listitem"><p> finally, set the connection between the CDC and the data.</p></li></ul></div><p>To do that:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the <span class="bold"><strong>Repository</strong></span> tree view and
+								under <span class="bold"><strong>Metadata</strong></span>, create a connection
+								to your database dedicated to CDC, in this scenario
+									<span class="emphasis"><em>CDC_connection</em></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Make sure that the DB connection for CDC is on the same server
+									with the source data to which changes are to be captured.</p></td></tr></table></div></li><li class="listitem"><p> In the <span class="bold"><strong>Repository</strong></span> tree view and
+								under <span class="bold"><strong>Metadata</strong></span>, create a connection
+								to the source data warehouse and identify the table to catch, in
+								this scenario <span class="emphasis"><em>CRM_connection</em></span>.</p></li><li class="listitem"><p> Right-click the <span class="emphasis"><em>CRM</em></span> connection and select
+									<span class="bold"><strong>Retrieve schema</strong></span> from the
+								drop-down menu to retrieve the schema of the table to catch.</p></li><li class="listitem"><p> Right-click <span class="bold"><strong>CDC Foundation</strong></span> of
+									<span class="emphasis"><em>CRM</em></span> and select <span class="bold"><strong>Create
+									CDC</strong></span> in the drop-down menu.</p></li></ul></div><p>The <span class="bold"><strong>[Create Change Data Capture] </strong></span>dialog
+						box displays</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="354"><tr><td><img src="../images/Use_Case_tMysqlCDC_Create_Sub1.png" width="354"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the <span class="bold"><strong>Set link Connection</strong></span>
+								field, select <span class="emphasis"><em>CDC_connection</em></span>.</p></li><li class="listitem"><p> Click <span class="bold"><strong>Create Subscriber</strong></span>. The
+									<span class="bold"><strong>[Create Subscriber and Execute SQL
+									Script]</strong></span> dialog box displays.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="514"><tr><td><img src="../images/Use_Case_tMysqlCDC_Create_Sub2.png" width="514"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Click <span class="bold"><strong>Execute</strong></span> and then <span class="bold"><strong>Close</strong></span>.</p></li><li class="listitem"><p> Click <span class="bold"><strong>Finish</strong></span> to validate the
+								creation of the subscriber table.</p></li></ul></div><p>In the <span class="bold"><strong>CDC Foundation</strong></span> folder, the
+						relevant subscriber table displays.</p><p>You must specify which table the subscriber wants to subscribe to and then
+						activate the subscription. To do that:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Right-click the <span class="emphasis"><em>Leafact</em></span> schema in the source
+								CRM and select <span class="bold"><strong>Add CDC</strong></span> in the
+								drop-down list. The <span class="bold"><strong>[Create Subscriber and
+									Execute SQL Script]</strong></span> dialog box displays.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="403"><tr><td><img src="../images/Use_Case_tMysqlCDC_Create_Sub3.png" width="403"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the <span class="bold"><strong>Events to catch</strong></span> check
+								boxes, select <span class="bold"><strong>Insert</strong></span>, <span class="bold"><strong>Update</strong></span> and <span class="bold"><strong>Delete</strong></span> to catch inserted, updated or deleted
+								data.</p></li><li class="listitem"><p> In the <span class="bold"><strong>Subscriber Name</strong></span> field,
+								enter the name of the subscriber that will have access to the
+								modifications, in this scenario <span class="emphasis"><em>Sub_Mktg</em></span> for
+								the Marketing department.</p></li><li class="listitem"><p> Click <span class="bold"><strong>Execute</strong></span> and then <span class="bold"><strong>Close</strong></span> to validate the
+								subscription.</p></li></ul></div><p>In the <span class="bold"><strong>CDC Foundation</strong></span> folder, the two
+						created tables display and the schema node of the catched table is marked
+						with a green CDC symbol.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="218"><tr><td><img src="../images/Use_Case_tMysqlCDC_arbo.png" width="218"></td></tr></table></div><p>Create the new subscribers <span class="emphasis"><em>Sub_Finance</em></span> and
+							<span class="emphasis"><em>Sub_Sales </em></span>for the Treasury and Sales departments
+						respectively.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Right-click <span class="emphasis"><em>Leadfact</em></span> and select <span class="bold"><strong>Edit CDC Subscribers</strong></span> from the drop-down
+								list. The <span class="bold"><strong>[Edit CDC]</strong></span> dialog box
+								displays.</p></li><li class="listitem"><p> Click <span class="bold"><strong>Add</strong></span>. The <span class="bold"><strong>Input subscriber name</strong></span> dialog box
+								display.</p></li><li class="listitem"><p> Enter the name of the subscriber, in this scenario
+									<span class="emphasis"><em>Sub_Finance</em></span> and
+									<span class="emphasis"><em>Sub_Sales</em></span>.</p></li><li class="listitem"><p> Click <span class="bold"><strong>Execute</strong></span> and then <span class="bold"><strong>Close</strong></span> to validate the creation
+								operation.</p></li></ul></div></div><div class="section" title="Step&nbsp;2: Modifying the CRM data"><div class="titlepage"><div><div><h4 class="title"><a name="d0e120931"></a>Step&nbsp;2: Modifying the CRM data</h4></div></div></div><p>Modify the data of your customers in your CRM, for example, convert all
+						customer names to upper case.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Double-click the <span class="bold"><strong>tMap</strong></span> component
+								and enter <code class="code">row1.CustomerName.toUpperCase()</code>in front of
+								the <span class="bold"><strong>CustomerName</strong></span> column to convert
+								all customer names to upper case.</p></li><li class="listitem"><p> Click <span class="bold"><strong>Ok</strong></span>.</p></li><li class="listitem"><p> Double-click the <span class="bold"><strong>tMysqlOutput</strong></span>
+								component.</p></li><li class="listitem"><p> In the <span class="bold"><strong>Action on table</strong></span> field,
+								select <span class="bold"><strong>None</strong></span>.</p></li><li class="listitem"><p> In the <span class="bold"><strong>Action on data</strong></span> field,
+								select <span class="bold"><strong>Insert or update</strong></span> to insert
+								or update table data.</p></li><li class="listitem"><p> Save your job and press <span class="bold"><strong>F6</strong></span> to
+								execute the job.</p></li></ul></div><p>To view all changes done on data, right-click the
+							<span class="emphasis"><em>Leadfact</em></span> table and select <span class="bold"><strong>View All Changes</strong></span> to open the relevant dialog box.</p></div><div class="section" title="Step&nbsp;3: Extracting change data"><div class="titlepage"><div><div><h4 class="title"><a name="d0e120993"></a>Step&nbsp;3: Extracting change data</h4></div></div></div><p>After setting up the CDC environment, you can now design a job using the
+						Mysql CDC component to incrementally extract the change data from the
+							<span class="emphasis"><em>Leadfact</em></span> table. To do that:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> From the <span class="bold"><strong>Palette</strong></span>, drop the
+									<span class="bold"><strong>tMysqlCDC</strong></span> and <span class="bold"><strong>tLogRow</strong></span> components to the design
+								workspace.</p></li><li class="listitem"><p> Link the two components using a <span class="bold"><strong>Row
+									Main</strong></span> link.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="334"><tr><td><img src="../images/Use_Case_tMysqlCDC1.png" width="334"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Double-click the <span class="bold"><strong>tMysqlCDC</strong></span>
+								component to define its properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="389"><tr><td><img src="../images/Use_Case_tMysqlCDC2.png" width="389"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Set <span class="bold"><strong>Property Type</strong></span> to <span class="bold"><strong>Repository</strong></span> and then select the select the
+								schema corresponding to your Mysql DB table,
+									<span class="emphasis"><em>CDC_connection</em></span> in this scenario. The
+								connection details will display automatically in the corresponding
+								fields</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> If you have not stored the CRM data warehouse connection details in
+							the <span class="bold"><strong>Metadata</strong></span> entry in the Repository,
+							select <span class="bold"><strong>Built-in </strong></span>in the property type
+							list and set the connection details manually.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> In the <span class="bold"><strong>Schema using CDC</strong></span> field,
+								select <span class="bold"><strong>Repository</strong></span> and then select
+								the schema of the <span class="emphasis"><em>Leadfact</em></span> table stored in the
+									<span class="bold"><strong>Metadata</strong></span> entry.</p></li><li class="listitem"><p> In the <span class="bold"><strong>Table using CDC</strong></span> field,
+								enter the name of the table captured by the CDC, in this scenario
+									<span class="emphasis"><em>Leadfact</em></span>.</p></li><li class="listitem"><p> In the <span class="bold"><strong>Subscriber</strong></span> field, enter
+								the name of the subscriber that will extract modified data,
+									<span class="emphasis"><em>Sub_Mktg,</em></span>
+								<span class="emphasis"><em>Sub_Sales</em></span>, and <span class="emphasis"><em>Sub_Finance</em></span>
+								for the Marketing, Sales and Treasury Departments
+								respectively.</p></li><li class="listitem"><p> In the <span class="bold"><strong>Events to catch</strong></span> field,
+								select the check boxes corresponding to the type of the modified
+								data the subscriber will extract. In this scenario, select the three
+								check boxes for the three subscribers.</p></li><li class="listitem"><p> Double-click the <span class="bold"><strong>tLogRow</strong></span>
+								component to set is properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="309"><tr><td><img src="../images/Use_Case_tMysqlCDC3.png" width="309"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Click the <span class="bold"><strong>Sync columns</strong></span> button to
+								retrieve the schema from the preceding component.</p></li><li class="listitem"><p> Save your job and press <span class="bold"><strong>F6</strong></span> to
+								execute it.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="431"><tr><td><img src="../images/Use_Case_tMysqlCDC4.png" width="431"></td></tr></table></div><p>The customer names are converted to upper case and the modification type
+						displays here is <span class="emphasis"><em>U</em></span> to stand for <span class="bold"><strong>Update</strong></span>.</p><p>Once these modifications are extracted, they are no more available in the
+						modified table. To verify their extraction, right-click the
+							<span class="emphasis"><em>Leadfact</em></span> table catched by the CDC and then select
+							<span class="bold"><strong>Views All Changes</strong></span>. The extracted
+						changes do not display anymore.</p></div></div></div></body></html>

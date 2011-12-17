@@ -1,0 +1,201 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSQLiteInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tSQLiteConnection.html" title="tSQLiteConnection"><link rel="next" href="tSQLiteOutput.html" title="tSQLiteOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tSQLiteInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSQLiteInput"></a>tSQLiteInput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tSQLiteInput_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tSQLiteInput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e140823"></a>Propri&eacute;t&eacute;s du tSQLiteInput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/SQLite</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tSQLiteInput</strong></span> lit une
+								base de donn&eacute;es et en extrait des champs &agrave; l&#8217;aide de requ&ecirc;tes. Un
+								petit moteur de base de donn&eacute;es SQLite lui est int&eacute;gr&eacute;, il n&#8217;a donc
+								pas besoin d&#8217;&ecirc;tre connect&eacute; &agrave; un serveur de base de donn&eacute;es. </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="bold"><strong>Le tSQLiteInput</strong></span> ex&eacute;cute une
+								requ&ecirc;te en base de donn&eacute;es selon un ordre strict qui doit
+								correspondre &agrave; celui d&eacute;fini dans le sch&eacute;ma. La liste des champs
+								r&eacute;cup&eacute;r&eacute;e est ensuite transmise au composant suivant via une
+								connexion de flux (Main row). </p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Peut &ecirc;tre Built-in ou Repository</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Propri&eacute;t&eacute;s utilis&eacute;es
+								ponctuellement.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>&nbsp;: S&eacute;lectionnez le
+								fichier dans lequel sont stock&eacute;es les propri&eacute;t&eacute;s du composant. Les
+								champs suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
+								collect&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case et s&eacute;lectionnez le composant <span class="bold"><strong>tSQLiteConnection</strong></span> ad&eacute;quat &agrave; partir de la liste
+									<span class="bold"><strong>Component</strong></span> pour r&eacute;utiliser les
+								param&egrave;tres d&#8217;une connexion que vous avez d&eacute;j&agrave; d&eacute;finis.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Lorsqu&#8217;un Job contient un Job parent et un Job enfant, la liste <span class="bold"><strong>Component List</strong></span> pr&eacute;sente uniquement les
+									composants de connexion du Job du m&ecirc;me niveau. Si vous souhaitez
+									utiliser une connexion existant dans un autre niveau, v&eacute;rifiez
+									que les composants de connexion disponibles partagent la m&ecirc;me
+									connexion.</p><p>Pour plus d&#8217;informations concernant le partage d&#8217;une connexion &agrave; travers diff&eacute;rents
+									niveaux de Jobs, consultez <span class="bold"><strong>Use or register
+										a shared DB connection</strong></span> dans tous les composants
+									de base de donn&eacute;es que vous utilisez.</p></td></tr></table></div>
+							<p>Sinon, vous pouvez &eacute;galement d&eacute;sactiver le composant de connexion et utiliser les
+									<span class="bold"><strong>Dynamic settings</strong></span> du composant,
+								afin de param&eacute;trer manuellement la connexion. Dans ce cas, v&eacute;rifiez
+								que le nom de la connexion est unique et distinct tout au long des
+								deux niveaux de Jobs. Pour plus d&#8217;informations concernant les
+								param&egrave;tres dynamiques (<span class="bold"><strong>Dynamic
+									settings</strong></span>), consultez le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de votre Studio. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="18"><tr><td><img src="../images/Save_Icon.png" width="18"></td></tr></table></div>
+						</td><td valign="top">
+							<p>Cliquez sur cette ic&ocirc;ne pour ouvrir l&#8217;assistant de configuration
+								de connexion &agrave; la base de donn&eacute;es et enregistrer les param&egrave;tres de
+								connexion que vous avez d&eacute;finis dans la vue <span class="bold"><strong>Basic settings </strong></span>du composant. </p>
+							<p>Pour plus d&#8217;informations sur comment d&eacute;finir et stocker des param&egrave;tres de connexion de
+								base de donn&eacute;es, consultez le<span class="bold"><strong> Guide
+									utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span> .</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Chemin d&#8217;acc&egrave;s au fichier de la base de donn&eacute;es SQLite. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (<span class="bold"><strong>Built-in</strong></span>),
+								soit distant dans le Repository.</p>
+							<p> </p>
+							
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute;
+								ponctuellement pour ce composant seulement. Voir &eacute;galement&nbsp;le
+									<span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans
+								le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le
+									<span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Query type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>La requ&ecirc;te peut &ecirc;tre construite manuellement (Built-in) pour un
+								Job particulier ou stock&eacute;e dans le Repository s&#8217;il s&#8217;agit d&#8217;une
+								requ&ecirc;te fr&eacute;quemment utilis&eacute;e, pour en faciliter l&#8217;utilisation.
+							</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Query</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez votre requ&ecirc;te en faisant particuli&egrave;rement attention &agrave;
+								l&#8217;ordre des champs afin qu&#8217;ils correspondent &agrave; la d&eacute;finition du
+								sch&eacute;ma.</p>
+							
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim all the String/Char columns</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Supprimer les espaces en d&eacute;but et en fin de champ dans les
+								colonnes s&eacute;lectionn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim column</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStat</em></span>
+								<span class="emphasis"><em>Catcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est tout &agrave; fait autonome du fait de son moteur de
+								base de donn&eacute;es SQLite int&eacute;gr&eacute;. Il s&#8217;agit d&#8217;un composant de d&eacute;but
+								pouvant initier un traitement de flux de donn&eacute;es.</p>
+						</td></tr></tbody></table></div><p>&nbsp;</p></div><div class="section" title="Sc&eacute;nario&nbsp;: Filtrer des donn&eacute;es SQlite"><div class="titlepage"><div><div><h3 class="title"><a name="d0e141232"></a>Sc&eacute;nario&nbsp;: Filtrer des donn&eacute;es SQlite</h3></div></div></div><p>Le sc&eacute;nario suivant d&eacute;crit un Job assez simple qui permet d&#8217;appliquer une requ&ecirc;te
+			donn&eacute;e utilisant un filtre pour extraire des lignes &agrave; partir d&#8217;une base de donn&eacute;es
+			SQLite source et alimenter une table SQLite en sortie.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="288"><tr><td><img src="../images/Use_Case_tSQLite1.png" width="288"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez-d&eacute;posez &agrave; partir de la <span class="bold"><strong>Palette</strong></span> les composants
+						<span class="bold"><strong>tSQLiteInput</strong></span> et <span class="bold"><strong>tSQLiteOutput</strong></span>.</p></li><li class="listitem"><p>Reliez le composant d&#8217;entr&eacute;e et de sortie &agrave; l&#8217;aide d&#8217;un lien de type <span class="bold"><strong>row Main</strong></span>.</p></li><li class="listitem"><p>Dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> du composant <span class="bold"><strong>tSQLiteInput</strong></span>, entrez le chemin d&#8217;acc&egrave;s ou parcourez
+					vos dossiers jusqu&#8217;au fichier d&#8217;entr&eacute;e &agrave; la base de donn&eacute;e SQLite.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="470"><tr><td><img src="../images/Use_Case_tSQLite2.png" width="470"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Le fichier contient des centaines de lignes et comprend une colonne <span class="bold"><strong>ip</strong></span> servant de base &agrave; la requ&ecirc;te. </p></li><li class="listitem"><p>Dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span> du composant <span class="bold"><strong>tSQLiteInput</strong></span>, modifiez le sch&eacute;ma afin qu&#8217;il
+					corresponde &agrave; la structure de la table. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="450"><tr><td><img src="../images/Use_Case_tSQLite3.png" width="450"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Query</strong></span>, renseignez la requ&ecirc;te choisie par
+					rapport &agrave; la colonne <span class="emphasis"><em>ip</em></span>. </p></li><li class="listitem"><p>S&eacute;lectionnez les param&egrave;tres d&#8217;encodage correspondants. </p></li><li class="listitem"><p>Pour le composant <span class="bold"><strong>tSQLiteOutput</strong></span>, dans le champ <span class="bold"><strong>Database </strong></span>de l&#8217;onglet <span class="bold"><strong>Basic
+						settings</strong></span>, s&eacute;lectionnez le chemin d&#8217;acc&egrave;s &agrave; la base de donn&eacute;es de
+					sortie. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="516"><tr><td><img src="../images/Use_Case_tSQLite4.png" width="516"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Table</strong></span>, renseignez le nom de la table &agrave;
+					alimenter avec les donn&eacute;es s&eacute;lectionn&eacute;es. </p></li><li class="listitem"><p>A partir des listes d&eacute;roulantes <span class="bold"><strong>Action on table</strong></span> et
+						<span class="bold"><strong>Action on Data</strong></span>, s&eacute;lectionnez les actions &agrave;
+					effectuer sur la table et sur les donn&eacute;es. Dans le cas pr&eacute;sent, les actions
+					sont, respectivement, <span class="emphasis"><em>Drop and create </em></span>et
+						<span class="emphasis"><em>Insert</em></span>. </p></li><li class="listitem"><p>Synchronisez le sch&eacute;ma avec le sch&eacute;ma d&#8217;entr&eacute;e. </p></li><li class="listitem"><p>S&eacute;lectionnez l&#8217;encodage puis d&eacute;finissez la limite de commit. </p></li><li class="listitem"><p>Enregistrez le Job puis ex&eacute;cutez-le en appuyant sur <span class="bold"><strong>F6</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="504"><tr><td><img src="../images/Use_Case_tSQLite5.png" width="504"></td></tr></table></div><p>Les donn&eacute;es s&eacute;lectionn&eacute;es sont renvoy&eacute;es vers le fichier SQLite d&eacute;fini.</p></div></div></body></html>

@@ -1,0 +1,70 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tLibraryLoad</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch04.html" title="Chapter&nbsp;4.&nbsp;Custom Code components"><link rel="prev" href="tJavaRow.html" title="tJavaRow"><link rel="next" href="tSetGlobalVar.html" title="tSetGlobalVar"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tLibraryLoad"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tLibraryLoad"></a>tLibraryLoad</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tLibraryLoad_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tLibraryLoad properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e48032"></a>tLibraryLoad properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Famille de composant</strong></span></p>
+                        </td><td valign="top">
+                            <p>Custom Code</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tLibraryLoad</strong></span> allows you to import
+                                a library.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tLibraryLoad</strong></span> allows you to load
+                                useable Java libraries in a Job.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Library</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the library you want to import from the list, or click on
+                                the <span class="bold"><strong>[...]</strong></span> button to browse to the
+                                library in your directory.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Dynamic Libs</em></span></p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Lib Paths</strong></span>: Enter the access path
+                                to your library, between double quotation marks.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Import</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the Java code required to import, if required, the external
+                                library used in the <span class="bold"><strong>Main code</strong></span> field
+                                of the <span class="bold"><strong>Basic settings</strong></span> tab.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to collect the log data at component
+                                level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component may be used alone, although it is more logical to
+                                use it as part of a Job.</p>
+                            
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Checking the format of an e-mail addressl"><div class="titlepage"><div><div><h3 class="title"><a name="d0e48187"></a>Scenario: Checking the format of an e-mail addressl</h3></div></div></div><p>This scenario uses two components, a <span class="bold"><strong>tLibraryLoad</strong></span> and
+            a <span class="bold"><strong>tJava</strong></span>. The goal of this scenario is to check the
+            format of an e-mail address and verify whether the format is valid or not. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="117"><tr><td><img src="../images/Use_Case_tLibraryLoad1.png" width="117"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Palette</strong></span>, open the <span class="bold"><strong>Custom_Code</strong></span> folder, and slide a <span class="bold"><strong>tLibraryLoad</strong></span> and <span class="bold"><strong>tJava
+                    </strong></span>component onto the workspace.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tLibraryLoad</strong></span> to <span class="bold"><strong>tJava</strong></span> using a <span class="bold"><strong>Trigger</strong></span> &gt;
+                        <span class="bold"><strong>OnSubjobOk</strong></span> link.</p></li><li class="listitem"><p>Double click on <span class="bold"><strong>tLibraryLoad</strong></span> to display its
+                        <span class="bold"><strong>Basic settings</strong></span>. From the <span class="bold"><strong>Library</strong></span> list, select
+                        <span class="emphasis"><em>jakarta-oro-2.0.8.jar</em></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Import</strong></span> field of the <span class="bold"><strong>Advanced settings</strong></span> tab, type <span class="emphasis"><em>import
+                        org.apache.oro.text.regex.*;</em></span></p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="444"><tr><td><img src="../images/Use_Case_tLibraryLoad2.png" width="444"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double click on <span class="bold"><strong>tJava</strong></span> to display its
+                        <span class="bold"><strong>Component</strong></span> view. </p></li><li class="listitem"><p>In the <span class="bold"><strong>Basic settings</strong></span> tab, enter your code,
+                    as in the screenshot below. The code allows you to check whether the character
+                    string pertains to an e-mail address, based on the regular expression:
+                        <code class="code">"^[\\w_.-]+@[\\w_.-]+\\.[\\w]+$"</code>. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="518"><tr><td><img src="../images/Use_Case_tLibraryLoad3.png" width="518"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Press <span class="bold"><strong>F6</strong></span> to save and run the Job. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="394"><tr><td><img src="../images/Use_Case_tLibraryLoad4.png" width="394"></td></tr></table></div><p>The <span class="bold"><strong>Console</strong></span> displays the boolean
+                <span class="emphasis"><em>false</em></span>. Hence, the e-mail address is not valid as the format is
+            incorrect. </p></div></div></body></html>

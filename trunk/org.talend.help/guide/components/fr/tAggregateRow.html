@@ -1,0 +1,278 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tAggregateRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch14.html" title="Chapitre&nbsp;14.&nbsp;Composants Processing"><link rel="prev" href="ch14.html" title="Chapitre&nbsp;14.&nbsp;Composants Processing"><link rel="next" href="tAggregateSortedRow.html" title="tAggregateSortedRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tAggregateRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tAggregateRow"></a>tAggregateRow</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tAggregateRow.png" width="27"></td></tr></table></div><a name="Xaa4550381"></a><div class="section" title="Propri&eacute;t&eacute;s du tAggregateRow"><div class="titlepage"><div><div><h3 class="title"><a name="d0e227082"></a>Propri&eacute;t&eacute;s du tAggregateRow</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Processing</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le composant <span class="bold"><strong>tAggregateRow</strong></span> re&ccedil;oit
+                                un flux de donn&eacute;es et fait une agr&eacute;gation bas&eacute;e sur une ou plusieurs
+                                colonnes. Pour chacune des lignes en sortie, une cl&eacute; d&#8217;agr&eacute;gation
+                                est fournie, ainsi que le r&eacute;sultat de l&#8217;op&eacute;ration d&#8217;agr&eacute;gation
+                                correspondant (min, max, sum, etc.).</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Il permet d&#8217;&eacute;tablir des m&eacute;triques et des statistiques bas&eacute;es sur
+                                des valeurs ou des calculs.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+                                sch&eacute;ma est soit local (built-in) soit distant dans le Repository. </p>
+                            <p> Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> pour
+                                modifier le sch&eacute;ma. Notez que lorsque vous modifiez le sch&eacute;ma, il se
+                                met automatiquement en built-in.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+                                conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp; le<span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+                                d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;
+                                dans divers projets et Job designs. Voir &eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.
+                            </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Group by</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>D&eacute;finit les ensembles d&#8217;agr&eacute;gation, dont les valeurs sont
+                                utilis&eacute;es pour les calculs.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Output Column</strong></span>&nbsp;: S&eacute;lectionnez le
+                                libell&eacute; de colonne dans la liste fournie, bas&eacute;e sur la structure de
+                                sch&eacute;ma que vous avez d&eacute;finie. Vous pouvez ajouter autant de colonnes
+                                de sortie que vous le souhaitez afin d&#8217;affiner les
+                                agr&eacute;gations.</p>
+                            <p> Ex&nbsp;: S&eacute;lectionnez <span class="emphasis"><em>Country</em></span> (Pays) pour
+                                calculer la moyenne des valeurs pour chaque pays ou s&eacute;lectionnez
+                                    <span class="emphasis"><em>Country</em></span> et <span class="emphasis"><em>Region</em></span> pour
+                                comparer les r&eacute;sultats des r&eacute;gions d&#8217;un pays par rapport aux r&eacute;gions
+                                d&#8217;un autre pays.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Input Column&nbsp;</strong></span>: Faites la
+                                correspondance entre les libell&eacute;s des colonnes d&#8217;entr&eacute;e avec ceux
+                                des colonnes de sortie, dans le cas o&ugrave; vous souhaitez que les
+                                libell&eacute;s du sch&eacute;ma de sortie soient diff&eacute;rents du sch&eacute;ma
+                                d&#8217;entr&eacute;e.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Operations</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>S&eacute;lectionnez le type d&#8217;op&eacute;ration &agrave; effectuer ainsi que la valeur &agrave;
+                                utiliser pour le calcul et le champ de sortie.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Output Column&nbsp;</strong></span>: S&eacute;lectionnez le
+                                champ de destination dans la liste.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Fonction&nbsp;</strong></span>: S&eacute;lectionnez
+                                l&#8217;op&eacute;rateur parmi&nbsp;: <span class="bold"><strong>count&nbsp;:</strong></span> calcule
+                                le nombre de ligne,</p>
+                            <p>
+                                <span class="bold"><strong>min&nbsp;:</strong></span> s&eacute;lectionne la plus petite
+                                valeur,</p>
+                            <p>
+                                <span class="bold"><strong>max&nbsp;:</strong></span> s&eacute;lectionne la plus grande
+                                valeur,</p>
+                            <p>
+                                <span class="bold"><strong>avg&nbsp;:</strong></span> calcule la moyenne,</p>
+                            <p>
+                                <span class="bold"><strong>sum&nbsp;:</strong></span> calcule la somme,</p>
+                            <p>
+                                <span class="bold"><strong>first&nbsp;:</strong></span> retourne la premi&egrave;re
+                                valeur,</p>
+                            <p>
+                                <span class="bold"><strong>last&nbsp;:</strong></span> retourne la derni&egrave;re
+                                valeur,</p>
+                            <p>
+                                <span class="bold"><strong>list&nbsp;:</strong></span> liste les valeurs d&#8217;une
+                                agr&eacute;gation de plusieurs cl&eacute;s.</p>
+                            <p>
+                                <span class="bold"><strong>list (object)&nbsp;:</strong></span> liste les valeurs
+                                Java d&#8217;une agr&eacute;gation de plusieurs cl&eacute;s,</p>
+                            <p>
+                                <span class="bold"><strong>count (distinct)&nbsp;:</strong></span> compte le nombre
+                                de lignes sans les doublons,</p>
+                            <p>
+                                <span class="bold"><strong>standard deviation&nbsp;:</strong></span> calcule
+                                l&#8217;&eacute;cart-type.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Input column position</strong></span>&nbsp;:
+                                S&eacute;lectionnez la colonne d&#8217;entr&eacute;e &agrave; partir de laquelle les valeurs
+                                sont collect&eacute;es pour l&#8217;agr&eacute;gation.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Ignore null values</strong></span>&nbsp;: Cochez cette
+                                case devant le nom de toutes les colonnes pour lesquelles vous
+                                voulez que les valeurs nulles soient ignor&eacute;es. </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Delimiter(only for list operation)</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Saisissez le s&eacute;parateur que vous souhaitez utiliser afin de
+                                s&eacute;parer les diff&eacute;rentes op&eacute;rations.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Use financial precision, this is the max precision for
+                                    &#8220;sum&#8221; and &#8220;avg&#8221; operations, checked option heaps more memory and
+                                    slower than unchecked.</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case afin d&#8217;utiliser une pr&eacute;cision financi&egrave;re, une
+                                pr&eacute;cision maximale, mais qui consomme plus de m&eacute;moire et rend le
+                                processus plus lent.</p>
+                            <div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+                                    <span class="emphasis"><em>Nous vous conseillons d&#8217;utiliser le type BigDecimal en
+                                        sortie avec cette option, afin d&#8217;obtenir des r&eacute;sultats
+                                        pr&eacute;cis.</em></span>
+                                </p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Check type overflow (slower)</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>V&eacute;rifie les types des donn&eacute;es afin d&#8217;&eacute;viter que le Job ne
+                                plante</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Check ULP (Unit in the Last Place), ensure that a value
+                                    will be incremented or decremented correctly, only float and
+                                    double types. (slower) </em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case afin d&#8217;avoir la meilleure pr&eacute;cision possible
+                                pour les types Float et Double.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>tStatCatcher Statistics</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+                                composant.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est un composant interm&eacute;diaire car il traite un flux
+                                de donn&eacute;es, par cons&eacute;quent il requiert des composants en entr&eacute;e
+                                comme en sortie. G&eacute;n&eacute;ralement, l&#8217;utilisation du composant <span class="bold"><strong>tAggregateRow</strong></span> est combin&eacute;e au composant
+                                    <span class="bold"><strong>tSortRow</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario : Agr&eacute;ger des valeurs et trier des donn&eacute;es"><div class="titlepage"><div><div><h3 class="title"><a name="Raa44816"></a>Sc&eacute;nario : Agr&eacute;ger des valeurs et trier des donn&eacute;es</h3></div></div></div><p>Le sc&eacute;nario suivant d&eacute;crit un Job &agrave; quatre composants. Le composant d&#8217;entr&eacute;e, un
+            fichier d&eacute;limit&eacute; CSV, contient des noms de pays et des valeurs de notation &agrave; trier par
+            ordre d&eacute;croissant de moyenne. Ce composant d&#8217;entr&eacute;e est connect&eacute; &agrave; un op&eacute;rateur
+                <span class="bold"><strong>tAggregateRow</strong></span> qui se charge de calculer les
+            moyennes puis &agrave; un composant <span class="bold"><strong>tSortRow</strong></span> qui se charge du
+            tri. Le flux de sortie est dirig&eacute; dans un nouveau fichier CSV.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="326"><tr><td><img src="../images/Use_Case_tAggregateRow1.png" width="326"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> A partir du dossier <span class="bold"><strong>File</strong></span> de la <span class="bold"><strong>Palette</strong></span>, cliquez et d&eacute;posez un composant <span class="bold"><strong>tFileInputDelimited</strong></span>. </p></li><li class="listitem"><p> Cliquez sur le libell&eacute; du composant et renommez-le en
+                        <span class="emphasis"><em>Countries</em></span>. Ou passez dans l&#8217;onglet <span class="bold"><strong>View</strong></span> pour le changer.</p></li><li class="listitem"><p> Dans l&#8217;onglet <span class="bold"><strong>Basic settings</strong></span>, d&eacute;finissez le
+                    chemin d&#8217;acc&egrave;s ainsi que les crit&egrave;res de d&eacute;limitation. Ou s&eacute;lectionnez l&#8217;entr&eacute;e
+                    de m&eacute;tadonn&eacute;es correspondant &agrave; votre fichier d&#8217;entr&eacute;e, si vous en avez d&eacute;fini
+                    une.</p></li><li class="listitem"><p> Cliquez sur <span class="bold"><strong>Edit schema...</strong></span> et param&eacute;trez les
+                    colonnes&nbsp;: <span class="emphasis"><em>Countries</em></span> et <span class="emphasis"><em>Points</em></span>
+                    correspondant &agrave; la structure du fichier. Si la description du fichier est
+                    conserv&eacute;e dans les <span class="bold"><strong>Metadata</strong></span> du <span class="bold"><strong>Repository</strong></span>, le sch&eacute;ma est automatiquement charg&eacute;
+                    lorsque vous cliquez sur <span class="bold"><strong>Repository</strong></span> dans le
+                    champ <span class="bold"><strong>Schema</strong></span>.</p></li><li class="listitem"><p> Puis dans le dossier <span class="bold"><strong>Processing</strong></span> de la
+                        <span class="bold"><strong>Palette</strong></span>, cliquez et d&eacute;posez le composant
+                        <span class="bold"><strong>tAggregateRow</strong></span>. Renommez-le en
+                        <span class="emphasis"><em>Calculation</em></span>.</p></li><li class="listitem"><p> Cliquez-droit et connectez <span class="emphasis"><em>Countries</em></span> &agrave;
+                        <span class="emphasis"><em>Calculation</em></span> &agrave; l&#8217;aide d&#8217;une connexion <span class="bold"><strong>Row &gt; Main</strong></span>.</p></li><li class="listitem"><p> Double-cliquez sur <span class="emphasis"><em>Calculation</em></span> (composant <span class="bold"><strong>tAggregateRow</strong></span>) pour d&eacute;finir les propri&eacute;t&eacute;s. Cliquez
+                    sur <span class="bold"><strong>Edit schema</strong></span> et d&eacute;finissez le sch&eacute;ma de
+                    sortie. Vous pouvez ajouter autant de colonnes que vous le voulez selon le
+                    nombre d&#8217;op&eacute;rations d&#8217;ensemble que vous souhaitez obtenir en sortie.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="394"><tr><td><img src="../images/Use_Case_tAggregateRow3.png" width="394"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans cet exemple, calculez la moyenne de la notation par pays et affichez les
+                    valeurs minimale et maximale par pays, sachant que chaque pays poss&egrave;de plusieurs
+                    notes. Cliquez sur <span class="bold"><strong>OK</strong></span> lorsque le sch&eacute;ma est
+                    termin&eacute;.</p></li><li class="listitem"><p> D&eacute;finissez &agrave; pr&eacute;sent les diff&eacute;rentes op&eacute;rations d&#8217;ensemble &agrave; effectuer. Dans
+                    le champ <span class="bold"><strong>Group&nbsp;By</strong></span> de la fen&ecirc;tre <span class="bold"><strong>Basic settings</strong></span> du composant <span class="bold"><strong>tAggregateRow</strong></span>, d&eacute;finissez les ensembles sur lesquels les
+                    op&eacute;rations sont effectu&eacute;es. Dans cet exemple, s&eacute;lectionnez <span class="bold"><strong>Country</strong></span> comme colonne de regroupement. Notez que dans la colonne
+                    de sortie, un champ cl&eacute; doit &ecirc;tre d&eacute;fini dans le sch&eacute;ma. La premi&egrave;re colonne
+                    cit&eacute;e comme de sortie (Output) dans la table <span class="bold"><strong>Group&nbsp;By</strong></span> devient l&#8217;ensemble principal de calcul. Toutes les
+                    autres sorties deviennent alors secondaires dans l&#8217;ordre d&#8217;affichage.</p></li><li class="listitem"><p> S&eacute;lectionnez la colonne d&#8217;entr&eacute;e (Input) dont sont extraites les
+                    valeurs.</p></li><li class="listitem"><p> Puis renseignez les diverses op&eacute;rations r&eacute;alis&eacute;es. Les fonctions utilis&eacute;es
+                    dans cet exemple sont des moyennes (average), min, max. S&eacute;lectionnez la colonne
+                    d&#8217;entr&eacute;e dont sont extraites les valeurs de calcul et s&eacute;lectionnez les cases
+                        <span class="bold"><strong>Ignore null values</strong></span> si n&eacute;cessaire.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="521"><tr><td><img src="../images/Use_Case_tAggregateRow4.png" width="521"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez-d&eacute;posez un composant <span class="bold"><strong>tSortRow</strong></span> dans
+                    l&#8217;espace de mod&eacute;lisation. Pour plus d&#8217;informations concernant ce composant,
+                    consultez <a class="xref" href="tSortRow.html#Raa63352" title="Propri&eacute;t&eacute;s du tSortRow">la section intitul&eacute;e &laquo;&nbsp;Propri&eacute;t&eacute;s du tSortRow&nbsp;&raquo;</a></p></li><li class="listitem"><p>Connectez-le au composant <span class="bold"><strong>tAggregateRow</strong></span> &agrave;
+                    l&#8217;aide d&#8217;une connexion de type <span class="bold"><strong>Row &gt;
+                    Main</strong></span>.</p></li><li class="listitem"><p>Dans la vue <span class="bold"><strong>Component</strong></span> du composant <span class="bold"><strong>tSortRow</strong></span>, d&eacute;finissez la colonne de tri, le type ainsi
+                    que l&#8217;ordre de tri.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="487"><tr><td><img src="../images/Use_Case_tAggregateRow5.png" width="487"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans ce sc&eacute;nario, la colonne &agrave; trier est <span class="emphasis"><em>Country</em></span>, le type
+                    de tri est alphab&eacute;tique et l&#8217;ordre est ascendant.</p></li><li class="listitem"><p>Ajoutez un composant de sortie &agrave; ce Job. Cliquez et d&eacute;posez un composant
+                        <span class="bold"><strong>tFileOutputDelimited</strong></span> et
+                    param&eacute;trez-le.</p></li><li class="listitem"><p>Connectez le composant <span class="bold"><strong>tSortRow</strong></span> &agrave; ce
+                    composant de sortie.</p></li><li class="listitem"><p>Dans la vue <span class="bold"><strong>Component</strong></span>, saisissez le chemin
+                    d&#8217;acc&egrave;s au fichier de sortie. Cliquez sur <span class="bold"><strong>Edit&nbsp;schema</strong></span> pour le configurer si n&eacute;cessaire. Dans ce sc&eacute;nario,
+                    le fichier d&eacute;limit&eacute; est de type CSV. </p><p>Cochez la case <span class="bold"><strong>Include Header</strong></span> afin de
+                    r&eacute;utiliser les libell&eacute;s des colonnes du sch&eacute;ma dans le flux de sortie.</p></li><li class="listitem"><p>Appuyez sur <span class="bold"><strong>F6</strong></span> pour ex&eacute;cuter le Job. Le
+                    fichier CSV est ainsi cr&eacute;&eacute; et il contient les r&eacute;sultats des op&eacute;rations
+                    d&#8217;agr&eacute;gation.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="439"><tr><td><img src="../images/Use_Case_tAggregateRow6.png" width="439"></td></tr></table></div></div></div></body></html>

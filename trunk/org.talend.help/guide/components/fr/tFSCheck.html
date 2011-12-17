@@ -1,0 +1,142 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFSCheck</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa55271.html" title="Chapitre&nbsp;11.&nbsp;Composants FileScale"><link rel="prev" href="tFSAggregate.html" title="tFSAggregate"><link rel="next" href="tFSCode.html" title="tFSCode"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tFSCheck"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFSCheck"></a>tFSCheck</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFSCheck_icon32.png" width="27"></td></tr></table></div><a name="Xaa2842452"></a><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+            <span class="emphasis"><em>Ce composant est disponible dans la </em></span><span class="bold"><strong>Palette
+                </strong></span><span class="emphasis"><em>du studio uniquement si vous avez souscrit &agrave; l&#8217;&eacute;dition
+                de</em></span>
+            <span class="bluebold">Talend Enterprise MDM Studio</span>. <span class="emphasis"><em>Pour plus
+                d&#8217;informations concernant le mode Massively Parallel eXtension, consultez le
+                </em></span><span class="bold"><strong>Guide Utilisateur</strong></span><span class="emphasis"><em> de
+                </em></span><span class="bluebold">Talend Enterprise MDM Studio</span><span class="emphasis"><em>.</em></span></p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tFSCheck"><div class="titlepage"><div><div><h3 class="title"><a name="d0e242046"></a>Propri&eacute;t&eacute;s du tFSCheck</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p>Famille de composant</p>
+                        </td><td valign="top"><p>FileScale</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tFSCheck </strong></span>v&eacute;rifie que tous les enregistrements d&#8217;un
+                                fichier d&#8217;entr&eacute;e sont bien tri&eacute;s. Cette v&eacute;rification peut &ecirc;tre
+                                effectu&eacute;e sur la totalit&eacute; ou une partie des donn&eacute;es. Ce composant
+                                peut v&eacute;rifier tr&egrave;s rapidement un fichier tr&egrave;s volumineux. Pour
+                                optimiser les performances, le composant trie g&eacute;n&eacute;ralement les
+                                donn&eacute;es avant de les traiter.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tFSCheck</strong></span> permet de v&eacute;rifier que les donn&eacute;es du
+                                fichier source sont bien tri&eacute;es.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. Le sch&eacute;ma est soit local (built-in) soit distant dans le
+                                Repository.</p><p> Cliquez sur <span class="bold"><strong>Edit
+                                    Schema</strong></span> pour modifier le sch&eacute;ma.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Si vous modifiez le sch&eacute;ma, il devient au&shy;tomatiquement
+                                    built-in.</p></td></tr></table></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le
+                                sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut
+                                &ecirc;tre r&eacute;utilis&eacute; dans divers projets et jobs. Voir &eacute;galement&nbsp;le
+                                    <span class="bold"><strong>Guide Utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le
+                                sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; pour ce composant uniquement. Voir
+                                &eacute;galement&nbsp;le <span class="bold"><strong>Guide Utilisateur</strong></span> de
+                                    <span class="bluebold">Talend Enterprise Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top"><p>Peut &ecirc;tre Built-in ou Repository. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>:
+                                Propri&eacute;t&eacute;s utilis&eacute;es ponctuellement.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>:
+                                S&eacute;lectionnez le fichier de propri&eacute;t&eacute;s du composant. Les champs
+                                suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
+                                collect&eacute;es.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Input File Name</em></span></p>
+                        </td><td valign="top"><p>Nom du fichier contenant les donn&eacute;es &agrave;
+                                v&eacute;rifier.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Record separator</em></span>
+                                <span class="emphasis"><em>(char)</em></span></p>
+                        </td><td valign="top"><p>Caract&egrave;re, cha&icirc;ne ou expression r&eacute;guli&egrave;re s&eacute;parant
+                                les lignes.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Field separator</em></span>
+                                <span class="emphasis"><em>(char)</em></span></p>
+                        </td><td valign="top"><p>Caract&egrave;re, cha&icirc;ne ou expression r&eacute;guli&egrave;re s&eacute;parant
+                                les champs.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Header</em></span></p>
+                        </td><td valign="top"><p>Nombre de lignes d&#8217;en-t&ecirc;te &agrave; ignorer en d&eacute;but de
+                                fichier.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Footer</em></span></p>
+                        </td><td valign="top"><p>Nombre de lignes &agrave; ignorer en fin de
+                                fichier.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Criteria</em></span></p>
+                        </td><td valign="top"><p>Cliquez sur le bouton<span class="bold"><strong>
+                                    [+]</strong></span> pour ajouter autant de lignes que n&eacute;cessaire afin
+                                de v&eacute;rifier que le fichier source est bien tri&eacute;.</p><p>
+                                <span class="bold"><strong>Schema column</strong></span>&nbsp;: Cliquez dans la
+                                cellule et s&eacute;lectionnez le nom de la colonne sur laquelle vous
+                                souhaitez vous baser pour trier le fichier </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> L&#8217;ordre est essentiel puisqu&#8217;il d&eacute;termine la priorit&eacute; de
+                                    tri.</p></td></tr></table></div>
+                            <p><span class="bold"><strong>Sort type</strong></span>&nbsp;: Cliquez dans la
+                                cellule et s&eacute;lectionnez le type de tri&nbsp;: num&eacute;rique ou
+                                alphab&eacute;tique.</p><p>
+                                <span class="bold"><strong>Order type&nbsp;</strong></span>: Cliquez dans la
+                                cellule et s&eacute;lectionnez l&#8217;ordre de tri&nbsp;: ascendant ou
+                                descendant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Generate FSLang File</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour g&eacute;n&eacute;rer le fichier FSLang
+                                correspondant &agrave; votre Job et cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>FSLang File Name</strong></span> pour sp&eacute;cifier son
+                                chemin d&#8217;acc&egrave;s et son nom.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Assign FileScale Path</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case puis cliquez sur le
+                                    bouton<span class="bold"><strong> [...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+                                    <span class="bold"><strong>FileScale Path</strong></span> pour
+                                s&eacute;lectionner le fichier ex&eacute;cutable correspondant au programme
+                                FileScale permettant d&#8217;ex&eacute;cuter le composant.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Specify Number of Process
+                                    Child</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case et saisissez le nombre de
+                                processus enfants &agrave; utiliser pour l&#8217;ex&eacute;cution de
+                                l&#8217;agr&eacute;gation.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Custom FileScale Parameter (separated by
+                                    ,)</em></span></p>
+                        </td><td valign="top"><p>Saisissez les param&egrave;tres pour chaque op&eacute;ration
+                                sp&eacute;cifique que vous souhaitez ajouter &agrave; l&#8217;appel de l&#8217;ex&eacute;cutable
+                                FileScale.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Check schema</em></span></p>
+                        </td><td valign="top"><p>V&eacute;rifie le sch&eacute;ma. Le r&eacute;sultat retourn&eacute; dans la
+                                console est &#8220;Ok&#8221; si le sch&eacute;ma est valide, sinon, rien ne sera
+                                retourn&eacute;.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant traite des
+                                fichiers, ainsi il ne n&eacute;cessite pas de flux de donn&eacute;es en entr&eacute;e ou
+                                en sortie. Il sert &agrave; v&eacute;rifier les donn&eacute;es contenues dans des
+                                fichiers volumineux.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>La limitation d&eacute;pend des
+                                limites de la m&eacute;moire physique et de l&#8217;architecture du processeur.
+                                Par exemple, la taille totale des fichiers trait&eacute;s ne peut pas
+                                exc&eacute;der la limite du syst&egrave;me de fichiers pour supporter les fichiers
+                                tr&egrave;s volumineux (maximum de la valeur 64&nbsp;bits sign&eacute;e).</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e242433"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Aucun sc&eacute;nario n&#8217;est disponible pour ce composant.</p></div></div></body></html>

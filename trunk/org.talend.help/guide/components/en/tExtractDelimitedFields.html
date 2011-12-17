@@ -1,0 +1,146 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tExtractDelimitedFields</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch14.html" title="Chapter&nbsp;14.&nbsp;Processing components"><link rel="prev" href="tExternalSortRow.html" title="tExternalSortRow"><link rel="next" href="tExtractPositionalFields.html" title="tExtractPositionalFields"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tExtractDelimitedFields"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tExtractDelimitedFields"></a>tExtractDelimitedFields</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tExtractDelimitedFields_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tExtractDelimitedFields properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e219284"></a>tExtractDelimitedFields properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Processing/Fields</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tExtractDelimitedFields </strong></span>generates
+                                multiple columns from a given column in a delimited file.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tExtractDelimitedFields</strong></span> helps to
+                                extract &#8216;fields&#8217; from within a string to write them elsewhere for
+                                example.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Field to split</em></span></p>
+                        </td><td valign="top">
+                            <p>Select from the list the field to split.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Field separator</em></span></p>
+                        </td><td valign="top">
+                            <p>Set field separator.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Since this component uses regex to split a filed and the regex
+                                    syntax uses special characters as operators, make sure to
+                                    precede the regex operator you use as a field separator by a
+                                    double backslash. For example, you have to use "\\|" instead of
+                                    "|".</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top">
+                            <p>This check box is selected by default. Clear the check box to skip
+                                the row on error and complete the process for error-free rows. If
+                                needed, you can retrieve the rows on error via a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Reject</strong></span> link.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema type</em></span> and <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. </p>
+                            <p> Click <span class="bold"><strong>Edit schema </strong></span>to make
+                                changes to the schema. Note that if you make changes, the schema
+                                automatically becomes built-in.</p>
+                            <p> Click <span class="bold"><strong>Sync columns</strong></span> to retrieve
+                                the schema from the previous component connected to <span class="bold"><strong>tExtractDelimitedFields</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: You create the schema
+                                and store it locally for the component. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: You have already
+                                created the schema and stored it in the Repository. You can use it
+                                in various projects and Job flowcharts. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Advanced separator (for number)</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to modify the separators used for
+                                numbers.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Trim column</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to remove leading and trailing whitespace
+                                from all columns.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Check each row structure against
+                                schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to synchronize every row against the input
+                                schema.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Validate date</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to check the date format strictly against
+                                the input schema.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the processing metadata at the Job
+                                level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component handles flow of data therefore it requires input
+                                and output components. It allows you to extract data from a
+                                delimited field, using a <span class="bold"><strong>Row</strong></span> &gt;
+                                    <span class="bold"><strong>Main</strong></span> link, and enables you to
+                                create a reject flow filtering data which type does not match the
+                                defined type.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Extracting fields from a comma-delimited file"><div class="titlepage"><div><div><h3 class="title"><a name="d0e219597"></a>Scenario: Extracting fields from a comma-delimited file</h3></div></div></div><p>This scenario describes a three-component Job where the <span class="bold"><strong>tExtractdelimitedFields</strong></span> component is used to extract two columns from a
+            comma-delimited file.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> onto the design workspace: <span class="bold"><strong>tFileInputDelimited</strong></span>, <span class="bold"><strong>tExtractDelimitedFields</strong></span>, and <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Via a right-click each of the three components, connect them using <span class="bold"><strong>Row Main</strong></span> links.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="464"><tr><td><img src="../images/Use_Case_tExtractDelimitedField.png" width="464"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the design workspace, select <span class="bold"><strong>tFileInputDelimited</strong></span>.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>Component</strong></span> tab to define the basic
+                    settings for <span class="bold"><strong>tFileInputDelimited</strong></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Basic settings </strong></span>view, set <span class="bold"><strong>Property Type</strong></span> to <span class="bold"><strong>Built-In</strong></span>.</p></li><li class="listitem"><p>Click the three-dot <span class="bold"><strong>[...]</strong></span> button next to the
+                        <span class="bold"><strong>File Name </strong></span>field to select the path to the
+                    input file. </p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The <span class="bold"><strong>File Name</strong></span> field is mandatory.</p><p> </p></td></tr></table></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="435"><tr><td><img src="../images/Use_Case_tExtractDelimitedField1.png" width="435"></td></tr></table></div><p>The input file used in this scenario is called <span class="emphasis"><em>test5.</em></span> It is a
+            text file that holds comma-delimited data.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="184"><tr><td><img src="../images/Use_Case_tExtractDelimitedField2.png" width="184"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Basic settings</strong></span> view, fill in all other
+                    fields as needed. For more information, see <a class="xref" href="tMDMInput.html#Raa86313" title="tMDMInput properties">the section called &#8220;tMDMInput properties&#8221;</a>. In this
+                    scenario, the header and the footer are not set and there is no limit for the
+                    number of processed rows</p></li><li class="listitem"><p>Click <span class="bold"><strong>Edit schema </strong></span>to describe the data
+                    structure of this input file. In this scenario, the schema is made of one
+                    column, <span class="emphasis"><em>name.</em></span></p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="403"><tr><td><img src="../images/Use_Case_tExtractDelimitedField3.png" width="403"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the design workspace, select <span class="bold"><strong>tExtractDelimitedFields</strong></span>.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>Component</strong></span> tab to define the basic
+                    settings for <span class="bold"><strong>tExtractDelimitedFields</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="434"><tr><td><img src="../images/Use_Case_tExtractDelimitedField4.png" width="434"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>From the <span class="bold"><strong>Field to split</strong></span> list, select the
+                    column to split, <span class="emphasis"><em>name</em></span> in this scenario.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Field separator</strong></span> field, enter the
+                    corresponding separator.</p></li><li class="listitem"><p>Click <span class="bold"><strong>Edit schema </strong></span>to describe the data
+                    structure of this processing component.</p></li><li class="listitem"><p>In the output panel of the <span class="bold"><strong>[Schema of
+                        tExtractDelimitedFields]</strong></span> dialog box, click the plus button to add
+                    two columns for the output schema, <span class="emphasis"><em>firstname</em></span> and
+                        <span class="emphasis"><em>lastname</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="486"><tr><td><img src="../images/Use_Case_tExtractDelimitedField5.png" width="486"></td></tr></table></div><p>In this scenario, we want to split the <span class="emphasis"><em>name</em></span> column into two
+            columns in the output flow, <span class="emphasis"><em>firstname</em></span> and
+                <span class="emphasis"><em>lastname.</em></span></p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to close the <span class="bold"><strong>[Schema of tExtractDelimitedFields]</strong></span> dialog box.</p></li><li class="listitem"><p>In the design workspace, select <span class="bold"><strong>tLogRow</strong></span> and
+                    click the <span class="bold"><strong>Component</strong></span> tab to define its basic
+                    settings. For more information, see <a class="xref" href="tLogRow.html" title="tLogRow">the section called &#8220;tLogRow&#8221;</a>.</p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute
+                    it.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="370"><tr><td><img src="../images/Use_Case_tExtractDelimitedField6.png" width="370"></td></tr></table></div><p>First names and last names are extracted and displayed in the corresponding defined
+            columns on the console.</p></div></div></body></html>

@@ -1,0 +1,257 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tBlockedFuzzyJoin</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa78577.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tAddCRCRow.html" title="tAddCRCRow"><link rel="next" href="dataquality-tChangeFileEncoding .html" title="tChangeFileEncoding"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tBlockedFuzzyJoin"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tBlockedFuzzyJoin"></a>tBlockedFuzzyJoin</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFuzzyJoin_icon32_white.png" width="27"></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component will be available in the </em></span>
+					<span class="bold"><strong>Palette</strong></span>
+					<span class="emphasis"><em> of the studio on the condition that you have subscribed to the
+						relevant edition of </em></span>
+					<span class="bluebold">
+						Talend Enterprise Data Quality
+					</span>
+					<span class="emphasis"><em>.</em></span>
+				</p></td></tr></table></div><div class="section" title="tBlockedFuzzyJoin properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e185495"></a>tBlockedFuzzyJoin properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Data Quality</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tBlockedFuzzyJoin </strong></span>joins
+										two tables by doing a fuzzy match on several columns. It
+										compares columns from the main flow with reference columns
+										from the lookup flow and outputs the match data, the
+										possible match data and the rejected data.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>Helps ensuring the data quality of any source data against
+										a reference data source.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											Schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. The schema is either built-in or remote in the
+										Repository.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: You create and
+										store the schema locally for this component only. Related
+										topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: You have
+										already created and stored the schema in the Repository. You
+										can reuse it in other projects and Job designs. Related
+										topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Replace output column with lookup column if
+											matches or possible matches</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to replace the output column with
+										the lookup column in case of match or possible match
+										values.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="emphasis"><em>Key definition</em></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Input key attribute</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select the column(s) from the main flow that needs to be
+										checked against the reference (lookup) key column.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Lookup key attribute</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select the lookup key columns that you will use as a
+										reference against which to compare the columns from the
+										input flow.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Matching type</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select the relevant matching algorithm from the
+										list:</p>
+									<p>
+										<span class="bold"><strong>Exact Match</strong></span>: matches each
+										processed entry to all possible reference entries that have
+										exactly the same value.</p>
+									<p>
+										<span class="bold"><strong>Levenshtein</strong></span>: Based on the
+										edit distance theory. It calculates the number of insertion,
+										deletion or substitution required for an entry to match the
+										reference entry. </p>
+									<p>
+										<span class="bold"><strong>Metaphone</strong></span>: Based on a
+										phonetic algorithm for indexing entries by their
+										pronunciation. It first loads the phonetics of all entries
+										of the lookup reference and checks all entries of the main
+										flow against the entries of the reference flow.</p>
+									<p>
+										<span class="bold"><strong>Double Metaphone</strong></span>: a new
+										version of the Metaphone phonetic algorithm, that produces
+										more accurate results than the original algorithm. It can
+										return both a primary and a secondary code for a string.
+										This accounts for some ambiguous cases as well as for
+										multiple variants of surnames with common ancestry.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Case sensitive</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to consider the letter case.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Min. distance</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Only for <span class="bold"><strong>Levenshtein</strong></span>. Set
+										the minimum number of changes allowed to match the
+										reference. If set to 0, only perfect matches(<span class="bold"><strong>Exact Match</strong></span>) are returned.</p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>You can create and store context variables for the
+											minimum and maximum distances and then have your Job to
+											loop on these values in order to start from a low max
+											number to match rows and go up to higher max number to
+											match more possible rows. You can press <span class="bold"><strong>Ctrl+Space</strong></span> to access the
+											variable list and select the new context variables. For
+											more information about context variables, see <span class="bluebold">Talend Enterprise Studio</span>
+											<span class="bold"><strong>User Guide</strong></span>.</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Max. distance</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Only for <span class="bold"><strong>Levenshtein</strong></span>. Set
+										the maximum number of changes allowed to match the
+										reference.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStat</em></span>
+										<span class="emphasis"><em>Catcher</em></span>
+										<span class="emphasis"><em>Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the component
+										level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is not startable (green background) and it
+										requires two input components and one or more output
+										components.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation/prerequisite</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>n/a</p>
+								</td></tr></tbody></table></div></div><div class="section" title="Scenario: Doing a fuzzy match on two columns and outputting the match, possible match and non match values"><div class="titlepage"><div><div><h3 class="title"><a name="d0e185861"></a>Scenario: Doing a fuzzy match on two columns and outputting the match,
+					possible match and non match values</h3></div></div></div><p>This Java scenario describes a six-component Job that aims at:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>matching each processed group number in the <span class="emphasis"><em>grp</em></span>
+							column against the entries that have exactly the same values in the
+							reference input file,</p></li><li class="listitem"><p>checking the edit distance between the entries in the
+								<span class="emphasis"><em>firstname</em></span> column of an input file against those
+							of the reference input file.</p></li></ul></div><p>The outputs of these two matching types are written in three output files: the
+					first for match values, the second for possible match values and the third for
+					the values for which there are no matches in the lookup file. </p><p>In this scenario, we have already stored the main and reference input schemas
+					in the Repository. For more information about storing schema metadata in the
+					Repository, see <span class="bluebold">Talend Enterprise Studio</span>
+					<span class="bold"><strong>User Guide</strong></span>.</p><p>The main input file contains four columns: <span class="emphasis"><em>grp</em></span>,
+						<span class="emphasis"><em>gender</em></span>, <span class="emphasis"><em>firstname</em></span> and
+						<span class="emphasis"><em>count</em></span>. The data in this input file have problems such
+					as duplication, first names spelled differently or wrongly, different
+					information for the same customer.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="303"><tr><td><img src="../images/Use_Case_tMergeRow.png" width="303"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Repository</strong></span> tree view, expand
+								<span class="bold"><strong>Metadata</strong></span> and the <span class="bold"><strong>FileExcel</strong></span> node where you have stored the main
+							input schemas and then drop it onto the design workspace.</p><p> A <span class="bold"><strong>tFileInputExcel</strong></span> component holding
+							your schema displays on the workspace.</p></li><li class="listitem"><p>Do the same with the reference input schema to display the reference
+								<span class="bold"><strong>tFileInputExcel</strong></span> on the
+							workspace.</p></li><li class="listitem"><p>Drop a <span class="bold"><strong>tBlockedFuzzyJoin</strong></span> and
+								<span class="bold"><strong>tLogRow</strong></span> (x3) from the <span class="bold"><strong>Palette</strong></span> onto the design workspace.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="415"><tr><td><img src="../images/Use_Case_tBlockedFuzzyJoin.png" width="415"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connect the main and reference input Excel files to <span class="bold"><strong>tBlockedFuzzyJoin</strong></span> using <span class="bold"><strong>Main</strong></span> links. The link between the reference input Excel
+							file and <span class="bold"><strong>tBlockedFuzzyJoin</strong></span> displays as
+							a <span class="bold"><strong>Lookup</strong></span> link on the design
+							workspace.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tBlockedFuzzyJoin</strong></span> to the
+							three <span class="bold"><strong>tLogrow </strong></span>components using the
+								<span class="bold"><strong>Matches</strong></span>, <span class="bold"><strong>Possible Matches</strong></span> and <span class="bold"><strong>Non
+								Matches</strong></span> links.</p></li><li class="listitem"><p>Double-click the main and reference input Excel file components to
+							display their <span class="bold"><strong>Basic settings</strong></span>
+							views.</p><p> The capture below shows the properties of the main input file.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="508"><tr><td><img src="../images/Use_Case_tBlockedFuzzyJoin1.png" width="508"></td></tr></table></div><p>The capture below shows the properties of the reference input file.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="512"><tr><td><img src="../images/Use_Case_tBlockedFuzzyJoin2.png" width="512"></td></tr></table></div><p>The property fields for both <span class="bold"><strong>tFileInputExcel</strong></span>
+					components are automatically filled in. If you do not define your input schemas
+					locally in the Repository, fill in the details manually after selecting
+						<span class="bold"><strong>Built-in</strong></span> in the <span class="bold"><strong>Schema</strong></span> and <span class="bold"><strong>Property Type</strong></span>
+					fields.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-click <span class="bold"><strong>tBlockedFuzzyJoin</strong></span> to
+							display its <span class="bold"><strong>Basic settings</strong></span> view and
+							define its properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="521"><tr><td><img src="../images/Use_Case_tBlockedFuzzyJoin3.png" width="521"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the <span class="bold"><strong>Edit schema</strong></span> button to open
+							a dialog box. Here you can define the data you want to pass to the
+							output components.</p></li></ul></div><p>In this example we want to pass the four input columns to the output
+					components in addition to the new column
+					<span class="emphasis"><em>ref_firstname</em></span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="513"><tr><td><img src="../images/Use_Case_tBlockedFuzzyJoin4.png" width="513"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to close the dialog box and
+							proceed to the next step.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Key definition</strong></span> area of the
+								<span class="bold"><strong>Basic settings</strong></span> view of <span class="bold"><strong>tBlockedFuzzyJoin</strong></span>, click the plus button to
+							add two columns to the list.</p></li><li class="listitem"><p>Select the input columns and the output columns you want to do the
+							fuzzy matching on from the <span class="bold"><strong>Input key
+								attribute</strong></span> and <span class="bold"><strong>Lookup key
+								attribute</strong></span> lists respectively, <span class="emphasis"><em>grp</em></span>
+							and <span class="emphasis"><em>firstname</em></span> in this example.</p></li><li class="listitem"><p>Click in the first cell of the <span class="bold"><strong>Matching
+								type</strong></span> column and select from the list the method to be
+							used to check the incoming data against the reference data,
+								<span class="emphasis"><em>Exact match</em></span> in this example. There is no
+							minimum nor maximum distance to set.</p></li><li class="listitem"><p>Set the matching type for the second column,
+								<span class="emphasis"><em>Levenshtein</em></span> in this example.</p></li><li class="listitem"><p>Then set the minimum and maximum distances. In this method, the
+							distance is the number of character changes (insertion, deletion or
+							substitution) that needs to be carried out in order for the entry to
+							fully match the reference. In this example, we want the min. distance to
+							be 0 and the max. distance to be 2. This will output all entries in the
+								<span class="emphasis"><em>firstname</em></span> column that exactly match or that
+							have maximum two character changes.</p></li><li class="listitem"><p>Double-click the first <span class="bold"><strong>tLogRow
+							</strong></span>component to display its <span class="bold"><strong>Basic
+								settings</strong></span> view and define its properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="407"><tr><td><img src="../images/Use_Case_tBlockedFuzzyJoin5.png" width="407"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Mode</strong></span> area, select <span class="bold"><strong>Table</strong></span> to display the source file and the
+								<span class="bold"><strong>tBlockedFuzzyJoin</strong></span> results together
+							to be able to compare them.</p></li><li class="listitem"><p>Do the same for the other two<span class="bold"><strong> tLogRow</strong></span>
+							components.</p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute
+							it.</p></li></ul></div><p>Three output tables are written on the console. The first shows the match
+					entries, the second show the possible match entries and the third shows the non
+					match entries according to the used matching method in the defined
+					columns.</p><p>The figure below illustrates extractions of the three output tables.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="477"><tr><td><img src="../images/use_case-tblockedfuzzyjoin.png" width="477"></td></tr></table></div></div></div></body></html>

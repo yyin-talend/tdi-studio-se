@@ -1,0 +1,317 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSynonymSearch</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa78577.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tSynonymOutput.html" title="tSynonymOutput"><link rel="next" href="tThresholdViolationAlert.html" title="tThresholdViolationAlert"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tSynonymSearch"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSynonymSearch"></a>tSynonymSearch</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="28"><tr><td><img src="../images/tSynonymSearch_icon32_white.png" width="28"></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component will be available in the </em></span>
+					<span class="bold"><strong>Palette</strong></span>
+					<span class="emphasis"><em> of the studio on the condition that you have subscribed to the
+						relevant edition of </em></span>
+					<span class="bluebold">
+						Talend Enterprise Data Quality
+					</span>
+					<span class="emphasis"><em>.</em></span>
+				</p></td></tr></table></div><div class="section" title="tSynonymSearch Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e211297"></a>tSynonymSearch Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Data Quality</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tSynonymSearch</strong></span> reads
+										input data and searches for all of their reference entries
+										defined in a given synonym index. If this component finds
+										any matched entry, it outputs them along with these input
+										data and the relative matching details.</p>
+									<p> For further information about available synonym indexes,
+										see the appendix about data synonym dictionaries in
+											the<span class="bluebold">
+											Talend Enterprise Data Quality
+										</span> User Guide.</p>
+									<p> For further information about how to create a synonym
+										index and define the reference entries, see <a class="xref" href="tSurviveFields.html" title="tSurviveFields">the section called &#8220;tSurviveFields&#8221;</a>.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tSynonymSearch</strong></span> searches a
+										given index for the reference entries matching the data you
+										input.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. The schema is either built-in or remote in the
+										Repository.</p>
+									<p> Default columns are provided in the schema of this
+										component in order to present the matching details between
+										the input data and the reference entries.</p>
+									<p> For further information about the default schema columns,
+										see <a class="xref" href="tSynonymSearch.html#Raa52525" title="Default schema columns">the section called &#8220;Default schema columns&#8221;</a></p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: The schema will
+										be created and stored locally for this component only.
+										Related topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: The schema
+										already exists and is stored in the Repository, hence can be
+										reused in various projects and job designs. Related topic:
+										see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Limit of each group</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Type in a number to indicate the maximum display of the
+										reference entries matched to each group of the input data.
+										Each row of input data is recognized as one group by this
+										component.</p>
+									<p> </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>If the entries count exceeds the indicated limit, this
+											component displays the ones scored the highest. For
+											further information about the scores used on the matched
+											entries, see <a class="xref" href="tSynonymSearch.html#Raa52525" title="Default schema columns">the section called &#8220;Default schema columns&#8221;</a>.</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Columns to search</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Complete this table to provide parameters used to match
+										the input data and the reference entries in a given
+										index.</p>
+									<p> The columns to be completed are:</p>
+									<p> - <span class="bold"><strong>Input column</strong></span>: select
+										the column(s) of interest from the input data schema.</p>
+									<p> - <span class="bold"><strong>Reference output
+											column</strong></span>: select the column(s) from the output
+										data schema to present the matched reference entries found
+										in the given synonym index.</p>
+									<p> - <span class="bold"><strong>Index path</strong></span>: enter, in
+										quotation marks, the path to the index you need to
+										search.</p>
+									<p> - <span class="bold"><strong>Limit</strong></span>: type in a
+										number to indicate the maximum reference entries to be
+										matched to each record of the corresponding input column you
+										have selected.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="italic">tStatCatcher Statistics </span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the Job and
+										the component levels.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Connections</strong></span>
+									</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>Outgoing links (from one component to another):</p>
+									<p>
+										<span class="bold"><strong>Row</strong></span>: Main; Reject</p>
+									<p>
+										<span class="bold"><strong>Trigger</strong></span>: Run if; On
+										Component Ok; On Component Error.</p>
+									<p> </p>
+									<p> Incoming links (from one component to another):</p>
+									<p>
+										<span class="bold"><strong>Row</strong></span>: Main; Reject </p>
+									<p> </p>
+									<p> For further information regarding connections, see
+											<span class="bluebold">Talend Enterprise Studio</span> User Guide.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component needs incoming data from the preceding
+										component.</p>
+								</td></tr></tbody></table></div><div class="section" title="Default schema columns"><div class="titlepage"><div><div><h4 class="title"><a name="Raa52525"></a>Default schema columns</h4></div></div></div><p>This section presents the detailed information about the default schema
+						columns provided natively with the <span class="bold"><strong>tSynonymSearch</strong></span> component.</p><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"></colgroup><thead><tr><th valign="top">
+										<p>Columns</p>
+									</th><th valign="top">
+										<p>Description</p>
+									</th></tr></thead><tbody><tr><td valign="top">
+										<p>
+											<span class="emphasis"><em>GID</em></span>
+										</p>
+									</td><td valign="top">
+										<p>Group IDs. These IDs are created automatically at
+											runtime to index the input data groups recognized by
+											this component.</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="emphasis"><em>GRP_SIZE</em></span>
+										</p>
+									</td><td valign="top">
+										<p>Numbers of the matched reference entries for each
+											group of the input data. This size is limited by the
+											number you set in the <span class="bold"><strong>Limit of
+												each group</strong></span> field and presents always the
+											entries scored the highest.</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="emphasis"><em>SCORE</em></span>
+										</p>
+									</td><td valign="top">
+										<p>Lucene score used to measure in total the match degree
+											between the selected input columns and their matched
+											reference entries.</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="emphasis"><em>SCORES</em></span>
+										</p>
+									</td><td valign="top">
+										<p>Lucene scores used to measure the match degree between
+											each input column you have selected and its matching
+											reference entries.</p>
+									</td></tr><tr><td valign="top">
+										<p>
+											<span class="emphasis"><em>NB_MATCHED<span></span> _FIELDS</em></span>
+										</p>
+									</td><td valign="top">
+										<p>Number of the input columns you have selected for the
+											matching operation.</p>
+									</td></tr></tbody></table></div><p>In addition to the matching-related information presented in the default
+						schema columns, you need to define more columns in order to output the input
+						data and their matched reference entries.</p><p>
+						<span>&nbsp;</span>
+					</p></div></div><div class="section" title="Scenario 1: Searching a given index for matched reference entries"><div class="titlepage"><div><div><h3 class="title"><a name="d0e211717"></a>Scenario 1: Searching a given index for matched reference entries</h3></div></div></div><p>In this scenario, a three-component Job reads the provided first name data,
+					searches a given synonym index for the matched reference entries to these input
+					data and then outputs the results.</p><p>The synonym index used by this Job stores reference entries and their synonyms
+					reading as follows:</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="244"><tr><td><img src="../images/Use_Case_tSynonymSearch1.png" width="244"></td></tr></table></div><p>This figure presents just a part of the entries and the corresponding synonyms
+					stored in the synonym index of interest. These data describe the first names
+					(reference entries) and the alternative diminutives (synonyms) often
+					used.</p><p>For further information about how to create this synonym index, see <a class="xref" href="tSynonymOutput.html#Raa34613" title="Scenario 2: Creating a synonym index for people names using tMap">the section called &#8220;Scenario 2: Creating a synonym index for people names using tMap&#8221;</a>.</p><p>The three components used in this Job are:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="bold"><strong>tFixedFlowInput</strong></span>: this component
+							generates rows of input data you will match against the reference
+							entries in the given synonym index.</p></li><li class="listitem"><p><span class="bold"><strong>tSynonymSearch</strong></span>: this component
+							searches for the matched reference entries in the given synonym
+							index.</p></li><li class="listitem"><p><span class="bold"><strong>tLogRow</strong></span><span class="emphasis"><em> (found)</em></span>:
+							this component lists the result of this matching search.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="405"><tr><td><img src="../images/Use_Case_tSynonymSearch2.png" width="405"></td></tr></table></div><p>To replicate this scenario, proceed as follows:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop <span class="bold"><strong>tFixedFlowInput</strong></span>, <span class="bold"><strong>tSynonymSearch</strong></span> and <span class="bold"><strong>tLogRow</strong></span> from the <span class="bold"><strong>Palette</strong></span> onto the Design workspace.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>You can change the name displayed for each of these component as what has
+						been done for the <span class="bold"><strong>tLogRow</strong></span> component, named
+						as <span class="emphasis"><em>found</em></span> in this scenario. For further information, see
+							<span class="bluebold">Talend Enterprise Studio</span>
+						<span class="bold"><strong>User Guide</strong></span>.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Right-click the <span class="bold"><strong>tFixedFlowInput</strong></span>
+							component to open the contextual menu and select <span class="bold"><strong>Row&nbsp;&gt;&nbsp;Main</strong></span>.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>tSynonymSearch</strong></span> component to
+							create an connection between these two components.</p></li><li class="listitem"><p>Do the same thing to connect <span class="bold"><strong>tSynonymOutput</strong></span> to <span class="bold"><strong>tLogRow</strong></span>
+							<span class="emphasis"><em>(found)</em></span>.</p></li><li class="listitem"><p>Double click <span class="bold"><strong>tFixedFlowInput</strong></span> to open
+							its <span class="bold"><strong>Component</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="519"><tr><td><img src="../images/Use_Case_tSynonymSearch3.png" width="519"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Next to the <span class="bold"><strong>Schema</strong></span> field, click the
+								<span class="bold"><strong>Edit schema</strong></span> button to open the
+							schema editor.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="465"><tr><td><img src="../images/Use_Case_tSynonymSearch4.png" width="465"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the plus button to add one row.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Column</strong></span> column, click the newly
+							added row and rename it as: <span class="emphasis"><em>FIRSTNAME</em></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Length</strong></span> column, type in
+								<span class="emphasis"><em>50</em></span> and in the <span class="bold"><strong>Precision</strong></span> column, type in <span class="emphasis"><em>0</em></span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate these
+							changes.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>You can also add this <span class="bold"><strong>tFileInputDelimited</strong></span>
+						file using the established metadata stored in the <span class="bold"><strong>Repository</strong></span>. This allows you to use automatically the
+						configuration of the corresponding metadata. For further information about
+						how to create and use this metadata, see <span class="bluebold">Talend Enterprise Studio</span>
+						<span class="bold"><strong>User Guide</strong></span>.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Mode</strong></span> area, select the
+								<span class="bold"><strong>Use Inline Content (delimited file)</strong></span>
+							option to display its corresponding fields.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Content</strong></span> field, type in four
+							rows of names: <span class="emphasis"><em>Kristof</em></span>, <span class="emphasis"><em>Chris</em></span>,
+								<span class="emphasis"><em>Tony</em></span> and <span class="emphasis"><em>Anton</em></span>, for
+							example.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tSynonymSearch</strong></span> to open
+							its <span class="bold"><strong>Component</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="519"><tr><td><img src="../images/Use_Case_tSynonymSearch5.png" width="519"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>Sync columns</strong></span> to add the schema
+							columns of its preceding component to the default schema columns of
+								<span class="bold"><strong>tSynonymSearch</strong></span>.</p></li><li class="listitem"><p>In the pop-up dialog box that prompts you to propagate the changes you
+							have made, click <span class="bold"><strong>Yes</strong></span> to accept.</p></li><li class="listitem"><p>Next to <span class="bold"><strong>Edit schema</strong></span>, click the
+							three-dot button to open the schema editor.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="524"><tr><td><img src="../images/Use_Case_tSynonymSearch6.png" width="524"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>On the <span class="bold"><strong>tSynonymSearch</strong></span> side, click the
+							plus button to add one row.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Column</strong></span> column, click the newly
+							added row and rename it as: <span class="emphasis"><em>matched_fname</em></span>. It is
+							used to present the matched reference entries in the execution
+							result.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Length</strong></span> column, type in
+								<span class="emphasis"><em>50</em></span> and in the <span class="bold"><strong>Precision</strong></span> column, type in <span class="emphasis"><em>0</em></span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate this editing and
+							then accept the propagation that the pop-up dialog box prompts
+							again.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Limit of each group</strong></span> field,
+							type in <span class="emphasis"><em>5</em></span> to replace the default value.</p></li><li class="listitem"><p>Under the <span class="bold"><strong>Column to search</strong></span> table,
+							click the plus button to add one row.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Input column</strong></span> column of the
+								<span class="bold"><strong>Columns to search</strong></span> table, select the
+								<span class="emphasis"><em>FIRSTNAME</em></span> option from the drop-down list which
+							presents all of the schema columns of the preceding <span class="bold"><strong>tFixedFlowInput</strong></span> component.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Reference output column</strong></span> column
+							of the same table, select the <span class="emphasis"><em>matched_fname</em></span> option
+							from the drop-down list which presents all of the schema columns of
+								<span class="bold"><strong>tSynonymSearch</strong></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Index path</strong></span> column, type in the
+							path to the index to be used between the quotation marks.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Limit</strong></span> column, leave the
+							default value <span class="emphasis"><em>5</em></span>.</p></li><li class="listitem"><p>Press <span class="bold"><strong>F6</strong></span> to run this Job.</p></li></ul></div><p>The execution result reads as follows in the console of the <span class="bold"><strong>Run</strong></span> view.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tSynonymSearch7.png" width="100%"></td></tr></table></div><p>From this result, you can read that, for example, the
+						<span class="emphasis"><em>Christophe</em></span> entry in the given synonym index is found
+					matched to the <span class="emphasis"><em>Kristof</em></span> input record and this record is
+					recognized as group <span class="emphasis"><em>1</em></span> with group size being
+						<span class="emphasis"><em>1</em></span>, meaning that one matched reference entry is found
+					for this group. Then you can easily find that the size of the group 2 is
+						<span class="emphasis"><em>5</em></span>. This is because 5 reference entries are found
+					matched to the <span class="emphasis"><em>Chris</em></span> input entry. </p><p>The <span class="emphasis"><em>SCORE</em></span> and the <span class="emphasis"><em>SCORES</em></span> columns
+					present the same values in this scenario because only one input column is
+					used.</p></div><div class="section" title="Scenario 2: Searching for matched reference entries for two input columns"><div class="titlepage"><div><div><h3 class="title"><a name="d0e212094"></a>Scenario 2: Searching for matched reference entries for two input
+					columns</h3></div></div></div><p>In this scenario, you are going to use the previous Job with slight
+					modifications on it in order to search two synonym indexes for input data from
+					two columns.</p><p>In addition to the index used earlier, another index is used alongside holding
+					the last name data, for example, <span class="emphasis"><em>Correia</em></span>,
+						<span class="emphasis"><em>Corria</em></span>, <span class="emphasis"><em>Toum</em></span>,
+						<span class="emphasis"><em>Toom</em></span>, <span class="emphasis"><em>toom</em></span>,
+						<span class="emphasis"><em>Walker</em></span>, <span class="emphasis"><em>Waker</em></span>.</p><p>To replicate this scenario, open the Job created in the previous section and
+					proceed as follows:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double click <span class="bold"><strong>tFixedFlowInput</strong></span> to open
+							its <span class="bold"><strong>Component</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="420"><tr><td><img src="../images/Use_Case_tSynonymSearch_1.png" width="420"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Next to <span class="bold"><strong>Edit schema</strong></span>, click the
+							three-dot button to open the schema editor. The
+								<span class="emphasis"><em>FIRSTNAME</em></span> row you have defined in the previous
+							scenario exists already in this editor.</p></li><li class="listitem"><p>Click the plus button to add a second row to the schema table and
+							rename it as <span class="emphasis"><em>LASTNAME</em></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Precision</strong></span> column of the schema
+							table, type in <span class="emphasis"><em>0</em></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="464"><tr><td><img src="../images/Use_Case_tSynonymSearch_2.png" width="464"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate this change and
+							thus close this schema editor.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Content</strong></span> field of the <span class="bold"><strong>Mode</strong></span> area, add more first name and last name
+							data to make the input data read as follows:</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="73"><tr><td><img src="../images/Use_Case_tSynonymSearch_3.png" width="73"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double click <span class="bold"><strong>tSynonymSearch</strong></span> to open
+							its <span class="bold"><strong>Component</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="516"><tr><td><img src="../images/Use_Case_tSynonymSearch_4.png" width="516"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>Sync columns</strong></span> to synchronize the
+							columns of this component with the preceding one and accept the
+							propagation prompted by the dialog box that pops up.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Limit of each group</strong></span> field,
+							type in <span class="emphasis"><em>10</em></span> to replace the one you have defined in
+							the previous scenario.</p></li><li class="listitem"><p>Under the <span class="bold"><strong>Columns to search</strong></span> table,
+							click the plus button to add a second row.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Input column</strong></span> column of the
+							newly added row, select <span class="emphasis"><em>LASTNAME</em></span> from the drop-down
+							list.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Reference output column</strong></span> column
+							of the same row, select <span class="emphasis"><em>matched_lname</em></span> from the
+							drop-down list.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Index path</strong></span> column of this row,
+							type in, between quotation marks, the path to the synonym index holding
+							the last name entries.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Limit</strong></span> column of this row,
+							leave the default value <span class="emphasis"><em>5</em></span>.</p></li><li class="listitem"><p>Press <span class="bold"><strong>F6</strong></span> to run this Job.</p></li></ul></div><p>The execution result reads as follows in the console of the <span class="bold"><strong>Run</strong></span> view.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="509"><tr><td><img src="../images/Use_Case_tSynonymSearch_5.png" width="509"></td></tr></table></div><p>From this result, if you take the input data <span class="emphasis"><em>Chris Toom</em></span>
+					for example, you read that:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>this record is recognized as group 2 with group size being 10, meaning
+							that 10 pairs of matched reference entries are found from the two
+							synonym indexes in use.</p><p> To compose these 10 pairs of matched reference entries, 5 reference
+							entries, which are <span class="emphasis"><em>Christian</em></span>,
+								<span class="emphasis"><em>Christiaan</em></span>, <span class="emphasis"><em>Christoffel</em></span>,
+								<span class="emphasis"><em>Christine</em></span> and <span class="emphasis"><em>Christophe</em></span>
+							(see the <span class="emphasis"><em>matched_fname</em></span> column), are found from the
+							first name synonym index and 2 reference entries, which are
+								<span class="emphasis"><em>Toom</em></span> and <span class="emphasis"><em>toom</em></span> (see the
+								<span class="emphasis"><em>matched_lname</em></span> column), are found from the last
+							name synonym index. The first name set and the last name set make a
+							Cartesian product equal to 10 pairs;</p></li><li class="listitem"><p>that the <span class="emphasis"><em>SCORES</em></span> column contains two sub-columns. </p><p> These sub-columns present the matching scores in regards to the
+								<span class="emphasis"><em>matched_fname</em></span> and to the
+								<span class="emphasis"><em>matched_lname</em></span> reference columns respectively.
+							Each figure listed in the <span class="emphasis"><em>SCORE</em></span> column is equal to
+							the sum of the two figures of the same row in the sub-columns of the
+								<span class="emphasis"><em>SCORES</em></span> column.</p></li></ul></div></div></div></body></html>

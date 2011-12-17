@@ -1,0 +1,238 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSurviveFields</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa78577.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tStem.html" title="tStem"><link rel="next" href="tSynonymOutput.html" title="tSynonymOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tSurviveFields"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSurviveFields"></a>tSurviveFields</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tMergeRow_icon32_white.png" width="27"></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component will be available in the </em></span>
+					<span class="bold"><strong>Palette</strong></span>
+					<span class="emphasis"><em> of the studio on the condition that you have subscribed to the
+						relevant edition of </em></span>
+					<span class="bluebold">
+						Talend Enterprise Data Quality
+					</span>
+					<span class="emphasis"><em>.</em></span>
+				</p></td></tr></table></div><div class="section" title="tSurviveFields Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e209684"></a>tSurviveFields Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Data Quality</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tSurviveFields</strong></span> receives a
+										flow and merges it based on one or more columns. The
+										aggregation key and the relevant result of operations (such
+										as min, max, sum etc) are provided for each output
+										line.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tSurviveFields</strong></span>
+										centralizes data from various and heterogeneous sources. It
+										helps to create a master copy of data for MDM. </p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. The schema is either built-in or remote in the
+										Repository.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: The schema will
+										be created and stored locally for this component only.
+										Related topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: The schema
+										already exists and is stored in the Repository, hence can be
+										reused in various projects and job designs. Related topic:
+										see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Key</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Define the merge sets, the values of which will be used
+										for calculations.</p>
+									<p>
+										<span class="bold"><strong>Output column</strong></span>: Select the
+										column name from the list that reflects the schema structure
+										you defined. You can add as many output columns as you wish
+										to make more precise aggregations.</p>
+									<p>
+										<span class="bold"><strong>Input column</strong></span>: Match each
+										input column name with your output columns, in case the
+										output column of the aggregation set needs to be
+										different.</p>
+									<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+											<span class="emphasis"><em>The columns in the Key table must NOT appear
+												in the Operations table. If you want all the columns
+												of the output schema to be filled in, they must
+												appear either in the Key table or in the Operations
+												table.</em></span>
+										</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Operations</em></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Output column</strong></span>: From the
+										list, select the output column which will result from the
+										selected merge operation.</p>
+									<p>
+										<span class="bold"><strong>Function</strong></span>: Select the type
+										of merge operation to be performed from the list. The list
+										includes count, min, max, avg, sum, first, last, list,
+										list(objects), count(distinct), standard deviation, max
+										length and replace.</p>
+									<p>
+										<span class="bold"><strong>Input column</strong></span>: From the
+										list, select the input column from which the values are to
+										be selected for the merge operation.</p>
+									<p>
+										<span class="bold"><strong>Weight column</strong></span>: Only
+										available with the <span class="emphasis"><em>replace</em></span> function.
+										From the list, select the column you want to use as a weight
+										value for the merge operation. Then the input column will be
+										replaced with the value which has the greater weight.</p>
+									<p>
+										<span class="bold"><strong>Ignore null values</strong></span>: Select
+										the check boxes which correspond to the names of the columns
+										for which you want the NULL value to be ignored.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Delimiter (only for list operation)</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Between double quotation marks, enter the delimiter you
+										want to use for the list operation.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Use financial precision, this is the max precision
+											for "sum" and "avg" operations, checked option heaps
+											more memory and slower than unchecked.</em></span>
+									</p>
+								</td><td valign="top">
+									<p>This check box, which enables financial precision, is
+										selected by default. Clear the check box if you want to use
+										less memory and thus optimize performance.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Check type overflow (slower)</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Checks the data type to ensure that the job does not
+										crash. </p>
+									<p> If you select this check box, the system will be
+										slower.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Check ULP (Unit in the Last Place), ensure that a
+											value will be incremented or decremented correctly, only
+											for float and double types. (slower)</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to launch ULP verification.</p>
+									<p> If you slelect this check box, the system will be
+										slower.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="italic">tStatCatcher Statistics </span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to collect log data at the Job and
+										the component levels.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component requires an input component and an output
+										component.</p>
+								</td></tr></tbody></table></div><p>
+					<span>&nbsp;</span>
+				</p></div><div class="section" title="Scenario: Merge the content of several rows using different columns as weight values"><div class="titlepage"><div><div><h3 class="title"><a name="d0e210022"></a>Scenario: Merge the content of several rows using different columns as weight
+					values</h3></div></div></div><p>This scenario describes a three-component Job that uses the <span class="bold"><strong>tSurviveFields</strong></span> component to merge, based on different
+					weight values, the content of data rows in different columns and then writes the
+					result in an output file.</p><p>In this scenario, we have already stored the input schemas of the input file
+					in the Repository. For further information about storing schema metadata in the
+					Repository, see <span class="bluebold">Talend Enterprise Studio</span>
+					<span class="bold"><strong>User Guide</strong></span>.</p><p>The input file contains four columns: <span class="emphasis"><em>grp</em></span>,
+						<span class="emphasis"><em>gender</em></span>, <span class="emphasis"><em>firstname</em></span> and
+						<span class="emphasis"><em>count</em></span>. The data in the input file has problems such as
+					duplication, first names spelled differently or wrongly and different
+					information for the same customer.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="303"><tr><td><img src="../images/Use_Case_tMergeRow.png" width="303"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Repository</strong></span> tree view, expand
+								<span class="bold"><strong>Metadata</strong></span> and the <span class="bold"><strong>FileExcel</strong></span> node where you have stored the
+							input schemas and then drop it onto the design workspace.</p><p> The <span class="bold"><strong>FileInputExcel</strong></span> component which
+							contains your schema displays on the workspace.</p></li><li class="listitem"><p>Drop a <span class="bold"><strong>tSurviveFields</strong></span> and a <span class="bold"><strong>tFileOutputExcel</strong></span> component from the <span class="bold"><strong>Palette</strong></span> onto the design workspace.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="342"><tr><td><img src="../images/Use_Case_tMergeRow1.png" width="342"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Link the components together using a <span class="bold"><strong>Main</strong></span> row link.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tFileInputExcel</strong></span> to
+							display its <span class="bold"><strong>Basic settings</strong></span> view.
+						</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="520"><tr><td><img src="../images/Use_Case_tMergeRow2.png" width="520"></td></tr></table></div><p>All <span class="bold"><strong>tFileInputExcel</strong></span> property fields are
+					automatically filled in. If you did not define your input schemas locally in the
+					Repository, fill in the details manually after selecting <span class="bold"><strong>Built-in</strong></span> in the <span class="bold"><strong>Schema Type</strong></span> and
+						<span class="bold"><strong>Property Type</strong></span> fields.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Double-click <span class="bold"><strong>tSurviveFields</strong></span> to
+							display its <span class="bold"><strong>Basic settings</strong></span> view and
+							define the component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="506"><tr><td><img src="../images/Use_Case_tmergeRow3.png" width="506"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>Sync columns</strong></span> to retrieve the
+							schema from the preceding component. You can click the three-dot button
+							next to <span class="bold"><strong>Edit schema</strong></span> to view the
+							schema.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Key</strong></span> area, click the plus
+							button to add a new line.</p></li><li class="listitem"><p>Click the field and select the name of the column you want to use to
+							merge the data from the list. You can select multiple columns as an
+							aggregation set if you want to merge data based on multiple criteria.
+							For this scenario, we want to use the <span class="emphasis"><em>grp</em></span> column to
+							merge the data.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Operations</strong></span> area, click the
+							plus button to add new rows. Here you can define the output columns that
+							will hold the results of the merge operation. In this scenario, we want
+							to merge the data in the <span class="emphasis"><em>firstname</em></span>,
+								<span class="emphasis"><em>gender</em></span> and <span class="emphasis"><em>count
+							</em></span>columns.</p></li><li class="listitem"><p>Click in the first field of the <span class="bold"><strong>Output
+								column</strong></span> and select the first output column that will hold
+							the merge results.</p></li><li class="listitem"><p>Click in the first field of the <span class="bold"><strong>Function</strong></span> column and select the merge operation you want
+							to perform.</p></li><li class="listitem"><p>Click in the first field of the <span class="bold"><strong>Input
+								Column</strong></span> list and select the column from which the input
+							values are to be taken.</p></li><li class="listitem"><p>Click in the first field of the <span class="bold"><strong>Weight
+								column</strong></span> and select the column that will be used as a basis
+							for the merge operation.</p></li><li class="listitem"><p>Repeat the same process to define the parameters for the merge
+							operation for all the columns you want to write in the output
+							file.</p></li></ul></div><p>Here we want to read data from the <span class="emphasis"><em>firstname</em></span> and
+						<span class="emphasis"><em>gender</em></span> input columns and write only the values with the
+					maximum weight (row count) in <span class="emphasis"><em>firstname</em></span> and
+						<span class="emphasis"><em>gender</em></span> output columns. We also want to read data from
+					the <span class="emphasis"><em>count</em></span> input column and write its maximum value in a
+						<span class="emphasis"><em>count</em></span> output column.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute
+							it. </p></li></ul></div><p>A progress bar displays to show the percentage of the merge operation
+					completed. When the percentage progress bar reaches 100%, the specified data is
+					regrouped and written in the defined output columns.</p><p>The figure below illustrates a sample of the input data and output data after
+					the merge operation.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="500"><tr><td><img src="../images/Use_Case_tMergeRow4.png" width="500"></td></tr></table></div></div></div></body></html>

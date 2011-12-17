@@ -1,0 +1,123 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMysqlTableList</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tMysqlSP.html" title="tMysqlSP"><link rel="next" href="tNetezzaBulkExec.html" title="tNetezzaBulkExec"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tMysqlTableList"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMysqlTableList"></a>tMysqlTableList</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tMysqlTableList_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tMysqlTableList"><div class="titlepage"><div><div><h3 class="title"><a name="d0e114157"></a>Propri&eacute;t&eacute;s du tMysqlTableList</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/MySQL</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tMysqlTableList</strong></span>
+								effectue une op&eacute;ration d&#8217;it&eacute;ration sur toutes les tables d&#8217;une base
+								de donn&eacute;es, gr&acirc;ce &agrave; une connexion MySQL d&eacute;finie.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tMysqlTableList</strong></span>
+								permet de lister les noms des tables MySQL gr&acirc;ce aux commandes
+								SELECT et WHERE.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Component list</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez le composant <span class="bold"><strong>tMysqlConnection</strong></span> dans la liste si vous pr&eacute;voyez
+								d&#8217;ajouter plus d&#8217;une connexion &agrave; votre Job en cours. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Where clause for table name selection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez la commande WHERE permettant d&#8217;identifier les tables sur
+								lesquelles effectuer l&#8217;op&eacute;ration d&#8217;it&eacute;ration.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Vous pouvez utiliser ce composant en association avec les autres
+								composants MySQL, notamment avec le <span class="bold"><strong>tMysqlConnection</strong></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div><p>&nbsp;</p></div><div class="section" title="Sc&eacute;nario&nbsp;: Effectuer une op&eacute;ration d&#8217;it&eacute;ration sur des tables et en effacer le contenu gr&acirc;ce &agrave; un mod&egrave;le SQL d&eacute;fini par l&#8217;utilisateur (SQL Template)"><div class="titlepage"><div><div><h3 class="title"><a name="Raa52376"></a>Sc&eacute;nario&nbsp;: Effectuer une op&eacute;ration d&#8217;it&eacute;ration sur des tables et en effacer le
+			contenu gr&acirc;ce &agrave; un mod&egrave;le SQL d&eacute;fini par l&#8217;utilisateur (SQL Template)</h3></div></div></div><p>Le sc&eacute;nario Java suivant d&eacute;crit un Job &agrave; trois composants qui permet d&#8217;effectuer une
+			op&eacute;ration d&#8217;it&eacute;ration, dans les tables sp&eacute;cifi&eacute;es d&#8217;une base de donn&eacute;es MySQL, en
+			utilisant une clause de type WHERE. Le Job permet ensuite d&#8217;effacer le contenu de ces
+			tables directement sur le SGBD gr&acirc;ce &agrave; un mod&egrave;le SQL (SQL Template) d&eacute;fini par
+			l&#8217;utilisateur.</p><p>Pour une utilisation avanc&eacute;e, commencez par cr&eacute;er une connexion &agrave; la base de donn&eacute;es
+			qui contient les tables que vous voulez vider de leur contenu. </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la vue en arborescence du <span class="bold"><strong>Repository</strong></span>,
+					d&eacute;veloppez le n&#339;ud <span class="bold"><strong>Metadata</strong></span> puis cliquez droit
+					sur <span class="bold"><strong>DB Connections</strong></span> pour cr&eacute;er une connexion &agrave;
+					la base de donn&eacute;es de travail et stocker les informations de connexion en local. </p><p>Pour plus d&#8217;informations sur les m&eacute;tadonn&eacute;es (metadata), consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p><p>Sinon, d&eacute;posez un composant <span class="bold"><strong>tMysqlConnection</strong></span> dans
+					l&#8217;&eacute;diteur graphique et renseignez les param&egrave;tres de connexion manuellement. </p></li><li class="listitem"><p>A partir du <span class="bold"><strong>Repository</strong></span>, d&eacute;posez dans l&#8217;&eacute;diteur graphique
+					la connexion que vous venez de cr&eacute;er. </p><p>La bo&icirc;te de dialogue <span class="bold"><strong>[Components]</strong></span> s&#8217;affiche &agrave;
+					l&#8217;&eacute;cran.</p></li><li class="listitem"><p>S&eacute;lectionnez le composant <span class="bold"><strong>tMysqlConnection</strong></span>
+					puis cliquez sur <span class="bold"><strong>OK</strong></span>.</p><p>Le composant <span class="bold"><strong>tMysqlConnection</strong></span> apparait alors dans
+					l&#8217;&eacute;diteur graphique et les param&egrave;tres de connexion, accessibles depuis la vue
+						<span class="bold"><strong>Basic settings</strong></span>, sont automatiquement
+					renseign&eacute;s. </p></li><li class="listitem"><p>A partir de la <span class="bold"><strong>Palette</strong></span>, cliquez-d&eacute;posez les composants
+						<span class="bold"><strong>tMysqlTableList</strong></span> et <span class="bold"><strong>tELT</strong></span> dans l&#8217;&eacute;diteur graphique. </p></li><li class="listitem"><p>Reliez les composants <span class="bold"><strong>tMysqlConnection </strong></span>et
+						<span class="bold"><strong>tMysqlTableList </strong></span>&agrave; l&#8217;aide d&#8217;un lien Trigger
+					de type <span class="bold"><strong>OnSubJobOk</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="450"><tr><td><img src="../images/Use_Case_tMySQLTableList_SQLTemplate.png" width="450"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Reliez les composants <span class="bold"><strong>tMysqlTableList </strong></span>et
+						<span class="bold"><strong>tELT </strong></span>&agrave; l&#8217;aide d&#8217;un lien de type <span class="bold"><strong>Iterate</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tMysqlConnection</strong></span> pour
+					afficher la vue <span class="bold"><strong>Basic settings </strong></span>du composant si
+					vous voulez en v&eacute;rifier les param&egrave;tres de connexion. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="479"><tr><td><img src="../images/Use_Case_tMySQLTableList_SQLTemplate1.png" width="479"></td></tr></table></div><p>Dans cet exemple, connectez-vous &agrave; une base de donn&eacute;es MySQL appel&eacute;e
+				<span class="emphasis"><em>examples</em></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans l&#8217;&eacute;diteur graphique, double-cliquez sur le composant <span class="bold"><strong>tMysqlTableList</strong></span> pour en afficher les param&egrave;tres de
+					bases et les d&eacute;finir (vue <span class="bold"><strong>Basic
+					settings</strong></span>).</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="482"><tr><td><img src="../images/Use_Case_tMySQLTableList_SQLTemplate2.png" width="482"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>S&eacute;lectionnez la connexion MySQL appropri&eacute;e &agrave; partir de la liste d&eacute;roulante
+						<span class="bold"><strong>Component list</strong></span>, dans le cas o&ugrave; vous
+					utilisez plus d&#8217;une connexion. </p></li><li class="listitem"><p>Renseignez la clause de type WHERE dans le champ appropri&eacute;, en veillant &agrave;
+					utiliser la bonne syntaxe, pour effectuer une it&eacute;ration sur la ou les tables
+					dont vous voulez effacer le contenu.</p><p>Dans ce sc&eacute;nario, op&eacute;rez l&#8217;it&eacute;ration sur toutes les tables dont le nom commence par
+					&#8220;ex&#8221;.</p></li><li class="listitem"><p>Dans l&#8217;&eacute;diteur graphique, double-cliquez sur le composant <span class="bold"><strong>tELT</strong></span> pour en afficher les param&egrave;tres de base et les
+					d&eacute;finir (vue <span class="bold"><strong>Basic settings</strong></span>).</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="527"><tr><td><img src="../images/Use_Case_tMySQLTableList_SQLTemplate3.png" width="527"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Database Name</strong></span>, renseignez le
+					nom de la base de donn&eacute;es o&ugrave; se trouvent les tables sur lesquelles vous voulez
+					travailler. </p></li><li class="listitem"><p>S&eacute;lectionnez la connexion MySQL appropri&eacute;e &agrave; partir de la liste d&eacute;roulante
+						<span class="bold"><strong>Component list</strong></span>, dans le cas o&ugrave; vous
+					utilisez plus d&#8217;une connexion. </p></li><li class="listitem"><p>Cliquez dans le champ <span class="bold"><strong>Table name</strong></span> et appuyez
+					sur <span class="bold"><strong>Ctrl+Espace </strong></span>pour atteindre la liste
+					g&eacute;n&eacute;rale des variables.</p></li><li class="listitem"><p>A partir de cette liste de variables, s&eacute;lectionnez
+						<span class="emphasis"><em>((String)globalMap.get("tMysqlTableList_1_CURRENT_TABLE"))</em></span>.</p></li></ul></div><p>
+			<span class="bold"><strong>Comment cr&eacute;er votre propre mod&egrave;le SQL (SQL Template)&nbsp;:</strong></span>
+		</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la vue en arborescence du <span class="bold"><strong>Repository</strong></span>, d&eacute;veloppez
+					successivement les n&#339;uds <span class="bold"><strong>SQL Templates</strong></span> et
+						<span class="bold"><strong>MySQL</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="211"><tr><td><img src="../images/Use_Case_tMySQLTableList_SQLTemplate4.png" width="211"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez-droit sur le n&#339;ud <span class="bold"><strong>UserDefined</strong></span> et
+					s&eacute;lectionnez l&#8217;option <span class="bold"><strong>Create SQLTemplate</strong></span> &agrave;
+					partir de la liste.</p><p>L&#8217;assistant <span class="bold"><strong>New SQLTemplate </strong></span>s&#8217;affiche &agrave; l&#8217;&eacute;cran.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="317"><tr><td><img src="../images/Use_Case_tMySQLTableList_SQLTemplate5.png" width="317"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Saisissez un nom pour le nouveau mod&egrave;le (SQL template) et remplissez les
+					autres champs si n&eacute;cessaire, puis cliquez sur <span class="bold"><strong>Finish</strong></span> pour fermer l&#8217;assistant.</p><p>L&#8217;&eacute;diteur de mod&egrave;le SQL s&#8217;affiche dans l&#8217;&eacute;diteur graphique.</p></li><li class="listitem"><p>Supprimez le code existant et saisissez le code permettant d&#8217;ex&eacute;cuter l&#8217;action
+					voulue, c&#8217;est-&agrave;-dire, ici, effacer le contenu de toutes les tables dont les noms
+					commencent par &#8220;ex&#8221;.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="293"><tr><td><img src="../images/Use_Case_tMySQLTableList_SQLTemplate6.png" width="293"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Dans un code SQL template, il est imp&eacute;ratif d&#8217;utiliser le nom exact de la
+				variable, en association avec le param&egrave;tre d&eacute;signant le nom de la table
+				(&#8220;__TABLE-NAME__&#8221; dans cet exemple). Pour afficher le nom de la variable utilis&eacute;e,
+				positionnez votre curseur sur le champ <span class="bold"><strong>Table Name
+				</strong></span>de la vue <span class="bold"><strong>Basic Settings</strong></span> du composant
+					<span class="bold"><strong>tELT</strong></span>. </p></td></tr></table></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="361"><tr><td><img src="../images/Use_Case_tMySQLTableList_SQLTemplate7.png" width="361"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Appuyez sur <span class="bold"><strong>Ctrl+S</strong></span> pour sauvegarder le
+					nouveau mod&egrave;le que vous venez de d&eacute;finir.</p></li></ul></div><p>La prochaine &eacute;tape consiste &agrave; ajouter ce nouveau mod&egrave;le SQL template &agrave; la liste de
+			mod&egrave;les du m&ecirc;me type dans le composant <span class="bold"><strong>tELT</strong></span>.</p><p>
+			<span class="bold"><strong>Comment ajouter votre propre mod&egrave;le SQL &agrave; la liste de mod&egrave;les du
+				m&ecirc;me type&nbsp;:</strong></span>
+		</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la vue <span class="bold"><strong>Component </strong></span>du composant <span class="bold"><strong>tELT</strong></span>, cliquez sur l&#8217;onglet <span class="bold"><strong>SQL
+						Templates</strong></span> pour afficher la liste de mod&egrave;les <span class="bold"><strong>SQLTemplate List</strong></span>. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="418"><tr><td><img src="../images/Use_Case_tMySQLTableList_SQLTemplate8.png" width="418"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Add</strong></span> et ajoutez deux
+					lignes de mod&egrave;les SQL template.</p></li><li class="listitem"><p>Cliquez sur la premi&egrave;re ligne pour afficher un menu d&eacute;roulante puis cliquez
+					sur la fl&egrave;che de ce menu pour d&eacute;rouler la liste des mod&egrave;les.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="321"><tr><td><img src="../images/Use_Case_tMySQLTableList_SQLTemplate9.png" width="321"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la liste, s&eacute;lectionnez le mod&egrave;le SQL template que vous venez de cr&eacute;er.
+				</p></li><li class="listitem"><p>Assurez-vous que le mod&egrave;le de la seconde ligne est bien en mode <span class="bold"><strong>Commit</strong></span>.</p></li><li class="listitem"><p>Enregistrez le Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+					l&#8217;ex&eacute;cuter.</p></li></ul></div><p>Toutes les tables de la base de donn&eacute;es MySQL <code class="code">examples</code> dont le nom
+			commence par &#8220;ex&#8221; sont alors vid&eacute;es de leur contenu.</p></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e114615"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>
+			<span>Pour un sc&eacute;nario associ&eacute;, consultez <a class="xref" href="tMysqlColumnList.html#Raa94771" title="Sc&eacute;nario&nbsp;: It&eacute;rer une table de base de donn&eacute;es et lister le nom des colonnes de la table">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: It&eacute;rer une table de base de donn&eacute;es et lister le nom des colonnes de la table&nbsp;&raquo;</a></span>
+		</p></div></div></body></html>

@@ -1,0 +1,130 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSalesforceGetUpdated</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch01.html" title="Chapter&nbsp;1.&nbsp;Business components"><link rel="prev" href="tSalesforceGetServerTimestamp.html" title="tSalesforceGetServerTimestamp"><link rel="next" href="tSalesforceInput.html" title="tSalesforceInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tSalesforceGetUpdated"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSalesforceGetUpdated"></a>tSalesforceGetUpdated</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tSalesforceGetUpdated_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tSalesforceGetUpdated properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10996"></a>tSalesforceGetUpdated properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Business/Cloud </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tSalesforceGetUpdated</strong></span> recovers
+                                updated data from a Salesforce object over a given period of
+                                time.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component can collect all updated data from a given
+                                Salesforce object during a specific period of time.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use an existing connection</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to use an established connection from
+                                    <span class="bold"><strong>tSalesforceConnection</strong></span>. Once you
+                                select it, the <span class="bold"><strong>Component list</strong></span> field
+                                appear allowing you to choose the <span class="bold"><strong>tSalesforceConnection</strong></span> component to be used.</p>
+                            <p> For more information on <span class="bold"><strong>tSalesforceConnection</strong></span>, see section <a class="xref" href="tSalesforceConnection.html" title="tSalesforceConnection">the section called &#8220;tSalesforceConnection&#8221;</a>.</p>
+                            <p> </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>When a Job contains the parent Job and the child Job,
+                                        <span class="bold"><strong>Component list</strong></span> presents
+                                    only the connection components in the same Job lev&shy;el, so if you
+                                    need to use an existing connection from the other level, you can
+                                    use <span class="bold"><strong>Dynamic settings</strong></span> to share
+                                    the intended connection. In this case, make sure that the
+                                    connection name is unique and distinc&shy;tive. For more information
+                                    about <span class="bold"><strong>Dynamic settings</strong></span>, see
+                                    your studio user guide.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Salesforce Webservice URL</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the webservice URL to connect to the Salesforce DB.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span> and
+                                <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the Webservice user authentication data.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Timeout (milliseconds)</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the intended number of query timeout in
+                                Salesforce.com.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Module</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the relevant module in the list.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>if you select the <span class="bold"><strong>Use Custom
+                                        module</strong></span> option, you display the <span class="bold"><strong>Custom Module Name</strong></span> field where you
+                                    can enter the name of the module you want to connect to. </p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. </p>
+                            <p> Click <span class="bold"><strong>Edit Schema</strong></span> to make
+                                changes to the schema. Note that if you make changes, the schema
+                                automatically becomes built-in.</p>
+                            <p> Click <span class="bold"><strong>Sync columns</strong></span> to retrieve
+                                the schema from the previous component connected in the Job.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Start Date</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in between double quotes the date at which you want to start
+                                the search. Use the following date format: &#8220;yyy-MM-dd
+                                HH:mm:ss&#8221;.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>You can do the search only on the past 30 days. </p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>End Date</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in between double quotes the date at which you want to end
+                                the search. Use the following date format:&#8220;yyy-MM-dd
+                                HH:mm:ss&#8221;.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Use Soap Compression</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to activate the SOAP compression.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The compression of SOAP messages optimizes system
+                                    performance.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Client ID</em></span></p>
+                        </td><td valign="top">
+                            <p>Set the ID of the real user to differentiate between those who use
+                                the same account and password to access the salesforce
+                                website.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>You can use this component as an output component. <span class="bold"><strong>tSalesforceGetUpdate</strong></span> requires an input
+                                component.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenarios"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11329"></a>Related scenarios</h3></div></div></div><p>No scenario is available for this component yet.</p></div></div></body></html>

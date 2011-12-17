@@ -1,0 +1,405 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tESBConsumer</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa48933.html" title="Chapter&nbsp;8.&nbsp;ESB components"><link rel="prev" href="Raa48933.html" title="Chapter&nbsp;8.&nbsp;ESB components"><link rel="next" href="tESBProviderFault.html" title="tESBProviderFault"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tESBConsumer"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tESBConsumer"></a>tESBConsumer</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tESBConsumer_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tESBConsumer Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e164303"></a>tESBConsumer Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                                                  <p>
+                                                  <span class="bold"><strong>Component family</strong></span>
+                                                  </p>
+                                                </td><td valign="top">
+                                                  <p>ESB/Web Services</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                                                  <p>
+                                                  <span class="bold"><strong>Function</strong></span>
+                                                  </p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Calls the defined method from the invoked
+                                                  Web service and returns the class as defined,
+                                                  based on the given parameters.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p>
+                                                  <span class="bold"><strong>Purpose</strong></span>
+                                                  </p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Invokes a Method through a Web
+                                                  service.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p>
+                                                  <span class="bold"><strong>Basic settings</strong></span>
+                                                  </p>
+                                                </td><td valign="top">
+                                                  <p>
+                                                  <span class="emphasis"><em>Property Type</em></span>
+                                                  </p>
+                                                </td><td valign="top">
+                                                  <p>Either <span class="bold"><strong>Built-in</strong></span> or <span class="bold"><strong>Repository</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Built-in</strong></span>:
+                                                  No WSDL file is configured for the job. You need
+                                                  to associate the job with a web service defined in
+                                                  the <span class="bold"><strong>Services</strong></span> node
+                                                  of the <span class="bold"><strong>Repository</strong></span>. Related topic: see
+                                                  <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Repository</strong></span>:
+                                                  Select the desired web service from the <span class="bold"><strong>Repository</strong></span>, to the
+                                                  granularity of the port name and operation.
+                                                  </p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p>
+                                                  <span class="emphasis"><em>Service configuration</em></span>
+                                                  </p>
+                                                </td><td valign="top">
+                                                  <p>Description of Web service bindings and
+                                                  configuration. The <span class="bold"><strong>Endpoint</strong></span> field gets filled in
+                                                  automatically upon completion of the service
+                                                  configuration. </p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p>
+                                                  <span class="emphasis"><em>Connection time out</em></span>
+                                                  </p>
+                                                </td><td valign="top">
+                                                  <p>Set a value in seconds for Web service
+                                                  connection time out.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p>
+                                                  <span class="emphasis"><em>Receive time out</em></span>
+                                                  </p>
+                                                </td><td valign="top">
+                                                  <p>Set a value in seconds for server
+                                                  answer.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Input Schema</em></span> and
+                                                  <span class="emphasis"><em>Edit schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>A schema is a row description, i.e., it
+                                                  defines the number of fields to be processed and
+                                                  passed on to the next component. The schema is
+                                                  either built-in or remotely stored in the
+                                                  Repository. Click <span class="bold"><strong>Edit
+                                                  schema</strong></span> to make changes to the schema.
+                                                  Note that if you make changes, the schema
+                                                  automatically becomes built-in. Click <span class="bold"><strong>Sync columns</strong></span> to retrieve
+                                                  the schema from the previous component connected
+                                                  in the Job.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Built-in</strong></span>:
+                                                  The schema is created and stored locally for this
+                                                  component only. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Repository</strong></span>:
+                                                  The schema already exists and is stored in the
+                                                  Repository, hence can be reused. Related topic:
+                                                  see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Response Schema</em></span> and
+                                                  <span class="emphasis"><em>Edit schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>A schema is a row description, i.e., it
+                                                  defines the number of fields to be processed and
+                                                  passed on to the next component. The schema is
+                                                  either built-in or remotely stored in the
+                                                  Repository. Click <span class="bold"><strong>Edit
+                                                  schema</strong></span> to make changes to the schema.
+                                                  Note that if you make changes, the schema
+                                                  automatically becomes built-in.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Built-in</strong></span>:
+                                                  The schema is created and stored locally for this
+                                                  component only. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Repository</strong></span>:
+                                                  The schema already exists and is stored in the
+                                                  Repository, hence can be reused. Related topic:
+                                                  see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Fault Schema</em></span> and
+                                                  <span class="emphasis"><em>Edit schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>A schema is a row description, i.e., it
+                                                  defines the number of fields to be processed and
+                                                  passed on to the next component. The schema is
+                                                  either built-in or remotely stored in the
+                                                  Repository. Click <span class="bold"><strong>Edit
+                                                  schema</strong></span> to make changes to the schema.
+                                                  Note that if you make changes, the schema
+                                                  automatically becomes built-in.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Built-in</strong></span>:
+                                                  The schema is created and stored locally for this
+                                                  component only. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Repository</strong></span>:
+                                                  The schema already exists and is stored in the
+                                                  Repository, hence can be reused. Related topic:
+                                                  see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p>
+                                                  <span class="emphasis"><em>ESB Service Settings</em></span>
+                                                  </p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Use Service
+                                                  Locator</strong></span>: Maintains the availability of
+                                                  the service to help meet demands and service level
+                                                  agreements (SLAs).</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Use Service Activity
+                                                  Monitor</strong></span>: Captures events and stores
+                                                  this information to facilitate in-depth analysis
+                                                  of service activity and track-and-trace of
+                                                  messages throughout a business transaction. This
+                                                  can be used to analyze service response times,
+                                                  identify traffic patterns, perform root cause
+                                                  analysis and more.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Use
+                                                  Authentication</strong></span>: Select this check box
+                                                  to enable the authentication option. Select from
+                                                  <span class="bold"><strong>Basic HTTP</strong></span>,
+                                                  <span class="bold"><strong>SAML Token (ESB runtime
+                                                  only)</strong></span> and <span class="bold"><strong>Username Token</strong></span>. Enter a username and a
+                                                  password in the corresponding fields as required.
+                                                  Authentication with the username token works both
+                                                  from the studio and at runtime. Authentication
+                                                  with the SAML token works at runtime only.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Use http proxy/Proxy
+                                                  host</em></span>, <span class="emphasis"><em>Proxy port</em></span>,
+                                                  <span class="emphasis"><em>Proxy user</em></span>, and
+                                                  <span class="emphasis"><em>Proxy password</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select this check box if you are using a
+                                                  proxy server and fill in the necessary
+                                                  information.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Trust server with
+                                                  SSL</em></span>/<span class="emphasis"><em>TrustStore
+                                                  file</em></span> and <span class="emphasis"><em>TrustStore
+                                                  password</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select this check box to validate the server
+                                                  certificate to the client via an SSL protocol and
+                                                  fill in the corresponding fields:</p>
+                                                  <p>
+                                                  <span class="bold"><strong>TrustStore file</strong></span>:
+                                                  Enter the path (including filename) to the
+                                                  certificate TrustStore file that contains the list
+                                                  of certificates that the client trusts.</p>
+                                                  <p>
+                                                  <span class="bold"><strong>TrustStore
+                                                  password</strong></span>: Enter the password used to
+                                                  check the integrity of the TrustStore data.
+                                                  </p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p>
+                                                  <span class="emphasis"><em>Mapping links display as</em></span>
+                                                  </p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Auto</strong></span>: By
+                                                  default, the links between the input and output
+                                                  schemas and the Web service parameters are in the
+                                                  form of curves.</p>
+                                                  <p>
+                                                  <span class="bold"><strong>Curves</strong></span>: Links
+                                                  between the schema and the Web service parameters
+                                                  are in the form of curves.</p>
+                                                  <p>
+                                                  <span class="bold"><strong>Lines (fast)</strong></span>:
+                                                  Links between the schema and the Web service
+                                                  parameters are in the form of straight lines. This
+                                                  option slightly optimizes performance.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p>
+                                                  <span class="emphasis"><em>Die on error</em></span>
+                                                  </p>
+                                                </td><td valign="top">
+                                                  <p>Select this check box to kill the Job when
+                                                  an error occurs.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Advanced
+                                                  setting</strong></span>s</p>
+                                                </td><td valign="top">
+                                                  <p>
+                                                  <span class="emphasis"><em>Service Locator Custom
+                                                  Properties</em></span>
+                                                  </p>
+                                                </td><td valign="top">
+                                                  <p>This table appears when <span class="bold"><strong>Use Service Locator</strong></span> is
+                                                  selected. You can add as many lines as needed in
+                                                  the table to customize the relevant
+                                                  properties.</p>
+                                                </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                                                  <p>
+                                                  <span class="emphasis"><em> Service Activity Custom
+                                                  Properties</em></span>
+                                                  </p>
+                                                </td><td valign="top">
+                                                  <p>This table appears when <span class="bold"><strong>Use Service Activity
+                                                  Monitor</strong></span> is selected. You can add as
+                                                  many lines as needed in the table to customize the
+                                                  relevant properties.</p>
+                                                </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                                                  <p>
+                                                  <span class="emphasis"><em> tStatCatcher Statistics</em></span>
+                                                  </p>
+                                                </td><td valign="top">
+                                                  <p>Select this check box to gather the Job
+                                                  processing metadata at a Job level as well as at
+                                                  each component level.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p>
+                                                  <span class="bold"><strong>Usage</strong></span>
+                                                  </p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>This component can be used as an
+                                                  intermediate component. It requires to be linked
+                                                  to an output component.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p>
+                                                  <span class="bold"><strong>Limitation</strong></span>
+                                                  </p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>A JDK is required for this component to
+                                                  operate.</p>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Scenario: Returning valid email"><div class="titlepage"><div><div><h3 class="title"><a name="d0e164981"></a>Scenario: Returning valid email</h3></div></div></div><p>This scenario describes a Job that uses a <span class="bold"><strong>tESBConsumer</strong></span> component to retrieve the valid
+                        email.</p><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="405"><tr><td align="center"><img src="../images/Use_Case_tESBConsumer1.png" align="middle" width="405"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> onto the design workspace: a
+                                                <span class="bold"><strong>tFixedFlowInput</strong></span>, a
+                                                <span class="bold"><strong>XMLMap</strong></span>, a <span class="bold"><strong>tESBConsumer</strong></span>, and two
+                                                <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Double-click the <span class="bold"><strong>tFixedFlowInput_1</strong></span> component to display
+                                        its <span class="bold"><strong>Component</strong></span> view and set
+                                        its <span class="bold"><strong>Basic settings</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="527"><tr><td align="center"><img src="../images/Use_Case_tESBConsumer3.png" align="middle" width="527"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next to <span class="bold"><strong>Edit
+                                                Schema</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="463"><tr><td align="center"><img src="../images/Use_Case_tESBConsumer2.png" align="middle" width="463"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the plus button to add a new line of string type and
+                                        name it <span class="emphasis"><em>payloadString</em></span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Number of rows</strong></span> field,
+                                        set the number of rows as <span class="emphasis"><em>1</em></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Mode</strong></span> area, select
+                                                <span class="bold"><strong>Use Single Table</strong></span>
+                                        and input the following request in quotations into the
+                                                <span class="bold"><strong>Value</strong></span> field:</p><p>
+                                        <code class="code">nomatter@gmail.com</code>
+                                </p></li><li class="listitem"><p>Connect <span class="bold"><strong>tFixedFlowInput_1</strong></span> to
+                                                <span class="bold"><strong>tXMLMap_1</strong></span>.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tXMLMap_1</strong></span> to
+                                                <span class="bold"><strong>tESBConsumer_1</strong></span> and
+                                        name this row as <span class="emphasis"><em>payload</em></span>.</p></li><li class="listitem"><p>In the design workspace, double-click <span class="bold"><strong>tXMLMap_1</strong></span> to open the <span class="bold"><strong>Map Editor</strong></span>.</p></li><li class="listitem"><p>In the output table, right-click the
+                                                <span class="emphasis"><em>Email</em></span> node and <span class="bold"><strong>select As loop element</strong></span> from
+                                        the contextual menu.</p></li><li class="listitem"><p>Click the <span class="emphasis"><em>payloadstring</em></span> node in the input
+                                        table and drop it to the <span class="bold"><strong>Expression</strong></span> column in the row of the
+                                                <span class="emphasis"><em>Email</em></span> node in the output
+                                        table.</p></li></ul></div><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="522"><tr><td align="center"><img src="../images/Use_Case_tESBConsumer4.png" align="middle" width="522"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate the
+                                        mapping and close the <span class="bold"><strong>Map
+                                                Editor</strong></span>.</p></li><li class="listitem"><p>In the design workspace, double-click <span class="bold"><strong>tESBConsumer_1</strong></span> to display its <span class="bold"><strong>Component</strong></span> view and set its
+                                                <span class="bold"><strong>Basic
+                                        settings</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="511"><tr><td align="center"><img src="../images/Use_Case_tESBConsumer5.png" align="middle" width="511"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next to the <span class="bold"><strong>Service configuration</strong></span> to open the
+                                        editor.</p></li></ul></div><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="525"><tr><td align="center"><img src="../images/Use_Case_tESBConsumer6.png" align="middle" width="525"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>WSDL</strong></span> field, type in:
+                                                <span class="emphasis"><em>http://www.webservicex.net/ValidateEmail.asmx?WSDL</em></span>.</p></li><li class="listitem"><p>Click the refresh button to retrieve port name and operation
+                                        name.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Port Name</strong></span> list, select
+                                        the port you want to use,
+                                                <span class="emphasis"><em>ValidateEmailSoap</em></span> in this
+                                        example.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span>.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Basic settings</strong></span> of
+                                                <span class="bold"><strong>tESBConsumer_1</strong></span>, set
+                                        the <span class="bold"><strong>Input Schema</strong></span> as
+                                        follow:</p></li></ul></div><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="522"><tr><td align="center"><img src="../images/Use_Case_tESBConsumer7.png" align="middle" width="522"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Set the <span class="bold"><strong>Response Schema</strong></span> as
+                                        follow:</p></li></ul></div><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="522"><tr><td align="center"><img src="../images/Use_Case_tESBConsumer8.png" align="middle" width="522"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Set the <span class="bold"><strong>Fault Schema</strong></span> as
+                                        follow:</p></li></ul></div><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="523"><tr><td align="center"><img src="../images/Use_Case_tESBConsumer9.png" align="middle" width="523"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Connect <span class="bold"><strong>tESBConsumer_1</strong></span> to
+                                                <span class="bold"><strong>tLogRow_1</strong></span> and
+                                                <span class="bold"><strong>tLogRow_2</strong></span>.</p></li><li class="listitem"><p>In the Job Design, double-click the <span class="bold"><strong>tLogRow_1</strong></span> component to display its
+                                                <span class="bold"><strong>Component</strong></span> view and
+                                        set its <span class="bold"><strong>Basic
+                                        settings</strong></span></p></li></ul></div><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="474"><tr><td align="center"><img src="../images/Use_Case_tESBConsumer10.png" align="middle" width="474"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next to <span class="bold"><strong>Edit
+                                                Schema</strong></span> and define the schema as
+                                        follow:</p></li></ul></div><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="514"><tr><td align="center"><img src="../images/Use_Case_tESBConsumer11.png" align="middle" width="514"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the Job Design, double-click the <span class="bold"><strong>tLogRow_2</strong></span> component to display its
+                                                <span class="bold"><strong>Component</strong></span> view and
+                                        set its <span class="bold"><strong>Basic
+                                        settings</strong></span></p></li></ul></div><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="484"><tr><td align="center"><img src="../images/Use_Case_tESBConsumer12.png" align="middle" width="484"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the three-dot button next to <span class="bold"><strong>Edit
+                                                Schema</strong></span> and define the schema as
+                                        follow:</p></li></ul></div><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="514"><tr><td align="center"><img src="../images/Use_Case_tESBConsumer13.png" align="middle" width="514"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to
+                                        execute it.</p></li></ul></div><p>In the execution log you will see:</p><p>
+                        </p><pre class="programlisting">Starting job consumer4 at 15:02
+21/04/2011.<span></span>
+<span></span>
+[statistics] connecting to socket on port 4057<span></span>
+[statistics] connected<span></span>
+ValidateEmail<span></span>
+ValidateEmailSoap<span></span>
+|<span></span>
+{http://www.webservicex.net}ValidateEmail<span></span>
+{http://www.webservicex.net}ValidateEmailSoap<span></span>
+IsValidEmail<span></span>
+[tLogRow_2] payload: &lt;?xml version="1.0" encoding="UTF-8"?&gt;<span></span>
+&lt;IsValidEmailResponse xmlns="http://www.webservicex.net"&gt;&lt;IsValidEmailResult&gt;
+false&lt;/IsValidEmailResult&gt;&lt;/IsValidEmailResponse&gt;<span></span>
+[statistics] disconnected<span></span>
+Job consumer4 ended at 15:03 21/04/2011. [exit code=0]</pre><p>
+                </p></div></div></body></html>

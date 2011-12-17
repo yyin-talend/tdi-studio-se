@@ -1,0 +1,149 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
+		java.util.List
+		java.util.Map
+	"
+%>
+    <%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();	
+
+	String directory = ElementParameterParser.getValue(node, "__SOURCE__");
+	String zipFile = ElementParameterParser.getValue(node, "__TARGET__");
+	String level = ElementParameterParser.getValue(node, "__LEVEL__");
+	boolean mkDir = ("true").equals(ElementParameterParser.getValue(node, "__MKDIR__"));
+	boolean isAllFile = ("true").equals(ElementParameterParser.getValue(node, "__ALL_FILES__"));
+	boolean subDir = ("true").equals(ElementParameterParser.getValue(node, "__SUB_DIRECTROY__"));
+	boolean overwrite = ("true").equals(ElementParameterParser.getValue(node, "__OVERWRITE__"));
+	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+	boolean isEncrypted = ("true").equals(ElementParameterParser.getValue(node, "__ENCRYPT_FILES__"));
+	String password = ElementParameterParser.getValue(node,"__PASSWORD__");
+	
+	List<Map<String, String>> masks = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MASK__");	
+	%>
+
+
+    String sourceDir_<%=cid %> = <%=directory %>;      
+    java.io.File file_<%=cid %> = new java.io.File(sourceDir_<%=cid %>);
+    String zipFile_<%=cid %> = <%=zipFile %>;
+    <%
+    if(!overwrite){
+    %>
+    if(new java.io.File(zipFile_<%=cid %>).exists()){
+    	throw(new Exception("File already exist!"));
+    }
+    <%
+    }
+    %>
+    <%if(mkDir){%>
+    String zipDir_<%=cid %> = (<%=zipFile %>).contains("\\")?
+    (<%=zipFile %>).substring(0,(<%=zipFile %>).lastIndexOf("\\")): (<%=zipFile %>).substring(0,(<%=zipFile %>).lastIndexOf("/"));
+    java.io.File zDir_<%=cid %> = new java.io.File(zipDir_<%=cid %>);
+    zDir_<%=cid %>.mkdirs();
+    <%}%>
+    int level_<%=cid %> = <%=level %>;        
+    final java.util.List<java.io.File> list_<%=cid %> = new java.util.ArrayList<java.io.File>();  
+    <% 
+	if (isAllFile == false) { 
+	    %>  
+	    String[] patterns_<%=cid %> = new String[<%=masks.size()%>];
+	    <%
+	    for(int i=0 ; i < masks.size() ; i++) {
+	        Map<String, String> line = masks.get(i);
+	        %>
+	        patterns_<%=cid %>[<%=i%>] = <%=line.get("FILEMASK")%>;
+	        <%
+	    }
+	    %>
+  		StringBuilder sbf_<%=cid %> = new StringBuilder(); 
+        sbf_<%=cid %>.append("(");
+        for (int i_<%=cid %> = 0 ; i_<%=cid %> < patterns_<%=cid %>.length ; i_<%=cid %>++) {
+            sbf_<%=cid %>.append(patterns_<%=cid %>[i_<%=cid %>].replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*"));
+            if(i_<%=cid %> != patterns_<%=cid %>.length-1) sbf_<%=cid %>.append("|");
+        }        
+        sbf_<%=cid %>.append(")");
+        final String maskStr_<%=cid %> = new String(sbf_<%=cid %>.toString());        
+        file_<%=cid %>.listFiles(new java.io.FilenameFilter() {
+            public boolean accept(java.io.File dir, String name) {
+                java.io.File file = new java.io.File(dir, name);
+                if (file.isFile()) {                            
+                    if (name.matches(maskStr_<%=cid %>)) {
+                        list_<%=cid %>.add(file);
+                        return true;
+                    }            
+                }
+                <% 
+                if (subDir==true) { 
+                    %>  
+                    else
+                    {   
+                    	file.listFiles(this);                    
+                    }
+                    <%
+                }
+                %>                  
+                return false;
+            }
+        });
+        <% 
+   } else {
+       %> 
+       file_<%=cid %>.listFiles(new java.io.FilenameFilter() {
+           public boolean accept(java.io.File dir, String name) {
+               java.io.File file = new java.io.File(dir, name);
+                   if (file.isFile()) {
+                       list_<%=cid %>.add(file);
+                       return true;
+                   }
+                   <% 
+                   if (subDir==true) { 
+                       %>  
+                       else
+                       {   
+                           file.listFiles(this);                    
+                       }
+                       <%
+                   }
+                   %>   
+                   return false;
+                }
+            });
+       <%
+       }
+   %>     
+      org.apache.tools.zip.ZipOutputStream out_<%=cid %> = null;
+      if (list_<%=cid %>.size() > 0) {
+      	int beginIndex_<%=cid %> = file_<%=cid %>.getPath().length()+1;
+      	java.io.OutputStream output_stream_<%=cid%> = new java.io.FileOutputStream(zipFile_<%=cid %>);
+      	if( <%=isEncrypted%> && !<%=password%>.equals("")){
+      		output_stream_<%=cid%> = new javax.crypto.CipherOutputStream(output_stream_<%=cid%>, 
+      				                       org.talend.archive.IntegrityUtil.createCipher( javax.crypto.Cipher.ENCRYPT_MODE, <%=password%>)); 
+      	}
+        out_<%=cid %> = new org.apache.tools.zip.ZipOutputStream(new java.io.BufferedOutputStream(output_stream_<%=cid%>)); 
+        out_<%=cid %>.setLevel(level_<%=cid %>);
+        out_<%=cid %>.setEncoding(<%=encoding%>);
+        // here get the file list
+        for (int i_<%=cid %> = 0; i_<%=cid %> < list_<%=cid %>.size(); i_<%=cid %>++) {
+            java.io.BufferedInputStream in_<%=cid %> = new java.io.BufferedInputStream(new java.io.FileInputStream(list_<%=cid %>.get(i_<%=cid %>)));
+            org.apache.tools.zip.ZipEntry entry = new org.apache.tools.zip.ZipEntry(list_<%=cid %>.get(i_<%=cid %>).getPath().substring(beginIndex_<%=cid %>));    
+            entry.setTime(list_<%=cid %>.get(i_<%=cid %>).lastModified()); 
+            out_<%=cid %>.putNextEntry(entry);   
+           
+            int readLen_<%=cid %>;
+            byte[] buf_<%=cid %>=new byte[1024];     
+            while ((readLen_<%=cid %> = in_<%=cid %>.read(buf_<%=cid %>,0,1024)) != -1)  {    
+                  out_<%=cid %>.write(buf_<%=cid %>, 0, readLen_<%=cid %>);    
+            }    
+            out_<%=cid %>.flush();    
+            in_<%=cid %>.close();       
+        }        
+      }
+      
+      if (out_<%=cid %> != null)  out_<%=cid %>.close();
+      globalMap.put("<%=cid %>_ARCHIVE_FILEPATH",zipFile_<%=cid %>);
+      globalMap.put("<%=cid %>_ARCHIVE_FILENAME",(<%=zipFile %>).contains("\\")?
+    (<%=zipFile %>).substring(((<%=zipFile %>).lastIndexOf("\\")+2)): (<%=zipFile %>).substring(((<%=zipFile %>).lastIndexOf("/"))+1));

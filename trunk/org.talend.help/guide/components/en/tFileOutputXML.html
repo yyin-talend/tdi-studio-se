@@ -1,0 +1,126 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileOutputXML</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch18.html" title="Chapter&nbsp;18.&nbsp;XML components"><link rel="prev" href="tFileInputXML.html" title="tFileInputXML"><link rel="next" href="tWriteXMLField.html" title="tWriteXMLField"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tFileOutputXML"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileOutputXML"></a>tFileOutputXML</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFileOutputXML.png" width="27"></td></tr></table></div><div class="section" title="tFileOutputXML properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e241816"></a>tFileOutputXML properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>XML or File/Output</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tFileOutputXML</strong></span> outputs data to an
+                                XML type of file.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tFileOutputXML</strong></span> writes an XML file
+                                with separated data value according to a defined schema.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>File name</em></span></p>
+                        </td><td valign="top">
+                            <p>Name or path to the output file and/or the variable to be used. </p>
+                            <p> </p>
+                            <p> Related topic: see Defining variables from the Component view
+                                section in <span class="bluebold">Talend Open Studio</span>
+                                User Guide</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Row tag</em></span></p>
+                        </td><td valign="top">
+                            <p>Specify the tag that will wrap data and structure per row.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component.
+                                The schema is either built-in or remote in the Repository. </p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: The schema will be
+                                created and stored locally for this component only. Related topic:
+                                see <span class="bluebold">Talend Open Studio</span>
+                                User Guide.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: The schema already
+                                exists and is stored in the Repository, hence can be reused in
+                                various projects and job designs. Related topic: see <span class="bluebold">Talend Open Studio</span> User Guide.</p>
+                        </td></tr><tr><td>&nbsp;</td><td><span class="emphasis"><em>Sync columns</em></span></td><td valign="top">Click to synchronize the output file schema with the
+                            input file schema. The Sync function only displays once the Row
+                            connection is linked with the Output component.</td></tr><tr><td><span class="bold"><strong>Advanced settings</strong></span></td><td><span class="emphasis"><em>Split output in several files</em></span></td><td valign="top"><p>If the output is big, you can split the output
+                                into several files, each containing the specified number of
+                                rows.</p>
+                            <p><span class="bold"><strong>Rows in each output file</strong></span>: Specify
+                                the number of rows in each output file.</p></td></tr><tr><td>&nbsp;</td><td><span class="italic">Create directory if not
+                            exists</span></td><td valign="top">This check box is selected by default. It creates a
+                            directory to hold the output XML files if required.</td></tr><tr><td>&nbsp;</td><td><span class="emphasis"><em>Root tags</em></span></td><td valign="top">Specify one or more root tags to wrap the whole output
+                            file structure and data. The default root tag is <span class="italic">root</span>. </td></tr><tr><td>&nbsp;</td><td><span class="italic">Output format</span></td><td valign="top"><p>Define the output format. </p>
+                            <p><span class="bold"><strong>Column</strong></span>: The columns retrieved
+                                from the input schema.</p>
+                            <p><span class="bold"><strong>As attribute</strong></span>: select check box
+                                for the column(s) you want to use as attribute(s) of the parent
+                                element in the XML output. </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>If the same column is selected in both the <span class="bold"><strong>Output format</strong></span> table as an attribute
+                                    and in the <span class="bold"><strong>Use dynamic grouping</strong></span>
+                                    setting as the criterion for dynamic grouping, only the denamic
+                                    group setting will take effect for that column. </p></td></tr></table></div>
+                            <p><span class="bold"><strong>Use schema column name</strong></span>: By
+                                default, this check box is selected for all columns so that the
+                                column labels from the input schema are used as data wrapping tags.
+                                If you want to use a different tag than from the input schema for
+                                any column, clear this check box for that column and specify a tag
+                                label between quotation marks in the <span class="bold"><strong>Label</strong></span> field. </p></td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="italic">Use dynamic grouping</span></p>
+                        </td><td valign="top">
+                            <p>Select this check box if you want to dynamically group the output
+                                columns. Click the plus button to add one ore more grouping criteria
+                                in the <span class="bold"><strong>Group by</strong></span> table. </p>
+                            <p><span class="bold"><strong>Column</strong></span>: Select a column you want
+                                to use as a wrapping element for the grouped output rows. </p>
+                            <p><span class="bold"><strong>Attribute label</strong></span>: Enter an
+                                attribute label for the group wrapping element, between quotation
+                                marks.</p>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">Custom the flush buffer
+                                size</span></td><td valign="top"><p>Select this check box to define the number of rows to buffer before the data is written into
+                                the target file and the buffer is emptied.</p>
+                            <p><span class="bold"><strong>Row Number</strong></span>: Specify the number of
+                                rows to buffer. </p></td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">Advanced separator (for
+                                numbers)</span></td><td valign="top"><p>Select this check box to modify the separators
+                                used for numbers: </p>
+                            <p><span class="bold"><strong>Thousands separator</strong></span>: define
+                                separators for thousands. </p>
+                            <p><span class="bold"><strong>Decimal separator</strong></span>: define
+                                separators for decimals.</p></td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Encoding</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the encoding from the list or select Custom and define it
+                                manually. This field is compulsory for DB data handling.</p>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">Don't generate empty
+                                file</span></td><td valign="top">Select the check box to avoid the generation of an empty
+                            file.</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">tStatCatcher
+                                Statistics</span></td><td valign="top">Select this check box to gather the Job processing
+                            metadata at a Job level as well as at each component level.</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Use this component to write an XML file with data passed on from
+                                other components using a Row link.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: From Positional to XML file"><div class="titlepage"><div><div><h3 class="title"><a name="d0e242165"></a>Scenario: From Positional to XML file</h3></div></div></div><p>Find a scenario using <span class="bold"><strong>tFileOutputXML</strong></span> component in the
+            scenario of <a class="xref" href="tFileInputPositional.html" title="tFileInputPositional">the section called &#8220;tFileInputPositional&#8221;</a>.</p></div></div></body></html>

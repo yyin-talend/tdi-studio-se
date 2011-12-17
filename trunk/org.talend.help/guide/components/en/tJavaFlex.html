@@ -1,0 +1,183 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tJavaFlex</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch04.html" title="Chapter&nbsp;4.&nbsp;Custom Code components"><link rel="prev" href="tJava.html" title="tJava"><link rel="next" href="tJavaRow.html" title="tJavaRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tJavaFlex"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tJavaFlex"></a>tJavaFlex</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tJavaFlex_icon32.png" width="27"></td></tr></table></div><div class="section" title="tJavaFlex properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e47132"></a>tJavaFlex properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Custom Code</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tJavaFlex</strong></span> enables you to enter
+                                personalized code in order to integrate it in <span class="bold"><strong>Talend</strong></span> program. With <span class="bold"><strong>tJavaFlex</strong></span>, you can enter the three java-code parts
+                                (start, main and end) that constitute a kind of component dedicated
+                                to do a desired operation.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Objective</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tJava</strong></span> makes it possible to extend
+                                the functionalities of a <span class="bold"><strong>Talend</strong></span> Job through using Java
+                                commands.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema </em></span>and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields to be processed and passed on to the next component. The
+                                schema is either <span class="bold"><strong>built-in</strong></span> or
+                                remotely stored in the <span class="bold"><strong>Repository</strong></span>.</p>
+                            <p> Click <span class="bold"><strong>Edit Schema</strong></span> to make
+                                changes to the schema. Note that if you make changes, the schema
+                                automatically becomes built-in.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Built-in</strong></span>: The schema is created
+                                and stored locally for this component only. Related topic: see
+                                    <span class="bluebold">Talend Open Studio</span>
+                                User Guide.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="bold"><strong>Repository</strong></span>: The schema already
+                                exists and is stored in the Repository, hence can be reused. Related
+                                topic: see <span class="bluebold">Talend Open Studio</span>
+                                User Guide.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Data Auto Propagate</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to automatically propagate the data to the
+                                component that follows.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Start code</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the Java code that will be called during the initialization
+                                phase.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Main code</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the Java code to be applied for each line in the data
+                                flow.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>End code</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the Java code that will be called during the closing
+                                phase.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Import</em></span></p>
+                        </td><td valign="top">
+                            <p>Enter the Java code that helps to import, if necessary, external
+                                libraries used in the <span class="bold"><strong>Main code</strong></span> box
+                                of the <span class="bold"><strong>Basic settings</strong></span> view.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the job processing metadata at a
+                                job level as well as at each component level.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>You can use this component as a start, intermediate or output
+                                component. You can as well use it as a one-component subjob.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>You should know the Java language.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario&nbsp;1: Generating data flow"><div class="titlepage"><div><div><h3 class="title"><a name="d0e47403"></a>Scenario&nbsp;1: Generating data flow</h3></div></div></div><p>This scenario describes a two-components Job that generates a three-line data flow
+            describing different personal titles (Miss, Mrs, and Mr) and displaying them on the
+            console.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="226"><tr><td><img src="../images/Use_Case_tJavaFlex1_1.png" width="226"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop <span class="bold"><strong>tJavaFlex</strong></span> and <span class="bold"><strong>tLogRow</strong></span> from the <span class="bold"><strong>Palette </strong></span>onto
+                    the design workspace.</p></li><li class="listitem"><p>Connect the components together using a <span class="bold"><strong>Row
+                        Main</strong></span> link.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tJavaFlex</strong></span> to display its
+                        <span class="bold"><strong>Basic settings</strong></span> view and define its
+                    properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="430"><tr><td><img src="../images/Use_Case_tJavaFlex1_2.png" width="430"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>From the <span class="bold"><strong>Schema Type </strong></span>list, select <span class="bold"><strong>Built-in</strong></span> and then click the three-dot button next to
+                        <span class="bold"><strong>Edit schema</strong></span> to open the corresponding
+                    dialog box where you can define the data structure to pass to the component that
+                    follows.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="273"><tr><td><img src="../images/Use_Case_tJavaFlex1_3.png" width="273"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the plus button to add two columns: <span class="emphasis"><em>key</em></span> and
+                        <span class="emphasis"><em>value</em></span> and then set their types to <span class="bold"><strong>Integer</strong></span> and <span class="bold"><strong>String
+                    </strong></span>respectively.</p></li><li class="listitem"><p>Click <span class="bold"><strong>Ok </strong></span>to validate your changes and close
+                    the dialog box. </p></li><li class="listitem"><p>In the <span class="bold"><strong>Basic settings</strong></span> view of <span class="bold"><strong>tJavaFlex</strong></span>, select the <span class="bold"><strong>Data Auto
+                        Propagate</strong></span> check box to automatically propagate data to the
+                    component that follows.</p><p> In this example, we do not want to do any transformation on the retrieved
+                    data.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Start code</strong></span> field, enter the code to be
+                    executed in the initialization phase. </p><p> In this example, the code indicates the initialization of <span class="bold"><strong>tJavaFlex</strong></span> by displaying the START message and sets up
+                    the loop and the variables to be used afterwards in the Java code:</p><p>
+                    </p><pre class="programlisting">System.out.println("## START\n#");<span></span>
+String [] valueArray = {"Miss", "Mrs", "Mr"};<span></span>
+<span></span>
+for (int i=0;i&lt;valueArray.length;i++) {</pre><p>
+                </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="326"><tr><td><img src="../images/Use_Case_tJavaFlex1_4.png" width="326"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Main code</strong></span> field, enter the code you
+                    want to apply on each of the data rows. </p><p> In this example, we want to display each key with its value:</p><p>
+                    </p><pre class="programlisting">row1.key = i;<span></span>
+row1.value = valueArray[i];</pre><p>
+                </p></li></ul></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>In the Main code,&#8221; row1&#8221; corresponds to the name of the link that comes
+                    out of </em></span><span class="bold"><strong>tJavaFlex</strong></span><span class="emphasis"><em>. If you
+                    rename this link, you have to modify the code of this field
+                    accordingly.</em></span></p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>End code</strong></span> field, enter the code that
+                    will be executed in the closing phase.</p><p> In this example, the brace (curly bracket) closes the loop and the code
+                    indicates the end of the execution of <span class="bold"><strong>tJavaFlex</strong></span>
+                    by displaying the END message:</p><p>
+                    </p><pre class="programlisting">}<span></span>
+System.out.println("#\n## END");</pre><p>
+                </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="326"><tr><td><img src="../images/Use_Case_tJavaFlex1_5.png" width="326"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>If needed, double-click <span class="bold"><strong>tLogRow </strong></span>and in its
+                        <span class="bold"><strong>Basic settings</strong></span> view, click the button next
+                    to <span class="bold"><strong>Edit schema</strong></span> to make sure that the schema has
+                    been correctly propagated.</p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute it. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="435"><tr><td><img src="../images/Use_Case_tJavaFlex1_6.png" width="435"></td></tr></table></div><p>The three personal titles are displayed on the console along with their corresponding
+            keys. </p></div><div class="section" title="Scenario&nbsp;2: Processing rows of data with tJavaFlex"><div class="titlepage"><div><div><h3 class="title"><a name="d0e47589"></a>Scenario&nbsp;2: Processing rows of data with tJavaFlex</h3></div></div></div><p>This scenario describes a two-component Job that generates random data and then
+            collects that data and does some transformation on it line by line using Java code
+            through the <span class="bold"><strong>tJavaFlex </strong></span>component.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="251"><tr><td><img src="../images/Use_Case_tJavaFlex2_1.png" width="251"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop <span class="bold"><strong>tRowGenerator</strong></span> and <span class="bold"><strong>tJavaFlex</strong></span> from the <span class="bold"><strong>Palette </strong></span>onto
+                    the design workspace.</p></li><li class="listitem"><p>Connect the components together using a <span class="bold"><strong>Row
+                        Main</strong></span> link.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tRowGenerator</strong></span> to display its
+                        <span class="bold"><strong>Basic settings</strong></span> view and the <span class="bold"><strong>[RowGenerator Editor]</strong></span> dialog box where you can define
+                    the component properties. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="478"><tr><td><img src="../images/Use_Case_tJavaFlex2_2.png" width="478"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click the plus button to add four columns: <span class="emphasis"><em>number</em></span>,
+                        <span class="emphasis"><em>txt</em></span>, <span class="emphasis"><em>date</em></span> and
+                        <span class="emphasis"><em>flag</em></span>.</p></li><li class="listitem"><p>Define the schema and set the parameters to the four columns according to the
+                    above capture.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Functions</strong></span> column, select the three-dot
+                    function <span class="bold"><strong>[...]</strong></span> for each of the defined
+                    columns.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Parameters</strong></span> column, enter 10 different
+                    parameters for each of the defined columns. These 10 parameters corresponds to
+                    the data that will be randomly generated when executing <span class="bold"><strong>tRowGenerator</strong></span>.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK </strong></span>to validate your changes and close
+                    the editor.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tJavaFlex</strong></span> to display its
+                        <span class="bold"><strong>Basic settings</strong></span> view and define the
+                    components properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="464"><tr><td><img src="../images/Use_Case_tJavaFlex2_3.png" width="464"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>Sync columns</strong></span> to retrieve the schema
+                    from the preceding component.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Start code</strong></span> field, enter the code to be
+                    executed in the initialization phase.</p><p> In this example, the code indicates the initialization of the <span class="bold"><strong>tJavaFlex</strong></span> component by displaying the START message
+                    and defining the variable to be used afterwards in the Java code:</p><p>
+                    </p><pre class="programlisting">System.out.println("## START\n#");<span></span>
+int i = 0;</pre><p>
+                </p></li><li class="listitem"><p>In the <span class="bold"><strong>Main code </strong></span>field, enter the code to be
+                    applied on each line of data. </p><p> In this example, we want to show the number of each line starting from 0 and
+                    then the number and the random text transformed to upper case and finally the
+                    random date set in the editor of <span class="bold"><strong>tRowGenerator</strong></span>.
+                    Then, we create a condition to show if the status is <span class="bold"><strong>true</strong></span> or <span class="bold"><strong>false</strong></span> and we increment
+                    the number of the line:</p><p>
+                    </p><pre class="programlisting">System.out.print(" row" + i + ":");<span></span>
+System.out.print("# number:" + row1.number);<span></span>
+System.out.print (" | txt:" + row1.txt.toUpperCase());<span></span>
+System.out.print(" | date:" + row1.date);<span></span>
+if(row1.flag) System.out.println(" | flag: true");<span></span>
+else  System.out.println(" | flag: false");<span></span>
+<span></span>
+i++;</pre><p>
+                </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="386"><tr><td><img src="../images/Use_Case_tJavaFlex2_4.png" width="386"></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>In the Main code filed, &#8220;row1&#8221; corresponds to the name of the link that
+                    comes out of </em></span><span class="bold"><strong>tJavaFlex</strong></span><span class="emphasis"><em>. If
+                    you rename this link, you have to modify the code.</em></span></p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>End code</strong></span> field, enter the code that
+                    will be executed in the closing phase.</p><p> In this example, the code indicates the end of the execution of <span class="bold"><strong>tJavaFlex</strong></span> by displaying the END message:</p><p>
+                    <code class="code">System.out.println("#\n## END");</code></p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="385"><tr><td><img src="../images/Use_Case_tJavaFlex2_5.png" width="385"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute it. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="430"><tr><td><img src="../images/Use_Case_tJavaFlex2_6.png" width="430"></td></tr></table></div><p>The console displays the randomly generated data that was modified by the java command
+            set through <span class="bold"><strong>tJavaFlex</strong></span>.</p></div></div></body></html>

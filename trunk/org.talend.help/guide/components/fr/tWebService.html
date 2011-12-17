@@ -1,0 +1,193 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tWebService</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch12.html" title="Chapitre&nbsp;12.&nbsp;Composants Internet"><link rel="prev" href="tSOAP.html" title="tSOAP"><link rel="next" href="tWebServiceInput.html" title="tWebServiceInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tWebService"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tWebService"></a>tWebService</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tWebServiceRow_white.png" width="27"></td></tr></table></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Ce composant requiert l&#8217;utilisation d&#8217;une JDK Sun.</em></span></p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tWebService"><div class="titlepage"><div><div><h3 class="title"><a name="d0e264144"></a>Propri&eacute;t&eacute;s du tWebService</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Internet </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant appelle la
+                                m&eacute;thode du service Web invoqu&eacute; et retourne la classe d&eacute;finie en
+                                fonction des param&egrave;tres donn&eacute;s.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tWebService</strong></span> invoque une m&eacute;thode via un service Web
+                                afin de r&eacute;cup&eacute;rer les valeurs des param&egrave;tres s&eacute;lectionn&eacute;s dans
+                                l&#8217;&eacute;diteur.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top"><p>Peut &ecirc;tre Built-in ou Repository. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>:
+                                Propri&eacute;t&eacute;s utilis&eacute;es ponctuellement. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>:
+                                S&eacute;lectionnez le fichier dans lequel sont stock&eacute;es les propri&eacute;t&eacute;s du
+                                composant. Les champs suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des
+                                donn&eacute;es collect&eacute;es. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Service configuration</em></span></p>
+                        </td><td valign="top"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> pour ouvrir l&#8217;&eacute;diteur du composant. Dans
+                                l&#8217;&eacute;diteur, vous pouvez&nbsp;:</p><p> -s&eacute;lectionner le service Web
+                                que vous souhaitez utiliser,</p><p> -configurer les param&egrave;tres
+                                d&#8217;entr&eacute;e du service Web,</p><p> -configurer les param&egrave;tres de
+                                sortie du service Web permettant de r&eacute;cup&eacute;rer les donn&eacute;es &agrave;
+                                transmettre en sortie.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Mapping links display as</em></span></p>
+                        </td><td valign="top"><p><span class="bold"><strong>Auto</strong></span>&nbsp;: par
+                                d&eacute;faut, les liens faisant la correspondance entre les sch&eacute;mas
+                                d&#8217;entr&eacute;e et de sortie et les param&egrave;tres du service Web sont en forme
+                                de courbes.</p><p>
+                                <span class="bold"><strong>Curves</strong></span>&nbsp;: les liens faisant la
+                                correspondance entre les sch&eacute;mas d&#8217;entr&eacute;e et de sortie et les
+                                param&egrave;tres du service Web sont en forme de courbes.</p><p>
+                                <span class="bold"><strong>Lines</strong></span>&nbsp;: les liens faisant la
+                                correspondance entre les sch&eacute;mas d&#8217;entr&eacute;e et de sortie et les
+                                param&egrave;tres du service Web sont en forme de lignes droites. Cette
+                                derni&egrave;re option am&eacute;liore l&eacute;g&egrave;rement les performances.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Connection Time out</em></span></p>
+                        </td><td valign="top"><p>Saisissez en secondes la dur&eacute;e de connexion au
+                                service Web.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Receive Time out</em></span></p>
+                        </td><td valign="top"><p>Saisissez en secondes le temps de r&eacute;ponse du
+                                serveur.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champ qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. Le sch&eacute;ma est soit local (built-in) soit distant dans le
+                                Repository. </p><p> Cliquez sur <span class="bold"><strong>Edit
+                                    Schema</strong></span> pour modifier le sch&eacute;ma. Notez que si vous
+                                modifiez le sch&eacute;ma, il devient automatiquement
+                                built-in.</p><p> Cliquez sur <span class="bold"><strong>Sync
+                                    columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma &agrave; partir du
+                                composant pr&eacute;c&eacute;dent dans le Job.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le
+                                sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; pour ce composant seulement. Voir
+                                &eacute;galement&nbsp;le Guide Utilisateur de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le
+                                sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut
+                                &ecirc;tre r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le Guide utilisateur de <span class="bluebold">Talend Enterprise Studio</span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use NTLM</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case si vous utilisez un protocole
+                                d&#8217;authentification NTLM.</p><p>
+                                <span class="bold"><strong>Domain</strong></span>&nbsp;: Nom de domaine du
+                                client,</p><p>
+                                <span class="bold"><strong>Host</strong></span>&nbsp;: Adresse IP du client.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Need authentication</em></span></p>
+                        </td><td valign="top"><p>Cochez la case d&#8217;authentification et renseignez le
+                                nom de l&#8217;utilisateur dans le champ <span class="bold"><strong>Username</strong></span> et son mot de passe dans le champ <span class="bold"><strong>Password</strong></span>, si cela est n&eacute;cessaire pour
+                                acc&eacute;der au service.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use http proxy</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case si vous vous connectez derri&egrave;re
+                                un proxy et renseignez les informations correspondantes. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Trust server with SSL</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour authentifier le serveur
+                                aupr&egrave;s du client via un protocole SSL et renseignez les champs
+                                correspondants.</p><p>
+                                <span class="bold"><strong>TrustStore file</strong></span>&nbsp;: saisissez le
+                                chemin d&#8217;acc&egrave;s et le nom du fichier TrustStore contenant la liste
+                                des certificats approuv&eacute;s par le client.</p><p>
+                                <span class="bold"><strong>TrustStore password</strong></span>&nbsp;: saisissez le
+                                mot de passe utilis&eacute; pour v&eacute;rifier l&#8217;int&eacute;grit&eacute; des donn&eacute;es
+                                TrustStore.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top"><p>D&eacute;cochez cette case pour passer les lignes en
+                                erreur et terminer le traitement des lignes sans erreur.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Temporary folder (for
+                                    wsdl2java)</em></span></p>
+                        </td><td valign="top"><p>D&eacute;finissez (ou parcourez votre r&eacute;pertoire jusqu&#8217;&agrave;)
+                                un dossier temporaire configur&eacute; o&ugrave; stocker les fichiers wsdl.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du composant.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Enable parallel
+                                execution</em></span></p>
+                        </td><td valign="top"><p>Cocher cette case permet de traiter plusieurs flux
+                                de donn&eacute;es simultan&eacute;ment. Cela permet de traiter les donn&eacute;es plus
+                                rapidement.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant peut &ecirc;tre
+                                utilis&eacute; comme composant interm&eacute;diaire ou comme composant de d&eacute;but de
+                                Job. Il requiert un composant de sortie.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Une JDK Sun est requise
+                                pour faire fonctionner ce composant.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Extraire une liste de noms &agrave; l&#8217;aide d&#8217;un service Web"><div class="titlepage"><div><div><h3 class="title"><a name="d0e264533"></a>Sc&eacute;nario&nbsp;: Extraire une liste de noms &agrave; l&#8217;aide d&#8217;un service Web</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job &agrave; trois composants utilisant un
+            service Web pour r&eacute;cup&eacute;rer la liste des d&eacute;fenseurs de l&#8217;&eacute;quipe de football d&#8217;un pays
+            donn&eacute;.</p><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td align="center"><img src="../images/Use_Case_tWebService1.png" align="middle" width="100%"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A partir de la <span class="bold"><strong>Palette</strong></span>, cliquez-glissez les
+                    composants suivants dans l&#8217;espace de mod&eacute;lisation&nbsp;: <span class="bold"><strong>tFixedFlowInput</strong></span>, <span class="bold"><strong>tWebService</strong></span> et
+                        <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Reliez les composants &agrave; l&#8217;aide de liens de type <span class="bold"><strong>Main
+                        Row</strong></span>.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tFixedFlowInput</strong></span> pour param&eacute;trer ses propri&eacute;t&eacute;s dans la vue
+                        <span class="bold"><strong>Component</strong></span>.</p></li></ul></div><div class="mediaobject" align="center"><img src="../images/Use_Case_tWebService2.png" align="middle"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+                        <span class="bold"><strong>Edit schema</strong></span> pour d&eacute;finir le sch&eacute;ma du
+                    composant d&#8217;entr&eacute;e.</p></li><li class="listitem"><p>Dans la bo&icirc;te de dialogue <span class="bold"><strong>Schema of
+                        tFixedFlowInput</strong></span>, cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> pour ajouter une colonne au sch&eacute;ma.</p></li><li class="listitem"><p>Renommez cette colonne <span class="emphasis"><em>Country</em></span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider. Une bo&icirc;te de
+                    dialogue s&#8217;ouvre et vous demande si vous souhaitez propager les modifications. </p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Yes</strong></span> (Oui).</p></li><li class="listitem"><p>Dans le tableau <span class="bold"><strong>Values</strong></span>, saisissez la valeur
+                    d&#8217;entr&eacute;e. Dans ce sc&eacute;nario, saisissez la valeur <span class="emphasis"><em>&#8220;ITALY&#8221;</em></span>
+                    pour r&eacute;cup&eacute;rer la liste des d&eacute;fenseurs de l&#8217;&eacute;quipe d&#8217;Italie.</p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tWebService</strong></span>
+                    pour ouvrir l&#8217;interface d&eacute;di&eacute;e ou cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> de l&#8217;onglet <span class="bold"><strong>Basic
+                        settings</strong></span> de la vue <span class="bold"><strong>Component</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="465"><tr><td><img src="../images/Use_Case_tWebService3.png" width="465"></td></tr></table></div><p>Dans l&#8217;onglet <span class="bold"><strong>WSDL</strong></span>,
+            connectez-vous au service Web &agrave; utiliser dans le Job.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>WSDL</strong></span>, saisissez l&#8217;adresse WSDL
+                    du service Web que vous souhaitez utiliser ou cliquez sur le bouton <span class="bold"><strong>Browse...</strong></span> pour s&eacute;lectionner un WSDL stock&eacute;
+                    localement.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Refresh</strong></span> pour r&eacute;cup&eacute;rer
+                    la description du WSDL dans les champs suivants.</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Port Name</strong></span>, s&eacute;lectionnez le port
+                    que vous souhaitez utiliser. Ici, s&eacute;lectionnez le port <span class="bold"><strong>FootballPoolWebServiceSoap</strong></span>.</p></li><li class="listitem"><p>Dans la liste <span class="bold"><strong>Operation</strong></span>, s&eacute;lectionnez le
+                    service que vous souhaitez utiliser. Ici, s&eacute;lectionnez le service <span class="bold"><strong>AllDefenders(parameters):ArrayOfString</strong></span>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Next</strong></span> pour passer &agrave; l&#8217;&eacute;tape
+                    suivante.</p></li></ul></div><p>Dans l&#8217;onglet <span class="bold"><strong>Input
+                mapping</strong></span>, faites la correspondance entre le sch&eacute;ma du composant de d&eacute;but
+            et le service Web.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="478"><tr><td><img src="../images/Use_Case_tWebService4.png" width="478"></td></tr></table></div><p>Dans la zone de droite, le param&egrave;tre d&#8217;entr&eacute;e du service
+            appara&icirc;t automatiquement. Vous avez la possibilit&eacute; d&#8217;ajouter d&#8217;autres param&egrave;tres en
+            s&eacute;lectionnant l&#8217;&eacute;l&eacute;ment <span class="bold"><strong>[-] parameters</strong></span> de la zone de
+            droite, en cliquant sur le bouton <span class="bold"><strong>[+]</strong></span>, et en
+            s&eacute;lectionnant les param&egrave;tres souhait&eacute;s dans la bo&icirc;te de dialogue <span class="bold"><strong>[Parameter Tree]</strong></span>.</p><p>Le service Web utilis&eacute; dans ce sc&eacute;nario ne comporte qu&#8217;un
+            seul param&egrave;tre d&#8217;entr&eacute;e&nbsp;: <span class="bold"><strong>sCountryName</strong></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>S&#8217;il est disponible, utilisez le bouton <span class="bold"><strong>Auto map!</strong></span>
+                situ&eacute; en bas &agrave; gauche de la fen&ecirc;tre, il permet d&#8217;effectuer l&#8217;op&eacute;ration de mapping
+                automatiquement.</p></td></tr></table></div><p>Vous devez cr&eacute;er une connexion entre le sch&eacute;ma d&#8217;entr&eacute;e et
+            les param&egrave;tres d&#8217;entr&eacute;e du Service Web d&eacute;fini. Pour ce faire&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la liste <span class="bold"><strong>Column</strong></span>, s&eacute;lectionnez la colonne
+                    du sch&eacute;ma d&#8217;entr&eacute;e que vous souhaitez mettre en correspondance avec le param&egrave;tre
+                    de sortie du service Web et glissez-la dans le param&egrave;tre correspondant dans la
+                    zone de droite.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>Next</strong></span> pour ouvrir une nouvelle vue
+                    dans l&#8217;&eacute;diteur.</p></li></ul></div><p>Dans l&#8217;onglet <span class="bold"><strong>Output
+                mapping</strong></span>, faites la correspondance entre le param&egrave;tre de sortie du service
+            Web et le sch&eacute;ma du composant de sortie.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="453"><tr><td><img src="../images/Use_Case_tWebService7.png" width="453"></td></tr></table></div><p>Dans la liste <span class="bold"><strong>Element</strong></span> &agrave;
+            gauche de l&#8217;&eacute;diteur, le param&egrave;tre de sortie du service Web appara&icirc;t automatiquement.
+            Vous avez la possibilit&eacute; d&#8217;ajouter d&#8217;autres param&egrave;tres en s&eacute;lectionnant l&#8217;&eacute;l&eacute;ment
+                <span class="bold"><strong>[+] parameters</strong></span> de la liste <span class="bold"><strong>Element</strong></span> &agrave; gauche de l&#8217;&eacute;diteur, en cliquant sur le bouton <span class="bold"><strong>[+]</strong></span>, et en s&eacute;lectionnant les param&egrave;tres souhait&eacute;s dans la
+            bo&icirc;te de dialogue <span class="bold"><strong>[Parameter Tree]</strong></span>.</p><p> Le service Web utilis&eacute; dans ce sc&eacute;nario ne comporte qu&#8217;un seul param&egrave;tre de sortie&nbsp;:
+                <span class="bold"><strong>AllDefendersResult.string</strong></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la zone de droite, cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> du champ <span class="bold"><strong>Edit Schema</strong></span> pour
+                    d&eacute;finir le sch&eacute;ma de sortie.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="516"><tr><td><img src="../images/Use_Case_tWebService6.png" width="516"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans la zone <span class="bold"><strong>Output</strong></span> &agrave; droite de la bo&icirc;te de
+                    dialogue, cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> pour
+                    ajouter une colonne au sch&eacute;ma de sortie.</p></li><li class="listitem"><p>Nommez cette colonne <span class="emphasis"><em>Name</em></span>. Elle r&eacute;cup&egrave;rera les noms des
+                    d&eacute;fenseurs.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span>.</p></li><li class="listitem"><p>Dans l&#8217;&eacute;diteur du <span class="bold"><strong>tWebService</strong></span>, s&eacute;lectionnez
+                    l&#8217;&eacute;l&eacute;ment <span class="bold"><strong>parameters.AllDefendersResult.string</strong></span>
+                    &agrave; gauche et glissez-le dans le champ correspondant &agrave; la colonne <span class="bold"><strong>Name</strong></span> dans la zone de droite.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="527"><tr><td><img src="../images/Use_Case_tWebService5.png" width="527"></td></tr></table></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>S&#8217;il est disponible, utilisez le bouton <span class="bold"><strong>Auto map!</strong></span>
+                situ&eacute; en bas &agrave; gauche de la fen&ecirc;tre, il permet d&#8217;effectuer l&#8217;op&eacute;ration de mapping
+                automatiquement.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>S&eacute;lectionnez cette ligne dans la zone de droite et cliquez sur le bouton
+                        <span class="bold"><strong>Denormalize</strong></span> pour d&eacute;normaliser les donn&eacute;es
+                    retourn&eacute;es.</p></li><li class="listitem"><p>Ajoutez le code <code class="code">[*]</code> apr&egrave;s le param&egrave;tre pour obtenir le code
+                    suivant&nbsp;: <code class="code">denormalize(parameters.AllDefendersResult.string[*],&#8221;:&#8221;)</code>
+                    permettant de r&eacute;cup&eacute;rer la totalit&eacute; des donn&eacute;es s&eacute;par&eacute;e par deux points
+                        <code class="code">&#8220;:&#8221;</code>.</p></li><li class="listitem"><p>Cliquez sur <span class="bold"><strong>OK</strong></span>.</p></li><li class="listitem"><p>Dans l&#8217;espace de mod&eacute;lisation, double-cliquez sur le composant <span class="bold"><strong>tLogRow</strong></span> pour param&eacute;trer ses propri&eacute;t&eacute;s dans la vue
+                        <span class="bold"><strong>Component</strong></span>.</p></li><li class="listitem"><p>Cliquez sur le bouton <span class="bold"><strong>Sync columns</strong></span> pour
+                    r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent.</p></li><li class="listitem"><p>Enregistrez votre Job et appuyez sur <span class="bold"><strong>F6</strong></span> pour
+                    l&#8217;ex&eacute;cuter.</p></li></ul></div><p>Les noms des d&eacute;fenseurs italiens sont retourn&eacute;s et
+            affich&eacute;s dans la console de <span class="bluebold">Talend Enterprise Studio</span>.</p></div></div></body></html>

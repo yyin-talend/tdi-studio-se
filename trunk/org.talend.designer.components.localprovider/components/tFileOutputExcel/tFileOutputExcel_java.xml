@@ -1,0 +1,216 @@
+<COMPONENT>
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.101"
+    STATUS="ALPHA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20050320A"
+    STARTABLE="false"
+  >
+    <SIGNATURE></SIGNATURE>
+  </HEADER>
+
+  <FAMILIES>
+    <FAMILY>File/Output</FAMILY>
+  </FAMILIES>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="10"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
+    <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="COMPONENT_OK"/>
+    <CONNECTOR CTYPE="COMPONENT_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+  	<PARAMETER NAME="VERSION_2007" FIELD="CHECK" REQUIRED="true" NUM_ROW="5">
+      		<DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+	<PARAMETER NAME="USESTREAM" FIELD="CHECK" NUM_ROW="10">
+		<DEFAULT>false</DEFAULT>
+	</PARAMETER>
+	
+	<PARAMETER NAME="STREAMNAME" FIELD="TEXT" NUM_ROW="20" SHOW_IF="USESTREAM=='true'">
+		<DEFAULT>outputStream</DEFAULT>
+	</PARAMETER>
+		
+    <PARAMETER
+      NAME="FILENAME"
+      FIELD="FILE"
+      NUM_ROW="20"
+      REQUIRED="true"
+      NOT_SHOW_IF="USESTREAM=='true'"
+    >
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.xls"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SHEETNAME"
+      FIELD="TEXT"
+      NUM_ROW="30"
+    >
+      <DEFAULT>"Sheet1"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="INCLUDEHEADER"
+      FIELD="CHECK"
+      NUM_ROW="40"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="APPEND_FILE"
+      FIELD="CHECK"
+      NUM_ROW="45"
+      NOT_SHOW_IF="USESTREAM=='true'"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="APPEND_SHEET"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="45"
+      SHOW_IF="(APPEND_FILE == 'true') AND (USESTREAM=='false')"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+	
+	<PARAMETER
+      NAME="FIRST_CELL_Y_ABSOLUTE"
+      FIELD="CHECK"
+      NUM_ROW="50"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+	
+	<PARAMETER
+      NAME="FIRST_CELL_X"
+      FIELD="TEXT"
+      NUM_ROW="50"
+	  SHOW_IF="(FIRST_CELL_Y_ABSOLUTE == 'true')"
+    >
+      <DEFAULT>0</DEFAULT>
+    </PARAMETER>
+	
+	<PARAMETER
+      NAME="FIRST_CELL_Y"
+      FIELD="TEXT"
+      NUM_ROW="50"
+	  SHOW_IF="(FIRST_CELL_Y_ABSOLUTE == 'true')"
+    >
+      <DEFAULT>0</DEFAULT>
+    </PARAMETER>
+    
+	<PARAMETER
+      NAME="KEEP_CELL_FORMATING"
+      FIELD="CHECK"
+      NUM_ROW="50"
+      SHOW_IF="(FIRST_CELL_Y_ABSOLUTE == 'true')"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+	
+	<PARAMETER NAME="FONT" FIELD="CLOSED_LIST" NUM_ROW="55">
+      <ITEMS DEFAULT="NONE">
+      	<ITEM NAME="NONE" VALUE="" />
+        <ITEM NAME="ARIAL" VALUE="ARIAL" />
+        <ITEM NAME="TIMES" VALUE="TIMES"/>
+        <ITEM NAME="COURIER" VALUE="COURIER"/>
+        <ITEM NAME="TAHOMA" VALUE="TAHOMA"/>
+      </ITEMS>
+    </PARAMETER>  
+
+	<PARAMETER NAME="IS_ALL_AUTO_SZIE" FIELD="CHECK" REQUIRED="true" NUM_ROW="65" >
+	  <DEFAULT>false</DEFAULT>
+	</PARAMETER>
+
+	<PARAMETER NAME="AUTO_SZIE_SETTING" FIELD="TABLE" NUM_ROW="70" NB_LINES="3" SHOW_IF="IS_ALL_AUTO_SZIE=='false'" >
+	  <ITEMS BASED_ON_SCHEMA="true">
+		<ITEM NAME="IS_AUTO_SIZE" FIELD="CHECK" />
+	  </ITEMS>
+	</PARAMETER>
+
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="75"
+    >
+      <DEFAULT/> 
+    </PARAMETER>
+  </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER
+      NAME="CREATE"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="40"
+      NOT_SHOW_IF="USESTREAM=='true'"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+	<PARAMETER NAME="ADVANCED_SEPARATOR" FIELD="CHECK" REQUIRED="true" NUM_ROW="46" >
+		<DEFAULT>false</DEFAULT>
+	</PARAMETER>
+	
+	<PARAMETER NAME="THOUSANDS_SEPARATOR" FIELD="TEXT" REQUIRED="true" NUM_ROW="46"
+		SHOW_IF="(ADVANCED_SEPARATOR == 'true')">
+		<DEFAULT>","</DEFAULT>
+	</PARAMETER>		
+	
+	<PARAMETER NAME="DECIMAL_SEPARATOR" FIELD="TEXT" REQUIRED="true" NUM_ROW="46"
+		SHOW_IF="(ADVANCED_SEPARATOR == 'true')">
+		<DEFAULT>"."</DEFAULT>
+	</PARAMETER>
+	
+	<PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="60"
+      REQUIRED="true"
+    >
+      <DEFAULT>"ISO-8859-15"</DEFAULT>
+    </PARAMETER>
+    
+  	<PARAMETER NAME="DELETE_EMPTYFILE" FIELD="CHECK" REQUIRED="true" NUM_ROW="70" SHOW_IF="(APPEND_FILE == 'false') AND (USESTREAM=='false')">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>    
+  </ADVANCED_PARAMETERS>
+
+  <CODEGENERATION>
+    <IMPORTS>
+      <IMPORT NAME="Java_Excel" MODULE="jxl.jar" REQUIRED="true" />
+      
+      <IMPORT NAME="TALEND_EXCEL" MODULE="talendExcel.jar" REQUIRED="true" />
+      <IMPORT NAME="dom4j" MODULE="dom4j-1.6.1.jar" REQUIRED="true" />
+      <IMPORT NAME="geronimo-stax-api" MODULE="geronimo-stax-api_1.0_spec-1.0.jar" REQUIRED="true" />
+      <IMPORT NAME="log4j" MODULE="log4j-1.2.15.jar" REQUIRED="true" />
+      <IMPORT NAME="poi" MODULE="poi-3.7-20101029.jar" REQUIRED="true" />
+      <IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-3.7-20101029.jar" REQUIRED="true" />
+      <IMPORT NAME="poi-ooxml-schemas" MODULE="poi-ooxml-schemas-3.7-20101029.jar" REQUIRED="true" />
+      <IMPORT NAME="poi-scratchpad" MODULE="poi-scratchpad-3.7-20101029.jar" REQUIRED="true" />
+      <IMPORT NAME="xmlbeans" MODULE="xmlbeans-2.3.0.jar" REQUIRED="true" />
+    </IMPORTS>
+  </CODEGENERATION>
+
+  <RETURNS>
+    <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
+  </RETURNS>
+
+</COMPONENT>

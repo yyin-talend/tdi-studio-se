@@ -1,0 +1,202 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tRunJob</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch15.html" title="Chapitre&nbsp;15.&nbsp;Composants System"><link rel="prev" href="ch15.html" title="Chapitre&nbsp;15.&nbsp;Composants System"><link rel="next" href="tSetEnv.html" title="tSetEnv"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tRunJob"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tRunJob"></a>tRunJob</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tRunJob.png" width="27"></td></tr></table></div><a name="Xaa1239929"></a><div class="section" title="Propri&eacute;t&eacute;s du tRunJob"><div class="titlepage"><div><div><h3 class="title"><a name="Raa62964"></a>Propri&eacute;t&eacute;s du tRunJob</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>System</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tRunJob</strong></span> ex&eacute;cute le Job sp&eacute;cifi&eacute; dans ses
+                                propri&eacute;t&eacute;s dans un contexte d&eacute;fini.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tRunJob</strong></span> permet de ma&icirc;triser des syst&egrave;mes de Job
+                                complexes devant &ecirc;tre ex&eacute;cuter l&#8217;un apr&egrave;s l&#8217;autre.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. Le sch&eacute;ma est soit local (built-in) soit distant dans le
+                                Repository. </p><p> Cliquez sur <span class="bold"><strong>Edit
+                                    Schema</strong></span> pour modifier le sch&eacute;ma. Notez que si vous
+                                modifiez le sch&eacute;ma dans cette vue, il devient automatiquement
+                                built-in.</p><p> Cliquez sur <span class="bold"><strong>Sync
+                                    columns </strong></span>pour r&eacute;cup&eacute;rer le sch&eacute;ma du composant
+                                pr&eacute;c&eacute;dent dans le Job.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Le
+                                sch&eacute;ma sera cr&eacute;&eacute; et conserv&eacute; pour ce composant seulement. Voir
+                                &eacute;galement&nbsp;: <span class="bold"><strong>Guide utilisateur</strong></span> de
+                                    <span class="bluebold">Talend Open Studio</span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le
+                                sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut
+                                &ecirc;tre r&eacute;utilis&eacute; dans divers projets et Job designs. Voir
+                                    &eacute;galement&nbsp;:&nbsp;<span class="bold"><strong>Guide utilisateur</strong></span>
+                                de <span class="bluebold">Talend Open Studio</span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use dynamic job</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case afin de pouvoir appeler et
+                                traiter de nombreux Jobs. Lorsque cette case est coch&eacute;e, seule la
+                                derni&egrave;re version des Jobs peut &ecirc;tre appel&eacute;e et trait&eacute;e. Un processus
+                                ind&eacute;pendant sera utilis&eacute; pour ex&eacute;cuter le sous-job. Les options
+                                    <span class="bold"><strong>Context</strong></span> et <span class="bold"><strong>Use an independent process to run subjob</strong></span>
+                                disparaissent.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Context job</em></span></p>
+                        </td><td valign="top"><p>Ce champ est visible uniquement lorsque l&#8217;option
+                                    <span class="bold"><strong>Use dynamic job</strong></span> est coch&eacute;e.
+                                Saisissez le nom du Job que vous souhaitez appeler dans la liste des
+                                Jobs s&eacute;lectionn&eacute;s.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>CopyChild Job Schema</em></span></p>
+                        </td><td valign="top"><p>Cliquez sur ce bouton pour r&eacute;cup&eacute;rer le sch&eacute;ma du
+                                Job fils.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Job</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez le Job &agrave; appeler et &agrave; traiter.
+                                Assurez-vous que le Job appel&eacute; ait &eacute;t&eacute; ex&eacute;cut&eacute; au moins une fois
+                                auparavant pour que son ex&eacute;cution via le <span class="bold"><strong>tRunJob</strong></span> se d&eacute;roule le mieux possible.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Version</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez la version du Job fils que vous
+                                souhaitez utiliser.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Context</em></span></p>
+                        </td><td valign="top"><p>Si vous avez param&eacute;tr&eacute; des contextes et des
+                                variables pour les Jobs &agrave; ex&eacute;cuter via le <span class="bold"><strong>tRunJob</strong></span>, s&eacute;lectionnez dans la liste le contexte &agrave;
+                                appliquer.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use an independent process to run
+                                    subjob</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case afin d&#8217;utiliser un processus
+                                id&eacute;pendant pour ex&eacute;cuter le sous-job. Cela vous permettra de
+                                r&eacute;soudre des probl&egrave;mes li&eacute;s&agrave; la taille limite de la m&eacute;moire.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Die on child error</em></span></p>
+                        </td><td valign="top"><p>D&eacute;cochez cette case pour ex&eacute;cuter le Job parent
+                                m&ecirc;me s&#8217;il y a une erreur lors de l&#8217;ex&eacute;cution du Job fils.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Transmit whole context</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour obtenir les contextes du
+                                Job parent. D&eacute;cochez-la pour obtenir les contextes du Job
+                                fils.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Context Param</em></span></p>
+                        </td><td valign="top"><p>Vous pouvez modifier les param&egrave;tres de contexte
+                                s&eacute;lectionn&eacute;s. Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> pour ajouter les param&egrave;tres tels qu&#8217;ils ont &eacute;t&eacute;
+                                d&eacute;finis dans le contexte du Job fils. </p><p> Pour plus
+                                d&#8217;informations sur les param&egrave;tres de contexte, consultez le
+                                    <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.
+                            </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Print Parameters</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour afficher les param&egrave;tres
+                                internes et externes dans la <span class="bold"><strong>Console</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de
+                                log au niveau du composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant peut &ecirc;tre
+                                utilis&eacute; en Job standalone ou peut aider &agrave; clarifier certains Jobs
+                                complexes en &eacute;vitant d&#8217;avoir un nombre important de sous-jobs dans
+                                le m&ecirc;me Job.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Global
+                                Variables</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Child return
+                                code</strong></span>&nbsp;: indique le code de retour Java du Job fils.
+                                Disponible comme variable <span class="bold"><strong>After</strong></span>.</p><p> Retourne un entier&nbsp;:</p><p>
+                                sans erreur&nbsp; &gt; la valeur du code est 0.</p><p> avec
+                                erreur(s) &gt; un message d&#8217;erreur appara&icirc;t.</p><p> </p><p>
+                                <span class="bold"><strong>Child exception stack trace</strong></span>&nbsp;:
+                                retourne la trace de la pile Java d&#8217;un Job fils. Disponible comme
+                                variable <span class="bold"><strong>After</strong></span>.</p><p>
+                                Retourne une cha&icirc;ne de caract&egrave;res.</p><p> </p><p> Pour
+                                plus d&#8217;informations concernant les variables, consultez&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span>
+                                <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Connections</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p>Liens de sortie (d&#8217;un composant &agrave; un
+                                autre)&nbsp;:</p><p>
+                                <span class="bold"><strong>Row</strong></span>&nbsp;: Main.</p><p>
+                                <span class="bold"><strong>Trigger</strong></span>&nbsp;: OnSubjobOk,
+                                OnSubjobError, Run if, OnComponentOk,
+                                OnComponentError.</p><p> </p><p> Liens d&#8217;entr&eacute;e (d&#8217;un
+                                composant &agrave; un autre)&nbsp;:</p><p>
+                                <span class="bold"><strong>Row</strong></span>&nbsp;: Main, Reject, Iterate.</p><p>
+                                <span class="bold"><strong>Trigger</strong></span>&nbsp;: OnSubjobOk,
+                                OnSubjobError, Run if, OnComponentOk, OnComponentError, Synchronize,
+                                Parallelize.</p><p> </p><p> Pour plus d&#8217;informations
+                                concernant les liens, consultez&nbsp;le <span class="bold"><strong>Guide
+                                    utilisateur</strong></span>
+                                <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Ex&eacute;cuter un Job fils"><div class="titlepage"><div><div><h3 class="title"><a name="d0e239475"></a>Sc&eacute;nario&nbsp;: Ex&eacute;cuter un Job fils</h3></div></div></div><p>Le sc&eacute;nario suivant d&eacute;crit un Job &agrave; un composant appelant et ex&eacute;cutant un autre Job.
+            Le Job &agrave; ex&eacute;cuter lit une liste de fichiers d&eacute;limit&eacute;s de base et affiche son contenu
+            dans la console de la vue <span class="bold"><strong>Run</strong></span>. La particularit&eacute; de ce
+            Job r&eacute;side dans le fait que ce dernier est ex&eacute;cut&eacute; &agrave; partir d&#8217;un autre Job et utilise la
+            variable de contexte provenant du fichier d&#8217;entr&eacute;e devant &ecirc;tre trait&eacute;.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="214"><tr><td><img src="../images/Use_Case_tRunJob1.png" width="214"></td></tr></table></div><p>Cr&eacute;ez le premier Job lisant un fichier d&eacute;limit&eacute;.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> A partir de la <span class="bold"><strong>Palette</strong></span>, cliquez et d&eacute;posez
+                    les composants <span class="bold"><strong>tFileInputDelimited</strong></span> et <span class="bold"><strong>tLogRow</strong></span> dans l&#8217;espace de mod&eacute;lisation.</p></li><li class="listitem"><p> Connectez ces deux composants &agrave; l&#8217;aide d&#8217;un lien de type <span class="bold"><strong>Row Main</strong></span>. </p></li><li class="listitem"><p> Double-cliquez sur le composant <span class="bold"><strong>tFileInputDelimited
+                    </strong></span>pour afficher la vue <span class="bold"><strong>Basic settings</strong></span>
+                    et param&eacute;trer les propri&eacute;t&eacute;s du composant d&#8217;entr&eacute;e.</p></li><li class="listitem"><p> Dans la liste d&eacute;roulante <span class="bold"><strong>Property Type</strong></span>,
+                    s&eacute;lectionnez l&#8217;option <span class="bold"><strong>Built-In</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="467"><tr><td><img src="../images/Use_Case_tRunJob3.png" width="467"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Cliquez dans le champ <span class="bold"><strong>File Name</strong></span> puis appuyez
+                    sur la touche <span class="bold"><strong>F5</strong></span> pour ouvrir la fen&ecirc;tre de
+                    configuration de variable.</p></li><li class="listitem"><p> Nommez&nbsp;<span class="emphasis"><em>File</em></span> cette nouvelle variable de contexte.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="370"><tr><td><img src="../images/Use_Case_tRunJob4.png" width="370"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Pour cet exemple, laissez les param&egrave;tres par d&eacute;faut, i.e. ne cochez pas la
+                    case <span class="bold"><strong>Prompt for value</strong></span> et laissez le champ
+                        <span class="bold"><strong>Prompt</strong></span> vide.</p></li><li class="listitem"><p> Cliquez sur <span class="bold"><strong>Finish</strong></span> pour valider puis appuyez
+                    sur <span class="bold"><strong>Enter</strong></span> pour vous assurer que la nouvelle
+                    variable de contexte est conserv&eacute;e dans le champ <span class="bold"><strong>File
+                        Name</strong></span>.</p></li><li class="listitem"><p> Dans les champs <span class="bold"><strong>Field separator</strong></span> et <span class="bold"><strong>Row separator</strong></span> de l&#8217;onglet <span class="bold"><strong>Basic
+                        settings</strong></span>, renseignez respectivement les s&eacute;parateurs de champs et
+                    de lignes utilis&eacute;s dans le fichier d&#8217;entr&eacute;e.</p></li><li class="listitem"><p> Dans cet exemple, les fichiers ne poss&egrave;dent ni en-t&ecirc;te ni pied de page.
+                    Ainsi, laissez les champs <span class="bold"><strong>Header</strong></span> et <span class="bold"><strong>Footer</strong></span> vides. Les fichiers sont relativement courts,
+                    vous pouvez donc laisser le champ <span class="bold"><strong>Limit</strong></span> vide.
+                </p></li><li class="listitem"><p> Dans la liste d&eacute;roulante <span class="bold"><strong>Schema type</strong></span>,
+                    s&eacute;lectionnez l&#8217;option <span class="bold"><strong>Built-in</strong></span>. Cliquez sur le
+                    bouton <span class="bold"><strong>[...]</strong></span> pour configurer manuellement le
+                    sch&eacute;ma.</p></li><li class="listitem"><p> Ajoutez deux colonnes et nommez-les comme les deux premi&egrave;res colonnes du
+                    fichier d&#8217;entr&eacute;e. Dans cet exemple&nbsp;: <span class="emphasis"><em>username</em></span> et
+                        <span class="emphasis"><em>age</em></span>.</p></li></ul></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> Si vous avez stock&eacute; le sch&eacute;ma dans le <span class="bold"><strong>Repository</strong></span>, s&eacute;lectionnez la m&eacute;tadonn&eacute;e correspondant &agrave; la structure de
+                votre fichier d&#8217;entr&eacute;e.</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Double-cliquez sur le composant <span class="bold"><strong>tLogRow </strong></span>pour
+                    afficher la vue <span class="bold"><strong>Basic settings</strong></span> et param&eacute;trer
+                    les propri&eacute;t&eacute;s du composant de sortie.</p></li><li class="listitem"><p> Cliquez sur le bouton <span class="bold"><strong>Sync columns</strong></span> pour
+                    r&eacute;cup&eacute;rer le sch&eacute;ma du composant d&#8217;entr&eacute;e puis param&eacute;trez les autres options
+                    selon vos besoins. </p></li><li class="listitem"><p> Enregistrez le Job fils puis appuyez sur la touche <span class="bold"><strong>F6</strong></span> vous assurer qu&#8217;il s&#8217;ex&eacute;cute correctement. </p></li></ul></div><p>Cr&eacute;ez le deuxi&egrave;me Job jouant le r&ocirc;le de Job parent.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Cliquez et d&eacute;posez les composants <span class="bold"><strong>tFileList</strong></span>
+                    et <span class="bold"><strong>tRunJob</strong></span> dans l&#8217;espace de
+                    mod&eacute;lisation.</p></li><li class="listitem"><p> Connectez ces deux composants &agrave; l&#8217;aide d&#8217;un lien de type <span class="bold"><strong>Iterate</strong></span>. </p></li><li class="listitem"><p> Double-cliquez sur le composant <span class="bold"><strong>tFileList
+                    </strong></span>pour afficher la vue <span class="bold"><strong>Basic settings</strong></span>
+                    et param&eacute;trer les propri&eacute;t&eacute;s du composant.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="501"><tr><td><img src="../images/Use_Case_tRunJob5.png" width="501"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans le champ <span class="bold"><strong>Directory</strong></span>, renseignez le
+                    chemin d&#8217;acc&egrave;s au r&eacute;pertoire contenant les fichiers &agrave; traiter ou cliquez sur le
+                    bouton <span class="bold"><strong>[...]</strong></span> pour parcourir vos dossiers
+                    jusqu&#8217;&agrave; ce r&eacute;pertoire. Dans cet exemple, il s&#8217;agit du r&eacute;pertoire
+                        <span class="emphasis"><em>tRunJob</em></span> qui contient trois fichiers d&eacute;limit&eacute;s. </p></li><li class="listitem"><p> Dans la liste d&eacute;roulante <span class="bold"><strong>FileList Type</strong></span>,
+                    s&eacute;lectionnez l&#8217;option <span class="bold"><strong>Files</strong></span>. </p></li><li class="listitem"><p> Cochez la case <span class="bold"><strong>Use Glob Expressions as
+                        Filemask</strong></span> pour pouvoir utiliser des expressions r&eacute;guli&egrave;res dans
+                    vos masques. </p></li><li class="listitem"><p> Cliquez sur le bouton<span class="bold"><strong> [...] </strong></span>pour ajouter un
+                    masque et renseignez le filtre &agrave; appliquer. Dans cet exemple, les fichiers &agrave;
+                    r&eacute;cup&eacute;rer sont de type d&eacute;limit&eacute;, le filtre choisi est
+                        <span class="emphasis"><em>&#8220;*.csv&#8221;</em></span>. </p></li><li class="listitem"><p> Double-cliquez sur le composant <span class="bold"><strong>tRunJob </strong></span>pour
+                    afficher la vue <span class="bold"><strong>Basic settings</strong></span> et param&eacute;trer
+                    les propri&eacute;t&eacute;s du composant.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="476"><tr><td><img src="../images/Use_Case_tRunJob7.png" width="476"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ
+                    Job pour acc&eacute;der &agrave; la bo&icirc;te de dialogue <span class="bold"><strong>[Find a
+                        Job]</strong></span>. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="251"><tr><td><img src="../images/Use_Case_tRunJob2.png" width="251"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> S&eacute;lectionnez le Job fils &agrave; ex&eacute;cuter puis cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de dialogue. Le nom du Job s&eacute;lectionn&eacute;
+                    appara&icirc;t dans le champ <span class="bold"><strong>Job</strong></span> de la vue <span class="bold"><strong>Basic settings</strong></span> du <span class="bold"><strong>tRunJob</strong></span>.</p></li><li class="listitem"><p> Cliquez sur le bouton <span class="bold"><strong>Copy Child Job Schema
+                    </strong></span>pour r&eacute;cup&eacute;rer le sch&eacute;ma d&eacute;fini dans le Job fils. </p></li><li class="listitem"><p> Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> pour ajouter une
+                    ligne de param&egrave;tres dans le champ <span class="bold"><strong>Context
+                    Param</strong></span>. </p></li><li class="listitem"><p> Cliquez dans la cellule <span class="bold"><strong>Values</strong></span> puis appuyez
+                    sur <span class="bold"><strong>Ctrl+Espace</strong></span> pour acc&eacute;der &agrave; la liste des
+                    variables de contexte et s&eacute;lectionnez le contexte
+                        <span class="emphasis"><em>tFileList-1.CURRENT_FILEPATH</em></span>. La cellule <span class="bold"><strong>Values </strong></span>est automatiquement renseign&eacute;e par la variable
+                    de contexte correspondante&nbsp;:
+                        <code class="code">((String)globalMap.get(&#8220;</code><span class="emphasis"><em>tFileList-1.CURRENT_FILEPATH</em></span><code class="code"><span>&#8221;))</span></code>. </p><p> Pour plus d&#8217;informations sur les param&egrave;tres de contexte, consultez le
+                        <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p></li><li class="listitem"><p> Enregistrez le Job ma&icirc;tre puis appuyez sur la touche <span class="bold"><strong>F6</strong></span> pour l&#8217;ex&eacute;cuter.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="407"><tr><td><img src="../images/Use_Case_tRunJob6.png" width="407"></td></tr></table></div><p>Le Job appel&eacute; lit les donn&eacute;es contenues dans les fichiers d&#8217;entr&eacute;e comme d&eacute;fini dans
+            le sch&eacute;ma d&#8217;entr&eacute;e et le r&eacute;sultat de ce Job est directement affich&eacute; dans la console
+                <span class="bold"><strong>Run</strong></span>.</p><p>Voir &eacute;galement&nbsp;: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+                    <a class="xref" href="tLoop.html" title="tLoop">la section intitul&eacute;e &laquo;&nbsp;tLoop&nbsp;&raquo;</a>, </p></li><li class="listitem"><p>
+                    <a class="xref" href="tBufferOutput.html#Raa33926" title="Sc&eacute;nario&nbsp;1&nbsp;: Mettre des donn&eacute;es en tampon">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;1&nbsp;: Mettre des donn&eacute;es en tampon&nbsp;&raquo;</a> du composant <span class="bold"><strong>tBufferOutput</strong></span>. </p></li></ul></div></div></div></body></html>

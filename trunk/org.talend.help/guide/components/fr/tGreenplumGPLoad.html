@@ -1,0 +1,497 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tGreenplumGPLoad</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tGreenplumInput.html" title="tGreenplumInput"><link rel="next" href="tGreenplumOutput.html" title="tGreenplumOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tGreenplumGPLoad"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tGreenplumGPLoad"></a>tGreenplumGPLoad</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tGreenplumGPLoad_icon32.png" width="27"></td></tr></table></div><p>Ce composant invoque l&#8217;utilitaire gpload de Greenplum afin d&#8217;ins&eacute;rer des enregistrements
+		dans une base de donn&eacute;es Greenplum. Ce composant peut &ecirc;tre utilis&eacute; soit en mode standalone,
+		il chargera alors les donn&eacute;es &agrave; partir d&#8217;un fichier de donn&eacute;es existant, soit connect&eacute; &agrave; un
+		flux d&#8217;entr&eacute;e, afin de charger des donn&eacute;es &agrave; partir du composant connect&eacute;.</p><div class="section" title="Propri&eacute;t&eacute;s du tGreenplumGPLoad"><div class="titlepage"><div><div><h3 class="title"><a name="d0e73582"></a>Propri&eacute;t&eacute;s du tGreenplumGPLoad</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/Greenplum</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="bold"><strong>tGreenplumGPLoad</strong></span>
+								ins&egrave;re des donn&eacute;es dans la table d&#8217;une base de donn&eacute;es Greenplum via
+								l&#8217;utilitaire gpload de Greenplum.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant permet de charger en masse des donn&eacute;es dans une table
+								Greenplum soit &agrave; partir d&#8217;un fichier, soit &agrave; partir d&#8217;un flux
+								d&#8217;entr&eacute;e, soit &agrave; partir d&#8217;un tube nomm&eacute;.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Peut &ecirc;tre Built-in ou Repository.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Propri&eacute;t&eacute;s utilis&eacute;es
+								ponctuellement.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository&nbsp;</strong></span>: S&eacute;lectionnez le
+								fichier de propri&eacute;t&eacute;s du composant. Les champs suivants sont alors
+								pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es collect&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Adresse IP du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Schema</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom exact du sch&eacute;ma.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Informations d&#8217;authentification de l&#8217;utilisateur de base de
+								donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la table dans laquelle les donn&eacute;es doivent &ecirc;tre
+								ins&eacute;r&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Action on table</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Vous pouvez effectuer l&#8217;une des op&eacute;rations suivantes sur les
+								donn&eacute;es de la table s&eacute;lectionn&eacute;e, avant de charger les donn&eacute;es&nbsp;: </p>
+							<p><span class="bold"><strong>None</strong></span>&nbsp;: n&#8217;effectuer aucune
+								op&eacute;ration de table.</p>
+							<p><span class="bold"><strong>Clear table</strong></span>&nbsp;: supprimer le
+								contenu de la table.</p>
+							<p><span class="bold"><strong>Create table</strong></span>&nbsp;: cr&eacute;er une table
+								qui n&#8217;existe pas encore. </p>
+							<p><span class="bold"><strong>Create table if not exists</strong></span>&nbsp;:
+								cr&eacute;er la table si n&eacute;cessaire. </p>
+							<p><span class="bold"><strong>Drop and create the table</strong></span>&nbsp;:
+								supprimer la table puis en cr&eacute;er une nouvelle. </p>
+							<p><span class="bold"><strong>Drop table if exists and create</strong></span>&nbsp;:
+								supprimer la table si elle existe d&eacute;j&agrave; et la (re)cr&eacute;e.</p>
+							<p><span class="bold"><strong>Truncate table&nbsp;</strong></span>: supprimer
+								rapidement le contenu de la table, mais sans possibilit&eacute; de
+								Rollback. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Action on data</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Vous pouvez effectuer diff&eacute;rentes actions sur les donn&eacute;es de la
+								table d&eacute;finie&nbsp;:</p>
+							<p><span class="bold"><strong>Insert</strong></span>&nbsp;: Ajouter de nouvelles
+								entr&eacute;es &agrave; la table. Si des doublons sont trouv&eacute;s, le Job
+								s&#8217;arr&ecirc;te.</p>
+							<p><span class="bold"><strong>Update</strong></span>&nbsp;: Apporter des
+								modifications aux entr&eacute;es existantes.</p>
+							<p><span class="bold"><strong>Merge</strong></span>&nbsp;: Mettre &agrave; jour ou ajouter
+								des donn&eacute;es dans la table.</p>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Il est n&eacute;cessaire de sp&eacute;cifier au moins une colonne comme &eacute;tant une cl&eacute;
+										primaire sur laquelle baser les op&eacute;rations </em></span>
+									<span class="bold"><strong>Update</strong></span>
+									<span class="emphasis"><em> et </em></span>
+									<span class="bold"><strong>Merge</strong></span>
+									<span class="emphasis"><em>. Vous pouvez le faire en cliquant sur </em></span>
+									<span class="bold"><strong>Edit Schema</strong></span>
+									<span class="emphasis"><em> et en cochant la (les) case(s) &agrave; c&ocirc;t&eacute; de la (des)
+										colonne(s) que vous souhaitez d&eacute;finir comme cl&eacute;(s)
+										primaire(s). Pour configurer les options des op&eacute;rations </em></span>
+									<span class="bold"><strong>Update</strong></span>
+									<span class="emphasis"><em> et </em></span>
+									<span class="bold"><strong>Merge</strong></span>
+									<span class="emphasis"><em>, cochez les cases de la colonne </em></span>
+									<span class="bold"><strong>Match Column</strong></span>
+									<span class="emphasis"><em> correspondant aux noms des colonnes que vous
+										souhaitez utiliser comme base pour les op&eacute;rations </em></span>
+									<span class="bold"><strong>Update</strong></span>
+									<span class="emphasis"><em> et </em></span>
+									<span class="bold"><strong>Merge</strong></span>
+									<span class="emphasis"><em>. Ensuite, cochez les cases de la colonne </em></span>
+									<span class="bold"><strong>Update Column </strong></span>
+									<span class="emphasis"><em>correspondant aux noms des colonnes que vous souhaitez
+										mettre &agrave; jour. Pour configurer le champ </em></span>
+									<span class="bold"><strong>Update condition</strong></span>
+									<span class="emphasis"><em>, saisissez la condition qui sera utilis&eacute;e pour mettre
+										&agrave; jour les donn&eacute;es.</em></span>
+								</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (Built-in) soit distant dans le
+								Repository.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+								conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;: <span class="bold"><strong>Guide utilisateur </strong></span>de <span class="bluebold">Talend Open Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+								r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;: <span class="bold"><strong>Guide
+									utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Data file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Chemin d&#8217;acc&egrave;s complet au fichier de donn&eacute;es &agrave; utiliser. Si ce
+								composant est utilis&eacute; seul (non connect&eacute; &agrave; un autre composant par un
+								flux d&#8217;entr&eacute;e), alors saisissez le nom d&#8217;un fichier existant &agrave;
+								charger dans la base de donn&eacute;es. S&#8217;il est connect&eacute; &agrave; un autre
+								composant par un flux d&#8217;entr&eacute;e, saisissez le nom du fichier &agrave;
+								g&eacute;n&eacute;rer et &agrave; &eacute;crire avec les donn&eacute;es d&#8217;entr&eacute;e, afin de l&#8217;utiliser
+								plus tard avec gpload pour charger dans la base de donn&eacute;es. Ce champ
+								est masqu&eacute; lorsque la case <span class="bold"><strong>Use
+									named-pipe</strong></span> est coch&eacute;e.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use named-pipe</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case afin d&#8217;utiliser un tube nomm&eacute; &agrave; la place d&#8217;un
+								fichier de donn&eacute;es. Cette option ne peut &ecirc;tre utilis&eacute;e que lorsque
+								le composant est connect&eacute; &agrave; un autre composant par un flux d&#8217;entr&eacute;e.
+								Quand la case est coch&eacute;e, aucun fichier de donn&eacute;es n&#8217;est g&eacute;n&eacute;r&eacute;, et
+								les donn&eacute;es sont transf&eacute;r&eacute;es &agrave; l&#8217;utilitaire gpload via un tube
+								nomm&eacute;. Cette option am&eacute;liore grandement les performances sous Linux
+								et Windows. </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Ce composant, en mode tube nomm&eacute;, utilise une interface JNI pour cr&eacute;er un tube nomm&eacute;
+									et &eacute;crire dedans, dans toute plateforme Windows. Le chemin
+									d&#8217;acc&egrave;s associ&eacute; au fichier DLL JNI doit &ecirc;tre configur&eacute; dans le
+									chemin d&#8217;acc&egrave;s &agrave; la biblioth&egrave;que Java. Le composant est
+									automatiquement fourni dans le Studio avec deux DLL pour les
+									syst&egrave;mes d&#8217;exploitation de 32 et 64 bits.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Named-pipe name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Sp&eacute;cifiez un nom pour le tube nomm&eacute; &agrave; utiliser. V&eacute;rifiez que le
+								nom saisi est valide.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Die on error</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cette case est coch&eacute;e par d&eacute;faut et stoppe le Job en cas d&#8217;erreur.
+								D&eacute;cochez cette case pour terminer le traitement avec les lignes sans
+								erreur, et ignorer les lignes en erreur. Vous pouvez r&eacute;cup&eacute;rer les
+								lignes en erreur, si vous le souhaitez. Pour cela, utilisez un lien
+									<span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Rejects</strong></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p><a name="Xaa4765350"></a>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use existing control file (YAML formatted)</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour fournir un fichier de contr&ocirc;le &agrave; utiliser
+								avec l&#8217;utilitaire gpload au lieu de sp&eacute;cifier explicitement toutes
+								les options dans le composant. Lorsque cette case est coch&eacute;e,
+								l&#8217;option <span class="bold"><strong>Data file</strong></span> ainsi que les
+								autres options li&eacute;es &agrave; l&#8217;utilitaire gpload ne s&#8217;appliquent plus.
+								Veuillez vous r&eacute;f&eacute;rer au manuel du gpload de Greenplum pour plus
+								d&#8217;informations concernant la cr&eacute;ation d&#8217;un fichier de
+								contr&ocirc;le.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Control file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le chemin d&#8217;acc&egrave;s au fichier de contr&ocirc;le &agrave; utiliser,
+								entre guillemets doubles, ou cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> afin de parcourir votre r&eacute;pertoire
+								jusqu&#8217;au fichier de contr&ocirc;le. Cette option est pass&eacute;e &agrave; l&#8217;utilitaire
+								gpload via l&#8217;argument<span class="emphasis"><em> -f</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>CSV mode</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour inclure des param&egrave;tres sp&eacute;cifiques au
+								format CSV, tels que <span class="bold"><strong>Escape char</strong></span> et
+									<span class="bold"><strong>Text enclosure</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Field separator</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Caract&egrave;re, cha&icirc;ne de caract&egrave;res ou expression r&eacute;guli&egrave;re utilis&eacute;
+								pour s&eacute;parer les champs.</p>
+							<div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Argument delim de l&#8217;utilitaire gpload. La valeur par d&eacute;faut est |. Pour
+										am&eacute;liorer les performances, utilisez la valeur par
+										d&eacute;faut.</em></span>
+								</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Escaped char</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Caract&egrave;re d&#8217;&eacute;chappement de la ligne. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="italic">Text enclosure</span>
+							</p>
+						</td><td valign="top">
+							<p>Caract&egrave;res utilis&eacute;s pour entourer le texte.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Header (skips the first row of data file)</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour ignorer la premi&egrave;re ligne du fichier de
+								donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Additional options</em></span>
+							</p>
+						</td><td valign="top">
+							<p>D&eacute;finissez les arguments gpload dans le tableau correspondant.
+								Cliquez sur le bouton <span class="bold"><strong>[+] </strong></span>autant de
+								fois que n&eacute;cessaire afin d&#8217;ajouter les arguments au tableau.</p>
+							<p>Cliquez sur le champ <span class="bold"><strong>Parameter</strong></span> et
+								choisissez l&#8217;argument souhait&eacute; dans la liste, puis cliquez sur le
+								champ <span class="bold"><strong>Value</strong></span> correspondant et
+								saisissez une valeur entre guillemets.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>LOCAL_HOSTNAME</strong></span>&nbsp;: Nom de l&#8217;h&ocirc;te ou
+								adresse IP de la machine sur laquelle gpload fonctionne. Si cette
+								machine est configur&eacute;e avec plusieurs cartes r&eacute;seau, vous pouvez
+								sp&eacute;cifier le nom de l&#8217;h&ocirc;te ou l&#8217;adresse IP de chaque carte r&eacute;seau,
+								afin de permettre au trafic d&#8217;utiliser simultan&eacute;ment toutes les
+								cartes r&eacute;seau. Par d&eacute;faut, l&#8217;h&ocirc;te local ou adresse IP principal(e)
+								est utilis&eacute;(e).</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>PORT (gpfdist port)</strong></span>&nbsp;: Num&eacute;ro du
+								port sp&eacute;cifique devant &ecirc;tre utilis&eacute; par le programme de distribution
+								du fichier gpfdist. Vous pouvez &eacute;galement renseigner <span class="bold"><strong>PORT_RANGE</strong></span> afin de s&eacute;lectionner un port
+								disponible dans l&#8217;&eacute;cart sp&eacute;cifi&eacute;. Si <span class="bold"><strong>PORT</strong></span> et <span class="bold"><strong>PORT_RANGE
+								</strong></span>sont sp&eacute;cifi&eacute;s, <span class="bold"><strong>PORT</strong></span>
+								pr&eacute;vaut. Si aucun des deux n&#8217;est d&eacute;fini, un port disponible
+								entre&nbsp;8000 et&nbsp;9000 est s&eacute;lectionn&eacute; par d&eacute;faut. Si plusieurs noms
+								d&#8217;h&ocirc;tes sont d&eacute;clar&eacute;s dans <span class="bold"><strong>LOCAL_HOSTNAME</strong></span>, le num&eacute;ro du port est utilis&eacute; pour
+								tous les h&ocirc;tes. Cette configuration est souhait&eacute;e si vous voulez
+								utiliser toutes les cartes r&eacute;seau pour charger le m&ecirc;me fichier ou le
+								m&ecirc;me ensemble de fichiers dans un r&eacute;pertoire donn&eacute;.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>PORT_RANGE</strong></span>&nbsp;: Peut &ecirc;tre utilis&eacute; &agrave;
+								la place de <span class="bold"><strong>PORT (gpfdist port)</strong></span>
+								afin de sp&eacute;cifier une plage de num&eacute;ros de ports parmi lesquels
+								gpload peut choisir un port disponible pour cette instance du
+								programme de distribution du fichier gpfdist.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>NULL_AS</strong></span>&nbsp;: Cha&icirc;ne de caract&egrave;res
+								repr&eacute;sentant une valeur null. La valeur par d&eacute;faut est
+									<code class="code">\N</code> en mode TEXT et une valeur vide sans guillemet
+								en mode CSV. Tout &eacute;l&eacute;ment de donn&eacute;es source correspondant &agrave; cette
+								cha&icirc;ne de caract&egrave;res sera consid&eacute;r&eacute; comme valeur null.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>FORCE_NOT_NULL</strong></span>&nbsp;: En mode CSV,
+								traite chaque colonne sp&eacute;cifi&eacute;e comme si elle &eacute;tait entour&eacute;e de
+								guillemets et n&#8217;&eacute;tait donc pas une valeur NULL. Pour la cha&icirc;ne de
+								caract&egrave;res null par d&eacute;faut en mode CSV (aucun caract&egrave;re entre deux
+								d&eacute;limiteurs), cela cr&eacute;e des valeurs manquantes &agrave; &eacute;valuer comme des
+								cha&icirc;nes de caract&egrave;res de longueur z&eacute;ro.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>ERROR_LIMIT (2 or higher)</strong></span>&nbsp;:
+								Active le mode d&#8217;isolation d&#8217;une ligne pour cette op&eacute;ration de
+								chargement. Lorsqu&#8217;il est activ&eacute; et que le nombre maximal d&#8217;erreurs
+								n&#8217;est pas atteint pour les instances de segments Greenplum durant le
+								traitement de l&#8217;entr&eacute;e, toutes les lignes correctes sont charg&eacute;es et
+								les lignes ayant des erreurs de format sont rejet&eacute;es ou enregistr&eacute;es
+								dans la table <span class="bold"><strong>ERROR_TABLE</strong></span>, si elle
+								est disponible. </p>
+							<p>Si le nombre limite d&#8217;erreurs est atteint, les lignes d&#8217;entr&eacute;e
+								ayant des erreurs de format arr&ecirc;tent l&#8217;op&eacute;ration de
+								chargement.</p>
+							<p>Notez que l&#8217;isolation d&#8217;une ligne en erreur s&#8217;applique uniquement
+								aux lignes de donn&eacute;es ayant des erreurs de format, par exemple, des
+								attributs manquants ou suppl&eacute;mentaires, des attributs d&#8217;un mauvais
+								type de donn&eacute;es ou des s&eacute;quences d&#8217;encodage client invalides. Des
+								erreurs de contraintes, telles que les violations de cl&eacute; primaire,
+								provoquent toujours l&#8217;arr&ecirc;t du chargement.</p>
+							<p> Lorsque cette option n&#8217;est pas activ&eacute;e, l&#8217;op&eacute;ration de chargement
+								s&#8217;arr&ecirc;te &agrave; la premi&egrave;re erreur rencontr&eacute;e.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>ERROR_TABLE</strong></span>&nbsp;: Lorsque la limite
+									<span class="bold"><strong>ERROR_LIMIT</strong></span> est d&eacute;clar&eacute;e,
+								sp&eacute;cifie une table d&#8217;erreur dans laquelle les lignes contenant des
+								erreurs de format sont enregistr&eacute;es lors de l&#8217;ex&eacute;cution en mode
+								isolation d&#8217;une ligne. Vous pouvez observer cette table d&#8217;erreurs
+								afin de voir les lignes en erreur n&#8217;ayant pas &eacute;t&eacute; charg&eacute;es (s&#8217;il y
+								en a).</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Log file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Parcourez votre syst&egrave;me ou saisissez le chemin d&#8217;acc&egrave;s &agrave; votre
+								fichier de log.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Encoding</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le type d&#8217;encodage dans le champ.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Specify gpload path</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case afin de sp&eacute;cifier le chemin d&#8217;acc&egrave;s complet &agrave;
+								l&#8217;ex&eacute;cutable gpload. Vous devez cocher cette case si le chemin
+								d&#8217;acc&egrave;s n&#8217;est pas sp&eacute;cifi&eacute; dans la variable d&#8217;environnement
+								PATH.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Full path to gpload executable</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Chemin d&#8217;acc&egrave;s complet &agrave; l&#8217;ex&eacute;cutable gpload sur la machine en
+								cours d&#8217;utilisation. Il est recommand&eacute; de sp&eacute;cifier le chemin
+								d&#8217;acc&egrave;s dans la variable d&#8217;environnement PATH au lieu de
+								s&eacute;lectionner cette option.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est principalement utilis&eacute; lorsque des
+								transformations particuli&egrave;res ne sont pas requises sur les donn&eacute;es &agrave;
+								charger dans la base de donn&eacute;es.</p>
+							<p>Ce composant peut &ecirc;tre utilis&eacute; en standalone ou en tant que
+								composant de sortie.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e74585"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez <a class="xref" href="tMysqlOutputBulkExec.html#Raa97924" title="Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es dans une base MySQL">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Ins&eacute;rer des donn&eacute;es dans une base
+				MySQL&nbsp;&raquo;</a> du composant <span class="bold"><strong>tMysqlOutputBulkExec</strong></span>.</p></div></div></body></html>

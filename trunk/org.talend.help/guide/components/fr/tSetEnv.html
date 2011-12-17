@@ -1,0 +1,81 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSetEnv</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch15.html" title="Chapitre&nbsp;15.&nbsp;Composants System"><link rel="prev" href="tRunJob.html" title="tRunJob"><link rel="next" href="tSSH.html" title="tSSH"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tSetEnv"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSetEnv"></a>tSetEnv</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tSetEnv_icon32_white.png" width="27"></td></tr></table></div><a name="Xaa1731116"></a><div class="section" title="Propri&eacute;t&eacute;s du tSetEnv"><div class="titlepage"><div><div><h3 class="title"><a name="d0e239834"></a>Propri&eacute;t&eacute;s du tSetEnv</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille du
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>System</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tSetEnv </strong></span>ajoute des variables &agrave;
+                                l&#8217;environnement du syst&egrave;me de mani&egrave;re temporaire, pendant
+                                l&#8217;ex&eacute;cution du Job. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tSetEnv </strong></span>permet de cr&eacute;er des variables et d&#8217;ex&eacute;cuter un Job
+                                script en communicant les informations des variables nouvellement
+                                cr&eacute;&eacute;es entre les diff&eacute;rents sous-Jobs. Apr&egrave;s l&#8217;ex&eacute;cution du Job, ces
+                                nouvelles variables sont supprim&eacute;es. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Parameters</em></span></p>
+                        </td><td valign="top"><p><span class="bold"><strong>Cliquez sur le bouton [+]
+                                    pour ajouter les variables n&eacute;cessaires au Job. name&nbsp;</strong></span>:
+                                Renseignez la syntaxe de la nouvelle variable. </p><p>
+                                <span class="bold"><strong>value&nbsp;</strong></span>: Entrez une valeur pour ce
+                                param&egrave;tre en fonction du contexte. </p><p>
+                                <span class="bold"><strong>append</strong></span>&nbsp;: Cochez cette case pour
+                                ajouter la nouvelle variable &agrave; la fin. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tSetEnv </strong></span>peut &ecirc;tre utilis&eacute; comme composant de d&eacute;but
+                                ou composant interm&eacute;diaire. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Modifier une variable lors de l&#8217;ex&eacute;cution d&#8217;un Job"><div class="titlepage"><div><div><h3 class="title"><a name="d0e239931"></a>Sc&eacute;nario&nbsp;: Modifier une variable lors de l&#8217;ex&eacute;cution d&#8217;un Job</h3></div></div></div><p>Le sc&eacute;nario suivant se pr&eacute;sente sous la forme de deux Jobs p&egrave;re et fils. Il permet
+            gr&acirc;ce au <span class="bold"><strong>tSetEnv</strong></span> de transf&eacute;rer et de modifier dans un
+            Job fils une valeur cr&eacute;&eacute;e dans un Job parent. Dans le cadre de ce Job, les composants
+                <span class="bold"><strong>tMsgBox</strong></span> sont utilis&eacute;s pour afficher &agrave; titre
+            informatif qu'une variable est correctement appliqu&eacute;e, via une fen&ecirc;tre pop-up.</p><p>Pour modifier la valeur du Job p&egrave;re en utilisant une variable cr&eacute;&eacute;e par le <span class="bold"><strong>tSetEnv</strong></span> dans le Job fils, proc&eacute;dez comme d&eacute;crit dans les
+            sections suivantes :</p><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d0e239947"></a>D&eacute;poser et relier les composants</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Cr&eacute;ez un premier Job appel&eacute; <span class="italic">parentJob</span> :
+                        cliquez-droit sur l'onglet <span class="bold"><strong>Job Design</strong></span> du
+                            <span class="bold"><strong>Repository</strong></span>, puis s&eacute;lectionnez <span class="bold"><strong>Create Job</strong></span>.</p></li><li class="listitem"><p>A partir de la <span class="bold"><strong>Palette</strong></span>, glissez-d&eacute;posez un
+                    composant <span class="bold"><strong>tSetEnv</strong></span>, deux composants <span class="bold"><strong>tMsgBox</strong></span> et un <span class="bold"><strong>tRunJob</strong></span> dans l'espace de mod&eacute;lisation graphique.</p></li><li class="listitem"><p>Connectez le <span class="bold"><strong>tSetEnv</strong></span> &agrave; un premier <span class="bold"><strong>tMsgBox</strong></span> &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>OnSubJobOk</strong></span> : cliquez-droit sur le composant de d&eacute;part,
+                    s&eacute;lectionnez <span class="italic">Trigger</span>, puis <span class="bold"><strong>OnSubjobOk</strong></span>, puis cliquez sur le composant &agrave;
+                    relier.</p></li><li class="listitem"><p>Connectez le premier <span class="bold"><strong>tMsgBox</strong></span> au <span class="bold"><strong>tRunJob</strong></span> &eacute;galement &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>OnSubjobOk</strong></span>.</p></li><li class="listitem"><p>Connectez ensuite le <span class="bold"><strong>tRunJob</strong></span> au second
+                        <span class="bold"><strong>tMsgBox</strong></span> &eacute;galement &agrave; l&#8217;aide d&#8217;un lien
+                        <span class="bold"><strong>OnSubjobOk</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-tsetenv1.png" align="middle"></div></li><li class="listitem"><p>Cr&eacute;ez maintenant le Job fils, appel&eacute; <span class="italic">SonJob</span>.</p></li><li class="listitem"><p>A partir de la <span class="bold"><strong>Palette</strong></span>, glissez-d&eacute;posez un
+                        <span class="bold"><strong>tSetEnv</strong></span> et un<span class="bold"><strong>tMsgBox</strong></span>.</p></li><li class="listitem"><p>Connectez le <span class="bold"><strong>tSetEnv</strong></span> au <span class="bold"><strong>tMsgBox</strong></span> &agrave; l'aide d'un lien <span class="bold"><strong>OnSubjobOk</strong></span> : cliquez-droit sur le composant de d&eacute;part,
+                    s&eacute;lectionnez <span class="italic">Trigger</span>, puis <span class="bold"><strong>OnSubjobOk</strong></span> . Puis cliquez sur le composant &agrave; relier. </p><div class="mediaobject" align="center"><img src="../images/use_case-tsetenv2.png" align="middle"></div></li></ol></div></div><div class="section" title="Configurer les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d0e240065"></a>Configurer les composants</h4></div></div></div><p>Dans cet exemple, la valeur d&eacute;finie dans le Job parent est transf&eacute;r&eacute;e au Job
+                fils. Elle y est modifi&eacute;e pour prendre la valeur du Job fils et retransf&eacute;r&eacute;e vers le
+                Job parent.</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Dans le Job <span class="italic">ParentJob</span>, s&eacute;lectionnez le
+                            <span class="bold"><strong>tSetEnv</strong></span> puis cliquez sur l&#8217;onglet
+                            <span class="bold"><strong>Component</strong></span>. Ajoutez une ligne de
+                        variable en cliquant sur le bouton <span class="bold"><strong>[+]</strong></span> pour
+                        d&eacute;finir sa valeur initiale. Saisissez <span class="italic">Variable_1</span> dans le champ <span class="bold"><strong>Name</strong></span> et <span class="italic">Parent job value</span>
+                        dans le champ <span class="bold"><strong>Value</strong></span>. </p></li><li class="listitem"><p>S&eacute;lectionnez le premier <span class="bold"><strong>tMsgBox</strong></span> et cliquez
+                        sur l'onglet <span class="bold"><strong>Component</strong></span>. Dans le champ
+                            <span class="bold"><strong>Message</strong></span>, saisissez le message qui
+                        s'affiche dans votre fen&ecirc;tre pop-up et qui confirme que votre variable est
+                        bien prise en compte dans le Job. Par exemple :
+                            <code class="code">"Parent:"+System.getProperty("Variable_1")</code> affiche la
+                        variable d&eacute;finie dans le <span class="bold"><strong>tSetEnv</strong></span> (ici
+                            <span class="italic">Parent job value</span>).</p></li><li class="listitem"><p>S&eacute;lectionnez le second <span class="bold"><strong>tMsgBox</strong></span> et cliquez sur
+                        l'onglet <span class="bold"><strong>Component</strong></span>. Dans le champ <span class="bold"><strong>Message</strong></span>, saisissez &agrave; nouveau la ligne
+                            <code class="code">"Parent:"+System.getProperty("Variable_1")</code>. Elle fait
+                        appara&icirc;tre dans le Job parent la variable d&eacute;finie dans le Job fils. </p></li><li class="listitem"><p>S&eacute;lectionnez le <span class="bold"><strong>tRunJob</strong></span> et cliquez sur
+                        l'onglet <span class="bold"><strong>Component</strong></span>. Dans le champ <span class="bold"><strong>Job</strong></span>, saisissez le nom de votre Job fils, ici
+                            <span class="italic">SonJob</span>. Cela ex&eacute;cute le Job fils &agrave;
+                        l'ex&eacute;cution du Job parent. </p><div class="mediaobject" align="center"><img src="../images/use_case-tsetenv3.png" align="middle"></div></li><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tRunJob</strong></span> pour ouvrir le Job fils
+            <span class="italic">SonJob</span>.</p></li><li class="listitem"><p>S&eacute;lectionnez le composant <span class="bold"><strong>tSetEnv</strong></span> et cliquez
+                    sur l'onglet <span class="bold"><strong>Component</strong></span>. Ajoutez une ligne de
+                    variable en cliquant sur le bouton <span class="bold"><strong>[+]</strong></span> pour
+                    d&eacute;finir sa valeur initiale. Saisissez <span class="italic">Variable_1</span> dans le champ <span class="bold"><strong>Name</strong></span>
+                    et <span class="italic">Son job value</span> dans le champ <span class="bold"><strong>Value</strong></span>. </p></li><li class="listitem"><p>S&eacute;lectionnez ensuite le <span class="bold"><strong>tMsgBox</strong></span> et cliquez
+                    sur l'onglet <span class="bold"><strong>Component</strong></span>. Dans le champ <span class="bold"><strong>Message</strong></span>, saisissez le message qui s'affiche dans
+                    votre fen&ecirc;tre pop-up et qui confirme que votre variable est correctement prise
+                    en compte dans le Job. Par exemple, la ligne de code
+                        <code class="code">"Son:"+System.getProperty("Variable_1")</code> affiche la variable
+                    d&eacute;finie dans le <span class="bold"><strong>tSetEnv</strong></span> (ici <span class="italic">Son job value</span>).</p><div class="mediaobject"><img src="../images/use_case-tsetenv4.png"></div></li><li class="listitem"><p>Enregistrez votre Job, retournez sous le Job parent, puis appuyez sur <span class="bold"><strong>F6</strong></span> pour l&#8217;ex&eacute;cuter.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e240215"></a>Ex&eacute;cuter le Job</h4></div></div></div><p>Trois fen&ecirc;tres pop-up s'affichent l'une apr&egrave;s l'autre : </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="italic">Parent: Parent job value</span> : la valeur du
+                            Job parent est <span class="italic">Parent job
+                            value</span>.</p></li><li class="listitem"><p><span class="italic">Son: Son job value</span> : la valeur du Job
+                        fils est <span class="italic">Son job value</span>.</p></li><li class="listitem"><p><span class="italic">Parent: Son job value</span> : la valeur du
+                            Job parent a &eacute;t&eacute; modifi&eacute;e par la variable d&eacute;finie dans le <span class="bold"><strong>tSetEnv</strong></span> du Job fils, puis retransf&eacute;r&eacute;e au Job
+                            parent. La valeur du Job parent est dor&eacute;navant celle d&eacute;finie dans le Job
+                            fils : <span class="italic">Son job value</span>.</p></li></ul></div><p>
+                </p></div></div></div></body></html>

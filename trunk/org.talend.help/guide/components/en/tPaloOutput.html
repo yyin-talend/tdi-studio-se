@@ -1,0 +1,202 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tPaloOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch02.html" title="Chapter&nbsp;2.&nbsp;Business Intelligence components"><link rel="prev" href="tPaloInputMulti.html" title="tPaloInputMulti"><link rel="next" href="tPaloOutputMulti.html" title="tPaloOutputMulti"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tPaloOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tPaloOutput"></a>tPaloOutput</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tPaloOutput_icon32.png" width="27"></td></tr></table></div><div class="section" title="tPaloOutput Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e32399"></a>tPaloOutput Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Component
+                                                  family</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p>Business Intelligence/Cube OLAP/Palo</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Function</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>This component writes one row of data
+                                                  (elements as well as values) into a Palo
+                                                  cube.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Purpose</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>This component takes the input stream and
+                                                  writes it to a given Palo cube.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Basic
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Use an existing
+                                                  connection</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select this check box and click the relevant
+                                                  DB connection component on the <span class="bold"><strong>Connection configuration</strong></span> to
+                                                  reuse the connection details you already
+                                                  defined.</p>
+                                                  <p> </p>
+                                                  <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>When a Job contains the parent Job and the
+                  child Job, <span class="bold"><strong>Connection configuration</strong></span> presents only
+                  the connection components in the same Job level, so if you need to use an existing
+                  connection from the other level, make sure that the avail&shy;able connection
+                  components are sharing the intended connection.</p><p>For further information about how to share a
+                  DB connection across Job levels, see <span class="bold"><strong>Use or register a
+                    shared DB connection</strong></span> in any database connection component
+                  corresponding to the database you are us&shy;ing, in <a class="xref" href="Raa29876.html" title="Chapter&nbsp;6.&nbsp;Database components">Chapter&nbsp;6, <i>Database components</i></a>.</p><p>Otherwise, you can as well deactivate the
+                  connection components and use <span class="bold"><strong>Dynamic settings</strong></span> of
+                  the component to specify the intended connection manually. In this case, make sure
+                  the connection name is unique and distinctive all over through the two Job levels.
+                  For further information about <span class="bold"><strong>Dynamic settings</strong></span>,
+                  see your studio user guide.</p></td></tr></table></div>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="emphasis"><em>Connection configuration
+                                                  </em></span></p>
+                                                  <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Unavailable when using an existing
+                  connection.</p></td></tr></table></div>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Host Name</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Enter the host name or the IP address of the
+                                                  host server.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Server Port</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Type in the listening port number of the
+                                                  Palo server.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Username</em></span> and
+                                                  <span class="emphasis"><em>Password</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Enter the Palo user authentication
+                                                  data.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Database</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Type in the name of the database where the
+                                                  cube of interest resides.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Cube</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Type in the name of the cube in which the
+                                                  incoming data is written.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Commit size</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Type in the row count of each batch to be
+                                                  written into the cube.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Schema</em></span> and
+                                                  <span class="emphasis"><em>Edit Schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>A schema is a row description, i.e., it
+                                                  defines the number of fields to be processed and
+                                                  passed on to the next component. The schema is
+                                                  either built-in or remotely stored in the
+                                                  Repository.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Built-in</strong></span>:
+                                                  The schema is created and stored locally for this
+                                                  component only. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Repository</strong></span>:
+                                                  The schema already exists and is stored in the
+                                                  Repository, hence can be reused. Related topic:
+                                                  see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Column as
+                                                  Measure</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select the column from the input stream
+                                                  which holds the Measure or Text values.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Create element if not
+                                                  exist</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select this check box to create the element
+                                                  being processed if it does not exist
+                                                  originally.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Save cube at process
+                                                  end</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select this check box to save the cube you
+                                                  have written the data in at the end of this
+                                                  process.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Advanced
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>tStat</em></span><span class="emphasis"><em>Catcher
+                                                  Statistics</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Select this check box to collect log data at
+                                                  the component level.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Usage</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>This component requires an input
+                                                  component.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Global
+                                                  variable</strong></span></p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="bold"><strong>Number of
+                                                  lines</strong></span>: Indicates the number of the
+                                                  lines processed. This is available as an <span class="bold"><strong>After</strong></span> variable.</p>
+                                                  <p> Returns a Integer.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Connections</strong></span></p>
+                                                </td><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p>Outgoing links (from one component to
+                                                  another):</p>
+                                                  <p>
+                                                  <span class="bold"><strong>Row</strong></span>:
+                                                  Iterate</p>
+                                                  <p>
+                                                  <span class="bold"><strong>Trigger</strong></span>: Run
+                                                  if</p>
+                                                  <p> </p>
+                                                  <p> Incoming links (from one component to
+                                                  another):</p>
+                                                  <p>
+                                                  <span class="bold"><strong>Row</strong></span>: Main;
+                                                  Reject</p>
+                                                  <p> </p>
+                                                  <p> For further information regarding
+                                                  connections, see <span class="bluebold">Talend Open Studio</span>
+                                                  <span class="bold"><strong>User
+                                                  Guide</strong></span>.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Limitation</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>This component is able to write only one row
+                                                  of data into a cube.</p>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e32845"></a>Related scenario</h3></div></div></div><p>For related topic, see <a class="xref" href="tPaloOutputMulti.html#Raa24458" title="Scenario 1: Writing data into a given cube">the section called &#8220;Scenario 1: Writing data into a given
+                                cube&#8221;</a>.</p></div></div></body></html>

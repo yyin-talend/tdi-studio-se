@@ -1,0 +1,145 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tWriteDynamicFields</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch16.html" title="Chapter&nbsp;16.&nbsp;Processing components"><link rel="prev" href="processing-tSurviveFields.html" title="tSurviveFields"><link rel="next" href="tWriteJsonField.html" title="tWriteJsonField"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tWriteDynamicFields"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tWriteDynamicFields"></a>tWriteDynamicFields</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="26"><tr><td><img src="../images/tWriteDynamicFields.png" width="26"></td></tr></table></div><div class="section" title="tWriteDynamicFields properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e313200"></a>tWriteDynamicFields properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Processing/Fields</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tWriteDynamicFields</strong></span>
+										creates an output dynamic column from input columns.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tWriteDynamicFields</strong></span>
+										allows you to create un dynamic schema from input columns in
+										the component.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											Schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. The schema is either built-in or remote in the
+										Repository. </p>
+									<p> Click <span class="bold"><strong>Edit Schema</strong></span> to
+										make changes to the schema. Note that if you make changes,
+										the schema automatically becomes built-in. </p>
+									<p> Click <span class="bold"><strong>Sync columns</strong></span> to
+										retrieve the schema from the previous component in the
+										Job.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: You create the
+										schema and store it locally for the relevant component.
+										Related topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: You have
+										already created the schema and stored it in the Repository.
+										You can reuse it in various projects and Job flowcharts.
+										Related topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to gather the Job processing
+										metadata at a Job level as well as at each component
+										level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Utilisation</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component handles flow of data therefore it requires
+										input and output components.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>n/a</p>
+								</td></tr></tbody></table></div><p>
+					<span>&nbsp;</span>
+				</p></div><div class="section" title="Scenario: Create a dynamic column and extract its content"><div class="titlepage"><div><div><h3 class="title"><a name="Raa87416"></a>Scenario: Create a dynamic column and extract its content</h3></div></div></div><p>This Java scenario contains five components. It aims at creating a Dynamic
+					type column from a schema and extracting the columns contained in this dynamic
+					column. These transformation results are displayed into the console.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="100%"><tr><td><img src="../images/Use_Case_tExtractDynamicFields1.png" width="100%"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>From the <span class="bold"><strong>Palette</strong></span> to the design
+							workspace, drag and drop the following components: </p><p> - a <span class="bold"><strong>tRowGenerator</strong></span> to generate a flow
+							containing customer information, </p><p> - a <span class="bold"><strong>tWriteDynamicFields</strong></span> to replace
+							columns with a Dynamic column,</p><p> - two <span class="bold"><strong>tLogRow</strong></span> to display the results
+							into the console, </p><p> - a <span class="bold"><strong>tExtractDynamicFields</strong></span> to extract
+							content from the dynamic column.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tRowGenerator</strong></span> to <span class="bold"><strong>tWriteDynamicFields</strong></span> using a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main
+							</strong></span>link.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tWriteDynamicFields</strong></span> to the
+							first <span class="bold"><strong>tLogRow</strong></span> using a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> link.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tLogRow</strong></span> to <span class="bold"><strong>tExtractDynamicFields</strong></span> using a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> link.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tExtractDynamicFields</strong></span> to the
+							second <span class="bold"><strong>tLogRow</strong></span> using a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> link.</p></li><li class="listitem"><p>Rename both <span class="bold"><strong>tLogRow</strong></span> by
+							double-clicking them.</p><p> Type in their new name, <span class="emphasis"><em>dynamicColumn</em></span> and
+								<span class="emphasis"><em>standard column</em></span> respectively.</p></li><li class="listitem"><p>In the design workspace, double-click the <span class="bold"><strong>tRowGenerator</strong></span> to open its editor.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="516"><tr><td><img src="../images/Use_Case_tExtractDynamicFields2.png" width="516"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click seven times on the <span class="bold"><strong>[+]</strong></span> button
+							to add seven columns to the schema. Name them <span class="emphasis"><em>id</em></span>,
+								<span class="emphasis"><em>firstName</em></span>, <span class="emphasis"><em>lastName</em></span>,
+								<span class="emphasis"><em>street</em></span>, <span class="emphasis"><em>city</em></span>,
+								<span class="emphasis"><em>States</em></span> and <span class="emphasis"><em>otherData</em></span>,
+							respectively.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Type </strong></span>column, select <span class="bold"><strong>Integer</strong></span> for <span class="emphasis"><em>id</em></span> and
+								<span class="bold"><strong>String</strong></span> for all other fields.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Functions </strong></span>columns, select the
+							function you want to apply to each column in the schema.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate the
+							configuration and close the editor.</p><p> A pop-up window opens and asks you to propagate the changes. Click
+								<span class="bold"><strong>Yes</strong></span>.</p></li><li class="listitem"><p>In the design workspace, double-click <span class="bold"><strong>tWriteDynamicFields</strong></span> component to display its <span class="bold"><strong>Basic settings</strong></span> view.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>[...]</strong></span> button next to
+								<span class="bold"><strong>Edit schema</strong></span> to set the schema of
+							the component.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="525"><tr><td><img src="../images/Use_Case_tExtractDynamicFields3.png" width="525"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the schema editor, click on <span class="emphasis"><em>otherData</em></span> column,
+							then click <span class="inlinemediaobject"><img src="../images/Schema_icon_RightArrow.png" width="21"></span> to add the column on the output side.</p><p> This way, the column will be displayed in the output, but it will not
+							be included into the dynamic column.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>[+]</strong></span> button in the output
+							area to add a column.</p><p> Name it <span class="emphasis"><em>columnDynamic</em></span> and set its <span class="bold"><strong>Type</strong></span> to <span class="bold"><strong>Dynamic</strong></span>.</p></li></ul></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+						<span class="emphasis"><em>The dynamic column must be defined in the last row of the
+							schema.</em></span>
+					</p></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+						<span class="emphasis"><em>The column names must be exactly the same on both sides of the
+							editor, otherwise the output columns will not be recognised.</em></span>
+					</p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate your changes and
+							close the editor.</p></li></ul></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+						<span class="emphasis"><em>The dynamic schema feature is only supported in </em></span>
+						<span class="bold"><strong>Built-In</strong></span>
+						<span class="emphasis"><em> mode.</em></span>
+					</p></td></tr></table></div><p>All columns that are not in the output area in the editor will be included
+					into the dynamic column.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the design workspace, double-click the first <span class="bold"><strong>tLogRow</strong></span> to display its<span class="bold"><strong> Basic
+								settings</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="421"><tr><td><img src="../images/Use_Case_tExtractDynamicFields4.png" width="421"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Mode</strong></span> area, select the
+								<span class="bold"><strong>Table (print value in cells of a
+								table)</strong></span> option.</p></li><li class="listitem"><p>In the design workspace, double-click <span class="bold"><strong>tWriteDynamicFields</strong></span> component to display ots <span class="bold"><strong>Basic settings</strong></span> view.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>[...]</strong></span> button next to
+								<span class="bold"><strong>Edit schema</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="345"><tr><td><img src="../images/Use_Case_tExtractDynamicFields6.png" width="345"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select in the left area the columns you want to add to the <span class="bold"><strong>tExtractDynamicFields</strong></span> schema and click the <span class="inlinemediaobject"><img src="../images/Copy_button.png" width="24"></span> button to copy them.</p><p> Click <span class="bold"><strong>OK</strong></span> to close the editor.</p></li><li class="listitem"><p>In the design workspace, double-click the <span class="bold"><strong>tExtractDynamicFields</strong></span> component to display its <span class="bold"><strong>Basic settings</strong></span> view.</p></li><li class="listitem"><p>Click the <span class="bold"><strong>[...]</strong></span> button next to
+								<span class="bold"><strong>Edit schema</strong></span>.</p></li><li class="listitem"><p>In the schema editor, click the <span class="inlinemediaobject"><img src="../images/Paste_button.png" width="24"></span> button in the output area to paste the columns
+							copied from <span class="bold"><strong>tWriteDynamicFields</strong></span>
+							component. </p></li><li class="listitem"><p>In the input area, click the Dynamic column and click the <span class="inlinemediaobject"><img src="../images/Schema_icon_RightArrow.png" width="21"></span> button to add the dynamic column to the output
+							schema.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate your changes and
+							close the editor.</p></li><li class="listitem"><p>In the design workspace, double-click the second <span class="bold"><strong>tLogRow</strong></span> to display its<span class="bold"><strong> Basic
+								settings</strong></span> view.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="410"><tr><td><img src="../images/Use_Case_tExtractDynamicFields7.png" width="410"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Mode</strong></span> area, select <span class="bold"><strong>Table (print value in cells of a table)</strong></span>
+							option.</p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute
+							it.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="527"><tr><td><img src="../images/Use_Case_tExtractDynamicFields_Result1.png" width="527"></td></tr></table></div><p>The first <span class="bold"><strong>tLogRow</strong></span> component displays in the
+					console the dynamic column in addition to the <span class="emphasis"><em>otherData</em></span>
+					column you have already defined in the output schema of the <span class="bold"><strong>tWriteDynamicFields</strong></span> component.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="514"><tr><td><img src="../images/Use_Case_tExtractDynamicFields_Result2.png" width="514"></td></tr></table></div><p>The second <span class="bold"><strong>tLogRow</strong></span> displays in the console
+					all the extracted columns (<span class="emphasis"><em>id</em></span>,
+						<span class="emphasis"><em>firstName</em></span> and <span class="emphasis"><em>lastName</em></span>) from the
+					dynamic one, the <span class="emphasis"><em>otherData</em></span> column that has not been
+					included into the dynamic column and the dynamic column which still contains all
+					columns voluntarily not extracted.</p></div></div></body></html>

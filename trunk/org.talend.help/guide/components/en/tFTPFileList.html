@@ -1,0 +1,134 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFTPFileList</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch10.html" title="Chapter&nbsp;10.&nbsp;Internet components"><link rel="prev" href="tFTPFileExist.html" title="tFTPFileExist"><link rel="next" href="tFTPFileProperties.html" title="tFTPFileProperties"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tFTPFileList"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFTPFileList"></a>tFTPFileList</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFTPFileList_icon32.png" width="27"></td></tr></table></div><div class="section" title="tFTPFileList properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e190726"></a>tFTPFileList properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Component
+                                family</strong></span></p>
+                        </td><td valign="top"><p>Internet/FTP</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tFTPFileList</strong></span> iterates on files and/or folders of a
+                                given directory on a remote host.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objective</strong></span></p>
+                        </td><td colspan="2" valign="top"><p><span class="bold"><strong>tFTPFileList</strong></span> retrieves files and /or folders based
+                                on a defined filemask pattern and iterates on each of them by
+                                connecting to a remote directory via an FTP protocol.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span></p>
+                        </td><td valign="top"><p>A schema is a row description, i.e., it defines
+                                the number of fields that will be processed and passed on to the
+                                next component. The schema is either <span class="bold"><strong>Built-in</strong></span> or remote in the <span class="bold"><strong>Repository</strong></span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: You create and store the schema locally for this
+                                component only. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>: You have already created the schema and stored it
+                                in the Repository. You can reuse it in various projects and Job
+                                designs. Related topic: see <span class="bluebold">Talend Open Studio</span>
+                                <span class="bold"><strong>User Guide</strong></span>.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use an existing connection/Component
+                                    List</em></span></p>
+                        </td><td valign="top"><p>Select this check box and in the <span class="bold"><strong>Component List</strong></span> click the relevant
+                                connection component to reuse the connection details you already
+                                defined.</p><p> </p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>When a Job contains the parent Job and the child Job,
+                                        <span class="bold"><strong>Component list</strong></span> presents
+                                    only the connection components in the same Job level, so if you
+                                    need to use an existing connection from the other level, you can
+                                    use <span class="bold"><strong>Dy&shy;namic settings</strong></span> to share
+                                    the intended connection. For more information about <span class="bold"><strong>Dynamic settings</strong></span>, see your studio
+                                    user guide.</p></td></tr></table></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Host</em></span></p>
+                        </td><td valign="top"><p>FTP IP address.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Port</em></span></p>
+                        </td><td valign="top"><p>Listening port number of the FTP server.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Username</em></span> and
+                                    <span class="emphasis"><em>Password</em></span> (or <span class="emphasis"><em>Private
+                                    key</em></span>)</p>
+                        </td><td valign="top"><p>User authentication information.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Remote directory</em></span></p>
+                        </td><td valign="top"><p>Path to the remote directory.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>File detail</em></span></p>
+                        </td><td valign="top"><p>Select this check box if you want to display the
+                                details of each of the files or folders on the remote host. These
+                                informative details include:</p><p> type of rights on the
+                                file/folder, name of the author, name of the group of users that
+                                have a read-write rights, file size and date of last
+                                modification.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>SFTPSupport/ Authentication
+                                    method</em></span></p>
+                        </td><td valign="top"><p>Select this check box and then in the <span class="bold"><strong>Authentication method</strong></span> list, select the
+                                SFTP authentication method: </p><p>
+                                <span class="bold"><strong>Password</strong></span>: Type in the password
+                                required in the relevant field. </p><p>
+                                <span class="bold"><strong>Public key</strong></span>: Type in the private key
+                                or click the three dot button next to the <span class="bold"><strong>Private key</strong></span> field to browse to it.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>If you select <span class="bold"><strong>Public Key</strong></span> as
+                                    the SFTP authentication method, make sure that the key is added
+                                    to the agent or that no passphrase (secret phrase) is required. </p></td></tr></table></div>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Files</em></span></p>
+                        </td><td valign="top"><p>Click the plus button to add the lines you want to
+                                use as filters: </p><p>
+                                <span class="bold"><strong>Filemask</strong></span>: enter the filename or
+                                filemask using wildcharacters (*) or regular expressions. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Connect Mode</em></span></p>
+                        </td><td valign="top"><p>Select the SFTP connection mode you want to use: </p><p>
+                                <span class="bold"><strong>Active</strong></span>: You determine the
+                                connection port to be used to allow data transfer.</p><p>
+                                <span class="bold"><strong>Passive</strong></span>: the FTP server determines
+                                the connection port to use to allow data transfer.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>This component is
+                                typically used as a single-component sub-job but can also be used
+                                with other components.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Scenario: Iterating on a remote directory"><div class="titlepage"><div><div><h3 class="title"><a name="Raa67462"></a>Scenario: Iterating on a remote directory</h3></div></div></div><p>The following Java scenario describes a three-component Job that connects to an FTP
+            server, lists files held in a remote directory based on a filemask and finally
+            recuperates and saves the files in a defined local directory. </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Drop the following components from the Palette to the design workspace:
+                        <span class="bold"><strong>tFTPConnection</strong></span>, <span class="bold"><strong>tFTPFileList</strong></span> and <span class="bold"><strong>tFTPGet</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="387"><tr><td><img src="../images/Use_Case_tFTPFileList1.png" width="387"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Link <span class="bold"><strong>tFTPConnection</strong></span> to <span class="bold"><strong>tFTPFileList</strong></span> using an <span class="bold"><strong>OnSubjobOk</strong></span> connection and then <span class="bold"><strong>tFTPFileList</strong></span> to <span class="bold"><strong>tFTPGet</strong></span> using
+                    an <span class="bold"><strong>Iterate</strong></span> connection.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tFTPConnection</strong></span> to display
+                        its<span class="bold"><strong> Basic settings</strong></span> view and define the
+                    component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="401"><tr><td><img src="../images/Use_Case_tFTPFileList2.png" width="401"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>In the <span class="bold"><strong>Host</strong></span> field, enter the IP address of
+                    the FTP server.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Port</strong></span> field, enter the listening port
+                    number.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Username</strong></span> and <span class="bold"><strong>Password</strong></span> fields, enter your authentication information for the
+                    FTP server.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Connect Mode</strong></span> list, select the FTP
+                    connection mode you want to use, <span class="bold"><strong>Passive</strong></span> in
+                    this example.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tFTPFileList</strong></span> to open its
+                        <span class="bold"><strong>Basic settings</strong></span> view and define the
+                    component properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="401"><tr><td><img src="../images/Use_Case_tftpFileList3.png" width="401"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select the <span class="bold"><strong>Use an existing connection</strong></span> check
+                    box and in the <span class="bold"><strong>Component list</strong></span>, click the
+                    relevant FTP connection component, <span class="bold"><strong>tFTPConnection_1</strong></span> in this scenario. Connection information are
+                    automatically filled in. </p></li><li class="listitem"><p>In the <span class="bold"><strong>Remote directory</strong></span> field, enter the
+                    relative path of the directory that holds the files to be listed. </p></li><li class="listitem"><p>In the <span class="bold"><strong>Filemask</strong></span> field, click the plus button
+                    to add one line and then define a file mask to filter the data to be retrieved.
+                    You can use special characters if need be. In this example, we want only to
+                    recuperate delimited files (<span class="emphasis"><em>*csv</em></span>). </p></li><li class="listitem"><p>In the <span class="bold"><strong>Connect Mode</strong></span> list, select the FTP
+                    server connection mode you want to use, <span class="bold"><strong>Active</strong></span>
+                    in this example.</p></li><li class="listitem"><p>Double-click <span class="bold"><strong>tFTPGet</strong></span> to display its <span class="bold"><strong>Basic settings</strong></span> view and define the components
+                    properties.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="478"><tr><td><img src="../images/Use_Case_tftpFileList4.png" width="478"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Select the <span class="bold"><strong>Use an existing connection</strong></span> check
+                    box and in the <span class="bold"><strong>Component list</strong></span>, click the
+                    relevant FTP connection component, <span class="bold"><strong>tFTPConnection_1</strong></span> in this scenario. Connection information are
+                    automatically filled in. </p></li><li class="listitem"><p>In the <span class="bold"><strong>Local directory</strong></span> field, enter the
+                    relative path for the output local directory where you want to write the
+                    recuperated files.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Remote directory</strong></span> field, enter the
+                    relative path of the remote directory that holds the file to be recuperated. </p></li><li class="listitem"><p>In the <span class="bold"><strong>Transfer Mode</strong></span> list, select the FTP
+                    transfer mode you want to use, <span class="bold"><strong>ascii</strong></span> in this
+                    example. </p></li><li class="listitem"><p>In the <span class="bold"><strong>Overwrite file</strong></span> field, select an option
+                    for you want to use for the transferred files. </p></li><li class="listitem"><p>In the <span class="bold"><strong>Files</strong></span> area, click the plus button to
+                    add a line in the <span class="bold"><strong>Filemask</strong></span> list, then click in
+                    the added line and press<span class="bold"><strong>Ctrl+Space</strong></span> to access
+                    the variable list. In the list, select the global variable<code class="code">
+                        ((String)globalMap.get("tFTPFileList_1_CURRENT_FILEPATH"))</code> to process
+                    all files in the remote directory.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Connect Mode</strong></span> list, select the
+                    connection mode to the FTP server you want to use. </p></li><li class="listitem"><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute it. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="514"><tr><td><img src="../images/Use_Case_tFTPFileList5.png" width="514"></td></tr></table></div><p>All .csv files held in the remote directory on the FTP server are listed in the
+            defined directory, as defined in the filemask. Then the files are retrieved and saved in
+            the defined local output directory. </p></div></div></body></html>

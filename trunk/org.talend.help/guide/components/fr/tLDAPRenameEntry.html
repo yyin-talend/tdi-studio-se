@@ -1,0 +1,112 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tLDAPRenameEntry</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Databases"><link rel="prev" href="tLDAPOutput.html" title="tLDAPOutput"><link rel="next" href="tMaxDBInput.html" title="tMaxDBInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tLDAPRenameEntry"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tLDAPRenameEntry"></a>tLDAPRenameEntry</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tLDAPRenameEntry_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tLDAPRenameEntry"><div class="titlepage"><div><div><h3 class="title"><a name="d0e98210"></a>Propri&eacute;t&eacute;s du tLDAPRenameEntry</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>Databases/LDAP</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tLDAPRenameEntry</strong></span> renomme des entr&eacute;es dans
+                                un annuaire LDAP.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tLDAPRenameEntry</strong></span> permet de renommer une ou des
+                                entr&eacute;e(s) dans un annuaire LDAP s&eacute;lectionn&eacute;.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Property type</em></span></p>
+                        </td><td valign="top"><p>Peut-&ecirc;tre Built-in ou Repository.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in&nbsp;</strong></span>:
+                                Propri&eacute;t&eacute;s utilis&eacute;es ponctuellement.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository&nbsp;</strong></span>:
+                                S&eacute;lectionnez le fichier dans lequel sont stock&eacute;es les propri&eacute;t&eacute;s du
+                                composant. Les champs suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des
+                                donn&eacute;es collect&eacute;es.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Use an existing
+                                connection</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case et cliquez sur le composant
+                                    <span class="bold"><strong>tLDAPConnection</strong></span> dans la liste
+                                    <span class="bold"><strong>Component List</strong></span>, afin de
+                                r&eacute;utiliser les informations de la connexion que vous avez
+                                pr&eacute;c&eacute;demment d&eacute;finie.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Host</em></span></p>
+                        </td><td valign="top"><p>Adresse IP du serveur d&#8217;annuaire LDAP.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Port</em></span></p>
+                        </td><td valign="top"><p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Base DN</em></span></p>
+                        </td><td valign="top"><p>Chemin d&#8217;acc&egrave;s &agrave; l&#8217;arborescence de l&#8217;utilisateur
+                                autoris&eacute;.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Protocol</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez le type de protocole dans la
+                                liste.</p><p><span class="bold"><strong>LDAP</strong></span>&nbsp;: aucun
+                                codage n&#8217;est utilis&eacute;</p><p><span class="bold"><strong>LDAPS&nbsp;</strong></span>: LDAP s&eacute;curis&eacute;</p><p><span class="bold"><strong>TLS</strong></span>&nbsp;: le certificat est utilis&eacute;</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>User</em></span> et
+                                    <span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top"><p>Renseignez les informations d&#8217;authentification de
+                                l&#8217;utilisateur. Notez que le login doit correspondre &agrave; la syntaxe
+                                LDAP pour &ecirc;tre valide. Par exemple&nbsp;: &#8220;cn=Directory Manager&#8221;.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Alias dereferencing</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez l&#8217;option dans la liste. <span class="bold"><strong>Never </strong></span>permet l&#8217;am&eacute;lioration des
+                                performances de recherche si vous &ecirc;tes s&ucirc;r qu&#8217;aucun alias n&#8217;est
+                                d&eacute;r&eacute;f&eacute;renc&eacute;. Par d&eacute;faut, utilisez <span class="bold"><strong>Always</strong></span>&nbsp;:</p><p><span class="bold"><strong>Always</strong></span>&nbsp;: les alias sont toujours
+                                d&eacute;r&eacute;f&eacute;renc&eacute;s.</p><p><span class="bold"><strong>Never&nbsp;</strong></span>:
+                                les alias ne sont jamais d&eacute;r&eacute;f&eacute;renc&eacute;s.</p><p><span class="bold"><strong>Searching&nbsp;</strong></span>: cette option d&eacute;r&eacute;f&eacute;rence les
+                                alias uniquement apr&egrave;s la r&eacute;solution du nom.</p><p><span class="bold"><strong>Finding</strong></span>&nbsp;: cette option d&eacute;r&eacute;f&eacute;rence les
+                                alias uniquement lors de la r&eacute;solution du nom.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Referrals handling</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez l&#8217;option dans la
+                                    liste&nbsp;:</p><p><span class="bold"><strong>Ignore&nbsp;</strong></span>: ne
+                                tient pas compte des redirections des requ&ecirc;tes</p><p><span class="bold"><strong>Follow</strong></span>&nbsp;: tient compte des redirections
+                                des requ&ecirc;tes</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Previous DN </em></span>et<span class="emphasis"><em> New
+                                    DN</em></span></p>
+                        </td><td valign="top"><p>S&eacute;lectionnez &agrave; partir de la liste d&eacute;roulante la
+                                colonne du sch&eacute;ma portant l&#8217;ancien DN (<span class="bold"><strong>Previous DN</strong></span>) et celle portant le nouveau DN &agrave;
+                                appliquer (<span class="bold"><strong>New DN</strong></span>). </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                    Schema</em></span></p>
+                        </td><td valign="top"><p>Un sch&eacute;ma est une description de lignes, i.e., il
+                                d&eacute;finit le nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant
+                                suivant. Le sch&eacute;ma est soit local (built-in) soit distant dans le
+                                Repository.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le
+                                sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; ponctuellement pour ce composant
+                                seulement. Voir &eacute;galement&nbsp;le<span class="bold"><strong> Guide
+                                    utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le
+                                sch&eacute;ma existe d&eacute;j&agrave; et il est stock&eacute; dans le Repository. Ainsi, il
+                                peut &ecirc;tre r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le<span class="bold"><strong> Guide
+                                    utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>. </p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top"><p>Cette case est coch&eacute;e par d&eacute;faut et stoppe le Job
+                                en cas d&#8217;erreur. D&eacute;cochez cette case pour terminer le traitement
+                                avec les lignes sans erreur, et ignorer les lignes en erreur. Vous
+                                pouvez r&eacute;cup&eacute;rer les lignes en erreur, si vous le souhaitez. Pour
+                                cela, utilisez un lien <span class="bold"><strong>Row</strong></span> &gt;
+                                    <span class="bold"><strong>Reject</strong></span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant couvre
+                                toutes les requ&ecirc;tes LDAP possibles. Il est g&eacute;n&eacute;ralement utilis&eacute;
+                                comme sous-Job &agrave; un seul composant mais il peut aussi &ecirc;tre utilis&eacute;
+                                en association avec d&#8217;autres composants. </p><p>Note&nbsp;: Appuyez
+                                sur <span class="bold"><strong>Ctrl + Espace</strong></span> pour acc&eacute;der &agrave; la
+                                liste des variables globales, inclus la variable <span class="bold"><strong>GetResultName</strong></span> permettant de r&eacute;cup&eacute;rer
+                                automatiquement la base correspondante.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;narios associ&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d0e98586"></a>Sc&eacute;narios associ&eacute;s</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute; au composant <span class="bold"><strong>tLDAPRenameEntry</strong></span>, consultez&nbsp;: </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tLDAPInput.html#Raa32404" title="Sc&eacute;nario&nbsp;: Afficher le contenu filtr&eacute; d&#8217;un annuaire LDAP">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Afficher le contenu filtr&eacute; d&#8217;un annuaire LDAP&nbsp;&raquo;</a> du composant <span class="bold"><strong>tLDAPInput</strong></span>. </p></li><li class="listitem"><p><a class="xref" href="tLDAPOutput.html#Raa38371" title="Sc&eacute;nario&nbsp;: Editer des donn&eacute;es dans un annuaire LDAP">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Editer des donn&eacute;es dans un annuaire LDAP&nbsp;&raquo;</a> du <span class="bold"><strong>tLDAPOutput</strong></span>.
+                </p></li></ul></div></div></div></body></html>

@@ -1,0 +1,239 @@
+<%@ jet 
+imports="
+        java.util.List
+        java.util.Map
+        org.talend.core.model.metadata.IMetadataColumn
+        org.talend.core.model.metadata.IMetadataTable
+        org.talend.core.model.metadata.types.JavaType
+        org.talend.core.model.metadata.types.JavaTypesManager
+        org.talend.core.model.process.ElementParameterParser
+        org.talend.core.model.process.IConnection
+        org.talend.core.model.process.IConnectionCategory
+        org.talend.core.model.process.INode
+        org.talend.designer.codegen.config.CodeGeneratorArgument
+		"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+%>
+<%
+    String entityname = ElementParameterParser.getValue(node, "__ENTITYNAME__").trim();
+    String customEntityname = ElementParameterParser.getValue(node, "__CUSTOM_ENTITY_NAME__");
+    if("CustomEntity".equals(entityname)){
+		entityname = customEntityname.replaceAll("\"","");
+	}
+    String action = ElementParameterParser.getValue(node,"__ACTION__");
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {//1
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {//2
+        String cid = node.getUniqueName();
+
+    	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	for (IConnection conn : conns) {//3
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//4
+    			
+    			List<IMetadataColumn> columns = metadata.getListColumns();
+    			int sizeColumns = columns.size();
+    			
+    			if("update".equals(action) && sizeColumns == 2 && "ownerid".equals(columns.get(1).getLabel())){
+    				 action = "reassignOwnerID";
+    			}
+    			boolean hasOwnerID = false;
+				%>
+StringBuffer OperXml_<%=cid%> = new StringBuffer();
+
+<%
+ if ("insert".equals(action) || "update".equals(action)) {//************
+ 	List<Map<String, String>> lookupMapping = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__LOOKUP_MAPPING__");
+ 	List activityEntities = java.util.Arrays.asList(new String[]{"activitypointer","appointment","bulkoperation","campaignactivity","campaignresponse","email","fax","incidentresolution","letter","opportunityclose","orderclose","phonecall","quoteclose","serviceappointment","task"});
+%>
+		
+<%
+    if("insert".equals(action))	{
+%>
+    	OperXml_<%=cid%>.append("<Create xmlns=\"http://schemas.microsoft.com/crm/2007/WebServices\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
+<%
+    }else if("update".equals(action))	{
+%>
+    	OperXml_<%=cid%>.append("<Update xmlns=\"http://schemas.microsoft.com/crm/2007/WebServices\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
+<%
+    }
+%>
+        OperXml_<%=cid%>.append("\n");
+    	OperXml_<%=cid%>.append("<entity xsi:type=\"web:");
+    	OperXml_<%=cid%>.append("<%=entityname.toLowerCase()%>");
+    	OperXml_<%=cid%>.append("\" xmlns:web=\"http://schemas.microsoft.com/crm/2007/WebServices\">");
+    	OperXml_<%=cid%>.append("\n");
+    		
+<%    			
+    			for (int i = 0; i < sizeColumns; i++) {//5  			
+
+    				IMetadataColumn column = columns.get(i);
+    				
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					
+					String entityMethodTemp = column.getLabel();
+					String entityMethod = "";
+					
+					if("update".equals(action) && "ownerid".equals(column.getLabel()))	{
+						hasOwnerID = true;
+						continue;
+					}
+%>
+
+<%
+					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
+					if(!isPrimitive) { //begin
+%>   				
+	    		if(<%=conn.getName() %>.<%=column.getLabel() %> != null ) { //
+<%
+    				}
+    				if(!"Id".equals(column.getLabel())){ 
+%>   
+								OperXml_<%=cid%>.append("<");
+								OperXml_<%=cid%>.append("<%=column.getLabel()%>");
+						<%
+						if(lookupMapping.size()>0){
+							for(Map<String, String> lookupMapper:lookupMapping){
+								if(column.getLabel().equals(lookupMapper.get("INPUT_COLUMN"))){
+								%>
+								OperXml_<%=cid%>.append(" type=\"");	
+								OperXml_<%=cid%>.append(<%=lookupMapper.get("TYPE")%>);
+								OperXml_<%=cid%>.append("\"");	
+								<%
+								}
+							}
+						}						
+						%>
+								OperXml_<%=cid%>.append(">");
+								
+								OperXml_<%=cid%>.append("<![CDATA[");
+<%     
+    					String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+        				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
+%>
+								OperXml_<%=cid%>.append(FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>));
+<%				
+						} else {//others
+%>
+								OperXml_<%=cid%>.append(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>));
+<%				
+						}
+%>
+								OperXml_<%=cid%>.append("]]>");
+								
+								OperXml_<%=cid%>.append("</");
+								OperXml_<%=cid%>.append("<%=column.getLabel()%>");
+								OperXml_<%=cid%>.append(">");
+								OperXml_<%=cid%>.append("\n");
+<%
+					}else{
+						String entityIdStr = entityname.toLowerCase();
+						if(activityEntities.contains(entityIdStr)){
+							entityIdStr = "activity";
+						}
+%>
+						OperXml_<%=cid%>.append("<");
+						OperXml_<%=cid%>.append("<%=entityIdStr%>");
+						OperXml_<%=cid%>.append("id>");
+						OperXml_<%=cid%>.append(<%=conn.getName() %>.Id);
+						OperXml_<%=cid%>.append("</");
+						OperXml_<%=cid%>.append("<%=entityIdStr%>");
+						OperXml_<%=cid%>.append("id>");
+						OperXml_<%=cid%>.append("\n");
+<%
+					}	
+%>
+<%
+					if(!isPrimitive) {//end
+%>
+	    		} //
+<%
+					} 
+%>  								
+
+<%
+				}//5	
+%> 
+<%
+ if ("insert".equals(action)) {//#######
+%>
+OperXml_<%=cid%>.append("</entity>");
+OperXml_<%=cid%>.append("\n");
+OperXml_<%=cid%>.append("</Create>");
+com.microsoft.schemas.crm._2007.webservices.CreateDocument createDoc_<%=cid%> =  com.microsoft.schemas.crm._2007.webservices.CreateDocument.Factory.parse(OperXml_<%=cid%>.toString());
+service_<%=cid%>.create(createDoc_<%=cid%>, catd_<%=cid%>, null, null);
+<%
+	} else if ("update".equals(action)) {//#######
+%>
+OperXml_<%=cid%>.append("</entity>");
+OperXml_<%=cid%>.append("\n");
+OperXml_<%=cid%>.append("</Update>");
+com.microsoft.schemas.crm._2007.webservices.UpdateDocument updateDoc_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.UpdateDocument.Factory.parse(OperXml_<%=cid%>.toString());
+service_<%=cid%>.update(updateDoc_<%=cid%>,catd_<%=cid%>,null,null);			
+<%
+  }//#######
+%>
+    			
+<%
+	} else if ("delete".equals(action)) {//*************	
+%>
+	OperXml_<%=cid%>.append("<Delete xmlns=\"http://schemas.microsoft.com/crm/2007/WebServices\">");
+	OperXml_<%=cid%>.append("\n");
+	OperXml_<%=cid%>.append("<entityName>");
+	OperXml_<%=cid%>.append("<%=entityname.toLowerCase()%>");
+	OperXml_<%=cid%>.append("</entityName>");
+	OperXml_<%=cid%>.append("\n");
+	OperXml_<%=cid%>.append("<id>");
+	OperXml_<%=cid%>.append(<%=conn.getName() %>.Id);
+	OperXml_<%=cid%>.append("</id>\n");
+	OperXml_<%=cid%>.append("</Delete>");
+	com.microsoft.schemas.crm._2007.webservices.DeleteDocument deleteDoc_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.DeleteDocument.Factory.parse(OperXml_<%=cid%>.toString());
+	service_<%=cid%>.delete(deleteDoc_<%=cid%>,catd_<%=cid%>,null,null);
+
+<%
+  }//************
+  if("reassignOwnerID".equals(action) || ("update".equals(action) && hasOwnerID)){
+%>
+	com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Execute execute_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Execute.Factory
+            .newInstance();
+    com.microsoft.schemas.crm._2007.webservices.ExecuteDocument executeDoc_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Factory
+            .newInstance();
+    com.microsoft.schemas.crm._2007.webservices.AssignRequest assignRequest_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.AssignRequest.Factory
+            .newInstance();
+    com.microsoft.schemas.crm._2006.coretypes.SecurityPrincipal assignee_<%=cid%> = com.microsoft.schemas.crm._2006.coretypes.SecurityPrincipal.Factory.newInstance();
+    assignee_<%=cid%>.setPrincipalId(String.valueOf(<%=conn.getName() %>.ownerid));
+    assignee_<%=cid%>.setType(com.microsoft.schemas.crm._2006.coretypes.SecurityPrincipalType.Enum.forString("User"));
+    assignRequest_<%=cid%>.setAssignee(assignee_<%=cid%>);
+    
+    com.microsoft.schemas.crm._2007.webservices.TargetOwnedDynamic dynamicTarget_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.TargetOwnedDynamic.Factory
+            .newInstance();
+    dynamicTarget_<%=cid%>.setEntityName("<%=entityname.toLowerCase()%>");
+    dynamicTarget_<%=cid%>.setEntityId(String.valueOf(<%=conn.getName() %>.Id));
+    
+    assignRequest_<%=cid%>.setTarget(dynamicTarget_<%=cid%>);
+
+    execute_<%=cid%>.setRequest(assignRequest_<%=cid%>);
+    executeDoc_<%=cid%>.setExecute(execute_<%=cid%>);
+    
+    executeDoc_<%=cid%> = com.microsoft.schemas.crm._2007.webservices.ExecuteDocument.Factory.parse(executeDoc_<%=cid%>.toString());
+
+    service_<%=cid%>.execute(executeDoc_<%=cid%>, catd_<%=cid%>, null,null);
+            
+<%  
+  }
+%> 	 
+		nb_line_<%=cid %>++; 
+		
+		///////////////////////    			
+<%
+    		}//4
+    	}//3
+    }//2
+}//1
+
+%>

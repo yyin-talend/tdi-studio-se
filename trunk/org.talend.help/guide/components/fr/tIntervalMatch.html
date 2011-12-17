@@ -1,0 +1,132 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tIntervalMatch</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch05.html" title="Chapitre&nbsp;5.&nbsp;Composants Data Quality"><link rel="prev" href="tFuzzyMatch.html" title="tFuzzyMatch"><link rel="next" href="tReplaceList.html" title="tReplaceList"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tIntervalMatch"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tIntervalMatch"></a>tIntervalMatch</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tIntervalMatch_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tIntervalMatch"><div class="titlepage"><div><div><h3 class="title"><a name="Xaa1732420"></a>Propri&eacute;t&eacute;s du tIntervalMatch</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+						<p>
+							<span class="bold"><strong>Famille de composant</strong></span>
+						</p>
+					</td><td valign="top">
+						<p>Data Quality</p>
+					</td><td valign="top"> </td></tr><tr><td valign="top">
+						<p>
+							<span class="bold"><strong>Fonction</strong></span>
+						</p>
+					</td><td colspan="2" valign="top">
+						<p>Le composant<span class="bold"><strong> tIntervalMatch</strong></span> permet
+							d&#8217;&eacute;tablir une jointure entre un flux principal et un flux de r&eacute;f&eacute;rence
+							(Java). Il classe une valeur sp&eacute;cifi&eacute;e du flux principal dans la
+							fourchette de valeurs correspondante d&eacute;finie dans le flux de r&eacute;f&eacute;rence
+							et retourne les informations correspondantes.</p>
+					</td></tr><tr><td valign="top">
+						<p>
+							<span class="bold"><strong>Objectif</strong></span>
+						</p>
+					</td><td colspan="2" valign="top">
+						<p>Il aide &agrave; retourner une valeur &agrave; l&#8217;aide d&#8217;une jointure.</p>
+					</td></tr><tr><td valign="top">
+						<p>
+							<span class="bold"><strong>Basic settings</strong></span>
+						</p>
+					</td><td valign="top">
+						<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit schema</em></span></p>
+					</td><td valign="top">
+						<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le nombre de
+							champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma est
+							soit local (<span class="bold"><strong>Built-in</strong></span>) soit distant dans
+							le <span class="bold"><strong>Repository</strong></span>. </p>
+						<p> Cliquez sur <span class="bold"><strong>Edit Schema</strong></span> pour
+							modifier le sch&eacute;ma. Notez que si vous effectuez des modifications, le
+							sch&eacute;ma passera automatiquement en Built-in.</p>
+					</td></tr><tr><td>
+						<p>&nbsp;</p>
+					</td><td>
+						<p>&nbsp;</p>
+					</td><td valign="top">
+						<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+							conserv&eacute; ponctuellement pour ce composant seulement. Voir &eacute;galement&nbsp;le
+								<span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p>
+					</td></tr><tr><td>
+						<p>&nbsp;</p>
+					</td><td>
+						<p>&nbsp;</p>
+					</td><td valign="top">
+						<p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe d&eacute;j&agrave; et
+							est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;. Voir
+							&eacute;galement&nbsp;le <span class="bold"><strong>Guide utilisateur</strong></span> de
+								<span class="bluebold">Talend Open Studio</span>.</p>
+					</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+						<p>
+							<span class="emphasis"><em>Search column</em></span>
+						</p>
+					</td><td valign="top">
+						<p>S&eacute;lectionnez la colonne du flux principal contenant les valeurs qui
+							doivent &ecirc;tre mises en correspondance avec l&#8217;intervalle de
+							valeurs.</p>
+					</td></tr><tr><td>
+						<p>&nbsp;</p>
+					</td><td valign="top">
+						<p>
+							<span class="emphasis"><em>Column (LOOKUP)</em></span>
+						</p>
+					</td><td valign="top">
+						<p>S&eacute;lectionnez la colonne du flux lookup contenant les valeurs qui
+							doivent &ecirc;tre retourn&eacute;es quand la jointure est ok.</p>
+					</td></tr><tr><td>
+						<p>&nbsp;</p>
+					</td><td valign="top">
+						<p>
+							<span class="emphasis"><em>Lookup Column min/ bounds strictly (min)</em></span>
+						</p>
+					</td><td valign="top">
+						<p>S&eacute;lectionnez la colonne contenant la valeur minimale de l&#8217;intervalle.
+							Cochez la case si la limite est stricte.</p>
+					</td></tr><tr><td>
+						<p>&nbsp;</p>
+					</td><td valign="top">
+						<p>
+							<span class="emphasis"><em>Lookup Column max/ bounds strictly (max)</em></span>
+						</p>
+					</td><td valign="top">
+						<p>S&eacute;lectionnez la colonne contenant la valeur maximale de l&#8217;intervalle.
+							Cochez la case si la limite est stricte</p>
+					</td></tr><tr><td valign="top">
+						<p>
+							<span class="bold"><strong>Advanced settings</strong></span>
+						</p>
+					</td><td valign="top">
+						<p>
+							<span class="italic">tStatCatcher Statistics</span></p>
+					</td><td valign="top">
+						<p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du Job,
+							aussi bien au niveau du Job qu&#8217;au niveau de chaque composant.</p>
+					</td></tr><tr><td valign="top">
+						<p>
+							<span class="bold"><strong>Utilisation</strong></span>
+						</p>
+					</td><td colspan="2" valign="top">
+						<p>Ce composant manipule un flux de donn&eacute;es, il requiert donc un Input et
+							un Output, et n&eacute;cessite la d&eacute;finition d&#8217;une &eacute;tape interm&eacute;diaire.</p>
+					</td></tr><tr><td valign="top">
+						<p>
+							<span class="bold"><strong>Limitation</strong></span>
+						</p>
+					</td><td colspan="2" valign="top">
+						<p>n/a</p>
+					</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Identifier le pays &agrave; partir de l&#8217;IP"><div class="titlepage"><div><div><h3 class="title"><a name="d0e50069"></a>Sc&eacute;nario&nbsp;: Identifier le pays &agrave; partir de l&#8217;IP</h3></div></div></div><p>Dans ce Job, un flux principal entrant transmet un sch&eacute;ma &agrave; deux colonnes:
+				<span class="emphasis"><em>Documents</em></span> et <span class="emphasis"><em>IP</em></span>, contenant des donn&eacute;es
+			factices. Un second fichier est utilis&eacute; comme flux lookup en Java, et contient une liste
+			class&eacute;e d&#8217;intervalles d&#8217;IP ainsi que le pays qui leur correspond. Ce Job a pour but de
+			retrouver les pays de chaque document &agrave; partir de la valeur de leur IP, en d&#8217;autres
+			termes, de cr&eacute;er une jointure entre le flux principal et le flux de r&eacute;f&eacute;rence.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="488"><tr><td><img src="../images/Use_Case_tIntervalMatch1.png" width="488"></td></tr></table></div><p>Le Job requiert un <span class="bold"><strong>tFileInputDelimited
+			</strong></span>suppl&eacute;mentaire, un <span class="bold"><strong>tIntervalMatch</strong></span> et un
+				<span class="bold"><strong>tLogRow</strong></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Glissez le composant dans l&#8217;espace de mod&eacute;lisation.</p></li><li class="listitem"><p>Configurez les param&egrave;tres de base dans la vue <span class="bold"><strong>Component</strong></span> du <span class="bold"><strong>tFileInputDelimited</strong></span>. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="519"><tr><td><img src="../images/Use_Case_tIntervalMatch3.png" width="519"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Le sch&eacute;ma se compose de deux colonnes, respectivement
+						<span class="emphasis"><em>Document</em></span> et <span class="emphasis"><em>IP.</em></span></p></li><li class="listitem"><p>Configurez la colonne <span class="bold"><strong>Type</strong></span> en <span class="bold"><strong>String</strong></span> pour la colonne <span class="emphasis"><em>Document</em></span>
+					et en <span class="bold"><strong>Integer</strong></span> pour la colonne
+						<span class="emphasis"><em>IP</em></span>.</p></li><li class="listitem"><p>Configurez maintenant les propri&eacute;t&eacute;s du deuxi&egrave;me <span class="bold"><strong>tFileInputDelimited</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="456"><tr><td><img src="../images/Use_Case_tIntervalMatch4.png" width="456"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>N&#8217;oubliez pas de d&eacute;finir le <span class="bold"><strong>Type </strong></span>des
+					donn&eacute;es.</p></li><li class="listitem"><p>Propagez le sch&eacute;ma du flux principal entrant au composant <span class="bold"><strong>tIntervalMatch</strong></span>.</p></li></ul></div><div class="mediaobject"><img src="../images/Use_Case_tIntervalMatch6Half.png"></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Notez que le sch&eacute;ma Output du composant <span class="bold"><strong>tIntervalMatch</strong></span> est en lecture seule et est compos&eacute; du sch&eacute;ma de
+					l&#8217;Input ainsi que d&#8217;une colonne suppl&eacute;mentaire lookup qui redirigera en sortie
+					les donn&eacute;es lookup demand&eacute;es.</p></li><li class="listitem"><p>Configurez les autres propri&eacute;t&eacute;s du composant <span class="bold"><strong>tIntervalMatch</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="423"><tr><td><img src="../images/Use_Case_tIntervalMatch5.png" width="423"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Configurez les autres propri&eacute;t&eacute;s du <span class="bold"><strong>tIntervalMatch</strong></span>, notamment les colonnes <span class="bold"><strong>min</strong></span> et <span class="bold"><strong>max</strong></span> correspondant aux
+					limites de l&#8217;intervalle.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="412"><tr><td><img src="../images/Use_Case_tIntervalMatch7.png" width="412"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Dans le champ <span class="bold"><strong>Column Lookup</strong></span>, s&eacute;lectionnez la
+					colonne dans laquelle les valeurs devront &ecirc;tre retourn&eacute;es. </p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Search column</strong></span>, s&eacute;lectionnez la
+					colonne du flux principal contenant les valeurs qui devront correspondre aux
+					valeurs de l&#8217;intervalle.</p></li><li class="listitem"><p>Le composant <span class="bold"><strong>tLogRow</strong></span> ne requiert pas de
+					configuration particuli&egrave;re pour ce Job.</p></li></ul></div><p>Le r&eacute;sultat suivant s'affiche:</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="504"><tr><td><img src="..\images\use_case-tintervalmatch8and9.png" width="504"></td></tr></table></div><p>Seules les valeurs demand&eacute;es retourn&eacute;es (pays) sont affich&eacute;es.</p></div></div></body></html>

@@ -1,0 +1,95 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFileExist</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch09.html" title="Chapitre&nbsp;9.&nbsp;Composants File"><link rel="prev" href="tFileDelete.html" title="tFileDelete"><link rel="next" href="tFileInputARFF.html" title="tFileInputARFF"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tFileExist"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFileExist"></a>tFileExist</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFileExist_icon32_white.png" width="27"></td></tr></table></div><a name="Xaa2498091"></a><div class="section" title="Propri&eacute;t&eacute;s du tFileExist"><div class="titlepage"><div><div><h3 class="title"><a name="d0e179812"></a>Propri&eacute;t&eacute;s du tFileExist</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille du
+                                    composant</strong></span></p>
+                        </td><td valign="top"><p>File/Management</p>
+                        </td><td valign="top"> </td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tFileExist </strong></span>v&eacute;rifie si un fichier existe
+                                ou non. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le<span class="bold"><strong>
+                                    tFileExists </strong></span>aide &agrave; rationaliser les processus en
+                                automatisant les t&acirc;ches r&eacute;currentes et fastidieuses, comme par
+                                exemple v&eacute;rifier si un fichier existe ou non. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>File Name</em></span></p>
+                        </td><td valign="top"><p>Chemin d&#8217;acc&egrave;s au fichier dont vous voulez
+                                v&eacute;rifier l&#8217;existence. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant peut &ecirc;tre
+                                utilis&eacute; en standalone. </p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Global
+                                Variables</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Exists</strong></span>&nbsp;: indique
+                                si un fichier sp&eacute;cifi&eacute; existe ou non. Disponible comme variable
+                                    <span class="bold"><strong>Flow</strong></span>.</p><p> Retourne une
+                                valeur bool&eacute;enne&nbsp;:</p><p> -true si le fichier
+                                existe.</p><p> -false si le fichier n&#8217;existe
+                                pas.</p><p> </p><p>
+                                <span class="bold"><strong>File name</strong></span>&nbsp;: retrouve le nom et le
+                                chemin d&#8217;acc&egrave;s d&#8217;un fichier. Disponible comme variable <span class="bold"><strong>After</strong></span>.</p><p> Retourne une cha&icirc;ne
+                                de caract&egrave;res.</p><p> </p><p> Pour plus d&#8217;informations
+                                concernant les variables, consultez le <span class="bold"><strong>Guide
+                                    Utilisateur</strong></span>
+                                <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Connections</strong></span></p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p>Liens de sortie (d&#8217;un composant &agrave; un
+                                autre)&nbsp;:</p><p>
+                                <span class="bold"><strong>Row</strong></span>&nbsp;: Main.</p><p>
+                                <span class="bold"><strong>Trigger</strong></span>&nbsp;: OnSubjobOk,
+                                OnSubjobError, Run if, OnComponentOk,
+                                OnComponentError.</p><p> </p><p> Liens d&#8217;entr&eacute;e (d&#8217;un
+                                composant &agrave; un autre)&nbsp;:</p><p>
+                                <span class="bold"><strong>Row</strong></span>&nbsp;: Main, Reject, Iterate.</p><p>
+                                <span class="bold"><strong>Trigger</strong></span>&nbsp;: Run if, OnSubjobOk,
+                                OnSubjobError, OnComponentOk, OnComponentError, Synchronize,
+                                Parallelize.</p><p> </p><p> Pour plus d&#8217;informations
+                                concernant les liens, consultez le <span class="bold"><strong>Guide
+                                    Utilisateur</strong></span>
+                                <span class="bluebold">Talend Open Studio</span>.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: V&eacute;rifier l&#8217;existence d&#8217;un fichier et le cr&eacute;er s&#8217;il n&#8217;existe pas"><div class="titlepage"><div><div><h3 class="title"><a name="d0e179991"></a>Sc&eacute;nario&nbsp;: V&eacute;rifier l&#8217;existence d&#8217;un fichier et le cr&eacute;er s&#8217;il n&#8217;existe pas</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job simple qui permet de v&eacute;rifier si le fichier sp&eacute;cifi&eacute; existe,
+            d&#8217;afficher un message &agrave; l&#8217;&eacute;cran si le fichier n&#8217;existe pas, de lire les donn&eacute;es d&#8217;un
+            autre fichier d&#8217;entr&eacute;e sp&eacute;cifi&eacute; et de les &eacute;crire dans un fichier d&eacute;limit&eacute; en sortie. </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> A partir de la <span class="bold"><strong>Palette</strong></span>, cliquez-d&eacute;posez les
+                    composants suivants dans l&#8217;&eacute;diteur graphique&nbsp;: le <span class="bold"><strong>tFileExist</strong></span>, le <span class="bold"><strong>tFileInputDelimited</strong></span>, le <span class="bold"><strong>tFileOutputDelimited</strong></span> et le <span class="bold"><strong>tMsgBox</strong></span>.</p></li><li class="listitem"><p> Reliez d&#8217;abord le <span class="bold"><strong>tFileExist</strong></span> au <span class="bold"><strong>tFile InputDelimited</strong></span> &agrave; l&#8217;aide d&#8217;un lien de type
+                        <span class="bold"><strong>OnSubjobOk</strong></span>, puis au <span class="bold"><strong>tMsgBox</strong></span> &agrave; l&#8217;aide d&#8217;un lien de type <span class="bold"><strong>Run
+                        If</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="338"><tr><td><img src="../images/Use_Case_tFileExist.png" width="338"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Reliez le <span class="bold"><strong>tFileInputDelimited </strong></span>au <span class="bold"><strong>tFileOutputDelimite</strong></span> &agrave; l&#8217;aide d&#8217;un lien de type
+                        <span class="bold"><strong>Row Main</strong></span>.</p></li><li class="listitem"><p> Dans l&#8217;&eacute;diteur graphique, s&eacute;lectionnez le <span class="bold"><strong>tFileExist</strong></span> puis cliquez sur la vue<span class="bold"><strong>
+                        Component</strong></span> pour en d&eacute;finir la configuration de base (<span class="bold"><strong>Basic settings</strong></span>).</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="401"><tr><td><img src="../images/Use_Case_tFileExist1.png" width="401"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans le champ <span class="bold"><strong>File name</strong></span>, renseignez le
+                    chemin d&#8217;acc&egrave;s au fichier ou parcourez vos dossiers &agrave; la recherche du fichier
+                    dont vous voulez v&eacute;rifier l&#8217;existence. </p></li><li class="listitem"><p> Dans l&#8217;&eacute;diteur graphique, s&eacute;lectionnez le composant <span class="bold"><strong>tFileInputDelimited</strong></span> puis cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour en d&eacute;finir la configuration de base
+                        (<span class="bold"><strong>Basic settings</strong></span>).</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="510"><tr><td><img src="../images/Use_Case_tFileExist3.png" width="510"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Remplissez le champ <span class="bold"><strong>File Name </strong></span>en parcourant
+                    vos dossiers jusqu&#8217;au fichier d&#8217;entr&eacute;e que vous voulez lire. </p></li></ul></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+                <span class="emphasis"><em>Si le chemin d&#8217;acc&egrave;s du fichier contient des caract&egrave;res caract&egrave;res
+                    accentu&eacute;s, vous obtiendrez un message d&#8217;erreur lors de l&#8217;ex&eacute;cution du Job. Pour
+                    plus d&#8217;informations concernant la proc&eacute;dure &agrave; suivre lorsque les accents ne sont
+                    pas support&eacute;s, consultez le&nbsp;</em></span><span class="bold"><strong>Guide
+                    d&#8217;installation</strong></span><span class="emphasis"><em> </em></span><span class="bluebold">Talend Open Studio</span><span class="emphasis"><em>.</em></span></p></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> D&eacute;finissez les s&eacute;parateurs de lignes et de champs dans leurs champs
+                    respectifs <span class="bold"><strong>Row separator</strong></span> et <span class="bold"><strong>Field Separator</strong></span>. </p></li><li class="listitem"><p> D&eacute;finissez le nombre de lignes d&#8217;en-t&ecirc;te (<span class="bold"><strong>Header</strong></span>), de pied de page (<span class="bold"><strong>Footer</strong></span>) et le nombre maximal de lignes &agrave; traiter (<span class="bold"><strong>Limit</strong></span>) en fonction de vos besoins. Dans ce sc&eacute;nario,
+                    notre tableau comporte une ligne d&#8217;en-t&ecirc;te.</p></li><li class="listitem"><p> Dans la liste d&eacute;roulante <span class="bold"><strong>Schema</strong></span>, choisissez
+                    le mode <span class="bold"><strong>Built-In</strong></span>. Cliquez ensuite sur le bouton
+                        <span class="bold"><strong>[...]</strong></span> du champ <span class="bold"><strong>Edit
+                        schema</strong></span> pour d&eacute;finir les donn&eacute;es &agrave; passer au composant <span class="bold"><strong>tFileOutputDelimited</strong></span>. D&eacute;finissez les donn&eacute;es
+                    pr&eacute;sentes dans le fichier &agrave; lire (&#8220;file2&#8221; dans ce sc&eacute;nario). </p></li></ul></div><p>Pour plus d&#8217;informations sur les types de sch&eacute;mas, consultez le<span class="bold"><strong>Guide Utilisateur</strong></span> de <span class="bluebold">Talend Open Studio</span>.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="414"><tr><td><img src="../images/Use_Case_tFileExist5.png" width="414"></td></tr></table></div><p>Le sch&eacute;ma du fichier &#8220;file2&#8221; est compos&eacute; de cinq colonnes&nbsp;: <span class="emphasis"><em>Num, Ref, Price,
+                Quant </em></span>et <span class="emphasis"><em>Tax</em></span>.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans l&#8217;&eacute;diteur graphique, s&eacute;lectionnez le composant <span class="bold"><strong>tFileOutputDelimited</strong></span>.</p></li><li class="listitem"><p> Cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="bold"><strong>Basic settings</strong></span>) du
+                        <span class="bold"><strong>tFileOutputDelimited</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="508"><tr><td><img src="../images/Use_Case_tFileExist4.png" width="508"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> D&eacute;finissez le champ <span class="bold"><strong>Property Type</strong></span> en mode
+                        <span class="bold"><strong>Built-in</strong></span>.</p></li><li class="listitem"><p> Dans le champ <span class="bold"><strong>File name</strong></span>, appuyez
+                    simultan&eacute;ment sur <span class="bold"><strong>Ctrl+Espace</strong></span> pour acc&eacute;der &agrave; la
+                    liste des variables et s&eacute;lectionner FILENAME.</p></li><li class="listitem"><p> D&eacute;finissez les s&eacute;parateurs de lignes et de champs dans leurs champs
+                    respectifs <span class="bold"><strong>Row separator</strong></span> et <span class="bold"><strong>Field Separator</strong></span>. </p></li><li class="listitem"><p> Cochez la case <span class="bold"><strong>Include Header</strong></span> car, dans cet
+                    exemple, le fichier &#8220;file2&#8221; comprend un en-t&ecirc;te. </p></li><li class="listitem"><p> D&eacute;finissez le champ <span class="bold"><strong>Schema</strong></span> en mode <span class="bold"><strong>Built-in </strong></span>puis cliquez sur le bouton <span class="bold"><strong>Sync columns</strong></span> pour synchroniser le sch&eacute;ma du fichier
+                    de sortie (file1) avec le sch&eacute;ma du fichier d&#8217;entr&eacute;e (file2). </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="473"><tr><td><img src="../images/Use_Case_tFileExist6.png" width="473"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Dans l&#8217;&eacute;diteur graphique, s&eacute;lectionnez le composant <span class="bold"><strong>tMsgBox</strong></span>.</p></li><li class="listitem"><p> Cliquez sur la vue <span class="bold"><strong>Component</strong></span> pour d&eacute;finir la
+                    configuration de base (<span class="bold"><strong>Basic settings</strong></span>) du
+                        <span class="bold"><strong>tMsgBox</strong></span>.</p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="455"><tr><td><img src="../images/Use_Case_tFileExist7.png" width="455"></td></tr></table></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p> Cliquez sur le lien <span class="bold"><strong>If</strong></span> pour en afficher les
+                    propri&eacute;t&eacute;s dans la vue <span class="bold"><strong>Basic settings</strong></span>.</p></li><li class="listitem"><p> Dans le panneau <span class="bold"><strong>Condition</strong></span>, appuyez
+                    simultan&eacute;ment sur <span class="bold"><strong>Ctrl+Espace</strong></span> pour acc&eacute;der &agrave; la
+                    liste de variable et s&eacute;lectionner EXISTS. Entrez un point d&#8217;exclamation avant la
+                    variable pour en inverser le sens. </p></li></ul></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="525"><tr><td><img src="../images/Use_Case_tFileExist8.png" width="525"></td></tr></table></div><p>Enregistrez votre Job puis appuyez sur <span class="bold"><strong>F6 </strong></span>pour
+            l&#8217;ex&eacute;cuter. </p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="354"><tr><td><img src="../images/Use_Case_tFileExist9.png" width="354"></td></tr></table></div><p>Une bo&icirc;te de dialogue appara&icirc;t pour confirmer que le fichier n&#8217;existe pas. </p><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer cette bo&icirc;te de dialogue et
+            continuer l&#8217;ex&eacute;cution du Job. Le fichier manquant, &#8220;file1&#8221; dans cet exemple, est &eacute;crit
+            sous la forme d&#8217;un fichier d&eacute;limit&eacute; &agrave; l&#8217;endroit pr&eacute;alablement d&eacute;termin&eacute;. </p></div></div></body></html>

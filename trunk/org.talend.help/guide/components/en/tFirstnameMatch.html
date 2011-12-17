@@ -1,0 +1,188 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tFirstnameMatch</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="Raa78577.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tFindRegexlibExpressions.html" title="tFindRegexlibExpressions"><link rel="next" href="tFuzzyJoin.html" title="tFuzzyJoin"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tFirstnameMatch"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tFirstnameMatch"></a>tFirstnameMatch</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tFirstnameMatch_icon32_white.png" width="27"></td></tr></table></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+					<span class="emphasis"><em>This component will be available in the </em></span>
+					<span class="bold"><strong>Palette</strong></span>
+					<span class="emphasis"><em> of the studio on the condition that you have subscribed to the right
+						edition of </em></span>
+					<span class="bluebold">
+						Talend Enterprise Data Quality
+					</span>
+					<span class="emphasis"><em>.</em></span>
+				</p></td></tr></table></div><div class="section" title="tFirstnameMatch properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e186801"></a>tFirstnameMatch properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Component family</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>Data Quality</p>
+								</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Function</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p><span class="bold"><strong>tFirstnameMatch</strong></span> compares
+										the first name column from the input flow with first names
+										in an embedded reference index and outputs the matching
+										first names.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Purpose</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>Helps ensuring the data quality of first names against a
+										reference index in order to standardize data.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Basic settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+											Schema</em></span></p>
+								</td><td valign="top">
+									<p>A schema is a row description, i.e., it defines the number
+										of fields that will be processed and passed on to the next
+										component. The schema is either built-in or remote in the
+										Repository. </p>
+									<p> One read-only column, <span class="emphasis"><em>FIRSTNAMEMATCH</em></span>
+										is added to the output schema automatically. </p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Built-in</strong></span>: The schema will
+										be created and stored locally for this component only.
+										Related topic: see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p><span class="bold"><strong>Repository</strong></span>: The schema
+										already exists and is stored in the Repository, hence can be
+										reused in various projects and job designs. Related topic:
+										see <span class="bluebold">Talend Enterprise Studio</span>
+										<span class="bold"><strong>User Guide</strong></span>.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>First Names</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select the column that contains first names.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Use Gender</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Optional parameter: select this check box and then from
+										the list, select the column that contains the gender. This
+										will optimize system performance and give more precise
+										results.</p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Expected genders are M (masculine) and F
+											(Feminine).</p></td></tr></table></div>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Use Country</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Optional parameter: select this check box and then from
+										the list, select the column that contains the country ISO
+										3166-1 alpha-3 codes. This will optimize system performance
+										and give more precise results.</p>
+								</td></tr><tr><td>
+									<p>&nbsp;</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>Fuzzy Search</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box if you want to get the best match
+										possible, including approximate matches.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Advanced settings</strong></span>
+									</p>
+								</td><td valign="top">
+									<p>
+										<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+									</p>
+								</td><td valign="top">
+									<p>Select this check box to gather the processing metadata at
+										the Job level as well as at each component level.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Usage</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>This component is not startable and it requires input and
+										output components.</p>
+								</td></tr><tr><td valign="top">
+									<p>
+										<span class="bold"><strong>Limitation/prerequisite</strong></span>
+									</p>
+								</td><td colspan="2" valign="top">
+									<p>The index used to standardize the first names is embedded
+										in this component. For the time being, it is able to handle
+										the Latin names.</p>
+								</td></tr></tbody></table></div></div><div class="section" title="Scenario: Matching first names with the embedded reference index"><div class="titlepage"><div><div><h3 class="title"><a name="d0e187064"></a>Scenario: Matching first names with the embedded reference index</h3></div></div></div><p>This scenario describes a four-component Job aiming at matching the
+						<span class="emphasis"><em>name</em></span> column of an input flow with the reference index. </p><p>The output of this first name match is displayed in the
+						<span class="emphasis"><em>FIRSTNAMEMATCH</em></span> output column along with all other
+					columns defined in the input schema of the <span class="bold"><strong>tFirstnameMatch</strong></span> component.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="483"><tr><td><img src="../images/Use_Case_FirstnameMatch.png" width="483"></td></tr></table></div><div class="section" title="Dropping and linking the components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e187083"></a>Dropping and linking the components</h4></div></div></div><p> To drop and link the components of interest, proceed as follows: </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> to the design workspace: <span class="bold"><strong>tFixedFlowInput</strong></span>, <span class="bold"><strong>tFilterColumns</strong></span>, <span class="bold"><strong>tFirstnameMatch</strong></span> and <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Connect the first three components using <span class="bold"><strong>Row
+									&gt; Main</strong></span> links.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tFirstnameMatch</strong></span> to
+									<span class="bold"><strong>tLogRow</strong></span> using a <span class="bold"><strong>Row &gt; Output</strong></span> link.</p></li></ol></div></div><div class="section" title="Configuring the input data"><div class="titlepage"><div><div><h4 class="title"><a name="d0e187125"></a>Configuring the input data</h4></div></div></div><p>To configure the input data, perform the following operations:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-click <span class="bold"><strong>tFixedFlowInput</strong></span> to
+								display the <span class="bold"><strong>Basic settings</strong></span> view and
+								define the component properties.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="505"><tr><td><img src="../images/Use_Case_FirstnameMatch1.png" width="505"></td></tr></table></div></li><li class="listitem"><p>From the <span class="bold"><strong>Schema</strong></span> list, set the
+								schema type to <span class="bold"><strong>Built-In</strong></span> and click
+								the three-dot button next to <span class="bold"><strong>Edit Schema.
+								</strong></span>A dialog box displays.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="371"><tr><td><img src="../images/Use_Case_FirstnameMatch2.png" width="371"></td></tr></table></div></li><li class="listitem"><p>Click the plus button to add as many lines as needed for the input
+								schema you want to create from internal variables. </p><p> In this example, the input data flow is made of several columns
+								including one for first names (<span class="emphasis"><em>name</em></span>), two for
+								country codes (<span class="emphasis"><em>iso2</em></span> and
+									<span class="emphasis"><em>iso3</em></span>) and one for gender
+									(<span class="emphasis"><em>gender</em></span>).</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to close the dialog
+								box.</p><p> The defined columns display in the <span class="bold"><strong>Mode</strong></span> area of the component basic settings
+								view.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Mode</strong></span> area, select the
+									<span class="bold"><strong>Use Inline Content (delimited
+									file)</strong></span> option to display the corresponding
+								view.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="461"><tr><td><img src="../images/Use_Case_FirstnameMatch3.png" width="461"></td></tr></table></div></li><li class="listitem"><p>Set the row and field separators in the corresponding fields. You
+								want to use these defined separators in your input flow.</p></li><li class="listitem"><p>In the <span class="bold"><strong>Content</strong></span> area, type in the
+								data for the input flow according to the schema you defined
+								earlier.</p></li></ol></div></div><div class="section" title="Configuring the process of matching data"><div class="titlepage"><div><div><h4 class="title"><a name="d0e187207"></a>Configuring the process of matching data</h4></div></div></div><p>To do this, you need to select the data columns of interest and then match
+						them using <span class="bold"><strong>tFirstnameMatch</strong></span></p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Click the <span class="bold"><strong>tFilterColumns</strong></span>
+								component to display its <span class="bold"><strong>Basic
+									settings</strong></span> view and define the component
+								properties.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="519"><tr><td><img src="../images/Use_Case_FirstnameMatch4.png" width="519"></td></tr></table></div><p>The <span class="bold"><strong>tFilterColumns</strong></span> component
+								enables you to build the output schema based on the column names of
+								the input schema.</p></li><li class="listitem"><p>Click the three-dot button next to <span class="bold"><strong>Edit
+									schema</strong></span> to display a dialog box where you can define
+								the output schema.</p></li><li class="listitem"><p>Select the <span class="emphasis"><em>name</em></span> and
+									<span class="emphasis"><em>gender</em></span> columns from the input schema and
+								move them to the output schema.</p></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to validate your changes
+								and close the dialog box.</p></li><li class="listitem"><p>Click <span class="bold"><strong>tFirstnameMatch</strong></span> to display
+								the <span class="bold"><strong>Basic settings</strong></span> view and define
+								the component properties.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="482"><tr><td><img src="../images/Use_Case_FirstnameMatch5.png" width="482"></td></tr></table></div></li><li class="listitem"><p>If required, click the three-dot button next to <span class="bold"><strong>Edit schema</strong></span> to view the input and output
+								schemas.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The output schema of this component is the same as the input
+									schema plus one fixed column:
+										<span class="emphasis"><em>FIRSTNAMEMATCH</em></span>.</p></td></tr></table></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="483"><tr><td><img src="../images/Use_Case_FirstnameMatch6.png" width="483"></td></tr></table></div></li><li class="listitem"><p>Click <span class="bold"><strong>OK</strong></span> to close the dialog
+								box.</p></li><li class="listitem"><p>From the <span class="bold"><strong>First Names</strong></span> list, select
+								the column that holds the first names, <span class="emphasis"><em>name</em></span> in
+								this example.</p></li><li class="listitem"><p>If required, select <span class="bold"><strong>Use Gender</strong></span> or
+									<span class="bold"><strong>Use Country</strong></span> check box and then
+								select from the list the column that contains the gender or country
+								respectively. This will optimize system performance and will give
+								more precise results.</p></li><li class="listitem"><p>If required, select the <span class="bold"><strong>Fuzzy
+									Search</strong></span> check box if you want to get the first-name
+								best match possible, in case several matches are available.</p></li></ol></div></div><div class="section" title="Executing the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e187310"></a>Executing the Job</h4></div></div></div><p>To do this, simply click <span class="bold"><strong>tLogRow</strong></span> to
+						display the <span class="bold"><strong>Basic settings</strong></span> view and define
+						the component properties according to the display mode you prefer.</p><p>In the <span class="bold"><strong>Mode</strong></span> area, select <span class="bold"><strong>Table (print values in cells of a table)</strong></span>.</p><p>Then save the Job and press <span class="bold"><strong>F6</strong></span> to execute
+						it.</p><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="403"><tr><td><img src="../images/Use_Case_FirstnameMatch7.png" width="403"></td></tr></table></div><p>All the output columns including <span class="emphasis"><em>FIRSTNAMEMATCH</em></span> are
+						listed in the <span class="bold"><strong>Run</strong></span> console. The
+							<span class="emphasis"><em>FIRSTNAMEMATCH</em></span> column outputs the best match
+						possible of the first names.</p></div></div></div></body></html>

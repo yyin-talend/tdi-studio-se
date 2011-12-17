@@ -1,0 +1,87 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tLastRegexlibExpressions</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tIntervalMatch.html" title="tIntervalMatch"><link rel="next" href="tLaunchDQReports.html" title="tLaunchDQReports"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tLastRegexlibExpressions"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tLastRegexlibExpressions"></a>tLastRegexlibExpressions</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="35"><tr><td><img src="../images/tLastRegexlibExpressions_icon32_white.png" width="35"></td></tr></table></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Ce composant est disponible dans la </em></span>
+            <span class="bold"><strong>Palette </strong></span>
+            <span class="emphasis"><em>du studio uniquement si vous avez souscrit &agrave; l&#8217;&eacute;dition correspondante de </em></span>
+            <span class="bluebold">
+                Talend Enterprise Data Quality
+            </span>
+            <span class="emphasis"><em>.</em></span>
+        </p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tLastRegexlibExpressions"><div class="titlepage"><div><div><h3 class="title"><a name="d0e178597"></a>Propri&eacute;t&eacute;s du tLastRegexlibExpressions</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Famille de composant</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Data Quality</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Fonction</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="bold"><strong>tLastRegexlibExpressions</strong></span>se
+                                connecte &agrave; un service Web, sur <a class="link" href="http://regexlib.com" target="_top"><span class="webblue">http://regexlib.com</span></a> afin d&#8217;obtenir les
+                                expressions les N plus r&eacute;centes parmi la liste d&#8217;expressions
+                                r&eacute;guli&egrave;res.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Objectif</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Le <span class="bold"><strong>tLastRegexlibExpressions</strong></span>
+                                retourne un ensemble de donn&eacute;es contenant des informations &agrave; propos
+                                des expressions r&eacute;guli&egrave;res N les plus r&eacute;cemment ajout&eacute;es &agrave; la
+                                biblioth&egrave;que qui correspondent &agrave; la requ&ecirc;te envoy&eacute;e &agrave; <span class="webblue">http://regexlib.com</span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Basic settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+                                schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Ces champs sont en lecture seule. Le sch&eacute;ma du composant contient
+                                les champs suivants&nbsp;: <span class="emphasis"><em>Title, Expression, Description,
+                                    Matches, Non-Matches, Author, Rating</em></span>
+                                    (<span class="emphasis"><em>Titre, Expression, Description, Correspondances,
+                                    Non-correspondaces, Auteur, Note</em></span>).</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="emphasis"><em>Max Rows</em></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Saisissez le nombre maximal d&#8217;expressions que vous souhaitez
+                                obtenir.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Advanced settings</strong></span>
+                            </p>
+                        </td><td valign="top">
+                            <p>
+                                <span class="italic">tStatCatcher Statistics</span>
+                            </p>
+                        </td><td valign="top">
+                            <p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du
+                                Job, aussi bien au niveau du Job qu&#8217;au niveau de chaque composant.
+                            </p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Utilisation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>Ce composant est un composant d&#8217;entr&eacute;e. Il requiert un flux de
+                                sortie, habituellement un fichier .csv. Vous pourrez importer
+                                ensuite toutes les expressions collect&eacute;es depuis un fichier .csv
+                                avec un format correct dans le studio de <span class="bluebold">Talend Enterprise Data Quality</span>.</p>
+                            <p> Pour plus d&#8217;informations sur l&#8217;import des mod&egrave;les, consultez
+                                    le<span class="bold"><strong> Guide Utilisateur </strong></span>de
+                                    <span class="bluebold">Talend Enterprise Data Quality</span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p>
+                                <span class="bold"><strong>Limitation</strong></span>
+                            </p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e178774"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez <a class="xref" href="tFindRegexlibExpressions.html#Raa13351" title="Sc&eacute;nario&nbsp;: Se connecter &agrave; un service Web et retourner une liste d&#8217;expressions r&eacute;guli&egrave;res">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Se connecter &agrave; un service Web et retourner une liste d&#8217;expressions
+			r&eacute;guli&egrave;res&nbsp;&raquo;</a>.</p></div></div></body></html>
