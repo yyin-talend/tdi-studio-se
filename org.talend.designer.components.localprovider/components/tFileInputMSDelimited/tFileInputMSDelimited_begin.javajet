@@ -427,6 +427,7 @@ if ( ((String)<%=rowSeparator1%>).length() > 0 ){
 }
 		
 com.csvreader.CsvReader <%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader( new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), <%=useMulSeprators?"';'" : "fieldSeparator_"+cid+"[0]" %>);
+<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.setTrimWhitespace(false);
 if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )
 	<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
 
@@ -486,6 +487,7 @@ if(useMulSeprators==false){
 	for(int i_<%=cid %>=0; i_<%=cid %><delim_<%=cid %>.length; i_<%=cid %>++){ //NS000
 		com.csvreader.CsvReader csvReader<%=cid %> = new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
 			new java.io.ByteArrayInputStream(tmp<%=cid %>.getBytes()), <%=encoding %>)), delim_<%=cid %>[i_<%=cid %>].charAt(0));
+		csvReader<%=cid %>.setTrimWhitespace(false);
 		if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )
 			csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
 		

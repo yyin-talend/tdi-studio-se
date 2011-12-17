@@ -233,7 +233,7 @@ public class QueryGuessCommand extends Command {
         }
 
         if (conn instanceof DatabaseConnection && conn.isContextMode()) {
-            schema = DatabaseConnectionParameterUtil.getTrueParamValue((DatabaseConnection) conn, schema);
+            schema = DatabaseConnectionParameterUtil.getContextTrueValue((DatabaseConnection) conn, schema);
         }
 
         String newQuery = null;

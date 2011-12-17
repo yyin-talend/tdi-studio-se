@@ -372,7 +372,7 @@ class GenerateMethodUtil {
 						if("id_String".equals(pathTypeMap.get(tmpXpath)) || "id_Object".equals(pathTypeMap.get(tmpXpath))){
 							strBuilder.append("treeNodeAPI.get_String(\""+ tmpXpath + "\")");
 						} else if("id_Date".equals(pathTypeMap.get(tmpXpath))) {
-							strBuilder.append("treeNodeAPI.get_Date(\""+ tmpXpath + "\" , \"" + pathPatternMap.get(tmpXpath) + "\")");
+							strBuilder.append("treeNodeAPI.get_Date(\""+ tmpXpath + "\" , " + pathPatternMap.get(tmpXpath) + ")");
 						} else if("id_byte[]".equals(pathTypeMap.get(tmpXpath))) {
 							strBuilder.append("treeNodeAPI.get_Bytes(\""+ tmpXpath + "\")");
 						} else {
@@ -450,6 +450,8 @@ class TreeNode_API_<%=cid %> {
 		}
 	}
 	
+	boolean methodExist = false;
+	
 	void generateMethodCodeForOne(TreeNode node, String cid) {
 		
 		if(!(node.getChildren().size()>0)){
@@ -465,11 +467,14 @@ class TreeNode_API_<%=cid %> {
 			if(typeMap.get(typeToGenerate)==null){
 				typeMap.put(typeToGenerate,typeToGenerate);
 				if ("id_String".equals(talendType) || "id_Object".equals(talendType)) {
+					if(!methodExist) {
 %>
 	String get_String(String xpath){
 		return xpath_value_map.get(xpath);
 	}
 <%
+						methodExist = true;
+					}
 				} else if ("id_Date".equals(talendType)) {
 %>
 	java.util.Date get_Date(String xpath, String pattern){
@@ -746,7 +751,7 @@ class GenerateToolByDom4j{
 %>
 valueMap.put("<%=currEleName%>",<%generateMethodUtil.generateExprCode(node.getExpression() ); %>);
 if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
-<%=currEleName%>.addNamespace("<%=node.getName() %>", TalendString.replaceSpecialCharForXML( <%generateMethodUtil.generateExprCode(node.getExpression() ); %>));
+<%=currEleName%>.addNamespace("<%=node.getName() %>", TalendString.replaceSpecialCharForXML(FormatterUtils.format(<%generateMethodUtil.generateExprCode(node.getExpression() ); %>,<%=node.getPattern()%>)));
 <%
 		} else {
 %>
@@ -759,7 +764,7 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 				if(node.getDefaultValue()==null || ("").equals(node.getDefaultValue())) { // get the expression
 %>
         	<%=currEleName %>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName %>.getName(),
-        	org.dom4j.DocumentHelper.createNamespace("",TalendString.replaceSpecialCharForXML(<%generateMethodUtil.generateExprCode(node.getExpression() ); %>))));
+        	org.dom4j.DocumentHelper.createNamespace("",TalendString.replaceSpecialCharForXML(FormatterUtils.format(<%generateMethodUtil.generateExprCode(node.getExpression() ); %>,<%=node.getPattern()%>)))));
 }//close if 8080
 <%
 				} else { // get the static value as the url
@@ -775,7 +780,7 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 				if(node.getDefaultValue()==null || ("").equals(node.getDefaultValue())) { // get the expression
 %>
         	<%=currEleName %>.setQName(org.dom4j.DocumentHelper.createQName("<%=parent.getName().substring(index+1 ) %>",
-        	org.dom4j.DocumentHelper.createNamespace("<%=node.getName() %>",TalendString.replaceSpecialCharForXML(<%generateMethodUtil.generateExprCode(node.getExpression() ); %>))));
+        	org.dom4j.DocumentHelper.createNamespace("<%=node.getName() %>",TalendString.replaceSpecialCharForXML(FormatterUtils.format(<%generateMethodUtil.generateExprCode(node.getExpression() ); %>,<%=node.getPattern()%>)))));
 }//close if 8080
 <%
 				} else {
@@ -831,7 +836,7 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 //		if(<%//tool.getValue(node);%>!=null){
 			valueMap.put("<%=currEleName%>",<%generateMethodUtil.generateExprCode(tmpNode.getExpression()); %>);
 			if(valueMap.get("<%=currEleName%>")!=null) {
-				<%=currEleName%>.addAttribute("<%=tmpNode.getName() %>",String.valueOf(<%generateMethodUtil.generateExprCode(tmpNode.getExpression()); %>));
+				<%=currEleName%>.addAttribute("<%=tmpNode.getName() %>",FormatterUtils.format(<%generateMethodUtil.generateExprCode(tmpNode.getExpression()); %>,<%=tmpNode.getPattern()%>));
 			}<% if(allowEmpty) { %> else {
 				<%=currEleName%>.addAttribute("<%=tmpNode.getName() %>","");
 			}
@@ -852,7 +857,7 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 %>
 		valueMap.put("<%=currEleName%>",<%generateMethodUtil.generateExprCode(node.getExpression()); %>);
 		if(valueMap.get("<%=currEleName%>")!=null) {
-			nestXMLTool.setText(<%=currEleName%>,String.valueOf(<%generateMethodUtil.generateExprCode(node.getExpression()); %>));
+			nestXMLTool.setText(<%=currEleName%>,FormatterUtils.format(<%generateMethodUtil.generateExprCode(node.getExpression()); %>,<%=node.getPattern()%>));
 		}
 <%
 		}

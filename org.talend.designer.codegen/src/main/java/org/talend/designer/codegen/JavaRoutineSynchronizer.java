@@ -28,6 +28,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
@@ -147,7 +148,7 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
             if (copyToTemp) {
                 String routineContent = new String(routineItem.getContent().getInnerContent());
                 // see 14713
-                String version = CodeGeneratorActivator.getDefault().getVersion();
+                String version = VersionUtils.getVersion();
                 if (routineContent.contains("%GENERATED_LICENSE%")) { //$NON-NLS-1$
                     IService service = GlobalServiceRegister.getDefault().getService(IBrandingService.class);
                     if (service instanceof AbstractBrandingService) {
@@ -216,8 +217,8 @@ public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
             IProject javaProject = service.getProject(ECodeLanguage.JAVA);
-//            ProjectManager projectManager = ProjectManager.getInstance();
-//            org.talend.core.model.properties.Project project = projectManager.getProject(routineItem);
+            // ProjectManager projectManager = ProjectManager.getInstance();
+            // org.talend.core.model.properties.Project project = projectManager.getProject(routineItem);
             initRoutineFolder(javaProject, routineItem);
             String routinesFolder = getRoutinesFolder(routineItem);
             if (!routineItem.isBuiltIn()) {
