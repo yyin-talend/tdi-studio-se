@@ -118,6 +118,7 @@ import org.talend.core.model.repository.DragAndDropManager;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.model.utils.IComponentName;
 import org.talend.core.model.utils.IDragAndDropServiceHandler;
 import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -728,7 +729,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         // This is the element that user select in the repositoryView.
         RepositoryNode seletetedNode = null;
 
-        EDatabaseComponentName componentName = null;
+        IComponentName componentName = null;
 
         IComponent component;
 
@@ -1453,12 +1454,20 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     private void getAppropriateComponent(Item item, boolean quickCreateInput, boolean quickCreateOutput, TempStore store,
             ERepositoryObjectType type) {
-        EDatabaseComponentName name = EDatabaseComponentName.getCorrespondingComponentName(item, type);
+        IComponentName name = EDatabaseComponentName.getCorrespondingComponentName(item, type);
         String componentName = null;
         if (item instanceof JobletProcessItem) { // joblet
             componentName = item.getProperty().getLabel();
         } else if (name == null) {
-            return;
+            for (IDragAndDropServiceHandler handler : DragAndDropManager.getHandlers()) {
+                name = handler.getCorrespondingComponentName(item, type);
+                if (name != null) {
+                    break;
+                }
+            }
+            if (name == null) {
+                return;
+            }
         } else { // tRunjob
             componentName = name.getDefaultComponentName();
         }
@@ -1498,8 +1507,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
      * @param quickCreateInput
      * @param quickCreateOutput
      */
-    private IComponent chooseOneComponent(List<IComponent> neededComponents, EDatabaseComponentName name,
-            boolean quickCreateInput, boolean quickCreateOutput) {
+    private IComponent chooseOneComponent(List<IComponent> neededComponents, IComponentName name, boolean quickCreateInput,
+            boolean quickCreateOutput) {
         if (neededComponents.isEmpty()) {
             return null;
         }
@@ -1627,7 +1636,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
      * @param name
      * @param node
      */
-    private void processSpecificDBTypeIfSameProduct(EDatabaseComponentName name, Node node) {
+    private void processSpecificDBTypeIfSameProduct(IComponentName name, Node node) {
         // process "Oracle with service name"
         if (name == EDatabaseComponentName.DBORACLESN) {
             IElementParameter p = node.getElementParameter("CONNECTION_TYPE"); //$NON-NLS-1$
