@@ -102,6 +102,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			
 		RegexUtil_<%=cid %> regexUtil_<%=cid %> = new RegexUtil_<%=cid %>();
 		final jxl.WorkbookSettings workbookSettings_<%= cid %> = new jxl.WorkbookSettings();
+		workbookSettings_<%= cid %>.setDrawingsDisabled(true); 
 <%
 		if(notNeedValidateOnCell==true){
 %>
