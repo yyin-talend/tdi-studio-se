@@ -124,7 +124,7 @@ public class FileCopy {
 
             long size = in.size();
             long position = 0;
-            final long MAP_SIZE = 102400000;
+            final long MAP_SIZE = 33525760;
             MappedByteBuffer buf = null;
             while (true) {
                 if (position + MAP_SIZE >= size) {
