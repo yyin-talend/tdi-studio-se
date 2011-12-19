@@ -122,6 +122,7 @@ public class SimpleSAXLooper implements ISAXLooper,Callable {
 	            spf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 				saxParser = spf.newSAXParser();
             }
+            saxParser.setProperty("http://xml.org/sax/properties/lexical-handler", hd);
             if (fileURL != null) {
                 org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(
                         new java.io.FileInputStream(fileURL));
