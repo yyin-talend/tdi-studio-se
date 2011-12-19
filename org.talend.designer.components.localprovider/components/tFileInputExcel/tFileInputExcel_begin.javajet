@@ -656,7 +656,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                     if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell_<%=cid%>)) {
                                         temp_row_<%= cid %>[i] =cell_<%=cid%>.getDateCellValue().toString();
                                     } else {
-                                        temp_row_<%= cid %>[i] =new BigDecimal(numberFormat_<%=cid%>.parse(String.valueOf(cell_<%=cid%>.getNumericCellValue())).toString()).toPlainString();
+                                         temp_row_<%= cid %>[i] =numberFormat_<%=cid%>.parse(dataFormat_<%=cid%>.formatCellValue(cell_<%=cid%>,workbook_<%= cid %>.getCreationHelper().createFormulaEvaluator())).toString();
                                     }
                                     break;
                                 case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN:
