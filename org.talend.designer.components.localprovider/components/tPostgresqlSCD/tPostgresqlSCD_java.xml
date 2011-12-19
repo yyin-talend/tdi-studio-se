@@ -12,6 +12,7 @@
     SCHEMA_AUTO_PROPAGATE="true"
     DATA_AUTO_PROPAGATE="false"
     EXTENSION="org.talend.designer.scd"
+	HAS_CONDITIONAL_OUTPUTS="true"
   >
     <SIGNATURE/>
   </HEADER>
