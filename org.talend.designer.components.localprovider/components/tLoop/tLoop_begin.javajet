@@ -32,7 +32,7 @@ if(increase){%>
 for(int loop<%=cid%> =<%=from%>; loop<%=cid%><=<%=to%>; loop<%=cid%>=loop<%=cid%>+<%=step%>){
 <%
 }else{%>
-for(int loop<%=cid%> =<%=from%>; loop<%=cid%>>=<%=to%>; loop<%=cid%>=loop<%=cid%>+<%=step%>){
+for(int loop<%=cid%> =<%=from%>; loop<%=cid%>>=<%=to%>; loop<%=cid%>=loop<%=cid%>-<%=step%>){
 <%}%>
 current_iteration_<%=cid%>++;
 globalMap.put("<%=cid%>_CURRENT_VALUE",loop<%=cid%>);
