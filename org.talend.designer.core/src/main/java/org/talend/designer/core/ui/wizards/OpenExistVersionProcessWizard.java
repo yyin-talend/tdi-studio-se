@@ -59,11 +59,11 @@ import org.talend.repository.ui.actions.routines.RoutineEditorInput;
  */
 public class OpenExistVersionProcessWizard extends Wizard {
 
-    OpenExistVersionProcessPage mainPage = null;
+    protected OpenExistVersionProcessPage mainPage = null;
 
-    private final IRepositoryViewObject processObject;
+    protected final IRepositoryViewObject processObject;
 
-    private boolean alreadyEditedByUser = false;
+    protected boolean alreadyEditedByUser = false;
 
     private String originaleObjectLabel = null;
 
@@ -203,7 +203,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
         }
     }
 
-    private void openAnotherVersion(final RepositoryNode node, final boolean readonly) {
+    protected void openAnotherVersion(final RepositoryNode node, final boolean readonly) {
         try {
             if (node.getObject() != null) {
                 Item item = node.getObject().getProperty().getItem();
