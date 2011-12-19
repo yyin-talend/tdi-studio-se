@@ -37,7 +37,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(jasperDesign_<%=cid%>, jasperFile_<%=cid%>);
 
     java.util.Map<String, Object> hm_<%=cid%> = new java.util.HashMap<String, Object>();
-    hm_<%=cid%>.put(net.sf.jasperreports.engine.JRParameter.REPORT_LOCALE, java.util.Locale.SIMPLIFIED_CHINESE);
+    hm_<%=cid%>.put(net.sf.jasperreports.engine.JRParameter.REPORT_LOCALE, java.util.Locale.getDefault());
 
     net.sf.jasperreports.engine.data.JRCsvDataSource ds_<%=cid%> = new net.sf.jasperreports.engine.data.JRCsvDataSource(
             new java.io.File(tempFile_<%=cid%>));
