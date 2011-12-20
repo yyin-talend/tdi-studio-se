@@ -1375,6 +1375,12 @@
               id="org.talend.repository.model.migration.AddContextGroupNameMigrationTask"
               name="Rename ContextGroup Name">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              class="org.talend.repository.model.migration.ChangeDefaultValueTDIBug16919"
+              id="org.talend.repository.model.migration.ChangeDefaultValueTDIBug16919"
+              name="set default value of ESCAPE of tPigCode">
+        </projecttask>
    </extension>
    
    <extension
