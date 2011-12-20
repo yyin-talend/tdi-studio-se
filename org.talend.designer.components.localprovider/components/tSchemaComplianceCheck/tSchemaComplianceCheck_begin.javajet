@@ -13,7 +13,6 @@
     org.talend.core.model.process.INode
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.utils.NodeUtil
-    org.talend.core.model.process.EConnectionType
     "
 %>
 <%
@@ -444,11 +443,12 @@ class RowSetValueUtil_<%=cid %> {
     
     Object pre_iPrecision = null;
     String sInColumnName = inColumn.getLabel(), sTestColName = null, sTestColType = null, sTestColPattern = null;
-    boolean bNullable = true, bMaxLenLimited = true;    
+    boolean bNullable = true, bMaxLenLimited = true;
     /* use setting of tSchemaComplianceCheck schema (it is synchronize with inputting schema, but length value can be different) */    
     Object pre_maxLength = listColumsToTest.get(iInColIndex).getLength();
     int maxLength = (pre_maxLength == null) ? 0 : Integer.parseInt(pre_maxLength.toString());
-      
+    IMetadataColumn schemaColumn = null;
+    
     if (bNeedReferSchema) {
       Map<String, String> checkedColumn = listCheckedColumns.get(iInColIndex);
       sTestColName = checkedColumn.get("SCHEMA_COLUMN");
@@ -458,7 +458,7 @@ class RowSetValueUtil_<%=cid %> {
       bMaxLenLimited = "true".equals(checkedColumn.get("MAX_LENGTH"));
        
     } else{
-      IMetadataColumn schemaColumn = listColumsToTest.get(iInColIndex);
+      schemaColumn = listColumsToTest.get(iInColIndex);
       sTestColName = schemaColumn.getLabel();
       sTestColType = JavaTypesManager.getTypeToGenerate(schemaColumn.getTalendType(), true);
       sTestColPattern = schemaColumn.getPattern();
@@ -476,13 +476,13 @@ class RowSetValueUtil_<%=cid %> {
     if (sTestColType != null){
       if (sTestColType.indexOf("Date") >= 0){
         checker.testDate(bNullable, sInConnName, inColumn, sTestColPattern, cid); 
-      } else{         
+      } else{
         checker.testDataType(bNullable, sInConnName, inColumn, sTestColType, cid);
       }
     }
     // length checking
     if (bMaxLenLimited){
-      checker.testDataLength(bNullable, sInConnName, inColumn, maxLength, cid);
+      checker.testDataLength(bNullable, sInConnName, "true".equals(anotherChecked)?schemaColumn:inColumn, maxLength, cid);
     }
     
     // precision checking
