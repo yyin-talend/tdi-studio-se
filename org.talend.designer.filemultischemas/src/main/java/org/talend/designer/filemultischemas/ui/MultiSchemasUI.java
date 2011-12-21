@@ -125,8 +125,8 @@ import org.talend.repository.ui.utils.ShadowProcessHelper;
  */
 public class MultiSchemasUI {
 
-    protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore().getInt(
-            ITalendCorePrefConstants.PREVIEW_LIMIT);
+    protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore()
+            .getInt(ITalendCorePrefConstants.PREVIEW_LIMIT);
 
     private static final String EMPTY_VALUE = Messages.getString("FileStep2.empty"); //$NON-NLS-1$
 
@@ -431,7 +431,7 @@ public class MultiSchemasUI {
     }
 
     private void addGroupMultiSchemaSettings(final Composite mainComposite) {
-        Group group = Form.createGroup(mainComposite, 1, Messages.getString("FileStep2.groupDelimitedFileSettings"), 180); //$NON-NLS-1$
+        Group group = Form.createGroup(mainComposite, 1, Messages.getString("FileStep2.groupDelimitedFileSettings"), 210); //$NON-NLS-1$
 
         Composite composite = new Composite(group, SWT.NONE);
         GridLayout gridLayout = new GridLayout(4, false);
@@ -1262,40 +1262,39 @@ public class MultiSchemasUI {
         });
         addRow.addSelectionListener(new SelectionAdapter() { // hywang for 10263
 
-                    @Override
-                    public void widgetSelected(SelectionEvent e) {
-                        SchemasKeyData root = (SchemasKeyData) schemaTreeViewer.getInput();
-                        AddRowDialog dialog = new AddRowDialog(MultiSchemasUI.this.getShell(), root);
-                        if (Window.OK == dialog.open()) {
-                            Object input = schemaTreeViewer.getInput();
-                            if (input instanceof SchemasKeyData) {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                SchemasKeyData root = (SchemasKeyData) schemaTreeViewer.getInput();
+                AddRowDialog dialog = new AddRowDialog(MultiSchemasUI.this.getShell(), root);
+                if (Window.OK == dialog.open()) {
+                    Object input = schemaTreeViewer.getInput();
+                    if (input instanceof SchemasKeyData) {
 
-                                SchemasKeyData data = (SchemasKeyData) input;
-                                List<SchemasKeyData> all = data.getChildren();
-                                SchemasKeyData newData = new SchemasKeyData(dialog.getRecordValue()); //$NON-NLS-N$
-                                newData.setSeparator(dialog.getSepValue()); //$NON-NLS-N$
-                                newData.setUniqueRecord(dialog.getKeyValue()); //$NON-NLS-N$
+                        SchemasKeyData data = (SchemasKeyData) input;
+                        List<SchemasKeyData> all = data.getChildren();
+                        SchemasKeyData newData = new SchemasKeyData(dialog.getRecordValue()); //$NON-NLS-N$
+                        newData.setSeparator(dialog.getSepValue()); //$NON-NLS-N$
+                        newData.setUniqueRecord(dialog.getKeyValue()); //$NON-NLS-N$
 
-                                final IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(
-                                        getMultiSchemasComponent(), dialog.getKeyValue());
-                                if (metadataTable != null) {
-                                    multiSchemaManager.createMultiSchemasColumns(newData, metadataTable.clone(true));
-                                } else {
-                                    List<MultiMetadataColumn> colums = multiSchemaManager.createPropertiesColumns(newData);
-                                    newData.setMetadataColumns(colums);
-                                }
-                                all.add(newData);
-                                data.addChild(newData);
-                                newData.setParent(data);
-                                schemaTreeViewer.refresh();
-                                int len = schemaTreeViewer.getTree().getItems().length;
-                                schemaTreeViewer.getTree().select(schemaTreeViewer.getTree().getItems()[len - 1]);
-                            }
-                            getUIManager()
-                                    .refreshSchemasDetailView(schemaTreeViewer, schemaDetailsViewer, getSchemaDetailModel());
+                        final IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(getMultiSchemasComponent(),
+                                dialog.getKeyValue());
+                        if (metadataTable != null) {
+                            multiSchemaManager.createMultiSchemasColumns(newData, metadataTable.clone(true));
+                        } else {
+                            List<MultiMetadataColumn> colums = multiSchemaManager.createPropertiesColumns(newData);
+                            newData.setMetadataColumns(colums);
                         }
+                        all.add(newData);
+                        data.addChild(newData);
+                        newData.setParent(data);
+                        schemaTreeViewer.refresh();
+                        int len = schemaTreeViewer.getTree().getItems().length;
+                        schemaTreeViewer.getTree().select(schemaTreeViewer.getTree().getItems()[len - 1]);
                     }
-                });
+                    getUIManager().refreshSchemasDetailView(schemaTreeViewer, schemaDetailsViewer, getSchemaDetailModel());
+                }
+            }
+        });
         removeRow.addSelectionListener(new SelectionAdapter() { // hywang for 10263
 
                     @Override
