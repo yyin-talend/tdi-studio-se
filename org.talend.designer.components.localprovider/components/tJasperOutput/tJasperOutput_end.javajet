@@ -23,6 +23,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String destinationDirectory = ElementParameterParser.getValue(node,"__DESTINATION__");
        	String reportType = ElementParameterParser.getValue(node,"__REPORT_TYPE__");
        	String outFileName=ElementParameterParser.getValue(node,"__FILE_NAME__");
+       	boolean isSpecifyLocale="true".equals(ElementParameterParser.getValue(node,"__SPECIFY_LOCALE__"));
+       	String reportLocale=ElementParameterParser.getValue(node,"__REPORT_LOCALE__");
+       	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
        	
 %>	
 	CsvWriter_<%=cid%>.close();
@@ -35,12 +38,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     
     jasperDesign_<%=cid%>.setLanguage(net.sf.jasperreports.engine.design.JasperDesign.LANGUAGE_JAVA);
     net.sf.jasperreports.engine.JasperCompileManager.compileReportToFile(jasperDesign_<%=cid%>, jasperFile_<%=cid%>);
-
+    java.util.Locale reportLocale_<%=cid%>=null;
+<%
+	if(isSpecifyLocale){
+%>
+		reportLocale_<%=cid%>=java.util.Locale.<%=reportLocale%>;
+<%
+	}else{
+%>
+		reportLocale_<%=cid%>=java.util.Locale.getDefault();
+<%
+	}
+%>
     java.util.Map<String, Object> hm_<%=cid%> = new java.util.HashMap<String, Object>();
-    hm_<%=cid%>.put(net.sf.jasperreports.engine.JRParameter.REPORT_LOCALE, java.util.Locale.getDefault());
+    hm_<%=cid%>.put(net.sf.jasperreports.engine.JRParameter.REPORT_LOCALE, reportLocale_<%=cid%>);
 
     net.sf.jasperreports.engine.data.JRCsvDataSource ds_<%=cid%> = new net.sf.jasperreports.engine.data.JRCsvDataSource(
-            new java.io.File(tempFile_<%=cid%>));
+            new java.io.File(tempFile_<%=cid%>),<%=encoding%>);
 
     ds_<%=cid%>.setFieldDelimiter(',');
 <%
@@ -89,6 +103,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 			}
 %>
+	exporter_<%=cid%>.setParameter(net.sf.jasperreports.engine.JRExporterParameter.CHARACTER_ENCODING, <%=encoding%>);
     exporter_<%=cid%>.setParameter(net.sf.jasperreports.engine.JRExporterParameter.OUTPUT_FILE_NAME, reportFile_<%=cid%>);
     exporter_<%=cid%>.setParameter(net.sf.jasperreports.engine.JRExporterParameter.JASPER_PRINT, print_<%=cid%>);
     exporter_<%=cid%>.exportReport();

@@ -20,6 +20,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String filename = ElementParameterParser.getValue(node,"__JRXML_FILE__");
         String tempDirectory = ElementParameterParser.getValue(node,"__TEMP_FILE__");
+        String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
         
 %>       
     int nb_line_<%=cid%> = 0;
@@ -30,7 +31,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         file_<%=cid%>.createNewFile();
     }
     com.csvreader.CsvWriter CsvWriter_<%=cid%>=new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-                new java.io.FileOutputStream(tempFile_<%=cid%>,false),"ISO-8859-15")), ',');  
+                new java.io.FileOutputStream(tempFile_<%=cid%>,false),<%=encoding%>)), ',');  
 	
 <%
         List<IMetadataColumn> columns = metadata.getListColumns();
