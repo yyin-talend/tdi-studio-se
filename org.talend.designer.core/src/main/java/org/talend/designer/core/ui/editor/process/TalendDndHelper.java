@@ -52,6 +52,10 @@ final class TalendDndHelper {
 
     public static List<IComponent> filterNeededComponents(Item item, RepositoryNode seletetedNode, ERepositoryObjectType type) {
         EDatabaseComponentName name = EDatabaseComponentName.getCorrespondingComponentName(item, type);
+        List<IComponent> neededComponents = new ArrayList<IComponent>();
+        if (name == null) {
+            return neededComponents;
+        }
         String productNameWanted = filterProductNameWanted(name, item);
         boolean hl7Related = false;
         boolean hl7Output = false;
@@ -82,7 +86,6 @@ final class TalendDndHelper {
         }
 
         Set<IComponent> components = ComponentsFactoryProvider.getInstance().getComponents();
-        List<IComponent> neededComponents = new ArrayList<IComponent>();
 
         EmfComponent emfComponent = null;
         for (IComponent component : components) {

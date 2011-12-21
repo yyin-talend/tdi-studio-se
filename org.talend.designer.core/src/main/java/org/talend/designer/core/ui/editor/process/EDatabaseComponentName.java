@@ -39,6 +39,7 @@ import org.talend.core.model.properties.WSDLSchemaConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.properties.impl.ConnectionItemImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.utils.IComponentName;
 
 /**
  * DOC bqian TalendEditor class global comment. Detailled comment <br/>
@@ -46,7 +47,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
  */
-public enum EDatabaseComponentName {
+public enum EDatabaseComponentName implements IComponentName {
 
     // DATABASES
     DBIBMDB2ZOS(DatabaseConnectionItem.class, EDatabaseTypeName.IBMDB2ZOS, "tDB2Input", "tDB2Output", true), //$NON-NLS-1$ //$NON-NLS-2$
