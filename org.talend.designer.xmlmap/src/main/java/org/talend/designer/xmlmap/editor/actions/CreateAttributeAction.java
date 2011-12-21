@@ -27,6 +27,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 
 /**
  * wchen class global comment. Detailled comment
@@ -77,11 +78,20 @@ public class CreateAttributeAction extends SelectionAction {
             }
 
         };
-
+        String label = "";
         InputDialog dialog = new InputDialog(null, "Create New Element", "Input the new element's valid label", "", validataor);
-        int open = dialog.open();
+        int open = -1;
+        while (!StringUtil.validateLabelForXML(label)) {
+            open = dialog.open();
+            if (open == InputDialog.OK) {
+                label = dialog.getValue().trim();
+            }
+            if (open == InputDialog.CANCEL) {
+                return;
+            }
+        }
         if (open == Window.OK) {
-            treeNode.setName(dialog.getValue());
+            treeNode.setName(label);
             treeNode.setNodeType(NodeType.ATTRIBUT);
             treeNode.setXpath(XmlMapUtil.getXPath(this.parent.getXpath(), treeNode.getName(), treeNode.getNodeType()));
             treeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
@@ -101,6 +111,7 @@ public class CreateAttributeAction extends SelectionAction {
             }
             children.add(index, treeNode);
         }
+
         if (open == Window.OK && mapperManager != null) {
             TreeNode docRoot = XmlMapUtil.getTreeNodeRoot(parent);
             if (input) {

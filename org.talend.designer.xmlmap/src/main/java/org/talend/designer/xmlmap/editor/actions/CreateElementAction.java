@@ -30,6 +30,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 
 /**
  * wchen class global comment. Detailled comment
@@ -100,10 +101,20 @@ public class CreateElementAction extends SelectionAction {
 
             InputDialog dialog = new InputDialog(null, "Create New Element", "Input the new element's valid label", "",
                     validataor);
-            int open = dialog.open();
+            int open = -1;
+            String label = "";
+            while (!StringUtil.validateLabelForXML(label)) {
+                open = dialog.open();
+                if (open == InputDialog.OK) {
+                    label = dialog.getValue().trim();
+                }
+                if (open == InputDialog.CANCEL) {
+                    return;
+                }
+            }
             if (open == Window.OK) {
                 XmlMapUtil.detachNodeConnections(parent, mapperManager.getCopyOfMapData(), false);
-                treeNode.setName(dialog.getValue());
+                treeNode.setName(label);
                 treeNode.setNodeType(NodeType.ELEMENT);
                 treeNode.setXpath(XmlMapUtil.getXPath(this.parent.getXpath(), treeNode.getName(), treeNode.getNodeType()));
                 treeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
