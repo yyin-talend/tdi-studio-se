@@ -19,14 +19,14 @@ import java.util.Map;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.ext.DefaultHandler2;
 
 /**
  * DOC s class global comment. Detailled comment
  * 
  * $Id: SAXLoopHandler.java,v 1.1 2008/03/21 07:20:39 xzhang Exp $
  */
-public class SAXLoopHandler extends DefaultHandler {
+public class SAXLoopHandler extends DefaultHandler2 {
 
     //
     private String loopPath = null;
@@ -36,6 +36,8 @@ public class SAXLoopHandler extends DefaultHandler {
     private int subLoopCount = 0;
 
     private List<String> loopCols = new ArrayList<String>();
+    
+    private List<String> selectColumns = new ArrayList<String>();
 
     private List<Boolean> asXMLs = null;
 
@@ -45,15 +47,12 @@ public class SAXLoopHandler extends DefaultHandler {
     private boolean isLooping = false;
 
     // is read the text value
-    private boolean outputText = false;
+    private boolean[] outputTexts = null;
 
     private String[] currentRow = null;
 
     // to mark the value is set or not
     private boolean[] currentRowHaveValue = null;
-
-    //cache the index of resultset array for TDI-18671
-    private int[] indexOfColumns = {-1,-1};
 
     private LoopEntry entry;
 
@@ -69,6 +68,9 @@ public class SAXLoopHandler extends DefaultHandler {
         this.loopPath = entry.getLoop();
         this.loopCols = entry.getPaths();
         this.asXMLs = entry.getAsXMLs();
+        
+        outputTexts = new boolean[loopCols.size()];
+        
         if (entry.getSubLoop() != null) {
             this.subLoopPath = entry.getSubLoop().getLoop();
         } else {
@@ -95,21 +97,9 @@ public class SAXLoopHandler extends DefaultHandler {
     }
 
     public void startDocument() throws SAXException {
-        // System.out.println("startDocument");
-        // for (String path : loopCols) {
-        // System.out.print("|" + path.substring(path.lastIndexOf("/")));
-        // }
-        // System.out.println();
     }
 
     public void endDocument() throws SAXException {
-        // System.out.println("endDocument");
-        // for (String[] tmp : entry.getRows()) {
-        // for (String value : tmp) {
-        // System.out.print("|" + value);
-        // }
-        // System.out.println();
-        // }
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -117,25 +107,25 @@ public class SAXLoopHandler extends DefaultHandler {
 
         String loopPath = this.loopPath;
         String subLoopPath = this.subLoopPath;
-        List<String> loopCols = new ArrayList<String>();
+        selectColumns.clear();
 
         if (loopPath.indexOf("*") != -1) {
             loopPath = this.loopPath.replace("*", qName);
             subLoopPath = this.subLoopPath.replace("*", qName);
             for (String loopCol : this.loopCols) {
                 if (loopCol.indexOf("@") != -1) {
-                    loopCols.add(loopCol.replace("*", qName));
+                	selectColumns.add(loopCol.replace("*", qName));
                 } else if (currentPath.length() > 0) {
                     if (this.loopPath.indexOf("*") < this.loopPath.length() - 1) {
                         String parent = currentPath.substring(currentPath.lastIndexOf("/") + 1);
-                        loopCols.add(loopCol.replace("*", parent));
+                        selectColumns.add(loopCol.replace("*", parent));
                     } else if (this.loopPath.indexOf("*") == this.loopPath.length() - 1) {
-                        loopCols.add(loopCol.replace("*", qName));
+                    	selectColumns.add(loopCol.replace("*", qName));
                     }
                 }
             }
         } else {
-            loopCols.addAll(this.loopCols);
+        	selectColumns.addAll(this.loopCols);
         }
 
         currentPath += "/" + qName;
@@ -146,29 +136,28 @@ public class SAXLoopHandler extends DefaultHandler {
             currentRowHaveValue = new boolean[this.loopCols.size() + 1];
         }
         if (isLooping) {
-        	indexOfColumns[0] = loopCols.indexOf(currentPath);//index of resultset for not "Get Nodes" column
-
             // count sub loop number
             if (currentPath.equals(subLoopPath)) {
                 subLoopCount++;
             }
             // paser the attributes
-            for (int i = 0; i < loopCols.size(); i++) {
-                String column = loopCols.get(i);
+            for (int i = 0; i < selectColumns.size(); i++) {
+                String column = selectColumns.get(i);
                 boolean asXML = this.asXMLs.get(i);
-
+                outputTexts[i] = false;
+                
                 if (asXML && (currentPath.equals(column) || currentPath.startsWith(column + "/"))) {
-                	indexOfColumns[1] = i; //index of resultset for "Get Nodes" column
                     if (currentRow[i] == null)
                         currentRow[i] = "";
                     currentRow[i] = currentRow[i] + "<" + qName;
                     if (attributes.getLength() > 0) {
                         for (int m = 0; m < attributes.getLength(); m++) {
-                            currentRow[i] = currentRow[i] + " " + attributes.getQName(m) + "=" + "\"" + attributes.getValue(m)
+                            currentRow[i] = currentRow[i] + " " + attributes.getQName(m) + "=" + "\"" + escapeEntityHelper.escapeAttributeEntities(attributes.getValue(m))
                                     + "\"";
                         }
                     }
-                    outputText = true;
+                    outputTexts[i] = true;
+                    currentRowHaveValue[i] = false;
                     currentRow[i] = currentRow[i] + ">";
                 } else {
                     int index = column.lastIndexOf("@");
@@ -177,13 +166,13 @@ public class SAXLoopHandler extends DefaultHandler {
                             String attribute = attributes.getValue(column.substring(index + 1));
                             if (attribute != null && false == currentRowHaveValue[i]) {
                                 currentRow[i] = attribute;
+                                currentRowHaveValue[i] = true;
                             }
-                            currentRowHaveValue[i] = true;
                         }
                     } else {
 
                         if (currentPath.equals(column)) {
-                            outputText = true;
+                        	outputTexts[i] = true;
                         }
                     }
                 }
@@ -218,17 +207,19 @@ public class SAXLoopHandler extends DefaultHandler {
             String text = new String(ch, start, length);
             // System.out.println(text);
             if (text.length() > 0) {
-                if (outputText) {
-                	for(int indexOfColumn : indexOfColumns){
-	                	if(indexOfColumn >= 0 && !currentRowHaveValue[indexOfColumn]) {
-		                    if (currentRow[indexOfColumn] == null) {
-		                        currentRow[indexOfColumn] = text;
-		                    } else {
-		                        currentRow[indexOfColumn] += text;
-		                    }
-	                	}
-                	}
-                }
+            	for (int i = 0; i < selectColumns.size(); i++) {
+	                if (outputTexts[i] && !currentRowHaveValue[i]) {
+	                	if(this.asXMLs.get(i) && !inCDATA) {
+	                    	text = escapeEntityHelper.escapeElementEntities(text);
+	                    }
+	                	
+	                    if (currentRow[i] == null) {
+	                        currentRow[i] = text;
+	                    } else {
+	                        currentRow[i] += text;
+	                    }
+	                }
+            	}
 
                 /**
                  * when the loop has functions, add the value of the element to the args
@@ -253,22 +244,28 @@ public class SAXLoopHandler extends DefaultHandler {
             loopPath = this.loopPath.replace("*", qName);
         }
 
-        if (isLooping && outputText) {
-        	for(int indexOfColumn : indexOfColumns){
-	        	if(indexOfColumn >= 0){
-		            if (currentRow[indexOfColumn] == null) {
-		                currentRow[indexOfColumn] = "";
-		            }
-		            if (currentRow[indexOfColumn].trim().startsWith("<")) {
-		                currentRow[indexOfColumn] = currentRow[indexOfColumn] + "</" + qName + ">";
-		            } else {
-		                currentRowHaveValue[indexOfColumn] = true;
-		            }
-	        	}
+        if (isLooping) {
+        	for (int i = 0; i < selectColumns.size(); i++) {
+        		if(outputTexts[i]) {
+        			if(!currentRowHaveValue[i]) {
+        				if(currentRow[i]==null) {
+        					currentRow[i] = "";
+        				}
+        			}
+        			currentRowHaveValue[i] = true;
+        		}
+        		String column = selectColumns.get(i);
+        		boolean asXML = this.asXMLs.get(i);
+        		if (asXML && (currentPath.equals(column) || currentPath.startsWith(column + "/"))) {
+        			currentRow[i] += "</" + qName + ">";
+        			if(this.currentPath.equals(column)) {
+        				currentRowHaveValue[i] = true;
+        			}
+        		}
+        		
+        		outputTexts[i] = false;
         	}
         }
-
-        outputText = false;
 
         if (currentPath.equals(loopPath)) {
             isLooping = false;
@@ -303,8 +300,50 @@ public class SAXLoopHandler extends DefaultHandler {
                 this.saxLooper.addLoopOrder(this.entry.getOriginalLoopPath());
             }
             // =================end================================
+            reset();
         }
         currentPath = currentPath.substring(0, currentPath.lastIndexOf("/"));
     }
+    
+    private void reset() {
+    	for(int i=0;i<outputTexts.length;i++) {
+    		outputTexts[i] = false;
+    	}
+    }
+    
+    /** Flag used to indicate that we are inside a CDATA section */
+    private boolean inCDATA;
+    
+    private EscapeEntityHelper escapeEntityHelper = new EscapeEntityHelper();
+    
+	public void startCDATA() throws SAXException {
+		inCDATA = true;
+		if(isLooping) {
+			for (int i = 0; i < selectColumns.size(); i++) {
+	            if (this.asXMLs.get(i)) {
+	                if (outputTexts[i] && !currentRowHaveValue[i]) {
+	                	if(currentRow[i] == null) {
+	                		currentRow[i] = "<![CDATA[";
+	                	} else {
+	                		currentRow[i] += "<![CDATA[";
+	                	}
+	                }
+	            }
+	        }
+		}
+	}
 
+	public void endCDATA() throws SAXException {
+		inCDATA = false;
+		if(isLooping) {
+			for (int i = 0; i < selectColumns.size(); i++) {
+	            if (this.asXMLs.get(i)) {
+	                if (outputTexts[i] && !currentRowHaveValue[i]) {
+	                	currentRow[i] += "]]>";
+	                }
+	            }
+	        }
+		}
+	}
+    
 }

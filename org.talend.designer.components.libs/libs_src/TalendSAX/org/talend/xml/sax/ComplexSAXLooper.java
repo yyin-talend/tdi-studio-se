@@ -150,6 +150,7 @@ public class ComplexSAXLooper implements ISAXLooper {
             } else {
                 hd = newHandler2();
             }
+            saxParser.setProperty("http://xml.org/sax/properties/lexical-handler", hd);
             org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(
                     new java.io.FileInputStream(fileURL));
             inSource.setEncoding(this.charset);
@@ -179,6 +180,7 @@ public class ComplexSAXLooper implements ISAXLooper {
             } else {
                 hd = newHandler2();
             }
+            saxParser.setProperty("http://xml.org/sax/properties/lexical-handler", hd);
             org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(is);
             inSource.setEncoding(this.charset);
             saxParser.parse(is, hd);
