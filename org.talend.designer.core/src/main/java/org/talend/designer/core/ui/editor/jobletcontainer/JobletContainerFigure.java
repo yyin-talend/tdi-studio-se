@@ -142,18 +142,9 @@ public class JobletContainerFigure extends Figure {
      */
     @Override
     public void paint(Graphics graphics) {
-        // graphics.setAlpha(100);
-        if (graphics.getAlpha() != -1) {
-            graphics.setAlpha(-1);
-        }
+        graphics.setAlpha(100);
         errorFigure.setLocation(jobletContainer.getErrorLocation());
         super.paint(graphics);
-    }
-
-    @Override
-    protected void paintFigure(Graphics graphics) {
-        // TODO Auto-generated method stub
-        super.paintFigure(graphics);
     }
 
     public void initializejobletContainer(Rectangle rectangle) {
@@ -175,15 +166,15 @@ public class JobletContainerFigure extends Figure {
         outlineFigure.setLocation(new Point(location.x, location.y));
         outlineFigure.setVisible(showTitle);
         outlineFigure.setBackgroundColor(new Color(Display.getDefault(), new RGB(130, 240, 100)));
-        outlineFigure.setForegroundColor(new Color(Display.getDefault(), new RGB(205, 190, 165)));
+        outlineFigure.setForegroundColor(new Color(Display.getDefault(), new RGB(220, 120, 120)));
         outlineFigure.setSize(rectangle.width, preferedSize.height);
 
         // collapseFigure.setBackgroundColor(new Color(null, 50, 50, 250));
 
         rectFig.setLocation(new Point(location.x, /* preferedSize.height + */location.y));
         rectFig.setSize(new Dimension(rectangle.width, rectangle.height /*- preferedSize.height*/));
-        rectFig.setBackgroundColor(new Color(Display.getDefault(), new RGB(195, 240, 190)));
-        rectFig.setForegroundColor(new Color(Display.getDefault(), new RGB(205, 190, 165)));
+        rectFig.setBackgroundColor(new Color(Display.getDefault(), new RGB(130, 240, 100)));
+        rectFig.setForegroundColor(new Color(Display.getDefault(), new RGB(220, 120, 120)));
     }
 
     public void disposeColors() {
