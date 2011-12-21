@@ -7,9 +7,7 @@ imports="
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.process.IConnectionCategory
-		org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils
 		org.talend.core.model.metadata.types.JavaTypesManager
-		org.talend.core.model.metadata.types.JavaType
 		java.util.Map
 		java.util.List
 " 
@@ -28,6 +26,16 @@ imports="
 		
 		public String getDirverClassName(INode node){
 			return "org.postgresql.Driver";
+		}
+		
+		public void createConnection(INode node) {
+			super.createConnection(node);
+			String useCursor= ElementParameterParser.getValue(node, "__USE_CURSOR__");
+			if(("true").equals(useCursor)) { 
+%>
+				conn_<%=cid%>.setAutoCommit(false); 
+<%
+			}
 		}
 		
 		public void createStatement(INode node) {
