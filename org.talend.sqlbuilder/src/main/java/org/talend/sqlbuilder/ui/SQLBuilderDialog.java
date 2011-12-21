@@ -635,7 +635,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
 
     private void deleteNoUseTable() {
 
-        if (SQLBuilderRepositoryNodeManager.tList == null) {
+        if (SQLBuilderRepositoryNodeManager.tList == null || SQLBuilderRepositoryNodeManager.tList.size() == 0) {
             return;
         }
         IRepositoryViewObject repositoryObject = node.getObject();

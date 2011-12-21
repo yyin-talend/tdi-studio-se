@@ -13,6 +13,8 @@
 package org.talend.sqlbuilder.repository.utility;
 
 import java.sql.DatabaseMetaData;
+import java.sql.Driver;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,6 +36,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.MetadataFillFactory;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -45,6 +48,7 @@ import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
+import org.talend.core.model.metadata.builder.util.MetadataConnectionUtils;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -614,7 +618,11 @@ public class SQLBuilderRepositoryNodeManager {
         connectionProperty.setStatusCode(""); //$NON-NLS-1$
 
         item.setProperty(connectionProperty);
-        item.setConnection(connection);
+        // TDI-18665
+        updatePackage(iMetadataConnection);
+        DatabaseConnection dbConn = (DatabaseConnection) iMetadataConnection.getCurrentConnection();
+        item.setConnection(dbConn);
+
         RepositoryObject object = new RepositoryObject(connectionProperty);
         object.setLabel(""); //$NON-NLS-1$
         ItemState state = PropertiesFactory.eINSTANCE.createItemState();
@@ -625,6 +633,55 @@ public class SQLBuilderRepositoryNodeManager {
         }
         RepositoryNode newNode = new RepositoryNode(object, node, ENodeType.SYSTEM_FOLDER);
         return newNode;
+    }
+
+    private void updatePackage(IMetadataConnection metadataConnectionTemp) {
+        if (metadataConnectionTemp == null) {
+            return;
+        }
+        Driver derbyDriver = null;
+        java.sql.Connection sqlConn = null;
+        // get dbType before get connection so that the dbtype won't be null.TDI-18366
+        String dbType = metadataConnectionTemp.getDbType();
+        DatabaseConnection dbConn = (DatabaseConnection) metadataConnectionTemp.getCurrentConnection();
+        List list = MetadataConnectionUtils.getConnection(metadataConnectionTemp);
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) instanceof Driver) {
+                String driverClass = metadataConnectionTemp.getDriverClass();
+                if (MetadataConnectionUtils.isDerbyRelatedDb(driverClass, dbType)) {
+                    derbyDriver = (Driver) list.get(i);
+                }
+            }
+            if (list.get(i) instanceof java.sql.Connection) {
+                sqlConn = (java.sql.Connection) list.get(i);
+            }
+        }
+        try {
+            if (sqlConn != null) {
+                DatabaseMetaData dm = ExtractMetaDataUtils.getDatabaseMetaData(sqlConn, dbType);
+                MetadataFillFactory.getDBInstance().fillCatalogs(dbConn, dm,
+                        MetadataConnectionUtils.getPackageFilter(dbConn, dm, true));
+                MetadataFillFactory.getDBInstance().fillSchemas(dbConn, dm,
+                        MetadataConnectionUtils.getPackageFilter(dbConn, dm, false));
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        } finally {
+            if (dbType != null
+                    && (dbType.equals(EDatabaseTypeName.HSQLDB.getDisplayName())
+                            || dbType.equals(EDatabaseTypeName.HSQLDB_SERVER.getDisplayName())
+                            || dbType.equals(EDatabaseTypeName.HSQLDB_WEBSERVER.getDisplayName()) || dbType
+                            .equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName()))) {
+                ExtractMetaDataUtils.closeConnection();
+            }
+            if (derbyDriver != null) {
+                try {
+                    derbyDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
+                } catch (SQLException e) {
+                    // exception of shutdown success. no need to catch.
+                }
+            }
+        }
     }
 
     /**
