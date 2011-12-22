@@ -294,7 +294,7 @@ public class ImportItemUtil {
 
                 } else {
                     // same name and same id
-                    itemRecord.setState(State.NAME_EXISTED);
+                    itemRecord.setState(State.NAME_AND_ID_EXISTED);
                     if (overwrite) {
                         result = true;
                     }
@@ -303,7 +303,6 @@ public class ImportItemUtil {
                         // if anything system, don't replace the source item if same name.
                         // if not from system, can overwrite.
                         itemRecord.setExistingItemWithSameId(itemWithSameName);
-                        itemRecord.setState(State.NAME_AND_ID_EXISTED);
                         result = true;
                     }
                 }
