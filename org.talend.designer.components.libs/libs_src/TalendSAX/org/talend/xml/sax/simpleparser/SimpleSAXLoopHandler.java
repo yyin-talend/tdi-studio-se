@@ -16,16 +16,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.talend.xml.sax.EscapeEntityHelper;
 import org.talend.xml.sax.simpleparser.model.XMLNode;
 import org.talend.xml.sax.simpleparser.model.XMLNodes;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.ext.DefaultHandler2;
 
 /**
  * DOC Administrator class global comment. Detailled comment
  */
-public class SimpleSAXLoopHandler extends DefaultHandler {
+public class SimpleSAXLoopHandler extends DefaultHandler2 {
 
     private XMLNodes nodes;
 
@@ -76,7 +77,7 @@ public class SimpleSAXLoopHandler extends DefaultHandler {
                     node.addTextValue("<" + qName);
                     if (attributes.getLength() > 0) {
                         for (int m = 0; m < attributes.getLength(); m++) {
-                            node.addTextValue(" " + attributes.getQName(m) + "=" + "\"" + attributes.getValue(m) + "\"");
+                            node.addTextValue(" " + attributes.getQName(m) + "=" + "\"" + escapeEntityHelper.escapeAttributeEntities(attributes.getValue(m)) + "\"");
                         }
                     }
                     node.outputText = true;
@@ -119,6 +120,9 @@ public class SimpleSAXLoopHandler extends DefaultHandler {
         for (XMLNode node : nodes.getNodesCollection()) {
             if (node.isLooping) {
                 if (node.outputText && node.hasValue == false) {
+                	if(node.isAsXML && !inCDATA) {
+                    	text = escapeEntityHelper.escapeElementEntities(text);
+                    }
                     node.addTextValue(text);
                 }
             }
@@ -181,5 +185,33 @@ public class SimpleSAXLoopHandler extends DefaultHandler {
         }
         return false;
     }
+
+    /** Flag used to indicate that we are inside a CDATA section */
+    private boolean inCDATA;
+    
+    private EscapeEntityHelper escapeEntityHelper = new EscapeEntityHelper();
+    
+	public void startCDATA() throws SAXException {
+		inCDATA = true;
+		for (XMLNode node : nodes.getNodesCollection()) {
+            if (node.isLooping && node.isAsXML) {
+                if (node.outputText && node.hasValue == false) {
+                    node.addTextValue("<![CDATA[");
+                }
+            }
+        }
+	}
+
+	public void endCDATA() throws SAXException {
+		inCDATA = false;
+		for (XMLNode node : nodes.getNodesCollection()) {
+            if (node.isLooping && node.isAsXML) {
+                if (node.outputText && node.hasValue == false) {
+                    node.addTextValue("]]>");
+                }
+            }
+        }
+	}
+
 
 }
