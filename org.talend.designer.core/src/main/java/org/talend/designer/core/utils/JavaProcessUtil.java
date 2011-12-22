@@ -331,7 +331,7 @@ public class JavaProcessUtil {
             }
         }
 
-        if (curParam.getName().equals("DB_VERSION")) { //$NON-NLS-1$
+        if (curParam.getName().equals("DB_VERSION") || (curParam.getRepositoryValue() != null && curParam.getRepositoryValue().equals("DB_VERSION"))) { //$NON-NLS-1$
             String jdbcName = (String) value;
             //
             if (jdbcName != null && !jdbcName.equals("Access_2003") && !jdbcName.equals("Access_2007")) {
