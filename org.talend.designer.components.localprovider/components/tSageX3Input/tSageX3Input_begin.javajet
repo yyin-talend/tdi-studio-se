@@ -39,6 +39,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
             String limit = ElementParameterParser.getValue(node, "__LIMIT_SIZE__");
             boolean useKeys = ("true").equals(ElementParameterParser.getValue(node,"__USE_KEYS__"));
             String publicName = ElementParameterParser.getValue(node,"__PUBLICATION_NAME__");
+            String action = ElementParameterParser.getValue(node,"__ACTION__");
 %>
             org.talend.sage.Client client_<%=cid %> = new org.talend.sage.Client();
             client_<%=cid %>.ConnectService(<%=endpoint%>);
@@ -46,7 +47,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 
             java.util.Map<String,String> keyValues_<%=cid%> = new java.util.HashMap<String,String>();		          
 <%
-			if(useKeys){	
+			if(useKeys || "Read".equals(action)){	
                 List<Map<String, String>> keys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__KEYS__");            
                 for(Map<String,String> keyValue:keys){
                 	String key = keyValue.get("KEY");
@@ -60,9 +61,24 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 			}
 			IConnection outgoingConn = outgoingConns.get(0);
 			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
+				if("QueryAndRead".equals(action)){
+				%>
+					java.util.List<org.talend.sage.Result> results_<%=cid %> = client_<%=cid %>.query(<%=publicName%>,client_<%=cid %>.createCAdxKeyValues(keyValues_<%=cid%>),<%=limit%>);
+					for(org.talend.sage.Result result_<%=cid%>:results_<%=cid%>){
+				<%
+				}else if("Query".equals(action)){
+				%>
+					java.util.List<org.talend.sage.Summary> results_<%=cid %> = client_<%=cid %>.querySummary(<%=publicName%>,client_<%=cid %>.createCAdxKeyValues(keyValues_<%=cid%>),<%=limit%>);
+					for(org.talend.sage.Summary result_<%=cid%>:results_<%=cid%>){
+				<%
+				}else if("Read".equals(action)){
+				%>
+					org.talend.sage.Result result_<%=cid %> = client_<%=cid %>.read(<%=publicName%>,client_<%=cid %>.createCAdxKeyValues(keyValues_<%=cid%>));
+					if(result_<%=cid%> != null){
+				<%
+				}
 %>           
-			java.util.List<org.talend.sage.Result> results_<%=cid %> = client_<%=cid %>.query(<%=publicName%>,client_<%=cid %>.createCAdxKeyValues(keyValues_<%=cid%>),<%=limit%>);
-			for(org.talend.sage.Result result_<%=cid%>:results_<%=cid%>){
+			
 <%
 			List<Map<String, String>> mappingList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MAPPING_INPUT__");
 			Map<String,Map<String,String>> resultMapping = new HashMap<String,Map<String,String>>();
@@ -84,28 +100,30 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 				
 				Map<String,String> fieldMapping = resultMapping.get(column.getLabel());
+				String keyOfValueStr = !"Query".equals(action)?fieldMapping.get("gID")+",":"";
+				keyOfValueStr += fieldMapping.get("fID");
 %>
-				if(result_<%=cid%>.getValue(<%=fieldMapping.get("gID")%>,<%=fieldMapping.get("fID")%>)!=null){
+				if(result_<%=cid%>.getValue(<%=keyOfValueStr%>)!=null){
     			<%	
     				if (javaType == JavaTypesManager.LIST) {	
-    			%>
-    					<%=outgoingConn.getName()%>.<%=column.getLabel()%> = result_<%=cid%>.getListValue(<%=fieldMapping.get("gID")%>,<%=fieldMapping.get("fID")%>);
+				%>    				
+    					<%=outgoingConn.getName()%>.<%=column.getLabel()%> = result_<%=cid%>.getListValue(<%=keyOfValueStr%>);
     			<%				
     				}else if (javaType == JavaTypesManager.STRING) {
     			%>				
-    					<%=outgoingConn.getName()%>.<%=column.getLabel()%> = result_<%=cid%>.getStringValue(<%=fieldMapping.get("gID")%>,<%=fieldMapping.get("fID")%>);
+    					<%=outgoingConn.getName()%>.<%=column.getLabel()%> = result_<%=cid%>.getStringValue(<%=keyOfValueStr%>);
     			<%
     				} else if(javaType == JavaTypesManager.DATE) { // Date
     			%>
-    					<%=outgoingConn.getName()%>.<%=column.getLabel()%> = ParserUtils.parseTo_Date(result_<%=cid%>.getStringValue(<%=fieldMapping.get("gID")%>,<%=fieldMapping.get("fID")%>), <%= patternValue %>);
+    					<%=outgoingConn.getName()%>.<%=column.getLabel()%> = ParserUtils.parseTo_Date(result_<%=cid%>.getStringValue(<%=keyOfValueStr%>), <%=patternValue%>);
     			<%
     				}  else if(javaType == JavaTypesManager.OBJECT) { // OBJECT
     			%>
-    					<%=outgoingConn.getName()%>.<%=column.getLabel()%> = result_<%=cid%>.getValue(<%=fieldMapping.get("gID")%>,<%=fieldMapping.get("fID")%>);
+    					<%=outgoingConn.getName()%>.<%=column.getLabel()%> = result_<%=cid%>.getValue(<%=keyOfValueStr%>);
     			<%
     				} else  { // other
     			%>							
-    					<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_<%= typeToGenerate %>(result_<%=cid%>.getStringValue(<%=fieldMapping.get("gID")%>,<%=fieldMapping.get("fID")%>));	
+    					<%=outgoingConn.getName()%>.<%=columnList.get(i).getLabel()%> = ParserUtils.parseTo_<%=typeToGenerate%>(result_<%=cid%>.getStringValue(<%=keyOfValueStr%>));	
     			<%
     				}
     			%>
