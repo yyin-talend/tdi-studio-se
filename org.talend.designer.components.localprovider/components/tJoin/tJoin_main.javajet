@@ -81,16 +81,18 @@ if(inRefCon != null){//exist lookup
 		for (int i = 0; i < minSize; i++) {//4
 			IMetadataColumn column = columns.get(i);
 			IMetadataColumn preColumn = preColumns.get(i);
-			
-			//find the lookup column
 			boolean isLookup = false;
-			for (int j = 0; j < lookupCols.size(); j++) {
-                 Map<String, String> lineValue = lookupCols.get(j);
-                 if (column.getLabel().equals(lineValue.get("OUTPUT_COLUMN"))) {
-					isLookup = true;
-					break;
-                 }
-            }
+
+			if(useLookup) {
+				//find the lookup column
+				for (int j = 0; j < lookupCols.size(); j++) {
+					Map<String, String> lineValue = lookupCols.get(j);
+					if (column.getLabel().equals(lineValue.get("OUTPUT_COLUMN"))) {
+						isLookup = true;
+						break;
+					}
+				}
+			}
             
             if(!isLookup) {
 %>					
