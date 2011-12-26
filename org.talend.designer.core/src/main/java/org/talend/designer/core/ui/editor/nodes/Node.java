@@ -3061,7 +3061,7 @@ public class Node extends Element implements IGraphicalNode {
     }
 
     public void checkNode() {
-        if (isActivate()) {
+        if (isActivate() && !isJoblet()) {
             checkParameters();
             checkSchema();
             checkLinks();
