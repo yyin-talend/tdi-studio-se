@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.swt.formtools.LabelledDirectoryField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.MapperSettingsManager;
 import org.talend.designer.mapper.model.MapperSettingModel;
@@ -56,6 +57,8 @@ public class PropertySetDialog extends Dialog {
     private LabelledDirectoryField directoryField;
 
     private LabelledText sizeField;
+
+    public static final String QUOTATION_MARK = "\""; //$NON-NLS-1$
 
     private final Color color = new Color(Display.getDefault(), 238, 238, 0);
 
@@ -174,6 +177,11 @@ public class PropertySetDialog extends Dialog {
             directoryField.getTextControl().setBackground(null);
             directoryField.setToolTipText(null);
         } else {
+            // bug TDI-19070
+            if (directoryField.getText() != null && !directoryField.getText().startsWith(QUOTATION_MARK)
+                    && !directoryField.getText().endsWith(QUOTATION_MARK)) {
+                directoryField.setText(TalendQuoteUtils.addQuotesIfNotExist(directoryField.getText()));
+            }
             directoryField.getTextControl().setBackground(color);
             directoryField.setToolTipText("Default is empty.");
         }
