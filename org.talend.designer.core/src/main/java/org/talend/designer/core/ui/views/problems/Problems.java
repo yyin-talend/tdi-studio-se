@@ -403,7 +403,7 @@ public class Problems {
             if (problem == null || problem instanceof TalendProblem)
                 continue;
             if (problem.getJobInfo() != null
-                    && (problem.getJobInfo().getJobName().equals(process.getName()) && problem.getJobInfo().getJobVersion()
+                    && (problem.getJobInfo().getJobId().equals(process.getId()) && problem.getJobInfo().getJobVersion()
                             .equals(process.getVersion()))) {
                 iter.remove();
             }
@@ -418,12 +418,17 @@ public class Problems {
     }
 
     public static void removeProblemsByElement(Node element) {
-
+        IProcess process = element.getProcess();
         for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
             Problem problem = iter.next();
-            if (problem.getNodeName() != null && (problem.getNodeName().equals(element.getUniqueName()))) {
-                iter.remove();
+            if (problem.getJobInfo() != null
+                    && (problem.getJobInfo().getJobId().equals(process.getId()) && problem.getJobInfo().getJobVersion()
+                            .equals(process.getVersion()))) {
+                if (problem.getNodeName() != null && (problem.getNodeName().equals(element.getUniqueName()))) {
+                    iter.remove();
+                }
             }
+
         }
         refreshProblemTreeView();
     }
