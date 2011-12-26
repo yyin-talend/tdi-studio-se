@@ -652,11 +652,15 @@ class ExportItemWizardPage extends WizardPage {
         }
         for (RelationshipItemBuilder.Relation relation : relations) {
             IRepositoryViewObject obj = null;
+            String id = relation.getId();
             try {
                 if (RelationshipItemBuilder.ROUTINE_RELATION.equals(relation.getType())) {
-                    obj = RoutinesUtil.getRoutineFromName(relation.getId());
+                    obj = RoutinesUtil.getRoutineFromName(id);
                 } else {
-                    obj = factory.getLastVersion(relation.getId());
+                    if (id != null && id.indexOf(" - ") != -1) { //$NON-NLS-1$
+                        id = id.substring(0, id.lastIndexOf(" - ")); //$NON-NLS-1$
+                    }
+                    obj = factory.getLastVersion(id);
                 }
                 if (obj != null) {
                     RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(obj, false);
@@ -1003,7 +1007,8 @@ class ExportItemWizardPage extends WizardPage {
                         || objectType == ERepositoryObjectType.METADATA_FILE_LDIF
                         || objectType == ERepositoryObjectType.METADATA_FILE_POSITIONAL
                         || objectType == ERepositoryObjectType.METADATA_FILE_REGEXP
-                        || objectType == ERepositoryObjectType.METADATA_FILE_XML) {
+                        || objectType == ERepositoryObjectType.METADATA_FILE_XML
+                        || objectType == ERepositoryObjectType.METADATA_GENERIC_SCHEMA) {
                     return new Object[0];
                 }
             }
