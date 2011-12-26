@@ -22,6 +22,7 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -546,8 +547,18 @@ public class JobletUtil {
 
                             if (para.getValue() != null) {
                                 if (paraOra.getValue() != null) {
-                                    if (!para.getValue().equals(paraOra.getValue())) {
-                                        return true;
+                                    // TDI-18915:The parameter here is not only a string value,but can be a
+                                    // MetadataTable
+                                    if (para.getValue() instanceof IMetadataTable) {
+                                        boolean isSame = ((MetadataTable) para.getValue()).sameMetadataAs((MetadataTable) paraOra
+                                                .getValue());
+                                        if (!isSame) {
+                                            return true;
+                                        }
+                                    } else {
+                                        if (!para.getValue().equals(paraOra.getValue())) {
+                                            return true;
+                                        }
                                     }
                                 } else {
                                     return true;
