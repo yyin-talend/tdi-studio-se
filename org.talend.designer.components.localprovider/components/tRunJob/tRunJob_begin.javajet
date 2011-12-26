@@ -12,13 +12,19 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
+boolean useDynamicJob = ("true").equals(ElementParameterParser.getValue(node, "__USE_DYNAMIC_JOB__"));
+
 String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__");
-String context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
+String context = "";
+
+if(useDynamicJob) {
+	context = ElementParameterParser.getValue(node,"__CONTEXT_NAME__");
+} else {
+	context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
+}
 String[] codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid", "\"--father_node="+ cid + "\""};
 
 String[] commandLine = new String[] {"<command>"};
-
-boolean useDynamicJob = ("true").equals(ElementParameterParser.getValue(node, "__USE_DYNAMIC_JOB__"));
 
 String childJobName;
 int jobNamePosition;
@@ -32,13 +38,23 @@ try {
 		java.util.List<String> childJob_commandLine_<%=cid%> = null;
 		String classpathSeparator_<%=cid%> = System.getProperty("path.separator");
 		<%
+	
+		//issue 19108: The context text field waits for a context name without quotes. The component removes the first quote and the last quote if they exist.
+		if(context.startsWith("\"")) {
+			context=context.substring(1, context.length());
+		}
+		if(context.endsWith("\"")) {
+			context=context.substring(0, context.length()-1);
+		}
+
 		if(process!=null && !process.equals("")){
 			String[] childJobIds = process.split(";");
 			for (int i=0;i<childJobIds.length;i++) {
 			%>
 				childJob_commandLine_<%=cid%> = new java.util.ArrayList<String>();
 				<%
-			    commandLine = ProcessorUtilities.getCommandLine("win32",true, childJobIds[i], context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+			commandLine = ProcessorUtilities.getCommandLine("win32",true, childJobIds[i], context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+			
 			    // remove the frontal 2 lines
 			    if (commandLine.length > 0 && ProcessorUtilities.isExportConfig()){
 					int tmpSize = commandLine.length - 2;
