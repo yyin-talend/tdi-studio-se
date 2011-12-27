@@ -89,7 +89,7 @@ imports="
 	        try {
 				stmtCreateIndex_<%=cid%>.execute(dropIndex_<%=cid %>);
 			}
-			catch (java.sql.SQLException e) {
+			catch (java.sql.SQLException e_<%=cid%>) {
 			}
 			
 			// Create spatial index using GIST on geometry columns
@@ -150,14 +150,14 @@ imports="
                 	if (pstmt_<%=cid %> != null) { 
 						pstmt_<%=cid %>.executeBatch();    
             	    }          	    
-                }catch (java.sql.BatchUpdateException e){
+                }catch (java.sql.BatchUpdateException e_<%=cid%>){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
-                		throw(e);
+                		throw(e_<%=cid%>);
                 	<%
                 	}else {
                 	%>
-                	System.out.println(e.getMessage());
+                	System.out.println(e_<%=cid%>.getMessage());
                 	<%
                 	}%>                	
             	}
