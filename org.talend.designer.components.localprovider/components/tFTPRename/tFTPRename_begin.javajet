@@ -99,6 +99,9 @@ if (sftp) {
   } else {
   %>    
     com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)globalMap.get("<%=conn %>");
+    if(c_<%=cid%>.getHome()!=null && !c_<%=cid%>.getHome().equals(c_<%=cid%>.pwd())){
+  		c_<%=cid%>.cd(c_<%=cid%>.getHome());
+  	}
   <%
   }
   %>

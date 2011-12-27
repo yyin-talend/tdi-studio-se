@@ -121,6 +121,9 @@ if (sftp) {
     c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
   <%} else {%>    
     com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)globalMap.get("<%=conn %>");
+    if(c_<%=cid%>.getHome()!=null && !c_<%=cid%>.getHome().equals(c_<%=cid%>.pwd())){
+  		c_<%=cid%>.cd(c_<%=cid%>.getHome());
+  	}
   <%}%> 
   String remoteDir_<%=cid %> = <%=remoteDir %>.replaceAll("\\\\", "/");
   <%=outputConnName %> = new <%=outputConnName %>Struct();

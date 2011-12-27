@@ -96,6 +96,9 @@ if (sftp) {
     c_<%=cid%>.setFilenameEncoding(<%=encoding%>);
   <%} else {%>    
     com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)globalMap.get("<%=conn %>");
+    if(c_<%=cid%>.getHome()!=null && !c_<%=cid%>.getHome().equals(c_<%=cid%>.pwd())){
+  		c_<%=cid%>.cd(c_<%=cid%>.getHome());
+  	}
   <%}%>
   java.util.List<java.util.Map<String,String>> list<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();
 

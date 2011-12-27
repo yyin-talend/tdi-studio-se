@@ -69,6 +69,9 @@ int nb_file_<%=cid%> = 0;
     String conn= "conn_" + connection;
     %>
     com.jcraft.jsch.ChannelSftp c_<%=cid%> = (com.jcraft.jsch.ChannelSftp)globalMap.get("<%=conn %>");
+    if(c_<%=cid%>.getHome()!=null && !c_<%=cid%>.getHome().equals(c_<%=cid%>.pwd())){
+  		c_<%=cid%>.cd(c_<%=cid%>.getHome());
+  	}
   <%} else {%>    
     class MyUserInfo_<%=cid %> implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
       String passphrase_<%=cid %> = <%=passPhrase %>;
@@ -119,7 +122,6 @@ int nb_file_<%=cid%> = 0;
   }
   %>  
   String localdir<%=cid %> = <%=localdir%>;
-
   for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) {
 
 <%} else {%>
