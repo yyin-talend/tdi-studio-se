@@ -24,6 +24,7 @@
 		org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode
 		org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection
 		org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData
+		org.talend.designer.xmlmap.model.emf.xmlmap.NodeType
 	"
 	skeleton="tAdvancedHash_java.skeleton"
 %>
