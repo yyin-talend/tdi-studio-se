@@ -487,7 +487,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 int returnValue = externalNode.open(getViewer().getControl().getShell());
                 if (!node.isReadOnly()) {
                     if (returnValue == SWT.OK) {
-                        Command cmd = new ExternalNodeChangeCommand(node, externalNode);
+                        Command cmd = new ExternalNodeChangeCommand(node, externalNode, oldExternalData);
                         CommandStack cmdStack = (CommandStack) part.getAdapter(CommandStack.class);
                         cmdStack.execute(cmd);
                     } else {
