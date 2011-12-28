@@ -165,12 +165,14 @@ public class ChangeMetadataCommand extends Command {
         this.currentInputMetadata = null;
         this.newInputMetadata = null;
         oldInputMetadata = null;
-        this.currentOutputMetadata = currentOutputMetadata;
+        if (currentOutputMetadata != null) {
+            this.currentOutputMetadata = currentOutputMetadata.clone(true);
+        }
         if (this.currentOutputMetadata == null) {
             this.currentOutputMetadata = node.getMetadataFromConnector(currentConnector);
         }
-        if (currentOutputMetadata == null) {
-            currentOutputMetadata = newOutputMetadata;
+        if (currentOutputMetadata == null && newOutputMetadata != null) {
+            currentOutputMetadata = newOutputMetadata.clone(true);
         }
         oldOutputMetadata = this.currentOutputMetadata.clone(true);
         this.newOutputMetadata = newOutputMetadata.clone(true);
@@ -615,7 +617,8 @@ public class ChangeMetadataCommand extends Command {
             }
         }
         if (!currentOutputMetadata.sameMetadataAs(oldOutputMetadata, IMetadataColumn.OPTIONS_NONE)) {
-            currentOutputMetadata.setListColumns(oldOutputMetadata.getListColumns());
+            List<IMetadataColumn> currentColumns = new ArrayList<IMetadataColumn>(oldOutputMetadata.getListColumns());
+            currentOutputMetadata.setListColumns(currentColumns);
             MetadataTool.copyTable(oldOutputMetadata, currentOutputMetadata);
         }
 
@@ -631,7 +634,7 @@ public class ChangeMetadataCommand extends Command {
             cmd.undo();
         }
 
-        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(newOutputMetadata, oldOutputMetadata);
+        List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldOutputMetadata, newOutputMetadata);
         ColumnListController.updateColumnList(node, columnNameChanged, true);
 
         if (!internal) {
