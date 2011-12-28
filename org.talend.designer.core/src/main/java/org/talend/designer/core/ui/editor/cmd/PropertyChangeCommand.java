@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ITDQRuleService;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
@@ -149,6 +150,57 @@ public class PropertyChangeCommand extends Command {
 
         oldValue = elem.getPropertyValue(propName);
         elem.setPropertyValue(propName, newValue);
+
+        // for TDI-19063
+        if ((propName.equals(EParameterName.DBNAME.getName()) || propName.equals(EParameterName.SCHEMA_DB.getName()) || propName
+                .equals(EParameterName.SCHEMA_DB.getName())) && elem instanceof Node) {
+            Node node = (Node) elem;
+            IElementParameter dqRulerParam = node.getElementParameter("DQRULES_LIST");
+            if (dqRulerParam != null) {
+
+                ITDQRuleService rulerService = null;
+                try {
+                    rulerService = (ITDQRuleService) GlobalServiceRegister.getDefault().getService(ITDQRuleService.class);
+                } catch (RuntimeException e) {
+                    // nothing to do
+                }
+                if (rulerService != null) {
+                    IElementParameter typeParam = node.getElementParameter("TYPE");
+                    IElementParameter dbParam = node.getElementParameter(EParameterName.DBNAME.getName());
+                    IElementParameter schemaParam = node.getElementParameter(EParameterName.SCHEMA_DB.getName());
+                    IElementParameter tableParam = node.getElementParameterFromField(EParameterFieldType.DBTABLE);
+
+                    Object value = dqRulerParam.getValue();
+                    String previousDisplayName = null;
+                    if (value != null && !"".equals(value) && dqRulerParam.getListItemsValue().length > 0) {
+                        int ruleIndex = dqRulerParam.getIndexOfItemFromList((String) value);
+                        previousDisplayName = dqRulerParam.getListItemsDisplayName()[ruleIndex];
+                    }
+
+                    rulerService.overrideRuleList(typeParam, dbParam, schemaParam, tableParam, dqRulerParam);
+
+                    // the rule values will be changed if any one of dbParam/schemaParam/tableParam is changed
+                    // need to keep the same selection and update the value
+                    if (previousDisplayName != null) {
+                        String[] names = dqRulerParam.getListItemsDisplayName();
+                        Integer valueIndex = null;
+                        for (int i = 0; i < names.length; i++) {
+                            if (previousDisplayName.equals(names[i])) {
+                                valueIndex = i;
+                            }
+                        }
+                        if (valueIndex != null) {
+                            dqRulerParam.setValue(dqRulerParam.getListItemsValue()[valueIndex]);
+                        } else {
+                            // rulers deleted from DQ
+                            dqRulerParam.setValue("");
+                        }
+                    }
+
+                }
+
+            }
+        }
 
         // feature 19312
         if (propName.contains(EParameterName.USE_DYNAMIC_JOB.getName()) && newValue.equals(false)) {

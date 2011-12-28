@@ -46,6 +46,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQPatternService;
+import org.talend.core.ITDQRuleService;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -472,37 +473,50 @@ public class ComboController extends AbstractElementPropertySectionController {
     public void refresh(IElementParameter param, boolean check) {
         String paramName = param.getName();
         boolean isPatternList = StringUtils.equals(paramName, "PATTERN_LIST");
+        boolean isRule = StringUtils.equals(paramName, "DQRULES_LIST");
         CCombo combo = (CCombo) hashCurControls.get(paramName);
 
         if (combo == null || combo.isDisposed()) {
             return;
         }
+
         // for feature 8147
-        try {
-            // if it is pattern,then it can get ITDQPatternService's instance
-            if (isPatternList) {
-                ITDQPatternService service = null;
-                try {
-                    service = (ITDQPatternService) GlobalServiceRegister.getDefault().getService(ITDQPatternService.class);
-                } catch (RuntimeException e) {
-                    // nothing to do
-                }
-                if (service != null && elem instanceof Node) {
-
-                    Node node = (Node) elem;
-
-                    IElementParameter typeParam = node.getElementParameter("TYPE");
-
-                    service.overridePatternList(typeParam, param);
-                }
+        // if it is pattern,then it can get ITDQPatternService's instance
+        if (isPatternList) {
+            ITDQPatternService service = null;
+            try {
+                service = (ITDQPatternService) GlobalServiceRegister.getDefault().getService(ITDQPatternService.class);
+            } catch (RuntimeException e) {
+                // nothing to do
             }
+            if (service != null && elem instanceof Node) {
 
-        } catch (Exception e) {
-            // nothing to do
+                Node node = (Node) elem;
+
+                IElementParameter typeParam = node.getElementParameter("TYPE");
+
+                service.overridePatternList(typeParam, param);
+            }
+        }
+        if (isRule) {
+            ITDQRuleService rulerService = null;
+            try {
+                rulerService = (ITDQRuleService) GlobalServiceRegister.getDefault().getService(ITDQRuleService.class);
+            } catch (RuntimeException e) {
+                // nothing to do
+            }
+            if (rulerService != null && elem instanceof Node) {
+                Node node = (Node) elem;
+                IElementParameter typeParam = node.getElementParameter("TYPE");
+                IElementParameter dbParam = node.getElementParameter(EParameterName.DBNAME.getName());
+                IElementParameter schemaParam = node.getElementParameter(EParameterName.SCHEMA_DB.getName());
+                IElementParameter tableParam = node.getElementParameterFromField(EParameterFieldType.DBTABLE);
+
+                rulerService.overrideRuleList(typeParam, dbParam, schemaParam, tableParam, param);
+            }
         }
 
         Object value = param.getValue();
-
         if (value instanceof String) {
             String strValue = ""; //$NON-NLS-1$
             int nbInList = 0, nbMax = param.getListItemsValue().length;
@@ -520,7 +534,7 @@ public class ComboController extends AbstractElementPropertySectionController {
                 combo.setItems(paramItems);
             }
             // bug 19837
-            if (isPatternList) {
+            if (isPatternList || isRule) {
                 combo.setText("".equals(strValue) ? (String) value : strValue);
             } else {
                 combo.setText(strValue);
