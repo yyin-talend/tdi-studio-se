@@ -500,7 +500,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
         RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(node);
         RepositoryNode metadataNode = null;
 
-        metadataNode = findRepositoryNode(names[1], repositoryNode);
+        metadataNode = findRepositoryNode(names[1], names[0], repositoryNode);
         if (metadataNode != null) {
             AbstractCreateTableAction action = new CreateTableAction(metadataNode);
             action.setAvoidUnloadResources(true);
@@ -516,14 +516,15 @@ public class SchemaTypeController extends AbstractRepositoryController {
      * @param root
      * @return
      */
-    private RepositoryNode findRepositoryNode(String label, RepositoryNode root) {
+    private RepositoryNode findRepositoryNode(String label, String id, RepositoryNode root) {
         String name = (String) root.getProperties(EProperties.LABEL);
+        String rootID = (String) root.getId();
         RepositoryNode toReturn = null;
-        if (label.equals(name)) {
+        if (label.equals(name) && !id.equals(rootID)) {
             toReturn = root;
         } else {
             for (IRepositoryNode node : root.getChildren()) {
-                toReturn = findRepositoryNode(label, (RepositoryNode) node);
+                toReturn = findRepositoryNode(label, id, (RepositoryNode) node);
                 if (toReturn != null) {
                     break;
                 }
