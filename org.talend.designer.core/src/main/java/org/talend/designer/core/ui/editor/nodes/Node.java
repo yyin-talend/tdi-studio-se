@@ -2833,24 +2833,28 @@ public class Node extends Element implements IGraphicalNode {
                             lastNotCustom = meta.getListColumns().indexOf(col);
                         }
                     }
-                    if (nbDynamic > 1) {
-                        String errorMessage = Messages.getString("Node.onlyOneDynamicPerSchema"); //$NON-NLS-1$
-                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                    }
-                    if (nbDynamic > 0 && (indexOfDynamicField != lastNotCustom)) {
-                        String errorMessage = Messages.getString("Node.dynamicShouldBeLastType"); //$NON-NLS-1$
-                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                    }
-                    if (nbDynamic > 0 && service == null) {
-                        String errorMessage = Messages.getString("Node.dynamicNotSupported"); //$NON-NLS-1$
-                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                    }
-                    if (nbDynamic > 0 && service != null) {
-                        if (!service.isSupportDynamicType(this.getComponent().getName())) {
-                            String errorMessage = Messages.getString("Node.componentDoesntSupportDynamic"); //$NON-NLS-1$
+
+                    if (!isJoblet()) {
+                        if (nbDynamic > 1) {
+                            String errorMessage = Messages.getString("Node.onlyOneDynamicPerSchema"); //$NON-NLS-1$
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         }
+                        if (nbDynamic > 0 && (indexOfDynamicField != lastNotCustom)) {
+                            String errorMessage = Messages.getString("Node.dynamicShouldBeLastType"); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        }
+                        if (nbDynamic > 0 && service == null) {
+                            String errorMessage = Messages.getString("Node.dynamicNotSupported"); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        }
+                        if (nbDynamic > 0 && service != null) {
+                            if (!service.isSupportDynamicType(this.getComponent().getName())) {
+                                String errorMessage = Messages.getString("Node.componentDoesntSupportDynamic"); //$NON-NLS-1$
+                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                            }
+                        }
                     }
+
                 }
             }
         }
@@ -3061,7 +3065,7 @@ public class Node extends Element implements IGraphicalNode {
     }
 
     public void checkNode() {
-        if (isActivate() && !isJoblet()) {
+        if (isActivate()) {
             checkParameters();
             checkSchema();
             checkLinks();
