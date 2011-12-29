@@ -177,11 +177,6 @@ public class PropertySetDialog extends Dialog {
             directoryField.getTextControl().setBackground(null);
             directoryField.setToolTipText(null);
         } else {
-            // bug TDI-19070
-            if (directoryField.getText() != null && !directoryField.getText().startsWith(QUOTATION_MARK)
-                    && !directoryField.getText().endsWith(QUOTATION_MARK)) {
-                directoryField.setText(TalendQuoteUtils.addQuotesIfNotExist(directoryField.getText()));
-            }
             directoryField.getTextControl().setBackground(color);
             directoryField.setToolTipText("Default is empty.");
         }
@@ -220,6 +215,11 @@ public class PropertySetDialog extends Dialog {
     }
 
     protected void okPressed() {
+        // bug TDI-19070
+        if (directoryField.getText() != null && !directoryField.getText().startsWith(QUOTATION_MARK)
+                && !directoryField.getText().endsWith(QUOTATION_MARK)) {
+            directoryField.setText(TalendQuoteUtils.addQuotesIfNotExist(directoryField.getText()));
+        }
         MapperSettingModel currnentModel = settingsManager.getCurrnentModel();
         currnentModel.setDieOnError(dieOnErrorButton.getSelection());
         currnentModel.setLookInParallel(lookupInParallelButton.getSelection());
