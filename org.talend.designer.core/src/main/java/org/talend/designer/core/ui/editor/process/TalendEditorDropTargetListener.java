@@ -137,6 +137,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.ExternalUtilities;
+import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextParameterTypeImpl;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ContextTypeImpl;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -1616,7 +1617,18 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 }
             }
             ConnectionCreateCommand.setCreatingConnection(true);
-            connection.reconnect(connection.getSource(), node, EConnectionType.FLOW_MAIN);
+            EConnectionType reconnectNewInputStyle = connection.getLineStyle();
+            if (ConnectionManager.canConnectToTarget(connection.getSource(), originalTarget, node, connection.getLineStyle(),
+                    connection.getName(), targetConnector.getName())) {
+                reconnectNewInputStyle = ConnectionManager.getNewConnectionType();
+            }
+            if (reconnectNewInputStyle.equals(EConnectionType.FLOW_MAIN)) {
+                connection.reconnect(connection.getSource(), node, EConnectionType.FLOW_MAIN);
+            } else if (reconnectNewInputStyle.equals(EConnectionType.FLOW_MERGE)) {
+                connection.reconnect(connection.getSource(), node, EConnectionType.FLOW_MERGE);
+            } else if (reconnectNewInputStyle.equals(EConnectionType.FLOW_REF)) {
+                connection.reconnect(connection.getSource(), node, EConnectionType.FLOW_REF);
+            }
             INodeConnector nodeConnector = node.getConnectorFromName(targetConnector.getName());
             nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() + 1);
             List<Object> nodeArgs = CreateComponentOnLinkHelper.getTargetArgs(connection, node);
