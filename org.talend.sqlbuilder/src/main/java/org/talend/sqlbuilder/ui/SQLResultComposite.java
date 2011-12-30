@@ -19,8 +19,6 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -235,20 +233,20 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
     private void createHeaderComposite(Composite parent, CTabItem tabItem) {
         // add sql statement, first create temp label to calculate correct size
 
-        int labelStyle = SWT.WRAP | SWT.MULTI;
-
-        Text tmpLabel = new Text(parent, labelStyle);
-        tmpLabel.setText(TextUtil.removeLineBreaks(sqlExecution.getSqlStatement()));
-        tmpLabel.setLayoutData(new FillLayout());
-        int parentWidth = this.getClientArea().width;
-        Point idealSize = tmpLabel.computeSize(parentWidth - 30, SWT.DEFAULT);
-
-        if (idealSize.y > 60) {
-            // we need a scroll bar
-            labelStyle = SWT.WRAP | SWT.MULTI | SWT.V_SCROLL;
-        }
-
-        tmpLabel.dispose();
+        // int labelStyle = SWT.WRAP | SWT.MULTI;
+        //
+        // Text tmpLabel = new Text(parent, labelStyle);
+        // tmpLabel.setText(TextUtil.removeLineBreaks(sqlExecution.getSqlStatement()));
+        // tmpLabel.setLayoutData(new FillLayout());
+        // int parentWidth = this.getClientArea().width;
+        // Point idealSize = tmpLabel.computeSize(parentWidth - 30, SWT.DEFAULT);
+        //
+        // if (idealSize.y > 60) {
+        // // we need a scroll bar
+        // labelStyle = SWT.WRAP | SWT.MULTI | SWT.V_SCROLL;
+        // }
+        //
+        // tmpLabel.dispose();
         // now create real label
         // create spanned cell for table data
         Composite headerComposite = new Composite(parent, SWT.FILL);
@@ -265,7 +263,7 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
 
         headerComposite.setLayout(hLayout);
 
-        Text label = new Text(headerComposite, labelStyle);
+        Text label = new Text(headerComposite, SWT.H_SCROLL);
         // label.setEnabled(false);
         label.setEditable(false);
         label.setBackground(this.getBackground());
