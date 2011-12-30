@@ -250,6 +250,21 @@ public class ConnectionCreateCommand extends Command {
         return true;
     }
 
+    public boolean canExecute(boolean refactorJoblet) {
+
+        if (target != null) {
+            if (!ConnectionManager.canConnectToTarget(source, null, target, source.getConnectorFromName(connectorName)
+                    .getDefaultConnectionType(), connectorName, connectionName, refactorJoblet)) {
+                creatingConnection = false;
+                return false;
+            }
+            newLineStyle = ConnectionManager.getNewConnectionType();
+
+        }
+        creatingConnection = true;
+        return true;
+    }
+
     public void execute() {
         canExecute();
         if (connectionName == null) {
