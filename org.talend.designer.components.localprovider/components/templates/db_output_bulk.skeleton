@@ -409,7 +409,9 @@ public class CLASS {
                         	if("sybase_id".equalsIgnoreCase(getDBMSId())){
                         		createSQL.append(" IDENTITY");
                         		createSQL.append(setNullable(column.getColumn().isNullable()));
-                        	}
+                        	}else if("mysql_id".equalsIgnoreCase(getDBMSId()) ) {
+                        		createSQL.append(" AUTO_INCREMENT");
+                        	} 
                         }else{
                         	if(column.isAutoIncrement()) {
                         		createSQL.append(getAutoIncrement(column.getStartValue(), column.getStep()));

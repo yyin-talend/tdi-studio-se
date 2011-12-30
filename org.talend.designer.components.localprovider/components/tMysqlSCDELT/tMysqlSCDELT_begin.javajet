@@ -71,6 +71,7 @@ if(columnList != null && columnList.size() > 0) {
     String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
     String tableAction = ElementParameterParser.getValue(node, "__TABLE_ACTION__");
     String tableName = ElementParameterParser.getValue(node, "__TABLE__");
+    String surrogateKey = ElementParameterParser.getValue(node,"__SURROGATE_KEY__");
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
     if(!("NONE").equals(tableAction)) {
         List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);
@@ -81,13 +82,13 @@ if(columnList != null && columnList.size() > 0) {
             stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
             stmtDrop_<%=cid%>.close();
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure,surrogateKey)%>");
             stmtCreate_<%=cid%>.close();
             <%
         } else if(("CREATE").equals(tableAction)) {
             %>
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure,surrogateKey)%>");
             stmtCreate_<%=cid%>.close();
             <%
         } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
@@ -108,7 +109,7 @@ if(columnList != null && columnList.size() > 0) {
                 %>
                 if(!whetherExist_<%=cid%>) {
                     java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                    stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+		            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure,surrogateKey)%>");
                     stmtCreate_<%=cid%>.close();
                 }                
                 <%
@@ -120,7 +121,7 @@ if(columnList != null && columnList.size() > 0) {
                     stmtDrop_<%=cid%>.close();
                 }
                 java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
+	            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure,surrogateKey)%>");
                 stmtCreate_<%=cid%>.close();
             <%
             }
@@ -146,9 +147,6 @@ if(columnList != null && columnList.size() > 0) {
     %>
     
     <%
-    String surrogateKey = ElementParameterParser.getValue(node,"__SURROGATE_KEY__");
-    String surrogateKeyType = ElementParameterParser.getValue(node,"__SK_CREATION__");
-    String sequenceName = ElementParameterParser.getValue(node,"__SK_DB_SEQUENCE__");
     boolean isEqualWithSK = false;
     for(Map<String, String> sk : sourceKeys) {
         if(surrogateKey.equals(sk.get("NAME"))) {
@@ -248,7 +246,7 @@ if(columnList != null && columnList.size() > 0) {
         }
         columnNameString = StringUtils.join(columnNames.toArray(), ", ");
         %>
-        String insertForType2_<%=cid%> = "INSERT INTO `" + tableName_<%=cid%> + "`(<%if(("DB_SEQUENCE").equals(surrogateKeyType)) {%>`<%=surrogateKey%>`, <%}%><%=columnNameString%>) SELECT <%if(("DB_SEQUENCE").equals(surrogateKeyType)) {%>" + <%=sequenceName%> + ".NEXTVAL, <%}%>t.<%=selectColumnString%>, '" + 
+        String insertForType2_<%=cid%> = "INSERT INTO `" + tableName_<%=cid%> + "`(<%=columnNameString%>) SELECT t.<%=selectColumnString%>, '" + 
         (changeDateTime_<%=cid%>) + "', NULL<%if(isEnableActive) {%>, 1<%}%><%if(isEnableVersion) {%>, d.`<%=versionField%>` + 1<%}%> FROM `" + 
         sourceTable_<%=cid%> + "` t, `" + tableName_<%=cid%> + "` d WHERE <%=joinClauseString%> AND (<%=whereClauseString%>) AND d.`<%=endDateField%>` = '" + (changeDateTime_<%=cid%>) + "'";
         java.sql.Statement stmtType2Insert_<%=cid%> = conn_<%=cid%>.createStatement();
@@ -268,7 +266,7 @@ if(columnList != null && columnList.size() > 0) {
     }
     String outerWhereClauseString = StringUtils.join(outerWhereClause.toArray(), " AND ");
     %>
-    String insert_<%=cid%> = "INSERT INTO `" + tableName_<%=cid%> + "`(<%if(("DB_SEQUENCE").equals(surrogateKeyType)) {%>`<%=surrogateKey%>`, <%}%><%=columnNameString%>) SELECT <%if(("DB_SEQUENCE").equals(surrogateKeyType)) {%>" + <%=sequenceName%> + ".NEXTVAL, <%}%>t.<%=selectColumnString%>"<%if(isEnableType2) {%> + ", '" + (changeDateTime_<%=cid%>) + "', NULL"<%}%>
+    String insert_<%=cid%> = "INSERT INTO `" + tableName_<%=cid%> + "`(<%=columnNameString%>) SELECT t.<%=selectColumnString%>"<%if(isEnableType2) {%> + ", '" + (changeDateTime_<%=cid%>) + "', NULL"<%}%>
     + "<%if(isEnableType2 && isEnableActive) {%>, 1<%}%><%if(isEnableType2 && isEnableVersion) {%>, 1<%}%> FROM `" + 
     sourceTable_<%=cid%> + "` t LEFT JOIN `" + tableName_<%=cid%> + "` d ON <%=joinClauseString%> WHERE (<%=outerWhereClauseString%>)";
     java.sql.Statement stmtInsert_<%=cid%> = conn_<%=cid%>.createStatement();
