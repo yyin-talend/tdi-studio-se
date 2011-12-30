@@ -17,16 +17,17 @@ import java.util.List;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.ext.DefaultHandler2;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * DOC s class global comment. Detailled comment
  */
-public class SAXLoopCompositeHandler extends DefaultHandler {
+public class SAXLoopCompositeHandler extends DefaultHandler2 {
 
-    private List<DefaultHandler> handlerList = new ArrayList<DefaultHandler>();
+    private List<DefaultHandler2> handlerList = new ArrayList<DefaultHandler2>();
 
-    public void register(DefaultHandler handler) {
+    public void register(DefaultHandler2 handler) {
         handlerList.add(handler);
     }
 
@@ -83,6 +84,18 @@ public class SAXLoopCompositeHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         for (DefaultHandler handler : handlerList) {
             handler.endElement(uri, localName, qName);
+        }
+    }
+    
+    public void startCDATA() throws SAXException {
+        for (DefaultHandler2 handler : handlerList) {
+            handler.startCDATA();
+        }
+    }
+    
+    public void endCDATA() throws SAXException {
+        for (DefaultHandler2 handler : handlerList) {
+            handler.endCDATA();
         }
     }
 }
