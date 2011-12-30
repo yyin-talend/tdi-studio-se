@@ -693,8 +693,8 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
             @Override
             public void widgetSelected(SelectionEvent e) {
                 lineLimitText.setEditable(enableLineLimitButton.getSelection());
-                RunProcessPlugin.getDefault().getPluginPreferences()
-                        .setValue(RunprocessConstants.ENABLE_CONSOLE_LINE_LIMIT, enableLineLimitButton.getSelection());
+                RunProcessPlugin.getDefault().getPluginPreferences().setValue(RunprocessConstants.ENABLE_CONSOLE_LINE_LIMIT,
+                        enableLineLimitButton.getSelection());
             }
         });
 
@@ -712,8 +712,8 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                 if (!s.equals("")) { //$NON-NLS-1$
                     try {
                         Integer.parseInt(s);
-                        RunProcessPlugin.getDefault().getPluginPreferences()
-                                .setValue(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT, lineLimitText.getText() + s);
+                        RunProcessPlugin.getDefault().getPluginPreferences().setValue(
+                                RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT, lineLimitText.getText() + s);
                     } catch (Exception ex) {
                         e.doit = false;
                     }
@@ -723,17 +723,17 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         lineLimitText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                RunProcessPlugin.getDefault().getPluginPreferences()
-                        .setValue(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT, lineLimitText.getText());
+                RunProcessPlugin.getDefault().getPluginPreferences().setValue(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT,
+                        lineLimitText.getText());
             }
         });
 
-        boolean enable = RunProcessPlugin.getDefault().getPluginPreferences()
-                .getBoolean(RunprocessConstants.ENABLE_CONSOLE_LINE_LIMIT);
+        boolean enable = RunProcessPlugin.getDefault().getPluginPreferences().getBoolean(
+                RunprocessConstants.ENABLE_CONSOLE_LINE_LIMIT);
         enableLineLimitButton.setSelection(enable);
         lineLimitText.setEditable(enable);
-        String count = RunProcessPlugin.getDefault().getPluginPreferences()
-                .getString(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT);
+        String count = RunProcessPlugin.getDefault().getPluginPreferences().getString(
+                RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT);
         if (count.equals("")) { //$NON-NLS-1$
             count = "100"; //$NON-NLS-1$
         }
@@ -1362,8 +1362,8 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                         // use this function to generate childrens also.
                         ProcessorUtilities.generateCode(processContext.getProcess(), context, false, false, true, monitor);
 
-                        ILaunchConfiguration config = ((Processor) processor).getDebugConfiguration(
-                                processContext.getStatisticsPort(), processContext.getTracesPort(), null);
+                        ILaunchConfiguration config = ((Processor) processor).getDebugConfiguration(processContext
+                                .getStatisticsPort(), processContext.getTracesPort(), null);
 
                         // see feature 0004820: The run job doesn't verify if
                         // code is correct before launching
@@ -1588,7 +1588,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
     // return this.leftTabFolder;
     // }
 
-    protected static RunProcessContext getProcessContext() {
+    public static RunProcessContext getProcessContext() {
         return processContext;
     }
 
@@ -1649,8 +1649,8 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                                 }
                             }
                             if (haveFind && tRunJobName.lastIndexOf("(") != -1 && tRunJobName.lastIndexOf(".java") != -1)
-                                tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1,
-                                        tRunJobName.lastIndexOf(".java"));
+                                tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1, tRunJobName
+                                        .lastIndexOf(".java"));
                             else
                                 tRunJobName = currenctJobName;
                         }

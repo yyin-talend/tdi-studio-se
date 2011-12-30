@@ -286,16 +286,16 @@ public class ProcessView extends ViewPart {
 
             public void focusGained(FocusEvent e) {
                 log.trace(Messages.getString("ProcessView.gainFocusLog")); //$NON-NLS-1$
-                IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench()
-                        .getAdapter(IContextService.class);
+                IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
+                        IContextService.class);
                 ca = contextService.activateContext("talend.runProcess"); //$NON-NLS-1$
             }
 
             public void focusLost(FocusEvent e) {
                 log.trace(Messages.getString("ProcessView.lostFocusLog")); //$NON-NLS-1$
                 if (ca != null) {
-                    IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench()
-                            .getAdapter(IContextService.class);
+                    IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
+                            IContextService.class);
                     contextService.deactivateContext(ca);
                 }
             }
@@ -564,7 +564,7 @@ public class ProcessView extends ViewPart {
 
         @Override
         public void run() {
-            if (!canRun) {
+            if (!canRun || (ProcessComposite.getProcessContext() != null && ProcessComposite.getProcessContext().isRunning())) {
                 return;
             }
             canRun = false;
