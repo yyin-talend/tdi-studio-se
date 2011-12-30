@@ -41,8 +41,7 @@ if(("PROPERTIES_FORMAT").equals(fileFormat)){
 	String sectionName = ElementParameterParser.getValue(node,"__SECTION_NAME__");
 	String retriveMode = ElementParameterParser.getValue(node,"__RETRIVE_MODE__");
 %>
-    org.ini4j.Wini ini_<%=cid%> = new org.ini4j.Wini(new java.io.File(<%=filename%>));
-    ini_<%=cid%>.getConfig().setFileEncoding(java.nio.charset.Charset.forName(<%=encoding %>));
+    org.ini4j.Wini ini_<%=cid%> = new org.ini4j.Wini(new java.io.InputStreamReader(new java.io.FileInputStream(<%=filename%>),<%=encoding%>));
 <%
 	if(("RETRIVE_ALL").equals(retriveMode)){
 %>
