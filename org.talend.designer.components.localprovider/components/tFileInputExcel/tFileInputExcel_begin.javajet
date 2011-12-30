@@ -102,7 +102,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			
 		RegexUtil_<%=cid %> regexUtil_<%=cid %> = new RegexUtil_<%=cid %>();
 		final jxl.WorkbookSettings workbookSettings_<%= cid %> = new jxl.WorkbookSettings();
-		workbookSettings_<%= cid %>.setDrawingsDisabled(true); 
+		workbookSettings_<%= cid %>.setDrawingsDisabled(true);
 <%
 		if(notNeedValidateOnCell==true){
 %>
@@ -175,6 +175,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         int rowCount_<%= cid %> = 0;
         int sheetIndex_<%= cid %> = 0;
         int currentRows_<%= cid %> = sheetList_<%= cid %>.get(0).getRows();
+        
+        //for the number format
+        java.text.DecimalFormat df_<%=cid %> = new java.text.DecimalFormat("#.####################################");
+		char separatorChar_<%=cid %> = df_<%=cid %>.getDecimalFormatSymbols().getDecimalSeparator();
         
         for(int i_<%= cid %> = begin_line_<%= cid %>; i_<%= cid %> < end_line_<%= cid %>; i_<%= cid %>++){
         
@@ -249,8 +253,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //end%>
 			String[] temp_row_<%= cid %> = new String[<%=listColumns.size()%>];
 			int actual_end_column_<%= cid %> = end_column_<%= cid %> >	row_<%= cid %>.length ? row_<%= cid %>.length : end_column_<%= cid %>;
-			java.text.DecimalFormat df_<%=cid %> = new java.text.DecimalFormat("#.####################################");
-			char separatorChar_<%=cid %> = df_<%=cid %>.getDecimalFormatSymbols().getDecimalSeparator();
 			for(int i=0;i<<%=size%>;i++){
 				
 				if(i + start_column_<%= cid %> < actual_end_column_<%= cid %>){
@@ -547,6 +549,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         int rowCount_<%= cid %> = 0;
         int sheetIndex_<%= cid %> = 0;
         int currentRows_<%= cid %> = (sheetList_<%= cid %>.get(0).getLastRowNum()+1);
+		
+		//for the number format        
+        java.text.DecimalFormat df_<%=cid %> = new java.text.DecimalFormat("#.####################################");
+        char decimalChar_<%=cid %> = df_<%=cid %>.getDecimalFormatSymbols().getDecimalSeparator();
+        org.apache.poi.hssf.usermodel.HSSFDataFormatter dataFormat_<%=cid%>=new org.apache.poi.hssf.usermodel.HSSFDataFormatter();
+		java.text.NumberFormat numberFormat_<%=cid%>=java.text.NumberFormat.getInstance();
         
         for(int i_<%= cid %> = begin_line_<%= cid %>; i_<%= cid %> < end_line_<%= cid %>; i_<%= cid %>++){
        
@@ -627,8 +635,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			else{
 				actual_end_column_<%= cid %> = end_column_<%= cid %> >	excel_end_column_<%=cid%> ? excel_end_column_<%=cid%> : end_column_<%= cid %>;
 			}
-			org.apache.poi.hssf.usermodel.HSSFDataFormatter dataFormat_<%=cid%>=new org.apache.poi.hssf.usermodel.HSSFDataFormatter();
-			java.text.NumberFormat numberFormat_<%=cid%>=java.text.NumberFormat.getInstance();
 			for(int i=0;i<<%=size%>;i++){
 				if(i + start_column_<%= cid %> < actual_end_column_<%= cid %>){
 					org.apache.poi.ss.usermodel.Cell cell_<%=cid%> = row_<%= cid %>.getCell(i + start_column_<%= cid %>);
@@ -641,7 +647,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                             if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell_<%=cid%>)) {
                                 temp_row_<%= cid %>[i] =cell_<%=cid%>.getDateCellValue().toString();
                             } else {
-                                temp_row_<%= cid %>[i] =new BigDecimal(numberFormat_<%=cid%>.parse(dataFormat_<%=cid%>.formatCellValue(cell_<%=cid%>)).toString()).toPlainString();
+                                temp_row_<%= cid %>[i] = df_<%=cid %>.format(cell_<%=cid%>.getNumericCellValue());
                             }
                             break;
                         case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN:
@@ -656,7 +662,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                     if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell_<%=cid%>)) {
                                         temp_row_<%= cid %>[i] =cell_<%=cid%>.getDateCellValue().toString();
                                     } else {
-                                        temp_row_<%= cid %>[i] =numberFormat_<%=cid%>.parse(dataFormat_<%=cid%>.formatCellValue(cell_<%=cid%>,workbook_<%= cid %>.getCreationHelper().createFormulaEvaluator())).toString();
+                                         temp_row_<%= cid %>[i] = df_<%=cid %>.format(numberFormat_<%=cid%>.parse(dataFormat_<%=cid%>.formatCellValue(cell_<%=cid%>,workbook_<%= cid %>.getCreationHelper().createFormulaEvaluator())));
                                     }
                                     break;
                                 case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN:
@@ -715,10 +721,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				}
 				
 <%		
-						}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType)) { 
+						}else if(JavaTypesManager.isNumberType(javaType)) { 
+							if(advancedSeparator) {
 %>
 				<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
 <%
+							} else {
+%>
+				<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, null, '.'==decimalChar_<%=cid %> ? null : decimalChar_<%=cid %>));
+<%
+							}
 						} else if(javaType == JavaTypesManager.BYTE_ARRAY) { 
 %>							
 				<%=firstConnName %>.<%=column.getLabel() %> = temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.getBytes(<%=encoding %>);
