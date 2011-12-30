@@ -200,8 +200,8 @@ public class InputTable extends AbstractInOutTable {
         if (connection != null) {
             INode source = connection.getSource();
             if (source != null) {
-                hasReadOnlyMetadataColumns = connection.isReadOnly() || !connection.isActivate() || source.isReadOnly()
-                        || !source.isActivate();
+                hasReadOnlyMetadataColumns = connection.isReadOnly() || !connection.isActivate() || source.isReadOnly();
+                // || !source.isActivate();
 
                 if (!hasReadOnlyMetadataColumns) {
                     for (IElementParameter param : source.getElementParameters()) {

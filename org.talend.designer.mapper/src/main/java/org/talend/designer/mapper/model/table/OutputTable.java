@@ -166,8 +166,7 @@ public class OutputTable extends AbstractInOutTable {
         if (connection != null) {
             INode target = connection.getTarget();
             if (target != null) {
-                hasReadOnlyMetadataColumns = connection.isReadOnly() || !connection.isActivate() || target.isReadOnly()
-                        || !target.isActivate();
+                hasReadOnlyMetadataColumns = connection.isReadOnly() || target.isReadOnly() || connection.getTable().isReadOnly();
 
                 if (!hasReadOnlyMetadataColumns) {
                     for (IElementParameter param : target.getElementParameters()) {
