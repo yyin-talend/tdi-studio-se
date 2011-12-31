@@ -331,14 +331,14 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     public void generateCode(boolean statistics, boolean trace, boolean javaProperties) throws ProcessorException {
         super.generateCode(statistics, trace, javaProperties);
         try {
-            String currentJavaProject = null; // hywang modified for 6484
+            // hywang modified for 6484
+            String currentJavaProject = ProjectManager.getInstance().getProject(property).getTechnicalLabel();
 
             ICodeGenerator codeGen;
             ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
             if (javaProperties) {
                 String javaInterpreter = ""; //$NON-NLS-1$
                 String javaLib = ""; //$NON-NLS-1$
-                currentJavaProject = ProjectManager.getInstance().getProject(property).getTechnicalLabel();
                 String javaContext = getContextPath().toOSString();
 
                 codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib, javaContext,
@@ -379,7 +379,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                                 }
                             }
                         }
-                        if (useGenerateRuleFiles && rulesService != null) {
+                        if (useGenerateRuleFiles && rulesService != null && currentJavaProject != null) {
                             rulesService.generateFinalRuleFiles(currentJavaProject, this.process);
                         }
                     }
