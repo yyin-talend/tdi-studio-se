@@ -388,10 +388,10 @@ class RowSetValueUtil_<%=cid %> {
 			ifPassed = false;
 			errorCode += 8;
 			errorMessage += "|precision Non-matches";
-		} else if (maxLength < len1 + len2) {
+		} else if (maxLength < len1 + iPrecision) {
 			ifPassed = false;
 			errorCode += 8;
-			errorMessage += "|exceed max length";
+			errorMessage += "|invalid Length setting is unsuitable for Precision";
 		}
 	}
 	int handleErrorCode(int errorCode, int resultErrorCode){
