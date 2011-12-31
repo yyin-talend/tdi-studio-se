@@ -61,6 +61,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobScriptItem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -136,8 +137,8 @@ public class EditPropertiesAction extends AContextualAction {
                 designerCoreService.renameJobLaunch(node.getObject(), originalName);
             }
             // refresh ...
-            IViewPart jobSettingView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-                    IJobSettingsView.ID);
+            IViewPart jobSettingView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                    .findView(IJobSettingsView.ID);
             if (jobSettingView != null && jobSettingView instanceof IJobSettingsView) {
                 ((IJobSettingsView) jobSettingView).refreshCurrentViewTab();
             }
@@ -227,8 +228,8 @@ public class EditPropertiesAction extends AContextualAction {
                     RefactoringStatusEntry entry = entries[i];
                     errorMessage += "\n>>>" + entry.getMessage(); //$NON-NLS-1$
                 }
-                MessageDialog.openError(getViewPart().getViewSite().getShell(), Messages
-                        .getString("EditPropertiesAction.warning"), errorMessage); //$NON-NLS-1$
+                MessageDialog.openError(getViewPart().getViewSite().getShell(),
+                        Messages.getString("EditPropertiesAction.warning"), errorMessage); //$NON-NLS-1$
                 return;
             }
 
@@ -307,6 +308,13 @@ public class EditPropertiesAction extends AContextualAction {
                         Item item = node.getObject().getProperty().getItem();
                         if (item instanceof SQLPatternItem) {
                             canWork = !((SQLPatternItem) item).isSystem();
+                        } else {
+                            canWork = false;
+                        }
+                    } else if (node.getObjectType() == ERepositoryObjectType.JOB_SCRIPT) {
+                        Item item = node.getObject().getProperty().getItem();
+                        if (item instanceof JobScriptItem) {
+                            canWork = true;
                         } else {
                             canWork = false;
                         }
