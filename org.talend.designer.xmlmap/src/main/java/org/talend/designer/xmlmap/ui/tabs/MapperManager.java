@@ -240,6 +240,9 @@ public class MapperManager implements ISelectionChangedListener {
         } else {
             metaEditorView = mapperUI.getTabFolderEditors().getOutputMetaEditorView();
         }
+        if (metaEditorView != null) {
+            metaEditorView.getTableViewerCreator().refresh();
+        }
         metaEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(selections);
 
     }
