@@ -23,6 +23,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.ui.ERunprocessImages;
+import org.talend.designer.runprocess.ui.ProcessComposite;
 import org.talend.designer.runprocess.ui.views.ProcessView;
 
 /**
@@ -43,15 +44,20 @@ public class RunProcessAction extends Action implements IWorkbenchWindowActionDe
 
     @Override
     public void run() {
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-        // TODO SML Use getInstance
-        ShowRunProcessViewAction action = new ShowRunProcessViewAction();
-        action.run();
 
-        // TODO SML Optimize
-        ProcessView view = (ProcessView) page.getActivePart();
-        view.runAction.run();
+        if ((ProcessComposite.getProcessContext() != null && !ProcessComposite.getProcessContext().isRunning())) {
+
+            IWorkbench workbench = PlatformUI.getWorkbench();
+            IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+            // TODO SML Use getInstance
+            ShowRunProcessViewAction action = new ShowRunProcessViewAction();
+            action.run();
+
+            // TODO SML Optimize
+            ProcessView view = (ProcessView) page.getActivePart();
+            view.runAction.run();
+
+        }
     }
 
     public void dispose() {
