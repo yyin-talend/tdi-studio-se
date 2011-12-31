@@ -92,6 +92,9 @@ public class CLASS {
 
         if (isContains) {
             for (XMLNode node : root.elements) {
+            	if(!node.isMainNode()) {
+            		continue;
+            	}
                 returnNode = getInsertNode(node, mainNode, listPreConns);
                 if (returnNode != null) {
                     break;
