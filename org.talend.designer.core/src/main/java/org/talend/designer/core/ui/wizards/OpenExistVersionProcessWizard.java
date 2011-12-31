@@ -13,12 +13,19 @@
 package org.talend.designer.core.ui.wizards;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
@@ -32,6 +39,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobScriptItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
@@ -40,6 +48,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ISQLPatternSynchronizer;
 import org.talend.designer.codegen.ITalendSynchronizer;
@@ -242,24 +251,33 @@ public class OpenExistVersionProcessWizard extends Wizard {
                     IFile file = SQLPatternSynchronizer.getSQLPatternFile(patternItem);
                     fileEditorInput = new RepositoryEditorInput(file, patternItem);
                 }
-
-                editorPart = page.findEditor(fileEditorInput);
-                if (editorPart == null) {
-                    // fileEditorInput.setView(getViewPart());
-                    fileEditorInput.setRepositoryNode(node);
-                    if (item instanceof ProcessItem) {
-                        page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, readonly);
-
-                    } else if (item instanceof BusinessProcessItem) {
-                        CorePlugin.getDefault().getDiagramModelService().openBusinessDiagramEditor(page, fileEditorInput);
+                if (fileEditorInput != null) {
+                    editorPart = page.findEditor(fileEditorInput);
+                    if (editorPart == null) {
+                        fileEditorInput.setRepositoryNode(node);
+                        if (item instanceof ProcessItem) {
+                            page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, readonly);
+                        } else if (item instanceof BusinessProcessItem) {
+                            CorePlugin.getDefault().getDiagramModelService().openBusinessDiagramEditor(page, fileEditorInput);
+                        } else {
+                            ECodeLanguage lang = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                                    Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
+                            String talendEditorID = "org.talend.designer.core.ui.editor.StandAloneTalend" + lang.getCaseName() + "Editor"; //$NON-NLS-1$ //$NON-NLS-2$
+                            page.openEditor(fileEditorInput, talendEditorID);
+                        }
                     } else {
-                        ECodeLanguage lang = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
-                        String talendEditorID = "org.talend.designer.core.ui.editor.StandAloneTalend" + lang.getCaseName() + "Editor"; //$NON-NLS-1$ //$NON-NLS-2$
-                        page.openEditor(fileEditorInput, talendEditorID);
+                        page.activate(editorPart);
                     }
                 } else {
-                    page.activate(editorPart);
+                    // TDI-19014:open another version of jobScript
+                    try {
+                        if (item instanceof JobScriptItem) {
+                            IProject fsProject = ResourceModelUtils.getProject(ProjectManager.getInstance().getCurrentProject());
+                            openXtextEditor(node, fsProject);
+                        }
+                    } catch (PersistenceException e) {
+                        ExceptionHandler.process(e);
+                    }
                 }
             }
         } catch (PartInitException e) {
@@ -283,4 +301,54 @@ public class OpenExistVersionProcessWizard extends Wizard {
         getProperty().setVersion(getOriginVersion());
     }
 
+    private void openXtextEditor(RepositoryNode repositoryNode, IProject fsProject) {
+        try {
+            if (ProjectManager.getInstance().isInCurrentMainProject(repositoryNode)) {
+                IFile linkedFile = createWorkspaceLink(
+                        fsProject,
+                        fsProject.getFolder(ERepositoryObjectType.getFolderName(ERepositoryObjectType.JOB_SCRIPT))
+                                .getFolder(repositoryNode.getParent().toString())
+                                .getFile(repositoryNode.getObject().getProperty().getLabel()).getLocation(), repositoryNode
+                                .getObject().getProperty().getVersion());
+                IWorkbenchPage page = getActivePage();
+                IDE.openEditor(page, linkedFile);
+
+            } else {
+                JobScriptItem jobScriptItem = (JobScriptItem) repositoryNode.getObject().getProperty().getItem();
+                IFile file = ResourcesPlugin
+                        .getWorkspace()
+                        .getRoot()
+                        .getFile(new Path(jobScriptItem.eResource().getURI().path()).removeFirstSegments(1).removeFileExtension());
+                IFile linkedFile = createWorkspaceLink(fsProject, file.getLocation(), "");
+                IWorkbenchPage page = getActivePage();
+                IDE.openEditor(page, linkedFile);
+            }
+        } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    public static IFile createWorkspaceLink(IProject fsProject, IPath realLocation, String version) throws CoreException {
+        String fileName = realLocation.lastSegment();
+        IFile linkedFile;
+        if (version.equals("")) {
+            realLocation = new Path(realLocation.toOSString() + ".item");
+            linkedFile = fsProject.getFolder("temp").getFile(fileName + ".jobscript");
+        } else {
+            realLocation = new Path(realLocation.toOSString() + "_" + version + ".item");
+            linkedFile = fsProject.getFolder("temp").getFile(fileName + "_" + version + ".jobscript");
+        }
+        while (!linkedFile.exists() || !linkedFile.getRawLocation().equals(realLocation)) {
+            // creates a linked file if it does not exists
+            if (!linkedFile.exists()) {
+                linkedFile.createLink(realLocation, IResource.HIDDEN, null);
+            } else if (!linkedFile.getRawLocation().equals(realLocation)) {// if linked file exist but does not
+                // point to the same file then
+                // creates a new one
+                linkedFile.delete(true, null);
+                linkedFile.createLink(realLocation, IResource.HIDDEN, null);
+            }
+        }
+        return linkedFile;
+    }
 }
