@@ -564,7 +564,7 @@ public class ProcessView extends ViewPart {
 
         @Override
         public void run() {
-            if (!canRun || (ProcessComposite.getProcessContext() != null && ProcessComposite.getProcessContext().isRunning())) {
+            if (!canRun) {
                 return;
             }
             canRun = false;
