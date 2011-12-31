@@ -853,6 +853,16 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                 if (selectionIndices.length > 0) {
                     selectThisDataMapTableView();
                     onSelectedEntries(event.getSelection(), selectionIndices);
+                    // bug 18414
+                    MetadataTableEditorView metadataTableEditorView = null;
+                    if (getZone() == Zone.INPUTS) {
+                        metadataTableEditorView = mapperManager.getUiManager().getInputMetaEditorView();
+                    } else if (getZone() == Zone.OUTPUTS) {
+                        metadataTableEditorView = mapperManager.getUiManager().getOutputMetaEditorView();
+                    }
+                    if (metadataTableEditorView != null) {
+                        metadataTableEditorView.getTableViewerCreator().refresh();
+                    }
                 }
             }
 
