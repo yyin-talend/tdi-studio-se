@@ -151,7 +151,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
             Control lastControl) {
         Button btnEdit;
         btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-        btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+        btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor("icons/routine.gif")));
         FormData data;
         btnEdit.addSelectionListener(listenerSelection);
 
@@ -213,7 +213,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         btnImport.setData(NAME, Messages.getString("GenerateGrammarController.import"));//$NON-NLS-1$
         btnImport.setData(PARAMETER_NAME, param.getName());
         if (elem instanceof Node) {
-            btnImport.setToolTipText(VARIABLE_TOOLTIP + Messages.getString("GenerateGrammarController.importtip"));//$NON-NLS-1$
+            btnImport.setToolTipText(Messages.getString("GenerateGrammarController.importtip"));//$NON-NLS-1$
         }
         data = new FormData();
         data.left = new FormAttachment(lastControl, 0);
@@ -237,7 +237,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
         btnExport.setData(NAME, Messages.getString("GenerateGrammarController.export"));//$NON-NLS-1$
         btnExport.setData(PARAMETER_NAME, param.getName());
         if (elem instanceof Node) {
-            btnExport.setToolTipText(VARIABLE_TOOLTIP + Messages.getString("GenerateGrammarController.exporttip"));//$NON-NLS-1$
+            btnExport.setToolTipText(Messages.getString("GenerateGrammarController.exporttip"));//$NON-NLS-1$
         }
         data = new FormData();
         data.left = new FormAttachment(btnImport, 0);
