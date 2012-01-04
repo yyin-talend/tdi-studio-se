@@ -151,7 +151,7 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
             Control lastControl) {
         Button btnEdit;
         btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-        btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor("icons/routine.gif")));
+        btnEdit.setImage(ImageProvider.getImage(DesignerPlugin.getImageDescriptor("icons/routine_generate.gif")));
         FormData data;
         btnEdit.addSelectionListener(listenerSelection);
 
