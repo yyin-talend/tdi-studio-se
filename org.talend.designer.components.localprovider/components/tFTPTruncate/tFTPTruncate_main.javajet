@@ -44,7 +44,6 @@
 			dir<%=cid %> = mask<%=cid %>.substring(0, i<%=cid %>); 
 			mask<%=cid %> = mask<%=cid %>.substring(i<%=cid %>+1); 
     	}
-    	mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
 <%
 		//bug TDI-19189 make regex to match the file name with Regular Expressions  
 %>    	
