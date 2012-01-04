@@ -30,10 +30,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQSurvivorshipService;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -123,7 +125,8 @@ public class GenerateSurvivorshipRulesController extends AbstractElementProperty
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
         Button btnEdit;
-        btnEdit = getWidgetFactory().createButton(subComposite, "Go", SWT.PUSH); //$NON-NLS-1$
+        btnEdit = getWidgetFactory().createButton(subComposite, null, SWT.PUSH); //$NON-NLS-1$
+        btnEdit.setImage(ImageProvider.getImage(DesignerPlugin.getImageDescriptor("icons/survivorship_generate.gif")));//$NON-NLS-1$
         FormData data;
         btnEdit.addSelectionListener(listenerSelection);
 
