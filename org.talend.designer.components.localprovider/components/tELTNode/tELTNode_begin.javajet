@@ -626,7 +626,7 @@
 				return "";
 			else {
 				setOperations(sql);
-				return previous().run(sql) + " GROUP BY (" + getGroupBy() + ")";
+				return previous().run(sql) + " GROUP BY " + getGroupBy();
 			}
 		}
 	}
