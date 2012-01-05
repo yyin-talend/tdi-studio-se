@@ -165,9 +165,9 @@ public class ChangeMetadataCommand extends Command {
         this.currentInputMetadata = null;
         this.newInputMetadata = null;
         oldInputMetadata = null;
-        if (currentOutputMetadata != null) {
-            this.currentOutputMetadata = currentOutputMetadata.clone(true);
-        }
+        // if (currentOutputMetadata != null) {
+        // this.currentOutputMetadata = currentOutputMetadata.clone(true);
+        // }
         if (this.currentOutputMetadata == null) {
             this.currentOutputMetadata = node.getMetadataFromConnector(currentConnector);
         }
