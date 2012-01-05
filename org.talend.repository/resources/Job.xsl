@@ -632,12 +632,10 @@
 						<xsl:for-each select="parameters/column">
 							<tr>
 								<td class="FONTSTYLE" align="left">
-									<xsl:variable name="propname"
-										select="@name" />
-									<xsl:value-of select="$propname" />
+									<xsl:value-of select="@name" />
 								</td>
 								<td class="FONTSTYLE" align="left">
-									<xsl:value-of select="text()" />
+									<xsl:value-of select="@value" />
 								</td>
 							</tr>
 						</xsl:for-each>
