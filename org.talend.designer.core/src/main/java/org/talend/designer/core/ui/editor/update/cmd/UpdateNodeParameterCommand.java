@@ -65,6 +65,7 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.service.IDesignerMapperService;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IEBCDICProviderService;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
@@ -241,8 +242,8 @@ public class UpdateNodeParameterCommand extends Command {
                         String repositoryValue = param.getRepositoryValue();
                         if ((repositoryValue != null)
                                 && (param.isShow(node.getElementParameters())
-                                        || (node instanceof INode && ((INode) node).getComponent().getName().equals(
-                                                "tAdvancedFileOutputXML")) || (node instanceof INode && ((INode) node)
+                                        || (node instanceof INode && ((INode) node).getComponent().getName()
+                                                .equals("tAdvancedFileOutputXML")) || (node instanceof INode && ((INode) node)
                                         .getComponent().getName().equals("tESBProviderRequest")))) { //$NON-NLS-1$
                             if (param.getName().equals(EParameterName.PROPERTY_TYPE.getName())
                                     || param.getFieldType() == EParameterFieldType.MEMO_SQL) {
@@ -298,8 +299,8 @@ public class UpdateNodeParameterCommand extends Command {
                                     if (service != null) {
                                         try {
                                             List<IRepositoryViewObject> all;
-                                            all = CorePlugin.getDefault().getProxyRepositoryFactory().getAll(
-                                                    ERepositoryObjectType.METADATA_CONNECTIONS);
+                                            all = CorePlugin.getDefault().getProxyRepositoryFactory()
+                                                    .getAll(ERepositoryObjectType.METADATA_CONNECTIONS);
                                             for (IRepositoryViewObject obj : all) {
                                                 Item tempItem = obj.getProperty().getItem();
                                                 if (tempItem instanceof DatabaseConnectionItem) {
@@ -708,7 +709,7 @@ public class UpdateNodeParameterCommand extends Command {
                             Set<MetadataTable> tables = ProjectNodeHelper.getTablesFromSpecifiedDataPackage(dbConn);
                             if (tables != null && !tables.isEmpty()) {
                                 Iterator it = tables.iterator();
-                                while (it.hasNext()) {
+                                while (it.hasNext() && tableToReload == null) {
                                     MetadataTable table = (MetadataTable) it.next();
                                     String label = table.getLabel();
                                     if (tableLabel != null) {
@@ -718,8 +719,23 @@ public class UpdateNodeParameterCommand extends Command {
                                         }
                                     }
                                 }
-
                             }
+                            Set<org.talend.core.model.metadata.builder.connection.MetadataTable> newTables = ConnectionHelper
+                                    .getTables(connection);
+                            if (newTables != null && !newTables.isEmpty() && tableToReload == null) {
+                                Iterator it = newTables.iterator();
+                                while (it.hasNext() && tableToReload == null) {
+                                    MetadataTable table = (MetadataTable) it.next();
+                                    String label = table.getLabel();
+                                    if (tableLabel != null) {
+                                        if (label != null && label.equals(tableLabel)) {
+                                            tableToReload = ConvertionHelper.convert(table);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
                         }
                     }
                     if (tableToReload != null) {
@@ -738,6 +754,7 @@ public class UpdateNodeParameterCommand extends Command {
                             tableToReload.setDbms(oldTable.getDbms());
                             tablesInNode.remove(index);
                             tablesInNode.add(index, tableToReload);
+                            builtIn = false;
                         }
                     }
                 }
