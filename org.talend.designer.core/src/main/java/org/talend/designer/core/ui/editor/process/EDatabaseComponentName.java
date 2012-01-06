@@ -122,7 +122,7 @@ public enum EDatabaseComponentName implements IComponentName {
     FILEPOSITIONAL(PositionalFileConnectionItem.class, "tFileInputPositional", "tFileOutputPositional", "POSITIONAL"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     FILEREGEX(RegExFileConnectionItem.class, "tFileInputRegex", null, "REGEX"), //$NON-NLS-1$ //$NON-NLS-2$
     FILEXML(XmlFileConnectionItem.class, "tFileInputXML", "tFileOutputXML", "XML"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    FILEXMLOUTPUT(XmlFileConnectionItem.class, (String) null, "tAdvancedFileOutputXML", "XMLOUTPUT"), //$NON-NLS-1$ //$NON-NLS-2$
+    FILEXMLOUTPUT(XmlFileConnectionItem.class, "tFileInputXML", "tAdvancedFileOutputXML", "XMLOUTPUT"), //$NON-NLS-1$ //$NON-NLS-2$
     SAPFFUNCTION(SAPConnectionItem.class, "tSAPInput", "tSAPOutput", "SAP"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     SAPIDOC(SAPConnectionItem.class, "tSAPIDocInput", "tSAPIDocOutput", "SAPIDOC"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     GENERICSCHEMA(GenericSchemaConnectionItem.class, (String) null, null, "GENERICSCHEMA"), //$NON-NLS-1$
