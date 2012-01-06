@@ -1371,7 +1371,7 @@ public class WebServiceUI extends AbstractWebService {
                                 job.done(Status.OK_STATUS);
                                 job.cancel();
                             }
-                            if (job.getResult() != null && job.getResult().isOK()) {
+                            if (monitor.isCanceled() || (job.getResult() != null && job.getResult().isOK())) {
                                 monitor.done();
                                 f = false;
                             }
