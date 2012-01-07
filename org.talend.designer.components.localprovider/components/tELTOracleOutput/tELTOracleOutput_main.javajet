@@ -424,14 +424,15 @@ if (useHintOptions) {
 <%
 	}else if (("UPDATE").equals(dataAction)){
 %>
-	String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
+	String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query
 <%
 		if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
 %>
-		+"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
+		+"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>+")"
+		+"  WHERE EXISTS (" +select_query +" WHERE "+ <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 <%
 		}
-%>
+%>+")"
 	;
 <%		if (useHintOptions && hintsValues.get("UPDATE") != null){
 %>
