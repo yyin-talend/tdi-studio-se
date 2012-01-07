@@ -101,6 +101,24 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
         return functionUnit.getId();
     }
 
+    /**
+     * Added by Marvin Wang on Jan.7, 2011 for bug Talend DI TDI-19154. Caz the method
+     * {@link SAPFunctionRepositoryObject#getProperty()} is overridden in this class.
+     */
+    @Override
+    public boolean isDeleted() {
+        return getProperty().getItem().getState().isDeleted();
+    }
+
+    /**
+     * Added by Marvin Wang on Jan.7, 2011 for bug Talend DI TDI-19154. The repository node should use the node from
+     * repObj.
+     */
+    @Override
+    public IRepositoryNode getRepositoryNode() {
+        return repObj.getRepositoryNode();
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -118,8 +136,7 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
     public void removeFromParent() {
         functionUnit.getConnection().getFuntions().remove(functionUnit);
     }
-    
-    
+
     public ERepositoryStatus getRepositoryStatus() {
         return repObj.getRepositoryStatus();
     }
