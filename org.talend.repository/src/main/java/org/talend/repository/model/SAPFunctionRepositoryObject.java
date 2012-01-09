@@ -118,8 +118,7 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
     public void removeFromParent() {
         functionUnit.getConnection().getFuntions().remove(functionUnit);
     }
-    
-    
+
     public ERepositoryStatus getRepositoryStatus() {
         return repObj.getRepositoryStatus();
     }
@@ -154,6 +153,22 @@ public class SAPFunctionRepositoryObject extends RepositoryObject implements ISu
 
     public ModelElement getModelElement() {
         return this.functionUnit;
+    }
+
+    /**
+     * Added by Marvin Wang on Jan.9, 2012 for bug TDI-19154.
+     */
+    @Override
+    public IRepositoryNode getRepositoryNode() {
+        return repObj.getRepositoryNode();
+    }
+
+    /**
+     * Added by Marvin Wang on Jan.9, 2012 for bug TDI-19154.
+     */
+    @Override
+    public boolean isDeleted() {
+        return this.getProperty().getItem().getState().isDeleted();
     }
 
 }
