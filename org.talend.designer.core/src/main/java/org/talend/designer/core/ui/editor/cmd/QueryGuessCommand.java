@@ -19,6 +19,8 @@ import org.apache.log4j.Priority;
 import org.eclipse.gef.commands.Command;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ITDQRuleService;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
@@ -117,7 +119,76 @@ public class QueryGuessCommand extends Command {
     @SuppressWarnings("unchecked")
     @Override
     public void execute() {
+        IElementParameter dqRuler = node.getElementParameter("DQRULES_LIST");
+        String newQuery = "";
+        if (dqRuler != null || !"".equals(dqRuler.getValue())) {
+            newQuery = generateNewQueryFromDQRuler(dqRuler);
+            if (newQuery == null || "".equals(newQuery)) {
+                newQuery = generateNewQuery();
+            }
+        } else {
+            newQuery = generateNewQuery();
+        }
 
+        for (IElementParameter param : (List<IElementParameter>) node.getElementParameters()) {
+            if (param.getFieldType() == EParameterFieldType.MEMO_SQL) {
+                oldValue = node.getPropertyValue(param.getName());
+                this.propName = param.getName();
+                String sql = null;
+                try {
+                    // sql = new SQLFormatUtil().formatSQL(newQuery);
+                    if (QueryUtil.needFormatSQL(dbType)) {
+                        sql = fomatQuery(newQuery);
+                    } else {
+                        sql = newQuery;
+                    }
+                    node.setPropertyValue(param.getName(), sql);
+                } catch (Exception e) {
+                    ExceptionHandler.process(e, Priority.WARN);
+                    node.setPropertyValue(param.getName(), newQuery);
+                }
+
+                param.setRepositoryValueUsed(false);
+            }
+        }
+
+        node.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+
+        if (this.node instanceof Node) {
+            ((Node) this.node).checkAndRefreshNode();
+        }
+
+        // Ends
+    }
+
+    private String generateNewQueryFromDQRuler(IElementParameter dqRulerParam) {
+        // update dqruler value before return it
+        ITDQRuleService rulerService = null;
+        try {
+            rulerService = (ITDQRuleService) GlobalServiceRegister.getDefault().getService(ITDQRuleService.class);
+        } catch (RuntimeException e) {
+            // nothing to do
+        }
+        if (rulerService != null) {
+            IElementParameter typeParam = node.getElementParameter("TYPE");
+            IElementParameter dbParam = node.getElementParameter(EParameterName.DBNAME.getName());
+            IElementParameter schemaParam = node.getElementParameter(EParameterName.SCHEMA_DB.getName());
+            IElementParameter tableParam = node.getElementParameterFromField(EParameterFieldType.DBTABLE);
+
+            List<IMetadataTable> metadataList = null;
+            IMetadataTable metadataTable = null;
+            if (node instanceof Node) {
+                metadataList = ((Node) node).getMetadataList();
+                if (metadataList != null && !metadataList.isEmpty()) {
+                    metadataTable = metadataList.get(0);
+                }
+            }
+            rulerService.overrideRuleList(typeParam, dbParam, schemaParam, tableParam, metadataTable, dqRulerParam);
+        }
+        return (String) dqRulerParam.getValue();
+    }
+
+    private String generateNewQuery() {
         // used for generating new Query.
 
         if (realDBType != null) {
@@ -216,11 +287,11 @@ public class QueryGuessCommand extends Command {
                         if (item != null && item instanceof DatabaseConnectionItem) {
 
                             if (isTeradata) {
-                                schema = (String) RepositoryToComponentProperty.getValue(((DatabaseConnectionItem) item)
-                                        .getConnection(), "SID", null); //$NON-NLS-1$
+                                schema = (String) RepositoryToComponentProperty.getValue(
+                                        ((DatabaseConnectionItem) item).getConnection(), "SID", null); //$NON-NLS-1$
                             } else {
-                                schema = (String) RepositoryToComponentProperty.getValue(((DatabaseConnectionItem) item)
-                                        .getConnection(), "SCHEMA", null); //$NON-NLS-1$
+                                schema = (String) RepositoryToComponentProperty.getValue(
+                                        ((DatabaseConnectionItem) item).getConnection(), "SCHEMA", null); //$NON-NLS-1$
                             }
                             schema = TalendTextUtils.removeQuotes(schema);
                         }
@@ -244,36 +315,7 @@ public class QueryGuessCommand extends Command {
         }
         newQuery = TalendTextUtils.addSQLQuotes(QueryUtil.generateNewQuery(node, newOutputMetadataTable, dbType, schema,
                 realTableName));
-
-        for (IElementParameter param : (List<IElementParameter>) node.getElementParameters()) {
-            if (param.getFieldType() == EParameterFieldType.MEMO_SQL) {
-                oldValue = node.getPropertyValue(param.getName());
-                this.propName = param.getName();
-                String sql = null;
-                try {
-                    // sql = new SQLFormatUtil().formatSQL(newQuery);
-                    if (QueryUtil.needFormatSQL(dbType)) {
-                        sql = fomatQuery(newQuery);
-                    } else {
-                        sql = newQuery;
-                    }
-                    node.setPropertyValue(param.getName(), sql);
-                } catch (Exception e) {
-                    ExceptionHandler.process(e, Priority.WARN);
-                    node.setPropertyValue(param.getName(), newQuery);
-                }
-
-                param.setRepositoryValueUsed(false);
-            }
-        }
-
-        node.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
-
-        if (this.node instanceof Node) {
-            ((Node) this.node).checkAndRefreshNode();
-        }
-
-        // Ends
+        return newQuery;
     }
 
     // get DatabaseConnection

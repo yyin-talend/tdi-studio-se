@@ -510,9 +510,13 @@ public class ComboController extends AbstractElementPropertySectionController {
                 IElementParameter typeParam = node.getElementParameter("TYPE");
                 IElementParameter dbParam = node.getElementParameter(EParameterName.DBNAME.getName());
                 IElementParameter schemaParam = node.getElementParameter(EParameterName.SCHEMA_DB.getName());
-                IElementParameter tableParam = node.getElementParameterFromField(EParameterFieldType.DBTABLE);
-
-                rulerService.overrideRuleList(typeParam, dbParam, schemaParam, tableParam, param);
+                IElementParameter tableParam = node.getElementParameter(EParameterName.TABLE.getName());
+                List<IMetadataTable> metadataList = node.getMetadataList();
+                IMetadataTable metadataTable = null;
+                if (metadataList != null && !metadataList.isEmpty()) {
+                    metadataTable = metadataList.get(0);
+                }
+                rulerService.overrideRuleList(typeParam, dbParam, schemaParam, tableParam, metadataTable, param);
             }
         }
 
