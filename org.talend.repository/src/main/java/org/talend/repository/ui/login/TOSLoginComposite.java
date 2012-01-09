@@ -530,7 +530,7 @@ public class TOSLoginComposite extends Composite {
                         for (int i = 0; i < projects.length; i++) {
                             if (projects[i].getLabel().toUpperCase().equals(newProject.toUpperCase())) {
                                 projectsMap.put(newProject.toUpperCase(), projects[i]);
-                                projectList.add(newProject.toUpperCase());
+                                projectList.add(newProject);
                                 sortProjects();
                                 enableOpenAndDelete(true);
                                 try {
@@ -652,7 +652,7 @@ public class TOSLoginComposite extends Composite {
         if (projects != null) {
             for (int i = 0; i < projects.length; i++) {
                 Project pro = projects[i];
-                projectList.add(pro.getTechnicalLabel());
+                projectList.add(pro.getLabel());
                 projectsMap.put(pro.getTechnicalLabel(), pro);
                 sortProjects();
                 enableOpenAndDelete(true);
