@@ -46,6 +46,8 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.time.TimeMeasure;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IESBService;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataManager;
@@ -361,7 +363,16 @@ public class ExportItemUtil {
                         ((FolderItem) item.getParent()).getChildren().remove(item);
                         item.setParent(null);
                     }
+                } else {
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                        IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+                        String wsdlFile = service.getWsdlFilePath(item);
+                        if (wsdlFile != null) {
+                            ProxyRepositoryFactory.getInstance().unloadResources(item.getProperty());
+                        }
+                    }
                 }
+
                 iterator.remove();
 
                 cleanResources(resourceSet);
