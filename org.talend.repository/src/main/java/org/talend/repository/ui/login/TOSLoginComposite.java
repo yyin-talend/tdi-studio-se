@@ -132,6 +132,8 @@ public class TOSLoginComposite extends Composite {
 
     private boolean inuse;
 
+    private Map<String, String> convertorMapper = new HashMap<String, String>();
+
     private static final Image OPEN_IMAGE = ImageProvider.getImage(ERepositoryImages.OPEN_ICON);
 
     public static final Color WHITE_COLOR = new Color(null, 255, 255, 255);
@@ -491,7 +493,10 @@ public class TOSLoginComposite extends Composite {
                                 IProject p = (IProject) obj;
                                 if (projectsMap.containsKey(p.getName())) {
                                     projectsMap.remove(p.getName());
-                                    projectList.remove(p.getName());
+                                    String name = convertorMapper.get(p.getName());
+                                    if (name != null)
+                                        projectList.remove(name);
+
                                     if (projectList.getItemCount() == 0) {
                                         enableOpenAndDelete(false);
                                     } else if (projectList.getSelection().length == 0) {
@@ -530,7 +535,8 @@ public class TOSLoginComposite extends Composite {
                         for (int i = 0; i < projects.length; i++) {
                             if (projects[i].getLabel().toUpperCase().equals(newProject.toUpperCase())) {
                                 projectsMap.put(newProject.toUpperCase(), projects[i]);
-                                projectList.add(newProject);
+                                convertorMapper.put(newProject.toUpperCase(), newProject);
+                                projectList.add(convertorMapper.get(newProject.toUpperCase()));
                                 sortProjects();
                                 enableOpenAndDelete(true);
                                 try {
@@ -616,7 +622,7 @@ public class TOSLoginComposite extends Composite {
                 if (projectList.getSelectionCount() > 0) {
                     String selection = projectList.getSelection()[0];
                     if (selection != null && !selection.equals("")) {
-                        Project project = (Project) projectsMap.get(selection);
+                        Project project = (Project) projectsMap.get(selection.toUpperCase());
                         boolean flag = dialog.logIn(project);
                         if (flag) {
                             dialog.okPressed();
@@ -652,7 +658,8 @@ public class TOSLoginComposite extends Composite {
         if (projects != null) {
             for (int i = 0; i < projects.length; i++) {
                 Project pro = projects[i];
-                projectList.add(pro.getLabel());
+                convertorMapper.put(pro.getTechnicalLabel(), pro.getLabel());
+                projectList.add(convertorMapper.get(pro.getTechnicalLabel()));
                 projectsMap.put(pro.getTechnicalLabel(), pro);
                 sortProjects();
                 enableOpenAndDelete(true);
@@ -677,6 +684,12 @@ public class TOSLoginComposite extends Composite {
 
     public Map getProjectMap() {
         return projectsMap;
+    }
+
+    public Map<String, String> getConvertorMap() {
+
+        return this.convertorMapper;
+
     }
 
     public void setStatusArea() throws PersistenceException {
