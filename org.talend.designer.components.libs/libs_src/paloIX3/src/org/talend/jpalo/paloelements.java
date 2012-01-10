@@ -38,6 +38,7 @@ public class paloelements {
 	private paloconnection plConn;
 	private long lDatabaseId;
 	private int iDimensionId;
+	private List<String> elementNameList = new ArrayList<String>();
 	
 	
 	
@@ -223,75 +224,79 @@ public class paloelements {
 	public paloelement createElement(String strElementName, int iElementType, int iMode) throws paloexception{
 		paloelement plElem = null;
 		
-		List<NameValuePair> qparams = new ArrayList<NameValuePair>();
-		qparams.add(new BasicNameValuePair("sid", this.plConn.getPaloToken()));
-		qparams.add(new BasicNameValuePair("database", String.valueOf(this.lDatabaseId)));
-		qparams.add(new BasicNameValuePair("dimension", String.valueOf(this.iDimensionId)));
-		
-		qparams.add(new BasicNameValuePair("new_name", strElementName));
-		qparams.add(new BasicNameValuePair("type", String.valueOf(iElementType)));
-		
-		try{
-			HttpEntity entity=null;
-			switch(iMode){
-				case MODE_ADD: 
-					entity = this.plConn.sendToServer(qparams, "/element/create"); 
-					break;
-				case MODE_UNKNOWN:
-				case MODE_ADD_OR_UPDATE:
-					paloelement plElm = getElement(strElementName);
-					if(null==plElm)	entity = this.plConn.sendToServer(qparams, "/element/create");
-					else{
+		if(!elementNameList.contains(strElementName)){
+			elementNameList.add(strElementName);
+			List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+			qparams.add(new BasicNameValuePair("sid", this.plConn.getPaloToken()));
+			qparams.add(new BasicNameValuePair("database", String.valueOf(this.lDatabaseId)));
+			qparams.add(new BasicNameValuePair("dimension", String.valueOf(this.iDimensionId)));
+			
+			qparams.add(new BasicNameValuePair("new_name", strElementName));
+			qparams.add(new BasicNameValuePair("type", String.valueOf(iElementType)));
+			
+			try{
+				HttpEntity entity=null;
+				switch(iMode){
+					case MODE_ADD: 
+						entity = this.plConn.sendToServer(qparams, "/element/create"); 
+						break;
+					case MODE_UNKNOWN:
+					case MODE_ADD_OR_UPDATE:
+						paloelement plElm = getElement(strElementName);
+						if(null==plElm)	entity = this.plConn.sendToServer(qparams, "/element/create");
+						else{
+							qparams.add(new BasicNameValuePair("element", String.valueOf(plElm.getElementIdentifier())));
+							entity = this.plConn.sendToServer(qparams, "/element/replace");
+						}
+						break;
+					case MODE_UPDATE:
+						plElm = getElement(strElementName);
+						if(null==plElm) throw new paloexception("Element " + strElementName +" does not exists!");
 						qparams.add(new BasicNameValuePair("element", String.valueOf(plElm.getElementIdentifier())));
 						entity = this.plConn.sendToServer(qparams, "/element/replace");
-					}
-					break;
-				case MODE_UPDATE:
-					plElm = getElement(strElementName);
-					if(null==plElm) throw new paloexception("Element " + strElementName +" does not exists!");
-					qparams.add(new BasicNameValuePair("element", String.valueOf(plElm.getElementIdentifier())));
-					entity = this.plConn.sendToServer(qparams, "/element/replace");
-					break;
-				case MODE_FORCE_ADD:
-					plElm = getElement(strElementName);
-					if(null!=plElm) deleteElement(plElm);
-					entity = this.plConn.sendToServer(qparams, "/element/create");
-					break;
+						break;
+					case MODE_FORCE_ADD:
+						plElm = getElement(strElementName);
+						if(null!=plElm) deleteElement(plElm);
+						entity = this.plConn.sendToServer(qparams, "/element/create");
+						break;
 
+				}
+				CsvReader csv = new CsvReader(entity.getContent(), Charset.forName("UTF-8"));
+		        csv.setDelimiter(';');
+		        csv.setTextQualifier('"');
+		        csv.setUseTextQualifier(true);
+		        csv.readRecord();
+	        	plElem = new paloelement(
+	        			this.plConn,
+	        			this.lDatabaseId,
+	        			this.iDimensionId,
+	        			this,
+	        			palohelpers.StringToLong(csv.get(0)),
+	        			csv.get(1),
+	        			palohelpers.StringToInt(csv.get(2)),
+	        			palohelpers.StringToInt(csv.get(3)),
+	        			palohelpers.StringToInt(csv.get(4)),
+	        			palohelpers.StringToInt(csv.get(5)),
+	        			palohelpers.StringToInt(csv.get(6)),
+	        			palohelpers.StringToInt(csv.get(7)),
+	        			palohelpers.StringToIntArray(csv.get(8), palohelpers.StringToInt(csv.get(7))),
+	        			palohelpers.StringToInt(csv.get(9)),
+	        			palohelpers.StringToIntArray(csv.get(10), palohelpers.StringToInt(csv.get(9))),
+	        			palohelpers.StringToDoubleArray(csv.get(11), palohelpers.StringToInt(csv.get(9)))
+	        	);
+		        csv.close();
+				entity.consumeContent();
+				paloElementsList.put(plElem.getName(), plElem);
+				paloElementsIdentifier.put(plElem.getElementIdentifier(),plElem.getName());
+				//plElem.setPaloElements(this);
+				
+			}catch(Exception e){
+				System.out.println("Hier " + strElementName);
+				throw new paloexception(e.getMessage());
 			}
-			CsvReader csv = new CsvReader(entity.getContent(), Charset.forName("UTF-8"));
-	        csv.setDelimiter(';');
-	        csv.setTextQualifier('"');
-	        csv.setUseTextQualifier(true);
-	        csv.readRecord();
-        	plElem = new paloelement(
-        			this.plConn,
-        			this.lDatabaseId,
-        			this.iDimensionId,
-        			this,
-        			palohelpers.StringToLong(csv.get(0)),
-        			csv.get(1),
-        			palohelpers.StringToInt(csv.get(2)),
-        			palohelpers.StringToInt(csv.get(3)),
-        			palohelpers.StringToInt(csv.get(4)),
-        			palohelpers.StringToInt(csv.get(5)),
-        			palohelpers.StringToInt(csv.get(6)),
-        			palohelpers.StringToInt(csv.get(7)),
-        			palohelpers.StringToIntArray(csv.get(8), palohelpers.StringToInt(csv.get(7))),
-        			palohelpers.StringToInt(csv.get(9)),
-        			palohelpers.StringToIntArray(csv.get(10), palohelpers.StringToInt(csv.get(9))),
-        			palohelpers.StringToDoubleArray(csv.get(11), palohelpers.StringToInt(csv.get(9)))
-        	);
-	        csv.close();
-			entity.consumeContent();
-			paloElementsList.put(plElem.getName(), plElem);
-			paloElementsIdentifier.put(plElem.getElementIdentifier(),plElem.getName());
-			//plElem.setPaloElements(this);
-			return plElem;
-		}catch(Exception e){
-			System.out.println("Hier " + strElementName);
-			throw new paloexception(e.getMessage());
 		}
+		return plElem;
 	}
 
 
