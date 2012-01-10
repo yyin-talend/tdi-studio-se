@@ -15,6 +15,7 @@ package org.talend.designer.components.util.mssql;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -30,6 +31,10 @@ public class MSSqlGenerateTimestampUtil {
     public static final int STRING_TO_JAVA_SQL_TIMESTAMP = 0x003;
 
     public static final int JAVA_SQL_DATE = 0x101;
+    
+    private static final String DATE_STRING_FOR_TIME = "1970-01-01 ";
+    
+    private static final int DB_TYPE_DATETIMEOFFSET = 0x004;
 
     /**
      * DOC jliu Comment method "getDate". <br>
@@ -57,34 +62,37 @@ public class MSSqlGenerateTimestampUtil {
             switch (columnDBTypeMapping.get(index)) {
             case STRING_TO_JAVA_SQL_DATE:
                 return new java.util.Date(java.sql.Date.valueOf(rs.getString(index)).getTime());
-            case STRING_TO_JAVA_SQL_TIME:
-                String tempDateString = rs.getString(index);
-                tempDateString = tempDateString.indexOf(".") == -1 ? tempDateString : tempDateString.substring(0,
-                        tempDateString.indexOf("."));
-                return new java.util.Date(java.sql.Time.valueOf(tempDateString).getTime());
             case STRING_TO_JAVA_SQL_TIMESTAMP:
                 return new java.util.Date(java.sql.Timestamp.valueOf(rs.getString(index)).getTime());
+            case STRING_TO_JAVA_SQL_TIME:
+            	return new java.util.Date(java.sql.Timestamp.valueOf(DATE_STRING_FOR_TIME + rs.getString(index)).getTime());
             case JAVA_SQL_DATE:
                 return new java.util.Date(rs.getTimestamp(index).getTime());
+            case DB_TYPE_DATETIMEOFFSET:
+            	return parseDatetimeOffset(rs.getString(index));
             default:
                 return null;
             }
         } else {
             // this code just run one times.
             if ("nvarchar".equals(rsmd.getColumnTypeName(index))) {
-                String tempDateString = rs.getString(index);
-                try {
+                String dateString = rs.getString(index);
+                try {//if DB DATE
                     columnDBTypeMapping.put(index, STRING_TO_JAVA_SQL_DATE);
-                    return new java.util.Date(java.sql.Date.valueOf(tempDateString).getTime());
+                    return new java.util.Date(java.sql.Date.valueOf(dateString).getTime());
                 } catch (java.lang.IllegalArgumentException iae1) {
-                    try {
-                        tempDateString = tempDateString.indexOf(".") == -1 ? tempDateString : tempDateString.substring(0,
-                                tempDateString.indexOf("."));
-                        columnDBTypeMapping.put(index, STRING_TO_JAVA_SQL_TIME);
-                        return new java.util.Date(java.sql.Time.valueOf(tempDateString).getTime());
+                    try {//if DB DATETIME2
+	                	columnDBTypeMapping.put(index, STRING_TO_JAVA_SQL_TIMESTAMP);
+	                    return new java.util.Date(java.sql.Timestamp.valueOf(dateString).getTime());
                     } catch (java.lang.IllegalArgumentException iae2) {
-                        columnDBTypeMapping.put(index, STRING_TO_JAVA_SQL_TIMESTAMP);
-                        return new java.util.Date(java.sql.Timestamp.valueOf(rs.getString(index)).getTime());
+                    	try {//if DB TIME
+                    		columnDBTypeMapping.put(index, STRING_TO_JAVA_SQL_TIME);
+                    		return new java.util.Date(java.sql.Timestamp.valueOf(DATE_STRING_FOR_TIME + dateString).getTime());
+                    	} catch(java.lang.IllegalArgumentException iae3) {
+                    		//if DB DATETIMEOFFSET
+                    		columnDBTypeMapping.put(index, DB_TYPE_DATETIMEOFFSET);
+                    		return parseDatetimeOffset(dateString);
+                    	}
                     }
                 }
 
@@ -95,4 +103,15 @@ public class MSSqlGenerateTimestampUtil {
         }
         return null;
     }
+    
+    private java.util.Date parseDatetimeOffset(String datetimeOffsetString) {
+    	int idx = datetimeOffsetString.lastIndexOf(' ');
+		String datetimeString = datetimeOffsetString.substring(0,idx);
+		String offsetString = datetimeOffsetString.substring(idx+1);
+		int offset = TimeZone.getTimeZone("GMT"+offsetString).getRawOffset();
+		long milliseconds = java.sql.Timestamp.valueOf(datetimeString).getTime();
+		long millisecondsToGMT1970_01_01 = milliseconds - offset;
+		return new java.util.Date(millisecondsToGMT1970_01_01);
+    }
+    
 }
