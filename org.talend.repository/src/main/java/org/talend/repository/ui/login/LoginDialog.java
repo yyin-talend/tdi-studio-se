@@ -202,8 +202,11 @@ public class LoginDialog extends TrayDialog {
         base.layout();
         Project[] projectCollection = tosLoginComposite.readProject();
         for (int i = 0; i < projectCollection.length; i++) {
-            tosLoginComposite.getProjectList().add(projectCollection[i].getLabel().toUpperCase());
+            tosLoginComposite.getProjectList().add(projectCollection[i].getLabel());
             tosLoginComposite.getProjectMap().put(projectCollection[i].getLabel().toUpperCase(), projectCollection[i]);
+            tosLoginComposite.getConvertorMap().put(projectCollection[i].getLabel().toUpperCase(),
+                    projectCollection[i].getLabel());
+
             try {
                 tosLoginComposite.setStatusArea();
             } catch (PersistenceException e) {
