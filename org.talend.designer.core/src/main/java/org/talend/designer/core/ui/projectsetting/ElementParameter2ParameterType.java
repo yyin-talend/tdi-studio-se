@@ -193,6 +193,10 @@ public class ElementParameter2ParameterType {
                                     if (index > -1) {
                                         elemParam.setPropertyValue(pTypeName, param.getListItemsValue()[index]);
                                     }
+                                } else if (value.equals("") && name != null
+                                        && (name.equals("LOAD_NEW_VARIABLE") || name.equals("NOT_LOAD_OLD_VARIABLE"))) {
+                                    valueSet = true;
+                                    elemParam.setPropertyValue(pTypeName, param.getListItemsValue()[1]);
                                 }
                             }
                             if (!valueSet) {
@@ -219,8 +223,8 @@ public class ElementParameter2ParameterType {
                                     }
                                     lineValues.put(elementValue.getElementRef(), elementValue.getValue());
                                     if (elementValue.getType() != null) {
-                                        lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE, elementValue
-                                                .getType());
+                                        lineValues.put(elementValue.getElementRef() + IEbcdicConstant.REF_TYPE,
+                                                elementValue.getType());
                                     }
                                 }
                             }
@@ -257,7 +261,8 @@ public class ElementParameter2ParameterType {
                             elemParam.setPropertyValue(pTypeName, value);
                             // end of fix for bug 2193
                         } else if (!param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                            if (param.getRepositoryValue() != null && !param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)) {
+                            if (param.getRepositoryValue() != null
+                                    && !param.getFieldType().equals(EParameterFieldType.PROPERTY_TYPE)) {
                                 if (repositoryParam != null && EmfComponent.REPOSITORY.equals(repositoryParam.getValue())) {
                                     param.setRepositoryValueUsed(true);
                                 } else {
