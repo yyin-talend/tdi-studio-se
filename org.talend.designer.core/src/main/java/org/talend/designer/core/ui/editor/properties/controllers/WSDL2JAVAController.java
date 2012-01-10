@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -431,6 +432,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
             ExceptionHandler.process(e);
         }
         CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
+        CorePlugin.getDefault().getRunProcessService().updateLibraries(new HashSet<String>(), null);
     }
 
     private String chanageRoutinesPackage(String routineContent, String name) {
