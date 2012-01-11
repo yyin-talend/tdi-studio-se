@@ -3180,6 +3180,13 @@ public class Node extends Element implements IGraphicalNode {
         return getComponent().getOriginalFamilyName().startsWith("ELT"); //$NON-NLS-1$
     }
 
+    public boolean isELTMapComponent() {
+        if (isELTComponent()) {
+            return getComponent().getName().endsWith("Map");//$NON-NLS-1$
+        }
+        return false;
+    }
+
     public boolean isFileScaleComponent() {
         return getComponent().getOriginalFamilyName().equals("FileScale"); //$NON-NLS-1$
     }
