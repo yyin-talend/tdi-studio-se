@@ -122,7 +122,7 @@ public class ConnectionCreateAction extends SelectionAction {
             if (connecType.hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
                 if (!(Boolean) node.getPropertyValue(EParameterName.STARTABLE.getName())
                         || (!node.getProcessStartNode(false).equals(node))) {
-                    if (!node.isELTComponent()) {
+                    if (!node.isELTMapComponent()) {
                         boolean jobletOk = false;
                         if (PluginChecker.isJobLetPluginLoaded()) {
                             IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault()
