@@ -693,9 +693,9 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
 
             // for bug 17692
             ERepositoryObjectType objectType = object.getRepositoryNode().getObjectType();
+            ERepositoryObjectType type = object.getRepositoryNode().getContentType();
             if (!objectType.equals(ERepositoryObjectType.JOB_DOC) && !objectType.equals(ERepositoryObjectType.JOBLET_DOC)) {
                 if (isTechinalStatus()) {
-                    ERepositoryObjectType type = object.getRepositoryNode().getContentType();
                     // Modified by Marvin Wang on Jan.7, 2011 for bug Talend DI TDI-19154, should not use
                     // obj.equals(constant) that will cause NPE.
                     if (!ERepositoryObjectType.DOCUMENTATION.equals(type) && !ERepositoryObjectType.BUSINESS_PROCESS.equals(type)
@@ -703,6 +703,11 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                         // if (!type.equals(ERepositoryObjectType.DOCUMENTATION) &&
                         // !type.equals(ERepositoryObjectType.BUSINESS_PROCESS)
                         // && !type.equals(ERepositoryObjectType.JOBLETS)) {
+                        itemTable.setRedraw(false);
+                        tableItem = new TableItem(itemTable, SWT.NONE);
+                    }
+                } else if (isDocumentStatus()) {
+                    if (ERepositoryObjectType.DOCUMENTATION.equals(type) || ERepositoryObjectType.BUSINESS_PROCESS.equals(type)) {
                         itemTable.setRedraw(false);
                         tableItem = new TableItem(itemTable, SWT.NONE);
                     }
@@ -714,7 +719,6 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                 }
             } else {
                 if (isDocumentStatus()) {
-                    ERepositoryObjectType type = object.getRepositoryNode().getContentType();
                     if (type.equals(ERepositoryObjectType.JOBS) || type.equals(ERepositoryObjectType.JOBLETS)) {
                         itemTable.setRedraw(false);
                         tableItem = new TableItem(itemTable, SWT.NONE);
@@ -762,7 +766,6 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                     GridData data = new GridData(GridData.FILL_HORIZONTAL);
                     statusItemCombo.setLayoutData(data);
                     statusItemCombo.setEditable(false);
-                    ERepositoryObjectType type = object.getRepositoryNode().getContentType();
                     if (!type.equals(ERepositoryObjectType.DOCUMENTATION) && !type.equals(ERepositoryObjectType.BUSINESS_PROCESS)) {
                         statusItemCombo.setItems(toArray(technicalStatusList));
                         statusItemCombo.select(0);
