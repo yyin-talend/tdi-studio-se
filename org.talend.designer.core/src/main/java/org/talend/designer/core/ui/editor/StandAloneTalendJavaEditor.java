@@ -396,7 +396,10 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
         @Override
         public void notifyChanged(Notification notification) {
-            if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
+            Object oldValue = notification.getOldValue();
+            Object newValue = notification.getNewValue();
+            boolean changed = (newValue == null && oldValue != null) || (newValue != null && !newValue.equals(oldValue));
+            if (notification.getEventType() != Notification.REMOVING_ADAPTER && changed) {
                 propertyIsDirty = true;
                 Display.getDefault().syncExec(new Runnable() {
 
