@@ -159,12 +159,12 @@ fw_<%=cid %>.close();
 <%//run mload command----------------------------------------------------%>
 <%if("true".equals(defineCharset)) {
 	if(!("".equals(charset))) {%>
-String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>mload -c "+<%=charset%>+" < \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1");
+String sb_<%=cid%>= new String("mload -c "+<%=charset%>+" < \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1");
 <%}} else {%>	
-String sb_<%=cid%>= new String("<%=(("Windows").equals(execution))?"cmd /c ":""%>mload < \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1");
+String sb_<%=cid%>= new String("mload < \""+<%=scriptPath%>+<%=table%>+".script\" > \""+<%=errorFile%>+"\" 2>&1");
 <%}%>
 <%if(("Windows").equals(execution)){%>
-final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>); 
+final Process process_<%=cid %> = Runtime.getRuntime().exec(new String[]{"cmd","/c",sb_<%=cid%>}); 
 <%}else{%>
 final Process process_<%=cid %> = Runtime.getRuntime().exec(new String[]{"sh","-c",sb_<%=cid%>});
 <%}%>
