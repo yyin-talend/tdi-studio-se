@@ -630,8 +630,12 @@ if(isValidFile_<%=cid %>){
 NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
 nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
 java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid%> = nsTool_<%=cid%>.xmlNameSpaceMap;  
-
+<% if(!("true").equals(ignore_NS_Str)) {%>
 org.dom4j.XPath x_<%=cid%> = doc_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=loopQuery%>,<%=loopQuery%>));  
+<% } else {%>
+String loopQuery_<%=cid%> = StringUtils.deletePrefixForXpath(<%=loopQuery%>);
+org.dom4j.XPath x_<%=cid%> = doc_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(loopQuery_<%=cid%>,loopQuery_<%=cid%>));
+<% } %>
 x_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
 
 java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = (java.util.List<org.dom4j.tree.AbstractNode>)x_<%=cid%>.selectNodes(doc_<%=cid%>);	
@@ -822,8 +826,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	}
 <%
 						}
+						
+						if(!("true").equals(ignore_NS_Str)) {
 %>
 	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>,<%=loopQuery%>));
+<% 
+						} else {
+%>
+	
+	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(StringUtils.deletePrefixForXpath(<%=query%>),loopQuery_<%=cid%>));
+<%
+						} 
+%>
     xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
     Object obj<%=i%>_<%=cid%> = xTmp<%=i%>_<%=cid%>.evaluate(temp_<%=cid%>);
     if(obj<%=i%>_<%=cid%> instanceof String || obj<%=i%>_<%=cid%> instanceof Number){
