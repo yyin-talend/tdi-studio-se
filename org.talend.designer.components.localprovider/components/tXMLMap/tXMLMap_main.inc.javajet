@@ -62,14 +62,12 @@ skeleton="tXMLMap_java.skeleton"
 	
 //	boolean isLookup = false;
 	boolean isXpathFromLookup = true;
-	boolean isExpressionEmpty = true;
-	boolean hasOutgoingConnection = false;
+	boolean hasOutgoingConnection = false;//to output or another lookup
 	boolean hasDocumentInMainInputTable = false;
 	boolean atLeastOneInputTableWithInnerJoin = false;
 	boolean isPlainNode = true;
 //	boolean isPlainNodeInLookup = false;
 	boolean hasValidLookupTables = false;
-	int closeWhileBlockCount = 0;
 	boolean hasDocumentGlobal = false;
 	
 //	boolean hasMainFilter = false;
@@ -266,11 +264,6 @@ skeleton="tXMLMap_java.skeleton"
 
 		<%@ include file="tXMLMap_lookup.inc.javajet" %>
 <%
-	
-	if(hasOutgoingConnection && isExpressionEmpty) {
-		closeWhileBlockCount++;
-	}
-	
 	} // end for lookup tables
 	
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -632,9 +625,6 @@ skeleton="tXMLMap_java.skeleton"
 		sb.append(cr + cr + rejectedInnerJoin + " = false;");
 		
 		sb.append(cr);
-		while(closeWhileBlockCount-- > 0) {
-			sb.append("} // end for while loop(TD128) " + cr + cr);
-		}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

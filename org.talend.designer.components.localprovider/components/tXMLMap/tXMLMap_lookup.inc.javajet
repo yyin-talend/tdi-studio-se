@@ -30,15 +30,15 @@ skeleton="tXMLMap_java.skeleton"
 %>
 <%
 	EConnectionType connectionType = null;
-	if (nextInputTable != null && nextInputTable.isLookup()) { 
+	if (nextInputTable != null && nextInputTable.isLookup()) {//TD132 
 		IConnection connection =  hNameToConnection.get(nextInputTable.getName());
 
 		if(connection == null){
 			continue;
-		}else{
+		}else{//TD131
 			connectionType = connection.getLineStyle();
 			
-			if(connectionType == EConnectionType.FLOW_REF) {
+			if(connectionType == EConnectionType.FLOW_REF) {//TD130
 				IMetadataTable metadataTable = connection.getMetadataTable();
 				String tableName = nextInputTable.getName();
 				String lookupMode = nextInputTable.getLookupMode();
@@ -52,8 +52,6 @@ skeleton="tXMLMap_java.skeleton"
 					isInnerJoin = true;
 			    	inputTablesWithInnerJoin.add(nextInputTable);
 			 	}
-			    //  nextJoinedTableNames =tableName+  "__" + tableName; 
-			    // System.out.println("nextJoinedTableNames : " + nextJoinedTableNames);
 				%>
 				///////////////////////////////////////////////
 				//Starting Lookup Table "<%= nextInputTable %>" 
@@ -69,8 +67,8 @@ skeleton="tXMLMap_java.skeleton"
 				
 				boolean findFromBasicType = false;
 				boolean findFromDocumentType = false;
-				String documentColumn = "";
-				boolean hasOutputFromLookupDoc = false;//to output or another lookup
+				String documentColumn = null;
+				boolean hasOutputFromLookupDoc = false;//to output or another lookup from Document
 				Map<String,String> outNodesXPath = new HashMap<String,String>();//output contain(1.lookup table to output table 2.lookup table to lookup table)
 				Map<String,String> lookupInputNodesXPath = new HashMap<String,String>();
 				String loopXPath = "";
@@ -155,6 +153,8 @@ skeleton="tXMLMap_java.skeleton"
 					    }
 					}
 				}
+				boolean isAllRows = "ALL_ROWS".equals(nextInputTable.getMatchingMode());
+				boolean isDocumentAllRows = isAllRows && documentColumn!=null;
 				
 				isXpathFromLookup = existXpathKeyFromCurrentLookup;
 				String[] aKeysNames = keysNames.toArray(new String[0]);
@@ -176,7 +176,7 @@ skeleton="tXMLMap_java.skeleton"
 				}
 				%>
 				
-				<%if(hasOutgoingConnection || hasExpressionKey){ %>
+				<%if(hasOutgoingConnection || hasExpressionKey || isAllRows){ %>
 					boolean forceLoop<%= tableName %> = false;
 					<%= className %> <%= tableName %>ObjectFromLookup = null;
 					boolean hasResultFromLookupCache<%= tableName %> = false;
@@ -184,39 +184,35 @@ skeleton="tXMLMap_java.skeleton"
 				<%} %>
 				
 				<%
-				if( null != aKeysValues && aKeysValues.length != 0 ){
-					isExpressionEmpty = false;
-					
-					if(aKeysValues.length > 0) {//TD114
-					 	if(isCacheOrReloadLookupMode) {
-			   			%>
-			   				List<Object> lookupCacheKey<%=tableName%> = new java.util.ArrayList<Object>();
-			   			<%	
-			  			} 
-						for (int iKeyName = 0; iKeyName < aKeysNames.length; iKeyName++) {
-							String typeToGenerate = keysTypes.get(iKeyName);
-							boolean javaPrimitiveKeyColumn = JavaTypesManager.isJavaPrimitiveType(typeToGenerate);
-				   			if("Document".equals(typeToGenerate)) {
-				   				String xpath = aKeysNames[iKeyName];
-				   				String relativeXPath = lookupInputNodesXPath.get(xpath);
+				if(aKeysValues!=null){//TD129
+				 	if(isCacheOrReloadLookupMode) {
+		   			%>
+		   				List<Object> lookupCacheKey<%=tableName%> = new java.util.ArrayList<Object>();
+		   			<%	
+		  			} 
+					for (int iKeyName = 0; iKeyName < aKeysNames.length; iKeyName++) {
+						String typeToGenerate = keysTypes.get(iKeyName);
+						boolean javaPrimitiveKeyColumn = JavaTypesManager.isJavaPrimitiveType(typeToGenerate);
+			   			if("Document".equals(typeToGenerate)) {
+			   				String xpath = aKeysNames[iKeyName];
+			   				String relativeXPath = lookupInputNodesXPath.get(xpath);
+						%>
+							<%= tableName %>HashKey.documentLookupResult.put("<%=relativeXPath%>",<%=aKeysValues[iKeyName] %>);
+							xpathToPatternMap_<%=tableName%>.put("<%=relativeXPath%>",<%=xpathToPatternMap.get(xpath)%>);
+							xpathToTypeMap_<%=tableName%>.put("<%=relativeXPath%>","<%=xpathToTypeMap.get(xpath)%>");
+							<%					
+							if(isCacheOrReloadLookupMode) {
 							%>
-								<%= tableName %>HashKey.documentLookupResult.put("<%=relativeXPath%>",<%=aKeysValues[iKeyName] %>);
-								xpathToPatternMap_<%=tableName%>.put("<%=relativeXPath%>",<%=xpathToPatternMap.get(xpath)%>);
-								xpathToTypeMap_<%=tableName%>.put("<%=relativeXPath%>","<%=xpathToTypeMap.get(xpath)%>");
-								<%					
-								if(isCacheOrReloadLookupMode) {
-								%>
-									lookupCacheKey<%=tableName%>.add(<%=aKeysValues[iKeyName] %>);
-								<%
-								}
-				   			} else {
-							%>
-						   	<%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = <%=aKeysValues[iKeyName] %>;
-							<%= tableName %>HashKey.hashCodeDirty = true;
-							<%		
-					   		}
-						}// end for aKeysNames
-					}//TD114
+								lookupCacheKey<%=tableName%>.add(<%=aKeysValues[iKeyName] %>);
+							<%
+							}
+			   			} else {
+						%>
+					   	<%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = <%=aKeysValues[iKeyName] %>;
+						<%= tableName %>HashKey.hashCodeDirty = true;
+						<%		
+				   		}
+					}// end for aKeysNames
 					
 					if(findFromBasicType && isCacheOrReloadLookupMode) {
 					%>
@@ -226,17 +222,13 @@ skeleton="tXMLMap_java.skeleton"
 					%>
 					
 					<%
-					if(hasOutgoingConnection || hasExpressionKey){
+					if(hasOutgoingConnection || hasExpressionKey || isAllRows){
 					%>
 						if(!<%= rejectedInnerJoin %>){//TD120
 							<%if(isOneOfReloadLookupMode) {//TD110
 								if(isCacheOrReloadLookupMode) {
-									if(findFromBasicType) { 
-									%>
+							%>
 									tHash_Lookup_Cache_<%= tableName %>.lookup(lookupCacheKey<%=tableName%>);
-									<% } else if(findFromDocumentType) { %>
-									tHash_Lookup_Cache_<%= tableName %>.lookup(lookupCacheKey<%=tableName%>);
-									<% } %>
 		  							if(tHash_Lookup_Cache_<%= tableName %>.hasNext()) {
 	  									hasResultFromLookupCache<%= tableName %> = true;
 		  							} else {
@@ -245,7 +237,6 @@ skeleton="tXMLMap_java.skeleton"
 								%>
 									<%= lookupSubProcessStartNodeName %>Process(globalMap);
 								<%
-								boolean isAllRows = "ALL_ROWS".equals(nextInputTable.getMatchingMode());
 					            if(nextInputTable.isPersistent()) {%>
 									tHash_Lookup_<%=tableName%> = 
 										(org.talend.designer.components.lookup.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=tableName%>Struct>) 
@@ -262,7 +253,7 @@ skeleton="tXMLMap_java.skeleton"
 							    }
 							    %>
 					    			tHash_Lookup_<%= tableName %>.initGet();
-					    		<% if(findFromBasicType) { %>
+					    		<% if(findFromBasicType || isAllRows) { %>
 					    			tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
 					    		<% } else if(findFromDocumentType) { %>
 					    			tHash_Lookup_<%= tableName %>.lookup();
@@ -276,7 +267,7 @@ skeleton="tXMLMap_java.skeleton"
 							%>
 					
 							<% if(!isOneOfReloadLookupMode) {%>
-								<%if(findFromBasicType) {%>
+								<%if(findFromBasicType || isAllRows) {%>
 									tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
 								<% } else if(findFromDocumentType) { %>
 									tHash_Lookup_<%= tableName %>.lookup();
@@ -419,7 +410,7 @@ skeleton="tXMLMap_java.skeleton"
 								<%=tableName%> = <%=tableName%>Default;
 								fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
 								if(fromLookup_<%=tableName%> != null) {
-								<% if(findFromDocumentType || hasOutputFromLookupDoc) {//TA110%>
+								<% if(findFromDocumentType || hasOutputFromLookupDoc || isDocumentAllRows) {//TA110%>
 									Document lookupDoc_<%=cid%> = fromLookup_<%=tableName%>.<%=documentColumn%>;
 									java.util.Map<String,String> xPathAsOutput_<%=cid%> = new java.util.HashMap<String,String>();
 									<%
@@ -451,7 +442,7 @@ skeleton="tXMLMap_java.skeleton"
 										}
 									}
 								<% }//TA110 %>
-									<%if(!findFromDocumentType){%>	
+									<%if(!findFromDocumentType && !isDocumentAllRows){%>	
 									<%=tableName%> = fromLookup_<%=tableName%>;
 									//construct the resultset for mutiple lookup when no document lookup.
 									oneRow_<%=tableName%> = new java.util.HashMap<String, Object>();
@@ -498,36 +489,10 @@ skeleton="tXMLMap_java.skeleton"
 					}
 					%>
 				<%
-				} // end of expression key checking
-				else {
-	
-					isExpressionEmpty = true;
-					if(hasOutgoingConnection){
-					%>
-						if(!<%= rejectedInnerJoin %>){
-							tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
-							if(tHash_Lookup_<%= tableName %>.hasNext()){
-							
-							}
-						}else {
-						
-						}
-						while (tHash_Lookup_<%=tableName%>.hasNext()) {//TD128 
-								
-							fromLookup_<%=tableName%> = null;
-							<%=tableName%> = <%=tableName%>Default;
-					
-							fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
-							if (fromLookup_<%=tableName%> != null) {
-
-								<%=tableName%> = fromLookup_<%=tableName%>;
-							}
-					<%
-					}
-				}
-			}
-		}
+				} //TD129 end of expression key checking
+			}//TD130
+		}//TD131
 	} else {
 		isXpathFromLookup = false;
-	}
+	}//TD132
 	%>
