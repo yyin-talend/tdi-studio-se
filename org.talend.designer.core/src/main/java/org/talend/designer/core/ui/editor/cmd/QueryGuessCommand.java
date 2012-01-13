@@ -121,7 +121,7 @@ public class QueryGuessCommand extends Command {
     public void execute() {
         IElementParameter dqRuler = node.getElementParameter("DQRULES_LIST");
         String newQuery = "";
-        if (dqRuler != null || !"".equals(dqRuler.getValue())) {
+        if (dqRuler != null && !"".equals(dqRuler.getValue())) {
             newQuery = generateNewQueryFromDQRuler(dqRuler);
             if (newQuery == null || "".equals(newQuery)) {
                 newQuery = generateNewQuery();
