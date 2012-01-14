@@ -39,7 +39,10 @@ import org.talend.repository.model.RepositoryNode;
 
 /**
  * ggu class global comment. Detailled comment
+ * 
+ * @deprecated replaced by RepositoryComponentManager
  */
+
 final class TalendDndHelper {
 
     private static final String MAP = "MAP";//$NON-NLS-1$

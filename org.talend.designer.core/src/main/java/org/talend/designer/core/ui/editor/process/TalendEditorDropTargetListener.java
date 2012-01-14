@@ -122,6 +122,7 @@ import org.talend.core.model.utils.IComponentName;
 import org.talend.core.model.utils.IDragAndDropServiceHandler;
 import org.talend.core.model.utils.SQLPatternUtils;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.repository.RepositoryComponentManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.core.ui.ICDCProviderService;
@@ -163,7 +164,6 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.editor.JobEditorInput;
-import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.EProperties;
@@ -1455,49 +1455,38 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     private void getAppropriateComponent(Item item, boolean quickCreateInput, boolean quickCreateOutput, TempStore store,
             ERepositoryObjectType type) {
-        IComponentName name = EDatabaseComponentName.getCorrespondingComponentName(item, type);
-        String componentName = null;
-        if (item instanceof JobletProcessItem) { // joblet
-            componentName = item.getProperty().getLabel();
-        } else if (name == null) {
+        IComponentName rcSetting = RepositoryComponentManager.getSetting(item, type);
+
+        // IComponentName name = EDatabaseComponentName.getCorrespondingComponentName(item, type);
+        // For handler, need check for esb
+        if (rcSetting == null) {
             for (IDragAndDropServiceHandler handler : DragAndDropManager.getHandlers()) {
-                name = handler.getCorrespondingComponentName(item, type);
-                if (name != null) {
+                rcSetting = handler.getCorrespondingComponentName(item, type);
+                if (rcSetting != null) {
                     break;
                 }
             }
-            if (name == null) {
+            if (rcSetting == null) {
                 return;
             }
-        } else { // tRunjob
-            componentName = name.getDefaultComponentName();
         }
 
-        // tRunJob is special from our rules
-        if (name == EDatabaseComponentName.RunJob || item instanceof JobletProcessItem) {
-            store.component = ComponentsFactoryProvider.getInstance().get(componentName);
-        } else {
+        List<IComponent> neededComponents = RepositoryComponentManager.filterNeededComponents(item, store.seletetedNode, type);
 
-            // for database, file, webservices, saleforce ...
-            List<IComponent> neededComponents = TalendDndHelper.filterNeededComponents(item, store.seletetedNode, type);
-            List<String> comNameList = new ArrayList<String>();
-            for (IComponent com : neededComponents) {
-                comNameList.add(com.getName());
-            }
-            for (IDragAndDropServiceHandler handler : DragAndDropManager.getHandlers()) {
-                List<IComponent> comList = handler.filterNeededComponents(item, store.seletetedNode, type);
-                if (comList != null) {
-                    for (IComponent handlerComp : comList) {
-                        if (!comNameList.contains(handlerComp.getName())) {
-                            neededComponents.add(handlerComp);
-                        }
+        // for esb
+        for (IDragAndDropServiceHandler handler : DragAndDropManager.getHandlers()) {
+            List<IComponent> comList = handler.filterNeededComponents(item, store.seletetedNode, type);
+            if (comList != null) {
+                for (IComponent handlerComp : comList) {
+                    if (!neededComponents.contains(handlerComp)) {
+                        neededComponents.add(handlerComp);
                     }
                 }
             }
-            IComponent component = chooseOneComponent(neededComponents, name, quickCreateInput, quickCreateOutput);
-            store.component = component;
         }
-        store.componentName = name;
+        IComponent component = chooseOneComponent(neededComponents, rcSetting, quickCreateInput, quickCreateOutput);
+        store.component = component;
+        store.componentName = rcSetting;
     }
 
     /**

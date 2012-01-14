@@ -707,4 +707,17 @@
              title="%useProjectSetting">
        </page>
     </extension>
+    <extension
+          point="org.talend.core.runtime.repositoryComponent_provider">
+       <DragAndDropFilter
+             clazz="org.talend.designer.core.repository.XMLOutputRepositoryComponentDndFilter"
+             id="org.talend.designer.core.XMLOutputRepositoryComponentDndFilter"
+             name="XMLOutput Filter">
+       </DragAndDropFilter>
+       <DragAndDropFilter
+             clazz="org.talend.designer.core.repository.WebServiceRepositoryComponentDndFilter"
+             id="org.talend.designer.core.WebServiceRepositoryComponentDndFilter"
+             name="WebService Filter">
+       </DragAndDropFilter>
+    </extension>
 </plugin>

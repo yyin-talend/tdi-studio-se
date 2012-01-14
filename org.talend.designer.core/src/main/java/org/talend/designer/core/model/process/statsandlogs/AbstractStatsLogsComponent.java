@@ -186,6 +186,10 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         return false;
     }
 
+    public String getRepositoryType() {
+        return null;
+    }
+
     public List<? extends IElementParameter> createElementParameters(INode node) {
         List<IElementParameter> elemParamList = new ArrayList<IElementParameter>();
 

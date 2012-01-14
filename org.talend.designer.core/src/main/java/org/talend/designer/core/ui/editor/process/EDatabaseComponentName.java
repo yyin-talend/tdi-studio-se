@@ -46,6 +46,7 @@ import org.talend.core.model.utils.IComponentName;
  * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
+ * @deprecated use extension point in class RepositoryComponentManager
  */
 public enum EDatabaseComponentName implements IComponentName {
 

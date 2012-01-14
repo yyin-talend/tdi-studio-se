@@ -61,4 +61,7 @@ public abstract class AbstractComponent implements IComponent {
         this.paletteType = paletteType;
     }
 
+    public String getRepositoryType() {
+        return null;
+    }
 }

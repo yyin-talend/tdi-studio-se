@@ -21,5 +21,13 @@
             name="ELTMapSaveToEmfMigrationTask">
       </projecttask>
    </extension>
+   <extension
+         point="org.talend.core.runtime.repositoryComponent_provider">
+      <DragAndDropFilter
+            clazz="org.talend.designer.dbmap.ui.dnd.ETLMapRepositoryComponentDndFilter"
+            id="org.talend.designer.dbmap.ETLMapRepositoryComponentDndFilter"
+            name="ETL Map Filter">
+      </DragAndDropFilter>
+   </extension>
 
 </plugin>

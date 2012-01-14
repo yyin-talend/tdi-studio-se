@@ -591,4 +591,8 @@ public class JobContextLoadComponent implements IComponent {
         // TODO Auto-generated method stub
 
     }
+
+    public String getRepositoryType() {
+        return null;
+    }
 }

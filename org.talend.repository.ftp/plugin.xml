@@ -19,5 +19,15 @@
             name="Metadata/Create FTP">
       </Action>
    </extension>
+   <extension
+         point="org.talend.core.runtime.repositoryComponent_provider">
+      <RepositoryComponent
+            name="FTP"
+            type="FTP">
+         <Item
+               clazz="org.talend.core.model.properties.FTPConnectionItem">
+         </Item>
+      </RepositoryComponent>
+   </extension>
 
 </plugin>
