@@ -462,7 +462,7 @@ public class StatsAndLogsManager {
         String[] listItemsDisplayName = process.getElementParameter(EParameterName.DB_TYPE.getName()).getListItemsDisplayName();
         processDBType = listItemsDisplayName[indexOfItemFromList];
 
-        IElementParameter param = process.getElementParameter(EParameterName.FILENAME.getName());
+        IElementParameter param = process.getElementParameter(EParameterName.DBFILE.getName());
         final String empty = ""; //$NON-NLS-1$
         String processDBFileName = empty;
         if (param != null) {
