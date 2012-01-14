@@ -32,7 +32,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
  * set "USE_BATCH_SIZE" default value to "false" in tPostgresqlOutput, see issue tdi bug 16919.
  * 
  */
-public class ChangeDefaultValueTDIBug19299 extends AbstractJobMigrationTask {
+public class ChangeUseBatchSizeToFalseForDBOuput extends AbstractJobMigrationTask {
 
     /*
      * (non-Javadoc)
