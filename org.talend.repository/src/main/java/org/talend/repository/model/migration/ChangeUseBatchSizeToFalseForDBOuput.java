@@ -29,10 +29,10 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
 /**
- * set "USE_BATCH_SIZE" default value to "false" in tPostgresqlOutput, see issue tdi bug 16919.
+ * set "USE_BATCH_SIZE" default value to "false" in tDBOutput, see issue tdi bug 16919.
  * 
  */
-public class ChangeDefaultValueTDIBug19299 extends AbstractJobMigrationTask {
+public class ChangeUseBatchSizeToFalseForDBOuput extends AbstractJobMigrationTask {
 
     /*
      * (non-Javadoc)
@@ -46,7 +46,7 @@ public class ChangeDefaultValueTDIBug19299 extends AbstractJobMigrationTask {
         if (getProject().getLanguage() != ECodeLanguage.JAVA || processType == null) {
             return ExecutionResult.NOTHING_TO_DO;
         }
-        String[] componentsName = new String[] { "tPostgresqlOutput" };
+        String[] componentsName = new String[] { "tPostgresqlOutput","tDB2Output", "tMysqlOutput", "tNetezzaOutput", "tSybaseOutput"};
 
         try {
 

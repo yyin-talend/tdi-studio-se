@@ -1383,9 +1383,9 @@
         </projecttask>
         <projecttask
               beforeLogon="false"
-              class="org.talend.repository.model.migration.ChangeDefaultValueTDIBug19299"
-              id="org.talend.repository.model.migration.ChangeDefaultValueTDIBug19299"
-              name="set default value of USE_BATCH_SIZE of tPostgresqlOutput">
+              class="org.talend.repository.model.migration.ChangeUseBatchSizeToFalseForDBOuput"
+              id="org.talend.repository.model.migration.ChangeUseBatchSizeToFalseForDBOuput"
+              name="set default value from true to false of USE_BATCH_SIZE of tDBOutput in TDI-19299">
         </projecttask>
    </extension>
    
