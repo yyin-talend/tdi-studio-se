@@ -31,6 +31,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         List<Map<String, String>> modifyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MODIFYCONFIG__");
 %>
 		//////////////////////////
+		boolean encodingBase64 = false;
 <%
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {
@@ -49,6 +50,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());					
 %>
+		encodingBase64 = false;
 		String value_<%=column.getLabel() %>_<%=cid %> = "";
 <%					
 					if(!isPrimitive) {
@@ -134,6 +136,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					separator = line.get("SEPARATOR");
 					isBinary = "true".equals(line.get("BINARY"));
 					isBase64 = "true".equals(line.get("BASE64"));
+					// Binary content --> always Base64 encoded
+					// Explicit base64 encoding : base64 checkbox checked for this column
+					if(isBinary || isBase64){
+						%>
+						// Convert binary or Base64 value to Base64 encoded string				
+						encodingBase64 = true;
+						<%	
+					}
 					break;
 				}
 		}	
@@ -147,11 +157,52 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	<%if(isMultiValue){%>		
 		String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
 		for(String item_<%=cid %> : values_<%=column.getLabel() %>_<%=cid %>){
-			util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + item_<%=cid %>, wrap_<%=cid %>);
+			<%
+			// Not binary and no explicit base64 encoding --> check if base 64 encoding needed
+			if(!isBinary && !isBase64){
+				%>
+				// If content doesn't follow LDIF rules, it must be base64 encoded
+				if(!netscape.ldap.util.LDIF.isPrintable(item_<%=cid %>.getBytes())){
+					encodingBase64 = true;
+				}
+				else{
+					encodingBase64 = false;
+				}
+				<%
+			}
+			%>
+			// Add ":" to comply with base64 ldif syntax
+			if(encodingBase64){
+				item_<%=cid %> = org.apache.commons.codec.binary.Base64.encodeBase64String(item_<%=cid %>.getBytes());
+				util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + item_<%=cid %>, wrap_<%=cid %>);
+			}
+			else{
+				util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+			}
 		}				
-	<%}else{%>
-		util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>); 
-	<%}%>
+<%
+	}else{
+		// Not binary and no explicit base64 encoding --> check if base 64 encoding needed
+		if(!isBinary && !isBase64){
+%>
+			// If content doesn't follow LDIF rules, it must be base64 encoded
+			if(!netscape.ldap.util.LDIF.isPrintable(value_<%=column.getLabel() %>_<%=cid %>.getBytes())){
+				encodingBase64 = true;
+			}
+			<%
+		}
+		%>
+		// Add ":" to comply with base64 ldif syntax
+		if(encodingBase64){
+			value_<%=column.getLabel() %>_<%=cid %> = org.apache.commons.codec.binary.Base64.encodeBase64String(value_<%=column.getLabel() %>_<%=cid %>.getBytes());
+			util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+		}
+		else {
+			util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+		}
+<%
+	}
+%>
 	needSeparator_<%=cid %> = true;
 	canOutput_<%=cid %> = true;   	
 <%}
@@ -173,6 +224,14 @@ sb_<%=cid %>.append("-\n");
 					separator = line.get("SEPARATOR");
 					isBinary = "true".equals(line.get("BINARY"));
 					isBase64 = "true".equals(line.get("BASE64"));
+					// Binary content --> always Base64 encoded
+					// Explicit base64 encoding : base64 checkbox checked for this column
+					if(isBinary || isBase64){
+						%>
+						// Convert binary or Base64 value to Base64 encoded string				
+						encodingBase64 = true;
+						<%	
+					}
 					break;
 				}
 		}
@@ -180,12 +239,54 @@ sb_<%=cid %>.append("-\n");
 	<%if(isMultiValue){%>
 		String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
 		for(String item_<%=cid %> : values_<%=column.getLabel() %>_<%=cid %>){
-			util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + item_<%=cid %>, wrap_<%=cid %>);
-		}				
-	<%}else{%>
-		util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-	<%}%>
-	canOutput_<%=cid %> = true;
+				<%
+				// Not binary and no explicit base64 encoding --> check if base 64 encoding needed
+				if(!isBinary && !isBase64){
+					%>
+					// If content doesn't follow LDIF rules, it must be base64 encoded
+					if(!netscape.ldap.util.LDIF.isPrintable(item_<%=cid %>.getBytes())){
+						encodingBase64 = true;
+					}
+					else{
+						encodingBase64 = false;
+					}
+					<%
+				}
+				%>
+				// Add ":" to comply with base64 ldif syntax
+				if(encodingBase64){
+					item_<%=cid %> = org.apache.commons.codec.binary.Base64.encodeBase64String(item_<%=cid %>.getBytes());
+					util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%>" + item_<%=cid %>, wrap_<%=cid %>);
+				}
+				else{
+					util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+				}
+		}
+<%
+	}else{
+				// Not binary and no explicit base64 encoding --> check if base 64 encoding needed
+				if(!isBinary && !isBase64){
+%>
+					// If content doesn't follow LDIF rules, it must be base64 encoded
+					if(!netscape.ldap.util.LDIF.isPrintable(value_<%=column.getLabel() %>_<%=cid %>.getBytes())){
+						encodingBase64 = true;
+					}
+				<%
+				}
+			%>
+			// Add ":" to comply with base64 ldif syntax
+			if(encodingBase64){
+				value_<%=column.getLabel() %>_<%=cid %> = org.apache.commons.codec.binary.Base64.encodeBase64String(value_<%=column.getLabel() %>_<%=cid %>.getBytes());
+				util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+			}
+			else{
+				util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+			}
+
+<%
+	}
+%>
+		canOutput_<%=cid %> = true;
 <%
 }// here end the if add
 %>

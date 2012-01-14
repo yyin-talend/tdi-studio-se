@@ -92,7 +92,14 @@
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
-
+    
+    <PARAMETER NAME="TEXTENCODING" FIELD="TABLE" REQUIRED="false"	NUM_ROW="44" NB_LINES="3" >
+		<ITEMS BASED_ON_SCHEMA="true">				
+				<ITEM NAME="BINARY" FIELD="CHECK" />
+				<ITEM NAME="BASE64" FIELD="CHECK" />
+			</ITEMS>
+		</PARAMETER>		
+    
   </PARAMETERS>
   
   <ADVANCED_PARAMETERS>
