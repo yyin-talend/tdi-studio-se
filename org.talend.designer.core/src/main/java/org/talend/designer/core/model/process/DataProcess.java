@@ -154,6 +154,14 @@ public class DataProcess {
         for (IElementParameter sourceParam : sourceElement.getElementParameters()) {
             IElementParameter targetParam = targetElement.getElementParameter(sourceParam.getName());
             if (targetParam != null) {
+
+                if (sourceParam.getName().equals(EParameterName.DB_TYPE.getName())
+                        && sourceParam.getValue().toString().matches("^.*[a|A][c|C][c|C][e|E][s|S][s|S].*$")) {
+
+                    sourceElement.getElementParameter(EParameterName.DBNAME.getName()).setValue(
+                            sourceElement.getElementParameter(EParameterName.DBFILE.getName()).getValue());
+                }
+
                 targetParam.setContextMode(sourceParam.isContextMode());
                 targetParam.setValue(sourceParam.getValue());
                 if (targetParam.getFieldType() == EParameterFieldType.TABLE) {
