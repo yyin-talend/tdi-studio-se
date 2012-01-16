@@ -404,7 +404,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
         	            throw new IllegalArgumentException("Text Enclosure must be assigned a char."); 
         	        }
 
-        			if(("\\\\").equals(strEscape)){
+        			if(("\\").equals(strEscape)){
         				this.escape = com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH;
         			}else if(strEscape.equals(strTextEnclosure)){
         				this.escape = com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED;
