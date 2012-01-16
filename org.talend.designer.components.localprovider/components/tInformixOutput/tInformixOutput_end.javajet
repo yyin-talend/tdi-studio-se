@@ -32,13 +32,7 @@ imports="
         IConnection rejectConn = rejectConns.get(0);
         rejectConnName = rejectConn.getName();
     }
-	
-    if(useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
-        %>
-        conn_<%=cid%>.commit();
-        <%
-    }
-    
+
     if(("INSERT_OR_UPDATE").equals(dataAction)) {
         %>
         if(pstmtUpdate_<%=cid%> != null){
@@ -118,8 +112,11 @@ imports="
  
     <%
     }   
+if(useTransaction && !("").equals(commitEvery)&&!("0").equals(commitEvery)){
     %>
-<%
+        conn_<%=cid%>.commit();
+    <%
+}
 if (!useExistingConnection) {
 	%>
 	conn_<%=cid%> .close();
