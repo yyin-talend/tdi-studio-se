@@ -62,6 +62,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.components.Expression;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
@@ -658,4 +659,9 @@ public class DesignerCoreService implements IDesignerCoreService {
     public PaletteRoot createEmptyPalette() {
         return TalendEditorPaletteFactory.createEmptyPalette();
     }
+
+    public boolean evaluate(final String string, List<? extends IElementParameter> listParam) {
+        return Expression.evaluate(string, listParam);
+    }
+
 }
