@@ -204,7 +204,8 @@ public class LoginDialog extends TrayDialog {
         stackLayout.topControl = tosLoginComposite;
         base.layout();
         Project[] projectCollection = tosLoginComposite.readProject();
-        Map<String, String> convertorMapper = tosLoginComposite.getConvertorMappper();
+
+        Map<String, String> convertorMapper = tosLoginComposite.getConvertorMapper();
 
         for (int i = 0; i < projectCollection.length; i++) {
 

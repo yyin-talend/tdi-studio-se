@@ -734,7 +734,7 @@ public class TOSLoginComposite extends Composite {
         return projectsMap;
     }
 
-    public Map<String, String> getConvertorMappper() {
+    public Map<String, String> getConvertorMapper() {
 
         return this.convertorMapper;
 
