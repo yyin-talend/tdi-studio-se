@@ -50,7 +50,7 @@ imports="
 		
 		//out put
 		for(IConnection conn:conns){
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 		 		String firstConnName = conn.getName();
 		 		
 		 		if ("Text".equals(msgBobyType) || "Bytes".equals(msgBobyType)) {
@@ -114,7 +114,7 @@ imports="
 		String queue = ElementParameterParser.getValue(node, "__QUEUE__");
 
 		for(IConnection conn:conns){
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 	 			String firstConnName = conn.getName();
 		 		if ("Text".equals(msgBobyType) || "Bytes".equals(msgBobyType)) {
 				%>
