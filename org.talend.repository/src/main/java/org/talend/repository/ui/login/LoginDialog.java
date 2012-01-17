@@ -13,6 +13,8 @@
 package org.talend.repository.ui.login;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -22,6 +24,7 @@ import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.PaintEvent;
@@ -201,21 +204,29 @@ public class LoginDialog extends TrayDialog {
         stackLayout.topControl = tosLoginComposite;
         base.layout();
         Project[] projectCollection = tosLoginComposite.readProject();
-        for (int i = 0; i < projectCollection.length; i++) {
-            tosLoginComposite.getProjectList().add(projectCollection[i].getLabel());
-            tosLoginComposite.getProjectMap().put(projectCollection[i].getLabel().toUpperCase(), projectCollection[i]);
-            tosLoginComposite.getConvertorMap().put(projectCollection[i].getLabel().toUpperCase(),
-                    projectCollection[i].getLabel());
+        Map<String, String> convertorMapper = tosLoginComposite.getConvertorMappper();
 
-            try {
-                tosLoginComposite.setStatusArea();
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
+        for (int i = 0; i < projectCollection.length; i++) {
+
+            tosLoginComposite.getProjectMap().put(projectCollection[i].getLabel().toUpperCase(), projectCollection[i]);
+            convertorMapper.put(projectCollection[i].getLabel().toUpperCase(), projectCollection[i].getLabel());
+
         }
-        if (tosLoginComposite.getProjectList().getItemCount() > 0) {
-            tosLoginComposite.getProjectList().select(0);
+
+        ListViewer projectListViewer = tosLoginComposite.getProjectListViewer();
+        projectListViewer.setInput(new ArrayList(convertorMapper.values()));
+
+        try {
+            tosLoginComposite.setStatusArea();
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+
+        if (projectListViewer.getList().getItemCount() > 0) {
+
+            projectListViewer.getList().select(0);
             tosLoginComposite.enableOpenAndDelete(true);
+
         }
     }
 

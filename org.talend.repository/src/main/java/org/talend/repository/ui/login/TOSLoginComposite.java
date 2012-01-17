@@ -14,7 +14,6 @@ package org.talend.repository.ui.login;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +24,10 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -36,6 +39,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -46,7 +50,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Form;
@@ -71,6 +74,7 @@ import org.talend.repository.ui.actions.importproject.ImportDemoProjectAction;
 import org.talend.repository.ui.actions.importproject.ImportProjectAsAction;
 import org.talend.repository.ui.actions.importproject.SelectDeleteProjectDialog;
 import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
+import org.talend.repository.ui.wizards.metadata.connection.wsdl.TableViewerContentProvider;
 import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
 
 /**
@@ -90,7 +94,7 @@ public class TOSLoginComposite extends Composite {
 
     private Composite tosActionComposite;
 
-    private List projectList;
+    private ListViewer projectListViewer;
 
     private Button openButton;
 
@@ -356,13 +360,51 @@ public class TOSLoginComposite extends Composite {
         openButton.setLayoutData(data);
         openButton.setImage(OPEN_IMAGE);
 
-        projectList = new List(tosActionComposite, SWT.BORDER | SWT.V_SCROLL);
+        Composite projectListViewerContainer = new Composite(tosActionComposite, SWT.NONE);
+        projectListViewerContainer.setLayout(new FillLayout());
+        this.projectListViewer = new ListViewer(projectListViewerContainer);
+        this.projectListViewer.setContentProvider(new TableViewerContentProvider());
+        this.projectListViewer.setLabelProvider(new ILabelProvider() {
+
+            public void removeListener(ILabelProviderListener listener) {
+            }
+
+            public boolean isLabelProperty(Object element, String property) {
+
+                return false;
+
+            }
+
+            public void dispose() {
+            }
+
+            public void addListener(ILabelProviderListener listener) {
+            }
+
+            public String getText(Object element) {
+
+                if (element != null) {
+
+                    return element.toString();
+                }
+
+                return null;
+            }
+
+            public Image getImage(Object element) {
+
+                return null;
+
+            }
+        });
+        this.projectListViewer.setSorter(new ViewerSorter());
+
         data = new FormData();
         data.top = new FormAttachment(projectLabel, 0, SWT.TOP);
         data.left = new FormAttachment(projectLabel, 10, SWT.RIGHT);
         data.right = new FormAttachment(openButton, -10, SWT.LEFT);
         data.bottom = new FormAttachment(0, 100);
-        projectList.setLayoutData(data);
+        projectListViewerContainer.setLayoutData(data);
 
         deleteButton = toolkit.createButton(tosActionComposite, null, SWT.PUSH);
         data = new FormData();
@@ -375,9 +417,9 @@ public class TOSLoginComposite extends Composite {
 
         createButton = toolkit.createButton(tosActionComposite, null, SWT.PUSH);
         data = new FormData();
-        data.top = new FormAttachment(projectList, 10, SWT.BOTTOM);
-        data.left = new FormAttachment(projectList, 0, SWT.LEFT);
-        data.right = new FormAttachment(projectList, 65, SWT.LEFT);
+        data.top = new FormAttachment(projectListViewerContainer, 10, SWT.BOTTOM);
+        data.left = new FormAttachment(projectListViewerContainer, 0, SWT.LEFT);
+        data.right = new FormAttachment(projectListViewerContainer, 65, SWT.LEFT);
 
         createButton.setText(Messages.getString("TOSLoginComposite.createButton"));
         createButton.setLayoutData(data);
@@ -495,12 +537,13 @@ public class TOSLoginComposite extends Composite {
                                     projectsMap.remove(p.getName());
                                     String name = convertorMapper.get(p.getName());
                                     if (name != null) {
-                                        projectList.remove(name);
+                                        convertorMapper.remove(p.getName());
+                                        TOSLoginComposite.this.projectListViewer.getList().remove(name);
                                     }
-                                    if (projectList.getItemCount() == 0) {
+                                    if (TOSLoginComposite.this.projectListViewer.getList().getItemCount() == 0) {
                                         enableOpenAndDelete(false);
-                                    } else if (projectList.getSelection().length == 0) {
-                                        projectList.select(0);
+                                    } else if (TOSLoginComposite.this.projectListViewer.getSelection().isEmpty()) {
+                                        TOSLoginComposite.this.projectListViewer.getList().select(0);
                                     }
                                     try {
                                         setStatusArea();
@@ -532,12 +575,12 @@ public class TOSLoginComposite extends Composite {
                         e1.printStackTrace();
                     }
                     if (!projectsMap.containsKey(newProject.toUpperCase())) {
+
                         for (int i = 0; i < projects.length; i++) {
                             if (projects[i].getLabel().toUpperCase().equals(newProject.toUpperCase())) {
                                 projectsMap.put(newProject.toUpperCase(), projects[i]);
                                 convertorMapper.put(newProject.toUpperCase(), newProject);
-                                projectList.add(convertorMapper.get(newProject.toUpperCase()));
-                                sortProjects();
+
                                 enableOpenAndDelete(true);
                                 try {
                                     setStatusArea();
@@ -546,6 +589,8 @@ public class TOSLoginComposite extends Composite {
                                 }
                             }
                         }
+
+                        TOSLoginComposite.this.projectListViewer.setInput(new ArrayList(convertorMapper.values()));
                     }
                 }
                 try {
@@ -619,8 +664,8 @@ public class TOSLoginComposite extends Composite {
             public void widgetSelected(SelectionEvent e) {
                 Context ctx = CorePlugin.getContext();
                 ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, loginComposite.getRepositoryContext());
-                if (projectList.getSelectionCount() > 0) {
-                    String selection = projectList.getSelection()[0];
+                if (!TOSLoginComposite.this.projectListViewer.getSelection().isEmpty()) {
+                    String selection = TOSLoginComposite.this.projectListViewer.getList().getSelection()[0];
                     if (selection != null && !selection.equals("")) {
                         Project project = (Project) projectsMap.get(selection.toUpperCase());
                         boolean flag = dialog.logIn(project);
@@ -653,17 +698,18 @@ public class TOSLoginComposite extends Composite {
             ExceptionHandler.process(e1);
         }
 
-        projectList.removeAll();
+        this.projectListViewer.getList().removeAll();
+
         projectsMap.clear();
         if (projects != null) {
             for (int i = 0; i < projects.length; i++) {
                 Project pro = projects[i];
                 convertorMapper.put(pro.getTechnicalLabel(), pro.getLabel());
-                projectList.add(convertorMapper.get(pro.getTechnicalLabel()));
                 projectsMap.put(pro.getTechnicalLabel(), pro);
-                sortProjects();
                 enableOpenAndDelete(true);
             }
+
+            this.projectListViewer.setInput(new ArrayList(convertorMapper.values()));
         }
 
         try {
@@ -678,16 +724,20 @@ public class TOSLoginComposite extends Composite {
         return filePath;
     }
 
-    public List getProjectList() {
-        return projectList;
+    public ListViewer getProjectListViewer() {
+
+        return this.projectListViewer;
+
     }
 
     public Map getProjectMap() {
         return projectsMap;
     }
 
-    public Map<String, String> getConvertorMap() {
-        return convertorMapper;
+    public Map<String, String> getConvertorMappper() {
+
+        return this.convertorMapper;
+
     }
 
     public void setStatusArea() throws PersistenceException {
@@ -720,7 +770,7 @@ public class TOSLoginComposite extends Composite {
                 statusLabel.setForeground(WHITE_COLOR);
                 Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.BOLD);// Arial courier
                 statusLabel.setFont(font);
-            } else if (projectList.getItemCount() > 0) {
+            } else if (this.projectListViewer.getList().getItemCount() > 0) {
                 iconLabel.setImage(LOGIN_CORRECT_IMAGE);
                 onIconLabel.setImage(LOGIN_CORRECT_IMAGE);
                 colorComposite.setBackground(YELLOW_GREEN_COLOR);
@@ -748,40 +798,5 @@ public class TOSLoginComposite extends Composite {
     public void enableOpenAndDelete(boolean enable) {
         openButton.setEnabled(enable);
         deleteButton.setEnabled(enable);
-    }
-
-    private void selectLast(String lastObjectSelected, List projectList) {
-        if (lastObjectSelected != null) {
-            int userIndex = -1;
-            String[] items = projectList.getItems();
-            for (int i = 0; userIndex == -1 && i < items.length; i++) {
-                if (lastObjectSelected.equals(items[i])) {
-                    userIndex = i;
-                }
-            }
-            if (userIndex != -1) {
-                projectList.select(userIndex);
-            } else {
-                projectList.select(0);
-            }
-        }
-
-    }
-
-    private void sortProjects() {
-        if (projectList.getItemCount() == 0) {
-            return;
-        }
-        String[] items = projectList.getItems();
-        String selected = null;
-        String[] selection = projectList.getSelection();
-        if (selection != null && selection.length != 0) {
-            selected = selection[0];
-        } else {
-            selected = projectList.getItem(0);
-        }
-        Arrays.sort(items);
-        projectList.setItems(items);
-        selectLast(selected, projectList);
     }
 }
