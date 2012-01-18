@@ -948,9 +948,13 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                     if (param.isReadOnly()
                             && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName().equals(
                                     EParameterName.VERSION.getName()))) {
-                        continue; // if the parameter is read only, don't load
-                        // it (this will prevent to overwrite the
-                        // value)
+                        if (!((elemParam instanceof Node) && ((Node) elemParam).isHL7Output() && param.getName().equals(
+                                EParameterName.SCHEMA_TYPE.getName()))) {
+                            continue;
+                            // if the parameter is read only, don't load
+                            // it (this will prevent to overwrite the
+                            // value)
+                        }
                     }
                     String value = pType.getValue();
                     if (param.getFieldType().equals(EParameterFieldType.CHECK)
