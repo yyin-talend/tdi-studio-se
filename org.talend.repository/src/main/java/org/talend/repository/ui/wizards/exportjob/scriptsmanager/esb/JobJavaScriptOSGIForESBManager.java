@@ -78,9 +78,8 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsM
  */
 public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
-	public JobJavaScriptOSGIForESBManager(
-			Map<ExportChoice, Object> exportChoiceMap, String contextName,
-			String launcher, int statisticPort, int tracePort) {
+	public JobJavaScriptOSGIForESBManager(Map<ExportChoice, Object> exportChoiceMap,
+			String contextName, String launcher, int statisticPort, int tracePort) {
 		super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
 	}
 
@@ -92,8 +91,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
 	private static final String JOB = "job";
 
-	private static Logger logger = Logger
-			.getLogger(JobJavaScriptOSGIForESBManager.class);
+	private static Logger logger = Logger.getLogger(JobJavaScriptOSGIForESBManager.class);
 
 	private static final String BLUEPRINT = "blueprint"; //$NON-NLS-1$
 
@@ -107,14 +105,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
 	private String itemType = null;
 
-	public List<ExportFileResource> getExportResources(
-			ExportFileResource[] process, String... codeOptions)
-			throws ProcessorException {
+	public List<ExportFileResource> getExportResources(ExportFileResource[] process,
+			String... codeOptions) throws ProcessorException {
 		List<ExportFileResource> list = new ArrayList<ExportFileResource>();
 
 		boolean needJob = true;
-		ExportFileResource libResource = new ExportFileResource(null,
-				LIBRARY_FOLDER_NAME); //$NON-NLS-1$
+		ExportFileResource libResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME); //$NON-NLS-1$
 		ExportFileResource osgiResource = getOsgiResource();
 		ExportFileResource jobScriptResource = new ExportFileResource(null, ""); //$NON-NLS-1$
 
@@ -372,8 +368,22 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 		for (Object o : processType.getNode()) {
 			if (o instanceof NodeType) {
 				String componentName = ((NodeType) o).getComponentName();
-				if ("tESBRProviderRequest".equals(componentName)
+				if ("tESBProviderRequest".equals(componentName)
 						|| "tESBConsumer".equals(componentName)) {
+					result = true;
+					break;
+				}
+			}
+		}
+		return result;
+	}
+	private boolean isESBProviderJob(ProcessItem processItem) {
+		boolean result = false;
+		ProcessType processType = processItem.getProcess();
+		for (Object o : processType.getNode()) {
+			if (o instanceof NodeType) {
+				String componentName = ((NodeType) o).getComponentName();
+				if ("tESBProviderRequest".equals(componentName)) {
 					result = true;
 					break;
 				}
@@ -607,9 +617,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 		}
 
 		FileReader fr = null;
-		String additionalJobIF = "<value>routines.system.api.TalendESBJob</value>";
-		if (!isESBJob) {
-			additionalJobIF = "";
+		String additionalJobInterfaces = "<value>routines.system.api.TalendESBJob</value>";
+		String additionalServiceProps = "";
+		if (isESBJob) {
+			if (isESBProviderJob((ProcessItem) processItem)) {
+				additionalJobInterfaces += "\n\t\t\t<value>routines.system.api.TalendESBJobFactory</value>";
+				additionalServiceProps = "<entry key=\"multithreading\" value=\"true\" />";
+			}
+		} else {
+			additionalJobInterfaces = "";
 		}
 		try {
 			fr = new FileReader(inputFile);
@@ -621,7 +637,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 			String line = br.readLine();
 			while (line != null) {
 				line = line
-						.replace("@JOBNAME@", jobName).replace("@TYPE@", itemType).replace("@JOBCLASSNAME@", jobClassName).replace("@ADDITIONAL_JOB_INTERFACE@", additionalJobIF); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+						.replace("@JOBNAME@", jobName) //$NON-NLS-1$
+						.replace("@TYPE@", itemType) //$NON-NLS-1$
+						.replace("@JOBCLASSNAME@", jobClassName) //$NON-NLS-1$
+						.replace("@ADDITIONAL_JOB_INTERFACE@", additionalJobInterfaces) //$NON-NLS-1$
+						.replace("@ADDITIONAL_SERVICE_PROPERTIES@", additionalServiceProps); //$NON-NLS-1$
 
 				if (hasSL) {
 					line = line
@@ -671,9 +691,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 			String outputFile, String jobName, String jobClassName,
 			String itemType, boolean isESBJob) {
 		FileReader fr = null;
-		String additionalJobIF = "<value>routines.system.api.TalendESBJob</value>";
+		String additionalServiceProps = "";
+		String additionalJobInterfaces = "<value>routines.system.api.TalendESBJob</value>";
 		if (!isESBJob) {
-			additionalJobIF = "";
+			additionalJobInterfaces = "";
 		}
 		try {
 			fr = new FileReader(inputFile);
@@ -685,7 +706,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 			String line = br.readLine();
 			while (line != null) {
 				line = line
-						.replace("@JOBNAME@", jobName).replace("@TYPE@", itemType).replace("@JOBCLASSNAME@", jobClassName).replace("@ADDITIONAL_JOB_INTERFACE@", additionalJobIF); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+						.replace("@JOBNAME@", jobName) //$NON-NLS-1$
+						.replace("@TYPE@", itemType) //$NON-NLS-1$
+						.replace("@JOBCLASSNAME@", jobClassName) //$NON-NLS-1$
+						.replace("@ADDITIONAL_JOB_INTERFACE@", additionalJobInterfaces) //$NON-NLS-1$
+						.replace("@ADDITIONAL_SERVICE_PROPERTIES@", additionalServiceProps); //$NON-NLS-1$
 				bw.write(line + "\n"); //$NON-NLS-1$
 				line = br.readLine();
 			}

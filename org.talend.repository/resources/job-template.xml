@@ -8,11 +8,12 @@
 	<service ref="job">
 		<interfaces>
 			<value>routines.system.api.TalendJob</value>
-	 		@ADDITIONAL_JOB_INTERFACE@
+			@ADDITIONAL_JOB_INTERFACE@
 		</interfaces>
 		<service-properties>
 			<entry key="name" value="@JOBNAME@" />
 			<entry key="type" value="@TYPE@" />
+			@ADDITIONAL_SERVICE_PROPERTIES@
 		</service-properties>
 	</service>
 
