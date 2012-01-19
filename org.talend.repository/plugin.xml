@@ -1317,6 +1317,13 @@
       </projecttask>
       <projecttask
             beforeLogon="false"
+            class="org.talend.repository.model.migration.RenameSchemaParameterForMSSqlConnectionMigrationTask"
+            description="Rename mssqlconnection schema parameter for bug TDI-19375 "
+            id="org.talend.repository.model.migration.RenameSchemaParameterForMSSqlConnectionMigrationTask"
+            name="Rename mssqlconnection schema parameter">
+      </projecttask>
+      <projecttask
+            beforeLogon="false"
             class="org.talend.repository.model.migration.AutoUpdateRelationsMigrationTask"
             description="This migration task should be run each time, not only first time after login."
             id="org.talend.repository.model.migration.AutoUpdateRelationsMigrationTask"

@@ -72,7 +72,7 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="DB_SCHEMA"
+      NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="3"
       REPOSITORY_VALUE="SCHEMA"
