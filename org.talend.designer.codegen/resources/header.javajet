@@ -94,13 +94,29 @@ import java.util.Comparator;
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %>
  */
 <%
-boolean talendEsbJob = !process.getNodesOfType("tESBProviderRequest").isEmpty() || !process.getNodesOfType("tESBConsumer").isEmpty();
+String talendJobInterfaces = "TalendJob";
+
 boolean talendMdmJob = !process.getNodesOfType("tMDMTriggerInput").isEmpty() || !process.getNodesOfType("tMDMTriggerOutput").isEmpty();
+boolean talendEsbJob = !process.getNodesOfType("tESBProviderRequest").isEmpty() || !process.getNodesOfType("tESBConsumer").isEmpty();
+boolean talendEsbJobFactory = !process.getNodesOfType("tESBProviderRequest").isEmpty();
 
-String talendJobInterfaceName = (talendEsbJob) ? ((talendMdmJob) ? "TalendESBJob, TalendMDMJob" : "TalendESBJob") : ((talendMdmJob) ? "TalendMDMJob" : "TalendJob");
-
+if (talendMdmJob) {
+	talendJobInterfaces += ", TalendMDMJob"; // Talend MDM job
+}
+if (talendEsbJob) {
+	talendJobInterfaces += ", TalendESBJob"; // Talend ESB job
+}
+if (talendEsbJobFactory) {
+	talendJobInterfaces += ", TalendESBJobFactory"; // Talend ESB provider job
+}
 %>
-public class <%=process.getName()%> implements <%=talendJobInterfaceName%> {
+public class <%=process.getName()%> implements <%=talendJobInterfaces%> {
+
+<% if (talendEsbJobFactory) { %>
+	public TalendESBJob newTalendESBJob() {
+		return new <%=process.getName()%>();
+	}
+<% } %>
 
 	public final Object obj = new Object();
 
@@ -449,7 +465,7 @@ private class TalendException extends Exception {
 						%>
 						try {
 							<%if (stats) {%>
-								if(this.execStat){    	
+								if(this.execStat){
 						    		runStat.updateStatOnConnection("<%=conn.getUniqueName() %>", 0, "error");
 								}
 							<%}%>
@@ -458,7 +474,7 @@ private class TalendException extends Exception {
 								%>
 								((java.util.Map)threadLocal.get()).put("errorCode", null);
 								((java.util.Map)threadLocal.get()).put("status", "failure");
-								<%=conn.getTarget().getUniqueName() %>Process(globalMap);								
+								<%=conn.getTarget().getUniqueName() %>Process(globalMap);
 								<%
 							} else {
 								%>
@@ -524,7 +540,7 @@ resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThrea
 %>
 				try {
 					<%if (stats) {%>
-						if(this.execStat){    	
+						if(this.execStat){
 				    		runStat.updateStatOnConnection("<%=conn.getUniqueName() %>", 0, "error");
 						}
 					<%}%>
@@ -533,7 +549,7 @@ resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThrea
 %>
 					((java.util.Map)threadLocal.get()).put("errorCode", null);
 					((java.util.Map)threadLocal.get()).put("status", "failure");
-					<%=conn.getTarget().getUniqueName() %>Process(globalMap);					
+					<%=conn.getTarget().getUniqueName() %>Process(globalMap);
 <%
 					} else {
 %>
