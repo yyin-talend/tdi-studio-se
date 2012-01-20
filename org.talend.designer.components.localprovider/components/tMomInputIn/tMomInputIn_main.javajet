@@ -35,6 +35,10 @@ imports="
 	
 	boolean getMQMDField =  ("true").equals(ElementParameterParser.getValue(node, "__GET_MQMD_FIELDS__"));
 	List<Map<String,String>> mqmdFields = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MQMD_FIELDS__");
+
+	boolean useMqHeader = "true".equals(ElementParameterParser.getValue(node, "__USE_MQ_HEADER__"));
+	boolean useMqRFH2 = "true".equals(ElementParameterParser.getValue(node, "__USE_MQRFH2__"));
+	List<Map<String,String>> mqrfh2FixedFields = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MQRFH2_FIXED_FIELD__");
 	
 	IMetadataTable metadata=null;
 	List<IMetadataColumn> columns = null;
@@ -145,8 +149,16 @@ imports="
 					<%=firstConnName%>.messageid=new String(inMessage<%=cid%>.messageId,"ISO-8859-15");	
 				<%
 				}
+				
+				if (useMqHeader && useMqRFH2) {
+					for(Map<String,String> field : mqrfh2FixedFields) {
+				%>
+				<%=firstConnName%>.<%=field.get("REFERENCE_COLUMN")%> = mqrfh2_<%=cid %>.get<%=field.get("MQMD_FIELD_NAME")%>();
+				<%
+					}
+				}
 			}
-		}
+		}// for
 	}
 	%>
 

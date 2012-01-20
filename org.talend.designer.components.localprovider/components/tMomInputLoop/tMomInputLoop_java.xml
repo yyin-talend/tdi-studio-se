@@ -119,7 +119,7 @@
 		  SHOW="false"
 		  >
 			<DEFAULT IF="(SERVER == 'JBOSS')">jbossall-client.jar</DEFAULT>
-			<DEFAULT IF="(SERVER == 'WEBSPHERE')">com.ibm.mq.jar;com.ibm.mqjms.jar;websphere-connector-1_5.jar</DEFAULT>
+			<DEFAULT IF="(SERVER == 'WEBSPHERE')">com.ibm.mq.jar;com.ibm.mqjms.jar;websphere-connector-1_5.jar;talendMQRFH2.jar</DEFAULT>
 			<DEFAULT IF="(SERVER == 'ACTIVEMQ')">activemq-all-5.1.0.jar</DEFAULT>
 		</PARAMETER>
 	
@@ -307,6 +307,26 @@
 				<ITEM NAME="DUPS_OK_ACKNOWLEDGE"   VALUE="DUPS_OK_ACKNOWLEDGE" />
 			</ITEMS>
 		</PARAMETER>
+		
+		<PARAMETER 
+		  NAME="USE_MQ_HEADER" 
+		  FIELD="CHECK" 
+		  NUM_ROW="40"
+	      REQUIRED="false" 
+	      SHOW_IF="(SERVER == 'WEBSPHERE')" 
+	      >
+	      	<DEFAULT>false</DEFAULT>
+	    </PARAMETER>
+
+		<PARAMETER 
+		  NAME="USE_MQRFH2" 
+		  FIELD="CHECK" 
+		  NUM_ROW="41"
+	      REQUIRED="false" 
+	      SHOW_IF="(USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
+	      >
+	      	<DEFAULT>true</DEFAULT>
+	    </PARAMETER>
 	    
 	</ADVANCED_PARAMETERS>
 	
@@ -326,6 +346,7 @@
 	        <IMPORT NAME="JAVA_SSIST" MODULE="javassist.jar" REQUIRED="true" /> 
 	        <IMPORT NAME="TROVE" MODULE="trove.jar" REQUIRED="true" />   
 	        <IMPORT NAME="LOG4J" MODULE="log4j-1.2.13.jar" REQUIRED="false" />
+	        <IMPORT NAME="TALENDMQRFH2" MODULE="talendMQRFH2.jar" REQUIRED="false" />
 	    </IMPORTS>
 	</CODEGENERATION>
 

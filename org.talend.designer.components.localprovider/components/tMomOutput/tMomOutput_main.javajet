@@ -34,7 +34,11 @@ class="MomInput"
 
 	boolean setMQMDField =  ("true").equals(ElementParameterParser.getValue(node, "__SET_MQMD_FIELDS__"));
 	List<Map<String,String>> mqmdFields = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MQMD_FIELDS__");
-		
+
+	boolean useMqHeader = "true".equals(ElementParameterParser.getValue(node, "__USE_MQ_HEADER__"));
+	boolean useMqRFH2 = "true".equals(ElementParameterParser.getValue(node, "__USE_MQRFH2__"));
+	List<Map<String,String>> mqrfh2FixedFields = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MQRFH2_FIXED_FIELD__");
+
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
@@ -171,6 +175,20 @@ class="MomInput"
 							message_<%=cid%>.<%=field.get("MQMD_FIELD_NAME")%> = <%=field.get("MQMD_FIELD_VALUE")%>;
 <%				
 						}
+					}
+					if (useMqHeader && useMqRFH2) {
+%>
+							org.talend.mq.headers.rfh2.MQRFH2 mqrfh2_<%=cid%> = new org.talend.mq.headers.rfh2.MQRFH2();
+							
+<%
+						for(Map<String,String> field : mqrfh2FixedFields) {
+%>
+							mqrfh2_<%=cid%>.set<%=field.get("MQMD_FIELD_NAME")%>(<%=field.get("VALUE")%>);
+<%
+						}
+%>
+							mqrfh2_<%=cid%>.toMessage(message_<%=cid%>);
+<%
 					}
 					
 					if ("Text".equals(msgBobyType)) {
