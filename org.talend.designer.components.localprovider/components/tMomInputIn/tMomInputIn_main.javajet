@@ -37,9 +37,18 @@ imports="
 	List<Map<String,String>> mqmdFields = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MQMD_FIELDS__");
 
 	boolean useMqHeader = "true".equals(ElementParameterParser.getValue(node, "__USE_MQ_HEADER__"));
-	boolean useMqRFH2 = "true".equals(ElementParameterParser.getValue(node, "__USE_MQRFH2__"));
+	boolean useFixedMqRFH2 = "true".equals(ElementParameterParser.getValue(node, "__USE_FIX_MQRFH2__"));
 	List<Map<String,String>> mqrfh2FixedFields = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MQRFH2_FIXED_FIELD__");
-	
+
+	boolean useMqRFH2_mcd = "true".equals(ElementParameterParser.getValue(node, "__USE_MQRFH2_MCD__"));
+	List<Map<String,String>> mqrfh2mcdFields = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MQRFH2_MCD_FIELD__");
+
+	boolean useMqRFH2_jms = "true".equals(ElementParameterParser.getValue(node, "__USE_MQRFH2_JMS__"));
+	List<Map<String,String>> mqrfh2jmsFields = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MQRFH2_JMS_FIELD__");
+
+	boolean useMqRFH2_usr = "true".equals(ElementParameterParser.getValue(node, "__USE_MQRFH2_USR__"));
+	List<Map<String,String>> mqrfh2usrFields = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MQRFH2_USR_FIELD__");
+
 	IMetadataTable metadata=null;
 	List<IMetadataColumn> columns = null;
 	List<IMetadataTable> metadatas = node.getMetadataList();
@@ -150,12 +159,69 @@ imports="
 				<%
 				}
 				
-				if (useMqHeader && useMqRFH2) {
-					for(Map<String,String> field : mqrfh2FixedFields) {
+				// extract the MQRFH2 header
+				if (useMqHeader) {
+					if (useFixedMqRFH2) {  // fix portion
+						for(Map<String,String> field : mqrfh2FixedFields) {
 				%>
 				<%=firstConnName%>.<%=field.get("REFERENCE_COLUMN")%> = mqrfh2_<%=cid %>.get<%=field.get("MQMD_FIELD_NAME")%>();
 				<%
+						}
 					}
+					if(useMqRFH2_mcd ) { // mcd folder
+%>
+				org.talend.mq.headers.rfh2.McdArea mcd_<%=cid %> = (org.talend.mq.headers.rfh2.McdArea)mqrfh2_<%=cid %>.getArea("mcd");
+				if(mcd_<%=cid %> != null) {
+<%
+						for(Map<String,String> field : mqrfh2mcdFields) {
+%>
+				<%=firstConnName%>.<%=field.get("REFERENCE_COLUMN")%> = mcd_<%=cid %>.get<%=field.get("MQMD_FIELD_NAME")%>();
+<%
+						}
+%>
+				}
+<%
+					}
+					if(useMqRFH2_jms ) { // jms folder
+%>
+				org.talend.mq.headers.rfh2.JmsArea jms_<%=cid %> = (org.talend.mq.headers.rfh2.JmsArea)mqrfh2_<%=cid %>.getArea("jms");
+				if (jms_<%=cid %> != null ) {
+<%
+						for(Map<String,String> field : mqrfh2jmsFields) {
+%>
+				<%=firstConnName%>.<%=field.get("REFERENCE_COLUMN")%> = jms_<%=cid %>.get<%=field.get("MQMD_FIELD_NAME")%>();
+<%
+						}
+%>
+				}
+<%
+					}
+					
+					if(useMqRFH2_usr ) { //usr folder
+%>
+				org.talend.mq.headers.rfh2.UsrArea usr_<%=cid %> = (org.talend.mq.headers.rfh2.UsrArea)mqrfh2_<%=cid %>.getArea("usr");
+				if (usr_<%=cid %> != null) {
+<%
+						for(Map<String,String> field : mqrfh2usrFields) {
+							for(IMetadataColumn column : columns) {
+								if(column.getLabel().equals(field.get("REFERENCE_COLUMN"))) {
+									String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), true);
+									if(typeToGenerate.equals("Integer")) {
+										typeToGenerate = "Int";
+									}
+%>
+					<%=firstConnName%>.<%=field.get("REFERENCE_COLUMN")%> = usr_<%=cid %>.get<%=typeToGenerate%>Property(<%=field.get("MQMD_FIELD_NAME")%>);
+<%
+									break;
+								}
+							}
+						}
+%>
+				
+				}
+<%
+					}
+					
 				}
 			}
 		}// for

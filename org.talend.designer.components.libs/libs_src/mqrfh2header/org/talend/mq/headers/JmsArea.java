@@ -8,6 +8,8 @@ public class JmsArea extends RFH2Area {
     private static final String KEY_CORRELATION_ID = "Cid";
     private static final String KEY_PRIORITY = "Pri";
     private static final String KEY_DELIVERY_MODE = "Dlv";
+    private static final String KEY_GROUP_ID = "Gid";
+    private static final String KEY_GROUP_SEQ = "Seq";
     
     public JmsArea() {
             super("jms");
@@ -98,6 +100,24 @@ public class JmsArea extends RFH2Area {
     protected boolean includeNullValueInToString() {
             return false;
     }
+    
+    public String getGroupId() {
+    	return (String)properties.get(KEY_GROUP_ID);
+    }
+    
+    public void setGroupId(String gid) {
+    	setProperty(KEY_GROUP_ID,gid);
+    }
+    
+    public int getGroupSeq() {
+    	return returnInt(KEY_GROUP_SEQ,0);
+    }
+    
+    public void setGroupSeq(int seq) {
+    	setProperty(KEY_GROUP_SEQ,Integer.toString(seq));
+    }
+    
+    
 
 
 }

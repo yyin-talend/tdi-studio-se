@@ -317,16 +317,6 @@
 	      >
 	      	<DEFAULT>false</DEFAULT>
 	    </PARAMETER>
-
-		<PARAMETER 
-		  NAME="USE_MQRFH2" 
-		  FIELD="CHECK" 
-		  NUM_ROW="41"
-	      REQUIRED="false" 
-	      SHOW_IF="(USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
-	      >
-	      	<DEFAULT>true</DEFAULT>
-	    </PARAMETER>
 	    
 	</ADVANCED_PARAMETERS>
 	

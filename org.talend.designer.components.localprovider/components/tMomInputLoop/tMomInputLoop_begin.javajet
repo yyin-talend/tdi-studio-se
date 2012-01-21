@@ -36,7 +36,6 @@ imports="
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
 	
 	boolean useMqHeader = "true".equals(ElementParameterParser.getValue(node, "__USE_MQ_HEADER__"));
-	boolean useMqRFH2 = "true".equals(ElementParameterParser.getValue(node, "__USE_MQRFH2__"));
     	
 	IMetadataTable metadata=null;
 	List<IMetadataColumn> columns = null;
@@ -310,7 +309,7 @@ imports="
 				%>
 				
 				<%
-				if (useMqHeader && useMqRFH2) {
+				if (useMqHeader) {
 				%>				
 				org.talend.mq.headers.rfh2.MQRFH2 mqrfh2_<%=cid %> = new org.talend.mq.headers.rfh2.MQRFH2(inMessage<%=cid %>);
 				

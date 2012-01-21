@@ -266,13 +266,13 @@
 	    </PARAMETER>
 
 		<PARAMETER 
-		  NAME="USE_MQRFH2" 
+		  NAME="USE_FIX_MQRFH2" 
 		  FIELD="CHECK" 
 		  NUM_ROW="91"
 	      REQUIRED="false" 
 	      SHOW_IF="(USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
 	      >
-	      	<DEFAULT>true</DEFAULT>
+	      	<DEFAULT>false</DEFAULT>
 	    </PARAMETER>
 	    	    
 	
@@ -281,7 +281,7 @@
 	      FIELD="TABLE"
 	      REQUIRED="false"
 	      NUM_ROW="92"
-	      SHOW_IF="(USE_MQ_HEADER == 'true') AND (USE_MQRFH2=='true') AND (SERVER == 'WEBSPHERE')"
+	      SHOW_IF="(USE_MQ_HEADER == 'true') AND (USE_FIX_MQRFH2=='true') AND (SERVER == 'WEBSPHERE')"
     	  >
 	      	<ITEMS>
 	        	<ITEM NAME="MQMD_FIELD_NAME" FIELD="CLOSED_LIST">
@@ -295,6 +295,94 @@
 					 	<ITEM NAME="NameValueCCSID" VALUE="NameValueCodedCharSetId"/>
 	          		</ITEMS>
 	        	</ITEM>
+	         	<ITEM NAME="REFERENCE_COLUMN" FIELD="COLUMN_LIST"/>
+	      	</ITEMS>
+	    </PARAMETER>
+
+		<PARAMETER 
+		  NAME="USE_MQRFH2_MCD" 
+		  FIELD="CHECK" 
+		  NUM_ROW="93"
+	      REQUIRED="false" 
+	      SHOW_IF="(USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
+	      >
+	      	<DEFAULT>false</DEFAULT>
+	    </PARAMETER>
+
+		<PARAMETER
+	      NAME="MQRFH2_MCD_FIELD"
+	      FIELD="TABLE"
+	      REQUIRED="false"
+	      NUM_ROW="94"
+	      SHOW_IF="(USE_MQ_HEADER == 'true') AND (USE_MQRFH2_MCD=='true') AND (SERVER == 'WEBSPHERE')"
+    	  >
+	      	<ITEMS>
+	        	<ITEM NAME="MQMD_FIELD_NAME" FIELD="CLOSED_LIST">
+			 		<ITEMS DEFAULT="Type">
+					 	<ITEM NAME="Type" VALUE="MessageType"/>
+					 	<ITEM NAME="Set" VALUE="MessageSet"/>
+					 	<ITEM NAME="Fmt" VALUE="OutputFormat"/>
+					 	<ITEM NAME="Msd" VALUE="MessageDomain"/>
+	          		</ITEMS>
+	        	</ITEM>
+	         	<ITEM NAME="REFERENCE_COLUMN" FIELD="COLUMN_LIST"/>
+	      	</ITEMS>
+	    </PARAMETER>
+
+		<PARAMETER 
+		  NAME="USE_MQRFH2_JMS" 
+		  FIELD="CHECK" 
+		  NUM_ROW="95"
+	      REQUIRED="false" 
+	      SHOW_IF="(USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
+	      >
+	      	<DEFAULT>false</DEFAULT>
+	    </PARAMETER>
+
+		<PARAMETER
+	      NAME="MQRFH2_JMS_FIELD"
+	      FIELD="TABLE"
+	      REQUIRED="false"
+	      NUM_ROW="96"
+	      SHOW_IF="(USE_MQ_HEADER == 'true') AND (USE_MQRFH2_JMS=='true') AND (SERVER == 'WEBSPHERE')"
+    	  >
+	      	<ITEMS>
+	        	<ITEM NAME="MQMD_FIELD_NAME" FIELD="CLOSED_LIST" >
+			 		<ITEMS DEFAULT="Destination">
+					 	<ITEM NAME="Dst" VALUE="Destination" />
+					 	<ITEM NAME="Exp" VALUE="Expiration" />
+					 	<ITEM NAME="Pri" VALUE="Priority" />
+					 	<ITEM NAME="Dlv" VALUE="DeliveryMode" />
+					 	<ITEM NAME="Cid" VALUE="CorrelationId" />
+					 	<ITEM NAME="Rto" VALUE="ReplyTo" />
+					 	<ITEM NAME="Tms" VALUE="Timestamp" />
+					 	<ITEM NAME="Gid" VALUE="GroupId" />
+					 	<ITEM NAME="Seq" VALUE="GroupSeq" />
+	          		</ITEMS>
+	        	</ITEM>
+	         	<ITEM NAME="REFERENCE_COLUMN" FIELD="COLUMN_LIST"/>
+	      	</ITEMS>
+	    </PARAMETER>
+
+		<PARAMETER 
+		  NAME="USE_MQRFH2_USR" 
+		  FIELD="CHECK" 
+		  NUM_ROW="97"
+	      REQUIRED="false" 
+	      SHOW_IF="(USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
+	      >
+	      	<DEFAULT>false</DEFAULT>
+	    </PARAMETER>
+
+		<PARAMETER
+	      NAME="MQRFH2_USR_FIELD"
+	      FIELD="TABLE"
+	      REQUIRED="false"
+	      NUM_ROW="98"
+	      SHOW_IF="(USE_MQ_HEADER == 'true') AND (USE_MQRFH2_USR=='true') AND (SERVER == 'WEBSPHERE')"
+    	  >
+	      	<ITEMS>
+	        	<ITEM NAME="MQMD_FIELD_NAME" FIELD="TEXT" />
 	         	<ITEM NAME="REFERENCE_COLUMN" FIELD="COLUMN_LIST"/>
 	      	</ITEMS>
 	    </PARAMETER>
