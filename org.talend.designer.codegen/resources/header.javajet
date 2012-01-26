@@ -86,6 +86,8 @@ import java.util.Comparator;
 	}
 %>
 
+@SuppressWarnings("unused")
+
 /**
  * Job: <%=process.getName() %> Purpose: <%=ElementParameterParser.getValue(process, "__PURPOSE__") %><br>
  * Description: <%=ElementParameterParser.getValue(process, "__DESCRIPTION__") %> <br>
@@ -148,6 +150,8 @@ if(isRunInMultiThread){
 	// create application properties with default
 	public class ContextProperties extends java.util.Properties {
 
+		private static final long serialVersionUID = 1L;
+	
 		public ContextProperties(java.util.Properties properties){
 			super(properties);
 		}
@@ -290,6 +294,9 @@ public Exception getException() {
 }
 
 private class TalendException extends Exception {
+
+	private static final long serialVersionUID = 1L;
+
 	private java.util.Map<String, Object> globalMap = null;
 	private Exception e = null;
 	private String currentComponent = null;
