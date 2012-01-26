@@ -776,6 +776,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 		return metaInfoResource;
 	}
 
+	@Override
+	public String getBundleVersion() {
+		return RepositoryPlugin.getDefault().getBundle().getVersion().toString();
+	}
+
 	protected Manifest getManifest(ExportFileResource libResource,
 			List<ProcessItem> itemToBeExport, String bundleName)
 			throws IOException {
