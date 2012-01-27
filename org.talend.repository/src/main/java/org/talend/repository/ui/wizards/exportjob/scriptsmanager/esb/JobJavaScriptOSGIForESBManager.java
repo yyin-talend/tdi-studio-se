@@ -57,6 +57,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
@@ -786,7 +787,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 		a.put(new Attributes.Name("Bundle-SymbolicName"), bundleName); //$NON-NLS-1$
 		a.put(new Attributes.Name("Bundle-Version"), getBundleVersion()); //$NON-NLS-1$
 		a.put(new Attributes.Name("Bundle-ManifestVersion"), "2"); //$NON-NLS-1$ //$NON-NLS-2$
-		a.put(new Attributes.Name("Created-By"), RepositoryPlugin.getDefault().getBundle().getVersion().toString());
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+		a.put(new Attributes.Name("Created-By"), brandingService.getFullProductName()+" ("+brandingService.getAcronym()+"_"+RepositoryPlugin.getDefault().getBundle().getVersion().toString()+")");
 		StringBuilder sb = new StringBuilder();
 		String delim = "";
 		for (ProcessItem pi : itemToBeExport) {
