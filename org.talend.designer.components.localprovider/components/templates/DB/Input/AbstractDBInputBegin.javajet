@@ -99,7 +99,26 @@ imports="
                 <% if((DynamicDatePattern!=null) && (!"".equals(DynamicDatePattern)) && (!"\"\"".equals(DynamicDatePattern))) {%>
                 	dcm_<%=cid%>.setFormat(<%=DynamicDatePattern%>);
                 <% } %>
-                	dcm_<%=cid%>.setLength(rsmd_<%=cid%>.getPrecision(i));
+<%
+		if (("oracle_id".equalsIgnoreCase(dbms))) {
+%>
+			if("LONG".equals(rsmd_<%=cid%>.getColumnTypeName(i).toUpperCase())) {
+				String length = MetadataTalendType.getDefaultDBTypes("oracle_id", "LONG", MetadataTalendType.DEFAULT_LENGTH);
+				if(length!=null && !("".equals(length))) {
+					dcm_<%=cid%>.setLength(Integer.parseInt(length));
+				} else {
+					dcm_<%=cid%>.setLength(rsmd_<%=cid%>.getPrecision(i));
+				}
+			} else {
+				dcm_<%=cid%>.setLength(rsmd_<%=cid%>.getPrecision(i));
+			}
+<%
+		} else {
+%>
+			dcm_<%=cid%>.setLength(rsmd_<%=cid%>.getPrecision(i));
+<%
+		}
+%>
                 	dcm_<%=cid%>.setPrecision(rsmd_<%=cid%>.getScale(i));
                 	dcm_<%=cid%>.setNullable(rsmd_<%=cid%>.isNullable(i) == 0 ? false : true);
                 	dcm_<%=cid%>.setKey(false);
