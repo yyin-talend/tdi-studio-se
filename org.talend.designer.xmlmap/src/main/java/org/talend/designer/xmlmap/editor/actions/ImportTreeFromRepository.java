@@ -270,6 +270,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                 if (service != null) {
                     boolean initConcepts = service.initConcepts(connection);
                     if (initConcepts) {
+                        String prefix = service.getXPathPrefixValue(selected);
                         String loopExpression = selected.getLoopExpression();
                         EList<ConceptTarget> conceptTargets = selected.getConceptTargets();
                         if (conceptTargets == null || loopExpression == null) {
@@ -278,7 +279,28 @@ public class ImportTreeFromRepository extends SelectionAction {
                         this.schemaTargets = conceptTargets;
                         List<FOXTreeNode> list = TreeUtil.getFoxTreeNodesForXmlMap(getTempTemplateXSDFile().getAbsolutePath(),
                                 loopExpression);
-                        prepareEmfTree(list, parentNode, null, loopExpression);
+                        TreeNode pNode = parentNode;
+                        if (MdmConceptType.RECEIVE.equals(selected.getConceptType())) {
+                            if (prefix != null) {
+                                String[] preValues = prefix.split(XmlMapUtil.XPATH_SEPARATOR);
+                                for (String value : preValues) {
+                                    if (!"".equals(value)) {
+                                        TreeNode createTreeNode = createModel();
+                                        createTreeNode.setName(value);
+                                        createTreeNode.setNodeType(NodeType.ELEMENT);
+                                        createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                                        createTreeNode.setXpath(XmlMapUtil.getXPath(pNode.getXpath(), createTreeNode.getName(),
+                                                createTreeNode.getNodeType()));
+                                        pNode.getChildren().add(createTreeNode);
+                                        pNode = createTreeNode;
+                                    }
+                                }
+                                loopExpression = prefix + loopExpression;
+                            }
+
+                        }
+
+                        prepareEmfTree(list, pNode, prefix, loopExpression);
                     }
                 }
             } else {
