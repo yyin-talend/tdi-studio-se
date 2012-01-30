@@ -113,20 +113,28 @@ class="MomInput"
 		String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
 		String qm=ElementParameterParser.getValue(node, "__QM__");
 		String queue = ElementParameterParser.getValue(node, "__QUEUE__");
+		boolean needSSLCipher = ("true").equals(ElementParameterParser.getValue(node,"__SET_MQ_SSL_CIPHER__"));
+		String sslCipher = ElementParameterParser.getValue(node, "__MQ_SSL_CIPHER__");
 %>
 	    props_<%=cid%>.put("hostname", <%=host%>);
 	    props_<%=cid%>.put("port", Integer.valueOf(<%=port%>));
 	    props_<%=cid%>.put("channel", <%=channel%>);
 	    props_<%=cid%>.put("CCSID", new Integer(1208));
 	    props_<%=cid%>.put("transport", "MQSeries");
-<%
-		if(!(dbuser == null) && !("\"\"").equals(dbuser) && !("").equals(dbuser)) {
-%>
-		props_<%=cid%>.put("userID",<%=dbuser%>);
-		props_<%=cid%>.put("password",<%=dbpwd%>);
-<%
+	    
+	    <%
+		if(needSSLCipher){
+		%>
+			com.ibm.mq.MQEnvironment.sslCipherSuite = "<%=sslCipher%>";
+		<%
 		}
-%>
+		if(!(dbuser == null) && !("\"\"").equals(dbuser) && !("").equals(dbuser)) {
+		%>
+			props_<%=cid%>.put("userID",<%=dbuser%>);
+			props_<%=cid%>.put("password",<%=dbpwd%>);
+		<%
+		}
+		%>
 	
 		com.ibm.mq.MQQueueManager qMgr_<%=cid%> = new com.ibm.mq.MQQueueManager(<%=qm%>, props_<%=cid%>);
 	    com.ibm.mq.MQQueue remoteQ_<%=cid%> = qMgr_<%=cid%>.accessQueue(<%=queue%>, 16);
