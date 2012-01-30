@@ -526,6 +526,17 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     /*
      * (non-Javadoc)
      * 
+     * @see org.eclipse.jface.dialogs.Dialog#cancelPressed()
+     */
+    @Override
+    public void cancelPressed() {
+        SQLBuilderRepositoryNodeManager.tList = null;
+        super.cancelPressed();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
     public void okPressed() {
