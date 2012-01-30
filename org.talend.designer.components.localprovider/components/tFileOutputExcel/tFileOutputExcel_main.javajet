@@ -155,7 +155,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					}
 					if(staticWidth ==0){
 %>
-							fitWidth_<%=cid%>[<%=i%>]=fitWidth_<%=cid%>[<%=i%>]>currentWith_<%=i%>_<%=cid%>?fitWidth_<%=cid%>[<%=i%>]:currentWith_<%=i%>_<%=cid%>;
+							fitWidth_<%=cid%>[<%=i%>]=fitWidth_<%=cid%>[<%=i%>]>currentWith_<%=i%>_<%=cid%>?fitWidth_<%=cid%>[<%=i%>]:currentWith_<%=i%>_<%=cid%>+2;
 <%
 					}else{
 %>
