@@ -528,8 +528,12 @@ public class SQLBuilderRepositoryNodeManager {
         tablesFromEMF = sortTableColumn(tablesFromEMF);
         // ConnectionHelper.getTables(connection).clear();
         // ConnectionHelper.getTables(connection).addAll(tablesFromEMF);
-        tList = new ArrayList<MetadataTable>();
-        tList.addAll(ConnectionHelper.getTables(connection));
+
+        // bug when do refresh twice it will add all tables
+        if (tList == null) {
+            tList = new ArrayList<MetadataTable>();
+            tList.addAll(ConnectionHelper.getTables(connection));
+        }
         Catalog c = (Catalog) ConnectionHelper.getPackage(connection.getSID(), connection, Catalog.class);
         Schema s = (Schema) ConnectionHelper.getPackage(connection.getSID(), connection, Schema.class);
         Schema schema = (Schema) ConnectionHelper.getPackage(connection.getUiSchema(), connection, Schema.class);
