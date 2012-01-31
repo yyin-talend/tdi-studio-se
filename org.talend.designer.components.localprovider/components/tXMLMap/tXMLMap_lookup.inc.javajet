@@ -58,6 +58,13 @@ skeleton="tXMLMap_java.skeleton"
 				///////////////////////////////////////////////
 				//tHash_Lookup_<%= tableName %>.initGet();
 				<%
+				String filtersConditions = nextInputTable.getExpressionFilter();
+				String filtersConditionsFormatted = "";
+				boolean hasExpressionFilter = nextInputTable.isActivateExpressionFilter() && filtersConditions != null && !("").equals(filtersConditions.trim());
+				if(hasExpressionFilter && matchXmlTreeExpr != null) {
+					filtersConditionsFormatted = matchXmlTreeExpr.generateExprCode(filtersConditions);
+				}
+
 				String expressionKey = "";
 				List<IMetadataColumn> listColumns = metadataTable.getListColumns();
 				ArrayList<String> keysNames = new ArrayList<String>();
@@ -388,7 +395,25 @@ skeleton="tXMLMap_java.skeleton"
 						  		//do nothing
 						  	<% } %>
 				  		}//TD10086
-				  		<% } %>
+				  		
+				  		<% if(hasExpressionFilter) {%>
+				  			if(!<%= rejectedInnerJoin %> &&
+				  				!(<%=filtersConditionsFormatted %>)
+				  			) {
+				  				<%=tableName%> = <%=tableName%>Default;
+				  				
+				  				<%for (String key : outNodesXPath.keySet()) {%> 
+				  				treeNodeAPI_<%=cid %>.put("<%=key%>",null);
+								<%}%>
+				  				
+				  				<% if(isInnerJoin) {%>
+								<%= rejectedInnerJoin %> = true;			  				
+				  				<% } %>
+				  			}
+				  		<%
+				  			}
+				  		} 
+				  		%>
 				  		
 				  		//////////////////////////////////////////////////////////////////////////////////////////////
 				  		<%if(isMultipleResult) {//TD114%>
@@ -477,6 +502,22 @@ skeleton="tXMLMap_java.skeleton"
 					    		if(tempLookup<%=tableName%>!=null) {
 					    			<%=tableName%> = tempLookup<%=tableName%>;
 					    		}
+					    		
+					    		<% if(hasExpressionFilter) {%>
+					    		if(!<%= rejectedInnerJoin %> &&
+				  					!(<%=filtersConditionsFormatted %>)
+				  				) {
+				  					<%=tableName%> = <%=tableName%>Default;
+				  				
+				  					<%for (String key : outNodesXPath.keySet()) {%> 
+				  					treeNodeAPI_<%=cid %>.put("<%=key%>",null);
+									<%}%>
+				  				
+				  					<% if(isInnerJoin) {%>
+									<%= rejectedInnerJoin %> = true;			  				
+				  					<% } %>
+				  				}
+					    		<% } %>
 				    		}
 				    		forceLoop<%= tableName %> = false;
 				  		<% 
