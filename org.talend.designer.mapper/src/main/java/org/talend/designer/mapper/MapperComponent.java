@@ -469,6 +469,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         ExternalMapperData data = mapperMain.buildExternalData();
         if (mapperMain != null && data != null) {
             if (externalData != null) {
+                this.externalData = data;// fwang fixed bug TDI-8027
                 MapperHelper.saveDataToEmf(data, emfMapperData);
             }
         }

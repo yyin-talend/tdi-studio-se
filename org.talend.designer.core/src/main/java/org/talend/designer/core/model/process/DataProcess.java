@@ -2782,15 +2782,16 @@ public class DataProcess {
         // newGraphicalNode.setExternalData(externalData);
         // }
 
-        IExternalData externalData = graphicalNode.getExternalData();
+        // IExternalData externalData = graphicalNode.getExternalData();
 
         IExternalNode externalNode = graphicalNode.getExternalNode();
         if (externalNode != null) {
             AbstractExternalData externalEmfData = ((IExternalNode) externalNode).getExternalEmfData();
             ((IExternalNode) newGraphicalNode.getExternalNode()).setExternalEmfData(externalEmfData);
         }
-        if (externalData != null) {
-            newGraphicalNode.setExternalData(externalData);
+        // fwang fixed bug TDI-8027
+        if (graphicalNode.getExternalData() != null) {
+            newGraphicalNode.setExternalData(graphicalNode.getExternalData());
         }
 
         copyElementParametersValue(graphicalNode, newGraphicalNode);
