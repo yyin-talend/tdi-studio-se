@@ -553,7 +553,7 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
         return manager.getExportResources(process);
     }
 
-    private Map<ExportChoice, Object> getExportChoiceMap() {
+    protected Map<ExportChoice, Object> getExportChoiceMap() {
         Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
         // exportChoiceMap.put(ExportChoice.needLauncher, shellLauncherButton.getSelection());
         // exportChoiceMap.put(ExportChoice.needSystemRoutine, systemRoutineButton.getSelection());

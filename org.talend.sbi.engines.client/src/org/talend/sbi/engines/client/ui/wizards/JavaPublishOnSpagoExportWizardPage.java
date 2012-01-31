@@ -21,6 +21,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.documentation.ExportFileResource;
 
@@ -144,6 +145,11 @@ public class JavaPublishOnSpagoExportWizardPage extends PublishOnSpagoExportWiza
                         .getUptodateProperty(process[0].getItem().getProperty()).getItem());
             } catch (PersistenceException e) {
                 e.printStackTrace();
+            }
+            if (manager == null) {
+                manager = new JobJavaScriptsManager(getExportChoiceMap(), contextCombo.getText(),
+                        "all", IProcessor.NO_STATISTICS, //$NON-NLS-1$ 
+                        IProcessor.NO_TRACES);
             }
             List<String> contextNames = manager.getJobContextsComboValue((ProcessItem) process[0].getItem());
             contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
