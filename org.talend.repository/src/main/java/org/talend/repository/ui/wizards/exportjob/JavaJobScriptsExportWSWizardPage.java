@@ -509,22 +509,21 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-            if (directoryNames != null) {
-                String filter = "sa-talend-(.)*-provide\\.zip"; //$NON-NLS-1$
-                for (String directoryName : directoryNames) {
-                    if (directoryName.toLowerCase().matches(filter))
-                        addDestinationItem(directoryName);
-                }
-            }
-
-            // setDefaultDestination();
-
-            String saName = getPetalsDefaultSaName();
-            String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
-
-            IPath path = new Path(userDir).append(saName);
-            saDestinationFilePath = path.toOSString();
-            setDestinationValue(saDestinationFilePath);
+			String saName = getPetalsDefaultSaName();
+			if (directoryNames != null && directoryNames.length > 0) {
+				// destination
+				for (int i = 0; i < directoryNames.length; i++) {
+					saDestinationFilePath = new Path(directoryNames[i]).append(
+							saName).toOSString();
+					addDestinationItem(saDestinationFilePath);
+					setDestinationValue(saDestinationFilePath);
+				}
+			} else {
+				String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
+				IPath path = new Path(userDir).append(saName);
+				saDestinationFilePath = path.toOSString();
+				setDestinationValue(saDestinationFilePath);
+			}
 
             sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
@@ -544,18 +543,19 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-            if (directoryNames != null) {
-                // destination
-                String filterName = ".esb"; //$NON-NLS-1$
-
-                for (int i = 0; i < directoryNames.length; i++) {
-                    if (directoryNames[i].toLowerCase().endsWith(filterName)) {
-                        addDestinationItem(directoryNames[i]);
-
-                    }
-                }
-            }
-            setDefaultDestination();
+			if (directoryNames != null && directoryNames.length > 0) {
+				String fileName = this.getDefaultFileName().get(0) + "_"
+						+ this.getDefaultFileName().get(1) + getOutputSuffix();
+				// destination
+				for (int i = 0; i < directoryNames.length; i++) {
+					String destination = new Path(directoryNames[i]).append(
+							fileName).toOSString();
+					addDestinationItem(destination);
+					setDestinationValue(destination);
+				}
+			} else {
+				setDefaultDestination();
+			}
 
             IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$
             if (section == null) {
@@ -610,42 +610,41 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-            if (directoryNames != null) {
-                // destination
-                String filterName = ".jar"; //$NON-NLS-1$
+			if (directoryNames != null && directoryNames.length > 0) {
+				String fileName = this.getDefaultFileName().get(0) + "-"
+						+ this.getDefaultFileName().get(1) + getOutputSuffix();
                 for (int i = 0; i < directoryNames.length; i++) {
-                    if (directoryNames[i].toLowerCase().endsWith(filterName)) {
-                        addDestinationItem(directoryNames[i]);
-                    }
+					String destination = new Path(directoryNames[i]).append(
+							fileName).toOSString();
+					addDestinationItem(destination);
+					setDestinationValue(destination);
                 }
-            }
-            // setDefaultDestination();
-            setDefaultDestinationForOSGI();
+			} else {
+				setDefaultDestinationForOSGI();
+			}
+		} else {
+			setDefaultDestinationForOSGI();
         }
     }
 
     protected void restoreWidgetValuesForWS() {
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
-            String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-            if (directoryNames != null) {
-                // destination
-                String filterName = ".zip"; //$NON-NLS-1$
-                JobExportType comboType = JobExportType.getTypeFromString(exportTypeCombo.getText());
-                if (comboType.equals(JobExportType.WSWAR)) {
-                    filterName = ".war"; //$NON-NLS-1$
-                } else {
-                    filterName = ".zip"; //$NON-NLS-1$
-                }
-
-                for (int i = 0; i < directoryNames.length; i++) {
-                    if (directoryNames[i].toLowerCase().endsWith(filterName)) {
-                        addDestinationItem(directoryNames[i]);
-
-                    }
-                }
-            }
-            setDefaultDestination();
+			String[] directoryNames = settings
+					.getArray(STORE_DESTINATION_NAMES_ID);
+			if (directoryNames != null && directoryNames.length > 0) {
+				String fileName = this.getDefaultFileName().get(0) + "_"
+						+ this.getDefaultFileName().get(1) + getOutputSuffix();
+				// destination
+				for (int i = 0; i < directoryNames.length; i++) {
+					String destination = new Path(directoryNames[i]).append(
+							fileName).toOSString();
+					addDestinationItem(destination);
+					setDestinationValue(destination);
+				}
+			} else {
+				setDefaultDestination();
+			}
 
             webXMLButton.setSelection(settings.getBoolean(STORE_WEBXML_ID));
             configFileButton.setSelection(settings.getBoolean(STORE_CONFIGFILE_ID));
@@ -684,16 +683,19 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-            if (directoryNames != null) {
+			if (directoryNames != null && directoryNames.length > 0) {
+				String fileName = this.getDefaultFileName().get(0) + "_"
+						+ this.getDefaultFileName().get(1) + getOutputSuffix();
                 // destination
                 for (int i = 0; i < directoryNames.length; i++) {
-                    if (directoryNames[i].toLowerCase().endsWith(".zip")) { //$NON-NLS-1$
-                        addDestinationItem(directoryNames[i]);
-                    }
+					String destination = new Path(directoryNames[i]).append(
+							fileName).toOSString();
+					addDestinationItem(destination);
+					setDestinationValue(destination);
                 }
+			} else {
+				setDefaultDestination();
             }
-
-            setDefaultDestination();
             shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
             systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
             userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
@@ -756,12 +758,20 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 settings.put(PETALS_EXPORT_DESTINATIONS, directoryNames);
                 return;
             }
-            String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-            if (directoryNames == null) {
-                directoryNames = new String[0];
-            }
-            String destinationValue = getDestinationValue();
-            directoryNames = addToHistory(directoryNames, destinationValue);
+			// String[] directoryNames =
+			// settings.getArray(STORE_DESTINATION_NAMES_ID);
+			// if (directoryNames == null) {
+			// directoryNames = new String[0];
+			// }
+			// String destinationValue = getDestinationValue();
+			// directoryNames = addToHistory(directoryNames, destinationValue);
+			String[] directoryNames = new String[1];
+			String destinationValue = getDestinationValue();
+			if (destinationValue != null) {
+				destinationValue = destinationValue.substring(0,
+						destinationValue.lastIndexOf(File.separator));
+			}
+			directoryNames[0] = destinationValue;
 
             settings.put(STORE_EXPORTTYPE_ID, getCurrentExportType().toString());
             settings.put(STORE_DESTINATION_NAMES_ID, directoryNames);
