@@ -1346,7 +1346,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             // unzip
             try {
                 String zipFile = manager.getDestinationPath();
-                ZipToFile.unZipFile(zipFile, new File(zipFile).getParentFile().getAbsolutePath());
+                // Added by Marvin Wang on Feb.1, 2012 for bug TDI-18824
+                File file = new File(zipFile);
+                if (file.exists())
+                    ZipToFile.unZipFile(zipFile, file.getParentFile().getAbsolutePath());
             } catch (Exception e) {
                 MessageBoxExceptionHandler.process(e);
                 return false;
