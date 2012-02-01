@@ -719,7 +719,8 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
                 }
             } else {
                 if (isDocumentStatus()) {
-                    if (type.equals(ERepositoryObjectType.JOBS) || type.equals(ERepositoryObjectType.JOBLETS)) {
+                    if (type.equals(ERepositoryObjectType.JOBS) || type.equals(ERepositoryObjectType.JOBLETS)
+                            || type.equals(ERepositoryObjectType.JOB_DOC) || type.equals(ERepositoryObjectType.JOBLET_DOC)) {
                         itemTable.setRedraw(false);
                         tableItem = new TableItem(itemTable, SWT.NONE);
                     }
