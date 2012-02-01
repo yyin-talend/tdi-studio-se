@@ -223,11 +223,11 @@
 		NAME="IS_TRANSACTED" 
 		FIELD="CHECK" 
 		REQUIRED="false" 
-		NUM_ROW="20">
+		NUM_ROW="15">
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
 	
-	<PARAMETER NAME="ACKNOWLEDGMENT_MODE" FIELD="CLOSED_LIST" NUM_ROW="30" SHOW="false">
+	<PARAMETER NAME="ACKNOWLEDGMENT_MODE" FIELD="CLOSED_LIST" NUM_ROW="20" SHOW="false">
       <ITEMS DEFAULT="AUTO_ACKNOWLEDGE">
         <ITEM NAME="AUTO_ACKNOWLEDGE"   VALUE="AUTO_ACKNOWLEDGE" />
         <ITEM NAME="CLIENT_ACKNOWLEDGE"   VALUE="CLIENT_ACKNOWLEDGE" />
@@ -235,7 +235,7 @@
       </ITEMS>
     </PARAMETER>
     
-	<PARAMETER NAME="SET_JMS_HEADER" FIELD="CHECK" NUM_ROW="40"
+	<PARAMETER NAME="SET_JMS_HEADER" FIELD="CHECK" NUM_ROW="25"
      	 REQUIRED="false" SHOW_IF="(SERVER != 'WEBSPHERE')" >
       <DEFAULT>"false"</DEFAULT>
     </PARAMETER>
@@ -243,7 +243,7 @@
       NAME="JMS_HEADERS"
       FIELD="TABLE"
       REQUIRED="false"
-      NUM_ROW="50"
+      NUM_ROW="30"
       NB_LINES="3"
       SHOW_IF="(SET_JMS_HEADER == 'true') AND (SERVER != 'WEBSPHERE')"
     >
@@ -267,7 +267,7 @@
       </ITEMS>
     </PARAMETER>
     
-	<PARAMETER NAME="SET_JMS_PROPERTIES" FIELD="CHECK" NUM_ROW="60"
+	<PARAMETER NAME="SET_JMS_PROPERTIES" FIELD="CHECK" NUM_ROW="35"
      	 REQUIRED="false" SHOW_IF="(SERVER != 'WEBSPHERE')" >
       <DEFAULT>"false"</DEFAULT>
     </PARAMETER>
@@ -275,7 +275,7 @@
       NAME="JMS_PROPERTIES"
       FIELD="TABLE"
       REQUIRED="false"
-      NUM_ROW="70"
+      NUM_ROW="40"
       NB_LINES="3"
       SHOW_IF="(SET_JMS_PROPERTIES == 'true') AND (SERVER != 'WEBSPHERE')"
     >
@@ -299,7 +299,7 @@
       </ITEMS>
     </PARAMETER>
     
-	<PARAMETER NAME="SET_MQMD_FIELDS" FIELD="CHECK" NUM_ROW="80"
+	<PARAMETER NAME="SET_MQMD_FIELDS" FIELD="CHECK" NUM_ROW="45"
      	 REQUIRED="false" SHOW_IF="(SERVER == 'WEBSPHERE')" >
       <DEFAULT>"false"</DEFAULT>
     </PARAMETER>
@@ -307,7 +307,7 @@
       NAME="MQMD_FIELDS"
       FIELD="TABLE"
       REQUIRED="false"
-      NUM_ROW="81"
+      NUM_ROW="46"
       NB_LINES="3"
       SHOW_IF="(SET_MQMD_FIELDS == 'true') AND (SERVER == 'WEBSPHERE')"
     >
@@ -348,8 +348,9 @@
 		<PARAMETER 
 		  NAME="USE_MQ_HEADER" 
 		  FIELD="CHECK" 
-		  NUM_ROW="90"
-	      REQUIRED="false" 
+		  NUM_ROW="50"
+	      REQUIRED="false"
+		  GROUP="HEADERS"
 	      SHOW_IF="(SERVER == 'WEBSPHERE')" 
 	      >
 	      	<DEFAULT>false</DEFAULT>
@@ -358,8 +359,9 @@
 		<PARAMETER 
 		  NAME="USE_FIX_MQRFH2" 
 		  FIELD="CHECK" 
-		  NUM_ROW="91"
+		  NUM_ROW="51"
 	      REQUIRED="false" 
+		  GROUP="HEADERS"
 	      SHOW_IF="(USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
 	      >
 	      	<DEFAULT>false</DEFAULT>
@@ -369,7 +371,8 @@
 	      NAME="MQRFH2_FIXED_FIELD"
 	      FIELD="TABLE"
 	      REQUIRED="false"
-	      NUM_ROW="92"
+	      NUM_ROW="52"
+		  GROUP="HEADERS"
 	      SHOW_IF="(USE_MQ_HEADER == 'true') AND (USE_FIX_MQRFH2=='true') AND (SERVER == 'WEBSPHERE')"
     	  >
 	      	<ITEMS>
@@ -389,8 +392,9 @@
 		<PARAMETER 
 		  NAME="USE_MQRFH2_MCD" 
 		  FIELD="CHECK" 
-		  NUM_ROW="93"
+		  NUM_ROW="53"
 	      REQUIRED="false" 
+		  GROUP="HEADERS"
 	      SHOW_IF="(USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
 	      >
 	      	<DEFAULT>false</DEFAULT>
@@ -400,7 +404,8 @@
 	      NAME="MQRFH2_MCD_FIELD"
 	      FIELD="TABLE"
 	      REQUIRED="false"
-	      NUM_ROW="94"
+	      NUM_ROW="54"
+		  GROUP="HEADERS"
 	      SHOW_IF="(USE_MQ_HEADER == 'true') AND (USE_MQRFH2_MCD=='true') AND (SERVER == 'WEBSPHERE')"
     	  >
 	      	<ITEMS>
@@ -419,8 +424,9 @@
 		<PARAMETER 
 		  NAME="USE_MQRFH2_JMS" 
 		  FIELD="CHECK" 
-		  NUM_ROW="95"
+		  NUM_ROW="55"
 	      REQUIRED="false" 
+		  GROUP="HEADERS"
 	      SHOW_IF="(USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
 	      >
 	      	<DEFAULT>false</DEFAULT>
@@ -430,7 +436,8 @@
 	      NAME="MQRFH2_JMS_FIELD"
 	      FIELD="TABLE"
 	      REQUIRED="false"
-	      NUM_ROW="96"
+	      NUM_ROW="56"
+		  GROUP="HEADERS"
 	      SHOW_IF="(USE_MQ_HEADER == 'true') AND (USE_MQRFH2_JMS=='true') AND (SERVER == 'WEBSPHERE')"
     	  >
 	      	<ITEMS>
@@ -454,8 +461,9 @@
 		<PARAMETER 
 		  NAME="USE_MQRFH2_USR" 
 		  FIELD="CHECK" 
-		  NUM_ROW="97"
+		  NUM_ROW="57"
 	      REQUIRED="false" 
+		  GROUP="HEADERS"
 	      SHOW_IF="(USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
 	      >
 	      	<DEFAULT>false</DEFAULT>
@@ -465,7 +473,8 @@
 	      NAME="MQRFH2_USR_FIELD"
 	      FIELD="TABLE"
 	      REQUIRED="false"
-	      NUM_ROW="98"
+	      NUM_ROW="58"
+		  GROUP="HEADERS"
 	      SHOW_IF="(USE_MQ_HEADER == 'true') AND (USE_MQRFH2_USR=='true') AND (SERVER == 'WEBSPHERE')"
     	  >
 	      	<ITEMS>
@@ -474,15 +483,16 @@
 	      	</ITEMS>
 	    </PARAMETER>
 	    
-	   	<PARAMETER NAME="SET_MQ_SSL_CIPHER" FIELD="CHECK" NUM_ROW="100"
-	     	 REQUIRED="false" SHOW_IF="(SERVER == 'WEBSPHERE')" >
+	   	<PARAMETER NAME="SET_MQ_SSL_CIPHER" FIELD="CHECK" NUM_ROW="70"
+	     	 REQUIRED="false" SHOW_IF="(SERVER == 'WEBSPHERE')" GROUP="SSL">
 	      <DEFAULT>"false"</DEFAULT>
 	    </PARAMETER>
 	    <PARAMETER
 	      NAME="MQ_SSL_CIPHER"
 	      FIELD="CLOSED_LIST"
-	      NUM_ROW="110"
+	      NUM_ROW="71"
 	      REQUIRED="false"
+		  GROUP="SSL"
 		  SHOW_IF="(SET_MQ_SSL_CIPHER == 'true') AND (SERVER == 'WEBSPHERE')">	  
 		  	<ITEMS DEFAULT="NULL_MD5">
 			 	<ITEM NAME="NULL_MD5" VALUE="SSL_RSA_WITH_NULL_MD5"/>
