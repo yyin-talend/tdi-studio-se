@@ -1412,8 +1412,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 RepositoryManager.refresh(camelService.getRoutes());
             }
         }
-        processEditorInput.setRepositoryNode(null);
-        processEditorInput.setLoadedProcess(null);
+        processEditorInput.dispose();
         processEditorInput = null;
         designerEditor = null;
         codeEditor = null;
