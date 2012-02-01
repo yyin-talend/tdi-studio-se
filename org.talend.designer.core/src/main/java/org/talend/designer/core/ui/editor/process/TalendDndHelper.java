@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.process;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.eclipse.emf.common.util.EList;
 import org.talend.core.database.EDatabaseTypeName;
@@ -108,6 +109,16 @@ final class TalendDndHelper {
                 boolean flag = filterComponent(component, name, type);
 
                 if (((componentProductname != null && productNameWanted.endsWith(componentProductname)) && value) || flag) {
+
+                    Pattern pattern = Pattern.compile("^.*oracle.*$", Pattern.CASE_INSENSITIVE);
+
+                    if (pattern.matcher(name.getDBType()).matches()
+                            && (emfComponent.getName().equals("tAmazonOracleInput") || emfComponent.getName().equals(
+                                    "tAmazonOracleOutput"))) {
+
+                        continue;
+                    }
+
                     if (item instanceof MDMConnectionItem) {
                         if (MdmConceptType.INPUT.equals(mdmType) && emfComponent.getName().endsWith(INPUT)) {
                             neededComponents.add(emfComponent);
