@@ -752,7 +752,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             // the way to get the xtextEditor programmly
             IEditorInput editorInput = new FileEditorInput(file);
             IEditorDescriptor desc = WorkbenchPlugin.getDefault().getEditorRegistry()
-                    .findEditor("org.talend.metalanguage.jobscript.JobScript");
+                    .findEditor("org.talend.metalanguage.jobscript.JobScriptForMultipage");
 
             WorkbenchPage page = (WorkbenchPage) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
             EditorReference ref = new EditorReference(page.getEditorManager(), new FileEditorInput(file), (EditorDescriptor) desc);
