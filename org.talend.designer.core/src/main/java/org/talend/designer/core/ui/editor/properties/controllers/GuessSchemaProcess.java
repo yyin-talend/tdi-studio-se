@@ -114,7 +114,7 @@ public class GuessSchemaProcess {
 
         if (node.getComponent().getModulesNeeded().size() > 0) {
             for (ModuleNeeded module : node.getComponent().getModulesNeeded()) {
-                if (module.isRequired()) {
+                if (module.isRequired(node.getElementParameters())) {
                     Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
                     libNode1.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     NodeContainer nc = null;
