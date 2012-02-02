@@ -157,6 +157,7 @@ imports="
 %>
 							List<javax.naming.directory.ModificationItem> mfItem_<%=cid%> = new java.util.ArrayList();
 							List<javax.naming.directory.Attribute> forUpate<%=cid%> = new java.util.ArrayList();
+							javax.naming.directory.Attribute attrForUpdate_<%=cid%>;
 							String incomingColumn_<%=cid%>  = null;
 <%
 						  	for (int i=0; i<attributeOptions.size(); i++) {
@@ -181,9 +182,16 @@ imports="
 <%																  					
 										}else if(javaType == JavaTypesManager.STRING){
 %>										
-								    		for(String value_<%=cid%> : <%=conn.getName() %>.<%=name%>.trim().split(<%=separator%>)){
-								    			base64_<%=cid%>.checkStringUpdate(<%=isBase64%>,"<%=name%>",forUpate<%=cid%>,value_<%=cid%>);
-								    		}
+											 // Create attribute before, to add multiple values if necessary and don't add any value if empty or null
+											 attrForUpdate_<%=cid%> = new javax.naming.directory.BasicAttribute("<%=name%>");
+											 if(<%=conn.getName() %>.<%=name%> != null){										
+							    				 for(String value_<%=cid%> : <%=conn.getName() %>.<%=name%>.trim().split(<%=separator%>)){
+							    					 if(value_<%=cid%> != null && !"".equals(value_<%=cid%>)){
+							    					 	base64_<%=cid%>.checkStringUpdateAttr(<%=isBase64%>,"<%=name%>",attrForUpdate_<%=cid%>,value_<%=cid%>);
+							    					 }
+									    		 }
+									    	 }
+   											 forUpate<%=cid%>.add(attrForUpdate_<%=cid%>);
 <%
 										}else{
 											if(advancedSeparator && JavaTypesManager.isNumberType(javaType, isNullable)) { 
