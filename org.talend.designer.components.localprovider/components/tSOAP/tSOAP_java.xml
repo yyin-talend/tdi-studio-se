@@ -2,22 +2,22 @@
 	<HEADER PLATEFORM="ALL" SERIAL="" VERSION="0.102" STATUS="ALPHA"
 		COMPATIBILITY="ALL" AUTHOR="Talend" RELEASE_DATE="20050320A"
 		STARTABLE="true"
-		SCHEMA_AUTO_PROPAGATE="false" 
+		SCHEMA_AUTO_PROPAGATE="false"
 		DATA_AUTO_PROPAGATE="false"
 		IS_MULTIPLYING_OUTPUTS="false">
 		<SIGNATURE />
 	</HEADER>
 
-  <FAMILIES>
-    <FAMILY>Internet</FAMILY>
-  </FAMILIES>
+	<FAMILIES>
+		<FAMILY>Internet</FAMILY>
+	</FAMILIES>
 
 	<DOCUMENTATION>
 		<URL />
 	</DOCUMENTATION>
 
 	<CONNECTORS>
-		<CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
+		<CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1" />
 		<CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1" />
 		<CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
 		<CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
@@ -58,7 +58,7 @@
 			NUM_ROW="30">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
-		<PARAMETER NAME="PROXY_HOST" FIELD="TEXT" 
+		<PARAMETER NAME="PROXY_HOST" FIELD="TEXT"
 			NUM_ROW="31" SHOW_IF="USE_PROXY == 'true'">
 			<DEFAULT>"61.163.92.4"</DEFAULT>
 		</PARAMETER>
@@ -66,7 +66,7 @@
 			NUM_ROW="32" SHOW_IF="USE_PROXY == 'true'">
 			<DEFAULT>8080</DEFAULT>
 		</PARAMETER>
-		<PARAMETER NAME="PROXY_USERNAME" FIELD="TEXT" 
+		<PARAMETER NAME="PROXY_USERNAME" FIELD="TEXT"
 			NUM_ROW="33" SHOW_IF="USE_PROXY == 'true'">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
@@ -83,9 +83,8 @@
 		<PARAMETER NAME="SSL_TRUSTSERVER_PASSWORD" FIELD="TEXT" NUM_ROW="45" SHOW_IF="NEED_SSL_TO_TRUSTSERVER == 'true'">
 			<DEFAULT>"password"</DEFAULT>
 		</PARAMETER>
-		
-		
-		
+
+
 		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" REQUIRED="true" NUM_ROW="50">
 			<DEFAULT>"http://www.deeptraining.com/webservices/weather.asmx"</DEFAULT>
 		</PARAMETER>
@@ -93,33 +92,30 @@
 			<DEFAULT>"http://litwinconsulting.com/webservices/GetWeather"</DEFAULT>
 		</PARAMETER>
 		<PARAMETER NAME="SOAP_VERSION" FIELD="CLOSED_LIST" NUM_ROW="70">
-      		<ITEMS DEFAULT="SOAP_1.1">
-        		<ITEM NAME="SOAP_1.1"   VALUE="Soap11" />
-        		<ITEM NAME="SOAP_1.2"   VALUE="Soap12" />
-        	</ITEMS>
-    	</PARAMETER>	
+			<ITEMS DEFAULT="SOAP_1.1">
+				<ITEM NAME="SOAP_1.1" VALUE="Soap11" />
+				<ITEM NAME="SOAP_1.2" VALUE="Soap12" />
+			</ITEMS>
+		</PARAMETER>
 		<PARAMETER NAME="SOAPMESSAGE" FIELD="MEMO" NUM_ROW="90" NB_LINES="10">
 			<DEFAULT>""</DEFAULT>
-  		</PARAMETER>
-  		 
+		</PARAMETER>
 	</PARAMETERS>
-	
+
 	<ADVANCED_PARAMETERS/>
-	
 
 	<CODEGENERATION>
 		<IMPORTS>
-			<IMPORT NAME="activation" MODULE="activation.jar" REQUIRED="true" />
-			<IMPORT NAME="jaxqname" MODULE="jax-qname.jar" REQUIRED="true" />
-			<IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" REQUIRED="true" />
-			<IMPORT NAME="saajapi" MODULE="saaj-api.jar" REQUIRED="true" />
-			<IMPORT NAME="saajimpl" MODULE="saaj-impl.jar" REQUIRED="true" />
-			<IMPORT NAME="jdom" MODULE="jdom-1.1.jar" REQUIRED="true" />
+			<IMPORT NAME="activation" MODULE="activation.jar" REQUIRED="true" BundleID="" />
+			<IMPORT NAME="jaxqname" MODULE="jax-qname.jar" REQUIRED="true" BundleID="" />
+			<IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" REQUIRED="true" BundleID="" />
+			<IMPORT NAME="saajapi" MODULE="saaj-api.jar" REQUIRED="true" BundleID="" />
+			<IMPORT NAME="saajimpl" MODULE="saaj-impl.jar" REQUIRED="true" BundleID="" />
+			<IMPORT NAME="jdom" MODULE="jdom-1.1.jar" REQUIRED="true" BundleID="org.apache.servicemix.bundles.jdom" />
 			<IMPORT NAME="talendsoap" MODULE="talend-soap.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 
 	<RETURNS/>
-		
-	
+
 </COMPONENT>
