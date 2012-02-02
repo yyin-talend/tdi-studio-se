@@ -64,7 +64,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 			        <%					
                 			        if(javaType == JavaTypesManager.STRING ){
                 			            %>
-                			            	column_value_<%=cid%> = TalendString.addEscapeChars(<%=conn.getName() %>.<%=column.getLabel() %>,escapeChar_<%=cid %>);
+                			            	column_value_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel() %>;
                 			            <%
                 			        }else if(javaType == JavaTypesManager.DATE && pattern != null){
                 			            %>
