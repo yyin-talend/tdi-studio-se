@@ -172,7 +172,7 @@ public class paloconnection {
 			URI uri = URIUtils.createURI("http", strServer, Integer.valueOf(strPort), strAPIUrl, URLEncodedUtils.format(qparams, "UTF-8"), null);
 			HttpGet req = new HttpGet(uri);
 			
-			System.out.println(req.getURI());
+//			System.out.println(req.getURI());
 
 			// Send to Server
 			HttpResponse rsp = paloHttpClient.execute(paloTargetHost, req);

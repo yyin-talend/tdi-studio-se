@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.talend.jpalo.talendHelpers.tPaloDimensionElements;
+
 import com.csvreader.CsvReader;
 
 
