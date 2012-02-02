@@ -742,8 +742,8 @@ public class ImportItemUtil {
                         if (haveRef) {
                             repFactory.save(tmpItem, true);
                         }
-                        repFactory.unloadResources(tmpItem.getProperty());
                     }
+                    repFactory.unloadResources(tmpItem.getProperty());
 
                     itemRecord.setImportPath(path.toPortableString());
                     itemRecord.setRepositoryType(itemType);
