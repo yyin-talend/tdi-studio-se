@@ -146,6 +146,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     private Map<ERepositoryObjectType, RepositoryNode> repositoryNodeMap = new HashMap<ERepositoryObjectType, RepositoryNode>();
 
+    private Map<ERepositoryObjectType, RepositoryNode> repositoryNodeExtensionMap = new HashMap<ERepositoryObjectType, RepositoryNode>();
+
     private String currentPerspective; // set the current perspective
 
     /**
@@ -311,7 +313,6 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     public void initialize(String currentPerspective) {
         this.currentPerspective = currentPerspective;
         nodeAndProject = new HashMap<Object, List<Project>>();
-
         List<IRepositoryNode> nodes = null;
         String urlBranch = null;
         if (ProjectManager.getInstance().getCurrentBranchURL(project) != null) {
@@ -580,6 +581,29 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         } catch (JSONException e) {
             ExceptionHandler.process(e);
         }
+        collectRepositoryNodes(nodes);
+    }
+
+    private void collectRepositoryNodes(List<IRepositoryNode> nodes) {
+        if (repositoryNodeMap == null) {
+            repositoryNodeMap = new HashMap<ERepositoryObjectType, RepositoryNode>();
+        }
+        if (nodes != null) {
+            for (IRepositoryNode node : nodes) {
+                if (node.getParent() instanceof ProjectRepositoryNode) { // root node of type
+                    ERepositoryObjectType roType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+                    if (roType != null) { // bin is null
+                        if (repositoryNodeMap.containsKey(roType)) {
+                            // later, will do something.
+                        } else {
+                            repositoryNodeMap.put(roType, (RepositoryNode) node);
+                        }
+                    }
+                }
+                collectRepositoryNodes(node.getChildren());
+            }
+        }
+
     }
 
     private String[] getUserAuthorization() throws JSONException {
@@ -638,7 +662,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     }
 
     private void initExtensionRepositoryNodes(List<IRepositoryNode> nodes) {
-        repositoryNodeMap.clear();
+        repositoryNodeExtensionMap.clear();
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IConfigurationElement[] configurationElements = registry
                 .getConfigurationElementsFor("org.talend.core.repository.repository_node_provider"); //$NON-NLS-1$
@@ -669,7 +693,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                         dynamicNode.setProperties(EProperties.CONTENT_TYPE, repositoryNodeType);
                     }
                     dynamicNode.setIcon(icon);
-                    repositoryNodeMap.put(repositoryNodeType, dynamicNode);
+                    repositoryNodeExtensionMap.put(repositoryNodeType, dynamicNode);
                     IRepositoryNode parentNode = findParentNodeByLabel(nodes, parentNodeType);
                     if (parentNode != null) {
                         parentNode.getChildren().add(dynamicNode);
@@ -2181,7 +2205,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         if (type == null) {
             return null;
         }
-        if (type == ERepositoryObjectType.BUSINESS_PROCESS) {
+        if (repositoryNodeMap.containsKey(type)) {
+            return repositoryNodeMap.get(type);
+        } else if (type == ERepositoryObjectType.BUSINESS_PROCESS) {
             return this.businessProcessNode;
         } else if (type == ERepositoryObjectType.PROCESS) {
             return this.processNode;
@@ -2258,7 +2284,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         } else if (type == ERepositoryObjectType.SVN_ROOT) {
             return this.svnRootNode;
         } else {
-            return repositoryNodeMap.get(type);
+            return repositoryNodeExtensionMap.get(type);
         }
     }
 

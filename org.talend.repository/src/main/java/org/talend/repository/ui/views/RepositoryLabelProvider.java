@@ -81,6 +81,10 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         this.view = view;
     }
 
+    protected IRepositoryView getView() {
+        return view;
+    }
+
     public String getText(IRepositoryViewObject object) {
         StringBuffer string = new StringBuffer();
         string.append(object.getLabel());
@@ -185,7 +189,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             boolean isExtensionPoint = false;
             for (IRepositoryContentHandler handler : RepositoryContentManager.getHandlers()) {
                 isExtensionPoint = handler.isRepObjType(itemType);
-                if (isExtensionPoint == true) {
+                if (isExtensionPoint) {
                     IImage icon = handler.getIcon(item);
                     if (icon != null) {
                         img = ImageProvider.getImage(icon);
@@ -193,7 +197,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                     }
                 }
             }
-            if (isExtensionPoint == false || img == null) {
+            if (isExtensionPoint || img == null) {
                 img = CoreImageProvider.getImage(itemType);
             }
         }
@@ -260,7 +264,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             return ImageProvider.getImage(node.getIcon());
         case SIMPLE_FOLDER:
             // FIXME SML Move in repository node
-            ECoreImage image = (view.getExpandedState(obj) ? ECoreImage.FOLDER_OPEN_ICON : ECoreImage.FOLDER_CLOSE_ICON);
+            ECoreImage image = (getView().getExpandedState(obj) ? ECoreImage.FOLDER_OPEN_ICON : ECoreImage.FOLDER_CLOSE_ICON);
             return ImageProvider.getImage(image);
         default:
             if (node.getObject() == null) {
@@ -277,25 +281,27 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 return ImageProvider.getImage(node.getIcon());
             } else if (repositoryObjectType == ERepositoryObjectType.METADATA_CON_TABLE) {
                 Image tableImage = ImageProvider.getImage(node.getIcon());
-                Item item = node.getObject().getProperty().getItem();
-                if (item != null && item instanceof DatabaseConnectionItem) {
-                    if (PluginChecker.isCDCPluginLoaded()) {
-                        ICDCProviderService service = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(
-                                ICDCProviderService.class);
-                        if (service != null) {
-                            String cdcLinkId = service.getCDCConnectionLinkId((DatabaseConnectionItem) item);
-                            if (cdcLinkId != null) { // cdc connection exist.
-                                if (node.getObject() instanceof MetadataTableRepositoryObject) {
-                                    MetadataTable table = ((MetadataTableRepositoryObject) node.getObject()).getTable();
-                                    String tableType = table.getTableType();
-                                    if (tableType != null && "TABLE".equals(tableType)) { //$NON-NLS-1$
-                                        ECDCStatus status = ECDCStatus.NONE;
-                                        if (table.isActivatedCDC()) {
-                                            status = ECDCStatus.ACTIVATED;
-                                        } else if (table.isAttachedCDC()) {
-                                            status = ECDCStatus.ADDED;
+                if (!getView().isFakeView()) {
+                    Item item = node.getObject().getProperty().getItem();
+                    if (item != null && item instanceof DatabaseConnectionItem) {
+                        if (PluginChecker.isCDCPluginLoaded()) {
+                            ICDCProviderService service = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(
+                                    ICDCProviderService.class);
+                            if (service != null) {
+                                String cdcLinkId = service.getCDCConnectionLinkId((DatabaseConnectionItem) item);
+                                if (cdcLinkId != null) { // cdc connection exist.
+                                    if (node.getObject() instanceof MetadataTableRepositoryObject) {
+                                        MetadataTable table = ((MetadataTableRepositoryObject) node.getObject()).getTable();
+                                        String tableType = table.getTableType();
+                                        if (tableType != null && "TABLE".equals(tableType)) { //$NON-NLS-1$
+                                            ECDCStatus status = ECDCStatus.NONE;
+                                            if (table.isActivatedCDC()) {
+                                                status = ECDCStatus.ACTIVATED;
+                                            } else if (table.isAttachedCDC()) {
+                                                status = ECDCStatus.ADDED;
+                                            }
+                                            return OverlayImageProvider.getImageWithCDCStatus(tableImage, status).createImage();
                                         }
-                                        return OverlayImageProvider.getImageWithCDCStatus(tableImage, status).createImage();
                                     }
                                 }
                             }

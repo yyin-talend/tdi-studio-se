@@ -173,7 +173,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private static List<ISelectionChangedListener> listenersNeedTobeAddedIntoTreeviewer = new ArrayList<ISelectionChangedListener>();
 
-    private static ProjectRepositoryNode root = new ProjectRepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
+    private ProjectRepositoryNode root = new ProjectRepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
 
     private IPreferenceStore preferenceStore = RepositoryManager.getPreferenceStore();
 
@@ -286,15 +286,12 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         }
         viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
         setContentProviderForView();
-        viewer.setLabelProvider(new RepositoryLabelProvider(this));
+        setLabelProviderForView();
         viewer.setSorter(new RepositoryNameSorter());
-        IViewSite viewSite = getViewSite();
-        viewer.setInput(viewSite);
+        setupInput();
         getSite().setSelectionProvider(viewer);
         addFilters();
-        /* need to expand so that all folderItem will be created */
-        viewer.expandAll();
-        viewer.collapseAll();
+        expandCollapseAll();
         if (isFromFake) {
             refresh();
         }
@@ -349,16 +346,39 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 }
             }
         });
-
-        if (listenersNeedTobeAddedIntoTreeviewer.size() > 0) {
-            for (ISelectionChangedListener listener : listenersNeedTobeAddedIntoTreeviewer) {
-                viewer.addSelectionChangedListener(listener);
+        if (!isFakeView()) {
+            if (listenersNeedTobeAddedIntoTreeviewer.size() > 0) {
+                for (ISelectionChangedListener listener : listenersNeedTobeAddedIntoTreeviewer) {
+                    viewer.addSelectionChangedListener(listener);
+                }
+                listenersNeedTobeAddedIntoTreeviewer.clear();
             }
-            listenersNeedTobeAddedIntoTreeviewer.clear();
+
+            CorePlugin.getDefault().getRepositoryService().registerRepositoryChangedListenerAsFirst(this);
         }
+        checkRCPMode();
 
-        CorePlugin.getDefault().getRepositoryService().registerRepositoryChangedListenerAsFirst(this);
+        expandFirstLevel();
+    }
 
+    protected void setupInput() {
+        IViewSite viewSite = getViewSite();
+        viewer.setInput(viewSite);
+    }
+
+    /**
+     * 
+     * ggu Comment method "expandCollapseAll".
+     * 
+     * @deprecated I think, should check for this, it's good or not. need more test..
+     */
+    protected void expandCollapseAll() {
+        /* need to expand so that all folderItem will be created */
+        viewer.expandAll();
+        viewer.collapseAll();
+    }
+
+    protected void checkRCPMode() {
         if (!CorePlugin.getDefault().getRepositoryService().isRCPMode()) {
             IMigrationToolService toolService = CorePlugin.getDefault().getMigrationToolService();
             toolService.executeMigration(SwitchProjectAction.PLUGIN_MODEL);
@@ -407,14 +427,21 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
             });
         }
-        if (root.getChildren().size() == 1) {
-            viewer.setExpandedState(root.getChildren().get(0), true);
-        }
     }
 
     protected void setContentProviderForView() {
         contentProvider = new RepositoryContentProvider(this);
         viewer.setContentProvider(contentProvider);
+    }
+
+    protected void setLabelProviderForView() {
+        viewer.setLabelProvider(new RepositoryLabelProvider(this));
+    }
+
+    protected void expandFirstLevel() {
+        if (root.getChildren().size() == 1) {
+            viewer.setExpandedState(root.getChildren().get(0), true);
+        }
     }
 
     public void createActionComposite(Composite parent) {
@@ -712,7 +739,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * 
      * @param tree
      */
-    private void createTreeTooltip(Tree tree) {
+    protected void createTreeTooltip(Tree tree) {
         AbstractTreeTooltip tooltip = new AbstractTreeTooltip(tree) {
 
             /*
@@ -1415,4 +1442,10 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     public void setFromFake(boolean isFromFake) {
         this.isFromFake = isFromFake;
     }
+
+    public boolean isFakeView() {
+        // if real view.
+        return (this.getClass() != RepositoryView.class);
+    }
+
 }
