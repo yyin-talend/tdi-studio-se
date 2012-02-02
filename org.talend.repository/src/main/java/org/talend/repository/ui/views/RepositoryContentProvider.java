@@ -38,8 +38,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private final IRepositoryView view;
 
-    private ProjectRepositoryNode root;
-
     private TreeViewer viewer;
 
     private final List<IRepositoryObject> joblets = new ArrayList<IRepositoryObject>();
@@ -58,9 +56,13 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     public void dispose() {
     }
 
+    protected IRepositoryView getView() {
+        return view;
+    }
+
     public Object[] getElements(Object parent) {
-        if (parent.equals(view.getViewSite())) {
-            IRepositoryNode systemFolders = view.getRoot();
+        if (parent.equals(getView().getViewSite())) {
+            IRepositoryNode systemFolders = getView().getRoot();
             if (systemFolders.getChildren().isEmpty()) {
                 initialize();
             }
@@ -76,6 +78,9 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     }
 
     public Object[] getChildren(Object parent) {
+        if (parent == null) {
+            return new RepositoryNode[0];
+        }
         RepositoryNode repositoryNode = ((RepositoryNode) parent);
         if (!repositoryNode.isInitialized()) {
             if (repositoryNode.getParent() instanceof ProjectRepositoryNode) {
@@ -106,12 +111,13 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     }
 
     private void initialize() {
-        root = (ProjectRepositoryNode) view.getRoot();
+        ProjectRepositoryNode root = getRoot();
+        root = (ProjectRepositoryNode) getView().getRoot();
 
         String currentPerspective = IBrandingConfiguration.PERSPECTIVE_DI_ID;
 
         try {
-            currentPerspective = view.getSite().getPage().getPerspective().getId();
+            currentPerspective = getView().getSite().getPage().getPerspective().getId();
         } catch (Exception e) {
             // do nothing
             // this exception is just in case, since for some specific cases, page can be null (shouldn't happen but..)
@@ -125,15 +131,15 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return the processNode
      */
     public RepositoryNode getProcessNode() {
-        return root.getProcessNode();
+        return getRoot().getProcessNode();
     }
 
     public RepositoryNode getJobletNode() {
-        return root.getJobletNode();
+        return getRoot().getJobletNode();
     }
 
     public RepositoryNode getReferenceProjectNode() {
-        return root.getReferenceProjectNode();
+        return getRoot().getReferenceProjectNode();
     }
 
     /**
@@ -142,10 +148,10 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return the metadataConNode
      */
     public RepositoryNode getMetadataConNode() {
-        if (root.getMetadataConNode() == null) {
-            getChildren(root.getMetadataConNode());
+        if (getRoot().getMetadataConNode() == null) {
+            getChildren(getRoot().getMetadataConNode());
         }
-        return root.getMetadataConNode();
+        return getRoot().getMetadataConNode();
     }
 
     /**
@@ -154,10 +160,10 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return the metadataConNode
      */
     public RepositoryNode getMetadataServicesNode() {
-        if (root.getMetadataConNode() == null) {
-            getChildren(root.getMetadataConNode());
+        if (getRoot().getMetadataConNode() == null) {
+            getChildren(getRoot().getMetadataConNode());
         }
-        return root.getMetadataConNode();
+        return getRoot().getMetadataConNode();
     }
 
     /**
@@ -166,7 +172,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return the codeNode
      */
     public RepositoryNode getCodeNode() {
-        return root.getCodeNode();
+        return getRoot().getCodeNode();
     }
 
     /**
@@ -175,7 +181,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return the metadataFileNode
      */
     public RepositoryNode getMetadataFileNode() {
-        return root.getMetadataFileNode();
+        return getRoot().getMetadataFileNode();
     }
 
     /**
@@ -184,7 +190,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return the metadataFilePositionalNode
      */
     public RepositoryNode getMetadataFilePositionalNode() {
-        return root.getMetadataFilePositionalNode();
+        return getRoot().getMetadataFilePositionalNode();
     }
 
     /**
@@ -193,7 +199,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return the metadataFileRegexpNode
      */
     public RepositoryNode getMetadataFileRegexpNode() {
-        return root.getMetadataFileRegexpNode();
+        return getRoot().getMetadataFileRegexpNode();
     }
 
     /**
@@ -202,15 +208,15 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return the metadataFileXmlNode
      */
     public RepositoryNode getMetadataFileXmlNode() {
-        return root.getMetadataFileXmlNode();
+        return getRoot().getMetadataFileXmlNode();
     }
 
     public RepositoryNode getMetadataValidationRulesNode() {
-        return root.getMetadataValidationRulesNode();
+        return getRoot().getMetadataValidationRulesNode();
     }
 
     public RepositoryNode getMetadataEDIFACTNode() {
-        return root.getMetadataEdifactNode();
+        return getRoot().getMetadataEdifactNode();
     }
 
     /**
@@ -219,7 +225,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return the metadataFileLdifNode
      */
     public RepositoryNode getMetadataFileLdifNode() {
-        return root.getMetadataFileLdifNode();
+        return getRoot().getMetadataFileLdifNode();
     }
 
     /**
@@ -228,7 +234,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return the metadataGenericSchemaNode
      */
     public RepositoryNode getMetadataGenericSchemaNode() {
-        return root.getMetadataGenericSchemaNode();
+        return getRoot().getMetadataGenericSchemaNode();
     }
 
     /**
@@ -237,7 +243,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return the metadataLDAPSchemaNode
      */
     public RepositoryNode getMetadataLDAPSchemaNode() {
-        return root.getMetadataLDAPSchemaNode();
+        return getRoot().getMetadataLDAPSchemaNode();
     }
 
     /**
@@ -246,7 +252,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return the metadataWSDLSchemaNode
      */
     public RepositoryNode getMetadataWSDLSchemaNode() {
-        return root.getMetadataWSDLSchemaNode();
+        return getRoot().getMetadataWSDLSchemaNode();
     }
 
     /**
@@ -255,7 +261,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return the metadataNode
      */
     public RepositoryNode getMetadataNode() {
-        return root.getMetadataNode();
+        return getRoot().getMetadataNode();
     }
 
     /**
@@ -264,7 +270,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return the metadataFileExcelNode
      */
     public RepositoryNode getMetadataFileExcelNode() {
-        return root.getMetadataFileExcelNode();
+        return getRoot().getMetadataFileExcelNode();
     }
 
     /**
@@ -273,11 +279,11 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return the metadataSalesforceSchemaNode
      */
     public RepositoryNode getMetadataSalesforceSchemaNode() {
-        return root.getMetadataSalesforceSchemaNode();
+        return getRoot().getMetadataSalesforceSchemaNode();
     }
 
     public RepositoryNode getMetadataBRMSConnectionNode() {
-        return root.getMetadataBRMSConnectionNode();
+        return getRoot().getMetadataBRMSConnectionNode();
     }
 
     public String[] gatherMetdataChildrens() {
@@ -299,22 +305,33 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     }
 
     public RepositoryNode getMetadataSAPConnectionNode() {
-        return root.getMetadataSAPConnectionNode();
+        return getRoot().getMetadataSAPConnectionNode();
     }
 
     public RepositoryNode getMetadataHeaderFooterConnectionNode() {
-        return root.getMetadataHeaderFooterConnectionNode();
+        return getRoot().getMetadataHeaderFooterConnectionNode();
     }
 
     public RepositoryNode getMetadataMdmConnectionNode() {
-        return root.getMetadataMDMConnectionNode();
+        return getRoot().getMetadataMDMConnectionNode();
     }
 
     public RepositoryNode getRootRepositoryNode(ERepositoryObjectType type) {
-        return root.getRootRepositoryNode(type);
+        RepositoryNode rootRepositoryNode = getRoot().getRootRepositoryNode(type);
+        if (rootRepositoryNode == null) {
+            initialize();
+            // re-retrieve
+            rootRepositoryNode = getRoot().getRootRepositoryNode(type);
+        }
+        if (rootRepositoryNode != null && rootRepositoryNode.getChildren().isEmpty()) {
+            // retrieve child
+            getChildren(rootRepositoryNode);
+
+        }
+        return rootRepositoryNode;
     }
 
     public ProjectRepositoryNode getRoot() {
-        return root;
+        return (ProjectRepositoryNode) getView().getRoot();
     }
 }
