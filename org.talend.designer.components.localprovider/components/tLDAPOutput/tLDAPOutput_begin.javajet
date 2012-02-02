@@ -140,6 +140,14 @@ int nb_line_<%=cid %> = 0;
 			}
 		}
 		
+		public void checkStringUpdateAttr(boolean isBase64,String columnName,javax.naming.directory.Attribute attrForUpdate,String inputValue) throws com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException{
+			if(isBase64){
+				attrForUpdate.add(com.sun.org.apache.xml.internal.security.utils.Base64.decode(inputValue));
+			}else{
+				attrForUpdate.add(inputValue);
+			}
+		}
+		
 	}
 	CheckBase64_<%=cid%> base64_<%=cid%> = new CheckBase64_<%=cid%>();
 	//check is base64 end
