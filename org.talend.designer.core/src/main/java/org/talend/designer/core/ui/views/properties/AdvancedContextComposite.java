@@ -159,10 +159,10 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
             if (parameter.isDynamicSettings()
                     && parameter.isShow(node.getElementParameters())
                     && parameter.getCategory() != EComponentCategory.TECHNICAL
-                    && (parameter.getFieldType() == EParameterFieldType.CHECK || parameter.getFieldType() == EParameterFieldType.CLOSED_LIST)
-                    || parameter.getFieldType() == EParameterFieldType.MODULE_LIST
-                    || parameter.getFieldType() == EParameterFieldType.RADIO
-                    || parameter.getFieldType() == EParameterFieldType.COMPONENT_LIST) {
+                    && (parameter.getFieldType() == EParameterFieldType.CHECK
+                            || parameter.getFieldType() == EParameterFieldType.CLOSED_LIST
+                            || parameter.getFieldType() == EParameterFieldType.MODULE_LIST
+                            || parameter.getFieldType() == EParameterFieldType.RADIO || parameter.getFieldType() == EParameterFieldType.COMPONENT_LIST)) {
                 legalParameters.add(parameter);
             }
         }
