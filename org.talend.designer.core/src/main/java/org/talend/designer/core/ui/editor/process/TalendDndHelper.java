@@ -112,7 +112,8 @@ final class TalendDndHelper {
 
                     Pattern pattern = Pattern.compile("^.*oracle.*$", Pattern.CASE_INSENSITIVE);
 
-                    if (pattern.matcher(name.getDBType()).matches()
+                    if (name.getDBType() != null
+                            && pattern.matcher(name.getDBType()).matches()
                             && (emfComponent.getName().equals("tAmazonOracleInput") || emfComponent.getName().equals(
                                     "tAmazonOracleOutput"))) {
 
