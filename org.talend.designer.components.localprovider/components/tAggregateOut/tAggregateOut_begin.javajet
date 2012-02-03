@@ -517,8 +517,9 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
            		} else if(function.equals(AVG)) {
 					
 					%>int <%=funin[OUTPUT_COLUMN] %>_count = 0;
+					<% if(!outputColumn.getTalendType().equals("id_Float") && !outputColumn.getTalendType().equals("id_Double")){%>
 					  double temp_<%=funin[OUTPUT_COLUMN] %>_sum;
-           			<%
+           			<%}
            			 
            		} else if(LIST.equals(function)) {
            			
