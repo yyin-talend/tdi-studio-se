@@ -434,7 +434,11 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             }
             category.add(EComponentCategory.VERSIONS);
             if (GlobalServiceRegister.getDefault().isServiceRegistered(IHeaderFooterProviderService.class)) {
-                category.add(EComponentCategory.HEADERFOOTER);
+                IHeaderFooterProviderService headerFooterService = (IHeaderFooterProviderService) GlobalServiceRegister
+                        .getDefault().getService(IHeaderFooterProviderService.class);
+                if (headerFooterService.isVisible()) {
+                    category.add(EComponentCategory.HEADERFOOTER);
+                }
             }
 
             // if svn remote connection, added by nma
