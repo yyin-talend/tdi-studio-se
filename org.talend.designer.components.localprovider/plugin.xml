@@ -27,4 +27,12 @@
             id="org.talend.designer.components.localprovider.MDMTriggerJetFileProvider">
       </jetProvider>
    </extension>
+   <extension
+         point="org.talend.core.runtime.repositoryComponent_provider">
+      <DragAndDropFilter
+            clazz="org.talend.designer.components.dnd.TAmazonOracleDndFilter"
+            id="org.talend.designer.components.localprovider.tAmazonOracleFilter"
+            name="tAmazonOracleInput/Output">
+      </DragAndDropFilter>
+   </extension>
 </plugin>
