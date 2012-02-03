@@ -33,8 +33,8 @@ public class TAmazonOracleDndFilter extends DefaultRepositoryComponentDndFilter 
     @Override
     public boolean except(Item item, ERepositoryObjectType type, RepositoryNode seletetedNode, IComponent component,
             String repositoryType) {
-        if (component != null && (component.getName().equals("tAmazonOracleInput") //$NON-NLS-1$
-                || component.getName().equals("tAmazonOracleOutput"))) { //$NON-NLS-1$
+        // for tAmazonOracleInput/Output/Connection/Row
+        if (component != null && component.getName().startsWith("tAmazonOracle")) { //$NON-NLS-1$
             return true;
         }
         return false;
