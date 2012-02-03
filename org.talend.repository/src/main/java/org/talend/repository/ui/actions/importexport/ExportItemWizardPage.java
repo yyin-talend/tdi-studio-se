@@ -197,24 +197,24 @@ class ExportItemWizardPage extends WizardPage {
             // for bug 10969
             Set<RepositoryNode> newSelection = new HashSet<RepositoryNode>();
             for (RepositoryNode currentNode : (List<RepositoryNode>) selection.toList()) {
-                List<IRepositoryViewObject> objects = null;
-                if (currentNode.getContentType() != null && currentNode.getObject() != null
-                        && currentNode.getObjectType() != ERepositoryObjectType.FOLDER) {
-                    try {
-                        objects = exportItemsTreeViewer.getAll(currentNode.getObjectType());
-                    } catch (IllegalArgumentException e) {
-                        // do nothing
-                        objects = new ArrayList<IRepositoryViewObject>();
-                    }
-
-                    for (IRepositoryViewObject nodeToSelect : objects) {
-                        if (currentNode.getObject().getId().equals(nodeToSelect.getId())) {
-                            newSelection.add((RepositoryNode) nodeToSelect.getRepositoryNode());
-                        }
-                    }
-                } else {
-                    newSelection.add(currentNode);
-                }
+                // List<IRepositoryViewObject> objects = null;
+                // if (currentNode.getContentType() != null && currentNode.getObject() != null
+                // && currentNode.getObjectType() != ERepositoryObjectType.FOLDER) {
+                // try {
+                // objects = exportItemsTreeViewer.getAll(currentNode.getObjectType());
+                // } catch (IllegalArgumentException e) {
+                // // do nothing
+                // objects = new ArrayList<IRepositoryViewObject>();
+                // }
+                //
+                // for (IRepositoryViewObject nodeToSelect : objects) {
+                // if (currentNode.getObject().getId().equals(nodeToSelect.getId())) {
+                // newSelection.add((RepositoryNode) nodeToSelect.getRepositoryNode());
+                // }
+                // }
+                // } else {
+                newSelection.add(currentNode);
+                // }
             }
 
             repositoryNodes.addAll(newSelection);
