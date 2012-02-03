@@ -216,6 +216,7 @@ public class ExternalDataConverter {
                     // remove table settings in main ,set false in case the value is true in previous version
                     if (EConnectionType.FLOW_MAIN == connection.getConnectionType()) {
                         inputTable.setActivateCondensedTool(false);
+                        inputTable.setPersistent(false);// bug TDI-8027
                     }
                 }
             }
@@ -226,6 +227,7 @@ public class ExternalDataConverter {
                 // remove table settings in main ,set false in case the value is true in previous version
                 if (EConnectionType.FLOW_MAIN == connection.getConnectionType()) {
                     inputTable.setActivateCondensedTool(false);
+                    inputTable.setPersistent(false);// bug TDI-8027
                 }
             }
         }
