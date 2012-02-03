@@ -78,7 +78,7 @@ if(columnList != null && columnList.size() > 0) {
     String surrogateKey = ElementParameterParser.getValue(node,"__SURROGATE_KEY__");
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
     if(!("NONE").equals(tableAction)) {
-        List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);
+        List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null, true, surrogateKey, 1, 1);
         Manager manager = getManager(dbmsId, cid);
         if(("DROP_CREATE").equals(tableAction)) {
             %>
@@ -86,13 +86,13 @@ if(columnList != null && columnList.size() > 0) {
             stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
             stmtDrop_<%=cid%>.close();
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure,surrogateKey)%>");
+            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
             stmtCreate_<%=cid%>.close();
             <%
         } else if(("CREATE").equals(tableAction)) {
             %>
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure,surrogateKey)%>");
+            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
             stmtCreate_<%=cid%>.close();
             <%
         } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
@@ -113,7 +113,7 @@ if(columnList != null && columnList.size() > 0) {
                 %>
                 if(!whetherExist_<%=cid%>) {
                     java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                    stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure,surrogateKey)%>");
+                    stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
                     stmtCreate_<%=cid%>.close();
                 }                
                 <%
@@ -125,7 +125,7 @@ if(columnList != null && columnList.size() > 0) {
                     stmtDrop_<%=cid%>.close();
                 }
                 java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure,surrogateKey)%>");
+                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
                 stmtCreate_<%=cid%>.close();
             <%
             }
