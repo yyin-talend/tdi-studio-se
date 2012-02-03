@@ -32,7 +32,7 @@
       <DragAndDropFilter
             clazz="org.talend.designer.components.dnd.TAmazonOracleDndFilter"
             id="org.talend.designer.components.localprovider.tAmazonOracleFilter"
-            name="tAmazonOracleInput/Output">
+            name="tAmazonOracleXXX">
       </DragAndDropFilter>
    </extension>
 </plugin>
