@@ -80,7 +80,12 @@ if(columnList != null && columnList.size() > 0) {
     boolean autoIncrease = "AUTO_INCREMENT".equals(surrogateKeyType)&&surrogateKey!=null;
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
     if(!("NONE").equals(tableAction)) {
-        List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null, true, surrogateKey, 1, 1);
+        List<Column> stmtStructure = null;
+        if(autoIncrease){
+	        stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null, true, surrogateKey, 1, 1);
+        }else{
+        	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, null, null);
+        }
         Manager manager = getManager(dbmsId, cid);
         if(("DROP_CREATE").equals(tableAction)) {
             %>
