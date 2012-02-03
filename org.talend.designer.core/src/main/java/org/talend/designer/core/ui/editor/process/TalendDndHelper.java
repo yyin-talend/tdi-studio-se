@@ -51,6 +51,33 @@ final class TalendDndHelper {
 
     private static final String RECEIVE = "Receive"; //$NON-NLS-1$
 
+    private static final String[] ORACLE_AMAZON_STRING = { "tAmazonOracleInput", "tAmazonOracleOutput",
+            "tAmazonOracleConnection", "tAmazonOracleRow" };
+
+    /**
+     * 
+     * DOC JKWANG Comment method "isOracleAmazonStringContained".
+     * 
+     * @param string
+     * @return
+     */
+    private static boolean isOracleAmazonStringContained(String dbType, String emfName) {
+
+        if (dbType != null && emfName != null
+                && Pattern.compile("^.*oracle.*$", Pattern.CASE_INSENSITIVE).matcher(dbType).matches()) {
+
+            for (String amazonString : ORACLE_AMAZON_STRING) {
+
+                if (emfName.equals(amazonString)) {
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public static List<IComponent> filterNeededComponents(Item item, RepositoryNode seletetedNode, ERepositoryObjectType type) {
         EDatabaseComponentName name = EDatabaseComponentName.getCorrespondingComponentName(item, type);
         List<IComponent> neededComponents = new ArrayList<IComponent>();
@@ -110,14 +137,10 @@ final class TalendDndHelper {
 
                 if (((componentProductname != null && productNameWanted.endsWith(componentProductname)) && value) || flag) {
 
-                    Pattern pattern = Pattern.compile("^.*oracle.*$", Pattern.CASE_INSENSITIVE);
-
-                    if (name.getDBType() != null
-                            && pattern.matcher(name.getDBType()).matches()
-                            && (emfComponent.getName().equals("tAmazonOracleInput") || emfComponent.getName().equals(
-                                    "tAmazonOracleOutput"))) {
+                    if (isOracleAmazonStringContained(name.getDBType(), emfComponent.getName())) {
 
                         continue;
+
                     }
 
                     if (item instanceof MDMConnectionItem) {
