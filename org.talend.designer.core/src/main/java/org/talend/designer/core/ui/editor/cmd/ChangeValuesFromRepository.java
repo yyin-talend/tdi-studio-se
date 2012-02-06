@@ -195,6 +195,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
         IElementParameter elemParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
         if (elemParam != null) {
+            // add for TDI-8053
+            elemParam.setValue(Boolean.FALSE);
             allowAutoSwitch = (Boolean) elemParam.getValue();
         }
         if (!allowAutoSwitch && (elem instanceof Node)) {
