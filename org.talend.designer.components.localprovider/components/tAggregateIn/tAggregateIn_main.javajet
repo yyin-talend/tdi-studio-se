@@ -248,7 +248,7 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
     								<%
 									} else {
 									%>
-	    								double <%= outputConn.getName() %>_<%=outOperation %>_temp =  aggregated_row_<%=cid %>.temp_<%=outOperation %>_sum / (double) aggregated_row_<%=cid %>.<%=outOperation %>_count;
+	    								double <%= outputConn.getName() %>_<%=outOperation %>_temp =  aggregated_row_<%=cid %>.<%=outOperation %>_sum / (double) aggregated_row_<%=cid %>.<%=outOperation %>_count;
 	    								
 	    								<% 
 	    								if(outputIsString) {

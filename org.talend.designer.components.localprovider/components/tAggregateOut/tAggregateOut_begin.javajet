@@ -96,24 +96,11 @@ for(int i=0; i<sizeOperations; i++){
 		distinctCols.put(in, in);
 		hasCountDistinctOperation = true;
 	}
-	if(("avg").equals(fun)){
-		String[] funin = new String[3];
-		funin[FUNCTION]=SUM;
-		funin[INPUT_COLUMN]=in;
-		funin[OUTPUT_COLUMN]=out;
-		funinOperations.add(funin);
-		funin=new String[3];
-		funin[FUNCTION]=AVG;
-		funin[INPUT_COLUMN]=in;
-		funin[OUTPUT_COLUMN]=out;
-		funinOperations.add(funin);
-	}else{
 		String[] funin = new String[3];
 		funin[FUNCTION]=fun;
 		funin[INPUT_COLUMN]=in;
 		funin[OUTPUT_COLUMN]=out;
 		funinOperations.add(funin);
-	}
 }
 
 java.util.Map<String,IMetadataColumn> keysColumns = new java.util.HashMap<String,IMetadataColumn>();
@@ -517,8 +504,10 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
            		} else if(function.equals(AVG)) {
 					
 					%>int <%=funin[OUTPUT_COLUMN] %>_count = 0;
-					<% if(!inputColumn.getTalendType().equals("id_Float") && !inputColumn.getTalendType().equals("id_Double")){%>
-					  double temp_<%=funin[OUTPUT_COLUMN] %>_sum;
+					<%if(forceUseBigDecimal){%>
+						BigDecimal <%=funin[OUTPUT_COLUMN] %>_sum;
+					<%}else{%>
+						<%=JavaTypesManager.getTypeToGenerate("id_Double", outputColumn.isNullable()) %> <%=funin[OUTPUT_COLUMN] %>_sum;
            			<%}
            			 
            		} else if(LIST.equals(function)) {
