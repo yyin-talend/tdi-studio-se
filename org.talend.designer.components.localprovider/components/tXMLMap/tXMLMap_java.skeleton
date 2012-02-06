@@ -111,7 +111,7 @@ public class CLASS {
 		}
 		
 		private void init(TreeNode node) {
-			if(node.getOutgoingConnections().size()>0 || node.getLookupOutgoingConnections().size()>0){
+			if(node.getOutgoingConnections().size()>0 || node.getLookupOutgoingConnections().size()>0 || node.getFilterOutGoingConnections().size()>0){
 				String talendType = node.getType();
 				JavaType javaType = JavaTypesManager.getJavaTypeFromId(talendType);
 				String typeToGenerate = JavaTypesManager.getTypeToGenerate(talendType, node.isNullable());
@@ -333,7 +333,7 @@ public class CLASS {
 		}
 		
 		private void findOutputNodes(TreeNode currentNode, List<TreeNode> outNodes){
-			if(currentNode.getOutgoingConnections().size()>0 || currentNode.getLookupOutgoingConnections().size()>0){
+			if(currentNode.getOutgoingConnections().size()>0 || currentNode.getLookupOutgoingConnections().size()>0 || currentNode.getFilterOutGoingConnections().size()>0){
 				outNodes.add(currentNode);
 			}
 			for(TreeNode childNode : currentNode.getChildren()) {

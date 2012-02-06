@@ -25,6 +25,7 @@
 			org.talend.designer.xmlmap.model.emf.xmlmap.Connection
 			org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree
 			org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection
+			org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection
 			org.talend.designer.xmlmap.model.emf.xmlmap.NodeType
 			org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree

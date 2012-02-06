@@ -116,18 +116,13 @@ skeleton="tXMLMap_java.skeleton"
 				    			documentColumn = columnName;
 				    			EList<Connection> outputs = leaf.getOutgoingConnections();
 				    			EList<LookupConnection> lookupOutputs = leaf.getLookupOutgoingConnections();
-					    		if(outputs!=null && outputs.size()!=0) {
-					    			hasOutputFromLookupDoc = true;
-					    			hasOutgoingConnection = true;
-					    		} else if(lookupOutputs!=null && lookupOutputs.size()!=0) {
+				    			EList<FilterConnection> filterOutputs = leaf.getFilterOutGoingConnections();
+					    		if((outputs!=null && outputs.size()!=0) || (lookupOutputs!=null && lookupOutputs.size()!=0) || (filterOutputs!=null && filterOutputs.size()!=0)) {
 					    			hasOutputFromLookupDoc = true;
 					    			hasOutgoingConnection = true;
 					    		}
 				    		}
-				    	  	if(leaf.getOutgoingConnections().size() > 0){
-						    	hasOutgoingConnection = true;
-						    }
-						    if(leaf.getLookupOutgoingConnections().size() > 0) {
+				    	  	if(leaf.getOutgoingConnections().size() > 0 || leaf.getLookupOutgoingConnections().size() > 0 || leaf.getFilterOutGoingConnections().size() > 0){
 						    	hasOutgoingConnection = true;
 						    }
 						    
