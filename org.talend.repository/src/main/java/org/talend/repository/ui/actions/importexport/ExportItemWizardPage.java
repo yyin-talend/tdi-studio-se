@@ -67,6 +67,7 @@ import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.ProcessUtils;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.Property;
@@ -239,7 +240,7 @@ class ExportItemWizardPage extends WizardPage {
             if (checkedObj[i] instanceof RepositoryNode) {
                 RepositoryNode checkedNode = (RepositoryNode) checkedObj[i];
                 if (checkedNode != null && !RepositoryNode.NO_ID.equals(checkedNode.getId())) {
-                    if (checkedNode.getChildren().isEmpty()) {
+                    if (ENodeType.REPOSITORY_ELEMENT.equals(checkedNode.getType())) {
                         checkedNodes.add(checkedNode);
                     }
                 }
@@ -650,10 +651,10 @@ class ExportItemWizardPage extends WizardPage {
             relations = builder.getItemsRelatedTo(item.getProperty().getId(), item.getProperty().getVersion(),
                     RelationshipItemBuilder.JOB_RELATION);
         }
-        for (RelationshipItemBuilder.Relation relation : relations) {
-            IRepositoryViewObject obj = null;
-            String id = relation.getId();
-            try {
+        try {
+            for (RelationshipItemBuilder.Relation relation : relations) {
+                IRepositoryViewObject obj = null;
+                String id = relation.getId();
                 if (RelationshipItemBuilder.ROUTINE_RELATION.equals(relation.getType())) {
                     obj = RoutinesUtil.getRoutineFromName(id);
                 } else {
@@ -662,21 +663,39 @@ class ExportItemWizardPage extends WizardPage {
                     }
                     obj = factory.getLastVersion(id);
                 }
-                if (obj != null) {
-                    RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(obj, false);
-                    if (repositoryNode != null) {
-                        if (!repositoryObjects.contains(obj)) {
-                            repositoryObjects.add(obj);
-                            checkAllVerSionLatest(repositoryObjects, obj);
-                            checkItemDependencies(obj.getProperty().getItem(), repositoryObjects);
-                        }
+                checkItemDependencies(obj, repositoryObjects);
+
+            }
+
+            // fix for TDI-19548 , and should be removed after implement add connection and context relationship to
+            // RelationshipItemBuilder
+            if (item instanceof ConnectionItem) {
+                ConnectionItem connectionItem = (ConnectionItem) item;
+                if (connectionItem.getConnection().isContextMode()) {
+                    String id = connectionItem.getConnection().getContextId();
+                    if (id != null) {
+                        IRepositoryViewObject object = factory.getLastVersion(id);
+                        checkItemDependencies(object, repositoryObjects);
                     }
                 }
-            } catch (PersistenceException et) {
-                ExceptionHandler.process(et);
             }
+        } catch (PersistenceException et) {
+            ExceptionHandler.process(et);
         }
 
+    }
+
+    private void checkItemDependencies(IRepositoryViewObject obj, List<IRepositoryViewObject> repositoryObjects) {
+        if (obj != null) {
+            RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(obj, false);
+            if (repositoryNode != null) {
+                if (!repositoryObjects.contains(obj)) {
+                    repositoryObjects.add(obj);
+                    checkAllVerSionLatest(repositoryObjects, obj);
+                    checkItemDependencies(obj.getProperty().getItem(), repositoryObjects);
+                }
+            }
+        }
     }
 
     /**
