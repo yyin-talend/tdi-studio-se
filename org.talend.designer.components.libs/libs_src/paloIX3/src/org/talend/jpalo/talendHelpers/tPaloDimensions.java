@@ -183,6 +183,10 @@ public class tPaloDimensions {
 			elementPosition = (int) plElm.getElementPosition();
 			elementName = plElm.getName();
 			elementParentPosition =(int) plElm.getFatherPaloelement().getElementPosition();
+			 //parent position is only -1 ,not 0 	 	 
+            if(elementParentPosition ==0 && elementPosition==0){ 	 	 
+            	elementParentPosition = -1; 	 	 
+            } 
 			elementLevel = getElementLevel(elementName,elementPosition);
 			tPaloDimele = new tPaloDimensionElements(elementPosition,elementName,elementParentPosition,elementLevel);
 			lstPaloDimensionElements.add(tPaloDimele);
