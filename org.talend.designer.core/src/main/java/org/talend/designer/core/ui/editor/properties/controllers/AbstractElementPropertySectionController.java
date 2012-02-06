@@ -1387,6 +1387,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         // General jdbc
         String url = getValueFromRepositoryName(element, EConnectionParameterName.URL.getName());
+        if (StringUtils.isEmpty(url)) {
+            // for oracle RAC
+            url = getValueFromRepositoryName(element, "RAC_" + EConnectionParameterName.URL.getName());
+        }
         connParameters.setUrl(TalendTextUtils.removeQuotes(url));
 
         String driverJar = getValueFromRepositoryName(element, EConnectionParameterName.DRIVER_JAR.getName());
@@ -1491,9 +1495,14 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setDirectory(getParameterValueWithContext(element, EConnectionParameterName.DIRECTORY.getName(), context));
         connParameters.setHttps(Boolean.parseBoolean(getParameterValueWithContext(element,
                 EConnectionParameterName.HTTPS.getName(), context)));
-        // TODO here maybe need url,driver class, driver jar parameters setting.
-        connParameters.setUrl(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
-                EConnectionParameterName.URL.getName(), context)));
+        String url = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
+                EConnectionParameterName.URL.getName(), context));
+        if (StringUtils.isEmpty(url)) {
+            // try to get url for oracle RAC.
+            url = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
+                    "RAC_" + EConnectionParameterName.URL.getName(), context));
+        }
+        connParameters.setUrl(url);
         connParameters.setDriverClass(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
                 EConnectionParameterName.DRIVER_CLASS.getName(), context)));
         connParameters.setDriverJar(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,

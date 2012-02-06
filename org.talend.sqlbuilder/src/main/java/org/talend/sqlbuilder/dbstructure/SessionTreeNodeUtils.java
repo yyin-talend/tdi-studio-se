@@ -117,7 +117,8 @@ public class SessionTreeNodeUtils {
         ISQLAlias alias = createSQLAlias("Repository Name", url, dbconnection.getUsername(), dbconnection //$NON-NLS-1$
                 .getPassword(),
         // fix bug for 7014,added by hyWang
-                dbconnection.getSID().length() == 0 ? (dbconnection.getDatasourceName().length() == 0 ? "Database" //$NON-NLS-1$  
+                dbconnection.getSID() == null || dbconnection.getSID().length() == 0 ? (dbconnection.getDatasourceName() == null
+                        || dbconnection.getDatasourceName().length() == 0 ? "Database" //$NON-NLS-1$  
                         : dbconnection.getDatasourceName()) : dbconnection.getSID());
         SessionTreeModel stm = new SessionTreeModel();
         SessionTreeNode session;
