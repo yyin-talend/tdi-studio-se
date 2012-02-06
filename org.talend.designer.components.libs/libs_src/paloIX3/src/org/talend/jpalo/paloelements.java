@@ -38,7 +38,7 @@ public class paloelements {
 	private paloconnection plConn;
 	private long lDatabaseId;
 	private int iDimensionId;
-	private List<String> temp = new ArrayList<String>();
+	private List<String> elementNameList = new ArrayList<String>();
 	
 	
 	
@@ -224,8 +224,8 @@ public class paloelements {
 	public paloelement createElement(String strElementName, int iElementType, int iMode) throws paloexception{
 		paloelement plElem = null;
 		
-		if(!temp.contains(strElementName)){
-			temp.add(strElementName);
+		if(!elementNameList.contains(strElementName)){
+			elementNameList.add(strElementName);
 			List<NameValuePair> qparams = new ArrayList<NameValuePair>();
 			qparams.add(new BasicNameValuePair("sid", this.plConn.getPaloToken()));
 			qparams.add(new BasicNameValuePair("database", String.valueOf(this.lDatabaseId)));

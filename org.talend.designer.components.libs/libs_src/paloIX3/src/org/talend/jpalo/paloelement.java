@@ -233,6 +233,52 @@ public class paloelement implements Comparable  {
         }		
 	}
 	
+	//get father paloelement 
+	public paloelement getFatherPaloelement() throws paloexception{
+		long identifier = getElementParentIdentifier();
+		paloelement plElm = null;
+		List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+		qparams.add(new BasicNameValuePair("sid", this.plConn.getPaloToken()));
+		qparams.add(new BasicNameValuePair("database", String.valueOf(lDatabaseId)));
+		qparams.add(new BasicNameValuePair("dimension", String.valueOf(this.iDimensionId)));
+		qparams.add(new BasicNameValuePair("element", String.valueOf(identifier)));
+		
+		try{
+		
+			HttpEntity entity = this.plConn.sendToServer(qparams, "/element/info");
+			CsvReader csv = new CsvReader(entity.getContent(), Charset.forName("UTF-8"));
+			csv.setDelimiter(';');
+			csv.setTextQualifier('"');
+			csv.setUseTextQualifier(true);
+			while(csv.readRecord()){
+					if(palohelpers.StringToLong(csv.get(0)) == identifier){
+								plElm = new paloelement(
+			        			this.plConn,
+			        			this.lDatabaseId,
+			        			this.iDimensionId,
+			        			paloElements,
+			        			palohelpers.StringToLong(csv.get(0)),
+			        			csv.get(1),
+			        			palohelpers.StringToInt(csv.get(2)),
+			        			palohelpers.StringToInt(csv.get(3)),
+			        			palohelpers.StringToInt(csv.get(4)),
+			        			palohelpers.StringToInt(csv.get(5)),
+			        			palohelpers.StringToInt(csv.get(6)),
+			        			palohelpers.StringToInt(csv.get(7)),
+			        			palohelpers.StringToIntArray(csv.get(8), palohelpers.StringToInt(csv.get(7))),
+			        			palohelpers.StringToInt(csv.get(9)),
+			        			palohelpers.StringToIntArray(csv.get(10), palohelpers.StringToInt(csv.get(9))),
+			        			palohelpers.StringToDoubleArray(csv.get(11), palohelpers.StringToInt(csv.get(9))));
+					}
+			}
+			csv.close();
+			entity.consumeContent();
+        }catch(Exception e){
+        	throw new paloexception(e.getMessage());
+        }
+        return plElm;
+	}
+	
 	public void refreshElementInfo() throws paloexception{
 		
 		List<NameValuePair> qparams = new ArrayList<NameValuePair>();
