@@ -55,7 +55,7 @@ public class palodimensions {
 				qparams.add(new BasicNameValuePair("show_info","0"));
 				break;
 			case DIMENSION_ATTRIBUTE:
-				qparams.add(new BasicNameValuePair("show_normal","0"));
+				qparams.add(new BasicNameValuePair("show_normal","1"));
 				qparams.add(new BasicNameValuePair("show_system","0"));
 				qparams.add(new BasicNameValuePair("show_attribute","1"));
 				qparams.add(new BasicNameValuePair("show_info","0"));
@@ -128,7 +128,7 @@ public class palodimensions {
 				qparams.add(new BasicNameValuePair("show_info","0"));
 				break;
 			case DIMENSION_ATTRIBUTE:
-				qparams.add(new BasicNameValuePair("show_normal","0"));
+				qparams.add(new BasicNameValuePair("show_normal","1"));
 				qparams.add(new BasicNameValuePair("show_system","0"));
 				qparams.add(new BasicNameValuePair("show_attribute","1"));
 				qparams.add(new BasicNameValuePair("show_info","0"));
