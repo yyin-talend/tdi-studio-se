@@ -160,7 +160,7 @@ if(useExistingConnection) {
         <%
     } else if(("ORACLE_OCI").equals(connectionType)) {
         %>
-        serviceUrl_<%=cid%> = "(description=(address=(protocol=tcp)(host=" + host_<%=cid%> + ")(port=" + <%=port%> + "))(connect_data=(service_name=" + dbname_<%=cid%> + ")))";
+        serviceUrl_<%=cid%> = <%=localServiceName%>;
         url_<%=cid%> = "jdbc:oracle:oci8:@" + <%=localServiceName%>; 
         <%
     }
