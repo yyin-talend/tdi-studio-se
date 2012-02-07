@@ -438,11 +438,8 @@ if(inputConn != null) { // T_OutMain_AggR_501
 					<%
 					}
 					%>
-					<% if(function.equals(AVG)){%>
-					operation_result_<%=cid %>.temp_<%=outputColumnName %>_<%= SUM %> += <%=inputConn.getName() %>.<%=inputColumnName %>.doubleValue();
-					<% }else{%>
 					operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> += <%=inputConn.getName() %>.<%=inputColumnName %>.doubleValue();
-					<%}
+					<%
 				
 				} else {
 				
@@ -452,29 +449,16 @@ if(inputConn != null) { // T_OutMain_AggR_501
 						<%
 					}
 					if(outputColumn.isNullable() && (outputIsByte || outputIsShort)){
-					%>
-					<% if(function.equals(AVG)){%>
-					operation_result_<%=cid %>.temp_<%=outputColumnName %>_<%= SUM %> = (operation_result_<%=cid %>.temp_<%=outputColumnName %>_<%= SUM %> + <%=inputConn.getName() %>.<%=inputColumnName %>.<%=primitiveTypeToGenerate%>Value());
-					<% }else{
 					%>operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> = (<%=primitiveTypeToGenerate%>)(operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %>.<%=primitiveTypeToGenerate%>Value() + <%=inputConn.getName() %>.<%=inputColumnName %>.<%=primitiveTypeToGenerate%>Value());
-					<%}%>
 					<%
 					}else{
 						if(inputColumn.isNullable()  ){
 					%>
 					if( <%=inputConn.getName() %>.<%=inputColumnName %> != null)
-						<% if(function.equals(AVG)){%>
-						operation_result_<%=cid %>.temp_<%=outputColumnName %>_<%= SUM %> += <%=inputConn.getName() %>.<%=inputColumnName %>;
-						<% }else{%>
 						operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> += <%=inputConn.getName() %>.<%=inputColumnName %>;
-						<%}%>
 <%
 					} else {%>
-						<% if(function.equals(AVG)){%>
-						operation_result_<%=cid %>.temp_<%=outputColumnName %>_<%= SUM %> += <%=inputConn.getName() %>.<%=inputColumnName %>;
-						<% }else{%>
 						operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> += <%=inputConn.getName() %>.<%=inputColumnName %>;
-						<%}%>
 					<%
 				    }
 				   }
