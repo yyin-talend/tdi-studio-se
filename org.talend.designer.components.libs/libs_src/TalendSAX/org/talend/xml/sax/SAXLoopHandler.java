@@ -40,6 +40,8 @@ public class SAXLoopHandler extends DefaultHandler2 {
     private List<String> selectColumns = new ArrayList<String>();
 
     private List<Boolean> asXMLs = null;
+    
+    private List<Boolean> isDots = null;
 
     private String currentPath = "";
 
@@ -68,6 +70,8 @@ public class SAXLoopHandler extends DefaultHandler2 {
         this.loopPath = entry.getLoop();
         this.loopCols = entry.getPaths();
         this.asXMLs = entry.getAsXMLs();
+        
+        this.isDots = entry.getIsDots();
         
         outputTexts = new boolean[loopCols.size()];
         
@@ -144,6 +148,7 @@ public class SAXLoopHandler extends DefaultHandler2 {
             for (int i = 0; i < selectColumns.size(); i++) {
                 String column = selectColumns.get(i);
                 boolean asXML = this.asXMLs.get(i);
+                boolean isDot = this.isDots.get(i);
                 outputTexts[i] = false;
                 
                 if (asXML && (currentPath.equals(column) || currentPath.startsWith(column + "/"))) {
@@ -159,6 +164,9 @@ public class SAXLoopHandler extends DefaultHandler2 {
                     outputTexts[i] = true;
                     currentRowHaveValue[i] = false;
                     currentRow[i] = currentRow[i] + ">";
+                } else if (isDot && (currentPath.equals(column) || currentPath.startsWith(column + "/"))) {
+                	outputTexts[i] = true;
+                    currentRowHaveValue[i] = false;
                 } else {
                     int index = column.lastIndexOf("@");
                     if (index > 0) {
@@ -256,8 +264,11 @@ public class SAXLoopHandler extends DefaultHandler2 {
         		}
         		String column = selectColumns.get(i);
         		boolean asXML = this.asXMLs.get(i);
-        		if (asXML && (currentPath.equals(column) || currentPath.startsWith(column + "/"))) {
-        			currentRow[i] += "</" + qName + ">";
+        		boolean isDot = this.isDots.get(i);
+        		if ((asXML || isDot) && (currentPath.equals(column) || currentPath.startsWith(column + "/"))) {
+        			if(asXML) {
+        				currentRow[i] += "</" + qName + ">";
+        			}
         			if(this.currentPath.equals(column)) {
         				currentRowHaveValue[i] = true;
         			}
