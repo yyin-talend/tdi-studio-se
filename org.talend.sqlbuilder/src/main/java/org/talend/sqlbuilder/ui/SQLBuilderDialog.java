@@ -54,6 +54,7 @@ import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.database.DriverShim;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
@@ -66,6 +67,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.core.sqlbuilder.util.TextUtil;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.repository.IRepositoryChangedListener;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.RepositoryElementDelta;
@@ -113,6 +115,8 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     private RepositoryNode node;
 
     private RepositoryNode nodeInEditor;
+
+    private DatabaseConnection connection;
 
     // Ends
 
@@ -530,8 +534,8 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      */
     @Override
     public void cancelPressed() {
-        SQLBuilderRepositoryNodeManager.tList = null;
         super.cancelPressed();
+        SQLBuilderRepositoryNodeManager.tList = null;
     }
 
     /*
@@ -645,6 +649,18 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     }
 
     private void deleteNoUseTable() {
+
+        //add for bug TDI-17097
+        connection = (DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(
+                SQLBuilderRepositoryNodeManager.getRoot(nodeInEditor)).getConnection();
+        if (SQLBuilderRepositoryNodeManager.tList instanceof List) {
+            if (SQLBuilderRepositoryNodeManager.tList.size() == 0) {
+                SQLBuilderRepositoryNodeManager.tList.addAll(ConnectionHelper.getTables(connection));
+            }
+        } else {
+            SQLBuilderRepositoryNodeManager.tList = new ArrayList<MetadataTable>();
+            SQLBuilderRepositoryNodeManager.tList.addAll(ConnectionHelper.getTables(connection));
+        }
 
         if (SQLBuilderRepositoryNodeManager.tList == null || SQLBuilderRepositoryNodeManager.tList.size() == 0) {
             return;
