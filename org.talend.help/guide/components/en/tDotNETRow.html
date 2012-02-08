@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>tDotNETRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="RaaDotNET.html" title="Chapter&nbsp;7.&nbsp;DotNET components"><link rel="prev" href="tDotNETInstantiate.html" title="tDotNETInstantiate"><link rel="next" href="Raa48933-dup-2.html" title="Chapter&nbsp;8.&nbsp;ELT components"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tDotNETRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tDotNETRow"></a>tDotNETRow</h2></div></div></div><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="27"><tr><td><img src="../images/tDotNetRow_icon32_white.png" width="27"></td></tr></table></div><div class="section" title="tDotNETRow properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e213455"></a>tDotNETRow properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+   <title>tDotNETRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="RaaDotNET.html" title="Chapter&nbsp;8.&nbsp;DotNET components"><link rel="prev" href="tDotNETInstantiate.html" title="tDotNETInstantiate"><link rel="next" href="Raa48933.html" title="Chapter&nbsp;9.&nbsp;ESB components"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tDotNETRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tDotNETRow"></a>tDotNETRow</h2></div></div></div><div class="mediaobject"><img src="../images/tDotNetRow_icon32_white.png"></div><div class="section" title="tDotNETRow properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e186968"></a>tDotNETRow properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
 									<p>
 										<span class="bold"><strong>Component family</strong></span>
 									</p>
@@ -13,7 +13,7 @@
 								</td><td colspan="2" valign="top">
 									<p><span class="bold"><strong>tDotNETRow </strong></span> sends data to
 										and from libraries and classes within .NET or other custom
-										dll files. </p>
+										DLL files. </p>
 								</td></tr><tr><td valign="top">
 									<p>
 										<span class="bold"><strong>Purpose</strong></span>
@@ -83,16 +83,19 @@
 										<span class="emphasis"><em>Dll to load</em></span>
 									</p>
 								</td><td valign="top">
-									<p>Fill this field with the path to a dll library or the
-										assembly&#8217;s name or click the <span class="bold"><strong>[...]</strong></span> button to browse to the library in
-										your directory. </p>
+									<p>Type in the path, or browse to the DLL library containing
+										the class(es) of interest or enter the assembly's name to be
+										used. For example, <span class="italic">System.Data,
+											Version=2.0.0.0, Culture=neutral,
+											PublicKeyToken=b77a5c561934e089</span> for an OleDb
+										assembly.</p>
 								</td></tr><tr><td>
 									<p>&nbsp;</p>
 								</td><td>
 									<p>&nbsp;<span class="emphasis"><em>Fully qualified class name(i.e.
 											ClassLibrary1.NameSpace2.Class1)</em></span></p>
 								</td><td valign="top">
-									<p>Fill this field with a fully qualified name for the class.
+									<p>Enter a fully qualified name for the class of interest.
 									</p>
 								</td></tr><tr><td>
 									<p>&nbsp;</p>
@@ -108,6 +111,8 @@
 										to be passed to the constructor for the object. Or, leave
 										this table empty to call a default constructor for the
 										object.</p>
+									<p>The valid value(s) should be the parameters required by
+										the class to be used.</p>
 								</td></tr><tr><td>&nbsp;</td><td>
 									<span class="emphasis"><em>Method Parameters</em></span>
 								</td><td valign="top">
@@ -157,16 +162,14 @@
 										select the appropriate context variable from the
 										list.</p>
 									<p> </p>
-									<p> For further information, see <span class="bluebold">Talend Enterprise Studio</span>
+									<p> For further information, see <span class="bluebold">Talend Open Studio</span>
 										<span class="bold"><strong>User Guide</strong></span>.</p>
 									<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
-											<span class="emphasis"><em>The </em></span>
-											<span class="bold"><strong>Action on table</strong></span>
-											<span class="emphasis"><em> field is not available with the
-												parallelization function. Therefore, you must use a </em></span>
-											<span class="bold"><strong>tCreateTable</strong></span>
-											<span class="emphasis"><em> component if you want to create a
-												table.</em></span>
+											<span class="italic">The <span class="bold"><strong>Action
+												on table</strong></span> field is not available with
+												the parallelization function. Therefore, you must
+												use a <span class="bold"><strong>tCreateTable</strong></span>
+												component if you want to create a table.</span>
 										</p></td></tr></table></div>
 									<div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
 											<span class="emphasis"><em>When parallel execution is enabled, it is not
@@ -178,46 +181,84 @@
 										<span class="bold"><strong>Usage</strong></span>
 									</p>
 								</td><td colspan="2" valign="top">
-									<p> This component is utilized to integrate with .NET
-										objects. </p>
-								</td></tr></tbody></table></div><p>
-					<span>&nbsp;</span>
-				</p></div><div class="section" title="Scenario: Utilizing .NET in Talend"><div class="titlepage"><div><div><h3 class="title"><a name="RaaDotNET-DotNETRow-Sce1"></a>Scenario: Utilizing .NET in Talend</h3></div></div></div><p>This scenario describes a three-component Job that uses a dll library
-					containing a class called MySqlDataReader Class and invokes a method on it that
-					reads data from MySql database and output the data onto the console.</p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow1.png" align="middle"></div><div class="section" title="Connecting components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e213887"></a>Connecting components</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> to the design workspace: <span class="bold"><strong>tDotNETInstantiate</strong></span>, <span class="bold"><strong>tDotNETRow</strong></span> and <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tDotNETInstantiate</strong></span> to
-									<span class="bold"><strong>tDotNETRow</strong></span> using a <span class="bold"><strong>Trigger On Subjob OK</strong></span> connection.</p></li><li class="listitem"><p>Connect <span class="bold"><strong>tDotNETRow</strong></span> to <span class="bold"><strong>tLogRow</strong></span> using a <span class="bold"><strong>Row
-									Main</strong></span> connection.</p></li></ol></div></div><div class="section" title="Configuring tDotNETInstantiate"><div class="titlepage"><div><div><h4 class="title"><a name="d0e213930"></a>Configuring tDotNETInstantiate</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-click <span class="bold"><strong>tDotNETInstantiate</strong></span>
+									<p>This component is utilized to integrate with .NET objects. </p>
+									<p>To use this component, you must first install the runtime
+										DLLs, for example <span class="italic">janet-win32.dll</span> for Windows 32-bit version
+										and <span class="italic">janet-win64.dll</span> for
+										Windows 64-bit version, from the corresponding Microsoft
+										Visual C++ Redistributable Package. This allows you to avoid
+										errors like the <span class="italic">UnsatisfiedLinkError</span> on dependent DLL. </p>
+									<p>So ensure that the runtime and all of the other DLLs which
+										the DLL to be called depends on are installed and their
+										versions are consistent among one another. </p>
+									<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>The required DLLs can be installed in the <span class="italic">System32</span> folder or in the
+												<span class="italic">bin</span> folder of the
+											Java runtime to be used.</p><p>If you need to export a Job using this component to
+											run it outside the Studio, you have to specify the
+											runtime container of interest by setting the <span class="italic">-Djava.library.path</span>
+											argument accordingly.</p></td></tr></table></div>
+								</td></tr></tbody></table></div></div><div class="section" title="Scenario: Utilizing .NET in Talend"><div class="titlepage"><div><div><h3 class="title"><a name="RaaDotNET-DotNETRow-Sce1"></a>Scenario: Utilizing .NET in Talend</h3></div></div></div><p>This scenario describes a three-component Job that uses a DLL library
+					containing a class called <span class="italic">Test1.Class1</span> Class
+					and invokes a method on it that processes the value and output the result onto
+					the console.</p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow1.png" align="middle"></div><div class="section" title="Prerequisites"><div class="titlepage"><div><div><h4 class="title"><a name="d0e187425"></a>Prerequisites</h4></div></div></div><p>Before replicating this scenario, you need first to build up your runtime
+						environment.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Create the DLL to be loaded by <span class="bold"><strong>tDotNETInstantiate</strong></span></p><p>This example class built into .NET reads as follows:</p><pre class="programlisting">using System;<span></span>
+using System.Collections.Generic;<span></span>
+using System.Text;<span></span>
+
+
+namespace Test1<span></span>
+{<span></span>
+    public class Class1<span></span>
+    {<span></span>
+        string s = null;<span></span>
+        public Class1(string s)<span></span>
+        {<span></span>
+            this.s = s;<span></span>
+        }<span></span>
+
+        public string getValue()<span></span>
+        {<span></span>
+            return "Return Value from Class1: " + s;<span></span>
+        }<span></span>
+
+    }<span></span>
+    }</pre><p>This class reads the input value and adds the text <span class="italic">Return Value from Class1:</span> in front of
+								this value. It is compiled using the latest .NET.</p></li><li class="listitem"><p>Install the runtime DLL from the latest .NET. In this scenario, we
+								use <span class="italic">janet-win32.dll</span> on <span class="italic">Windows 32-bit</span> version and place it in
+								the <span class="italic">System32</span> folder.</p><p>Thus the runtime DLL is compatible with the DLL to be
+								loaded.</p></li></ul></div></div><div class="section" title="Connecting components"><div class="titlepage"><div><div><h4 class="title"><a name="d0e187493"></a>Connecting components</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Drop the following components from the <span class="bold"><strong>Palette</strong></span> to the design workspace: <span class="bold"><strong>tDotNETInstantiate</strong></span>, <span class="bold"><strong>tDotNETRow</strong></span> and <span class="bold"><strong>tLogRow</strong></span>.</p></li><li class="step" title="Step 2"><p>Connect <span class="bold"><strong>tDotNETInstantiate</strong></span> to
+									<span class="bold"><strong>tDotNETRow</strong></span> using a <span class="bold"><strong>Trigger On Subjob OK</strong></span> connection.</p></li><li class="step" title="Step 3"><p>Connect <span class="bold"><strong>tDotNETRow</strong></span> to <span class="bold"><strong>tLogRow</strong></span> using a <span class="bold"><strong>Row
+									Main</strong></span> connection.</p></li></ol></div></div><div class="section" title="Configuring tDotNETInstantiate"><div class="titlepage"><div><div><h4 class="title"><a name="d0e187536"></a>Configuring tDotNETInstantiate</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="bold"><strong>tDotNETInstantiate</strong></span>
 								to display its <span class="bold"><strong>Basic settings</strong></span> view
-								and define the component properties.</p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow2.png" align="middle"></div></li><li class="listitem"><p>Click the three-dot button next to the <span class="bold"><strong>Dll
-									to load</strong></span> field and browse to the dll file to be
+								and define the component properties.</p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow2.png" align="middle"></div></li><li class="step" title="Step 2"><p>Click the three-dot button next to the <span class="bold"><strong>Dll
+									to load</strong></span> field and browse to the DLL file to be
 								loaded. Alternatively, you can fill the field with an assembly. In
-								this example, we use:</p><p>
-								<span class="emphasis"><em>"C:/Program Files/MySQL/MySQL Connector Net
-									6.4.4/Assemblies/v4.0/MySql.Data.dll"</em></span>
-							</p></li><li class="listitem"><p>Fill the <span class="bold"><strong>Fully qualified class
+								this example, we use :</p><p>
+								<span class="emphasis"><em>"C:/Program
+									Files/ClassLibrary1/bin/Debug/ClassLibrary1.dll""</em></span>
+							</p></li><li class="step" title="Step 3"><p>Fill the <span class="bold"><strong>Fully qualified class
 									name</strong></span> field with a valid class name to be used. In
 								this example, we use:</p><p>
-								<span class="emphasis"><em>"MySqlDataReader Class"</em></span>
-							</p></li><li class="listitem"><p>Click the plus button beneath the <span class="bold"><strong>Value(s)
+								<span class="emphasis"><em>"Test1.Class1"</em></span>
+							</p></li><li class="step" title="Step 4"><p>Click the plus button beneath the <span class="bold"><strong>Value(s)
 									to pass to the constructor</strong></span> table to add a new line
 								for the value to be passed to the constructor.</p><p>In this example, we use:</p><p>
-								<code class="code">"Server=192.168.0.63;Port=3306;Database=mysql77;Uid=myroot;Pwd=root;"</code>
-							</p></li></ol></div></div><div class="section" title="Configuring tDotNETRow"><div class="titlepage"><div><div><h4 class="title"><a name="d0e213981"></a>Configuring tDotNETRow</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-click <span class="bold"><strong>tDotNETRow</strong></span> to
+								<code class="code">"Hello world"</code>
+							</p></li></ol></div></div><div class="section" title="Configuring tDotNETRow"><div class="titlepage"><div><div><h4 class="title"><a name="d0e187587"></a>Configuring tDotNETRow</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="bold"><strong>tDotNETRow</strong></span> to
 								display its <span class="bold"><strong>Basic settings</strong></span> view and
-								define the component properties. </p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow3.png" align="middle"></div></li><li class="listitem"><p>Select <span class="bold"><strong>Propagate data to output</strong></span>
-								check box.</p></li><li class="listitem"><p>Select <span class="bold"><strong>Use an existing instance</strong></span>
-								check box and select <span class="bold"><strong>tDotNETInstantiate_1</strong></span> from the <span class="bold"><strong>Existing instance to use</strong></span> list on the right.</p></li><li class="listitem"><p>Fill the <span class="bold"><strong>Method Name</strong></span> field with a
+								define the component properties. </p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow3.png" align="middle"></div></li><li class="step" title="Step 2"><p>Select <span class="bold"><strong>Propagate data to output</strong></span>
+								check box.</p></li><li class="step" title="Step 3"><p>Select <span class="bold"><strong>Use an existing instance</strong></span>
+								check box and select <span class="bold"><strong>tDotNETInstantiate_1</strong></span> from the <span class="bold"><strong>Existing instance to use</strong></span> list on the right.</p></li><li class="step" title="Step 4"><p>Fill the <span class="bold"><strong>Method Name</strong></span> field with a
 								method name to be used. In this example, we use
-									<span class="emphasis"><em>"GetData"</em></span>.</p><p>
-								</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>For further information about this method, see <a class="link" href="http://msdn.microsoft.com/en-us/library/1f4hddda" target="_top">DbDataReader.GetData Method</a>.</p></td></tr></table></div><p>
-							</p></li><li class="listitem"><p>Click the three-dot button next to <span class="bold"><strong>Edit
+									<span class="emphasis"><em>"getValue"</em></span>, a custom method.</p></li><li class="step" title="Step 5"><p>Click the three-dot button next to <span class="bold"><strong>Edit
 									schema</strong></span> to add one column to the schema.</p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow4.png" align="middle"></div><p>Click the plus button beneath the table to add a new column to the
 								schema and click <span class="bold"><strong>OK</strong></span> to save the
-								setting.</p></li><li class="listitem"><p> Select <span class="bold"><strong>newColumn</strong></span> from
+								setting.</p></li><li class="step" title="Step 6"><p>Select <span class="bold"><strong>newColumn</strong></span> from
 									the<span class="bold"><strong> Output value target column</strong></span>
-								list.</p></li><li class="listitem"><p>Leave rest of the settings as they are.</p></li></ol></div></div><div class="section" title="Configuring tLogRow"><div class="titlepage"><div><div><h4 class="title"><a name="d0e214059"></a>Configuring tLogRow</h4></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-click <span class="bold"><strong>tLogRow</strong></span> to display
+								list.</p></li></ol></div></div><div class="section" title="Configuring tLogRow"><div class="titlepage"><div><div><h4 class="title"><a name="d0e187653"></a>Configuring tLogRow</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="bold"><strong>tLogRow</strong></span> to display
 								its <span class="bold"><strong>Basic settings</strong></span> view and define
-								the component properties. </p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow5.png" align="middle"></div></li><li class="listitem"><p>Click <span class="bold"><strong>Sync columns</strong></span> button to
-								retrieve the schema defined in the preceding component.</p></li><li class="listitem"><p>Select <span class="bold"><strong>Table</strong></span> in the <span class="bold"><strong>Mode</strong></span> area.</p></li><li class="listitem"><p>Leave the rest settings as they are.</p></li></ol></div><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute
-						it.</p><p>The data read from the MySql database is then output onto the
-						console.</p></div></div></div></body></html>
+								the component properties. </p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow5.png" align="middle"></div></li><li class="step" title="Step 2"><p>Click <span class="bold"><strong>Sync columns</strong></span> button to
+								retrieve the schema defined in the preceding component.</p></li><li class="step" title="Step 3"><p>Select <span class="bold"><strong>Table</strong></span> in the <span class="bold"><strong>Mode</strong></span> area.</p></li></ol></div><p>Save your Job and press <span class="bold"><strong>F6</strong></span> to execute
+						it.</p><div class="mediaobject" align="center"><img src="../images/use_case-tdotnetrow-result.png" align="middle"></div><p>From the result, you can read that the text <code class="code">Return Value from
+							Class1</code> is added in front of the retrieved value <code class="code">Hello
+							world</code>.</p></div></div></div></body></html>

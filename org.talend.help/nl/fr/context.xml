@@ -309,12 +309,16 @@
     <description>Instancie un objet .NET à partir de Talend.</description>
     <topic href="guide/components/fr/tDotNETInstantiate.html" label="tDotNETInstantiate Component Documentation"/>
   </context>
+  <context id="tDotNETRow">
+    <description>Passe des valeurs d'un flux  à la méthode d'un objet .NET</description>
+    <topic href="guide/components/fr/tDotNETRow.html" label="tDotNETRow Component Documentation"/>
+  </context>
   <context id="tDTDValidator">
     <description>Valide l'entrée XML par rapport à un fichier DTD</description>
     <topic href="guide/components/fr/tDTDValidator.html" label="tDTDValidator Component Documentation"/>
   </context>
   <context id="tEDIFACTtoXML">
-    <description>Ferme une connexion Access sélectionée</description>
+    <description>Génère un document XML à partir d'un fichier EDIFACT</description>
     <topic href="guide/components/fr/tEDIFACTtoXML.html" label="tEDIFACTtoXML Component Documentation"/>
   </context>
   <context id="tELTJDBCInput">
@@ -482,7 +486,7 @@
     <topic href="guide/components/fr/tFileDelete.html" label="tFileDelete Component Documentation"/>
   </context>
   <context id="tFileExist">
-    <description>Vérifie si le fichier existe ou non</description>
+    <description>Vérifie si un fichier existe ou non</description>
     <topic href="guide/components/fr/tFileExist.html" label="tFileExist Component Documentation"/>
   </context>
   <context id="tFileFetch">
@@ -1026,7 +1030,7 @@
     <topic href="guide/components/fr/tLDAPInput.html" label="tLDAPInput Component Documentation"/>
   </context>
   <context id="tLDAPOutput">
-    <description>Écrire un message sur un serveur LDAP</description>
+    <description>Écrit un message sur un serveur LDAP</description>
     <topic href="guide/components/fr/tLDAPOutput.html" label="tLDAPOutput Component Documentation"/>
   </context>
   <context id="tLDAPRenameEntry">
@@ -1074,7 +1078,7 @@
     <topic href="guide/components/fr/tMaxDBInput.html" label="tMaxDBInput Component Documentation"/>
   </context>
   <context id="tMaxDBOutput">
-    <description>Insère ou met à jour des lignes dans une table.</description>
+    <description>Insère ou met à jour des lignes dans une table</description>
     <topic href="guide/components/fr/tMaxDBOutput.html" label="tMaxDBOutput Component Documentation"/>
   </context>
   <context id="tMaxDBRow">
@@ -1312,6 +1316,10 @@
   <context id="tNamedPipeClose">
     <description>Ferme un tube nommé ouvert via un composant tNamedPipe</description>
     <topic href="guide/components/fr/tNamedPipeClose.html" label="tNamedPipeClose Component Documentation"/>
+  </context>
+  <context id="tNamedPipeOpen">
+    <description>Ouvre un tube nommé</description>
+    <topic href="guide/components/fr/tNamedPipeOpen.html" label="tNamedPipeOpen Component Documentation"/>
   </context>
   <context id="tNamedPipeOutput">
     <description>Charge en masse des données d'un fichier ou d'un tube nommé à l'aide de l'utilitaire gpload de Greenplum</description>
@@ -1670,7 +1678,7 @@
     <topic href="guide/components/fr/tSageX3Output.html" label="tSageX3Output Component Documentation"/>
   </context>
   <context id="tSalesforceBulkExec">
-    <description>Ecrit en masse dans Salesforce</description>
+    <description>Ecrit des sortie en masse vers Salesforce</description>
     <topic href="guide/components/fr/tSalesforceBulkExec.html" label="tSalesforceBulkExec Component Documentation"/>
   </context>
   <context id="tSalesforceConnection">
@@ -1701,9 +1709,17 @@
     <description>Construit un fichier de chargement de masse au format Salesforce</description>
     <topic href="guide/components/fr/tSalesforceOutputBulk.html" label="tSalesforceOutputBulk Component Documentation"/>
   </context>
+  <context id="tSalesforceOutputBulkExec">
+    <description>Ecrit des sorties en masse vers Salesforce</description>
+    <topic href="guide/components/fr/tSalesforceOutputBulkExec.html" label="tSalesforceOutputBulkExec Component Documentation"/>
+  </context>
   <context id="tSampleRow">
     <description>Filtrer les lignes selon leur numéro</description>
     <topic href="guide/components/fr/tSampleRow.html" label="tSampleRow Component Documentation"/>
+  </context>
+  <context id="tSAPBWInput">
+    <description>Lit une table de base de données et extrait des champs à partir d'une requête SQL</description>
+    <topic href="guide/components/fr/tSAPBWInput.html" label="tSAPBWInput Component Documentation"/>
   </context>
   <context id="tSAPCommit">
     <description>Commite toutes les transactions n'ayant pas encore été commitées dans une connexion SAP sélectionnée</description>
@@ -2013,6 +2029,10 @@
     <description>Exécute une requête SQL à chaque itération de flux Talend</description>
     <topic href="guide/components/fr/tTeradataRow.html" label="tTeradataRow Component Documentation"/>
   </context>
+  <context id="tTeradataTPTUtility">
+    <description>Utilise l'utilitaire TPT</description>
+    <topic href="guide/components/fr/tTeradataTPTUtility.html" label="tTeradataTPTUtility Component Documentation"/>
+  </context>
   <context id="tTeradataTPump">
     <description>Utilise le protocole TPump</description>
     <topic href="guide/components/fr/tTeradataTPump.html" label="tTeradataTPump Component Documentation"/>
@@ -2209,14 +2229,6 @@
     <description>tWriteDynamicFields</description>
     <topic href="guide/components/fr/tWriteDynamicFields.html" label="tWriteDynamicFields Component Documentation"/>
   </context>
-  <context id="tBRMS">
-    <description>Ecrit une structure XML dans le Service Web Talend</description>
-    <topic href="guide/components/fr/tBRMS.html" label="tBRMS Component Documentation"/>
-  </context>
-  <context id="tRules">
-    <description>Lit un fichier XML multi-niveaux</description>
-    <topic href="guide/components/fr/tRules.html" label="tRules Component Documentation"/>
-  </context>
   <context id="tFSAggregate">
     <description>Agréger les enregistrements dans un fichier basé sur les groupse de clés</description>
     <topic href="guide/components/fr/tFSAggregate.html" label="tFSAggregate Component Documentation"/>
@@ -2357,9 +2369,17 @@
     <description>Génère une clé fonctionnelle à partir des colonnes d'entrée et l'inclut dans le flux de sortie avec les\r\ncolonnes d'entrée</description>
     <topic href="guide/components/fr/tGenKey.html" label="tGenKey Component Documentation"/>
   </context>
+  <context id="tGoogleAddressRow">
+    <description>Crée une adresse de référence via GoogleMap et obtient les détails de l'adresse</description>
+    <topic href="guide/components/fr/tGoogleAddressRow.html" label="tGoogleAddressRow Component Documentation"/>
+  </context>
   <context id="tGoogleGeocoder">
     <description>Obtient la latitude et la longitude d'une adresse.</description>
     <topic href="guide/components/fr/tGoogleGeocoder.html" label="tGoogleGeocoder Component Documentation"/>
+  </context>
+  <context id="tGoogleMapLookup">
+    <description>Crée une adresse de référence via GoogleMap</description>
+    <topic href="guide/components/fr/tGoogleMapLookup.html" label="tGoogleMapLookup Component Documentation"/>
   </context>
   <context id="tLastRegexlibExpressions">
     <description>Retourne les N expressions les plus récentes ajoutées à la librairie sur regexlib.com.</description>
@@ -2370,7 +2390,7 @@
     <topic href="guide/components/fr/tLaunchDQReports.html" label="tLaunchDQReports Component Documentation"/>
   </context>
   <context id="tMatchGroup">
-    <description>Créé des groupes d'enregistrements similaires</description>
+    <description>Crée des groupes d'enregistrements similaires</description>
     <topic href="guide/components/fr/tMatchGroup.html" label="tMatchGroup Component Documentation"/>
   </context>
   <context id="tMultiPatternCheck">
@@ -2433,6 +2453,10 @@
     <description>Calcule une valeur de jointure floue</description>
     <topic href="guide/components/fr/tRecordMatching.html" label="tRecordMatching Component Documentation"/>
   </context>
+  <context id="tRuleSurvivorship">
+    <description>Reçoit des enregistrements groupés et crée un représentant unique d'une entité via des règles métier à l'aide de données consolidées</description>
+    <topic href="guide/components/fr/tRuleSurvivorship.html" label="tRuleSurvivorship Component Documentation"/>
+  </context>
   <context id="tStandardizePhoneNumber">
     <description>Formate et standardise un numéro de téléphone selon son\r\ncode pays.</description>
     <topic href="guide/components/fr/tStandardizePhoneNumber.html" label="tStandardizePhoneNumber Component Documentation"/>
@@ -2461,12 +2485,20 @@
     <description>Compose un champ avec toutes les données d'entrée</description>
     <topic href="guide/components/fr/tThresholdViolationAlert.html" label="tThresholdViolationAlert Component Documentation"/>
   </context>
-  <context id="tPetalsInput">
+    <context id="tPetalsInput">
     <description>Transférer des données de l'ESB Petals à un Job Talend</description>
     <topic href="guide/components/fr/tPetalsInput.html" label="tPetalsInput Component Documentation"/>
   </context>
   <context id="tPetalsOutput">
     <description>Transférer des données d'un Job Talend à l'ESB Petals</description>
     <topic href="guide/components/fr/tPetalsOutput.html" label="tPetalsOutput Component Documentation"/>
+  </context>
+  <context id="tBRMS">
+    <description>Ecrit une structure XML dans le Service Web Talend</description>
+    <topic href="guide/components/fr/tBRMS.html" label="tBRMS Component Documentation"/>
+  </context>
+  <context id="tRules">
+    <description>Lit un fichier XML multi-niveaux</description>
+    <topic href="guide/components/fr/tRules.html" label="tRules Component Documentation"/>
   </context>
 </contexts>
