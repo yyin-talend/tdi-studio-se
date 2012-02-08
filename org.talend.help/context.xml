@@ -166,11 +166,11 @@
     <topic href="guide/components/en/tBarChart.html" label="tBarChart Component Documentation"/>
   </context>
   <context id="tBonitaDeploy">
-    <description>Deploys a specific Bonita Process (with the BAR file) to Bonita Runtime</description>
+    <description>Deploys a specific Bonita Process (with the BAR file) to Bonita Runtime</description>
     <topic href="guide/components/en/tBonitaDeploy.html" label="tBonitaDeploy Component Documentation"/>
   </context>
   <context id="tBonitaInstantiateProcess">
-    <description>Instantiate an existing process in Bonita Runtime and start its.</description>
+    <description>Instantiate an existing process in Bonita Runtime and start its.</description>
     <topic href="guide/components/en/tBonitaInstantiateProcess.html" label="tBonitaInstantiateProcess Component Documentation"/>
   </context>
   <context id="tBufferInput">
@@ -310,7 +310,7 @@
     <topic href="guide/components/en/tDotNETInstantiate.html" label="tDotNETInstantiate Component Documentation"/>
   </context>
   <context id="tDotNETRow">
-    <description>Pass values from a flow to a .NET object method.</description>
+    <description>Pass values from a flow to a .NET object method</description>
     <topic href="guide/components/en/tDotNETRow.html" label="tDotNETRow Component Documentation"/>
   </context>
   <context id="tDTDValidator">
@@ -318,7 +318,7 @@
     <topic href="guide/components/en/tDTDValidator.html" label="tDTDValidator Component Documentation"/>
   </context>
   <context id="tEDIFACTtoXML">
-    <description>Closes a selected Access connection</description>
+    <description>Generates a XML file from an EDIFACT file</description>
     <topic href="guide/components/en/tEDIFACTtoXML.html" label="tEDIFACTtoXML Component Documentation"/>
   </context>
   <context id="tELTJDBCInput">
@@ -748,10 +748,6 @@
   <context id="tGreenplumConnection">
     <description>Creates a connection to a Greenplum DB</description>
     <topic href="guide/components/en/tGreenplumConnection.html" label="tGreenplumConnection Component Documentation"/>
-  </context>
-  <context id="tGreenplumGPLoad">
-    <description>Bulk load data from a file or named-pipe using greenplum's gpload utility</description>
-    <topic href="guide/components/en/tGreenplumGPLoad.html" label="tGreenplumGPLoad Component Documentation"/>
   </context>
   <context id="tGreenplumInput">
     <description>Reads a Greenplum table and extracts fields based on an SQL query</description>
@@ -1338,7 +1334,7 @@
     <topic href="guide/components/en/tNamedPipeClose.html" label="tNamedPipeClose Component Documentation"/>
   </context>
   <context id="tNamedPipeOpen">
-    <description>Bulk load data from a file or named-pipe using greenplum's gpload utility</description>
+    <description>Opens a named-pipe</description>
     <topic href="guide/components/en/tNamedPipeOpen.html" label="tNamedPipeOpen Component Documentation"/>
   </context>
   <context id="tNamedPipeOutput">
@@ -1741,6 +1737,10 @@
     <description>Filters rows according to line numbers</description>
     <topic href="guide/components/en/tSampleRow.html" label="tSampleRow Component Documentation"/>
   </context>
+  <context id="tSAPBWInput">
+    <description>Reads a DB table and extracts fields based on an SQL query</description>
+    <topic href="guide/components/en/tSAPBWInput.html" label="tSAPBWInput Component Documentation"/>
+  </context>
   <context id="tSAPCommit">
     <description>Commits all transactions not already commited in a selected SAP connection</description>
     <topic href="guide/components/en/tSAPCommit.html" label="tSAPCommit Component Documentation"/>
@@ -2048,6 +2048,10 @@
   <context id="tTeradataRow">
     <description>Executes an SQL query at each of Talend flow's iterations</description>
     <topic href="guide/components/en/tTeradataRow.html" label="tTeradataRow Component Documentation"/>
+  </context>
+  <context id="tTeradataTPTUtility">
+    <description>Uses the TPT utility</description>
+    <topic href="guide/components/en/tTeradataTPTUtility.html" label="tTeradataTPTUtility Component Documentation"/>
   </context>
   <context id="tTeradataTPump">
     <description>Uses the TPump protocol</description>
@@ -2398,7 +2402,7 @@
     <topic href="guide/components/en/tGenKey.html" label="tGenKey Component Documentation"/>
   </context>
   <context id="tGoogleAddressRow">
-    <description>Address Lookup via GoogleMap and Get the detail address information.</description>
+    <description>Address Lookup via GoogleMap and Get the detail address information</description>
     <topic href="guide/components/en/tGoogleAddressRow.html" label="tGoogleAddressRow Component Documentation"/>
   </context>
   <context id="tGoogleGeocoder">
@@ -2517,7 +2521,7 @@
     <description>creates groups of similar records</description>
     <topic href="guide/components/en/tMatchGroupHadoop.html" label="tMatchGroupHadoop Component Documentation"/>
   </context>
-    <context id="tPetalsInput">
+  <context id="tPetalsInput">
     <description>Transfer data from Petals ESB to a Talend job</description>
     <topic href="guide/components/en/tPetalsInput.html" label="tPetalsInput Component Documentation"/>
   </context>

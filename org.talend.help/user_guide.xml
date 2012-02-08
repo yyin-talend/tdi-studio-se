@@ -521,6 +521,7 @@
     <topic label="tSalesforceOutputBulk" href="guide/components/en/tSalesforceOutputBulk.html"/>
     <topic label="tSalesforceOutputBulkExec" href="guide/components/en/tSalesforceOutputBulkExec.html"/>
     <topic label="tSampleRow" href="guide/components/en/tSampleRow.html"/>
+    <topic label="tSAPBWInput" href="guide/components/en/tSAPBWInput.html"/>
     <topic label="tSAPCommit" href="guide/components/en/tSAPCommit.html"/>
     <topic label="tSAPConnection" href="guide/components/en/tSAPConnection.html"/>
     <topic label="tSAPIDocInput" href="guide/components/en/tSAPIDocInput.html"/>
@@ -610,6 +611,7 @@
     <topic label="tTeradataOutput" href="guide/components/en/tTeradataOutput.html"/>
     <topic label="tTeradataRollback" href="guide/components/en/tTeradataRollback.html"/>
     <topic label="tTeradataRow" href="guide/components/en/tTeradataRow.html"/>
+    <topic label="tTeradataTPTUtility" href="guide/components/en/tTeradataTPTUtility.html"/>
     <topic label="tTeradataTPump" href="guide/components/en/tTeradataTPump.html"/>
     <topic label="tThresholdViolationAlert" href="guide/components/en/tThresholdViolationAlert.html"/>
     <topic label="tUniqRow" href="guide/components/en/tUniqRow.html"/>
@@ -644,6 +646,6 @@
     <topic label="tXMLMap" href="guide/components/en/tXMLMap.html"/>
     <topic label="tXMLRPCInput" href="guide/components/en/tXMLRPCInput.html"/>
     <topic label="tXSDValidator" href="guide/components/en/tXSDValidator.html"/>
-    <topic label="tXSLT" href="guide/components/en/tXSLT.html"/> 
+    <topic label="tXSLT" href="guide/components/en/tXSLT.html"/>
   </topic>
 </toc>
