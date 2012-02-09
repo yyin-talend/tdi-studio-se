@@ -2086,14 +2086,16 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
      * DOC amaumont Comment method "updateGridDataHeightForTableConstraints".
      */
     public void updateGridDataHeightForTableGlobalMap() {
-
         int moreSpace = WindowSystem.isGTK() ? tableForGlobalMap.getItemHeight() : 0;
-        // int moreSpace = 0;
         int size = ((InputTable) abstractDataMapTable).getGlobalMapEntries().size();
-        tableForGlobalMapGridData.heightHint = size * (tableForGlobalMap.getItemHeight() + tableForGlobalMap.getItemHeight() / 2)
-                + moreSpace;
+        if (size < 3) {
+            tableForGlobalMapGridData.heightHint = size
+                    * (tableForGlobalMap.getItemHeight() + tableForGlobalMap.getItemHeight() / 2) + moreSpace;
+        } else {
+            tableForGlobalMapGridData.heightHint = size * (tableForGlobalMap.getItemHeight()) + moreSpace;
+        }
 
-        if (WindowSystem.isGTK()) {
+        if (WindowSystem.isGTK() || WindowSystem.isOSX()) {
             tableViewerCreatorForGlobalMap.layout();
         }
 
