@@ -131,6 +131,14 @@ public class ExcelTool {
             curY = absY;
         }
     }
+    
+    /**
+     * get the start insert row index.
+     * @return
+     */
+    public int getStartRow() {
+    	return curY;
+    }
 
     private void initPreXlsx(String fileName) throws Exception {
         InputStream preIns = new FileInputStream(fileName);

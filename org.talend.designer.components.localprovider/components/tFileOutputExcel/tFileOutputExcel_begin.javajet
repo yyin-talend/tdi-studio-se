@@ -256,6 +256,12 @@ if(isIncludeHeader){
 		boolean needDel_<%=cid %> = false;
 		<%
 			}
+			
+			if(!firstCellYAbsolute) {
+		%>
+		if (xlsxTool_<%=cid%>.getStartRow() == 0){
+		<%
+			}
 		%>
 		xlsxTool_<%=cid%>.addRow();
 		<%
@@ -272,7 +278,12 @@ if(isIncludeHeader){
 			}
 		%>
 		nb_line_<%=cid %>++;
-		<%	
+		<%
+			if(!firstCellYAbsolute) {
+		%>
+	}
+		<%
+			}
 		}	
 		%>
 <%
