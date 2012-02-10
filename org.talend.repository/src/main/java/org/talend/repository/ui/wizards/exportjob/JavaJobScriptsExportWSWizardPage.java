@@ -464,9 +464,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             String s = (String) getDefaultFileName().get(0);
 
             if (str.equals(s)) {
-                //                selectedFileName = b + "_" + getDefaultFileName().get(1) + getOutputSuffix(); //$NON-NLS-1$
-                selectedFileName = b + ((JobExportType.OSGI.equals(jobExportType)) ? "-" : "_") + getDefaultFileName().get(1)
-                        + getOutputSuffix(); //$NON-NLS-1$
+                if (getDefaultFileName().get(1) != null && !"".equals(getDefaultFileName().get(1))) {
+                    selectedFileName = b + ((JobExportType.OSGI.equals(jobExportType)) ? "-" : "_") + getDefaultFileName().get(1)
+                            + getOutputSuffix(); //$NON-NLS-1$
+                } else {
+                    selectedFileName = b + getOutputSuffix();
+                }
             } else {
                 selectedFileName = b + getOutputSuffix();
             }
@@ -509,21 +512,20 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-			String saName = getPetalsDefaultSaName();
-			if (directoryNames != null && directoryNames.length > 0) {
-				// destination
-				for (int i = 0; i < directoryNames.length; i++) {
-					saDestinationFilePath = new Path(directoryNames[i]).append(
-							saName).toOSString();
-					addDestinationItem(saDestinationFilePath);
-					setDestinationValue(saDestinationFilePath);
-				}
-			} else {
-				String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
-				IPath path = new Path(userDir).append(saName);
-				saDestinationFilePath = path.toOSString();
-				setDestinationValue(saDestinationFilePath);
-			}
+            String saName = getPetalsDefaultSaName();
+            if (directoryNames != null && directoryNames.length > 0) {
+                // destination
+                for (int i = 0; i < directoryNames.length; i++) {
+                    saDestinationFilePath = new Path(directoryNames[i]).append(saName).toOSString();
+                    addDestinationItem(saDestinationFilePath);
+                    setDestinationValue(saDestinationFilePath);
+                }
+            } else {
+                String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
+                IPath path = new Path(userDir).append(saName);
+                saDestinationFilePath = path.toOSString();
+                setDestinationValue(saDestinationFilePath);
+            }
 
             sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
@@ -543,19 +545,17 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-			if (directoryNames != null && directoryNames.length > 0) {
-				String fileName = this.getDefaultFileName().get(0) + "_"
-						+ this.getDefaultFileName().get(1) + getOutputSuffix();
-				// destination
-				for (int i = 0; i < directoryNames.length; i++) {
-					String destination = new Path(directoryNames[i]).append(
-							fileName).toOSString();
-					addDestinationItem(destination);
-					setDestinationValue(destination);
-				}
-			} else {
-				setDefaultDestination();
-			}
+            if (directoryNames != null && directoryNames.length > 0) {
+                String fileName = getDefaultFileNameWithType();
+                // destination
+                for (int i = 0; i < directoryNames.length; i++) {
+                    String destination = new Path(directoryNames[i]).append(fileName).toOSString();
+                    addDestinationItem(destination);
+                    setDestinationValue(destination);
+                }
+            } else {
+                setDefaultDestination();
+            }
 
             IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$
             if (section == null) {
@@ -610,41 +610,36 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-			if (directoryNames != null && directoryNames.length > 0) {
-				String fileName = this.getDefaultFileName().get(0) + "-"
-						+ this.getDefaultFileName().get(1) + getOutputSuffix();
+            if (directoryNames != null && directoryNames.length > 0) {
+                String fileName = getDefaultFileNameWithType();
                 for (int i = 0; i < directoryNames.length; i++) {
-					String destination = new Path(directoryNames[i]).append(
-							fileName).toOSString();
-					addDestinationItem(destination);
-					setDestinationValue(destination);
+                    String destination = new Path(directoryNames[i]).append(fileName).toOSString();
+                    addDestinationItem(destination);
+                    setDestinationValue(destination);
                 }
-			} else {
-				setDefaultDestinationForOSGI();
-			}
-		} else {
-			setDefaultDestinationForOSGI();
+            } else {
+                setDefaultDestinationForOSGI();
+            }
+        } else {
+            setDefaultDestinationForOSGI();
         }
     }
 
     protected void restoreWidgetValuesForWS() {
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
-			String[] directoryNames = settings
-					.getArray(STORE_DESTINATION_NAMES_ID);
-			if (directoryNames != null && directoryNames.length > 0) {
-				String fileName = this.getDefaultFileName().get(0) + "_"
-						+ this.getDefaultFileName().get(1) + getOutputSuffix();
-				// destination
-				for (int i = 0; i < directoryNames.length; i++) {
-					String destination = new Path(directoryNames[i]).append(
-							fileName).toOSString();
-					addDestinationItem(destination);
-					setDestinationValue(destination);
-				}
-			} else {
-				setDefaultDestination();
-			}
+            String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
+            if (directoryNames != null && directoryNames.length > 0) {
+                String fileName = getDefaultFileNameWithType();
+                // destination
+                for (int i = 0; i < directoryNames.length; i++) {
+                    String destination = new Path(directoryNames[i]).append(fileName).toOSString();
+                    addDestinationItem(destination);
+                    setDestinationValue(destination);
+                }
+            } else {
+                setDefaultDestination();
+            }
 
             webXMLButton.setSelection(settings.getBoolean(STORE_WEBXML_ID));
             configFileButton.setSelection(settings.getBoolean(STORE_CONFIGFILE_ID));
@@ -683,18 +678,16 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-			if (directoryNames != null && directoryNames.length > 0) {
-				String fileName = this.getDefaultFileName().get(0) + "_"
-						+ this.getDefaultFileName().get(1) + getOutputSuffix();
+            if (directoryNames != null && directoryNames.length > 0) {
+                String fileName = getDefaultFileNameWithType();
                 // destination
                 for (int i = 0; i < directoryNames.length; i++) {
-					String destination = new Path(directoryNames[i]).append(
-							fileName).toOSString();
-					addDestinationItem(destination);
-					setDestinationValue(destination);
+                    String destination = new Path(directoryNames[i]).append(fileName).toOSString();
+                    addDestinationItem(destination);
+                    setDestinationValue(destination);
                 }
-			} else {
-				setDefaultDestination();
+            } else {
+                setDefaultDestination();
             }
             shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
             systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
@@ -758,20 +751,19 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 settings.put(PETALS_EXPORT_DESTINATIONS, directoryNames);
                 return;
             }
-			// String[] directoryNames =
-			// settings.getArray(STORE_DESTINATION_NAMES_ID);
-			// if (directoryNames == null) {
-			// directoryNames = new String[0];
-			// }
-			// String destinationValue = getDestinationValue();
-			// directoryNames = addToHistory(directoryNames, destinationValue);
-			String[] directoryNames = new String[1];
-			String destinationValue = getDestinationValue();
-			if (destinationValue != null) {
-				destinationValue = destinationValue.substring(0,
-						destinationValue.lastIndexOf(File.separator));
-			}
-			directoryNames[0] = destinationValue;
+            // String[] directoryNames =
+            // settings.getArray(STORE_DESTINATION_NAMES_ID);
+            // if (directoryNames == null) {
+            // directoryNames = new String[0];
+            // }
+            // String destinationValue = getDestinationValue();
+            // directoryNames = addToHistory(directoryNames, destinationValue);
+            String[] directoryNames = new String[1];
+            String destinationValue = getDestinationValue();
+            if (destinationValue != null) {
+                destinationValue = destinationValue.substring(0, destinationValue.lastIndexOf(File.separator));
+            }
+            directoryNames[0] = destinationValue;
 
             settings.put(STORE_EXPORTTYPE_ID, getCurrentExportType().toString());
             settings.put(STORE_DESTINATION_NAMES_ID, directoryNames);

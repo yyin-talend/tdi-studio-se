@@ -94,6 +94,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.documentation.FileSystemExporterFullPath;
@@ -107,6 +108,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
+import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.action.JobExportAction;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
@@ -274,10 +276,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         if (destinationFile == null || "".equals(destinationFile)) { //$NON-NLS-1$
             if (length == 1) {
                 // TODOthis is changed by shenhaize first open ,it show contains in the combo
-                path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + getOutputSuffix()); //$NON-NLS-1$
+                path = path.append(getDefaultFileNameWithType()); //$NON-NLS-1$
             } else if (length > 1) {
                 // i changed here ..
-                path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + getOutputSuffix()); //$NON-NLS-1$
+                path = path.append(getDefaultFileNameWithType()); //$NON-NLS-1$
             }
         } else {
             // path = new Path(destinationFile);
@@ -285,39 +287,41 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             if (store.getBoolean(IRepositoryPrefConstants.USE_EXPORT_SAVE)) {
                 path = new Path(destinationFile);
             } else {
-                path = path.append(this.getDefaultFileName().get(0) + "_" + this.getDefaultFileName().get(1) + getOutputSuffix()); //$NON-NLS-1$
+                path = path.append(getDefaultFileNameWithType()); //$NON-NLS-1$
             }
         }
         setDestinationValue(path.toOSString());
     }
 
     protected void setDefaultDestinationForOSGI() {
-        String bundleName = this.getDefaultFileName().get(0) + "-" + this.getDefaultFileName().get(1) + getOutputSuffix();
+        String bundleName = getDefaultFileNameWithType();
         String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
         IPath path = new Path(userDir).append(bundleName);
         setDestinationValue(path.toOSString());
     }
 
     protected List<String> getDefaultFileName() {
-        List<String> list = null;
+        List<String> list = new ArrayList<String>();
         if (nodes.length >= 1) {
-            String label = null;
-            String version = null;
-            RepositoryNode node = nodes[0];
-            if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
-                label = node.getProperties(EProperties.LABEL).toString();
-            } else if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
-                IRepositoryViewObject repositoryObject = node.getObject();
-                if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
-                    ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
-                    label = processItem.getProperty().getLabel();
-                    version = processItem.getProperty().getVersion();
-                    list = new ArrayList<String>();
-                    list.add(label);
-                    list.add(version);
+            String label = "";
+            String version = "";
+            if (nodes.length > 1) {
+                label = ProjectManager.getInstance().getCurrentProject().getLabel();
+            } else {
+                RepositoryNode node = nodes[0];
+                if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
+                    label = node.getProperties(EProperties.LABEL).toString();
+                } else if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+                    IRepositoryViewObject repositoryObject = node.getObject();
+                    if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
+                        ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
+                        label = processItem.getProperty().getLabel();
+                        version = processItem.getProperty().getVersion();
+                    }
                 }
             }
-
+            list.add(label);
+            list.add(version);
             // return label;
             return list;
         }
@@ -1557,4 +1561,19 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     protected boolean validateDestinationGroup() {
         return super.validateDestinationGroup() && this.checkExport();
     }
+
+    protected String getDefaultFileNameWithType() {
+        String version = "";
+        List<String> defaultFileName = getDefaultFileName();
+        if (defaultFileName.get(1) != null && !"".equals(defaultFileName.get(1))) {
+            version = ((JobExportType.OSGI.equals(getCurrentExportType())) ? "-" : "_") + defaultFileName.get(1);
+        }
+        String fileName = defaultFileName.get(0) + version + getOutputSuffix();
+        return fileName;
+    }
+
+    public JobExportType getCurrentExportType() {
+        return JobExportType.POJO;
+    }
+
 }

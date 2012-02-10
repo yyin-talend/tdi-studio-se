@@ -58,11 +58,15 @@ public class ExportJobScriptAction extends AContextualAction {
         }
         List<RepositoryNode> nodes = (List<RepositoryNode>) selection.toList();
         for (RepositoryNode node : nodes) {
-            if (node.getType() != ENodeType.REPOSITORY_ELEMENT
-                    || node.getProperties(EProperties.CONTENT_TYPE) != ERepositoryObjectType.PROCESS) {
+            if (node.getProperties(EProperties.CONTENT_TYPE) != ERepositoryObjectType.PROCESS) {
                 canWork = false;
                 break;
             }
+            if (node.getType() != ENodeType.REPOSITORY_ELEMENT && node.getChildren().isEmpty()) {
+                canWork = false;
+                break;
+            }
+
             if (canWork && node.getObject() != null
                     && ProxyRepositoryFactory.getInstance().getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
                 canWork = false;
