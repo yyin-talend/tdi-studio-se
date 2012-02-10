@@ -516,8 +516,8 @@ public class TOSLoginComposite extends Composite {
                 newProjectDialog.setTitle(Messages.getString("LoginDialog.newProjectTitle")); //$NON-NLS-1$
                 if (newProjectDialog.open() == Window.OK) {
                     project = newPrjWiz.getProject();
-                    refresh();
                 }
+                refresh();
             }
         });
 
