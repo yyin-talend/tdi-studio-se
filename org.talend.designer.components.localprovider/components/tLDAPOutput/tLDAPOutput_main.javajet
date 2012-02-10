@@ -121,9 +121,7 @@ imports="
 										String incomingColumn_<%=cid%> = String.valueOf(<%=conn.getName()%>.<%=column.getLabel()%>);
 <%
 									}
-									//for bug TDI-19611	
 %>
-									incomingColumn_<%=cid%> = base64_<%=cid%>.filterNullElement(incomingColumn_<%=cid%>,<%=separatorText%>);
 							    	if(incomingColumn_<%=cid%>.trim().indexOf(<%=separatorText%>)>0){
 							    		javax.naming.directory.Attribute attr_<%=cid%> = new javax.naming.directory.BasicAttribute("<%=column.getOriginalDbColumnName()%>");
 							    		for(String value_<%=cid%> : incomingColumn_<%=cid%>.trim().split(<%=separator%>)){
@@ -131,9 +129,7 @@ imports="
 							    		}
 							    		entry_<%=cid%>.put(attr_<%=cid%>);
 							    	}else{
-							    			if(incomingColumn_<%=cid%>!=null && !"".equals(incomingColumn_<%=cid%>)){
-							    				base64_<%=cid%>.checkString(<%=isBase64%>,"<%=column.getOriginalDbColumnName()%>",entry_<%=cid%>,incomingColumn_<%=cid%>);
-							    			}
+									    	base64_<%=cid%>.checkString(<%=isBase64%>,"<%=column.getOriginalDbColumnName()%>",entry_<%=cid%>,incomingColumn_<%=cid%>);
 							    	}
 <%
 								}
