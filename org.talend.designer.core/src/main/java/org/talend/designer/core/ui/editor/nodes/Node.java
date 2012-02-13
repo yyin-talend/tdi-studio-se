@@ -2619,7 +2619,10 @@ public class Node extends Element implements IGraphicalNode {
                         || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                         || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                         || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)
-                        || (getCurrentActiveLinksNbInput(EConnectionType.ROUTE_WHEN) > 0)) {
+                /*
+                 * http://jira.talendforge.org/browse/TESB-4858 Modified By LiXiaopeng 2012-2-13 ||
+                 * (getCurrentActiveLinksNbInput(EConnectionType.ROUTE_WHEN) > 0)
+                 */) {
 
                     String errorMessage = Messages.getString("Node.errorMessage2"); //$NON-NLS-1$
                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
