@@ -105,7 +105,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 											if(<%=isBinary%> || <%=isBase64%>){
                                 				value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
 											}else{
-		                                		value_<%=cid%> = new String(byteValue_<%=cid%>);
+		                                		value_<%=cid%> = new String(byteValue_<%=cid%>,<%=encoding%>);
 											}
                                 				results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
                                 		}
@@ -157,7 +157,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 											if(<%=isBinary%> || <%=isBase64%>){
                                 				value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
 											}else{
-		                                		value_<%=cid%> = new String(byteValue_<%=cid%>);
+		                                		value_<%=cid%> = new String(byteValue_<%=cid%>,<%=encoding%>);
 											}
                                 				results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
                                 		}
@@ -226,7 +226,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 												if(<%=isBinary%> || <%=isBase64%>){
 		        	                   	    		value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
 												}else{
-													value_<%=cid%> = new String(byteValue_<%=cid%>);
+													value_<%=cid%> = new String(byteValue_<%=cid%>,<%=encoding%>);
 												}
 	                                			if(firstLoop_<%=cid %>){
 													results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + ":" + value_<%=cid %>;

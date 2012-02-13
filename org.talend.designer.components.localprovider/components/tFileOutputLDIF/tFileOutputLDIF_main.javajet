@@ -162,7 +162,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			if(!isBinary && !isBase64){
 				%>
 				// If content doesn't follow LDIF rules, it must be base64 encoded
-				if(!netscape.ldap.util.LDIF.isPrintable(item_<%=cid %>.getBytes())){
+				if(!netscape.ldap.util.LDIF.isPrintable(item_<%=cid %>.getBytes(<%=encoding%>))){
 					encodingBase64 = true;
 				}
 				else{
@@ -173,7 +173,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			%>
 			// Add ":" to comply with base64 ldif syntax
 			if(encodingBase64){
-				item_<%=cid %> = org.apache.commons.codec.binary.Base64.encodeBase64String(item_<%=cid %>.getBytes());
+				item_<%=cid %> = org.apache.commons.codec.binary.Base64.encodeBase64String(item_<%=cid %>.getBytes(<%=encoding%>));
 				util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + item_<%=cid %>, wrap_<%=cid %>);
 			}
 			else{
@@ -186,7 +186,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		if(!isBinary && !isBase64){
 %>
 			// If content doesn't follow LDIF rules, it must be base64 encoded
-			if(!netscape.ldap.util.LDIF.isPrintable(value_<%=column.getLabel() %>_<%=cid %>.getBytes())){
+			if(!netscape.ldap.util.LDIF.isPrintable(value_<%=column.getLabel() %>_<%=cid %>.getBytes(<%=encoding%>))){
 				encodingBase64 = true;
 			}
 			<%
@@ -194,7 +194,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		%>
 		// Add ":" to comply with base64 ldif syntax
 		if(encodingBase64){
-			value_<%=column.getLabel() %>_<%=cid %> = org.apache.commons.codec.binary.Base64.encodeBase64String(value_<%=column.getLabel() %>_<%=cid %>.getBytes());
+			value_<%=column.getLabel() %>_<%=cid %> = org.apache.commons.codec.binary.Base64.encodeBase64String(value_<%=column.getLabel() %>_<%=cid %>.getBytes(<%=encoding%>));
 			util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 		}
 		else {
@@ -244,7 +244,7 @@ sb_<%=cid %>.append("-\n");
 				if(!isBinary && !isBase64){
 					%>
 					// If content doesn't follow LDIF rules, it must be base64 encoded
-					if(!netscape.ldap.util.LDIF.isPrintable(item_<%=cid %>.getBytes())){
+					if(!netscape.ldap.util.LDIF.isPrintable(item_<%=cid %>.getBytes(<%=encoding%>))){
 						encodingBase64 = true;
 					}
 					else{
@@ -255,7 +255,7 @@ sb_<%=cid %>.append("-\n");
 				%>
 				// Add ":" to comply with base64 ldif syntax
 				if(encodingBase64){
-					item_<%=cid %> = org.apache.commons.codec.binary.Base64.encodeBase64String(item_<%=cid %>.getBytes());
+					item_<%=cid %> = org.apache.commons.codec.binary.Base64.encodeBase64String(item_<%=cid %>.getBytes(<%=encoding%>));
 					util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%>" + item_<%=cid %>, wrap_<%=cid %>);
 				}
 				else{
@@ -268,7 +268,7 @@ sb_<%=cid %>.append("-\n");
 				if(!isBinary && !isBase64){
 %>
 					// If content doesn't follow LDIF rules, it must be base64 encoded
-					if(!netscape.ldap.util.LDIF.isPrintable(value_<%=column.getLabel() %>_<%=cid %>.getBytes())){
+					if(!netscape.ldap.util.LDIF.isPrintable(value_<%=column.getLabel() %>_<%=cid %>.getBytes(<%=encoding%>))){
 						encodingBase64 = true;
 					}
 				<%
@@ -276,7 +276,7 @@ sb_<%=cid %>.append("-\n");
 			%>
 			// Add ":" to comply with base64 ldif syntax
 			if(encodingBase64){
-				value_<%=column.getLabel() %>_<%=cid %> = org.apache.commons.codec.binary.Base64.encodeBase64String(value_<%=column.getLabel() %>_<%=cid %>.getBytes());
+				value_<%=column.getLabel() %>_<%=cid %> = org.apache.commons.codec.binary.Base64.encodeBase64String(value_<%=column.getLabel() %>_<%=cid %>.getBytes(<%=encoding%>));
 				util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 			}
 			else{
