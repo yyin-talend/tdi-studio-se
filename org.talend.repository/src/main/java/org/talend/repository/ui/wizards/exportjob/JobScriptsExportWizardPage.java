@@ -1566,13 +1566,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         String version = "";
         List<String> defaultFileName = getDefaultFileName();
         if (defaultFileName.get(1) != null && !"".equals(defaultFileName.get(1))) {
-            version = ((JobExportType.OSGI.equals(getCurrentExportType())) ? "-" : "_") + defaultFileName.get(1);
+            version = ((JobExportType.OSGI.equals(getCurrentExportType1())) ? "-" : "_") + defaultFileName.get(1);
         }
         String fileName = defaultFileName.get(0) + version + getOutputSuffix();
         return fileName;
     }
 
-    public JobExportType getCurrentExportType() {
+    public JobExportType getCurrentExportType1() {
         return JobExportType.POJO;
     }
 
