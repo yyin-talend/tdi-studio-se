@@ -48,6 +48,10 @@ public class CsvWriter {
 	private boolean initialized = false;
 
 	private boolean closed = false;
+	
+	private boolean useCRLFRecordDelimiter;
+	
+	private static final String CRLF = "\r\n";
 
 	/**
 	 * Double up the text qualifier to represent an occurance of the text
@@ -168,6 +172,20 @@ public class CsvWriter {
 	public void setRecordDelimiter(char recordDelimiter) {
 		useCustomRecordDelimiter = true;
 		userSettings.RecordDelimiter = recordDelimiter;
+	}
+	
+	/**
+	 * set CRLF(window line separator) as record separator
+	 * for the contexts:Mac or Unix JVM create csv using Window row separator 
+	 * @param recordDelimiter
+	 */
+	public void useCRLFRecordDelimiter(boolean useCRLFRecordDelimiter) {
+		this.useCRLFRecordDelimiter = useCRLFRecordDelimiter;
+		
+		if(useCRLFRecordDelimiter) {
+			useCustomRecordDelimiter = false;
+			userSettings.RecordDelimiter = Letters.NULL;
+		}
 	}
 
 	/**
@@ -386,6 +404,8 @@ public class CsvWriter {
 
 		if (useCustomRecordDelimiter) {
 			outputStream.write(userSettings.RecordDelimiter);
+		} else if(useCRLFRecordDelimiter) {
+			outputStream.print(CRLF);
 		} else {
 			outputStream.println();
 		}
@@ -446,6 +466,8 @@ public class CsvWriter {
 
 		if (useCustomRecordDelimiter) {
 			outputStream.write(userSettings.RecordDelimiter);
+		} else if(useCRLFRecordDelimiter) {
+			outputStream.print(CRLF);
 		} else {
 			outputStream.println();
 		}

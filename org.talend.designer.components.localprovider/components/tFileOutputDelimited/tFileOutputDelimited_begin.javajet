@@ -315,6 +315,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
     		String delim = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
     		String rowSeparator = ElementParameterParser.getValue(node, "__CSVROWSEPARATOR__");
+    		boolean useOSLineSeparator = ("true").equals(ElementParameterParser.getValue(node,"__OS_LINE_SEPARATOR_AS_ROW_SEPARATOR__"));
     		
         	String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
         	
@@ -351,6 +352,11 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             	private char row_Delim;            	
             	private char escape;            	
             	private char textEnclosure;
+            	private boolean useCRLFRecordDelimiter;
+            	
+            	public boolean isUseCRLFRecordDelimiter() {
+            		return useCRLFRecordDelimiter;
+            	}
             	          	
             	public void setFieldSeparator(String fieldSep) throws IllegalArgumentException{
                     char field_Delim_<%=cid %>[] = null;
@@ -372,6 +378,10 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             	}
             	
             	public void setRowSeparator(String rowSep){
+            		if("\r\n".equals(rowSep)) {
+            			useCRLFRecordDelimiter = true;
+            			return;
+            		}
             		char row_Delim<%=cid %>[] = null;
                  
             		//support passing value (property: Row Separator) by 'context.rs' or 'globalMap.get("rs")'.  
@@ -524,10 +534,23 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 <%
                 	}
 	            }
+	            
+	            if(!useOSLineSeparator) {
 	    		%>
-        	    if(csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n')
-        	    	CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());
+    	    	if(csvSettings_<%=cid %>.isUseCRLFRecordDelimiter()) {
+    	    		CsvWriter<%=cid%>.useCRLFRecordDelimiter(true);
+    	    	} else {
+    	    		CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());
+    	    	}
 	    		<%
+	    		} else {
+	    		%>
+	    		if(!csvSettings_<%=cid %>.isUseCRLFRecordDelimiter() && csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n') {
+	    			CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());
+	    		}
+	    		<%
+	    		}
+	    		
 	    	    if(isIncludeHeader && !hasDynamic)
 	    	    {
     	        %>		   
@@ -651,10 +674,23 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 <%
 					}
                 }
+                
+                if(!useOSLineSeparator) {
 %>
-        	    if(csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n')
-        	    	CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());   	    	
-    	    <% 		
+       	    	if(csvSettings_<%=cid %>.isUseCRLFRecordDelimiter()) {
+    	    		CsvWriter<%=cid%>.useCRLFRecordDelimiter(true);
+    	    	} else {
+    	    		CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());   	    	
+    	    	}
+    	    	<%
+    	    	} else {
+    	    	%>
+    	    	if(!csvSettings_<%=cid %>.isUseCRLFRecordDelimiter() && csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n') {
+	    			CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());
+	    		}
+    	    	<%
+    	    	}
+    	    	
 	    	    if(isIncludeHeader && !hasDynamic)
 	    	    {
 	    	        for(int i = 0; i < sizeColumns; i++)
