@@ -6,7 +6,7 @@ import com.sforce.ws.ConnectionException;
 /** * Generated class, please do not edit. */
 public class Connector {
 
-    public static final String END_POINT = "https://login.salesforce.com/services/Soap/u/23.0";
+    public static final String END_POINT = "https://login.salesforce.com/services/Soap/u/24.0";
 
     public static PartnerConnection newConnection(String username, String password) throws ConnectionException {
         ConnectorConfig config = new ConnectorConfig();

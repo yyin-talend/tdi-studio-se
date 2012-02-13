@@ -64,6 +64,8 @@ public enum StatusCode {
     CUSTOM_TAB_LIMIT_EXCEEDED,
     /** * Enumeration : DELETE_FAILED */
     DELETE_FAILED,
+    /** * Enumeration : DELETE_OPERATION_TOO_LARGE */
+    DELETE_OPERATION_TOO_LARGE,
     /** * Enumeration : DELETE_REQUIRED_ON_CASCADE */
     DELETE_REQUIRED_ON_CASCADE,
     /** * Enumeration : DEPENDENCY_EXISTS */
@@ -180,6 +182,8 @@ public enum StatusCode {
     INVALID_OPERATOR,
     /** * Enumeration : INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST */
     INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST,
+    /** * Enumeration : INVALID_PACKAGE_VERSION */
+    INVALID_PACKAGE_VERSION,
     /** * Enumeration : INVALID_PARTNER_NETWORK_STATUS */
     INVALID_PARTNER_NETWORK_STATUS,
     /** * Enumeration : INVALID_PERSON_ACCOUNT_OPERATION */

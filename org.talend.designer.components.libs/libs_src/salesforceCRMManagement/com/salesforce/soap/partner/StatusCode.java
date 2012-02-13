@@ -135,6 +135,9 @@ public class StatusCode implements org.apache.axis2.databinding.ADBBean {
     public static final java.lang.String _DELETE_FAILED = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("DELETE_FAILED");
 
+    public static final java.lang.String _DELETE_OPERATION_TOO_LARGE = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("DELETE_OPERATION_TOO_LARGE");
+
     public static final java.lang.String _DELETE_REQUIRED_ON_CASCADE = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("DELETE_REQUIRED_ON_CASCADE");
 
@@ -308,6 +311,9 @@ public class StatusCode implements org.apache.axis2.databinding.ADBBean {
 
     public static final java.lang.String _INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST");
+
+    public static final java.lang.String _INVALID_PACKAGE_VERSION = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("INVALID_PACKAGE_VERSION");
 
     public static final java.lang.String _INVALID_PARTNER_NETWORK_STATUS = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("INVALID_PARTNER_NETWORK_STATUS");
@@ -606,6 +612,8 @@ public class StatusCode implements org.apache.axis2.databinding.ADBBean {
 
     public static final StatusCode DELETE_FAILED = new StatusCode(_DELETE_FAILED, true);
 
+    public static final StatusCode DELETE_OPERATION_TOO_LARGE = new StatusCode(_DELETE_OPERATION_TOO_LARGE, true);
+
     public static final StatusCode DELETE_REQUIRED_ON_CASCADE = new StatusCode(_DELETE_REQUIRED_ON_CASCADE, true);
 
     public static final StatusCode DEPENDENCY_EXISTS = new StatusCode(_DEPENDENCY_EXISTS, true);
@@ -728,6 +736,8 @@ public class StatusCode implements org.apache.axis2.databinding.ADBBean {
 
     public static final StatusCode INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST = new StatusCode(
             _INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST, true);
+
+    public static final StatusCode INVALID_PACKAGE_VERSION = new StatusCode(_INVALID_PACKAGE_VERSION, true);
 
     public static final StatusCode INVALID_PARTNER_NETWORK_STATUS = new StatusCode(_INVALID_PARTNER_NETWORK_STATUS, true);
 

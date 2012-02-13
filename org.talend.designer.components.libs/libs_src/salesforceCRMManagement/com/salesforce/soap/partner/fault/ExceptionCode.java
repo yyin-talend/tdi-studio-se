@@ -48,6 +48,12 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
     public static final java.lang.String _API_DISABLED_FOR_ORG = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("API_DISABLED_FOR_ORG");
 
+    public static final java.lang.String _ARGUMENT_OBJECT_PARSE_ERROR = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("ARGUMENT_OBJECT_PARSE_ERROR");
+
+    public static final java.lang.String _CANNOT_DELETE_OWNER = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("CANNOT_DELETE_OWNER");
+
     public static final java.lang.String _CANT_ADD_STANDADRD_PORTAL_USER_TO_TERRITORY = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("CANT_ADD_STANDADRD_PORTAL_USER_TO_TERRITORY");
 
@@ -65,6 +71,21 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
 
     public static final java.lang.String _CUSTOM_METADATA_LIMIT_EXCEEDED = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("CUSTOM_METADATA_LIMIT_EXCEEDED");
+
+    public static final java.lang.String _DATACLOUD_API_CLIENT_EXCEPTION = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("DATACLOUD_API_CLIENT_EXCEPTION");
+
+    public static final java.lang.String _DATACLOUD_API_SERVER_BUSY_EXCEPTION = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("DATACLOUD_API_SERVER_BUSY_EXCEPTION");
+
+    public static final java.lang.String _DATACLOUD_API_SERVER_EXCEPTION = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("DATACLOUD_API_SERVER_EXCEPTION");
+
+    public static final java.lang.String _DATACLOUD_API_UNAVAILABLE = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("DATACLOUD_API_UNAVAILABLE");
+
+    public static final java.lang.String _DUPLICATE_ARGUMENT_VALUE = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("DUPLICATE_ARGUMENT_VALUE");
 
     public static final java.lang.String _DUPLICATE_VALUE = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("DUPLICATE_VALUE");
@@ -96,11 +117,17 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
     public static final java.lang.String _EXCEEDED_QUOTA = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("EXCEEDED_QUOTA");
 
+    public static final java.lang.String _FEED_NOT_ENABLED_FOR_OBJECT = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("FEED_NOT_ENABLED_FOR_OBJECT");
+
     public static final java.lang.String _FUNCTIONALITY_NOT_ENABLED = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("FUNCTIONALITY_NOT_ENABLED");
 
     public static final java.lang.String _FUNCTIONALITY_TEMPORARILY_UNAVAILABLE = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("FUNCTIONALITY_TEMPORARILY_UNAVAILABLE");
+
+    public static final java.lang.String _ILLEGAL_QUERY_PARAMETER_VALUE = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("ILLEGAL_QUERY_PARAMETER_VALUE");
 
     public static final java.lang.String _INACTIVE_OWNER_OR_USER = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("INACTIVE_OWNER_OR_USER");
@@ -144,6 +171,9 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
     public static final java.lang.String _INVALID_LOGIN = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("INVALID_LOGIN");
 
+    public static final java.lang.String _INVALID_MULTIPART_REQUEST = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("INVALID_MULTIPART_REQUEST");
+
     public static final java.lang.String _INVALID_NEW_PASSWORD = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("INVALID_NEW_PASSWORD");
 
@@ -152,6 +182,9 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
 
     public static final java.lang.String _INVALID_OPERATION_WITH_EXPIRED_PASSWORD = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("INVALID_OPERATION_WITH_EXPIRED_PASSWORD");
+
+    public static final java.lang.String _INVALID_PAGING_OPTION = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("INVALID_PAGING_OPTION");
 
     public static final java.lang.String _INVALID_QUERY_FILTER_OPERATOR = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("INVALID_QUERY_FILTER_OPERATOR");
@@ -177,6 +210,9 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
     public static final java.lang.String _INVALID_SOAP_HEADER = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("INVALID_SOAP_HEADER");
 
+    public static final java.lang.String _INVALID_SORT_OPTION = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("INVALID_SORT_OPTION");
+
     public static final java.lang.String _INVALID_SSO_GATEWAY_URL = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("INVALID_SSO_GATEWAY_URL");
 
@@ -186,8 +222,17 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
     public static final java.lang.String _INVALID_TYPE_FOR_OPERATION = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("INVALID_TYPE_FOR_OPERATION");
 
+    public static final java.lang.String _JIGSAW_IMPORT_LIMIT_EXCEEDED = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("JIGSAW_IMPORT_LIMIT_EXCEEDED");
+
+    public static final java.lang.String _JIGSAW_REQUEST_NOT_SUPPORTED = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("JIGSAW_REQUEST_NOT_SUPPORTED");
+
     public static final java.lang.String _JSON_PARSER_ERROR = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("JSON_PARSER_ERROR");
+
+    public static final java.lang.String _LICENSING_UNKNOWN_ERROR = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("LICENSING_UNKNOWN_ERROR");
 
     public static final java.lang.String _LIMIT_EXCEEDED = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("LIMIT_EXCEEDED");
@@ -249,6 +294,9 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
     public static final java.lang.String _PORTAL_NO_ACCESS = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("PORTAL_NO_ACCESS");
 
+    public static final java.lang.String _POST_BODY_PARSE_ERROR = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("POST_BODY_PARSE_ERROR");
+
     public static final java.lang.String _QUERY_TIMEOUT = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("QUERY_TIMEOUT");
 
@@ -264,20 +312,38 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
     public static final java.lang.String _SERVER_UNAVAILABLE = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("SERVER_UNAVAILABLE");
 
+    public static final java.lang.String _SOCIALCRM_FEEDSERVICE_API_CLIENT_EXCEPTION = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("SOCIALCRM_FEEDSERVICE_API_CLIENT_EXCEPTION");
+
+    public static final java.lang.String _SOCIALCRM_FEEDSERVICE_API_SERVER_EXCEPTION = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("SOCIALCRM_FEEDSERVICE_API_SERVER_EXCEPTION");
+
+    public static final java.lang.String _SOCIALCRM_FEEDSERVICE_API_UNAVAILABLE = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("SOCIALCRM_FEEDSERVICE_API_UNAVAILABLE");
+
     public static final java.lang.String _SSO_SERVICE_DOWN = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("SSO_SERVICE_DOWN");
 
     public static final java.lang.String _TOO_MANY_APEX_REQUESTS = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("TOO_MANY_APEX_REQUESTS");
 
+    public static final java.lang.String _TOO_MANY_RECIPIENTS = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("TOO_MANY_RECIPIENTS");
+
     public static final java.lang.String _TRIAL_EXPIRED = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("TRIAL_EXPIRED");
+
+    public static final java.lang.String _UNKNOWN_ATTACHMENT_EXCEPTION = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("UNKNOWN_ATTACHMENT_EXCEPTION");
 
     public static final java.lang.String _UNKNOWN_EXCEPTION = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("UNKNOWN_EXCEPTION");
 
     public static final java.lang.String _UNSUPPORTED_API_VERSION = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("UNSUPPORTED_API_VERSION");
+
+    public static final java.lang.String _UNSUPPORTED_ATTACHMENT_ENCODING = org.apache.axis2.databinding.utils.ConverterUtil
+            .convertToString("UNSUPPORTED_ATTACHMENT_ENCODING");
 
     public static final java.lang.String _UNSUPPORTED_CLIENT = org.apache.axis2.databinding.utils.ConverterUtil
             .convertToString("UNSUPPORTED_CLIENT");
@@ -292,6 +358,10 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
 
     public static final ExceptionCode API_DISABLED_FOR_ORG = new ExceptionCode(_API_DISABLED_FOR_ORG, true);
 
+    public static final ExceptionCode ARGUMENT_OBJECT_PARSE_ERROR = new ExceptionCode(_ARGUMENT_OBJECT_PARSE_ERROR, true);
+
+    public static final ExceptionCode CANNOT_DELETE_OWNER = new ExceptionCode(_CANNOT_DELETE_OWNER, true);
+
     public static final ExceptionCode CANT_ADD_STANDADRD_PORTAL_USER_TO_TERRITORY = new ExceptionCode(
             _CANT_ADD_STANDADRD_PORTAL_USER_TO_TERRITORY, true);
 
@@ -305,6 +375,17 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
     public static final ExceptionCode CLIENT_REQUIRE_UPDATE_FOR_USER = new ExceptionCode(_CLIENT_REQUIRE_UPDATE_FOR_USER, true);
 
     public static final ExceptionCode CUSTOM_METADATA_LIMIT_EXCEEDED = new ExceptionCode(_CUSTOM_METADATA_LIMIT_EXCEEDED, true);
+
+    public static final ExceptionCode DATACLOUD_API_CLIENT_EXCEPTION = new ExceptionCode(_DATACLOUD_API_CLIENT_EXCEPTION, true);
+
+    public static final ExceptionCode DATACLOUD_API_SERVER_BUSY_EXCEPTION = new ExceptionCode(
+            _DATACLOUD_API_SERVER_BUSY_EXCEPTION, true);
+
+    public static final ExceptionCode DATACLOUD_API_SERVER_EXCEPTION = new ExceptionCode(_DATACLOUD_API_SERVER_EXCEPTION, true);
+
+    public static final ExceptionCode DATACLOUD_API_UNAVAILABLE = new ExceptionCode(_DATACLOUD_API_UNAVAILABLE, true);
+
+    public static final ExceptionCode DUPLICATE_ARGUMENT_VALUE = new ExceptionCode(_DUPLICATE_ARGUMENT_VALUE, true);
 
     public static final ExceptionCode DUPLICATE_VALUE = new ExceptionCode(_DUPLICATE_VALUE, true);
 
@@ -326,10 +407,14 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
 
     public static final ExceptionCode EXCEEDED_QUOTA = new ExceptionCode(_EXCEEDED_QUOTA, true);
 
+    public static final ExceptionCode FEED_NOT_ENABLED_FOR_OBJECT = new ExceptionCode(_FEED_NOT_ENABLED_FOR_OBJECT, true);
+
     public static final ExceptionCode FUNCTIONALITY_NOT_ENABLED = new ExceptionCode(_FUNCTIONALITY_NOT_ENABLED, true);
 
     public static final ExceptionCode FUNCTIONALITY_TEMPORARILY_UNAVAILABLE = new ExceptionCode(
             _FUNCTIONALITY_TEMPORARILY_UNAVAILABLE, true);
+
+    public static final ExceptionCode ILLEGAL_QUERY_PARAMETER_VALUE = new ExceptionCode(_ILLEGAL_QUERY_PARAMETER_VALUE, true);
 
     public static final ExceptionCode INACTIVE_OWNER_OR_USER = new ExceptionCode(_INACTIVE_OWNER_OR_USER, true);
 
@@ -359,12 +444,16 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
 
     public static final ExceptionCode INVALID_LOGIN = new ExceptionCode(_INVALID_LOGIN, true);
 
+    public static final ExceptionCode INVALID_MULTIPART_REQUEST = new ExceptionCode(_INVALID_MULTIPART_REQUEST, true);
+
     public static final ExceptionCode INVALID_NEW_PASSWORD = new ExceptionCode(_INVALID_NEW_PASSWORD, true);
 
     public static final ExceptionCode INVALID_OPERATION = new ExceptionCode(_INVALID_OPERATION, true);
 
     public static final ExceptionCode INVALID_OPERATION_WITH_EXPIRED_PASSWORD = new ExceptionCode(
             _INVALID_OPERATION_WITH_EXPIRED_PASSWORD, true);
+
+    public static final ExceptionCode INVALID_PAGING_OPTION = new ExceptionCode(_INVALID_PAGING_OPTION, true);
 
     public static final ExceptionCode INVALID_QUERY_FILTER_OPERATOR = new ExceptionCode(_INVALID_QUERY_FILTER_OPERATOR, true);
 
@@ -382,13 +471,21 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
 
     public static final ExceptionCode INVALID_SOAP_HEADER = new ExceptionCode(_INVALID_SOAP_HEADER, true);
 
+    public static final ExceptionCode INVALID_SORT_OPTION = new ExceptionCode(_INVALID_SORT_OPTION, true);
+
     public static final ExceptionCode INVALID_SSO_GATEWAY_URL = new ExceptionCode(_INVALID_SSO_GATEWAY_URL, true);
 
     public static final ExceptionCode INVALID_TYPE = new ExceptionCode(_INVALID_TYPE, true);
 
     public static final ExceptionCode INVALID_TYPE_FOR_OPERATION = new ExceptionCode(_INVALID_TYPE_FOR_OPERATION, true);
 
+    public static final ExceptionCode JIGSAW_IMPORT_LIMIT_EXCEEDED = new ExceptionCode(_JIGSAW_IMPORT_LIMIT_EXCEEDED, true);
+
+    public static final ExceptionCode JIGSAW_REQUEST_NOT_SUPPORTED = new ExceptionCode(_JIGSAW_REQUEST_NOT_SUPPORTED, true);
+
     public static final ExceptionCode JSON_PARSER_ERROR = new ExceptionCode(_JSON_PARSER_ERROR, true);
+
+    public static final ExceptionCode LICENSING_UNKNOWN_ERROR = new ExceptionCode(_LICENSING_UNKNOWN_ERROR, true);
 
     public static final ExceptionCode LIMIT_EXCEEDED = new ExceptionCode(_LIMIT_EXCEEDED, true);
 
@@ -430,6 +527,8 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
 
     public static final ExceptionCode PORTAL_NO_ACCESS = new ExceptionCode(_PORTAL_NO_ACCESS, true);
 
+    public static final ExceptionCode POST_BODY_PARSE_ERROR = new ExceptionCode(_POST_BODY_PARSE_ERROR, true);
+
     public static final ExceptionCode QUERY_TIMEOUT = new ExceptionCode(_QUERY_TIMEOUT, true);
 
     public static final ExceptionCode QUERY_TOO_COMPLICATED = new ExceptionCode(_QUERY_TOO_COMPLICATED, true);
@@ -440,15 +539,30 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
 
     public static final ExceptionCode SERVER_UNAVAILABLE = new ExceptionCode(_SERVER_UNAVAILABLE, true);
 
+    public static final ExceptionCode SOCIALCRM_FEEDSERVICE_API_CLIENT_EXCEPTION = new ExceptionCode(
+            _SOCIALCRM_FEEDSERVICE_API_CLIENT_EXCEPTION, true);
+
+    public static final ExceptionCode SOCIALCRM_FEEDSERVICE_API_SERVER_EXCEPTION = new ExceptionCode(
+            _SOCIALCRM_FEEDSERVICE_API_SERVER_EXCEPTION, true);
+
+    public static final ExceptionCode SOCIALCRM_FEEDSERVICE_API_UNAVAILABLE = new ExceptionCode(
+            _SOCIALCRM_FEEDSERVICE_API_UNAVAILABLE, true);
+
     public static final ExceptionCode SSO_SERVICE_DOWN = new ExceptionCode(_SSO_SERVICE_DOWN, true);
 
     public static final ExceptionCode TOO_MANY_APEX_REQUESTS = new ExceptionCode(_TOO_MANY_APEX_REQUESTS, true);
 
+    public static final ExceptionCode TOO_MANY_RECIPIENTS = new ExceptionCode(_TOO_MANY_RECIPIENTS, true);
+
     public static final ExceptionCode TRIAL_EXPIRED = new ExceptionCode(_TRIAL_EXPIRED, true);
+
+    public static final ExceptionCode UNKNOWN_ATTACHMENT_EXCEPTION = new ExceptionCode(_UNKNOWN_ATTACHMENT_EXCEPTION, true);
 
     public static final ExceptionCode UNKNOWN_EXCEPTION = new ExceptionCode(_UNKNOWN_EXCEPTION, true);
 
     public static final ExceptionCode UNSUPPORTED_API_VERSION = new ExceptionCode(_UNSUPPORTED_API_VERSION, true);
+
+    public static final ExceptionCode UNSUPPORTED_ATTACHMENT_ENCODING = new ExceptionCode(_UNSUPPORTED_ATTACHMENT_ENCODING, true);
 
     public static final ExceptionCode UNSUPPORTED_CLIENT = new ExceptionCode(_UNSUPPORTED_CLIENT, true);
 
@@ -734,7 +848,8 @@ public class ExceptionCode implements org.apache.axis2.databinding.ADBBean {
             _table_.get(value);
 
             if (enumeration == null)
-                throw new java.lang.IllegalArgumentException();
+				enumeration = new ExceptionCode(value, true);
+                //throw new java.lang.IllegalArgumentException();
             return enumeration;
         }
 

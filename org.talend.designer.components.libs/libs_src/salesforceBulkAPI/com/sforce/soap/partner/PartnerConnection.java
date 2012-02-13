@@ -20,6 +20,25 @@ public class PartnerConnection {
         return __config;
     }
 
+    private com.sforce.soap.partner.StreamingEnabledHeader_element __StreamingEnabledHeader;
+
+    public void setStreamingEnabledHeader(boolean streamingEnabled) {
+        __StreamingEnabledHeader = new com.sforce.soap.partner.StreamingEnabledHeader_element();
+        __StreamingEnabledHeader.setStreamingEnabled(streamingEnabled);
+    }
+
+    public void clearStreamingEnabledHeader() {
+        __StreamingEnabledHeader = null;
+    }
+
+    public com.sforce.soap.partner.StreamingEnabledHeader_element getStreamingEnabledHeader() {
+        return __StreamingEnabledHeader;
+    }
+
+    public void __setStreamingEnabledHeader(com.sforce.soap.partner.StreamingEnabledHeader_element __header) {
+        __StreamingEnabledHeader = __header;
+    }
+
     private com.sforce.soap.partner.MruHeader_element __MruHeader;
 
     public void setMruHeader(boolean updateMru) {
@@ -214,25 +233,6 @@ public class PartnerConnection {
         __DisableFeedTrackingHeader = __header;
     }
 
-    private com.sforce.soap.partner.AllowFieldTruncationHeader_element __AllowFieldTruncationHeader;
-
-    public void setAllowFieldTruncationHeader(boolean allowFieldTruncation) {
-        __AllowFieldTruncationHeader = new com.sforce.soap.partner.AllowFieldTruncationHeader_element();
-        __AllowFieldTruncationHeader.setAllowFieldTruncation(allowFieldTruncation);
-    }
-
-    public void clearAllowFieldTruncationHeader() {
-        __AllowFieldTruncationHeader = null;
-    }
-
-    public com.sforce.soap.partner.AllowFieldTruncationHeader_element getAllowFieldTruncationHeader() {
-        return __AllowFieldTruncationHeader;
-    }
-
-    public void __setAllowFieldTruncationHeader(com.sforce.soap.partner.AllowFieldTruncationHeader_element __header) {
-        __AllowFieldTruncationHeader = __header;
-    }
-
     private com.sforce.soap.partner.UserTerritoryDeleteHeader_element __UserTerritoryDeleteHeader;
 
     public void setUserTerritoryDeleteHeader(java.lang.String transferToUserId) {
@@ -250,6 +250,25 @@ public class PartnerConnection {
 
     public void __setUserTerritoryDeleteHeader(com.sforce.soap.partner.UserTerritoryDeleteHeader_element __header) {
         __UserTerritoryDeleteHeader = __header;
+    }
+
+    private com.sforce.soap.partner.AllowFieldTruncationHeader_element __AllowFieldTruncationHeader;
+
+    public void setAllowFieldTruncationHeader(boolean allowFieldTruncation) {
+        __AllowFieldTruncationHeader = new com.sforce.soap.partner.AllowFieldTruncationHeader_element();
+        __AllowFieldTruncationHeader.setAllowFieldTruncation(allowFieldTruncation);
+    }
+
+    public void clearAllowFieldTruncationHeader() {
+        __AllowFieldTruncationHeader = null;
+    }
+
+    public com.sforce.soap.partner.AllowFieldTruncationHeader_element getAllowFieldTruncationHeader() {
+        return __AllowFieldTruncationHeader;
+    }
+
+    public void __setAllowFieldTruncationHeader(com.sforce.soap.partner.AllowFieldTruncationHeader_element __header) {
+        __AllowFieldTruncationHeader = __header;
     }
 
     private com.sforce.soap.partner.QueryOptions_element __QueryOptions;
@@ -353,6 +372,8 @@ public class PartnerConnection {
             __connection.addHeader(AllowFieldTruncationHeader_qname, __AllowFieldTruncationHeader);
         if (__DisableFeedTrackingHeader != null)
             __connection.addHeader(DisableFeedTrackingHeader_qname, __DisableFeedTrackingHeader);
+        if (__StreamingEnabledHeader != null)
+            __connection.addHeader(StreamingEnabledHeader_qname, __StreamingEnabledHeader);
         if (__DebuggingHeader != null)
             __connection.addHeader(DebuggingHeader_qname, __DebuggingHeader);
         if (__PackageVersionHeader != null)
@@ -489,6 +510,8 @@ public class PartnerConnection {
             __connection.addHeader(AllowFieldTruncationHeader_qname, __AllowFieldTruncationHeader);
         if (__DisableFeedTrackingHeader != null)
             __connection.addHeader(DisableFeedTrackingHeader_qname, __DisableFeedTrackingHeader);
+        if (__StreamingEnabledHeader != null)
+            __connection.addHeader(StreamingEnabledHeader_qname, __StreamingEnabledHeader);
         if (__DebuggingHeader != null)
             __connection.addHeader(DebuggingHeader_qname, __DebuggingHeader);
         if (__PackageVersionHeader != null)
@@ -530,6 +553,8 @@ public class PartnerConnection {
             __connection.addHeader(AllowFieldTruncationHeader_qname, __AllowFieldTruncationHeader);
         if (__DisableFeedTrackingHeader != null)
             __connection.addHeader(DisableFeedTrackingHeader_qname, __DisableFeedTrackingHeader);
+        if (__StreamingEnabledHeader != null)
+            __connection.addHeader(StreamingEnabledHeader_qname, __StreamingEnabledHeader);
         if (__AllOrNoneHeader != null)
             __connection.addHeader(AllOrNoneHeader_qname, __AllOrNoneHeader);
         if (__DebuggingHeader != null)
@@ -642,6 +667,8 @@ public class PartnerConnection {
             __connection.addHeader(AllowFieldTruncationHeader_qname, __AllowFieldTruncationHeader);
         if (__DisableFeedTrackingHeader != null)
             __connection.addHeader(DisableFeedTrackingHeader_qname, __DisableFeedTrackingHeader);
+        if (__StreamingEnabledHeader != null)
+            __connection.addHeader(StreamingEnabledHeader_qname, __StreamingEnabledHeader);
         if (__AllOrNoneHeader != null)
             __connection.addHeader(AllOrNoneHeader_qname, __AllOrNoneHeader);
         if (__DebuggingHeader != null)
@@ -833,6 +860,8 @@ public class PartnerConnection {
             __connection.addHeader(AllowFieldTruncationHeader_qname, __AllowFieldTruncationHeader);
         if (__DisableFeedTrackingHeader != null)
             __connection.addHeader(DisableFeedTrackingHeader_qname, __DisableFeedTrackingHeader);
+        if (__StreamingEnabledHeader != null)
+            __connection.addHeader(StreamingEnabledHeader_qname, __StreamingEnabledHeader);
         if (__AllOrNoneHeader != null)
             __connection.addHeader(AllOrNoneHeader_qname, __AllOrNoneHeader);
         if (__DebuggingHeader != null)
@@ -900,6 +929,8 @@ public class PartnerConnection {
             __connection.addHeader(AllowFieldTruncationHeader_qname, __AllowFieldTruncationHeader);
         if (__DisableFeedTrackingHeader != null)
             __connection.addHeader(DisableFeedTrackingHeader_qname, __DisableFeedTrackingHeader);
+        if (__StreamingEnabledHeader != null)
+            __connection.addHeader(StreamingEnabledHeader_qname, __StreamingEnabledHeader);
         if (__DebuggingHeader != null)
             __connection.addHeader(DebuggingHeader_qname, __DebuggingHeader);
         if (__PackageVersionHeader != null)
@@ -951,6 +982,8 @@ public class PartnerConnection {
             __connection.addHeader(AllowFieldTruncationHeader_qname, __AllowFieldTruncationHeader);
         if (__DisableFeedTrackingHeader != null)
             __connection.addHeader(DisableFeedTrackingHeader_qname, __DisableFeedTrackingHeader);
+        if (__StreamingEnabledHeader != null)
+            __connection.addHeader(StreamingEnabledHeader_qname, __StreamingEnabledHeader);
         if (__AllOrNoneHeader != null)
             __connection.addHeader(AllOrNoneHeader_qname, __AllOrNoneHeader);
         if (__DebuggingHeader != null)
@@ -978,6 +1011,8 @@ public class PartnerConnection {
             __connection.addHeader(AllowFieldTruncationHeader_qname, __AllowFieldTruncationHeader);
         if (__DisableFeedTrackingHeader != null)
             __connection.addHeader(DisableFeedTrackingHeader_qname, __DisableFeedTrackingHeader);
+        if (__StreamingEnabledHeader != null)
+            __connection.addHeader(StreamingEnabledHeader_qname, __StreamingEnabledHeader);
         if (__AllOrNoneHeader != null)
             __connection.addHeader(AllOrNoneHeader_qname, __AllOrNoneHeader);
         if (__DebuggingHeader != null)
@@ -1204,6 +1239,9 @@ public class PartnerConnection {
     private static final javax.xml.namespace.QName undeleteResponse_qname = new javax.xml.namespace.QName(
             "urn:partner.soap.sforce.com", "undeleteResponse");
 
+    private static final javax.xml.namespace.QName StreamingEnabledHeader_qname = new javax.xml.namespace.QName(
+            "urn:partner.soap.sforce.com", "StreamingEnabledHeader");
+
     private static final javax.xml.namespace.QName MruHeader_qname = new javax.xml.namespace.QName("urn:partner.soap.sforce.com",
             "MruHeader");
 
@@ -1234,11 +1272,11 @@ public class PartnerConnection {
     private static final javax.xml.namespace.QName DisableFeedTrackingHeader_qname = new javax.xml.namespace.QName(
             "urn:partner.soap.sforce.com", "DisableFeedTrackingHeader");
 
-    private static final javax.xml.namespace.QName AllowFieldTruncationHeader_qname = new javax.xml.namespace.QName(
-            "urn:partner.soap.sforce.com", "AllowFieldTruncationHeader");
-
     private static final javax.xml.namespace.QName UserTerritoryDeleteHeader_qname = new javax.xml.namespace.QName(
             "urn:partner.soap.sforce.com", "UserTerritoryDeleteHeader");
+
+    private static final javax.xml.namespace.QName AllowFieldTruncationHeader_qname = new javax.xml.namespace.QName(
+            "urn:partner.soap.sforce.com", "AllowFieldTruncationHeader");
 
     private static final javax.xml.namespace.QName QueryOptions_qname = new javax.xml.namespace.QName(
             "urn:partner.soap.sforce.com", "QueryOptions");
@@ -1251,6 +1289,7 @@ public class PartnerConnection {
 
     private static HashMap<QName, java.lang.Class> knownHeaders = new HashMap<QName, java.lang.Class>();
     static {
+        knownHeaders.put(StreamingEnabledHeader_qname, com.sforce.soap.partner.StreamingEnabledHeader_element.class);
         knownHeaders.put(MruHeader_qname, com.sforce.soap.partner.MruHeader_element.class);
         knownHeaders.put(CallOptions_qname, com.sforce.soap.partner.CallOptions_element.class);
         knownHeaders.put(PackageVersionHeader_qname, com.sforce.soap.partner.PackageVersionHeader_element.class);
@@ -1261,8 +1300,8 @@ public class PartnerConnection {
         knownHeaders.put(DebuggingHeader_qname, com.sforce.soap.partner.DebuggingHeader_element.class);
         knownHeaders.put(LoginScopeHeader_qname, com.sforce.soap.partner.LoginScopeHeader_element.class);
         knownHeaders.put(DisableFeedTrackingHeader_qname, com.sforce.soap.partner.DisableFeedTrackingHeader_element.class);
-        knownHeaders.put(AllowFieldTruncationHeader_qname, com.sforce.soap.partner.AllowFieldTruncationHeader_element.class);
         knownHeaders.put(UserTerritoryDeleteHeader_qname, com.sforce.soap.partner.UserTerritoryDeleteHeader_element.class);
+        knownHeaders.put(AllowFieldTruncationHeader_qname, com.sforce.soap.partner.AllowFieldTruncationHeader_element.class);
         knownHeaders.put(QueryOptions_qname, com.sforce.soap.partner.QueryOptions_element.class);
         knownHeaders.put(AssignmentRuleHeader_qname, com.sforce.soap.partner.AssignmentRuleHeader_element.class);
         knownHeaders.put(AllOrNoneHeader_qname, com.sforce.soap.partner.AllOrNoneHeader_element.class);

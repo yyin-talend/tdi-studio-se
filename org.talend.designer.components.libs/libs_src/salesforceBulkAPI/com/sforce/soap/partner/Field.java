@@ -496,6 +496,27 @@ public class Field implements com.sforce.ws.bind.XMLizable {
         nillable__is_set = true;
     }
 
+    /** * element : permissionable of type {http://www.w3.org/2001/XMLSchema}boolean * java type: boolean */
+    private static final com.sforce.ws.bind.TypeInfo permissionable__typeInfo = new com.sforce.ws.bind.TypeInfo(
+            "urn:partner.soap.sforce.com", "permissionable", "http://www.w3.org/2001/XMLSchema", "boolean", 1, 1, true);
+
+    private boolean permissionable__is_set = false;
+
+    private boolean permissionable;
+
+    public boolean getPermissionable() {
+        return permissionable;
+    }
+
+    public boolean isPermissionable() {
+        return permissionable;
+    }
+
+    public void setPermissionable(boolean permissionable) {
+        this.permissionable = permissionable;
+        permissionable__is_set = true;
+    }
+
     /**
      * * element : picklistValues of type {urn:partner.soap.sforce.com}PicklistEntry * java type:
      * com.sforce.soap.partner.PicklistEntry[]
@@ -775,6 +796,7 @@ public class Field implements com.sforce.ws.bind.XMLizable {
         __typeMapper.writeBoolean(__out, nameField__typeInfo, nameField, nameField__is_set);
         __typeMapper.writeBoolean(__out, namePointing__typeInfo, namePointing, namePointing__is_set);
         __typeMapper.writeBoolean(__out, nillable__typeInfo, nillable, nillable__is_set);
+        __typeMapper.writeBoolean(__out, permissionable__typeInfo, permissionable, permissionable__is_set);
         __typeMapper.writeObject(__out, picklistValues__typeInfo, picklistValues, picklistValues__is_set);
         __typeMapper.writeInt(__out, precision__typeInfo, precision, precision__is_set);
         __typeMapper.writeObject(__out, referenceTo__typeInfo, referenceTo, referenceTo__is_set);
@@ -903,6 +925,10 @@ public class Field implements com.sforce.ws.bind.XMLizable {
             setNillable((boolean) __typeMapper.readBoolean(__in, nillable__typeInfo, boolean.class));
         }
         __in.peekTag();
+        if (__typeMapper.verifyElement(__in, permissionable__typeInfo)) {
+            setPermissionable((boolean) __typeMapper.readBoolean(__in, permissionable__typeInfo, boolean.class));
+        }
+        __in.peekTag();
         if (__typeMapper.isElement(__in, picklistValues__typeInfo)) {
             setPicklistValues((com.sforce.soap.partner.PicklistEntry[]) __typeMapper.readObject(__in, picklistValues__typeInfo,
                     com.sforce.soap.partner.PicklistEntry[].class));
@@ -1013,6 +1039,8 @@ public class Field implements com.sforce.ws.bind.XMLizable {
         sb.append("'" + com.sforce.ws.util.Verbose.toString(namePointing) + "'\n");
         sb.append(" nillable=");
         sb.append("'" + com.sforce.ws.util.Verbose.toString(nillable) + "'\n");
+        sb.append(" permissionable=");
+        sb.append("'" + com.sforce.ws.util.Verbose.toString(permissionable) + "'\n");
         sb.append(" picklistValues=");
         sb.append("'" + com.sforce.ws.util.Verbose.toString(picklistValues) + "'\n");
         sb.append(" precision=");
