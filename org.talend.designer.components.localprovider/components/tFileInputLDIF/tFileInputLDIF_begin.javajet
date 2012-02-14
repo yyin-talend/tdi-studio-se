@@ -16,6 +16,7 @@ imports="
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+boolean useFieldOptions = ("true").equals(ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__"));
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -94,25 +95,33 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                             
                                 byte[][] values_<%=cid %> = attribute_<%=cid %>.getByteValueArray();
 <%
-								for(Map<String, String> line:textEncodingColumns){// search in the configuration table
-									String columnName = line.get("SCHEMA_COLUMN");
-										isBinary = "true".equals(line.get("BINARY"));
+								if(useFieldOptions){
+									for(Map<String, String> line:textEncodingColumns){// search in the configuration table
+										String columnName = line.get("SCHEMA_COLUMN");
 										isBase64 = "true".equals(line.get("BASE64"));
 %>
-									if(attribute_<%=cid %>.getBaseName().equalsIgnoreCase("<%=columnName%>")){
-										for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
-		                           			String value_<%=cid%> = null;
-											if(<%=isBinary%> || <%=isBase64%>){
-                                				value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
-											}else{
-		                                		value_<%=cid%> = new String(byteValue_<%=cid%>,<%=encoding%>);
-											}
-                                				results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
+										if(attribute_<%=cid %>.getBaseName().equalsIgnoreCase("<%=columnName%>")){
+											for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
+		                           				String value_<%=cid%> = null;
+												if(<%=isBase64%>){
+		                             	   			value_<%=cid%> = new String(byteValue_<%=cid%>,<%=encoding%>);
+												}else{
+                                					value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
+												}
+                                					results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
+                                			}
                                 		}
-                                	}
 <%
-                                	isBinary = false; isBase64 = false;
-                                }
+	                                	isBase64 = false;
+	                               	}
+	                           	}else{
+%>
+										for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
+	                           				String value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
+                           					results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
+                            			}
+<%
+	                           	}
 %>
                             }
                         }
@@ -146,25 +155,33 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                             
                                 byte[][] values_<%=cid %> = attribute_<%=cid %>.getByteValueArray();
 <%
-								for(Map<String, String> line:textEncodingColumns){// search in the configuration table
-									String columnName = line.get("SCHEMA_COLUMN");
-										isBinary = "true".equals(line.get("BINARY"));
+								if(useFieldOptions){
+									for(Map<String, String> line:textEncodingColumns){// search in the configuration table
+										String columnName = line.get("SCHEMA_COLUMN");
 										isBase64 = "true".equals(line.get("BASE64"));
 %>
-									if(attribute_<%=cid %>.getBaseName().equalsIgnoreCase("<%=columnName%>")){
-										for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
-		                           			String value_<%=cid%> = null;
-											if(<%=isBinary%> || <%=isBase64%>){
-                                				value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
-											}else{
-		                                		value_<%=cid%> = new String(byteValue_<%=cid%>,<%=encoding%>);
-											}
-                                				results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
+										if(attribute_<%=cid %>.getBaseName().equalsIgnoreCase("<%=columnName%>")){
+											for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
+		                           				String value_<%=cid%> = null;
+												if(<%=isBase64%>){
+		                             		   		value_<%=cid%> = new String(byteValue_<%=cid%>,<%=encoding%>);
+												}else{
+                                					value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
+												}
+                                					results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
+                                			}
                                 		}
-                                	}
 <%
-                                	isBinary = false; isBase64 = false;
-                                }
+                            			isBase64 = false;
+                            		}
+                           	 	}else{
+%>
+										for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
+	    	                       			String value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
+            	                			results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
+                	            		}
+<%
+                    	        }
 %>
                             }
                         }
@@ -215,31 +232,43 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                 
                                 	boolean firstLoop_<%=cid %> = true;
 <%
-								for(Map<String, String> line:textEncodingColumns){// search in the configuration table
-									String columnName = line.get("SCHEMA_COLUMN");
-										isBinary = "true".equals(line.get("BINARY"));
-										isBase64 = "true".equals(line.get("BASE64"));
+									if(useFieldOptions){
+										for(Map<String, String> line:textEncodingColumns){// search in the configuration table
+											String columnName = line.get("SCHEMA_COLUMN");
+											isBase64 = "false".equals(line.get("BASE64"));
 %>
-									if(attribute_<%=cid %>.getBaseName().equalsIgnoreCase("<%=columnName%>")){
-			                          	 	for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
-				                        	   	String value_<%=cid%> = null;
-												if(<%=isBinary%> || <%=isBase64%>){
-		        	                   	    		value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
-												}else{
-													value_<%=cid%> = new String(byteValue_<%=cid%>,<%=encoding%>);
-												}
-	                                			if(firstLoop_<%=cid %>){
-													results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + ":" + value_<%=cid %>;
-												}else{
-													results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
-												}
-												firstLoop_<%=cid %> = false;
-	                          				 }
-	                          			
-                                	}
+											if(attribute_<%=cid %>.getBaseName().equalsIgnoreCase("<%=columnName%>")){
+			                          	 		for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
+				                        	  	 	String value_<%=cid%> = null;
+													if(<%=isBase64%>){
+														value_<%=cid%> = new String(byteValue_<%=cid%>,<%=encoding%>);
+													}else{
+		        	                   	    			value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
+													}
+	                                				if(firstLoop_<%=cid %>){
+														results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + ":" + value_<%=cid %>;
+													}else{
+														results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
+													}
+													firstLoop_<%=cid %> = false;
+	                          				 	}
+                                			}
 <%
-									isBinary = false; isBase64 = false;
-                                }
+											isBase64 = false;
+										}
+                            		}else{
+%>
+	                          	 		for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
+		                        	  	 	String value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
+                            				if(firstLoop_<%=cid %>){
+												results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + ":" + value_<%=cid %>;
+											}else{
+												results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
+											}
+											firstLoop_<%=cid %> = false;
+                      					 }
+<%
+                            		}
 %>
 
 									
