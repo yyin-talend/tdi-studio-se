@@ -1389,7 +1389,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String url = getValueFromRepositoryName(element, EConnectionParameterName.URL.getName());
         if (StringUtils.isEmpty(url)) {
             // for oracle RAC
-            url = getValueFromRepositoryName(element, "RAC_" + EConnectionParameterName.URL.getName());
+            // url = getValueFromRepositoryName(element, "RAC_" + EConnectionParameterName.URL.getName());
+            // Changed by Marvin Wang on Feb. 14, 2012 for bug TDI-19597. Above is the original code, below is new code
+            // to get the Oracle RAC url.
+            if (EDatabaseTypeName.ORACLE_RAC.getXmlName().equals(type)) {
+                url = getValueFromRepositoryName(element, "RAC_" + EConnectionParameterName.URL.getName());
+            }
         }
         connParameters.setUrl(TalendTextUtils.removeQuotes(url));
 
@@ -1499,8 +1504,14 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 EConnectionParameterName.URL.getName(), context));
         if (StringUtils.isEmpty(url)) {
             // try to get url for oracle RAC.
-            url = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
-                    "RAC_" + EConnectionParameterName.URL.getName(), context));
+            // url = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
+            // "RAC_" + EConnectionParameterName.URL.getName(), context));
+            // Changed by Marvin Wang on Feb. 14, 2012 for bug TDI-19597. Above is the original code, below is new code
+            // to get the Oracle RAC url.
+            String dbType = connParameters.getDbType();
+            if (EDatabaseTypeName.ORACLE_RAC.getDisplayName().equals(dbType))
+                url = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element, "RAC_"
+                        + EConnectionParameterName.URL.getName(), context));
         }
         connParameters.setUrl(url);
         connParameters.setDriverClass(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
