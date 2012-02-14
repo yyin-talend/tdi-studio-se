@@ -235,7 +235,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 									if(useFieldOptions){
 										for(Map<String, String> line:textEncodingColumns){// search in the configuration table
 											String columnName = line.get("SCHEMA_COLUMN");
-											isBase64 = "false".equals(line.get("BASE64"));
+											isBase64 = "true".equals(line.get("BASE64"));
 %>
 											if(attribute_<%=cid %>.getBaseName().equalsIgnoreCase("<%=columnName%>")){
 			                          	 		for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
