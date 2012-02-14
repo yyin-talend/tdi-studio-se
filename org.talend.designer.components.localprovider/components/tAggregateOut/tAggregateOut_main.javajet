@@ -305,6 +305,13 @@ if(inputConn != null) { // T_OutMain_AggR_501
 			|| function.equals(STD_DEV) && inputIsNumber && outputIsNumber
 		;
 		
+		// use double type as the sum for avg when the type of output column is byte, int, long, short, double, float
+		boolean forceUseDoubleAvgSum = false; 
+
+		if(AVG.equals(function) ) {
+			forceUseDoubleAvgSum = !outputIsBigDecimal; // the type of output column can't be BigDecimal
+		}
+		
 		if(isValidTypeForOperation) { // T_OutMain_AggR_745
 		
 			if(ignoreNull && !isInputColumnPrimitive) { // T_OutMain_AggR_545
@@ -402,11 +409,7 @@ if(inputConn != null) { // T_OutMain_AggR_501
 				if(!isSelectedPrimitive && isBasePrimitive && !forceUseBigDecimal) {
 					%>
 					if(operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> == null) {
-						<%if(AVG.equals(function)){%>
-						operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> = (double) 0;
-						<%}else{%>
-						operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> = (<%= primitiveTypeToGenerate %>) 0;
-						<%}%>
+						operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> = (<%= forceUseDoubleAvgSum?"double":primitiveTypeToGenerate %>) 0;
 					}
 					<%
 				}
@@ -437,9 +440,13 @@ if(inputConn != null) { // T_OutMain_AggR_501
 				} else if(inputIsBigDecimal && !outputIsBigDecimal) {
 				
 					if(checkTypeOverflow || checkUlp) {
-					
+						if(forceUseDoubleAvgSum) {
+						%>utilClass_<%=cid %>.checkedIADD( operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>, (double)<%=inputConn.getName() %>.<%=inputColumnName %>, <%= checkTypeOverflow %>.doubleValue(), <%= checkUlp %>);
+						<%
+						} else {
 						%>utilClass_<%=cid %>.checkedIADD( (<%= primitiveTypeToGenerate%>) operation_result_<%=cid %>.<%=outputColumnName %>_<%=function %>, (<%= primitiveTypeToGenerate%>) <%=inputConn.getName() %>.<%=inputColumnName %>, <%= checkTypeOverflow %>.doubleValue(), <%= checkUlp %>);
 					<%
+						}
 					}
 					%>
 					operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> += <%=inputConn.getName() %>.<%=inputColumnName %>.doubleValue();
@@ -448,12 +455,16 @@ if(inputConn != null) { // T_OutMain_AggR_501
 				} else {
 				
 					if(checkTypeOverflow || checkUlp) {
-					
+						if(forceUseDoubleAvgSum) {
+						%>utilClass_<%=cid %>.checkedIADD( operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %>, <%=inputConn.getName() %>.<%=inputColumnName %>, <%= checkTypeOverflow %>, <%= checkUlp %>);
+						<%
+						} else {
 						%>utilClass_<%=cid %>.checkedIADD( (<%= primitiveTypeToGenerate%>) operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %>, (<%= primitiveTypeToGenerate%>) <%=inputConn.getName() %>.<%=inputColumnName %>, <%= checkTypeOverflow %>, <%= checkUlp %>);
 						<%
+						}
 					}
-					if(function.equals(SUM) && outputColumn.isNullable() && (outputIsByte || outputIsShort)){
-					%>operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> = (<%=primitiveTypeToGenerate%>)(operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %>.<%=primitiveTypeToGenerate%>Value() + <%=inputConn.getName() %>.<%=inputColumnName %>.<%=primitiveTypeToGenerate%>Value());
+					if(outputColumn.isNullable() && (outputIsByte || outputIsShort)){
+					%>operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %> = (<%=forceUseDoubleAvgSum?"double":primitiveTypeToGenerate%>)(operation_result_<%=cid %>.<%=outputColumnName %>_<%= SUM %>.<%=forceUseDoubleAvgSum?"double":primitiveTypeToGenerate%>Value() + <%=inputConn.getName() %>.<%=inputColumnName %>.<%=primitiveTypeToGenerate%>Value());
 					<%
 					}else{
 						if(inputColumn.isNullable()  ){

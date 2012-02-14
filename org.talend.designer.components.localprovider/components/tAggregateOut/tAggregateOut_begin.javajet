@@ -96,11 +96,24 @@ for(int i=0; i<sizeOperations; i++){
 		distinctCols.put(in, in);
 		hasCountDistinctOperation = true;
 	}
+	if(("avg").equals(fun)){
+		String[] funin = new String[3];
+		funin[FUNCTION]=SUM;
+		funin[INPUT_COLUMN]=in;
+		funin[OUTPUT_COLUMN]=out;
+		funinOperations.add(funin);
+		funin=new String[3];
+		funin[FUNCTION]=AVG;
+		funin[INPUT_COLUMN]=in;
+		funin[OUTPUT_COLUMN]=out;
+		funinOperations.add(funin);
+	}else{
 		String[] funin = new String[3];
 		funin[FUNCTION]=fun;
 		funin[INPUT_COLUMN]=in;
 		funin[OUTPUT_COLUMN]=out;
 		funinOperations.add(funin);
+	}
 }
 
 java.util.Map<String,IMetadataColumn> keysColumns = new java.util.HashMap<String,IMetadataColumn>();
@@ -236,6 +249,48 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 		}
 		
 		public void checkedIADD(double a, double b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+			if(checkUlp) {
+			    double minAddedValue = Math.ulp(a);
+			    if (minAddedValue > b) {
+			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
+			    }
+			}
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < Double.MIN_VALUE)) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, byte b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < Double.MIN_VALUE)) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, short b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < Double.MIN_VALUE)) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, int b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < Double.MIN_VALUE)) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, long b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < Double.MIN_VALUE)) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, float b, boolean checkTypeOverFlow, boolean checkUlp) {
 		
 			if(checkUlp) {
 			    double minAddedValue = Math.ulp(a);
@@ -475,6 +530,14 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 				|| function.equals(STD_DEV) && inputIsNumber && outputIsNumber
 			;
 			
+			// use double type as the sum for avg when the type of output column is byte, int, long, short, double, float
+			boolean forceUseDoubleAvgSum = false; 
+			if((i + 1 < sizeOps) && SUM.equals(function)) {
+				if(AVG.equals(funinOperations.get(i+1)[FUNCTION] ) ) {
+					forceUseDoubleAvgSum = !outputIsBigDecimal; // the type of output column can't be BigDecimal
+				}
+			}
+			
 			if(!isValidTypeForOperation) {
 				warnings.add("Warning:the operation '" + function + "' for the output column '"+ outputColumn.getLabel() +"' can't be processed because of incompatible input and/or output types");
 			}
@@ -497,18 +560,17 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 
 					%>BigDecimal <%=funin[OUTPUT_COLUMN] %>_<%=function %>;
            			<%
-
+           		} else if(forceUseDoubleAvgSum && function.equals(SUM)) { // force use double to sum when the function is avg
+           			%>
+           			<%=JavaTypesManager.getTypeToGenerate("id_Double", outputColumn.isNullable()) %> <%=funin[OUTPUT_COLUMN] %>_<%=function %>;
+					<%
            		}else if(function.equals(COUNT)){
            			%>int <%=funin[OUTPUT_COLUMN] %>_clmCount = 0;
            			<%
            		} else if(function.equals(AVG)) {
 					
 					%>int <%=funin[OUTPUT_COLUMN] %>_count = 0;
-					<%if(forceUseBigDecimal){%>
-						BigDecimal <%=funin[OUTPUT_COLUMN] %>_sum;
-					<%}else{%>
-						<%=JavaTypesManager.getTypeToGenerate("id_Double", outputColumn.isNullable()) %> <%=funin[OUTPUT_COLUMN] %>_sum;
-           			<%}
+           			<%
            			 
            		} else if(LIST.equals(function)) {
            			
