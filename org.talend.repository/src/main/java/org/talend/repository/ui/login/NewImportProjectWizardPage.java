@@ -345,6 +345,10 @@ public class NewImportProjectWizardPage extends WizardPage {
     }
 
     public String getProjectName() {
+        return nameText.getText();
+    }
+
+    public String getTechnicalName() {
         return technicalNameText.getText();
     }
 

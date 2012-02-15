@@ -771,6 +771,7 @@ public class LoginComposite extends Composite {
                 newProjectDialog.setTitle(Messages.getString("NewImportProjectWizard.windowTitle")); //$NON-NLS-1$
                 if (newProjectDialog.open() == Window.OK) {
                     final String newName = newPrjWiz.getName();
+                    final String technicalName = newPrjWiz.getTechnicalName();
                     final String demoProjName = importCombo.getCombo().getItem(importCombo.getCombo().getSelectionIndex());
 
                     //
@@ -811,9 +812,10 @@ public class LoginComposite extends Composite {
                                 String filePath = new Path(url.getFile()).toOSString();
 
                                 if (demoProjectFileType.getName().equalsIgnoreCase("folder")) { //$NON-NLS-1$
-                                    ImportProjectsUtilities.importProjectAs(getShell(), newName, newName, filePath, monitorWrap);
+                                    ImportProjectsUtilities.importProjectAs(getShell(), newName, technicalName, filePath,
+                                            monitorWrap);
                                 } else {// type.equalsIgnoreCase("archive")
-                                    ImportProjectsUtilities.importArchiveProjectAs(getShell(), newName, newName, filePath,
+                                    ImportProjectsUtilities.importArchiveProjectAs(getShell(), newName, technicalName, filePath,
                                             monitorWrap);
                                 }
 

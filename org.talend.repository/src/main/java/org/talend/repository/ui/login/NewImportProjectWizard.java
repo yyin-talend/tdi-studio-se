@@ -24,6 +24,8 @@ public class NewImportProjectWizard extends Wizard {
 
     private String projectName;
 
+    private String technicalName;
+
     /*
      * (non-Javadoc)
      * 
@@ -32,6 +34,7 @@ public class NewImportProjectWizard extends Wizard {
     @Override
     public boolean performFinish() {
         projectName = mainPage.getProjectName();
+        technicalName = mainPage.getTechnicalName();
         return true;
     }
 
@@ -44,6 +47,10 @@ public class NewImportProjectWizard extends Wizard {
 
     public String getName() {
         return projectName;
+    }
+
+    public String getTechnicalName() {
+        return technicalName;
     }
 
 }
