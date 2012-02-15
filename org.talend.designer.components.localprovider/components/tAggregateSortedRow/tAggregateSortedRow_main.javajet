@@ -89,8 +89,17 @@ boolean sameGroup_<%=cid %> = true;
 	flag_<%=cid%> = false;
 <%
 	for(int i = 0; i < column_gr.length; i++){
-%>group_<%=column_gr[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_gr[i][0].getLabel() %>;
-<%	}
+		if("id_Dynamic".equals(column_gr[i][0].getTalendType())) {
+%>
+			group_<%=column_gr[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_gr[i][0].getLabel() %>.clone();
+<%
+		} else {
+%>
+			group_<%=column_gr[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_gr[i][0].getLabel() %>;
+<%	
+		}
+	}
+		
 	for(int i = 0; i < column_op.length; i++){//__HSS_tAR_001
 		boolean duplicate = false;
 		for(int j = 0; j < i; j++){
@@ -870,8 +879,16 @@ if(true){
 	
 	//do first
 	for(int i = 0; i < column_gr.length; i++){
-%>group_<%=column_gr[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_gr[i][0].getLabel() %>;
-<%	}
+		if("id_Dynamic".equals(column_gr[i][0].getTalendType())) {
+%>
+			group_<%=column_gr[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_gr[i][0].getLabel() %>.clone();
+<%
+		} else {
+%>
+			group_<%=column_gr[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_gr[i][0].getLabel() %>;
+<%	
+		}
+	}
 	for(int i = 0; i < column_op.length && column_gr.length > 0; i++){
 		boolean duplicate = false;
 		for(int j = 0; j < i; j++){

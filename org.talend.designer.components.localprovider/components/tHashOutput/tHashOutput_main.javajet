@@ -171,14 +171,20 @@ if(!isLinked){//111
 %>    
 		<%=connectionName %>Struct oneRow_<%=cid %> = new <%=connectionName %>Struct();
 				
-		<%
+<%
             for (IMetadataColumn column : listColumns) {
                 String columnName = column.getLabel();
-		%>
-			oneRow_<%=cid %>.<%=columnName %> = <%=connectionName %>.<%=columnName %>;
-		<%
+				if("id_Dynamic".equals(column.getTalendType())) {
+%>
+					oneRow_<%=cid %>.<%=columnName %> = <%=connectionName %>.<%=columnName %>.clone();
+<%
+				} else {
+%>
+					oneRow_<%=cid %>.<%=columnName %> = <%=connectionName %>.<%=columnName %>;
+<%
+				}
         	}
-		%>
+%>
 		
         tHashFile_<%=cid %>.put(oneRow_<%=cid %>);
         nb_line_<%=cid %> ++;
@@ -202,9 +208,15 @@ if(!isLinked){//111
     //min
     int size = Math.min(columns.size(), tHashOutputcolumns.size());
     for(int i=0; i<size; i++){//444
+		if("id_Dynamic".equals(tHashOutputcolumns.get(i).getTalendType())) {
 %>
-	oneRow_<%=cid %>.<%=tHashOutputcolumns.get(i).getLabel() %> = <%=connectionName %>.<%=columns.get(i).getLabel() %>;
+			oneRow_<%=cid %>.<%=tHashOutputcolumns.get(i).getLabel() %> = <%=connectionName %>.<%=columns.get(i).getLabel() %>.clone();
 <%
+		} else {
+%>
+			oneRow_<%=cid %>.<%=tHashOutputcolumns.get(i).getLabel() %> = <%=connectionName %>.<%=columns.get(i).getLabel() %>;
+<%
+		}
 	}//444
 %>
         tHashFile_<%=cid %>.put(oneRow_<%=cid %>);
