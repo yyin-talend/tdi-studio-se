@@ -351,7 +351,11 @@ for(INode node:(List< ? extends INode>)process.getGraphicalNodes())
 	    }
 	    uri = fragments.toString();
 	}else if("cJMS".equals(componentName)){
-		String name = node.getUniqueName().replace("_", "");
+		//http://jira.talendforge.org/browse/TESB-4861
+		String name = ElementParameterParser.getValue(node, "__CONNECTION_FACOTRY__");
+		if(name == null){
+		   name = "jms";
+		}
 		name = "\"" + name + "\"";
 		//String name = ElementParameterParser.getValue(node, "__NAME__").trim();
 		//Remove unnecessary subfix
