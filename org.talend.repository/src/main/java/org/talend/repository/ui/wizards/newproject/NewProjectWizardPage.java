@@ -294,6 +294,11 @@ public class NewProjectWizardPage extends WizardPage {
                     }
                 }
             }
+            // add for bug TDI-19617
+            if (descriptionText.getText().length() == 0) {
+                descriptionStatus = new Status(IStatus.WARNING, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
+                        Messages.getString("NewProjectWizardPage.DETAIL"), null); //$NON-NLS-1$
+            }
         }
         updatePageStatus();
     }
