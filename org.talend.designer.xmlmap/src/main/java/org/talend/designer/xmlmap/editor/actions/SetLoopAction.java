@@ -37,14 +37,7 @@ public class SetLoopAction extends SelectionAction {
         if (getSelectedObjects().get(0) instanceof TreeNodeEditPart) {
             TreeNodeEditPart nodePart = (TreeNodeEditPart) getSelectedObjects().get(0);
             TreeNode model = (TreeNode) nodePart.getModel();
-            // root can't be loop
-            if (model.eContainer() instanceof TreeNode && XmlMapUtil.DOCUMENT.equals(((TreeNode) model.eContainer()).getType())) {
-                // fix for TDI-18727
-                if (XmlMapUtil.isExpressionEditable(model)) {
-                    return true;
-                }
-                return false;
-            }
+
             if (NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType())
                     || !(model.eContainer() instanceof TreeNode)) {
                 return false;
