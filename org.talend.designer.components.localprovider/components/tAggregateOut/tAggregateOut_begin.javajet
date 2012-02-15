@@ -283,13 +283,6 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 		    }
 		}
 		
-		public void checkedIADD(double a, long b, boolean checkTypeOverFlow, boolean checkUlp) {
-		
-		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < Double.MIN_VALUE)) {
-		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
-		    }
-		}
-		
 		public void checkedIADD(double a, float b, boolean checkTypeOverFlow, boolean checkUlp) {
 		
 			if(checkUlp) {
@@ -491,6 +484,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 			boolean outputIsString = outputJavaType == JavaTypesManager.STRING;
 			boolean outputIsBigDecimal = outputJavaType == JavaTypesManager.BIGDECIMAL;
 			boolean outputIsDate = outputJavaType == JavaTypesManager.DATE;
+			boolean outputIsLong = outputJavaType == JavaTypesManager.LONG;
 			boolean outputIsDecimal = outputJavaType == JavaTypesManager.FLOAT || outputJavaType == JavaTypesManager.DOUBLE || outputIsBigDecimal;
 			
 			boolean inputIsNumber = JavaTypesManager.isNumberType(inputJavaType, false);
@@ -512,6 +506,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 				&& inputIsDecimal
 				&& outputIsDecimal
 				&& useFinancialPrecision
+				
 			;
 			
 			boolean sameInOutType = outputJavaType == inputJavaType;
@@ -534,7 +529,10 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 			boolean forceUseDoubleAvgSum = false; 
 			if((i + 1 < sizeOps) && SUM.equals(function)) {
 				if(AVG.equals(funinOperations.get(i+1)[FUNCTION] ) ) {
-					forceUseDoubleAvgSum = !outputIsBigDecimal; // the type of output column can't be BigDecimal
+					forceUseDoubleAvgSum = !outputIsBigDecimal && !outputIsLong; // the type of output column can't be BigDecimal
+					if(!forceUseBigDecimal) {
+						forceUseBigDecimal = outputIsLong;
+					}
 				}
 			}
 			

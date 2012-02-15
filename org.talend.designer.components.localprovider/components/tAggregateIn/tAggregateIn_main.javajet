@@ -185,6 +185,7 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
 							boolean outputIsString = outputJavaType == JavaTypesManager.STRING;
 							boolean outputIsBigDecimal = outputJavaType == JavaTypesManager.BIGDECIMAL;
 							boolean outputIsDate = outputJavaType == JavaTypesManager.DATE;
+							boolean outputIsLong = outputJavaType == JavaTypesManager.LONG;
 							boolean outputIsDecimal = outputJavaType == JavaTypesManager.FLOAT || outputJavaType == JavaTypesManager.DOUBLE || outputIsBigDecimal;
 							boolean inputIsNumber = JavaTypesManager.isNumberType(inputJavaType, false);
 							boolean inputIsObject = inputJavaType == JavaTypesManager.OBJECT;
@@ -206,7 +207,9 @@ if (mestadataTableListOut!=null && mestadataTableListOut.size()>0) { // T_InMain
 								&& outputIsDecimal
 								&& useFinancialPrecision
 							;
-	
+							if(AVG.equals(function) && !forceUseBigDecimal) {
+								forceUseBigDecimal = outputIsLong;
+							}
 							boolean sameInOutType = outputJavaType == inputJavaType;
 					
 							boolean isValidTypeForOperation = 

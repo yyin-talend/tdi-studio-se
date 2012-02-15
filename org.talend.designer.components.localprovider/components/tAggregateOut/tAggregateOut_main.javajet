@@ -263,6 +263,7 @@ if(inputConn != null) { // T_OutMain_AggR_501
 		boolean outputIsString = outputJavaType == JavaTypesManager.STRING;
 		boolean outputIsBigDecimal = outputJavaType == JavaTypesManager.BIGDECIMAL;
 		boolean outputIsDate = outputJavaType == JavaTypesManager.DATE;
+		boolean outputIsLong = outputJavaType == JavaTypesManager.LONG;
 		boolean outputIsDecimal = outputJavaType == JavaTypesManager.FLOAT || outputJavaType == JavaTypesManager.DOUBLE || outputIsBigDecimal;
 		
 		boolean outputIsByte = outputJavaType == JavaTypesManager.BYTE;
@@ -309,7 +310,10 @@ if(inputConn != null) { // T_OutMain_AggR_501
 		boolean forceUseDoubleAvgSum = false; 
 
 		if(AVG.equals(function) ) {
-			forceUseDoubleAvgSum = !outputIsBigDecimal; // the type of output column can't be BigDecimal
+			forceUseDoubleAvgSum = !outputIsBigDecimal && !outputIsLong; // the type of output column can't be BigDecimal
+			if(!forceUseBigDecimal) {
+				forceUseBigDecimal = outputIsLong;
+			}
 		}
 		
 		if(isValidTypeForOperation) { // T_OutMain_AggR_745
