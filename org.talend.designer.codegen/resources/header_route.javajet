@@ -353,7 +353,7 @@ for(INode node:(List< ? extends INode>)process.getGraphicalNodes())
 	}else if("cJMS".equals(componentName)){
 		//http://jira.talendforge.org/browse/TESB-4861
 		String name = ElementParameterParser.getValue(node, "__CONNECTION_FACOTRY__");
-		if(name == null){
+		if(name == null || name.equals("")){
 		   name = "jms";
 		}
 		name = "\"" + name + "\"";
@@ -563,7 +563,6 @@ for(INode node:(List< ? extends INode>)process.getGraphicalNodes())
 	}
 %>
 	uriMap.put("<%=cid%>", <%=uri%>);
-	System.out.println(<%=uri%>);
 <%
 }
 %>
