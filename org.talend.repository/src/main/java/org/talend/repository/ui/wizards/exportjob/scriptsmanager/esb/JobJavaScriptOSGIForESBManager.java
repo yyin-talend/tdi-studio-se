@@ -72,7 +72,6 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
-import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 
 /**
@@ -581,50 +580,36 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 			String jobClassName, String itemType, boolean isESBJob) {
 
 		// http://jira.talendforge.org/browse/TESB-3677
-		boolean hasSL = false;
 		boolean hasSAM = false;
 
 		if (ROUTE.equals(itemType)) {
-
 			ProcessType process = ((ProcessItem) processItem).getProcess();
 			if (process != null) {
 				EList nodes = process.getNode();
 				Iterator iterator = nodes.iterator();
-
 				while (iterator.hasNext()) {
 					NodeType next = (NodeType) iterator.next();
-
-					if ("cCXF".equals(next.getComponentName())) {
-						if (!hasSL) {
-							hasSL = computeCheckElementValue("ENABLE_SL",
-									next.getElementParameter());
-						}
-						if (!hasSAM) {
-							// http://jira.talendforge.org/browse/TESB-3850
-							String format = computeTextElementValue(
-									"DATAFORMAT", next.getElementParameter());
-							if (!"MESSAGE".equals(format)) {
-								hasSAM = computeCheckElementValue("ENABLE_SAM",
-										next.getElementParameter());
-							}
+					if ("cCXF".equals(next.getComponentName())) { //$NON-NLS-1$
+						// http://jira.talendforge.org/browse/TESB-3850
+						String format = computeTextElementValue("DATAFORMAT", next.getElementParameter()); //$NON-NLS-1$
+						if (!"MESSAGE".equals(format)) { //$NON-NLS-1$
+							hasSAM = computeCheckElementValue("ENABLE_SAM", next.getElementParameter()); //$NON-NLS-1$
 						}
 					}
-
-					if (hasSL && hasSAM) {
+					if (hasSAM) {
 						break;
 					}
-
 				}
 			}
 		}
 
 		FileReader fr = null;
-		String additionalJobInterfaces = "<value>routines.system.api.TalendESBJob</value>";
+		String additionalJobInterfaces = "<value>routines.system.api.TalendESBJob</value>"; //$NON-NLS-1$
 		String additionalServiceProps = "";
 		if (isESBJob) {
 			if (isESBProviderJob((ProcessItem) processItem)) {
-				additionalJobInterfaces += "\n\t\t\t<value>routines.system.api.TalendESBJobFactory</value>";
-				additionalServiceProps = "<entry key=\"multithreading\" value=\"true\" />";
+				additionalJobInterfaces += "\n\t\t\t<value>routines.system.api.TalendESBJobFactory</value>"; //$NON-NLS-1$
+				additionalServiceProps = "<entry key=\"multithreading\" value=\"true\" />"; //$NON-NLS-1$
 			}
 		} else {
 			additionalJobInterfaces = "";
@@ -645,29 +630,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 						.replace("@ADDITIONAL_JOB_INTERFACE@", additionalJobInterfaces) //$NON-NLS-1$
 						.replace("@ADDITIONAL_SERVICE_PROPERTIES@", additionalServiceProps); //$NON-NLS-1$
 
-				if (hasSL) {
-					line = line
-							.replace("@ESBSLFeatureProperty@",
-									"<property name=\"locatorFeature\" ref=\"locatorFeature\"/>");
-					line = line
-							.replace(
-									"@ESBSLFeaturePropertyRef@",
-									"<reference id=\"locatorFeature\" interface=\"org.talend.esb.servicelocator.cxf.LocatorFeature\"/>");
-				}
-				if (hasSAM) {
-					line = line
-							.replace("@ESBSAMFeatureProperty@",
-									"<property name=\"eventFeature\" ref=\"eventFeature\"/>");
-					line = line
-							.replace(
-									"@ESBSAMFeaturePropertyRef@",
-									"<reference id=\"eventFeature\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>");
-				}
-
-				line = line.replace("@ESBSLFeatureProperty@", "");
-				line = line.replace("@ESBSLFeaturePropertyRef@", "");
-				line = line.replace("@ESBSAMFeatureProperty@", "");
-				line = line.replace("@ESBSAMFeaturePropertyRef@", "");
+				// SAM
+				line = line.replace("@ESBSAMFeatureProperty@", //$NON-NLS-1$
+				        (hasSAM) ? "<property name=\"eventFeature\" ref=\"eventFeature\"/>" : "");
+				line = line.replace("@ESBSAMFeaturePropertyRef@", //$NON-NLS-1$
+				        (hasSAM) ? "<reference id=\"eventFeature\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>" : "");
 
 				bw.write(line + "\n"); //$NON-NLS-1$
 				line = br.readLine();
@@ -682,7 +649,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 			ExceptionHandler.process(e);
 			logger.error(e);
 		}
-
 	}
 
 	private String getOSGIInfFolder() {
@@ -694,7 +660,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 			String itemType, boolean isESBJob) {
 		FileReader fr = null;
 		String additionalServiceProps = "";
-		String additionalJobInterfaces = "<value>routines.system.api.TalendESBJob</value>";
+		String additionalJobInterfaces = "<value>routines.system.api.TalendESBJob</value>"; //$NON-NLS-1$
 		if (!isESBJob) {
 			additionalJobInterfaces = "";
 		}
@@ -746,8 +712,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
 		FileOutputStream fos = null;
 		try {
-			Manifest manifest = getManifest(libResource, itemToBeExport,
-					jobName);
+			Manifest manifest = getManifest(libResource, itemToBeExport, jobName);
 			fos = new FileOutputStream(manifestPath);
 			manifest.write(fos);
 		} catch (FileNotFoundException e1) {
@@ -858,8 +823,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 			// compute JMS import packages
 			if (jmsImportPkgs.size() > 0) {
 				for (String pkg : jmsImportPkgs) {
-					externalJMSImportSB.append(",");
-					externalJMSImportSB.append(pkg);
+					externalJMSImportSB.append(",").append(pkg);
 				}
 			}
 
@@ -890,15 +854,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 		} else {
 			a.put(new Attributes.Name("Import-Package"), //$NON-NLS-1$
 					"routines.system.api;resolution:=optional" //$NON-NLS-1$
-//							+ ",org.dom4j;resolution:=optional" //$NON-NLS-1$
-//							+ ",org.dom4j.io;resolution:=optional" //$NON-NLS-1$
-//							+ ",org.dom4j.tree;resolution:=optional" //$NON-NLS-1$
-//							+ ",org.jaxen;resolution:=optional" //$NON-NLS-1$
 							+ ",javax.xml.soap;resolution:=optional" //$NON-NLS-1$
 							+ ",javax.xml.ws.soap;resolution:=optional" //$NON-NLS-1$
-//							+ ",javax.ws.rs;resolution:=optional" //$NON-NLS-1$
-//							+ ",javax.ws.rs.core;resolution:=optional" //$NON-NLS-1$
-//							+ ",javax.ws.rs.ext;resolution:=optional" //$NON-NLS-1$
 			);
 		}
 		if (itemToBeExport != null && !itemToBeExport.isEmpty()) {
@@ -909,8 +866,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 				 */
 				String requiredBundles = caculateDependenciesBundles(pi);
 				if (requiredBundles != null && !"".equals(requiredBundles)) {
-					a.put(new Attributes.Name("Require-Bundle"),
-							requiredBundles);
+					a.put(new Attributes.Name("Require-Bundle"), requiredBundles);
 				}
 			}
 		}
