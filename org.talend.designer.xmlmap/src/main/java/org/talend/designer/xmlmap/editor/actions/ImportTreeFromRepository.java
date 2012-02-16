@@ -50,6 +50,7 @@ import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.MDMConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.IMDMProviderService;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -271,6 +272,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                     boolean initConcepts = service.initConcepts(connection);
                     if (initConcepts) {
                         String prefix = service.getXPathPrefixValue(selected);
+                        prefix = TalendTextUtils.removeQuotes(prefix);
                         String loopExpression = selected.getLoopExpression();
                         EList<ConceptTarget> conceptTargets = selected.getConceptTargets();
                         if (conceptTargets == null || loopExpression == null) {
@@ -281,7 +283,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                                 loopExpression);
                         TreeNode pNode = parentNode;
                         if (MdmConceptType.RECEIVE.equals(selected.getConceptType())) {
-                            if (prefix != null) {
+                            if (prefix != null && !"".equals(prefix)) {
                                 String[] preValues = prefix.split(XmlMapUtil.XPATH_SEPARATOR);
                                 for (String value : preValues) {
                                     if (!"".equals(value)) {
