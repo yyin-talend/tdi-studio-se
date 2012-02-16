@@ -27,9 +27,12 @@ String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__"
         
 boolean needSSLtoTrustServer = ("true").equals(ElementParameterParser.getValue(node,"__NEED_SSL_TO_TRUSTSERVER__"));
 String trustStoreFile = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_TRUSTSTORE__");
-String trustStorePassword = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_PASSWORD__");	
+String trustStorePassword = ElementParameterParser.getValue(node,"__SSL_TRUSTSERVER_PASSWORD__");
+
+boolean useKerberos = ("true").equals(ElementParameterParser.getValue(node,"__USE_KERBEROS__"));
+String kerberosConfiguration = ElementParameterParser.getValue(node,"__KERBEROS_CONFIGURATION__");
 %>
-org.talend.soap.SOAPUtil soapUtil_<%=cid%> = new org.talend.soap.SOAPUtil();
+<%if(useKerberos){%>final<%}%> org.talend.soap.SOAPUtil soapUtil_<%=cid%> = new org.talend.soap.SOAPUtil();
 <%		
 if (needSSLtoTrustServer) {
 %>   

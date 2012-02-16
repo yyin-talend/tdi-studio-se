@@ -102,7 +102,23 @@
 		</PARAMETER>
 	</PARAMETERS>
 
-	<ADVANCED_PARAMETERS/>
+	<ADVANCED_PARAMETERS>
+		<PARAMETER
+	      NAME="USE_KERBEROS"
+	      FIELD="CHECK"
+	      NUM_ROW="10"
+	    >
+	      <DEFAULT>false</DEFAULT>
+	    </PARAMETER>    
+	
+	    <PARAMETER
+	      NAME="KERBEROS_CONFIGURATION"
+	      FIELD="COMPONENT_LIST"
+	      FILTER="tSetKerberosConfiguration"
+	      NUM_ROW="10"
+	      SHOW_IF="USE_KERBEROS == 'true'"
+	    />
+	</ADVANCED_PARAMETERS>
 
 	<CODEGENERATION>
 		<IMPORTS>

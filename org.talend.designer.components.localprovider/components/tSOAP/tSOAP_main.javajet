@@ -21,33 +21,55 @@ String soapMessageStr = ElementParameterParser.getValue(node,"__SOAPMESSAGE__");
 soapMessageStr = soapMessageStr.replaceAll("[\r\n]", " ");
         
 String soapVersion = ElementParameterParser.getValue(node,"__SOAP_VERSION__");
+
+boolean useKerberos = ("true").equals(ElementParameterParser.getValue(node,"__USE_KERBEROS__"));
+String kerberosConfiguration = ElementParameterParser.getValue(node,"__KERBEROS_CONFIGURATION__");
+
+if(useKerberos){
 %>
-<%if("Soap12".equals(soapVersion)){%>
-String soapVersion_<%=cid%> = org.talend.soap.SOAPUtil.SOAP12;
-<%}else{%>
-String soapVersion_<%=cid%> = org.talend.soap.SOAPUtil.SOAP11;
-<%}%>
-		
-soapUtil_<%=cid%>.invokeSOAP(soapVersion_<%=cid%>,<%=endpoint%>,<%=action%>,<%=soapMessageStr%>);
-		// for output
+	class TalendPrivilegedAction implements java.security.PrivilegedAction {
+		public TalendPrivilegedAction() {
+		}
+		public Object run(){
+			try{
+				soapUtil_<%=cid%>.invokeSOAP(org.talend.soap.SOAPUtil.<%=soapVersion.toUpperCase()%>,<%=endpoint%>,<%=action%>,<%=soapMessageStr%>);
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			return null;
+		}
+	}
+	javax.security.auth.Subject subject_<%=cid%> = (javax.security.auth.Subject)globalMap.get("kerberos_subject_<%=kerberosConfiguration%>");
+	if(subject_<%=cid%>==null){
+		System.err.println("Subject for Kerberos is null!");
+	}
+	javax.security.auth.Subject.doAs(subject_<%=cid%>,new TalendPrivilegedAction());
 <%
-	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-	if (conns!=null) {//1
-		if (conns.size()>0) {//2
-			IConnection conn = conns.get(0); //the first connection
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//3
-%>		
-				<%=conn.getName() %> = new <%=conn.getName() %>Struct();
-				<%=conn.getName() %>.Header = soapUtil_<%=cid%>.getReHeaderMessage();
-				if(soapUtil_<%=cid%>.hasFault()){
-					<%=conn.getName() %>.Fault = soapUtil_<%=cid%>.getReFaultMessage();
-				}else{
-					<%=conn.getName() %>.Body = soapUtil_<%=cid%>.getReBodyMessage();
-				}
-<%			
-			}//3
-		}//2
-	}//1
+}else{
+%>
+	soapUtil_<%=cid%>.invokeSOAP(org.talend.soap.SOAPUtil.<%=soapVersion.toUpperCase()%>,<%=endpoint%>,<%=action%>,<%=soapMessageStr%>);
+<%
+}
+%>
+// for output
+<%
+List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+if (conns!=null) {//1
+	if (conns.size()>0) {//2
+		IConnection conn = conns.get(0); //the first connection
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//3
+		%>		
+			<%=conn.getName() %> = new <%=conn.getName() %>Struct();
+			<%=conn.getName() %>.Header = soapUtil_<%=cid%>.getReHeaderMessage();
+			if(soapUtil_<%=cid%>.hasFault()){
+				<%=conn.getName() %>.Fault = soapUtil_<%=cid%>.getReFaultMessage();
+			}else{
+				<%=conn.getName() %>.Body = soapUtil_<%=cid%>.getReBodyMessage();
+			}
+		<%			
+		}//3
+	}//2
+}//1
 %>
         
 
