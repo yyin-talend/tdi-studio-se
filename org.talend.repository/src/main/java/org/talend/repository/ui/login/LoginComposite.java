@@ -43,6 +43,8 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -955,6 +957,16 @@ public class LoginComposite extends Composite {
         data.right = new FormAttachment(100, -HORIZONTAL_THREE_SPACE - btPoint.x - 50);
         projectText.setLayoutData(data);
         projectText.setText(DEFAULT_PROJECT_NAME);
+
+        // add for bug TDI-19614
+        projectText.setBackground(GREY_COLOR);
+        projectText.addFocusListener(new FocusAdapter() {
+
+            public void focusGained(FocusEvent e) {
+                projectText.setBackground(null);
+                projectText.setText("");
+            }
+        });
 
         advanced = toolkit.createButton(tosProjectComposite, null, SWT.PUSH);
         advanced.setText(Messages.getString("LoginComposite.buttons.advanced"));
