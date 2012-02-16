@@ -241,7 +241,6 @@ public class ImportProjectsUtilities {
         while (childrenEnum.hasNext()) {
 
             Object child = childrenEnum.next();
-            createUserDefinedIfSqlpattern(child);
             // Add the child, this way we get every files except the project
             // folder itself which we don't want
             files.add(child);
@@ -249,34 +248,6 @@ public class ImportProjectsUtilities {
             // instead
             if (provider.isFolder(child)) {
                 getFilesForProject(files, provider, child);
-            }
-        }
-    }
-
-    /**
-     * bug TDI-19490 Create UserDefined folder under SQL template.
-     * 
-     * DOC JKWANG Comment method "createUserDefinedIfSqlpattern".
-     * 
-     * @param child
-     */
-    private static void createUserDefinedIfSqlpattern(Object child) {
-        // TODO Auto-generated method stub
-
-        final String suffix = "org.talend.resources\\resources\\demoprojects\\java\\TALENDDEMOSJAVA\\sqlPatterns";
-        String[] sqlTemplates = { suffix.concat("Generic"), suffix.concat("MySQL"), suffix.concat("Netezza"),
-                suffix.concat("Oracle"), suffix.concat("ParAccel"), suffix.concat("Teradata") };
-        String path = ((File) child).getPath();
-
-        if (child instanceof File && path != null) {
-
-            for (String sqlTemplate : sqlTemplates) {
-
-                if (path.endsWith(sqlTemplate)) {
-
-                    new File(((File) child), "UserDefined").mkdirs();
-                    break;
-                }
             }
         }
     }
