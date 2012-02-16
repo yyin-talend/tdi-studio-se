@@ -729,7 +729,7 @@ public class LoginComposite extends Composite {
         Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.selectADemoProject"));
         gc.dispose();
         data = new FormData();
-        data.left = new FormAttachment(10, HORIZONTAL_TWO_SPACE);
+        data.left = new FormAttachment(10, HORIZONTAL_SPACE);
         data.right = new FormAttachment(10, HORIZONTAL_TWO_SPACE + labelSize.x);
         data.bottom = new FormAttachment(manageProjectsButtonTemp, HORIZONTAL_FOUR_SPACE, SWT.CENTER);
         manageProjectLabel1.setLayoutData(data);
@@ -943,7 +943,7 @@ public class LoginComposite extends Composite {
         gc.dispose();
         data = new FormData();
         data.top = new FormAttachment(0, 10);
-        data.left = new FormAttachment(10, HORIZONTAL_TWO_SPACE);
+        data.left = new FormAttachment(10, HORIZONTAL_SPACE);
         data.right = new FormAttachment(10, HORIZONTAL_TWO_SPACE + labelSize.x);
         data.bottom = new FormAttachment(createProjectBtn, 0, SWT.BOTTOM);
         createProjectLabel.setLayoutData(data);
@@ -965,6 +965,11 @@ public class LoginComposite extends Composite {
             public void focusGained(FocusEvent e) {
                 projectText.setBackground(null);
                 projectText.setText("");
+            }
+
+            public void focusLost(FocusEvent e) {
+                projectText.setText(DEFAULT_PROJECT_NAME);
+                projectText.setBackground(GREY_COLOR);
             }
         });
 
