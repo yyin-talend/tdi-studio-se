@@ -294,7 +294,7 @@ public class ImportItemUtil {
 
                 } else {
                     // same name and same id
-                    itemRecord.setState(State.NAME_AND_ID_EXISTED);
+                    itemRecord.setState(State.NAME_EXISTED);
                     if (overwrite) {
                         result = true;
                     }
@@ -303,6 +303,7 @@ public class ImportItemUtil {
                         // if anything system, don't replace the source item if same name.
                         // if not from system, can overwrite.
                         itemRecord.setExistingItemWithSameId(itemWithSameName);
+                        itemRecord.setState(State.NAME_AND_ID_EXISTED);
                         result = true;
                     }
                 }
@@ -311,7 +312,7 @@ public class ImportItemUtil {
                 }
             }
 
-            if (result && overwrite && itemRecord.getState() == State.NAME_AND_ID_EXISTED) {
+            if (result && overwrite && itemRecord.getState() == State.NAME_EXISTED) {
                 // if item is locked, cannot overwrite
                 if (checkIfLocked(itemRecord)) {
                     itemRecord.addError(Messages.getString("RepositoryUtil.itemLocked")); //$NON-NLS-1$
@@ -742,8 +743,8 @@ public class ImportItemUtil {
                         if (haveRef) {
                             repFactory.save(tmpItem, true);
                         }
+                        repFactory.unloadResources(tmpItem.getProperty());
                     }
-                    repFactory.unloadResources(tmpItem.getProperty());
 
                     itemRecord.setImportPath(path.toPortableString());
                     itemRecord.setRepositoryType(itemType);
