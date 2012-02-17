@@ -180,7 +180,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
             StructuredSelection selection = (StructuredSelection) mainPage.getSelection();
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             boolean lastVersion = node.getObject().getVersion().equals(processObject.getVersion());
-            processObject.getProperty().setVersion(originalVersion);
+            // processObject.getProperty().setVersion(originalVersion);
             if (lastVersion) {
                 lockObject(processObject);
             }
