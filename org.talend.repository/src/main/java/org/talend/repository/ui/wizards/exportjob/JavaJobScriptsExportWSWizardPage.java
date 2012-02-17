@@ -216,7 +216,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }// else ignors it
     }
 
-    public JobExportType getCurrentExportType() {
+    public JobExportType getCurrentExportType1() {
         if (exportTypeCombo != null && !exportTypeCombo.getText().equals("")) { //$NON-NLS-1$
             return JobExportType.getTypeFromLabel(exportTypeCombo.getText());
         } else {
@@ -307,7 +307,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 exportTypeCombo.add(exportType.label);
             }
         }
-        exportTypeCombo.setText(getCurrentExportType().label);
+        exportTypeCombo.setText(getCurrentExportType1().label);
         if (exportTypeFixed != null) {
             left.setVisible(false);
             optionsGroup.setVisible(false);
@@ -375,17 +375,17 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     @Override
     public JobScriptsManager createJobScriptsManager() {
         Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
-        String launcher = (getCurrentExportType() == JobExportType.POJO) ? launcherCombo.getText() : "all";
+        String launcher = (getCurrentExportType1() == JobExportType.POJO) ? launcherCombo.getText() : "all";
         String context = (contextCombo == null || contextCombo.isDisposed()) ? "Default" : contextCombo.getText();
         JobScriptsManager manager = JobScriptsManagerFactory.createManagerInstance(exportChoiceMap, context, launcher,
-                IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, getCurrentExportType());
+                IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, getCurrentExportType1());
         manager.setDestinationPath(getDestinationValue());
         return manager;
     }
 
     @Override
     protected String getOutputSuffix() {
-        switch (getCurrentExportType()) {
+        switch (getCurrentExportType1()) {
         case WSWAR:
             return ".war"; //$NON-NLS-1$
         case JBOSSESB:
@@ -407,7 +407,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     @Override
     protected void handleDestinationBrowseButtonPressed() {
         FileDialog dialog = new FileDialog(getContainer().getShell(), SWT.SAVE);
-        JobExportType jobExportType = getCurrentExportType();
+        JobExportType jobExportType = getCurrentExportType1();
         switch (jobExportType) {
         case WSWAR:
             dialog.setFilterExtensions(new String[] { "*.war", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
@@ -464,9 +464,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             String s = (String) getDefaultFileName().get(0);
 
             if (str.equals(s)) {
-                //                selectedFileName = b + "_" + getDefaultFileName().get(1) + getOutputSuffix(); //$NON-NLS-1$
-                selectedFileName = b + ((JobExportType.OSGI.equals(jobExportType)) ? "-" : "_") + getDefaultFileName().get(1)
-                        + getOutputSuffix(); //$NON-NLS-1$
+                if (getDefaultFileName().get(1) != null && !"".equals(getDefaultFileName().get(1))) {
+                    selectedFileName = b + ((JobExportType.OSGI.equals(jobExportType)) ? "-" : "_") + getDefaultFileName().get(1)
+                            + getOutputSuffix(); //$NON-NLS-1$
+                } else {
+                    selectedFileName = b + getOutputSuffix();
+                }
             } else {
                 selectedFileName = b + getOutputSuffix();
             }
@@ -509,21 +512,20 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-			String saName = getPetalsDefaultSaName();
-			if (directoryNames != null && directoryNames.length > 0) {
-				// destination
-				for (int i = 0; i < directoryNames.length; i++) {
-					saDestinationFilePath = new Path(directoryNames[i]).append(
-							saName).toOSString();
-					addDestinationItem(saDestinationFilePath);
-					setDestinationValue(saDestinationFilePath);
-				}
-			} else {
-				String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
-				IPath path = new Path(userDir).append(saName);
-				saDestinationFilePath = path.toOSString();
-				setDestinationValue(saDestinationFilePath);
-			}
+            String saName = getPetalsDefaultSaName();
+            if (directoryNames != null && directoryNames.length > 0) {
+                // destination
+                for (int i = 0; i < directoryNames.length; i++) {
+                    saDestinationFilePath = new Path(directoryNames[i]).append(saName).toOSString();
+                    addDestinationItem(saDestinationFilePath);
+                    setDestinationValue(saDestinationFilePath);
+                }
+            } else {
+                String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
+                IPath path = new Path(userDir).append(saName);
+                saDestinationFilePath = path.toOSString();
+                setDestinationValue(saDestinationFilePath);
+            }
 
             sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
@@ -543,19 +545,17 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-			if (directoryNames != null && directoryNames.length > 0) {
-				String fileName = this.getDefaultFileName().get(0) + "_"
-						+ this.getDefaultFileName().get(1) + getOutputSuffix();
-				// destination
-				for (int i = 0; i < directoryNames.length; i++) {
-					String destination = new Path(directoryNames[i]).append(
-							fileName).toOSString();
-					addDestinationItem(destination);
-					setDestinationValue(destination);
-				}
-			} else {
-				setDefaultDestination();
-			}
+            if (directoryNames != null && directoryNames.length > 0) {
+                String fileName = getDefaultFileNameWithType();
+                // destination
+                for (int i = 0; i < directoryNames.length; i++) {
+                    String destination = new Path(directoryNames[i]).append(fileName).toOSString();
+                    addDestinationItem(destination);
+                    setDestinationValue(destination);
+                }
+            } else {
+                setDefaultDestination();
+            }
 
             IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$
             if (section == null) {
@@ -610,41 +610,36 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-			if (directoryNames != null && directoryNames.length > 0) {
-				String fileName = this.getDefaultFileName().get(0) + "-"
-						+ this.getDefaultFileName().get(1) + getOutputSuffix();
+            if (directoryNames != null && directoryNames.length > 0) {
+                String fileName = getDefaultFileNameWithType();
                 for (int i = 0; i < directoryNames.length; i++) {
-					String destination = new Path(directoryNames[i]).append(
-							fileName).toOSString();
-					addDestinationItem(destination);
-					setDestinationValue(destination);
+                    String destination = new Path(directoryNames[i]).append(fileName).toOSString();
+                    addDestinationItem(destination);
+                    setDestinationValue(destination);
                 }
-			} else {
-				setDefaultDestinationForOSGI();
-			}
-		} else {
-			setDefaultDestinationForOSGI();
+            } else {
+                setDefaultDestinationForOSGI();
+            }
+        } else {
+            setDefaultDestinationForOSGI();
         }
     }
 
     protected void restoreWidgetValuesForWS() {
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
-			String[] directoryNames = settings
-					.getArray(STORE_DESTINATION_NAMES_ID);
-			if (directoryNames != null && directoryNames.length > 0) {
-				String fileName = this.getDefaultFileName().get(0) + "_"
-						+ this.getDefaultFileName().get(1) + getOutputSuffix();
-				// destination
-				for (int i = 0; i < directoryNames.length; i++) {
-					String destination = new Path(directoryNames[i]).append(
-							fileName).toOSString();
-					addDestinationItem(destination);
-					setDestinationValue(destination);
-				}
-			} else {
-				setDefaultDestination();
-			}
+            String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
+            if (directoryNames != null && directoryNames.length > 0) {
+                String fileName = getDefaultFileNameWithType();
+                // destination
+                for (int i = 0; i < directoryNames.length; i++) {
+                    String destination = new Path(directoryNames[i]).append(fileName).toOSString();
+                    addDestinationItem(destination);
+                    setDestinationValue(destination);
+                }
+            } else {
+                setDefaultDestination();
+            }
 
             webXMLButton.setSelection(settings.getBoolean(STORE_WEBXML_ID));
             configFileButton.setSelection(settings.getBoolean(STORE_CONFIGFILE_ID));
@@ -683,18 +678,16 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-			if (directoryNames != null && directoryNames.length > 0) {
-				String fileName = this.getDefaultFileName().get(0) + "_"
-						+ this.getDefaultFileName().get(1) + getOutputSuffix();
+            if (directoryNames != null && directoryNames.length > 0) {
+                String fileName = getDefaultFileNameWithType();
                 // destination
                 for (int i = 0; i < directoryNames.length; i++) {
-					String destination = new Path(directoryNames[i]).append(
-							fileName).toOSString();
-					addDestinationItem(destination);
-					setDestinationValue(destination);
+                    String destination = new Path(directoryNames[i]).append(fileName).toOSString();
+                    addDestinationItem(destination);
+                    setDestinationValue(destination);
                 }
-			} else {
-				setDefaultDestination();
+            } else {
+                setDefaultDestination();
             }
             shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
             systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
@@ -749,7 +742,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         // update directory names history
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
-            if (getCurrentExportType().equals(JobExportType.PETALSESB)) {
+            if (getCurrentExportType1().equals(JobExportType.PETALSESB)) {
                 String[] directoryNames = settings.getArray(PETALS_EXPORT_DESTINATIONS);
                 if (directoryNames == null)
                     directoryNames = new String[0];
@@ -758,24 +751,23 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 settings.put(PETALS_EXPORT_DESTINATIONS, directoryNames);
                 return;
             }
-			// String[] directoryNames =
-			// settings.getArray(STORE_DESTINATION_NAMES_ID);
-			// if (directoryNames == null) {
-			// directoryNames = new String[0];
-			// }
-			// String destinationValue = getDestinationValue();
-			// directoryNames = addToHistory(directoryNames, destinationValue);
-			String[] directoryNames = new String[1];
-			String destinationValue = getDestinationValue();
-			if (destinationValue != null) {
-				destinationValue = destinationValue.substring(0,
-						destinationValue.lastIndexOf(File.separator));
-			}
-			directoryNames[0] = destinationValue;
+            // String[] directoryNames =
+            // settings.getArray(STORE_DESTINATION_NAMES_ID);
+            // if (directoryNames == null) {
+            // directoryNames = new String[0];
+            // }
+            // String destinationValue = getDestinationValue();
+            // directoryNames = addToHistory(directoryNames, destinationValue);
+            String[] directoryNames = new String[1];
+            String destinationValue = getDestinationValue();
+            if (destinationValue != null) {
+                destinationValue = destinationValue.substring(0, destinationValue.lastIndexOf(File.separator));
+            }
+            directoryNames[0] = destinationValue;
 
-            settings.put(STORE_EXPORTTYPE_ID, getCurrentExportType().toString());
+            settings.put(STORE_EXPORTTYPE_ID, getCurrentExportType1().toString());
             settings.put(STORE_DESTINATION_NAMES_ID, directoryNames);
-            if (getCurrentExportType().equals(JobExportType.OSGI)) {
+            if (getCurrentExportType1().equals(JobExportType.OSGI)) {
                 return;
             }
             if (contextButton != null) {
@@ -794,14 +786,14 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 settings.put(STORE_DEPENDENCIES_ID, exportDependencies.getSelection());
             }
 
-            if (getCurrentExportType().equals(JobExportType.POJO)) {
+            if (getCurrentExportType1().equals(JobExportType.POJO)) {
                 settings.put(STORE_SHELL_LAUNCHER_ID, shellLauncherButton.getSelection());
                 settings.put(STORE_SYSTEM_ROUTINE_ID, systemRoutineButton.getSelection());
                 settings.put(STORE_USER_ROUTINE_ID, userRoutineButton.getSelection());
                 settings.put(STORE_MODEL_ID, modelButton.getSelection());
                 settings.put(EXTRACT_ZIP_FILE, chkButton.getSelection());
                 return;
-            } else if (getCurrentExportType().equals(JobExportType.WSZIP)) {
+            } else if (getCurrentExportType1().equals(JobExportType.WSZIP)) {
                 settings.put(STORE_WEBXML_ID, webXMLButton.getSelection());
                 settings.put(STORE_CONFIGFILE_ID, configFileButton.getSelection());
                 settings.put(STORE_AXISLIB_ID, axisLibButton.getSelection());
@@ -898,7 +890,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         left.setLayoutData(gridData);
         left.setLayout(new GridLayout(3, true));
 
-        switch (getCurrentExportType()) {
+        switch (getCurrentExportType1()) {
         case POJO:
             createOptions(left, font);
             restoreWidgetValuesForPOJO();
@@ -1339,7 +1331,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         if (!super.checkExport()) {
             return false;
         }
-        if (getCurrentExportType().equals(JobExportType.PETALSESB)) {
+        if (getCurrentExportType1().equals(JobExportType.PETALSESB)) {
             chkButton.setVisible(false);
             zipOption = null;
             if (isMultiNodes()) {
@@ -1347,7 +1339,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
             validateOptionsGroup();
         }
-        if (getCurrentExportType().equals(JobExportType.JBOSSESB)) {
+        if (getCurrentExportType1().equals(JobExportType.JBOSSESB)) {
             if (isMultiNodes()) {
                 setErrorMessage(Messages.getString("JavaJobScriptsExportWSWizardPage.singleJobExport"));
             }
@@ -1367,7 +1359,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 }
             }
         }
-        if (getCurrentExportType().equals(JobExportType.OSGI)) {
+        if (getCurrentExportType1().equals(JobExportType.OSGI)) {
             if (isMultiNodes()) {
                 setErrorMessage("This type of export support actually only a single job export.");
             }
