@@ -164,6 +164,8 @@ public class RepositoryHelper {
             return BusinessPackage.eINSTANCE.getCopybook();
         } else if (type == ERepositoryObjectType.METADATA_MDMCONNECTION) {
             return BusinessPackage.eINSTANCE.getMDM();
+        } else if (type == ERepositoryObjectType.getTypeFromKey("Services")) {
+            return BusinessPackage.eINSTANCE.getService();
         }
         return null;
     }
