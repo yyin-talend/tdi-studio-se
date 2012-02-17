@@ -28,6 +28,7 @@ import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.FTPConnection;
+import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
@@ -283,7 +284,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     if (!relatedPropertyParam.getCategory().equals(currentCategory) && !repositoryValue.equals("ENCODING")) { //$NON-NLS-1$
                         continue;
                     }
-                    Object objectValue;
+                    Object objectValue = null;
                     if (connection instanceof XmlFileConnection && this.dragAndDropAction == true
                             && repositoryValue.equals("FILE_PATH") && reOpenXSDBool == true) {
 
@@ -303,6 +304,16 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             objectValue = moduleUnit.getModuleName();
                         } else {
                             objectValue = null;
+                        }
+                    } else if (connection instanceof MDMConnection) {
+                        if (table == null) {
+                            IMetadataTable metaTable = null;
+                            if (((Node) elem).getMetadataList().size() > 0) {
+                                metaTable = ((Node) elem).getMetadataList().get(0);
+                            }
+                            objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, metaTable);
+                        } else {
+                            objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, table);
                         }
                     } else {
                         objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue, table);
