@@ -65,7 +65,7 @@ public class OpenJobSelectionDialog extends RepositoryReviewDialog {
     @Override
     protected void buttonPressed(int buttonId) {
         if (SELECTINREPOSITORY == buttonId) {
-            IStructuredSelection selection = (IStructuredSelection) getRepositoryView().getViewer().getSelection();
+            IStructuredSelection selection = (IStructuredSelection) getRepositoryTreeViewer().getSelection();
             // RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             //
             // RepositoryView.show().expand(node);
@@ -83,7 +83,7 @@ public class OpenJobSelectionDialog extends RepositoryReviewDialog {
     @Override
     protected Control createDialogArea(Composite parent) {
         Control control = super.createDialogArea(parent);
-        getRepositoryView().getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+        getRepositoryTreeViewer().addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
                 boolean highlightOKButton = isSelectionValid(event);

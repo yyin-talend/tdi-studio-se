@@ -202,7 +202,7 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
                 }
             }
         } else {
-            IStructuredSelection selection = (IStructuredSelection) repositoryView.getViewer().getSelection();
+            IStructuredSelection selection = (IStructuredSelection) getRepositoryTreeViewer().getSelection();
             RepositoryNode context = (RepositoryNode) selection.getFirstElement();
             try { // get the item from file
                 IRepositoryViewObject contextObj = factory.getLastVersion(context.getObject().getProperty().getId());
@@ -365,8 +365,8 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
             view.refresh(ERepositoryObjectType.CONTEXT);
         }
         // refresh fake repository view
-        if (getRepositoryView() != null) {
-            getRepositoryView().refresh();
+        if (getRepositoryTreeViewer() != null) {
+            getRepositoryTreeViewer().refresh();
         }
     }
 

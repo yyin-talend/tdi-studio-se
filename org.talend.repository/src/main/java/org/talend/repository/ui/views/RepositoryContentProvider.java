@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -20,7 +19,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingConfiguration;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -39,8 +37,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     private final IRepositoryView view;
 
     private TreeViewer viewer;
-
-    private final List<IRepositoryObject> joblets = new ArrayList<IRepositoryObject>();
 
     private final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
@@ -112,7 +108,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private void initialize() {
         ProjectRepositoryNode root = getRoot();
-        root = (ProjectRepositoryNode) getView().getRoot();
 
         String currentPerspective = IBrandingConfiguration.PERSPECTIVE_DI_ID;
 
