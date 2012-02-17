@@ -14,16 +14,14 @@ package org.talend.repository.ui.dialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -33,23 +31,17 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.PartInitException;
 import org.talend.commons.CommonsPlugin;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.time.TimeMeasure;
-import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.IESBService;
 import org.talend.core.PluginChecker;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.MetadataColumnRepositoryObject;
@@ -59,6 +51,7 @@ import org.talend.core.model.metadata.Query;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.HeaderFooterConnection;
+import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.properties.ConnectionItem;
@@ -81,6 +74,7 @@ import org.talend.repository.model.SAPFunctionRepositoryObject;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryLabelProvider;
+import org.talend.repository.ui.views.RepositoryTreeViewer;
 import org.talend.repository.ui.views.RepositoryView;
 
 /**
@@ -97,21 +91,18 @@ public class RepositoryReviewDialog extends Dialog {
 
     private String[] repositoryTypes;
 
-    protected FakeRepositoryView repositoryView;
-
-    public FakeRepositoryView getRepositoryView() {
-        return this.repositoryView;
-    }
-
     private RepositoryNode result;
 
     ITypeProcessor typeProcessor;
 
+    /*
+     * selectedNodeName,isSelectionId,selectionType for selection
+     */
     private String selectedNodeName;
 
-    private boolean hidenTypeSelection;
+    private boolean isSelectionId;
 
-    private boolean isHeaderButton;
+    private ERepositoryObjectType selectionType;
 
     private ViewerFilter[] additionalFilters;
 
@@ -119,11 +110,9 @@ public class RepositoryReviewDialog extends Dialog {
 
     ViewerTextFilter textFilter = new ViewerTextFilter();
 
-    private boolean needInitialize = true;
+    private RepositoryTreeViewer repositoryTreeViewer;
 
-    private List<String> jobIDList;
-
-    private IRepositoryView view;
+    private IRepositoryView repView;
 
     protected RepositoryReviewDialog(Shell parentShell) {
         super(parentShell);
@@ -135,7 +124,7 @@ public class RepositoryReviewDialog extends Dialog {
         TimeMeasure.displaySteps = debugMode;
         TimeMeasure.measureActive = debugMode;
 
-        TimeMeasure.begin("RepositoryReviewDialog"); //$NON-NLS-1$
+        TimeMeasure.begin(RepositoryReviewDialog.class.getSimpleName());
     }
 
     /**
@@ -192,8 +181,6 @@ public class RepositoryReviewDialog extends Dialog {
     public RepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type, Boolean isHeaderButton, String repositoryType) {
         this(parentShell, type, repositoryType);
 
-        this.isHeaderButton = isHeaderButton;
-        // setHeaderButton(isHeaderButton);
         if (typeProcessor instanceof RepositoryTypeProcessor) {
             ((RepositoryTypeProcessor) typeProcessor).setHeaderButton(isHeaderButton);
         }
@@ -203,8 +190,6 @@ public class RepositoryReviewDialog extends Dialog {
             boolean hidenTypeSelection, boolean needInitialize) {
         this(parentShell, type, repositoryType);
 
-        this.needInitialize = needInitialize;
-        this.hidenTypeSelection = hidenTypeSelection;
         if (hidenTypeSelection && (typeProcessor instanceof RepositoryTypeProcessor)) {
             ((RepositoryTypeProcessor) typeProcessor).setHidenTypeSelection(hidenTypeSelection);
         }
@@ -220,11 +205,15 @@ public class RepositoryReviewDialog extends Dialog {
         this.typeProcessor = typeProcessor;
     }
 
-    protected IRepositoryView getView() {
-        if (view == null) {
-            view = RepositoryView.show();
+    protected RepositoryTreeViewer getRepositoryTreeViewer() {
+        return repositoryTreeViewer;
+    }
+
+    protected IRepositoryView getRepView() {
+        if (repView == null) {
+            repView = RepositoryView.show();
         }
-        return view;
+        return repView;
     }
 
     /**
@@ -295,7 +284,7 @@ public class RepositoryReviewDialog extends Dialog {
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite container = (Composite) super.createDialogArea(parent);
-        TimeMeasure.step("RepositoryReviewDialog", "before createDialogArea..."); //$NON-NLS-1$  //$NON-NLS-2$
+        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "before createDialogArea..."); //$NON-NLS-1$
         GridData data = (GridData) container.getLayoutData();
         data.minimumHeight = 400;
         data.heightHint = 400;
@@ -309,36 +298,34 @@ public class RepositoryReviewDialog extends Dialog {
         viewContainer.setLayout(new GridLayout());
         viewContainer.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        TimeMeasure.step("RepositoryReviewDialog", "show RepositoryView"); //$NON-NLS-1$  //$NON-NLS-2$
-        repositoryView = new FakeRepositoryView(typeProcessor, type, jobIDList);
-        try {
-            repositoryView.init(getView().getViewSite());
-            TimeMeasure.step("RepositoryReviewDialog", "init for FakeRepositoryView"); //$NON-NLS-1$  //$NON-NLS-2$
-        } catch (PartInitException e) {
-            // e.printStackTrace();
-            ExceptionHandler.process(e);
-        }
+        repositoryTreeViewer = new RepositoryTreeViewer(viewContainer, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        repositoryTreeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        repositoryView.createPartControl(viewContainer);
-        TimeMeasure.step("RepositoryReviewDialog", "createPartControl for FakeRepositoryView"); //$NON-NLS-1$  //$NON-NLS-2$
-        repositoryView.addFilter(textFilter);
+        repositoryTreeViewer.setContentProvider(new RepositoryContentProvider(getRepView()));
+        repositoryTreeViewer.setLabelProvider(new RepositoryLabelProvider(getRepView()));
+
+        addFilter(textFilter);
         if (dbSupportFilter != null) {
-            repositoryView.addFilter(dbSupportFilter);
+            addFilter(dbSupportFilter);
         }
         if (additionalFilters != null) {
-            repositoryView.addFilter(additionalFilters);
+            addFilter(additionalFilters);
         }
-        // no need refresh.
-        // refreshView();
+        ViewerFilter filter = typeProcessor.makeFilter();
+        addFilter(filter);
+        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "finshed add Filters"); //$NON-NLS-1$
+
+        repositoryTreeViewer.setInput(getInput());
+        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "set input"); //$NON-NLS-1$ 
+        repositoryTreeViewer.expandAll();
+        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "expandAll"); //$NON-NLS-1$
 
         // see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful to
         // open it on previous selected job if exists
-        if (selectedNodeName != null) {
-            repositoryView.selectNode((RepositoryNode) repositoryView.getViewer().getInput(), selectedNodeName);
-            TimeMeasure.step("RepositoryReviewDialog", "selectNode for FakeRepositoryView"); //$NON-NLS-1$  //$NON-NLS-2$
-        }
+        selectNode();
+        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "selectNode"); //$NON-NLS-1$  
 
-        repositoryView.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+        repositoryTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
                 boolean highlightOKButton = isSelectionValid(event);
@@ -346,7 +333,7 @@ public class RepositoryReviewDialog extends Dialog {
             }
 
         });
-        repositoryView.getViewer().addDoubleClickListener(new IDoubleClickListener() {
+        repositoryTreeViewer.addDoubleClickListener(new IDoubleClickListener() {
 
             public void doubleClick(DoubleClickEvent event) {
                 if (getButton(IDialogConstants.OK_ID).isEnabled()) {
@@ -355,13 +342,36 @@ public class RepositoryReviewDialog extends Dialog {
             }
         });
 
-        TimeMeasure.step("RepositoryReviewDialog", "finished createDialogArea..."); //$NON-NLS-1$  //$NON-NLS-2$
-        TimeMeasure.end("RepositoryReviewDialog"); //$NON-NLS-1$
+        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "finished createDialogArea..."); //$NON-NLS-1$ 
+        TimeMeasure.end(RepositoryReviewDialog.class.getSimpleName());
         TimeMeasure.display = false;
         TimeMeasure.displaySteps = false;
         TimeMeasure.measureActive = false;
 
         return container;
+    }
+
+    private RepositoryNode getInput() {
+        IContentProvider contentProvider = getRepView().getViewer().getContentProvider();
+        if (contentProvider instanceof RepositoryContentProvider) {
+            return typeProcessor.getInputRoot((RepositoryContentProvider) contentProvider);
+        }
+        return null;
+
+    }
+
+    public void addFilter(ViewerFilter filter) {
+        if (filter != null) {
+            getRepositoryTreeViewer().addFilter(filter);
+        }
+    }
+
+    public void addFilter(ViewerFilter[] filters) {
+        if (filters != null) {
+            for (ViewerFilter filter : filters) {
+                addFilter(filter);
+            }
+        }
     }
 
     protected boolean isSelectionValid(SelectionChangedEvent event) {
@@ -371,16 +381,6 @@ public class RepositoryReviewDialog extends Dialog {
             highlightOKButton = false;
         } else {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-            ERepositoryObjectType t = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-            List<String> idList = this.getJobIDList();
-            if (idList != null && t == ERepositoryObjectType.PROCESS) {
-                if (idList.contains(node.getObject().getId())) {
-                    highlightOKButton = false;
-                    MessageDialog.openWarning(getParentShell(), "warning", "This Operation is used in other job!");
-                    return highlightOKButton;
-                }
-
-            }
 
             if (node.getType() != ENodeType.REPOSITORY_ELEMENT) {
                 highlightOKButton = false;
@@ -421,14 +421,57 @@ public class RepositoryReviewDialog extends Dialog {
                 pattern = pattern.replace("?", "."); //$NON-NLS-1$ //$NON-NLS-2$
                 pattern = "(?i)" + pattern + ".*"; //$NON-NLS-1$ //$NON-NLS-2$
                 textFilter.setText(pattern);
-                repositoryView.refresh();
-                repositoryView.selectFirstOne();
+                getRepositoryTreeViewer().refresh();
+                getRepositoryTreeViewer().expandAll();
+                // repositoryView.selectFirstOne();
             }
         });
     }
 
     public void setSelectedNodeName(String selectionNode) {
         this.selectedNodeName = selectionNode;
+    }
+
+    public void setSelectedNodeName(ERepositoryObjectType selectionType, String selectionNode, boolean isSelectionId) {
+        setSelectedNodeName(selectionNode);
+        this.selectionType = selectionType;
+        this.isSelectionId = isSelectionId;
+    }
+
+    private void selectNode() {
+        /*
+         * Make sure expand all. Just notice it here, because have been expand before.
+         */
+        // getRepositoryTreeViewer().expandAll();
+        RepositoryNode root = (RepositoryNode) getRepositoryTreeViewer().getInput();
+        selectNode(root, this.selectionType, this.selectedNodeName, this.isSelectionId);
+    }
+
+    private void selectNode(RepositoryNode root, ERepositoryObjectType selectionType, String idOrLabel, boolean isSelectionId) {
+        if (idOrLabel == null) {
+            return;
+        }
+        if (selectionType != null) {
+            if (root.getContentType() != selectionType || root.getObjectType() != selectionType) {
+                return;
+            }
+        }
+        boolean valid = false;
+        if (isSelectionId) {
+            IRepositoryViewObject object = root.getObject();
+            if (object != null && idOrLabel.equals(object.getId())) {
+                valid = true;
+            }
+        } else if (idOrLabel.equals(root.getProperties(EProperties.LABEL))) {
+            valid = true;
+        }
+        if (valid) {
+            getRepositoryTreeViewer().setSelection(new StructuredSelection(root), true);
+        } else if (root.hasChildren()) {
+            for (IRepositoryNode child : root.getChildren()) {
+                selectNode((RepositoryNode) child, selectionType, idOrLabel, isSelectionId);
+            }
+        }
     }
 
     /*
@@ -442,16 +485,6 @@ public class RepositoryReviewDialog extends Dialog {
         getButton(IDialogConstants.OK_ID).setEnabled(false);
     }
 
-    protected void refreshView() {
-        TimeMeasure.step("RepositoryReviewDialog", "before refresh FakeRepositoryView"); //$NON-NLS-1$  //$NON-NLS-2$
-        ProjectRepositoryNode.refProjectBool = false;
-        repositoryView.refresh(needInitialize);
-        TimeMeasure.step("RepositoryReviewDialog", "refresh FakeRepositoryView"); //$NON-NLS-1$  //$NON-NLS-2$
-        getView().refresh();
-        TimeMeasure.step("RepositoryReviewDialog", "refresh RepositoryView"); //$NON-NLS-1$  //$NON-NLS-2$
-        ProjectRepositoryNode.refProjectBool = true;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -459,363 +492,19 @@ public class RepositoryReviewDialog extends Dialog {
      */
     @Override
     protected void okPressed() {
-        IStructuredSelection selection = (IStructuredSelection) repositoryView.getViewer().getSelection();
+        IStructuredSelection selection = (IStructuredSelection) getRepositoryTreeViewer().getSelection();
         result = (RepositoryNode) selection.getFirstElement();
         super.okPressed();
-        repositoryView.dispose();
     }
 
     public RepositoryNode getResult() {
         return result;
     }
 
-    public List<String> getJobIDList() {
-        return this.jobIDList;
-    }
-
     public void setJobIDList(List<String> jobIDList) {
-        this.jobIDList = jobIDList;
-    }
-
-}
-
-/**
- * 
- * DOC talend class global comment. Detailled comment
- */
-class MetadataMultiTypeProcessor implements ITypeProcessor {
-
-    String[] repositoryTypes;
-
-    public MetadataMultiTypeProcessor(String[] repositoryTypes) {
-        this.repositoryTypes = repositoryTypes;
-    }
-
-    public boolean isSelectionValid(RepositoryNode node) {
-        if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_FILE_XML
-                || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_MDMCONNECTION) {
-            return true;
+        if (this.typeProcessor instanceof JobTypeProcessor) {
+            ((JobTypeProcessor) this.typeProcessor).setJobIDList(jobIDList);
         }
-        return false;
-
-    }
-
-    public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
-        List<IRepositoryNode> refProjects = null;
-        RepositoryNode referenceProjectNode = contentProvider.getRootRepositoryNode(ERepositoryObjectType.REFERENCED_PROJECTS);
-        if (referenceProjectNode != null) {
-            refProjects = referenceProjectNode.getChildren();
-        } else {
-            refProjects = Collections.EMPTY_LIST;
-        }
-        List<RepositoryNode> container = new NoNullList<RepositoryNode>();
-        container.addAll(getMetadataNode(contentProvider.getRoot()));
-        getReferencedInputRoot(container, refProjects);
-
-        RepositoryNode node = new RepositoryNode(null, null, null);
-        node.getChildren().addAll(container);
-
-        return node;
-    }
-
-    private void getReferencedInputRoot(List<RepositoryNode> container, List<IRepositoryNode> refProjects) {
-        if (!refProjects.isEmpty()) {
-            for (IRepositoryNode repositoryNode : refProjects) {
-                List<RepositoryNode> refContainer = new NoNullList<RepositoryNode>();
-                ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
-                ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
-                refContainer.addAll(getMetadataNode(refProject));
-                RepositoryNode referenceProjectNode = refProject.getRootRepositoryNode(ERepositoryObjectType.REFERENCED_PROJECTS);
-                if (referenceProjectNode != null && !referenceProjectNode.getChildren().isEmpty()) {
-                    getReferencedInputRoot(refContainer, referenceProjectNode.getChildren());
-                }
-                newProject.getChildren().addAll(refContainer);
-                container.add(newProject);
-            }
-        }
-    }
-
-    /**
-     * 
-     * DOC need add other types when needed
-     * 
-     * @param projectNode
-     * @return
-     */
-    private List<RepositoryNode> getMetadataNode(ProjectRepositoryNode projectNode) {
-        List<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
-        if (repositoryTypes != null && repositoryTypes.length != 0) {
-            for (int i = 0; i < repositoryTypes.length; i++) {
-                if (ERepositoryCategoryType.XML.getName().equals(repositoryTypes[i])) {
-                    nodes.add(projectNode.getMetadataFileXmlNode());
-                } else if (ERepositoryCategoryType.MDM.getName().equals(repositoryTypes[i])) {
-                    nodes.add(projectNode.getMetadataMDMConnectionNode());
-                }
-            }
-        }
-        return nodes;
-    }
-
-    public ViewerFilter makeFilter() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String getDialogTitle() {
-        // TODO Auto-generated method stub
-        return "Metadatas";
-    }
-
-}
-
-/**
- * bqian class global comment. Detailled comment <br/>
- * 
- * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
- * 
- */
-class FakeRepositoryView extends RepositoryView {
-
-    ERepositoryObjectType type;
-
-    ITypeProcessor typeProcessor;
-
-    RepositoryNode input;
-
-    private List<String> jobIDList = null;
-
-    // private IRepositoryView repositoryview;
-
-    /**
-     * DOC bqian SnippetsDialogTrayView constructor comment.
-     * 
-     * @param typeProcessor
-     * 
-     * @param type
-     * @param type
-     */
-    public FakeRepositoryView(ITypeProcessor typeProcessor, ERepositoryObjectType type, List<String> jobIDList) {
-        super();
-        this.typeProcessor = typeProcessor;
-        this.type = type;
-        this.jobIDList = jobIDList;
-        // this.repositoryview = RepositoryView.show();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.ui.views.RepositoryView#createPartControl(org.eclipse.swt.widgets.Composite)
-     */
-    @Override
-    public void createPartControl(Composite parent) {
-        super.setFromFake(false);
-        TimeMeasure.step("RepositoryReviewDialog", "before createPartControl in FakeRepositoryView"); //$NON-NLS-1$  //$NON-NLS-2$
-        super.createPartControl(parent);
-        TimeMeasure.step("RepositoryReviewDialog", "end parent createPartControl in FakeRepositoryView"); //$NON-NLS-1$  //$NON-NLS-2$
-        ViewerFilter filter = typeProcessor.makeFilter();
-        addFilter(filter);
-        CorePlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(this);
-    }
-
-    @Override
-    protected void setContentProviderForView() {
-        viewer.setContentProvider(new RepositoryContentProvider(this) {
-
-            @Override
-            public Object[] getElements(Object parent) {
-                if (parent.equals(getView().getViewSite())) {
-                    return new RepositoryNode[0];
-                }
-                return getChildren(parent);
-            }
-
-        });
-    }
-
-    @Override
-    protected void setLabelProviderForView() {
-        viewer.setLabelProvider(new RepositoryLabelProvider(this) {
-
-            public Color getForeground(Object element) {
-                if (jobIDList != null && !jobIDList.isEmpty()) {
-                    RepositoryNode node = (RepositoryNode) element;
-                    if (node.getObject() != null && jobIDList.contains(node.getObject().getId())) {
-                        return INACTIVE_ENTRY_COLOR;
-                    }
-                }
-                return super.getForeground(element);
-            }
-        });
-
-    }
-
-    protected void setupInput() {
-        TimeMeasure.step("RepositoryReviewDialog", "before set input"); //$NON-NLS-1$  //$NON-NLS-2$     
-        viewer.setInput(getInput());
-        TimeMeasure.step("RepositoryReviewDialog", "finished set input"); //$NON-NLS-1$  //$NON-NLS-2$        
-    }
-
-    public void addFilters() {
-        super.addFilters();
-        TimeMeasure.step("RepositoryReviewDialog", "finished addFilters"); //$NON-NLS-1$  //$NON-NLS-2$    
-    }
-
-    protected void expandCollapseAll() {
-        // nothing to do here
-    }
-
-    protected void createTreeTooltip(Tree tree) {
-        // no need for fake repository
-    }
-
-    protected void expandFirstLevel() {
-        // no need for fake repository
-        if (type == ERepositoryObjectType.PROCESS) {
-            getViewer().expandAll();
-        }
-    }
-
-    public void addFilter(ViewerFilter filter) {
-        if (filter != null) {
-            getViewer().addFilter(filter);
-        }
-    }
-
-    public void addFilter(ViewerFilter[] filters) {
-        if (filters != null) {
-            for (ViewerFilter filter : filters) {
-                addFilter(filter);
-            }
-        }
-    }
-
-    /**
-     * see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful to open
-     * it on previous selected job if exists.
-     * 
-     * @param root The root node of the sub tree that we are searching.
-     * @param label The label that we are looking for.
-     */
-    public void selectNode(RepositoryNode root, String label) {
-        if (root.getProperties(EProperties.LABEL).equals(label)) {
-            getViewer().setSelection(new StructuredSelection(root), true);
-        } else if (root.hasChildren()) {
-            for (IRepositoryNode child : root.getChildren()) {
-                selectNode((RepositoryNode) child, label);
-            }
-        }
-    }
-
-    public void printItem(TreeItem[] items) {
-        for (TreeItem treeItem : items) {
-            Object o = treeItem.getData();
-
-            getViewer().setExpandedState(o, true);
-
-            printItem(treeItem.getItems());
-        }
-    }
-
-    private TreeItem getFirstMatchingItem(TreeItem[] items) {
-        for (int i = 0; i < items.length; i++) {
-            RepositoryNode node = (RepositoryNode) items[i].getData();
-            ENodeType nodeType = node.getType();
-            if (nodeType == ENodeType.REPOSITORY_ELEMENT) {
-                return items[i];
-            }
-            getViewer().setExpandedState(node, true);
-
-            TreeItem item = getFirstMatchingItem(items[i].getItems());
-            if (item != null) {
-                return item;
-            }
-        }
-        return null;
-    }
-
-    public void selectFirstOne() {
-        TreeItem item = getFirstMatchingItem(getViewer().getTree().getItems());
-
-        if (item != null) {
-            getViewer().getTree().setSelection(new TreeItem[] { item });
-            ISelection sel = getViewer().getSelection();
-            getViewer().setSelection(sel, true);
-        }
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.ui.views.RepositoryView#refresh(java.lang.Object)
-     */
-    @Override
-    public void refresh(Object object) {
-        refresh();
-        // viewer.refresh(object);
-        if (object != null) {
-            // getViewer().setExpandedState(object, true);
-            getViewer().expandToLevel(object, AbstractTreeViewer.ALL_LEVELS);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.ui.views.RepositoryView#refresh()
-     */
-    @Override
-    public void refresh() {
-        super.refresh();
-        // getViewer().setInput(this.getViewSite());
-        getViewer().setInput(getInput());
-        getViewer().expandAll();
-    }
-
-    @Override
-    public void refresh(boolean needInitialize) {
-        super.refresh(needInitialize);
-        // getViewer().setInput(this.getViewSite());
-        getViewer().setInput(getInput());
-        getViewer().expandAll();
-    }
-
-    private RepositoryNode getInput() {
-        if (input == null) {
-            // getViewer().expandAll();
-
-            // RepositoryContentProvider contentProvider = (RepositoryContentProvider) this.repositoryview.getViewer()
-            // .getContentProvider();
-            RepositoryContentProvider contentProvider = (RepositoryContentProvider) getViewer().getContentProvider();
-            input = typeProcessor.getInputRoot(contentProvider);
-        }
-        return input;
-    }
-
-    @Override
-    protected void makeActions() {
-    }
-
-    @Override
-    protected void hookContextMenu() {
-    }
-
-    @Override
-    protected void contributeToActionBars() {
-        // not used
-    }
-
-    @Override
-    protected void initDragAndDrop() {
-    }
-
-    @Override
-    protected void hookDoubleClickAction() {
-    }
-
-    @Override
-    public void createActionComposite(Composite parent) {
     }
 
 }
@@ -841,41 +530,43 @@ interface ITypeProcessor {
  * 
  * ggu class global comment. Detailled comment
  */
-abstract class SingleTypeProcessor implements ITypeProcessor {
+abstract class MultiTypesProcessor implements ITypeProcessor {
 
-    private String repositoryType;
+    private String[] repositoryTypes;
 
-    public SingleTypeProcessor(String repositoryType) {
+    public MultiTypesProcessor(String[] repositoryTypes) {
         super();
-        this.repositoryType = repositoryType;
+        this.repositoryTypes = repositoryTypes;
     }
 
-    protected String getRepositoryType() {
-        return repositoryType;
+    protected String[] getRepositoryTypes() {
+        return repositoryTypes;
     }
 
-    protected abstract ERepositoryObjectType getType();
+    protected abstract List<ERepositoryObjectType> getTypes();
 
     public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
-        TimeMeasure.step("RepositoryReviewDialog", "before getInputRoot, in SingleTypeProcessor"); //$NON-NLS-1$  //$NON-NLS-2$
-        RepositoryNode contextNode = contentProvider.getRootRepositoryNode(getType());
-        TimeMeasure.step("RepositoryReviewDialog", "finished main project, in SingleTypeProcessor"); //$NON-NLS-1$  //$NON-NLS-2$
+        RepositoryNode tmpRootNode = new RepositoryNode(null, null, null);
+        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "before getInputRoot, in MultiTypesProcessor"); //$NON-NLS-1$
+
+        List<RepositoryNode> rootNodes = getRepositoryNodesByTypes(contentProvider);
+        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "finished main project, in MultiTypesProcessor"); //$NON-NLS-1$ 
+
+        if (rootNodes != null) {
+            tmpRootNode.getChildren().addAll(rootNodes);
+        }
         // referenced project.
-        addSubReferencedProjectNodes(contextNode, contentProvider.getRoot());
-        TimeMeasure.step("RepositoryReviewDialog", "finished ref-projects, in SingleTypeProcessor"); //$NON-NLS-1$  //$NON-NLS-2$
-        return contextNode;
+        addSubReferencedProjectNodes(tmpRootNode, contentProvider.getRoot());
+        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "finished ref-projects, in MultiTypesProcessor"); //$NON-NLS-1$
+
+        return tmpRootNode;
     }
 
     protected void addSubReferencedProjectNodes(RepositoryNode contextNode, ProjectRepositoryNode parentRefProject) {
 
         RepositoryNode referenceProjectNode = parentRefProject.getRootRepositoryNode(ERepositoryObjectType.REFERENCED_PROJECTS);
         if (referenceProjectNode != null) {
-            if (!referenceProjectNode.isInitialized()) {
-                if (referenceProjectNode.getParent() instanceof ProjectRepositoryNode) {
-                    ((ProjectRepositoryNode) referenceProjectNode.getParent()).initializeChildren(referenceProjectNode);
-                }
-                referenceProjectNode.setInitialized(true);
-            }
+            initNode(referenceProjectNode);
 
             List<IRepositoryNode> refProjects = referenceProjectNode.getChildren();
             if (refProjects != null && !refProjects.isEmpty()) {
@@ -885,23 +576,58 @@ abstract class SingleTypeProcessor implements ITypeProcessor {
                     ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
                     ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
 
-                    RepositoryNode rootRepositoryNode = refProject.getRootRepositoryNode(getType());
-                    if (rootRepositoryNode != null) {
-                        newProject.getChildren().add(rootRepositoryNode);
+                    List<RepositoryNode> rootNodes = getRepositoryNodesByTypes(refProject);
+                    if (rootNodes != null) {
+                        newProject.getChildren().addAll(rootNodes);
                     }
+                    // sub ref-project
+                    addSubReferencedProjectNodes(newProject, refProject);
+
                     nodesList.add(newProject);
 
-                    // sub ref-project
-                    addSubReferencedProjectNodes(rootRepositoryNode, newProject);
                 }
                 contextNode.getChildren().addAll(nodesList);
             }
         }
     }
 
+    protected List<RepositoryNode> getRepositoryNodesByTypes(Object provider) {
+        List<RepositoryNode> rootNodes = new ArrayList<RepositoryNode>();
+        List<ERepositoryObjectType> types = getTypes();
+        if (types != null) {
+            for (ERepositoryObjectType type : types) {
+                RepositoryNode rootNode = null;
+                if (provider instanceof RepositoryContentProvider) {
+                    rootNode = ((RepositoryContentProvider) provider).getRootRepositoryNode(type);
+                }
+                if (provider instanceof ProjectRepositoryNode) {
+                    rootNode = ((ProjectRepositoryNode) provider).getRootRepositoryNode(type);
+                }
+                if (rootNode != null) {
+                    initNode(rootNode);
+                    rootNodes.add(rootNode);
+                }
+            }
+        }
+        return rootNodes;
+    }
+
+    protected final void initNode(RepositoryNode rootTypeNode) {
+        if (rootTypeNode.getParent() instanceof ProjectRepositoryNode && !rootTypeNode.isInitialized()) {
+            ((ProjectRepositoryNode) rootTypeNode.getParent()).initializeChildren(rootTypeNode);
+            rootTypeNode.setInitialized(true);
+        }
+    }
+
     public boolean isSelectionValid(RepositoryNode node) {
-        if (node.getObjectType() == getType()) {
-            return true;
+        Object nodeType = node.getProperties(EProperties.CONTENT_TYPE);
+        List<ERepositoryObjectType> types = getTypes();
+        if (types != null) {
+            for (ERepositoryObjectType type : types) {
+                if (nodeType == type) {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -911,18 +637,113 @@ abstract class SingleTypeProcessor implements ITypeProcessor {
 
             @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
-                RepositoryNode node = (RepositoryNode) element;
-                if (node.getContentType() == getType()) {
-                    return false;
-                }
-                return true;
+                return selectRepositoryNode(viewer, (RepositoryNode) parentElement, (RepositoryNode) element);
             }
         };
+    }
+
+    protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
+        if (node == null)
+            return false;
+        IRepositoryViewObject object = node.getObject();
+        if (object != null) {
+            // column
+            if (object instanceof MetadataColumnRepositoryObject) {
+                return false;
+            }
+        }
+        // hide the column folder
+        if (object == null && node.getParent() != null && node.getParent().getObject() != null
+                && node.getParent().getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
+            return false;
+        }
+        // cdc
+        ICDCProviderService cdcService = null;
+        if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_CDC) {
+            return false;
+        }
+        if (isCDCConnection(node)) {
+            return false;
+        }
+        if (PluginChecker.isCDCPluginLoaded()) {
+            cdcService = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(ICDCProviderService.class);
+            if (cdcService != null && cdcService.isSubscriberTableNode(node)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    protected final boolean isCDCConnection(RepositoryNode node) {
+        ICDCProviderService service = null;
+        if (PluginChecker.isCDCPluginLoaded()) {
+            service = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(ICDCProviderService.class);
+        }
+        if (node != null && node.getType() == ENodeType.STABLE_SYSTEM_FOLDER) {
+            List<IRepositoryNode> children = node.getChildren();
+            if (children != null) {
+                for (IRepositoryNode child : children) {
+                    if (service != null && service.isSystemSubscriberTable((RepositoryNode) child)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+
     }
 
     public String getDialogTitle() {
         return null;
     }
+
+}
+
+/**
+ * 
+ * ggu class global comment. Detailled comment
+ */
+abstract class SingleTypeProcessor extends MultiTypesProcessor {
+
+    public SingleTypeProcessor(String repositoryType) {
+        super(new String[] { repositoryType });
+    }
+
+    protected String getRepositoryType() {
+        return getRepositoryTypes()[0];
+    }
+
+    protected List<ERepositoryObjectType> getTypes() {
+        List<ERepositoryObjectType> types = new ArrayList<ERepositoryObjectType>();
+        ERepositoryObjectType type = getType();
+        if (type != null) {
+            types.add(type);
+        }
+        return types;
+    }
+
+    protected abstract ERepositoryObjectType getType();
+
+    public boolean isSelectionValid(RepositoryNode node) {
+        if (node.getObjectType() == getType()) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
+        if (node == null)
+            return false;
+        if (node.getContentType() == getType()) {
+            return false;
+        }
+        if (isCDCConnection(node)) {
+            return false;
+        }
+        return true;
+    }
+
 }
 
 /**
@@ -932,6 +753,8 @@ abstract class SingleTypeProcessor implements ITypeProcessor {
  * 
  */
 class JobTypeProcessor extends SingleTypeProcessor {
+
+    private List<String> jobIDList;
 
     /**
      * ggu JobTypeProcessor constructor comment.
@@ -945,7 +768,26 @@ class JobTypeProcessor extends SingleTypeProcessor {
         return ERepositoryObjectType.PROCESS;
     }
 
+    public List<String> getJobIDList() {
+        return jobIDList;
+    }
+
+    public void setJobIDList(List<String> jobIDList) {
+        this.jobIDList = jobIDList;
+    }
+
     public boolean isSelectionValid(RepositoryNode node) {
+
+        ERepositoryObjectType t = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+        List<String> idList = getJobIDList();
+        if (idList != null && t == ERepositoryObjectType.PROCESS) {
+            if (idList.contains(node.getObject().getId())) {
+                MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "warning",
+                        "This Operation is used in other job!");
+                return false;
+            }
+
+        }
         if (node.getProperties(EProperties.CONTENT_TYPE) == getType()) {
             return true;
         }
@@ -958,20 +800,14 @@ class JobTypeProcessor extends SingleTypeProcessor {
 
     }
 
-    public ViewerFilter makeFilter() {
-        return new ViewerFilter() {
-
-            @Override
-            public boolean select(Viewer viewer, Object parentElement, Object element) {
-                RepositoryNode node = (RepositoryNode) element;
-                if (getRepositoryType() != null && node.getObject() != null) {
-                    if (node.getObject().getId() == null || node.getObject().getId().equals(getRepositoryType())) {
-                        return false;
-                    }
-                }
-                return true;
+    @Override
+    protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
+        if (getRepositoryType() != null && node.getObject() != null) {
+            if (node.getObject().getId() == null || node.getObject().getId().equals(getRepositoryType())) {
+                return false;
             }
-        };
+        }
+        return true;
     }
 
     /*
@@ -990,9 +826,7 @@ class JobTypeProcessor extends SingleTypeProcessor {
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
  */
-class RepositoryTypeProcessor implements ITypeProcessor {
-
-    String repositoryType;
+class RepositoryTypeProcessor extends SingleTypeProcessor {
 
     boolean hidenTypeSelection;
 
@@ -1004,331 +838,93 @@ class RepositoryTypeProcessor implements ITypeProcessor {
      * @param repositoryType
      */
     public RepositoryTypeProcessor(String repositoryType) {
-        this.repositoryType = repositoryType;
+        super(repositoryType);
     }
 
-    public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
-        RepositoryNode metadataNode = getMetadataNode(contentProvider);
+    @Override
+    protected ERepositoryObjectType getType() {
+        final String repositoryType = getRepositoryType();
 
-        addReferencedProjectNodes(contentProvider, metadataNode);
-
-        return metadataNode;
-    }
-
-    /**
-     * 
-     * ggu Comment method "addReferencedProjectNodes".
-     * 
-     */
-
-    private void addReferencedProjectNodes(RepositoryContentProvider contentProvider, RepositoryNode metadataNode) {
-        if (contentProvider == null || metadataNode == null) {
-            return;
+        if (repositoryType == null) { // all
+            return ERepositoryObjectType.METADATA;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.DELIMITED.getName())) {
+            return ERepositoryObjectType.METADATA_FILE_DELIMITED;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.POSITIONAL.getName())) {
+            return ERepositoryObjectType.METADATA_FILE_POSITIONAL;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.REGEX.getName())) {
+            return ERepositoryObjectType.METADATA_FILE_REGEXP;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.XML.getName())
+                || repositoryType.equals(ERepositoryCategoryType.XMLOUTPUT.getName())) {
+            return ERepositoryObjectType.METADATA_FILE_XML;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.LDIF.getName())) {
+            return ERepositoryObjectType.METADATA_FILE_LDIF;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.EXCEL.getName())) {
+            return ERepositoryObjectType.METADATA_FILE_EXCEL;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.GENERIC.getName())) {
+            return ERepositoryObjectType.METADATA_GENERIC_SCHEMA;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.LDAP.getName())) {
+            return ERepositoryObjectType.METADATA_LDAP_SCHEMA;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.WSDL.getName())) {
+            return ERepositoryObjectType.METADATA_WSDL_SCHEMA;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.SALESFORCE.getName())) {
+            return ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA;
         }
 
-        RepositoryNode referenceProjectNode = contentProvider.getRootRepositoryNode(ERepositoryObjectType.REFERENCED_PROJECTS);
-        ;
-        addSubRefProjects(metadataNode, referenceProjectNode);
-
-    }
-
-    private void addSubRefProjectNodes(ProjectRepositoryNode subRefProject, RepositoryNode metadataNode) {
-        if (subRefProject.getReferenceProjectNode() == null)
-            return;
-        RepositoryNode referenceProjectNode = subRefProject.getRootRepositoryNode(ERepositoryObjectType.REFERENCED_PROJECTS);
-
-        addSubRefProjects(metadataNode, referenceProjectNode);
-    }
-
-    protected void addSubRefProjects(RepositoryNode metadataNode, RepositoryNode referenceProjectNode) {
-        if (referenceProjectNode != null) {
-            List<RepositoryNode> nodesList = new ArrayList<RepositoryNode>();
-            if (!referenceProjectNode.isInitialized()) {
-                if (referenceProjectNode.getParent() instanceof ProjectRepositoryNode) {
-                    ((ProjectRepositoryNode) referenceProjectNode.getParent()).initializeChildren(referenceProjectNode);
-                }
-                referenceProjectNode.setInitialized(true);
-
-            }
-            List<IRepositoryNode> refProjects = referenceProjectNode.getChildren();
-            if (refProjects != null && !refProjects.isEmpty()) {
-                for (IRepositoryNode repositoryNode : refProjects) {
-                    ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
-                    ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
-
-                    RepositoryNode refMetadataNode = getMetadataNode(refProject);
-
-                    if (refMetadataNode != null) {
-                        newProject.getChildren().add(refMetadataNode);
-                        nodesList.add(newProject);
-
-                        addSubRefProjectNodes(refProject, refMetadataNode);
-                    }
-                }
-                metadataNode.getChildren().addAll(nodesList);
-            }
+        if (repositoryType.startsWith(ERepositoryCategoryType.DATABASE.getName())) {
+            return ERepositoryObjectType.METADATA_CONNECTIONS;
         }
-    }
-
-    private RepositoryNode getMetadataNode(Object provider) {
-        RepositoryNode metadataNode = null;
-        if (provider != null) {
-            if (repositoryType == null) { // all
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider).getRootRepositoryNode(ERepositoryObjectType.METADATA);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider).getRootRepositoryNode(ERepositoryObjectType.METADATA);
-                }
-            }
-            if (repositoryType.equals(ERepositoryCategoryType.DELIMITED.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_DELIMITED);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_DELIMITED);
-                }
-            }
-            if (repositoryType.equals(ERepositoryCategoryType.POSITIONAL.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_POSITIONAL);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_POSITIONAL);
-                }
-            }
-            if (repositoryType.equals(ERepositoryCategoryType.REGEX.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_REGEXP);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_REGEXP);
-                }
-            }
-            if (repositoryType.equals(ERepositoryCategoryType.XML.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_XML);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_XML);
-                }
-            }
-            if (repositoryType.equals(ERepositoryCategoryType.LDIF.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_LDIF);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_LDIF);
-                }
-            }
-            if (repositoryType.equals(ERepositoryCategoryType.EXCEL.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EXCEL);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EXCEL);
-                }
-            }
-            if (repositoryType.equals(ERepositoryCategoryType.GENERIC.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
-                }
-            }
-            if (repositoryType.equals(ERepositoryCategoryType.LDAP.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_LDAP_SCHEMA);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_LDAP_SCHEMA);
-                }
-            }
-            if (repositoryType.equals(ERepositoryCategoryType.WSDL.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_WSDL_SCHEMA);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_WSDL_SCHEMA);
-                }
-            }
-            if (repositoryType.equals(ERepositoryCategoryType.SALESFORCE.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
-                }
-            }
-
-            if (repositoryType.startsWith(ERepositoryCategoryType.DATABASE.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_CONNECTIONS);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_CONNECTIONS);
-                }
-            }
-
-            if (repositoryType.startsWith(ERepositoryCategoryType.SAP.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_SAPCONNECTIONS);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_SAPCONNECTIONS);
-                }
-            }
-            if (repositoryType.startsWith(ERepositoryCategoryType.HEADERFOOTER.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_HEADER_FOOTER);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_HEADER_FOOTER);
-                }
-            }
-            if (repositoryType.equals(ERepositoryCategoryType.EBCDIC.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC);
-                }
-            }
-
-            if (repositoryType.equals("SERVICES:OPERATION")) {
-                if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
-                    IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
-                    ERepositoryObjectType servicesType = service.getServicesType();
-                    if (provider instanceof RepositoryContentProvider) {
-                        metadataNode = ((RepositoryContentProvider) provider).getRootRepositoryNode(servicesType);
-                    }
-                    if (provider instanceof ProjectRepositoryNode) {
-                        metadataNode = ((ProjectRepositoryNode) provider).getRootRepositoryNode(servicesType);
-                    }
-                }
-
-            }
-
-            if (repositoryType.equals(ERepositoryCategoryType.MDM.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION);
-                }
-            }
-            if (repositoryType.equals(ERepositoryCategoryType.FTP.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_FTP);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_FTP);
-                }
-            }
-            if (repositoryType.equals(ERepositoryCategoryType.BRMS.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_BRMS);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_BRMS);
-                }
-            }
-            if (repositoryType.equals(ERepositoryCategoryType.HL7.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_HL7);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_HL7);
-                }
-            }
-            // added by hyWang
-            if (repositoryType.equals(ERepositoryCategoryType.RULE.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_RULES);
-                }
-            }
-            if (repositoryType.equals(ERepositoryCategoryType.VALIDATIONRULES.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_VALIDATION_RULES);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_VALIDATION_RULES);
-                }
-            }
-            if (repositoryType.equals(ERepositoryCategoryType.EDIFACT.getName())) {
-                if (provider instanceof RepositoryContentProvider) {
-                    metadataNode = ((RepositoryContentProvider) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_EDIFACT);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    metadataNode = ((ProjectRepositoryNode) provider)
-                            .getRootRepositoryNode(ERepositoryObjectType.METADATA_EDIFACT);
-                }
-            }
+        if (repositoryType.startsWith(ERepositoryCategoryType.SAP.getName())) {
+            return ERepositoryObjectType.METADATA_SAPCONNECTIONS;
         }
-        return metadataNode;
+        if (repositoryType.startsWith(ERepositoryCategoryType.HEADERFOOTER.getName())) {
+            return ERepositoryObjectType.METADATA_HEADER_FOOTER;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.EBCDIC.getName())) {
+            return ERepositoryObjectType.METADATA_FILE_EBCDIC;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.MDM.getName())) {
+            return ERepositoryObjectType.METADATA_MDMCONNECTION;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.FTP.getName())) {
+            return ERepositoryObjectType.METADATA_FILE_FTP;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.BRMS.getName())) {
+            return ERepositoryObjectType.METADATA_FILE_BRMS;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.HL7.getName())) {
+            return ERepositoryObjectType.METADATA_FILE_HL7;
+        }
+        // added by hyWang
+        if (repositoryType.equals(ERepositoryCategoryType.RULE.getName())) {
+            return ERepositoryObjectType.METADATA_FILE_RULES;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.VALIDATIONRULES.getName())) {
+            return ERepositoryObjectType.METADATA_VALIDATION_RULES;
+        }
+        if (repositoryType.equals(ERepositoryCategoryType.EDIFACT.getName())) {
+            return ERepositoryObjectType.METADATA_EDIFACT;
+        }
+        return null;
+
     }
 
     public boolean isSelectionValid(RepositoryNode node) {
-        if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.PROCESS) {
+        // only for item
+        IRepositoryViewObject object = node.getObject();
+        if (object != null && object.getProperty().getItem() != null) {
             return true;
         }
-        if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.SERVICESPORT) {
-            return false;
-        }
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
-            IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
-            ERepositoryObjectType servicesType = service.getServicesType();
-            if (node.getProperties(EProperties.CONTENT_TYPE) == servicesType) {
-                return false;
-            }
-        }
-
-        return true;
+        return false;
     }
 
     public boolean isHidenTypeSelection() {
@@ -1347,112 +943,81 @@ class RepositoryTypeProcessor implements ITypeProcessor {
         this.isHeaderButton = isHeaderButton;
     }
 
-    public ViewerFilter makeFilter() {
-        return new ViewerFilter() {
+    @Override
+    protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
+        final String repositoryType = getRepositoryType();
+        if (node == null) {
+            return false;
+        }
+        if (node.getContentType() == ERepositoryObjectType.REFERENCED_PROJECTS) {
+            return true;
+        }
+        // ProjectManager pManager = ProjectManager.getInstance();
+        // if (!pManager.isInCurrentMainProject(node)) {
+        // for sub folders
+        if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER) {
+            return false;
+        }
+        // for Db Connections
+        if (node.getType() == ENodeType.SYSTEM_FOLDER) {
+            return true;
+        }
+        // }
+        IRepositoryViewObject object = node.getObject();
+        if (object == null || object.getProperty().getItem() == null) {
+            return false;
+        }
+        if (object instanceof MetadataTable) {
+            return false;
+        }
+        Item item = object.getProperty().getItem();
+        if (item instanceof FolderItem) {
+            return true;
+        }
 
-            @Override
-            public boolean select(Viewer viewer, Object parentElement, Object element) {
-                // if (repositoryType.startsWith("DATABASE") && repositoryType.contains(":")) {
-                RepositoryNode node = (RepositoryNode) element;
-                if (node.getContentType() == ERepositoryObjectType.REFERENCED_PROJECTS) {
-                    return true;
+        if (item instanceof ConnectionItem) {
+            ConnectionItem connectionItem = (ConnectionItem) item;
+            Connection connection = connectionItem.getConnection();
+            // tAdvancedFileOutputXML
+            if (repositoryType != null && repositoryType.equals(ERepositoryCategoryType.XMLOUTPUT.getName())) {
+                if (connection instanceof XmlFileConnection && ((XmlFileConnection) connection).isInputModel()) {
+                    return false;
                 }
-                ProjectManager pManager = ProjectManager.getInstance();
-                if (!pManager.isInCurrentMainProject(node)) {
-                    // for sub folders
-                    if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER) {
-                        return false;
-                    }
-                    // for Db Connections
-                    if (node.getType() == ENodeType.SYSTEM_FOLDER) {
+            }
+
+            if (repositoryType.startsWith(ERepositoryCategoryType.DATABASE.getName())) {
+                String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE", null); //$NON-NLS-1$
+                if (repositoryType.contains(":")) { // database //$NON-NLS-1$
+                    // is
+                    // specified
+                    // //$NON-NLS-1$
+                    String neededDbType = repositoryType.substring(repositoryType.indexOf(":") + 1); //$NON-NLS-1$
+                    if (hidenTypeSelection) {
                         return true;
                     }
-                }
-                if (node.getObject() == null || node.getObject().getProperty().getItem() == null) {
-                    return false;
-                }
-                if (node.getObject() instanceof MetadataTable) {
-                    return false;
-                }
-                Item item = node.getObject().getProperty().getItem();
-                if (item instanceof FolderItem) {
-                    return true;
-                }
-
-                if (repositoryType.startsWith(ERepositoryCategoryType.DATABASE.getName())) {
-                    if (item instanceof ConnectionItem) {
-                        ConnectionItem connectionItem = (ConnectionItem) item;
-                        Connection connection = connectionItem.getConnection();
-                        String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE", null); //$NON-NLS-1$
-                        if (repositoryType.contains(":")) { // database //$NON-NLS-1$
-                            // is
-                            // specified
-                            // //$NON-NLS-1$
-                            String neededDbType = repositoryType.substring(repositoryType.indexOf(":") + 1); //$NON-NLS-1$
-                            if (hidenTypeSelection) {
-                                return true;
-                            }
-                            if (!MetadataTalendType.sameDBProductType(neededDbType, currentDbType)) {
-                                return false;
-                            }
-                        }
+                    if (!MetadataTalendType.sameDBProductType(neededDbType, currentDbType)) {
+                        return false;
                     }
                 }
-
-                if (repositoryType.equals("SERVICES:OPERATION")) {
-                    if (item instanceof ConnectionItem) {
-                        ConnectionItem connectionItem = (ConnectionItem) item;
-                        Connection connection = connectionItem.getConnection();
-                        String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE", null); //$NON-NLS-1$
-                        if (repositoryType.contains(":")) { // database //$NON-NLS-1$
-                            // is
-                            // specified
-                            // //$NON-NLS-1$
-                            String neededDbType = repositoryType.substring(repositoryType.indexOf(":") + 1); //$NON-NLS-1$
-                            if (hidenTypeSelection) {
-                                return true;
-                            }
-                            // if (node.getObjectType() == ERepositoryObjectType.SERVICESPORT) {
-                            // return false;
-                            // }
-                            // if (node.getObjectType() == ERepositoryObjectType.SERVICESOPERATION) {
-                            // return false;
-                            // }
-                            // if (!MetadataTalendType.sameDBProductType(neededDbType, currentDbType)) {
-                            // return false;
-                            // }
-                        }
-                    }
-                }
-
-                if (repositoryType.startsWith(ERepositoryCategoryType.HEADERFOOTER.getName())) {
-                    if (item instanceof HeaderFooterConnectionItem) {
-                        HeaderFooterConnectionItem connectionItem = (HeaderFooterConnectionItem) item;
-                        HeaderFooterConnection connection = (HeaderFooterConnection) connectionItem.getConnection();
-                        boolean isHeader = connection.isIsHeader();
-
-                        if ((isHeader && isHeaderButton) || (!isHeader && !isHeaderButton)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-
-                    }
-                }
-                return true;
             }
-        };
+        }
+        if (repositoryType.startsWith(ERepositoryCategoryType.HEADERFOOTER.getName())) {
+            if (item instanceof HeaderFooterConnectionItem) {
+                HeaderFooterConnectionItem connectionItem = (HeaderFooterConnectionItem) item;
+                HeaderFooterConnection connection = (HeaderFooterConnection) connectionItem.getConnection();
+                boolean isHeader = connection.isIsHeader();
+
+                if ((isHeader && isHeaderButton) || (!isHeader && !isHeaderButton)) {
+                    return true;
+                } else {
+                    return false;
+                }
+
+            }
+        }
+        return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.ui.dialog.ITypeProcessor#getDialogTitle()
-     */
-    public String getDialogTitle() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }
 
 /**
@@ -1461,9 +1026,7 @@ class RepositoryTypeProcessor implements ITypeProcessor {
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
  */
-class SchemaTypeProcessor implements ITypeProcessor {
-
-    String repositoryType;
+class SchemaTypeProcessor extends MultiTypesProcessor {
 
     /**
      * DOC bqian RepositoryTypeProcessor constructor comment.
@@ -1471,111 +1034,42 @@ class SchemaTypeProcessor implements ITypeProcessor {
      * @param repositoryType
      */
     public SchemaTypeProcessor(String repositoryType) {
-        this.repositoryType = repositoryType;
+        super(new String[] { repositoryType });
     }
 
-    private List<ERepositoryObjectType> needCheckedTypes() {
+    protected String getRepositoryType() {
+        return getRepositoryTypes()[0];
+    }
+
+    @Override
+    protected List<ERepositoryObjectType> getTypes() {
         List<ERepositoryObjectType> list = new ArrayList<ERepositoryObjectType>(50);
+        String repositoryType = getRepositoryType();
         if (repositoryType != null && repositoryType.startsWith(ERepositoryCategoryType.DATABASE.getName())) {
             list.add(ERepositoryObjectType.METADATA_CONNECTIONS);
         } else {
+            list.add(ERepositoryObjectType.METADATA_CONNECTIONS);
             list.add(ERepositoryObjectType.METADATA_FILE_DELIMITED);
             list.add(ERepositoryObjectType.METADATA_FILE_POSITIONAL);
             list.add(ERepositoryObjectType.METADATA_FILE_REGEXP);
             list.add(ERepositoryObjectType.METADATA_FILE_XML);
             list.add(ERepositoryObjectType.METADATA_FILE_LDIF);
             list.add(ERepositoryObjectType.METADATA_FILE_EXCEL);
+            list.add(ERepositoryObjectType.METADATA_FILE_HL7);
+            list.add(ERepositoryObjectType.METADATA_FILE_EBCDIC);
+            list.add(ERepositoryObjectType.METADATA_FILE_FTP);
+            list.add(ERepositoryObjectType.METADATA_FILE_BRMS);
             list.add(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
             list.add(ERepositoryObjectType.METADATA_LDAP_SCHEMA);
             list.add(ERepositoryObjectType.METADATA_WSDL_SCHEMA);
             list.add(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
             list.add(ERepositoryObjectType.METADATA_SAPCONNECTIONS);
-            list.add(ERepositoryObjectType.METADATA_FILE_HL7);
-            list.add(ERepositoryObjectType.METADATA_FILE_EBCDIC);
             list.add(ERepositoryObjectType.METADATA_RULES_MANAGEMENT);
             list.add(ERepositoryObjectType.METADATA_MDMCONNECTION);
-            list.add(ERepositoryObjectType.METADATA_FILE_FTP);
             list.add(ERepositoryObjectType.METADATA_EDIFACT);
-            list.add(ERepositoryObjectType.METADATA_CONNECTIONS);
-            list.add(ERepositoryObjectType.METADATA_FILE_BRMS);
+
         }
         return list;
-    }
-
-    public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
-        List<RepositoryNode> container = new NoNullList<RepositoryNode>();
-
-        for (ERepositoryObjectType type : needCheckedTypes()) {
-            RepositoryNode rootRepositoryNode = contentProvider.getRootRepositoryNode(type);
-            if (rootRepositoryNode != null) {
-                container.add(rootRepositoryNode);
-            }
-        }
-        addReferencedProjectNodes(contentProvider, container);
-
-        RepositoryNode node = new RepositoryNode(null, null, null);
-        node.getChildren().addAll(container);
-
-        return node;
-    }
-
-    private void addReferencedProjectNodes(RepositoryContentProvider contentProvider, List<RepositoryNode> container) {
-        if (contentProvider == null || container == null) {
-            return;
-        }
-
-        RepositoryNode refRepositoryNode = contentProvider.getRootRepositoryNode(ERepositoryObjectType.REFERENCED_PROJECTS);
-        if (refRepositoryNode != null) {
-            if (!refRepositoryNode.isInitialized()) {
-                if (refRepositoryNode.getParent() instanceof ProjectRepositoryNode) {
-                    ((ProjectRepositoryNode) refRepositoryNode.getParent()).initializeChildren(refRepositoryNode);
-                }
-                refRepositoryNode.setInitialized(true);
-            }
-            List<IRepositoryNode> refProjects = refRepositoryNode.getChildren();
-
-            addSubReferenceProjects(container, refProjects);
-        }
-    }
-
-    private void addSubReferencedProjectNodes(ProjectRepositoryNode subRefProject, List<RepositoryNode> container) {
-        RepositoryNode refRepositoryNode = subRefProject.getRootRepositoryNode(ERepositoryObjectType.REFERENCED_PROJECTS);
-        if (refRepositoryNode == null)
-            return;
-        if (!refRepositoryNode.isInitialized()) {
-            if (refRepositoryNode.getParent() instanceof ProjectRepositoryNode) {
-                ((ProjectRepositoryNode) refRepositoryNode.getParent()).initializeChildren(refRepositoryNode);
-            }
-            refRepositoryNode.setInitialized(true);
-        }
-        List<IRepositoryNode> refProjects = refRepositoryNode.getChildren();
-
-        addSubReferenceProjects(container, refProjects);
-    }
-
-    protected void addSubReferenceProjects(List<RepositoryNode> container, List<IRepositoryNode> refProjects) {
-        if (refProjects != null && !refProjects.isEmpty()) {
-            List<RepositoryNode> nodesList = new NoNullList<RepositoryNode>();
-            for (IRepositoryNode repositoryNode : refProjects) {
-                ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
-
-                ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
-
-                List<RepositoryNode> refContainer = new ArrayList<RepositoryNode>();
-                for (ERepositoryObjectType type : needCheckedTypes()) {
-                    RepositoryNode rootRepositoryNode = refProject.getRootRepositoryNode(type);
-                    if (rootRepositoryNode != null) {
-                        refContainer.add(rootRepositoryNode);
-                    }
-                }
-
-                newProject.getChildren().addAll(refContainer);
-                nodesList.add(newProject);
-
-                addSubReferencedProjectNodes(refProject, refContainer);
-            }
-            container.addAll(nodesList);
-        }
     }
 
     public boolean isSelectionValid(RepositoryNode node) {
@@ -1585,89 +1079,39 @@ class SchemaTypeProcessor implements ITypeProcessor {
         return false;
     }
 
-    public ViewerFilter makeFilter() {
-        return new ViewerFilter() {
-
-            @Override
-            public boolean select(Viewer viewer, Object parentElement, Object element) {
-
-                RepositoryNode node = (RepositoryNode) element;
-                if (node == null)
-                    return false;
-                IRepositoryViewObject object = node.getObject();
-                if (object != null) {
-                    // query
-                    if (object instanceof Query) {
-                        return false;
-                    }
-                    // column
-                    if (object instanceof MetadataColumnRepositoryObject) {
-                        return false;
-                    }
-                }
-                // hide the column folder
-                if (object == null && node.getParent() != null && node.getParent().getObject() != null
-                        && node.getParent().getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
-                    return false;
-                }
-                // cdc
-                ICDCProviderService cdcService = null;
-                if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_CDC) {
-                    return false;
-                }
-                if (PluginChecker.isCDCPluginLoaded()) {
-                    cdcService = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(ICDCProviderService.class);
-                    if (cdcService != null && cdcService.isSubscriberTableNode(node)) {
-                        return false;
-                    }
-                }
-
-                if (ERepositoryCategoryType.CDC.getName().equals(repositoryType) && (object != null)) { //$NON-NLS-1$
-                    if (object.getRepositoryObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
-                        DatabaseConnectionItem item = (DatabaseConnectionItem) object.getProperty().getItem();
-                        DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-
-                        if (cdcService != null && cdcService.canCreateCDCConnection(connection)) {
-                            return true;
-                        }
-                        return false;
-                    }
-                    if (object instanceof MetadataTable) {
-                        return ((MetadataTableRepositoryObject) object).getTable().isActivatedCDC();
-                    }
-                }
-                return true;
-            }
-        };
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.ui.dialog.ITypeProcessor#getDialogTitle()
-     */
-    public String getDialogTitle() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-}
-
-/**
- * 
- * DOC talend class global comment. Detailled comment
- * 
- * @param <T> on null object
- */
-class NoNullList<T> extends ArrayList<T> {
-
-    private static final long serialVersionUID = 4564909079208559374L;
-
     @Override
-    public boolean add(T t) {
-        if (t == null) {
-            return false;
+    protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
+        if (super.selectRepositoryNode(viewer, parentNode, node)) {
+            IRepositoryViewObject object = node.getObject();
+            if (object != null) {
+                // query
+                if (object instanceof Query) {
+                    return false;
+                }
+            }
+            // cdc
+            ICDCProviderService cdcService = null;
+            if (PluginChecker.isCDCPluginLoaded()) {
+                cdcService = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(ICDCProviderService.class);
+            }
+            String repositoryType = getRepositoryType();
+            if (ERepositoryCategoryType.CDC.getName().equals(repositoryType) && (object != null)) {
+                if (object.getRepositoryObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
+                    DatabaseConnectionItem item = (DatabaseConnectionItem) object.getProperty().getItem();
+                    DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+
+                    if (cdcService != null && cdcService.canCreateCDCConnection(connection)) {
+                        return true;
+                    }
+                    return false;
+                }
+                if (object instanceof MetadataTable) {
+                    return ((MetadataTableRepositoryObject) object).getTable().isActivatedCDC();
+                }
+            }
+            return true;
         }
-        return super.add(t);
+        return false;
     }
 
 }
@@ -1701,18 +1145,12 @@ class SAPFunctionProcessor extends SingleTypeProcessor {
         return false;
     }
 
-    public ViewerFilter makeFilter() {
-        return new ViewerFilter() {
-
-            @Override
-            public boolean select(Viewer viewer, Object parentElement, Object element) {
-                RepositoryNode node = (RepositoryNode) element;
-                if (node.getObject() != null && (node.getObject() instanceof MetadataTable)) {
-                    return false;
-                }
-                return true;
-            }
-        };
+    @Override
+    protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
+        if (node.getObject() != null && (node.getObject() instanceof MetadataTable)) {
+            return false;
+        }
+        return true;
     }
 
 }
@@ -1793,19 +1231,15 @@ class QueryTypeProcessor extends SingleTypeProcessor {
         return false;
     }
 
-    public ViewerFilter makeFilter() {
-        return new ViewerFilter() {
-
-            @Override
-            public boolean select(Viewer viewer, Object parentElement, Object element) {
-                // if (repositoryType.startsWith("DATABASE") && repositoryType.contains(":")) {
-                RepositoryNode node = (RepositoryNode) element;
-                if (node.getObject() != null && (node.getObject() instanceof MetadataTable)) {
-                    return false;
-                }
-                return true;
-            }
-        };
+    @Override
+    protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
+        if (node.getObject() != null && (node.getObject() instanceof MetadataTable)) {
+            return false;
+        }
+        if (isCDCConnection(node)) {
+            return false;
+        }
+        return true;
     }
 
 }
@@ -1829,40 +1263,82 @@ class ValidationRuleTypeProcessor extends SingleTypeProcessor {
         return ERepositoryObjectType.METADATA_VALIDATION_RULES;
     }
 
-    public ViewerFilter makeFilter() {
-        return new ViewerFilter() {
-
-            @Override
-            public boolean select(Viewer viewer, Object parentElement, Object element) {
-                RepositoryNode node = (RepositoryNode) element;
-                if (node.getContentType() == ERepositoryObjectType.REFERENCED_PROJECTS) {
-                    return true;
-                }
-                ProjectManager pManager = ProjectManager.getInstance();
-                if (!pManager.isInCurrentMainProject(node)) {
-                    if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER) {
-                        return false;
-                    }
-                    if (node.getType() == ENodeType.SYSTEM_FOLDER) {
-                        return true;
-                    }
-                }
-                if (node.getObject() == null || node.getObject().getProperty().getItem() == null) {
-                    return false;
-                }
-                if (node.getObject() instanceof MetadataTable) {
-                    return false;
-                }
-                Item item = node.getObject().getProperty().getItem();
-                if (item instanceof FolderItem) {
-                    return true;
-                }
-                if (node.getObjectType() == getType()) {
-                    return true;
-                }
+    @Override
+    protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
+        if (node.getContentType() == ERepositoryObjectType.REFERENCED_PROJECTS) {
+            return true;
+        }
+        ProjectManager pManager = ProjectManager.getInstance();
+        if (!pManager.isInCurrentMainProject(node)) {
+            if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER) {
                 return false;
             }
-        };
+            if (node.getType() == ENodeType.SYSTEM_FOLDER) {
+                return true;
+            }
+        }
+        if (node.getObject() == null || node.getObject().getProperty().getItem() == null) {
+            return false;
+        }
+        if (node.getObject() instanceof MetadataTable) {
+            return false;
+        }
+        Item item = node.getObject().getProperty().getItem();
+        if (item instanceof FolderItem) {
+            return true;
+        }
+        if (node.getObjectType() == getType()) {
+            return true;
+        }
+        return false;
+
+    }
+
+}
+
+/**
+ * 
+ * DOC talend class global comment. Detailled comment
+ */
+class MetadataMultiTypeProcessor extends MultiTypesProcessor {
+
+    public MetadataMultiTypeProcessor(String[] repositoryTypes) {
+        super(repositoryTypes);
+    }
+
+    @Override
+    protected List<ERepositoryObjectType> getTypes() {
+        List<ERepositoryObjectType> types = new ArrayList<ERepositoryObjectType>();
+
+        String[] repositoryTypes = getRepositoryTypes();
+        if (repositoryTypes != null) {
+            for (int i = 0; i < repositoryTypes.length; i++) {
+                if (ERepositoryCategoryType.XML.getName().equals(repositoryTypes[i])) {
+                    types.add(ERepositoryObjectType.METADATA_FILE_XML);
+                } else if (ERepositoryCategoryType.MDM.getName().equals(repositoryTypes[i])) {
+                    types.add(ERepositoryObjectType.METADATA_MDMCONNECTION);
+                }
+            }
+        }
+        return types;
+    }
+
+    protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
+        if (super.selectRepositoryNode(viewer, parentNode, node)) {
+            IRepositoryViewObject object = node.getObject();
+            if (object != null) {
+                // query
+                if (object instanceof Query) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public String getDialogTitle() {
+        return "Metadatas";
     }
 
 }
@@ -1884,7 +1360,6 @@ class ViewerTextFilter extends ViewerFilter {
             return true;
         }
         RepositoryNode node = (RepositoryNode) element;
-        ERepositoryObjectType type = node.getContentType();
         ENodeType nodeType = node.getType();
         if (nodeType != ENodeType.REPOSITORY_ELEMENT) {
             List<IRepositoryNode> children = node.getChildren();
