@@ -1266,7 +1266,7 @@ public class TalendForgeDialog extends TrayDialog {
         @Override
         protected void cancelPressed() {
             super.cancelPressed();
-            font.dispose();
+            // font.dispose();
         }
     }
 }
