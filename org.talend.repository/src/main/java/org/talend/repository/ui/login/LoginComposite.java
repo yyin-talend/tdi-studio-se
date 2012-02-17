@@ -2428,7 +2428,8 @@ public class LoginComposite extends Composite {
         public String getText(Object element) {
             Project prj = (Project) element;
             String toReturn = prj.getLabel() + " - " + prj.getLanguage().getName(); //$NON-NLS-1$
-            if (!prj.isLocal() && !isAuthenticationNeeded()) {
+            if ((!prj.isLocal() && !isAuthenticationNeeded())
+                    || (prj.isLocal() && !isAuthenticationNeeded() && prj.getEmfProject().getUrl() != null)) {
                 toReturn += " (remote project in offline mode)"; //$NON-NLS-1$
             }
             return toReturn;

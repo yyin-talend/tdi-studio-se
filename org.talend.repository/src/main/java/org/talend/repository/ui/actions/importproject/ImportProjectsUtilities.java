@@ -55,6 +55,7 @@ import org.eclipse.ui.internal.wizards.datatransfer.ZipLeveledStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
 import org.osgi.framework.Bundle;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.platform.PluginChecker;
@@ -62,6 +63,8 @@ import org.talend.commons.xml.XmlUtil;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.builder.database.PluginConstant;
+import org.talend.core.model.properties.Project;
+import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.resources.ResourcesPlugin;
@@ -115,6 +118,16 @@ public class ImportProjectsUtilities {
             replaceInFile("label=\".*?\"", file3.getLocation().toOSString(), "label=\"" + newName + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             replaceInFile("technicalLabel=\".*?\"", file3.getLocation().toOSString(), "technicalLabel=\"" //$NON-NLS-1$ //$NON-NLS-2$
                     + technicalName + "\""); //$NON-NLS-1$
+            // TDI-19269
+            final IProject project = workspace.getRoot().getProject(technicalName);
+            XmiResourceManager xmiManager = new XmiResourceManager();
+            try {
+                final Project loadProject = xmiManager.loadProject(project);
+                loadProject.setLocal(true);
+                xmiManager.saveResource(loadProject.eResource());
+            } catch (PersistenceException e) {
+                //
+            }
         } catch (IOException e) {
             throw new InvocationTargetException(e);
         }
