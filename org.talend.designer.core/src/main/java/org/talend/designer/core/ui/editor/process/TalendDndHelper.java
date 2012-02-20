@@ -63,7 +63,7 @@ final class TalendDndHelper {
      */
     private static boolean isOracleAmazonStringContained(String dbType, String emfName) {
 
-        if (dbType != null && emfName != null
+        if (dbType != null && !dbType.equals(EDatabaseTypeName.ORACLEFORSID.getDisplayName()) && emfName != null
                 && Pattern.compile("^.*oracle.*$", Pattern.CASE_INSENSITIVE).matcher(dbType).matches()) {
 
             for (String amazonString : ORACLE_AMAZON_STRING) {
