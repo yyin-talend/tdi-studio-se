@@ -85,11 +85,59 @@
 				String mqType = ElementParameterParser.getValue(node, "__MQ_TYPE__");
 				if("ActiveMQ".equals(mqType)){
 					String amqUri = ElementParameterParser.getValue(node, "__AMQ_BROKER_URI__").trim();
+					
 %>
 				jmsConnectionFactory = new org.apache.activemq.ActiveMQConnectionFactory(<%=amqUri%>);
+<%
+				String amqPool = ElementParameterParser.getValue(node, "__AMQ_POOL__").trim();
+				if("true".equals(amqPool)){
+				     String amq_pool_max_connections = ElementParameterParser.getValue(node, "__AMQ_POOL_MAX_CONNECTIONS__").trim();
+				     String amq_pool_max_active = ElementParameterParser.getValue(node, "__AMQ_POOL_MAX_ACTIVE__").trim();
+				     String amq_pool_idle_timeout = ElementParameterParser.getValue(node, "__AMQ_POOL_IDLE_TIMEOUT__").trim();
+				     String amq_pool_expiry_timeout = ElementParameterParser.getValue(node, "__AMQ_POOL_EXPIRY_TIMEOUT__").trim();
+				     
+				     if(amq_pool_max_connections.startsWith("\"")){
+						 amq_pool_max_connections = amq_pool_max_connections.substring(1);
+					 }
+					 if(amq_pool_max_connections.endsWith("\"")){
+						 amq_pool_max_connections = amq_pool_max_connections.substring(0, amq_pool_max_connections.length() - 1);
+					 }
+				     if(amq_pool_max_active.startsWith("\"")){
+						 amq_pool_max_active = amq_pool_max_active.substring(1);
+					 }
+					 if(amq_pool_max_active.endsWith("\"")){
+						 amq_pool_max_active = amq_pool_max_active.substring(0, amq_pool_max_active.length() - 1);
+					 }
+				     if(amq_pool_idle_timeout.startsWith("\"")){
+						 amq_pool_idle_timeout = amq_pool_idle_timeout.substring(1);
+					 }
+					 if(amq_pool_idle_timeout.endsWith("\"")){
+						 amq_pool_idle_timeout = amq_pool_idle_timeout.substring(0, amq_pool_idle_timeout.length() - 1);
+					 }
+				     if(amq_pool_expiry_timeout.startsWith("\"")){
+						 amq_pool_expiry_timeout = amq_pool_expiry_timeout.substring(1);
+					 }
+					 if(amq_pool_expiry_timeout.endsWith("\"")){
+						 amq_pool_expiry_timeout = amq_pool_expiry_timeout.substring(0, amq_pool_expiry_timeout.length() - 1);
+					 }
+%>
+				org.apache.activemq.pool.PooledConnectionFactory pooledConnectionFactory_<%=node.getUniqueName()%> 
+					= new org.apache.activemq.pool.PooledConnectionFactory();
+				pooledConnectionFactory_<%=node.getUniqueName()%>.setConnectionFactory(jmsConnectionFactory);
+				pooledConnectionFactory_<%=node.getUniqueName()%>.setExpiryTimeout(<%=amq_pool_expiry_timeout%>);
+				pooledConnectionFactory_<%=node.getUniqueName()%>.setIdleTimeout(<%=amq_pool_idle_timeout%>);
+				pooledConnectionFactory_<%=node.getUniqueName()%>.setMaxConnections(<%=amq_pool_max_connections%>);
+				pooledConnectionFactory_<%=node.getUniqueName()%>.setMaximumActive(<%=amq_pool_max_active%>);
+				camelContext.addComponent(<%=name%>,
+					org.apache.camel.component.jms.JmsComponent.jmsComponent(pooledConnectionFactory_<%=node.getUniqueName()%>));	
+<%
+					 
+				}else{
+%>				
 				camelContext.addComponent(<%=name%>,
 					org.apache.camel.component.jms.JmsComponent.jmsComponent(jmsConnectionFactory));
 <%				
+				    }
 				}else if("WebSphere MQ".equals(mqType)){
 					String wmqServer = ElementParameterParser.getValue(node, "__WQM_SEVER__");
 					String wmqPort = ElementParameterParser.getValue(node, "__WMQ_PORT__");

@@ -801,6 +801,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 						if ("ActiveMQ".equals(value)) {
 							// add ActiveMQ packages
 							jmsImportPkgs.add("org.apache.activemq");
+							boolean ampPool = computeCheckElementValue(
+									"AMQ_POOL", next.getElementParameter());
+							// http://jira.talendforge.org/browse/TESB-4923
+							if (ampPool) {
+								jmsImportPkgs.add("org.apache.activemq.pool");
+								jmsImportPkgs.add("org.apache.commons.pool");
+							}
 
 						} else if ("WebSphere MQ".equals(value)) {
 							// add WMQ packages
