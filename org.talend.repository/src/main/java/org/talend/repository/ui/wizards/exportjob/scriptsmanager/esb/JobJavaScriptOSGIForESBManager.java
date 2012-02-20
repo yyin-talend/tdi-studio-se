@@ -277,8 +277,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 						}
 					}
 				}
-
-				if ("cJMS".equals(componentName)) {
+				//http://jira.talendforge.org/browse/TESB-4910
+				if ("cJMSConnectionFactory".equals(componentName)) {
 					String value = computeTextElementValue("MQ_TYPE",
 							currentNode.getElementParameter());
 					// http://jira.talendforge.org/browse/TESB-3828
@@ -436,7 +436,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
 				// http://jira.talendforge.org/browse/TESB-3812
 				// Update OSGI Export of cJMS
-				if ("cJMS".equals(componentName)) {
+				if ("cJMSConnectionFactory".equals(componentName)) {
 					String value = computeTextElementValue("MQ_TYPE",
 							currentNode.getElementParameter());
 					// http://jira.talendforge.org/browse/TESB-3828
@@ -789,7 +789,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
 					// http://jira.talendforge.org/browse/TESB-4072, compute
 					// additional import packages
-					if ("cJMS".equals(next.getComponentName())) {
+					if ("cJMSConnectionFactory".equals(next.getComponentName())) {
 
 						// add basic packages
 						jmsImportPkgs.add("org.apache.camel.component.jms");
