@@ -316,7 +316,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					java.util.Date dateGMT_<%=cid %> = ((jxl.DateCell)row_<%= cid %>[<%=i%> + start_column_<%= cid %>]).getDate();
 					<%=firstConnName %>.<%=column.getLabel() %> = new java.util.Date(dateGMT_<%=cid %>.getTime() - java.util.TimeZone.getDefault().getOffset(dateGMT_<%=cid %>.getTime()));
 				}catch(Exception e){
-					throw new RuntimeException("The cell format is not Date in row "+(nb_line_<%= cid %>+1));
+					<% // for bug TDI-19404 %>
+					throw new RuntimeException("The cell format is not Date in ( Row. "+(nb_line_<%= cid %>+1)+ " and ColumnNum. " + curColNum_<%=cid %> + " )");
 				}
 			}
 <%
@@ -716,7 +717,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>);
 						}
 					}catch(Exception e){
-						throw new RuntimeException("The cell format is not Date in row "+(nb_line_<%= cid %>+1));
+						<% // for bug TDI-19404 %>
+						throw new RuntimeException("The cell format is not Date in ( Row. "+(nb_line_<%= cid %>+1)+ " and ColumnNum. " + curColNum_<%=cid %> + " )");
 					}
 				}
 				
