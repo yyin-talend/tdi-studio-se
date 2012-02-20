@@ -147,7 +147,7 @@ public class NewProjectWizardPage extends WizardPage {
         languageJavaRadio.setSelection(true);
 
         languagePerlRadio = new Button(radioContainer, SWT.RADIO);
-        languagePerlRadio.setText(ECodeLanguage.PERL.getName() + " (deprecated)");
+        languagePerlRadio.setText(ECodeLanguage.PERL.getName() + " (deprecated)"); //$NON-NLS-1$
 
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
@@ -180,7 +180,7 @@ public class NewProjectWizardPage extends WizardPage {
     private void init() {
         String defaultProjectName = getDefaultProjectName();
         nameText.setText(defaultProjectName);
-        if ("".equals(defaultProjectName)) {
+        if ("".equals(defaultProjectName)) { //$NON-NLS-1$
             setPageComplete(false);
         } else {
             setPageComplete(true);
@@ -194,7 +194,7 @@ public class NewProjectWizardPage extends WizardPage {
             return StringUtils.trimToEmpty(projectWizard.getDefaultProjectName());
         }
 
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     Project[] projects;
@@ -294,6 +294,12 @@ public class NewProjectWizardPage extends WizardPage {
                     }
                 }
             }
+            // add for bug TDI-19617
+            if (descriptionText.getText().length() == 0) {
+                descriptionStatus = new Status(IStatus.WARNING, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
+                        Messages.getString("NewProjectWizardPage.DETAIL"), null); //$NON-NLS-1$  
+            }
+
         }
         updatePageStatus();
     }
