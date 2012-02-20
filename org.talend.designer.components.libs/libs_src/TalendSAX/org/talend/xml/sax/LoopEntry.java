@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2011 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2012 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -38,6 +38,8 @@ public class LoopEntry {
 
     // ==========================end========================================
 
+    private List<Boolean> isDots = new ArrayList<Boolean>();
+    
     // node original path
     private List<String> originalPaths = new ArrayList<String>();
 
@@ -75,12 +77,24 @@ public class LoopEntry {
         originalPaths.add(originalPath);
     }
 
-    public void addPath(String path, String originalPath, Boolean asXML) {
+    public void addPath(String path, String originalPath, Boolean asXML, boolean isDot) {
         paths.add(path);
         originalPaths.add(originalPath);
         // ===========add for feature10170===================
         asXMLs.add(asXML);
         // ===============end=================================
+        isDots.add(isDot);
+    }
+    
+    public List<Boolean> getIsDots() {
+    	 if (this.isDots.size() > 0) {
+             return this.isDots;
+         } else {
+             for (int i = 0; i < this.paths.size(); i++) {
+                 this.isDots.add(false);
+             }
+             return this.isDots;
+         }
     }
 
     public void setAsXMLs(boolean[] asXML) {

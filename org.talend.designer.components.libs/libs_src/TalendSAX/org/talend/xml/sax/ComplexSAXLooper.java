@@ -18,7 +18,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 // ============================================================================
 //
-// Copyright (C) 2006-2011 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2012 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -272,6 +272,7 @@ public class ComplexSAXLooper implements ISAXLooper {
             String column = nodePaths[m];
             String resultCol = this.loopPath;
             boolean isAsXML = this.asXMLs[m];
+            boolean isDot = false;//fix for TDI-19435
             String tmpLoopPath = null;
             String[] splits = column.split("/");
             for (String tmp : splits) {
@@ -280,6 +281,7 @@ public class ComplexSAXLooper implements ISAXLooper {
                     tmpLoopPath = resultCol;
                 } else if (tmp.equals(".")) {
                     tmpLoopPath = resultCol;
+                    isDot = true;
                 } else {
 
                     if (tmp.indexOf("*[") >= 0 && tmp.indexOf(")]") >= 0) {// has funcion in column
@@ -307,9 +309,9 @@ public class ComplexSAXLooper implements ISAXLooper {
             }
 
             if (function == null) {
-                entryMap.get(tmpLoopPath).addPath(resultCol, column, isAsXML);
+                entryMap.get(tmpLoopPath).addPath(resultCol, column, isAsXML, isDot);
             } else {// add the exist function to the loopentry
-                entryMap.get(tmpLoopPath).addPath(column, column, isAsXML);
+                entryMap.get(tmpLoopPath).addPath(column, column, isAsXML, isDot);
                 entryMap.get(tmpLoopPath).addFunction(column, function);
                 function = null;
             }
