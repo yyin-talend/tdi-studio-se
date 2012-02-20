@@ -132,7 +132,7 @@ import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
  */
 public class LoginComposite extends Composite {
 
-    private static final String DEFAULT_PROJECT_NAME = "ProjectName";
+    private static final String DEFAULT_PROJECT_NAME = "ProjectName"; //$NON-NLS-1$
 
     private static final String LOCAL = "local"; //$NON-NLS-1$
 
@@ -268,15 +268,15 @@ public class LoginComposite extends Composite {
     // only for test
     // private static final String ARCHIVA_URL = "http://192.168.0.58:8080";
 
-    private static final String ARCHIVA_SERVICES_SEGMENT = "/restServices/archivaServices/"; //$NON-NLS-N$
+    private static final String ARCHIVA_SERVICES_SEGMENT = "/restServices/archivaServices/"; //$NON-NLS-N$ //$NON-NLS-1$
 
-    private static final String ARCHIVA_SERVICES_URL_KEY = "archivaUrl"; //$NON-NLS-N$
+    private static final String ARCHIVA_SERVICES_URL_KEY = "archivaUrl"; //$NON-NLS-N$ //$NON-NLS-1$
 
-    private static final String ARCHIVA_REPOSITORY_KEY = "repository"; //$NON-NLS-N$
+    private static final String ARCHIVA_REPOSITORY_KEY = "repository"; //$NON-NLS-N$ //$NON-NLS-1$
 
-    private static final String ARCHIVA_USER = "username"; //$NON-NLS-N$
+    private static final String ARCHIVA_USER = "username"; //$NON-NLS-N$ //$NON-NLS-1$
 
-    private static final String ARCHIVA_USER_PWD = "password"; //$NON-NLS-N$
+    private static final String ARCHIVA_USER_PWD = "password"; //$NON-NLS-N$ //$NON-NLS-1$
 
     private boolean afterUpdate = false;
 
@@ -308,10 +308,10 @@ public class LoginComposite extends Composite {
         perReader = ConnectionUserPerReader.getInstance();
         try {
             Browser browser = new Browser(parent, SWT.BORDER);
-            System.setProperty("USE_BROWSER", "yes");
+            System.setProperty("USE_BROWSER", "yes"); //$NON-NLS-1$ //$NON-NLS-2$
             browser.dispose();
         } catch (Throwable t) {
-            System.setProperty("USE_BROWSER", "no");
+            System.setProperty("USE_BROWSER", "no"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
@@ -362,7 +362,7 @@ public class LoginComposite extends Composite {
         }
         try {
             setStatusArea();
-            log.info("validate updatesite..."); //$NON-NLS-N$
+            log.info("validate updatesite..."); //$NON-NLS-N$ //$NON-NLS-1$
             validateUpdate();
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
@@ -505,7 +505,7 @@ public class LoginComposite extends Composite {
         Label welcomeLabel = toolkit.createLabel(repositoryComposite, Messages.getString("LoginComposite.welcomeTitle")); //$NON-NLS-1$
         welcomeLabel.setBackground(repositoryComposite.getBackground());
         GC gc = new GC(welcomeLabel);
-        Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.welcomeTitle"));
+        Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.welcomeTitle")); //$NON-NLS-1$
         gc.dispose();
 
         FormData welcomeLabelFormData = new FormData();
@@ -716,7 +716,7 @@ public class LoginComposite extends Composite {
         //
         manageProjectsButtonTemp = toolkit.createButton(tosActionComposite, null, SWT.PUSH);
         manageProjectsButtonTemp.setBackground(tosActionComposite.getBackground());
-        manageProjectsButtonTemp.setText(Messages.getString("LoginComposite.manageProjectsButtonTemp"));
+        manageProjectsButtonTemp.setText(Messages.getString("LoginComposite.manageProjectsButtonTemp")); //$NON-NLS-1$
         data = new FormData();
         data.top = new FormAttachment(0, HORIZONTAL_THREE_SPACE);
         data.right = new FormAttachment(90, -HORIZONTAL_TWO_SPACE);
@@ -726,7 +726,7 @@ public class LoginComposite extends Composite {
         manageProjectLabel1 = toolkit.createLabel(tosActionComposite, Messages.getString("LoginComposite.selectADemoProject")); //$NON-NLS-1$
         manageProjectLabel1.setBackground(tosActionComposite.getBackground());
         GC gc = new GC(manageProjectLabel1);
-        Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.selectADemoProject"));
+        Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.selectADemoProject")); //$NON-NLS-1$
         gc.dispose();
         data = new FormData();
         data.left = new FormAttachment(10, HORIZONTAL_SPACE);
@@ -795,7 +795,7 @@ public class LoginComposite extends Composite {
                                     }
                                 }
                                 if (null == demoProjectBean) {
-                                    throw new IOException("cannot find selected demo project");
+                                    throw new IOException("cannot find selected demo project"); //$NON-NLS-1$
                                 }
                                 String techName = demoProjectBean.getProjectName();
 
@@ -925,12 +925,12 @@ public class LoginComposite extends Composite {
         openProjectBtn.setVisible(false);
 
         Label createProjectLabel = toolkit
-                .createLabel(tosProjectComposite, Messages.getString("LoginComposite.projectTitleTemp"));
+                .createLabel(tosProjectComposite, Messages.getString("LoginComposite.projectTitleTemp")); //$NON-NLS-1$
 
         //
         createProjectBtn = toolkit.createButton(tosProjectComposite, null, SWT.PUSH);
         createProjectBtn.setBackground(tosProjectComposite.getBackground());
-        createProjectBtn.setText(Messages.getString("LoginComposite.buttons.createButton"));
+        createProjectBtn.setText(Messages.getString("LoginComposite.buttons.createButton")); //$NON-NLS-1$
         FormData data = new FormData();
         data.top = new FormAttachment(createProjectLabel, -HORIZONTAL_SPACE, SWT.CENTER);
         data.right = new FormAttachment(90, -HORIZONTAL_TWO_SPACE);
@@ -939,7 +939,7 @@ public class LoginComposite extends Composite {
         createProjectBtn.setEnabled(true);
 
         GC gc = new GC(createProjectLabel);
-        Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.projectTitleTemp"));
+        Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.projectTitleTemp")); //$NON-NLS-1$
         gc.dispose();
         data = new FormData();
         data.top = new FormAttachment(0, 10);
@@ -948,7 +948,7 @@ public class LoginComposite extends Composite {
         data.bottom = new FormAttachment(createProjectBtn, 0, SWT.BOTTOM);
         createProjectLabel.setLayoutData(data);
 
-        projectText = toolkit.createText(tosProjectComposite, "", SWT.BORDER);
+        projectText = toolkit.createText(tosProjectComposite, "", SWT.BORDER); //$NON-NLS-1$
         data = new FormData();
         data.top = new FormAttachment(createProjectLabel, 0, SWT.TOP);
         data.left = new FormAttachment(createProjectLabel, 10, SWT.RIGHT);
@@ -965,12 +965,12 @@ public class LoginComposite extends Composite {
             public void focusGained(FocusEvent e) {
                 if (projectText.getText().equals(DEFAULT_PROJECT_NAME)) {
                     projectText.setBackground(null);
-                    projectText.setText("");
+                    projectText.setText(""); //$NON-NLS-1$
                 }
             }
 
             public void focusLost(FocusEvent e) {
-                if (projectText.getText() == "") {
+                if (projectText.getText() == "") { //$NON-NLS-1$
                     projectText.setText(DEFAULT_PROJECT_NAME);
                     projectText.setBackground(GREY_COLOR);
                 }
@@ -978,7 +978,7 @@ public class LoginComposite extends Composite {
         });
 
         advanced = toolkit.createButton(tosProjectComposite, null, SWT.PUSH);
-        advanced.setText(Messages.getString("LoginComposite.buttons.advanced"));
+        advanced.setText(Messages.getString("LoginComposite.buttons.advanced")); //$NON-NLS-1$
         advanced.setBackground(tosProjectComposite.getBackground());
         data = new FormData();
         data.top = new FormAttachment(createProjectLabel, HORIZONTAL_TWO_SPACE);
@@ -1406,7 +1406,7 @@ public class LoginComposite extends Composite {
                 boolean valid = Pattern.matches(RepositoryConstants.MAIL_PATTERN, user2);
                 if (valid && RepositoryConstants.REPOSITORY_REMOTE_ID.equals(repositoryId2)) {
                     String url = bean.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL);
-                    valid = url != null || !"".equals(url);
+                    valid = url != null || !"".equals(url); //$NON-NLS-1$
                 }
                 bean.setComplete(valid);
             }
@@ -1541,8 +1541,8 @@ public class LoginComposite extends Composite {
                             return;
                         }
                         beforeConnBean = connection;
-                        user.setText(connection.getUser() == null ? "" : connection.getUser());
-                        passwordText.setText(connection.getPassword() == null ? "" : connection.getPassword());
+                        user.setText(connection.getUser() == null ? "" : connection.getUser()); //$NON-NLS-1$
+                        passwordText.setText(connection.getPassword() == null ? "" : connection.getPassword()); //$NON-NLS-1$
                         updateServerFields();
                         // updateButtons();
                         updateVisible();
@@ -1646,8 +1646,8 @@ public class LoginComposite extends Composite {
                             return;
                         }
                         beforeConnBean = connection;
-                        user.setText(connection.getUser() == null ? "" : connection.getUser());
-                        passwordText.setText(connection.getPassword() == null ? "" : connection.getPassword());
+                        user.setText(connection.getUser() == null ? "" : connection.getUser()); //$NON-NLS-1$
+                        passwordText.setText(connection.getPassword() == null ? "" : connection.getPassword()); //$NON-NLS-1$
 
                         updateServerFields();
                         // updateButtons();
@@ -1761,7 +1761,7 @@ public class LoginComposite extends Composite {
         }
         // if workspace different,no need to spent time check patches
         try {
-            if (repositoryId != null && repositoryId.equals("remote") && isSVNProviderPluginLoadedRemote() && isWorkSpaceSame()) {
+            if (repositoryId != null && repositoryId.equals("remote") && isSVNProviderPluginLoadedRemote() && isWorkSpaceSame()) { //$NON-NLS-1$
                 JSONObject archivaProperties = getArchivaServicesProperties(getAdminURL());
 
                 archivaServiceURL = archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY) + ARCHIVA_SERVICES_SEGMENT;
@@ -1819,8 +1819,8 @@ public class LoginComposite extends Composite {
     private String getAdminURL() {
         String tacURL = null;
         ConnectionBean currentBean = getConnection();
-        if (currentBean != null && currentBean.getRepositoryId().equals("remote")) {
-            tacURL = currentBean.getDynamicFields().get("url");
+        if (currentBean != null && currentBean.getRepositoryId().equals("remote")) { //$NON-NLS-1$
+            tacURL = currentBean.getDynamicFields().get("url"); //$NON-NLS-1$
         }
         return tacURL;
     }
@@ -2122,7 +2122,7 @@ public class LoginComposite extends Composite {
                 boolean valid = Pattern.matches(RepositoryConstants.MAIL_PATTERN, user2);
                 if (valid && RepositoryConstants.REPOSITORY_REMOTE_ID.equals(repositoryId2)) {
                     String url = getConnection().getDynamicFields().get(RepositoryConstants.REPOSITORY_URL);
-                    valid = url != null || !"".equals(url);
+                    valid = url != null || !"".equals(url); //$NON-NLS-1$
                 }
 
                 getConnection().setComplete(valid);
@@ -2262,7 +2262,7 @@ public class LoginComposite extends Composite {
                 boolean valid = Pattern.matches(RepositoryConstants.MAIL_PATTERN, user2);
                 if (valid && RepositoryConstants.REPOSITORY_REMOTE_ID.equals(repositoryId2)) {
                     String url = getConnection().getDynamicFields().get(RepositoryConstants.REPOSITORY_URL);
-                    valid = url != null || !"".equals(url);
+                    valid = url != null || !"".equals(url); //$NON-NLS-1$
                 }
                 getConnection().setComplete(valid);
             }
@@ -2378,12 +2378,12 @@ public class LoginComposite extends Composite {
         if (!PluginChecker.isSVNProviderPluginLoaded()) {
             if (bean == null) {
                 bean = new ConnectionBean();
-                bean.setName("Local");
-                bean.setDescription("Default connection");
-                bean.setPassword("");
+                bean.setName("Local"); //$NON-NLS-1$
+                bean.setDescription("Default connection"); //$NON-NLS-1$
+                bean.setPassword(""); //$NON-NLS-1$
                 List<IRepositoryFactory> listRepository = getUsableRepositoryProvider();
                 bean.setRepositoryId(listRepository.get(0).getId());
-                bean.setUser("test@talend.com");
+                bean.setUser("test@talend.com"); //$NON-NLS-1$
                 bean.setWorkSpace(getRecentWorkSpace());
                 bean.setComplete(true);
             }
