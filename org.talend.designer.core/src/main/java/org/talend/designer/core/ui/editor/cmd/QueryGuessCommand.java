@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.cmd;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Priority;
 import org.eclipse.gef.commands.Command;
@@ -39,12 +40,16 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.repository.utils.DatabaseConnectionParameterUtil;
+import orgomg.cwm.objectmodel.core.ModelElement;
+import orgomg.cwm.resource.relational.Catalog;
+import orgomg.cwm.resource.relational.Schema;
 
 /**
  * This class is used for generating new query when "Guess Query" button is selected. <br/>
@@ -209,8 +214,10 @@ public class QueryGuessCommand extends Command {
                 }
             }
         }
+        boolean isJdbc = false;
         // hywang add for bug 7575
         if (dbType != null && dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
+            isJdbc = true;
             String driverClassName = node.getElementParameter("DRIVER_CLASS").getValue().toString(); //$NON-NLS-N$
             driverClassName = TalendTextUtils.removeQuotes(driverClassName);
             //
@@ -313,8 +320,12 @@ public class QueryGuessCommand extends Command {
                 && realTableName.length() > 2) {
             realTableName = realTableName.substring(1, realTableName.length() - 1);
         }
-        newQuery = TalendTextUtils.addSQLQuotes(QueryUtil.generateNewQuery(node, newOutputMetadataTable, dbType, schema,
+        if (isJdbc) {
+            schema = getDefaultSchema(realTableName);
+        }
+        newQuery = TalendTextUtils.addSQLQuotes(QueryUtil.generateNewQuery(node, newOutputMetadataTable, isJdbc, dbType, schema,
                 realTableName));
+
         return newQuery;
     }
 
@@ -393,5 +404,33 @@ public class QueryGuessCommand extends Command {
             }
         }
         return buffer.toString();
+    }
+
+    private String getDefaultSchema(String realTableName) {
+        String schema = "";
+        List<Schema> schemas = ConnectionHelper.getSchema(this.conn);
+        Set<Catalog> catalog = ConnectionHelper.getAllCatalogs(this.conn);
+        for (Schema deScha : schemas) {
+            for (ModelElement ele : deScha.getOwnedElement()) {
+                if (ele.getName().equals(realTableName)) {
+                    return deScha.getName();
+                }
+            }
+        }
+
+        for (Catalog cata : catalog) {
+            for (ModelElement ele : cata.getOwnedElement()) {
+                String eleName = TalendTextUtils.addQuotesWithSpaceFieldForSQLStringForce(
+                        TalendTextUtils.declareString(ele.getName()), dbType, true);
+                if (eleName.startsWith(TalendTextUtils.QUOTATION_MARK) && eleName.endsWith(TalendTextUtils.QUOTATION_MARK)
+                        && eleName.length() > 2) {
+                    eleName = eleName.substring(1, eleName.length() - 1);
+                }
+                if (eleName.equals(realTableName)) {
+                    return cata.getName();
+                }
+            }
+        }
+        return schema;
     }
 }
