@@ -12,7 +12,10 @@
 // ============================================================================
 package org.talend.designer.components.dnd;
 
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.DefaultRepositoryComponentDndFilter;
@@ -33,8 +36,17 @@ public class TAmazonOracleDndFilter extends DefaultRepositoryComponentDndFilter 
     @Override
     public boolean except(Item item, ERepositoryObjectType type, RepositoryNode seletetedNode, IComponent component,
             String repositoryType) {
+        //
+        boolean isOracleSid = false;
+        if (item != null && item instanceof DatabaseConnectionItem) {
+            if (((DatabaseConnectionItem) item).getConnection() instanceof DatabaseConnection)
+                if (((DatabaseConnection) ((DatabaseConnectionItem) item).getConnection()).getDatabaseType().equals(
+                        EDatabaseTypeName.ORACLEFORSID.getDisplayName())) {
+                    isOracleSid = true;
+                }
+        }
         // for tAmazonOracleInput/Output/Connection/Row
-        if (component != null && component.getName().startsWith("tAmazonOracle")) { //$NON-NLS-1$
+        if (!isOracleSid && component != null && component.getName().startsWith("tAmazonOracle")) { //$NON-NLS-1$
             return true;
         }
         return false;
