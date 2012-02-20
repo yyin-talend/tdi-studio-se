@@ -963,13 +963,17 @@ public class LoginComposite extends Composite {
         projectText.addFocusListener(new FocusAdapter() {
 
             public void focusGained(FocusEvent e) {
-                projectText.setBackground(null);
-                projectText.setText("");
+                if (projectText.getText().equals(DEFAULT_PROJECT_NAME)) {
+                    projectText.setBackground(null);
+                    projectText.setText("");
+                }
             }
 
             public void focusLost(FocusEvent e) {
-                projectText.setText(DEFAULT_PROJECT_NAME);
-                projectText.setBackground(GREY_COLOR);
+                if (projectText.getText() == "") {
+                    projectText.setText(DEFAULT_PROJECT_NAME);
+                    projectText.setBackground(GREY_COLOR);
+                }
             }
         });
 
