@@ -43,9 +43,9 @@ public class palohelpers {
 	
 	public static long StringToLong(String strIn){
 		if(null == strIn || strIn.length()==0) return -1l;
-		if(strIn.length()>18){
-			strIn = strIn.substring(0, 18);
-		}
+			if(strIn.length()>18){
+				strIn = strIn.substring(0, 18);
+			}
 		return Long.valueOf(strIn);
 	}
 
