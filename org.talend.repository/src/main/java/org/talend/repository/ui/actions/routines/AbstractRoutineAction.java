@@ -95,15 +95,13 @@ public abstract class AbstractRoutineAction extends AContextualAction {
         }
 
         if (!found) {
-            routineSynchronizer.syncRoutine(routineItem, true);
-            // need open from item file with multiple version
             IFile file = null;
-            // is ref project
             ProjectManager projectManager = ProjectManager.getInstance();
             boolean flag = projectManager.isInCurrentMainProject(routineItem);
-            if (!flag) {
+            if (!flag) { // is ref project
                 file = routineSynchronizer.getRoutinesFile(routineItem);
-            } else {
+            } else {// need open from item file with multiple version
+                routineSynchronizer.syncRoutine(routineItem, true);
                 ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                 String lastVersion = factory.getLastVersion(routineItem.getProperty().getId()).getVersion();
                 String curVersion = routineItem.getProperty().getVersion();
