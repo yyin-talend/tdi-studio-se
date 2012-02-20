@@ -262,6 +262,41 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 		    }
 		}
 		
+		public void checkedIADD(double a, byte b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < Double.MIN_VALUE)) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, short b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < Double.MIN_VALUE)) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, int b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < Double.MIN_VALUE)) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
+		public void checkedIADD(double a, float b, boolean checkTypeOverFlow, boolean checkUlp) {
+		
+			if(checkUlp) {
+			    double minAddedValue = Math.ulp(a);
+			    if (minAddedValue > b) {
+			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
+			    }
+			}
+		
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < Double.MIN_VALUE)) {
+		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
+		    }
+		}
+		
 		private String buildOverflowMessage(String a, String b, String advicedTypes, String originalType) {
 		    return "Type overflow when adding " + b + " to " + a
 		    + ", to resolve this problem, increase the precision by using "+ advicedTypes +" type in place of "+ originalType +".";
@@ -449,6 +484,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 			boolean outputIsString = outputJavaType == JavaTypesManager.STRING;
 			boolean outputIsBigDecimal = outputJavaType == JavaTypesManager.BIGDECIMAL;
 			boolean outputIsDate = outputJavaType == JavaTypesManager.DATE;
+			boolean outputIsLong = outputJavaType == JavaTypesManager.LONG;
 			boolean outputIsDecimal = outputJavaType == JavaTypesManager.FLOAT || outputJavaType == JavaTypesManager.DOUBLE || outputIsBigDecimal;
 			
 			boolean inputIsNumber = JavaTypesManager.isNumberType(inputJavaType, false);
@@ -470,6 +506,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 				&& inputIsDecimal
 				&& outputIsDecimal
 				&& useFinancialPrecision
+				
 			;
 			
 			boolean sameInOutType = outputJavaType == inputJavaType;
@@ -487,6 +524,17 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 				|| function.equals(COUNT_DISTINCT) && outputIsNumber
 				|| function.equals(STD_DEV) && inputIsNumber && outputIsNumber
 			;
+			
+			// use double type as the sum for avg when the type of output column is byte, int, long, short, double, float
+			boolean forceUseDoubleAvgSum = false; 
+			if((i + 1 < sizeOps) && SUM.equals(function)) {
+				if(AVG.equals(funinOperations.get(i+1)[FUNCTION] ) ) {
+					forceUseDoubleAvgSum = !outputIsBigDecimal && !outputIsLong; // the type of output column can't be BigDecimal
+					if(!forceUseBigDecimal) {
+						forceUseBigDecimal = outputIsLong;
+					}
+				}
+			}
 			
 			if(!isValidTypeForOperation) {
 				warnings.add("Warning:the operation '" + function + "' for the output column '"+ outputColumn.getLabel() +"' can't be processed because of incompatible input and/or output types");
@@ -510,7 +558,10 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 
 					%>BigDecimal <%=funin[OUTPUT_COLUMN] %>_<%=function %>;
            			<%
-
+           		} else if(forceUseDoubleAvgSum && function.equals(SUM)) { // force use double to sum when the function is avg
+           			%>
+           			<%=JavaTypesManager.getTypeToGenerate("id_Double", outputColumn.isNullable()) %> <%=funin[OUTPUT_COLUMN] %>_<%=function %>;
+					<%
            		}else if(function.equals(COUNT)){
            			%>int <%=funin[OUTPUT_COLUMN] %>_clmCount = 0;
            			<%
