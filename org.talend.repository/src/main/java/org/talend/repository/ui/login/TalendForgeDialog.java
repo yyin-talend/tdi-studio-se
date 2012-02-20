@@ -347,6 +347,7 @@ public class TalendForgeDialog extends TrayDialog {
         data.bottom = new FormAttachment(userNameLabel, 0, SWT.BOTTOM);
         userNameText.setLayoutData(data);
         userNameText.setFont(font);
+        userNameText.forceFocus();
 
         Label needLabelforUserName = new Label(createAccount, SWT.NONE);
         data = new FormData();
@@ -614,7 +615,7 @@ public class TalendForgeDialog extends TrayDialog {
         loginLabel.setText(Messages.getString("TalendForgeDialog.loginLabel"));
         loginLabel.setLayoutData(data);
         loginLabel.setBackground(connectAccount.getBackground());
-        loginLabel.forceFocus();
+        // loginLabel.forceFocus();
 
         linkToCreate = new Hyperlink(connectAccount, SWT.NONE);
         data = new FormData();
