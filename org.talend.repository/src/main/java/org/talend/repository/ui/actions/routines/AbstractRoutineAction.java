@@ -29,6 +29,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
@@ -97,13 +98,20 @@ public abstract class AbstractRoutineAction extends AContextualAction {
             routineSynchronizer.syncRoutine(routineItem, true);
             // need open from item file with multiple version
             IFile file = null;
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            String lastVersion = factory.getLastVersion(routineItem.getProperty().getId()).getVersion();
-            String curVersion = routineItem.getProperty().getVersion();
-            if (curVersion != null && curVersion.equals(lastVersion)) {
-                file = routineSynchronizer.getFile(routineItem);
-            } else {
+            // is ref project
+            ProjectManager projectManager = ProjectManager.getInstance();
+            boolean flag = projectManager.isInCurrentMainProject(routineItem);
+            if (!flag) {
                 file = routineSynchronizer.getRoutinesFile(routineItem);
+            } else {
+                ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                String lastVersion = factory.getLastVersion(routineItem.getProperty().getId()).getVersion();
+                String curVersion = routineItem.getProperty().getVersion();
+                if (curVersion != null && curVersion.equals(lastVersion)) {
+                    file = routineSynchronizer.getFile(routineItem);
+                } else {
+                    file = routineSynchronizer.getRoutinesFile(routineItem);
+                }
             }
             RepositoryEditorInput input = new RoutineEditorInput(file, routineItem);
             input.setReadOnly(readOnly);
