@@ -130,8 +130,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		//modif end
 		
 		int[] fitWidth_<%=cid %> = new int[<%=columns.size()%>];
-		java.util.Arrays.fill(fitWidth_<%=cid %>,2);
-		
+		for(int i_<%=cid%>=0;i_<%=cid%><<%=columns.size()%>;i_<%=cid%>++){
+		    int fitCellViewSize_<%=cid%>=writableSheet_<%=cid %>.getColumnView(i_<%=cid%><%if(firstCellYAbsolute){%>+<%=firstCellXStr%><%}%>).getSize();
+			fitWidth_<%=cid %>[i_<%=cid%>]=fitCellViewSize_<%=cid%>/256;
+			if(fitCellViewSize_<%=cid%>%256!=0){
+				fitWidth_<%=cid %>[i_<%=cid%>]+=1;
+			}
+		}
 <%if(font !=null && font.length()!=0){%>
 		
 		jxl.write.WritableFont wf_<%=cid%> = new jxl.write.WritableFont(jxl.write.WritableFont.<%=font%>, 10, jxl.write.WritableFont.NO_BOLD, false);

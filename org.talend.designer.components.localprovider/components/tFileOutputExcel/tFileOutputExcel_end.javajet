@@ -45,9 +45,9 @@
 	%>
 	//modif start
 		<%if(firstCellYAbsolute){%>
-			writableSheet_<%=cid %>.setColumnView(<%=i%> + <%=firstCellYStr%>, fitWidth_<%=cid %>[<%=i%>]+2);
+			writableSheet_<%=cid %>.setColumnView(<%=i%> + <%=firstCellXStr%>, fitWidth_<%=cid %>[<%=i%>]);
 		<%}else{%>
-			writableSheet_<%=cid %>.setColumnView(<%=i%>, fitWidth_<%=cid %>[<%=i%>]+2);
+			writableSheet_<%=cid %>.setColumnView(<%=i%>, fitWidth_<%=cid %>[<%=i%>]);
 		<%}%>
 	//modif end
 	<%
@@ -58,7 +58,7 @@
 	                		Map<String,String> tmp= autoSizeList.get(i);
 	                		if(("true").equals(tmp.get("IS_AUTO_SIZE"))){ 
 	%>
-		writableSheet_<%=cid %>.setColumnView(<%=i%>, fitWidth_<%=cid %>[<%=i%>]+2);
+		writableSheet_<%=cid %>.setColumnView(<%=i%>, fitWidth_<%=cid %>[<%=i%>]);
 	<%
 	                		}
 	                	}
