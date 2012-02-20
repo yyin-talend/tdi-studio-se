@@ -338,7 +338,7 @@ class GenerateMethodUtil {
 				currentExpression = currentExpression.substring(currentExpression.indexOf("["), currentExpression.length());
 				
 				while(currentExpression.length()>0 && !end) {
-					expression = currentExpression.substring(0, currentExpression.indexOf("]")+1);
+					expression = this.getXPathExpression(currentExpression);
 					currentExpression = currentExpression.substring(expression.length(), currentExpression.length());
 					matcherFromDoc = expressionFromDoc.matcher(expression);
 					if(matcherFromDoc.matches()) {
@@ -373,6 +373,24 @@ class GenerateMethodUtil {
 				strBuilder.append(expression);
 			}
 			%><%=strBuilder.toString()%><%
+		}
+		
+		private String getXPathExpression(String currentExpression) {
+			int count = 0;
+			int i = 0;
+			for(;i<currentExpression.length();i++) {
+				char c = currentExpression.charAt(i);
+				if('[' == c) {
+					count++;
+				}
+				if(']' == c) {
+					if(count==1) {
+						break;
+					}
+					count--;
+				}
+			}
+			return currentExpression.substring(0,i+1);
 		}
 		
 		public List<TreeNode> getGroupByNodeList(TreeNode group) {
