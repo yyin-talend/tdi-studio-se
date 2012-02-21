@@ -578,8 +578,8 @@ public class TOSLoginComposite extends Composite {
 
                         for (int i = 0; i < projects.length; i++) {
                             if (projects[i].getLabel().toUpperCase().equals(newProject.toUpperCase())) {
-                                projectsMap.put(newProject.toUpperCase(), projects[i]);
-                                convertorMapper.put(newProject.toUpperCase(), newProject);
+                                projectsMap.put(projects[i].getTechnicalLabel(), projects[i]);
+                                convertorMapper.put(projects[i].getTechnicalLabel(), newProject);
 
                                 enableOpenAndDelete(true);
                                 try {
@@ -605,6 +605,7 @@ public class TOSLoginComposite extends Composite {
                         }
                     };
                     new ProgressMonitorDialog(getShell()).run(true, false, op);
+                    refresh();
                 } catch (InvocationTargetException e1) {
                     e1.getTargetException();
                 } catch (InterruptedException e1) {
@@ -667,7 +668,20 @@ public class TOSLoginComposite extends Composite {
                 if (!TOSLoginComposite.this.projectListViewer.getSelection().isEmpty()) {
                     String selection = TOSLoginComposite.this.projectListViewer.getList().getSelection()[0];
                     if (selection != null && !selection.equals("")) {
-                        Project project = (Project) projectsMap.get(selection.toUpperCase());
+
+                        // add for bug TDI-19577
+                        StringBuffer temp = new StringBuffer();
+                        // if (selection.contains(" ")) {
+                        for (int i = 0; i < selection.length(); i++) {
+                            if ((selection.charAt(i) + "").equals(" ")) {
+                                temp.append("_");
+                            } else {
+                                temp.append(selection.charAt(i));
+                            }
+                            // }
+                        }
+
+                        Project project = (Project) projectsMap.get(temp.toString().toUpperCase());
                         boolean flag = dialog.logIn(project);
                         if (flag) {
                             dialog.okPressed();
