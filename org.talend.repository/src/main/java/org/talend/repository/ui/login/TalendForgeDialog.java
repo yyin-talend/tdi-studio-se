@@ -1047,8 +1047,10 @@ public class TalendForgeDialog extends TrayDialog {
                         IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
                         String connectionEmail = project.getAuthor().getLogin();
                         prefStore.setValue(connectionEmail, "notused" + ":" + username + ":" + password);
-                        MessageDialog.openInformation(getShell(), Messages.getString("TalendForgeDialog.MessageTitle"),
-                                Messages.getString("TalendForgeDialog.ConnectSuccessMessage"));
+                        // bug TDI-19619,when connect correct,no need openInformation.
+                        // MessageDialog.openInformation(getShell(),
+                        // Messages.getString("TalendForgeDialog.MessageTitle"),
+                        // Messages.getString("TalendForgeDialog.ConnectSuccessMessage"));
                         okPressed();
                     }
                 }
