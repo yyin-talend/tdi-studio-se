@@ -142,6 +142,10 @@ public class TalendForgeDialog extends TrayDialog {
 
     private Font font = new Font(null, LoginComposite.FONT_ARIAL, 9, SWT.NORMAL);
 
+    private Font fontMac = new Font(null, LoginComposite.FONT_ARIAL, 12, SWT.NORMAL);
+
+    private final String osName = System.getProperties().getProperty("os.name");
+
     /**
      * DOC Administrator TalendForgeDialog constructor comment.
      * 
@@ -150,6 +154,9 @@ public class TalendForgeDialog extends TrayDialog {
     public TalendForgeDialog(Shell shell, Project project) {
         super(shell);
         this.project = project;
+        if (osName.contains("Mac")) {
+            font = fontMac;
+        }
     }
 
     protected void initializeBounds() {
