@@ -247,14 +247,62 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 				    String str_<%=cid %> = null;
 				    org.dom4j.Node node_<%=cid%> = null;
 	
-					for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) { // G_TXM_M_001
-				    	nb_line_<%=cid%>++;
+					java.util.Iterator<org.dom4j.tree.AbstractNode> iterator_<%=cid%> = nodeList_<%=cid%>.iterator();
+					boolean forcedLoop_<%=cid%> = !iterator_<%=cid%>.hasNext();
+					while (iterator_<%=cid%>.hasNext() || forcedLoop_<%=cid%>) { // G_TXM_M_001
 				    	<%= rejectedInnerJoin %> = false;
 				    	<%= rejectedDocInnerJoin %> = false;
 						<%=mainRowRejected%>=false;
 					    isMatchDocRow<%=cid%> = false;
 						
 				    	treeNodeAPI_<%=cid %>.clear();
+				    	
+				    	if(forcedLoop_<%=cid%>) {
+				    		forcedLoop_<%=cid%> = false;
+				    		//if no loop nodes,set root as loop.
+						<%
+						XPathHelper xpathHelperForRootLoop = new XPathHelper(tmpNode,true);
+						String rootLoopPath = xpathHelperForRootLoop.getLoopNodeXPath();
+						%>
+							String xPathRootLoop_<%=cid %> = "<%=rootLoopPath %>";
+						<%if(!xpathHelperForRootLoop.hasDefinedNS()){%>
+							org.dom4j.XPath xRootLoop_<%=cid%> = doc_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(xPathRootLoop_<%=cid %>,xPathRootLoop_<%=cid %>));  
+						<%} else {%>
+							org.dom4j.XPath xRootLoop_<%=cid%> = doc_<%=cid%>.createXPath(xPathRootLoop_<%=cid %>);
+						<%}%>
+							xRootLoop_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
+							org.dom4j.tree.AbstractNode rootNode_<%=cid%> = (org.dom4j.tree.AbstractNode)xRootLoop_<%=cid%>.selectSingleNode(doc_<%=cid%>);
+							if(rootNode_<%=cid%>==null) {
+								break;
+							}
+							nb_line_<%=cid%>++;
+						<%
+						Map<String,String> outNodesXPathForRootLoop = xpathHelperForRootLoop.getOutNodesXPath();
+						int idx = 0;
+						for (Object key : outNodesXPathForRootLoop.keySet()) {
+							Object val = outNodesXPathForRootLoop.get(key);
+							if(!xpathHelperForRootLoop.hasDefinedNS()){
+							%>
+							org.dom4j.XPath xTmp<%=idx%>_<%=cid%> = rootNode_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix("<%=val %>",xPathRootLoop_<%=cid %>));
+							<%} else {%>
+							org.dom4j.XPath xTmp<%=idx%>_<%=cid%> = rootNode_<%=cid%>.createXPath("<%=val%>");
+							<%}%>
+							xTmp<%=idx%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
+							Object obj<%=idx%>_<%=cid%> = xTmp<%=idx%>_<%=cid%>.evaluate(rootNode_<%=cid%>);
+						    if(obj<%=idx%>_<%=cid%> instanceof String || obj<%=idx%>_<%=cid%> instanceof Number){
+						    	str_<%=cid %> = String.valueOf(obj<%=idx%>_<%=cid%>);
+						    	treeNodeAPI_<%=cid %>.put("<%=key %>", str_<%=cid %>);
+						    }else{
+						    	node_<%=cid%> = xTmp<%=idx%>_<%=cid%>.selectSingleNode(rootNode_<%=cid%>);
+						    	treeNodeAPI_<%=cid %>.put("<%=key %>", node_<%=cid%>!=null ? xTmp<%=idx%>_<%=cid%>.valueOf(rootNode_<%=cid%>) : null);
+						    }
+						<%
+							idx++;
+						}
+						%>
+				    	} else {
+				    		nb_line_<%=cid%>++;
+				    		org.dom4j.tree.AbstractNode temp_<%=cid%> = iterator_<%=cid%>.next();
 						<%
 						Map<String,String> outNodesXPath = xpathHelper.getOutNodesXPath();
 						int i = 0;
@@ -278,6 +326,9 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 						<%
 							i++;
 						}
+						%>
+						}
+						<%
 				}
 	   		}// if(document)
 		}// for()
