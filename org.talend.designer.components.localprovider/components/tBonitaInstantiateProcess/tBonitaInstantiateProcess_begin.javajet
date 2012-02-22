@@ -16,7 +16,6 @@ imports="
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	
-	String bonitaRuntimePath = ElementParameterParser.getValue(node, "__BONITA_RUNTIME_PATH__");
 	String processID = ElementParameterParser.getValue(node, "__PROCESS_ID__");
 	String userName = ElementParameterParser.getValue(node, "__USERNAME__");
 	String password = ElementParameterParser.getValue(node, "__PASSWORD__");
@@ -28,15 +27,23 @@ imports="
 	
 	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 	
-	boolean useBonitaEnvironmentFile = ("true").equals(ElementParameterParser.getValue(node, "__USE_BONITA_ENVIRONMENT_FILE__"));
 	String bonitaEnvironmentFile = ElementParameterParser.getValue(node, "__BONITA_ENVIRONMENT_FILE__");
-	boolean useJassFile = ("true").equals(ElementParameterParser.getValue(node, "__USE_JASS_STANDARD_FILE__"));
 	String jassFile = ElementParameterParser.getValue(node, "__JASS_STANDARD_FILE__");
-	boolean useLoggingFile = ("true").equals(ElementParameterParser.getValue(node, "__USE_LOGGING_FILE__"));
 	String loggingFile = ElementParameterParser.getValue(node, "__LOGGING_FILE__");
 	String loginModule = ElementParameterParser.getValue(node, "__LOGIN_MODULE__");
+	String dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__");
+	String bonitaHome = ElementParameterParser.getValue(node, "__BONITA_HOME__");
+	
+	if("BONITA_561".equals(dbVersion)){
+%>
+	System.setProperty("BONITA_HOME", <%=bonitaHome%>);
+<%
+	}else if("BONITA_531".equals(dbVersion)||"BONITA_523".equals(dbVersion)){
 %>
 	System.setProperty("org.ow2.bonita.environment", <%=bonitaEnvironmentFile%> );
+<%
+	}
+%>
 	System.setProperty("java.security.auth.login.config", <%=jassFile%> );
 	System.setProperty("java.util.logging.config.file", new java.io.File(<%=loggingFile%>).toURI().toURL().toString());
 	
@@ -50,7 +57,7 @@ imports="
 	
 	try {
 			
-		loginContext_<%=cid%> = new javax.security.auth.login.LoginContext(<%=loginModule%>, new org.ow2.novabpm.util.SimpleCallbackHandler(<%=userName%>, <%=password%>));
+		loginContext_<%=cid%> = new javax.security.auth.login.LoginContext(<%=loginModule%>, new org.ow2.bonita.util.SimpleCallbackHandler(<%=userName%>, <%=password%>));
 		loginContext_<%=cid%>.login();
 <%
 		if("true".equals(use_process_id)) {
