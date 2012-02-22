@@ -176,6 +176,7 @@ public class ComponentsFactory implements IComponentsFactory {
         // if the component is unknown (new component?), we will load also
         // (technical components will always loaded by default as they're not saved in componentSettings)
         // to avoid any problem, we also load by default the category named "Technical".
+
         for (ComponentSetting componentSetting : getComponentsFromProject()) {
             String name = componentSetting.getName();
             if (name != null && name.equals(componentName)) {
@@ -607,14 +608,26 @@ public class ComponentsFactory implements IComponentsFactory {
             }
 
         };
+        // Changed by Marvin Wang on Feb.22 for bug TDI-19166, caz the test ConnectionManagerTest maybe get the null
+        // context.
         BundleContext context = null;
         if (Platform.getProduct() != null) {
-            context = Platform.getProduct().getDefiningBundle().getBundleContext();
-        } else {
+            final Bundle definingBundle = Platform.getProduct().getDefiningBundle();
+            if (definingBundle != null) {
+                context = definingBundle.getBundleContext();
+            }
+        }
+        if (context == null) {
             context = CodeGeneratorActivator.getDefault().getBundle().getBundleContext();
         }
-        // BundleContext context = Platform.getProduct().getDefiningBundle().getBundleContext();
+        // if (Platform.getProduct() != null) {
+        // context = Platform.getProduct().getDefiningBundle().getBundleContext();
+        // } else {
+        // context = CodeGeneratorActivator.getDefault().getBundle().getBundleContext();
+        // }
         // if (context == null) {
+        // context = Platform.getProduct().getDefiningBundle().getBundleContext();
+        // if (context == null)
         // context = CodeGeneratorActivator.getDefault().getBundle().getBundleContext();
         // }
         ServiceReference sref = context.getServiceReference(PackageAdmin.class.getName());
