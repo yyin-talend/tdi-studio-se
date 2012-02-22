@@ -174,7 +174,11 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
         }
         data[115][0] = Messages.getString("ConnectionInfoTab.property15"); //$NON-NLS-1$
         try {
-            data[115][1] = "" + jdbcMetaData.supportsGetGeneratedKeys(); //$NON-NLS-1$
+            if (jdbcMetaData.getURL().startsWith("jdbc:sybase")) {//$NON-NLS-1$ 
+                data[115][1] = "" + 0; //$NON-NLS-1$ 
+            } else {
+                data[115][1] = "" + jdbcMetaData.supportsGetGeneratedKeys(); //$NON-NLS-1$ 
+            }
         } catch (UnimplementedOperationException unimplementedOperationException) {
             // do nothing.
         } catch (Throwable e) {
@@ -182,7 +186,11 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
         }
         data[116][0] = Messages.getString("ConnectionInfoTab.property16"); //$NON-NLS-1$
         try {
-            data[116][1] = "" + jdbcMetaData.getDatabaseMajorVersion(); //$NON-NLS-1$
+            if (jdbcMetaData.getURL().startsWith("jdbc:sybase")) {//$NON-NLS-1$ 
+                data[116][1] = "" + 0; //$NON-NLS-1$ 
+            } else {
+                data[116][1] = "" + jdbcMetaData.getDatabaseMajorVersion(); //$NON-NLS-1$ 
+            }
         } catch (UnsupportedOperationException exception) {
             // do nothing.
         } catch (Throwable e) {
@@ -190,7 +198,11 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
         }
         data[117][0] = Messages.getString("ConnectionInfoTab.property17"); //$NON-NLS-1$
         try {
-            data[117][1] = "" + jdbcMetaData.getDatabaseMinorVersion(); //$NON-NLS-1$
+            if (jdbcMetaData.getURL().startsWith("jdbc:sybase")) {//$NON-NLS-1$ 
+                data[117][1] = "" + 0; //$NON-NLS-1$ 
+            } else {
+                data[117][1] = "" + jdbcMetaData.getDatabaseMinorVersion(); //$NON-NLS-1$ 
+            }
         } catch (UnsupportedOperationException exception) {
             // do nothing.
         } catch (Throwable e) {
@@ -198,7 +210,11 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
         }
         data[118][0] = Messages.getString("ConnectionInfoTab.property18"); //$NON-NLS-1$
         try {
-            data[118][1] = "" + jdbcMetaData.getJDBCMinorVersion(); //$NON-NLS-1$
+            if (jdbcMetaData.getURL().startsWith("jdbc:sybase")) {//$NON-NLS-1$ 
+                data[118][1] = "" + 0; //$NON-NLS-1$ 
+            } else {
+                data[118][1] = "" + jdbcMetaData.getJDBCMinorVersion(); //$NON-NLS-1$ 
+            }
         } catch (UnimplementedOperationException operationException) {
             // do nothing.
         } catch (Throwable e) {
@@ -206,7 +222,11 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
         }
         data[119][0] = Messages.getString("ConnectionInfoTab.property19"); //$NON-NLS-1$
         try {
-            data[119][1] = "" + jdbcMetaData.getJDBCMajorVersion(); //$NON-NLS-1$
+            if (jdbcMetaData.getURL().startsWith("jdbc:sybase")) {//$NON-NLS-1$ 
+                data[119][1] = "" + 0; //$NON-NLS-1$ 
+            } else {
+                data[119][1] = "" + jdbcMetaData.getJDBCMajorVersion(); //$NON-NLS-1$ 
+            }
         } catch (UnimplementedOperationException exception) {
             // do nothing.
         } catch (Throwable e) {
@@ -214,7 +234,11 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
         }
         data[120][0] = Messages.getString("ConnectionInfoTab.property20"); //$NON-NLS-1$
         try {
-            data[120][1] = "" + jdbcMetaData.getSQLStateType(); //$NON-NLS-1$
+            if (jdbcMetaData.getURL().startsWith("jdbc:sybase")) {//$NON-NLS-1$ 
+                data[120][1] = "" + 0; //$NON-NLS-1$ 
+            } else {
+                data[120][1] = "" + jdbcMetaData.getSQLStateType(); //$NON-NLS-1$ 
+            }
         } catch (UnimplementedOperationException unimplementedOperationException) {
             // do nothing.
         } catch (Throwable e) {
@@ -230,7 +254,11 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
         }
         data[122][0] = Messages.getString("ConnectionInfoTab.property22"); //$NON-NLS-1$
         try {
-            data[122][1] = "" + jdbcMetaData.supportsStatementPooling(); //$NON-NLS-1$
+            if (jdbcMetaData.getURL().startsWith("jdbc:sybase")) {//$NON-NLS-1$ 
+                data[122][1] = "" + 0; //$NON-NLS-1$ 
+            } else {
+                data[122][1] = "" + jdbcMetaData.supportsStatementPooling(); //$NON-NLS-1$ 
+            }
         } catch (UnsupportedOperationException exception) {
             // do nothing.
         } catch (Throwable e) {
@@ -565,7 +593,11 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
         }
         data[43][0] = Messages.getString("ConnectionInfoTab.property65"); //$NON-NLS-1$
         try {
-            data[43][1] = "" + jdbcMetaData.supportsMultipleOpenResults(); //$NON-NLS-1$
+            if (jdbcMetaData.getURL().startsWith("jdbc:sybase")) {//$NON-NLS-1$ 
+                data[43][1] = "" + 0; //$NON-NLS-1$ 
+            } else {
+                data[43][1] = "" + jdbcMetaData.supportsMultipleOpenResults(); //$NON-NLS-1$ 
+            }
         } catch (UnimplementedOperationException operationException) {
             // do nothing.
         } catch (Throwable e) {
@@ -907,7 +939,11 @@ public class ConnectionInfoTab extends AbstractDataSetTab {
         }
         data[15][0] = Messages.getString("ConnectionInfoTab.property103"); //$NON-NLS-1$
         try {
-            data[15][1] = "" + jdbcMetaData.getResultSetHoldability(); //$NON-NLS-1$
+            if (jdbcMetaData.getURL().startsWith("jdbc:sybase")) {//$NON-NLS-1$ 
+                data[15][1] = "" + 0; //$NON-NLS-1$ 
+            } else {
+                data[15][1] = "" + jdbcMetaData.getResultSetHoldability(); //$NON-NLS-1$ 
+            }
         } catch (UnsupportedOperationException operationException) {
             // do nothing.
         } catch (SQLException sql) {
