@@ -320,7 +320,7 @@ public class QueryGuessCommand extends Command {
                 && realTableName.length() > 2) {
             realTableName = realTableName.substring(1, realTableName.length() - 1);
         }
-        if (isJdbc) {
+        if (isJdbc && conn != null) {
             schema = getDefaultSchema(realTableName);
         }
         newQuery = TalendTextUtils.addSQLQuotes(QueryUtil.generateNewQuery(node, newOutputMetadataTable, isJdbc, dbType, schema,
