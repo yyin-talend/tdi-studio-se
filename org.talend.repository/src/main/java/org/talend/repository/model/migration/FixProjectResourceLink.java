@@ -24,6 +24,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -40,6 +41,9 @@ public class FixProjectResourceLink extends AbstractItemMigrationTask {
             // this case shouldn't happen normally, but just in case, each item should have one author
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             item.getProperty().setAuthor(factory.getRepositoryContext().getUser());
+        }
+        if (ERepositoryObjectType.getItemType(item).isDQItemType()) {
+            return ExecutionResult.NOTHING_TO_DO;
         }
         if (item.getProperty().getAuthor().getLogin() != null) {
             return ExecutionResult.NOTHING_TO_DO;
