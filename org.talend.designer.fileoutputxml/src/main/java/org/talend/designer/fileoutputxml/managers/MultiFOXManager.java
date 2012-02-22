@@ -298,7 +298,8 @@ public class MultiFOXManager extends FOXManager {
     public List<Map<String, String>> getLoopTable() {
         List<Map<String, String>> result = new ArrayList<Map<String, String>>();
         for (FOXTreeNode rootNode : this.getOriginalNodes()) {
-            Element loopNode = (Element) org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeUtil.getLoopNode(rootNode);
+            Element loopNode = (Element) org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeUtil
+                    .getLoopNode(rootNode);
             if (loopNode != null) {
                 String path = TreeUtil.getPath(loopNode);
                 tableLoader(loopNode, path.substring(0, path.lastIndexOf("/")), result, loopNode.getDefaultValue()); //$NON-NLS-1$
@@ -325,6 +326,7 @@ public class MultiFOXManager extends FOXManager {
         newMap.put(FileOutputXMLComponent.COLUMN, element.getColumnLabel());
         newMap.put(FileOutputXMLComponent.ATTRIBUTE, element.isMain() ? "main" : "branch"); //$NON-NLS-1$ //$NON-NLS-2$
         newMap.put(FileOutputXMLComponent.VALUE, defaultValue); //$NON-NLS-1$
+        newMap.put(FileOutputXMLComponent.ORDER, String.valueOf(getNodeOrder(element)));
 
         table.add(newMap);
         for (FOXTreeNode att : element.getAttributeChildren()) {
