@@ -670,18 +670,11 @@ public class TOSLoginComposite extends Composite {
                     if (selection != null && !selection.equals("")) {
 
                         // add for bug TDI-19577
-                        StringBuffer temp = new StringBuffer();
-                        // if (selection.contains(" ")) {
-                        for (int i = 0; i < selection.length(); i++) {
-                            if ((selection.charAt(i) + "").equals(" ")) {
-                                temp.append("_");
-                            } else {
-                                temp.append(selection.charAt(i));
-                            }
-                            // }
+                        if (selection.contains(" ")) {
+                            selection = selection.replace(' ', '_');
                         }
 
-                        Project project = (Project) projectsMap.get(temp.toString().toUpperCase());
+                        Project project = (Project) projectsMap.get(selection.toUpperCase());
                         boolean flag = dialog.logIn(project);
                         if (flag) {
                             dialog.okPressed();
