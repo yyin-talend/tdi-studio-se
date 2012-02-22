@@ -17,6 +17,7 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.net.URL;
+import java.util.HashMap;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -28,21 +29,28 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.component_cache.ComponentsCache;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.designer.core.model.components.EmfComponent;
-import org.talend.designer.core.model.components.manager.ComponentManager;
+import org.talend.core.model.properties.User;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.utils.ProjectHelper;
+import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.repository.localprovider.model.LocalRepositoryFactory;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC ycbai class global comment. Detailled comment
@@ -57,41 +65,74 @@ public class ConnectionManagerTest {
 
     private static Node newSource;
 
+    private static IComponent componentSource;
+
+    private static IComponent componentTarget;
+
+    private static Process sourceProcess;
+
+    private static Process targetProcess;
+
     private static Node target;
 
     private static Node newTarget;
 
+    private static Property createProperty() {
+        Property property = PropertiesFactory.eINSTANCE.createProperty();
+        property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
+        property.setVersion(VersionUtils.DEFAULT_VERSION);
+        property.setStatusCode(""); //$NON-NLS-1$
+
+        return property;
+    }
+
+    private static String getProjectName(ECodeLanguage language) {
+        return "codegen_" + language.getName() + "_temp_project"; //$NON-NLS-1$ //$NON-NLS-2$
+        // return "TALENDDEMOSJAVA";
+    }
+
+    private static User createUser() {
+        User user = PropertiesFactory.eINSTANCE.createUser();
+        user.setLogin("user@talend.com"); //$NON-NLS-1$
+        return user;
+    }
+
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        ComponentsCache cache = ComponentManager.getInstance();
+        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        repFactory.setRepositoryFactoryFromProvider(LocalRepositoryFactory.getInstance());
 
-        String componentDir = getComponentsLocation(IComponentsFactory.COMPONENTS_INNER_FOLDER).getAbsolutePath();
+        Context ctx = CoreRuntimePlugin.getInstance().getContext();
+        if (ctx != null) {
+            RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
+            ECodeLanguage language = ECodeLanguage.JAVA;
+            if (repositoryContext == null) {
+                repositoryContext = new RepositoryContext();
+                Project projectInfor = ProjectHelper.createProject(getProjectName(language), "Just a test!", //$NON-NLS-1$
+                        language, createUser());
+                Project project;
+                try {
+                    project = repFactory.createProject(projectInfor);
+                    repositoryContext.setFields(new HashMap<String, String>());
+                    repositoryContext.setProject(project);
+                    ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
+                } catch (PersistenceException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
-        String sourceComponentPath = componentDir.concat(File.separator).concat("tFileInputDelimited").concat(File.separator)
-                .concat("tFileInputDelimited_java.xml");
-        File sourceXmlMainFile = new File(sourceComponentPath);
-        String pathName = sourceXmlMainFile.getAbsolutePath();
-        pathName = pathName.replace(componentDir, "");
-        EmfComponent sourceComponent = new EmfComponent(pathName, IComponentsFactory.COMPONENTS_LOCATION, sourceXmlMainFile
-                .getParentFile().getName(), componentDir, cache, false);
+        componentSource = ComponentsFactoryProvider.getInstance().get("tFileInputDelimited");
+        componentTarget = ComponentsFactoryProvider.getInstance().get("tFileOutputDelimited");
 
-        String targetComponentPath = componentDir.concat(File.separator).concat("tFileOutputDelimited").concat(File.separator)
-                .concat("tFileOutputDelimited_java.xml");
-        File targetXmlMainFile = new File(targetComponentPath);
-        pathName = targetXmlMainFile.getAbsolutePath();
-        pathName = pathName.replace(componentDir, "");
-        EmfComponent targetComponent = new EmfComponent(pathName, IComponentsFactory.COMPONENTS_LOCATION, targetXmlMainFile
-                .getParentFile().getName(), componentDir, cache, false);
+        sourceProcess = new Process(createProperty());
+        targetProcess = new Process(createProperty());
 
-        Property property = getMyProperty();
-        org.talend.designer.core.ui.editor.process.Process process = new Process(property);
-        source = new Node(sourceComponent, process);
+        source = new Node(componentSource, sourceProcess);
         source.setLocation(new Point(1, 10));
-        newSource = new Node(sourceComponent, process);
-        newSource.setLocation(new Point(20, 30));
-        target = new Node(targetComponent, process);
+        target = new Node(componentTarget, targetProcess);
         target.setLocation(new Point(100, 2));
-        newTarget = new Node(targetComponent, process);
+        newTarget = new Node(componentTarget, targetProcess);
         newTarget.setLocation(new Point(150, 200));
     }
 

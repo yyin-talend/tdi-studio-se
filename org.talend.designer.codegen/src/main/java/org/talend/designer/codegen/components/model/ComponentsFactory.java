@@ -607,12 +607,25 @@ public class ComponentsFactory implements IComponentsFactory {
             }
 
         };
+
+        // Changed by Marvin Wang on Feb.22 for bug TDI-19166, caz the test ConnectionManagerTest maybe get the null
+        // context.
         BundleContext context = null;
         if (Platform.getProduct() != null) {
-            context = Platform.getProduct().getDefiningBundle().getBundleContext();
-        } else {
+            final Bundle definingBundle = Platform.getProduct().getDefiningBundle();
+            if (definingBundle != null) {
+                context = definingBundle.getBundleContext();
+            }
+        }
+        if (context == null) {
             context = CodeGeneratorActivator.getDefault().getBundle().getBundleContext();
         }
+
+        // if (Platform.getProduct() != null) {
+        // context = Platform.getProduct().getDefiningBundle().getBundleContext();
+        // } else {
+        // context = CodeGeneratorActivator.getDefault().getBundle().getBundleContext();
+        // }
         // BundleContext context = Platform.getProduct().getDefiningBundle().getBundleContext();
         // if (context == null) {
         // context = CodeGeneratorActivator.getDefault().getBundle().getBundleContext();
