@@ -78,8 +78,8 @@ public class NewProjectWizard extends Wizard {
         Context ctx = CorePlugin.getContext();
         RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         try {
-            Project projectInfor = ProjectHelper.createProject(mainPage.getName(), mainPage.getDescription(),
-                    mainPage.getLanguage(), repositoryContext.getUser());
+            Project projectInfor = ProjectHelper.createProject(mainPage.getName().trim().replace(' ', '_'),
+                    mainPage.getDescription(), mainPage.getLanguage(), repositoryContext.getUser());
             project = repositoryFactory.createProject(projectInfor);
             return true;
         } catch (PersistenceException e) {

@@ -98,7 +98,7 @@ public class ImportProjectAsWizard extends Wizard {
         if (getContainer().getCurrentPage().equals(manyProjectsPage)) {
             return manyProjectsPage.createProjects();
         } else {
-            name = mainPage.getName();
+            name = mainPage.getName().trim().replace(' ', '_');
             final String technicalName = mainPage.getTechnicalName();
             final String sourcePath = mainPage.getSourcePath();
             final boolean isArchive = mainPage.isArchive();

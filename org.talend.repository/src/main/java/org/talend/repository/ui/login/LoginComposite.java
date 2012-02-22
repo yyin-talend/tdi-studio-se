@@ -772,7 +772,7 @@ public class LoginComposite extends Composite {
                 WizardDialog newProjectDialog = new WizardDialog(getShell(), newPrjWiz);
                 newProjectDialog.setTitle(Messages.getString("NewImportProjectWizard.windowTitle")); //$NON-NLS-1$
                 if (newProjectDialog.open() == Window.OK) {
-                    final String newName = newPrjWiz.getName();
+                    final String newName = newPrjWiz.getName().trim().replace(' ', '_');
                     final String technicalName = newPrjWiz.getTechnicalName();
                     final String demoProjName = importCombo.getCombo().getItem(importCombo.getCombo().getSelectionIndex());
 
