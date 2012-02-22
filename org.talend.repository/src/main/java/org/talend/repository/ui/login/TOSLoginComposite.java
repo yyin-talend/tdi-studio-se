@@ -524,6 +524,7 @@ public class TOSLoginComposite extends Composite {
         deleteButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
+                refresh();
                 Shell activeShell = Display.getCurrent().getActiveShell();
                 SelectDeleteProjectDialog dialog = new SelectDeleteProjectDialog(activeShell, true);
                 if (dialog.open() == Dialog.OK) {
@@ -578,8 +579,8 @@ public class TOSLoginComposite extends Composite {
 
                         for (int i = 0; i < projects.length; i++) {
                             if (projects[i].getLabel().toUpperCase().equals(newProject.toUpperCase())) {
-                                projectsMap.put(projects[i].getTechnicalLabel(), projects[i]);
-                                convertorMapper.put(projects[i].getTechnicalLabel(), newProject);
+                                projectsMap.put(newProject.toUpperCase(), projects[i]);
+                                convertorMapper.put(newProject.toUpperCase(), newProject);
 
                                 enableOpenAndDelete(true);
                                 try {
@@ -668,12 +669,6 @@ public class TOSLoginComposite extends Composite {
                 if (!TOSLoginComposite.this.projectListViewer.getSelection().isEmpty()) {
                     String selection = TOSLoginComposite.this.projectListViewer.getList().getSelection()[0];
                     if (selection != null && !selection.equals("")) {
-
-                        // add for bug TDI-19577
-                        if (selection.contains(" ")) {
-                            selection = selection.replace(' ', '_');
-                        }
-
                         Project project = (Project) projectsMap.get(selection.toUpperCase());
                         boolean flag = dialog.logIn(project);
                         if (flag) {
