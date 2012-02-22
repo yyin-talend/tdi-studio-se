@@ -33,6 +33,8 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.TreeU
  */
 public class MultiFOXManager extends FOXManager {
 
+    protected Map<String, Map<String, Integer>> orderMap = new HashMap<String, Map<String, Integer>>();
+
     /**
      * wzhang FOXMultiManager constructor comment.
      * 
@@ -353,6 +355,53 @@ public class MultiFOXManager extends FOXManager {
                 tableLoader((Element) child, currentPath, table, child.getDefaultValue());
             }
         }
+    }
+
+    public void initNodeOrder(FOXTreeNode node) {
+        if (node == null) {
+            return;
+        }
+        FOXTreeNode parent = node.getParent();
+        if (parent == null) {
+            node.setOrder(1);
+            String path = TreeUtil.getPath(node);
+            Map<String, Integer> xpathMap = orderMap.get(node.getRow());
+            if (xpathMap == null) {
+                xpathMap = new HashMap<String, Integer>();
+                orderMap.put(node.getRow(), xpathMap);
+            }
+            xpathMap.put(path, order);
+            order++;
+        }
+        List<FOXTreeNode> childNode = node.getChildren();
+        for (FOXTreeNode child : childNode) {
+            child.setOrder(order);
+            String path = TreeUtil.getPath(child);
+
+            Map<String, Integer> xpathMap = orderMap.get(child.getRow());
+            if (xpathMap == null) {
+                xpathMap = new HashMap<String, Integer>();
+                orderMap.put(child.getRow(), xpathMap);
+            }
+            xpathMap.put(path, order);
+            order++;
+            if (child.getChildren().size() > 0) {
+                initNodeOrder(child);
+            }
+        }
+
+    }
+
+    public int getNodeOrder(FOXTreeNode node) {
+        if (node != null) {
+            String path = TreeUtil.getPath(node);
+            Map<String, Integer> xpathMap = orderMap.get(node.getRow());
+            if (xpathMap != null) {
+                return xpathMap.get(path);
+            }
+            return 0;
+        }
+        return 0;
     }
 
 }
