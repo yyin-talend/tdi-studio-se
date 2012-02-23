@@ -914,10 +914,11 @@ public class ElementParameter implements IElementParameter {
         clone.setNotReadOnlyIf(getNotReadOnlyIf());
         clone.setNotShowIf(getNotShowIf());
         clone.setNumRow(getNumRow());
-        final IElementParameter pParameter = getParentParameter();
-        if (pParameter != null) {
-            clone.setParentParameter(pParameter.getClone());
-        }
+       //changed by hqzhang for TDI 19754 start
+//        final IElementParameter pParameter = getParentParameter();
+//        if (pParameter != null) {
+//            clone.setParentParameter(pParameter.getClone());
+//        }
         clone.setReadOnly(isReadOnly());
         clone.setReadOnlyIf(getReadOnlyIf());
         clone.setRepositoryValue(getRepositoryValue());
@@ -928,7 +929,13 @@ public class ElementParameter implements IElementParameter {
         clone.setValue(getValue()); // ?
         // clone.setValueToDefault(null)
         clone.setNoContextAssist(isNoContextAssist());
-
+        if(this.getChildParameters().size()>0){
+            for(String name : this.getChildParameters().keySet()){
+                IElementParameter childParamClone = this.getChildParameters().get(name).getClone();
+                clone.getChildParameters().put(name, childParamClone);
+                childParamClone.setParentParameter(clone);
+            }
+        }//TDI 19754 end
         return clone;
     }
 
