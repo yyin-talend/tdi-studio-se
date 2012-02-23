@@ -238,7 +238,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 		
 			if(checkUlp) {
 			    float minAddedValue = Math.ulp(a);
-			    if (minAddedValue > b) {
+			    if (minAddedValue > Math.abs(b)) {
 			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(b), "'double' or 'BigDecimal'", "'float/Float'"));
 			    }
 			}
@@ -252,7 +252,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 		
 			if(checkUlp) {
 			    double minAddedValue = Math.ulp(a);
-			    if (minAddedValue > b) {
+			    if (minAddedValue > Math.abs(b)) {
 			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
 			    }
 			}
@@ -287,7 +287,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 		
 			if(checkUlp) {
 			    double minAddedValue = Math.ulp(a);
-			    if (minAddedValue > b) {
+			    if (minAddedValue > Math.abs(b)) {
 			        throw new RuntimeException(buildPrecisionMessage(String.valueOf(a), String.valueOf(a), "'BigDecimal'", "'double/Double'"));
 			    }
 			}
