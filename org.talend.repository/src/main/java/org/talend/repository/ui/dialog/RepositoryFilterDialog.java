@@ -46,6 +46,8 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PartInitException;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IESBService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Status;
@@ -55,11 +57,11 @@ import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryCheckBoxView;
@@ -405,6 +407,32 @@ public class RepositoryFilterDialog extends Dialog {
                     checkboxTreeViewer.setChecked(root.getDocNode(), false);
                 } else if (ERepositoryObjectType.REFERENCED_PROJECTS.name().equals(split[1])) {
                     checkboxTreeViewer.setChecked(root.getReferenceProjectNode(), false);
+                } else if (ERepositoryObjectType.METADATA_MDMCONNECTION.name().equals(split[1])) {
+                    checkboxTreeViewer.setChecked(root.getMetadataMDMConnectionNode(), false);
+                } else if (ERepositoryObjectType.METADATA_VALIDATION_RULES.name().equals(split[1])) {
+                    checkboxTreeViewer.setChecked(root.getMetadataValidationRulesNode(), false);
+                } else if (ERepositoryObjectType.METADATA_FILE_FTP.name().equals(split[1])) {
+                    checkboxTreeViewer.setChecked(root.getMetadataFTPConnectionNode(), false);
+                } else if (ERepositoryObjectType.METADATA_EDIFACT.name().equals(split[1])) {
+                    checkboxTreeViewer.setChecked(root.getMetadataEdifactNode(), false);
+                } else if (ERepositoryObjectType.METADATA_FILE_HL7.name().equals(split[1])) {
+                    checkboxTreeViewer.setChecked(root.getMetadataHL7ConnectionNode(), false);
+                } else if (ERepositoryObjectType.CODE.name().equals(split[1])) {
+                    checkboxTreeViewer.setChecked(root.getCodeNode(), false);
+                } else if (ERepositoryObjectType.JOB_SCRIPT.name().equals(split[1])) {
+                    checkboxTreeViewer.setChecked(root.getJobScriptNode(), false);
+                } else {
+                    IESBService service = null;
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                        service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+                    }
+                    if (service != null) {
+                        ERepositoryObjectType serviceType = service.getServicesType();
+                        if (serviceType.name().equals(split[1])) {
+                            RepositoryNode servicesNode = ((ProjectRepositoryNode) root).getRootRepositoryNode(serviceType);
+                            checkboxTreeViewer.setChecked(servicesNode, false);
+                        }
+                    }
                 }
             } else if (split.length == 3) {
                 // child in sql pattern
@@ -597,22 +625,21 @@ public class RepositoryFilterDialog extends Dialog {
         IPreferenceStore preferenceStore = RepositoryManager.getPreferenceStore();
 
         String relust = convertToString(uncheckedNode, RepositoryManager.ITEM_SEPARATOR);
-        preferenceStore.setValue(IRepositoryPrefConstants.FILTER_BY_NODE, relust.length() > 2 ? relust.substring(0, relust
-                .length() - 2) : relust);
+        preferenceStore.setValue(IRepositoryPrefConstants.FILTER_BY_NODE,
+                relust.length() > 2 ? relust.substring(0, relust.length() - 2) : relust);
 
         String status = convertToString(uncheckedStatus, RepositoryManager.ITEM_SEPARATOR);
-        preferenceStore.setValue(IRepositoryPrefConstants.FILTER_BY_STATUS, status.length() > 2 ? status.substring(0, status
-                .length() - 2) : status);
+        preferenceStore.setValue(IRepositoryPrefConstants.FILTER_BY_STATUS,
+                status.length() > 2 ? status.substring(0, status.length() - 2) : status);
 
         String users = convertToString(uncheckedUser, RepositoryManager.ITEM_SEPARATOR);
-        preferenceStore.setValue(IRepositoryPrefConstants.FILTER_BY_USER, users.length() > 2 ? users.substring(0,
-                users.length() - 2) : users);
+        preferenceStore.setValue(IRepositoryPrefConstants.FILTER_BY_USER,
+                users.length() > 2 ? users.substring(0, users.length() - 2) : users);
 
         boolean canUserFilterEnable = this.userFilterPattern.getText() != null && !"".equals(this.userFilterPattern.getText());
         preferenceStore.setValue(IRepositoryPrefConstants.FILTER_BY_NAME, this.userFilterPattern.getText());
-        preferenceStore.setValue(IRepositoryPrefConstants.TAG_USER_DEFINED_PATTERNS_ENABLED, this.enableUserPatternBtn
-                .getSelection()
-                && canUserFilterEnable);
+        preferenceStore.setValue(IRepositoryPrefConstants.TAG_USER_DEFINED_PATTERNS_ENABLED,
+                this.enableUserPatternBtn.getSelection() && canUserFilterEnable);
 
         preferenceStore.setValue(IRepositoryPrefConstants.USER_FILTER_TABLE_ENABLED, !allUsersBtn.getSelection());
         super.okPressed();

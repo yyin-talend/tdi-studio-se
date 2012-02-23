@@ -2343,4 +2343,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         return this.metadataHeaderFooterConnectionNode;
     }
 
+    public IRepositoryNode getJobScriptNode() {
+        // TODO Auto-generated method stub
+        return this.jobscriptsNode;
+    }
+
 }
