@@ -243,7 +243,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 			    }
 			}
 			
-		    if (checkTypeOverFlow && ((double) a + (double) b > (double) Float.MAX_VALUE) || ((double) a + (double) b < (double) Float.MIN_VALUE)) {
+		    if (checkTypeOverFlow && ((double) a + (double) b > (double) Float.MAX_VALUE) || ((double) a + (double) b < (double) -Float.MAX_VALUE)) {
 		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'double' or 'BigDecimal'", "'float/Float'"));
 		    }
 		}
@@ -257,28 +257,28 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 			    }
 			}
 		
-		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < Double.MIN_VALUE)) {
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE)) {
 		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
 		    }
 		}
 		
 		public void checkedIADD(double a, byte b, boolean checkTypeOverFlow, boolean checkUlp) {
 		
-		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < Double.MIN_VALUE)) {
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE)) {
 		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
 		    }
 		}
 		
 		public void checkedIADD(double a, short b, boolean checkTypeOverFlow, boolean checkUlp) {
 		
-		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < Double.MIN_VALUE)) {
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE)) {
 		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
 		    }
 		}
 		
 		public void checkedIADD(double a, int b, boolean checkTypeOverFlow, boolean checkUlp) {
 		
-		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < Double.MIN_VALUE)) {
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE)) {
 		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
 		    }
 		}
@@ -292,7 +292,7 @@ if(sizeOps>0){ // T_OutBegin_AggR_114
 			    }
 			}
 		
-		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < Double.MIN_VALUE)) {
+		    if (checkTypeOverFlow && (a + b > (double) Double.MAX_VALUE) || (a + b < -Double.MAX_VALUE)) {
 		        throw new RuntimeException(buildOverflowMessage(String.valueOf(a), String.valueOf(b), "'BigDecimal'", "'double/Double'"));
 		    }
 		}
