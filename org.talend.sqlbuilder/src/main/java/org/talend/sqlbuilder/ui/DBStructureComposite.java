@@ -13,10 +13,8 @@
 package org.talend.sqlbuilder.ui;
 
 import java.lang.reflect.InvocationTargetException;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -68,8 +66,8 @@ import org.talend.sqlbuilder.actions.OpenNewEditorAction;
 import org.talend.sqlbuilder.actions.OpenQueryAction;
 import org.talend.sqlbuilder.actions.ShowQueryPropertyAction;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
-import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
+import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.UIUtils;
 
@@ -688,35 +686,28 @@ public class DBStructureComposite extends Composite {
     }
 
     /**
-     * 
-     * DOC guanglong.du DBStructureComposite class global comment. Detailled comment
+     * Changed by Marvin Wang on Feb.23, 2012 for bug TDI-19196 to sort by the display source name.
      */
     class DBTreeViewerSorter extends ViewerSorter {
 
-        private final Collator col = Collator.getInstance(Locale.getDefault());
-
-        int updown = 1;
-
         public int compare(Viewer viewer, Object e1, Object e2) {
-            int result = 0;
-            RepositoryNode t1 = (RepositoryNode) e1;
-            RepositoryNode t2 = (RepositoryNode) e2;
-            // compare items should be same type.
-            IRepositoryViewObject o1 = t1.getObject();
-            IRepositoryViewObject o2 = t2.getObject();
-            if (o1.getClass() == o2.getClass()) {
-                String v1 = (o1.getLabel());
-                String v2 = (o2.getLabel());
-                if (o1 instanceof QueryRepositoryObject) {
-                    v1 = ((QueryRepositoryObject) o1).getQuery().getLabel();
-                    v2 = ((QueryRepositoryObject) o2).getQuery().getLabel();
-                }
-                if (v1 != null && v2 != null) {
-                    result = (col.compare(v1, v2)) * updown;
+            int comparedResult = 0;
+            if (e1 instanceof IRepositoryNode && e2 instanceof IRepositoryNode) {
+                IRepositoryNode t1 = (IRepositoryNode) e1;
+                IRepositoryNode t2 = (IRepositoryNode) e2;
+                IRepositoryViewObject repViewObj1 = t1.getObject();
+                IRepositoryViewObject repViewObj2 = t2.getObject();
+                if (repViewObj1 instanceof SqlBuilderRepositoryObject && repViewObj2 instanceof SqlBuilderRepositoryObject) {
+                    SqlBuilderRepositoryObject repositoryObject1 = (SqlBuilderRepositoryObject) repViewObj1;
+                    SqlBuilderRepositoryObject repositoryObject2 = (SqlBuilderRepositoryObject) repViewObj2;
+
+                    String sourceName1 = repositoryObject1.getSourceName();
+                    String sourceName2 = repositoryObject2.getSourceName();
+
+                    comparedResult = sourceName1.compareToIgnoreCase(sourceName2);
                 }
             }
-
-            return result;
+            return comparedResult;
         }
     }
 }
