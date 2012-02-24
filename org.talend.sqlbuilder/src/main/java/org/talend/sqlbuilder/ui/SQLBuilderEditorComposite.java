@@ -188,7 +188,7 @@ public class SQLBuilderEditorComposite extends AbstractSQLEditorComposite {
 
         });
     }
-    
+
     /**
      * 
      * When dispose the control, dispose resource at the same time. (bug 6916)
@@ -517,5 +517,15 @@ public class SQLBuilderEditorComposite extends AbstractSQLEditorComposite {
     protected void adaptWidgetToReadOnly() {
         super.adaptWidgetToReadOnly();
         colorText.setEditable(!isReadOnly());
+    }
+
+    /**
+     * For bug TDI-7643, every composite should has different query object, using <code>queryObject</code> to store the
+     * object.
+     */
+    public Query doSaveSQL(Query query2, boolean as) {
+        queryObject = super.doSaveSQL(query2, as);
+        this.setQueryObject(queryObject);
+        return queryObject;
     }
 }
