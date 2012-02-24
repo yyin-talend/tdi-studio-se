@@ -232,9 +232,7 @@ public class ImportTreeFromRepository extends SelectionAction {
             }
 
             if (tempXpath.equals(absoluteXPathQuery)) {
-                if (!(parent.eContainer() instanceof AbstractInOutTree)) {
-                    createTreeNode.setLoop(true);
-                }
+                createTreeNode.setLoop(true);
             } else if (!isMappedChild(tempXpath, absoluteXPathQuery)) {
                 continue;
             }
