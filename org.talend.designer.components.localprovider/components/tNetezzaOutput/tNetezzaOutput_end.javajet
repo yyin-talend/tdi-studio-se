@@ -283,7 +283,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 
 		<%} else {
 		%>
-			if(nb_line_<%=cid %> > 0) {
+			if(batchSizeCounter_<%=cid%> > 0) {
 		<%
 		  }
 		%>
