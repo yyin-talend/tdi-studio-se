@@ -46,6 +46,8 @@ public interface ISQLBuilderDialog {
 
     public ConnectionParameters getConnParameters();
 
+    public void setConnParameters(ConnectionParameters connectionParameters);
+
     public void refreshNode(RepositoryNode node);
 
     public Shell getShell();

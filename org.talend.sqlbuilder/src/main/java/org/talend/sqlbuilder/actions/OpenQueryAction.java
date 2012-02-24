@@ -16,12 +16,14 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
-import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
+import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 
@@ -56,8 +58,12 @@ public class OpenQueryAction extends OpenNewEditorAction {
         if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.QUERY) {
             List<String> repositoryName = repositoryNodeManager.getALLReposotoryNodeNames();
             ConnectionParameters connectionParameters = new ConnectionParameters();
-            if (node.getObject() instanceof QueryRepositoryObject) {
-                connectionParameters.setQueryObject(((QueryRepositoryObject) node.getObject()).getQuery());
+            IRepositoryViewObject repViewObject = node.getObject();
+            if (repViewObject instanceof QueryRepositoryObject) {
+                QueryRepositoryObject queryRepObj = (QueryRepositoryObject) repViewObject;
+                Query query = queryRepObj.getQuery();
+                connectionParameters.setQueryObject(query);
+                dialog.setConnParameters(connectionParameters);
             }
             connectionParameters.setQuery(dialog.getConnParameters().getQuery());
             connectionParameters.setShowDesignerPage(false);

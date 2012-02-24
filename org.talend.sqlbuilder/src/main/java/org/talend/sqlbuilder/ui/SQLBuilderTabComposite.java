@@ -30,12 +30,12 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.core.sqlbuilder.util.TextUtil;
 import org.talend.repository.model.IRepositoryNode;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
-import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
+import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.editors.SQLBuilderEditorInput;
 import org.talend.sqlbuilder.editors.SQLBuilderEditorSite;
@@ -122,7 +122,9 @@ public class SQLBuilderTabComposite extends Composite {
     }
 
     /**
-     * Creates tab item.
+     * Creates tab item. Changed by Marvin Wang on Feb. 24, 2012 for bug TDI-7643, for all SQLBuilderEditorComposite
+     * when using <code>editorComposite.getConnParam().getQueryObject()</code> to get the query object, the query every
+     * time get is the same object. Caz all <code>SQLBuilderEditorComposite</code>s use the same connection parameter.
      * 
      * @param node
      * @param connParam
@@ -135,7 +137,9 @@ public class SQLBuilderTabComposite extends Composite {
             for (int i = 0; i < tabItems.length; i++) {
                 SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) (((CTabFolder) tabItems[i].getControl())
                         .getItems()[0]).getControl();
-                Query query2 = editorComposite.getConnParam().getQueryObject();
+                // To get the different query object for each SQLBuilderEditorComposite, use the following method. The
+                // queryObject is stored in <code>SQLBuilderEditorComposite.doSaveSQL()</code>
+                Query query2 = editorComposite.getQueryObject();
                 if ((RepositoryNodeType) node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.QUERY) {
                     Query query = ((QueryRepositoryObject) node.getObject()).getQuery();
                     if (query2 == null && tabItems[i].getData() instanceof Query) {
@@ -151,20 +155,20 @@ public class SQLBuilderTabComposite extends Composite {
                     connParam.setQueryObject(query);
                     queryStr = query.getValue();
                 }
-                // else {
-                // String queryString = connParam.getQuery();
-                // String repositoryName = connParam.getRepositoryName();
-                // if (editorComposite.getConnParam().getQuery().equals(queryString)
-                // && editorComposite.getConnParam().getRepositoryName().equals(repositoryName)) {
-                // if ("".equals(editorComposite.getEditorContent())) { //$NON-NLS-1$
-                // editorComposite.setEditorContent(queryString);
-                // }
-                // tabFolder.setSelection(i);
-                // return;
-                // }
-                // }
             }
         }
+
+        // changed by Marvin Wang on Feb. 24 for bug TDI-7643
+        Object connectTypeObj = node.getProperties(EProperties.CONTENT_TYPE);
+        RepositoryNodeType connectType = null;
+        if (connectTypeObj instanceof RepositoryNodeType)
+            connectType = (RepositoryNodeType) connectTypeObj;
+
+        if (RepositoryNodeType.QUERY != connectType) {
+            connParam.setQueryObject(null);
+            dialog.getConnParameters().setQueryObject(null);
+        }
+
         CTabItem tabItem = null;
         if (connParam.isFromDBNode()) {
             tabItem = new CTabItem(tabFolder, SWT.NULL);
