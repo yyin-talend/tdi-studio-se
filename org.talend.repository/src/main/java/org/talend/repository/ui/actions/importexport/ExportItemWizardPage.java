@@ -77,7 +77,6 @@ import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.routines.RoutinesUtil;
-import org.talend.dataprofiler.core.i18n.internal.DefaultMessagesImpl;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
@@ -114,11 +113,11 @@ class ExportItemWizardPage extends WizardPage {
 
     private static final String[] FILE_EXPORT_MASK = { "*.zip;*.tar;*.tar.gz", "*.*" }; //$NON-NLS-1$ //$NON-NLS-2$
 
-    private static final String DESTINATION_FILE = "destinationFile";
+    private static final String DESTINATION_FILE = "destinationFile"; //$NON-NLS-1$
 
-    private static final String DIRECTORY_PATH = "directoryPath";
+    private static final String DIRECTORY_PATH = "directoryPath"; //$NON-NLS-1$
 
-    private static final String ARCHIVE_PATH = "archivePath";
+    private static final String ARCHIVE_PATH = "archivePath"; //$NON-NLS-1$
 
     private String lastPath;
 
@@ -925,11 +924,10 @@ class ExportItemWizardPage extends WizardPage {
         }
         ProjectManager pManager = ProjectManager.getInstance();
         Project project = pManager.getCurrentProject().getEmfProject();
-        String projectPath = lastPath + "\\" + project.getTechnicalLabel();
+        String projectPath = lastPath + "\\" + project.getTechnicalLabel(); //$NON-NLS-1$
         if (new File(projectPath).exists() || new File(archivePathField.getText()).exists()) {
             File oldFile = new File(projectPath).exists() ? new File(projectPath) : new File(archivePathField.getText());
-            if (MessageDialogWithToggle.openConfirm(null, DefaultMessagesImpl.getString("ExportPatternsWizard.waring"), //$NON-NLS-1$
-                    DefaultMessagesImpl.getString("ExportPatternsWizard.fileAlreadyExist"))) { //$NON-NLS-1$
+            if (MessageDialogWithToggle.openConfirm(null, Messages.getString("ExportItemWizardPage.waring"), Messages.getString("ExportItemWizardPage.fileAlreadyExist"))) { //$NON-NLS-1$ //$NON-NLS-2$
                 deleteFile(oldFile);
             } else {
                 return false;
