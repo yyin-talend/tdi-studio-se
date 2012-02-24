@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -70,11 +71,13 @@ import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
+import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.routines.RoutinesUtil;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -110,11 +113,11 @@ class ExportItemWizardPage extends WizardPage {
 
     private static final String[] FILE_EXPORT_MASK = { "*.zip;*.tar;*.tar.gz", "*.*" }; //$NON-NLS-1$ //$NON-NLS-2$
 
-    private static final String DESTINATION_FILE = "destinationFile";
+    private static final String DESTINATION_FILE = "destinationFile"; //$NON-NLS-1$
 
-    private static final String DIRECTORY_PATH = "directoryPath";
+    private static final String DIRECTORY_PATH = "directoryPath"; //$NON-NLS-1$
 
-    private static final String ARCHIVE_PATH = "archivePath";
+    private static final String ARCHIVE_PATH = "archivePath"; //$NON-NLS-1$
 
     private String lastPath;
 
@@ -901,11 +904,36 @@ class ExportItemWizardPage extends WizardPage {
         }
     }
 
+    private void deleteFile(File file) {
+        if (file.exists()) {
+            if (file.isFile()) {
+                file.delete();
+            } else if (file.isDirectory()) {
+                File files[] = file.listFiles();
+                for (int i = 0; i < files.length; i++) {
+                    this.deleteFile(files[i]);
+                }
+            }
+            file.delete();
+        }
+    }
+
     public boolean performFinish() {
         if (!checkExportFile()) {
             return false;
         }
 
+        ProjectManager pManager = ProjectManager.getInstance();
+        Project project = pManager.getCurrentProject().getEmfProject();
+        String projectPath = lastPath + "\\" + project.getTechnicalLabel(); //$NON-NLS-1$
+        if (new File(projectPath).exists() || new File(archivePathField.getText()).exists()) {
+            File oldFile = new File(projectPath).exists() ? new File(projectPath) : new File(archivePathField.getText());
+            if (MessageDialogWithToggle.openConfirm(null, Messages.getString("ExportItemWizardPage.waring"), Messages.getString("ExportItemWizardPage.fileAlreadyExist"))) { //$NON-NLS-1$ //$NON-NLS-2$
+                deleteFile(oldFile);
+            } else {
+                return false;
+            }
+        }
         Collection<Item> selectedItems = getSelectedItems();
         try {
             ExportItemUtil exportItemUtil = new ExportItemUtil();
