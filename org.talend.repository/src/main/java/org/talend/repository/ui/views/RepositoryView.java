@@ -173,7 +173,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private static List<ISelectionChangedListener> listenersNeedTobeAddedIntoTreeviewer = new ArrayList<ISelectionChangedListener>();
 
-    private ProjectRepositoryNode root = new ProjectRepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
+    private ProjectRepositoryNode rootProjectNode;
 
     private IPreferenceStore preferenceStore = RepositoryManager.getPreferenceStore();
 
@@ -200,6 +200,24 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     // private boolean useFilter = false;
 
     public RepositoryView() {
+    }
+
+    protected ProjectRepositoryNode createRootNode() {
+        final ProjectRepositoryNode projectRepNode = new ProjectRepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
+        ProjectManager.getInstance().updateViewProjectNode(projectRepNode);
+        return projectRepNode;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.ui.repository.views.IRepositoryView#getSystemFolders()
+     */
+    public RepositoryNode getRoot() {
+        if (rootProjectNode == null) {
+            rootProjectNode = createRootNode();
+        }
+        return rootProjectNode;
     }
 
     /**
@@ -439,6 +457,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     protected void expandFirstLevel() {
+        final RepositoryNode root = this.getRoot();
         if (root.getChildren().size() == 1) {
             viewer.setExpandedState(root.getChildren().get(0), true);
         }
@@ -1072,12 +1091,13 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                         throw new InvocationTargetException(e);
                     }
                 }
-                root = new ProjectRepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
+                rootProjectNode = createRootNode();
                 viewer.refresh();
 
                 // unsetting the selection will prevent the propertyView from displaying dirty data
                 viewer.setSelection(new TreeSelection());
 
+                final ProjectRepositoryNode root = (ProjectRepositoryNode) getRoot();
                 if (root.getChildren().size() == 1) {
                     viewer.setExpandedState(root.getChildren().get(0), true);
                 }
@@ -1126,12 +1146,13 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     throw new InvocationTargetException(e);
                 }
 
-                root = new ProjectRepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
+                rootProjectNode = createRootNode();
                 viewer.refresh();
 
                 // unsetting the selection will prevent the propertyView from displaying dirty data
                 viewer.setSelection(new TreeSelection());
 
+                final ProjectRepositoryNode root = (ProjectRepositoryNode) getRoot();
                 if (root.getChildren().size() == 1) {
                     viewer.setExpandedState(root.getChildren().get(0), true);
                 }
@@ -1240,6 +1261,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             // user A and B in svn,if user A delete some jobs,B create job,the recyle bin can't refresh,
             // so need refresh recyle bin. if empty recyle bin,must delete job documents,don't need refresh recyle bin.
             // if refresh throw exception.
+            final ProjectRepositoryNode root = (ProjectRepositoryNode) getRoot();
             if (!rootNode.getContentType().equals(ERepositoryObjectType.DOCUMENTATION)) {
                 root.getRecBinNode().setInitialized(false);
                 root.getRecBinNode().getChildren().clear();
@@ -1272,16 +1294,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         viewer.setExpandedState(object, state);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.ui.repository.views.IRepositoryView#getSystemFolders()
-     */
-    public RepositoryNode getRoot() {
-        return root;
-    }
-
     public List<IRepositoryViewObject> getAll(ERepositoryObjectType type) {
+        final ProjectRepositoryNode root = (ProjectRepositoryNode) getRoot();
         // find the system folder
         RepositoryNode container = findContainer(root, type);
 
