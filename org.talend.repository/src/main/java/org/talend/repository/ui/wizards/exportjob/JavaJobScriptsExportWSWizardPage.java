@@ -28,6 +28,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -125,6 +126,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     protected Combo exportTypeCombo;
 
     protected Combo esbTypeCombo;
+
+    protected ScrolledComposite scrolledComposite;
 
     protected Composite pageComposite;
 
@@ -236,15 +239,17 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         if (exportTypeFixed == null || !exportTypeFixed.equals(JobExportType.JBOSSESB)) {
             SashForm sash = createExportTree(parent);
-
-            pageComposite = new Group(sash, 0);
+            // Added a scrolled composite by Marvin Wang on Feb. 27, 2012 for bug TDI-19198.
+            scrolledComposite = new ScrolledComposite(sash, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+            pageComposite = new Group(scrolledComposite, 0);
             pageComposite.setLayout(layout);
             pageComposite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
             pageComposite.setFont(parent.getFont());
             setControl(sash);
             sash.setWeights(new int[] { 0, 1, 23 });
         } else {
-            pageComposite = new Group(parent, 0);
+            scrolledComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+            pageComposite = new Group(scrolledComposite, 0);
             pageComposite.setLayout(layout);
             pageComposite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
             pageComposite.setFont(parent.getFont());
@@ -277,6 +282,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         setPageComplete(determinePageCompletion());
 
         giveFocusToDestination();
+
+        pageComposite.setSize(pageComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        scrolledComposite.setContent(pageComposite);
     }
 
     protected void createExportTypeGroup(Composite parent) {
@@ -864,16 +872,16 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     }
 
     protected void createOptionsGroupButtons(Composite parent) {
-
+        // Commented by Marvin Wang on Feb.27, 2012 for bug TDI-19198, directly create components on Group.
         GridLayout layout = new GridLayout();
-        optionsGroupComposite = new Composite(parent, SWT.NONE);
+        // optionsGroupComposite = new Composite(parent, SWT.NONE);
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
         // fix the setParametersValue button can not see sometimes.
-        gridData.minimumHeight = 200;
-        optionsGroupComposite.setLayoutData(gridData);
-        optionsGroupComposite.setLayout(layout);
+        // gridData.minimumHeight = 200;
+        // optionsGroupComposite.setLayoutData(gridData);
+        // optionsGroupComposite.setLayout(layout);
         // options group
-        Group optionsGroup = new Group(optionsGroupComposite, SWT.NONE);
+        Group optionsGroup = new Group(parent, SWT.NONE);
 
         optionsGroup.setLayout(layout);
 
