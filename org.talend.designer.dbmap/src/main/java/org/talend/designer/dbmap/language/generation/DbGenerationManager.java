@@ -272,6 +272,7 @@ public abstract class DbGenerationManager {
                     ExternalDbMapEntry dbMapEntry = metadataTableEntries.get(i);
                     String expression = dbMapEntry.getExpression();
                     expression = initExpression(component, dbMapEntry);
+                    expression = addQuoteForSpecialChar(expression);
                     // for (IMetadataColumn column : columns) {
                     // if (expression != null && column.getLabel().equals(dbMapEntry.getName())) {
                     //                            expression = expression.replaceFirst("." + dbMapEntry.getName(), //$NON-NLS-1$
@@ -719,6 +720,17 @@ public abstract class DbGenerationManager {
                 sb.append(inputTable.getName());
             }
         }
+    }
+
+    private String addQuoteForSpecialChar(String expression) {
+        String[] split = expression.split("\\.");
+        if (split.length > 1) {
+            String exp = MetadataToolHelper.validateValue(split[1]);
+            if (!exp.equals(split[1])) {
+                split[1] = "\\\"" + split[1].trim() + "\\\"";
+            }
+        }
+        return split[0] + "." + split[1].trim();
     }
 
     private String initExpression(DbMapComponent component, ExternalDbMapEntry dbMapEntry) {
