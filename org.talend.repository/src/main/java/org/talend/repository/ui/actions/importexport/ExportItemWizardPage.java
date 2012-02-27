@@ -62,25 +62,19 @@ import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.ProcessUtils;
-import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
-import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
@@ -640,67 +634,6 @@ class ExportItemWizardPage extends WizardPage {
         });
     }
 
-    private void checkItemDependencies(Item item, List<IRepositoryViewObject> repositoryObjects) {
-        if (item == null) {
-            return;
-        }
-        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-        RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
-        List<RelationshipItemBuilder.Relation> relations;
-        if (item instanceof JobletProcessItem) {
-            relations = builder.getItemsRelatedTo(item.getProperty().getId(), item.getProperty().getVersion(),
-                    RelationshipItemBuilder.JOBLET_RELATION);
-        } else {
-            relations = builder.getItemsRelatedTo(item.getProperty().getId(), item.getProperty().getVersion(),
-                    RelationshipItemBuilder.JOB_RELATION);
-        }
-        try {
-            for (RelationshipItemBuilder.Relation relation : relations) {
-                IRepositoryViewObject obj = null;
-                String id = relation.getId();
-                if (RelationshipItemBuilder.ROUTINE_RELATION.equals(relation.getType())) {
-                    obj = RoutinesUtil.getRoutineFromName(id);
-                } else {
-                    if (id != null && id.indexOf(" - ") != -1) { //$NON-NLS-1$
-                        id = id.substring(0, id.lastIndexOf(" - ")); //$NON-NLS-1$
-                    }
-                    obj = factory.getLastVersion(id);
-                }
-                checkItemDependencies(obj, repositoryObjects);
-
-            }
-
-            // fix for TDI-19548 , and should be removed after implement add connection and context relationship to
-            // RelationshipItemBuilder
-            if (item instanceof ConnectionItem) {
-                ConnectionItem connectionItem = (ConnectionItem) item;
-                if (connectionItem.getConnection().isContextMode()) {
-                    String id = connectionItem.getConnection().getContextId();
-                    if (id != null) {
-                        IRepositoryViewObject object = factory.getLastVersion(id);
-                        checkItemDependencies(object, repositoryObjects);
-                    }
-                }
-            }
-        } catch (PersistenceException et) {
-            ExceptionHandler.process(et);
-        }
-
-    }
-
-    private void checkItemDependencies(IRepositoryViewObject obj, List<IRepositoryViewObject> repositoryObjects) {
-        if (obj != null) {
-            RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(obj, false);
-            if (repositoryNode != null) {
-                if (!repositoryObjects.contains(obj)) {
-                    repositoryObjects.add(obj);
-                    checkAllVerSionLatest(repositoryObjects, obj);
-                    checkItemDependencies(obj.getProperty().getItem(), repositoryObjects);
-                }
-            }
-        }
-    }
-
     /**
      * DOC qwei Comment method "exportDependenciesSelected".
      */
@@ -724,7 +657,7 @@ class ExportItemWizardPage extends WizardPage {
 
                     public void run() {
                         for (Item item : selectedItems) {
-                            checkItemDependencies(item, repositoryObjects);
+                            RepositoryNodeUtilities.checkItemDependencies(item, repositoryObjects);
                         }
 
                     }
@@ -782,28 +715,6 @@ class ExportItemWizardPage extends WizardPage {
             //
         }
 
-    }
-
-    private void checkAllVerSionLatest(List<IRepositoryViewObject> repositoryObjects, IRepositoryViewObject object) {
-        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-        RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
-        if (object.getRepositoryNode() != null) {
-            List<RelationshipItemBuilder.Relation> relations = builder.getItemsJobRelatedTo(object.getId(), object.getVersion(),
-                    RelationshipItemBuilder.JOB_RELATION);
-            for (RelationshipItemBuilder.Relation relation : relations) {
-                try {
-                    IRepositoryViewObject obj = factory.getLastVersion(relation.getId());
-                    if (obj != null) {
-                        if (!repositoryObjects.contains(obj)) {
-                            repositoryObjects.add(obj);
-                            checkAllVerSionLatest(repositoryObjects, obj);
-                        }
-                    }
-                } catch (PersistenceException et) {
-                    ExceptionHandler.process(et);
-                }
-            }
-        }
     }
 
     private void archiveRadioSelected() {
