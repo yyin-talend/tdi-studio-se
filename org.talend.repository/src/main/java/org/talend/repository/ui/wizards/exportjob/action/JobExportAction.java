@@ -73,40 +73,61 @@ public class JobExportAction implements IRunnableWithProgress {
 
     private String bundleVersion;
 
+	private String type = "Job";
+
     public JobExportAction(List<RepositoryNode> nodes, String jobVersion, String bundleVersion, JobScriptsManager manager,
-            String directoryName) {
-        super();
-        this.nodes = nodes;
-        this.jobVersion = jobVersion;
-        this.bundleVersion = bundleVersion;
-        this.manager = manager;
-        this.directoryName = directoryName;
+			String directoryName, String type) {
+		this(nodes, jobVersion, jobVersion, manager, directoryName);
+		this.type = type;
     }
 
-    public JobExportAction(List<RepositoryNode> nodes, String jobVersion, JobScriptsManager manager, String directoryName) {
-        this(nodes, jobVersion, jobVersion, manager, directoryName);
+	public JobExportAction(List<RepositoryNode> nodes, String jobVersion,
+			String bundleVersion, JobScriptsManager manager,
+			String directoryName) {
+		super();
+		this.nodes = nodes;
+		this.jobVersion = jobVersion;
+		this.bundleVersion = bundleVersion;
+		this.manager = manager;
+		this.directoryName = directoryName;
+	}
+
+	public JobExportAction(List<RepositoryNode> nodes, String jobVersion,
+			JobScriptsManager manager, String directoryName, String type) {
+		this(nodes, jobVersion, jobVersion, manager, directoryName, type);
     }
+
+	public JobExportAction(List<RepositoryNode> nodes, String jobVersion,
+			JobScriptsManager manager, String directoryName) {
+		this(nodes, jobVersion, jobVersion, manager, directoryName);
+	}
 
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         final EventLoopProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
 
-        progressMonitor.beginTask(Messages.getString("JobScriptsExportWizardPage.exportJobScript"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+        progressMonitor.beginTask(Messages.getString("JobScriptsExportWizardPage.exportJobScript", type), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
         for (RepositoryNode node : nodes) {
             if (jobVersion != null && jobVersion.equals(JobScriptsExportWizardPage.ALL_VERSIONS)) {
                 String[] allVersions = JobVersionUtils.getAllVersions(node);
                 for (String version : allVersions) {
-                    monitor.subTask(Messages.getString("JobScriptksExportWizardPage.exportJob0", node.getLabel(), version)); //$NON-NLS-1$
+					monitor.subTask(Messages
+							.getString(
+									"JobScriptsExportWizardPage.exportJob0", type, node.getLabel(), version)); //$NON-NLS-1$
                     if (!exportJobScript(nodes, version, bundleVersion, progressMonitor)) {
                         return;
                     }
                 }
             } else {
-                monitor.subTask(Messages.getString("JobScriptsExportWizardPage.exportJob1", node.getLabel(), jobVersion)); //$NON-NLS-1$
+				monitor.subTask(Messages
+						.getString(
+								"JobScriptsExportWizardPage.exportJob1", type, node.getLabel(), jobVersion)); //$NON-NLS-1$
                 if (!exportJobScript(nodes, jobVersion, bundleVersion, progressMonitor)) {
                     return;
                 }
             }
-            monitor.subTask(Messages.getString("JobScriptsExportWizardPage.exportJobSucessful", node.getLabel(), jobVersion)); //$NON-NLS-1$
+			monitor.subTask(Messages
+					.getString(
+							"JobScriptsExportWizardPage.exportJobSucessful", type, node.getLabel(), jobVersion)); //$NON-NLS-1$
         }
         progressMonitor.done();
     }
@@ -225,7 +246,8 @@ public class JobExportAction implements IRunnableWithProgress {
                 }
             }
         }
-        monitor.subTask(Messages.getString("JobScriptsExportWizardPage.exportSuccess")); //$NON-NLS-1$
+		monitor.subTask(Messages.getString(
+				"JobScriptsExportWizardPage.exportSuccess", type)); //$NON-NLS-1$
         reBuildJobZipFile(processes);
         return true;
     }

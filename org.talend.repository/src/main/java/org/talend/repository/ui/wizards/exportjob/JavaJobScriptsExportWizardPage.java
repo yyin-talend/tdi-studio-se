@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -20,14 +19,13 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
-import org.talend.designer.core.model.utils.emf.talendfile.impl.ProcessTypeImpl;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
  * 
- * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 下午03:09:07 bqian
+ * @referto WizardArchiveFileResourceExportPage1 $Id:
+ *          JobScriptsExportWizardPage.java 1 2006-12-13 下午03:09:07 bqian
  * 
  */
 public abstract class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
@@ -141,4 +139,8 @@ public abstract class JavaJobScriptsExportWizardPage extends JobScriptsExportWiz
         }
     }
 
+	@Override
+	protected String getProcessType() {
+		return "Job";
+	}
 }
