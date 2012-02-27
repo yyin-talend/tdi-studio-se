@@ -27,18 +27,14 @@ import java.util.regex.PatternSyntaxException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.data.text.StringHelper;
-import org.talend.core.database.EDatabaseTypeName;
-import org.talend.core.model.metadata.Dbms;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.ContextParameterUtils;
-import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.dbmap.DbMapComponent;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
@@ -727,7 +723,6 @@ public abstract class DbGenerationManager {
 
     private String initExpression(DbMapComponent component, ExternalDbMapEntry dbMapEntry) {
         String expression = dbMapEntry.getExpression();
-        boolean flag = false;
         if (expression != null) {
             List<Map<String, String>> itemNameList = null;
             MapExpressionParser mapParser1 = new MapExpressionParser("\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*");
@@ -753,7 +748,7 @@ public abstract class DbGenerationManager {
                     for (IConnection iconn : inputConnections) {
                         IMetadataTable metadataTable = iconn.getMetadataTable();
                         String tName = iconn.getName();
-                        if (metadataTable != null && metadataTable.getLabel().equals(tName)) {
+                        if (tableValue.equals(tName) && metadataTable != null) {
                             List<IMetadataColumn> lColumn = metadataTable.getListColumns();
                             String tableName = metadataTable.getTableName();
                             String tableColneName = tableName;
@@ -787,26 +782,8 @@ public abstract class DbGenerationManager {
                                 if (columnValue.equals(co.getLabel())) {
                                     String oriName = co.getOriginalDbColumnName();
                                     oriName = oriName.replaceAll("\\$", "\\\\\\$");
-                                    // addQuoteforspecial
-                                    if (!oriName.equals(co.getLabel())) {
-                                        Set<Dbms> types = MetadataTalendType.getDbmsSet();
-                                        Iterator iterator = types.iterator();
-                                        EDatabaseTypeName type = null;
-                                        while (iterator.hasNext()) {
-                                            Dbms dbms = (Dbms) iterator.next();
-                                            if (dbms.getId().equals(metadataTable.getDbms())) {
-                                                type = EDatabaseTypeName.getTypeFromDbType(dbms.getProduct());
-                                                flag = true;
-                                                break;
-                                            }
-                                        }
-                                        oriName = TalendQuoteUtils.getQuoteByDBType(type) + oriName
-                                                + TalendQuoteUtils.getQuoteByDBType(type);
-                                    }
-
                                     expression = expression.replaceFirst("\\." + co.getLabel(), //$NON-NLS-1$
                                             "\\." + oriName); //$NON-NLS-1$
-
                                 }
                             }
 
@@ -815,9 +792,6 @@ public abstract class DbGenerationManager {
                 }
             }
 
-        }
-        if (flag) {
-            expression = TalendQuoteUtils.checkStringQuotationMarks(expression);
         }
         return expression;
     }
