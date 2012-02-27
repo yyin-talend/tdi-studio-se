@@ -51,6 +51,8 @@ public class ImportTreeFromXml extends SelectionAction {
 
     public static final String ID = "org.talend.designer.xmlmap.editor.actions.ImportTreeFromXml";
 
+    boolean isLoopModel = false;
+
     public ImportTreeFromXml(IWorkbenchPart part, Shell shell) {
         super(part);
         this.shell = shell;
@@ -67,7 +69,7 @@ public class ImportTreeFromXml extends SelectionAction {
             boolean clickOk = TreeUtil.getFoxTreeNodesForXmlMap(file, shell, list);
             if (clickOk) {
                 TreeNode treeNodeRoot = XmlMapUtil.getTreeNodeRoot(parentNode);
-
+                isLoopModel = false;
                 XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getCopyOfMapData(), true);
                 parentNode.getChildren().clear();
                 prepareEmfTreeNode(list, parentNode);
@@ -83,6 +85,7 @@ public class ImportTreeFromXml extends SelectionAction {
                     rootNode.setNodeType(NodeType.ELEMENT);
                     rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                     rootNode.setXpath(XmlMapUtil.getXPath(parentNode.getXpath(), "root", NodeType.ELEMENT));
+                    rootNode.setLoop(true);
                     parentNode.getChildren().add(rootNode);
                     showError();
                 }
@@ -112,6 +115,10 @@ public class ImportTreeFromXml extends SelectionAction {
                 createTreeNode = XmlmapFactory.eINSTANCE.createTreeNode();
             } else {
                 createTreeNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+            }
+            if (!isLoopModel) {
+                createTreeNode.setLoop(true);
+                isLoopModel = true;
             }
             createTreeNode.setName(foxNode.getLabel());
             if (foxNode instanceof Element) {
