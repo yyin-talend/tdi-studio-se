@@ -85,6 +85,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.ValidationRulesConnectionItem;
+import org.talend.core.model.repository.DynaEnum;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryContentHandler;
@@ -173,11 +174,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         this.setProperties(EProperties.CONTENT_TYPE, projectNode.getProperties(EProperties.CONTENT_TYPE));
     }
 
+    // base project
     public ProjectRepositoryNode(IRepositoryObject object, RepositoryNode parent, ENodeType type) {
-        super(object, parent, type);
-        // base project
-        this.project = ProjectManager.getInstance().getCurrentProject();
-        setRoot(this);
+        this(ProjectManager.getInstance().getCurrentProject(), object, parent, null, type);
     }
 
     private String getCurrentRepositoryType() {
@@ -2339,13 +2338,52 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
      * @see org.talend.repository.model.nodes.IProjectRepositoryNode#getMetadataHeaderFooterConnectionNode()
      */
     public RepositoryNode getMetadataHeaderFooterConnectionNode() {
-        // TODO Auto-generated method stub
         return this.metadataHeaderFooterConnectionNode;
     }
 
     public IRepositoryNode getJobScriptNode() {
-        // TODO Auto-generated method stub
         return this.jobscriptsNode;
+    }
+
+    @Override
+    public void dispose() {
+        // for all
+        for (DynaEnum<? extends DynaEnum<?>> de : ERepositoryObjectType.values()) {
+            if (de instanceof ERepositoryObjectType) {
+                RepositoryNode rootRepositoryNode = getRootRepositoryNode((ERepositoryObjectType) de);
+                if (rootRepositoryNode != null && !rootRepositoryNode.isDisposed()) {
+                    rootRepositoryNode.dispose();
+                }
+            }
+        }
+        //
+        if (this.repositoryNodeMap != null) {
+            // maybe no need, because have done it front.
+            // for (ERepositoryObjectType type : this.repositoryNodeMap.keySet()) {
+            // RepositoryNode repositoryNode = this.repositoryNodeMap.get(type);
+            // repositoryNode.dispose();
+            // }
+            this.repositoryNodeMap.clear();
+        }
+
+        this.project = null;
+        this.recBinNode = null;
+        // for extension point
+        if (this.repositoryNodeExtensionMap != null) {
+            for (ERepositoryObjectType type : this.repositoryNodeExtensionMap.keySet()) {
+                RepositoryNode repositoryNode = this.repositoryNodeExtensionMap.get(type);
+                if (repositoryNode != null && !repositoryNode.isDisposed()) {
+                    repositoryNode.dispose();
+                }
+            }
+            this.repositoryNodeExtensionMap.clear();
+        }
+
+        if (this.nodeAndProject != null) {
+            clearNodeAndProjectCash();
+        }
+
+        super.dispose();
     }
 
 }

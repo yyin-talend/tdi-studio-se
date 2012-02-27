@@ -75,4 +75,11 @@ public class StableRepositoryNode extends RepositoryNode {
         this.label = label;
     }
 
+    @Override
+    public void dispose() {
+        this.icon = null;
+        this.label = null;
+        super.dispose();
+    }
+
 }
