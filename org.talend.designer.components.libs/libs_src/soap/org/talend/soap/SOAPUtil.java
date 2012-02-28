@@ -1,6 +1,7 @@
 package org.talend.soap;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
@@ -20,7 +21,12 @@ import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.jdom.input.DOMBuilder;
@@ -117,7 +123,9 @@ public class SOAPUtil {
             setReBodyMessage(null);
         } else {
             hasFault = false;
-            if (reBody.getChildNodes().getLength() <= 1) {
+            if (reBody.getChildNodes().getLength() < 1) {
+                setReBodyMessage(null);
+            } else if (reBody.getChildNodes().getLength() == 1 && reBody.getChildNodes().item(0) instanceof javax.xml.soap.Text) {
                 setReBodyMessage(null);
             } else {
                 setReBodyMessage(Doc2StringWithoutDeclare(extractContentAsDocument(reBody)));
@@ -190,4 +198,71 @@ public class SOAPUtil {
         XMLOutputter outputter = new XMLOutputter();
         return outputter.outputString(jdomDoc.getRootElement());
     }
+
+	/**
+	 * invoke soap and return the response document
+	 */
+	public Document extractContentAsDocument(String version, String destination, String soapAction, String soapMessage) throws SOAPException,
+            TransformerException, ParserConfigurationException, FileNotFoundException {
+    	MessageFactory messageFactory = null;
+    	if (version.equals(SOAP12)) {
+    		messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_2_PROTOCOL);
+    	} else {
+    		messageFactory = MessageFactory.newInstance();
+    	}
+    	SOAPMessage message = messageFactory.createMessage();
+    	MimeHeaders mimeHeaders = message.getMimeHeaders();
+    	mimeHeaders.setHeader("SOAPAction", soapAction);
+    	SOAPPart soapPart = message.getSOAPPart();
+    	ByteArrayInputStream stream = new ByteArrayInputStream(soapMessage.getBytes());
+    	StreamSource preppedMsgSrc = new StreamSource(stream);
+    	soapPart.setContent(preppedMsgSrc);
+    	message.saveChanges();
+    	SOAPMessage reply = connection.call(message, destination);
+    	SOAPPart reSoapPart = reply.getSOAPPart();
+    	reSoapPart.getNamespaceURI();
+    	SOAPEnvelope reEnvelope = reSoapPart.getEnvelope();
+         
+        Document document;
+        DocumentBuilderFactory factory = new com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl();
+        factory.setNamespaceAware(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        document = builder.newDocument();
+        Element element;
+        Element envelopeRootElem = document.createElement(reEnvelope.getNodeName());
+		if(reEnvelope.getNamespaceURI()!=null && reEnvelope.getPrefix()!=null){
+			envelopeRootElem.setAttribute("xmlns:"+reEnvelope.getPrefix(),reEnvelope.getNamespaceURI());
+		}
+        Iterator childElements = reEnvelope.getChildElements();
+        org.w3c.dom.Node domNode = null;
+        while (childElements.hasNext()) {
+            domNode = (org.w3c.dom.Node) childElements.next();
+            element = (Element) document.importNode(domNode, true);
+            envelopeRootElem.appendChild(element);
+        }
+        document.appendChild(envelopeRootElem);
+        return document;
+    }
+
+	/**
+	 * XML org.w3c.dom.Document String
+	 */
+	public String Doc2StringWithDeclare(Document doc,String encoding) {
+		String xmlStr = "";
+		try {
+			TransformerFactory tf = TransformerFactory.newInstance();
+			Transformer t = tf.newTransformer();
+			if(encoding!=null&&encoding.length()>0){
+				t.setOutputProperty("encoding", encoding);
+			}
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			t.transform(new DOMSource(doc), new StreamResult(bos));
+			xmlStr = bos.toString();
+		} catch (TransformerConfigurationException e) {
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			e.printStackTrace();
+		}
+		return xmlStr;
+	}
 }
