@@ -880,14 +880,14 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     protected void createOptionsGroupButtons(Composite parent) {
         // Commented by Marvin Wang on Feb.27, 2012 for bug TDI-19198, directly create components on Group.
         GridLayout layout = new GridLayout();
-        // optionsGroupComposite = new Composite(parent, SWT.NONE);
+        optionsGroupComposite = new Composite(parent, SWT.NONE);
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
         // fix the setParametersValue button can not see sometimes.
         // gridData.minimumHeight = 200;
-        // optionsGroupComposite.setLayoutData(gridData);
-        // optionsGroupComposite.setLayout(layout);
+        optionsGroupComposite.setLayoutData(gridData);
+        optionsGroupComposite.setLayout(layout);
         // options group
-        Group optionsGroup = new Group(parent, SWT.NONE);
+        Group optionsGroup = new Group(optionsGroupComposite, SWT.NONE);
 
         optionsGroup.setLayout(layout);
 
