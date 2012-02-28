@@ -128,6 +128,7 @@ public class QueryGuessCommand extends Command {
         String newQuery = "";
         if (dqRuler != null && !"".equals(dqRuler.getValue())) {
             newQuery = generateNewQueryFromDQRuler(dqRuler);
+            newQuery = "\"" + newQuery.replace("\"", "\\\"") + "\"";
             if (newQuery == null || "".equals(newQuery)) {
                 newQuery = generateNewQuery();
             }
@@ -188,7 +189,9 @@ public class QueryGuessCommand extends Command {
                     metadataTable = metadataList.get(0);
                 }
             }
-            rulerService.overrideRuleList(typeParam, dbParam, schemaParam, tableParam, metadataTable, dqRulerParam);
+            rulerService.overrideRuleList(typeParam, dbParam, schemaParam,
+                    tableParam, metadataTable, dqRulerParam, node
+                            .getElementName().contains("Invalid"));
         }
         return (String) dqRulerParam.getValue();
     }
