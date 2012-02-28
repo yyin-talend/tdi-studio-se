@@ -234,6 +234,8 @@ public class Node extends Element implements IGraphicalNode {
 
     private Boolean takeSchema = null;
 
+    private EConnectionType virtualLinkTo;
+
     /**
      * Getter for index.
      * 
@@ -3469,7 +3471,7 @@ public class Node extends Element implements IGraphicalNode {
     public boolean isVirtualGenerateNode() {
         return false;
     }
-
+    
     /**
      * ftang Comment method "checkStartLinks".
      */
@@ -3641,6 +3643,14 @@ public class Node extends Element implements IGraphicalNode {
     public List<ModuleNeeded> getModulesNeeded() {
         // same as the component, but an override is possible in the AbstractNode when generate the code
         return component.getModulesNeeded();
+    }
+
+    public EConnectionType getVirtualLinkTo() {
+        return this.virtualLinkTo;
+    }
+
+    public void setVirtualLinkTo(EConnectionType virtualLinkTo) {
+        this.virtualLinkTo=virtualLinkTo;
     }
 
 }
