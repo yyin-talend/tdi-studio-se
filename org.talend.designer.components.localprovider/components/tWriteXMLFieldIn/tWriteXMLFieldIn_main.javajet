@@ -14,6 +14,7 @@ imports="
 	org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
+	org.talend.core.model.process.EConnectionType
 "
 %>
 
@@ -28,7 +29,7 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-    	List< ? extends IConnection> conns = node.getOutgoingConnections();
+    	List< ? extends IConnection> conns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
 		if(conns!=null && conns.size()>0){
     		IConnection conn = conns.get(0);
 if("id_Document".equals(metadata.getColumn(xmlField).getTalendType())) {

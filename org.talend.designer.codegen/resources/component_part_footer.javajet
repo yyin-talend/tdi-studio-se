@@ -242,7 +242,7 @@ end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 			if((!node.isVirtualGenerateNode())) {
 				generateMethodCall = true;
 			} else {
-				if(node.getOutgoingConnections(EConnectionType.ON_ROWS_END).size()>0 || node.getOutgoingConnections(EConnectionType.FLOW_MAIN).size()>0) {
+				if(node.getVirtualLinkTo()==null ||  node.getVirtualLinkTo()!=EConnectionType.ON_COMPONENT_OK) {
 					generateMethodCall = true;
 				}
 				// Else, that means the component is a ON_COMPONENT_OK virtual component typed.
