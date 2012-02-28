@@ -135,6 +135,8 @@ public class NewProcessWizard extends Wizard {
         try {
 
             property.setId(repositoryFactory.getNextId());
+          //changed by hqzhang for TDI-19527, label=displayName
+            property.setLabel(property.getDisplayName());
 
             ProcessType process = TalendFileFactory.eINSTANCE.createProcessType();
             ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();

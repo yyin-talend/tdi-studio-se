@@ -68,6 +68,8 @@ public class SimpleBusinessCreationWizard extends RepositoryWizard {
         String nextId = repositoryFactory.getNextId();
 
         property.setId(nextId);
+      //changed by hqzhang for TDI-19527, label=displayName
+        property.setLabel(property.getDisplayName());
 
         DiagramResourceManager diagramResourceManager = new DiagramResourceManager(getWorkbench().getActiveWorkbenchWindow()
                 .getActivePage(), new NullProgressMonitor());
