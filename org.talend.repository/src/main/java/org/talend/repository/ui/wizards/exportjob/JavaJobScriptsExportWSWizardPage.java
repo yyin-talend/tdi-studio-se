@@ -690,7 +690,13 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 String fileName = getDefaultFileNameWithType();
                 // destination
                 for (int i = 0; i < directoryNames.length; i++) {
-                    String destination = new Path(directoryNames[i]).append(fileName).toOSString();
+                    String destination;
+                    Path dirPath = new Path(directoryNames[i]);
+                    if (dirPath.segmentCount() == 0) {
+                        destination = dirPath.toOSString() + File.separator + fileName;
+                    } else {
+                        destination = dirPath.append(fileName).toOSString();
+                    }
                     addDestinationItem(destination);
                     setDestinationValue(destination);
                 }
