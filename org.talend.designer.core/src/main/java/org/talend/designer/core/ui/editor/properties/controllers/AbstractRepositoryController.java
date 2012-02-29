@@ -262,13 +262,17 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
             return null;
         }
         if (elem instanceof Node) {
-            String propertyValue = (String) (((Node) elem).getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
-            IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(propertyValue);
-            if (lastVersion != null) {
-                final Item item = lastVersion.getProperty().getItem();
-                if (item != null && item instanceof ConnectionItem) {
-                    Connection repositoryConn = ((ConnectionItem) item).getConnection();
-                    return repositoryConn;
+            IElementParameter elementParameter = ((Node) elem).getElementParameter(EParameterName.PROPERTY_TYPE.getName());
+            if (elementParameter != null && !EmfComponent.BUILTIN.equals(elementParameter.getValue())) {
+                String propertyValue = (String) (((Node) elem)
+                        .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
+                IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(propertyValue);
+                if (lastVersion != null) {
+                    final Item item = lastVersion.getProperty().getItem();
+                    if (item != null && item instanceof ConnectionItem) {
+                        Connection repositoryConn = ((ConnectionItem) item).getConnection();
+                        return repositoryConn;
+                    }
                 }
             }
         }
