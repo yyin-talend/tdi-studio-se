@@ -29,6 +29,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -596,7 +597,13 @@ public class ChangeMetadataCommand extends Command {
                         && parameter.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
                     List<Map<String, Object>> value2 = (List<Map<String, Object>>) parameter.getValue();
                     RepositoryToComponentProperty.getTableXMLMappingValue(getConnection(), value2, newOutputMetadata);
+                    IElementParameter elementParameter = node.getElementParameter(EParameterName.PROPERTY_TYPE.getName());
                     parameter.setRepositoryValueUsed(true);
+                    if (getConnection() instanceof MDMConnection) {
+                        if (elementParameter != null && EmfComponent.BUILTIN.equals(elementParameter.getValue())) {
+                            parameter.setRepositoryValueUsed(false);
+                        }
+                    }
                 }
             }
         }
