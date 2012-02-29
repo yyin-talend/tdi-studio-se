@@ -82,8 +82,8 @@
 			<TABLE IF="PROCESSING_MODE == 'RAW'" READONLY="true">
 				<COLUMN NAME="message" TYPE="id_Object" />
 			</TABLE>
-			<TABLE IF="PROCESSING_MODE == 'CONTENT'" READONLY="true">
-				<COLUMN NAME="messageContent" TYPE="id_String" />
+			<TABLE IF="PROCESSING_MODE == 'CONTENT'" READONLY="false">
+				<COLUMN NAME="messageContent" TYPE="id_String" CUSTOM="true"/>
 			</TABLE>
 		</PARAMETER>
 	</PARAMETERS>

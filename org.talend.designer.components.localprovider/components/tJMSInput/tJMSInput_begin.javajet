@@ -80,9 +80,15 @@ if(advProps.size() > 0){
 		<%=firstConnName%>.message=message_<%=cid %>;	
 <%
 			}else{
+				if("id_Document".equals(metadata.getColumn("messageContent").getTalendType())){
+%>
+		<%=firstConnName%>.messageContent=ParserUtils.parseTo_Document(((javax.jms.ObjectMessage) message_<%=cid %>).getObject().toString());
+<%
+				}else{
 %>
 		<%=firstConnName%>.messageContent=((javax.jms.TextMessage) message_<%=cid %>).getText();
 <%
+				}
 			}
 		}
 	}

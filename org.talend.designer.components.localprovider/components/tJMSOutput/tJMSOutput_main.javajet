@@ -30,9 +30,18 @@ producer_<%=cid %>.send((javax.jms.Message)<%=conn.getName() %>.message);
 nbline_<%=cid %>++;
 <%
 				}else{
+					if("id_Document".equals(metadata.getColumn("messageContent").getTalendType())){
+%>
+javax.jms.ObjectMessage message_<%=cid %> = session_<%=cid %>.createObjectMessage();
+message_<%=cid %>.setObject(<%=conn.getName() %>.messageContent);
+<%
+					}else{
 %>
 javax.jms.TextMessage message_<%=cid %> = session_<%=cid %>.createTextMessage();
 message_<%=cid %>.setText(<%=conn.getName() %>.messageContent);
+<%
+					}
+%>
 producer_<%=cid %>.send(message_<%=cid %>);
 
 nbline_<%=cid %>++;
