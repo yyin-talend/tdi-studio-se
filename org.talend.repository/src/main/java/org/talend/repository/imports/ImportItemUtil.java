@@ -294,7 +294,7 @@ public class ImportItemUtil {
 
                 } else {
                     // same name and same id
-                    itemRecord.setState(State.NAME_EXISTED);
+                    itemRecord.setState(State.NAME_AND_ID_EXISTED);
                     if (overwrite) {
                         result = true;
                     }
@@ -303,7 +303,6 @@ public class ImportItemUtil {
                         // if anything system, don't replace the source item if same name.
                         // if not from system, can overwrite.
                         itemRecord.setExistingItemWithSameId(itemWithSameName);
-                        itemRecord.setState(State.NAME_AND_ID_EXISTED);
                         result = true;
                     }
                 }
@@ -312,7 +311,7 @@ public class ImportItemUtil {
                 }
             }
 
-            if (result && overwrite && itemRecord.getState() == State.NAME_EXISTED) {
+            if (result && overwrite && itemRecord.getState() == State.NAME_AND_ID_EXISTED) {
                 // if item is locked, cannot overwrite
                 if (checkIfLocked(itemRecord)) {
                     itemRecord.addError(Messages.getString("RepositoryUtil.itemLocked")); //$NON-NLS-1$
@@ -616,7 +615,12 @@ public class ImportItemUtil {
                     /* only delete when name exsit rather than id exist */
                     if (itemRecord.getState().equals(ItemRecord.State.NAME_EXISTED)
                             || itemRecord.getState().equals(ItemRecord.State.NAME_AND_ID_EXISTED)) {
-                        repFactory.forceDeleteObjectPhysical(lastVersion, itemRecord.getProperty().getVersion());
+                        // TDI-19535 (check if exists, delete all items with same id)
+                        List<IRepositoryViewObject> allVersionToDelete = repFactory.getAllVersion(ProjectManager.getInstance()
+                                .getCurrentProject(), lastVersion.getId(), false);
+                        for (IRepositoryViewObject currentVersion : allVersionToDelete) {
+                            repFactory.forceDeleteObjectPhysical(lastVersion, currentVersion.getVersion());
+                        }
                     }
                     lastVersion = null;
 
