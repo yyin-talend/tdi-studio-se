@@ -625,6 +625,7 @@ public class MapperManager extends AbstractMapperManager {
         errorMessageCol.setOriginalDbColumnName(ERROR_REJECT_MESSAGE);
         errorMessageCol.setReadOnly(true);
         errorMessageCol.setCustom(true);
+        errorMessageCol.setCustomId(0);
         metadataTable.getListColumns().add(errorMessageCol);
 
         MetadataColumn errorStackTrace = new MetadataColumn();
@@ -635,6 +636,7 @@ public class MapperManager extends AbstractMapperManager {
         errorStackTrace.setOriginalDbColumnName(ERROR_REJECT_STACK_TRACE);
         errorStackTrace.setReadOnly(true);
         errorStackTrace.setCustom(true);
+        errorStackTrace.setCustomId(1);
         metadataTable.getListColumns().add(errorStackTrace);
 
         OutputTable abstractDataMapTable = new OutputTable(this, metadataTable, tableName);

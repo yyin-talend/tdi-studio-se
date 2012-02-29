@@ -36,7 +36,7 @@ public class MapperSettingsManager {
 
     private MapperSettingModel originalModel;
 
-    private MapperSettingModel currnentModel;
+    private MapperSettingModel currentModel;
 
     private MapperManager manager;
 
@@ -87,33 +87,32 @@ public class MapperSettingsManager {
     }
 
     private void initCurrnentModel() {
-        currnentModel = new MapperSettingModel();
+        currentModel = new MapperSettingModel();
         AbstractMapComponent component = manager.getAbstractMapComponent();
         IElementParameter parameter = component.getElementParameter(DIE_ON_ERROR);
         if (parameter != null && parameter.getValue() != null && parameter.getValue() instanceof Boolean) {
-            currnentModel.setDieOnError((Boolean) parameter.getValue());
+            currentModel.setDieOnError((Boolean) parameter.getValue());
         }
         parameter = component.getElementParameter(TEMPORARY_DATA_DIRECTORY);
         if (parameter != null && parameter.getValue() != null) {
-            currnentModel.setTempDataDir(String.valueOf(parameter.getValue()));
+            currentModel.setTempDataDir(String.valueOf(parameter.getValue()));
         }
         parameter = component.getElementParameter(ROWS_BUFFER_SIZE);
         if (parameter != null && parameter.getValue() != null) {
-            currnentModel.setRowBufferSize(String.valueOf(parameter.getValue()));
+            currentModel.setRowBufferSize(String.valueOf(parameter.getValue()));
         }
-        // TODO: temporary set be true, handle after...
         boolean parallel = false;
-        IElementParameter paraEle = manager.getAbstractMapComponent().getElementParameter(LOOKUP_IN_PARALLEL);
+        IElementParameter paraEle = component.getElementParameter(LOOKUP_IN_PARALLEL);
         if (paraEle != null) {
             parallel = (Boolean) paraEle.getValue();
         }
-        currnentModel.setLookInParallel(parallel);
+        currentModel.setLookInParallel(parallel);
     }
 
     private void initOriginalModel() {
         if (originalModel == null) {
             try {
-                originalModel = currnentModel.clone();
+                originalModel = currentModel.clone();
             } catch (CloneNotSupportedException e) {
                 ExceptionHandler.process(e);
             }
@@ -122,35 +121,35 @@ public class MapperSettingsManager {
 
     public boolean isMapperSettingChanged() {
         if (originalModel != null) {
-            return !originalModel.equals(currnentModel);
-        } else if (currnentModel != null) {
-            return !currnentModel.equals(originalModel);
+            return !originalModel.equals(currentModel);
+        } else if (currentModel != null) {
+            return !currentModel.equals(originalModel);
         } else {
             return true;
         }
     }
 
     public int getChangeNumOfSettings() {
-        return currnentModel.hasDifferNumWith(defaultModel);
+        return currentModel.hasDifferNumWith(defaultModel);
     }
 
     public void saveCurrentSettings() {
         AbstractMapComponent component = manager.getAbstractMapComponent();
         IElementParameter parameter = component.getElementParameter(DIE_ON_ERROR);
         if (parameter != null) {
-            parameter.setValue(currnentModel.isDieOnError());
+            parameter.setValue(currentModel.isDieOnError());
         }
         parameter = component.getElementParameter(TEMPORARY_DATA_DIRECTORY);
         if (parameter != null) {
-            parameter.setValue(currnentModel.getTempDataDir());
+            parameter.setValue(currentModel.getTempDataDir());
         }
         parameter = component.getElementParameter(ROWS_BUFFER_SIZE);
         if (parameter != null) {
-            parameter.setValue(currnentModel.getRowBufferSize());
+            parameter.setValue(currentModel.getRowBufferSize());
         }
         parameter = component.getElementParameter(LOOKUP_IN_PARALLEL);
         if (parameter != null) {
-            parameter.setValue(currnentModel.isLookInParallel());
+            parameter.setValue(currentModel.isLookInParallel());
         }
     }
 
@@ -169,7 +168,7 @@ public class MapperSettingsManager {
      * @return the currnentModel
      */
     public MapperSettingModel getCurrnentModel() {
-        return this.currnentModel;
+        return this.currentModel;
     }
 
     /**

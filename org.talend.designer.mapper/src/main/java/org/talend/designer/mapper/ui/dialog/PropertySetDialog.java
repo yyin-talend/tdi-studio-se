@@ -216,15 +216,15 @@ public class PropertySetDialog extends Dialog {
 
     protected void okPressed() {
         // bug TDI-19070
-        if (directoryField.getText() != null && !directoryField.getText().startsWith(QUOTATION_MARK)
-                && !directoryField.getText().endsWith(QUOTATION_MARK)) {
+        if (directoryField.getText() != null && StringUtils.trimToNull(directoryField.getText()) != null
+                && (!directoryField.getText().startsWith(QUOTATION_MARK) || !directoryField.getText().endsWith(QUOTATION_MARK))) {
             directoryField.setText(TalendQuoteUtils.addQuotesIfNotExist(directoryField.getText()));
         }
-        MapperSettingModel currnentModel = settingsManager.getCurrnentModel();
-        currnentModel.setDieOnError(dieOnErrorButton.getSelection());
-        currnentModel.setLookInParallel(lookupInParallelButton.getSelection());
-        currnentModel.setTempDataDir(directoryField.getText());
-        currnentModel.setRowBufferSize(sizeField.getText());
+        MapperSettingModel currentModel = settingsManager.getCurrnentModel();
+        currentModel.setDieOnError(dieOnErrorButton.getSelection());
+        currentModel.setLookInParallel(lookupInParallelButton.getSelection());
+        currentModel.setTempDataDir(directoryField.getText());
+        currentModel.setRowBufferSize(sizeField.getText());
 
         if (dieOnErrorButton.getSelection()) {
             mapperManager.removeRejectOutput();
