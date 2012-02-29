@@ -91,7 +91,8 @@
 	//filter some values for schemas, because it should be base on Connection, because some Connection maybe deactivate.
 	if(conns != null && conns.size() > 0){
 		for(IConnection conn : conns){
-			if(conn.getMetadataTable().getTableName().startsWith("tHash")){
+			String metadataTableName=conn.getMetadataTable().getTableName();
+			if((!conn.getName().equals(metadataTableName)) && metadataTableName.startsWith("tHash")){
 				break;
 			}
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
