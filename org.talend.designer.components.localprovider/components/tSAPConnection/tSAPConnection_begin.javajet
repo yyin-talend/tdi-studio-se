@@ -85,7 +85,7 @@
     com.sap.conn.jco.JCoDestination dest_<%=cid%> = com.sap.conn.jco.JCoDestinationManager.getDestination("SAP_SERVER_<%=cid%>");
     // Begins the stateful call sequence for calls to the specified destination.
     com.sap.conn.jco.JCoContext.begin(dest_<%=cid%>);
-
+	dest_<%=cid%>.ping();
     globalMap.put("conn_<%=cid %>", dest_<%=cid%>);
 <%}%>
 	
