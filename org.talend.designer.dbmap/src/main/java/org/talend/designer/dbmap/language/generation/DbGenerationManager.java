@@ -729,8 +729,10 @@ public abstract class DbGenerationManager {
             if (!exp.equals(split[1].trim())) {
                 split[1] = "\\\"" + split[1].trim() + "\\\"";
             }
+            return split[0] + "." + split[1].trim();
+        } else {
+            return expression;
         }
-        return split[0] + "." + split[1].trim();
     }
 
     private String initExpression(DbMapComponent component, ExternalDbMapEntry dbMapEntry) {
