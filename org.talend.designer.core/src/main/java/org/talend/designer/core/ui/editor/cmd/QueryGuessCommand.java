@@ -429,6 +429,19 @@ public class QueryGuessCommand extends Command {
                 if (eleName.equals(realTableName)) {
                     return cata.getName();
                 }
+                if (ele instanceof Schema) {
+                    for (ModelElement child : ((Schema) ele).getOwnedElement()) {
+                        String childeleName = TalendTextUtils.addQuotesWithSpaceFieldForSQLStringForce(
+                                TalendTextUtils.declareString(child.getName()), dbType, true);
+                        if (childeleName.startsWith(TalendTextUtils.QUOTATION_MARK)
+                                && childeleName.endsWith(TalendTextUtils.QUOTATION_MARK) && childeleName.length() > 2) {
+                            childeleName = childeleName.substring(1, childeleName.length() - 1);
+                        }
+                        if (childeleName.equals(realTableName)) {
+                            return ele.getName();
+                        }
+                    }
+                }
             }
         }
         return schema;
