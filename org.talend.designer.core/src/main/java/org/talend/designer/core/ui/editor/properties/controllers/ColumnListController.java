@@ -61,7 +61,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
-import org.talend.core.utils.KeywordsValidator;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -752,14 +751,14 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             for (IMetadataColumn column : table.getListColumns()) {
                 // add for bug 12034
                 String label = column.getLabel();
-                if (element instanceof INode && ((INode) element).getComponent().getName().endsWith("tFileInputXML")) {//$NON-NLS-1$
-                    if (label.length() > 1) {
-                        String labelSub = label.substring(1);
-                        if (labelSub != null && KeywordsValidator.isKeyword(labelSub)) {
-                            label = labelSub;
-                        }
-                    }
-                }
+                //                if (element instanceof INode && ((INode) element).getComponent().getName().endsWith("tFileInputXML")) {//$NON-NLS-1$
+                // if (label.length() > 1) {
+                // String labelSub = label.substring(1);
+                // if (labelSub != null && KeywordsValidator.isKeyword(labelSub)) {
+                // label = labelSub;
+                // }
+                // }
+                // }
                 columnList.add(label);
             }
         }
