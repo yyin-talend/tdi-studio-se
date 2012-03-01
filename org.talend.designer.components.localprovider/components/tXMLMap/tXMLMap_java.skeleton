@@ -442,61 +442,6 @@ public class CLASS {
 			return uiXPath.substring(uiXPath.indexOf(":")+1);
 		}
 	}
-	
-	/*class FindNodeUtil{
-		
-		TreeNode findLoopPathNode(TreeNode node){
-			if(node == null){
-				return null;
-			}
-			if(node.isLoop()) {
-				return node;
-			}
-			for(TreeNode tmpNode : node.getChildren()) {
-				TreeNode resultNode = findLoopPathNode(tmpNode);
-				if(resultNode!=null){
-					return resultNode;
-				}
-			}
-			
-			return null;
-		}
-		
-		void findXpathArray(TreeNode node, String loopPath, List<String> resultList, java.util.Map<String, String> map) {
-			if(node.getOutgoingConnections().size()>0 || node.getLookupOutgoingConnections().size()>0){
-				String xpath = node.getXpath();
-				String result = null;
-				if(xpath==null || ("").equals(xpath)){
-				} else if(xpath.equals(loopPath)){ // get the value in the loop elment
-					result = ".";
-				} else if(xpath.contains(loopPath)){ // find the loop path
-					result = xpath.substring(loopPath.length() + 1);
-				} else {
-					StringBuilder resultBuff = new StringBuilder();
-					String tmp = loopPath;
-					
-					while(!xpath.contains(tmp)){
-						int index = tmp.lastIndexOf("/");
-						if(index<0){ break; }
-						tmp = tmp.substring(0,index-1);
-						resultBuff.append("../");
-					}
-					if(tmp.lastIndexOf("/") < 0 ){
-						System.out.println("Loop Path is not set or loop Path is invalid");
-					}else{
-						resultBuff.append(xpath.substring(tmp.length() + 1));
-					}
-					result = resultBuff.toString();
-				}
-				resultList.add(result);
-				map.put(result, node.getXpath());
-			} else {
-    			for(TreeNode tmpNode : node.getChildren()) {
-    				findXpathArray(tmpNode, loopPath, resultList, map);
-    			}
-			}
-		}
-	}*/
 
 	class TreeUtil{
 		//get all nodes whose expression is editable;
