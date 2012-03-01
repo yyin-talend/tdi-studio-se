@@ -99,7 +99,7 @@ public class SQLBuilderTabComposite extends Composite {
             clearParent();
 
             // create tab folder for different sessions
-            tabFolder = new CTabFolder(this, SWT.NULL | SWT.BORDER);
+            tabFolder = new CTabFolder(this, SWT.NULL | SWT.BORDER | SWT.CLOSE);
             tabFolder.setSimple(false);
             tabFolder.setToolTipText(Messages.getString("SQLBuilderTabComposite.toolTipText")); //$NON-NLS-1$
             this.layout();
@@ -164,9 +164,21 @@ public class SQLBuilderTabComposite extends Composite {
         if (connectTypeObj instanceof RepositoryNodeType)
             connectType = (RepositoryNodeType) connectTypeObj;
 
-        if (RepositoryNodeType.QUERY != connectType) {
-            connParam.setQueryObject(null);
-            dialog.getConnParameters().setQueryObject(null);
+        // changed for bug TDI-19892
+        boolean flag = true;
+        if (!("").equals(connParam.getQuery()) && 0 == tabFolder.getItems().length && null == connParam.getQueryObject()) {
+            flag = false;
+        }
+
+        if (flag) {
+            if (RepositoryNodeType.QUERY == connectType) {
+                connParam.setQueryObject(((QueryRepositoryObject) node.getObject()).getQuery());
+                dialog.getConnParameters().setQueryObject(((QueryRepositoryObject) node.getObject()).getQuery());
+            } else if (RepositoryNodeType.DATABASE == connectType) {
+                connParam.setQueryObject(null);
+                dialog.getConnParameters().setQueryObject(null);
+            }
+
         }
 
         CTabItem tabItem = null;
