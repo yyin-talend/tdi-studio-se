@@ -333,6 +333,7 @@ public class MapperManager implements ISelectionChangedListener {
                                         createTreeNode.setNodeType(NodeType.ELEMENT);
                                         createTreeNode.setXpath(XmlMapUtil.getXPath(treeNode.getXpath(),
                                                 createTreeNode.getName(), createTreeNode.getNodeType()));
+                                        createTreeNode.setLoop(true);
                                         treeNode.getChildren().add(createTreeNode);
 
                                     }
@@ -496,6 +497,7 @@ public class MapperManager implements ISelectionChangedListener {
                                         createTreeNode.setNodeType(NodeType.ELEMENT);
                                         createTreeNode.setXpath(XmlMapUtil.getXPath(treeNode.getXpath(),
                                                 createTreeNode.getName(), createTreeNode.getNodeType()));
+                                        createTreeNode.setLoop(true);
                                         treeNode.getChildren().add(createTreeNode);
 
                                     }
