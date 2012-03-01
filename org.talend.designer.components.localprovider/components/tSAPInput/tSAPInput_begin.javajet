@@ -94,13 +94,9 @@
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 	            for(Map<String, String> schemaMap : schemas) {
 	            	String schemaName = schemaMap.get("SCHEMA");		
-	            	if(conn.getName().equals(schemaName)){
+	    			if(schemaName.equals(conn.getName())){
 						tempSchemaBufferBaseOnLink.add(schemaMap);
-						break;
 	    			}
-	    		}
-	    		if(tempSchemaBufferBaseOnLink.size()>0){
-	    			break;
 	    		}	
 			}
 		}
