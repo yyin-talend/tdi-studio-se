@@ -18,6 +18,11 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+
+boolean inputIsDocument = "true".equals(ElementParameterParser.getValue(node, "__INPUT_IS_DOCUMENT__"));
+String colDoc = ElementParameterParser.getValue(node, "__DOCUMENT_COL__");
+
+if(!inputIsDocument) {
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
@@ -446,6 +451,22 @@ out_<%=cid%>.newLine();
 }
 <%
 	}
+		}
+	}
+}
+} else {
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+			List< ? extends IConnection> conns = node.getIncomingConnections();
+			if(conns!=null && conns.size()>0){
+				IConnection conn = conns.get(0);
+%>
+					nb_line_<%=cid %>++;
+					writer_<%=cid%>.write(<%=conn.getName()%>.<%=colDoc%>.getDocument());
+<%
+			}
 		}
 	}
 }

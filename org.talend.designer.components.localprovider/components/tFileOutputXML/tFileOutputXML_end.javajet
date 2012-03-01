@@ -19,6 +19,9 @@ String cid = node.getUniqueName();
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");		
 boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));		
 
+boolean inputIsDocument = "true".equals(ElementParameterParser.getValue(node, "__INPUT_IS_DOCUMENT__"));
+
+if(!inputIsDocument) {
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
@@ -99,6 +102,11 @@ if(("true").equals(split)){
 %>globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
 	}
+}
+} else {
+%>
+	writer_<%=cid%>.close();
+<%
 }
 	%>
 	
