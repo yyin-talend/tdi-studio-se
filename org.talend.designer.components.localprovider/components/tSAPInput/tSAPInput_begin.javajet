@@ -91,17 +91,13 @@
 	//filter some values for schemas, because it should be base on Connection, because some Connection maybe deactivate.
 	if(conns != null && conns.size() > 0){
 		for(IConnection conn : conns){
-			String metadataTableName=conn.getMetadataTable().getTableName();
-			if((!conn.getName().equals(metadataTableName)) && metadataTableName.startsWith("tHash")){
-				break;
-			}
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 	            for(Map<String, String> schemaMap : schemas) {
 	            	String schemaName = schemaMap.get("SCHEMA");		
-	    			if(conn.getName().equals(schemaName)){
+	    			if(schemaName.equals(conn.getName())){
 						tempSchemaBufferBaseOnLink.add(schemaMap);
 	    			}
-	    		}
+	    		}	
 			}
 		}
 	}
