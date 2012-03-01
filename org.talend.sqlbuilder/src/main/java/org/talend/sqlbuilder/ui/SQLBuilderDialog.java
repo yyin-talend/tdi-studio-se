@@ -663,6 +663,12 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         if (SQLBuilderRepositoryNodeManager.tList == null || SQLBuilderRepositoryNodeManager.tList.size() == 0) {
             return;
         }
+
+        // changed for bug TDI-17097
+        if (node == null) {
+            return;
+        }
+
         IRepositoryViewObject repositoryObject = node.getObject();
         Item item = repositoryObject.getProperty().getItem();
         if (item instanceof DatabaseConnectionItem) {
