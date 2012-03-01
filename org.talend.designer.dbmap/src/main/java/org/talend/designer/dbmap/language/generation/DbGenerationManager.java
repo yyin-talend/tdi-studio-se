@@ -723,13 +723,15 @@ public abstract class DbGenerationManager {
     }
 
     private String addQuoteForSpecialChar(String expression) {
-        String[] split = expression.split("\\.");
-        if (split.length == 2) {
-            String exp = MetadataToolHelper.validateValue(split[1].trim());
-            if (!exp.equals(split[1].trim())) {
-                split[1] = "\\\"" + split[1].trim() + "\\\"";
+        int lastIndex = expression.lastIndexOf(".");
+        if (lastIndex > 0) {
+            String first = expression.substring(0, lastIndex).trim();
+            String second = expression.substring(lastIndex + 1, expression.length()).trim();
+            String exp = MetadataToolHelper.validateValue(second);
+            if (!exp.equals(second)) {
+                second = "\\\"" + second + "\\\"";
             }
-            return split[0] + "." + split[1].trim();
+            return first.trim() + "." + second.trim();
         } else {
             return expression;
         }
