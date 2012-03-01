@@ -724,7 +724,7 @@ public abstract class DbGenerationManager {
 
     private String addQuoteForSpecialChar(String expression) {
         String[] split = expression.split("\\.");
-        if (split.length > 1) {
+        if (split.length == 2) {
             String exp = MetadataToolHelper.validateValue(split[1].trim());
             if (!exp.equals(split[1].trim())) {
                 split[1] = "\\\"" + split[1].trim() + "\\\"";
