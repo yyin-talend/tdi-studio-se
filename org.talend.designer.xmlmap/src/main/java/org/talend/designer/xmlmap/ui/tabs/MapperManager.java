@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -25,7 +24,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
-import org.talend.commons.ui.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
@@ -426,16 +424,12 @@ public class MapperManager implements ISelectionChangedListener {
     }
 
     private void processColumnNameChanged(final TreeNode treeNode) {
-        if (!treeNode.getOutgoingConnections().isEmpty() || !treeNode.getLookupOutgoingConnections().isEmpty()) {
-            new AsynchronousThreading(20, false, mapperUI.getTabFolderEditors().getDisplay(), new Runnable() {
-
-                public void run() {
-                    boolean propagate = MessageDialog.openQuestion(mapperUI.getTabFolderEditors().getShell(), "Propagate",
-                            "Propagate changes to all related expressions in order to keep the links valid ?");
-                    XmlMapUtil.updateXPathAndExpression(copyOfMapData, treeNode, treeNode.getName(),
-                            XmlMapUtil.getXPathLength(treeNode.getXpath()), propagate);
-                }
-            }).start();
+        XmlMapUtil.updateXPathAndExpression(copyOfMapData, treeNode, treeNode.getName(),
+                XmlMapUtil.getXPathLength(treeNode.getXpath()), true);
+        if (treeNode instanceof OutputTreeNode) {
+            getMapperUI().getTabFolderEditors().getOutputTreeSchemaEditor().refresh();
+        } else {
+            getMapperUI().getTabFolderEditors().getInputTreeSchemaEditor().refresh();
         }
     }
 
@@ -475,8 +469,7 @@ public class MapperManager implements ISelectionChangedListener {
                                 TreeNode treeNode = selectedOutputTree.getNodes().get(event.index);
                                 if (treeNode != null) {
                                     treeNode.setName((String) event.newValue);
-                                    XmlMapUtil.updateXPathAndExpression(copyOfMapData, treeNode, treeNode.getName(),
-                                            XmlMapUtil.getXPathLength(treeNode.getXpath()), true);
+                                    processColumnNameChanged(treeNode);
                                 }
                             }
                         } else if (AbstractMetadataTableEditorView.ID_COLUMN_TYPE.equals(event.column.getId())) {
