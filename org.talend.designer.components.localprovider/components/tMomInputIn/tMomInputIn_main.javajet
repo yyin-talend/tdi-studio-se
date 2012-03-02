@@ -69,8 +69,16 @@ imports="
 		 		if ("Text".equals(msgBobyType) || "Bytes".equals(msgBobyType)) {
 				%>
 					<%=firstConnName%>.from=<%=from%>;	
+				<%
+					if("id_Document".equals(metadata.getColumn("message").getTalendType())){
+				%>
+					<%=firstConnName%>.message=ParserUtils.parseTo_Document(msg_<%=cid%>);
+				<%
+					} else {
+				%>
 					<%=firstConnName%>.message=msg_<%=cid%>;	
 				<%
+					}
 				} else {
 					for(IMetadataColumn column : columns) {
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
@@ -86,10 +94,17 @@ imports="
 			            }else {
 			                typeToGenerate = typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 				        }
+				    	if(!"Document".equals(typeToGenerate)){
 						%>
 						<%=firstConnName%>.<%=column.getLabel() %> = msg_<%=cid %>.get<%=typeToGenerate%>("<%=column.getLabel()%>");
 
 					<%
+						}else{
+					%>
+						<%=firstConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_<%=typeToGenerate%>(msg_<%=cid %>.getObject("<%=column.getLabel()%>").toString());
+
+					<%
+						}
 					}
 				}
 				/*---------------------------------------------get message headers------------------------------------------------------*/
@@ -132,8 +147,16 @@ imports="
 		 		if ("Text".equals(msgBobyType) || "Bytes".equals(msgBobyType)) {
 				%>
 					<%=firstConnName%>.from=<%=queue%>;	
+				<%
+					if("id_Document".equals(metadata.getColumn("message").getTalendType())){
+				%>
+					<%=firstConnName%>.message=ParserUtils.parseTo_Document(msg_<%=cid%>);
+				<%
+					} else {
+				%>
 					<%=firstConnName%>.message=msg_<%=cid%>;	
 				<%
+					}
 				} else {
 					for(IMetadataColumn column : columns) {
 						String columType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());

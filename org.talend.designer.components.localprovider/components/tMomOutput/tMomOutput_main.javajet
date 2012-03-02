@@ -115,10 +115,17 @@ class="MomInput"
 					            }else {
 					                typeToGenerate = typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 					            }
+					            if(!"Document".equals(typeToGenerate)){
 %>
 							message_<%=cid%>.set<%=typeToGenerate%>("<%=column.getLabel()%>",<%=conn.getName() %>.<%=column.getLabel() %>);	
 							
 <%
+								}else{
+%>
+							message_<%=cid%>.setString("<%=column.getLabel()%>",String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>));	
+							
+<%
+								}
 						}
 					} 
 					/*---------------------------------------------3.set message headers------------------------------------------------------*/

@@ -76,21 +76,21 @@
 	      >
 			<TABLE IF="((SERVER == 'JBOSS') or (SERVER == 'ACTIVEMQ')) AND (IS_USE_MESSAGE_ID == 'false')" READONLY="false">
       			<COLUMN NAME="from" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
-      			<COLUMN NAME="message" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
+      			<COLUMN NAME="message" TYPE="id_String" LENGTH="255" CUSTOM="true"/>
    	 		</TABLE>
 		    <TABLE IF="((SERVER == 'JBOSS') or (SERVER == 'ACTIVEMQ')) AND (IS_USE_MESSAGE_ID == 'true')" READONLY="false">
 		        <COLUMN NAME="from" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
 			    <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
-			    <COLUMN NAME="message" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
+			    <COLUMN NAME="message" TYPE="id_String" LENGTH="255" CUSTOM="true"/>
 		    </TABLE>
 	    	<TABLE IF="(SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'true')" READONLY="false">
 		        <COLUMN NAME="from" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
 		        <COLUMN NAME="messageid" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
-		        <COLUMN NAME="message" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
+		        <COLUMN NAME="message" TYPE="id_String" LENGTH="255" CUSTOM="true"/>
 	    	</TABLE>
 			<TABLE IF="(SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'false')" READONLY="false">
       			<COLUMN NAME="from" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
-      			<COLUMN NAME="message" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
+      			<COLUMN NAME="message" TYPE="id_String" LENGTH="255" CUSTOM="true"/>
     		</TABLE>
 			<TABLE IF="(MESSAGE_BODY_TYPE == 'MAP')" READONLY="false">
     		</TABLE>
@@ -405,7 +405,6 @@
 	        <IMPORT NAME="JAVA_SSIST" MODULE="javassist.jar" REQUIRED="true" /> 
 	        <IMPORT NAME="TROVE" MODULE="trove.jar" REQUIRED="true" />   
 	        <IMPORT NAME="LOG4J" MODULE="log4j-1.2.13.jar" REQUIRED="false" />
-	        <IMPORT NAME="TALENDMQRFH2" MODULE="talendMQRFH2.jar" REQUIRED="false" />
 	    </IMPORTS>
 	</CODEGENERATION>
 
