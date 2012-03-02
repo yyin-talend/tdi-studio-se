@@ -16,7 +16,6 @@
 	org.talend.core.model.process.INode
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	org.talend.core.model.utils.TalendTextUtils
-	org.talend.core.model.process.EConnectionType
 	"
 %>
 	<%
@@ -55,7 +54,7 @@
 	List<IMetadataColumn> firstColumnList = null;
 
 	//1. get first DATA Link
-	List< ? extends IConnection> conns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);	
+	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();	
 	if(conns != null && conns.size() > 0){
 		for(IConnection conn : conns){
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -92,7 +91,7 @@
 	//filter some values for schemas, because it should be base on Connection, because some Connection maybe deactivate.
 	if(conns != null && conns.size() > 0){
 		for(IConnection conn : conns){
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
 	            for(Map<String, String> schemaMap : schemas) {
 	            	String schemaName = schemaMap.get("SCHEMA");
 	    			if(schemaName.equals(conn.getName())){
