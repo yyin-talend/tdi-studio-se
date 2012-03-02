@@ -412,7 +412,13 @@ public class QueryGuessCommand extends Command {
         Set<Catalog> catalog = ConnectionHelper.getAllCatalogs(this.conn);
         for (Schema deScha : schemas) {
             for (ModelElement ele : deScha.getOwnedElement()) {
-                if (ele.getName().equals(realTableName)) {
+                String childeleName = TalendTextUtils.addQuotesWithSpaceFieldForSQLStringForce(
+                        TalendTextUtils.declareString(ele.getName()), dbType, true);
+                if (childeleName.startsWith(TalendTextUtils.QUOTATION_MARK)
+                        && childeleName.endsWith(TalendTextUtils.QUOTATION_MARK) && childeleName.length() > 2) {
+                    childeleName = childeleName.substring(1, childeleName.length() - 1);
+                }
+                if (childeleName.equals(realTableName)) {
                     return deScha.getName();
                 }
             }
@@ -420,15 +426,6 @@ public class QueryGuessCommand extends Command {
 
         for (Catalog cata : catalog) {
             for (ModelElement ele : cata.getOwnedElement()) {
-                String eleName = TalendTextUtils.addQuotesWithSpaceFieldForSQLStringForce(
-                        TalendTextUtils.declareString(ele.getName()), dbType, true);
-                if (eleName.startsWith(TalendTextUtils.QUOTATION_MARK) && eleName.endsWith(TalendTextUtils.QUOTATION_MARK)
-                        && eleName.length() > 2) {
-                    eleName = eleName.substring(1, eleName.length() - 1);
-                }
-                if (eleName.equals(realTableName)) {
-                    return cata.getName();
-                }
                 if (ele instanceof Schema) {
                     for (ModelElement child : ((Schema) ele).getOwnedElement()) {
                         String childeleName = TalendTextUtils.addQuotesWithSpaceFieldForSQLStringForce(
@@ -440,6 +437,16 @@ public class QueryGuessCommand extends Command {
                         if (childeleName.equals(realTableName)) {
                             return ele.getName();
                         }
+                    }
+                } else {
+                    String eleName = TalendTextUtils.addQuotesWithSpaceFieldForSQLStringForce(
+                            TalendTextUtils.declareString(ele.getName()), dbType, true);
+                    if (eleName.startsWith(TalendTextUtils.QUOTATION_MARK) && eleName.endsWith(TalendTextUtils.QUOTATION_MARK)
+                            && eleName.length() > 2) {
+                        eleName = eleName.substring(1, eleName.length() - 1);
+                    }
+                    if (eleName.equals(realTableName)) {
+                        return cata.getName();
                     }
                 }
             }
