@@ -62,6 +62,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.repository.RepositoryComponentManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -70,7 +71,6 @@ import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.process.EDatabaseComponentName;
 import org.talend.designer.core.ui.projectsetting.ImplicitContextLoadElement;
 import org.talend.designer.core.ui.projectsetting.StatsAndLogsElement;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
@@ -123,24 +123,24 @@ public class PropertyTypeController extends AbstractRepositoryController {
     private boolean canSaveProperty(IElementParameter param) {
         INode node = (INode) param.getElement();
         //
-        boolean canSaved = false;
         String componentName = node.getComponent().getName();
-        for (EDatabaseComponentName eComponent : EDatabaseComponentName.values()) {
-            if (componentName.equals(eComponent.getInputComponentName())
-                    || componentName.equals(eComponent.getOutPutComponentName())) {
-                canSaved = true;
-                break;
-            }
-            // Teradata
-            /**
-             * @author wzhang. For the property in EdatabaseComponentName class is "tELTTeradataInput" and
-             * "tELTTeradataOutput". So define the String variable custom.
-             */
-            if (componentName.equals("tTeradataInput") || componentName.equals("tTeradataOutput")) { //$NON-NLS-1$ //$NON-NLS-2$
-                canSaved = true;
-            }
-        }
-        return canSaved;
+        return RepositoryComponentManager.validComponent(componentName);
+        // for (EDatabaseComponentName eComponent : EDatabaseComponentName.values()) {
+        // if (componentName.equals(eComponent.getInputComponentName())
+        // || componentName.equals(eComponent.getOutPutComponentName())) {
+        // canSaved = true;
+        // break;
+        // }
+        // // Teradata
+        // /**
+        // * @author wzhang. For the property in EdatabaseComponentName class is "tELTTeradataInput" and
+        // * "tELTTeradataOutput". So define the String variable custom.
+        // */
+        //            if (componentName.equals("tTeradataInput") || componentName.equals("tTeradataOutput")) { //$NON-NLS-1$ //$NON-NLS-2$
+        // canSaved = true;
+        // }
+        // }
+        // return canSaved;
     }
 
     /**
