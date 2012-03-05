@@ -532,6 +532,7 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
 			useUpdateWhere =false;
 		if (useMergeUpdate) {
 		boolean isfirstUpdateSet = true; 
+		String keyColumnName=null;
 			for(Map<String, String> keyColumn:updateColumns){
 				if (keyColumn.get("UPDATE").equals("true")) {
 					if (isfirstUpdateSet) {
@@ -539,7 +540,11 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
 					}else {
 						mergeUpdate.append(",");
 					}
-					mergeUpdate.append("target."  + keyColumn.get("SCHEMA_COLUMN") + "=source." + keyColumn.get("SCHEMA_COLUMN"));
+					keyColumnName=keyColumn.get("SCHEMA_COLUMN");
+					if(!(keyColumnName!=null && keyColumnName.equals(MetadataToolHelper.validateValue(keyColumnName)))){
+						keyColumnName="\\\""+keyColumnName+"\\\"";
+					}
+						mergeUpdate.append("target."  + keyColumnName + "=source." + keyColumnName);
 				}				
 			}
 		%>
@@ -574,6 +579,7 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
 			useInsertWhere = false;
 		if (useMergeInsert) {
 		    boolean isfirstInsertWhere = true;
+		    String keyColumnName=null;
 			for(Map<String, String> keyColumn:insertColumns){
 				if (isfirstInsertWhere) {
 	 			 	isfirstInsertWhere = false;
@@ -582,9 +588,13 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
 					mergeInsertValue.append(",");
 					
 				}
-				if (keyColumn.get("INSERT").equals("true")) {					
-					mergeInsertName.append(keyColumn.get("SCHEMA_COLUMN"));
-					mergeInsertValue.append("source." + keyColumn.get("SCHEMA_COLUMN"));
+				if (keyColumn.get("INSERT").equals("true")) {
+					keyColumnName=keyColumn.get("SCHEMA_COLUMN");
+					if(!(keyColumnName!=null && keyColumnName.equals(MetadataToolHelper.validateValue(keyColumnName)))){
+						keyColumnName="\\\""+keyColumnName+"\\\"";
+					}					
+					mergeInsertName.append(keyColumnName);
+					mergeInsertValue.append("source." + keyColumnName);
 				}				
 			}
 			%>
