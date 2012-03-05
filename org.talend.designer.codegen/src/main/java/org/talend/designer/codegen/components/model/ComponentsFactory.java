@@ -839,7 +839,8 @@ public class ComponentsFactory implements IComponentsFactory {
             AbstractComponentsProvider currentProvider = provider;
             if (currentProvider == null) {
                 ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
-                for (AbstractComponentsProvider curProvider : componentsProviderManager.getProviders()) {
+                ArrayList<AbstractComponentsProvider> providers = componentsProviderManager.getProviders();
+                for (AbstractComponentsProvider curProvider : providers) {
                     String path = new Path(curProvider.getInstallationFolder().toString()).toPortableString();
                     if (source.startsWith(path)) {
                         currentProvider = curProvider;
