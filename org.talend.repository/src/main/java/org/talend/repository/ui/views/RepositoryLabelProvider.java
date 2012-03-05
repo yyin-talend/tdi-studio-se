@@ -197,7 +197,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                     }
                 }
             }
-            if (isExtensionPoint || img == null) {
+            if (!isExtensionPoint || img == null) {
                 img = CoreImageProvider.getImage(itemType);
             }
         }
