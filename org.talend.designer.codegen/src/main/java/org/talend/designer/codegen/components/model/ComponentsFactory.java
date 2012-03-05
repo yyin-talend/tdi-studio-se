@@ -17,6 +17,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -839,7 +840,8 @@ public class ComponentsFactory implements IComponentsFactory {
             AbstractComponentsProvider currentProvider = provider;
             if (currentProvider == null) {
                 ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
-                for (AbstractComponentsProvider curProvider : componentsProviderManager.getProviders()) {
+                Collection<AbstractComponentsProvider> providers = componentsProviderManager.getProviders();
+                for (AbstractComponentsProvider curProvider : providers) {
                     String path = new Path(curProvider.getInstallationFolder().toString()).toPortableString();
                     if (source.startsWith(path)) {
                         currentProvider = curProvider;

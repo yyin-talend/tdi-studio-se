@@ -13,7 +13,6 @@
 package org.talend.designer.codegen.components.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -34,7 +33,7 @@ public final class ComponentsProviderManager {
 
     private static final ComponentsProviderManager INSTANCE = new ComponentsProviderManager();
 
-    private Collection<AbstractComponentsProvider> providers;
+    private ArrayList<AbstractComponentsProvider> providers;
 
     private ComponentsProviderManager() {
     }
@@ -43,7 +42,7 @@ public final class ComponentsProviderManager {
         return INSTANCE;
     }
 
-    public Collection<AbstractComponentsProvider> getProviders() {
+    public ArrayList<AbstractComponentsProvider> getProviders() {
         loadComponentsProvidersFromExtension();
         return providers;
     }
@@ -72,7 +71,13 @@ public final class ComponentsProviderManager {
                     componentsProvider.setId(id);
                     componentsProvider.setFolderName(folderName);
                     componentsProvider.setContributer(contributerName);
-                    providers.add(componentsProvider);
+                    // fix for bug TDI-19889 ,put the UserComponentsProvider to the first place to get
+                    // correct component provider when compare the user component path with install folder
+                    if (id.equals("org.talend.designer.components.model.UserComponentsProvider")) {
+                        providers.add(0, componentsProvider);
+                    } else {
+                        providers.add(componentsProvider);
+                    }
                 } catch (CoreException e) {
                     log.error(Messages.getString("ComponentsProviderManager.unableLoad") + id, e); //$NON-NLS-1$
                 }
