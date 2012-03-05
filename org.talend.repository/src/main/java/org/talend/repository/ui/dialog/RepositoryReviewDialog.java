@@ -59,8 +59,10 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.HeaderFooterConnectionItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.repository.DragAndDropManager;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.IDragAndDropServiceHandler;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.repository.ProjectManager;
@@ -913,6 +915,11 @@ class RepositoryTypeProcessor extends SingleTypeProcessor {
         }
         if (repositoryType.equals(ERepositoryCategoryType.EDIFACT.getName())) {
             return ERepositoryObjectType.METADATA_EDIFACT;
+        }
+        for (IDragAndDropServiceHandler handler : DragAndDropManager.getHandlers()) {
+            if (handler.getType(repositoryType) != null) {
+                return handler.getType(repositoryType);
+            }
         }
         return null;
 
