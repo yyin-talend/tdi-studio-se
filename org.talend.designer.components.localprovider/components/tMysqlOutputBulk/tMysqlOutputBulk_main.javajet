@@ -64,10 +64,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 			        <%					
                 			        if(javaType == JavaTypesManager.STRING ){
                 			            %>
-                			            if(escape_mode_<%=cid %> == com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH){
-                			            	column_value_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel() %>.replaceAll("\\\\","\\\\\\\\");
-                			            }else{
-                			            	column_value_<%=cid%> = com.csvreader.CsvWriter.replace(<%=conn.getName() %>.<%=column.getLabel() %>,""+escapeChar_<%=cid %>,""+escapeChar_<%=cid %>+escapeChar_<%=cid %>);
+                			            column_value_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel() %>.replaceAll("\\\\","\\\\\\\\");
+                			            if(!"\\".equals(textEnclosure_<%=cid %>+"") || !"\\".equals(escapeChar_<%=cid %>+"")){
+                			            	column_value_<%=cid%> = column_value_<%=cid%>.replaceAll(""+textEnclosure_<%=cid %>,""+textEnclosure_<%=cid %>+textEnclosure_<%=cid %>);
                 			            }
                 			            <%
                 			        }else if(javaType == JavaTypesManager.DATE && pattern != null){
@@ -91,6 +90,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 			            <%
                 			        }
                 			        %>                			    
+                			    }else{
+                			    	column_value_<%=cid%> = "\\N";
                 			    }
                 		 <% 
                 			}
