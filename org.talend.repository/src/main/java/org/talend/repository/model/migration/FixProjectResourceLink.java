@@ -42,7 +42,7 @@ public class FixProjectResourceLink extends AbstractItemMigrationTask {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             item.getProperty().setAuthor(factory.getRepositoryContext().getUser());
         }
-        if (ERepositoryObjectType.getItemType(item).isDQItemType()) {
+        if (ERepositoryObjectType.getItemType(item).isDQItemType() && !ERepositoryObjectType.getItemType(item).isDIItemType()) {
             return ExecutionResult.NOTHING_TO_DO;
         }
         if (item.getProperty().getAuthor().getLogin() != null) {
