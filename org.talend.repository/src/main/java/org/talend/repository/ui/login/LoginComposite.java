@@ -934,7 +934,7 @@ public class LoginComposite extends Composite {
         FormData data = new FormData();
         data.top = new FormAttachment(createProjectLabel, -HORIZONTAL_SPACE, SWT.CENTER);
         data.right = new FormAttachment(90, -HORIZONTAL_TWO_SPACE);
-        data.bottom = new FormAttachment(0, 30 + HORIZONTAL_SPACE);
+        data.bottom = new FormAttachment(0, 28 + HORIZONTAL_SPACE);
         createProjectBtn.setLayoutData(data);
         createProjectBtn.setEnabled(true);
 
@@ -944,8 +944,8 @@ public class LoginComposite extends Composite {
         data = new FormData();
         data.top = new FormAttachment(0, 10);
         data.left = new FormAttachment(10, HORIZONTAL_SPACE);
-        data.right = new FormAttachment(10, HORIZONTAL_TWO_SPACE + labelSize.x);
-        data.bottom = new FormAttachment(createProjectBtn, 0, SWT.BOTTOM);
+        data.right = new FormAttachment(10, HORIZONTAL_THREE_SPACE + labelSize.x + 1);
+        data.bottom = new FormAttachment(createProjectBtn, -1, SWT.BOTTOM);
         createProjectLabel.setLayoutData(data);
 
         projectText = toolkit.createText(tosProjectComposite, "", SWT.BORDER); //$NON-NLS-1$
@@ -982,7 +982,7 @@ public class LoginComposite extends Composite {
         advanced.setBackground(tosProjectComposite.getBackground());
         data = new FormData();
         data.top = new FormAttachment(createProjectLabel, HORIZONTAL_TWO_SPACE);
-        data.left = new FormAttachment(createProjectLabel, 10, SWT.RIGHT);
+        data.left = new FormAttachment(createProjectLabel, HORIZONTAL_TWO_SPACE - 1, SWT.RIGHT);
         // data.right = new FormAttachment(90, -HORIZONTAL_THREE_SPACE);
         data.bottom = new FormAttachment(createProjectLabel, HORIZONTAL_TWO_SPACE + 50);
         advanced.setLayoutData(data);
