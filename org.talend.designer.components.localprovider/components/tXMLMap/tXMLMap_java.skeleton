@@ -221,12 +221,8 @@ public class CLASS {
 		}
 		
 		public XPathHelper(TreeNode rootNode){
-			this(rootNode,false);
-		}
-		
-		public XPathHelper(TreeNode rootNode,boolean rootLoop){
 			//1. find loop node
-			loopNode = findLoopNode(rootNode,rootLoop);
+			loopNode = findLoopNode(rootNode);
 			if(loopNode!=null){
 				nsMapping = new HashMap<String,String>(); 
 				Map<String,String> dPrefixMapping = new HashMap<String,String>();
@@ -415,7 +411,7 @@ public class CLASS {
 			}
 		}
 		
-		private TreeNode findLoopNode(TreeNode node,boolean rootLoop){
+		private TreeNode findLoopNode(TreeNode node){
 			if(node == null){
 				return null;
 			}
@@ -424,10 +420,7 @@ public class CLASS {
 			}
 			for(TreeNode childNode : node.getChildren()) {
 				if(childNode.getNodeType() == NodeType.ELEMENT){
-					if(rootLoop) {
-						return childNode;
-					}
-					TreeNode resultNode = findLoopNode(childNode,rootLoop);
+					TreeNode resultNode = findLoopNode(childNode);
 					if(resultNode!=null){
 						return resultNode;
 					}
