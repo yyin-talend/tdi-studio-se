@@ -1394,6 +1394,12 @@
               id="org.talend.repository.model.migration.ChangeUseBatchSizeToFalseForDBOuput"
               name="set default value from true to false of USE_BATCH_SIZE of tDBOutput in TDI-19299">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              class="org.talend.repository.model.migration.ChangeJobscriptContentValueMigrationTask"
+              id="org.talend.repository.model.migration.ChangeJobscriptContentValueMigrationTask"
+              name="change jobscript content value">
+        </projecttask>
    </extension>
    
    <extension
