@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.model;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -2347,42 +2348,88 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     @Override
     public void dispose() {
+        boolean doDispose = isEnableDisposed();
+
+        if (doDispose) {
+            this.project = null;
+            this.recBinNode = null;
+        }
+        // Ref
+        if (refProject != null) {
+            for (IRepositoryNode refP : refProject.getChildren()) {
+                if (refP instanceof IProjectRepositoryNode) {
+                    // dispose the ref-projects also.
+                    if (refP instanceof RepositoryNode) {
+                        ((RepositoryNode) refP).setEnableDisposed(doDispose);
+                    }
+                    refP.dispose();
+                }
+            }
+        }
         // for all
         for (DynaEnum<? extends DynaEnum<?>> de : ERepositoryObjectType.values()) {
             if (de instanceof ERepositoryObjectType) {
                 RepositoryNode rootRepositoryNode = getRootRepositoryNode((ERepositoryObjectType) de);
                 if (rootRepositoryNode != null && !rootRepositoryNode.isDisposed()) {
+                    // dispose the root node for type.
+                    rootRepositoryNode.setEnableDisposed(doDispose);
                     rootRepositoryNode.dispose();
                 }
             }
         }
-        //
-        if (this.repositoryNodeMap != null) {
-            // maybe no need, because have done it front.
-            // for (ERepositoryObjectType type : this.repositoryNodeMap.keySet()) {
-            // RepositoryNode repositoryNode = this.repositoryNodeMap.get(type);
-            // repositoryNode.dispose();
-            // }
-            this.repositoryNodeMap.clear();
-        }
 
-        this.project = null;
-        this.recBinNode = null;
         // for extension point
         if (this.repositoryNodeExtensionMap != null) {
             for (ERepositoryObjectType type : this.repositoryNodeExtensionMap.keySet()) {
                 RepositoryNode repositoryNode = this.repositoryNodeExtensionMap.get(type);
                 if (repositoryNode != null && !repositoryNode.isDisposed()) {
+                    // dispose the root node for type.
+                    repositoryNode.setEnableDisposed(doDispose);
                     repositoryNode.dispose();
                 }
             }
-            this.repositoryNodeExtensionMap.clear();
+            if (doDispose) {
+                this.repositoryNodeExtensionMap.clear();
+            }
+        }
+        //
+        if (this.repositoryNodeMap != null) {
+            // maybe no need, because have done it front in 'all' and 'extension point'.
+            for (ERepositoryObjectType type : this.repositoryNodeMap.keySet()) {
+                RepositoryNode repositoryNode = this.repositoryNodeMap.get(type);
+                if (repositoryNode != null && !repositoryNode.isDisposed()) {
+                    // dispose the root node for type.
+                    repositoryNode.setEnableDisposed(doDispose);
+                    repositoryNode.dispose();
+                }
+            }
+            if (doDispose) {
+                this.repositoryNodeMap.clear();
+            }
         }
 
-        if (this.nodeAndProject != null) {
-            clearNodeAndProjectCash();
+        if (doDispose && this.nodeAndProject != null) {
+            nodeAndProject.clear();
         }
 
+        if (doDispose) {
+            // use reflect to set the object to null.
+            final Field[] declaredFields = this.getClass().getDeclaredFields();
+            for (Field f : declaredFields) {
+                f.setAccessible(true);
+                try {
+                    final Object object = f.get(this);
+                    if (object instanceof RepositoryNode) {
+                        f.set(this, null);
+                    }
+
+                } catch (IllegalArgumentException e) {
+                    //
+                } catch (IllegalAccessException e) {
+                    //
+                }
+            }
+        }
         super.dispose();
     }
 
