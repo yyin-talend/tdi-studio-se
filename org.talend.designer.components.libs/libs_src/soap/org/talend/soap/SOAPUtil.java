@@ -202,7 +202,7 @@ public class SOAPUtil {
 	/**
 	 * invoke soap and return the response document
 	 */
-	public Document extractContentAsDocument(String version, String destination, String soapAction, String soapMessage) throws SOAPException,
+	public String extractContentAsDocument(String version, String destination, String soapAction, String soapMessage) throws SOAPException,
             TransformerException, ParserConfigurationException, FileNotFoundException {
     	MessageFactory messageFactory = null;
     	if (version.equals(SOAP12)) {
@@ -220,49 +220,16 @@ public class SOAPUtil {
     	message.saveChanges();
     	SOAPMessage reply = connection.call(message, destination);
     	SOAPPart reSoapPart = reply.getSOAPPart();
-    	reSoapPart.getNamespaceURI();
-    	SOAPEnvelope reEnvelope = reSoapPart.getEnvelope();
-         
-        Document document;
-        DocumentBuilderFactory factory = new com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl();
-        factory.setNamespaceAware(true);
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        document = builder.newDocument();
-        Element element;
-        Element envelopeRootElem = document.createElement(reEnvelope.getNodeName());
-		if(reEnvelope.getNamespaceURI()!=null && reEnvelope.getPrefix()!=null){
-			envelopeRootElem.setAttribute("xmlns:"+reEnvelope.getPrefix(),reEnvelope.getNamespaceURI());
-		}
-        Iterator childElements = reEnvelope.getChildElements();
-        org.w3c.dom.Node domNode = null;
-        while (childElements.hasNext()) {
-            domNode = (org.w3c.dom.Node) childElements.next();
-            element = (Element) document.importNode(domNode, true);
-            envelopeRootElem.appendChild(element);
-        }
-        document.appendChild(envelopeRootElem);
-        return document;
-    }
-
-	/**
-	 * XML org.w3c.dom.Document String
-	 */
-	public String Doc2StringWithDeclare(Document doc,String encoding) {
-		String xmlStr = "";
-		try {
+    	try {
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer t = tf.newTransformer();
-			if(encoding!=null&&encoding.length()>0){
-				t.setOutputProperty("encoding", encoding);
-			}
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			t.transform(new DOMSource(doc), new StreamResult(bos));
-			xmlStr = bos.toString();
-		} catch (TransformerConfigurationException e) {
+			t.transform(reSoapPart.getContent(), new StreamResult(bos));
+			return bos.toString();
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (TransformerException e) {
-			e.printStackTrace();
+			return null;
 		}
-		return xmlStr;
-	}
+    }
+
 }

@@ -63,7 +63,7 @@ if (useMessageFromSchema && (connName==null || schemaEmpty)) {
 		}
 		if(outputDocument){
 %>
-			org.w3c.dom.Document document;
+			String document;
 			public Object run(){
 				try{
 					this.document = soapUtil_<%=cid%>.extractContentAsDocument(org.talend.soap.SOAPUtil.<%=soapVersion.toUpperCase()%>,<%=endpoint%>,<%=action%>,<%=useMessageFromSchema?connName+"."+soapMessageColumn+".toString()":soapMessageStr%>);
@@ -101,7 +101,7 @@ final String soapVersion_<%=cid%> = org.talend.soap.SOAPUtil.SOAP11;
 <%
 	if(outputDocument){
 %>
-	org.w3c.dom.Document document_<%=cid%> = talendPrivilegedAction_<%=cid%>.document;
+	String document_<%=cid%> = talendPrivilegedAction_<%=cid%>.document;
 <%
 	}
 %>
@@ -110,7 +110,7 @@ final String soapVersion_<%=cid%> = org.talend.soap.SOAPUtil.SOAP11;
 }else{
 	if(outputDocument){
 %>
-		org.w3c.dom.Document document_<%=cid%> = soapUtil_<%=cid%>.extractContentAsDocument(org.talend.soap.SOAPUtil.<%=soapVersion.toUpperCase()%>,<%=endpoint%>,<%=action%>,<%=useMessageFromSchema?connName+"."+soapMessageColumn+".toString()":soapMessageStr%>);
+		String document_<%=cid%> = soapUtil_<%=cid%>.extractContentAsDocument(org.talend.soap.SOAPUtil.<%=soapVersion.toUpperCase()%>,<%=endpoint%>,<%=action%>,<%=useMessageFromSchema?connName+"."+soapMessageColumn+".toString()":soapMessageStr%>);
 <%
 	}else{
 %>
@@ -130,7 +130,7 @@ if (conns!=null) {//1
 %>		
 				<%=conn.getName() %> = new <%=conn.getName() %>Struct();
 				<%if(outputDocument){%>
-					<%=conn.getName() %>.Soap = ParserUtils.parseTo_Document(soapUtil_<%=cid%>.Doc2StringWithDeclare(document_<%=cid%>,null));
+					<%=conn.getName() %>.Soap = ParserUtils.parseTo_Document(document_<%=cid%>);
 				<%}else{%>
 					<%=conn.getName() %>.Header = soapUtil_<%=cid%>.getReHeaderMessage();
 					if(soapUtil_<%=cid%>.hasFault()){
