@@ -81,7 +81,7 @@ public class NewImportProjectWizardPage extends WizardPage {
     protected NewImportProjectWizardPage() {
         super("WizardPage"); //$NON-NLS-1$
 
-        setTitle(Messages.getString("NewProjectWizardPage.title")); //$NON-NLS-1$
+        setTitle(Messages.getString("NewProjectWizardPage.title2")); //$NON-NLS-1$
         setDescription(Messages.getString("NewProjectWizardPage.description"));
     }
 
