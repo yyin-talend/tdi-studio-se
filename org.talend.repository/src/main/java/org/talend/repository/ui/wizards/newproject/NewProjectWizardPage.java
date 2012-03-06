@@ -88,7 +88,7 @@ public class NewProjectWizardPage extends WizardPage {
     public NewProjectWizardPage() {
         super("WizardPage"); //$NON-NLS-1$
 
-        setTitle(Messages.getString("NewProjectWizardPage.title")); //$NON-NLS-1$
+        setTitle(Messages.getString("NewProjectWizardPage.title2")); //$NON-NLS-1$
         setDescription(Messages.getString("NewProjectWizardPage.description")); //$NON-NLS-1$
         initKeyWords();
 
@@ -293,11 +293,6 @@ public class NewProjectWizardPage extends WizardPage {
                         languageStatus = createOkStatus();
                     }
                 }
-            }
-            // add for bug TDI-19617
-            if (descriptionText.getText().length() == 0) {
-                descriptionStatus = new Status(IStatus.WARNING, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
-                        Messages.getString("NewProjectWizardPage.DETAIL"), null); //$NON-NLS-1$  
             }
 
         }
