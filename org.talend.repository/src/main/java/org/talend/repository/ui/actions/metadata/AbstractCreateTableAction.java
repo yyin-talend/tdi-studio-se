@@ -46,6 +46,7 @@ import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
+import org.talend.core.model.metadata.builder.connection.SalesforceModuleUnit;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
@@ -675,6 +676,10 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                 return;
             }
             initContextMode(item);
+            if (metadataTable.eContainer() instanceof SalesforceModuleUnit) {
+                SalesforceModuleUnit unit = (SalesforceModuleUnit) metadataTable.eContainer();
+                connection.setModuleName(unit.getModuleName());
+            }
             // set the repositoryObject, lock and set isRepositoryObjectEditable
             SalesforceSchemaTableWizard salesforceSchemaWizard = new SalesforceSchemaTableWizard(PlatformUI.getWorkbench(),
                     creation, item, metadataTable, forceReadOnly);
@@ -719,16 +724,17 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             if (nodeType == ERepositoryObjectType.METADATA_SALESFORCE_MODULE) {
                 item = (SalesforceSchemaConnectionItem) node.getObject().getProperty().getItem();
                 connection = (SalesforceSchemaConnection) item.getConnection();
-                metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-                String nextId = ProxyRepositoryFactory.getInstance().getNextId();
-                metadataTable.setId(nextId);
-                metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
+                metadataTable = TableHelper.findByLabel(connection, tableLabel);
                 creation = false;
             } else {
                 return;
 
             }
             initContextMode(item);
+            if (metadataTable.eContainer() instanceof SalesforceModuleUnit) {
+                SalesforceModuleUnit unit = (SalesforceModuleUnit) metadataTable.eContainer();
+                connection.setModuleName(unit.getModuleName());
+            }
             // set the repositoryObject, lock and set isRepositoryObjectEditable
             SalesforceSchemasWizard salesforceSchemasWizard = new SalesforceSchemasWizard(PlatformUI.getWorkbench(), creation,
                     node.getObject(), metadataTable, getExistingNames(), forceReadOnly, null, null, node.getProperties(
