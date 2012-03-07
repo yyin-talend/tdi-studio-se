@@ -585,59 +585,6 @@ class TreeNode_API_<%=cid %> {
 		}
 	}
 	
-	/*class FindNodeUtil{
-		
-		TreeNode findLoopPathNode(TreeNode node){
-			if(node == null){
-				return null;
-			}
-			if(node.isLoop()) {
-				return node;
-			}
-			for(TreeNode tmpNode : node.getChildren()) {
-				TreeNode resultNode = findLoopPathNode(tmpNode);
-				if(resultNode!=null){
-					return resultNode;
-				}
-			}
-			
-			return null;
-		}
-		
-		void findXpathArray(TreeNode node, String loopPath, List<String> resultList) {
-			if(node.getOutgoingConnections().size()>0){
-				String xpath = node.getXpath();
-				String result = null;
-				if(xpath==null || ("").equals(xpath)){
-				} else if(xpath.equals(loopPath)){ // get the value in the loop elment
-					result = ".";
-				} else if(xpath.contains(loopPath)){ // find the loop path
-					result = xpath.substring(loopPath.length() + 1);
-				} else {
-					StringBuilder resultBuff = new StringBuilder();
-					String tmp = loopPath;
-					
-					while(!xpath.contains(tmp)){
-						int index = tmp.lastIndexOf("/");
-						if(index<0){ break; }
-						tmp = tmp.substring(0,index-1);
-						resultBuff.append("../");
-					}
-					if(tmp.lastIndexOf("/") < 0 ){
-						System.out.println("Loop Path is not set or loop Path is invalid");
-					}else{
-						resultBuff.append(xpath.substring(tmp.length() + 1));
-					}
-					result = resultBuff.toString();
-				}
-				resultList.add(result);
-			} else {
-    			for(TreeNode tmpNode : node.getChildren()) {
-    				findXpathArray(tmpNode, loopPath, resultList);
-    			}
-			}
-		}
-	}*/
 	GenerateMethodUtil generateMethodUtil = new GenerateMethodUtil();
 	generateMethodUtil.cid = cid;
 	if(mainInputTable != null) {
@@ -1165,13 +1112,7 @@ generateToolByDom4j.generateGroupCode(index);
 <%
 			
 			OutputTreeNode loop = (OutputTreeNode)generateToolByDom4j.getLoopNode(root);
-			if(loop==null){
-%>
-				if(true){
-					throw new Exception("Loop element is missing in the output Table:<%=outputTable.getName()%>!");
-				}
-<%
-			} else if(!isRootLoop){
+			if(!isRootLoop){
 				generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent");
 			}
 %>
