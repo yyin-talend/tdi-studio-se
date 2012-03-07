@@ -479,12 +479,25 @@ public abstract class DbGenerationManager {
 
         List<String> contextList = getContextList(component);
         String sqlQuery = sb.toString();
+        boolean haveReplace = false;
         for (String context : contextList) {
             if (sqlQuery.contains(context)) {
                 sqlQuery = sqlQuery.replace(context, "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
+                haveReplace = true;
             }
             if (queryColumnsName.contains(context)) {
                 queryColumnsName = queryColumnsName.replace(context, "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+        if (!haveReplace) {
+            List<String> connContextList = getConnectionContextList(component);
+            for (String context : connContextList) {
+                if (sqlQuery.contains(context)) {
+                    sqlQuery = sqlQuery.replace(context, "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+                if (queryColumnsName.contains(context)) {
+                    queryColumnsName = queryColumnsName.replace(context, "\" +" + context + "+ \""); //$NON-NLS-1$ //$NON-NLS-2$
+                }
             }
         }
         sqlQuery = handleQuery(sqlQuery);
@@ -594,6 +607,7 @@ public abstract class DbGenerationManager {
             }
             String entryName = dbMapEntry.getName();
             entryName = getOriginalColumnName(entryName, component, table);
+
             String locationInputEntry = language.getLocation(table.getName(), entryName);
             sbWhere.append(DbMapSqlConstants.SPACE);
             sbWhere.append(locationInputEntry);
@@ -831,6 +845,41 @@ public abstract class DbGenerationManager {
             }
         }
         return entryName;
+    }
+
+    private List<String> getConnectionContextList(DbMapComponent component) {
+        List<String> contextList = new ArrayList<String>();
+        List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+        List<Map<String, String>> itemNameList = null;
+        for (IConnection iconn : inputConnections) {
+            String connName = iconn.getName();
+            if (!ContextParameterUtils.containContextVariables(connName)) {
+                continue;
+            }
+
+            MapExpressionParser mapParser1 = new MapExpressionParser("\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*");
+            itemNameList = mapParser1.parseInTableEntryLocations(connName);
+            if (itemNameList == null) {
+                return contextList;
+            }
+            IMetadataTable metadataTable = iconn.getMetadataTable();
+            for (Map<String, String> itemNamemap : itemNameList) {
+                Set<Entry<String, String>> set = itemNamemap.entrySet();
+                Iterator<Entry<String, String>> ite = set.iterator();
+                while (ite.hasNext()) {
+                    Entry<String, String> entry = ite.next();
+                    String tableValue = entry.getKey();
+                    String schemaValue = entry.getValue();
+                    if (metadataTable != null && tableValue.equals(metadataTable.getLabel())) {
+                        if (!contextList.contains(schemaValue)) {
+                            contextList.add(schemaValue);
+                        }
+                    }
+                }
+            }
+
+        }
+        return contextList;
     }
 
 }
