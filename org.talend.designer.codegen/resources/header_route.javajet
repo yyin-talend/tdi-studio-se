@@ -349,8 +349,8 @@ for (INode node : graphicalNodes) {
 		uri = sb.toString();
 
 	} else if ("cLog".equals(componentName)) {
-		String useJDSL = ElementParameterParser.getValue(node, "__USE_JDSL__");
-		if ("true".equals(useJDSL)) {
+		String useLogEIP = ElementParameterParser.getValue(node, "__USE_LOGEIP__");
+		if ("true".equals(useLogEIP)) {
 			continue;
 		}
 
