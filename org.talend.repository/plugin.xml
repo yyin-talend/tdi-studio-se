@@ -1400,6 +1400,13 @@
               id="org.talend.repository.model.migration.ChangeJobscriptContentValueMigrationTask"
               name="change jobscript content value">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              class="org.talend.repository.model.migration.ChangeValueTDIBug19870"
+              id="org.talend.repository.model.migration.ChangeValueTDIBug19870"
+              name="ChangeValueTDIBug19870">
+        </projecttask>
+
    </extension>
    
    <extension
