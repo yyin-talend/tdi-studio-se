@@ -39,7 +39,7 @@ imports="
 	String tableAction = "false";
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-
+	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 %>
 
 int nb_line_<%=cid%> = 0;
@@ -55,6 +55,10 @@ int insertedCount_<%=cid%>=0;
 java.lang.Class.forName("com.teradata.jdbc.TeraDriver");
 String url_<%=cid %> = "jdbc:teradata://" + <%=dbhost%>+"/TYPE=FASTLOAD";
 
+String dbProperties_<%=cid%> = <%=dbproperties%>;
+if(dbProperties_<%=cid%> != null && dbProperties_<%=cid%>.trim().length() > 0) {
+	url_<%=cid %> +=","+dbProperties_<%=cid%>;
+}
 <%
 List<IMetadataColumn> columnList = null;
 
