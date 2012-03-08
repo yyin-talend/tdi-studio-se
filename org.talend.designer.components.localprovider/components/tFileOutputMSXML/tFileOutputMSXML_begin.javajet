@@ -30,6 +30,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 		String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 		String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+		boolean trimText = ("true").equals(ElementParameterParser.getValue(node,"__TRIM_TEXT__"));
 
 		List<Map<String, String>> rootTable = 
         	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT__");
@@ -113,6 +114,7 @@ org.dom4j.Document doc_<%=cid %> = org.dom4j.DocumentHelper.createDocument();
 
 final org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
 format_<%=cid %>.setEncoding(<%=encoding%>);
+format_<%=cid %>.setTrimText(<%=trimText%>);
 
 <%
 for(IConnection inComminConn : incomingConns){
