@@ -139,8 +139,11 @@ public class MapperManager implements ISelectionChangedListener {
 
     private void addTreeSchemaEnties(ExtendedTableModel<TreeSchemaTableEntry> tableModel, EList<TreeNode> nodes) {
         for (TreeNode node : nodes) {
-            TreeSchemaTableEntry entry = new TreeSchemaTableEntry(node);
-            tableModel.add(entry);
+            // avoid to edit choice and subs in schema editor
+            if (!node.isChoice() && !node.isSubstitution()) {
+                TreeSchemaTableEntry entry = new TreeSchemaTableEntry(node);
+                tableModel.add(entry);
+            }
             if (!node.getChildren().isEmpty()) {
                 addTreeSchemaEnties(tableModel, node.getChildren());
             }

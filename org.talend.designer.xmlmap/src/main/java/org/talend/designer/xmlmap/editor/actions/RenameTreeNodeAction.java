@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.xmlmap.editor.actions;
 
+import org.eclipse.datatools.enablement.oda.xml.util.ui.XSDPopulationUtil2;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.dialogs.IInputValidator;
@@ -74,14 +75,30 @@ public class RenameTreeNodeAction extends SelectionAction {
                     return null;
                 }
             };
-            InputDialog dialog = new InputDialog(null, "Rename Tree Node", "", selectedNode.getName(), validataor);
+            String name = selectedNode.getName();
+            if (selectedNode.isSubstitution()) {
+                name = name.substring(0, name.lastIndexOf(XSDPopulationUtil2.SUBS));
+            }
+            InputDialog dialog = new InputDialog(null, "Rename Tree Node", "", name, validataor);
             if (dialog.open() == Window.OK) {
-                selectedNode.setName(dialog.getValue());
+                if (selectedNode.isSubstitution()) {
+                    selectedNode.setName(dialog.getValue() + XSDPopulationUtil2.SUBS);
+                } else {
+                    selectedNode.setName(dialog.getValue());
+                }
                 // refresh
-                XmlMapData externalEmfData = (XmlMapData) mapperManager.getCopyOfMapData();
-                XmlMapUtil.updateXPathAndExpression(externalEmfData, selectedNode, dialog.getValue(),
-                        XmlMapUtil.getXPathLength(selectedNode.getXpath()), true);
+                if (selectedNode.isSubstitution()) {
+                    TreeNode realParent = XmlMapUtil.getRealParentNode(selectedNode);
+                    if (realParent != null) {
+                        selectedNode.setXpath(XmlMapUtil.getXPath(realParent.getXpath(), selectedNode.getName(),
+                                selectedNode.getNodeType()));
+                    }
+                } else {
+                    XmlMapData externalEmfData = (XmlMapData) mapperManager.getCopyOfMapData();
+                    XmlMapUtil.updateXPathAndExpression(externalEmfData, selectedNode, dialog.getValue(),
+                            XmlMapUtil.getXPathLength(selectedNode.getXpath()), true);
 
+                }
                 TabFolderEditors tabFolderEditors = mapperManager.getMapperUI().getTabFolderEditors();
                 if (tabFolderEditors != null) {
                     if (selectedNode instanceof OutputTreeNode) {
@@ -104,7 +121,7 @@ public class RenameTreeNodeAction extends SelectionAction {
                 if (obj instanceof TreeNodeEditPart) {
                     TreeNodeEditPart nodePart = (TreeNodeEditPart) obj;
                     this.selectedNode = (TreeNode) nodePart.getModel();
-                    if (NodeType.NAME_SPACE.equals(selectedNode.getNodeType())) {
+                    if (NodeType.NAME_SPACE.equals(selectedNode.getNodeType()) || selectedNode.isChoice()) {
                         return false;
                     }
                     int xPathLength = XmlMapUtil.getXPathLength(selectedNode.getXpath());

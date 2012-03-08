@@ -41,7 +41,7 @@ public class SetGroupAction extends SelectionAction {
             }
 
             if (NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType())
-                    || !(model.eContainer() instanceof TreeNode)) { //$NON-NLS-N$
+                    || !(model.eContainer() instanceof TreeNode) || model.isChoice() || model.isSubstitution()) { //$NON-NLS-N$
                 return false;
             }
             OutputTreeNode findDownLoopNode = findDownLoopNode(model);

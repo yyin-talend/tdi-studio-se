@@ -736,13 +736,31 @@ public interface XmlmapPackage extends EPackage {
     int TREE_NODE__NULLABLE = ABSTRACT_NODE_FEATURE_COUNT + 11;
 
     /**
+     * The feature id for the '<em><b>Choice</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TREE_NODE__CHOICE = ABSTRACT_NODE_FEATURE_COUNT + 12;
+
+    /**
+     * The feature id for the '<em><b>Substitution</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TREE_NODE__SUBSTITUTION = ABSTRACT_NODE_FEATURE_COUNT + 13;
+
+    /**
      * The number of structural features of the '<em>Tree Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int TREE_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 12;
+    int TREE_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 14;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl <em>Output Tree Node</em>}' class.
@@ -915,6 +933,24 @@ public interface XmlmapPackage extends EPackage {
      * @ordered
      */
     int OUTPUT_TREE_NODE__NULLABLE = TREE_NODE__NULLABLE;
+
+    /**
+     * The feature id for the '<em><b>Choice</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TREE_NODE__CHOICE = TREE_NODE__CHOICE;
+
+    /**
+     * The feature id for the '<em><b>Substitution</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TREE_NODE__SUBSTITUTION = TREE_NODE__SUBSTITUTION;
 
     /**
      * The feature id for the '<em><b>Aggregate</b></em>' attribute.
@@ -1662,6 +1698,28 @@ public interface XmlmapPackage extends EPackage {
     EAttribute getTreeNode_Nullable();
 
     /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isChoice <em>Choice</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Choice</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isChoice()
+     * @see #getTreeNode()
+     * @generated
+     */
+    EAttribute getTreeNode_Choice();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isSubstitution <em>Substitution</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Substitution</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isSubstitution()
+     * @see #getTreeNode()
+     * @generated
+     */
+    EAttribute getTreeNode_Substitution();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode <em>Output Tree Node</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2260,6 +2318,22 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EAttribute TREE_NODE__NULLABLE = eINSTANCE.getTreeNode_Nullable();
+
+        /**
+         * The meta object literal for the '<em><b>Choice</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute TREE_NODE__CHOICE = eINSTANCE.getTreeNode_Choice();
+
+        /**
+         * The meta object literal for the '<em><b>Substitution</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute TREE_NODE__SUBSTITUTION = eINSTANCE.getTreeNode_Substitution();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl <em>Output Tree Node</em>}' class.

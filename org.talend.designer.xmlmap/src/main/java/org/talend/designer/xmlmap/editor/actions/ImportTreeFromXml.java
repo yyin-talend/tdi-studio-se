@@ -108,16 +108,29 @@ public class ImportTreeFromXml extends SelectionAction {
             return;
         }
         String xPath = parent.getXpath();
-        TreeNode createTreeNode = null;
+        TreeNode realParentNode = parent;
+        if (parent.isSubstitution() || parent.isChoice()) {
+            realParentNode = XmlMapUtil.getRealParentNode(parent);
+            if (realParentNode != null) {
+                xPath = realParentNode.getXpath();
+            }
+        }
         for (FOXTreeNode foxNode : list) {
+            TreeNode createTreeNode = null;
             if (input) {
                 createTreeNode = XmlmapFactory.eINSTANCE.createTreeNode();
             } else {
                 createTreeNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
             }
-            createTreeNode.setName(foxNode.getLabel());
+            String label = foxNode.getLabel();
+            createTreeNode.setName(label);
             if (foxNode instanceof Element) {
                 createTreeNode.setNodeType(NodeType.ELEMENT);
+                if (foxNode.isChoice()) {
+                    createTreeNode.setChoice(foxNode.isChoice());
+                } else if (foxNode.isSubstitution()) {
+                    createTreeNode.setSubstitution(foxNode.isSubstitution());
+                }
             } else if (foxNode instanceof Attribute) {
                 createTreeNode.setNodeType(NodeType.ATTRIBUT);
             } else if (foxNode instanceof NameSpaceNode) {
@@ -127,7 +140,7 @@ public class ImportTreeFromXml extends SelectionAction {
                     createTreeNode.setName(XmlMapUtil.DEFAULT_NAME_SPACE_PREFIX);
                 }
             }
-            createTreeNode.setXpath(XmlMapUtil.getXPath(xPath, createTreeNode.getName(), createTreeNode.getNodeType()));
+            createTreeNode.setXpath(XmlMapUtil.getXPath(xPath, label, createTreeNode.getNodeType()));
             if (foxNode.getDataType() != null && "".equals(foxNode.getDataType())) {
                 createTreeNode.setType(foxNode.getDataType());
             } else {

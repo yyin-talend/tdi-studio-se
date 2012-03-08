@@ -80,7 +80,14 @@ public class CreateNameSpaceAction extends SelectionAction {
             createdNode.setName(XmlMapUtil.DEFAULT_NAME_SPACE_PREFIX);
         }
 
-        createdNode.setXpath(XmlMapUtil.getXPath(parent.getXpath(), label, NodeType.NAME_SPACE));
+        String parentXpath = parent.getXpath();
+        if (parent.isChoice() || parent.isSubstitution()) {
+            TreeNode realPrant = XmlMapUtil.getRealParentNode(parent);
+            if (realPrant != null) {
+                parentXpath = realPrant.getXpath();
+            }
+        }
+        createdNode.setXpath(XmlMapUtil.getXPath(parentXpath, label, NodeType.NAME_SPACE));
 
         final EList<TreeNode> children = parent.getChildren();
         int index = 0;
@@ -117,6 +124,9 @@ public class CreateNameSpaceAction extends SelectionAction {
             if (object instanceof TreeNodeEditPart) {
                 TreeNodeEditPart nodePart = (TreeNodeEditPart) object;
                 this.parent = (TreeNode) nodePart.getModel();
+                if (parent.isChoice() || parent.isSubstitution()) {
+                    return false;
+                }
                 boolean isElement = NodeType.ELEMENT.equals(parent.getNodeType());
                 if (isElement && !XmlMapUtil.DOCUMENT.equals(parent.getType())) {
                     return true;

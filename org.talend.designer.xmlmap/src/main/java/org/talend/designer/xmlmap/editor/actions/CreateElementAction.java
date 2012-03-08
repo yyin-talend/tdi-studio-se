@@ -116,7 +116,14 @@ public class CreateElementAction extends SelectionAction {
                 XmlMapUtil.detachNodeConnections(parent, mapperManager.getCopyOfMapData(), false);
                 treeNode.setName(label);
                 treeNode.setNodeType(NodeType.ELEMENT);
-                treeNode.setXpath(XmlMapUtil.getXPath(this.parent.getXpath(), treeNode.getName(), treeNode.getNodeType()));
+                String parentXpath = parent.getXpath();
+                if (parent.isChoice() || parent.isSubstitution()) {
+                    TreeNode realPrant = XmlMapUtil.getRealParentNode(parent);
+                    if (realPrant != null) {
+                        parentXpath = realPrant.getXpath();
+                    }
+                }
+                treeNode.setXpath(XmlMapUtil.getXPath(parentXpath, treeNode.getName(), treeNode.getNodeType()));
                 treeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                 parent.getChildren().add(treeNode);
                 parent.setExpression("");

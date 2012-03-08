@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
 import org.talend.designer.xmlmap.dnd.XmlDragSourceListener;
 import org.talend.designer.xmlmap.dnd.XmlDropTargetListener;
+import org.talend.designer.xmlmap.editor.actions.AddChoiceAction;
 import org.talend.designer.xmlmap.editor.actions.CreateAttributeAction;
 import org.talend.designer.xmlmap.editor.actions.CreateElementAction;
 import org.talend.designer.xmlmap.editor.actions.CreateNameSpaceAction;
@@ -41,6 +42,7 @@ import org.talend.designer.xmlmap.editor.actions.RenameTreeNodeAction;
 import org.talend.designer.xmlmap.editor.actions.SetAggregateAction;
 import org.talend.designer.xmlmap.editor.actions.SetGroupAction;
 import org.talend.designer.xmlmap.editor.actions.SetLoopAction;
+import org.talend.designer.xmlmap.editor.actions.SetSubstitutionAction;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
@@ -146,6 +148,16 @@ public class XmlMapEditor extends GraphicalEditor {
         renameTreeNodeAction.setMapperManager(mapperManager);
         getActionRegistry().registerAction(renameTreeNodeAction);
         getSelectionActions().add(renameTreeNodeAction.getId());
+
+        AddChoiceAction createChoice = new AddChoiceAction(this);
+        createChoice.setMapperManager(mapperManager);
+        getActionRegistry().registerAction(createChoice);
+        getSelectionActions().add(createChoice.getId());
+
+        SetSubstitutionAction setSubs = new SetSubstitutionAction(this);
+        setSubs.setMapperManager(mapperManager);
+        getActionRegistry().registerAction(setSubs);
+        getSelectionActions().add(setSubs.getId());
     }
 
     /**
@@ -305,12 +317,19 @@ public class XmlMapEditor extends GraphicalEditor {
                             menu.add(fixValueAction);
                         }
 
-                        DeleteTreeNodeAction action = (DeleteTreeNodeAction) getActionRegistry().getAction(
-                                DeleteTreeNodeAction.ID);
-                        action.update(object);
-                        action.setInput(false);
-                        if (action.isEnabled()) {
-                            menu.add(action);
+                        AddChoiceAction addChoice = (AddChoiceAction) getActionRegistry().getAction(AddChoiceAction.ID);
+                        addChoice.update(object);
+                        addChoice.setInput(false);
+                        if (addChoice.isEnabled()) {
+                            menu.add(addChoice);
+                        }
+
+                        SetSubstitutionAction setSubs = (SetSubstitutionAction) getActionRegistry().getAction(
+                                SetSubstitutionAction.ID);
+                        setSubs.update(object);
+                        setSubs.setInput(false);
+                        if (setSubs.isEnabled()) {
+                            menu.add(setSubs);
                         }
 
                         SetLoopAction loopAction = (SetLoopAction) getActionRegistry().getAction(SetLoopAction.ID);
@@ -345,6 +364,14 @@ public class XmlMapEditor extends GraphicalEditor {
                         renameTreeNodeAction.update(object);
                         if (renameTreeNodeAction.isEnabled()) {
                             menu.add(renameTreeNodeAction);
+                        }
+
+                        DeleteTreeNodeAction action = (DeleteTreeNodeAction) getActionRegistry().getAction(
+                                DeleteTreeNodeAction.ID);
+                        action.update(object);
+                        action.setInput(false);
+                        if (action.isEnabled()) {
+                            menu.add(action);
                         }
 
                     }
@@ -389,12 +416,19 @@ public class XmlMapEditor extends GraphicalEditor {
                             menu.add(fixValueAction);
                         }
 
-                        DeleteTreeNodeAction deleteAction = (DeleteTreeNodeAction) getActionRegistry().getAction(
-                                DeleteTreeNodeAction.ID);
-                        deleteAction.setInput(true);
-                        deleteAction.update(object);
-                        if (deleteAction.isEnabled()) {
-                            menu.add(deleteAction);
+                        AddChoiceAction addChoice = (AddChoiceAction) getActionRegistry().getAction(AddChoiceAction.ID);
+                        addChoice.update(object);
+                        addChoice.setInput(true);
+                        if (addChoice.isEnabled()) {
+                            menu.add(addChoice);
+                        }
+
+                        SetSubstitutionAction setSubs = (SetSubstitutionAction) getActionRegistry().getAction(
+                                SetSubstitutionAction.ID);
+                        setSubs.update(object);
+                        setSubs.setInput(true);
+                        if (setSubs.isEnabled()) {
+                            menu.add(setSubs);
                         }
 
                         SetLoopAction loopAction = (SetLoopAction) getActionRegistry().getAction(SetLoopAction.ID);
@@ -417,6 +451,15 @@ public class XmlMapEditor extends GraphicalEditor {
                         if (renameTreeNodeAction.isEnabled()) {
                             menu.add(renameTreeNodeAction);
                         }
+
+                        DeleteTreeNodeAction deleteAction = (DeleteTreeNodeAction) getActionRegistry().getAction(
+                                DeleteTreeNodeAction.ID);
+                        deleteAction.setInput(true);
+                        deleteAction.update(object);
+                        if (deleteAction.isEnabled()) {
+                            menu.add(deleteAction);
+                        }
+
                     }
                 }
             }

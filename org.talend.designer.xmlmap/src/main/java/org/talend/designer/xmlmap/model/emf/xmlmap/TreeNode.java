@@ -30,6 +30,8 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getLookupIncomingConnections <em>Lookup Incoming Connections</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#getDefaultValue <em>Default Value</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isNullable <em>Nullable</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isChoice <em>Choice</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isSubstitution <em>Substitution</em>}</li>
  * </ul>
  * </p>
  *
@@ -323,5 +325,57 @@ public interface TreeNode extends AbstractNode {
      * @generated
      */
     void setNullable(boolean value);
+
+    /**
+     * Returns the value of the '<em><b>Choice</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Choice</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Choice</em>' attribute.
+     * @see #setChoice(boolean)
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getTreeNode_Choice()
+     * @model
+     * @generated
+     */
+    boolean isChoice();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isChoice <em>Choice</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Choice</em>' attribute.
+     * @see #isChoice()
+     * @generated
+     */
+    void setChoice(boolean value);
+
+    /**
+     * Returns the value of the '<em><b>Substitution</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Substitution</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Substitution</em>' attribute.
+     * @see #setSubstitution(boolean)
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getTreeNode_Substitution()
+     * @model
+     * @generated
+     */
+    boolean isSubstitution();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isSubstitution <em>Substitution</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Substitution</em>' attribute.
+     * @see #isSubstitution()
+     * @generated
+     */
+    void setSubstitution(boolean value);
 
 } // TreeNode

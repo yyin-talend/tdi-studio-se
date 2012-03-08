@@ -572,6 +572,9 @@ public class XmlMapUtil {
 
     public static boolean isExpressionEditable(TreeNode treeNode) {
         List children = treeNode.getChildren();
+        if (treeNode.isChoice() || treeNode.isSubstitution()) {
+            return false;
+        }
         boolean haschild = false;
         boolean isNameSpace = false;
         if (children.size() > 0) {
@@ -656,6 +659,18 @@ public class XmlMapUtil {
                 return parent;
             } else {
                 return findUpGroupNode(parent);
+            }
+        }
+        return null;
+    }
+
+    public static TreeNode getRealParentNode(TreeNode node) {
+        if (node.eContainer() instanceof TreeNode) {
+            TreeNode parent = (TreeNode) node.eContainer();
+            if (!parent.isChoice() && !parent.isSubstitution()) {
+                return parent;
+            } else {
+                return getRealParentNode(parent);
             }
         }
         return null;

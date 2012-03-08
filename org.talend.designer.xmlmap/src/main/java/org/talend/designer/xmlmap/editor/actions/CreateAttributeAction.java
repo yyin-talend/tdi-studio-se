@@ -93,7 +93,14 @@ public class CreateAttributeAction extends SelectionAction {
         if (open == Window.OK) {
             treeNode.setName(label);
             treeNode.setNodeType(NodeType.ATTRIBUT);
-            treeNode.setXpath(XmlMapUtil.getXPath(this.parent.getXpath(), treeNode.getName(), treeNode.getNodeType()));
+            String parentXpath = parent.getXpath();
+            if (parent.isChoice() || parent.isSubstitution()) {
+                TreeNode realPrant = XmlMapUtil.getRealParentNode(parent);
+                if (realPrant != null) {
+                    parentXpath = realPrant.getXpath();
+                }
+            }
+            treeNode.setXpath(XmlMapUtil.getXPath(parentXpath, treeNode.getName(), treeNode.getNodeType()));
             treeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
             final EList<TreeNode> children = parent.getChildren();
             int index = 0;
@@ -137,6 +144,9 @@ public class CreateAttributeAction extends SelectionAction {
             if (object instanceof TreeNodeEditPart) {
                 TreeNodeEditPart nodePart = (TreeNodeEditPart) object;
                 this.parent = (TreeNode) nodePart.getModel();
+                if (parent.isChoice() || parent.isSubstitution()) {
+                    return false;
+                }
                 boolean isElement = NodeType.ELEMENT.equals(parent.getNodeType());
                 if (isElement && XmlMapUtil.getXPathLength(parent.getXpath()) > 2) {
                     return true;

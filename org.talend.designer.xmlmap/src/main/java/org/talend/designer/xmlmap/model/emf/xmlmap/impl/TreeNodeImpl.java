@@ -51,6 +51,8 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getLookupIncomingConnections <em>Lookup Incoming Connections</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#getDefaultValue <em>Default Value</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isNullable <em>Nullable</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isChoice <em>Choice</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isSubstitution <em>Substitution</em>}</li>
  * </ul>
  * </p>
  *
@@ -266,6 +268,46 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
      * @ordered
      */
     protected boolean nullable = NULLABLE_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #isChoice() <em>Choice</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isChoice()
+     * @generated
+     * @ordered
+     */
+    protected static final boolean CHOICE_EDEFAULT = false;
+
+    /**
+     * The cached value of the '{@link #isChoice() <em>Choice</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isChoice()
+     * @generated
+     * @ordered
+     */
+    protected boolean choice = CHOICE_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #isSubstitution() <em>Substitution</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isSubstitution()
+     * @generated
+     * @ordered
+     */
+    protected static final boolean SUBSTITUTION_EDEFAULT = false;
+
+    /**
+     * The cached value of the '{@link #isSubstitution() <em>Substitution</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isSubstitution()
+     * @generated
+     * @ordered
+     */
+    protected boolean substitution = SUBSTITUTION_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -516,6 +558,48 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
      * <!-- end-user-doc -->
      * @generated
      */
+    public boolean isChoice() {
+        return choice;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setChoice(boolean newChoice) {
+        boolean oldChoice = choice;
+        choice = newChoice;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.TREE_NODE__CHOICE, oldChoice, choice));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public boolean isSubstitution() {
+        return substitution;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setSubstitution(boolean newSubstitution) {
+        boolean oldSubstitution = substitution;
+        substitution = newSubstitution;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.TREE_NODE__SUBSTITUTION, oldSubstitution, substitution));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
@@ -557,6 +641,10 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return getDefaultValue();
             case XmlmapPackage.TREE_NODE__NULLABLE:
                 return isNullable();
+            case XmlmapPackage.TREE_NODE__CHOICE:
+                return isChoice();
+            case XmlmapPackage.TREE_NODE__SUBSTITUTION:
+                return isSubstitution();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -609,6 +697,12 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
             case XmlmapPackage.TREE_NODE__NULLABLE:
                 setNullable((Boolean)newValue);
                 return;
+            case XmlmapPackage.TREE_NODE__CHOICE:
+                setChoice((Boolean)newValue);
+                return;
+            case XmlmapPackage.TREE_NODE__SUBSTITUTION:
+                setSubstitution((Boolean)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -657,6 +751,12 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
             case XmlmapPackage.TREE_NODE__NULLABLE:
                 setNullable(NULLABLE_EDEFAULT);
                 return;
+            case XmlmapPackage.TREE_NODE__CHOICE:
+                setChoice(CHOICE_EDEFAULT);
+                return;
+            case XmlmapPackage.TREE_NODE__SUBSTITUTION:
+                setSubstitution(SUBSTITUTION_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -693,6 +793,10 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return DEFAULT_VALUE_EDEFAULT == null ? defaultValue != null : !DEFAULT_VALUE_EDEFAULT.equals(defaultValue);
             case XmlmapPackage.TREE_NODE__NULLABLE:
                 return nullable != NULLABLE_EDEFAULT;
+            case XmlmapPackage.TREE_NODE__CHOICE:
+                return choice != CHOICE_EDEFAULT;
+            case XmlmapPackage.TREE_NODE__SUBSTITUTION:
+                return substitution != SUBSTITUTION_EDEFAULT;
         }
         return super.eIsSet(featureID);
     }
@@ -725,6 +829,10 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
         result.append(defaultValue);
         result.append(", nullable: ");
         result.append(nullable);
+        result.append(", choice: ");
+        result.append(choice);
+        result.append(", substitution: ");
+        result.append(substitution);
         result.append(')');
         return result.toString();
     }

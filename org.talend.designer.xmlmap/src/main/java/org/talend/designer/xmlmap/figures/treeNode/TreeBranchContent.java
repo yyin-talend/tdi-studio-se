@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures.treeNode;
 
+import org.eclipse.datatools.enablement.oda.xml.util.ui.XSDPopulationUtil2;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
@@ -92,7 +93,11 @@ public class TreeBranchContent extends Figure implements ITextCell {
         } else if (NodeType.NAME_SPACE.equals(model.getNodeType())) {
             name = XmlMapUtil.XPATH_NAMESPACE + model.getName();
         } else {
-            name = model.getName();
+            if (model.isChoice()) {
+                name = XSDPopulationUtil2.CHOICE;
+            } else {
+                name = model.getName();
+            }
         }
         return name;
     }

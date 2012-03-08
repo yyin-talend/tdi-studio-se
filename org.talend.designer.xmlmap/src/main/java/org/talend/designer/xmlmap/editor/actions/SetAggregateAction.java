@@ -48,7 +48,8 @@ public class SetAggregateAction extends SelectionAction {
             OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getSelectedObjects().get(0);
             OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
             // root can't be aggregate
-            if (NodeType.NAME_SPACE.equals(model.getNodeType()) || !(model.eContainer() instanceof OutputTreeNode)) {
+            if (NodeType.NAME_SPACE.equals(model.getNodeType()) || !(model.eContainer() instanceof OutputTreeNode)
+                    || model.isChoice() || model.isSubstitution()) {
                 return false;
             }
             if (!XmlMapUtil.isExpressionEditable(model)) {
