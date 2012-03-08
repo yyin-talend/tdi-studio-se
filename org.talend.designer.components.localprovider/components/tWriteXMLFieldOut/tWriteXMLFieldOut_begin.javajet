@@ -53,16 +53,16 @@ java.util.List<java.util.Map<String,String>> flows_<%=cid%> = java.util.Collecti
 java.util.Map<String,String> flowValues_<%=cid%> = null;
 <%}%>
 
-class ThreadXMLField extends Thread {
+class ThreadXMLField_<%=cid%> extends Thread {
 	java.util.Queue<String> queue;
 	java.util.List<java.util.Map<String,String>> flows;
 	
-	ThreadXMLField(java.util.Queue q) {
+	ThreadXMLField_<%=cid%>(java.util.Queue q) {
 		this.queue = q;
 		globalMap.put("queue_<%=virtualTargetCid%>", queue);
 	}
 	
-	ThreadXMLField(java.util.Queue q, java.util.List<java.util.Map<String,String>> l) {
+	ThreadXMLField_<%=cid%>(java.util.Queue q, java.util.List<java.util.Map<String,String>> l) {
 		this.queue = q;
 		this.flows = l;
 		globalMap.put("queue_<%=virtualTargetCid%>", queue);
@@ -79,9 +79,9 @@ class ThreadXMLField extends Thread {
 	}
 }
 <%if(!storeFlow){%>
-	ThreadXMLField txf_<%=cid%> = new ThreadXMLField(listGroupby_<%=cid%>);
+	ThreadXMLField_<%=cid%> txf_<%=cid%> = new ThreadXMLField_<%=cid%>(listGroupby_<%=cid%>);
 <%} else {%>
-	ThreadXMLField txf_<%=cid%> = new ThreadXMLField(listGroupby_<%=cid%>, flows_<%=cid%>);
+	ThreadXMLField_<%=cid%> txf_<%=cid%> = new ThreadXMLField_<%=cid%>(listGroupby_<%=cid%>, flows_<%=cid%>);
 <%}%>
 txf_<%=cid%>.start();
 
