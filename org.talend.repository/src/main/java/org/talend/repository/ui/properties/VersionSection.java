@@ -132,7 +132,7 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
         tableViewer.setContentProvider(new IStructuredContentProvider() {
 
             public Object[] getElements(Object inputElement) {
-                IRepositoryObject repositoryObject = ((IRepositoryObject) inputElement);
+            	IRepositoryViewObject repositoryObject = ((IRepositoryViewObject) inputElement);
                 if (repositoryObject.getProperty() == null) {
                     return null;
                 }
