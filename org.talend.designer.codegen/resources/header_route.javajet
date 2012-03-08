@@ -506,6 +506,31 @@ for (INode node : graphicalNodes) {
 
 		//sb.append("+\"");
 		uri = sb.toString();
+	} else if ("cHttp".equals(componentName)) {
+
+		StringBuffer sb = new StringBuffer();
+		
+		String resourceUri = ElementParameterParser.getValue(node, "__URI__");
+		sb.append(resourceUri);
+
+		boolean hasParam = false;
+		
+		String method = ElementParameterParser.getValue(node, "__METHOD__");
+		if("GET".equals(method)||"HEAD".equals(method)){
+			List<Map<String, String>> parameters = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__PARAMETERS__");
+			for (Map<String, String> map : parameters) {
+				String argName = map.get("KEY").trim();
+				String argValue = map.get("VALUE").trim();
+				if (hasParam) {
+					sb.append("+\"&\"+" + argName + "+\"=\"+" + argValue);
+				} else {
+					sb.append("+\"?\"+" + argName + "+\"=\"+" + argValue);
+					hasParam = true;
+				}
+			}
+		}
+		
+		uri = sb.toString();
 	} else {
 		continue;
 	}
