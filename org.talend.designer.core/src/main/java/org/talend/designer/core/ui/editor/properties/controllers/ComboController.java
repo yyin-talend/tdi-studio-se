@@ -499,26 +499,14 @@ public class ComboController extends AbstractElementPropertySectionController {
             }
         }
         if (isRule) {
-            ITDQRuleService rulerService = null;
+            ITDQRuleService service = null;
             try {
-                rulerService = (ITDQRuleService) GlobalServiceRegister.getDefault().getService(ITDQRuleService.class);
+                service = (ITDQRuleService) GlobalServiceRegister.getDefault().getService(ITDQRuleService.class);
             } catch (RuntimeException e) {
                 // nothing to do
             }
-            if (rulerService != null && elem instanceof Node) {
-                Node node = (Node) elem;
-                IElementParameter typeParam = node.getElementParameter("TYPE");
-                IElementParameter dbParam = node.getElementParameter(EParameterName.DBNAME.getName());
-                IElementParameter schemaParam = node.getElementParameter(EParameterName.SCHEMA_DB.getName());
-                IElementParameter tableParam = node.getElementParameterFromField(EParameterFieldType.DBTABLE);
-                List<IMetadataTable> metadataList = node.getMetadataList();
-                IMetadataTable metadataTable = null;
-                if (metadataList != null && !metadataList.isEmpty()) {
-                    metadataTable = metadataList.get(0);
-                }
-                rulerService.overrideRuleList(typeParam, dbParam, schemaParam,
-                        tableParam, metadataTable, param, node.getElementName()
-                                .contains("Invalid"));
+            if (service != null) {
+                service.fillTDQRuleList(param);
             }
         }
 

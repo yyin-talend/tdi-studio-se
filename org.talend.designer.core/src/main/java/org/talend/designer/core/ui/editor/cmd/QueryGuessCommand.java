@@ -168,7 +168,6 @@ public class QueryGuessCommand extends Command {
     }
 
     private String generateNewQueryFromDQRuler(IElementParameter dqRulerParam) {
-        // update dqruler value before return it
         ITDQRuleService rulerService = null;
         try {
             rulerService = (ITDQRuleService) GlobalServiceRegister.getDefault().getService(ITDQRuleService.class);
@@ -180,6 +179,7 @@ public class QueryGuessCommand extends Command {
             IElementParameter dbParam = node.getElementParameter(EParameterName.DBNAME.getName());
             IElementParameter schemaParam = node.getElementParameter(EParameterName.SCHEMA_DB.getName());
             IElementParameter tableParam = node.getElementParameterFromField(EParameterFieldType.DBTABLE);
+            IElementParameter whereClause = node.getElementParameter("WHERE_CLAUSE");
 
             List<IMetadataTable> metadataList = null;
             IMetadataTable metadataTable = null;
@@ -189,10 +189,10 @@ public class QueryGuessCommand extends Command {
                     metadataTable = metadataList.get(0);
                 }
             }
-            rulerService.overrideRuleList(typeParam, dbParam, schemaParam, tableParam, metadataTable, dqRulerParam, node
-                    .getElementName().contains("Invalid"));
+            return rulerService.getQueryByRule(dqRulerParam, typeParam, dbParam, schemaParam, tableParam, metadataTable, node
+                    .getElementName().contains("Invalid"), whereClause);
         }
-        return (String) dqRulerParam.getValue();
+        return "";
     }
 
     private String generateNewQuery() {
