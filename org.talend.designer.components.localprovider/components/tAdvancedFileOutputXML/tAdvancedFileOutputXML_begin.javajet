@@ -186,6 +186,9 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				} else {
 					doc_<%=cid %>=org.dom4j.DocumentHelper.createDocument();
 				}
+				<%if(groupTable.size()>0){%>
+					org.dom4j.Element firstGroupPathElement_<%=cid%> = null;
+				<%}%>
 			<%} else {	%>
 				doc_<%=cid %>=org.dom4j.DocumentHelper.createDocument();
 			<%
