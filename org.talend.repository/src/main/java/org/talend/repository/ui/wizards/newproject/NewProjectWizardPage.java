@@ -258,6 +258,8 @@ public class NewProjectWizardPage extends WizardPage {
     protected void checkFieldsValue() {
         // Field Name
         if (nameText.getText().length() == 0) {
+            // for bug TDI-6993
+            technicalNameText.setText("");
             nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
                     Messages.getString("NewProjectWizardPage.nameEmpty"), null); //$NON-NLS-1$
         } else {
