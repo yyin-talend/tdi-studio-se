@@ -46,7 +46,6 @@ import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XMLFileNode;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.impl.XmlXPathLoopDescriptorImpl;
-import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.MDMConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
@@ -86,7 +85,7 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     private Shell shell;
 
-    private Map<TreeNode, XMLFileNode> nodeMap = new HashMap<TreeNode, XMLFileNode>();
+    private Map<String, Integer> xpathAndOrder = new HashMap<String, Integer>();
 
     private boolean input;
 
@@ -96,7 +95,15 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     public static final String ID = "org.talend.designer.xmlmap.editor.actions.ImportTreeFromRepository";
 
-    private Map<String, TreeNode> xpathAndSubs = new HashMap<String, TreeNode>();
+    List<XMLFileNode> root;
+
+    List<XMLFileNode> group;
+
+    List<XMLFileNode> loop;
+
+    List<TreeNode> groupElements;
+
+    TreeNode outputLoop = null;
 
     /**
      * DOC talend ImportTreeFromRepository constructor comment.
@@ -126,7 +133,6 @@ public class ImportTreeFromRepository extends SelectionAction {
                     XmlFileConnectionItem xmlitem = (XmlFileConnectionItem) item;
                     XmlFileConnection connection = (XmlFileConnection) xmlitem.getConnection();
                     prepareEmfTreeFromXml(connection);
-                    nodeMap.clear();
                 } else if (item instanceof MDMConnectionItem) {
                     String selectedSchema = (String) repositoryNode.getProperties(EProperties.LABEL);
                     MDMConnection connection = (MDMConnection) ((MDMConnectionItem) item).getConnection();
@@ -163,18 +169,30 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     private void prepareEmfTreeFromXml(XmlFileConnection connection) {
         if (!connection.isInputModel()) {
-            String filePath = connection.getXmlFilePath();
-            if (filePath != null && filePath.toLowerCase().endsWith(".xsd")) {
-                File xsdFile = new File(filePath);
-                if (!xsdFile.exists()) {
-                    filePath = initFileContent(connection);
+            String file = connection.getXmlFilePath();
+            List<FOXTreeNode> list = new ArrayList<FOXTreeNode>();
+            File xmlFile = new File(file);
+            if (xmlFile.exists()) {
+                list = TreeUtil.getFoxTreeNodesForXmlMap(xmlFile.getAbsolutePath(), connection.getRoot().get(0).getXMLPath());
+            } else if (connection.getFileContent() != null && connection.getFileContent().length > 0) {
+                String xsdFile = initFileContent(connection);
+                if (xsdFile != null && new File(xsdFile).exists()) {
+                    list = TreeUtil.getFoxTreeNodesForXmlMap(xsdFile, connection.getRoot().get(0).getXMLPath());
                 }
             }
-            File xsdFile = null;
-            if (filePath != null) {
-                xsdFile = new File(filePath);
+
+            root = connection.getRoot();
+            loop = connection.getLoop();
+            group = connection.getGroup();
+            groupElements = new ArrayList<TreeNode>();
+            prepareModelFromOutput(list, schemaNode);
+            if (outputLoop != null) {
+                fillGroup(outputLoop, groupElements);
+            } else {
+                if (!schemaNode.getChildren().isEmpty()) {
+                    schemaNode.getChildren().get(0).setLoop(true);
+                }
             }
-            prepareModelFromOutput(connection.getRoot(), connection.getLoop(), connection.getGroup(), xsdFile);
         } else {
             List<SchemaTarget> schemaTargets = null;
             if (!connection.getSchema().isEmpty() && connection.getSchema().get(0) instanceof XmlXPathLoopDescriptorImpl) {
@@ -342,8 +360,20 @@ public class ImportTreeFromRepository extends SelectionAction {
                         prepareEmfTree(list, pNode);
 
                     } else {
-                        File file = new File(getTempTemplateXSDFile().getAbsolutePath());
-                        prepareModelFromOutput(selected.getRoot(), selected.getLoop(), selected.getGroup(), file);
+                        List<FOXTreeNode> list = TreeUtil.getFoxTreeNodesForXmlMap(getTempTemplateXSDFile().getAbsolutePath(),
+                                selected.getRoot().get(0).getXMLPath());
+                        root = selected.getRoot();
+                        loop = selected.getLoop();
+                        group = selected.getGroup();
+                        groupElements = new ArrayList<TreeNode>();
+                        prepareModelFromOutput(list, schemaNode);
+                        if (outputLoop != null) {
+                            fillGroup(outputLoop, groupElements);
+                        } else {
+                            if (!schemaNode.getChildren().isEmpty()) {
+                                schemaNode.getChildren().get(0).setLoop(true);
+                            }
+                        }
                     }
                 }
             }
@@ -429,287 +459,150 @@ public class ImportTreeFromRepository extends SelectionAction {
         return file;
     }
 
-    private void prepareXpathAndFoxNodeMap(Map<String, FOXTreeNode> xpathAndFoxNodeMap, List<FOXTreeNode> foxTreeNodes,
-            String parentXpath) {
-        for (int i = 0; i < foxTreeNodes.size(); i++) {
-            FOXTreeNode foxNode = foxTreeNodes.get(i);
+    private void prepareModelFromOutput(List<FOXTreeNode> foxTreeNodes, TreeNode parent) {
+        TreeNode realParent = XmlMapUtil.getRealParentNode(parent);
+        for (FOXTreeNode foxNode : foxTreeNodes) {
+            TreeNode createTreeNode = createModel();
             String label = foxNode.getLabel();
-            NodeType type = null;
+            createTreeNode.setName(label);
             if (foxNode instanceof Element) {
-                type = NodeType.ELEMENT;
+                createTreeNode.setNodeType(NodeType.ELEMENT);
+                if (foxNode.isChoice()) {
+                    createTreeNode.setChoice(foxNode.isChoice());
+                } else if (foxNode.isSubstitution()) {
+                    createTreeNode.setSubstitution(foxNode.isSubstitution());
+                }
             } else if (foxNode instanceof Attribute) {
-                type = NodeType.ATTRIBUT;
+                createTreeNode.setNodeType(NodeType.ATTRIBUT);
             } else if (foxNode instanceof NameSpaceNode) {
-                type = NodeType.NAME_SPACE;
+                createTreeNode.setNodeType(NodeType.NAME_SPACE);
+                createTreeNode.setDefaultValue(foxNode.getDefaultValue());
+                if (createTreeNode.getName() == null || createTreeNode.getName().equals("")) {
+                    createTreeNode.setName(XmlMapUtil.DEFAULT_NAME_SPACE_PREFIX);
+                }
             }
-            String xpath = XmlMapUtil.getXPath(parentXpath, label, type);
-            xpathAndFoxNodeMap.put(xpath, foxNode);
-            String pXpath = xpath;
-            if (foxNode.isSubstitution() || foxNode.isChoice()) {
-                pXpath = parentXpath;
-            }
-            if (!foxNode.getChildren().isEmpty()) {
-                prepareXpathAndFoxNodeMap(xpathAndFoxNodeMap, foxNode.getChildren(), pXpath);
-            }
-        }
-    }
-
-    private void prepareModelFromOutput(List<XMLFileNode> root, List<XMLFileNode> loop, List<XMLFileNode> group, File xsdFile) {
-        xpathAndSubs.clear();
-        Map<String, FOXTreeNode> xpathAndFoxNodeMap = new HashMap<String, FOXTreeNode>();
-        if (xsdFile != null) {
-            if (root.size() > 0) {
-                List<FOXTreeNode> foxTreeNodes = TreeUtil.getFoxTreeNodesForXmlMap(xsdFile.getAbsolutePath(), root.get(0)
-                        .getXMLPath());
-                prepareXpathAndFoxNodeMap(xpathAndFoxNodeMap, foxTreeNodes, schemaNode.getXpath());
-            }
-        }
-
-        TreeNode rootNode = null;
-        TreeNode lastTreeNode = schemaNode;
-
-        TreeNode temp = null;
-        TreeNode mainNode = schemaNode;
-        String mainPath = null;
-        String lastXmlPath = null;
-
-        // build root
-        for (int i = 0; i < root.size(); i++) {
-            XMLFileNode node = (XMLFileNode) root.get(i);
-            String newPath = node.getXMLPath();
-            String type = node.getType();
-            if (node.getAttribute().equals("attri")) {
-                temp = createModel();
-                temp.setName(newPath);
-                temp.setDefaultValue(node.getDefaultValue());
-                temp.setNodeType(NodeType.ATTRIBUT);
-                temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
-                lastTreeNode.getChildren().add(temp);
-            } else if (node.getAttribute().equals("ns")) {
-                temp = createModel();
-                temp.setName(newPath);
-                temp.setDefaultValue(node.getDefaultValue());
-                temp.setNodeType(NodeType.NAME_SPACE);
-                temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
-
-                lastTreeNode.getChildren().add(temp);
+            if (foxNode.getDataType() != null && "".equals(foxNode.getDataType())) {
+                createTreeNode.setType(foxNode.getDataType());
             } else {
-                temp = this.addElement(lastTreeNode, lastXmlPath, node, xpathAndFoxNodeMap);
-                if (temp == null) {
-                    continue;
-                }
-                if (rootNode == null) {
-                    rootNode = temp;
-                }
-                if (node.getAttribute().equals("main")) {
-                    mainNode = temp;
-                    mainPath = newPath;
-                }
-                lastTreeNode = temp;
-                lastXmlPath = newPath;
+                createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
             }
-            if (type == null) {
-                type = JavaTypesManager.getDefaultJavaType().getId();
-            }
-            temp.setType(type);
-
-        }
-
-        // build group tree
-        lastTreeNode = mainNode;
-        lastXmlPath = mainPath;
-        List<TreeNode> groupElements = new ArrayList<TreeNode>();
-        boolean isFirst = true;
-        for (int i = 0; i < group.size(); i++) {
-            XMLFileNode node = (XMLFileNode) group.get(i);
-            String newPath = node.getXMLPath();
-            String type = node.getType();
-
-            if (node.getAttribute().equals("attri")) {
-                temp = createModel();
-                temp.setName(newPath);
-                temp.setDefaultValue(node.getDefaultValue());
-                temp.setNodeType(NodeType.ATTRIBUT);
-                temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
-                lastTreeNode.getChildren().add(temp);
-            } else if (node.getAttribute().equals("ns")) {
-                temp = createModel();
-                temp.setName(newPath);
-                temp.setDefaultValue(node.getDefaultValue());
-                temp.setNodeType(NodeType.NAME_SPACE);
-                temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
-                lastTreeNode.getChildren().add(temp);
+            String xPath = XmlMapUtil.getXPath(realParent.getXpath(), label, createTreeNode.getNodeType());
+            createTreeNode.setXpath(xPath);
+            if (createTreeNode.isSubstitution() || createTreeNode.isChoice()) {
+                if (isMappedChoiceSubsOutput(foxNode, realParent.getXpath())) {
+                    parent.getChildren().add(createTreeNode);
+                }
             } else {
-                temp = this.addElement(lastTreeNode, lastXmlPath, node, xpathAndFoxNodeMap);
-                if (temp == null) {
-                    continue;
-                }
-                if (node.getAttribute().equals("main")) {
-                    mainNode = temp;
-                    mainPath = newPath;
-                }
-                if (isFirst) {
-                    temp.setGroup(true);
-                    isFirst = false;
-                }
-                lastTreeNode = temp;
-                lastXmlPath = newPath;
-                groupElements.add(temp);
-            }
-            if (type == null) {
-                type = JavaTypesManager.getDefaultJavaType().getId();
-            }
-            temp.setType(type);
-
-        }
-
-        // build loop tree
-        lastTreeNode = mainNode;
-        lastXmlPath = mainPath;
-        isFirst = true;
-        TreeNode loopElement = null;
-        for (int i = 0; i < loop.size(); i++) {
-            XMLFileNode node = (XMLFileNode) loop.get(i);
-            String newPath = node.getXMLPath();
-            String type = node.getType();
-
-            if (node.getAttribute().equals("attri")) {
-                temp = createModel();
-                temp.setName(newPath);
-                temp.setDefaultValue(node.getDefaultValue());
-                temp.setNodeType(NodeType.ATTRIBUT);
-                temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
-                lastTreeNode.getChildren().add(temp);
-            } else if (node.getAttribute().equals("ns")) {
-                temp = createModel();
-                temp.setName(newPath);
-                temp.setDefaultValue(node.getDefaultValue());
-                temp.setNodeType(NodeType.NAME_SPACE);
-                temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
-                lastTreeNode.getChildren().add(temp);
-            } else {
-                temp = this.addElement(lastTreeNode, lastXmlPath, node, xpathAndFoxNodeMap);
-                if (temp == null) {
-                    continue;
-                }
-                if (rootNode == null) {
-                    rootNode = temp;
-                }
-                if (node.getAttribute().equals("main")) {
-                    mainNode = temp;
-                    mainPath = newPath;
-                }
-                if (isFirst) {
-                    temp.setLoop(true);
-                    XmlMapUtil.upsetMainNode(temp);
-                    loopElement = temp;
-                    isFirst = false;
-                }
-                lastTreeNode = temp;
-                lastXmlPath = newPath;
-            }
-            if (type == null) {
-                type = JavaTypesManager.getDefaultJavaType().getId();
-            }
-            temp.setType(type);
-
-        }
-
-        if (loopElement != null && !groupElements.isEmpty()) {
-            fillGroup(loopElement, groupElements);
-        }
-
-        if (rootNode != null) {
-            schemaNode.getChildren().add(rootNode);
-        }
-
-    }
-
-    private TreeNode createParentChoiceOrSubs(TreeNode parentNode, TreeNode currentNode,
-            Map<String, FOXTreeNode> xpathAndFoxNodeMap) {
-        FOXTreeNode treeNode = xpathAndFoxNodeMap.get(currentNode.getXpath());
-        if (treeNode != null) {
-            FOXTreeNode parent = treeNode.getParent();
-            if (parent != null) {
-                if (parent.isChoice()) {
-                    String xPath = XmlMapUtil.getXPath(parentNode.getXpath(), parent.getLabel(), NodeType.ELEMENT);
-                    TreeNode choice = xpathAndSubs.get(xPath);
-                    if (choice == null) {
-                        choice = createModel();
-                        choice.setChoice(true);
-                        choice.setName(parent.getLabel());
-                        choice.setNodeType(NodeType.ELEMENT);
-                        choice.setXpath(xPath);
-                        xpathAndSubs.put(xPath, choice);
+                String subXpath = xPath.substring(schemaNode.getXpath().length() + 1, xPath.length());
+                XMLFileNode found = findXmlFileNode(subXpath, root);
+                if (found == null) {
+                    found = findXmlFileNode(subXpath, group);
+                    if (found != null) {
+                        groupElements.add(createTreeNode);
                     }
-                    choice.getChildren().add(currentNode);
-                    return choice;
-                } else if (parent.isSubstitution()) {
-                    FOXTreeNode clone = cloneSubsFOXTreeNode(parent);
-                    FOXTreeNode subRoot = getSubsRoot(parent, clone);
-                    String xPath = XmlMapUtil.getXPath(parentNode.getXpath(), subRoot.getLabel(), NodeType.ELEMENT);
-                    TreeNode subNode = xpathAndSubs.get(xPath);
-                    if (subNode == null) {
-                        subNode = createModel();
-                        subNode.setSubstitution(true);
-                        subNode.setName(subRoot.getLabel());
-                        subNode.setNodeType(NodeType.ELEMENT);
-                        subNode.setXpath(xPath);
-                        xpathAndSubs.put(xPath, subNode);
+                }
+                if (found == null) {
+                    found = findXmlFileNode(subXpath, loop);
+                    if (found != null) {
+                        if (outputLoop == null) {
+                            outputLoop = createTreeNode;
+                            outputLoop.setLoop(true);
+                        }
                     }
-                    TreeNode lastSubs = createSubChild(subNode, subRoot);
-                    lastSubs.getChildren().add(currentNode);
-                    return subNode;
+                }
+                if (found == null) {
+                    continue;
+                } else {
+                    xpathAndOrder.put(createTreeNode.getXpath(), found.getOrder());
+                    Integer index = null;
+                    List<TreeNode> children = parent.getChildren();
+                    for (int i = 0; i < children.size(); i++) {
+                        Integer order = xpathAndOrder.get(children.get(i).getXpath());
+                        if (found.getOrder() < order) {
+                            index = i;
+                        }
+                    }
+                    if (index == null) {
+                        parent.getChildren().add(createTreeNode);
+                    } else {
+                        parent.getChildren().add(index, createTreeNode);
+                    }
                 }
             }
-            // if no subs or choice created ,return current node
-            return currentNode;
-        } else {
-            // return null for abstract sub nodes , no need to create
-            return null;
+            prepareModelFromOutput(foxNode.getChildren(), createTreeNode);
         }
     }
 
-    private TreeNode createSubChild(TreeNode subParent, FOXTreeNode foxSubParent) {
-        if (foxSubParent.getChildren().isEmpty()) {
-            return subParent;
-        } else {
-            FOXTreeNode foxChild = foxSubParent.getChildren().get(0);
-            String xPath = XmlMapUtil.getXPath(subParent.getXpath(), foxChild.getLabel(), NodeType.ELEMENT);
-            TreeNode subNode = xpathAndSubs.get(xPath);
-            if (subNode == null) {
-                subNode = createModel();
-                subNode.setSubstitution(true);
-                subNode.setName(foxChild.getLabel());
-                subNode.setNodeType(NodeType.ELEMENT);
-                subNode.setXpath(xPath);
-                subParent.getChildren().add(subNode);
-                xpathAndSubs.put(xPath, subNode);
+    private boolean isMappedChoiceSubsOutput(FOXTreeNode node, String pXpath) {
+        List<FOXTreeNode> children = node.getChildren();
+        List<FOXTreeNode> subsChoice = new ArrayList<FOXTreeNode>();
+        XMLFileNode found = null;
+        for (FOXTreeNode child : children) {
+            if (child.isSubstitution() || child.isChoice()) {
+                subsChoice.add(child);
+            } else {
+                String childXpath = "";
+                if (child instanceof Element) {
+                    childXpath = XmlMapUtil.getXPath(pXpath, child.getLabel(), NodeType.ELEMENT);
+                } else if (child instanceof Attribute) {
+                    childXpath = XmlMapUtil.getXPath(pXpath, child.getLabel(), NodeType.ATTRIBUT);
+                } else if (child instanceof NameSpaceNode) {
+                    childXpath = XmlMapUtil.getXPath(pXpath, child.getLabel(), NodeType.NAME_SPACE);
+                }
+
+                found = findXmlFileNode(childXpath, root);
+                if (found == null) {
+                    found = findXmlFileNode(childXpath, group);
+                }
+                if (found == null) {
+                    found = findXmlFileNode(childXpath, loop);
+                }
+                if (found != null) {
+                    break;
+                }
             }
-            return createSubChild(subNode, foxChild);
         }
+
+        if (found != null) {
+            return true;
+        }
+
+        if (!subsChoice.isEmpty()) {
+            for (FOXTreeNode foxNode : subsChoice) {
+                boolean isChildMapped = isMappedChoiceSubsOutput(foxNode, pXpath);
+                if (isChildMapped) {
+                    return true;
+                }
+            }
+        }
+
+        return found != null;
     }
 
-    /*
-     * find up for parent subs ,make a clone to make sure the subs tree only have one branch
-     */
-    private FOXTreeNode getSubsRoot(FOXTreeNode subNode, FOXTreeNode clone) {
-        FOXTreeNode parent = subNode.getParent();
-        if (!parent.isSubstitution()) {
-            return clone;
-        } else {
-            FOXTreeNode cloneP = cloneSubsFOXTreeNode(parent);
-            clone.setParent(cloneP);
-            clone.getChildren().add(clone);
-            return getSubsRoot(parent, cloneP);
+    private XMLFileNode findXmlFileNode(String subXpath, List<XMLFileNode> list) {
+        String pXpath = "";
+        for (XMLFileNode fileNode : list) {
+            if (fileNode.getAttribute().equals("attri")) {
+                String tempXpath = pXpath + XmlMapUtil.XPATH_SEPARATOR + XmlMapUtil.XPATH_ATTRIBUTE + fileNode.getXMLPath();
+                if (subXpath != null && subXpath.endsWith(tempXpath)) {
+                    return fileNode;
+                }
+            } else if (fileNode.getAttribute().equals("ns")) {
+                String tempXpath = pXpath + XmlMapUtil.XPATH_SEPARATOR + XmlMapUtil.XPATH_NAMESPACE + fileNode.getXMLPath();
+                if (subXpath != null && subXpath.endsWith(tempXpath)) {
+                    return fileNode;
+                }
+            } else {
+                pXpath = fileNode.getXMLPath();
+                if (subXpath != null && subXpath.endsWith(pXpath)) {
+                    return fileNode;
+                }
+            }
+            if (fileNode.getXMLPath() != null && fileNode.getXMLPath().equals(subXpath)) {
+                return fileNode;
+            }
         }
-    }
-
-    private FOXTreeNode cloneSubsFOXTreeNode(FOXTreeNode node) {
-        Element element = new Element();
-        element.setLabel(node.getLabel());
-        element.setSubstitution(node.isSubstitution());
-        return element;
+        return null;
     }
 
     private void fillGroup(TreeNode loopElement, List<TreeNode> groupElements) {
@@ -723,125 +616,6 @@ public class ImportTreeFromRepository extends SelectionAction {
             }
         }
 
-    }
-
-    protected TreeNode addElement(TreeNode lastTreeNode, String lastXmlPath, XMLFileNode xmlFilenode,
-            Map<String, FOXTreeNode> xpathAndFoxNodeMap) {
-        String newPath = xmlFilenode.getXMLPath();
-        String defaultValue = xmlFilenode.getDefaultValue();
-        String name = newPath.substring(newPath.lastIndexOf("/") + 1); //$NON-NLS-1$
-        String parentPath = newPath.substring(0, newPath.lastIndexOf("/")); //$NON-NLS-1$
-        TreeNode temp = createModel();
-        temp.setName(name);
-        temp.setDefaultValue(defaultValue);
-        temp.setNodeType(NodeType.ELEMENT);
-        if (lastTreeNode == schemaNode) { // root node of a document
-            temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
-            return temp;
-        }
-
-        // in the same branch as lastTreeNode
-        if (lastXmlPath.equals(parentPath)) {
-            temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
-            EList<TreeNode> children = lastTreeNode.getChildren();
-            int childrenSize = children.size();
-            /*
-             * keep the same order as in repository
-             */
-            int index = childrenSize;
-            int order = xmlFilenode.getOrder();
-            for (int i = 0; i < childrenSize; i++) {
-                TreeNode treeNode = children.get(i);
-                XMLFileNode xmlFileNode = nodeMap.get(treeNode);
-                if (xmlFileNode != null) {
-                    if (order < xmlFileNode.getOrder()) {
-                        index = children.indexOf(treeNode);
-                        break;
-                    }
-                }
-            }
-            if (index == childrenSize) {
-                TreeNode child = createParentChoiceOrSubs(lastTreeNode, temp, xpathAndFoxNodeMap);
-                if (child != null) {
-                    children.add(child);
-                } else {
-                    temp = null;
-                }
-            } else {
-                TreeNode child = createParentChoiceOrSubs(lastTreeNode, temp, xpathAndFoxNodeMap);
-                if (child != null) {
-                    children.add(index, child);
-                } else {
-                    temp = null;
-                }
-            }
-            if (temp != null) {
-                nodeMap.put(temp, xmlFilenode);
-            }
-        }
-        // in different branches as lastTreeNode
-        else {
-            String[] nods = lastXmlPath.split("/"); //$NON-NLS-1$
-            String[] newNods = parentPath.split("/"); //$NON-NLS-1$
-            int parentLevel = 0;
-            int checkLength = nods.length < newNods.length ? nods.length : newNods.length;
-            for (int i = 1; i < checkLength; i++) {
-                if (nods[i].equals(newNods[i])) {
-                    parentLevel = i;
-                }
-            }
-            TreeNode parent = lastTreeNode;
-            for (int i = 0; i < nods.length - (parentLevel + 1); i++) {
-                TreeNode tmpParent = (TreeNode) parent.eContainer();
-                if (tmpParent == null) {
-                    break;
-                }
-                if (tmpParent.isSubstitution() || tmpParent.isChoice()) {
-                    parent = tmpParent;
-                    i--;
-                    continue;
-                }
-                parent = tmpParent;
-            }
-
-            if (parent != null) {
-                temp.setXpath(XmlMapUtil.getXPath(parent.getXpath(), temp.getName(), temp.getNodeType()));
-                EList<TreeNode> children = parent.getChildren();
-                int childrenSize = children.size();
-
-                int index = childrenSize - 1;
-                int order = xmlFilenode.getOrder();
-                for (int i = 0; i < childrenSize; i++) {
-                    TreeNode treeNode = children.get(i);
-                    XMLFileNode xmlFileNode = nodeMap.get(treeNode);
-                    if (xmlFileNode != null) {
-                        if (order < xmlFileNode.getOrder()) {
-                            index = children.indexOf(treeNode);
-                            break;
-                        }
-                    }
-                }
-
-                if (index == childrenSize - 1) {
-                    TreeNode child = createParentChoiceOrSubs(parent, temp, xpathAndFoxNodeMap);
-                    if (child != null) {
-                        children.add(child);
-                    } else {
-                        temp = null;
-                    }
-                } else {
-                    TreeNode child = createParentChoiceOrSubs(parent, temp, xpathAndFoxNodeMap);
-                    if (child != null) {
-                        children.add(index, child);
-                    } else {
-                        temp = null;
-                    }
-                }
-                nodeMap.put(temp, xmlFilenode);
-            }
-        }
-
-        return temp;
     }
 
     @Override

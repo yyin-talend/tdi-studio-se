@@ -665,15 +665,17 @@ public class XmlMapUtil {
     }
 
     public static TreeNode getRealParentNode(TreeNode node) {
-        if (node.eContainer() instanceof TreeNode) {
-            TreeNode parent = (TreeNode) node.eContainer();
-            if (!parent.isChoice() && !parent.isSubstitution()) {
-                return parent;
-            } else {
-                return getRealParentNode(parent);
+        if (node.isSubstitution() || node.isChoice()) {
+            if (node.eContainer() instanceof TreeNode) {
+                TreeNode parent = (TreeNode) node.eContainer();
+                if (!parent.isChoice() && !parent.isSubstitution()) {
+                    return parent;
+                } else {
+                    return getRealParentNode(parent);
+                }
             }
         }
-        return null;
+        return node;
     }
 
 }
