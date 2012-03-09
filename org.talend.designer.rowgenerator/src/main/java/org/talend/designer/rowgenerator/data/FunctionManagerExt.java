@@ -13,6 +13,8 @@
 package org.talend.designer.rowgenerator.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,17 +74,28 @@ public class FunctionManagerExt extends FunctionManager {
         } else {
             for (int i = 0; i < functions.size(); i++) {
                 String name = functions.get(i).getName();
-                if (list.contains(name)) {
-                    int indexOf = list.indexOf(name);
-                    arrayTalendFunctions2[indexOf] = functions.get(indexOf).getClassName() + "." + name;//$NON-NLS-1$
+                // if (list.contains(name)) {
+                // int indexOf = list.indexOf(name);
+                //                    arrayTalendFunctions2[indexOf] = functions.get(indexOf).getClassName() + "." + name;//$NON-NLS-1$
 
-                    String className = functions.get(i).getClassName();
-                    arrayTalendFunctions2[i] = className + "." + name;//$NON-NLS-1$
-                } else {
+                String className = functions.get(i).getClassName();
+                if (className == null) {
                     arrayTalendFunctions2[i] = name;
-                    list.add(name);
+                } else {
+                    arrayTalendFunctions2[i] = className + "." + name;//$NON-NLS-1$
                 }
+                // } else {
+                // arrayTalendFunctions2[i] = name;
+                // list.add(name);
+                // }
             }
+            Arrays.sort(arrayTalendFunctions2, new Comparator<String>() {
+
+                public int compare(String n1, String n2) {
+                    return n1.compareTo(n2);
+                }
+
+            });
             currentFun = (Function) functions.get(0).clone();
             bean.setArrayFunctions(arrayTalendFunctions2);
         }
