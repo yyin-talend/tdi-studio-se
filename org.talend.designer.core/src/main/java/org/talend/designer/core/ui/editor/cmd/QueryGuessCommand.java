@@ -128,7 +128,7 @@ public class QueryGuessCommand extends Command {
         String newQuery = "";
         if (dqRuler != null && !"".equals(dqRuler.getValue())) {
             newQuery = generateNewQueryFromDQRuler(dqRuler);
-            newQuery = "\"" + newQuery.replace("\"", "\\\"") + "\"";
+            newQuery = "\"" + newQuery + "\"";
             if (newQuery == null || "".equals(newQuery)) {
                 newQuery = generateNewQuery();
             }
