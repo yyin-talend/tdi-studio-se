@@ -415,6 +415,11 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
             try {
                 final Project loadProject = xmiManager.loadProject(project);
                 loadProject.setLocal(true);
+                loadProject.setId(0);
+                loadProject.setUrl(null);
+                loadProject.setCreationDate(null);
+                loadProject.setDescription("");
+                loadProject.setType(null);
                 xmiManager.saveResource(loadProject.eResource());
             } catch (PersistenceException e) {
                 //
