@@ -101,34 +101,34 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			org.talend.DynamicInvoker.setTimeOut(<%=timeout %>);
 		
 	 		org.talend.DynamicInvoker.main(params_<%=cid %>);
-	 		java.util.Map result = org.talend.DynamicInvoker.getResult();
+	 		java.util.Map result_<%=cid %> = org.talend.DynamicInvoker.getResult();
 	        
 	        Object[] results_<%=cid %> = null;
 		    int nb_line_<%=cid %> = 0;
 		
-	        for (Object key : result.keySet()) {
+	        for (Object key_<%=cid %> : result_<%=cid %>.keySet()) {
         
 	           results_<%=cid %> = new Object[<%=listColumns.size()==0? 1 : listColumns.size()%>];
 	            
-	           Object value = result.get(key);
-	           if (value instanceof Object[]){
-	                Object[] objArr_<%=cid %> = (Object[])value;
+	           Object value_<%=cid %> = result_<%=cid %>.get(key_<%=cid %>);
+	           if (value_<%=cid %> instanceof Object[]){
+	                Object[] objArr_<%=cid %> = (Object[])value_<%=cid %>;
 	                int len_<%=cid %> = Math.min(objArr_<%=cid %>.length, results_<%=cid %>.length);
 	                int k_<%=cid %> = 0;
 	                for (int i_<%=cid %> = 0; i_<%=cid %> < len_<%=cid %>; i_<%=cid %>++ ) {
 	                    results_<%=cid %>[k_<%=cid %>] = objArr_<%=cid %>[k_<%=cid %>];
 	                }
                 
-		        } else if (value instanceof java.util.List) {
-		        	java.util.List list_<%=cid %> = (java.util.List)value;
+		        } else if (value_<%=cid %> instanceof java.util.List) {
+		        	java.util.List list_<%=cid %> = (java.util.List)value_<%=cid %>;
 		            int len_<%=cid %> = Math.min(list_<%=cid %>.size(), results_<%=cid %>.length);
 		            int k_<%=cid %> = 0;
 		            for (java.util.Iterator iter_<%=cid %> = list_<%=cid %>.iterator(); iter_<%=cid %>.hasNext() && k_<%=cid %> < len_<%=cid %>; k_<%=cid %>++) {
 		            	results_<%=cid %>[k_<%=cid %>] = iter_<%=cid %>.next();
 		            }
                                 
-           		} else if (value instanceof java.util.Map) {                
-					java.util.Map map_<%=cid %> = (java.util.Map)value;
+           		} else if (value_<%=cid %> instanceof java.util.Map) {                
+					java.util.Map map_<%=cid %> = (java.util.Map)value_<%=cid %>;
 	                java.util.Collection values_<%=cid %> = map_<%=cid %>.values();
 	                int len_<%=cid %> = Math.min(values_<%=cid %>.size(), results_<%=cid %>.length);
 	                int k_<%=cid %> = 0;
@@ -136,18 +136,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	                    results_<%=cid %>[k_<%=cid %>] = iter_<%=cid %>.next();
 	                }
 
-            	} else if (value instanceof org.w3c.dom.Element) {
-                	results_<%=cid %>[0] = org.apache.axis.utils.XMLUtils.ElementToString((org.w3c.dom.Element)value);
+            	} else if (value_<%=cid %> instanceof org.w3c.dom.Element) {
+                	results_<%=cid %>[0] = org.apache.axis.utils.XMLUtils.ElementToString((org.w3c.dom.Element)value_<%=cid %>);
                 
-	            }else if (value instanceof org.apache.axis.types.Schema){
-	                org.apache.axis.types.Schema schema_<%=cid %> = (org.apache.axis.types.Schema) value;
+	            }else if (value_<%=cid %> instanceof org.apache.axis.types.Schema){
+	                org.apache.axis.types.Schema schema_<%=cid %> = (org.apache.axis.types.Schema) value_<%=cid %>;
 	                org.apache.axis.message.MessageElement[] _any_<%=cid %> = schema_<%=cid %>.get_any();
 	                for (int s_<%=cid %> = 0; s_<%=cid %> < _any_<%=cid %>.length; s_<%=cid %>++) {
 	                    results_<%=cid %>[s_<%=cid %>] = _any_<%=cid %>[s_<%=cid %>].toString();
 	                }	
 	                
 	            } else {
-				    results_<%=cid %>[0] = value;
+				    results_<%=cid %>[0] = value_<%=cid %>;
 	            }
             
 		<%} else { %>
