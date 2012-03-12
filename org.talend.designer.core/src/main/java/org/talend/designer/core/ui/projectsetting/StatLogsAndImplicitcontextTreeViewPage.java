@@ -149,8 +149,8 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         createImplicitcontextTree(composite);
         createStatTree(composite);
 
-        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        if (factory.isUserReadOnlyOnCurrentProject()) {
+        IProxyRepositoryFactory facto = ProxyRepositoryFactory.getInstance();
+        if (facto.isUserReadOnlyOnCurrentProject()) {
             composite.setEnabled(false);
         }
         return composite;
@@ -158,8 +158,9 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
     @Override
     public void dispose() {
-        if (widgetFactory != null)
+        if (widgetFactory != null) {
             widgetFactory.dispose();
+        }
         super.dispose();
     }
 
@@ -179,6 +180,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         // This only tree listener aim is to change open/close icons on folders :
         viewer.addTreeListener(new ITreeViewerListener() {
 
+            @Override
             public void treeCollapsed(TreeExpansionEvent event) {
                 RepositoryNode node = (RepositoryNode) event.getElement();
                 if (node.getType().equals(ENodeType.SIMPLE_FOLDER)) {
@@ -189,6 +191,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
                 }
             }
 
+            @Override
             public void treeExpanded(TreeExpansionEvent event) {
                 RepositoryNode node = (RepositoryNode) event.getElement();
                 if (node.getType().equals(ENodeType.SIMPLE_FOLDER)) {
@@ -202,6 +205,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
         viewer.addCheckStateListener(new ICheckStateListener() {
 
+            @Override
             public void checkStateChanged(CheckStateChangedEvent event) {
                 RepositoryNode node = (RepositoryNode) event.getElement();
                 List<RepositoryNode> objects = new ArrayList<RepositoryNode>();
@@ -256,6 +260,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         // This only tree listener aim is to change open/close icons on folders :
         statViewer.addTreeListener(new ITreeViewerListener() {
 
+            @Override
             public void treeCollapsed(TreeExpansionEvent event) {
                 RepositoryNode node = (RepositoryNode) event.getElement();
                 if (node.getType().equals(ENodeType.SIMPLE_FOLDER)) {
@@ -266,6 +271,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
                 }
             }
 
+            @Override
             public void treeExpanded(TreeExpansionEvent event) {
                 RepositoryNode node = (RepositoryNode) event.getElement();
                 if (node.getType().equals(ENodeType.SIMPLE_FOLDER)) {
@@ -279,6 +285,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
         statViewer.addCheckStateListener(new ICheckStateListener() {
 
+            @Override
             public void checkStateChanged(CheckStateChangedEvent event) {
                 RepositoryNode node = (RepositoryNode) event.getElement();
                 List<RepositoryNode> objects = new ArrayList<RepositoryNode>();
@@ -313,27 +320,6 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
         statViewer.setCheckedElements(statCheckedObjects.toArray());
         statViewer.setExpandedElements(statContentProvider.getContents());
-    }
-
-    private void initstat() {
-        RepositoryNode[] nodes = statContentProvider.getContents();
-        List<RepositoryNode> objects = new ArrayList<RepositoryNode>();
-        for (RepositoryNode n : nodes) {
-            processItems(objects, n);
-            for (RepositoryNode node : objects) {
-                if (isStatUseProjectSetting(node)) {
-                    if (!statAddedObjects.contains(node)) {
-                        statAddedObjects.add(node);
-                    }
-                    statRemovedObjects.remove(node);
-                } else {
-                    statAddedObjects.remove(node);
-                    if (!statRemovedObjects.contains(node)) {
-                        statRemovedObjects.add(node);
-                    }
-                }
-            }
-        }
     }
 
     private boolean isUseProjectSetting(RepositoryNode node) {
@@ -417,22 +403,20 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
     class AllJobContentProvider extends RepositoryContentProvider {
 
-        private IRepositoryView view = null;
-
         public AllJobContentProvider(IRepositoryView v) {
             super(v);
-            view = v;
         }
 
+        @Override
         public Object[] getElements(Object parent) {
-            if (parent.equals(view.getViewSite())) {
+            if (parent.equals(getView().getViewSite())) {
                 return getContents();
             }
             return getChildren(parent);
         }
 
         RepositoryNode[] getContents() {
-            ProjectRepositoryNode systemFolders = (ProjectRepositoryNode) view.getRoot();
+            ProjectRepositoryNode systemFolders = (ProjectRepositoryNode) getView().getRoot();
             return new RepositoryNode[] { systemFolders.getRootRepositoryNode(ERepositoryObjectType.PROCESS) };
             // return (RepositoryNode[])
             // systemFolders.getRootRepositoryNode(ERepositoryObjectType.PROCESS).getChildren().toArray(
@@ -558,6 +542,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
         final IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
+            @Override
             public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitor.beginTask(
                         Messages.getString("StatLogsAndImplicitcontextTreeViewPage.SaveProjectSettings"), (addedObjects.size() + statAddedObjects.size()) * 100); //$NON-NLS-1$                
@@ -634,6 +619,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         if (disp != null) {
             disp.syncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     ShowAddedContextdialog showDialog = new ShowAddedContextdialog(contextVars, true);
                     if (showDialog.open() == Window.OK) {
@@ -661,6 +647,7 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
         if (display != null) {
             display.asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     process.getCommandStack().execute(cmd);
                 }

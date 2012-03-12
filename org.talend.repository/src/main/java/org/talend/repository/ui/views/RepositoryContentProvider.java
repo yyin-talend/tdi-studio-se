@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
@@ -36,8 +35,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private final IRepositoryView view;
 
-    private TreeViewer viewer;
-
     private final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
     public RepositoryContentProvider(IRepositoryView view) {
@@ -46,7 +43,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     }
 
     public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-        viewer = (TreeViewer) v;
     }
 
     public void dispose() {
