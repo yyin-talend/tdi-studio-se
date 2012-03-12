@@ -117,17 +117,31 @@ public class TreeBranchContent extends Figure implements ITextCell {
     private String getStatus(TreeNode node) {
         String status = "";
         if (node.isLoop()) {
-            status = "(loop :" + String.valueOf(node.isLoop()) + ")";
+            status = "(loop" + (node.isOptional() ? " :optional" : "");
         }
         if (node instanceof OutputTreeNode) {
             OutputTreeNode outputNode = (OutputTreeNode) node;
             if (outputNode.isGroup()) {
-                status = "(group :" + String.valueOf(outputNode.isGroup()) + ")";
+                if ("".equals(status)) {
+                    status = "(group";
+                } else {
+                    status = status + " , group";
+                }
+
             }
 
             if (outputNode.isAggregate()) {
-                status = status + " (aggregate :" + String.valueOf(outputNode.isAggregate()) + ")";
+                if ("".equals(status)) {
+                    status = "(aggregate";
+                } else {
+                    status = status + " , aggregate";
+                }
+
             }
+        }
+
+        if (!"".equals(status)) {
+            status = status + ")";
         }
 
         return status;

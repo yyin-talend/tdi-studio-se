@@ -270,6 +270,7 @@ public class ImportTreeFromRepository extends SelectionAction {
 
             } else if (tempXpath.equals(absoluteXPathQuery)) {
                 createTreeNode.setLoop(true);
+                createTreeNode.setOptional(foxNode.isOptional());
             } else if (!isMappedChild(tempXpath)) {
                 continue;
             }
@@ -507,6 +508,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                         if (outputLoop == null) {
                             outputLoop = createTreeNode;
                             outputLoop.setLoop(true);
+                            outputLoop.setOptional(foxNode.isOptional());
                         }
                     }
                 }

@@ -53,6 +53,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isNullable <em>Nullable</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isChoice <em>Choice</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isSubstitution <em>Substitution</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl#isOptional <em>Optional</em>}</li>
  * </ul>
  * </p>
  *
@@ -308,6 +309,26 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
      * @ordered
      */
     protected boolean substitution = SUBSTITUTION_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #isOptional() <em>Optional</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isOptional()
+     * @generated
+     * @ordered
+     */
+    protected static final boolean OPTIONAL_EDEFAULT = false;
+
+    /**
+     * The cached value of the '{@link #isOptional() <em>Optional</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isOptional()
+     * @generated
+     * @ordered
+     */
+    protected boolean optional = OPTIONAL_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -600,6 +621,27 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
      * <!-- end-user-doc -->
      * @generated
      */
+    public boolean isOptional() {
+        return optional;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setOptional(boolean newOptional) {
+        boolean oldOptional = optional;
+        optional = newOptional;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.TREE_NODE__OPTIONAL, oldOptional, optional));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
@@ -645,6 +687,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return isChoice();
             case XmlmapPackage.TREE_NODE__SUBSTITUTION:
                 return isSubstitution();
+            case XmlmapPackage.TREE_NODE__OPTIONAL:
+                return isOptional();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -703,6 +747,9 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
             case XmlmapPackage.TREE_NODE__SUBSTITUTION:
                 setSubstitution((Boolean)newValue);
                 return;
+            case XmlmapPackage.TREE_NODE__OPTIONAL:
+                setOptional((Boolean)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -757,6 +804,9 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
             case XmlmapPackage.TREE_NODE__SUBSTITUTION:
                 setSubstitution(SUBSTITUTION_EDEFAULT);
                 return;
+            case XmlmapPackage.TREE_NODE__OPTIONAL:
+                setOptional(OPTIONAL_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -797,6 +847,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
                 return choice != CHOICE_EDEFAULT;
             case XmlmapPackage.TREE_NODE__SUBSTITUTION:
                 return substitution != SUBSTITUTION_EDEFAULT;
+            case XmlmapPackage.TREE_NODE__OPTIONAL:
+                return optional != OPTIONAL_EDEFAULT;
         }
         return super.eIsSet(featureID);
     }
@@ -833,6 +885,8 @@ public class TreeNodeImpl extends AbstractNodeImpl implements TreeNode {
         result.append(choice);
         result.append(", substitution: ");
         result.append(substitution);
+        result.append(", optional: ");
+        result.append(optional);
         result.append(')');
         return result.toString();
     }

@@ -754,13 +754,22 @@ public interface XmlmapPackage extends EPackage {
     int TREE_NODE__SUBSTITUTION = ABSTRACT_NODE_FEATURE_COUNT + 13;
 
     /**
+     * The feature id for the '<em><b>Optional</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TREE_NODE__OPTIONAL = ABSTRACT_NODE_FEATURE_COUNT + 14;
+
+    /**
      * The number of structural features of the '<em>Tree Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int TREE_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 14;
+    int TREE_NODE_FEATURE_COUNT = ABSTRACT_NODE_FEATURE_COUNT + 15;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl <em>Output Tree Node</em>}' class.
@@ -951,6 +960,15 @@ public interface XmlmapPackage extends EPackage {
      * @ordered
      */
     int OUTPUT_TREE_NODE__SUBSTITUTION = TREE_NODE__SUBSTITUTION;
+
+    /**
+     * The feature id for the '<em><b>Optional</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TREE_NODE__OPTIONAL = TREE_NODE__OPTIONAL;
 
     /**
      * The feature id for the '<em><b>Aggregate</b></em>' attribute.
@@ -1720,6 +1738,17 @@ public interface XmlmapPackage extends EPackage {
     EAttribute getTreeNode_Substitution();
 
     /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isOptional <em>Optional</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Optional</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isOptional()
+     * @see #getTreeNode()
+     * @generated
+     */
+    EAttribute getTreeNode_Optional();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode <em>Output Tree Node</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2334,6 +2363,14 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EAttribute TREE_NODE__SUBSTITUTION = eINSTANCE.getTreeNode_Substitution();
+
+        /**
+         * The meta object literal for the '<em><b>Optional</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute TREE_NODE__OPTIONAL = eINSTANCE.getTreeNode_Optional();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl <em>Output Tree Node</em>}' class.

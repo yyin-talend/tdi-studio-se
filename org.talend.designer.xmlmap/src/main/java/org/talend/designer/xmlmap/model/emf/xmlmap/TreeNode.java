@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isNullable <em>Nullable</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isChoice <em>Choice</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isSubstitution <em>Substitution</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isOptional <em>Optional</em>}</li>
  * </ul>
  * </p>
  *
@@ -377,5 +378,31 @@ public interface TreeNode extends AbstractNode {
      * @generated
      */
     void setSubstitution(boolean value);
+
+    /**
+     * Returns the value of the '<em><b>Optional</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Optional</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Optional</em>' attribute.
+     * @see #setOptional(boolean)
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getTreeNode_Optional()
+     * @model
+     * @generated
+     */
+    boolean isOptional();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode#isOptional <em>Optional</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Optional</em>' attribute.
+     * @see #isOptional()
+     * @generated
+     */
+    void setOptional(boolean value);
 
 } // TreeNode

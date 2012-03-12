@@ -42,6 +42,7 @@ import org.talend.designer.xmlmap.editor.actions.RenameTreeNodeAction;
 import org.talend.designer.xmlmap.editor.actions.SetAggregateAction;
 import org.talend.designer.xmlmap.editor.actions.SetGroupAction;
 import org.talend.designer.xmlmap.editor.actions.SetLoopAction;
+import org.talend.designer.xmlmap.editor.actions.SetLoopOptional;
 import org.talend.designer.xmlmap.editor.actions.SetSubstitutionAction;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
@@ -158,6 +159,11 @@ public class XmlMapEditor extends GraphicalEditor {
         setSubs.setMapperManager(mapperManager);
         getActionRegistry().registerAction(setSubs);
         getSelectionActions().add(setSubs.getId());
+
+        SetLoopOptional setOptional = new SetLoopOptional(this);
+        getActionRegistry().registerAction(setOptional);
+        getSelectionActions().add(setOptional.getId());
+
     }
 
     /**
@@ -338,6 +344,12 @@ public class XmlMapEditor extends GraphicalEditor {
                             menu.add(loopAction);
                         }
 
+                        SetLoopOptional loopOptinalAction = (SetLoopOptional) getActionRegistry().getAction(SetLoopOptional.ID);
+                        loopOptinalAction.update(object);
+                        if (loopOptinalAction.isEnabled()) {
+                            menu.add(loopOptinalAction);
+                        }
+
                         SetGroupAction grouptAction = (SetGroupAction) getActionRegistry().getAction(SetGroupAction.ID);
                         grouptAction.update(object);
                         if (grouptAction.isEnabled()) {
@@ -435,6 +447,12 @@ public class XmlMapEditor extends GraphicalEditor {
                         loopAction.update(object);
                         if (loopAction.isEnabled()) {
                             menu.add(loopAction);
+                        }
+
+                        SetLoopOptional loopOptinalAction = (SetLoopOptional) getActionRegistry().getAction(SetLoopOptional.ID);
+                        loopOptinalAction.update(object);
+                        if (loopOptinalAction.isEnabled()) {
+                            menu.add(loopOptinalAction);
                         }
 
                         ImportTreeFromRepository importFromRepository = (ImportTreeFromRepository) getActionRegistry().getAction(
