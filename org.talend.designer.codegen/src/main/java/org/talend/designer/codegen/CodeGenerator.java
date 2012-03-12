@@ -56,6 +56,7 @@ import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 import org.talend.designer.codegen.model.CodeGeneratorInternalTemplatesFactoryProvider;
 import org.talend.designer.codegen.proxy.JetProxy;
 import org.talend.designer.core.ICamelDesignerCoreService;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
@@ -274,15 +275,51 @@ public class CodeGenerator implements ICodeGenerator {
                         // Fix bug TESB-2951 Generated Codes error when Route
                         // starts with cFile/cFTP/cActiveMQ/cFTP/cJMS
                         // LiXiaopeng 2011-09-05
-                        String startNodeName = subTree.getRootNode().getSubProcessStartNode(true).getComponent().getName();
+						INode subProcessStartNode = subTree.getRootNode()
+								.getSubProcessStartNode(true);
+						String startNodeName = subProcessStartNode
+								.getComponent().getName();
+						List<String> routerFroms = new ArrayList<String>();
+						{
+							routerFroms.add("cMessagingEndpoint");
+							routerFroms.add("cFile");
+							routerFroms.add("cFTP");
+							routerFroms.add("cJMS");
+							routerFroms.add("cCXF");
+							routerFroms.add("cMail");
+							// routerFroms.add("cErrorHandler");
+						}
                         // http://jira.talendforge.org/browse/TESB-3734 Remove cActiveMQ
-                        if ("cMessagingEndpoint".equals(startNodeName) || "cFile".equals(startNodeName)
-                                || "cFTP".equals(startNodeName) || "cJMS".equals(startNodeName) || "cCXF".equals(startNodeName)) {
+						if (routerFroms.contains(startNodeName)) {
                             nodeSubTreeList.add(subTree);
-                        } else if ("cConfig".equals(startNodeName)) {
+						} else if ("cConfig".equals(startNodeName)) {
                             // Customized remove the cConfig routeId codes.
                             // TESB-2825 LiXP 20110823
                             // Do nothing.
+						} else if ("cErrorHandler".equals(startNodeName)) {
+							List<? extends IConnection> outgoingConnections = subProcessStartNode
+									.getOutgoingConnections();
+							if (outgoingConnections.size() < 1) {
+								componentsCode.append(generateComponentsCode(
+										subTree, subTree.getRootNode(),
+										ECodePart.MAIN, null, ETypeGen.CAMEL));
+								componentsCode.append(";");
+							} else if (outgoingConnections.size() > 0) {
+								INode target = outgoingConnections.get(0)
+										.getTarget();
+								if (routerFroms.contains(target.getComponent()
+										.getName())) {
+									nodeSubTreeList.add(subTree);
+								} else {
+									componentsCode
+											.append(generateComponentsCode(
+													subTree,
+													subTree.getRootNode(),
+													ECodePart.MAIN, null,
+													ETypeGen.CAMEL));
+									componentsCode.append(";");
+								}
+							}
                         } else {
                             componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null,
                                     ETypeGen.CAMEL)); // And
@@ -623,25 +660,56 @@ public class CodeGenerator implements ICodeGenerator {
                     }
                     codeComponent.append(generateComponentCode(subProcess, node, ECodePart.MAIN, incomingName, typeGen));
                     if (ETypeGen.CAMEL == typeGen) {
-                        if (node.getIncomingConnections().size() < 1){
-							// http://jira.talendforge.org/browse/TESB-4086 XiaopengLi
-							String label = null;
-							IElementParameter parameter = node
-									.getElementParameter("LABEL");
-							if (parameter != null
-									&& !"__UNIQUE_NAME__".equals(parameter
-											.getValue())) {
-								label = (String) parameter.getValue();
-							}
+						String label = null;
+						IElementParameter parameter = node
+								.getElementParameter("LABEL");
+						if (parameter != null
+								&& !"__UNIQUE_NAME__".equals(parameter
+										.getValue())) {
+							label = (String) parameter.getValue();
+						}
 
-							if(label == null){
-								label = node.getUniqueName();
+						if (label == null) {
+							label = node.getUniqueName();
+						}
+						List<? extends IConnection> inConnections = node
+								.getIncomingConnections();
+						int size = inConnections.size();
+						if (size < 1) {
+							// http://jira.talendforge.org/browse/TESB-4086 XiaopengLi
+							if ("cErrorHandler".equals(node.getComponent()
+									.getName())) {
+								// codeComponent.append(".id(\""
+								// + node.getUniqueName() + "\")");
+							} else {
+								codeComponent.append(".routeId(\"" + label
+										+ "\")");
 							}
-                            codeComponent.append(".routeId(\"" + label + "\")");
-                        }
-                        else{
-                        	codeComponent.append(".id(\"" + node.getUniqueName() + "\")");
-                        }
+						} else if (size == 1) {
+							IConnection iConnection = inConnections.get(0);
+							INode source = iConnection.getSource();
+							if ("cErrorHandler".equals(source.getComponent()
+									.getName())
+									&& source.getIncomingConnections().size() < 1) {
+
+								if ("true"
+										.equals(node
+												.getPropertyValue(EParameterName.STARTABLE
+														.getName()))) {
+									codeComponent.append(".routeId(\"" + label
+											+ "\")");
+								} else {
+									// codeComponent.append(".id(\""
+									// + node.getUniqueName() + "\")");
+								}
+							} else {
+								codeComponent.append(".id(\""
+										+ node.getUniqueName() + "\")");
+							}
+						} else {
+							codeComponent.append(".id(\""
+									+ node.getUniqueName() + "\")");
+						}
                     }
                     codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.MAIN, typeGen));
                 }
