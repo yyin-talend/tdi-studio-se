@@ -73,6 +73,13 @@
 				javax.jms.ConnectionFactory jmsConnectionFactory = null;
 <%			}
 			for(INode node: jmsCFNodes){
+				//Use transaction http://jira.talendforge.org/browse/TESB-5160 By LiXiaopeng
+				String useTransaction = ElementParameterParser.getValue(node, "__USE_TRANSACTION__");
+				String transactedMethodStr = "";
+				if("true".equals(useTransaction)){
+					transactedMethodStr = "Transacted";
+				}
+			
 				//Component Name
 				String name = node.getUniqueName().replace("_", "");
 				name = "\"" + name + "\"";
@@ -129,13 +136,13 @@
 				pooledConnectionFactory_<%=node.getUniqueName()%>.setMaxConnections(<%=amq_pool_max_connections%>);
 				pooledConnectionFactory_<%=node.getUniqueName()%>.setMaximumActive(<%=amq_pool_max_active%>);
 				camelContext.addComponent(<%=name%>,
-					org.apache.camel.component.jms.JmsComponent.jmsComponent(pooledConnectionFactory_<%=node.getUniqueName()%>));	
+					org.apache.camel.component.jms.JmsComponent.jmsComponent<%=transactedMethodStr%>(pooledConnectionFactory_<%=node.getUniqueName()%>));	
 <%
 					 
 				}else{
 %>				
 				camelContext.addComponent(<%=name%>,
-					org.apache.camel.component.jms.JmsComponent.jmsComponent(jmsConnectionFactory));
+					org.apache.camel.component.jms.JmsComponent.jmsComponent<%=transactedMethodStr%>(jmsConnectionFactory));
 <%				
 				    }
 				}else if("WebSphere MQ".equals(mqType)){
@@ -176,7 +183,7 @@
 					if("false".equals(useAuth)){
 %>
 					camelContext.addComponent(<%=name%>,
-						org.apache.camel.component.jms.JmsComponent.jmsComponent(jmsConnectionFactory));
+						org.apache.camel.component.jms.JmsComponent.jmsComponent<%=transactedMethodStr%>(jmsConnectionFactory));
 <%					
 					}else{
 %>
@@ -187,7 +194,7 @@
        				connectionFactoryAdapter<%=node.getUniqueName()%>.setTargetConnectionFactory(jmsConnectionFactory);
        
 					camelContext.addComponent(<%=name%>,
-						org.apache.camel.component.jms.JmsComponent.jmsComponent(connectionFactoryAdapter<%=node.getUniqueName()%>));
+						org.apache.camel.component.jms.JmsComponent.jmsComponent<%=transactedMethodStr%>(connectionFactoryAdapter<%=node.getUniqueName()%>));
 <%						
 					}					
 					
@@ -195,7 +202,7 @@
 %>
 					<%=ElementParameterParser.getValue(node, "__OTHER_CODE__")%>
 					camelContext.addComponent(<%=name%>,
-						org.apache.camel.component.jms.JmsComponent.jmsComponent(jmsConnectionFactory));
+						org.apache.camel.component.jms.JmsComponent.jmsComponent<%=transactedMethodStr%>(jmsConnectionFactory));
 <%
 				}
 			
