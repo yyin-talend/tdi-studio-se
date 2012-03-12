@@ -106,24 +106,22 @@ public class ImportProjectsUtilities {
         // TODO SML Optimize
         final IWorkspace workspace = org.eclipse.core.resources.ResourcesPlugin.getWorkspace();
         IContainer containers = (IProject) workspace.getRoot().findMember(new Path(technicalName));
-
         IResource file2 = containers.findMember(IProjectDescription.DESCRIPTION_FILE_NAME);
         try {
             FilesUtils.replaceInFile("<name>.*</name>", file2.getLocation().toOSString(), "<name>" + technicalName + "</name>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-            IResource file3 = containers.findMember(OLD_TALEND_PROJECT_FILE_NAME);
-            if (file3 == null || !file3.exists()) {
-                file3 = containers.findMember(TALEND_PROJECT_FILE_NAME);
-            }
-            replaceInFile("label=\".*?\"", file3.getLocation().toOSString(), "label=\"" + newName + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            replaceInFile("technicalLabel=\".*?\"", file3.getLocation().toOSString(), "technicalLabel=\"" //$NON-NLS-1$ //$NON-NLS-2$
-                    + technicalName + "\""); //$NON-NLS-1$
             // TDI-19269
             final IProject project = workspace.getRoot().getProject(technicalName);
             XmiResourceManager xmiManager = new XmiResourceManager();
             try {
                 final Project loadProject = xmiManager.loadProject(project);
+                loadProject.setTechnicalLabel(technicalName);
+                loadProject.setLabel(newName);
                 loadProject.setLocal(true);
+                loadProject.setId(0);
+                loadProject.setUrl(null);
+                loadProject.setCreationDate(null);
+                loadProject.setDescription("");
+                loadProject.setType(null);
                 xmiManager.saveResource(loadProject.eResource());
             } catch (PersistenceException e) {
                 //
