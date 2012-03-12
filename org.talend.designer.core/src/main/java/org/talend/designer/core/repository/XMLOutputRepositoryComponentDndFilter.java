@@ -12,11 +12,13 @@
 // ============================================================================
 package org.talend.designer.core.repository;
 
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.DefaultRepositoryComponentDndFilter;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * DOC ggu class global comment. Detailled comment
@@ -35,6 +37,16 @@ public class XMLOutputRepositoryComponentDndFilter extends DefaultRepositoryComp
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean except(Item item, ERepositoryObjectType type, RepositoryNode seletetedNode, IComponent component,
+            String repositoryType) {
+        if (component != null && repositoryType != null && repositoryType.equals("XMLOUTPUT")
+                && (component.getName().equals("tExtractXMLField") || component.getName().equals("tFileInputXML"))) {
+            return true;
+        }
+        return false;
     }
 
 }
