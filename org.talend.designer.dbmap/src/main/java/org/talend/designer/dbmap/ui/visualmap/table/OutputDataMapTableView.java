@@ -39,6 +39,7 @@ import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedLis
 import org.talend.commons.ui.swt.tableviewer.behavior.TableCellValueModifiedEvent;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonPushImageTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.core.model.components.IComponent;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.i18n.Messages;
@@ -234,7 +235,12 @@ public class OutputDataMapTableView extends DataMapTableView {
 
     public void createFiltersColumns(final TableViewerCreator<FilterTableEntry> tableViewerCreatorForFilters) {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForFilters);
-        column.setTitle(Messages.getString("OutputDataMapTableView.columnTitle.AdditionalClauses")); //$NON-NLS-1$
+        IComponent component = getMapperManager().getComponent().getComponent();
+        if (component != null && "tELTOracleMap".equals(component.getName())) { //$NON-NLS-1$
+            column.setTitle(Messages.getString("OutputDataMapTableView.columnTitle.AdditionalClauses.oracle")); //$NON-NLS-1$
+        } else {
+            column.setTitle(Messages.getString("OutputDataMapTableView.columnTitle.AdditionalClauses")); //$NON-NLS-1$
+        }
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<FilterTableEntry, String>() {
 
