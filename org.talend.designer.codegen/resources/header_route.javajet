@@ -518,9 +518,27 @@ for (INode node : graphicalNodes) {
 		String method = ElementParameterParser.getValue(node, "__METHOD__");
 		if("GET".equals(method)||"HEAD".equals(method)){
 			List<Map<String, String>> parameters = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__PARAMETERS__");
+			String encodeCharset = ElementParameterParser.getValue(node, "__ENCODER_CHARSET__");
+			
 			for (Map<String, String> map : parameters) {
 				String argName = map.get("KEY").trim();
 				String argValue = map.get("VALUE").trim();
+				try{
+					if(argName.startsWith("\"")&&argName.endsWith("\"")&&argName.length()>=2){
+						argName = URLEncoder.encode(argName.substring(1, argName.length()-1),encodeCharset);
+						argName = "\""+argName+"\"";
+					}else{
+						argName = URLEncoder.encode(argName,encodeCharset);
+					}
+					if(argValue.startsWith("\"")&&argValue.endsWith("\"")&&argValue.length()>=2){
+						argValue = URLEncoder.encode(argValue.substring(1, argValue.length()-1),encodeCharset);
+						argValue = "\""+argValue+"\"";
+					}else{
+						argValue = URLEncoder.encode(argValue,encodeCharset);
+					}
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
 				if (hasParam) {
 					sb.append("+\"&\"+" + argName + "+\"=\"+" + argValue);
 				} else {
