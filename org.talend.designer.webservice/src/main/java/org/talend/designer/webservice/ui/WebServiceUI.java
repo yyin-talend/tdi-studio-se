@@ -381,25 +381,26 @@ public class WebServiceUI extends AbstractWebService {
                     if (!ele.equals("")) {
                         if (!map.get("PARAPARENT").equals("")) {
                             String paraParent = map.get("PARAPARENT");
-                            if (paraParent.equals(ele)) {
-                                ParameterInfo parain = new ParameterInfo();
-                                parain.setName(ele);
-                            } else {
-                                for (int i = 0; i < paraoutList.size(); i++) {
-                                    ParameterInfo para2 = paraoutList.get(i);
-                                    if (paraParent.equals(para2.getName())) {
-                                        // para.setParent(para2);
-                                        ParameterInfo parain = new ParameterInfo();
-                                        parain.setName(ele);
-                                        // bug 22801:After import tWebService job,missing [*] when added new Element
-                                        parain.setArraySize(arraySize);
-                                        parain.setIndex(paraIndex);
-                                        para2.getParameterInfos().add(parain);
-                                        parain.setParent(para2);
-                                        paraoutList.add(parain);
-                                    }
+                            // if (paraParent.equals(ele)) {
+                            // ParameterInfo parain = new ParameterInfo();
+                            // parain.setName(ele);
+                            // } else {
+                            for (int i = 0; i < paraoutList.size(); i++) {
+                                ParameterInfo para2 = paraoutList.get(i);
+                                if (paraParent.equals(para2.getName())) {
+                                    // para.setParent(para2);
+                                    ParameterInfo parain = new ParameterInfo();
+                                    parain.setName(ele);
+                                    // bug 22801:After import tWebService job,missing [*] when added new Element
+                                    parain.setArraySize(arraySize);
+                                    parain.setIndex(paraIndex);
+                                    para2.getParameterInfos().add(parain);
+                                    parain.setParent(para2);
+                                    paraoutList.add(parain);
+                                    break;
                                 }
                             }
+                            // }
                         } else {
                             paraout = new ParameterInfo();
                             paraout.setName(ele);
