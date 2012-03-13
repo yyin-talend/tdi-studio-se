@@ -119,8 +119,7 @@ import org.talend.repository.utils.JobVersionUtils;
 /**
  * Page of the Job Scripts Export Wizard. <br/>
  * 
- * @referto WizardArchiveFileResourceExportPage1 $Id:
- *          JobScriptsExportWizardPage.java 1 2006-12-13 下午03:09:07 bqian
+ * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 下午03:09:07 bqian
  * 
  */
 public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPage1 {
@@ -135,7 +134,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     protected static final String QUERY_MESSAGE_NAME = "queryMessageName";//$NON-NLS-1$
 
-    public static final String ALL_VERSIONS = "all"; //$NON-NLS-1$
+    public static final String ALL_VERSIONS = "Latest"; //$NON-NLS-1$
 
     private static final String OUTPUT_FILE_SUFFIX = ".zip"; //$NON-NLS-1$
 
@@ -420,8 +419,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         GridLayout layout = new GridLayout();
         versionGroup.setLayout(layout);
         versionGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		versionGroup.setText(Messages.getString(
-				"JobScriptsExportWSWizardPage.JobVersion", getProcessType())); //$NON-NLS-1$
+        versionGroup.setText(Messages.getString("JobScriptsExportWSWizardPage.JobVersion", getProcessType())); //$NON-NLS-1$
         versionGroup.setFont(parent.getFont());
 
         versionGroup.setLayout(new GridLayout(1, true));
@@ -431,9 +429,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         left.setLayout(new GridLayout(3, false));
 
         Label label = new Label(left, SWT.NONE);
-		label.setText(Messages
-				.getString(
-						"JobScriptsExportWSWizardPage.JobVersion.Label", getProcessType())); //$NON-NLS-1$
+        label.setText(Messages.getString("JobScriptsExportWSWizardPage.JobVersion.Label", getProcessType())); //$NON-NLS-1$
 
         final Combo versionCombo = new Combo(left, SWT.PUSH);
         GridData gd = new GridData();
@@ -1338,7 +1334,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         // achen modify to fix bug 0006222
 
         IRunnableWithProgress worker = new JobExportAction(Arrays.asList(getCheckNodes()), getSelectedJobVersion(), manager,
- originalRootFolderName, getProcessType());
+                originalRootFolderName, getProcessType());
 
         IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
         try {
@@ -1580,13 +1576,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         return JobExportType.POJO;
     }
 
-	/**
-	 * GLIU add for fixing TESB-4975 default is "Job"
-	 * 
-	 * @return
-	 */
-	protected String getProcessType() {
-		return "Job";
-	}
+    /**
+     * GLIU add for fixing TESB-4975 default is "Job"
+     * 
+     * @return
+     */
+    protected String getProcessType() {
+        return "Job";
+    }
 
 }
