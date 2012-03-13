@@ -275,7 +275,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
     protected String getRepositoryItemFromRepositoryName(IElementParameter param, String repositoryName) {
         String value = (String) param.getValue();
         Object[] valuesList = param.getListItemsValue();
-        String[] originalList = param.getListItemsDisplayName();
+        String[] originalList = param.getListItemsDisplayCodeName();
         for (int i = 0; i < valuesList.length; i++) {
             if (valuesList[i].equals(value)) {
                 if ("DB_VERSION".equals(repositoryName)) {
