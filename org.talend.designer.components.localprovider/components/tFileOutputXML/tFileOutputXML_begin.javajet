@@ -207,6 +207,8 @@ imports="
 %>
 	int nb_line_<%=cid%> = 0;
 	org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
+	format_<%=cid%>.setEncoding(<%=encoding%>);
+	format_<%=cid%>.setNewLineAfterDeclaration(false);
 	org.dom4j.io.XMLWriter writer_<%=cid%> = new org.dom4j.io.XMLWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(file_<%=cid %>), <%=encoding%>), format_<%=cid%>);
 <%
 			}
