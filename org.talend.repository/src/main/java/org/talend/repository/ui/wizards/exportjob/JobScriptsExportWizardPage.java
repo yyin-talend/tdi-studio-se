@@ -134,7 +134,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     protected static final String QUERY_MESSAGE_NAME = "queryMessageName";//$NON-NLS-1$
 
-    public static final String ALL_VERSIONS = "all"; //$NON-NLS-1$
+    public static final String ALL_VERSIONS = "Latest"; //$NON-NLS-1$
 
     private static final String OUTPUT_FILE_SUFFIX = ".zip"; //$NON-NLS-1$
 
