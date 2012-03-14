@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.fileoutputxml.action;
 
+import java.util.List;
+
+import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -73,8 +76,20 @@ public class CreateAttributeAction extends SelectionProviderAction {
     private void createChildNode(FOXTreeNode node) {
         String label = ""; //$NON-NLS-1$
         while (!org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil.validateLabelForXML(label)) {
+            final List<FOXTreeNode> nodes = node.getChildren();
             InputDialog dialog = new InputDialog(null, Messages.getString("CreateAttributeAction.1"), //$NON-NLS-1$
-                    Messages.getString("CreateAttributeAction.2"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
+                    Messages.getString("CreateAttributeAction.2"), "", new IInputValidator() {
+
+                        @Override
+                        public String isValid(String newText) {
+                            for (int i = 0; i < nodes.size(); i++) {
+                                if (newText.trim().equals(nodes.get(i).getLabel())) {
+                                    return "The name already exists, please change a new one.";
+                                }
+                            }
+                            return null;
+                        }
+                    }); //$NON-NLS-1$ 
             int status = dialog.open();
             if (status == InputDialog.OK) {
                 label = dialog.getValue().trim();

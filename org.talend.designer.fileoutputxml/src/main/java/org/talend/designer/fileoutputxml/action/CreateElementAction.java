@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.fileoutputxml.action;
 
+import java.util.List;
+
+import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -84,9 +87,21 @@ public class CreateElementAction extends SelectionProviderAction {
         }
         String label = ""; //$NON-NLS-1$
         while (!StringUtil.validateLabelForXML(label)) {
+            final List<FOXTreeNode> nodes = node.getChildren();
             InputDialog dialog = new InputDialog(null,
                     Messages.getString("CreateElementAction.4"), Messages.getString("CreateElementAction.5"), //$NON-NLS-1$ //$NON-NLS-2$
-                    "", null); //$NON-NLS-1$
+                    "", new IInputValidator() {
+
+                        @Override
+                        public String isValid(String newText) {
+                            for (int i = 0; i < nodes.size(); i++) {
+                                if (newText.trim().equals(nodes.get(i).getLabel())) {
+                                    return "The name already exists, please change a new one.";
+                                }
+                            }
+                            return null;
+                        }
+                    }); //$NON-NLS-1$
             int status = dialog.open();
             if (status == InputDialog.OK) {
                 label = dialog.getValue().trim();
