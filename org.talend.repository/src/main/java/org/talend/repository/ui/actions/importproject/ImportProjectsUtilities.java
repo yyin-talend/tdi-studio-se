@@ -122,6 +122,11 @@ public class ImportProjectsUtilities {
                 loadProject.setCreationDate(null);
                 loadProject.setDescription("");
                 loadProject.setType(null);
+                // ADD xqliu 2012-03-14 TDQ-4771 clear the list of Folders
+                if (loadProject.getFolders() != null) {
+                    loadProject.getFolders().clear();
+                }
+                // ~ TDQ-4771
                 xmiManager.saveResource(loadProject.eResource());
             } catch (PersistenceException e) {
                 //
