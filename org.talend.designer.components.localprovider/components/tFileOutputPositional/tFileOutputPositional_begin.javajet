@@ -119,6 +119,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 		int nb_line_<%=cid%> = 0;
 		
+<%
+		if(useByte){
+%>
+class Arrays_<%=cid %>{
+    public byte[] copyOfRange(byte[] original, int from, int to) {
+        int newLength = to - from;
+        if (newLength < 0)
+            throw new IllegalArgumentException(from + " > " + to);
+        byte[] copy = new byte[newLength];
+        System.arraycopy(original, from, copy, 0,
+                         Math.min(original.length - from, newLength));
+        return copy;
+    }
+}
+byte[] byteArray_<%=cid %> = new byte[0];
+Arrays_<%=cid %> arrays_<%=cid %> = new Arrays_<%=cid %>();
+<%
+		}
+%>		
 		class PositionUtil_<%=cid%>{
 		
 <%
@@ -130,7 +149,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			Map<String, String> format=formats.get(i);
     			if(i%100==0){
 %>
-              void writeHeader_<%=i/100%>(String tempStringB<%=cid %>,int tempLengthB<%=cid %>,final <%=writerClass %> out<%=cid %>)throws IOException,java.io.UnsupportedEncodingException{
+              void writeHeader_<%=i/100%>(String tempStringB<%=cid %>,int tempLengthB<%=cid %>,final <%=writerClass %> out<%=cid %><% if(useByte){ %>,byte[] byteArray_<%=cid %>,Arrays_<%=cid %> arrays_<%=cid %><% } %>)throws IOException,java.io.UnsupportedEncodingException{
               
                  int tempLengthM<%=cid %>= 0;
 <%
@@ -148,18 +167,40 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
                     if (("\'A\'").equals(format.get("KEEP"))) {
                     } else if (("\'R\'").equals(format.get("KEEP"))) {
+						if(useByte){
 %>
-                        tempStringB<%=cid %> = tempStringB<%=cid %>.substring(tempLengthB<%=cid %>-<%=format.get("SIZE")%>);
+                    		byteArray_<%=cid %>=arrays_<%=cid %>.copyOfRange(tempStringB<%=cid %>.getBytes(<%=encoding %>),tempLengthB<%=cid %> - <%=format.get("SIZE")%>,tempLengthB<%=cid %>);
+	                    	tempStringB<%=cid %> = new String(byteArray_<%=cid %>,<%=encoding %>);
 <%
+                        }else{
+%>
+	                        tempStringB<%=cid %> = tempStringB<%=cid %>.substring(tempLengthB<%=cid %>-<%=format.get("SIZE")%>);
+<%
+						}
                     } else if (("\'M\'").equals(format.get("KEEP"))) {
 %>
                         int begin<%=cid %>=(tempLengthB<%=cid %>-<%=format.get("SIZE")%>)/2;
-                        tempStringB<%=cid %> = tempStringB<%=cid %>.substring(begin<%=cid %>, begin<%=cid %>+<%=format.get("SIZE")%>);
 <%
-                    } else {
+						if(useByte){
 %>
-                    tempStringB<%=cid %> = tempStringB<%=cid %>.substring(0, <%=format.get("SIZE")%>);
+							byteArray_<%=cid %>=arrays_<%=cid %>.copyOfRange(tempStringB<%=cid %>.getBytes(<%=encoding %>),begin<%=cid %>,begin<%=cid %> + <%=format.get("SIZE")%>);
+		                    tempStringB<%=cid %> = new String(byteArray_<%=cid %>,<%=encoding %>);
 <%
+						}else{
+%>
+    	                    tempStringB<%=cid %> = tempStringB<%=cid %>.substring(begin<%=cid %>, begin<%=cid %>+<%=format.get("SIZE")%>);
+<%
+	                    }
+                    } else {
+                    	if(useByte){
+%>
+	                    	byteArray_<%=cid %>=arrays_<%=cid %>.copyOfRange(tempStringB<%=cid %>.getBytes(<%=encoding %>),0,<%=format.get("SIZE")%>);
+                    		tempStringB<%=cid %> = new String(byteArray_<%=cid %>,<%=encoding %>);
+<%
+                    	}else{
+%>
+                    		tempStringB<%=cid %> = tempStringB<%=cid %>.substring(0, <%=format.get("SIZE")%>);
+<%						}
                     }
 %>
                 }else if(tempLengthB<%=cid %><<%=format.get("SIZE")%>){
@@ -226,7 +267,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 				if(i%100==0){
 %>
-				  void setValue_<%=i/100%>(final <%=inConnName!=null?inConnName:conn.getName() %>Struct <%=conn.getName() %>,StringBuilder sb_<%=cid %>,String tempStringM<%=cid %>,int tempLengthM<%=cid %>)throws IOException,java.io.UnsupportedEncodingException{
+				  void setValue_<%=i/100%>(final <%=inConnName!=null?inConnName:conn.getName() %>Struct <%=conn.getName() %>,StringBuilder sb_<%=cid %>,String tempStringM<%=cid %>,int tempLengthM<%=cid %><% if(useByte){ %>,byte[] byteArray_<%=cid %>,Arrays_<%=cid %> arrays_<%=cid %><% } %>)throws IOException,java.io.UnsupportedEncodingException{
 <%
                 }
 %>
@@ -268,16 +309,41 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     if (("\'A\'").equals(format.get("KEEP"))) {%>
                         sb_<%=cid %>.append(tempStringM<%=cid %>);
                     <%
-                    } else if (("\'R\'").equals(format.get("KEEP"))) {%>
-                        sb_<%=cid %>.append(tempStringM<%=cid %>.substring(tempLengthM<%=cid %>-<%=format.get("SIZE")%>));
-                    <%
-                    } else if (("\'M\'").equals(format.get("KEEP"))) {%>
+                    } else if (("\'R\'").equals(format.get("KEEP"))) {
+                    	 if(useByte){%>
+                    		byteArray_<%=cid %>=arrays_<%=cid %>.copyOfRange(tempStringM<%=cid %>.getBytes(<%=encoding %>),tempLengthM<%=cid %> - <%=format.get("SIZE")%>,tempLengthM<%=cid %>);
+	                    	sb_<%=cid %>.append(new String(byteArray_<%=cid %>,<%=encoding %>));
+<%
+                         }else{
+%>
+    	                    sb_<%=cid %>.append(tempStringM<%=cid %>.substring(tempLengthM<%=cid %>-<%=format.get("SIZE")%>));
+<%
+                    	 }
+                    } else if (("\'M\'").equals(format.get("KEEP"))) {
+%>
                         int begin<%=cid %>=(tempLengthM<%=cid %>-<%=format.get("SIZE")%>)/2;
-                        sb_<%=cid %>.append(tempStringM<%=cid %>.substring(begin<%=cid %>, begin<%=cid %>+<%=format.get("SIZE")%>));
-                    <%
-                    } else {%>
-                        sb_<%=cid %>.append(tempStringM<%=cid %>.substring(0, <%=format.get("SIZE")%>));
-                    <%
+<%
+						if(useByte){
+%>
+							byteArray_<%=cid %>=arrays_<%=cid %>.copyOfRange(tempStringM<%=cid %>.getBytes(<%=encoding %>),begin<%=cid %>,begin<%=cid %>+<%=format.get("SIZE")%>);
+	                    	sb_<%=cid %>.append(new String(byteArray_<%=cid %>,<%=encoding %>));
+<%
+						}else{
+%>
+    	                    sb_<%=cid %>.append(tempStringM<%=cid %>.substring(begin<%=cid %>, begin<%=cid %>+<%=format.get("SIZE")%>));
+<%
+                    	}
+                    } else {
+                    	if(useByte){
+%>
+                    		byteArray_<%=cid %>=arrays_<%=cid %>.copyOfRange(tempStringM<%=cid %>.getBytes(<%=encoding %>),0,<%=format.get("SIZE")%>);
+                    		sb_<%=cid %>.append(new String(byteArray_<%=cid %>,<%=encoding %>));
+<%
+                    	}else{
+%>
+                    		sb_<%=cid %>.append(tempStringM<%=cid %>.substring(0, <%=format.get("SIZE")%>));
+<%
+                    	}
                     }%>
                 }else if(tempLengthM<%=cid %><<%=format.get("SIZE")%>){
                    
@@ -417,7 +483,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			Map<String, String> format=formats.get(i);
     			if(i%100==0){
 %>
-            positionUtil_<%=cid%>.writeHeader_<%=i/100%>(tempStringB<%=cid %>,tempLengthB<%=cid %>,out<%=cid %>);
+            positionUtil_<%=cid%>.writeHeader_<%=i/100%>(tempStringB<%=cid %>,tempLengthB<%=cid %>,out<%=cid %><% if(useByte){ %>,byteArray_<%=cid %>,arrays_<%=cid %><% }%>);
 <%
                 }
             }

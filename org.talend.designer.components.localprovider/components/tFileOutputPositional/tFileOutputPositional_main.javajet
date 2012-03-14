@@ -69,7 +69,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 				if(i%100==0){
 %>
-    				positionUtil_<%=cid%>.setValue_<%=i/100%>(<%=conn.getName() %>,sb_<%=cid %>,tempStringM<%=cid %>,tempLengthM<%=cid %>);
+    				positionUtil_<%=cid%>.setValue_<%=i/100%>(<%=conn.getName() %>,sb_<%=cid %>,tempStringM<%=cid %>,tempLengthM<%=cid %><% if(useByte){ %>,byteArray_<%=cid %>,arrays_<%=cid %><% }%>);
 <%
 				}
 			}
