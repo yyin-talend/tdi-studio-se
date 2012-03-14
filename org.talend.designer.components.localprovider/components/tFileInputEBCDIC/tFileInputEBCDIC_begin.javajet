@@ -21,6 +21,10 @@
     
 	String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 	String copybook = ElementParameterParser.getValue(node,"__COPYBOOK__");
+	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+	List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
+	String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
+	boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
 %>
 
 	// open file
@@ -28,6 +32,7 @@
 	javax.xml.bind.Unmarshaller unmarshaller_<%=cid %> = jaxbContext_<%=cid %>.createUnmarshaller();
 	Object o_<%=cid %> = unmarshaller_<%=cid %>.unmarshal(new java.io.FileInputStream(<%= copybook %>));
 	net.sf.cobol2j.FileFormat fF_<%=cid %> = (net.sf.cobol2j.FileFormat) o_<%=cid %>;
+    fF_<%=cid %>.setConversionTable(<%=encoding%>);
 	net.sf.cobol2j.RecordSet rset_<%=cid %> = new net.sf.cobol2j.RecordSet(new java.io.FileInputStream(<%= filename %>), fF_<%=cid %>);
 	java.util.Map recdefs_<%=cid %> = new net.sf.cobol2j.RecordsMap(fF_<%=cid %>);
 	
@@ -81,9 +86,15 @@ if(justConn != null){//------BBB
 		for (int valueN=0; valueN<sizeListColumns; valueN++) {
 			IMetadataColumn column = justColumnList.get(valueN);
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+			if(javaType == JavaTypesManager.STRING){
 %>				
-		<%=justConn.getName() %>.<%=column.getLabel()%> = (<%=javaType.getLabel() %>)inrecord_<%=cid %>.get(<%=valueN%>);
+				<%=justConn.getName() %>.<%=column.getLabel()%> = ((String)inrecord_<%=cid %>.get(<%=valueN%>))<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
 <%
+			}else {
+%>
+				<%=justConn.getName() %>.<%=column.getLabel()%> = (<%=javaType.getLabel() %>)inrecord_<%=cid %>.get(<%=valueN%>);
+<%
+			}
 		}
 %>	
 	}	

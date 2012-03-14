@@ -14,6 +14,7 @@
 <%
 	String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 	String copybook = ElementParameterParser.getValue(node,"__COPYBOOK__");
+	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 %>
 
     // write file
@@ -21,6 +22,7 @@
     javax.xml.bind.Unmarshaller unmarshallerW_<%=cid %> = jaxbContextW_<%=cid %>.createUnmarshaller();
     Object oW_<%=cid %> = unmarshallerW_<%=cid %>.unmarshal(new java.io.FileInputStream(<%= copybook %>));
     net.sf.cobol2j.FileFormat fFW_<%=cid %> = (net.sf.cobol2j.FileFormat) oW_<%=cid %>;
+    fFW_<%=cid %>.setConversionTable(<%=encoding%>);
     net.sf.cobol2j.RecordWriter rwriter_<%=cid %> = new net.sf.cobol2j.RecordWriter( new java.io.FileOutputStream(<%= filename %>), fFW_<%=cid %> );
     
     int nb_line_<%=cid%> = 0;
