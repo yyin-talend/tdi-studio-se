@@ -869,6 +869,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             }
         }
         Set<String> neededLibraries = JavaProcessorUtilities.getNeededLibrariesForProcess(process);
+        JavaProcessorUtilities.checkJavaProjectLib(neededLibraries);
 
         boolean exportingJob = ProcessorUtilities.isExportConfig();
         String unixRootPathVar = "$ROOT_PATH"; //$NON-NLS-1$

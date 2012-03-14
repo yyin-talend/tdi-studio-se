@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -403,6 +404,25 @@ public class JavaProcessorUtilities {
             }
         }
         return neededLibraries;
+    }
+
+    /**
+     * DOC ycbai Comment method "checkJavaProjectLib".
+     * 
+     * @param jarsNeeded
+     */
+    public static void checkJavaProjectLib(Collection<String> jarsNeeded) {
+        File libDir = getJavaProjectLibFolder();
+        if ((libDir != null) && (libDir.isDirectory())) {
+            Set<String> jarsNeedRetrieve = new HashSet<String>(jarsNeeded);
+            for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
+                jarsNeedRetrieve.remove(externalLib.getName());
+            }
+            if (!jarsNeedRetrieve.isEmpty()) {
+                ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
+                repositoryBundleService.retrieve(jarsNeedRetrieve, libDir.getAbsolutePath());
+            }
+        }
     }
 
     /**
