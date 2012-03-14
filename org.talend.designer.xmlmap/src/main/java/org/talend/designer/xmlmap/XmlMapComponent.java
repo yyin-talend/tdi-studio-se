@@ -125,7 +125,7 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
     public void renameInputConnection(String oldName, String newName) {
         XmlMapData externalEmfData = (XmlMapData) getExternalEmfData();
         for (InputXmlTree inputTree : externalEmfData.getInputTrees()) {
-            if (inputTree.getName() != null && inputTree.getName().equals(oldName)) {
+            if (inputTree.getName() != null && inputTree.getName().equals(oldName) && !oldName.equals(newName)) {
                 inputTree.setName(newName);
                 XmlMapUtil.updateXPathAndExpression(externalEmfData, inputTree.getNodes(), inputTree.getName(), 1);
             }
@@ -135,7 +135,7 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
     public void renameOutputConnection(String oldName, String newName) {
         XmlMapData externalEmfData = (XmlMapData) getExternalEmfData();
         for (OutputXmlTree outputTree : externalEmfData.getOutputTrees()) {
-            if (outputTree.getName() != null && outputTree.getName().equals(oldName)) {
+            if (outputTree.getName() != null && outputTree.getName().equals(oldName) && !oldName.equals(newName)) {
                 outputTree.setName(newName);
                 XmlMapUtil.updateXPathAndExpression(externalEmfData, outputTree.getNodes(), outputTree.getName(), 1);
             }
