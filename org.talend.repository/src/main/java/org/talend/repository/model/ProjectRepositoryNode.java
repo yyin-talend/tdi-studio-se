@@ -140,6 +140,8 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     public static boolean refreshBool = false;
 
+    private static ProjectRepositoryNode defaultProjRepoNode;
+
     private final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
     private org.talend.core.model.general.Project project;
@@ -178,6 +180,15 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     // base project
     public ProjectRepositoryNode(IRepositoryObject object, RepositoryNode parent, ENodeType type) {
         this(ProjectManager.getInstance().getCurrentProject(), object, parent, null, type);
+    }
+
+    public static ProjectRepositoryNode getInstance() {
+        if (defaultProjRepoNode == null) {
+            defaultProjRepoNode = new ProjectRepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
+            ProjectManager.getInstance().updateViewProjectNode(defaultProjRepoNode);
+            defaultProjRepoNode.initialize(null);
+        }
+        return defaultProjRepoNode;
     }
 
     private String getCurrentRepositoryType() {
@@ -412,7 +423,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         nodes.add(docNode);
 
         // 7. Metadata
-        metadataNode = new RepositoryNode(null, this, ENodeType.STABLE_SYSTEM_FOLDER);
+        metadataNode = new FixedRepositoryNode(null, this, ENodeType.STABLE_SYSTEM_FOLDER);
         metadataNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA);
         metadataNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA);
         nodes.add(metadataNode);
@@ -649,29 +660,16 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         // hideHiddenNodesDependsUserRight(this, currentRepositoryType);
     }
 
-    private void hideHiddenNodesDependsUserRight(IRepositoryNode container, String currentRepositoryType) {
-        for (IRepositoryNode node : new ArrayList<IRepositoryNode>(container.getChildren())) {
-            ERepositoryObjectType contentType = node.getContentType();
-            if (contentType != null && !ArrayUtils.contains(contentType.getProducts(), currentRepositoryType)) {
-                removeNode(this, node);
-                removeContentType(contentType);
-            } else {
-                hideNodesFromOtherProduct(node, currentRepositoryType);
-            }
-        }
-    }
-
     private void initExtensionRepositoryNodes(List<IRepositoryNode> nodes) {
         repositoryNodeExtensionMap.clear();
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IConfigurationElement[] configurationElements = registry
                 .getConfigurationElementsFor("org.talend.core.repository.repository_node_provider"); //$NON-NLS-1$
         try {
-            for (int i = 0; i < configurationElements.length; i++) {
-                IConfigurationElement element = configurationElements[i];
-                Object extensionNode = element.createExecutableExtension("class"); //$NON-NLS-N$
-                String type = element.getAttribute("type"); //$NON-NLS-N$
-                String parentNodeType = element.getAttribute("parentNodeType"); //$NON-NLS-N$
+            for (IConfigurationElement element : configurationElements) {
+                Object extensionNode = element.createExecutableExtension("class");
+                String type = element.getAttribute("type");
+                String parentNodeType = element.getAttribute("parentNodeType");
                 if (extensionNode instanceof IExtendRepositoryNode) {
                     IExtendRepositoryNode diyNode = (IExtendRepositoryNode) extensionNode;
                     IImage icon = diyNode.getNodeImage();
@@ -686,8 +684,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                             nodeToAdd.setRoot(this);
                         }
                     }
-                    ERepositoryObjectType repositoryNodeType = (ERepositoryObjectType) ERepositoryObjectType.valueOf(
-                            ERepositoryObjectType.class, type);
+                    ERepositoryObjectType repositoryNodeType = ERepositoryObjectType.valueOf(ERepositoryObjectType.class, type);
                     if (repositoryNodeType != null) {
                         dynamicNode.setProperties(EProperties.LABEL, repositoryNodeType);
                         dynamicNode.setProperties(EProperties.CONTENT_TYPE, repositoryNodeType);
@@ -720,8 +717,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             IRepositoryNode node = findParentNodeByLabel(inode.getChildren(), parentNodeType);
             if (node != null) {
                 return node;
-            } else
+            } else {
                 continue;
+            }
         }
         return null;
     }
@@ -739,7 +737,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     }
 
     private void getRefProject(Project project, Object parent) {
-        for (ProjectReference refProject : (List<ProjectReference>) (List<ProjectReference>) project.getReferencedProjects()) {
+        for (ProjectReference refProject : (List<ProjectReference>) project.getReferencedProjects()) {
             String parentBranch = ProxyRepositoryFactory.getInstance().getRepositoryContext().getFields()
                     .get(IProxyRepositoryFactory.BRANCH_SELECTION + "_" + project.getTechnicalLabel()); //$NON-NLS-1$
             if (refProject.getBranch() == null || parentBranch.equals(refProject.getBranch())) {
@@ -1006,7 +1004,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     EList<SAPFunctionUnit> funtions = sapConnection.getFuntions();
                     if (funtions != null) {
                         for (int i = 0; i < funtions.size(); i++) {
-                            SAPFunctionUnit unit = (SAPFunctionUnit) funtions.get(i);
+                            SAPFunctionUnit unit = funtions.get(i);
                             if (SubItemHelper.isDeleted(unit)) {
                                 RepositoryNode tableNode = createSAPNode(new RepositoryViewObject(item.getProperty()),
                                         currentParentNode, unit);
@@ -1028,7 +1026,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     EList<SAPIDocUnit> iDocs = sapConnection.getIDocs();
                     if (iDocs != null) {
                         for (int i = 0; i < iDocs.size(); i++) {
-                            SAPIDocUnit unit = (SAPIDocUnit) iDocs.get(i);
+                            SAPIDocUnit unit = iDocs.get(i);
                             if (SubItemHelper.isDeleted(unit)) {
                                 RepositoryNode tableNode = createSAPNode(new RepositoryViewObject(item.getProperty()),
                                         currentParentNode, unit);
@@ -1187,8 +1185,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                 }
                 for (IRepositoryNode userDefined : sqlChild.getChildren()) {
                     if (label.equalsIgnoreCase(((RepositoryNode) userDefined).getProperties(EProperties.LABEL).toString())) {
-                        if (sqlChild.toString().equalsIgnoreCase(parentLabel))
+                        if (sqlChild.toString().equalsIgnoreCase(parentLabel)) {
                             return (RepositoryNode) userDefined;
+                        }
                     }
 
                 }
@@ -1228,10 +1227,10 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
             // for system folder
             if (RepositoryConstants.SYSTEM_DIRECTORY.equals(label)) {
                 if (getMergeRefProject()) {
-                    List list = parent.getChildren();
+                    parent.getChildren();
                     boolean existSystemFolder = false;
                     for (IRepositoryNode node : parent.getChildren()) {
-                        if (RepositoryConstants.SYSTEM_DIRECTORY.equalsIgnoreCase(node.getLabel())) { //$NON-NLS-1$
+                        if (RepositoryConstants.SYSTEM_DIRECTORY.equalsIgnoreCase(node.getLabel())) {
                             existSystemFolder = true;
                             break;
                         }
@@ -1333,8 +1332,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
 
     private void handleReferenced(RepositoryNode parent) {
         if (parent.getType().equals(ENodeType.SYSTEM_FOLDER)) {
-            for (ProjectReference refProject : (List<ProjectReference>) (List<ProjectReference>) project.getEmfProject()
-                    .getReferencedProjects()) {
+            for (ProjectReference refProject : (List<ProjectReference>) project.getEmfProject().getReferencedProjects()) {
                 String parentBranch = ProxyRepositoryFactory.getInstance().getRepositoryContext().getFields()
                         .get(IProxyRepositoryFactory.BRANCH_SELECTION + "_" + project.getTechnicalLabel()); //$NON-NLS-1$
                 // if not a DB ref project, modified by nma, order 12519
@@ -1345,7 +1343,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     ProjectRepositoryNode referencedProjectNode = new ProjectRepositoryNode(
                             new org.talend.core.model.general.Project(emfProject), null, parent, this,
                             ENodeType.REFERENCED_PROJECT);
-                    referencedProjectNode.setProperties(EProperties.LABEL, emfProject.getLabel()); //$NON-NLS-1$
+                    referencedProjectNode.setProperties(EProperties.LABEL, emfProject.getLabel());
                     referencedProjectNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
                     parent.getChildren().add(referencedProjectNode);
                     referencedProjectNode.initialize(currentPerspective);
