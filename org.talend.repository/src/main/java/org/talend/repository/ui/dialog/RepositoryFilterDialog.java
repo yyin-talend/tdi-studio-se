@@ -419,6 +419,9 @@ public class RepositoryFilterDialog extends Dialog {
                     checkboxTreeViewer.setChecked(root.getMetadataHL7ConnectionNode(), false);
                 } else if (ERepositoryObjectType.CODE.name().equals(split[1])) {
                     checkboxTreeViewer.setChecked(root.getCodeNode(), false);
+                } else if ("SURVIVORSHIP_FILE_ITEM".equals(split[1])) {
+                    checkboxTreeViewer.setChecked(root.getRootRepositoryNode((ERepositoryObjectType) ERepositoryObjectType
+                            .valueOf(ERepositoryObjectType.class, "SURVIVORSHIP_FILE_ITEM")), false);
                 } else {
                     IESBService service = null;
                     if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
