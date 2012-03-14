@@ -419,7 +419,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         GridLayout layout = new GridLayout();
         versionGroup.setLayout(layout);
         versionGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-        versionGroup.setText(Messages.getString("JobScriptsExportWSWizardPage.JobVersion", getProcessType())); //$NON-NLS-1$
+		versionGroup
+				.setText(Messages
+						.getString(
+								"JobScriptsExportWSWizardPage.newJobVersion", getProcessType())); //$NON-NLS-1$
         versionGroup.setFont(parent.getFont());
 
         versionGroup.setLayout(new GridLayout(1, true));
@@ -429,7 +432,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         left.setLayout(new GridLayout(3, false));
 
         Label label = new Label(left, SWT.NONE);
-        label.setText(Messages.getString("JobScriptsExportWSWizardPage.JobVersion.Label", getProcessType())); //$NON-NLS-1$
+		label.setText(Messages
+				.getString(
+						"JobScriptsExportWSWizardPage.newJobVersion.Label", getProcessType())); //$NON-NLS-1$
 
         final Combo versionCombo = new Combo(left, SWT.PUSH);
         GridData gd = new GridData();

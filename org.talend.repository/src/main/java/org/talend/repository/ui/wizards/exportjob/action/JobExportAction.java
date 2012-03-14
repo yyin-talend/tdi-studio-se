@@ -105,14 +105,17 @@ public class JobExportAction implements IRunnableWithProgress {
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         final EventLoopProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
 
-        progressMonitor.beginTask(Messages.getString("JobScriptsExportWizardPage.exportJobScript", type), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+		progressMonitor
+				.beginTask(
+						Messages.getString(
+								"JobScriptsExportWizardPage.newExportJobScript", type), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
         for (RepositoryNode node : nodes) {
             if (jobVersion != null && jobVersion.equals(JobScriptsExportWizardPage.ALL_VERSIONS)) {
                 String[] allVersions = JobVersionUtils.getAllVersions(node);
                 for (String version : allVersions) {
 					monitor.subTask(Messages
 							.getString(
-									"JobScriptsExportWizardPage.exportJob0", type, node.getLabel(), version)); //$NON-NLS-1$
+									"JobScriptsExportWizardPage.newExportJob0", type, node.getLabel(), version)); //$NON-NLS-1$
                     if (!exportJobScript(nodes, version, bundleVersion, progressMonitor)) {
                         return;
                     }
@@ -120,14 +123,14 @@ public class JobExportAction implements IRunnableWithProgress {
             } else {
 				monitor.subTask(Messages
 						.getString(
-								"JobScriptsExportWizardPage.exportJob1", type, node.getLabel(), jobVersion)); //$NON-NLS-1$
+								"JobScriptsExportWizardPage.newExportJob1", type, node.getLabel(), jobVersion)); //$NON-NLS-1$
                 if (!exportJobScript(nodes, jobVersion, bundleVersion, progressMonitor)) {
                     return;
                 }
             }
 			monitor.subTask(Messages
 					.getString(
-							"JobScriptsExportWizardPage.exportJobSucessful", type, node.getLabel(), jobVersion)); //$NON-NLS-1$
+							"JobScriptsExportWizardPage.newExportJobSucessful", type, node.getLabel(), jobVersion)); //$NON-NLS-1$
         }
         progressMonitor.done();
     }
