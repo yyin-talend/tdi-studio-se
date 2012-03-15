@@ -1346,6 +1346,9 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     referencedProjectNode.setProperties(EProperties.LABEL, emfProject.getLabel());
                     referencedProjectNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.REFERENCED_PROJECTS);
                     parent.getChildren().add(referencedProjectNode);
+                    // fix the bug for Ref-project
+                    ProjectManager.getInstance().updateViewProjectNode(referencedProjectNode);
+
                     referencedProjectNode.initialize(currentPerspective);
                 }
             }
