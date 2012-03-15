@@ -25,6 +25,11 @@ imports="
 			dbport = ElementParameterParser.getValue(node, "__PORT__");
 			String frameworkType = ElementParameterParser.getValue(node,"__FRAMEWORK_TYPE__");
 			if(("EMBEDED").equals(frameworkType)) {
+			String dbRootPath = ElementParameterParser.getValue(node, "__DBPATH__");
+%>
+				//set the root path of the database
+				System.setProperty("derby.system.home", <%=dbRootPath%>);
+<%
 			} else {
     			String connectionFlag = ElementParameterParser.getValue(node, "__CONNECTION_FLAG__");
     			if(("false").equals(connectionFlag)) {
@@ -71,8 +76,6 @@ imports="
 			if(("EMBEDED").equals(frameworkType)) {
 %>
 				String url_<%=cid%> = "jdbc:derby:" + <%=db%>;
-				//set the root path of the database
-				System.setProperty("derby.system.home", <%=dbRootPath%>);
 <%
 			} else {
     			if(("JCCJDBC").equals(frameworkType)) {
