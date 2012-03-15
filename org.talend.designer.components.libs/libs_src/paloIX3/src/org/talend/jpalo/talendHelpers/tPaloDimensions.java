@@ -10,6 +10,8 @@ public class tPaloDimensions {
 	// HashSet<tPaloDimensionElements>();
 	private Set<String[]> lstTalendMainIn = new HashSet<String[]>();
 	private ArrayList<tPaloDimensionElements> lstPaloDimensionElements = new ArrayList<tPaloDimensionElements>();
+	private int maxDepth = 0;
+	public Map<String, List<List>> paths;
 	// private List<String[]> lstTalendMainIn = new ArrayList<String[]>();
 
 	private int iNbOfCols = 0;
@@ -34,7 +36,7 @@ public class tPaloDimensions {
 			for (int i = 0; i < 2; i++) {
 				boolean bFound = false;
 				for (tPaloDimensionElements tParentDimensionElement : lstPaloDimensionElements) {
-					if (tParentDimensionElement.getElementName().equals(
+					if (tParentDimensionElement.getElementName()!= null && tParentDimensionElement.getElementName().equals(
 							strMainIn[i])) {
 						bFound = true;
 						break;
@@ -60,7 +62,7 @@ public class tPaloDimensions {
 		}
 		for (String[] strMainIn : lstTalendMainIn) {
 			for (tPaloDimensionElements tParentDimensionElement : lstPaloDimensionElements) {
-				if (tParentDimensionElement.getElementName().equals(
+				if (tParentDimensionElement.getElementName()!=null && tParentDimensionElement.getElementName().equals(
 						strMainIn[0])) {
 					tPaloDimensionElements actElem = getDimenionElement(strMainIn[1]);
 					if (null != actElem) {
@@ -111,7 +113,7 @@ public class tPaloDimensions {
 				boolean bElemenExists = false;
 				// Check if Dimension Element allready Exists
 				for (tPaloDimensionElements tDimensionElement : lstPaloDimensionElements) {
-					if (tDimensionElement.getElementName().equals(strMainIn[i])) {
+					if (tDimensionElement.getElementName()!=null && tDimensionElement.getElementName().equals(strMainIn[i])) {
 						bElemenExists = true;
 						break;
 					}
@@ -121,7 +123,7 @@ public class tPaloDimensions {
 				// Get ParentPosision
 				if (i > 0) {
 					for (tPaloDimensionElements tParentDimensionElement : lstPaloDimensionElements) {
-						if (tParentDimensionElement.getElementName().equals(
+						if (tParentDimensionElement.getElementName()!=null && tParentDimensionElement.getElementName().equals(
 								strMainIn[i - 1])) {
 							iParentPosition = tParentDimensionElement
 									.getPosition();
@@ -146,7 +148,7 @@ public class tPaloDimensions {
 
 		for (tPaloDimensionElements tConsElement : lstPaloDimensionElements) {
 			if (tConsElement.getParentPosition() == iParentPosition
-					&& !tConsElement.getElementName().equals(strElementName)) {
+					&& tConsElement.getElementName()!=null && !tConsElement.getElementName().equals(strElementName)) {
 				paloCons.addElementToConsolidation(
 						paloElements.getElement(tConsElement.getElementName()),
 						tConsElement.getFactor());
@@ -170,26 +172,96 @@ public class tPaloDimensions {
 
 		return lstPaloDimensionElements;
 	}
-	
-	// get all exist PaloDimensionelements  
+
+	/**
+	 * return all the elements max Depth
+	 * @param pleles
+	 * @return
+	 * @throws paloexception
+	 */
+	public int maxDepthElement(paloelements pleles) throws paloexception {
+		long depth = 0;
+		for (paloelement plElm : pleles.getElements()) {
+			if (depth < plElm.getElementDepth()) {
+				depth = plElm.getElementDepth();
+			}
+		}
+		maxDepth = (int) depth + 1;
+		return maxDepth;
+	}
+
+	/**
+	 * get all existing elements and pass for the addMainInToTransformList() method
+	 * 
+	 * @param pleles
+	 * @return
+	 * @throws paloexception
+	 */
 	public void getAllExistPaloDimensionElements(paloelements pleles)
 			throws paloexception {
-		tPaloDimensionElements tPaloDimele = null;
-		int elementPosition = 0 ;
-		String elementName = "";
-		int elementParentPosition = 0;
-		int elementLevel = 0;
-		for(paloelement plElm : pleles.getElements()){
-			elementPosition = (int) plElm.getElementPosition();
-			elementName = plElm.getName();
-			elementParentPosition =(int) plElm.getFatherPaloelement().getElementPosition();
-			 //parent position is only -1 ,not 0 	 	 
-            if(elementParentPosition ==0 && elementPosition==0){ 	 	 
-            	elementParentPosition = -1; 	 	 
-            } 
-			elementLevel = getElementLevel(elementName,elementPosition);
-			tPaloDimele = new tPaloDimensionElements(elementPosition,elementName,elementParentPosition,elementLevel);
-			lstPaloDimensionElements.add(tPaloDimele);
+		maxDepthElement(pleles);
+		// List<String> sr = new ArrayList<String>();
+		String[] arr = null;
+		paths = new HashMap<String, List<List>>();
+		for (paloelement plElm : pleles.getElements()) {
+			// if element has no parent it means it's root element
+			if (plElm.getElementParents() == null) {
+				List elementPaths = new ArrayList<List>();
+				List path = new ArrayList<String>();
+				elementPaths.add(path);
+				path.add(plElm.getName());
+				paths.put(plElm.getName(), elementPaths);
+				collectionPaths(pleles, plElm, elementPaths, path);
+			}
+		}
+		for (String key : paths.keySet()) {
+			List<List> elementPaths = paths.get(key);
+			for (List<String> path : elementPaths) {
+				arr = new String[maxDepth];
+				for (int i = 0; i < path.size(); i++) {
+					arr[i] = path.get(i);
+				}
+				addMainInToTransformList(arr);
+			}
+		}
+	}
+	/**
+	 * get all the existing elements
+	 * @param pleles
+	 * @param plele
+	 * @param paths
+	 * @param path
+	 */
+	private void collectionPaths(paloelements pleles, paloelement plele,
+			List<List> paths, List<String> path) {
+
+		int[] childIDs = plele.getElementChildren();
+		int i = 0;
+		List<String> tempPath = null;
+		if (plele.hasChildren()) {
+			tempPath = new ArrayList<String>();
+			for (String s : path) {
+				tempPath.add(s);
+			}
+		}
+		if (childIDs != null) {
+			for (long id : childIDs) {
+				paloelement child = pleles.getElementByIdentifier(id);
+				List copyPath = null;
+				if (i != 0) {
+					copyPath = new ArrayList<String>();
+					for (String s : tempPath) {
+						copyPath.add(s);
+					}
+					paths.add(copyPath);
+					copyPath.add(child.getName());
+					collectionPaths(pleles, child, paths, copyPath);
+				} else {
+					path.add(child.getName());
+					collectionPaths(pleles, child, paths, path);
+				}
+				i++;
+			}
 		}
 	}
 

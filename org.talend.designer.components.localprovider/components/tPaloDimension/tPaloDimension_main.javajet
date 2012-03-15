@@ -75,35 +75,36 @@
 			thPDims_<%=cid %>.buildParentChildRelationShipNormal();
 			for(org.talend.jpalo.talendHelpers.tPaloDimensionElements thPElem_<%=cid %> : thPDims_<%=cid %>.getParentChildList()){
 
-				//if(pELMs_<%=cid %>.getElement(thPElem_<%=cid %>.getElementName())==null){
+				if(thPElem_<%=cid %>.getElementName()!=null){
 
-				switch (thPElem_<%=cid %>.getLevel()){
-		<%
-				iNbOfDimensionElements = tDimensionElements.size();
-				for(int i=0; i<iNbOfDimensionElements; i++){
-					Map<String, String> DimensionElement = tDimensionElements.get(i);
-					String strDimensionElement = DimensionElement.get("SOURCE_COLUMN");
-					String strDimensionElementType = DimensionElement.get("ELEMENT_TYPE");
-					String strDimensionUpdateMode = DimensionElement.get("CREATION_MODE");
-					if(strDimensionUpdateMode.equals("DELETE")){
-		%>
-					case <%=i%>:
-						pELMs_<%=cid %>.deleteElement(thPElem_<%=cid %>.getElementName());			
-					break;
-		<%
-		
-					}else{
-		%>
-					case <%=i%>:
-						//if(pELMs_<%=cid %>.getElement(thPElem_<%=cid %>.getElementName())==null){
-						pELMs_<%=cid %>.createElement(thPElem_<%=cid %>.getElementName(),org.talend.jpalo.paloelements.<%=strDimensionElementType%>,org.talend.jpalo.paloelements.<%=strDimensionUpdateMode%>);
-					//	}
-					break;
-		<%
+					switch (thPElem_<%=cid %>.getLevel()){
+				<%
+						iNbOfDimensionElements = tDimensionElements.size();
+						for(int i=0; i<iNbOfDimensionElements; i++){
+							Map<String, String> DimensionElement = tDimensionElements.get(i);
+							String strDimensionElement = DimensionElement.get("SOURCE_COLUMN");
+							String strDimensionElementType = DimensionElement.get("ELEMENT_TYPE");
+							String strDimensionUpdateMode = DimensionElement.get("CREATION_MODE");
+							if(strDimensionUpdateMode.equals("DELETE")){
+				%>
+							case <%=i%>:
+								pELMs_<%=cid %>.deleteElement(thPElem_<%=cid %>.getElementName());			
+							break;
+				<%
+				
+							}else{
+				%>
+							case <%=i%>:
+								//if(pELMs_<%=cid %>.getElement(thPElem_<%=cid %>.getElementName())==null){
+								pELMs_<%=cid %>.createElement(thPElem_<%=cid %>.getElementName(),org.talend.jpalo.paloelements.<%=strDimensionElementType%>,org.talend.jpalo.paloelements.<%=strDimensionUpdateMode%>);
+							//	}
+							break;
+				<%
+							}
+						}
+				%>			
+					}
 				}
-			}
-		%>			
-				}//}
 			}
 		<%
 			if(bHierachieNormal){
