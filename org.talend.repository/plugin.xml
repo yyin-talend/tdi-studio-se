@@ -1406,6 +1406,12 @@
               id="org.talend.repository.model.migration.ChangeValueTDIBug19870"
               name="ChangeValueTDIBug19870">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              class="org.talend.repository.model.migration.CheckAndUpdateStatusMigrationTask"
+              id="org.talend.repository.model.migration.CheckAndUpdateStatusMigrationTask"
+              name="CheckAndUpdateStatus">
+        </projecttask>
 
    </extension>
    
