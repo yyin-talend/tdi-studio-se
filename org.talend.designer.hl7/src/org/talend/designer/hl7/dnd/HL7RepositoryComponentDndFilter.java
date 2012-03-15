@@ -33,6 +33,15 @@ public class HL7RepositoryComponentDndFilter extends DefaultRepositoryComponentD
     public HL7RepositoryComponentDndFilter() {
     }
 
+    // add for bug TDI-19994
+    @Override
+    public boolean except(Item item, ERepositoryObjectType type, RepositoryNode seletetedNode, IComponent component,
+            String repositoryType) {
+
+        return !valid(item, type, seletetedNode, component, repositoryType);
+
+    }
+
     @Override
     public boolean valid(Item item, ERepositoryObjectType type, RepositoryNode seletetedNode, IComponent component,
             String repositoryType) {
