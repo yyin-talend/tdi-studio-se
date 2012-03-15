@@ -423,7 +423,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
         nodes.add(docNode);
 
         // 7. Metadata
-        metadataNode = new FixedRepositoryNode(null, this, ENodeType.STABLE_SYSTEM_FOLDER);
+        metadataNode = new RepositoryNode(null, this, ENodeType.STABLE_SYSTEM_FOLDER);
         metadataNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA);
         metadataNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA);
         nodes.add(metadataNode);
