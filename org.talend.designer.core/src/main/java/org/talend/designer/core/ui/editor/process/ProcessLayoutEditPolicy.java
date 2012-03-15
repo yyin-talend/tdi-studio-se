@@ -74,6 +74,14 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
             MoveNodeCommand locationCommand = new MoveNodeCommand((Node) child.getModel(), ((Rectangle) constraint).getLocation());
             return locationCommand;
         }
+        // add for bug TDI-7706,when moving Node,the note can't move
+        if (child instanceof NoteEditPart) {
+            if (((Note) child.getModel()).isReadOnly()) {
+                return null;
+            }
+            MoveNoteCommand locationCommand = new MoveNoteCommand((Note) child.getModel(), ((Rectangle) constraint).getLocation());
+            return locationCommand;
+        }
 
         return null;
 
