@@ -759,7 +759,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 Display.getDefault().syncExec(new Runnable() {
 
                     public void run() {
-                        CheckboxTreeViewer viewer = (CheckboxTreeViewer) treeViewer.getExportItemsTreeViewer().getViewer();
+                        CheckboxTreeViewer viewer = treeViewer.getFilteredCheckboxTree().getViewer();
                         Set<RepositoryNode> nodes = new HashSet<RepositoryNode>();
                         nodes.addAll(repositoryNodes);
                         nodes.addAll(checkedNodes);

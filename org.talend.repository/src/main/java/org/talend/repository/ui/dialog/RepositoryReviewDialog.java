@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Text;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IESBService;
 import org.talend.core.PluginChecker;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.MetadataColumnRepositoryObject;
@@ -68,9 +69,9 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
-import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.SAPFunctionRepositoryObject;
+import org.talend.repository.ui.utils.RecombineRepositoryNodeUtil;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryLabelProvider;
@@ -546,77 +547,7 @@ abstract class MultiTypesProcessor implements ITypeProcessor {
     protected abstract List<ERepositoryObjectType> getTypes();
 
     public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
-        RepositoryNode tmpRootNode = new RepositoryNode(null, null, null);
-        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "before getInputRoot, in MultiTypesProcessor"); //$NON-NLS-1$
-
-        List<RepositoryNode> rootNodes = getRepositoryNodesByTypes(contentProvider);
-        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "finished main project, in MultiTypesProcessor"); //$NON-NLS-1$ 
-
-        if (rootNodes != null) {
-            tmpRootNode.getChildren().addAll(rootNodes);
-        }
-        // referenced project.
-        addSubReferencedProjectNodes(tmpRootNode, contentProvider.getRoot());
-        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "finished ref-projects, in MultiTypesProcessor"); //$NON-NLS-1$
-
-        return tmpRootNode;
-    }
-
-    protected void addSubReferencedProjectNodes(RepositoryNode contextNode, ProjectRepositoryNode parentRefProject) {
-
-        RepositoryNode referenceProjectNode = parentRefProject.getRootRepositoryNode(ERepositoryObjectType.REFERENCED_PROJECTS);
-        if (referenceProjectNode != null) {
-            initNode(referenceProjectNode);
-
-            List<IRepositoryNode> refProjects = referenceProjectNode.getChildren();
-            if (refProjects != null && !refProjects.isEmpty()) {
-                List<IRepositoryNode> nodesList = new ArrayList<IRepositoryNode>();
-
-                for (IRepositoryNode repositoryNode : refProjects) {
-                    ProjectRepositoryNode refProject = (ProjectRepositoryNode) repositoryNode;
-                    ProjectRepositoryNode newProject = new ProjectRepositoryNode(refProject);
-
-                    List<RepositoryNode> rootNodes = getRepositoryNodesByTypes(refProject);
-                    if (rootNodes != null) {
-                        newProject.getChildren().addAll(rootNodes);
-                    }
-                    // sub ref-project
-                    addSubReferencedProjectNodes(newProject, refProject);
-
-                    nodesList.add(newProject);
-
-                }
-                contextNode.getChildren().addAll(nodesList);
-            }
-        }
-    }
-
-    protected List<RepositoryNode> getRepositoryNodesByTypes(Object provider) {
-        List<RepositoryNode> rootNodes = new ArrayList<RepositoryNode>();
-        List<ERepositoryObjectType> types = getTypes();
-        if (types != null) {
-            for (ERepositoryObjectType type : types) {
-                RepositoryNode rootNode = null;
-                if (provider instanceof RepositoryContentProvider) {
-                    rootNode = ((RepositoryContentProvider) provider).getRootRepositoryNode(type);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    rootNode = ((ProjectRepositoryNode) provider).getRootRepositoryNode(type);
-                }
-                if (rootNode != null) {
-                    initNode(rootNode);
-                    rootNodes.add(rootNode);
-                }
-            }
-        }
-        return rootNodes;
-    }
-
-    protected final void initNode(RepositoryNode rootTypeNode) {
-        if (rootTypeNode.getParent() instanceof ProjectRepositoryNode && !rootTypeNode.isInitialized()) {
-            ((ProjectRepositoryNode) rootTypeNode.getParent()).initializeChildren(rootTypeNode);
-            rootTypeNode.setInitialized(true);
-        }
+        return RecombineRepositoryNodeUtil.getFixingTypesInputRoot(contentProvider, getTypes());
     }
 
     public boolean isSelectionValid(RepositoryNode node) {
@@ -782,8 +713,9 @@ class JobTypeProcessor extends SingleTypeProcessor {
         List<String> idList = getJobIDList();
         if (idList != null && t == ERepositoryObjectType.PROCESS) {
             if (idList.contains(node.getObject().getId())) {
-                MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "warning",
-                        "This Operation is used in other job!");
+                MessageDialog.openWarning(Display.getCurrent().getActiveShell(),
+                        Messages.getString("RepositoryReviewDialog.waringTitle"), //$NON-NLS-1$
+                        Messages.getString("RepositoryReviewDialog.waringMessages")); //$NON-NLS-1$
                 return false;
             }
 
@@ -914,6 +846,13 @@ class RepositoryTypeProcessor extends SingleTypeProcessor {
         if (repositoryType.equals(ERepositoryCategoryType.EDIFACT.getName())) {
             return ERepositoryObjectType.METADATA_EDIFACT;
         }
+        if (repositoryType.equals("SERVICES:OPERATION")) { //$NON-NLS-1$
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+                return service.getServicesType();
+            }
+        }
+
         return null;
 
     }
@@ -1338,7 +1277,7 @@ class MetadataMultiTypeProcessor extends MultiTypesProcessor {
     }
 
     public String getDialogTitle() {
-        return "Metadatas";
+        return Messages.getString("RepositoryReviewDialog.metadataTitle"); //$NON-NLS-1$
     }
 
 }
@@ -1375,8 +1314,15 @@ class ViewerTextFilter extends ViewerFilter {
             return false;
         }
 
-        String name = node.getObject().getProperty().getLabel();
-        return name.matches(text);
+        final IRepositoryViewObject object = node.getObject();
+        if (object != null) {
+            String name = object.getProperty().getLabel();
+            if (name != null) {
+                return name.matches(text);
+            }
+
+        }
+        return true; // always
     }
 }
 

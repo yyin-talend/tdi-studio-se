@@ -19,7 +19,6 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -38,16 +37,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
+import org.talend.repository.ui.views.RepositoryViewerProvider;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
 
@@ -57,10 +53,6 @@ import org.talend.repository.ui.views.RepositoryView;
 public class ExportTreeViewer {
 
     private FilteredCheckboxTree filteredCheckboxTree;
-
-    private CheckboxRepositoryView exportItemsTreeViewer;
-
-    private IRepositoryView repositoryView = RepositoryView.show();
 
     Collection<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
 
@@ -72,9 +64,15 @@ public class ExportTreeViewer {
 
     private JobScriptsExportWizardPage jobScriptExportWizardPage;
 
+    private IRepositoryView realRepView;
+
     public ExportTreeViewer(IStructuredSelection selection, JobScriptsExportWizardPage jobScriptExportWizardPage) {
         this.selection = selection;
         this.jobScriptExportWizardPage = jobScriptExportWizardPage;
+    }
+
+    protected ERepositoryObjectType getCheckingType() {
+        return ERepositoryObjectType.PROCESS; // default for job
     }
 
     public SashForm createContents(Composite parent) {
@@ -142,23 +140,23 @@ public class ExportTreeViewer {
 
         createSelectionButton(itemComposite);
 
+        CheckboxTreeViewer exportItemsTreeViewer = getExportItemsTreeViewer();
         exportItemsTreeViewer.refresh();
         // force loading all nodes
-        TreeViewer viewer = exportItemsTreeViewer.getViewer();
-        viewer.expandAll();
-        viewer.collapseAll();
+        exportItemsTreeViewer.expandAll();
+        exportItemsTreeViewer.collapseAll();
         // expand to level of metadata connection
-        viewer.expandToLevel(4);
+        exportItemsTreeViewer.expandToLevel(4);
 
         // if user has select some items in repository view, mark them as checked
         if (!selection.isEmpty()) {
             repositoryNodes.addAll(selection.toList());
-            ((CheckboxTreeViewer) viewer).setCheckedElements(repositoryNodes.toArray());
+            exportItemsTreeViewer.setCheckedElements(repositoryNodes.toArray());
             for (RepositoryNode node : repositoryNodes) {
-                expandParent(viewer, node);
+                expandParent(exportItemsTreeViewer, node);
                 exportItemsTreeViewer.refresh(node);
             }
-            selectItems(exportItemsTreeViewer.getViewer().getTree().getItems());
+            selectItems(exportItemsTreeViewer.getTree().getItems());
         }
         return itemComposite;
     }
@@ -168,12 +166,13 @@ public class ExportTreeViewer {
      * of the repository node is created we need to compare ids to select this nodes
      */
     private void selectItems(TreeItem[] treeItems) {
+        CheckboxTreeViewer exportItemsTreeViewer = getExportItemsTreeViewer();
         for (TreeItem treeItem : treeItems) {
             if (treeItem.getData() != null && treeItem.getData() instanceof RepositoryNode) {
                 RepositoryNode repositoryNode = (RepositoryNode) treeItem.getData();
                 for (RepositoryNode repositoryNode2 : repositoryNodes) {
                     if (repositoryNode.getId().equals(repositoryNode2.getId()))
-                        ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).setChecked(repositoryNode, true);
+                        exportItemsTreeViewer.setChecked(repositoryNode, true);
                 }
             }
             selectItems(treeItem.getItems());
@@ -192,15 +191,18 @@ public class ExportTreeViewer {
         return this.filteredCheckboxTree;
     }
 
-    public CheckboxRepositoryView getExportItemsTreeViewer() {
-        return this.exportItemsTreeViewer;
+    protected CheckboxTreeViewer getExportItemsTreeViewer() {
+        if (getFilteredCheckboxTree() != null) {
+            return this.getFilteredCheckboxTree().getViewer();
+        }
+        return null;
     }
 
     public RepositoryNode[] getCheckNodes() {
-        CheckboxTreeViewer viewer = (CheckboxTreeViewer) exportItemsTreeViewer.getViewer();
         List<RepositoryNode> ret = new ArrayList<RepositoryNode>();
-        for (int i = 0; i < viewer.getCheckedElements().length; i++) {
-            RepositoryNode node = (RepositoryNode) viewer.getCheckedElements()[i];
+        CheckboxTreeViewer exportItemsTreeViewer = getExportItemsTreeViewer();
+        for (int i = 0; i < exportItemsTreeViewer.getCheckedElements().length; i++) {
+            RepositoryNode node = (RepositoryNode) exportItemsTreeViewer.getCheckedElements()[i];
             if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
                 ret.add(node);
             }
@@ -213,16 +215,15 @@ public class ExportTreeViewer {
 
             @Override
             protected CheckboxTreeViewer doCreateTreeViewer(Composite parent, int style) {
-                exportItemsTreeViewer = new CheckboxRepositoryView();
-                try {
-                    exportItemsTreeViewer.init(repositoryView.getViewSite());
-                } catch (PartInitException e) {
-                    // e.printStackTrace();
-                    ExceptionHandler.process(e);
-                }
-                exportItemsTreeViewer.createPartControl(parent);
+                RepositoryViewerProvider provider = new RepositoryViewerProvider() {
 
-                return (CheckboxTreeViewer) exportItemsTreeViewer.getViewer();
+                    @Override
+                    protected ERepositoryObjectType getCheckingType() {
+                        return ExportTreeViewer.this.getCheckingType();
+                    }
+
+                };
+                return (CheckboxTreeViewer) provider.createViewer(parent);
             }
 
             @Override
@@ -243,7 +244,7 @@ public class ExportTreeViewer {
                 return false;
             }
         };
-        exportItemsTreeViewer.getViewer().addFilter(new ViewerFilter() {
+        getExportItemsTreeViewer().addFilter(new ViewerFilter() {
 
             @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
@@ -253,12 +254,19 @@ public class ExportTreeViewer {
         });
     }
 
+    protected IRepositoryView getRepView() {
+        if (realRepView == null) {
+            realRepView = RepositoryView.show();
+        }
+        return realRepView;
+    }
+
     public void addCheckStateListener(ICheckStateListener listener) {
-        ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).addCheckStateListener(listener);
+        getExportItemsTreeViewer().addCheckStateListener(listener);
     }
 
     public void removeCheckStateListener(ICheckStateListener listener) {
-        ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).removeCheckStateListener(listener);
+        getExportItemsTreeViewer().removeCheckStateListener(listener);
     }
 
     protected boolean filterRepositoryNode(RepositoryNode node) {
@@ -323,7 +331,7 @@ public class ExportTreeViewer {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).setAllChecked(true);
+                getExportItemsTreeViewer().setAllChecked(true);
                 checkSelection();
             }
         });
@@ -334,7 +342,7 @@ public class ExportTreeViewer {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).setAllChecked(false);
+                getExportItemsTreeViewer().setAllChecked(false);
                 checkSelection();
             }
         });
@@ -347,7 +355,7 @@ public class ExportTreeViewer {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                exportItemsTreeViewer.getViewer().expandAll();
+                getExportItemsTreeViewer().expandAll();
             }
         });
         // setButtonLayoutData(expandBtn);
@@ -358,7 +366,7 @@ public class ExportTreeViewer {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                exportItemsTreeViewer.getViewer().collapseAll();
+                getExportItemsTreeViewer().collapseAll();
             }
         });
         // setButtonLayoutData(collapseBtn);
@@ -368,78 +376,17 @@ public class ExportTreeViewer {
      * 
      * A repository view with checkbox on the left.
      */
-    class CheckboxRepositoryView extends RepositoryView {
-
-        @Override
-        protected TreeViewer createTreeViewer(Composite parent) {
-            return new CheckboxRepositoryTreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.repository.ui.views.RepositoryView#createPartControl(org.eclipse.swt.widgets.Composite)
-         */
-        @Override
-        public void createPartControl(Composite parent) {
-            super.createPartControl(parent);
-            CorePlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(this);
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.repository.ui.views.RepositoryView#refresh(java.lang.Object)
-         */
-        @Override
-        public void refresh(Object object) {
-            refresh();
-            if (object != null) {
-                getViewer().expandToLevel(object, AbstractTreeViewer.ALL_LEVELS);
-            }
-        }
-
-        @Override
-        protected void makeActions() {
-        }
-
-        @Override
-        protected void hookContextMenu() {
-        }
-
-        @Override
-        protected void contributeToActionBars() {
-        }
-
-        @Override
-        protected void initDragAndDrop() {
-        }
-
-        @Override
-        protected void hookDoubleClickAction() {
-        }
-
-        @Override
-        public void addFilters() {
-        }
-
-        @Override
-        public void createActionComposite(Composite parent) {
-        }
-
-    }
 
     /**
      * DOC nrousseau Comment method "dispose".
      */
     public void dispose() {
-        ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).setCheckedElements(ArrayUtils.EMPTY_OBJECT_ARRAY);
-        exportItemsTreeViewer.dispose();
+        getExportItemsTreeViewer().setCheckedElements(ArrayUtils.EMPTY_OBJECT_ARRAY);
         jobScriptExportWizardPage = null;
-        repositoryView = null;
-        exportItemsTreeViewer = null;
         repositoryNodes.clear();
         repositoryNodes = null;
         filteredCheckboxTree = null;
+
+        realRepView = null;
     }
 }

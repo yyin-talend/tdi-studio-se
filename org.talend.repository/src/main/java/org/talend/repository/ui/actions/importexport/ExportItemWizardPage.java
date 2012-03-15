@@ -31,8 +31,8 @@ import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -56,7 +56,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
 import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
@@ -85,10 +84,9 @@ import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
-import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
+import org.talend.repository.ui.views.RepositoryViewerProvider;
 
 /**
  * Initialy copied from org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage.
@@ -121,17 +119,11 @@ class ExportItemWizardPage extends WizardPage {
 
     private String lastPath;
 
-    private CheckboxRepositoryView exportItemsTreeViewer;
-
-    private IRepositoryView repositoryView;
-
     private IStructuredSelection selection;
 
     private FilteredCheckboxTree filteredCheckboxTree;
 
     private Button exportDependencies;
-
-    private TreeViewer viewer;
 
     Collection<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
 
@@ -141,10 +133,13 @@ class ExportItemWizardPage extends WizardPage {
 
     protected ExportItemWizardPage(String pageName, IStructuredSelection selection) {
         super(pageName);
-        repositoryView = RepositoryView.show();
         this.selection = selection;
         setDescription(Messages.getString("ExportItemWizardPage.description")); //$NON-NLS-1$
         setImageDescriptor(WorkbenchImages.getImageDescriptor(IWorkbenchGraphicConstants.IMG_WIZBAN_EXPORT_WIZ));
+    }
+
+    private CheckboxTreeViewer getItemsTreeViewer() {
+        return filteredCheckboxTree.getViewer();
     }
 
     public void createControl(Composite parent) {
@@ -186,14 +181,13 @@ class ExportItemWizardPage extends WizardPage {
         createTreeViewer(itemComposite);
 
         createSelectionButton(itemComposite);
-
+        CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
         exportItemsTreeViewer.refresh();
         // force loading all nodes
-        viewer = exportItemsTreeViewer.getViewer();
-        viewer.expandAll();
-        viewer.collapseAll();
+        exportItemsTreeViewer.expandAll();
+        exportItemsTreeViewer.collapseAll();
         // expand to level of metadata connection
-        viewer.expandToLevel(2);
+        exportItemsTreeViewer.expandToLevel(2);
 
         addTreeCheckedSelection();
         // if user has select some items in repository view, mark them as checked
@@ -228,17 +222,18 @@ class ExportItemWizardPage extends WizardPage {
 
             for (RepositoryNode node : repositoryNodes) {
                 expandRoot(node);
-                expandParent(viewer, node);
+                expandParent(exportItemsTreeViewer, node);
                 checkElement(node, nodes);
             }
 
-            ((CheckboxTreeViewer) viewer).setCheckedElements(nodes.toArray());
+            exportItemsTreeViewer.setCheckedElements(nodes.toArray());
         }
     }
 
     private void refreshExportDependNodes() {
         checkedNodes.clear();
-        Object[] checkedObj = ((CheckboxTreeViewer) viewer).getCheckedElements();
+        CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
+        Object[] checkedObj = exportItemsTreeViewer.getCheckedElements();
         for (int i = 0; i < checkedObj.length; i++) {
             if (checkedObj[i] instanceof RepositoryNode) {
                 RepositoryNode checkedNode = (RepositoryNode) checkedObj[i];
@@ -342,12 +337,17 @@ class ExportItemWizardPage extends WizardPage {
             }
         }
         if (objectType != null) {
-            if (objectType == ERepositoryObjectType.METADATA) {
-                viewer.expandToLevel(((ProjectRepositoryNode) exportItemsTreeViewer.getRoot()).getMetadataNode(), 2);
-            } else if (objectType == ERepositoryObjectType.ROUTINES) {
-                viewer.expandToLevel(((ProjectRepositoryNode) exportItemsTreeViewer.getRoot()).getCodeNode(), 2);
-            } else if (objectType == ERepositoryObjectType.DOCUMENTATION) {
-                viewer.expandToLevel(((ProjectRepositoryNode) exportItemsTreeViewer.getRoot()).getDocNode(), 2);
+            CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
+            final IContentProvider contentProvider = exportItemsTreeViewer.getContentProvider();
+            if (contentProvider instanceof RepositoryContentProvider) {
+                ProjectRepositoryNode root = ((RepositoryContentProvider) contentProvider).getRoot();
+                if (objectType == ERepositoryObjectType.METADATA) {
+                    exportItemsTreeViewer.expandToLevel(root.getMetadataNode(), 2);
+                } else if (objectType == ERepositoryObjectType.ROUTINES) {
+                    exportItemsTreeViewer.expandToLevel(root.getCodeNode(), 2);
+                } else if (objectType == ERepositoryObjectType.DOCUMENTATION) {
+                    exportItemsTreeViewer.expandToLevel(root.getDocNode(), 2);
+                }
             }
 
         }
@@ -363,7 +363,8 @@ class ExportItemWizardPage extends WizardPage {
     }
 
     private void addTreeCheckedSelection() {
-        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+        CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
+        exportItemsTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
                 refreshExportDependNodes();
@@ -377,15 +378,15 @@ class ExportItemWizardPage extends WizardPage {
 
             @Override
             protected CheckboxTreeViewer doCreateTreeViewer(Composite parent, int style) {
-                exportItemsTreeViewer = new CheckboxRepositoryView();
-                try {
-                    exportItemsTreeViewer.init(repositoryView.getViewSite());
-                } catch (PartInitException e) {
-                    // e.printStackTrace();
-                    ExceptionHandler.process(e);
-                }
-                exportItemsTreeViewer.createPartControl(parent);
-                return (CheckboxTreeViewer) exportItemsTreeViewer.getViewer();
+                RepositoryViewerProvider provider = new RepositoryViewerProvider() {
+
+                    @Override
+                    protected RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
+                        return contentProvider.getRoot(); // use the whole and same tree
+                    }
+
+                };
+                return (CheckboxTreeViewer) provider.createViewer(parent);
             }
 
             @Override
@@ -424,7 +425,8 @@ class ExportItemWizardPage extends WizardPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).setAllChecked(true);
+                CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
+                exportItemsTreeViewer.setAllChecked(true);
             }
         });
 
@@ -436,7 +438,8 @@ class ExportItemWizardPage extends WizardPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ((CheckboxTreeViewer) exportItemsTreeViewer.getViewer()).setAllChecked(false);
+                CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
+                exportItemsTreeViewer.setAllChecked(false);
             }
         });
 
@@ -448,7 +451,8 @@ class ExportItemWizardPage extends WizardPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                exportItemsTreeViewer.getViewer().expandAll();
+                CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
+                exportItemsTreeViewer.expandAll();
             }
         });
         setButtonLayoutData(expandBtn);
@@ -459,7 +463,8 @@ class ExportItemWizardPage extends WizardPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                exportItemsTreeViewer.getViewer().collapseAll();
+                CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
+                exportItemsTreeViewer.collapseAll();
             }
         });
         setButtonLayoutData(collapseBtn);
@@ -617,9 +622,10 @@ class ExportItemWizardPage extends WizardPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 refreshExportDependNodes();
-                viewer.expandAll();
-                viewer.collapseAll();
-                viewer.expandToLevel(3);
+                CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
+                exportItemsTreeViewer.expandAll();
+                exportItemsTreeViewer.collapseAll();
+                exportItemsTreeViewer.expandToLevel(3);
                 exportDependenciesSelected();
                 allNode.clear();
                 if (exportDependencies.getSelection()) {
@@ -632,10 +638,10 @@ class ExportItemWizardPage extends WizardPage {
                 Set<RepositoryNode> nodes = new HashSet<RepositoryNode>();
                 for (RepositoryNode node : allNode) {
                     expandRoot(node);
-                    expandParent(viewer, node);
+                    expandParent(exportItemsTreeViewer, node);
                     checkElement(node, nodes);
                 }
-                ((CheckboxTreeViewer) viewer).setCheckedElements(nodes.toArray());
+                exportItemsTreeViewer.setCheckedElements(nodes.toArray());
             }
         });
     }
@@ -760,11 +766,11 @@ class ExportItemWizardPage extends WizardPage {
                 Display.getDefault().syncExec(new Runnable() {
 
                     public void run() {
-                        CheckboxTreeViewer viewer = (CheckboxTreeViewer) exportItemsTreeViewer.getViewer();
+                        CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
                         Set<RepositoryNode> nodes = new HashSet<RepositoryNode>();
                         nodes.addAll(repositoryNodes);
                         nodes.addAll(checkedNodes);
-                        viewer.setCheckedElements(nodes.toArray());
+                        exportItemsTreeViewer.setCheckedElements(nodes.toArray());
 
                     }
                 });
@@ -928,7 +934,10 @@ class ExportItemWizardPage extends WizardPage {
         String projectPath = lastPath + "\\" + project.getTechnicalLabel(); //$NON-NLS-1$
         if (new File(projectPath).exists() || new File(archivePathField.getText()).exists()) {
             File oldFile = new File(projectPath).exists() ? new File(projectPath) : new File(archivePathField.getText());
-            if (MessageDialogWithToggle.openConfirm(null, Messages.getString("ExportItemWizardPage.waring"), Messages.getString("ExportItemWizardPage.fileAlreadyExist"))) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (MessageDialogWithToggle
+                    .openConfirm(
+                            null,
+                            Messages.getString("ExportItemWizardPage.waring"), Messages.getString("ExportItemWizardPage.fileAlreadyExist"))) { //$NON-NLS-1$ //$NON-NLS-2$
                 deleteFile(oldFile);
             } else {
                 return false;
@@ -942,10 +951,6 @@ class ExportItemWizardPage extends WizardPage {
 
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e);
-        } finally {
-            if (exportItemsTreeViewer != null) {
-                exportItemsTreeViewer.dispose();
-            }
         }
         return true;
     }
@@ -1021,126 +1026,7 @@ class ExportItemWizardPage extends WizardPage {
     }
 
     public boolean performCancel() {
-        if (exportItemsTreeViewer != null) {
-            exportItemsTreeViewer.dispose();
-        }
         return true;
     }
 
-    /**
-     * DOC hywang ExportViewProvider constructor comment. This provider only using for export wizard page It will hide
-     * the tables nodes of file connection and database connection when export item wizard is open
-     * 
-     * @param view
-     */
-    class ExportViewProvider extends RepositoryContentProvider {
-
-        public ExportViewProvider(IRepositoryView view) {
-            super(view);
-        }
-
-        @Override
-        public Object[] getChildren(Object parent) {
-            RepositoryNode repositoryNode = ((RepositoryNode) parent);
-            ERepositoryObjectType objectType = repositoryNode.getObjectType();
-            if (objectType != null) {
-                if (objectType == ERepositoryObjectType.METADATA_CONNECTIONS
-                        || objectType == ERepositoryObjectType.METADATA_FILE_BRMS
-                        || objectType == ERepositoryObjectType.METADATA_FILE_DELIMITED
-                        || objectType == ERepositoryObjectType.METADATA_FILE_EBCDIC
-                        || objectType == ERepositoryObjectType.METADATA_FILE_EXCEL
-                        || objectType == ERepositoryObjectType.METADATA_FILE_FTP
-                        || objectType == ERepositoryObjectType.METADATA_FILE_HL7
-                        || objectType == ERepositoryObjectType.METADATA_FILE_LDIF
-                        || objectType == ERepositoryObjectType.METADATA_FILE_POSITIONAL
-                        || objectType == ERepositoryObjectType.METADATA_FILE_REGEXP
-                        || objectType == ERepositoryObjectType.METADATA_FILE_XML
-                        || objectType == ERepositoryObjectType.METADATA_GENERIC_SCHEMA) {
-                    return new Object[0];
-                }
-            }
-
-            if (!repositoryNode.isInitialized()) {
-                if (repositoryNode.getParent() instanceof ProjectRepositoryNode) {
-                    // initialize repository from main project
-                    ((ProjectRepositoryNode) repositoryNode.getParent()).initializeChildren(parent);
-                }
-                repositoryNode.setInitialized(true);
-            }
-
-            return repositoryNode.getChildren().toArray();
-        }
-
-    }
-
-    /**
-     * 
-     * A repository view with checkbox on the left.
-     */
-    class CheckboxRepositoryView extends RepositoryView {
-
-        @Override
-        protected TreeViewer createTreeViewer(Composite parent) {
-            return new CheckboxRepositoryTreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.repository.ui.views.RepositoryView#createPartControl(org.eclipse.swt.widgets.Composite)
-         */
-        @Override
-        public void createPartControl(Composite parent) {
-            super.createPartControl(parent);
-            CorePlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(this);
-        }
-
-        @Override
-        protected void setContentProviderForView() {
-            ExportViewProvider contentProvider = new ExportViewProvider(repositoryView);
-            viewer.setContentProvider(contentProvider);
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.repository.ui.views.RepositoryView#refresh(java.lang.Object)
-         */
-        @Override
-        public void refresh(Object object) {
-            refresh();
-            if (object != null) {
-                getViewer().expandToLevel(object, AbstractTreeViewer.ALL_LEVELS);
-            }
-        }
-
-        @Override
-        protected void makeActions() {
-        }
-
-        @Override
-        protected void hookContextMenu() {
-        }
-
-        @Override
-        protected void contributeToActionBars() {
-        }
-
-        @Override
-        protected void initDragAndDrop() {
-        }
-
-        @Override
-        protected void hookDoubleClickAction() {
-        }
-
-        @Override
-        public void addFilters() {
-        }
-
-        @Override
-        public void createActionComposite(Composite parent) {
-        }
-
-    }
 }
