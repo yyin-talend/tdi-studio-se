@@ -90,13 +90,15 @@ public class CreateElementAction extends SelectionProviderAction {
             final List<FOXTreeNode> nodes = node.getChildren();
             InputDialog dialog = new InputDialog(null,
                     Messages.getString("CreateElementAction.4"), Messages.getString("CreateElementAction.5"), //$NON-NLS-1$ //$NON-NLS-2$
-                    "", new IInputValidator() {
+                    "", new IInputValidator() { //$NON-NLS-1$
 
                         @Override
                         public String isValid(String newText) {
                             for (int i = 0; i < nodes.size(); i++) {
-                                if (newText.trim().equals(nodes.get(i).getLabel())) {
-                                    return "The name already exists, please change a new one.";
+                                if (!nodes.get(i).isAttribute()) {
+                                    if (newText.trim().equals(nodes.get(i).getLabel())) {
+                                        return Messages.getString("CreateElementAction.3"); //$NON-NLS-1$
+                                    }
                                 }
                             }
                             return null;

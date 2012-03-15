@@ -78,13 +78,15 @@ public class CreateAttributeAction extends SelectionProviderAction {
         while (!org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil.validateLabelForXML(label)) {
             final List<FOXTreeNode> nodes = node.getChildren();
             InputDialog dialog = new InputDialog(null, Messages.getString("CreateAttributeAction.1"), //$NON-NLS-1$
-                    Messages.getString("CreateAttributeAction.2"), "", new IInputValidator() {
+                    Messages.getString("CreateAttributeAction.2"), "", new IInputValidator() { //$NON-NLS-1$ //$NON-NLS-2$
 
                         @Override
                         public String isValid(String newText) {
                             for (int i = 0; i < nodes.size(); i++) {
-                                if (newText.trim().equals(nodes.get(i).getLabel())) {
-                                    return "The name already exists, please change a new one.";
+                                if (nodes.get(i).isAttribute()) {
+                                    if (newText.trim().equals(nodes.get(i).getLabel())) {
+                                        return Messages.getString("CreateAttributeAction.4"); //$NON-NLS-1$
+                                    }
                                 }
                             }
                             return null;
@@ -101,6 +103,7 @@ public class CreateAttributeAction extends SelectionProviderAction {
         FOXTreeNode child = new Attribute(label);
         // add by wzhang. set the row name
         child.setRow(node.getRow());
+        child.setAttribute(true);
         node.addChild(child);
         this.xmlViewer.refresh();
         xmlViewer.expandAll();
