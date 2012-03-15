@@ -1307,7 +1307,14 @@
             description="Rename pig mode parameter for bug TDI-13406 "
             id="org.talend.repository.model.migration.RenameModeParaForPigMigrationTask"
             name="Rename pig mode parameter">
-      </projecttask>	  
+      </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.RenameVersionParametersForPigMigrationTask"
+            description="Rename pig mode parameter for bug TDI-20076 "
+            id="org.talend.repository.model.migration.RenameVersionParametersForPigMigrationTask"
+            name="Rename pig parameters">
+      </projecttask>		  
       <projecttask
             beforeLogon="false"
             class="org.talend.repository.model.migration.RenamePasswordParaForLdapMigrationTask"
