@@ -24,8 +24,7 @@
 
     String sDatabaseName = ElementParameterParser.getValue(node,"__DATABASE__");
     String sCubeName = ElementParameterParser.getValue(node,"__CUBE__");
-    //String sCubeType = ElementParameterParser.getValue(node,"__CUBE_TYPE__");
-    String sCubeType = "CUBE_NORMAL";
+    String sCubeType = ElementParameterParser.getValue(node,"__CUBE_TYPE__");
 
     String sCommitSize = ElementParameterParser.getValue(node,"__COMMITSIZE__");
     int iCommitSize = Integer.valueOf(sCommitSize).intValue();	
