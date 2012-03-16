@@ -11,8 +11,15 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.talend.xml.sax.FunctionRegister;
+import org.talend.xml.sax.LoopEntry;
+import org.talend.xml.sax.SAXLoopCompositeHandler;
+import org.talend.xml.sax.SAXLoopHandler;
+import org.talend.xml.sax.SAXLoopIterator;
+import org.talend.xml.sax.SAXMultiLoopIterator;
 import org.talend.xml.sax.commons.ISAXLooper;
 import org.talend.xml.sax.function.inter.Function;
+import org.talend.xml.sax.io.UnicodeReader;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -152,8 +159,8 @@ public class ComplexSAXLooper implements ISAXLooper {
             }
             saxParser.setProperty("http://xml.org/sax/properties/lexical-handler", hd);
             org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(
-                    new java.io.FileInputStream(fileURL));
-            inSource.setEncoding(this.charset);
+                    new UnicodeReader(new java.io.FileInputStream(fileURL),this.charset));
+//            inSource.setEncoding(this.charset);
             saxParser.parse(inSource, hd);
 
         } catch (ParserConfigurationException e) {
@@ -181,8 +188,9 @@ public class ComplexSAXLooper implements ISAXLooper {
                 hd = newHandler2();
             }
             saxParser.setProperty("http://xml.org/sax/properties/lexical-handler", hd);
-            org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(is);
-            inSource.setEncoding(this.charset);
+            // routines.system.UnicodeReader.java is used to ignore the BOM of the source file.
+            org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(new UnicodeReader(is,this.charset));
+//            inSource.setEncoding(this.charset);
             saxParser.parse(is, hd);
 
         } catch (ParserConfigurationException e) {

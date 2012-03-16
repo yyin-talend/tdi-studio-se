@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2011 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2012 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -21,6 +21,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.talend.xml.sax.commons.ISAXLooper;
+import org.talend.xml.sax.io.UnicodeReader;
 import org.talend.xml.sax.simpleparser.model.XMLNode;
 import org.talend.xml.sax.simpleparser.model.XMLNodes;
 import org.xml.sax.helpers.DefaultHandler;
@@ -124,13 +125,14 @@ public class SimpleSAXLooper implements ISAXLooper,Callable {
             }
             saxParser.setProperty("http://xml.org/sax/properties/lexical-handler", hd);
             if (fileURL != null) {
+            	// routines.system.UnicodeReader.java is used to ignore the BOM of the source file.
                 org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(
-                        new java.io.FileInputStream(fileURL));
-                inSource.setEncoding(this.charset);
+                        new UnicodeReader(new java.io.FileInputStream(fileURL),this.charset));
+//                inSource.setEncoding(this.charset);
                 saxParser.parse(inSource, hd);
             } else {
-                org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(is);
-                inSource.setEncoding(this.charset);
+                org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(new UnicodeReader(is,this.charset));
+//                inSource.setEncoding(this.charset);
                 saxParser.parse(is, hd);
             }
         } finally {
@@ -147,7 +149,7 @@ public class SimpleSAXLooper implements ISAXLooper,Callable {
             long startall = Runtime.getRuntime().maxMemory();
             long timeStart = System.currentTimeMillis();
 
-            String file = "C:/Documents and Settings/Administrator/桌面/in.xml";
+            String file = "C:/Documents and Settings/Administrator/æ¡Œé�¢/in.xml";
             // String file = "D:/test/outMain.xml";
             String[] query = new String[] { "cust-vendor-num", "cust-vendor-num" + "/@xsi:nil", "cust", "cust" + "/@xsi:nil" };
             boolean[] asXMLs = new boolean[] { false, false, false, false };
