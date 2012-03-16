@@ -46,14 +46,16 @@ if(autoPropagate&&isVersion_V4_0){//1
 	        	if(inConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA) && outConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {	        			
     	    		List<IMetadataColumn> columns = metadata.getListColumns();
     	    		IMetadataTable ref_metadata = inConn.getMetadataTable();
-        	    	for(IMetadataColumn column : columns){
-        	    		//add a name mapping for issue:11712
-        	    		if (ref_metadata.getColumn(column.getLabel()) != null) {
+    	    		if(ref_metadata != null) {
+	        	    	for(IMetadataColumn column : columns){
+	        	    		//add a name mapping for issue:11712
+	        	    		if (ref_metadata.getColumn(column.getLabel()) != null) {
 %>
-        				<%=outConn.getName()%>.<%=column.getLabel()%> = <%=inConn.getName()%>.<%=column.getLabel()%>;
+	        				<%=outConn.getName()%>.<%=column.getLabel()%> = <%=inConn.getName()%>.<%=column.getLabel()%>;
 <%
-        				}
-        			}
+	        				}
+	        			}
+	        		}
 				}
 			} //3
 		} //2
@@ -87,14 +89,16 @@ if(autoPropagate&&isVersion_V3_2){//1
 	        	if(inConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA) && outConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {	        			
     	    		List<IMetadataColumn> columns = metadata.getListColumns();
     	    		IMetadataTable ref_metadata = inConn.getMetadataTable();
-        	    	for(IMetadataColumn column : columns){
-        	    		//add a name mapping for issue:11712, 
-        	    		if (ref_metadata.getColumn(column.getLabel()) != null) {        	    	
+    	    		if(ref_metadata != null) {
+	        	    	for(IMetadataColumn column : columns){
+	        	    		//add a name mapping for issue:11712, 
+	        	    		if (ref_metadata.getColumn(column.getLabel()) != null) {        	    	
 %>
-        				<%=outConn.getName()%>.<%=column.getLabel()%> = <%=inConn.getName()%>.<%=column.getLabel()%>;
+	        				<%=outConn.getName()%>.<%=column.getLabel()%> = <%=inConn.getName()%>.<%=column.getLabel()%>;
 <%
-        				}
-        			}
+	        				}
+	        			}
+	        		}
 				}
 			} //3
 		} //2
