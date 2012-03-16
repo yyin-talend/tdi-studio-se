@@ -125,15 +125,11 @@ public class QueryGuessCommand extends Command {
     @Override
     public void execute() {
         IElementParameter dqRuler = node.getElementParameter("DQRULES_LIST");
-        String newQuery = "";
-        if (dqRuler != null && !"".equals(dqRuler.getValue())) {
-            newQuery = generateNewQueryFromDQRuler(dqRuler);
-            newQuery = "\"" + newQuery + "\"";
-            if (newQuery == null || "".equals(newQuery)) {
-                newQuery = generateNewQuery();
-            }
-        } else {
+        String newQuery;
+        if (dqRuler == null || "".equals(dqRuler.getValue())) {
             newQuery = generateNewQuery();
+        } else {
+            newQuery = generateNewQueryFromDQRuler(dqRuler);
         }
 
         for (IElementParameter param : (List<IElementParameter>) node.getElementParameters()) {
