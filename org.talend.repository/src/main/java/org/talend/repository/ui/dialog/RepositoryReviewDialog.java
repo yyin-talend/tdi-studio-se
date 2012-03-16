@@ -848,7 +848,8 @@ class RepositoryTypeProcessor extends SingleTypeProcessor {
         if (repositoryType.equals(ERepositoryCategoryType.EDIFACT.getName())) {
             return ERepositoryObjectType.METADATA_EDIFACT;
         }
-        if (repositoryType.equals("SERVICES:OPERATION")) { //$NON-NLS-1$
+		// http://jira.talendforge.org/browse/TESB-5218 LiXiaopeng
+		if (repositoryType.equals("SERVICES:OPERATION") || repositoryType.equals("WEBSERVICE")) { //$NON-NLS-1$
             if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
                 IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
                 return service.getServicesType();
