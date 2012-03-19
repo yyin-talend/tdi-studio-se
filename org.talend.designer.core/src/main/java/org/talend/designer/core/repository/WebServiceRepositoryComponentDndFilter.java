@@ -12,11 +12,13 @@
 // ============================================================================
 package org.talend.designer.core.repository;
 
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.WSDLSchemaConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.DefaultRepositoryComponentDndFilter;
+import org.talend.repository.model.RepositoryNode;
 
 /**
  * ggu class global comment. Detailled comment
@@ -33,9 +35,27 @@ public class WebServiceRepositoryComponentDndFilter extends DefaultRepositoryCom
             WSDLSchemaConnection connection = (WSDLSchemaConnection) ((WSDLSchemaConnectionItem) item).getConnection();
             if (!connection.isIsInputModel()) {
                 return "WEBSERVICE"; //$NON-NLS-1$
+            } else {
+                return "WSDL"; //$NON-NLS-1$
             }
         }
         return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.repository.DefaultRepositoryComponentDndFilter#except(org.talend.core.model.properties.Item,
+     * org.talend.core.model.repository.ERepositoryObjectType, org.talend.repository.model.RepositoryNode,
+     * org.talend.core.model.components.IComponent, java.lang.String)
+     */
+    @Override
+    public boolean except(Item item, ERepositoryObjectType type, RepositoryNode seletetedNode, IComponent component,
+            String repositoryType) {
+        if (!(item instanceof WSDLSchemaConnectionItem) || component == null || repositoryType == null) {
+            return false;
+        }
+        return !repositoryType.equals(component.getRepositoryType());
     }
 
 }
