@@ -38,6 +38,10 @@ public class HL7RepositoryComponentDndFilter extends DefaultRepositoryComponentD
     public boolean except(Item item, ERepositoryObjectType type, RepositoryNode seletetedNode, IComponent component,
             String repositoryType) {
 
+        if (!(item instanceof HL7ConnectionItem) || component == null || repositoryType == null) {
+            return false;
+        }
+
         return !valid(item, type, seletetedNode, component, repositoryType);
 
     }
