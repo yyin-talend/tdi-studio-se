@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.notify.Notification;
@@ -45,6 +46,7 @@ import org.eclipse.jdt.debug.core.JDIDebugModel;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.custom.CTabFolder;
@@ -57,6 +59,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -695,7 +698,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         if (useCodeView) {
             try {
-                int index = addPage(codeEditor, createFileEditorInput());
+                IEditorInput editorInput = createFileEditorInput();
+                if (!(process.getProperty().getItem() instanceof ProcessItem)) { // shouldn't work for joblet
+                    editorInput = new JobletCodeEditInput();
+                }
+
+                int index = addPage(codeEditor, editorInput);
                 // init Syntax Validation.
                 if (getCurrentLang() == ECodeLanguage.PERL) {
                     if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerPerlService.class)) {
@@ -1430,5 +1438,37 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     }
 
     public abstract AbstractTalendEditor getDesignerEditor();
+
+    class JobletCodeEditInput extends PlatformObject implements IEditorInput {
+
+        public Object getAdapter(Class adapter) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public boolean exists() {
+            return true;
+        }
+
+        public ImageDescriptor getImageDescriptor() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public String getName() {
+            return "";
+        }
+
+        public IPersistableElement getPersistable() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public String getToolTipText() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+    }
 
 }
