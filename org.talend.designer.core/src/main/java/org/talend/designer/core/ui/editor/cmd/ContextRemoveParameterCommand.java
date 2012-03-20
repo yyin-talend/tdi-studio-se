@@ -93,17 +93,6 @@ public class ContextRemoveParameterCommand extends Command {
 
     }
 
-    private void refreshPropertyView() {
-        // IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        // IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        // PropertySheet sheet = (PropertySheet) view;
-        // final IPage currentPage = sheet.getCurrentPage();
-        // if (currentPage instanceof TabbedPropertySheetPage) {
-        // TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) currentPage;
-        // tabbedPropertySheetPage.refresh();
-        // }
-    }
-
     /**
      * qzhang Comment method "refreshContextView".
      */
@@ -162,33 +151,6 @@ public class ContextRemoveParameterCommand extends Command {
                 removeParameterFromContext(paraSourceId, contextParaName);
             }
         }
-
-        // for (int i = 0; i < contextManager.getListContext().size(); i++) {
-        // IContext context = contextManager.getListContext().get(i);
-        // List<IContextParameter> listParams = context.getContextParameterList();
-        //
-        // boolean found = false;
-        // List<IContextParameter> movedList = new ArrayList<IContextParameter>();
-        //
-        // for (int j = 0; j < listParams.size(); j++) {
-        // IContextParameter contextParameter = listParams.get(j);
-        // if (contextParamNames.contains(contextParameter.getName()) &&
-        // contextParameter.getSource().equals(paraSourceId)) {
-        // movedList.add(contextParameter);
-        // found = true;
-        // listParams.remove(j);
-        // }
-        // if (movedList.size() == contextParamNames.size()) { // has finished search
-        // break;
-        // }
-        // }
-        // if (found) {
-        // mapParams.put(context.getName(), movedList);
-        // // listParams.removeAll(movedList);
-        // } else { // not find anything in first
-        // return;
-        // }
-        // }
         contextManager.fireContextsChangedEvent();
         refreshContextView();
     }
