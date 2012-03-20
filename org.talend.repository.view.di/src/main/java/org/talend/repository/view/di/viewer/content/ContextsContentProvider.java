@@ -10,24 +10,27 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.view.di.viewer.content.metadata;
+package org.talend.repository.view.di.viewer.content;
 
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.viewer.content.ProjectRepoDirectChildrenNodeContentProvider;
 
-public class MetadataFileExcelContentProvider extends AbstractMetadataContentProvider {
+/**
+ * DOC ggu class global comment. Detailled comment
+ */
+public class ContextsContentProvider extends ProjectRepoDirectChildrenNodeContentProvider {
 
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.talend.repository.viewer.content.SingleTopLevelContentProvider#getTopLevelNode(org.talend.repository.model
-     * .RepositoryNode)
+     * @see org.talend.repository.viewer.content.ProjectRepoDirectChildrenNodeContentProvider#
+     * getTopLevelNodeFromProjectRepositoryNode(org.talend.repository.model.ProjectRepositoryNode)
      */
     @Override
-    protected RepositoryNode getTopLevelNode(RepositoryNode theRootNode) {
-        return ((ProjectRepositoryNode) theRootNode.getParent()).getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EXCEL);
+    protected RepositoryNode getTopLevelNodeFromProjectRepositoryNode(ProjectRepositoryNode projectNode) {
+        return projectNode.getRootRepositoryNode(ERepositoryObjectType.CONTEXT);
     }
 
 }

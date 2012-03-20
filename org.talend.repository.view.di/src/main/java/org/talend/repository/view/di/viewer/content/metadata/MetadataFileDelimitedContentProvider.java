@@ -16,7 +16,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 
-public class MetadataFileExcelContentProvider extends AbstractMetadataContentProvider {
+public class MetadataFileDelimitedContentProvider extends AbstractMetadataContentProvider {
 
     /*
      * (non-Javadoc)
@@ -27,7 +27,8 @@ public class MetadataFileExcelContentProvider extends AbstractMetadataContentPro
      */
     @Override
     protected RepositoryNode getTopLevelNode(RepositoryNode theRootNode) {
-        return ((ProjectRepositoryNode) theRootNode.getParent()).getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EXCEL);
+        return ((ProjectRepositoryNode) theRootNode.getParent())
+                .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_DELIMITED);
     }
 
 }
