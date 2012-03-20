@@ -223,6 +223,10 @@ public class ImportTreeFromRepository extends SelectionAction {
     }
 
     private void prepareEmfTree(List<FOXTreeNode> list, TreeNode parent) {
+        prepareEmfTree(list, parent, false);
+    }
+
+    private void prepareEmfTree(List<FOXTreeNode> list, TreeNode parent, boolean ignoreMapped) {
         if (list == null || list.isEmpty()) {
             return;
         }
@@ -271,7 +275,7 @@ public class ImportTreeFromRepository extends SelectionAction {
             } else if (tempXpath.equals(absoluteXPathQuery)) {
                 createTreeNode.setLoop(true);
                 createTreeNode.setOptional(foxNode.isOptional());
-            } else if (!isMappedChild(tempXpath)) {
+            } else if (!isMappedChild(tempXpath) && !ignoreMapped) {
                 continue;
             }
 
@@ -280,7 +284,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                 XmlMapUtil.upsetMainNode(createTreeNode);
             }
             if (foxNode.getChildren() != null && !foxNode.getChildren().isEmpty()) {
-                prepareEmfTree(foxNode.getChildren(), createTreeNode);
+                prepareEmfTree(foxNode.getChildren(), createTreeNode, ignoreMapped);
             }
         }
 
@@ -339,34 +343,44 @@ public class ImportTreeFromRepository extends SelectionAction {
                                 absoluteXPathQuery);
                         TreeNode pNode = schemaNode;
                         if (MdmConceptType.RECEIVE.equals(selected.getConceptType())) {
-                            if (prefix != null && !"".equals(prefix)) {
-                                String[] preValues = prefix.split(XmlMapUtil.XPATH_SEPARATOR);
-                                for (String value : preValues) {
-                                    if (!"".equals(value)) {
-                                        TreeNode createTreeNode = createModel();
-                                        createTreeNode.setName(value);
-                                        createTreeNode.setNodeType(NodeType.ELEMENT);
-                                        createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-                                        createTreeNode.setXpath(XmlMapUtil.getXPath(pNode.getXpath(), createTreeNode.getName(),
-                                                createTreeNode.getNodeType()));
-                                        pNode.getChildren().add(createTreeNode);
-                                        pNode = createTreeNode;
+                            List<FOXTreeNode> updateNodesList = TreeUtil.parseMDMUpdateReport(shell, true);
+                            if (updateNodesList == null) {
+                                if (prefix != null && !"".equals(prefix)) {
+                                    String[] preValues = prefix.split(XmlMapUtil.XPATH_SEPARATOR);
+                                    for (String value : preValues) {
+                                        if (!"".equals(value)) {
+                                            TreeNode createTreeNode = createModel();
+                                            createTreeNode.setName(value);
+                                            createTreeNode.setNodeType(NodeType.ELEMENT);
+                                            createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                                            createTreeNode.setXpath(XmlMapUtil.getXPath(pNode.getXpath(),
+                                                    createTreeNode.getName(), createTreeNode.getNodeType()));
+                                            pNode.getChildren().add(createTreeNode);
+                                            pNode = createTreeNode;
+                                        }
                                     }
+                                    absoluteXPathQuery = prefix + absoluteXPathQuery;
                                 }
-                                absoluteXPathQuery = prefix + absoluteXPathQuery;
+                            } else {
+                                TreeNode rootNode = createDefaultTreeNode(pNode, "exchange"); //$NON-NLS-1$
+                                TreeNode reportNode = createDefaultTreeNode(rootNode, "report"); //$NON-NLS-1$
+                                TreeNode itemNode = createDefaultTreeNode(rootNode, "item"); //$NON-NLS-1$
+                                // parse the update content..
+                                prepareEmfTree(updateNodesList, reportNode, true);
+                                pNode = itemNode;
+                                absoluteXPathQuery = "/exchange/item" + absoluteXPathQuery; //$NON-NLS-1$
                             }
-
                         }
-
                         prepareEmfTree(list, pNode);
-
                     } else {
                         List<FOXTreeNode> list = TreeUtil.getFoxTreeNodesForXmlMap(getTempTemplateXSDFile().getAbsolutePath(),
                                 selected.getRoot().get(0).getXMLPath());
+
                         root = selected.getRoot();
                         loop = selected.getLoop();
                         group = selected.getGroup();
                         groupElements = new ArrayList<TreeNode>();
+
                         prepareModelFromOutput(list, schemaNode);
                         if (outputLoop != null) {
                             fillGroup(outputLoop, groupElements);
@@ -379,6 +393,18 @@ public class ImportTreeFromRepository extends SelectionAction {
                 }
             }
         }
+    }
+
+    private TreeNode createDefaultTreeNode(TreeNode parentNode, String name) {
+        TreeNode createTreeNode = createModel();
+        createTreeNode.setName(name);
+        createTreeNode.setNodeType(NodeType.ELEMENT);
+        createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+        createTreeNode
+                .setXpath(XmlMapUtil.getXPath(parentNode.getXpath(), createTreeNode.getName(), createTreeNode.getNodeType()));
+        parentNode.getChildren().add(createTreeNode);
+
+        return createTreeNode;
     }
 
     private boolean isMappedChild(String tempXpath) {
