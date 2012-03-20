@@ -53,30 +53,6 @@
             </instanceof>
          </possibleChildren>
       </navigatorContent>
-            <navigatorContent
-            activeByDefault="true"
-            contentProvider="org.talend.repository.view.di.viewer.content.RecycleBinContentProvider"
-            icon="icons/recyclebinempty.png"
-            id="org.talend.repository.viewer.root.recycleBin"
-            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="RecycleBin"
-            priority="highest">
-         <triggerPoints>
-            <or>
-               <adapt
-                     type="org.talend.repository.model.ProjectRepositoryNode">
-               </adapt>
-               <instanceof
-                     value="org.talend.repository.model.ProjectRepositoryNode">
-               </instanceof>
-            </or>
-         </triggerPoints>
-         <possibleChildren>
-            <instanceof
-                  value="org.talend.repository.model.RepositoryNode">
-            </instanceof>
-         </possibleChildren>
-      </navigatorContent>
       <navigatorContent
             activeByDefault="true"
             appearsBefore="org.talend.repository.viewer.root.code"
@@ -104,12 +80,62 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
-            appearsBefore="org.talend.repository.viewer.root.metadata"
+            appearsBefore="org.talend.repository.viewer.root.sqlTemplates"
             contentProvider="org.talend.repository.view.di.viewer.content.code.CodeTopNodeContentProvider"
             icon="icons/code.png"
             id="org.talend.repository.viewer.root.code"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="Code"
+            priority="high">
+         <triggerPoints>
+            <or>
+               <adapt
+                     type="org.talend.repository.model.ProjectRepositoryNode">
+               </adapt>
+               <instanceof
+                     value="org.talend.repository.model.ProjectRepositoryNode">
+               </instanceof>
+            </or>
+         </triggerPoints>
+         <possibleChildren>
+            <instanceof
+                  value="org.talend.repository.model.RepositoryNode">
+            </instanceof>
+         </possibleChildren>
+      </navigatorContent>
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="org.talend.repository.view.di.viewer.content.code.RoutinesContentProvider"
+            icon="icons/routines.gif"
+            id="org.talend.repository.viewer.root.routines"
+            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
+            name="Routines"
+            priority="normal">
+         <triggerPoints>
+            <and>
+               <instanceof
+                     value="org.talend.repository.model.RepositoryNode">
+               </instanceof>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.isCodeTopNode">
+               </test>
+            </and>
+         </triggerPoints>
+         <possibleChildren>
+            <instanceof
+                  value="org.talend.repository.model.RepositoryNode">
+            </instanceof>
+         </possibleChildren>
+      </navigatorContent>
+      <navigatorContent
+            activeByDefault="true"
+            appearsBefore="org.talend.repository.viewer.root.metadata"
+            contentProvider="org.talend.repository.view.di.viewer.content.SqlTemplatesContentProvider"
+            icon="icons/sqlTemplates.png"
+            id="org.talend.repository.viewer.root.sqlTemplates"
+            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
+            name="SQL Templates"
             priority="high">
          <triggerPoints>
             <or>
@@ -179,6 +205,7 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
+            appearsBefore="org.talend.repository.viewer.metadata.dbPositional"
             contentProvider="org.talend.repository.view.di.viewer.content.metadata.MetadataFileDelimitedContentProvider"
             icon="icons/fileDelimited.gif"
             id="org.talend.repository.viewer.metadata.dbDelimited"
@@ -203,56 +230,6 @@
       </navigatorContent>
       
       
-      <navigatorContent
-            activeByDefault="true"
-            contentProvider="org.talend.repository.view.di.viewer.content.code.RoutinesContentProvider"
-            icon="icons/routines.gif"
-            id="org.talend.repository.viewer.root.routines"
-            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="Routines"
-            priority="normal">
-         <triggerPoints>
-            <and>
-               <instanceof
-                     value="org.talend.repository.model.RepositoryNode">
-               </instanceof>
-               <test
-                     forcePluginActivation="true"
-                     property="org.talend.repository.node.isCodeTopNode">
-               </test>
-            </and>
-         </triggerPoints>
-         <possibleChildren>
-            <instanceof
-                  value="org.talend.repository.model.RepositoryNode">
-            </instanceof>
-         </possibleChildren>
-      </navigatorContent>
-      <navigatorContent
-            activeByDefault="true"
-            appearsBefore="org.talend.repository.viewer.root.metadata"
-            contentProvider="org.talend.repository.view.di.viewer.content.SqlTemplatesContentProvider"
-            icon="icons/sqlTemplates.png"
-            id="org.talend.repository.viewer.root.sqlTemplates"
-            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="SQL Templates"
-            priority="high">
-         <triggerPoints>
-            <or>
-               <adapt
-                     type="org.talend.repository.model.ProjectRepositoryNode">
-               </adapt>
-               <instanceof
-                     value="org.talend.repository.model.ProjectRepositoryNode">
-               </instanceof>
-            </or>
-         </triggerPoints>
-         <possibleChildren>
-            <instanceof
-                  value="org.talend.repository.model.RepositoryNode">
-            </instanceof>
-         </possibleChildren>
-      </navigatorContent>
       <navigatorContent
             activeByDefault="true"
             appearsBefore="org.talend.repository.viewer.metadata.dbRegexp"
@@ -385,38 +362,12 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
-            appearsBefore="org.talend.repository.viewer.metadata.webService"
+            appearsBefore="org.talend.repository.viewer.metadata.salesforce"
             contentProvider="org.talend.repository.view.di.viewer.content.metadata.MetadataLDAPContentProvider"
             icon="icons/ldap.png"
             id="org.talend.repository.viewer.metadata.ldap"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="LDAP"
-            priority="normal">
-         <possibleChildren>
-            <instanceof
-                  value="org.talend.repository.model.RepositoryNode">
-            </instanceof>
-         </possibleChildren>
-         <triggerPoints>
-            <and>
-               <instanceof
-                     value="org.talend.repository.model.RepositoryNode">
-               </instanceof>
-               <test
-                     forcePluginActivation="true"
-                     property="org.talend.repository.node.isMetadataTopNode">
-               </test>
-            </and>
-         </triggerPoints>
-      </navigatorContent>
-      <navigatorContent
-            activeByDefault="true"
-            appearsBefore="org.talend.repository.viewer.metadata.salesforce"
-            contentProvider="org.talend.repository.view.di.viewer.content.metadata.MetadataWebServiceContentProvider"
-            icon="icons/webService.png"
-            id="org.talend.repository.viewer.metadata.webService"
-            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="Web Service"
             priority="normal">
          <possibleChildren>
             <instanceof
@@ -488,6 +439,31 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
+            contentProvider="org.talend.repository.view.di.viewer.content.metadata.MetadataWebServiceContentProvider"
+            icon="icons/webService.png"
+            id="org.talend.repository.viewer.metadata.webService"
+            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
+            name="Web Service"
+            priority="normal">
+         <possibleChildren>
+            <instanceof
+                  value="org.talend.repository.model.RepositoryNode">
+            </instanceof>
+         </possibleChildren>
+         <triggerPoints>
+            <and>
+               <instanceof
+                     value="org.talend.repository.model.RepositoryNode">
+               </instanceof>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.isMetadataTopNode">
+               </test>
+            </and>
+         </triggerPoints>
+      </navigatorContent>
+      <navigatorContent
+            activeByDefault="true"
             appearsBefore="org.talend.repository.viewer.root.recycleBin"
             contentProvider="org.talend.repository.view.di.viewer.content.DocumentationContentProvider"
             icon="icons/documentation.gif"
@@ -511,6 +487,47 @@
             </or>
          </triggerPoints>
       </navigatorContent>
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="org.talend.repository.view.di.viewer.content.RecycleBinContentProvider"
+            icon="icons/recyclebinempty.png"
+            id="org.talend.repository.viewer.root.recycleBin"
+            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
+            name="RecycleBin"
+            priority="highest">
+         <triggerPoints>
+            <or>
+               <adapt
+                     type="org.talend.repository.model.ProjectRepositoryNode">
+               </adapt>
+               <instanceof
+                     value="org.talend.repository.model.ProjectRepositoryNode">
+               </instanceof>
+            </or>
+         </triggerPoints>
+         <possibleChildren>
+            <instanceof
+                  value="org.talend.repository.model.RepositoryNode">
+            </instanceof>
+         </possibleChildren>
+      </navigatorContent>
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="org.talend.repository.view.di.viewer.content.DummyContentProvider"
+            id="org.talend.repository.view.content.dummy.for.activation.di"
+            name="name">
+         <enablement>
+            <and>
+               <instanceof
+                     value="org.talend.repository.navigator.TalendRepositoryRoot">
+               </instanceof>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.alwaysFalse">
+               </test>
+            </and>
+         </enablement>
+      </navigatorContent>
    </extension>
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
@@ -520,6 +537,13 @@
             namespace="org.talend.repository.node"
             properties="isJob,isMetadataTopNode,isCodeTopNode"
             type="org.talend.repository.model.RepositoryNode">
+      </propertyTester>
+      <propertyTester
+            class="org.talend.repository.tester.NodeTester"
+            id="org.talend.repository.view.di.activation.tester"
+            namespace="org.talend.repository.node"
+            properties="alwaysFalse"
+            type="org.talend.repository.navigator.TalendRepositoryRoot">
       </propertyTester>
    </extension>
 

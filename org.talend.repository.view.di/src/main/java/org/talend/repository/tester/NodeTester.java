@@ -22,6 +22,11 @@ import org.talend.repository.model.RepositoryNode;
 public class NodeTester extends PropertyTester {
 
     /**
+     * 
+     */
+    private static final String ALWAYS_FALSE = "alwaysFalse"; //$NON-NLS-1$
+
+    /**
      * property used to check if object is a job
      */
     public static final String IS_JOB = "isJob"; //$NON-NLS-1$
@@ -46,6 +51,9 @@ public class NodeTester extends PropertyTester {
             }
             if (IS_CODE_TOP_NODE.equals(property)) {
                 return isCodeTopNode(repositoryNode);
+            }
+            if (ALWAYS_FALSE.equals(property)) {
+                return false;
             }
             Assert.isTrue(false);// cause we should never be here
         }

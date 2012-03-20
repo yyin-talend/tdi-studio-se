@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.view.di.viewer.content.metadata;
 
+import org.eclipse.jface.viewers.Viewer;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
@@ -41,6 +42,18 @@ public class MetadataTopNodeContentProvider extends ProjectRepoDirectChildrenNod
     @Override
     protected Object[] getRepositoryNodeChildren(RepositoryNode repositoryNode) {
         return NO_CHILDREN;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.viewer.content.FolderListenerSingleTopContentProvider#inputChanged(org.eclipse.jface.viewers
+     * .Viewer, java.lang.Object, java.lang.Object)
+     */
+    @Override
+    public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
+        // do nothing caus we do not need any notification
     }
 
 }
