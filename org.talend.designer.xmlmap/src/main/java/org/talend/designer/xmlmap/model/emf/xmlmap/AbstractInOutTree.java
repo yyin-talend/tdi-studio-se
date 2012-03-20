@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isMinimized <em>Minimized</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getName <em>Name</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getFilterIncomingConnections <em>Filter Incoming Connections</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isMultiLoops <em>Multi Loops</em>}</li>
  * </ul>
  * </p>
  *
@@ -176,5 +177,31 @@ public interface AbstractInOutTree extends EObject {
      * @generated
      */
     EList<FilterConnection> getFilterIncomingConnections();
+
+    /**
+     * Returns the value of the '<em><b>Multi Loops</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Multi Loops</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Multi Loops</em>' attribute.
+     * @see #setMultiLoops(boolean)
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getAbstractInOutTree_MultiLoops()
+     * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
+     * @generated
+     */
+    boolean isMultiLoops();
+
+    /**
+     * Sets the value of the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isMultiLoops <em>Multi Loops</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Multi Loops</em>' attribute.
+     * @see #isMultiLoops()
+     * @generated
+     */
+    void setMultiLoops(boolean value);
 
 } // AbstractInOutTree

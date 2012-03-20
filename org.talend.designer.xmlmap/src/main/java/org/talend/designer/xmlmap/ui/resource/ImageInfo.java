@@ -47,6 +47,7 @@ public enum ImageInfo {
     TREE_EXPAND("/icons/tree_expand.gif"), //$NON-NLS-1$
     TREE_COLLAPSE("/icons/tree_collapse.gif"), //$NON-NLS-1$
     ZONE_SASH("/icons/zone_sash.jpg"), //$NON-NLS-1$
+    SETLOOPFUNCTION_BUTTON("/icons/setLoopFunctionButton.jpg"), //$NON-NLS-1$
     PROPERTY_TOOL_ICON("/icons/property.png");
 
     private String path;

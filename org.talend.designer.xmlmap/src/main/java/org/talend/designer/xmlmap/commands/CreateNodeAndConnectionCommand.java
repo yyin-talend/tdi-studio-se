@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.xmlmap.commands;
 
+import java.util.List;
+
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
@@ -25,9 +27,11 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
@@ -51,6 +55,10 @@ public class CreateNodeAndConnectionCommand extends Command {
     private EditPart targetEditPart;
 
     private XmlMapData xmlMapData;
+
+    private TreeNode loopParentTreeNode;
+
+    private List<InputLoopNodesTable> listInputLoopNodesTablesEntry;
 
     /*
      * if true update expression,else create a new child
@@ -99,7 +107,6 @@ public class CreateNodeAndConnectionCommand extends Command {
                                 hasSubTree = true;
                             }
                         }
-
                     }
                 }
 
@@ -141,7 +148,9 @@ public class CreateNodeAndConnectionCommand extends Command {
                     continue;
                 }
                 AbstractNode sourceNode = (AbstractNode) ((AbstractNodePart) o).getModel();
-
+                if (o instanceof TreeNodeEditPart) {
+                    loopParentTreeNode = XmlMapUtil.getLoopParentNode((TreeNode) sourceNode);
+                }
                 if (update) {
                     doUpdate(sourceNode);
                 } else {
@@ -279,6 +288,49 @@ public class CreateNodeAndConnectionCommand extends Command {
             sourceNode.getOutgoingConnections().add(conn);
             if (xmlMapData != null) {
                 xmlMapData.getConnections().add(conn);
+            }
+            //
+            if (loopParentTreeNode != null) {
+                InputLoopNodesTable inputLoopNodesTable = null;
+                AbstractInOutTree abstractTree = XmlMapUtil.getAbstractInOutTree(targetOutputNode);
+                if (abstractTree != null && abstractTree instanceof OutputXmlTree) {
+                    listInputLoopNodesTablesEntry = ((OutputXmlTree) abstractTree).getInputLoopNodesTables();
+                    if (!XmlMapUtil.hasDocument(abstractTree)) {
+                        if (listInputLoopNodesTablesEntry != null && listInputLoopNodesTablesEntry.size() == 0) {
+                            inputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
+                            inputLoopNodesTable.getInputloopnodes().add(loopParentTreeNode);
+                            listInputLoopNodesTablesEntry.add(inputLoopNodesTable);
+                        } else if (listInputLoopNodesTablesEntry != null && listInputLoopNodesTablesEntry.size() == 1) {
+                            inputLoopNodesTable = listInputLoopNodesTablesEntry.get(0);
+                            boolean isContain = false;
+                            for (TreeNode treeNode : inputLoopNodesTable.getInputloopnodes()) {
+                                if (treeNode.getXpath().equals(loopParentTreeNode.getXpath())) {
+                                    isContain = true;
+                                }
+                            }
+                            if (!isContain) {
+                                inputLoopNodesTable.getInputloopnodes().add(loopParentTreeNode);
+                            }
+                        }
+                    } else {
+                        OutputTreeNode loopParentOutputTreeNode;
+                        if (targetOutputNode.isLoop()) {
+                            loopParentOutputTreeNode = targetOutputNode;
+                        } else {
+                            loopParentOutputTreeNode = (OutputTreeNode) XmlMapUtil.getLoopParentNode(targetOutputNode);
+                        }
+                        if (loopParentOutputTreeNode != null) {
+                            if (loopParentOutputTreeNode.getInputLoopNodesTable() == null) {
+                                inputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
+                                inputLoopNodesTable.getInputloopnodes().add(loopParentTreeNode);
+                                loopParentOutputTreeNode.setInputLoopNodesTable(inputLoopNodesTable);
+                                listInputLoopNodesTablesEntry.add(inputLoopNodesTable);
+                            } else {
+                                loopParentOutputTreeNode.getInputLoopNodesTable().getInputloopnodes().add(loopParentTreeNode);
+                            }
+                        }
+                    }
+                }
             }
 
         } else if (targetEditPart instanceof TreeNodeEditPart) {

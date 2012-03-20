@@ -182,13 +182,22 @@ public interface XmlmapPackage extends EPackage {
     int ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS = 5;
 
     /**
+     * The feature id for the '<em><b>Multi Loops</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ABSTRACT_IN_OUT_TREE__MULTI_LOOPS = 6;
+
+    /**
      * The number of structural features of the '<em>Abstract In Out Tree</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int ABSTRACT_IN_OUT_TREE_FEATURE_COUNT = 6;
+    int ABSTRACT_IN_OUT_TREE_FEATURE_COUNT = 7;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputXmlTreeImpl <em>Input Xml Tree</em>}' class.
@@ -253,6 +262,15 @@ public interface XmlmapPackage extends EPackage {
      * @ordered
      */
     int INPUT_XML_TREE__FILTER_INCOMING_CONNECTIONS = ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS;
+
+    /**
+     * The feature id for the '<em><b>Multi Loops</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_XML_TREE__MULTI_LOOPS = ABSTRACT_IN_OUT_TREE__MULTI_LOOPS;
 
     /**
      * The feature id for the '<em><b>Nodes</b></em>' containment reference list.
@@ -382,6 +400,15 @@ public interface XmlmapPackage extends EPackage {
     int OUTPUT_XML_TREE__FILTER_INCOMING_CONNECTIONS = ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS;
 
     /**
+     * The feature id for the '<em><b>Multi Loops</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_XML_TREE__MULTI_LOOPS = ABSTRACT_IN_OUT_TREE__MULTI_LOOPS;
+
+    /**
      * The feature id for the '<em><b>Nodes</b></em>' containment reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -436,13 +463,22 @@ public interface XmlmapPackage extends EPackage {
     int OUTPUT_XML_TREE__ENABLE_EMPTY_ELEMENT = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 5;
 
     /**
+     * The feature id for the '<em><b>Input Loop Nodes Tables</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_XML_TREE__INPUT_LOOP_NODES_TABLES = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 6;
+
+    /**
      * The number of structural features of the '<em>Output Xml Tree</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int OUTPUT_XML_TREE_FEATURE_COUNT = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 6;
+    int OUTPUT_XML_TREE_FEATURE_COUNT = ABSTRACT_IN_OUT_TREE_FEATURE_COUNT + 7;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarTableImpl <em>Var Table</em>}' class.
@@ -980,13 +1016,22 @@ public interface XmlmapPackage extends EPackage {
     int OUTPUT_TREE_NODE__AGGREGATE = TREE_NODE_FEATURE_COUNT + 0;
 
     /**
+     * The feature id for the '<em><b>Input Loop Nodes Table</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int OUTPUT_TREE_NODE__INPUT_LOOP_NODES_TABLE = TREE_NODE_FEATURE_COUNT + 1;
+
+    /**
      * The number of structural features of the '<em>Output Tree Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int OUTPUT_TREE_NODE_FEATURE_COUNT = TREE_NODE_FEATURE_COUNT + 1;
+    int OUTPUT_TREE_NODE_FEATURE_COUNT = TREE_NODE_FEATURE_COUNT + 2;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarNodeImpl <em>Var Node</em>}' class.
@@ -1238,6 +1283,34 @@ public interface XmlmapPackage extends EPackage {
     int FILTER_CONNECTION_FEATURE_COUNT = ICONNECTION_FEATURE_COUNT + 2;
 
                 /**
+     * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputLoopNodesTableImpl <em>Input Loop Nodes Table</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputLoopNodesTableImpl
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getInputLoopNodesTable()
+     * @generated
+     */
+    int INPUT_LOOP_NODES_TABLE = 14;
+
+                /**
+     * The feature id for the '<em><b>Inputloopnodes</b></em>' reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_LOOP_NODES_TABLE__INPUTLOOPNODES = 0;
+
+                /**
+     * The number of structural features of the '<em>Input Loop Nodes Table</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INPUT_LOOP_NODES_TABLE_FEATURE_COUNT = 1;
+
+                /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.NodeType <em>Node Type</em>}' enum.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1245,7 +1318,7 @@ public interface XmlmapPackage extends EPackage {
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getNodeType()
      * @generated
      */
-    int NODE_TYPE = 14;
+    int NODE_TYPE = 15;
 
 
     /**
@@ -1453,6 +1526,17 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      */
     EAttribute getOutputXmlTree_EnableEmptyElement();
+
+    /**
+     * Returns the meta object for the containment reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#getInputLoopNodesTables <em>Input Loop Nodes Tables</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the containment reference list '<em>Input Loop Nodes Tables</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#getInputLoopNodesTables()
+     * @see #getOutputXmlTree()
+     * @generated
+     */
+    EReference getOutputXmlTree_InputLoopNodesTables();
 
     /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarTable <em>Var Table</em>}'.
@@ -1770,6 +1854,17 @@ public interface XmlmapPackage extends EPackage {
     EAttribute getOutputTreeNode_Aggregate();
 
     /**
+     * Returns the meta object for the reference '{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode#getInputLoopNodesTable <em>Input Loop Nodes Table</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the reference '<em>Input Loop Nodes Table</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode#getInputLoopNodesTable()
+     * @see #getOutputTreeNode()
+     * @generated
+     */
+    EReference getOutputTreeNode_InputLoopNodesTable();
+
+    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.VarNode <em>Var Node</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1841,6 +1936,27 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      */
     EReference getFilterConnection_Target();
+
+                /**
+     * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable <em>Input Loop Nodes Table</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Input Loop Nodes Table</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable
+     * @generated
+     */
+    EClass getInputLoopNodesTable();
+
+                /**
+     * Returns the meta object for the reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable#getInputloopnodes <em>Inputloopnodes</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the reference list '<em>Inputloopnodes</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable#getInputloopnodes()
+     * @see #getInputLoopNodesTable()
+     * @generated
+     */
+    EReference getInputLoopNodesTable_Inputloopnodes();
 
                 /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection <em>IConnection</em>}'.
@@ -1959,6 +2075,17 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      */
     EReference getAbstractInOutTree_FilterIncomingConnections();
+
+                /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isMultiLoops <em>Multi Loops</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Multi Loops</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isMultiLoops()
+     * @see #getAbstractInOutTree()
+     * @generated
+     */
+    EAttribute getAbstractInOutTree_MultiLoops();
 
                 /**
      * Returns the meta object for enum '{@link org.talend.designer.xmlmap.model.emf.xmlmap.NodeType <em>Node Type</em>}'.
@@ -2149,6 +2276,14 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EAttribute OUTPUT_XML_TREE__ENABLE_EMPTY_ELEMENT = eINSTANCE.getOutputXmlTree_EnableEmptyElement();
+
+        /**
+         * The meta object literal for the '<em><b>Input Loop Nodes Tables</b></em>' containment reference list feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference OUTPUT_XML_TREE__INPUT_LOOP_NODES_TABLES = eINSTANCE.getOutputXmlTree_InputLoopNodesTables();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarTableImpl <em>Var Table</em>}' class.
@@ -2391,6 +2526,14 @@ public interface XmlmapPackage extends EPackage {
         EAttribute OUTPUT_TREE_NODE__AGGREGATE = eINSTANCE.getOutputTreeNode_Aggregate();
 
         /**
+         * The meta object literal for the '<em><b>Input Loop Nodes Table</b></em>' reference feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference OUTPUT_TREE_NODE__INPUT_LOOP_NODES_TABLE = eINSTANCE.getOutputTreeNode_InputLoopNodesTable();
+
+        /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.VarNodeImpl <em>Var Node</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -2453,6 +2596,24 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EReference FILTER_CONNECTION__TARGET = eINSTANCE.getFilterConnection_Target();
+
+                                /**
+         * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputLoopNodesTableImpl <em>Input Loop Nodes Table</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputLoopNodesTableImpl
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getInputLoopNodesTable()
+         * @generated
+         */
+        EClass INPUT_LOOP_NODES_TABLE = eINSTANCE.getInputLoopNodesTable();
+
+                                /**
+         * The meta object literal for the '<em><b>Inputloopnodes</b></em>' reference list feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference INPUT_LOOP_NODES_TABLE__INPUTLOOPNODES = eINSTANCE.getInputLoopNodesTable_Inputloopnodes();
 
                                 /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection <em>IConnection</em>}' class.
@@ -2547,6 +2708,14 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EReference ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS = eINSTANCE.getAbstractInOutTree_FilterIncomingConnections();
+
+                                /**
+         * The meta object literal for the '<em><b>Multi Loops</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_IN_OUT_TREE__MULTI_LOOPS = eINSTANCE.getAbstractInOutTree_MultiLoops();
 
                                 /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.NodeType <em>Node Type</em>}' enum.

@@ -339,6 +339,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                     TreeNodeFigure outputFigure = (TreeNodeFigure) getFigure();
                     if (outputFigure.getElement() != null) {
                         outputFigure.getElement().updateExpression();
+                        outputFigure.getElement().getBranchContent().updateLoopButtonFigure();
                     }
 
                 }

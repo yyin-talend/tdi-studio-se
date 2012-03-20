@@ -72,6 +72,7 @@ public class XmlmapFactoryImpl extends EFactoryImpl implements XmlmapFactory {
             case XmlmapPackage.CONNECTION: return createConnection();
             case XmlmapPackage.LOOKUP_CONNECTION: return createLookupConnection();
             case XmlmapPackage.FILTER_CONNECTION: return createFilterConnection();
+            case XmlmapPackage.INPUT_LOOP_NODES_TABLE: return createInputLoopNodesTable();
             default:
                 throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
         }
@@ -215,6 +216,16 @@ public class XmlmapFactoryImpl extends EFactoryImpl implements XmlmapFactory {
     public FilterConnection createFilterConnection() {
         FilterConnectionImpl filterConnection = new FilterConnectionImpl();
         return filterConnection;
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public InputLoopNodesTable createInputLoopNodesTable() {
+        InputLoopNodesTableImpl inputLoopNodesTable = new InputLoopNodesTableImpl();
+        return inputLoopNodesTable;
     }
 
                 /**

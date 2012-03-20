@@ -20,8 +20,10 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
@@ -39,6 +41,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl#isErrorReject <em>Error Reject</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl#isAllInOne <em>All In One</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl#isEnableEmptyElement <em>Enable Empty Element</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputXmlTreeImpl#getInputLoopNodesTables <em>Input Loop Nodes Tables</em>}</li>
  * </ul>
  * </p>
  *
@@ -154,6 +157,16 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
      * @ordered
      */
     protected boolean enableEmptyElement = ENABLE_EMPTY_ELEMENT_EDEFAULT;
+
+    /**
+     * The cached value of the '{@link #getInputLoopNodesTables() <em>Input Loop Nodes Tables</em>}' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getInputLoopNodesTables()
+     * @generated
+     * @ordered
+     */
+    protected EList<InputLoopNodesTable> inputLoopNodesTables;
 
     /**
      * <!-- begin-user-doc -->
@@ -296,11 +309,25 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
      * <!-- end-user-doc -->
      * @generated
      */
+    public EList<InputLoopNodesTable> getInputLoopNodesTables() {
+        if (inputLoopNodesTables == null) {
+            inputLoopNodesTables = new EObjectContainmentEList<InputLoopNodesTable>(InputLoopNodesTable.class, this, XmlmapPackage.OUTPUT_XML_TREE__INPUT_LOOP_NODES_TABLES);
+        }
+        return inputLoopNodesTables;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case XmlmapPackage.OUTPUT_XML_TREE__NODES:
                 return ((InternalEList<?>)getNodes()).basicRemove(otherEnd, msgs);
+            case XmlmapPackage.OUTPUT_XML_TREE__INPUT_LOOP_NODES_TABLES:
+                return ((InternalEList<?>)getInputLoopNodesTables()).basicRemove(otherEnd, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
@@ -325,6 +352,8 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
                 return isAllInOne();
             case XmlmapPackage.OUTPUT_XML_TREE__ENABLE_EMPTY_ELEMENT:
                 return isEnableEmptyElement();
+            case XmlmapPackage.OUTPUT_XML_TREE__INPUT_LOOP_NODES_TABLES:
+                return getInputLoopNodesTables();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -357,6 +386,10 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
             case XmlmapPackage.OUTPUT_XML_TREE__ENABLE_EMPTY_ELEMENT:
                 setEnableEmptyElement((Boolean)newValue);
                 return;
+            case XmlmapPackage.OUTPUT_XML_TREE__INPUT_LOOP_NODES_TABLES:
+                getInputLoopNodesTables().clear();
+                getInputLoopNodesTables().addAll((Collection<? extends InputLoopNodesTable>)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -387,6 +420,9 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
             case XmlmapPackage.OUTPUT_XML_TREE__ENABLE_EMPTY_ELEMENT:
                 setEnableEmptyElement(ENABLE_EMPTY_ELEMENT_EDEFAULT);
                 return;
+            case XmlmapPackage.OUTPUT_XML_TREE__INPUT_LOOP_NODES_TABLES:
+                getInputLoopNodesTables().clear();
+                return;
         }
         super.eUnset(featureID);
     }
@@ -411,6 +447,8 @@ public class OutputXmlTreeImpl extends AbstractInOutTreeImpl implements OutputXm
                 return allInOne != ALL_IN_ONE_EDEFAULT;
             case XmlmapPackage.OUTPUT_XML_TREE__ENABLE_EMPTY_ELEMENT:
                 return enableEmptyElement != ENABLE_EMPTY_ELEMENT_EDEFAULT;
+            case XmlmapPackage.OUTPUT_XML_TREE__INPUT_LOOP_NODES_TABLES:
+                return inputLoopNodesTables != null && !inputLoopNodesTables.isEmpty();
         }
         return super.eIsSet(featureID);
     }

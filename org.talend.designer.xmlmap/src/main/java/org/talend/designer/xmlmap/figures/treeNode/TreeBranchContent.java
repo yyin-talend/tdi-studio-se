@@ -18,11 +18,17 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseListener;
 import org.talend.designer.xmlmap.figures.cells.ITextCell;
+import org.talend.designer.xmlmap.figures.treetools.ToolBarButtonImageFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
+import org.talend.designer.xmlmap.ui.dialog.SetLoopFunctionDialog;
+import org.talend.designer.xmlmap.ui.resource.ImageInfo;
+import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -40,13 +46,15 @@ public class TreeBranchContent extends Figure implements ITextCell {
 
     private TreeNode treeNode;
 
-    public TreeBranchContent(TreeNode treeNode) {
+    private ToolBarButtonImageFigure loopButtonFigure;
+
+    public TreeBranchContent(final TreeNode treeNode) {
         setDirectEditType(DirectEditType.NODE_NAME);
         this.treeNode = treeNode;
         GridLayout manager = new GridLayout(4, false);
         manager.horizontalSpacing = 5;
         manager.verticalSpacing = 1;
-        manager.marginHeight = 1;
+        manager.marginHeight = -1;
         manager.marginWidth = 5;
         setLayoutManager(manager);
         nameFigure = new Label();
@@ -63,6 +71,24 @@ public class TreeBranchContent extends Figure implements ITextCell {
         setOpaque(true);
 
         this.add(nameFigure);
+        //
+        loopButtonFigure = new ToolBarButtonImageFigure(ImageProviderMapper.getImage(ImageInfo.SETLOOPFUNCTION_BUTTON));
+        if (treeNode.eContainer() != null && treeNode.eContainer() instanceof OutputTreeNode) {
+            this.add(loopButtonFigure);
+            loopButtonFigure.setVisible(false);
+            if (treeNode.isLoop()) {
+                loopButtonFigure.setVisible(true);
+                loopButtonFigure.addMouseListener(new MouseListener.Stub() {
+
+                    @Override
+                    public void mousePressed(MouseEvent me) {
+                        OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
+                        SetLoopFunctionDialog nsDialog = new SetLoopFunctionDialog(null, outputTreeNode.getInputLoopNodesTable());
+                        nsDialog.open();
+                    }
+                });
+            }
+        }
         this.add(statusFigure);
         this.add(defaultValue);
     }
@@ -145,6 +171,25 @@ public class TreeBranchContent extends Figure implements ITextCell {
         }
 
         return status;
+    }
+
+    public void updateLoopButtonFigure() {
+        if (treeNode.eContainer() != null && treeNode.eContainer() instanceof OutputTreeNode) {
+            if (treeNode.isLoop()) {
+                loopButtonFigure.setVisible(true);
+                loopButtonFigure.addMouseListener(new MouseListener.Stub() {
+
+                    @Override
+                    public void mousePressed(MouseEvent me) {
+                        OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
+                        SetLoopFunctionDialog nsDialog = new SetLoopFunctionDialog(null, outputTreeNode.getInputLoopNodesTable());
+                        nsDialog.open();
+                    }
+                });
+            } else {
+                loopButtonFigure.setVisible(false);
+            }
+        }
     }
 
     public void updateStatus() {

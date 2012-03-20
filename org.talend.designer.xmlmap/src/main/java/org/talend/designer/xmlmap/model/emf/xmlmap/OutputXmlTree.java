@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isErrorReject <em>Error Reject</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isAllInOne <em>All In One</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#isEnableEmptyElement <em>Enable Empty Element</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree#getInputLoopNodesTables <em>Input Loop Nodes Tables</em>}</li>
  * </ul>
  * </p>
  *
@@ -178,5 +179,21 @@ public interface OutputXmlTree extends AbstractInOutTree {
      * @generated
      */
     void setEnableEmptyElement(boolean value);
+
+    /**
+     * Returns the value of the '<em><b>Input Loop Nodes Tables</b></em>' containment reference list.
+     * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable}.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Input Loop Nodes Tables</em>' reference list isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Input Loop Nodes Tables</em>' containment reference list.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getOutputXmlTree_InputLoopNodesTables()
+     * @model containment="true"
+     * @generated
+     */
+    EList<InputLoopNodesTable> getInputLoopNodesTables();
 
 } // OutputXmlTree

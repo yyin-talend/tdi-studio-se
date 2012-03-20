@@ -85,7 +85,6 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
                         ((OutputXmlTreeFigure) inOutTreeEditPart.getFigure()).update(XmlmapPackage.TREE_NODE__TYPE);
                     }
                 }
-
             }
         }
     }

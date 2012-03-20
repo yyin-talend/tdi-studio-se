@@ -58,6 +58,7 @@ public class OutputXmlTreeFigure extends AbstractInOutTreeFigure {
         settingContainer.update(type);
         filterFigure.update(type);
         imageButtonsFigure.updateMinSizeImage();
+        imageButtonsFigure.updateLoopFunctionButton();
     }
 
     private OutputXmlTree getOutputXmlTree() {

@@ -24,6 +24,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.IConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
@@ -125,6 +126,13 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    private EClass inputLoopNodesTableEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     private EClass iConnectionEClass = null;
 
                 /**
@@ -196,6 +204,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
 
         // Initialize simple dependencies
         TalendFilePackage.eINSTANCE.eClass();
+        XMLTypePackage.eINSTANCE.eClass();
 
         // Create package meta-data objects
         theXmlmapPackage.createPackageContents();
@@ -381,6 +390,15 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      */
     public EAttribute getOutputXmlTree_EnableEmptyElement() {
         return (EAttribute)outputXmlTreeEClass.getEStructuralFeatures().get(5);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EReference getOutputXmlTree_InputLoopNodesTables() {
+        return (EReference)outputXmlTreeEClass.getEStructuralFeatures().get(6);
     }
 
     /**
@@ -649,6 +667,15 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EReference getOutputTreeNode_InputLoopNodesTable() {
+        return (EReference)outputTreeNodeEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getVarNode() {
         return varNodeEClass;
     }
@@ -705,6 +732,24 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      */
     public EReference getFilterConnection_Target() {
         return (EReference)filterConnectionEClass.getEStructuralFeatures().get(1);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EClass getInputLoopNodesTable() {
+        return inputLoopNodesTableEClass;
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EReference getInputLoopNodesTable_Inputloopnodes() {
+        return (EReference)inputLoopNodesTableEClass.getEStructuralFeatures().get(0);
     }
 
                 /**
@@ -811,6 +856,15 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getAbstractInOutTree_MultiLoops() {
+        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(6);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EEnum getNodeType() {
         return nodeTypeEEnum;
     }
@@ -856,6 +910,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__MINIMIZED);
         createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__NAME);
         createEReference(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS);
+        createEAttribute(abstractInOutTreeEClass, ABSTRACT_IN_OUT_TREE__MULTI_LOOPS);
 
         inputXmlTreeEClass = createEClass(INPUT_XML_TREE);
         createEReference(inputXmlTreeEClass, INPUT_XML_TREE__NODES);
@@ -872,6 +927,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         createEAttribute(outputXmlTreeEClass, OUTPUT_XML_TREE__ERROR_REJECT);
         createEAttribute(outputXmlTreeEClass, OUTPUT_XML_TREE__ALL_IN_ONE);
         createEAttribute(outputXmlTreeEClass, OUTPUT_XML_TREE__ENABLE_EMPTY_ELEMENT);
+        createEReference(outputXmlTreeEClass, OUTPUT_XML_TREE__INPUT_LOOP_NODES_TABLES);
 
         varTableEClass = createEClass(VAR_TABLE);
         createEAttribute(varTableEClass, VAR_TABLE__NAME);
@@ -905,6 +961,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
 
         outputTreeNodeEClass = createEClass(OUTPUT_TREE_NODE);
         createEAttribute(outputTreeNodeEClass, OUTPUT_TREE_NODE__AGGREGATE);
+        createEReference(outputTreeNodeEClass, OUTPUT_TREE_NODE__INPUT_LOOP_NODES_TABLE);
 
         varNodeEClass = createEClass(VAR_NODE);
         createEAttribute(varNodeEClass, VAR_NODE__NULLABLE);
@@ -922,6 +979,9 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         filterConnectionEClass = createEClass(FILTER_CONNECTION);
         createEReference(filterConnectionEClass, FILTER_CONNECTION__SOURCE);
         createEReference(filterConnectionEClass, FILTER_CONNECTION__TARGET);
+
+        inputLoopNodesTableEClass = createEClass(INPUT_LOOP_NODES_TABLE);
+        createEReference(inputLoopNodesTableEClass, INPUT_LOOP_NODES_TABLE__INPUTLOOPNODES);
 
         // Create enums
         nodeTypeEEnum = createEEnum(NODE_TYPE);
@@ -952,6 +1012,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
 
         // Obtain other dependent packages
         TalendFilePackage theTalendFilePackage = (TalendFilePackage)EPackage.Registry.INSTANCE.getEPackage(TalendFilePackage.eNS_URI);
+        XMLTypePackage theXMLTypePackage = (XMLTypePackage)EPackage.Registry.INSTANCE.getEPackage(XMLTypePackage.eNS_URI);
 
         // Create type parameters
 
@@ -983,6 +1044,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEAttribute(getAbstractInOutTree_Minimized(), ecorePackage.getEBoolean(), "minimized", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getAbstractInOutTree_Name(), ecorePackage.getEString(), "name", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getAbstractInOutTree_FilterIncomingConnections(), this.getFilterConnection(), null, "filterIncomingConnections", null, 0, -1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getAbstractInOutTree_MultiLoops(), theXMLTypePackage.getBoolean(), "multiLoops", null, 0, 1, AbstractInOutTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(inputXmlTreeEClass, InputXmlTree.class, "InputXmlTree", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getInputXmlTree_Nodes(), this.getTreeNode(), null, "nodes", null, 0, -1, InputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -999,6 +1061,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEAttribute(getOutputXmlTree_ErrorReject(), ecorePackage.getEBoolean(), "errorReject", null, 0, 1, OutputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getOutputXmlTree_AllInOne(), ecorePackage.getEBoolean(), "allInOne", null, 0, 1, OutputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getOutputXmlTree_EnableEmptyElement(), ecorePackage.getEBoolean(), "enableEmptyElement", "true", 0, 1, OutputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getOutputXmlTree_InputLoopNodesTables(), this.getInputLoopNodesTable(), null, "inputLoopNodesTables", null, 0, -1, OutputXmlTree.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(varTableEClass, VarTable.class, "VarTable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getVarTable_Name(), ecorePackage.getEString(), "name", null, 0, 1, VarTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1032,6 +1095,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
 
         initEClass(outputTreeNodeEClass, OutputTreeNode.class, "OutputTreeNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getOutputTreeNode_Aggregate(), ecorePackage.getEBoolean(), "aggregate", null, 0, 1, OutputTreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getOutputTreeNode_InputLoopNodesTable(), this.getInputLoopNodesTable(), null, "inputLoopNodesTable", null, 0, 1, OutputTreeNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(varNodeEClass, VarNode.class, "VarNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getVarNode_Nullable(), ecorePackage.getEBoolean(), "nullable", null, 0, 1, VarNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1049,6 +1113,9 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEClass(filterConnectionEClass, FilterConnection.class, "FilterConnection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getFilterConnection_Source(), this.getAbstractNode(), null, "source", null, 0, 1, FilterConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getFilterConnection_Target(), this.getAbstractInOutTree(), null, "target", null, 0, 1, FilterConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(inputLoopNodesTableEClass, InputLoopNodesTable.class, "InputLoopNodesTable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getInputLoopNodesTable_Inputloopnodes(), this.getTreeNode(), null, "inputloopnodes", null, 0, -1, InputLoopNodesTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         // Initialize enums and add enum literals
         initEEnum(nodeTypeEEnum, NodeType.class, "NodeType");

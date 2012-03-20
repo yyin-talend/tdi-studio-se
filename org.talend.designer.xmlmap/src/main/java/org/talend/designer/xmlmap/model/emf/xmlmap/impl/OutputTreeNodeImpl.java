@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
@@ -34,6 +35,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl#isAggregate <em>Aggregate</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.OutputTreeNodeImpl#getInputLoopNodesTable <em>Input Loop Nodes Table</em>}</li>
  * </ul>
  * </p>
  *
@@ -58,6 +60,16 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
      * @ordered
      */
     protected boolean aggregate = AGGREGATE_EDEFAULT;
+
+    /**
+     * The cached value of the '{@link #getInputLoopNodesTable() <em>Input Loop Nodes Table</em>}' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getInputLoopNodesTable()
+     * @generated
+     * @ordered
+     */
+    protected InputLoopNodesTable inputLoopNodesTable;
 
     /**
      * <!-- begin-user-doc -->
@@ -104,11 +116,52 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
      * <!-- end-user-doc -->
      * @generated
      */
+    public InputLoopNodesTable getInputLoopNodesTable() {
+        if (inputLoopNodesTable != null && inputLoopNodesTable.eIsProxy()) {
+            InternalEObject oldInputLoopNodesTable = (InternalEObject)inputLoopNodesTable;
+            inputLoopNodesTable = (InputLoopNodesTable)eResolveProxy(oldInputLoopNodesTable);
+            if (inputLoopNodesTable != oldInputLoopNodesTable) {
+                if (eNotificationRequired())
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, XmlmapPackage.OUTPUT_TREE_NODE__INPUT_LOOP_NODES_TABLE, oldInputLoopNodesTable, inputLoopNodesTable));
+            }
+        }
+        return inputLoopNodesTable;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public InputLoopNodesTable basicGetInputLoopNodesTable() {
+        return inputLoopNodesTable;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setInputLoopNodesTable(InputLoopNodesTable newInputLoopNodesTable) {
+        InputLoopNodesTable oldInputLoopNodesTable = inputLoopNodesTable;
+        inputLoopNodesTable = newInputLoopNodesTable;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.OUTPUT_TREE_NODE__INPUT_LOOP_NODES_TABLE, oldInputLoopNodesTable, inputLoopNodesTable));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
             case XmlmapPackage.OUTPUT_TREE_NODE__AGGREGATE:
                 return isAggregate();
+            case XmlmapPackage.OUTPUT_TREE_NODE__INPUT_LOOP_NODES_TABLE:
+                if (resolve) return getInputLoopNodesTable();
+                return basicGetInputLoopNodesTable();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -123,6 +176,9 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
         switch (featureID) {
             case XmlmapPackage.OUTPUT_TREE_NODE__AGGREGATE:
                 setAggregate((Boolean)newValue);
+                return;
+            case XmlmapPackage.OUTPUT_TREE_NODE__INPUT_LOOP_NODES_TABLE:
+                setInputLoopNodesTable((InputLoopNodesTable)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -139,6 +195,9 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
             case XmlmapPackage.OUTPUT_TREE_NODE__AGGREGATE:
                 setAggregate(AGGREGATE_EDEFAULT);
                 return;
+            case XmlmapPackage.OUTPUT_TREE_NODE__INPUT_LOOP_NODES_TABLE:
+                setInputLoopNodesTable((InputLoopNodesTable)null);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -153,6 +212,8 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
         switch (featureID) {
             case XmlmapPackage.OUTPUT_TREE_NODE__AGGREGATE:
                 return aggregate != AGGREGATE_EDEFAULT;
+            case XmlmapPackage.OUTPUT_TREE_NODE__INPUT_LOOP_NODES_TABLE:
+                return inputLoopNodesTable != null;
         }
         return super.eIsSet(featureID);
     }

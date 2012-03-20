@@ -24,6 +24,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.IConnection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
@@ -341,9 +342,13 @@ public class XmlMapUtil {
 
     public static void detachConnectionsSouce(AbstractNode treeNode, XmlMapData mapData, boolean detachChildren) {
         treeNode.setExpression("");
+        TreeNode souceTreeNode = null;
         for (Connection connection : treeNode.getIncomingConnections()) {
             AbstractNode source = connection.getSource();
             if (source.getOutgoingConnections().contains(connection)) {
+                if (source instanceof TreeNode) {
+                    souceTreeNode = (TreeNode) source;
+                }
                 source.getOutgoingConnections().remove(connection);
                 mapData.getConnections().remove(connection);
             }
@@ -351,6 +356,7 @@ public class XmlMapUtil {
         treeNode.getIncomingConnections().clear();
 
         if (treeNode instanceof OutputTreeNode) {
+            XmlMapUtil.getLoopFunctionData(XmlMapUtil.getLoopParentNode(souceTreeNode), (OutputTreeNode) treeNode);
             OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
             if (!XmlMapUtil.isExpressionEditable(outputTreeNode) && outputTreeNode.isAggregate()) {
                 outputTreeNode.setAggregate(false);
@@ -678,4 +684,60 @@ public class XmlMapUtil {
         return node;
     }
 
+    public static TreeNode getLoopParentNode(TreeNode treeNode) {
+        if (treeNode != null && treeNode.eContainer() instanceof TreeNode) {
+            TreeNode parent = (TreeNode) treeNode.eContainer();
+            if (parent.isLoop()) {
+                return parent;
+            } else {
+                return getLoopParentNode(parent);
+            }
+        }
+        return null;
+    }
+
+    public static void getLoopFunctionData(TreeNode loopParentTreeNode, OutputTreeNode targetOutputNode) {
+        //
+        List<InputLoopNodesTable> listInputLoopNodesTablesEntry = null;
+        InputLoopNodesTable inputLoopNodesTable = null;
+        if (targetOutputNode == null || loopParentTreeNode == null) {
+            return;
+        }
+        AbstractInOutTree abstractTree = getAbstractInOutTree(targetOutputNode);
+        if (abstractTree != null && abstractTree instanceof OutputXmlTree) {
+            if (hasDocument(abstractTree)) {
+                if (targetOutputNode.isLoop()) {
+                    inputLoopNodesTable = targetOutputNode.getInputLoopNodesTable();
+                } else {
+                    OutputTreeNode loopParentNode = (OutputTreeNode) getLoopParentNode(targetOutputNode);
+                    if (loopParentNode != null) {
+                        inputLoopNodesTable = loopParentNode.getInputLoopNodesTable();
+                    }
+                }
+                if (inputLoopNodesTable != null) {
+                    for (TreeNode treeNode : inputLoopNodesTable.getInputloopnodes()) {
+                        if (treeNode.getXpath().equals(loopParentTreeNode.getXpath())) {
+                            inputLoopNodesTable.getInputloopnodes().remove(loopParentTreeNode);
+                            break;
+                        }
+                    }
+                }
+            } else {
+                listInputLoopNodesTablesEntry = ((OutputXmlTree) abstractTree).getInputLoopNodesTables();
+                if (listInputLoopNodesTablesEntry != null && listInputLoopNodesTablesEntry.size() == 0) {
+                    return;
+                } else if (listInputLoopNodesTablesEntry != null && listInputLoopNodesTablesEntry.size() == 1) {
+                    inputLoopNodesTable = listInputLoopNodesTablesEntry.get(0);
+                    if (inputLoopNodesTable != null) {
+                        for (TreeNode treeNode : inputLoopNodesTable.getInputloopnodes()) {
+                            if (treeNode.getXpath().equals(loopParentTreeNode.getXpath())) {
+                                inputLoopNodesTable.getInputloopnodes().remove(loopParentTreeNode);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

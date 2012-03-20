@@ -13,6 +13,7 @@
 package org.talend.designer.xmlmap.figures.treetools;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.draw2d.Clickable;
@@ -26,16 +27,21 @@ import org.eclipse.swt.graphics.Image;
 import org.talend.designer.xmlmap.figures.layout.TreeToolBarLayout;
 import org.talend.designer.xmlmap.figures.treesettings.TreeSettingsManager;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
+import org.talend.designer.xmlmap.ui.dialog.SetLoopFunctionDialog;
 import org.talend.designer.xmlmap.ui.resource.ImageInfo;
 import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
  */
 public class TreeToolBarContainer extends Figure {
+
+    private ToolBarButtonImageFigure setLoopFunctionButton;
 
     private ToolBarButtonImageFigure condensedButton;
 
@@ -71,6 +77,9 @@ public class TreeToolBarContainer extends Figure {
         }
 
         if (!isInputMain) {
+            setLoopFunctionButton = new SetLoopFunctionButton(ImageProviderMapper.getImage(ImageInfo.SETLOOPFUNCTION_BUTTON));
+            this.add(setLoopFunctionButton);
+
             condensedButton = new CondensedButton(ImageProviderMapper.getImage(ImageInfo.CONDENSED_TOOL_ICON));
             condensedButton.setSelected(abstractTree.isActivateCondensedTool());
             this.add(condensedButton);
@@ -102,6 +111,12 @@ public class TreeToolBarContainer extends Figure {
 
     private void setTooltips() {
         Label tooltip = new Label();
+        if (setLoopFunctionButton != null) {
+            tooltip.setText("set Loop Function");
+            setLoopFunctionButton.setToolTip(tooltip);
+        }
+
+        tooltip = new Label();
         if (condensedButton != null) {
             tooltip.setText("tXmlMap settings");
             condensedButton.setToolTip(tooltip);
@@ -127,7 +142,30 @@ public class TreeToolBarContainer extends Figure {
         }
     }
 
+    public void updateLoopFunctionButton() {
+        if (setLoopFunctionButton != null && abstractTree instanceof OutputXmlTree) {
+            if (!XmlMapUtil.hasDocument(abstractTree)) {
+                List<InputLoopNodesTable> listInputLoopNodesTablesEntry = ((OutputXmlTree) abstractTree)
+                        .getInputLoopNodesTables();
+                if (listInputLoopNodesTablesEntry != null && listInputLoopNodesTablesEntry.size() == 1
+                        && listInputLoopNodesTablesEntry.get(0).getInputloopnodes().size() > 1) {
+                    setLoopFunctionButton.setVisible(true);
+                } else {
+                    setLoopFunctionButton.setVisible(false);
+                }
+            } else {
+                setLoopFunctionButton.setVisible(false);
+            }
+        }
+    }
+
     public void updateButtonsColor(Color color) {
+        if (setLoopFunctionButton != null) {
+            updateLoopFunctionButton();
+            if (!setLoopFunctionButton.isSelected()) {
+                setLoopFunctionButton.setBackgroundColor(color);
+            }
+        }
         if (condensedButton != null) {
             if (!condensedButton.isSelected()) {
                 condensedButton.setBackgroundColor(color);
@@ -148,6 +186,36 @@ public class TreeToolBarContainer extends Figure {
             defaultSettingMap.put(TreeSettingsManager.LOOK_UP_INNER_JOIN_REJECT, false);
         }
         return defaultSettingMap;
+    }
+
+    class SetLoopFunctionButton extends ToolBarButtonImageFigure {
+
+        public SetLoopFunctionButton(Image image) {
+            super(image);
+            setStyle(Clickable.STYLE_TOGGLE);
+        }
+
+        @Override
+        public void toolBarButtonPressed(MouseEvent me) {
+            super.toolBarButtonPressed(me);
+            CommandStack commandStack = abstractTreePart.getViewer().getEditDomain().getCommandStack();
+            commandStack.execute(new Command() {
+
+                @Override
+                public void execute() {
+                    if (abstractTree instanceof OutputXmlTree) {
+                        List<InputLoopNodesTable> listInputLoopNodesTablesEntry = ((OutputXmlTree) abstractTree)
+                                .getInputLoopNodesTables();
+                        if (listInputLoopNodesTablesEntry.size() == 1) {
+                            InputLoopNodesTable inputLoopNodesTable = listInputLoopNodesTablesEntry.get(0);
+                            SetLoopFunctionDialog nsDialog = new SetLoopFunctionDialog(null, inputLoopNodesTable);
+                            nsDialog.open();
+                        }
+                    }
+                }
+            });
+            revalidate();
+        }
     }
 
     class CondensedButton extends ToolBarButtonImageFigure {

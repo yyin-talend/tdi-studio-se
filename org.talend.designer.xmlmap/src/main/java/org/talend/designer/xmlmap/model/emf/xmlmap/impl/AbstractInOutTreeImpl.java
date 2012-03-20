@@ -33,6 +33,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractInOutTreeImpl#isMinimized <em>Minimized</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractInOutTreeImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractInOutTreeImpl#getFilterIncomingConnections <em>Filter Incoming Connections</em>}</li>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractInOutTreeImpl#isMultiLoops <em>Multi Loops</em>}</li>
  * </ul>
  * </p>
  *
@@ -148,6 +149,26 @@ public abstract class AbstractInOutTreeImpl extends EObjectImpl implements Abstr
      * @ordered
      */
     protected EList<FilterConnection> filterIncomingConnections;
+
+    /**
+     * The default value of the '{@link #isMultiLoops() <em>Multi Loops</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isMultiLoops()
+     * @generated
+     * @ordered
+     */
+    protected static final boolean MULTI_LOOPS_EDEFAULT = false;
+
+    /**
+     * The cached value of the '{@link #isMultiLoops() <em>Multi Loops</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #isMultiLoops()
+     * @generated
+     * @ordered
+     */
+    protected boolean multiLoops = MULTI_LOOPS_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -290,6 +311,27 @@ public abstract class AbstractInOutTreeImpl extends EObjectImpl implements Abstr
      * <!-- end-user-doc -->
      * @generated
      */
+    public boolean isMultiLoops() {
+        return multiLoops;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setMultiLoops(boolean newMultiLoops) {
+        boolean oldMultiLoops = multiLoops;
+        multiLoops = newMultiLoops;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.ABSTRACT_IN_OUT_TREE__MULTI_LOOPS, oldMultiLoops, multiLoops));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
@@ -305,6 +347,8 @@ public abstract class AbstractInOutTreeImpl extends EObjectImpl implements Abstr
                 return getName();
             case XmlmapPackage.ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS:
                 return getFilterIncomingConnections();
+            case XmlmapPackage.ABSTRACT_IN_OUT_TREE__MULTI_LOOPS:
+                return isMultiLoops();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -337,6 +381,9 @@ public abstract class AbstractInOutTreeImpl extends EObjectImpl implements Abstr
                 getFilterIncomingConnections().clear();
                 getFilterIncomingConnections().addAll((Collection<? extends FilterConnection>)newValue);
                 return;
+            case XmlmapPackage.ABSTRACT_IN_OUT_TREE__MULTI_LOOPS:
+                setMultiLoops((Boolean)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -367,6 +414,9 @@ public abstract class AbstractInOutTreeImpl extends EObjectImpl implements Abstr
             case XmlmapPackage.ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS:
                 getFilterIncomingConnections().clear();
                 return;
+            case XmlmapPackage.ABSTRACT_IN_OUT_TREE__MULTI_LOOPS:
+                setMultiLoops(MULTI_LOOPS_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -391,6 +441,8 @@ public abstract class AbstractInOutTreeImpl extends EObjectImpl implements Abstr
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case XmlmapPackage.ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS:
                 return filterIncomingConnections != null && !filterIncomingConnections.isEmpty();
+            case XmlmapPackage.ABSTRACT_IN_OUT_TREE__MULTI_LOOPS:
+                return multiLoops != MULTI_LOOPS_EDEFAULT;
         }
         return super.eIsSet(featureID);
     }
@@ -415,6 +467,8 @@ public abstract class AbstractInOutTreeImpl extends EObjectImpl implements Abstr
         result.append(minimized);
         result.append(", name: ");
         result.append(name);
+        result.append(", multiLoops: ");
+        result.append(multiLoops);
         result.append(')');
         return result.toString();
     }

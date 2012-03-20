@@ -82,7 +82,8 @@ public class OutputXmlTreeEditPart extends AbstractInOutTreeEditPart {
             case XmlmapPackage.OUTPUT_XML_TREE__ENABLE_EMPTY_ELEMENT:
                 ((OutputXmlTreeFigure) getFigure()).update(featureId);
                 break;
-
+            case XmlmapPackage.TREE_NODE__EXPRESSION:
+                ((OutputXmlTreeFigure) getFigure()).update(XmlmapPackage.TREE_NODE__TYPE);
             }
         }
     }

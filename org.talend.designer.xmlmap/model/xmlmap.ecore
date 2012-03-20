@@ -23,6 +23,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="filterIncomingConnections"
         upperBound="-1" eType="#//FilterConnection"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiLoops" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InputXmlTree" eSuperTypes="#//AbstractInOutTree">
     <eStructuralFeatures xsi:type="ecore:EReference" name="nodes" upperBound="-1"
@@ -42,6 +43,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="allInOne" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="enableEmptyElement" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
         defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="inputLoopNodesTables" upperBound="-1"
+        eType="#//InputLoopNodesTable" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VarTable">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -83,6 +86,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OutputTreeNode" eSuperTypes="#//TreeNode">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="aggregate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="inputLoopNodesTable" eType="#//InputLoopNodesTable"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VarNode" eSuperTypes="#//AbstractNode">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="nullable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
@@ -103,5 +107,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="FilterConnection" eSuperTypes="#//IConnection">
     <eStructuralFeatures xsi:type="ecore:EReference" name="source" eType="#//AbstractNode"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//AbstractInOutTree"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InputLoopNodesTable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="inputloopnodes" upperBound="-1"
+        eType="#//TreeNode"/>
   </eClassifiers>
 </ecore:EPackage>

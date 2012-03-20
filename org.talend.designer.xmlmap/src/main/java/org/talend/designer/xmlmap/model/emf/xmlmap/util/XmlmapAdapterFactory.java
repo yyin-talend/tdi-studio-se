@@ -130,6 +130,10 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
                 return createFilterConnectionAdapter();
             }
             @Override
+            public Adapter caseInputLoopNodesTable(InputLoopNodesTable object) {
+                return createInputLoopNodesTableAdapter();
+            }
+            @Override
             public Adapter caseAbstractExternalData(AbstractExternalData object) {
                 return createAbstractExternalDataAdapter();
             }
@@ -304,6 +308,20 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     public Adapter createFilterConnectionAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable <em>Input Loop Nodes Table</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable
+     * @generated
+     */
+    public Adapter createInputLoopNodesTableAdapter() {
         return null;
     }
 

@@ -125,6 +125,15 @@ public interface XmlmapFactory extends EFactory {
     FilterConnection createFilterConnection();
 
                 /**
+     * Returns a new object of class '<em>Input Loop Nodes Table</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Input Loop Nodes Table</em>'.
+     * @generated
+     */
+    InputLoopNodesTable createInputLoopNodesTable();
+
+                /**
      * Returns the package supported by this factory.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
