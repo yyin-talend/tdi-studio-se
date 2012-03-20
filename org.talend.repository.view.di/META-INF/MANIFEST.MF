@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: DataIntegration
+Bundle-SymbolicName: org.talend.repository.view.di;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.talend.repository.view.di.DIPlugin
+Bundle-Vendor: .Talend.
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.ui.navigator,
+ org.talend.core.runtime,
+ org.talend.repository.view,
+ org.talend.repository
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

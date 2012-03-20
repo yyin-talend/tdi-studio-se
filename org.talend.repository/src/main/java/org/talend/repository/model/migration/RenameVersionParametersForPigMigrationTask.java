@@ -56,6 +56,10 @@ public class RenameVersionParametersForPigMigrationTask extends AbstractJobMigra
         ModifyComponentsAction.searchAndModify(item, processType, filter, Arrays.<IComponentConversion> asList(addOption));
     }
 
+    /**
+     * 
+     * AddErgonomicOptionConversion class global comment. Detailled comment
+     */
     private class AddErgonomicOptionConversion implements IComponentConversion {
 
         private String field1 = "RADIO"; //$NON-NLS-1$

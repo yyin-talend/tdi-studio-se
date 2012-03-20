@@ -12,4 +12,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.talend.commons,
  org.talend.commons.ui,
  org.talend.model,
- org.talend.metadata.managment.ui
+ org.talend.metadata.managment.ui,
+ org.eclipse.ui.navigator,
+ org.talend.repository.view
