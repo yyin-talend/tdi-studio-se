@@ -513,9 +513,8 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
-            contentProvider="org.talend.repository.view.di.viewer.content.DummyContentProvider"
             id="org.talend.repository.view.content.dummy.for.activation.di"
-            name="name">
+            name="dummy.for.activation">
          <enablement>
             <and>
                <instanceof
@@ -523,7 +522,7 @@
                </instanceof>
                <test
                      forcePluginActivation="true"
-                     property="org.talend.repository.node.alwaysFalse">
+                     property="org.talend.dummy.alwaysFalse">
                </test>
             </and>
          </enablement>
@@ -541,7 +540,7 @@
       <propertyTester
             class="org.talend.repository.tester.NodeTester"
             id="org.talend.repository.view.di.activation.tester"
-            namespace="org.talend.repository.node"
+            namespace="org.talend.dummy"
             properties="alwaysFalse"
             type="org.talend.repository.navigator.TalendRepositoryRoot">
       </propertyTester>
