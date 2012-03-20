@@ -94,4 +94,15 @@ public class EmptyContext implements IContext, Cloneable {
         // TODO Auto-generated method stub
         return null;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IContext#getContextParameter(java.lang.String, java.lang.String)
+     */
+    @Override
+    public IContextParameter getContextParameter(String sourceId, String paraName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

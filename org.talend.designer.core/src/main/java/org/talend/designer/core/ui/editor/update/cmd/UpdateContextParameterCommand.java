@@ -118,9 +118,10 @@ public class UpdateContextParameterCommand extends Command {
                                 List<Object> parameter = (List<Object>) result.getParameter();
                                 if (parameter.size() >= 3) {
                                     item = (ContextItem) parameter.get(0);
+                                    String sourceId = item.getProperty().getId();
                                     String oldName = (String) parameter.get(1);
                                     String newName = (String) parameter.get(2);
-                                    if (oldName.equals(param.getName())) {
+                                    if (oldName.equals(param.getName()) && sourceId.equals(param.getSource())) {
                                         if (newName != null) {
                                             param.setName(newName);
                                             ContextUtils.updateParameterFromRepository(item, param, context.getName());
