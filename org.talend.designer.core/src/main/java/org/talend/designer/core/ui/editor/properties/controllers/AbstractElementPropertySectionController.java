@@ -1873,6 +1873,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         ISQLBuilderService.class);
 
                 connParameters.setQuery(query);
+                connParameters.setFirstOpenSqlBuilder(true); // first open Sql Builder,set true
 
                 Dialog sqlBuilder = service.openSQLBuilderDialog(parentShell, processName, connParameters);
 

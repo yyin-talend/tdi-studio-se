@@ -666,8 +666,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             return;
         }
 
-        // changed for bug TDI-17097
+        // changed for bug TDI-19892
         if (node == null) {
+            SQLBuilderRepositoryNodeManager.tList = null;
             return;
         }
 

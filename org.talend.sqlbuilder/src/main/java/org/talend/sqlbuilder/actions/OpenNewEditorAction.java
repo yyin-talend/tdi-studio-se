@@ -23,8 +23,8 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.core.sqlbuilder.util.TextUtil;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
@@ -108,6 +108,11 @@ public class OpenNewEditorAction extends SelectionProviderAction {
         IRepositoryViewObject object = SQLBuilderRepositoryNodeManager.getRoot(firstNode).getObject();
         connParam.setRepositoryName(object.getLabel());
         connParam.setRepositoryId(object.getId());
+        // whether is first open Sql Builder
+        if (!connParam.isFirstOpenSqlBuilder()) {
+            connParam.setQuery(""); //$NON-NLS-1$
+        }
+        connParam.setFirstOpenSqlBuilder(false);
         if (isQuery) {
             DBTreeProvider provider = (DBTreeProvider) selectionProvider.getContentProvider();
             selectReveal(provider.getSelectedExtReposiotryNode());

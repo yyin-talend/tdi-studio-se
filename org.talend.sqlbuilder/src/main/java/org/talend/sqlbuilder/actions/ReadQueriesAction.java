@@ -74,6 +74,7 @@ public class ReadQueriesAction extends AContextualAction {
             connParameters.setRepositoryId(dbConnectionItem.getProperty().getId());
             connParameters.setQueryObject(queryRepositoryObject.getQuery());
             connParameters.setQuery(queryRepositoryObject.getQuery().getValue());
+            connParameters.setFirstOpenSqlBuilder(true); // first open Sql Builder,set true
         }
 
         Shell parentShell = new Shell(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()

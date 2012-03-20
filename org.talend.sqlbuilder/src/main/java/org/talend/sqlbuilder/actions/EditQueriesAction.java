@@ -83,6 +83,7 @@ public class EditQueriesAction extends AContextualAction {
             connParameters.setRepositoryId(dbConnectionItem.getProperty().getId());
             connParameters.setQueryObject(queryRepositoryObject.getQuery());
             connParameters.setQuery(queryRepositoryObject.getQuery().getValue());
+            connParameters.setFirstOpenSqlBuilder(true); // first open Sql Builder,set true
         } else if (repositoryNode.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
             dbConnectionItem = (DatabaseConnectionItem) repositoryNode.getObject().getProperty().getItem();
             connParameters.setRepositoryName(dbConnectionItem.getProperty().getLabel());
