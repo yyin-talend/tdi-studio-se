@@ -1216,6 +1216,11 @@ class ValidationRuleTypeProcessor extends SingleTypeProcessor {
                 return true;
             }
         }
+
+        if (node.getType() == ENodeType.SYSTEM_FOLDER) {
+            return true;
+        }
+
         if (node.getObject() == null || node.getObject().getProperty().getItem() == null) {
             return false;
         }
