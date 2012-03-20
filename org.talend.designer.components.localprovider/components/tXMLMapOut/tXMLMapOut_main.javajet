@@ -222,10 +222,12 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 				XPathHelper xpathHelper = new XPathHelper(tmpNode);
 				
 				String loopPath = xpathHelper.getLoopNodeXPath();
+				
 				%>
 				//init document to flat tool
 				DocumentToFlat docToFlat_<%=cid%> = new DocumentToFlat();
 				docToFlat_<%=cid%>.setOriginalLoop("<%=loopPath %>");
+				docToFlat_<%=cid%>.setIsOptional(<%=xpathHelper.isLoopOptional() %>);
 				org.dom4j.Document doc_<%=cid%> = <%=mainInputName %>.<%=tmpNode.getName() %>.getDocument(); 
 				docToFlat_<%=cid%>.setDoc(doc_<%=cid%>);
 				docToFlat_<%=cid%>.setDefineNS(<%=xpathHelper.hasDefinedNS()%>);

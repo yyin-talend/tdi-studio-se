@@ -203,6 +203,7 @@ public class CLASS {
 	
 	class XPathHelper{
 		int dPrefixCount = 0;
+		boolean isOptional = false; // use to judge if the loop node is mandotary in the source file.
 		Map<String,String> nsMapping;
 		TreeNode loopNode;
 		String finalLoopNodeXPath;
@@ -224,6 +225,7 @@ public class CLASS {
 			//1. find loop node
 			loopNode = findLoopNode(rootNode);
 			if(loopNode!=null){
+				isOptional = loopNode.isOptional();
 				nsMapping = new HashMap<String,String>(); 
 				Map<String,String> dPrefixMapping = new HashMap<String,String>();
 				//2. collection all NS
@@ -258,6 +260,13 @@ public class CLASS {
 				return false;
 			}
 			return true;
+		}
+		/**
+		 * use to judge if the loop is mandotary
+		 * 
+		 */
+		public boolean isLoopOptional() {
+			return isOptional;
 		}
 		
 		public Map<String,String> getOutNodesXPath(){
