@@ -201,7 +201,8 @@
          id="org.apache.axis"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="true"/>
 
    <plugin
          id="org.eclipse.core.resources"
@@ -242,7 +243,8 @@
          id="javax.xml.rpc"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="true"/>
 
    <plugin
          id="org.apache.log4j"
@@ -360,7 +362,9 @@
          id="org.apache.commons.discovery"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="true"/>
+
 
    <plugin
          id="javax.activation"
@@ -681,7 +685,8 @@
          id="org.eclipse.jdt.debug"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="true"/>
 
    <plugin
          id="org.eclipse.ecf"
@@ -788,13 +793,15 @@
          id="org.talend.libraries.apache"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="true"/>
 
    <plugin
          id="org.talend.libraries.dom4j-jaxen"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="true"/>
 
    <plugin
          id="org.talend.libraries.jdbc.jtds"
@@ -812,14 +819,16 @@
          id="org.talend.libraries.jdom"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="true"/>
 
    <plugin
          id="org.talend.libraries.jexcel"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
-
+         version="0.0.0"
+         unpack="true"/>
+         
    <plugin
          id="org.talend.repository.view"
          download-size="0"
