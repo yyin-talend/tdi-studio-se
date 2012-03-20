@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
@@ -40,6 +41,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ICamelDesignerCoreService;
@@ -81,6 +83,7 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
         addCompiler();
+        getSourceViewer().setEditable(isEditable());
     }
 
     /**
@@ -278,5 +281,12 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     protected void createActions() {
         super.createActions();
         getAction(IJavaEditorActionDefinitionIds.SHOW_IN_BREADCRUMB).setEnabled(false);
+    }
+
+    protected boolean isErrorStatus(IStatus status) {
+        if (!(process.getProperty().getItem() instanceof ProcessItem)) {
+            return false;
+        }
+        return super.isErrorStatus(status);
     }
 }
