@@ -18,11 +18,11 @@ import java.sql.Connection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -259,7 +259,9 @@ public class GuessSchemaProcess {
         return tempPath;
     }
 
-    public CsvArray run() throws ProcessorException {
+    public CsvArray run() throws ProcessorException, PersistenceException {
+
+        CsvArray array = new CsvArray();
         buildProcess();
         IProcessor processor = ProcessorUtilities.getProcessor(process, null);
         processor.setContext(selectContext);
@@ -272,44 +274,46 @@ public class GuessSchemaProcess {
         ProcessStreamTrashReaderUtil.readAndForget(executeprocess, buffer);
         final String errorMessage = buffer.toString();
         if (!"".equals(buffer.toString())) {
+            throw new PersistenceException(errorMessage) {
+
+                private static final long serialVersionUID = 1L;
+
+                /*
+                 * (non-Javadoc)
+                 * 
+                 * @see java.lang.Throwable#initCause(java.lang.Throwable)
+                 */
+                @Override
+                public synchronized Throwable initCause(Throwable cause) {
+                    // TODO Auto-generated method stub
+                    return super.initCause(cause);
+                }
+
+                /*
+                 * (non-Javadoc)
+                 * 
+                 * @see java.lang.Throwable#getMessage()
+                 */
+                @Override
+                public String getMessage() {
+                    StringTokenizer tokenizer = new StringTokenizer(errorMessage, "\n");
+                    StringBuilder sqlError = new StringBuilder();
+                    if (tokenizer.countTokens() > 2) {
+                        tokenizer.nextToken();
+                        sqlError.append(tokenizer.nextToken()).append("\n");
+                    }
+                    return sqlError.toString();
+                }
+
+            };
+        } else {
             try {
-                throw new PersistenceException(errorMessage) {
-
-                    /*
-                     * (non-Javadoc)
-                     * 
-                     * @see java.lang.Throwable#initCause(java.lang.Throwable)
-                     */
-                    @Override
-                    public synchronized Throwable initCause(Throwable cause) {
-                        // TODO Auto-generated method stub
-                        return super.initCause(cause);
-                    }
-
-                    /*
-                     * (non-Javadoc)
-                     * 
-                     * @see java.lang.Throwable#getMessage()
-                     */
-                    @Override
-                    public String getMessage() {
-                        return errorMessage;
-                    }
-
-                };
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
+                array = array.createFrom(previousFile, currentProcessEncoding);
+            } catch (IOException ioe) {
+                throw new ProcessorException(ioe);
             }
         }
-
-        try {
-            CsvArray array = new CsvArray();
-            array = array.createFrom(previousFile, currentProcessEncoding);
-            return array;
-        } catch (IOException ioe) {
-            throw new ProcessorException(ioe);
-        }
-
+        return array;
     }
 
     public static Property getNewmockProperty() {

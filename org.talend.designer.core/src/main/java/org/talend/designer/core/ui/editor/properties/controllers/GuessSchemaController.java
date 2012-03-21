@@ -45,10 +45,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueButton;
 import org.talend.commons.utils.data.list.UniqueStringGenerator;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ITDQRuleService;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -411,6 +413,23 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     oneColum.setNullable((schemaContent.get(1))[i - 1].equals(Boolean.TRUE.toString()) ? true : false);
                     columns.add(oneColum);
                 }
+
+                if (columns.size() > 0) {
+                    IElementParameter dqRule = elem.getElementParameter("DQRULES_LIST");
+                    if (dqRule != null) {
+                        ITDQRuleService ruleService = null;
+                        try {
+                            ruleService = (ITDQRuleService) GlobalServiceRegister.getDefault().getService(ITDQRuleService.class);
+                        } catch (RuntimeException e) {
+                            // nothing to do
+                        }
+                        IElementParameter queryParam = elem.getElementParameter("QUERY");
+                        if (ruleService != null && queryParam != null) {
+                            ruleService.updateOriginalColumnNames(columns, queryParam);
+                        }
+                    }
+                }
+
                 IMetadataTable tempMetatable = new MetadataTable();
                 /* for bug 20973 */
                 if (tempMetatable.getTableName() == null) {
@@ -464,6 +483,16 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                 }
             });
             ExceptionHandler.process(e);
+        } catch (PersistenceException pe) {
+            ExtractMetaDataUtils.closeConnection();
+            final String strExcepton = pe.getMessage();
+            Display.getDefault().asyncExec(new Runnable() {
+
+                public void run() {
+                    MessageDialog.openWarning(composite.getShell(),
+                            Messages.getString("GuessSchemaController.connectionError"), strExcepton); //$NON-NLS-1$
+                }
+            });
         }
 
     }
