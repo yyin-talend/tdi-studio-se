@@ -1419,6 +1419,12 @@
               id="org.talend.repository.model.migration.CheckAndUpdateStatusMigrationTask"
               name="CheckAndUpdateStatus">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              class="org.talend.repository.model.migration.AddCopyBookXc2jFileMigrationTask"
+              id="org.talend.repository.model.migration.AddCopyBookXc2jFileMigrationTask"
+              name="AddCopyBookXc2jFileMigrationTask">
+        </projecttask>
 
    </extension>
    
