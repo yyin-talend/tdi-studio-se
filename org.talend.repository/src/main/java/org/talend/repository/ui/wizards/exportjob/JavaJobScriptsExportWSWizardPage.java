@@ -686,20 +686,26 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
+            String fileName = getDefaultFileNameWithType();
+            if (!fileName.endsWith(".zip")) {//$NON-NLS-1$
+                fileName = fileName + ".zip";//$NON-NLS-1$
+            }
             if (directoryNames != null && directoryNames.length > 0) {
-                String fileName = getDefaultFileNameWithType();
                 // destination
                 for (int i = 0; i < directoryNames.length; i++) {
-                    String destination;
-                    Path dirPath = new Path(directoryNames[i]);
-                    if (dirPath.segmentCount() == 0) {
-                        destination = dirPath.toOSString() + File.separator + fileName;
-                    } else {
-                        destination = dirPath.append(fileName).toOSString();
+                    // String destination;
+                    // Path dirPath = new Path(directoryNames[i]);
+                    // if (dirPath.segmentCount() == 0) {
+                    // destination = dirPath.toOSString() + File.separator + fileName;
+                    // } else {
+                    // destination = dirPath.append(fileName).toOSString();
+                    // }
+                    if (directoryNames[i].toLowerCase().endsWith(".zip")) { //$NON-NLS-1$
+                        directoryNames[i] = (directoryNames[i].charAt(0) + "").toUpperCase() + directoryNames[i].substring(1);//$NON-NLS-1$
+                        addDestinationItem(directoryNames[i]);
                     }
-                    addDestinationItem(destination);
-                    setDestinationValue(destination);
                 }
+                setDestinationValue(directoryNames[0].substring(0, (directoryNames[0].lastIndexOf("\\") + 1)) + fileName);//$NON-NLS-1$
             } else {
                 setDefaultDestination();
             }
@@ -765,19 +771,18 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 settings.put(PETALS_EXPORT_DESTINATIONS, directoryNames);
                 return;
             }
-            // String[] directoryNames =
-            // settings.getArray(STORE_DESTINATION_NAMES_ID);
-            // if (directoryNames == null) {
-            // directoryNames = new String[0];
-            // }
-            // String destinationValue = getDestinationValue();
-            // directoryNames = addToHistory(directoryNames, destinationValue);
-            String[] directoryNames = new String[1];
-            String destinationValue = getDestinationValue();
-            if (destinationValue != null) {
-                destinationValue = destinationValue.substring(0, destinationValue.lastIndexOf(File.separator));
+            String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
+            if (directoryNames == null) {
+                directoryNames = new String[0];
             }
-            directoryNames[0] = destinationValue;
+            String destinationValue = getDestinationValue();
+            directoryNames = addToHistory(directoryNames, destinationValue);
+            // String[] directoryNames = new String[1];
+            // String destinationValue = getDestinationValue();
+            // if (destinationValue != null) {
+            // destinationValue = destinationValue.substring(0, destinationValue.lastIndexOf(File.separator));
+            // }
+            // directoryNames[0] = destinationValue;
 
             settings.put(STORE_EXPORTTYPE_ID, getCurrentExportType1().toString());
             settings.put(STORE_DESTINATION_NAMES_ID, directoryNames);
