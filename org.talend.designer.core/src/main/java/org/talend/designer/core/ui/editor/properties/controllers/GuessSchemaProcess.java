@@ -22,7 +22,6 @@ import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -40,6 +39,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.ProcessStreamTrashReaderUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.utils.CsvArray;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -259,7 +259,7 @@ public class GuessSchemaProcess {
         return tempPath;
     }
 
-    public CsvArray run() throws ProcessorException, PersistenceException {
+    public CsvArray run() throws ProcessorException {
 
         CsvArray array = new CsvArray();
         buildProcess();
@@ -274,7 +274,7 @@ public class GuessSchemaProcess {
         ProcessStreamTrashReaderUtil.readAndForget(executeprocess, buffer);
         final String errorMessage = buffer.toString();
         if (!"".equals(buffer.toString())) {
-            throw new PersistenceException(errorMessage) {
+            throw new ProcessorException(errorMessage) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -310,7 +310,18 @@ public class GuessSchemaProcess {
             try {
                 array = array.createFrom(previousFile, currentProcessEncoding);
             } catch (IOException ioe) {
-                throw new ProcessorException(ioe);
+                throw new ProcessorException(ioe) {
+
+                    /*
+                     * (non-Javadoc)
+                     * 
+                     * @see java.lang.Throwable#getMessage()
+                     */
+                    @Override
+                    public String getMessage() {
+                        return Messages.getString("GuessSchemaController.0", System.getProperty("line.separator")); //$NON-NLS-1$ //$NON-NLS-2$                        
+                    }
+                };
             }
         }
         return array;

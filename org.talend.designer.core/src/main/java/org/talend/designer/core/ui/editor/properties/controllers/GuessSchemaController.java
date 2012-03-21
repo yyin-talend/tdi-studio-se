@@ -45,7 +45,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueButton;
 import org.talend.commons.utils.data.list.UniqueStringGenerator;
@@ -474,7 +473,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             }
         } catch (ProcessorException e) {
             ExtractMetaDataUtils.closeConnection();
-            final String strExcepton = Messages.getString("GuessSchemaController.0", System.getProperty("line.separator")); //$NON-NLS-1$ //$NON-NLS-2$
+            final String strExcepton = e.getMessage();
             Display.getDefault().asyncExec(new Runnable() {
 
                 public void run() {
@@ -483,16 +482,6 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                 }
             });
             ExceptionHandler.process(e);
-        } catch (PersistenceException pe) {
-            ExtractMetaDataUtils.closeConnection();
-            final String strExcepton = pe.getMessage();
-            Display.getDefault().asyncExec(new Runnable() {
-
-                public void run() {
-                    MessageDialog.openWarning(composite.getShell(),
-                            Messages.getString("GuessSchemaController.connectionError"), strExcepton); //$NON-NLS-1$
-                }
-            });
         }
 
     }
