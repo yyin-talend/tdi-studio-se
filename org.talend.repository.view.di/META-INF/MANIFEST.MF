@@ -14,5 +14,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.expressions
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: org.talend.repository.view.di.viewer.content.metadata,
+Export-Package: org.talend.repository.view.di,
+ org.talend.repository.view.di.viewer.content,
+ org.talend.repository.view.di.viewer.content.code,
+ org.talend.repository.view.di.viewer.content.metadata,
+ org.talend.repository.view.di.viewer.content.rules,
  org.talend.repository.viewer.label

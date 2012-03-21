@@ -107,7 +107,7 @@
             activeByDefault="true"
             contentProvider="org.talend.repository.view.di.viewer.content.code.RoutinesContentProvider"
             icon="icons/routines.gif"
-            id="org.talend.repository.viewer.root.routines"
+            id="org.talend.repository.viewer.code.routines"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="Routines"
             priority="normal">
@@ -389,7 +389,7 @@
       <navigatorContent
             activeByDefault="true"
             appearsBefore="org.talend.repository.viewer.metadata.genericSchemas"
-            contentProvider="org.talend.repository.view.di.viewer.content.metadata.MetadataWebServiceContentProvider"
+            contentProvider="org.talend.repository.view.di.viewer.content.metadata.MetadataSalesforceContentProvider"
             icon="icons/salesforce.png"
             id="org.talend.repository.viewer.metadata.salesforce"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
@@ -527,6 +527,31 @@
             </and>
          </enablement>
       </navigatorContent>
+      <navigatorContent
+            activeByDefault="true"
+            appearsBefore="org.talend.repository.viewer.metadata.genericSchemas"
+            contentProvider="org.talend.repository.view.di.viewer.content.rules.RulesTopNodeContentProvider"
+            icon="icons/rulesManagement.gif"
+            id="org.talend.repository.viewer.metadata.rules"
+            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
+            name="Rules Management"
+            priority="normal">
+         <triggerPoints>
+            <or>
+               <adapt
+                     type="org.talend.repository.model.ProjectRepositoryNode">
+               </adapt>
+               <instanceof
+                     value="org.talend.repository.model.ProjectRepositoryNode">
+               </instanceof>
+            </or>
+         </triggerPoints>
+         <possibleChildren>
+            <instanceof
+                  value="org.talend.repository.model.RepositoryNode">
+            </instanceof>
+         </possibleChildren>
+      </navigatorContent>
    </extension>
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
@@ -534,7 +559,7 @@
             class="org.talend.repository.tester.NodeTester"
             id="org.talend.repository.node.tester"
             namespace="org.talend.repository.node"
-            properties="isJob,isMetadataTopNode,isCodeTopNode"
+            properties="isJob,isMetadataTopNode,isCodeTopNode,isRulesTopNode"
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
       <propertyTester
@@ -544,6 +569,17 @@
             properties="alwaysFalse"
             type="org.talend.repository.navigator.TalendRepositoryRoot">
       </propertyTester>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewerContentBinding
+            viewerId="org.talend.repository.cnf.view">
+         <includes>
+            <contentExtension
+                  pattern="org.talend.repository.viewer.code.*">
+            </contentExtension>
+         </includes>
+      </viewerContentBinding>
    </extension>
 
 

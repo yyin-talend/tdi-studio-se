@@ -35,6 +35,8 @@ public class NodeTester extends PropertyTester {
 
     private static final Object IS_CODE_TOP_NODE = "isCodeTopNode"; //$NON-NLS-1$
 
+    private static final Object IS_RULES_TOP_NODE = "isRulesTopNode"; //$NON-NLS-1$
+
     public NodeTester() {
         // TODO Auto-generated constructor stub
     }
@@ -51,6 +53,9 @@ public class NodeTester extends PropertyTester {
             }
             if (IS_CODE_TOP_NODE.equals(property)) {
                 return isCodeTopNode(repositoryNode);
+            }
+            if (IS_RULES_TOP_NODE.equals(property)) {
+                return isRulesTopNode(repositoryNode);
             }
             if (ALWAYS_FALSE.equals(property)) {
                 return false;
@@ -90,5 +95,16 @@ public class NodeTester extends PropertyTester {
      */
     public boolean isCodeTopNode(RepositoryNode repositoryNode) {
         return repositoryNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.CODE;
+    }
+
+    /**
+     * 
+     * DOC ggu Comment method "isRulesTopNode".
+     * 
+     * @param repositoryNode
+     * @return
+     */
+    public boolean isRulesTopNode(RepositoryNode repositoryNode) {
+        return repositoryNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_RULES_MANAGEMENT;
     }
 }

@@ -14,9 +14,9 @@ package org.talend.repository.view.di.viewer.content.metadata;
 
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.tester.NodeTester;
-import org.talend.repository.viewer.content.FolderListenerSingleTopContentProvider;
+import org.talend.repository.view.di.viewer.content.AbstractChildTopNodeContentProvider;
 
-public abstract class AbstractMetadataContentProvider extends FolderListenerSingleTopContentProvider {
+public abstract class AbstractMetadataContentProvider extends AbstractChildTopNodeContentProvider {
 
     NodeTester nodeTester = new NodeTester();
 
@@ -33,17 +33,6 @@ public abstract class AbstractMetadataContentProvider extends FolderListenerSing
             return false;
         }
 
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.repository.viewer.content.SingleTopLevelContentProvider#extractPotentialRootNode(java.lang.Object)
-     */
-    @Override
-    protected RepositoryNode extractPotentialRootNode(Object element) {
-        return (RepositoryNode) element;
     }
 
 }

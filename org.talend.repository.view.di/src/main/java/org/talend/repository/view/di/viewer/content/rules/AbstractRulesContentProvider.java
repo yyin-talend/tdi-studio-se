@@ -10,16 +10,13 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.view.di.viewer.content.code;
+package org.talend.repository.view.di.viewer.content.rules;
 
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.tester.NodeTester;
 import org.talend.repository.view.di.viewer.content.AbstractChildTopNodeContentProvider;
 
-/**
- * DOC ggu class global comment. Detailled comment
- */
-public abstract class AbstractCodeContentProvider extends AbstractChildTopNodeContentProvider {
+public abstract class AbstractRulesContentProvider extends AbstractChildTopNodeContentProvider {
 
     NodeTester nodeTester = new NodeTester();
 
@@ -31,7 +28,7 @@ public abstract class AbstractCodeContentProvider extends AbstractChildTopNodeCo
     @Override
     protected boolean isRootNodeType(Object element) {
         if (element instanceof RepositoryNode) {
-            return nodeTester.isCodeTopNode((RepositoryNode) element);
+            return nodeTester.isRulesTopNode((RepositoryNode) element);
         } else {
             return false;
         }

@@ -35,6 +35,7 @@
             activeByDefault="true"
             appearsBefore="org.talend.repository.viewer.metadata.genericSchemas"
             contentProvider="org.talend.repository.ftp.ui.viewer.content.FtpContentProvider"
+            icon="icons/ftp.png"
             id="org.talend.repository.viewer.metadata.ftp"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="FTP"
