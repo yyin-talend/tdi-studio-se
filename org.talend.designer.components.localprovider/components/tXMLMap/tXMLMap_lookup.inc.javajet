@@ -79,6 +79,7 @@ skeleton="tXMLMap_java.skeleton"
 				Map<String,String> outNodesXPath = new HashMap<String,String>();//output contain(1.lookup table to output table 2.lookup table to lookup table)
 				Map<String,String> lookupInputNodesXPath = new HashMap<String,String>();
 				String loopXPath = "";
+				boolean isLoopOptional = false;
 				boolean isMultipleResult = false;
 				boolean existXpathKeyFromCurrentLookup = false;
 				boolean hasExpressionKey = false;
@@ -95,6 +96,7 @@ skeleton="tXMLMap_java.skeleton"
 				    if("Document".equals(typeToGenerate)) {
 				    	xpathHelper = new XPathHelper(externalInputTableEntry);
 						loopXPath = xpathHelper.getLoopNodeXPath();
+						isLoopOptional = xpathHelper.isLoopOptional();
 						outNodesXPath = xpathHelper.getOutNodesXPath();
 						lookupInputNodesXPath = xpathHelper.getLookupInputNodesXPath();
 						xpathToPatternMap = xpathHelper.getXpathToPatternMap();
@@ -333,7 +335,7 @@ skeleton="tXMLMap_java.skeleton"
 								<%
 								}
 								%>
-									List<java.util.Map<String,Object>> result_<%=cid%> = lookupDoc_<%=cid%>.LookupDocument("<%=loopXPath%>",<%= tableName %>HashKey.documentLookupResult,
+									List<java.util.Map<String,Object>> result_<%=cid%> = lookupDoc_<%=cid%>.LookupDocument("<%=loopXPath%>",<%=isLoopOptional %>,<%= tableName %>HashKey.documentLookupResult,
 										xPathAsOutput_<%=cid%>,xmlNameSpaceMap_<%=tableName%>,xpathToTypeMap_<%=tableName%>,xpathToPatternMap_<%=tableName%>,"<%=matchingMode%>");
 									if(result_<%=cid%> == null || result_<%=cid%>.size() == 0) {
 										// not find
@@ -441,7 +443,7 @@ skeleton="tXMLMap_java.skeleton"
 									<%
 									}
 									%>
-									List<java.util.Map<String,Object>> result_<%=cid%> = lookupDoc_<%=cid%>.LookupDocument("<%=loopXPath%>",<%= tableName %>HashKey.documentLookupResult,
+									List<java.util.Map<String,Object>> result_<%=cid%> = lookupDoc_<%=cid%>.LookupDocument("<%=loopXPath%>",<%=isLoopOptional %>, <%= tableName %>HashKey.documentLookupResult,
 										xPathAsOutput_<%=cid%>,xmlNameSpaceMap_<%=tableName%>,xpathToTypeMap_<%=tableName%>,xpathToPatternMap_<%=tableName%>,"<%=matchingMode%>");
 									if(result_<%=cid%> == null || result_<%=cid%>.size() == 0) {
 										//do nothing
