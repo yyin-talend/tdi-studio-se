@@ -515,8 +515,13 @@ class ExportItemWizardPage extends WizardPage {
             }
             if (reloadExportPath(ARCHIVE_PATH) != null) {
                 String newPath = reloadExportPath(ARCHIVE_PATH)
-                        .substring(0, reloadExportPath(ARCHIVE_PATH).lastIndexOf("\\") + 1) + arcFileName + ".zip";
+                        .substring(0, reloadExportPath(ARCHIVE_PATH).lastIndexOf("\\") + 1) + arcFileName + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$
                 this.archivePathField.setText(newPath);
+            } else {
+                if (reloadExportPath(DIRECTORY_PATH) != null) {
+                    String newPath = reloadExportPath(DIRECTORY_PATH) + "\\" + arcFileName + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$
+                    this.archivePathField.setText(newPath);
+                }
             }
         }
 
