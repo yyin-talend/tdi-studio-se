@@ -497,8 +497,25 @@ class ExportItemWizardPage extends WizardPage {
         archivePathField = new Text(projectGroup, SWT.BORDER);
 
         archivePathField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));
-        if (reloadExportPath(ARCHIVE_PATH) != null) {
-            this.archivePathField.setText(reloadExportPath(ARCHIVE_PATH));
+
+        if (selection.getFirstElement() instanceof RepositoryNode) {
+            RepositoryNode node = (RepositoryNode) selection.getFirstElement();
+            String arcFileName;
+            if (node.getObject() == null) {
+                arcFileName = node.getLabel();
+            } else {
+                arcFileName = node.getObject().getLabel();
+            }
+            if (reloadExportPath(ARCHIVE_PATH) != null) {
+                String newPath = reloadExportPath(ARCHIVE_PATH)
+                        .substring(0, reloadExportPath(ARCHIVE_PATH).lastIndexOf("\\") + 1) + arcFileName + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$
+                this.archivePathField.setText(newPath);
+            } else {
+                if (reloadExportPath(DIRECTORY_PATH) != null) {
+                    String newPath = reloadExportPath(DIRECTORY_PATH) + "\\" + arcFileName + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$
+                    this.archivePathField.setText(newPath);
+                }
+            }
         }
 
         // browse button
