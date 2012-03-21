@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
@@ -94,6 +96,12 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     public static final String ID = "org.talend.designer.xmlmap.editor.actions.ImportTreeFromRepository";
 
+    private static final String RELATIVE_PATH = "../";
+
+    private static final String RELATIVE_PATH_PATTERN = "\\.\\./";
+
+    private List<String> targetAbsolutePath;
+
     /**
      * DOC talend ImportTreeFromRepository constructor comment.
      * 
@@ -108,6 +116,7 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     @Override
     public void run() {
+        targetAbsolutePath = null;
         RepositoryXmlSelectionDialog reviewDialog = new RepositoryXmlSelectionDialog(shell, new String[] { "XML", "MDM" });
         if (reviewDialog.open() == Window.OK) {
             TreeNode treeNodeRoot = XmlMapUtil.getTreeNodeRoot(parentNode);
@@ -137,6 +146,8 @@ public class ImportTreeFromRepository extends SelectionAction {
                     rootNode.setNodeType(NodeType.ELEMENT);
                     rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                     rootNode.setXpath(XmlMapUtil.getXPath(parentNode.getXpath(), "root", NodeType.ELEMENT));
+                    rootNode.setLoop(true);
+                    rootNode.setMain(true);
                     parentNode.getChildren().add(rootNode);
                     showError();
                 }
@@ -312,15 +323,51 @@ public class ImportTreeFromRepository extends SelectionAction {
     }
 
     private boolean isMappedChild(String tempXpath, String absoluteXPathQuery) {
-        for (Object obj : schemaTargets) {
-            String relativeXPathQuery = "";
-            if (obj instanceof SchemaTarget) {
-                relativeXPathQuery = ((SchemaTarget) obj).getRelativeXPathQuery();
-            } else if (obj instanceof ConceptTarget) {
-                relativeXPathQuery = ((ConceptTarget) obj).getRelativeLoopExpression();
+        if (targetAbsolutePath == null) {
+            targetAbsolutePath = new ArrayList<String>();
+            targetAbsolutePath.add(absoluteXPathQuery);
+            Pattern regex = Pattern.compile(RELATIVE_PATH_PATTERN, Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE //$NON-NLS-1$
+                    | Pattern.MULTILINE);
+            for (Object obj : schemaTargets) {
+                String relativeXPathQuery = "";
+                if (obj instanceof SchemaTarget) {
+                    relativeXPathQuery = ((SchemaTarget) obj).getRelativeXPathQuery();
+                } else if (obj instanceof ConceptTarget) {
+                    relativeXPathQuery = ((ConceptTarget) obj).getRelativeLoopExpression();
+                }
+
+                StringBuffer tempAbsolute = new StringBuffer();
+                tempAbsolute.append(absoluteXPathQuery);
+                tempAbsolute.append(XmlMapUtil.XPATH_SEPARATOR);
+                tempAbsolute.append(relativeXPathQuery);
+
+                if (relativeXPathQuery.startsWith(RELATIVE_PATH)) {
+                    Matcher regexMatcher = regex.matcher(relativeXPathQuery);
+                    int relativeLength = 0;
+                    while (regexMatcher.find()) {
+                        relativeLength++;
+                    }
+                    if (relativeLength > 0) {
+                        String subRelativeQuery = relativeXPathQuery.substring(relativeLength * RELATIVE_PATH.length(),
+                                relativeXPathQuery.length());
+                        String[] absoluteSplit = absoluteXPathQuery.split(XmlMapUtil.XPATH_SEPARATOR);
+                        if (absoluteSplit.length > relativeLength) {
+                            tempAbsolute = new StringBuffer();
+                            for (int i = 0; i < absoluteSplit.length - relativeLength; i++) {
+                                tempAbsolute.append(absoluteSplit[i]);
+                                tempAbsolute.append(XmlMapUtil.XPATH_SEPARATOR);
+                            }
+                            tempAbsolute.append(subRelativeQuery);
+                        }
+
+                    }
+                }
+                targetAbsolutePath.add(tempAbsolute.toString());
             }
-            final String toAbsolute = absoluteXPathQuery + XmlMapUtil.XPATH_SEPARATOR + relativeXPathQuery;
-            if (toAbsolute.startsWith(tempXpath)) {
+        }
+
+        for (String absTarget : targetAbsolutePath) {
+            if (absTarget.startsWith(tempXpath)) {
                 return true;
             }
         }
