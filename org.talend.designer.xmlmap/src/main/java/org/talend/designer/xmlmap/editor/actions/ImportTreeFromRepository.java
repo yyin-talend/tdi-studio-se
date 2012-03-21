@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
@@ -95,6 +97,10 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     public static final String ID = "org.talend.designer.xmlmap.editor.actions.ImportTreeFromRepository";
 
+    private static final String RELATIVE_PATH = "../";
+
+    private static final String RELATIVE_PATH_PATTERN = "\\.\\./";
+
     List<XMLFileNode> root;
 
     List<XMLFileNode> group;
@@ -103,7 +109,9 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     List<TreeNode> groupElements;
 
-    TreeNode outputLoop = null;
+    TreeNode loopNode = null;
+
+    private List<String> targetAbsolutePath;
 
     /**
      * DOC talend ImportTreeFromRepository constructor comment.
@@ -119,6 +127,7 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     @Override
     public void run() {
+        targetAbsolutePath = null;
         RepositoryXmlSelectionDialog reviewDialog = new RepositoryXmlSelectionDialog(shell, new String[] { "XML", "MDM" });
         if (reviewDialog.open() == Window.OK) {
             TreeNode treeNodeRoot = XmlMapUtil.getTreeNodeRoot(schemaNode);
@@ -150,6 +159,10 @@ public class ImportTreeFromRepository extends SelectionAction {
                     schemaNode.getChildren().add(rootNode);
                     showError();
                 }
+            }
+            if (loopNode == null && !schemaNode.getChildren().isEmpty()) {
+                schemaNode.getChildren().get(0).setLoop(true);
+                schemaNode.getChildren().get(0).setMain(true);
             }
 
             AbstractInOutTree tree = null;
@@ -186,8 +199,8 @@ public class ImportTreeFromRepository extends SelectionAction {
             group = connection.getGroup();
             groupElements = new ArrayList<TreeNode>();
             prepareModelFromOutput(list, schemaNode);
-            if (outputLoop != null) {
-                fillGroup(outputLoop, groupElements);
+            if (loopNode != null) {
+                fillGroup(loopNode, groupElements);
             } else {
                 if (!schemaNode.getChildren().isEmpty()) {
                     schemaNode.getChildren().get(0).setLoop(true);
@@ -272,11 +285,14 @@ public class ImportTreeFromRepository extends SelectionAction {
                     continue;
                 }
 
-            } else if (tempXpath.equals(absoluteXPathQuery)) {
+            } else if (!ignoreMapped && !isMappedChild(tempXpath)) {
+                continue;
+            }
+
+            if (tempXpath.equals(absoluteXPathQuery)) {
                 createTreeNode.setLoop(true);
                 createTreeNode.setOptional(foxNode.isOptional());
-            } else if (!isMappedChild(tempXpath) && !ignoreMapped) {
-                continue;
+                loopNode = createTreeNode;
             }
 
             parent.getChildren().add(createTreeNode);
@@ -382,8 +398,8 @@ public class ImportTreeFromRepository extends SelectionAction {
                         groupElements = new ArrayList<TreeNode>();
 
                         prepareModelFromOutput(list, schemaNode);
-                        if (outputLoop != null) {
-                            fillGroup(outputLoop, groupElements);
+                        if (loopNode != null) {
+                            fillGroup(loopNode, groupElements);
                         } else {
                             if (!schemaNode.getChildren().isEmpty()) {
                                 schemaNode.getChildren().get(0).setLoop(true);
@@ -408,15 +424,51 @@ public class ImportTreeFromRepository extends SelectionAction {
     }
 
     private boolean isMappedChild(String tempXpath) {
-        for (Object obj : schemaTargets) {
-            String relativeXPathQuery = "";
-            if (obj instanceof SchemaTarget) {
-                relativeXPathQuery = ((SchemaTarget) obj).getRelativeXPathQuery();
-            } else if (obj instanceof ConceptTarget) {
-                relativeXPathQuery = ((ConceptTarget) obj).getRelativeLoopExpression();
+        if (targetAbsolutePath == null) {
+            targetAbsolutePath = new ArrayList<String>();
+            targetAbsolutePath.add(absoluteXPathQuery);
+            Pattern regex = Pattern.compile(RELATIVE_PATH_PATTERN, Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE //$NON-NLS-1$
+                    | Pattern.MULTILINE);
+            for (Object obj : schemaTargets) {
+                String relativeXPathQuery = "";
+                if (obj instanceof SchemaTarget) {
+                    relativeXPathQuery = ((SchemaTarget) obj).getRelativeXPathQuery();
+                } else if (obj instanceof ConceptTarget) {
+                    relativeXPathQuery = ((ConceptTarget) obj).getRelativeLoopExpression();
+                }
+
+                StringBuffer tempAbsolute = new StringBuffer();
+                tempAbsolute.append(absoluteXPathQuery);
+                tempAbsolute.append(XmlMapUtil.XPATH_SEPARATOR);
+                tempAbsolute.append(relativeXPathQuery);
+
+                if (relativeXPathQuery.startsWith(RELATIVE_PATH)) {
+                    Matcher regexMatcher = regex.matcher(relativeXPathQuery);
+                    int relativeLength = 0;
+                    while (regexMatcher.find()) {
+                        relativeLength++;
+                    }
+                    if (relativeLength > 0) {
+                        String subRelativeQuery = relativeXPathQuery.substring(relativeLength * RELATIVE_PATH.length(),
+                                relativeXPathQuery.length());
+                        String[] absoluteSplit = absoluteXPathQuery.split(XmlMapUtil.XPATH_SEPARATOR);
+                        if (absoluteSplit.length > relativeLength) {
+                            tempAbsolute = new StringBuffer();
+                            for (int i = 0; i < absoluteSplit.length - relativeLength; i++) {
+                                tempAbsolute.append(absoluteSplit[i]);
+                                tempAbsolute.append(XmlMapUtil.XPATH_SEPARATOR);
+                            }
+                            tempAbsolute.append(subRelativeQuery);
+                        }
+
+                    }
+                }
+                targetAbsolutePath.add(tempAbsolute.toString());
             }
-            final String toAbsolute = absoluteXPathQuery + XmlMapUtil.XPATH_SEPARATOR + relativeXPathQuery;
-            if (toAbsolute.startsWith(tempXpath)) {
+        }
+
+        for (String absTarget : targetAbsolutePath) {
+            if (absTarget.startsWith(tempXpath)) {
                 return true;
             }
         }
@@ -531,10 +583,10 @@ public class ImportTreeFromRepository extends SelectionAction {
                 if (found == null) {
                     found = findXmlFileNode(subXpath, loop);
                     if (found != null) {
-                        if (outputLoop == null) {
-                            outputLoop = createTreeNode;
-                            outputLoop.setLoop(true);
-                            outputLoop.setOptional(foxNode.isOptional());
+                        if (loopNode == null) {
+                            loopNode = createTreeNode;
+                            loopNode.setLoop(true);
+                            loopNode.setOptional(foxNode.isOptional());
                         }
                     }
                 }
