@@ -86,6 +86,8 @@ public class UpdateDetectionDialog extends SelectionDialog {
 
     private boolean canCancel = true;
 
+    private boolean canDeselect = true;
+
     private boolean isJobReadOnly = false;
 
     private boolean onlySimpleShow = false;
@@ -194,9 +196,11 @@ public class UpdateDetectionDialog extends SelectionDialog {
             case RELOAD:
             case JOBLET_UPDATE:
                 this.canCancel = false;
+                this.canDeselect = false;
                 return;
             default:
                 this.canCancel = true;
+                this.canDeselect = true;
             }
         }
 
@@ -248,7 +252,7 @@ public class UpdateDetectionDialog extends SelectionDialog {
                 }
             }
         });
-        if (!isOnlySimpleShow()) {
+        if (!isOnlySimpleShow() && canDeselect) {
             // "select all" button
             selectButton = createButton(composite, IDialogConstants.SELECT_ALL_ID, WorkbenchMessages.SelectionDialog_selectLabel,
                     false);
