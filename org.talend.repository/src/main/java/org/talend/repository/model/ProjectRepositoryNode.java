@@ -2348,6 +2348,14 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
     }
 
     @Override
+    public String getLabel() {
+        if (getProject() != null) {
+            return getProject().getLabel();
+        }
+        return super.getLabel();
+    }
+
+    @Override
     public void dispose() {
         boolean doDispose = isEnableDisposed();
 
