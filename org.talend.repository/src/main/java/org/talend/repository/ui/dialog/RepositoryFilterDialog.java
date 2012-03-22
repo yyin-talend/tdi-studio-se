@@ -310,14 +310,15 @@ public class RepositoryFilterDialog extends Dialog {
         if (nodeType != null) {
             switch (nodeType) {
             case SYSTEM_FOLDER:
-                if (!ERepositoryObjectType.ROUTINES.equals(node.getContentType())) {
-                    visible = true;
-                }
+                // if (!ERepositoryObjectType.ROUTINES.equals(node.getContentType())) {
+                visible = true;
+                // }
                 break;
             case STABLE_SYSTEM_FOLDER:
                 // Generic/system unvisible
                 if (node.getParent() != null && node.getParent().getObjectType() == null
-                        && !ERepositoryObjectType.DOCUMENTATION.equals(node.getParent().getContentType())) {
+                        && !ERepositoryObjectType.DOCUMENTATION.equals(node.getParent().getContentType())
+                        && !ERepositoryObjectType.ROUTINES.equals(node.getParent().getContentType())) {
                     visible = true;
                 }
                 break;
@@ -368,7 +369,7 @@ public class RepositoryFilterDialog extends Dialog {
                 } else if (ERepositoryObjectType.CONTEXT.name().equals(split[1])) {
                     checkboxTreeViewer.setChecked(root.getContextNode(), false);
                 } else if (ERepositoryObjectType.ROUTINES.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getCodeNode(), false);
+                    checkboxTreeViewer.setChecked(root.getRoutineNode(), false);
                 } else if (ERepositoryObjectType.SQLPATTERNS.name().equals(split[1])) {
                     checkboxTreeViewer.setChecked(root.getSQLPatternNode(), false);
                 } else if (ERepositoryObjectType.METADATA.name().equals(split[1])) {
