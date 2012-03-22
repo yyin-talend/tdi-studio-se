@@ -28,11 +28,9 @@ public class SetLoopAction extends SelectionAction {
 
     private MapperManager mapperManager;
 
-    private List<TreeNode> loopNodeList = new ArrayList<TreeNode>();
+    private boolean input;
 
-    private List<TreeNode> subLoopNodeList = new ArrayList<TreeNode>();
-
-    private List<TreeNode> childrenNodes = new ArrayList<TreeNode>();
+    List<TreeNode> loopNodeList = new ArrayList<TreeNode>();
 
     // private List<TreeNode> nodesNeedToChangeMainStatus = new ArrayList<TreeNode>();
 
@@ -107,164 +105,44 @@ public class SetLoopAction extends SelectionAction {
             }
         }
         // TDI-20147
-        if (XmlMapUtil.hasDocument(abstractTree)) {
-            loopNodeList.clear();
-            getLoopNode(model);
-            if (loopNodeList != null && loopNodeList.size() > 0) {
-                if (MessageDialog.openConfirm(Display.getDefault().getActiveShell(),
-                        Messages.getString("SetLoopAction.cleanSubLoopTitle"),
-                        Messages.getString("SetLoopAction.cleanSubLoopMessages"))) {
-                    if (model instanceof OutputTreeNode) {
-                        subLoopNodeList.clear();
-                        List<InputLoopNodesTable> listInputLoopNodesTablesEntry = ((OutputXmlTree) abstractTree)
-                                .getInputLoopNodesTables();
-                        InputLoopNodesTable inputLoopNodesTable = null;
-                        for (TreeNode node : loopNodeList) {
-                            inputLoopNodesTable = ((OutputTreeNode) node).getInputLoopNodesTable();
-                            if (inputLoopNodesTable != null && inputLoopNodesTable.getInputloopnodes().size() > 0) {
-                                subLoopNodeList.addAll(inputLoopNodesTable.getInputloopnodes());
-                                ((OutputTreeNode) node).setInputLoopNodesTable(null);
-                                listInputLoopNodesTablesEntry.remove(inputLoopNodesTable);
-                            }
-                        }
-                        inputLoopNodesTable = ((OutputTreeNode) model).getInputLoopNodesTable();
-                        if (inputLoopNodesTable == null) {
-                            inputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
-                            inputLoopNodesTable.getInputloopnodes().addAll(subLoopNodeList);
-                            //
-                            for (TreeNode node : getAllChildrenNodes(model)) {
-                                if (XmlMapUtil.isExpressionEditable(node) && !node.isLoop()) {
-                                    EList<Connection> incomingConnections = node.getIncomingConnections();
-                                    for (Connection connection : incomingConnections) {
-                                        if (connection.getSource() instanceof TreeNode) {
-                                            TreeNode sourceTreeNode = (TreeNode) connection.getSource();
-                                            TreeNode treeNode = XmlMapUtil.getLoopParentNode((TreeNode) connection.getSource());
-                                            if (sourceTreeNode != null) {
-                                                String temp = "[" + sourceTreeNode.getXpath() + "]";
-                                                if (treeNode != null && node.getExpression() != null
-                                                        && !"".equals(node.getExpression()) && temp.equals(node.getExpression())) {
-                                                    inputLoopNodesTable.getInputloopnodes().add(treeNode);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            ((OutputTreeNode) model).setInputLoopNodesTable(inputLoopNodesTable);
-                            if (inputLoopNodesTable.getInputloopnodes().size() > 1) {
-                                listInputLoopNodesTablesEntry.add(inputLoopNodesTable);
-                            }
-                        }
-                    }
-                    cleanSubLoop(model);
-                } else {
-                    return;
-                }
-            }
-
-            //
-            if (model instanceof OutputTreeNode) {
-                TreeNode loopParentNode = XmlMapUtil.getLoopParentNode(model);
-                InputLoopNodesTable inputLoopNodesTable = null;
-                loopNodeList.clear();
-                if (loopParentNode != null) {
-                    inputLoopNodesTable = ((OutputTreeNode) loopParentNode).getInputLoopNodesTable();
-                    if (inputLoopNodesTable != null) {
-                        loopNodeList.addAll(inputLoopNodesTable.getInputloopnodes());
-                        ((OutputTreeNode) loopParentNode).setInputLoopNodesTable(null);
-                        inputLoopNodesTable.getInputloopnodes().clear();
-                        if (!XmlMapUtil.isExpressionEditable(model)) {
-                            for (TreeNode node : getAllChildrenNodes(model)) {
-                                if (XmlMapUtil.isExpressionEditable(node) && !node.isLoop()) {
-                                    EList<Connection> incomingConnections = node.getIncomingConnections();
-                                    for (Connection connection : incomingConnections) {
-                                        if (connection.getSource() instanceof TreeNode) {
-                                            TreeNode sourceTreeNode = (TreeNode) connection.getSource();
-                                            TreeNode treeNode = XmlMapUtil.getLoopParentNode((TreeNode) connection.getSource());
-                                            if (sourceTreeNode != null) {
-                                                String temp = "[" + sourceTreeNode.getXpath() + "]";
-                                                if (treeNode != null && node.getExpression() != null
-                                                        && !"".equals(node.getExpression()) && temp.equals(node.getExpression())) {
-                                                    inputLoopNodesTable.getInputloopnodes().add(treeNode);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            ((OutputTreeNode) model).setInputLoopNodesTable(inputLoopNodesTable);
-                        } else if (model.getExpression() != null && !"".equals(model.getExpression())) {
-                            for (TreeNode node : loopNodeList) {
-                                if (node != null) {
-                                    EList<Connection> incomingConnections = model.getIncomingConnections();
-                                    for (Connection connection : incomingConnections) {
-                                        if (connection.getSource() instanceof TreeNode) {
-                                            TreeNode treeNode = XmlMapUtil.getLoopParentNode((TreeNode) connection.getSource());
-                                            if (treeNode != null && treeNode.getXpath().equals(node.getXpath())) {
-                                                inputLoopNodesTable.getInputloopnodes().clear();
-                                                inputLoopNodesTable.getInputloopnodes().add(node);
-                                                ((OutputTreeNode) model).setInputLoopNodesTable(inputLoopNodesTable);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    List<InputLoopNodesTable> listInputLoopNodesTablesEntry = ((OutputXmlTree) abstractTree)
-                            .getInputLoopNodesTables();
-                    if (!XmlMapUtil.isExpressionEditable(model)) {
-                        if (inputLoopNodesTable == null) {
-                            inputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
-                            for (TreeNode node : model.getChildren()) {
-                                EList<Connection> incomingConnections = node.getIncomingConnections();
-                                for (Connection connection : incomingConnections) {
-                                    if (connection.getSource() instanceof TreeNode) {
-                                        TreeNode sourceTreeNode = (TreeNode) connection.getSource();
-                                        TreeNode treeNode = XmlMapUtil.getLoopParentNode((TreeNode) connection.getSource());
-                                        if (sourceTreeNode != null) {
-                                            String temp = "[" + sourceTreeNode.getXpath() + "]";
-                                            if (treeNode != null && node.getExpression() != null
-                                                    && !"".equals(node.getExpression()) && temp.equals(node.getExpression())) {
-                                                inputLoopNodesTable.getInputloopnodes().add(treeNode);
-                                                ((OutputTreeNode) model).setInputLoopNodesTable(inputLoopNodesTable);
-                                                if (inputLoopNodesTable.getInputloopnodes().size() > 1) {
-                                                    listInputLoopNodesTablesEntry.add(inputLoopNodesTable);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                    } else if (model.getExpression() != null && !"".equals(model.getExpression())) {
-                        if (inputLoopNodesTable == null) {
-                            inputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
-                            EList<Connection> incomingConnections = model.getIncomingConnections();
-                            for (Connection connection : incomingConnections) {
-                                if (connection.getSource() instanceof TreeNode) {
-                                    TreeNode sourceTreeNode = (TreeNode) connection.getSource();
-                                    TreeNode treeNode = XmlMapUtil.getLoopParentNode((TreeNode) connection.getSource());
-                                    if (sourceTreeNode != null) {
-                                        String temp = "[" + sourceTreeNode.getXpath() + "]";
-                                        if (treeNode != null && temp.equals(model.getExpression())) {
-                                            inputLoopNodesTable.getInputloopnodes().add(treeNode);
-                                            ((OutputTreeNode) model).setInputLoopNodesTable(inputLoopNodesTable);
-                                            listInputLoopNodesTablesEntry.add(inputLoopNodesTable);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+        List<TreeNode> loopNodes = new ArrayList<TreeNode>();
+        checkSubElementIsLoop(model, loopNodes);
+        checkParentElementIsLoop(model, loopNodes);
+        if (!loopNodes.isEmpty()) {
+            if (MessageDialog.openConfirm(Display.getDefault().getActiveShell(),
+                    Messages.getString("SetLoopAction.cleanSubLoopTitle"),
+                    Messages.getString("SetLoopAction.cleanSubLoopMessages"))) {
+            } else {
+                return;
             }
         }
-        checkParentElementIsLoop(nodePart);
+
+        for (TreeNode treeNode : loopNodes) {
+            treeNode.setLoop(false);
+        }
+
+        if (!input) {
+            // clean the InputLoopNodesTable for the old loops
+            for (TreeNode treeNode : loopNodes) {
+                InputLoopNodesTable inputLoopNodesTable = ((OutputTreeNode) treeNode).getInputLoopNodesTable();
+                if (inputLoopNodesTable != null && abstractTree != null) {
+                    ((OutputXmlTree) abstractTree).getInputLoopNodesTables().remove(inputLoopNodesTable);
+                    inputLoopNodesTable.getInputloopnodes().clear();
+                }
+                ((OutputTreeNode) treeNode).setInputLoopNodesTable(null);
+            }
+            // find input loop node and add to InputLoopNodesTable
+            List<TreeNode> sourceLoopNodes = new ArrayList<TreeNode>();
+            findChildSourceLoop(model, sourceLoopNodes);
+            if (!sourceLoopNodes.isEmpty()) {
+                InputLoopNodesTable createInputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
+                createInputLoopNodesTable.eAdapters().add(nodePart);
+                ((OutputTreeNode) model).setInputLoopNodesTable(createInputLoopNodesTable);
+                createInputLoopNodesTable.getInputloopnodes().addAll(sourceLoopNodes);
+            }
+        }
         model.setLoop(true);
+
         XmlMapUtil.clearMainNode(model);
         XmlMapUtil.upsetMainNode(model);
 
@@ -283,6 +161,27 @@ public class SetLoopAction extends SelectionAction {
         }
     }
 
+    private void findChildSourceLoop(TreeNode treeNode, List<TreeNode> sourceLoopNodes) {
+        if (treeNode.getExpression() != null) {
+            EList<Connection> incomingConnections = treeNode.getIncomingConnections();
+            for (Connection connection : incomingConnections) {
+                if (connection.getSource() instanceof TreeNode) {
+                    TreeNode loopParentNode = XmlMapUtil.getLoopParentNode((TreeNode) connection.getSource());
+                    if (loopParentNode != null && !sourceLoopNodes.contains(loopParentNode)) {
+                        sourceLoopNodes.add(loopParentNode);
+                    }
+                }
+            }
+
+        }
+        if (!treeNode.getChildren().isEmpty()) {
+            for (TreeNode child : treeNode.getChildren()) {
+                findChildSourceLoop(child, sourceLoopNodes);
+            }
+        }
+
+    }
+
     private void cleanSubLoop(TreeNode docRoot) {
         for (TreeNode treeNode : docRoot.getChildren()) {
             if (treeNode.isLoop()) {
@@ -292,34 +191,30 @@ public class SetLoopAction extends SelectionAction {
         }
     }
 
-    private boolean checkParentElementIsLoop(TreeNodeEditPart nodePart) {
-        if (nodePart != null) {
-            if (nodePart.getParent() instanceof TreeNodeEditPart) {
-                TreeNodeEditPart nodePartTemp = (TreeNodeEditPart) nodePart.getParent();
-                TreeNode model = (TreeNode) nodePartTemp.getModel();
-                if (model.isLoop()) {
-                    model.setLoop(false);
-                    return true;
-                } else {
-                    checkParentElementIsLoop(nodePartTemp);
-                }
-            }
+    private void checkSubElementIsLoop(TreeNode subTreeNode, List<TreeNode> subLoops) {
+        if (subTreeNode == null) {
+            return;
         }
-        return false;
+        TreeNode e = subTreeNode;
+        if (e.isLoop()) {
+            subLoops.add(e);
+        }
+        for (TreeNode treeNode : subTreeNode.getChildren()) {
+            checkSubElementIsLoop(treeNode, subLoops);
+        }
     }
 
-    private List<TreeNode> getAllChildrenNodes(TreeNode node) {
-        if (node == null) {
-            return null;
+    private void checkParentElementIsLoop(TreeNode subTreeNode, List<TreeNode> subLoops) {
+        if (subTreeNode == null) {
+            return;
         }
-        TreeNode e = node;
-        if (XmlMapUtil.isExpressionEditable(e)) {
-            childrenNodes.add(e);
+        TreeNode e = subTreeNode;
+        if (e.isLoop()) {
+            subLoops.add(e);
         }
-        for (TreeNode child : node.getChildren()) {
-            getAllChildrenNodes(child);
+        if (e.eContainer() instanceof TreeNode) {
+            checkParentElementIsLoop((TreeNode) e.eContainer(), subLoops);
         }
-        return childrenNodes;
     }
 
     private void getLoopNode(TreeNode pNode) {
@@ -356,6 +251,14 @@ public class SetLoopAction extends SelectionAction {
 
     public void setMapperManager(MapperManager mapperManager) {
         this.mapperManager = mapperManager;
+    }
+
+    public boolean isInput() {
+        return input;
+    }
+
+    public void setInput(boolean input) {
+        this.input = input;
     }
 
 }
