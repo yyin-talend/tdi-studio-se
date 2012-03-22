@@ -524,9 +524,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             if (directoryNames != null && directoryNames.length > 0) {
                 // destination
                 for (int i = 0; i < directoryNames.length; i++) {
-                    saDestinationFilePath = new Path(directoryNames[i]).append(saName).toOSString();
-                    addDestinationItem(saDestinationFilePath);
-                    setDestinationValue(saDestinationFilePath);
+                    if (directoryNames[i].toLowerCase().endsWith(".zip")) { //$NON-NLS-1$
+                        directoryNames[i] = (directoryNames[i].charAt(0) + "").toUpperCase() + directoryNames[i].substring(1);//$NON-NLS-1$
+                        addDestinationItem(directoryNames[i]);
+                    }
+                    setDestinationValue(directoryNames[0].substring(0, (directoryNames[0].lastIndexOf("\\") + 1)) + saName);//$NON-NLS-1$
                 }
             } else {
                 String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
@@ -557,9 +559,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 String fileName = getDefaultFileNameWithType();
                 // destination
                 for (int i = 0; i < directoryNames.length; i++) {
-                    String destination = new Path(directoryNames[i]).append(fileName).toOSString();
-                    addDestinationItem(destination);
-                    setDestinationValue(destination);
+                    if (directoryNames[i].toLowerCase().endsWith(".esb")) { //$NON-NLS-1$
+                        directoryNames[i] = (directoryNames[i].charAt(0) + "").toUpperCase() + directoryNames[i].substring(1);//$NON-NLS-1$
+                        addDestinationItem(directoryNames[i]);
+                    }
+                    setDestinationValue(directoryNames[0].substring(0, (directoryNames[0].lastIndexOf("\\") + 1)) + fileName);//$NON-NLS-1$
                 }
             } else {
                 setDefaultDestination();
@@ -621,9 +625,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             if (directoryNames != null && directoryNames.length > 0) {
                 String fileName = getDefaultFileNameWithType();
                 for (int i = 0; i < directoryNames.length; i++) {
-                    String destination = new Path(directoryNames[i]).append(fileName).toOSString();
-                    addDestinationItem(destination);
-                    setDestinationValue(destination);
+                    if (directoryNames[i].toLowerCase().endsWith(".jar")) { //$NON-NLS-1$
+                        directoryNames[i] = (directoryNames[i].charAt(0) + "").toUpperCase() + directoryNames[i].substring(1);//$NON-NLS-1$
+                        addDestinationItem(directoryNames[i]);
+                    }
+                    setDestinationValue(directoryNames[0].substring(0, (directoryNames[0].lastIndexOf("\\") + 1)) + fileName);//$NON-NLS-1$
                 }
             } else {
                 setDefaultDestinationForOSGI();
@@ -641,9 +647,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 String fileName = getDefaultFileNameWithType();
                 // destination
                 for (int i = 0; i < directoryNames.length; i++) {
-                    String destination = new Path(directoryNames[i]).append(fileName).toOSString();
-                    addDestinationItem(destination);
-                    setDestinationValue(destination);
+                    if (directoryNames[i].toLowerCase().endsWith(".war") || directoryNames[i].toLowerCase().endsWith(".zip")) { //$NON-NLS-1$
+                        directoryNames[i] = (directoryNames[i].charAt(0) + "").toUpperCase() + directoryNames[i].substring(1);//$NON-NLS-1$
+                        addDestinationItem(directoryNames[i]);
+                    }
+                    setDestinationValue(directoryNames[0].substring(0, (directoryNames[0].lastIndexOf("\\") + 1)) + fileName);//$NON-NLS-1$
                 }
             } else {
                 setDefaultDestination();
