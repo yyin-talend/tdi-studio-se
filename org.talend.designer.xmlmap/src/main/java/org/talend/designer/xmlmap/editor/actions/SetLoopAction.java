@@ -104,6 +104,11 @@ public class SetLoopAction extends SelectionAction {
                 abstractTree = (AbstractInOutTree) docRoot.eContainer();
             }
         }
+        boolean hasDocument = false;
+        if (abstractTree != null) {
+            hasDocument = XmlMapUtil.hasDocument(abstractTree);
+        }
+
         // TDI-20147
         List<TreeNode> loopNodes = new ArrayList<TreeNode>();
         checkSubElementIsLoop(model, loopNodes);
@@ -119,6 +124,14 @@ public class SetLoopAction extends SelectionAction {
 
         for (TreeNode treeNode : loopNodes) {
             treeNode.setLoop(false);
+        }
+
+        if (input) {
+            // check if child is mapped to output reomve the old loop in output node
+            removeloopInOutputTree(loopNodes);
+            // add input loopNodes to InputLoopNodesTable
+            addInputLoopNodesToOutput(model, model);
+
         }
 
         if (!input) {
@@ -146,7 +159,7 @@ public class SetLoopAction extends SelectionAction {
         XmlMapUtil.clearMainNode(model);
         XmlMapUtil.upsetMainNode(model);
 
-        if (XmlMapUtil.hasDocument(abstractTree)) {
+        if (hasDocument) {
             loopNodeList.clear();
             getLoopNode(docRoot);
             if (loopNodeList != null && loopNodeList.size() > 1) {
@@ -159,6 +172,51 @@ public class SetLoopAction extends SelectionAction {
             mapperManager.getProblemsAnalyser().checkLoopProblems(abstractTree);
             mapperManager.getMapperUI().updateStatusBar();
         }
+    }
+
+    private void addInputLoopNodesToOutput(TreeNode loopNode, TreeNode loopOrChild) {
+        if (!loopOrChild.getOutgoingConnections().isEmpty()) {
+            for (Connection connection : loopOrChild.getOutgoingConnections()) {
+                if (connection.getTarget() instanceof OutputTreeNode) {
+                    OutputTreeNode loopParentNode = (OutputTreeNode) XmlMapUtil.getLoopParentNode((OutputTreeNode) connection
+                            .getTarget());
+                    if (loopParentNode != null) {
+                        if (loopParentNode.getInputLoopNodesTable() != null) {
+                            loopParentNode.getInputLoopNodesTable().getInputloopnodes().add(loopNode);
+                        }
+                    } else {
+                        OutputXmlTree abstractInOutTree = (OutputXmlTree) XmlMapUtil
+                                .getAbstractInOutTree((OutputTreeNode) connection.getTarget());
+                        if (!XmlMapUtil.hasDocument(abstractInOutTree)) {
+                            EList<InputLoopNodesTable> inputLoopNodesTables = abstractInOutTree.getInputLoopNodesTables();
+                            if (inputLoopNodesTables.size() == 1) {
+                                InputLoopNodesTable inputLoopNodesTable = inputLoopNodesTables.get(0);
+                                inputLoopNodesTable.getInputloopnodes().add(loopNode);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (!loopOrChild.getChildren().isEmpty()) {
+            for (TreeNode child : loopOrChild.getChildren()) {
+                addInputLoopNodesToOutput(loopNode, child);
+            }
+        }
+    }
+
+    private void removeloopInOutputTree(List<TreeNode> oldLoops) {
+        EList<OutputXmlTree> outputTrees = mapperManager.getCopyOfMapData().getOutputTrees();
+        for (TreeNode oldLoop : oldLoops) {
+            for (OutputXmlTree outputTree : outputTrees) {
+                EList<InputLoopNodesTable> inputLoopNodesTables = outputTree.getInputLoopNodesTables();
+                for (InputLoopNodesTable inputLoopTable : inputLoopNodesTables) {
+                    inputLoopTable.getInputloopnodes().remove(oldLoop);
+                }
+
+            }
+        }
+
     }
 
     private void findChildSourceLoop(TreeNode treeNode, List<TreeNode> sourceLoopNodes) {
