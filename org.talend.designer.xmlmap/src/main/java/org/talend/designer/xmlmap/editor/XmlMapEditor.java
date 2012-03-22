@@ -340,6 +340,7 @@ public class XmlMapEditor extends GraphicalEditor {
 
                         SetLoopAction loopAction = (SetLoopAction) getActionRegistry().getAction(SetLoopAction.ID);
                         loopAction.update(object);
+                        loopAction.setInput(false);
                         if (loopAction.isEnabled()) {
                             menu.add(loopAction);
                         }
@@ -445,6 +446,7 @@ public class XmlMapEditor extends GraphicalEditor {
 
                         SetLoopAction loopAction = (SetLoopAction) getActionRegistry().getAction(SetLoopAction.ID);
                         loopAction.update(object);
+                        loopAction.setInput(true);
                         if (loopAction.isEnabled()) {
                             menu.add(loopAction);
                         }
