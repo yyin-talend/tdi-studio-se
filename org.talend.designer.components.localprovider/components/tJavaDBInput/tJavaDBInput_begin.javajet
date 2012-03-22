@@ -91,7 +91,23 @@ imports="
 %>
 <%
 		}
-		
+		public void createConnection(INode node) {
+			cid = node.getUniqueName();
+			dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+			dbhost = ElementParameterParser.getValue(node, "__HOST__");
+	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
+	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
+	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+	 		
+%>
+			    java.lang.Class.forName("<%=this.getDirverClassName(node) %>").newInstance();
+				<%this.setURL(node);%>
+		        String dbUser_<%=cid %> = <%=dbuser%>;
+		        String dbPwd_<%=cid %> = <%=dbpwd%>;
+		        conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+<%
+		}
 		public String getDirverClassName(INode node){
 			String frameworkType = ElementParameterParser.getValue(node,"__FRAMEWORK_TYPE__");	
 			if(("EMBEDED").equals(frameworkType)) {

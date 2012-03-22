@@ -73,7 +73,7 @@ imports="
     {%>
     	try
     	{
-    		java.sql.DriverManager.getConnection("jdbc:derby:;shutdown=true;deregister=false");
+    		java.sql.DriverManager.getConnection("jdbc:derby:;shutdown=true");
     	}
     	catch(java.sql.SQLException se)
     	{
