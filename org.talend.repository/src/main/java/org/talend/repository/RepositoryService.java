@@ -80,6 +80,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.SVNConstant;
 import org.talend.core.prefs.PreferenceManipulator;
+import org.talend.core.repository.CoreRepositoryPlugin;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
 import org.talend.core.repository.model.ResourceModelUtils;
@@ -176,8 +177,6 @@ public class RepositoryService implements IRepositoryService {
         return RepositoryNodeUtilities.getPath((RepositoryNode) node);
     }
 
-    ChangeProcessor changeProcessor = new ChangeProcessor();
-
     /*
      * (non-Javadoc)
      * 
@@ -185,7 +184,7 @@ public class RepositoryService implements IRepositoryService {
      * IRepositoryChangedListener)
      */
     public void registerRepositoryChangedListener(IRepositoryChangedListener listener) {
-        changeProcessor.addRepositoryChangedListener(listener);
+        CoreRepositoryPlugin.getDefault().registerRepositoryChangedListener(listener);
     }
 
     /*
@@ -196,7 +195,7 @@ public class RepositoryService implements IRepositoryService {
      * .IRepositoryChangedListener)
      */
     public void registerRepositoryChangedListenerAsFirst(IRepositoryChangedListener listener) {
-        changeProcessor.registerRepositoryChangedListenerAsFirst(listener);
+        CoreRepositoryPlugin.getDefault().registerRepositoryChangedListenerAsFirst(listener);
     }
 
     /*
@@ -206,7 +205,7 @@ public class RepositoryService implements IRepositoryService {
      * IRepositoryChangedListener)
      */
     public void removeRepositoryChangedListener(IRepositoryChangedListener listener) {
-        changeProcessor.removeRepositoryChangedListener(listener);
+        CoreRepositoryPlugin.getDefault().removeRepositoryChangedListener(listener);
     }
 
     /*
@@ -216,7 +215,7 @@ public class RepositoryService implements IRepositoryService {
      * org.talend.repository.model.IRepositoryService#repositoryChanged(org.talend.repository.RepositoryElementDelta)
      */
     public void repositoryChanged(IRepositoryElementDelta delta) {
-        changeProcessor.repositoryChanged(delta);
+        CoreRepositoryPlugin.getDefault().repositoryChanged(delta);
     }
 
     // This method is used for the Action in RepositoryView to synchronize the sqlBuilder.
@@ -503,15 +502,13 @@ public class RepositoryService implements IRepositoryService {
         openLoginDialog();
     }
 
-    boolean rcpMode = false;
-
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.repository.model.IRepositoryService#isRCPMode()
      */
     public boolean isRCPMode() {
-        return rcpMode;
+        return CoreRepositoryPlugin.getDefault().isRCPMode();
     }
 
     /*
@@ -520,7 +517,7 @@ public class RepositoryService implements IRepositoryService {
      * @see org.talend.repository.model.IRepositoryService#setRCPMode()
      */
     public void setRCPMode() {
-        rcpMode = true;
+        CoreRepositoryPlugin.getDefault().setRCPMode();
     }
 
     public void openMetadataConnection(IRepositoryViewObject o, INode node) {
