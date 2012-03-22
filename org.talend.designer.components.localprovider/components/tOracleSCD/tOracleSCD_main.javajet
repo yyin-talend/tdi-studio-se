@@ -453,7 +453,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         }
         %>
     }
-    
+    <%
+    	if(rejectConnName!=null){
+    %>
+    	<%=rejectConnName %>=null;
+    <%
+    	}
+    %>
 	} catch (Exception e) {//catch
   		<%
         if (dieOnError) {
