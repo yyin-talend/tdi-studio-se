@@ -27,6 +27,8 @@
 			org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.NodeType
+			org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable
+			org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection
 			org.talend.core.model.process.IConnection
 			org.talend.core.model.process.EConnectionType
             java.util.Map

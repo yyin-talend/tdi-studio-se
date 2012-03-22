@@ -10,6 +10,8 @@
 			org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree
 			org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode
+			org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable
+			org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection
 "
 %>
 <%

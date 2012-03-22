@@ -24,6 +24,7 @@
 			org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection
 			org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection
 			org.talend.designer.xmlmap.model.emf.xmlmap.NodeType
+			org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable
 			org.talend.core.model.process.IConnection
 			org.talend.core.model.process.EConnectionType
 			org.talend.core.model.metadata.IMetadataTable

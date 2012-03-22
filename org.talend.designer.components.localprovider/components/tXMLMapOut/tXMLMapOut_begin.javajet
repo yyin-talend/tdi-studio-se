@@ -23,6 +23,8 @@
 			org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.NodeType
+			org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable
+			org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection
 			org.talend.core.model.process.IConnection
 			org.talend.core.model.process.EConnectionType
             java.util.Map
@@ -522,15 +524,29 @@ class GenerateToolByDom4j{
 	java.util.List<java.util.List<TreeNode>> groupList = new java.util.ArrayList<java.util.List<TreeNode>>();
 	java.util.List<java.util.List<java.util.List<TreeNode>>> groupbyNodeList = new java.util.ArrayList(new java.util.ArrayList<java.util.List<TreeNode>>());
 	
+	java.util.List<TreeNode> loopNodes;
+	java.util.Map<TreeNode,String> loopNodeToParentRef;
+	java.util.Map<TreeNode,String> currentLoopNodeRef;
+	
 	void setAllMainNodes(TreeNode root) {
-		TreeNode loop = getLoopNode(root);
-		if(loop==null) return;
-		loop.setMain(true);
-		TreeNode parent = (TreeNode)loop.eContainer();
-		while((parent != null) && (!("id_Document").equals(parent.getType())) ) {
-			parent.setMain(true);
-			parent = (TreeNode)parent.eContainer();
+		loopNodes = new java.util.ArrayList<TreeNode>();
+		loopNodeToParentRef = new java.util.HashMap<TreeNode,String>();
+		currentLoopNodeRef = new java.util.HashMap<TreeNode,String>();
+		
+		getLoopNodes(root);
+		int i = 0;
+		for(;i<loopNodes.size();i++) {
+			TreeNode loop = loopNodes.get(i);
+			loop.setMain(true);
+			loopNodeToParentRef.put(loop,"subTreeLoopParent"+i);
+			currentLoopNodeRef.put(loop,"subTreeLoop"+i);
+			TreeNode parent = (TreeNode)loop.eContainer();
+			while((parent != null) && (!("id_Document").equals(parent.getType())) ) {
+				parent.setMain(true);
+				parent = (TreeNode)parent.eContainer();
+			}
 		}
+		
 	}
 	
 	private boolean isRoot(TreeNode node) {
@@ -540,21 +556,18 @@ class GenerateToolByDom4j{
 		return "id_Document".equals(parent.getType());
 	}
 	
-	public TreeNode getLoopNode(TreeNode root) {
+	public void getLoopNodes(TreeNode root) {
 		if(root == null) {
-			return null;
+			return;
 		}
 		if(root.isLoop()){
-			return root;
+			loopNodes.add(root);
+			return;
 		}
 		
 		for(TreeNode node : root.getChildren()){
-			TreeNode tmpNode = getLoopNode(node);
-			if(tmpNode!=null) {
-				return tmpNode;
-			}
+			getLoopNodes(node);
 		}
-		return null;
 	}
 	
 	public void generateCode(OutputTreeNode node, String currEleName, String parentName){
@@ -575,6 +588,11 @@ class GenerateToolByDom4j{
 			for(TreeNode child:node.getChildren()){
 				if(!child.isGroup() && !child.isLoop()) {
 					generateCode((OutputTreeNode)child,currEleName+"_"+index++,currEleName);
+				} else if(child.isLoop()) {
+%>
+					<%=loopNodeToParentRef.get(child)%> = <%=currEleName%>;
+<%
+					
 				}
 			}
 			
@@ -657,8 +675,16 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 			if(node.isMain() && (node.isGroup() || (node.isLoop() && !isRoot(node)))) {
 %>
 				org.dom4j.Element <%=currEleName%> = org.dom4j.DocumentHelper.createElement("<%=node.getName()%>");
+<% 
+				if(loopNodes.size() > 1) {
+%>
+				<%=parentName%>.elements().add(<%=currEleName%>);
+<%
+				} else {
+%>
 				<%=parentName%>.elements().add(orderHelper.getInsertLocation(<%=XMLOrderUtil.getCurrPos(node) %>,<%=XMLOrderUtil.getCurrOrder(node) %>),<%=currEleName%>);
 <%
+				}
 			} else {
 %>
 				org.dom4j.Element <%=currEleName%> = <%=parentName%>.addElement("<%=node.getName()%>");
@@ -974,6 +1000,19 @@ class GenerateDocument_<%=tableName %> {
 XMLMapUtil xmu = new XMLMapUtil();
 
 %>
+
+<%
+	OutputTreeNode root = (OutputTreeNode)outputNode.getChildren().get(0); // get the root tree node
+	generateToolByDom4j.setAllMainNodes(root);
+	for(TreeNode loopNode : generateToolByDom4j.loopNodes) {
+		String parentRef = generateToolByDom4j.loopNodeToParentRef.get(loopNode);
+		String isCurrentLoopRef = generateToolByDom4j.currentLoopNodeRef.get(loopNode);
+%>
+		org.dom4j.Element <%=parentRef%> = null;
+		public boolean  <%=isCurrentLoopRef%> = false;
+<%
+	}
+%>
 	
     public GenerateDocument_<%=tableName %>() {
 //    	this.treeNodeAPI = treeNodeAPI;
@@ -1017,8 +1056,6 @@ XMLMapUtil xmu = new XMLMapUtil();
 if (needRoot) {
 	needRoot=false;
 <%
-	OutputTreeNode root = (OutputTreeNode)outputNode.getChildren().get(0); // get the root tree node
-	generateToolByDom4j.setAllMainNodes(root);
 	generateToolByDom4j.generateCode(root,"root","doc");
 %>
 		root4Group = subTreeRootParent;
@@ -1035,10 +1072,24 @@ generateToolByDom4j.generateGroupCode(index);
 %>
 		isNewElement = false;
 <%
-			
-			OutputTreeNode loop = (OutputTreeNode)generateToolByDom4j.getLoopNode(root);
 			if(!isRootLoop){
-				generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent");
+				if(generateToolByDom4j.loopNodes.size() == 1) {
+					OutputTreeNode loop = (OutputTreeNode)generateToolByDom4j.loopNodes.get(0);
+					generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent");
+				} else {
+					for(TreeNode loopNode : generateToolByDom4j.loopNodes) {
+						OutputTreeNode loop = (OutputTreeNode)loopNode;
+						String parentRef = generateToolByDom4j.loopNodeToParentRef.get(loopNode);
+						String isCurrentLoopRef = generateToolByDom4j.currentLoopNodeRef.get(loopNode); 
+%>
+						if(<%=isCurrentLoopRef%>) {
+<%
+						generateToolByDom4j.generateCode(loop,"loop",parentRef);
+%>
+						}
+<%
+					}
+				}
 			}
 %>
 		}

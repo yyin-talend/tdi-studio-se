@@ -203,8 +203,10 @@ public class CLASS {
 	
 	class XPathHelper{
 		int dPrefixCount = 0;
+		Map<String,String> nsMapping = new HashMap<String,String>();
+		Map<String,String> dPrefixMapping = new HashMap<String,String>();
+		TreeNode rootNode;
 		boolean isOptional = false; // use to judge if the loop node is mandotary in the source file.
-		Map<String,String> nsMapping;
 		TreeNode loopNode;
 		String finalLoopNodeXPath;
 		Map<String,String> outNodesXPath;
@@ -222,33 +224,46 @@ public class CLASS {
 		}
 		
 		public XPathHelper(TreeNode rootNode){
-			//1. find loop node
-			loopNode = findLoopNode(rootNode);
-			if(loopNode!=null){
-				isOptional = loopNode.isOptional();
-				nsMapping = new HashMap<String,String>(); 
-				Map<String,String> dPrefixMapping = new HashMap<String,String>();
-				//2. collection all NS
-				collectionNS(rootNode, nsMapping, dPrefixMapping, null);
-				
-				List<TreeNode> outNodes = new ArrayList<TreeNode>(); 
-				//3. find all output node(out & lookup out)
-				findOutputNodes(rootNode, outNodes);
-				
-				//4. build xpath with prefix
-				finalLoopNodeXPath = buildXPathWithPrefix(loopNode, dPrefixMapping);
-				
-				outNodesXPath = new HashMap<String,String>();
-				buildXPathWithPrefix(outNodes, dPrefixMapping, outNodesXPath);
-				
-				//5. build xpath for the node has lookup input connection
-				List<TreeNode> lookupInputNodes = new ArrayList<TreeNode>();
-				findLookupInputNodes(rootNode, lookupInputNodes);
-				lookupInputNodesXPath = new HashMap<String,String>();
-				buildXPathWithPrefix(lookupInputNodes, dPrefixMapping, lookupInputNodesXPath);
+			this(rootNode,false);
+		}
+		
+		public XPathHelper(TreeNode rootNode,boolean isMultiLoop){
+			this.rootNode = rootNode;
+			collectionNS(rootNode, nsMapping, dPrefixMapping, null);
+			if(!isMultiLoop) {
+				//set loop node
+				setInputLoopNode(findLoopNode(rootNode));
+			} else {
+				//do nothing
 			}
 			
 		}
+				
+		public void setInputLoopNode(TreeNode inputLoopNode) {
+			if(inputLoopNode==null){
+				return;
+			}
+			loopNode = inputLoopNode;
+			isOptional = loopNode.isOptional();
+			
+			
+			List<TreeNode> outNodes = new ArrayList<TreeNode>(); 
+			//find all output node(out & lookup out)
+			findOutputNodes(rootNode, outNodes);
+			
+			//build xpath with prefix
+			finalLoopNodeXPath = buildXPathWithPrefix(loopNode, dPrefixMapping);
+			
+			outNodesXPath = new HashMap<String,String>();
+			buildXPathWithPrefix(outNodes, dPrefixMapping, outNodesXPath);
+			
+			//build xpath for the node has lookup input connection
+			List<TreeNode> lookupInputNodes = new ArrayList<TreeNode>();
+			findLookupInputNodes(rootNode, lookupInputNodes);
+			lookupInputNodesXPath = new HashMap<String,String>();
+			buildXPathWithPrefix(lookupInputNodes, dPrefixMapping, lookupInputNodesXPath);
+		}
+		
 		public boolean hasLoopNode(){
 			if(loopNode == null){
 				return false;
@@ -261,6 +276,7 @@ public class CLASS {
 			}
 			return true;
 		}
+		
 		/**
 		 * use to judge if the loop is mandotary
 		 * 
@@ -469,6 +485,19 @@ public class CLASS {
 			}
 		}
 		
+		void getAllLoopNodes(OutputTreeNode node,List<OutputTreeNode> result) {
+			if(node == null) {
+				return;
+			}
+			if(node.isLoop()){
+				result.add(node);
+				return;
+			}
+			for(TreeNode child : node.getChildren()){
+				getAllLoopNodes((OutputTreeNode)child,result);
+			}
+		}
+		
 		boolean isRootLoop(TreeNode root) {
 			if(root == null) return false;
 			List<TreeNode> children = root.getChildren();
@@ -571,4 +600,173 @@ public class CLASS {
     public String generate(Object argument) {
         return "";
     }
+    
+    class LoopHelper {
+	
+		//all used input loops(if the input loop is no used in any output table,we treat as no loop node)
+		List<TreeNode> inputLoopsInAllOutputTables = new ArrayList<TreeNode>();
+		
+		//all output tables
+		List<OutputXmlTree> outputTables;
+		
+		//all input tables
+		List<InputXmlTree> inputTables;
+		
+		TreeNode inputRootOfMainInputTableDocument;
+		
+		public LoopHelper(TreeNode inputRoot,List<OutputXmlTree> outputTables,List<InputXmlTree> inputTables) {
+			this.inputRootOfMainInputTableDocument = inputRoot;
+			this.outputTables = outputTables;
+			this.inputTables = inputTables;
+			
+			for(OutputXmlTree outputTable : outputTables) {
+				List<InputLoopNodesTable> inputLoopNodesTables = outputTable.getInputLoopNodesTables();
+				for(InputLoopNodesTable inputLoopNodesTable : inputLoopNodesTables) {
+					List<TreeNode> inputLoopNodes = inputLoopNodesTable.getInputloopnodes();
+					for(TreeNode node : inputLoopNodes) {
+						if(!inputLoopsInAllOutputTables.contains(node)) {
+							inputLoopsInAllOutputTables.add(node);
+						}
+					}
+					
+				}
+			}
+		}
+		
+		//all input loops used by current output table
+		List<TreeNode> inputLoopsInCurrentOutputTable;
+		
+		//for output mapping belong to unique input loop
+		public Map<TreeNode,TreeNode> outputNodeToLoopNode;
+		
+		//need a var for lookup output mapping belong to input loop
+		
+		boolean parallelLoopExistInCurrentOutputTable;
+		
+		boolean nestedLoopExistInCurrentOutputTable;
+		
+		//set current output table and init
+		public void initForOneOutputTable(OutputXmlTree currentOutputTable) {
+			inputLoopsInCurrentOutputTable = new ArrayList<TreeNode>();
+			parallelLoopExistInCurrentOutputTable = false;
+			nestedLoopExistInCurrentOutputTable = false;
+			outputNodeToLoopNode = new HashMap<TreeNode,TreeNode>();
+			
+			List<InputLoopNodesTable> inputLoopNodesTables = currentOutputTable.getInputLoopNodesTables();
+			if(inputLoopNodesTables.size() > 1) {
+				parallelLoopExistInCurrentOutputTable = true;
+			}
+			for(InputLoopNodesTable inputLoopNodesTable : inputLoopNodesTables) {
+				List<TreeNode> inputLoopNodes = inputLoopNodesTable.getInputloopnodes();
+				if(inputLoopNodes.size() > 1) {
+					nestedLoopExistInCurrentOutputTable = true;
+				}
+				for(TreeNode inputLoopNode : inputLoopNodes) {
+					if(!inputLoopsInCurrentOutputTable.contains(inputLoopNode)) {
+						inputLoopsInCurrentOutputTable.add(inputLoopNode);
+					}
+				}
+			}
+			if(parallelLoopExistInCurrentOutputTable || nestedLoopExistInCurrentOutputTable) {
+				setLoopMapping();
+			}
+		}
+		
+		
+		List<TreeNode> currentInputLoopNodes;
+		//filter for lookup table
+		List<TreeNode> noUsedInputLoopsForCurrentOutputTableLoop;
+		List<TreeNode> noUsedLookupNodesForAllLookupTableToCurrentOutputTableLoop;
+		//set current output loop of current output table  and init
+		public void initForOneOutputTableLoop(List<TreeNode> inputLoopNodes) {
+			noUsedInputLoopsForCurrentOutputTableLoop = new ArrayList<TreeNode>();
+			noUsedLookupNodesForAllLookupTableToCurrentOutputTableLoop = new ArrayList<TreeNode>();
+			currentInputLoopNodes = inputLoopNodes;
+			for(TreeNode inputLoopNode : inputLoopsInAllOutputTables) {
+				if(!currentInputLoopNodes.contains(inputLoopNode)) {
+					noUsedInputLoopsForCurrentOutputTableLoop.add(inputLoopNode);
+					insideOfLoop(inputLoopNode);
+				}
+			}
+		}
+		
+		private void insideOfLoop(TreeNode loopNode) {
+			if(asOutput(loopNode)) {
+				noUsedLookupNodesForAllLookupTableToCurrentOutputTableLoop.add(loopNode);
+			}
+			for(TreeNode childNode : loopNode.getChildren()) {
+				insideOfLoop(childNode);
+			}
+		}
+	
+		/**
+		 * used when parallel loop exist in current output table or  parallel relation exist between all output tables
+		 * @param nodeOfLookupTable
+		 * @return
+		 */
+		public boolean validLookupKey(TreeNode nodeOfLookupTable) {
+			List<LookupConnection> lookupIncomings = nodeOfLookupTable.getLookupIncomingConnections();
+			if(lookupIncomings.size()>0) {
+				LookupConnection lookupIncoming = lookupIncomings.get(0);
+				TreeNode source = (TreeNode)lookupIncoming.getSource();
+				return !noUsedLookupNodesForAllLookupTableToCurrentOutputTableLoop.contains(source);
+			}
+			return true;
+		}
+		
+		/**
+		 * for the output mapping
+		 */
+		private void setLoopMapping() {
+			for(TreeNode inputLoop : inputLoopsInCurrentOutputTable) {
+				initInsideOfLoop(inputLoop,inputLoop);
+			}
+			initOutsideOfLoops(this.inputRootOfMainInputTableDocument);
+		}
+		
+		private void initInsideOfLoop(TreeNode loopNode,TreeNode node) {
+			if(asOutput(node)) {
+				outputNodeToLoopNode.put(node, loopNode);
+			}
+			for(TreeNode childNode : node.getChildren()) {
+				initInsideOfLoop(loopNode,childNode);
+			}
+		}
+		
+		private void initOutsideOfLoops(TreeNode node) {
+			if(node.isLoop()) {
+				return;
+			}
+			if(asOutput(node)) {
+				//TODO
+				outputNodeToLoopNode.put(node, this.inputLoopsInCurrentOutputTable.get(0));
+			}
+			for(TreeNode childNode : node.getChildren()) {
+				initOutsideOfLoops(childNode);
+			}
+		}
+		
+		//for output mapping 
+		public boolean belongToCurrentLoop(TreeNode inputLoopNode,String xpath) {
+			if(parallelLoopExistInCurrentOutputTable || nestedLoopExistInCurrentOutputTable) {
+				for(Map.Entry<TreeNode, TreeNode> entry : outputNodeToLoopNode.entrySet()) {
+					TreeNode outputNode = entry.getKey();
+					TreeNode loopNode = entry.getValue();
+					if(xpath.equals(outputNode.getXpath())) {
+						if(loopNode != inputLoopNode) {
+							return false;
+						} else {
+							return true;
+						}
+					}
+				}
+			}
+			return true;
+		}
+		
+		private boolean asOutput(TreeNode currentNode) {
+			return currentNode.getOutgoingConnections().size()>0 || currentNode.getLookupOutgoingConnections().size()>0 || currentNode.getFilterOutGoingConnections().size()>0;
+		}
+	
+	}
 }

@@ -87,6 +87,9 @@ skeleton="tXMLMap_java.skeleton"
 				Map<String,String> xpathToPatternMap = null;
 				Map<String,String> xpathToTypeMap = null;
 				
+				boolean unvalidLookupKeyExistForHash = false;
+				List<IMetadataColumn> validLookupKeyFlatColumns = new ArrayList<IMetadataColumn>();
+				
 				for(int j = 0; j < listColumns.size(); j++){
 					IMetadataColumn column = listColumns.get(j);
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
@@ -130,10 +133,21 @@ skeleton="tXMLMap_java.skeleton"
 						    
 				    	  	expressionKey = leaf.getExpression();
 							if (expressionKey != null && !"".equals(expressionKey.trim())) {
+							
+								//filter for valid lookup key
+								if(parallelLoopExistInCurrentOutputTable || parallelRelationExistBetweenAllOutputTables) {
+									if(!loopHelper.validLookupKey(leaf)) {
+										continue;
+									} else {
+										if(!"Document".equals(typeToGenerate)) {
+											validLookupKeyFlatColumns.add(column);
+										}
+									}
+								}
+								
 								hasExpressionKey = true;
 							    String resultExpression = null;
 							    if("Document".equals(typeToGenerate)) {
-							    	documentColumn = columnName;
 							    	findFromDocumentType = true;
 							    	keysNames.add(leaf.getXpath());
 							    } else {
@@ -157,8 +171,29 @@ skeleton="tXMLMap_java.skeleton"
 					    }
 					}
 				}
-				boolean isAllRows = "ALL_ROWS".equals(nextInputTable.getMatchingMode());
-				boolean isDocumentAllRows = isAllRows && documentColumn!=null;
+				
+				/////////////////////////////////////////////////////
+				//set unvalidLookupKeyExistForHash
+				if((parallelLoopExistInCurrentOutputTable || parallelRelationExistBetweenAllOutputTables)) {
+					LoopHelper nestLoopHelper = new LoopHelper(documentNodeInMainInputTable,outputTablesSortedByReject,inputTables);
+					for(int ii=0;ii<allInputLoopNodesTables.size();ii++) {
+						InputLoopNodesTable oneInputLoopNodesTable = allInputLoopNodesTables.get(ii);
+						List<TreeNode> oneInputLoopNodes = oneInputLoopNodesTable.getInputloopnodes();
+						nestLoopHelper.initForOneOutputTableLoop(oneInputLoopNodes);
+						if(nextInputTable!=null && nextInputTable.isLookup()) {
+							EList<TreeNode> treeNodes = nextInputTable.getNodes();
+							for(TreeNode treeNode : treeNodes) {
+								//only check the flat column,because hash only ready for flat column
+								if(!nestLoopHelper.validLookupKey(treeNode)) {
+									unvalidLookupKeyExistForHash = true;
+								}
+								
+							}
+							
+						}
+					}
+				}
+				/////////////////////////////////////////////////////
 				
 				isXpathFromLookup = existXpathKeyFromCurrentLookup;
 				String[] aKeysNames = keysNames.toArray(new String[0]);
@@ -174,7 +209,15 @@ skeleton="tXMLMap_java.skeleton"
 					} else {
 						matchingMode = "ALL_ROWS";
 					}
+				} else {
+					if(aKeysValues.length == 0) {
+						matchingMode = "ALL_ROWS";
+					}
 				}
+				
+				boolean isAllRows = "ALL_ROWS".equals(matchingMode);
+				boolean isDocumentAllRows = isAllRows && documentColumn!=null;
+				
 				if("ALL_ROWS".equals(matchingMode) || "ALL_MATCHES".equals(matchingMode)) {
 					isMultipleResult = true;
 				}
@@ -189,6 +232,98 @@ skeleton="tXMLMap_java.skeleton"
 				
 				<%
 				if(aKeysValues!=null){//TD129
+				////////////////////////////////////////////////////////////////////////
+					if(unvalidLookupKeyExistForHash) {
+					%>
+						<%= tableName %>HashKey = new <%= tableName %>Struct() {
+							{
+								this.loopKey = "<%=loopKey%>";
+							}
+							
+							public int hashCode() {
+								if(this.hashCodeDirty){
+									final int prime = PRIME;
+									int result = DEFAULT_HASHCODE;
+					<%
+						for(IMetadataColumn column : validLookupKeyFlatColumns) {
+							String columnName = column.getLabel();
+    						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+
+							if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
+							
+							 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+							 	if(javaType == JavaTypesManager.BOOLEAN) {
+								%>
+				        			result = prime * result + (this.<%=column.getLabel() %> ? 1231 : 1237);
+								<%
+								} else {	
+								%>
+									result = prime * result + (int) this.<%=column.getLabel() %>;
+								<%
+								}
+								
+							} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+		
+								%>
+								result = prime * result + java.util.Arrays.hashCode(this.<%=column.getLabel() %>);
+								<%
+							
+							} else {
+							%>
+								result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : this.<%=column.getLabel() %>.hashCode());
+							<%
+							}
+						}
+					%>
+									result = prime * result + ((this.loopKey == null) ? 0 : this.loopKey.hashCode());
+									
+									this.hashCode = result;
+    								this.hashCodeDirty = false;	
+								}
+								return this.hashCode;
+							}
+							
+							public boolean equals(Object obj) {
+								if (this == obj) return true;
+								if (obj == null) return false;
+								if(!(obj instanceof <%=tableName%>Struct)) return false;
+								final <%=tableName%>Struct other = (<%=tableName%>Struct) obj;
+								if(!this.loopKey.equals(other.loopKey)) return false;
+<%	
+								for(IMetadataColumn column : validLookupKeyFlatColumns) {
+									String columnName = column.getLabel();
+									JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				
+									if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
+									%>
+										if (this.<%=columnName %> != other.<%=columnName %>) 
+											return false;
+									<%
+									} else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+									%>
+										if(!java.util.Arrays.equals(this.<%=columnName %>, other.<%=columnName %>)) {
+											return false;
+										}
+									<%
+									} else {
+									%>
+										if (this.<%=columnName %> == null) {
+											if (other.<%=columnName %> != null) 
+												return false;
+										} else if (!this.<%=columnName %>.equals(other.<%=columnName %>)) 
+											return false;
+									<%
+									}
+				
+								}
+%>
+								return true;
+							} 
+							
+						};
+					<%
+					}
+					///////////////////////////////////////////////////////////////////////
 				 	if(isCacheOrReloadLookupMode) {
 		   			%>
 		   				List<Object> lookupCacheKey<%=tableName%> = new java.util.ArrayList<Object>();
@@ -443,7 +578,7 @@ skeleton="tXMLMap_java.skeleton"
 									<%
 									}
 									%>
-									List<java.util.Map<String,Object>> result_<%=cid%> = lookupDoc_<%=cid%>.LookupDocument("<%=loopXPath%>",<%=isLoopOptional %>, <%= tableName %>HashKey.documentLookupResult,
+									List<java.util.Map<String,Object>> result_<%=cid%> = lookupDoc_<%=cid%>.LookupDocument("<%=loopXPath%>",<%=isLoopOptional %>,<%= tableName %>HashKey.documentLookupResult,
 										xPathAsOutput_<%=cid%>,xmlNameSpaceMap_<%=tableName%>,xpathToTypeMap_<%=tableName%>,xpathToPatternMap_<%=tableName%>,"<%=matchingMode%>");
 									if(result_<%=cid%> == null || result_<%=cid%>.size() == 0) {
 										//do nothing
@@ -518,7 +653,11 @@ skeleton="tXMLMap_java.skeleton"
 				    		}
 				    		forceLoop<%= tableName %> = false;
 				  		<% 
-				  			gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"' // G_TM_M_002"));
+				  			if(isVirtual) {
+				  				closeWhileCountForMultiResult++;
+				  			} else {
+				  				gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"' // G_TM_M_002"));
+				  			}
 				  		}//TD114 
 				  		%>
 				  		/////////////////////////////////////////////////////////////////////////////////////////////////

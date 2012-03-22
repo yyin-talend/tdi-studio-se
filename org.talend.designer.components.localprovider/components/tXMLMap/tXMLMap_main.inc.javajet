@@ -51,6 +51,17 @@ skeleton="tXMLMap_java.skeleton"
 	
 	XmlMapData xmlMapData=(XmlMapData)ElementParameterParser.getObjectValueXMLTree(node);
 
+	boolean isVirtual = false;
+	int closeWhileCountForMultiResult = 0;
+	String loopKey = null;
+	List<InputLoopNodesTable> allInputLoopNodesTables = null;
+	boolean parallelLoopExistInCurrentOutputTable = false;
+	boolean parallelRelationExistBetweenAllOutputTables = false;
+	TreeNode documentNodeInMainInputTable = null;
+	ArrayList<OutputXmlTree> outputTablesSortedByReject = null;
+	
+	LoopHelper loopHelper = null;
+	
 	
 	EList<InputXmlTree> inputTablesWithInvalid = xmlMapData.getInputTrees();
 	EList<OutputXmlTree> outputTables = xmlMapData.getOutputTrees();
@@ -320,7 +331,7 @@ skeleton="tXMLMap_java.skeleton"
 
 		StringBuilder sb = new StringBuilder();
 		
-		ArrayList<OutputXmlTree> outputTablesSortedByReject = new ArrayList<OutputXmlTree>(outputTables);
+		outputTablesSortedByReject = new ArrayList<OutputXmlTree>(outputTables);
 		// sorting outputs : rejects tables after not rejects table
 		Collections.sort(outputTablesSortedByReject, new Comparator<OutputXmlTree>() {
 
