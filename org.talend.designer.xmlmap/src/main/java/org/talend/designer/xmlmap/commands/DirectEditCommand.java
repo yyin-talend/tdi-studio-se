@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
@@ -37,6 +38,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
+import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -58,11 +60,20 @@ public class DirectEditCommand extends Command {
 
     private List<InputLoopNodesTable> listInputLoopNodesTablesEntry;
 
+    private EditPart targetEditPart;
+
     public DirectEditCommand() {
 
     }
 
     public DirectEditCommand(AbstractNode model, DirectEditType type, Object newValue) {
+        this.model = (AbstractNode) model;
+        this.newValue = newValue;
+        this.type = type;
+    }
+
+    public DirectEditCommand(EditPart targetEditPart, AbstractNode model, DirectEditType type, Object newValue) {
+        this.targetEditPart = targetEditPart;
         this.model = (AbstractNode) model;
         this.newValue = newValue;
         this.type = type;
@@ -127,6 +138,11 @@ public class DirectEditCommand extends Command {
 
                                         //
                                         if (model instanceof OutputTreeNode && sourceNode instanceof TreeNode) {
+                                            OutputTreeNodeEditPart outputTreeNodeEditPart = null;
+                                            if (targetEditPart != null && targetEditPart instanceof OutputTreeNodeEditPart) {
+                                                outputTreeNodeEditPart = XmlMapUtil
+                                                        .getParentLoopNodeEditPart((OutputTreeNodeEditPart) targetEditPart);
+                                            }
                                             if (((TreeNode) sourceNode).isLoop()) {
                                                 loopParentTreeNode = (TreeNode) sourceNode;
                                             } else {
@@ -173,6 +189,7 @@ public class DirectEditCommand extends Command {
                                                                 inputLoopNodesTable = XmlmapFactory.eINSTANCE
                                                                         .createInputLoopNodesTable();
                                                                 inputLoopNodesTable.getInputloopnodes().add(loopParentTreeNode);
+                                                                inputLoopNodesTable.eAdapters().add(outputTreeNodeEditPart);
                                                                 loopParentOutputTreeNode
                                                                         .setInputLoopNodesTable(inputLoopNodesTable);
                                                                 listInputLoopNodesTablesEntry.add(inputLoopNodesTable);

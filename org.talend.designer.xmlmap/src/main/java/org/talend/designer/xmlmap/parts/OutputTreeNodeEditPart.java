@@ -89,22 +89,11 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
             break;
         case Notification.ADD:
         case Notification.ADD_MANY:
-            switch (featureId) {
-            case XmlmapPackage.INPUT_LOOP_NODES_TABLE__INPUTLOOPNODES:
-                if (getFigure() instanceof TreeNodeFigure) {
-                    TreeNodeFigure outputFigure = (TreeNodeFigure) getFigure();
-                    if (outputFigure.getElement() != null) {
-                        outputFigure.getElement().getBranchContent().updateLoopButtonFigure();
-                    }
-                }
-                break;
-            default:
-                break;
-            }
         case Notification.REMOVE:
         case Notification.REMOVE_MANY:
             switch (featureId) {
             case XmlmapPackage.INPUT_LOOP_NODES_TABLE__INPUTLOOPNODES:
+            case XmlmapPackage.OUTPUT_TREE_NODE__INPUT_LOOP_NODES_TABLE:
                 if (getFigure() instanceof TreeNodeFigure) {
                     TreeNodeFigure outputFigure = (TreeNodeFigure) getFigure();
                     if (outputFigure.getElement() != null) {

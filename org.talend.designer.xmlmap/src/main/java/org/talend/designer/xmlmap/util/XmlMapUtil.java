@@ -35,6 +35,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
+import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 
 /**
@@ -697,6 +698,21 @@ public class XmlMapUtil {
                 return parent;
             } else {
                 return getLoopParentNode(parent);
+            }
+        }
+        return null;
+    }
+
+    public static OutputTreeNodeEditPart getParentLoopNodeEditPart(OutputTreeNodeEditPart nodePart) {
+        if (nodePart != null) {
+            if (nodePart.getParent() instanceof OutputTreeNodeEditPart) {
+                OutputTreeNodeEditPart nodePartTemp = (OutputTreeNodeEditPart) nodePart.getParent();
+                TreeNode model = (TreeNode) nodePartTemp.getModel();
+                if (model.isLoop()) {
+                    return nodePartTemp;
+                } else {
+                    getParentLoopNodeEditPart(nodePartTemp);
+                }
             }
         }
         return null;

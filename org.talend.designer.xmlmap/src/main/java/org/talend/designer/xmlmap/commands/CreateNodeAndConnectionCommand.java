@@ -234,7 +234,7 @@ public class CreateNodeAndConnectionCommand extends Command {
                             xmlMapData.getConnections().add(conn);
                         }
 
-                        createInputLoopTable(targetNode);
+                        createInputLoopTable(targetNode, (OutputTreeNodeEditPart) targetEditPart);
                     }
                 }
 
@@ -264,7 +264,11 @@ public class CreateNodeAndConnectionCommand extends Command {
         return null;
     }
 
-    private void createInputLoopTable(OutputTreeNode targetOutputNode) {
+    private void createInputLoopTable(OutputTreeNode targetOutputNode, OutputTreeNodeEditPart treeNodeEditPart) {
+        OutputTreeNodeEditPart outputTreeNodeEditPart = null;
+        if (treeNodeEditPart instanceof OutputTreeNodeEditPart) {
+            outputTreeNodeEditPart = XmlMapUtil.getParentLoopNodeEditPart(treeNodeEditPart);
+        }
         //
         if (loopParentTreeNode != null) {
             InputLoopNodesTable inputLoopNodesTable = null;
@@ -299,6 +303,7 @@ public class CreateNodeAndConnectionCommand extends Command {
                         if (loopParentOutputTreeNode.getInputLoopNodesTable() == null) {
                             inputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
                             inputLoopNodesTable.getInputloopnodes().add(loopParentTreeNode);
+                            inputLoopNodesTable.eAdapters().add(outputTreeNodeEditPart);
                             loopParentOutputTreeNode.setInputLoopNodesTable(inputLoopNodesTable);
                             listInputLoopNodesTablesEntry.add(inputLoopNodesTable);
                         } else {
@@ -333,7 +338,7 @@ public class CreateNodeAndConnectionCommand extends Command {
                 }
             }
 
-            createInputLoopTable(targetOutputNode);
+            createInputLoopTable(targetOutputNode, (OutputTreeNodeEditPart) targetEditPart);
 
             targetOutputNode.setExpression(expression);
             Connection conn = XmlmapFactory.eINSTANCE.createConnection();

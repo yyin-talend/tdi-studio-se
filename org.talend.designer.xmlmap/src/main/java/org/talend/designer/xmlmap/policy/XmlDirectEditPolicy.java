@@ -26,7 +26,7 @@ public class XmlDirectEditPolicy extends DirectEditPolicy {
                 switch (type) {
                 case EXPRESSION:
                 case NODE_NAME:
-                    command = new DirectEditCommand(model, type, request.getCellEditor().getValue());
+                    command = new DirectEditCommand(getHost(), model, type, request.getCellEditor().getValue());
                     break;
                 case VAR_NODE_TYPE:
                     if (editor instanceof ComboBoxCellEditor) {
