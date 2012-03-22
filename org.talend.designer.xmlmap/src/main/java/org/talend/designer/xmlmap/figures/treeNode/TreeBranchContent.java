@@ -22,6 +22,7 @@ import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.talend.designer.xmlmap.figures.cells.ITextCell;
 import org.talend.designer.xmlmap.figures.treetools.ToolBarButtonImageFigure;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
@@ -73,20 +74,23 @@ public class TreeBranchContent extends Figure implements ITextCell {
         this.add(nameFigure);
         //
         loopButtonFigure = new ToolBarButtonImageFigure(ImageProviderMapper.getImage(ImageInfo.SETLOOPFUNCTION_BUTTON));
-        if (treeNode.eContainer() != null && treeNode.eContainer() instanceof OutputTreeNode) {
-            this.add(loopButtonFigure);
-            loopButtonFigure.setVisible(false);
-            if (treeNode.isLoop()) {
-                loopButtonFigure.setVisible(true);
-                loopButtonFigure.addMouseListener(new MouseListener.Stub() {
+        loopButtonFigure.addMouseListener(new MouseListener.Stub() {
 
-                    @Override
-                    public void mousePressed(MouseEvent me) {
-                        OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
-                        SetLoopFunctionDialog nsDialog = new SetLoopFunctionDialog(null, outputTreeNode.getInputLoopNodesTable());
-                        nsDialog.open();
-                    }
-                });
+            @Override
+            public void mousePressed(MouseEvent me) {
+                OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
+                SetLoopFunctionDialog nsDialog = new SetLoopFunctionDialog(null, outputTreeNode.getInputLoopNodesTable());
+                nsDialog.open();
+            }
+        });
+
+        if (treeNode != null && treeNode instanceof OutputTreeNode) {
+            if (treeNode.isLoop()) {
+                OutputTreeNode targetOutputTreeNode = (OutputTreeNode) treeNode;
+                if (targetOutputTreeNode.getInputLoopNodesTable() != null
+                        && targetOutputTreeNode.getInputLoopNodesTable().getInputloopnodes().size() > 1) {
+                    this.add(loopButtonFigure);
+                }
             }
         }
         this.add(statusFigure);
@@ -140,7 +144,7 @@ public class TreeBranchContent extends Figure implements ITextCell {
         }
     }
 
-    private String getStatus(TreeNode node) {
+    public String getStatus(TreeNode node) {
         String status = "";
         if (node.isLoop()) {
             status = "(loop" + (node.isOptional() ? " :optional" : "");
@@ -174,22 +178,20 @@ public class TreeBranchContent extends Figure implements ITextCell {
     }
 
     public void updateLoopButtonFigure() {
-        if (treeNode.eContainer() != null && treeNode.eContainer() instanceof OutputTreeNode) {
-            if (treeNode.isLoop()) {
-                loopButtonFigure.setVisible(true);
-                loopButtonFigure.addMouseListener(new MouseListener.Stub() {
-
-                    @Override
-                    public void mousePressed(MouseEvent me) {
-                        OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
-                        SetLoopFunctionDialog nsDialog = new SetLoopFunctionDialog(null, outputTreeNode.getInputLoopNodesTable());
-                        nsDialog.open();
-                    }
-                });
+        if (treeNode instanceof OutputTreeNode) {
+            OutputTreeNode outputNode = (OutputTreeNode) treeNode;
+            InputLoopNodesTable inputLoopNodesTable = outputNode.getInputLoopNodesTable();
+            if (inputLoopNodesTable != null && inputLoopNodesTable.getInputloopnodes().size() > 1) {
+                if (!this.getChildren().contains(loopButtonFigure)) {
+                    this.add(loopButtonFigure, 1);
+                }
             } else {
-                loopButtonFigure.setVisible(false);
+                if (this.getChildren().contains(loopButtonFigure)) {
+                    this.remove(loopButtonFigure);
+                }
             }
         }
+
     }
 
     public void updateStatus() {

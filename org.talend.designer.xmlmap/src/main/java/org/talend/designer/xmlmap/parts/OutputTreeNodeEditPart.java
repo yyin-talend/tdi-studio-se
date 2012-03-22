@@ -86,6 +86,53 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
                     }
                 }
             }
+            break;
+        case Notification.ADD:
+        case Notification.ADD_MANY:
+            switch (featureId) {
+            case XmlmapPackage.INPUT_LOOP_NODES_TABLE__INPUTLOOPNODES:
+                if (getFigure() instanceof TreeNodeFigure) {
+                    TreeNodeFigure outputFigure = (TreeNodeFigure) getFigure();
+                    if (outputFigure.getElement() != null) {
+                        outputFigure.getElement().getBranchContent().updateLoopButtonFigure();
+                    }
+                }
+                break;
+            default:
+                break;
+            }
+        case Notification.REMOVE:
+        case Notification.REMOVE_MANY:
+            switch (featureId) {
+            case XmlmapPackage.INPUT_LOOP_NODES_TABLE__INPUTLOOPNODES:
+                if (getFigure() instanceof TreeNodeFigure) {
+                    TreeNodeFigure outputFigure = (TreeNodeFigure) getFigure();
+                    if (outputFigure.getElement() != null) {
+                        outputFigure.getElement().getBranchContent().updateLoopButtonFigure();
+                    }
+                }
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void activate() {
+        super.activate();
+        OutputTreeNode outputNode = (OutputTreeNode) getModel();
+        if (outputNode.getInputLoopNodesTable() != null) {
+            outputNode.getInputLoopNodesTable().eAdapters().add(this);
+        }
+    }
+
+    @Override
+    public void deactivate() {
+        super.deactivate();
+        OutputTreeNode outputNode = (OutputTreeNode) getModel();
+        if (outputNode.getInputLoopNodesTable() != null) {
+            outputNode.getInputLoopNodesTable().eAdapters().remove(this);
         }
     }
 }

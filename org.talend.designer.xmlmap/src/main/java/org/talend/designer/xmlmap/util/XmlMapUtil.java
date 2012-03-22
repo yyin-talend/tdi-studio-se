@@ -341,7 +341,6 @@ public class XmlMapUtil {
     }
 
     public static void detachConnectionsSouce(AbstractNode treeNode, XmlMapData mapData, boolean detachChildren) {
-        treeNode.setExpression("");
         TreeNode souceTreeNode = null;
         for (Connection connection : treeNode.getIncomingConnections()) {
             AbstractNode source = connection.getSource();
@@ -356,7 +355,13 @@ public class XmlMapUtil {
         treeNode.getIncomingConnections().clear();
 
         if (treeNode instanceof OutputTreeNode) {
-            XmlMapUtil.getLoopFunctionData(XmlMapUtil.getLoopParentNode(souceTreeNode), (OutputTreeNode) treeNode);
+            if (souceTreeNode != null && souceTreeNode instanceof TreeNode) {
+                if (souceTreeNode.isLoop()) {
+                    XmlMapUtil.getLoopFunctionData(souceTreeNode, (OutputTreeNode) treeNode);
+                } else {
+                    XmlMapUtil.getLoopFunctionData(XmlMapUtil.getLoopParentNode(souceTreeNode), (OutputTreeNode) treeNode);
+                }
+            }
             OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
             if (!XmlMapUtil.isExpressionEditable(outputTreeNode) && outputTreeNode.isAggregate()) {
                 outputTreeNode.setAggregate(false);
@@ -368,6 +373,7 @@ public class XmlMapUtil {
                 }
             }
         }
+        treeNode.setExpression("");
     }
 
     public static void detachLookupTarget(TreeNode treeNode, XmlMapData mapData) {

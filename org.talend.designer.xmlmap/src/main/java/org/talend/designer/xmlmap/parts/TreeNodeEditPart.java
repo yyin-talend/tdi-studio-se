@@ -36,6 +36,7 @@ import org.eclipse.swt.SWT;
 import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.ExpressionFigure;
+import org.talend.designer.xmlmap.figures.OutputXmlTreeFigure;
 import org.talend.designer.xmlmap.figures.anchors.ConnectionColumnAnchor;
 import org.talend.designer.xmlmap.figures.anchors.FilterColumnAnchor;
 import org.talend.designer.xmlmap.figures.anchors.LookupColumnAnchor;
@@ -339,9 +340,13 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                     TreeNodeFigure outputFigure = (TreeNodeFigure) getFigure();
                     if (outputFigure.getElement() != null) {
                         outputFigure.getElement().updateExpression();
-                        outputFigure.getElement().getBranchContent().updateLoopButtonFigure();
                     }
+                }
 
+                if (((AbstractInOutTreeEditPart) XmlMapUtil.findTreePart(this)).getFigure() instanceof OutputXmlTreeFigure) {
+                    OutputXmlTreeFigure outputXmlTreeFigure = (OutputXmlTreeFigure) ((AbstractInOutTreeEditPart) XmlMapUtil
+                            .findTreePart(this)).getFigure();
+                    outputXmlTreeFigure.update(XmlmapPackage.TREE_NODE__TYPE);
                 }
                 break;
             case XmlmapPackage.INPUT_XML_TREE__MINIMIZED:

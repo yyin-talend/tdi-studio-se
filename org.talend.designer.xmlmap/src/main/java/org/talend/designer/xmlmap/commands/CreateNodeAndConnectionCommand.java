@@ -149,7 +149,11 @@ public class CreateNodeAndConnectionCommand extends Command {
                 }
                 AbstractNode sourceNode = (AbstractNode) ((AbstractNodePart) o).getModel();
                 if (o instanceof TreeNodeEditPart) {
-                    loopParentTreeNode = XmlMapUtil.getLoopParentNode((TreeNode) sourceNode);
+                    if (((TreeNode) sourceNode).isLoop()) {
+                        loopParentTreeNode = (TreeNode) sourceNode;
+                    } else {
+                        loopParentTreeNode = XmlMapUtil.getLoopParentNode((TreeNode) sourceNode);
+                    }
                 }
                 if (update) {
                     doUpdate(sourceNode);
@@ -229,6 +233,8 @@ public class CreateNodeAndConnectionCommand extends Command {
                         if (xmlMapData != null) {
                             xmlMapData.getConnections().add(conn);
                         }
+
+                        createInputLoopTable(targetNode);
                     }
                 }
 
@@ -258,6 +264,52 @@ public class CreateNodeAndConnectionCommand extends Command {
         return null;
     }
 
+    private void createInputLoopTable(OutputTreeNode targetOutputNode) {
+        //
+        if (loopParentTreeNode != null) {
+            InputLoopNodesTable inputLoopNodesTable = null;
+            AbstractInOutTree abstractTree = XmlMapUtil.getAbstractInOutTree(targetOutputNode);
+            if (abstractTree != null && abstractTree instanceof OutputXmlTree) {
+                listInputLoopNodesTablesEntry = ((OutputXmlTree) abstractTree).getInputLoopNodesTables();
+                if (!XmlMapUtil.hasDocument(abstractTree)) {
+                    if (listInputLoopNodesTablesEntry != null && listInputLoopNodesTablesEntry.size() == 0) {
+                        inputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
+                        inputLoopNodesTable.getInputloopnodes().add(loopParentTreeNode);
+                        listInputLoopNodesTablesEntry.add(inputLoopNodesTable);
+                    } else if (listInputLoopNodesTablesEntry != null && listInputLoopNodesTablesEntry.size() == 1) {
+                        inputLoopNodesTable = listInputLoopNodesTablesEntry.get(0);
+                        boolean isContain = false;
+                        for (TreeNode treeNode : inputLoopNodesTable.getInputloopnodes()) {
+                            if (treeNode.getXpath().equals(loopParentTreeNode.getXpath())) {
+                                isContain = true;
+                            }
+                        }
+                        if (!isContain) {
+                            inputLoopNodesTable.getInputloopnodes().add(loopParentTreeNode);
+                        }
+                    }
+                } else {
+                    OutputTreeNode loopParentOutputTreeNode;
+                    if (targetOutputNode.isLoop()) {
+                        loopParentOutputTreeNode = targetOutputNode;
+                    } else {
+                        loopParentOutputTreeNode = (OutputTreeNode) XmlMapUtil.getLoopParentNode(targetOutputNode);
+                    }
+                    if (loopParentOutputTreeNode != null) {
+                        if (loopParentOutputTreeNode.getInputLoopNodesTable() == null) {
+                            inputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
+                            inputLoopNodesTable.getInputloopnodes().add(loopParentTreeNode);
+                            loopParentOutputTreeNode.setInputLoopNodesTable(inputLoopNodesTable);
+                            listInputLoopNodesTablesEntry.add(inputLoopNodesTable);
+                        } else {
+                            loopParentOutputTreeNode.getInputLoopNodesTable().getInputloopnodes().add(loopParentTreeNode);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private void doUpdate(AbstractNode sourceNode) {
         if (targetEditPart instanceof OutputTreeNodeEditPart) {
             OutputTreeNode targetOutputNode = (OutputTreeNode) ((OutputTreeNodeEditPart) targetEditPart).getModel();
@@ -280,6 +332,9 @@ public class CreateNodeAndConnectionCommand extends Command {
                     expression = expression + " " + tableName + "." + sourceNode.getName();
                 }
             }
+
+            createInputLoopTable(targetOutputNode);
+
             targetOutputNode.setExpression(expression);
             Connection conn = XmlmapFactory.eINSTANCE.createConnection();
             conn.setSource(sourceNode);
@@ -288,49 +343,6 @@ public class CreateNodeAndConnectionCommand extends Command {
             sourceNode.getOutgoingConnections().add(conn);
             if (xmlMapData != null) {
                 xmlMapData.getConnections().add(conn);
-            }
-            //
-            if (loopParentTreeNode != null) {
-                InputLoopNodesTable inputLoopNodesTable = null;
-                AbstractInOutTree abstractTree = XmlMapUtil.getAbstractInOutTree(targetOutputNode);
-                if (abstractTree != null && abstractTree instanceof OutputXmlTree) {
-                    listInputLoopNodesTablesEntry = ((OutputXmlTree) abstractTree).getInputLoopNodesTables();
-                    if (!XmlMapUtil.hasDocument(abstractTree)) {
-                        if (listInputLoopNodesTablesEntry != null && listInputLoopNodesTablesEntry.size() == 0) {
-                            inputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
-                            inputLoopNodesTable.getInputloopnodes().add(loopParentTreeNode);
-                            listInputLoopNodesTablesEntry.add(inputLoopNodesTable);
-                        } else if (listInputLoopNodesTablesEntry != null && listInputLoopNodesTablesEntry.size() == 1) {
-                            inputLoopNodesTable = listInputLoopNodesTablesEntry.get(0);
-                            boolean isContain = false;
-                            for (TreeNode treeNode : inputLoopNodesTable.getInputloopnodes()) {
-                                if (treeNode.getXpath().equals(loopParentTreeNode.getXpath())) {
-                                    isContain = true;
-                                }
-                            }
-                            if (!isContain) {
-                                inputLoopNodesTable.getInputloopnodes().add(loopParentTreeNode);
-                            }
-                        }
-                    } else {
-                        OutputTreeNode loopParentOutputTreeNode;
-                        if (targetOutputNode.isLoop()) {
-                            loopParentOutputTreeNode = targetOutputNode;
-                        } else {
-                            loopParentOutputTreeNode = (OutputTreeNode) XmlMapUtil.getLoopParentNode(targetOutputNode);
-                        }
-                        if (loopParentOutputTreeNode != null) {
-                            if (loopParentOutputTreeNode.getInputLoopNodesTable() == null) {
-                                inputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
-                                inputLoopNodesTable.getInputloopnodes().add(loopParentTreeNode);
-                                loopParentOutputTreeNode.setInputLoopNodesTable(inputLoopNodesTable);
-                                listInputLoopNodesTablesEntry.add(inputLoopNodesTable);
-                            } else {
-                                loopParentOutputTreeNode.getInputLoopNodesTable().getInputloopnodes().add(loopParentTreeNode);
-                            }
-                        }
-                    }
-                }
             }
 
         } else if (targetEditPart instanceof TreeNodeEditPart) {

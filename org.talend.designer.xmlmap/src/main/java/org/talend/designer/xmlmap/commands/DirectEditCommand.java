@@ -22,18 +22,22 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
+import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
@@ -50,6 +54,10 @@ public class DirectEditCommand extends Command {
 
     private DirectEditType type;
 
+    private TreeNode loopParentTreeNode;
+
+    private List<InputLoopNodesTable> listInputLoopNodesTablesEntry;
+
     public DirectEditCommand() {
 
     }
@@ -65,7 +73,6 @@ public class DirectEditCommand extends Command {
         try {
             if (model != null) {
                 if (DirectEditType.EXPRESSION.equals(type)) {
-                    model.setExpression((String) newValue);
 
                     Pattern regex = Pattern.compile(XPRESSION_PATTERN, Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE //$NON-NLS-1$
                             | Pattern.MULTILINE);
@@ -117,6 +124,68 @@ public class DirectEditCommand extends Command {
                                             source.getLookupOutgoingConnections().add((LookupConnection) connection);
                                             ((TreeNode) model).getLookupIncomingConnections().add((LookupConnection) connection);
                                         }
+
+                                        //
+                                        if (model instanceof OutputTreeNode && sourceNode instanceof TreeNode) {
+                                            if (((TreeNode) sourceNode).isLoop()) {
+                                                loopParentTreeNode = (TreeNode) sourceNode;
+                                            } else {
+                                                loopParentTreeNode = XmlMapUtil.getLoopParentNode((TreeNode) sourceNode);
+                                            }
+                                            OutputTreeNode targetOutputNode = (OutputTreeNode) model;
+                                            if (loopParentTreeNode != null) {
+                                                InputLoopNodesTable inputLoopNodesTable = null;
+                                                AbstractInOutTree abstractTree = XmlMapUtil
+                                                        .getAbstractInOutTree(targetOutputNode);
+                                                if (abstractTree != null && abstractTree instanceof OutputXmlTree) {
+                                                    listInputLoopNodesTablesEntry = ((OutputXmlTree) abstractTree)
+                                                            .getInputLoopNodesTables();
+                                                    if (!XmlMapUtil.hasDocument(abstractTree)) {
+                                                        if (listInputLoopNodesTablesEntry != null
+                                                                && listInputLoopNodesTablesEntry.size() == 0) {
+                                                            inputLoopNodesTable = XmlmapFactory.eINSTANCE
+                                                                    .createInputLoopNodesTable();
+                                                            inputLoopNodesTable.getInputloopnodes().add(loopParentTreeNode);
+                                                            listInputLoopNodesTablesEntry.add(inputLoopNodesTable);
+                                                        } else if (listInputLoopNodesTablesEntry != null
+                                                                && listInputLoopNodesTablesEntry.size() == 1) {
+                                                            inputLoopNodesTable = listInputLoopNodesTablesEntry.get(0);
+                                                            boolean isContain = false;
+                                                            for (TreeNode treeNode : inputLoopNodesTable.getInputloopnodes()) {
+                                                                if (treeNode.getXpath().equals(loopParentTreeNode.getXpath())) {
+                                                                    isContain = true;
+                                                                }
+                                                            }
+                                                            if (!isContain) {
+                                                                inputLoopNodesTable.getInputloopnodes().add(loopParentTreeNode);
+                                                            }
+                                                        }
+                                                    } else {
+                                                        OutputTreeNode loopParentOutputTreeNode;
+                                                        if (targetOutputNode.isLoop()) {
+                                                            loopParentOutputTreeNode = targetOutputNode;
+                                                        } else {
+                                                            loopParentOutputTreeNode = (OutputTreeNode) XmlMapUtil
+                                                                    .getLoopParentNode(targetOutputNode);
+                                                        }
+                                                        if (loopParentOutputTreeNode != null) {
+                                                            if (loopParentOutputTreeNode.getInputLoopNodesTable() == null) {
+                                                                inputLoopNodesTable = XmlmapFactory.eINSTANCE
+                                                                        .createInputLoopNodesTable();
+                                                                inputLoopNodesTable.getInputloopnodes().add(loopParentTreeNode);
+                                                                loopParentOutputTreeNode
+                                                                        .setInputLoopNodesTable(inputLoopNodesTable);
+                                                                listInputLoopNodesTablesEntry.add(inputLoopNodesTable);
+                                                            } else {
+                                                                loopParentOutputTreeNode.getInputLoopNodesTable()
+                                                                        .getInputloopnodes().add(loopParentTreeNode);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
                                         connection.setSource(sourceNode);
                                         connection.setTarget(model);
                                         mapperData.getConnections().add(connection);
@@ -180,6 +249,8 @@ public class DirectEditCommand extends Command {
                 } else if (DirectEditType.NODE_NAME.equals(type)) {
                     model.setName((String) newValue);
                 }
+
+                model.setExpression((String) newValue);
             }
 
         } catch (PatternSyntaxException ex) {
