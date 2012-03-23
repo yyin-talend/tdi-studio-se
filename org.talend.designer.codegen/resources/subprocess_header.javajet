@@ -118,10 +118,12 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 <%
 	if(hasAtLeastOneKey) {
 %>
-	private static final int DEFAULT_HASHCODE = 1;
-    private static final int PRIME = 31;
-    private int hashCode = DEFAULT_HASHCODE;
+	protected static final int DEFAULT_HASHCODE = 1;
+    protected static final int PRIME = 31;
+    protected int hashCode = DEFAULT_HASHCODE;
     public boolean hashCodeDirty = true;
+    
+    public String loopKey;
     
     
 <%
