@@ -143,11 +143,8 @@ public class DirectEditCommand extends Command {
                                                 outputTreeNodeEditPart = XmlMapUtil
                                                         .getParentLoopNodeEditPart((OutputTreeNodeEditPart) targetEditPart);
                                             }
-                                            if (((TreeNode) sourceNode).isLoop()) {
-                                                loopParentTreeNode = (TreeNode) sourceNode;
-                                            } else {
-                                                loopParentTreeNode = XmlMapUtil.getLoopParentNode((TreeNode) sourceNode);
-                                            }
+
+                                            loopParentTreeNode = XmlMapUtil.getLoopParentNode((TreeNode) sourceNode);
                                             OutputTreeNode targetOutputNode = (OutputTreeNode) model;
                                             if (loopParentTreeNode != null) {
                                                 InputLoopNodesTable inputLoopNodesTable = null;
@@ -177,19 +174,16 @@ public class DirectEditCommand extends Command {
                                                             }
                                                         }
                                                     } else {
-                                                        OutputTreeNode loopParentOutputTreeNode;
-                                                        if (targetOutputNode.isLoop()) {
-                                                            loopParentOutputTreeNode = targetOutputNode;
-                                                        } else {
-                                                            loopParentOutputTreeNode = (OutputTreeNode) XmlMapUtil
-                                                                    .getLoopParentNode(targetOutputNode);
-                                                        }
+                                                        OutputTreeNode loopParentOutputTreeNode = (OutputTreeNode) XmlMapUtil
+                                                                .getLoopParentNode(targetOutputNode);
                                                         if (loopParentOutputTreeNode != null) {
                                                             if (loopParentOutputTreeNode.getInputLoopNodesTable() == null) {
                                                                 inputLoopNodesTable = XmlmapFactory.eINSTANCE
                                                                         .createInputLoopNodesTable();
+                                                                if (outputTreeNodeEditPart != null) {
+                                                                    inputLoopNodesTable.eAdapters().add(outputTreeNodeEditPart);
+                                                                }
                                                                 inputLoopNodesTable.getInputloopnodes().add(loopParentTreeNode);
-                                                                inputLoopNodesTable.eAdapters().add(outputTreeNodeEditPart);
                                                                 loopParentOutputTreeNode
                                                                         .setInputLoopNodesTable(inputLoopNodesTable);
                                                                 listInputLoopNodesTablesEntry.add(inputLoopNodesTable);

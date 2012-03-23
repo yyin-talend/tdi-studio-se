@@ -357,11 +357,7 @@ public class XmlMapUtil {
 
         if (treeNode instanceof OutputTreeNode) {
             if (souceTreeNode != null && souceTreeNode instanceof TreeNode) {
-                if (souceTreeNode.isLoop()) {
-                    XmlMapUtil.getLoopFunctionData(souceTreeNode, (OutputTreeNode) treeNode);
-                } else {
-                    XmlMapUtil.getLoopFunctionData(XmlMapUtil.getLoopParentNode(souceTreeNode), (OutputTreeNode) treeNode);
-                }
+                XmlMapUtil.getLoopFunctionData(XmlMapUtil.getLoopParentNode(souceTreeNode), (OutputTreeNode) treeNode);
             }
             OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
             if (!XmlMapUtil.isExpressionEditable(outputTreeNode) && outputTreeNode.isAggregate()) {
@@ -692,26 +688,27 @@ public class XmlMapUtil {
     }
 
     public static TreeNode getLoopParentNode(TreeNode treeNode) {
-        if (treeNode != null && treeNode.eContainer() instanceof TreeNode) {
-            TreeNode parent = (TreeNode) treeNode.eContainer();
-            if (parent.isLoop()) {
-                return parent;
+        if (treeNode != null && treeNode instanceof TreeNode) {
+            if (treeNode.isLoop()) {
+                return treeNode;
             } else {
-                return getLoopParentNode(parent);
+                if (treeNode.eContainer() != null && treeNode.eContainer() instanceof TreeNode) {
+                    return getLoopParentNode((TreeNode) treeNode.eContainer());
+                }
             }
         }
         return null;
     }
 
     public static OutputTreeNodeEditPart getParentLoopNodeEditPart(OutputTreeNodeEditPart nodePart) {
-        if (nodePart != null) {
-            if (nodePart.getParent() instanceof OutputTreeNodeEditPart) {
-                OutputTreeNodeEditPart nodePartTemp = (OutputTreeNodeEditPart) nodePart.getParent();
-                TreeNode model = (TreeNode) nodePartTemp.getModel();
-                if (model.isLoop()) {
-                    return nodePartTemp;
-                } else {
-                    getParentLoopNodeEditPart(nodePartTemp);
+        if (nodePart != null && nodePart instanceof OutputTreeNodeEditPart) {
+            OutputTreeNodeEditPart nodePartTemp = (OutputTreeNodeEditPart) nodePart;
+            TreeNode model = (TreeNode) nodePartTemp.getModel();
+            if (model.isLoop()) {
+                return nodePartTemp;
+            } else {
+                if (nodePartTemp.getParent() != null && nodePartTemp.getParent() instanceof OutputTreeNodeEditPart) {
+                    getParentLoopNodeEditPart((OutputTreeNodeEditPart) nodePartTemp.getParent());
                 }
             }
         }
@@ -728,13 +725,10 @@ public class XmlMapUtil {
         AbstractInOutTree abstractTree = getAbstractInOutTree(targetOutputNode);
         if (abstractTree != null && abstractTree instanceof OutputXmlTree) {
             if (hasDocument(abstractTree)) {
-                if (targetOutputNode.isLoop()) {
-                    inputLoopNodesTable = targetOutputNode.getInputLoopNodesTable();
-                } else {
-                    OutputTreeNode loopParentNode = (OutputTreeNode) getLoopParentNode(targetOutputNode);
-                    if (loopParentNode != null) {
-                        inputLoopNodesTable = loopParentNode.getInputLoopNodesTable();
-                    }
+                OutputTreeNode loopParentNode = (OutputTreeNode) getLoopParentNode(targetOutputNode);
+                if (loopParentNode != null) {
+                    inputLoopNodesTable = loopParentNode.getInputLoopNodesTable();
+
                 }
                 if (inputLoopNodesTable != null) {
                     for (TreeNode treeNode : inputLoopNodesTable.getInputloopnodes()) {

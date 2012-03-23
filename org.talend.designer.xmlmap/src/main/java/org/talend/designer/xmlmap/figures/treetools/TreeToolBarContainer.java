@@ -209,6 +209,7 @@ public class TreeToolBarContainer extends Figure {
                         if (listInputLoopNodesTablesEntry.size() == 1) {
                             InputLoopNodesTable inputLoopNodesTable = listInputLoopNodesTablesEntry.get(0);
                             SetLoopFunctionDialog nsDialog = new SetLoopFunctionDialog(null, inputLoopNodesTable);
+                            setLoopFunctionButton.setSelected(false);
                             nsDialog.open();
                         }
                     }

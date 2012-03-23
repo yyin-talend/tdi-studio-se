@@ -256,6 +256,7 @@ public class SetLoopFunctionDialog extends Dialog {
 
         if (index >= 0 && (target >= 0 && target < viewer.getTable().getItemCount())) {
             Collections.swap(listData, index, target);
+            inputLoopNodesTable.getInputloopnodes().move(index, target);
         }
         sequence = 0;
         viewer.refresh();
@@ -281,5 +282,4 @@ public class SetLoopFunctionDialog extends Dialog {
     public List<String> getList() {
         return this.listData;
     }
-
 }

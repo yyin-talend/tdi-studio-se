@@ -149,11 +149,7 @@ public class CreateNodeAndConnectionCommand extends Command {
                 }
                 AbstractNode sourceNode = (AbstractNode) ((AbstractNodePart) o).getModel();
                 if (o instanceof TreeNodeEditPart) {
-                    if (((TreeNode) sourceNode).isLoop()) {
-                        loopParentTreeNode = (TreeNode) sourceNode;
-                    } else {
-                        loopParentTreeNode = XmlMapUtil.getLoopParentNode((TreeNode) sourceNode);
-                    }
+                    loopParentTreeNode = XmlMapUtil.getLoopParentNode((TreeNode) sourceNode);
                 }
                 if (update) {
                     doUpdate(sourceNode);
@@ -293,17 +289,14 @@ public class CreateNodeAndConnectionCommand extends Command {
                         }
                     }
                 } else {
-                    OutputTreeNode loopParentOutputTreeNode;
-                    if (targetOutputNode.isLoop()) {
-                        loopParentOutputTreeNode = targetOutputNode;
-                    } else {
-                        loopParentOutputTreeNode = (OutputTreeNode) XmlMapUtil.getLoopParentNode(targetOutputNode);
-                    }
+                    OutputTreeNode loopParentOutputTreeNode = (OutputTreeNode) XmlMapUtil.getLoopParentNode(targetOutputNode);
                     if (loopParentOutputTreeNode != null) {
                         if (loopParentOutputTreeNode.getInputLoopNodesTable() == null) {
                             inputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
+                            if (outputTreeNodeEditPart != null) {
+                                inputLoopNodesTable.eAdapters().add(outputTreeNodeEditPart);
+                            }
                             inputLoopNodesTable.getInputloopnodes().add(loopParentTreeNode);
-                            inputLoopNodesTable.eAdapters().add(outputTreeNodeEditPart);
                             loopParentOutputTreeNode.setInputLoopNodesTable(inputLoopNodesTable);
                             listInputLoopNodesTablesEntry.add(inputLoopNodesTable);
                         } else {

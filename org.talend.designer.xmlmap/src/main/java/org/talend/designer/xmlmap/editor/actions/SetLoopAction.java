@@ -152,6 +152,7 @@ public class SetLoopAction extends SelectionAction {
                 createInputLoopNodesTable.eAdapters().add(nodePart);
                 ((OutputTreeNode) model).setInputLoopNodesTable(createInputLoopNodesTable);
                 createInputLoopNodesTable.getInputloopnodes().addAll(sourceLoopNodes);
+                ((OutputXmlTree) abstractTree).getInputLoopNodesTables().add(createInputLoopNodesTable);
             }
         }
         model.setLoop(true);
