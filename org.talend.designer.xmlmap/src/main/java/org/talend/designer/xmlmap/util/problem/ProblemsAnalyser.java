@@ -39,10 +39,6 @@ public class ProblemsAnalyser {
 
     private static final String ERROR_MESSAGE_START = "Require loop element for Document :";
 
-    boolean isMultipleDocType = false;
-
-    private static final String ERROR_MESSAGE_MULTIPLE_DOC_TYPE = "Multiple document type in the same schema :";
-
     /**
      * DOC wchen ProblemsAnalyser constructor comment.
      */
@@ -57,11 +53,9 @@ public class ProblemsAnalyser {
         final XmlMapData copyOfMapData = mapperManager.getCopyOfMapData();
         if (copyOfMapData != null) {
             for (InputXmlTree inputTree : copyOfMapData.getInputTrees()) {
-                isMultipleDocType = false;
                 checkTreeNodesProblem(inputTree, inputTree.getNodes());
             }
             for (OutputXmlTree outputTree : copyOfMapData.getOutputTrees()) {
-                isMultipleDocType = false;
                 checkTreeNodesProblem(outputTree, outputTree.getNodes());
             }
 
@@ -75,7 +69,6 @@ public class ProblemsAnalyser {
         if (treeAndProblems.get(abstractTree) != null) {
             treeAndProblems.get(abstractTree).clear();
         }
-        isMultipleDocType = false;
         List<? extends TreeNode> nodes = null;
         if (abstractTree instanceof InputXmlTree) {
             nodes = ((InputXmlTree) abstractTree).getNodes();
@@ -96,12 +89,6 @@ public class ProblemsAnalyser {
             if (XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
                 if (!hasDocumentLoop(treeNode)) {
                     String message = ERROR_MESSAGE_START + treeNode.getXpath();
-                    addProblem(abstractTree, new Problem(null, message, ProblemStatus.ERROR));
-                }
-                if (!isMultipleDocType) {
-                    isMultipleDocType = true;
-                } else {
-                    String message = ERROR_MESSAGE_MULTIPLE_DOC_TYPE + treeNode.getXpath();
                     addProblem(abstractTree, new Problem(null, message, ProblemStatus.ERROR));
                 }
             }

@@ -146,6 +146,8 @@ public class Node extends Element implements IGraphicalNode {
 
     public static final String RETURNS_CHANGED = "returns changed";
 
+    private static final String DOCUMENT = "id_Document";
+
     public static final int DEFAULT_SIZE = 32;
 
     protected Point location = new Point(0, 0);
@@ -1908,6 +1910,30 @@ public class Node extends Element implements IGraphicalNode {
         return null;
     }
 
+    /**
+     * 
+     * DOC hcyi Comment method "checkMultipleDocumentType".
+     * 
+     * @param metadataTable
+     */
+    private void checkMultipleDocumentType(IMetadataTable metadataTable) {
+        boolean isMultipleDocType = false;
+        if (metadataTable != null) {
+            List<IMetadataColumn> metadataColumnList = metadataTable.getListColumns();
+            for (IMetadataColumn metadataColumn : metadataColumnList) {
+                if (DOCUMENT.equals(metadataColumn.getTalendType())) {
+                    if (!isMultipleDocType) {
+                        isMultipleDocType = true;
+                    } else {
+                        String errorMessage = Messages.getString("Node.MultipleDocumentType", metadataTable.getTableName()); //$NON-NLS-1$ 
+                        Problems.add(ProblemStatus.ERROR, this, errorMessage); //$NON-NLS-1$
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -2421,6 +2447,12 @@ public class Node extends Element implements IGraphicalNode {
             boolean x = (Boolean) enableParallelizeParameter.getValue();
             if (x) {
                 addStatus(Process.PARALLEL_STATUS);
+            }
+        }
+        // TDI-20093
+        if (getMetadataList() != null && getMetadataList().size() > 0) {
+            for (IMetadataTable table : getMetadataList()) {
+                checkMultipleDocumentType(table);
             }
         }
     }
