@@ -516,8 +516,7 @@ public class ComboController extends AbstractElementPropertySectionController {
                 if (metadataList != null && !metadataList.isEmpty()) {
                     metadataTable = metadataList.get(0);
                 }
-                rulerService.overrideRuleList(typeParam, dbParam, schemaParam, tableParam, metadataTable, param, node
-                        .getElementName().contains("Invalid"));
+                rulerService.overrideRuleList(typeParam, dbParam, schemaParam, tableParam, metadataTable, param);
             }
         }
 
@@ -572,15 +571,11 @@ public class ComboController extends AbstractElementPropertySectionController {
             }
         }
         // MOD msjian 2012-3-20 TDQ-1340: sort regex pattern list, revert 19836 MOD by gdbu
-        // return stringToDisplay.toArray(new String[0]);
+        return stringToDisplay.toArray(new String[0]);
         // // MOD gdbu 2011-6-1 bug : 19836
-        String[] toArray = stringToDisplay.toArray(new String[0]);
-        String paramName = param.getName();
-        if (!"VALIDATION_TYPE".equals(paramName)) { // TDI-19822 don't sort for VALIDATION_TYPE parameter
-            Arrays.sort(toArray, String.CASE_INSENSITIVE_ORDER);
-        }
+        // String[] toArray = stringToDisplay.toArray(new String[0]);
         // Arrays.sort(toArray, String.CASE_INSENSITIVE_ORDER);
-        return toArray;
+        // return toArray;
         // // ~19836
         // TDQ-1340~
     }
