@@ -819,15 +819,13 @@ public class DataProcess {
                 IMetadataTable metadataTable = graphicalNode.getMetadataFromConnector(sourceConnector);
                 if (metadataTable != null) {
                     newMetadata = metadataTable.clone();
-                } else {
+                } else if (!graphicalNode.getMetadataList().isEmpty()) {
                     newMetadata = graphicalNode.getMetadataList().get(0).clone();
                 }
             }
-            if (newMetadata == null) {
-                continue;
+            if (newMetadata != null) {
+                newMetadata.setTableName(uniqueName);
             }
-
-            newMetadata.setTableName(uniqueName);
             if (graphicalNode.isDesignSubjobStartNode()) {
                 curNode.setDesignSubjobStartNode(null);
             } else {
@@ -852,7 +850,7 @@ public class DataProcess {
                 }
 
             } else {
-                if (curNode.getMetadataList() != null) {
+                if (curNode.getMetadataList() != null && newMetadata != null) {
                     curNode.getMetadataList().remove(0);
                     curNode.getMetadataList().add(newMetadata);
                 }
@@ -884,9 +882,11 @@ public class DataProcess {
         INode targetNode = null;
         for (int i = 0; i < itemList.size(); i++) {
             targetNode = itemsMap.get(itemList.get(i));
-            // We set the type of the connection which linked two components in case of a virtual component. ONLY in case of the first component
-            if(itemList.get(i).getOutputConnections().size()>0)
-                targetNode.setVirtualLinkTo(EConnectionType.getTypeFromName(itemList.get(i).getOutputConnections().get(0).getConnectionType()));
+            // We set the type of the connection which linked two components in case of a virtual component. ONLY in
+            // case of the first component
+            if (itemList.get(i).getOutputConnections().size() > 0)
+                targetNode.setVirtualLinkTo(EConnectionType.getTypeFromName(itemList.get(i).getOutputConnections().get(0)
+                        .getConnectionType()));
             targetFound = false;
             if (targetNode != null) {
                 for (int j = 0; j < targetNode.getElementParameters().size() && !targetFound; j++) {
