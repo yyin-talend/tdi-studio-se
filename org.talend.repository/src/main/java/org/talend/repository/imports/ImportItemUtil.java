@@ -395,7 +395,7 @@ public class ImportItemUtil {
                 for (ItemRecord itemRecord : itemRecords) {
                     if (!monitor.isCanceled()) {
                         if (itemRecord.isValid()) {
-                            if (itemRecord.getState() == State.ID_EXISTED || itemRecord.getState() == State.NAME_AND_ID_EXISTED) {
+                            if (itemRecord.getState() == State.ID_EXISTED) {
                                 String id = nameToIdMap.get(itemRecord.getProperty().getLabel()
                                         + ERepositoryObjectType.getItemType(itemRecord.getProperty().getItem()).toString());
                                 if (id == null) {
