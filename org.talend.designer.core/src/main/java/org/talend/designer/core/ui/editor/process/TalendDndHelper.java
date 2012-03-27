@@ -26,6 +26,7 @@ import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.MdmConceptType;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.HL7ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.MDMConnectionItem;
@@ -35,6 +36,7 @@ import org.talend.core.model.properties.impl.XmlFileConnectionItemImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.RepositoryNode;
 
@@ -61,20 +63,24 @@ final class TalendDndHelper {
      * @param string
      * @return
      */
-    private static boolean isOracleAmazonStringContained(String dbType, String emfName) {
-
-        if (dbType != null && !dbType.equals(EDatabaseTypeName.ORACLEFORSID.getDisplayName()) && emfName != null
-                && Pattern.compile("^.*oracle.*$", Pattern.CASE_INSENSITIVE).matcher(dbType).matches()) {
-
+    private static boolean isOracleAmazonStringContained(Node node, String dbType, String emfName) {
+        if (emfName != null && Pattern.compile("^.*oracle.*$", Pattern.CASE_INSENSITIVE).matcher(dbType).matches()) {
             for (String amazonString : ORACLE_AMAZON_STRING) {
-
                 if (emfName.equals(amazonString)) {
-
+                    IElementParameter param = node.getElementParameter("CONNECTION_TYPE");
+                    if (param != null) {
+                        Object[] valuesList = param.getListItemsValue();
+                        for (int i = 0; i < valuesList.length; i++) {
+                            String type = EDatabaseTypeName.getTypeFromDbType(valuesList[i].toString()).getDisplayName();
+                            if (type != null && type.equals(dbType)) {
+                                return false;
+                            }
+                        }
+                    }
                     return true;
                 }
             }
         }
-
         return false;
     }
 
@@ -136,8 +142,7 @@ final class TalendDndHelper {
                 boolean flag = filterComponent(component, name, type);
 
                 if (((componentProductname != null && productNameWanted.endsWith(componentProductname)) && value) || flag) {
-
-                    if (isOracleAmazonStringContained(name.getDBType(), emfComponent.getName())) {
+                    if (isOracleAmazonStringContained(new Node(component), name.getDBType(), emfComponent.getName())) {
 
                         continue;
 
