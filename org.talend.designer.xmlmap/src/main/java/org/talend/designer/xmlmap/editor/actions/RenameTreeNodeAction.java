@@ -79,8 +79,8 @@ public class RenameTreeNodeAction extends SelectionAction {
                 selectedNode.setName(dialog.getValue());
                 // refresh
                 XmlMapData externalEmfData = (XmlMapData) mapperManager.getCopyOfMapData();
-                XmlMapUtil.updateXPathAndExpression(externalEmfData, selectedNode, dialog.getValue(),
-                        XmlMapUtil.getXPathLength(selectedNode.getXpath()), true);
+                XmlMapUtil.updateXPathAndExpression(externalEmfData, mapperManager.getMapperComponent().getExpressionManager(),
+                        selectedNode, dialog.getValue(), XmlMapUtil.getXPathLength(selectedNode.getXpath()), true);
 
                 TabFolderEditors tabFolderEditors = mapperManager.getMapperUI().getTabFolderEditors();
                 if (tabFolderEditors != null) {

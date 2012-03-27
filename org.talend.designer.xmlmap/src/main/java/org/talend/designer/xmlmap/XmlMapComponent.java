@@ -52,6 +52,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.model.tree.XML_MAP_LOOKUP_MODE;
+import org.talend.designer.xmlmap.ui.expressionutil.XmlMapExpressionManager;
 import org.talend.designer.xmlmap.util.MapDataHelper;
 import org.talend.designer.xmlmap.util.XMLMapperHelper;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -69,8 +70,11 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
 
     private MapDataHelper mapperHelper;
 
+    private XmlMapExpressionManager expressionManager;
+
     public XmlMapComponent() {
         mapperHelper = new MapDataHelper();
+        expressionManager = new XmlMapExpressionManager();
     }
 
     @Override
@@ -127,7 +131,8 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         for (InputXmlTree inputTree : externalEmfData.getInputTrees()) {
             if (inputTree.getName() != null && inputTree.getName().equals(oldName) && !oldName.equals(newName)) {
                 inputTree.setName(newName);
-                XmlMapUtil.updateXPathAndExpression(externalEmfData, inputTree.getNodes(), inputTree.getName(), 1);
+                XmlMapUtil.updateXPathAndExpression(externalEmfData, expressionManager, inputTree.getNodes(),
+                        inputTree.getName(), 1);
             }
         }
     }
@@ -137,7 +142,8 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         for (OutputXmlTree outputTree : externalEmfData.getOutputTrees()) {
             if (outputTree.getName() != null && outputTree.getName().equals(oldName) && !oldName.equals(newName)) {
                 outputTree.setName(newName);
-                XmlMapUtil.updateXPathAndExpression(externalEmfData, outputTree.getNodes(), outputTree.getName(), 1);
+                XmlMapUtil.updateXPathAndExpression(externalEmfData, expressionManager, outputTree.getNodes(),
+                        outputTree.getName(), 1);
             }
         }
     }
@@ -387,4 +393,7 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         return true;
     }
 
+    public XmlMapExpressionManager getExpressionManager() {
+        return expressionManager;
+    }
 }
