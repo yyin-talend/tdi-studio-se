@@ -140,6 +140,8 @@ public class MapDataHelper {
                         treeRoot.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                         treeRoot.setNodeType(NodeType.ELEMENT);
                         treeRoot.setXpath(XmlMapUtil.getXPath(found.getXpath(), treeRoot.getName(), treeRoot.getNodeType()));
+                        treeRoot.setLoop(true);
+                        treeRoot.setMain(true);
                         children.add(treeRoot);
                     }
                 }
@@ -247,6 +249,8 @@ public class MapDataHelper {
                             treeRoot.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                             treeRoot.setNodeType(NodeType.ELEMENT);
                             treeRoot.setXpath(XmlMapUtil.getXPath(found.getXpath(), treeRoot.getName(), treeRoot.getNodeType()));
+                            treeRoot.setLoop(true);
+                            treeRoot.setMain(true);
                             children.add(treeRoot);
                         }
                     }
