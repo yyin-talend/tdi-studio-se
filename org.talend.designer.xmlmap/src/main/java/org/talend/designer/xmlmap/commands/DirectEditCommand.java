@@ -192,6 +192,10 @@ public class DirectEditCommand extends Command {
                                                                         .setInputLoopNodesTable(inputLoopNodesTable);
                                                                 listInputLoopNodesTablesEntry.add(inputLoopNodesTable);
                                                             } else {
+                                                                if (outputTreeNodeEditPart != null) {
+                                                                    loopParentOutputTreeNode.getInputLoopNodesTable().eAdapters()
+                                                                            .add(outputTreeNodeEditPart);
+                                                                }
                                                                 loopParentOutputTreeNode.getInputLoopNodesTable()
                                                                         .getInputloopnodes().add(loopParentTreeNode);
                                                             }

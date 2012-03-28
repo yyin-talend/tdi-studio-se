@@ -28,6 +28,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -147,8 +148,16 @@ public class CreateNodeAndConnectionCommand extends Command {
                 if (!(o instanceof AbstractNodePart)) {
                     continue;
                 }
+                boolean isLookup = false;
                 AbstractNode sourceNode = (AbstractNode) ((AbstractNodePart) o).getModel();
-                if (o instanceof TreeNodeEditPart) {
+                //
+                if (sourceNode instanceof TreeNode) {
+                    AbstractInOutTree abstractTree = XmlMapUtil.getAbstractInOutTree((TreeNode) sourceNode);
+                    if (abstractTree != null && abstractTree instanceof InputXmlTree) {
+                        isLookup = ((InputXmlTree) abstractTree).isLookup();
+                    }
+                }
+                if (o instanceof TreeNodeEditPart && !isLookup) {
                     loopParentTreeNode = XmlMapUtil.getLoopParentNode((TreeNode) sourceNode);
                 }
                 if (update) {
@@ -300,6 +309,9 @@ public class CreateNodeAndConnectionCommand extends Command {
                             loopParentOutputTreeNode.setInputLoopNodesTable(inputLoopNodesTable);
                             listInputLoopNodesTablesEntry.add(inputLoopNodesTable);
                         } else {
+                            if (outputTreeNodeEditPart != null) {
+                                loopParentOutputTreeNode.getInputLoopNodesTable().eAdapters().add(outputTreeNodeEditPart);
+                            }
                             loopParentOutputTreeNode.getInputLoopNodesTable().getInputloopnodes().add(loopParentTreeNode);
                         }
                     }

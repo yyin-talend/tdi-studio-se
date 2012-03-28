@@ -13,6 +13,7 @@ import org.talend.designer.xmlmap.i18n.Messages;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
@@ -31,6 +32,8 @@ public class SetLoopAction extends SelectionAction {
     private boolean input;
 
     List<TreeNode> loopNodeList = new ArrayList<TreeNode>();
+
+    private boolean isLookup = false;
 
     // private List<TreeNode> nodesNeedToChangeMainStatus = new ArrayList<TreeNode>();
 
@@ -102,72 +105,84 @@ public class SetLoopAction extends SelectionAction {
             docRoot = XmlMapUtil.getTreeNodeRoot(model);
             if (docRoot.eContainer() instanceof AbstractInOutTree) {
                 abstractTree = (AbstractInOutTree) docRoot.eContainer();
-            }
-        }
-        boolean hasDocument = false;
-        if (abstractTree != null) {
-            hasDocument = XmlMapUtil.hasDocument(abstractTree);
-        }
-
-        // TDI-20147
-        List<TreeNode> loopNodes = new ArrayList<TreeNode>();
-        checkSubElementIsLoop(model, loopNodes);
-        checkParentElementIsLoop(model, loopNodes);
-        if (!loopNodes.isEmpty()) {
-            if (MessageDialog.openConfirm(Display.getDefault().getActiveShell(),
-                    Messages.getString("SetLoopAction.cleanSubLoopTitle"),
-                    Messages.getString("SetLoopAction.cleanSubLoopMessages"))) {
-            } else {
-                return;
-            }
-        }
-
-        for (TreeNode treeNode : loopNodes) {
-            treeNode.setLoop(false);
-        }
-
-        if (input) {
-            // check if child is mapped to output reomve the old loop in output node
-            removeloopInOutputTree(loopNodes);
-            // add input loopNodes to InputLoopNodesTable
-            addInputLoopNodesToOutput(model, model);
-
-        }
-
-        if (!input) {
-            // clean the InputLoopNodesTable for the old loops
-            for (TreeNode treeNode : loopNodes) {
-                InputLoopNodesTable inputLoopNodesTable = ((OutputTreeNode) treeNode).getInputLoopNodesTable();
-                if (inputLoopNodesTable != null && abstractTree != null) {
-                    ((OutputXmlTree) abstractTree).getInputLoopNodesTables().remove(inputLoopNodesTable);
-                    inputLoopNodesTable.getInputloopnodes().clear();
+                if (abstractTree != null && abstractTree instanceof InputXmlTree) {
+                    isLookup = ((InputXmlTree) abstractTree).isLookup();
                 }
-                ((OutputTreeNode) treeNode).setInputLoopNodesTable(null);
-            }
-            // find input loop node and add to InputLoopNodesTable
-            List<TreeNode> sourceLoopNodes = new ArrayList<TreeNode>();
-            findChildSourceLoop(model, sourceLoopNodes);
-            if (!sourceLoopNodes.isEmpty()) {
-                InputLoopNodesTable createInputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
-                createInputLoopNodesTable.eAdapters().add(nodePart);
-                ((OutputTreeNode) model).setInputLoopNodesTable(createInputLoopNodesTable);
-                createInputLoopNodesTable.getInputloopnodes().addAll(sourceLoopNodes);
-                ((OutputXmlTree) abstractTree).getInputLoopNodesTables().add(createInputLoopNodesTable);
             }
         }
-        model.setLoop(true);
-
-        XmlMapUtil.clearMainNode(model);
-        XmlMapUtil.upsetMainNode(model);
-
-        if (hasDocument) {
-            loopNodeList.clear();
-            getLoopNode(docRoot);
-            if (loopNodeList != null && loopNodeList.size() > 1) {
-                abstractTree.setMultiLoops(true);
-            } else {
-                abstractTree.setMultiLoops(false);
+        if (!isLookup) {
+            boolean hasDocument = false;
+            if (abstractTree != null) {
+                hasDocument = XmlMapUtil.hasDocument(abstractTree);
             }
+
+            // TDI-20147
+            List<TreeNode> loopNodes = new ArrayList<TreeNode>();
+            checkSubElementIsLoop(model, loopNodes);
+            checkParentElementIsLoop(model, loopNodes);
+            if (!loopNodes.isEmpty()) {
+                if (MessageDialog.openConfirm(Display.getDefault().getActiveShell(),
+                        Messages.getString("SetLoopAction.cleanSubLoopTitle"),
+                        Messages.getString("SetLoopAction.cleanSubLoopMessages"))) {
+                } else {
+                    return;
+                }
+            }
+
+            for (TreeNode treeNode : loopNodes) {
+                treeNode.setLoop(false);
+            }
+
+            if (input) {
+                // check if child is mapped to output reomve the old loop in output node
+                removeloopInOutputTree(loopNodes);
+                // add input loopNodes to InputLoopNodesTable
+                addInputLoopNodesToOutput(model, model);
+
+            }
+
+            if (!input) {
+                // clean the InputLoopNodesTable for the old loops
+                for (TreeNode treeNode : loopNodes) {
+                    InputLoopNodesTable inputLoopNodesTable = ((OutputTreeNode) treeNode).getInputLoopNodesTable();
+                    if (inputLoopNodesTable != null && abstractTree != null) {
+                        ((OutputXmlTree) abstractTree).getInputLoopNodesTables().remove(inputLoopNodesTable);
+                        inputLoopNodesTable.getInputloopnodes().clear();
+                    }
+                    ((OutputTreeNode) treeNode).setInputLoopNodesTable(null);
+                }
+                // find input loop node and add to InputLoopNodesTable
+                List<TreeNode> sourceLoopNodes = new ArrayList<TreeNode>();
+                findChildSourceLoop(model, sourceLoopNodes);
+                if (!sourceLoopNodes.isEmpty()) {
+                    InputLoopNodesTable createInputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
+                    createInputLoopNodesTable.eAdapters().add(nodePart);
+                    ((OutputTreeNode) model).setInputLoopNodesTable(createInputLoopNodesTable);
+                    createInputLoopNodesTable.getInputloopnodes().addAll(sourceLoopNodes);
+                    ((OutputXmlTree) abstractTree).getInputLoopNodesTables().add(createInputLoopNodesTable);
+                }
+            }
+            model.setLoop(true);
+
+            XmlMapUtil.clearMainNode(model);
+            XmlMapUtil.upsetMainNode(model);
+
+            if (hasDocument) {
+                loopNodeList.clear();
+                getLoopNode(docRoot);
+                if (loopNodeList != null && loopNodeList.size() > 1) {
+                    abstractTree.setMultiLoops(true);
+                } else {
+                    abstractTree.setMultiLoops(false);
+                }
+            }
+        } else {
+            if (docRoot != null) {
+                cleanSubLoop(docRoot);
+            }
+            model.setLoop(true);
+            XmlMapUtil.clearMainNode(docRoot);
+            XmlMapUtil.upsetMainNode(model);
         }
         if (abstractTree != null) {
             mapperManager.getProblemsAnalyser().checkLoopProblems(abstractTree);

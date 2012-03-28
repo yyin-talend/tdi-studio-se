@@ -733,7 +733,7 @@ public class XmlMapUtil {
                 return nodePartTemp;
             } else {
                 if (nodePartTemp.getParent() != null && nodePartTemp.getParent() instanceof OutputTreeNodeEditPart) {
-                    getParentLoopNodeEditPart((OutputTreeNodeEditPart) nodePartTemp.getParent());
+                    return getParentLoopNodeEditPart((OutputTreeNodeEditPart) nodePartTemp.getParent());
                 }
             }
         }

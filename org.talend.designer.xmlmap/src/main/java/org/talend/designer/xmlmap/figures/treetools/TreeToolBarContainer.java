@@ -72,13 +72,16 @@ public class TreeToolBarContainer extends Figure {
         this.setLayoutManager(manager);
 
         boolean isInputMain = false;
+        boolean isLookup = false;
         if (abstractTree instanceof InputXmlTree) {
             isInputMain = !((InputXmlTree) abstractTree).isLookup();
+            isLookup = ((InputXmlTree) abstractTree).isLookup();
         }
-
         if (!isInputMain) {
-            setLoopFunctionButton = new SetLoopFunctionButton(ImageProviderMapper.getImage(ImageInfo.SETLOOPFUNCTION_BUTTON));
-            this.add(setLoopFunctionButton);
+            if (!isLookup) {
+                setLoopFunctionButton = new SetLoopFunctionButton(ImageProviderMapper.getImage(ImageInfo.SETLOOPFUNCTION_BUTTON));
+                this.add(setLoopFunctionButton);
+            }
 
             condensedButton = new CondensedButton(ImageProviderMapper.getImage(ImageInfo.CONDENSED_TOOL_ICON));
             condensedButton.setSelected(abstractTree.isActivateCondensedTool());
