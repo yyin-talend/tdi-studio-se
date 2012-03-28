@@ -14,8 +14,6 @@ package org.talend.designer.xmlmap.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.emf.common.util.EList;
@@ -39,8 +37,9 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
-import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
+import org.talend.designer.xmlmap.ui.expressionutil.TableEntryLocation;
+import org.talend.designer.xmlmap.ui.expressionutil.XmlMapExpressionManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -49,8 +48,6 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
 public class DirectEditCommand extends Command {
 
     private AbstractNode model;
-
-    protected final String XPRESSION_PATTERN = "(\\[\\s*\\w+\\.\\w+\\s*:\\s*(/.+?)+(/@.+?)*\\s*\\])|((?!\\[)\\s*\\w+\\.\\w+(?!\\]))";
 
     private Object newValue;
 
@@ -61,6 +58,8 @@ public class DirectEditCommand extends Command {
     private List<InputLoopNodesTable> listInputLoopNodesTablesEntry;
 
     private EditPart targetEditPart;
+
+    protected XmlMapExpressionManager expressionManager = new XmlMapExpressionManager();
 
     public DirectEditCommand() {
 
@@ -85,13 +84,8 @@ public class DirectEditCommand extends Command {
             if (model != null) {
                 if (DirectEditType.EXPRESSION.equals(type)) {
 
-                    Pattern regex = Pattern.compile(XPRESSION_PATTERN, Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE //$NON-NLS-1$
-                            | Pattern.MULTILINE);
-                    Matcher regexMatcher = regex.matcher((String) newValue);
-                    List<String> matched = new ArrayList<String>();
-                    while (regexMatcher.find()) {
-                        matched.add(regexMatcher.group().trim());
-                    }
+                    List<TableEntryLocation> matchedLocations = expressionManager.parseTableEntryLocation((String) newValue);
+
                     EList<? extends INodeConnection> connections = null;
                     if (model instanceof OutputTreeNode || model instanceof VarNode) {
                         connections = model.getIncomingConnections();
@@ -102,26 +96,36 @@ public class DirectEditCommand extends Command {
                     List usefullConnections = new ArrayList();
 
                     XmlMapData mapperData = XmlMapUtil.getXmlMapData(model);
-                    if (!matched.isEmpty()) {
-                        for (int i = 0; i < matched.size(); i++) {
-                            String convertToXpath = XmlMapUtil.convertToXpath(matched.get(i));
+                    if (!matchedLocations.isEmpty()) {
+                        for (int i = 0; i < matchedLocations.size(); i++) {
+                            TableEntryLocation currentLocation = matchedLocations.get(i);
                             boolean found = false;
                             for (INodeConnection conn : connections) {
+                                TableEntryLocation sourceLocation = null;
                                 if (conn.getSource() instanceof TreeNode) {
-                                    if (convertToXpath != null && convertToXpath.equals(((TreeNode) conn.getSource()).getXpath())) {
-                                        found = true;
-                                        usefullConnections.add(conn);
-                                        break;
-                                    }
+                                    sourceLocation = expressionManager.parseTableEntryLocation(
+                                            XmlMapUtil.convertToExpression(((TreeNode) conn.getSource()).getXpath())).get(0);
+                                } else if (conn.getSource() instanceof VarNode) {
+                                    VarNode varNode = (VarNode) conn.getSource();
+                                    sourceLocation = new TableEntryLocation(((VarTable) varNode.eContainer()).getName(),
+                                            varNode.getName());
+                                }
+                                if (currentLocation.equals(sourceLocation)) {
+                                    found = true;
+                                    usefullConnections.add(conn);
+                                    break;
                                 }
                             }
                             if (!found) {
                                 if (mapperData != null) {
+                                    String convertToXpath = XmlMapUtil.convertToXpath(currentLocation.toString());
                                     boolean findFromVar = false;
                                     if (model instanceof OutputTreeNode) {
                                         findFromVar = true;
                                     }
-                                    AbstractNode sourceNode = findConnectionSource(mapperData, convertToXpath, findFromVar);
+
+                                    AbstractNode sourceNode = findConnectionSource(mapperData, currentLocation,
+                                            XmlMapUtil.getXPathLength(convertToXpath), findFromVar);
                                     if (sourceNode != null) {
                                         INodeConnection connection = null;
                                         if (model instanceof OutputTreeNode || model instanceof VarNode) {
@@ -269,20 +273,20 @@ public class DirectEditCommand extends Command {
         }
     }
 
-    protected AbstractNode findConnectionSource(XmlMapData mapperData, String xpath, boolean findFromVar) {
-        if (xpath == null || mapperData == null) {
+    protected AbstractNode findConnectionSource(XmlMapData mapperData, TableEntryLocation matchedLocation, int xpathLength,
+            boolean findFromVar) {
+        if (mapperData == null) {
             return null;
         }
-        AbstractNode node = findConnectionSource(mapperData.getInputTrees(), xpath);
+        AbstractNode node = findConnectionSource(mapperData.getInputTrees(), matchedLocation, xpathLength);
 
         if (node == null && findFromVar) {
-            String[] split = xpath.split(XmlMapUtil.XPATH_SEPARATOR);
-            if (split.length == 2) {
+            if (xpathLength == 2) {
                 VarTable varTable = mapperData.getVarTables().get(0);
-                if (varTable.getName() != null && varTable.getName().equals(split[0])) {
+                if (varTable.getName() != null && varTable.getName().equals(matchedLocation.getTableName())) {
                     EList<VarNode> nodes = varTable.getNodes();
                     for (VarNode varNode : nodes) {
-                        if (varNode.getName() != null && varNode.getName().equals(split[1])) {
+                        if (varNode.getName() != null && varNode.getName().equals(matchedLocation.getColumnValue())) {
                             node = varNode;
                         }
                     }
@@ -299,18 +303,12 @@ public class DirectEditCommand extends Command {
         return node;
     }
 
-    private TreeNode findConnectionSource(List<InputXmlTree> inputTrees, String xpath) {
-        int xPathLength = XmlMapUtil.getXPathLength(xpath);
-        TreeNode source = null;
+    private TreeNode findConnectionSource(List<InputXmlTree> inputTrees, TableEntryLocation matchedLocation, int xpathLength) {
         for (InputXmlTree inputTree : inputTrees) {
             for (TreeNode node : inputTree.getNodes()) {
-                if (xpath.equals(node.getXpath())) {
-                    return node;
-                } else if (xPathLength > XmlMapUtil.getXPathLength(node.getXpath())) {
-                    source = findConnectionSource(node, xpath, xPathLength);
-                    if (source != null) {
-                        return source;
-                    }
+                TreeNode source = findConnectionSource(node, matchedLocation, xpathLength);
+                if (source != null) {
+                    return source;
                 }
             }
         }
@@ -318,13 +316,17 @@ public class DirectEditCommand extends Command {
         return null;
     }
 
-    private TreeNode findConnectionSource(TreeNode treeNode, String xpath, int xPathLength) {
-        TreeNode source = null;
-        for (TreeNode node : treeNode.getChildren()) {
-            if (xpath.equals(node.getXpath())) {
-                return node;
-            } else if (xPathLength > XmlMapUtil.getXPathLength(node.getXpath())) {
-                source = findConnectionSource(node, xpath, xPathLength);
+    private TreeNode findConnectionSource(TreeNode treeNode, TableEntryLocation matchedLocation, int xpathLength) {
+        int sourceXpathLength = XmlMapUtil.getXPathLength(treeNode.getXpath());
+        if (xpathLength == sourceXpathLength) {
+            TableEntryLocation sourceLocation = expressionManager.parseTableEntryLocation(
+                    XmlMapUtil.convertToExpression(treeNode.getXpath())).get(0);
+            if (matchedLocation.equals(sourceLocation)) {
+                return treeNode;
+            }
+        } else if (xpathLength > sourceXpathLength) {
+            for (TreeNode child : treeNode.getChildren()) {
+                TreeNode source = findConnectionSource(child, matchedLocation, xpathLength);
                 if (source != null) {
                     return source;
                 }

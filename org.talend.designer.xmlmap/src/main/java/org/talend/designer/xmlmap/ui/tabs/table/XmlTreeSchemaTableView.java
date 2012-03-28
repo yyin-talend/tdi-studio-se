@@ -20,7 +20,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
@@ -37,11 +36,10 @@ import org.talend.commons.ui.swt.tableviewer.behavior.IColumnLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
-import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
-import org.talend.core.ui.metadata.celleditor.JavaTypeComboValueAdapter;
 import org.talend.core.ui.proposal.JavaSimpleDateFormatProposalProvider;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
+import org.talend.designer.xmlmap.ui.expressionutil.XmlMapExpressionManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -94,7 +92,8 @@ public class XmlTreeSchemaTableView extends AbstractXmlTreeSchemaTableView {
                     // }
                     // bean.setXPath(typedValue);
                     XmlMapData mapperData = XmlMapUtil.getXmlMapData(bean.getTreeNode());
-                    XmlMapUtil.updateXPathAndExpression(mapperData, bean.getTreeNode(), bean.getName(),
+                    XmlMapExpressionManager expressionManager = new XmlMapExpressionManager();
+                    XmlMapUtil.updateXPathAndExpression(mapperData, expressionManager, bean.getTreeNode(), bean.getName(),
                             XmlMapUtil.getXPathLength(bean.getXPath()), true);
                     if (!bean.getTreeNode().getChildren().isEmpty()) {
                         refresh();

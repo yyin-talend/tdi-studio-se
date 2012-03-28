@@ -60,8 +60,8 @@ public class FixValueAction extends SelectionAction {
                 }
                 selectedNode.setName(prefix);
                 XmlMapData externalEmfData = (XmlMapData) mapperManager.getCopyOfMapData();
-                XmlMapUtil.updateXPathAndExpression(externalEmfData, selectedNode, prefix,
-                        XmlMapUtil.getXPathLength(selectedNode.getXpath()), true);
+                XmlMapUtil.updateXPathAndExpression(externalEmfData, mapperManager.getMapperComponent().getExpressionManager(),
+                        selectedNode, prefix, XmlMapUtil.getXPathLength(selectedNode.getXpath()), true);
             }
         }
     }

@@ -14,8 +14,6 @@ package org.talend.designer.xmlmap.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.emf.common.util.EList;
@@ -26,6 +24,8 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.model.tree.IUILookupMode;
@@ -33,6 +33,7 @@ import org.talend.designer.xmlmap.model.tree.IUIMatchingMode;
 import org.talend.designer.xmlmap.model.tree.XML_MAP_LOOKUP_MODE;
 import org.talend.designer.xmlmap.model.tree.XML_MAP_MATCHING_MODE;
 import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
+import org.talend.designer.xmlmap.ui.expressionutil.TableEntryLocation;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -41,8 +42,6 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
 public class TreeSettingDirectEditCommand extends DirectEditCommand {
 
     private Object model;
-
-    private final String XPRESSION_PATTERN = "(\\[\\s*\\w+\\.\\w+\\s*:\\s*(/.+?)+(/@.+?)*\\s*\\])|((?!\\[)\\s*\\w+\\.\\w+(?!\\]))";
 
     private Object newValue;
 
@@ -116,37 +115,40 @@ public class TreeSettingDirectEditCommand extends DirectEditCommand {
     private void calculateFilterConnections(AbstractInOutTree abstractTree, String newValue) {
         XmlMapData mapperData = (XmlMapData) abstractTree.eContainer();
 
-        Pattern regex = Pattern.compile(XPRESSION_PATTERN, Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE //$NON-NLS-1$
-                | Pattern.MULTILINE);
-        Matcher regexMatcher = regex.matcher((String) newValue);
-        List<String> matched = new ArrayList<String>();
-        while (regexMatcher.find()) {
-            matched.add(regexMatcher.group().trim());
-        }
+        List<TableEntryLocation> matchedLocations = expressionManager.parseTableEntryLocation((String) newValue);
         EList<FilterConnection> connections = abstractTree.getFilterIncomingConnections();
 
         List usefullConnections = new ArrayList();
 
-        if (!matched.isEmpty()) {
-            for (int i = 0; i < matched.size(); i++) {
-                String convertToXpath = XmlMapUtil.convertToXpath(matched.get(i));
+        if (!matchedLocations.isEmpty()) {
+            for (int i = 0; i < matchedLocations.size(); i++) {
+                TableEntryLocation currentLocation = matchedLocations.get(i);
                 boolean found = false;
                 for (FilterConnection conn : connections) {
+                    TableEntryLocation sourceLocation = null;
                     if (conn.getSource() instanceof TreeNode) {
-                        if (convertToXpath != null && convertToXpath.equals(((TreeNode) conn.getSource()).getXpath())) {
-                            found = true;
-                            usefullConnections.add(conn);
-                            break;
-                        }
+                        sourceLocation = expressionManager.parseTableEntryLocation(
+                                XmlMapUtil.convertToExpression(((TreeNode) conn.getSource()).getXpath())).get(0);
+
+                    } else if (conn.getSource() instanceof VarNode) {
+                        VarNode varNode = (VarNode) conn.getSource();
+                        sourceLocation = new TableEntryLocation(((VarTable) varNode.eContainer()).getName(), varNode.getName());
+                    }
+                    if (currentLocation.equals(sourceLocation)) {
+                        found = true;
+                        usefullConnections.add(conn);
+                        break;
                     }
                 }
                 if (!found) {
                     if (mapperData != null) {
+                        String convertToXpath = XmlMapUtil.convertToXpath(currentLocation.toString());
                         boolean findFromVar = false;
                         if (abstractTree instanceof OutputXmlTree) {
                             findFromVar = true;
                         }
-                        AbstractNode sourceNode = findConnectionSource(mapperData, convertToXpath, findFromVar);
+                        AbstractNode sourceNode = findConnectionSource(mapperData, currentLocation,
+                                XmlMapUtil.getXPathLength(convertToXpath), findFromVar);
                         if (sourceNode != null) {
                             FilterConnection connection = null;
                             connection = XmlmapFactory.eINSTANCE.createFilterConnection();

@@ -24,6 +24,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.IConnection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
@@ -37,6 +38,8 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
+import org.talend.designer.xmlmap.ui.expressionutil.TableEntryLocation;
+import org.talend.designer.xmlmap.ui.expressionutil.XmlMapExpressionManager;
 
 /**
  * wchen class global comment. Detailled comment
@@ -49,7 +52,9 @@ public class XmlMapUtil {
 
     public static final String EXPRESSION_SEPARATOR = ".";
 
-    public static final String EXPRESSION_SEPARATOR_SPLIT = "\\.";
+    public static final String DOUBLE_ESCAPE = "\\"; //$NON-NLS-1$
+
+    public static final String EXPRESSION_SEPARATOR_SPLIT = DOUBLE_ESCAPE + EXPRESSION_SEPARATOR;
 
     public static final String DEFAULT_DATA_TYPE = "id_String";
 
@@ -137,16 +142,16 @@ public class XmlMapUtil {
 
     }
 
-    public static void updateXPathAndExpression(XmlMapData mapData, List<? extends TreeNode> treeNodes, String newName,
-            int rootXpathLength) {
+    public static void updateXPathAndExpression(XmlMapData mapData, XmlMapExpressionManager expressionManager,
+            List<? extends TreeNode> treeNodes, String newName, int xpathReplaceLocation) {
         for (TreeNode treeNode : treeNodes) {
-            updateXPathAndExpression(mapData, treeNode, newName, rootXpathLength, true);
+            updateXPathAndExpression(mapData, expressionManager, treeNode, newName, xpathReplaceLocation, true);
         }
 
     }
 
-    public static void updateXPathAndExpression(XmlMapData mapperData, TreeNode treeNode, String newName, int rootXpathLength,
-            boolean updateTargetExpression) {
+    public static void updateXPathAndExpression(XmlMapData mapperData, XmlMapExpressionManager expressionManager,
+            TreeNode treeNode, String newName, int xpathReplaceLocation, boolean updateTargetExpression) {
         String xpath = treeNode.getXpath();
         int xPathLength = getXPathLength(xpath);
         String newXPath = "";
@@ -154,25 +159,25 @@ public class XmlMapUtil {
         if (xpath.split(CHILDREN_SEPARATOR).length == 2) {
             String[] split = xpath.split(CHILDREN_SEPARATOR);
             // change the root node part eg : row1.newColum
-            if (rootXpathLength <= 2) {
+            if (xpathReplaceLocation <= 2) {
                 String[] subSplit = split[0].split(EXPRESSION_SEPARATOR_SPLIT);
-                if (subSplit.length == 2 && rootXpathLength - 1 >= 0) {
-                    subSplit[rootXpathLength - 1] = newName;
+                if (subSplit.length == 2 && xpathReplaceLocation - 1 >= 0) {
+                    subSplit[xpathReplaceLocation - 1] = newName;
                     newXPath = subSplit[0] + EXPRESSION_SEPARATOR + subSplit[1] + CHILDREN_SEPARATOR + split[1];
                 }
             } else {
                 // change the child part eg : class/student/name
                 String[] subSplit = split[1].split(XPATH_SEPARATOR);
-                if (rootXpathLength == xPathLength) {
+                if (xpathReplaceLocation == xPathLength) {
                     String typeString = "";
                     if (NodeType.ATTRIBUT.equals(treeNode.getNodeType())) {
                         typeString = XPATH_ATTRIBUTE;
                     } else if (NodeType.NAME_SPACE.equals(treeNode.getNodeType())) {
                         typeString = XPATH_NAMESPACE;
                     }
-                    subSplit[rootXpathLength - 2 - 1] = typeString + newName;
+                    subSplit[xpathReplaceLocation - 2 - 1] = typeString + newName;
                 } else {
-                    subSplit[rootXpathLength - 2 - 1] = newName;
+                    subSplit[xpathReplaceLocation - 2 - 1] = newName;
                 }
 
                 newXPath = split[0] + CHILDREN_SEPARATOR;
@@ -185,8 +190,8 @@ public class XmlMapUtil {
         } else if (xpath.split(XPATH_SEPARATOR).length == 2) {
             // normal column
             String[] split = xpath.split(XPATH_SEPARATOR);
-            if (rootXpathLength <= xPathLength && rootXpathLength - 1 >= 0) {
-                split[rootXpathLength - 1] = newName;
+            if (xpathReplaceLocation <= xPathLength && xpathReplaceLocation - 1 >= 0) {
+                split[xpathReplaceLocation - 1] = newName;
             }
             newXPath = split[0] + XPATH_SEPARATOR + split[1];
 
@@ -196,32 +201,52 @@ public class XmlMapUtil {
 
         treeNode.setXpath(newXPath);
         if (updateTargetExpression) {
-            updateTargetExpression(treeNode);
+            updateTargetExpression(treeNode, xpath, expressionManager);
         } else {
             if (mapperData == null) {
                 return;
             }
             XmlMapUtil.detachNodeConnections(treeNode, mapperData, true);
-            // XmlMapUtil.detachConnectionsTarget(treeNode, mapperData, false);
-            // XmlMapUtil.detachLookupTarget(treeNode, mapperData);
-            // treeNode.getOutgoingConnections().clear();
-            // treeNode.getLookupOutgoingConnections().clear();
         }
         if (!treeNode.getChildren().isEmpty()) {
             for (TreeNode child : treeNode.getChildren()) {
-                updateXPathAndExpression(mapperData, child, newName, rootXpathLength, updateTargetExpression);
+                updateXPathAndExpression(mapperData, expressionManager, child, newName, xpathReplaceLocation,
+                        updateTargetExpression);
             }
         }
     }
 
-    private static void updateTargetExpression(TreeNode treeNode) {
-        for (Connection connection : treeNode.getOutgoingConnections()) {
+    private static void updateTargetExpression(TreeNode treeNode, String oldXpath, XmlMapExpressionManager expressionManager) {
+        String convertToExpression = convertToExpression(oldXpath);
+        TableEntryLocation previousLocation = expressionManager.parseTableEntryLocation(convertToExpression).get(0);
+        TableEntryLocation newLocation = expressionManager.parseTableEntryLocation(
+                XmlMapUtil.convertToExpression(treeNode.getXpath())).get(0);
+
+        List<INodeConnection> connections = new ArrayList<INodeConnection>();
+        connections.addAll(treeNode.getOutgoingConnections());
+        connections.addAll(treeNode.getLookupOutgoingConnections());
+
+        for (INodeConnection connection : connections) {
             AbstractNode target = connection.getTarget();
-            target.setExpression(XmlMapUtil.convertToExpression(treeNode.getXpath()));
+            List<TableEntryLocation> targetLocaitons = expressionManager.parseTableEntryLocation(target.getExpression());
+            for (TableEntryLocation current : targetLocaitons) {
+                if (current.equals(previousLocation)) {
+                    String newExpression = expressionManager.replaceExpression(target.getExpression(), current, newLocation);
+                    target.setExpression(newExpression);
+                }
+            }
+
         }
-        for (LookupConnection connection : treeNode.getLookupOutgoingConnections()) {
-            AbstractNode target = connection.getTarget();
-            target.setExpression(XmlMapUtil.convertToExpression(treeNode.getXpath()));
+        for (FilterConnection connection : treeNode.getFilterOutGoingConnections()) {
+            AbstractInOutTree target = connection.getTarget();
+            List<TableEntryLocation> targetLocaitons = expressionManager.parseTableEntryLocation(target.getExpressionFilter());
+            for (TableEntryLocation current : targetLocaitons) {
+                if (current.equals(previousLocation)) {
+                    String newExpression = expressionManager
+                            .replaceExpression(target.getExpressionFilter(), current, newLocation);
+                    target.setExpressionFilter(newExpression);
+                }
+            }
         }
     }
 
@@ -233,7 +258,7 @@ public class XmlMapUtil {
             return expression;
         }
 
-        if (expression.indexOf(CHILDREN_SEPARATOR) != -1) {
+        if (expression.startsWith(EXPRESSION_LEFT) && expression.endsWith(EXPRESSION_RIGHT)) {
             return expression.substring(1, expression.length() - 1);
         } else {
             return expression.replace(EXPRESSION_SEPARATOR, XPATH_SEPARATOR);

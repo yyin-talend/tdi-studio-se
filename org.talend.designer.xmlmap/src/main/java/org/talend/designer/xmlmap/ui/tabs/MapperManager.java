@@ -428,8 +428,8 @@ public class MapperManager implements ISelectionChangedListener {
     }
 
     private void processColumnNameChanged(final TreeNode treeNode) {
-        XmlMapUtil.updateXPathAndExpression(copyOfMapData, treeNode, treeNode.getName(),
-                XmlMapUtil.getXPathLength(treeNode.getXpath()), true);
+        XmlMapUtil.updateXPathAndExpression(copyOfMapData, getMapperComponent().getExpressionManager(), treeNode,
+                treeNode.getName(), XmlMapUtil.getXPathLength(treeNode.getXpath()), true);
         if (treeNode instanceof OutputTreeNode) {
             getMapperUI().getTabFolderEditors().getOutputTreeSchemaEditor().refresh();
         } else {
