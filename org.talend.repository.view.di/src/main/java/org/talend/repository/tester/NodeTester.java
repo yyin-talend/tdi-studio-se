@@ -24,6 +24,16 @@ public class NodeTester extends PropertyTester {
     /**
      * 
      */
+    private static final String IS_DELETED = "isDeleted"; //$NON-NLS-1$
+
+    /**
+     * 
+     */
+    private static final String IS_BUSINESS_MODEL = "isBusinessModel"; //$NON-NLS-1$
+
+    /**
+     * 
+     */
     private static final String ALWAYS_FALSE = "alwaysFalse"; //$NON-NLS-1$
 
     /**
@@ -60,9 +70,27 @@ public class NodeTester extends PropertyTester {
             if (ALWAYS_FALSE.equals(property)) {
                 return false;
             }
+            if (IS_BUSINESS_MODEL.equals(property)) {
+                return isBusinessModel(repositoryNode);
+            }
+            if (IS_DELETED.equals(property)) {
+                return isDeleted(repositoryNode);
+            }
             Assert.isTrue(false);// cause we should never be here
         }
         return false;
+    }
+
+    /**
+     * DOC sgandon Comment method "isBusinessModel".
+     * 
+     * @param repositoryNode
+     */
+    public boolean isBusinessModel(RepositoryNode repositoryNode) {
+        boolean isBM = repositoryNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.BUSINESS_PROCESS;
+        // && repositoryNode.getType() == ENodeType.REPOSITORY_ELEMENT;
+        return isBM;
+
     }
 
     /**
@@ -106,5 +134,9 @@ public class NodeTester extends PropertyTester {
      */
     public boolean isRulesTopNode(RepositoryNode repositoryNode) {
         return repositoryNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_RULES_MANAGEMENT;
+    }
+
+    public boolean isDeleted(RepositoryNode repositoryNode) {
+        return repositoryNode.getObject() != null ? repositoryNode.getObject().isDeleted() : false;
     }
 }

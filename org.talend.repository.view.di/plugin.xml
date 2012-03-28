@@ -27,6 +27,26 @@
                   value="org.talend.repository.model.RepositoryNode">
             </instanceof>
          </possibleChildren>
+         <actionProvider
+               class="org.talend.repository.viewer.action.RepositoryNodeContextMenuActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isBusinessModel">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -539,8 +559,8 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
-            id="org.talend.repository.view.content.dummy.for.activation.di"
-            name="dummy.for.activation">
+            id="org.talend.repository.view.content.di.fake.for.activation"
+            name="di.fake.for.activation">
          <enablement>
             <and>
                <instanceof
@@ -560,7 +580,7 @@
             class="org.talend.repository.tester.NodeTester"
             id="org.talend.repository.node.tester"
             namespace="org.talend.repository.node"
-            properties="isJob,isMetadataTopNode,isCodeTopNode,isRulesTopNode"
+            properties="isJob,isMetadataTopNode,isCodeTopNode,isRulesTopNode,isBusinessModel,isDeleted"
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
       <propertyTester
