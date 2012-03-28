@@ -14,9 +14,9 @@ package org.talend.repository.view.di.viewer.content.rules;
 
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.tester.NodeTester;
-import org.talend.repository.view.di.viewer.content.AbstractChildTopNodeContentProvider;
+import org.talend.repository.view.di.viewer.content.SubEmptyTopNodeContentProvider;
 
-public abstract class AbstractRulesContentProvider extends AbstractChildTopNodeContentProvider {
+public abstract class AbstractRulesContentProvider extends SubEmptyTopNodeContentProvider {
 
     NodeTester nodeTester = new NodeTester();
 

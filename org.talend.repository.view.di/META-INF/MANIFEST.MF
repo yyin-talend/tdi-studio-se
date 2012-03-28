@@ -11,7 +11,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.talend.core.runtime,
  org.talend.repository.view;visibility:=reexport,
  org.talend.repository,
- org.eclipse.core.expressions
+ org.eclipse.core.expressions,
+ org.talend.core.repository
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.talend.repository.view.di,

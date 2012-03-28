@@ -12,17 +12,24 @@
 // ============================================================================
 package org.talend.repository.view.di.viewer.content;
 
+import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.viewer.content.FolderListenerSingleTopContentProvider;
+import org.talend.repository.viewer.content.ProjectRepoAbstractContentProvider;
 
-public abstract class AbstractChildTopNodeContentProvider extends FolderListenerSingleTopContentProvider {
+abstract public class SubEmptyTopNodeContentProvider extends ProjectRepoAbstractContentProvider {
 
     /*
      * (non-Javadoc)
      * 
      * @see
-     * org.talend.repository.viewer.content.SingleTopLevelContentProvider#extractPotentialRootNode(java.lang.Object)
+     * org.talend.repository.viewer.content.ProjectRepoAbstractContentProvider#getProjectRepository(org.talend.repository
+     * .model.RepositoryNode)
      */
+    @Override
+    protected ProjectRepositoryNode getProjectRepositoryNode(RepositoryNode element) {
+        return ((ProjectRepositoryNode) element.getParent());
+    }
+
     @Override
     protected RepositoryNode extractPotentialRootNode(Object element) {
         return (RepositoryNode) element;

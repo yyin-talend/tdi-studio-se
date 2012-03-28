@@ -41,14 +41,15 @@
             name="FTP"
             priority="normal">
          <triggerPoints>
-            <or>
-               <adapt
-                     type="org.talend.repository.model.ProjectRepositoryNode">
-               </adapt>
+            <and>
                <instanceof
-                     value="org.talend.repository.model.ProjectRepositoryNode">
+                     value="org.talend.repository.model.RepositoryNode">
                </instanceof>
-            </or>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.isMetadataTopNode">
+               </test>
+            </and>
          </triggerPoints>
          <possibleChildren>
             <instanceof

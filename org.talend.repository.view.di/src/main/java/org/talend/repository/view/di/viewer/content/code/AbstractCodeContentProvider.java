@@ -14,12 +14,12 @@ package org.talend.repository.view.di.viewer.content.code;
 
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.tester.NodeTester;
-import org.talend.repository.view.di.viewer.content.AbstractChildTopNodeContentProvider;
+import org.talend.repository.view.di.viewer.content.SubEmptyTopNodeContentProvider;
 
 /**
  * DOC ggu class global comment. Detailled comment
  */
-public abstract class AbstractCodeContentProvider extends AbstractChildTopNodeContentProvider {
+public abstract class AbstractCodeContentProvider extends SubEmptyTopNodeContentProvider {
 
     NodeTester nodeTester = new NodeTester();
 

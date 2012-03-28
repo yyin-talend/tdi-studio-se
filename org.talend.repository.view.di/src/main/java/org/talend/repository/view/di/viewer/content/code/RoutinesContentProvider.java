@@ -22,11 +22,12 @@ public class RoutinesContentProvider extends AbstractCodeContentProvider {
      * (non-Javadoc)
      * 
      * @see
-     * org.talend.repository.viewer.content.SingleTopLevelContentProvider#getTopLevelNode(org.talend.repository.model
-     * .RepositoryNode)
+     * org.talend.repository.viewer.content.ProjectRepoAbstractContentProvider#getTopLevelNodeFromProjectRepositoryNode
+     * (org.talend.repository.model.ProjectRepositoryNode)
      */
     @Override
-    protected RepositoryNode getTopLevelNode(RepositoryNode theRootNode) {
-        return ((ProjectRepositoryNode) theRootNode.getParent()).getRootRepositoryNode(ERepositoryObjectType.ROUTINES);
+    protected RepositoryNode getTopLevelNodeFromProjectRepositoryNode(ProjectRepositoryNode projectNode) {
+
+        return projectNode.getRootRepositoryNode(ERepositoryObjectType.ROUTINES);
     }
 }

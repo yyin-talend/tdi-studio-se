@@ -13,10 +13,11 @@
 package org.talend.repository.view.di.viewer.content;
 
 import org.eclipse.jface.viewers.Viewer;
+import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.viewer.content.ProjectRepoDirectChildrenNodeContentProvider;
 
-public abstract class AbstractTopNodeContentProvider extends ProjectRepoDirectChildrenNodeContentProvider {
+public abstract class EmptyTopNodeContentProvider extends ProjectRepoDirectChildrenNodeContentProvider {
 
     /*
      * (non-Javadoc)
@@ -28,6 +29,18 @@ public abstract class AbstractTopNodeContentProvider extends ProjectRepoDirectCh
     @Override
     protected Object[] getRepositoryNodeChildren(RepositoryNode repositoryNode) {
         return NO_CHILDREN;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.viewer.content.ProjectRepoAbstractContentProvider#setupDeleteFolderListener(org.talend.
+     * repository.model.ProjectRepositoryNode)
+     */
+    @Override
+    protected void setupDeleteFolderListener(ProjectRepositoryNode projRepo) {
+        // do nothing caus no need to refresh anything
     }
 
     /*

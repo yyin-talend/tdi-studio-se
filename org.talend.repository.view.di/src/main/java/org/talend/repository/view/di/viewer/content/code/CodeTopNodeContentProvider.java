@@ -15,9 +15,9 @@ package org.talend.repository.view.di.viewer.content.code;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.view.di.viewer.content.AbstractTopNodeContentProvider;
+import org.talend.repository.view.di.viewer.content.EmptyTopNodeContentProvider;
 
-public class CodeTopNodeContentProvider extends AbstractTopNodeContentProvider {
+public class CodeTopNodeContentProvider extends EmptyTopNodeContentProvider {
 
     /*
      * (non-Javadoc)
