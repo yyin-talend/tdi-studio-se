@@ -19,6 +19,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -127,11 +128,14 @@ public class ImageController extends AbstractElementPropertySectionController {
 
             compositeImage.setToolTipText(param.getDisplayName());
             Point size = new Point(image.getImageData().width, image.getImageData().height);
-            FormData formData = new FormData(size.x, size.y);
+            FormData formData = new FormData((int) (size.x * 0.8), (int) (size.y * 0.8));
             formData.top = new FormAttachment(0, top);
             formData.left = new FormAttachment(labelLabel);
-            compositeImage.setBackgroundImage(image);
+            ImageData data = image.getImageData();
             compositeImage.setLayoutData(formData);
+            data = data.scaledTo((int) (size.x * 0.8), (int) (size.y * 0.8));
+            Image im = new Image(image.getDevice(), data);
+            compositeImage.setBackgroundImage(im);
             return compositeImage;
         } else {
             return lastControl;
