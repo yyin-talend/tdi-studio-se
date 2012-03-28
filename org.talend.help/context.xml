@@ -1673,6 +1673,14 @@
     <description>Send a message for RESTful webservice and retrieve the response.</description>
     <topic href="guide/components/en/tREST.html" label="tREST Component Documentation"/>
   </context>
+  <context id="tRESTRequest">
+    <description>ESB REST Service Provider Component that receives the REST Request and pass it along with the flow or iterate.</description>
+    <topic href="guide/components/en/tRESTRequest.html" label="tRESTRequest Component Documentation"/>
+  </context>
+  <context id="tRESTResponse">
+    <description>ESB REST Service Provider response component</description>
+    <topic href="guide/components/en/tRESTResponse.html" label="tRESTResponse Component Documentation"/>
+  </context>
   <context id="tRowGenerator">
     <description>Generates as many rows and fields as needed and feeds each field with a value taken randomly from a provided list</description>
     <topic href="guide/components/en/tRowGenerator.html" label="tRowGenerator Component Documentation"/>
@@ -2313,9 +2321,21 @@
     <description>Inserts or updates lines into an HBase table</description>
     <topic href="guide/components/en/tHBaseOutput.html" label="tHBaseOutput Component Documentation"/>
   </context>
+  <context id="tHDFSConnection">
+    <description>Create a connection to HDFS</description>
+    <topic href="guide/components/en/tHDFSConnection.html" label="tHDFSConnection Component Documentation"/>
+  </context>
   <context id="tHDFSGet">
     <description>Gets files on Hadoop File System</description>
     <topic href="guide/components/en/tHDFSGet.html" label="tHDFSGet Component Documentation"/>
+  </context>
+  <context id="tHDFSInput">
+    <description>Reads data from HDFS</description>
+    <topic href="guide/components/en/tHDFSInput.html" label="tHDFSInput Component Documentation"/>
+  </context>
+  <context id="tHDFSOutput">
+    <description>Writes data to HDFS</description>
+    <topic href="guide/components/en/tHDFSOutput.html" label="tHDFSOutput Component Documentation"/>
   </context>
   <context id="tHDFSPut">
     <description>Puts files on Hadoop File System</description>
