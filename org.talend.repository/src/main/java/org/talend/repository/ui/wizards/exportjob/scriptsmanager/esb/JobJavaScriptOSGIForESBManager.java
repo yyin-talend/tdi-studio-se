@@ -48,6 +48,7 @@ import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
@@ -70,6 +71,7 @@ import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
@@ -673,7 +675,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         // generate the MANIFEST.MF file in the temp folder
         String manifestPath = getTmpFolder() + PATH_SEPARATOR + "MANIFEST.MF"; //$NON-NLS-1$
-
+   
         FileOutputStream fos = null;
         try {
             Manifest manifest = getManifest(libResource, itemToBeExport, jobName);
@@ -711,9 +713,19 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             throws IOException {
         Manifest manifest = new Manifest();
         Attributes a = manifest.getMainAttributes();
+
+		// http://jira.talendforge.org/browse/TESB-5382 LiXiaopeng
+		String symbolicName = bundleName;
+		Project project = ProjectManager.getInstance().getCurrentProject();
+		if (project != null) {
+			String proName = project.getLabel();
+			if (proName != null) {
+				symbolicName = proName + "." + symbolicName;
+			}
+		}
         a.put(Attributes.Name.MANIFEST_VERSION, "1.0"); //$NON-NLS-1$
         a.put(new Attributes.Name("Bundle-Name"), bundleName); //$NON-NLS-1$
-        a.put(new Attributes.Name("Bundle-SymbolicName"), bundleName); //$NON-NLS-1$
+		a.put(new Attributes.Name("Bundle-SymbolicName"), symbolicName); //$NON-NLS-1$
         a.put(new Attributes.Name("Bundle-Version"), getBundleVersion()); //$NON-NLS-1$
         a.put(new Attributes.Name("Bundle-ManifestVersion"), "2"); //$NON-NLS-1$ //$NON-NLS-2$
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
