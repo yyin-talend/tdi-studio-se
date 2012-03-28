@@ -719,5 +719,10 @@
              id="org.talend.designer.core.WebServiceRepositoryComponentDndFilter"
              name="WebService Filter">
        </DragAndDropFilter>
+       <DragAndDropFilter
+             clazz="org.talend.designer.core.ui.editor.process.TAmazonOracleDndFilter"
+             id="org.talend.designer.core.tAmazonOracleFilter"
+             name="tAmazonOracleXXX">
+       </DragAndDropFilter>
     </extension>
 </plugin>
