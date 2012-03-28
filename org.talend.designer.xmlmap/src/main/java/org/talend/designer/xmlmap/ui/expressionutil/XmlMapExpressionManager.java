@@ -69,7 +69,6 @@ public class XmlMapExpressionManager {
     private void recompilePatternIfNecessary(String regexpPattern) {
         if (pattern == null || !regexpPattern.equals(pattern.getPattern())) {
             try {
-                System.out.println(regexpPattern);
                 pattern = compiler.compile(regexpPattern);
             } catch (MalformedPatternException e) {
                 throw new RuntimeException(e);
