@@ -3108,8 +3108,8 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                         ExtendedTableModel<IMetadataColumn> extendedTableModel = metadataEditorView.getExtendedTableModel();
                         List<IMetadataColumn> copyedAllList = new ArrayList<IMetadataColumn>(extendedTableModel.getBeansList());
 
-                        List<OutputTable> outputtables = mapperManager.getOutputTables();
-                        for (OutputTable outputTable : outputtables) {
+                        if (abstractDataMapTable instanceof OutputTable) {
+                            OutputTable outputTable = (OutputTable) abstractDataMapTable;
                             List<IColumnEntry> oldOuputEntries = outputTable.getDataMapTableEntries();
                             if (oldOuputEntries != null) {
                                 for (IColumnEntry entry : oldOuputEntries) {
@@ -3124,6 +3124,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                                 }
                             }
                         }
+
                         extendedTableModel.removeAll(copyedAllList);
                         for (IMetadataColumn metaColumnToAdd : columns) {
                             String label = metaColumnToAdd.getLabel();
