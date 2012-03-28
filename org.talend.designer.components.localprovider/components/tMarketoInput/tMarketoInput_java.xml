@@ -162,6 +162,18 @@
 					<ITEM NAME="InterestingMoment" VALUE="InterestingMoment" />
 					<ITEM NAME="RequestCampaign" VALUE="RequestCampaign" />
 					<ITEM NAME="SalesEmailBounced" VALUE="SalesEmailBounced" />
+					<ITEM NAME="ChangeLeadPartition" VALUE="ChangeLeadPartition" />
+					<ITEM NAME="ChangeRevenueStage" VALUE="ChangeRevenueStage" />
+					<ITEM NAME="ChangeRevenueStageManually" VALUE="ChangeRevenueStageManually" />
+					<ITEM NAME="ComputeDataValue" VALUE="ComputeDataValue" />
+					<ITEM NAME="ChangeStatusInProgression" VALUE="ChangeStatusInProgression" />
+					<ITEM NAME="ChangeFieldInProgram" VALUE="ChangeFieldInProgram" />
+					<ITEM NAME="EnrichWithDatacom" VALUE="EnrichWithDatacom" />
+					<ITEM NAME="ChangeSegment" VALUE="ChangeSegment" />
+					<ITEM NAME="ComputeSegmentation" VALUE="ComputeSegmentation" />
+					<ITEM NAME="ResolveRuleset" VALUE="ResolveRuleset" />
+					<ITEM NAME="SmartCampaignTest" VALUE="SmartCampaignTest" />
+					<ITEM NAME="SmartCampaignTestTrigger" VALUE="SmartCampaignTestTrigger" />
 				</ITEMS>
 			</ITEM>
 		</ITEMS>
@@ -223,6 +235,18 @@
 					<ITEM NAME="InterestingMoment" VALUE="InterestingMoment" />
 					<ITEM NAME="RequestCampaign" VALUE="RequestCampaign" />
 					<ITEM NAME="SalesEmailBounced" VALUE="SalesEmailBounced" />
+					<ITEM NAME="ChangeLeadPartition" VALUE="ChangeLeadPartition" />
+					<ITEM NAME="ChangeRevenueStage" VALUE="ChangeRevenueStage" />
+					<ITEM NAME="ChangeRevenueStageManually" VALUE="ChangeRevenueStageManually" />
+					<ITEM NAME="ComputeDataValue" VALUE="ComputeDataValue" />
+					<ITEM NAME="ChangeStatusInProgression" VALUE="ChangeStatusInProgression" />
+					<ITEM NAME="ChangeFieldInProgram" VALUE="ChangeFieldInProgram" />
+					<ITEM NAME="EnrichWithDatacom" VALUE="EnrichWithDatacom" />
+					<ITEM NAME="ChangeSegment" VALUE="ChangeSegment" />
+					<ITEM NAME="ComputeSegmentation" VALUE="ComputeSegmentation" />
+					<ITEM NAME="ResolveRuleset" VALUE="ResolveRuleset" />
+					<ITEM NAME="SmartCampaignTest" VALUE="SmartCampaignTest" />
+					<ITEM NAME="SmartCampaignTestTrigger" VALUE="SmartCampaignTestTrigger" />
 				</ITEMS>
 			</ITEM>
 		</ITEMS>
