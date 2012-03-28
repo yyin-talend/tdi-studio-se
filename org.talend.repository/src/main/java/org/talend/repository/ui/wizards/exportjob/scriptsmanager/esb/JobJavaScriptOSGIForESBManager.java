@@ -720,7 +720,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 		if (project != null) {
 			String proName = project.getLabel();
 			if (proName != null) {
-				symbolicName = proName + "." + symbolicName;
+				symbolicName = proName.toLowerCase() + "." + symbolicName;
 			}
 		}
         a.put(Attributes.Name.MANIFEST_VERSION, "1.0"); //$NON-NLS-1$
