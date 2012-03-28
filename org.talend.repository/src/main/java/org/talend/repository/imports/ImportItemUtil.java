@@ -86,7 +86,6 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.model.repository.RepositoryViewObject;
-import org.talend.core.repository.model.IRepositoryFactory;
 import org.talend.core.repository.model.PropertiesProjectResourceImpl;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.utils.RoutineUtils;
@@ -396,7 +395,7 @@ public class ImportItemUtil {
                 for (ItemRecord itemRecord : itemRecords) {
                     if (!monitor.isCanceled()) {
                         if (itemRecord.isValid()) {
-                            if (itemRecord.getState() == State.ID_EXISTED || itemRecord.getState() == State.NAME_AND_ID_EXISTED) {
+                            if (itemRecord.getState() == State.ID_EXISTED) {
                                 String id = nameToIdMap.get(itemRecord.getProperty().getLabel()
                                         + ERepositoryObjectType.getItemType(itemRecord.getProperty().getItem()).toString());
                                 if (id == null) {
