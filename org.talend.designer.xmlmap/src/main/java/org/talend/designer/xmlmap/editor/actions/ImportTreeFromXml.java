@@ -124,6 +124,7 @@ public class ImportTreeFromXml extends SelectionAction {
             }
             String label = foxNode.getLabel();
             createTreeNode.setName(label);
+            createTreeNode.setOptional(foxNode.isOptional());
             if (foxNode instanceof Element) {
                 createTreeNode.setNodeType(NodeType.ELEMENT);
                 if (foxNode.isChoice()) {

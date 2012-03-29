@@ -253,6 +253,7 @@ public class ImportTreeFromRepository extends SelectionAction {
         }
         for (FOXTreeNode foxNode : list) {
             TreeNode createTreeNode = createModel();
+            createTreeNode.setOptional(foxNode.isOptional());
             String label = foxNode.getLabel();
             createTreeNode.setName(label);
             if (foxNode instanceof Element) {
@@ -542,6 +543,7 @@ public class ImportTreeFromRepository extends SelectionAction {
         TreeNode realParent = XmlMapUtil.getRealParentNode(parent);
         for (FOXTreeNode foxNode : foxTreeNodes) {
             TreeNode createTreeNode = createModel();
+            createTreeNode.setOptional(foxNode.isOptional());
             String label = foxNode.getLabel();
             createTreeNode.setName(label);
             if (foxNode instanceof Element) {
