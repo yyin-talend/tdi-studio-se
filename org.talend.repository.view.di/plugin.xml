@@ -28,7 +28,7 @@
             </instanceof>
          </possibleChildren>
          <actionProvider
-               class="org.talend.repository.viewer.action.RepositoryNodeContextMenuActionProvider">
+               class="org.talend.repository.viewer.action.RepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -36,7 +36,7 @@
                   </instanceof>
                   <test
                         forcePluginActivation="true"
-                        property="org.talend.repository.node.isBusinessModel">
+                        property="org.talend.repository.node.isBusinessModelBranch">
                   </test>
                   <not>
                      <test
@@ -72,6 +72,26 @@
                   value="org.talend.repository.model.RepositoryNode">
             </instanceof>
          </possibleChildren>
+         <actionProvider
+               class="org.talend.repository.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isJobBranch">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -580,7 +600,7 @@
             class="org.talend.repository.tester.NodeTester"
             id="org.talend.repository.node.tester"
             namespace="org.talend.repository.node"
-            properties="isJob,isMetadataTopNode,isCodeTopNode,isRulesTopNode,isBusinessModel,isDeleted"
+            properties="isJobBranch,isMetadataTopNode,isCodeTopNode,isRulesTopNode,isBusinessModelBranch,isDeleted"
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
       <propertyTester

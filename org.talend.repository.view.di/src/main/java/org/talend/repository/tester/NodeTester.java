@@ -15,7 +15,6 @@ package org.talend.repository.tester;
 import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.runtime.Assert;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 
@@ -29,7 +28,7 @@ public class NodeTester extends PropertyTester {
     /**
      * 
      */
-    private static final String IS_BUSINESS_MODEL = "isBusinessModel"; //$NON-NLS-1$
+    private static final String IS_BUSINESS_MODEL_BRANCH = "isBusinessModelBranch"; //$NON-NLS-1$
 
     /**
      * 
@@ -39,7 +38,7 @@ public class NodeTester extends PropertyTester {
     /**
      * property used to check if object is a job
      */
-    public static final String IS_JOB = "isJob"; //$NON-NLS-1$
+    public static final String IS_JOB_BRANCH = "isJobBranch"; //$NON-NLS-1$
 
     private static final Object IS_METADATA_TOP_NODE = "isMetadataTopNode"; //$NON-NLS-1$
 
@@ -47,16 +46,12 @@ public class NodeTester extends PropertyTester {
 
     private static final Object IS_RULES_TOP_NODE = "isRulesTopNode"; //$NON-NLS-1$
 
-    public NodeTester() {
-        // TODO Auto-generated constructor stub
-    }
-
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
         if (receiver instanceof RepositoryNode) {
             RepositoryNode repositoryNode = (RepositoryNode) receiver;
-            if (IS_JOB.equals(property)) {
-                return isJob(repositoryNode);
+            if (IS_JOB_BRANCH.equals(property)) {
+                return isJobBranch(repositoryNode);
             }
             if (IS_METADATA_TOP_NODE.equals(property)) {
                 return isMetadataTopNode(repositoryNode);
@@ -70,8 +65,8 @@ public class NodeTester extends PropertyTester {
             if (ALWAYS_FALSE.equals(property)) {
                 return false;
             }
-            if (IS_BUSINESS_MODEL.equals(property)) {
-                return isBusinessModel(repositoryNode);
+            if (IS_BUSINESS_MODEL_BRANCH.equals(property)) {
+                return isBusinessModelBranch(repositoryNode);
             }
             if (IS_DELETED.equals(property)) {
                 return isDeleted(repositoryNode);
@@ -86,7 +81,7 @@ public class NodeTester extends PropertyTester {
      * 
      * @param repositoryNode
      */
-    public boolean isBusinessModel(RepositoryNode repositoryNode) {
+    public boolean isBusinessModelBranch(RepositoryNode repositoryNode) {
         boolean isBM = repositoryNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.BUSINESS_PROCESS;
         // && repositoryNode.getType() == ENodeType.REPOSITORY_ELEMENT;
         return isBM;
@@ -99,9 +94,8 @@ public class NodeTester extends PropertyTester {
      * @param repositoryNode
      * @return
      */
-    public boolean isJob(RepositoryNode repositoryNode) {
-        boolean isJob = repositoryNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.PROCESS
-                && repositoryNode.getType() == ENodeType.REPOSITORY_ELEMENT;
+    public boolean isJobBranch(RepositoryNode repositoryNode) {
+        boolean isJob = repositoryNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.PROCESS;
         return isJob;
     }
 
