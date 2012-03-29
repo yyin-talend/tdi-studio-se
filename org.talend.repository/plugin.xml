@@ -31,112 +31,7 @@
             class="org.talend.repository.ui.actions.folder.RenameFolderAction"
             id="org.talend.repository.actions.renamefolder"
             level="20"
-            name="Rename folder"/>
-      <Action
-            class="org.talend.repository.ui.actions.metadata.CreateConnectionAction"
-            id="org.talend.repository.actions.createconnection"
-            isEditAction="true"
-            isReadAction="true"
-            level="10"
-            name="Metadata/Create connection"/>
-      <Action
-            class="org.talend.repository.ui.actions.metadata.CreateTableAction"
-            id="org.talend.repository.actions.createtable"
-            isEditAction="true"
-            level="15"
-            name="Metadata/Create table"/>
-      <Action
-            class="org.talend.repository.ui.actions.metadata.ReadTableAction"
-            id="org.talend.repository.actions.readtable"
-            isReadAction="true"
-            level="18"
-            name="Metadata/Read table"/>
-      <Action
-            class="org.talend.repository.ui.actions.metadata.CreateFileDelimitedAction"
-            id="org.talend.repository.actions.createfiledelimited"
-            isEditAction="true"
-            isReadAction="true"
-            level="10"
-            name="Metadata/Create file delimited"/>
-      <Action
-            class="org.talend.repository.ui.actions.metadata.CreateFilePositionalAction"
-            id="org.talend.repository.actions.createfilepositional"
-            isEditAction="true"
-            isReadAction="true"
-            level="10"
-            name="Metadata/Create file positional"/>
-      <Action
-            class="org.talend.repository.ui.actions.metadata.CreateFileRegexpAction"
-            id="org.talend.repository.actions.createfileregexp"
-            isEditAction="true"
-            isReadAction="true"
-            level="10"
-            name="Metadata/Create file regexp"/>
-      <Action
-            class="org.talend.repository.ui.actions.metadata.CreateFileXmlAction"
-            id="org.talend.repository.actions.createfilexml"
-            isEditAction="true"
-            isReadAction="true"
-            level="10"
-            name="Metadata/Create file xml"/>
-      <Action
-            class="org.talend.repository.ui.actions.metadata.CreateFileLdifAction"
-            id="org.talend.repository.actions.createfileldif"
-            isEditAction="true"
-            isReadAction="true"
-            level="10"
-            name="Metadata/Create file ldif"/>
-      <Action
-            class="org.talend.repository.ui.actions.metadata.CreateFileExcelAction"
-            id="org.talend.repository.actions.createfileexcel"
-            isEditAction="true"
-            isReadAction="true"
-            level="10"
-            name="Metadata/Create file Excel"/>
-      <Action
-            class="org.talend.repository.ui.actions.metadata.CreateSalesforceSchemaAction"
-            id="org.talend.repository.actions.createsalesforceschema"
-            isEditAction="true"
-            isReadAction="true"
-            level="10"
-            name="Metadata/Create Salesforce"/>
-      <Action
-            class="org.talend.repository.ui.actions.metadata.CreateSalesforceModulesAction"
-            id="org.talend.repository.actions.createSalesforceModulesAction"
-            isEditAction="true"
-            isReadAction="true"
-            level="10"
-            name="Metadata/Create Salesforce Modules"/>
-      <Action
-            class="org.talend.repository.ui.actions.metadata.CreateSalesforceSchemasAction"
-            id="org.talend.repository.actions.CreateSalesforceSchemasAction"
-            isEditAction="true"
-            isReadAction="true"
-            level="10"
-            name="Metadata/Create Salesforce Schemas"/>
-      <Action
-            class="org.talend.repository.ui.actions.documentation.CreateDocumentationAction"
-            id="org.talend.repository.actions.createdocumentation"
-            level="10"
-            name="Add documentation"/>
-      <Action
-            class="org.talend.repository.ui.actions.documentation.OpenDocumentationAction"
-            id="org.talend.repository.actions.opendocumentation"
-            isReadAction="true"
-            level="11"
-            name="Open documentation"/>
-      <Action
-            class="org.talend.repository.ui.actions.documentation.ExtractDocumentationAction"
-            id="org.talend.repository.actions.extractdocumentation"
-            isReadAction="true"
-            level="12"
-            name="Extract documentation"/>
-      <Action
-            class="org.talend.repository.ui.actions.documentation.UpdateDocumentationAction"
-            id="org.talend.repository.actions.updatedocumentation"
-            isEditAction="true"
-            level="10"
-            name="Update documentation"/>
+            name="Rename folder"/>          
       <Action
             class="org.talend.repository.ui.actions.ExpandAllAction"
             id="org.talend.repository.actions.expand"
@@ -201,48 +96,14 @@
              id="org.talend.repository.actions.ImportExternalJAR"
              level="97"
              name="Import External JARs"/>
-       <Action
-             class="org.talend.repository.ui.actions.metadata.CreateGenericSchemaAction"
-             id="org.talend.repository.actions.createGenericSchemas"
-             isEditAction="true"
-             isPropertiesAction="false"
-             isReadAction="true"
-             level="10"
-             name="Metadata/Create generic schemas"/>
-       <Action
-             class="org.talend.repository.ui.actions.metadata.CreateLDAPSchemaAction"
-             id="org.talend.repository.actions.createLDAPSchema"
-             isEditAction="true"
-             isReadAction="true"
-             level="10"
-             name="Metadata/Create LDAP schemas">
-       </Action>
-       <Action
-             class="org.talend.repository.ui.actions.metadata.CreateWSDLSchemaAction"
-             id="org.talend.repository.actions.createWSDLSchema"
-             isEditAction="true"
-             isReadAction="true"
-             level="10"
-             name="Metadata/Create WSDL schemas">
-       </Action>
+     
        <Action
              class="org.talend.repository.ui.actions.metadata.CopyToGenericSchemaAction"
              id="org.talend.repository.CopyToGenericSchemaAction"
              level="18"
              name="Metadata/Copy to Generic schema action">
        </Action>
-       <Action
-             class="org.talend.repository.ui.actions.metadata.ImportSchemaFileAction"
-             id="org.talend.repository.actions.ImportSchemaFileAction"
-             level="10"
-             name="Metadata/Create generic schema from xml">
-       </Action>
-       <Action
-             class="org.talend.repository.ui.actions.GenerateDocAsHTMLAction"
-             id="org.talend.repository.ui.actions.GenerateDocAsHTMLAction"
-             level="98"
-             name="Generate Doc as HTML">
-       </Action>
+      
        <Action
              class="org.talend.repository.ui.actions.sqlpattern.CreateSqlpatternAction"
              id="org.talend.repository.ui.actions.sqlpattern.createsqlpatternaction"
@@ -1207,13 +1068,6 @@
        </projecttask>
        <projecttask
              beforeLogon="false"
-             class="org.talend.repository.model.migration.AddRulesGlobalMapMigrationTask"
-             description="modify metadata"
-             id="org.talend.repository.AddRulesGlobalMapMigrationTask"
-             name="AddRulesGlobalMapMigrationTask">
-       </projecttask>
-       <projecttask
-             beforeLogon="false"
              class="org.talend.repository.model.migration.AddWebServiceOutputTableMigrationTask"
              description="modify metadataTable"
              id="org.talend.repository.AddWebServiceOutputTableMigrationTask"
@@ -1571,19 +1425,6 @@
                toolbarPath="Default"
                tooltip="boot a new Talend Open Studio.">
          </action>
-      </actionSet>
-         <actionSet
-            id="org.talend.repository.CreateactionSet"
-            label="Action set"
-            visible="false">
-         <action
-               class="org.talend.repository.ui.actions.toolbar.CreateToolbarItemAction"
-              icon="icons/process_icon.gif"
-               id="org.talend.repository.repositoryitem.createJob"
-               style="pulldown"
-               tooltip="%create.tootip"
-               label="%create.title"
-               toolbarPath="Default"/>
       </actionSet>
    </extension>
    <extension

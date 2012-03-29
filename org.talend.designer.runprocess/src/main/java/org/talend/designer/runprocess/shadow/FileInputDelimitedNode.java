@@ -14,16 +14,17 @@ package org.talend.designer.runprocess.shadow;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import org.apache.log4j.Level;
 import org.eclipse.core.runtime.Path;
+import org.skife.csv.CSVReader;
+import org.skife.csv.SimpleReader;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.core.CorePlugin;
@@ -36,8 +37,6 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType;
 import org.talend.fileprocess.FileInputDelimited;
 import org.talend.librariesmanager.prefs.PreferencesUtilities;
-
-import com.csvreader.CsvReader;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>
@@ -96,35 +95,41 @@ public class FileInputDelimitedNode extends FileInputNode {
                         EShadowProcessType.FILE_CSV);
                 this.setColumnNumber(max);
             } else {
-                CsvReader cr = null;
+                CSVReader cr = null;
                 try {
-                    cr = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(trimParameter(filename)),
-                            trimParameter(encoding))), trimParameter(StringUtils.loadConvert(fieldSep, languageName)).charAt(0));
-                    if (!rowSep.equals("\"\\n\"") && !rowSep.equals("\"\\r\"")) { //$NON-NLS-1$ //$NON-NLS-2$
-                        cr.setRecordDelimiter(trimParameter(StringUtils.loadConvert(rowSep, languageName)).charAt(0));
-                    }
-                    cr.setSkipEmptyRecords(true);
-                    String en = trimParameter(textEnclosure);
-                    if (en.length() > 0) {
-                        cr.setTextQualifier(en.charAt(0));
-                    } else {
-                        cr.setUseTextQualifier(false);
-                    }
-                    if (escapeChar.equals("\"\\\\\"") || escapeChar.equals("\"\"")) { //$NON-NLS-1$ //$NON-NLS-2$
-                        cr.setEscapeMode(CsvReader.ESCAPE_MODE_BACKSLASH);
-                    } else {
-                        cr.setEscapeMode(CsvReader.ESCAPE_MODE_DOUBLED);
-                    }
-
-                    for (int i = 0; i < headerRows && cr.readRecord(); i++) {
+                    // cr = new CsvReader(new BufferedReader(new InputStreamReader(new
+                    // FileInputStream(trimParameter(filename)),
+                    // trimParameter(encoding))), trimParameter(StringUtils.loadConvert(fieldSep,
+                    // languageName)).charAt(0));
+                    cr = new SimpleReader();
+                    cr.setSeperator(trimParameter(StringUtils.loadConvert(fieldSep, languageName)).charAt(0));
+                    //                    if (!rowSep.equals("\"\\n\"") && !rowSep.equals("\"\\r\"")) { //$NON-NLS-1$ //$NON-NLS-2$
+                    // cr.setRecordDelimiter(trimParameter(StringUtils.loadConvert(rowSep, languageName)).charAt(0));
+                    // }
+                    // cr.setSkipEmptyRecords(true);
+                    // String en = trimParameter(textEnclosure);
+                    // if (en.length() > 0) {
+                    // cr.setTextQualifier(en.charAt(0));
+                    // } else {
+                    // cr.setUseTextQualifier(false);
+                    // }
+                    //                    if (escapeChar.equals("\"\\\\\"") || escapeChar.equals("\"\"")) { //$NON-NLS-1$ //$NON-NLS-2$
+                    // cr.setEscapeMode(CsvReader.ESCAPE_MODE_BACKSLASH);
+                    // } else {
+                    // cr.setEscapeMode(CsvReader.ESCAPE_MODE_DOUBLED);
+                    // }
+                    List items = cr.parse(new File(filename));
+                    for (int i = 0; i < headerRows && items.size() > 0; i++) {
                         // do nothing, just ignore the header part
                     }
                     int columnCount = 0;
-                    for (int i = 0; i < limitRows && cr.readRecord(); i++) {
-                        int temp = cr.getColumnCount();
+                    for (int i = 0; i < limitRows && items.size() > 0; i++) {
+                        String[] item = (String[]) items.get(i);
+                        int temp = item.length;
                         if (temp > columnCount) {
                             columnCount = temp;
                         }
+
                     }
                     if (columnCount > 0) {
                         this.setColumnNumber(columnCount);
@@ -140,7 +145,7 @@ public class FileInputDelimitedNode extends FileInputNode {
                     ExceptionHandler.process(e);
                 } finally {
                     if (cr != null) {
-                        cr.close();
+                        // cr.close();
                     }
                 }
             }

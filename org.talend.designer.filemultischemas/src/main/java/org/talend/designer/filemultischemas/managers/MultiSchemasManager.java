@@ -15,11 +15,9 @@ package org.talend.designer.filemultischemas.managers;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,6 +27,8 @@ import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.skife.csv.CSVReader;
+import org.skife.csv.SimpleReader;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.data.list.UniqueStringGenerator;
 import org.talend.core.CorePlugin;
@@ -63,8 +63,6 @@ import org.talend.designer.filemultischemas.data.MultiSchemasMetadataColumn;
 import org.talend.designer.filemultischemas.data.SchemasKeyData;
 import org.talend.fileprocess.FileInputDelimited;
 import org.talend.repository.preview.ProcessDescription;
-
-import com.csvreader.CsvReader;
 
 /**
  * cLi class global comment. Detailled comment
@@ -736,10 +734,12 @@ public class MultiSchemasManager {
                 boolean added = false;
                 int sepIndex = 0;
                 while (count < separators.length()) {
-                    CsvReader csvReader = getCsvReader(new ByteArrayInputStream(readLine.getBytes()), separators.charAt(count),
+                    CSVReader csvReader = getCsvReader(new ByteArrayInputStream(readLine.getBytes()), separators.charAt(count),
                             encoding);
-                    csvReader.readRecord();
-                    row = csvReader.getValues();
+                    List items = csvReader.parse(readLine);
+                    if (items.size() > 0) {
+                        row = (String[]) items.get(0);// csvReader.getValues();
+                    }
                     if (row.length > 1 && row.length > selectColumnIndex && isInKeyValues(getKeyValues(), row[selectColumnIndex])) {
                         // this kind of record will not added in the if that deal with rows that only have one column
                         if (uniqueKey.contains(row[selectColumnIndex] + String.valueOf(separators.charAt(count)))) {
@@ -749,13 +749,13 @@ public class MultiSchemasManager {
                             uniqueKey.add(row[selectColumnIndex] + String.valueOf(separators.charAt(count)));
                             csvArrayBean.getCsvArray().add(row);
                             csvArrayBean.getSeparators().add(String.valueOf(separators.charAt(count)));
-                            csvReader.close();
+                            // csvReader.close();
                             added = true;
                             break;
                         }
                     }
 
-                    csvReader.close();
+                    // csvReader.close();
                     count++;
                 }
                 // for rows that only have one column , if this column don't have any separator use the first as it's
@@ -778,18 +778,26 @@ public class MultiSchemasManager {
             final String fieldSeparator, final String rowSeparator, final boolean needSkpipEmptyRecord,
             final boolean splitRecord, int selectColumnIndex) {
         CSVArrayAndSeparator csvArrayBean = new CSVArrayAndSeparator();
-        CsvReader multiSchameCsvReader = null;
+        CSVReader multiSchameCsvReader = null;
         try {
             // read max columns
             multiSchameCsvReader = getCSVReader(filePath, encoding, fieldSeparator, rowSeparator, needSkpipEmptyRecord);
+            List items = multiSchameCsvReader.parse(new File(filePath));
             int columsNum = -1;
-            while (multiSchameCsvReader.readRecord()) {
-                String[] values = multiSchameCsvReader.getValues();
+            for (Object item : items) {
+                String[] values = (String[]) item;
                 if (columsNum < values.length) {
                     columsNum = values.length;
                 }
             }
-            multiSchameCsvReader.close();
+
+            // while (multiSchameCsvReader.readRecord()) {
+            // String[] values = multiSchameCsvReader.getValues();
+            // if (columsNum < values.length) {
+            // columsNum = values.length;
+            // }
+            // }
+            // multiSchameCsvReader.close();
             if (columsNum < 0) {
                 return null;
             }
@@ -798,8 +806,10 @@ public class MultiSchemasManager {
             String currentRowKey = ""; //$NON-NLS-1$
 
             multiSchameCsvReader = getCSVReader(filePath, encoding, fieldSeparator, rowSeparator, needSkpipEmptyRecord);
-            while (multiSchameCsvReader.readRecord()) {
-                String[] values = multiSchameCsvReader.getValues();
+
+            items = multiSchameCsvReader.parse(new File(filePath));
+            for (Object item : items) {
+                String[] values = (String[]) item;
                 if (values == null || values.length < 1 || values.length <= selectColumnIndex) {
                     continue;
                 }
@@ -815,28 +825,48 @@ public class MultiSchemasManager {
                 csvArrayBean.getCsvArray().add(values);
                 csvArrayBean.getSeparators().add(fieldSeparator);
             }
+
+            // while (multiSchameCsvReader.readRecord()) {
+            // String[] values = multiSchameCsvReader.getValues();
+            // if (values == null || values.length < 1 || values.length <= selectColumnIndex) {
+            // continue;
+            // }
+            // final String first = values[selectColumnIndex];
+            //                if ("".equals(first.trim())) { // must be contain first //$NON-NLS-1$
+            // continue;
+            // }
+            // currentRowKey = first;
+            // if (uniqueKey.contains(currentRowKey)) { // existed.
+            // continue;
+            // }
+            // uniqueKey.add(currentRowKey);
+            // csvArrayBean.getCsvArray().add(values);
+            // csvArrayBean.getSeparators().add(fieldSeparator);
+            // }
         } catch (IOException e) {
             ExceptionHandler.process(e);
             return null;
         } finally {
-            if (multiSchameCsvReader != null) {
-                multiSchameCsvReader.close();
-            }
+            // if (multiSchameCsvReader != null) {
+            // multiSchameCsvReader.close();
+            // }
         }
         // return handlerCSVArray(csvArray, selectColumnIndex, multiSchameCsvReader);
         return csvArrayBean;
     }
 
-    private CsvReader getCSVReader(final String filePath, final String encoding, final String fieldSeparator,
+    private CSVReader getCSVReader(final String filePath, final String encoding, final String fieldSeparator,
             final String rowSeparator, final boolean needSkpipEmptyRecord) throws IOException {
-        CsvReader csvReadertFileInputDelimited;
-        csvReadertFileInputDelimited = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(filePath),
-                encoding)), fieldSeparator.charAt(0));
-
-        csvReadertFileInputDelimited.setRecordDelimiter(rowSeparator.charAt(0));
-        csvReadertFileInputDelimited.setSkipEmptyRecords(needSkpipEmptyRecord);
-        csvReadertFileInputDelimited.setTextQualifier('"');// PTODO
-        csvReadertFileInputDelimited.setEscapeMode(CsvReader.ESCAPE_MODE_DOUBLED);// PTODO
+        CSVReader csvReadertFileInputDelimited = new SimpleReader();
+        csvReadertFileInputDelimited.setSeperator(fieldSeparator.charAt(0));
+        // csvReadertFileInputDelimited = new CsvReader(new BufferedReader(new InputStreamReader(new
+        // FileInputStream(filePath),
+        // encoding)), fieldSeparator.charAt(0));
+        //
+        // csvReadertFileInputDelimited.setRecordDelimiter(rowSeparator.charAt(0));
+        // csvReadertFileInputDelimited.setSkipEmptyRecords(needSkpipEmptyRecord);
+        // csvReadertFileInputDelimited.setTextQualifier('"');// PTODO
+        // csvReadertFileInputDelimited.setEscapeMode(CsvReader.ESCAPE_MODE_DOUBLED);// PTODO
 
         return csvReadertFileInputDelimited;
     }
@@ -899,20 +929,26 @@ public class MultiSchemasManager {
                 boolean added = false;
                 int count = 0;
                 while (count < separators.length()) {
-                    CsvReader csvReader = getCsvReader(new ByteArrayInputStream(readLine.getBytes()), separators.charAt(count),
+                    CSVReader csvReader = getCsvReader(new ByteArrayInputStream(readLine.getBytes()), separators.charAt(count),
                             encoding);
-                    csvReader.readRecord();
-                    row = csvReader.getValues();
+
+                    List items = csvReader.parse(readLine);
+
+                    // csvReader.readRecord();
+                    if (items.size() > 0) {
+                        row = (String[]) items.get(0);// csvReader.getValues();
+                    }
+
                     if (row.length > 1 && row.length > keyIndex) {
                         if (isInKeyValues(keyValues, row[keyIndex])) {
                             added = true;
                             csvArray.add(row);
-                            csvReader.close();
+                            // csvReader.close();
                             i++;
                             break;
                         }
                     }
-                    csvReader.close();
+                    // csvReader.close();
                     count++;
                 }
                 if (!added && row != null && row.length > keyIndex) {
@@ -943,16 +979,19 @@ public class MultiSchemasManager {
         return false;
     }
 
-    private CsvReader getCsvReader(ByteArrayInputStream inputStream, char separator, String encoding)
+    private CSVReader getCsvReader(ByteArrayInputStream inputStream, char separator, String encoding)
             throws FileNotFoundException, UnsupportedEncodingException {
         encoding = TalendTextUtils.removeQuotes(encoding);
-        CsvReader csvReader = new CsvReader(new BufferedReader(new InputStreamReader(inputStream, encoding == null ? ENCODING
-                : encoding)), separator);
-        csvReader.setRecordDelimiter('\n');
-        csvReader.setSkipEmptyRecords(true);
-        csvReader.setTextQualifier('"');
-
-        csvReader.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
+        // CSVReader csvReader = new CSVReader(new BufferedReader(new InputStreamReader(inputStream, encoding == null ?
+        // ENCODING
+        // : encoding)), separator);
+        // csvReader.setRecordDelimiter('\n');
+        // csvReader.setSkipEmptyRecords(true);
+        // csvReader.setTextQualifier('"');
+        //
+        // csvReader.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
+        CSVReader csvReader = new SimpleReader();
+        csvReader.setSeperator(separator);
         return csvReader;
     }
 

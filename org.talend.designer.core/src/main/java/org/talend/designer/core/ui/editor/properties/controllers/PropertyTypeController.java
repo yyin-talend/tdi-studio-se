@@ -75,6 +75,7 @@ import org.talend.designer.core.ui.projectsetting.ImplicitContextLoadElement;
 import org.talend.designer.core.ui.projectsetting.StatsAndLogsElement;
 import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.model.IMetadataService;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
@@ -524,25 +525,28 @@ public class PropertyTypeController extends AbstractRepositoryController {
                     }
 
                     if (realNode != null) {
-                        ConnectionItem connItem = repositoryService.openMetadataConnection(true, realNode, node);
-                        if (connItem != null) {
-                            // refresh
-                            RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_CONNECTIONS);
+                        final IMetadataService metadataService = CorePlugin.getDefault().getMetadataService();
+                        if (metadataService != null) {
+                            ConnectionItem connItem = metadataService.openMetadataConnection(true, realNode, node);
+                            if (connItem != null) {
+                                // refresh
+                                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_CONNECTIONS);
 
-                            IElementParameter propertyParam = elem
-                                    .getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-                            propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName())
-                                    .setValue(EmfComponent.REPOSITORY);
+                                IElementParameter propertyParam = elem
+                                        .getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+                                propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName())
+                                        .setValue(EmfComponent.REPOSITORY);
 
-                            // 2. commnd
-                            Command cmd = new ChangeValuesFromRepository(
-                                    (Element) node,
-                                    connItem.getConnection(),
-                                    propertyParam.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), connItem.getProperty().getId()); //$NON-NLS-1$
-                            executeCommand(cmd);
-                            // see bug in feature 5998.refresh repositoryList.
-                            if (dynamicProperty instanceof MultipleThreadDynamicComposite) {
-                                ((MultipleThreadDynamicComposite) dynamicProperty).updateRepositoryList();
+                                // 2. commnd
+                                Command cmd = new ChangeValuesFromRepository(
+                                        (Element) node,
+                                        connItem.getConnection(),
+                                        propertyParam.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), connItem.getProperty().getId()); //$NON-NLS-1$
+                                executeCommand(cmd);
+                                // see bug in feature 5998.refresh repositoryList.
+                                if (dynamicProperty instanceof MultipleThreadDynamicComposite) {
+                                    ((MultipleThreadDynamicComposite) dynamicProperty).updateRepositoryList();
+                                }
                             }
                         }
                     }

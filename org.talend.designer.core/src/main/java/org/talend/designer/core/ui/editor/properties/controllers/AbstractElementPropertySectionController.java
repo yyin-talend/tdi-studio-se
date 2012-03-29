@@ -135,6 +135,7 @@ import org.talend.designer.core.ui.views.properties.WidgetFactory;
 import org.talend.designer.core.utils.UpgradeParameterHelper;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.model.IMetadataService;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -1981,7 +1982,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     // for bug 14535
                     if (o != null && elem instanceof INode) {
                         INode node = (INode) elem;
-                        RepositoryPlugin.getDefault().getRepositoryService().openMetadataConnection(o, node);
+                        IMetadataService metadataService = CorePlugin.getDefault().getMetadataService();
+                        if (metadataService != null) {
+                            metadataService.openMetadataConnection(o, node);
+                        }
                         RepositoryManager.getRepositoryView().refresh();
                     }
                 } catch (Exception e) {

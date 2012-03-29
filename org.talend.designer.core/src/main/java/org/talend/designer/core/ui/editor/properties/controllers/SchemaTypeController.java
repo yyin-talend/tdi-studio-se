@@ -75,13 +75,12 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.utils.SAPParametersUtils;
 import org.talend.designer.core.utils.ValidationRulesUtil;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.repository.model.IMetadataService;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.ui.actions.metadata.AbstractCreateTableAction;
-import org.talend.repository.ui.actions.metadata.CreateTableAction;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
 /**
@@ -502,11 +501,11 @@ public class SchemaTypeController extends AbstractRepositoryController {
 
         metadataNode = findRepositoryNode(names[1], names[0], repositoryNode);
         if (metadataNode != null) {
-            AbstractCreateTableAction action = new CreateTableAction(metadataNode);
-            action.setAvoidUnloadResources(true);
-            action.run();
+            final IMetadataService metadataService = CorePlugin.getDefault().getMetadataService();
+            if (metadataService != null) {
+                metadataService.runCreateTableAction(metadataNode);
+            }
         }
-
     }
 
     /**
