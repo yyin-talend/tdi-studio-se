@@ -65,6 +65,18 @@ public class ActivityType implements java.io.Serializable {
     public static final java.lang.String _InterestingMoment = "InterestingMoment";
     public static final java.lang.String _RequestCampaign = "RequestCampaign";
     public static final java.lang.String _SalesEmailBounced = "SalesEmailBounced";
+    public static final java.lang.String _ChangeLeadPartition = "ChangeLeadPartition";
+    public static final java.lang.String _ChangeRevenueStage = "ChangeRevenueStage";
+    public static final java.lang.String _ChangeRevenueStageManually = "ChangeRevenueStageManually";
+    public static final java.lang.String _ComputeDataValue = "ComputeDataValue";
+    public static final java.lang.String _ChangeStatusInProgression = "ChangeStatusInProgression";
+    public static final java.lang.String _ChangeFieldInProgram = "ChangeFieldInProgram";
+    public static final java.lang.String _EnrichWithDatacom = "EnrichWithDatacom";
+    public static final java.lang.String _ChangeSegment = "ChangeSegment";
+    public static final java.lang.String _ComputeSegmentation = "ComputeSegmentation";
+    public static final java.lang.String _ResolveRuleset = "ResolveRuleset";
+    public static final java.lang.String _SmartCampaignTest = "SmartCampaignTest";
+    public static final java.lang.String _SmartCampaignTestTrigger = "SmartCampaignTestTrigger";
     public static final ActivityType VisitWebpage = new ActivityType(_VisitWebpage);
     public static final ActivityType FillOutForm = new ActivityType(_FillOutForm);
     public static final ActivityType ClickLink = new ActivityType(_ClickLink);
@@ -113,6 +125,18 @@ public class ActivityType implements java.io.Serializable {
     public static final ActivityType InterestingMoment = new ActivityType(_InterestingMoment);
     public static final ActivityType RequestCampaign = new ActivityType(_RequestCampaign);
     public static final ActivityType SalesEmailBounced = new ActivityType(_SalesEmailBounced);
+    public static final ActivityType ChangeLeadPartition = new ActivityType(_ChangeLeadPartition);
+    public static final ActivityType ChangeRevenueStage = new ActivityType(_ChangeRevenueStage);
+    public static final ActivityType ChangeRevenueStageManually = new ActivityType(_ChangeRevenueStageManually);
+    public static final ActivityType ComputeDataValue = new ActivityType(_ComputeDataValue);
+    public static final ActivityType ChangeStatusInProgression = new ActivityType(_ChangeStatusInProgression);
+    public static final ActivityType ChangeFieldInProgram = new ActivityType(_ChangeFieldInProgram);
+    public static final ActivityType EnrichWithDatacom = new ActivityType(_EnrichWithDatacom);
+    public static final ActivityType ChangeSegment = new ActivityType(_ChangeSegment);
+    public static final ActivityType ComputeSegmentation = new ActivityType(_ComputeSegmentation);
+    public static final ActivityType ResolveRuleset = new ActivityType(_ResolveRuleset);
+    public static final ActivityType SmartCampaignTest = new ActivityType(_SmartCampaignTest);
+    public static final ActivityType SmartCampaignTestTrigger = new ActivityType(_SmartCampaignTestTrigger);
     public java.lang.String getValue() { return _value_;}
     public static ActivityType fromValue(java.lang.String value)
           throws java.lang.IllegalArgumentException {

@@ -22,7 +22,7 @@ public class MktMktowsApiServiceLocator extends org.apache.axis.client.Service i
     }
 
     // Use to get a proxy class for MktowsApiSoapPort
-    private java.lang.String MktowsApiSoapPort_address = "http://localhost/soap/mktows";
+    private java.lang.String MktowsApiSoapPort_address = "https://na-n.marketo.com/soap/mktows/1_7";
 
     public java.lang.String getMktowsApiSoapPortAddress() {
         return MktowsApiSoapPort_address;
