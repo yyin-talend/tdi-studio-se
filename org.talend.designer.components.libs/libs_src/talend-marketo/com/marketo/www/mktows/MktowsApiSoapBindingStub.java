@@ -1142,9 +1142,11 @@ public class MktowsApiSoapBindingStub extends org.apache.axis.client.Stub implem
             if (super.cachedEndpoint != null) {
                 _call.setTargetEndpointAddress(super.cachedEndpoint);
             }
-            if (super.cachedTimeout != null) {
+            /*if (super.cachedTimeout != null) {
                 _call.setTimeout(super.cachedTimeout);
-            }
+            }*/
+            // add an ability to set time out. feature 18073. 	 	 
+            _call.setTimeout(timeout); 
             if (super.cachedPortName != null) {
                 _call.setPortName(super.cachedPortName);
             }
