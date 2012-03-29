@@ -108,6 +108,7 @@ skeleton="tXMLMap_java.skeleton"
 						java.util.HashMap<String,String> xmlNameSpaceMap_<%=tableName%> = new java.util.HashMap<String,String>();
 						<%=xpathHelper.buildNSMapping("xmlNameSpaceMap"+"_"+tableName)%>
 						
+						<%= tableName %>HashKey.documentLookupResult.clear();
 						java.util.Map<String,String> xpathToPatternMap_<%=tableName%> = new java.util.HashMap<String,String>();
 						java.util.Map<String,String> xpathToTypeMap_<%=tableName%> = new java.util.HashMap<String,String>();
 				    <%
