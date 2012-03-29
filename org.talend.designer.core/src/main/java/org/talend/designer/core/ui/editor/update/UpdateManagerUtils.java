@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.LoginException;
@@ -213,8 +212,9 @@ public final class UpdateManagerUtils {
             return false;
         }
         try {
-            UpdateDetectionDialog checkDialog = new UpdateDetectionDialog(Display.getCurrent().getActiveShell(), results,
-                    onlySimpleShow);
+            // changed by hqzhang, Display.getCurrent().getActiveShell() may cause studio freeze
+            UpdateDetectionDialog checkDialog = new UpdateDetectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .getShell(), results, onlySimpleShow);
 
             if (checkDialog.open() == IDialogConstants.OK_ID) {
                 // final List<Object> selectResult = Arrays.asList(checkDialog.getResult());
