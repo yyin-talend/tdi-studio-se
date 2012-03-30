@@ -9,18 +9,18 @@ import org.talend.repository.view.di.viewer.content.ContentAdapterFactory;
 /**
  * The activator class controls the plug-in life cycle register adapters
  */
-public class DIPlugin extends AbstractUIPlugin {
+public class DIRepositoryViewPlugin extends AbstractUIPlugin {
 
     // The plug-in ID
     public static final String PLUGIN_ID = "org.talend.repository.view.di"; //$NON-NLS-1$
 
     // The shared instance
-    private static DIPlugin plugin;
+    private static DIRepositoryViewPlugin plugin;
 
     /**
      * The constructor
      */
-    public DIPlugin() {
+    public DIRepositoryViewPlugin() {
     }
 
     /*
@@ -61,7 +61,7 @@ public class DIPlugin extends AbstractUIPlugin {
      * 
      * @return the shared instance
      */
-    public static DIPlugin getDefault() {
+    public static DIRepositoryViewPlugin getDefault() {
         return plugin;
     }
 

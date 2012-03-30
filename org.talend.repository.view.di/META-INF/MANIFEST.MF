@@ -3,21 +3,20 @@ Bundle-ManifestVersion: 2
 Bundle-Name: DataIntegration
 Bundle-SymbolicName: org.talend.repository.view.di;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.talend.repository.view.di.DIPlugin
+Bundle-Activator: org.talend.repository.view.di.DIRepositoryViewPlugin
 Bundle-Vendor: .Talend.
 Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.expressions,
  org.eclipse.ui,
  org.eclipse.ui.navigator,
  org.talend.core.runtime,
- org.talend.repository.view;visibility:=reexport,
- org.talend.repository,
- org.eclipse.core.expressions,
- org.talend.core.repository
+ org.talend.core.repository;visibility:=reexport,
+ org.talend.commons.runtime,
+ org.talend.repository.view;visibility:=reexport
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.talend.repository.view.di,
  org.talend.repository.view.di.viewer.content,
  org.talend.repository.view.di.viewer.content.code,
  org.talend.repository.view.di.viewer.content.metadata,
- org.talend.repository.view.di.viewer.content.rules,
- org.talend.repository.viewer.label
+ org.talend.repository.view.di.viewer.content.rules

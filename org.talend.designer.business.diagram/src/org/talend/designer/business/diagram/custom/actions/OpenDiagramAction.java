@@ -37,10 +37,9 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.model.BinRepositoryNode;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 
 /**
@@ -121,7 +120,7 @@ public class OpenDiagramAction extends AContextualAction implements IIntroAction
                     enabled = false;
                 }
                 RepositoryNode parent = repositoryNode.getParent();
-                if (enabled && parent != null && parent instanceof BinRepositoryNode) {
+                if (enabled && parent != null && parent.isBin()) {
                     enabled = false;
                 }
             }

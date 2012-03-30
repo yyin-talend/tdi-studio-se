@@ -38,7 +38,6 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryConstants;
@@ -153,7 +152,7 @@ public class DetecteViewImpactAction extends AContextualAction {
                     canWork = false;
                 }
                 RepositoryNode parent = node.getParent();
-                if (canWork && parent != null && parent instanceof BinRepositoryNode) {
+                if (canWork && parent != null && parent.isBin()) {
                     canWork = false;
                 }
                 if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
