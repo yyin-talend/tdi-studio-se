@@ -1799,8 +1799,16 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     initConnectionParametersWithContext(connectionNode, part.getProcess().getContextManager().getDefaultContext());
                 }
             }
-
-            openSqlBuilderBuildIn(connParameters, propertyName);
+            // add for bug TDI-20335
+            if (part == null) {
+                Shell parentShell = new Shell(composite.getShell().getDisplay());
+                ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(
+                        ISQLBuilderService.class);
+                Dialog sqlBuilder = service.openSQLBuilderDialog(parentShell, "", connParameters);
+                sqlBuilder.open();
+            } else {
+                openSqlBuilderBuildIn(connParameters, propertyName);
+            }
 
         } else if (repositoryType.equals(EmfComponent.REPOSITORY)) {
             String repositoryName2 = ""; //$NON-NLS-1$
