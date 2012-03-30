@@ -50,7 +50,7 @@ public class FooterComposite extends Composite {
         formLayout.spacing = 15;
         this.setLayout(formLayout);
         Button applyButton = new Button(this, SWT.NONE);
-        applyButton.setEnabled(isReadOnly());
+        applyButton.setEnabled(!mapperUi.getMapperComponent().isReadOnly());
         applyButton.setText("Apply"); //$NON-NLS-1$
         FormData applyFormData = new FormData();
         applyFormData.width = 100;
@@ -73,7 +73,7 @@ public class FooterComposite extends Composite {
         }
 
         Button okButton = new Button(this, SWT.NONE);
-        okButton.setEnabled(isReadOnly());
+        okButton.setEnabled(!mapperUi.getMapperComponent().isReadOnly());
         okButton.setText("OK"); //$NON-NLS-1$
         FormData okFormData = new FormData();
 
@@ -116,11 +116,4 @@ public class FooterComposite extends Composite {
         return statusBar;
     }
 
-    private boolean isReadOnly() {
-        if (mapperUi.getMapperComponent().getProcess().isReadOnly()) {
-            return false;
-        } else {
-            return !mapperUi.getMapperComponent().getProcess().isReadOnly();
-        }
-    }
 }
