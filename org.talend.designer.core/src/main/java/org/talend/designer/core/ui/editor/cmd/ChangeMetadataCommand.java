@@ -322,8 +322,8 @@ public class ChangeMetadataCommand extends Command {
                 boolean isJoblet = ((Node) targetNode).isJoblet();
                 if (!isJoblet
                         && baseConnector.equals(baseConnectorForCurrentNode)
-                        && (targetIsBuiltIn || (!targetNode.getMetadataFromConnector(baseConnector).sameMetadataAs(
-                                newOutputMetadata)))) {
+                        && (targetIsBuiltIn || (targetNode.getMetadataFromConnector(baseConnector) != null && !targetNode
+                                .getMetadataFromConnector(baseConnector).sameMetadataAs(newOutputMetadata)))) {
                     targetNode.metadataInputChanged(currentIO, currentIO.getUniqueName());
                     if (isExecute) {
                         if (targetNode instanceof Node) {
