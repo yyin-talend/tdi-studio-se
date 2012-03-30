@@ -35,6 +35,14 @@
 			<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/copybook.xc2j"
 			</DEFAULT>
 		</PARAMETER>
+    <PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="120"
+      SHOW="false"
+    >       
+      <DEFAULT>ebcdic_id</DEFAULT>
+    </PARAMETER>
 		
 	</PARAMETERS>
 
