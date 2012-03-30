@@ -396,4 +396,9 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
     public XmlMapExpressionManager getExpressionManager() {
         return expressionManager;
     }
+
+    @Override
+    public boolean isReadOnly() {
+        return super.isReadOnly() || this.getProcess().isReadOnly();
+    }
 }
