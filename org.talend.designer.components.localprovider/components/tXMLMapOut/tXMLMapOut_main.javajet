@@ -215,24 +215,17 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 		boolean parallelRelationExistBetweenAllOutputTables = false;
 		List<TreeNode> currentInputLoopNodes;
 		//check whether multiloop
+		isMultiLoop = mainInputTable.isMultiLoops();
+		//check whether parallel relation exist
 		List<TreeNode> inputLoopNodesForPreviousOutputTable = null;
 		for(OutputXmlTree outputTable : outputTablesSortedByReject) {
-			if(outputTable.isMultiLoops()) {//parallel loop
-				isMultiLoop = true;
-			}
-			
 			List<InputLoopNodesTable> inputLoopNodesTables = outputTable.getInputLoopNodesTables();
+			
 			for(InputLoopNodesTable inputLoopNodesTable : inputLoopNodesTables) {
-				List<TreeNode> inputLoopNodes = inputLoopNodesTable.getInputloopnodes();
-				int size = inputLoopNodes.size();
-				if(size > 1) {//nested loop
-					isMultiLoop = true;
-				}
-				List<TreeNode> inputLoopNodesForCurrentOutputTable = inputLoopNodes;
+				List<TreeNode> inputLoopNodesForCurrentOutputTable = inputLoopNodesTable.getInputloopnodes();
 				if(inputLoopNodesForPreviousOutputTable!=null) {
 					//use different loops for output tables(it is also a parallel relation,but between different output tables)
 					if(inputLoopNodesForPreviousOutputTable.size() != inputLoopNodesForCurrentOutputTable.size() || !inputLoopNodesForPreviousOutputTable.containsAll(inputLoopNodesForCurrentOutputTable)) {
-						isMultiLoop = true;
 						parallelRelationExistBetweenAllOutputTables = true;
 					}
 				}
