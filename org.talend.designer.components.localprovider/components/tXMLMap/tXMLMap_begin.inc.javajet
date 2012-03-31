@@ -547,29 +547,51 @@ class GenerateToolByDom4j{
 		return null;
 	}
 	
-	public void generateCode(OutputTreeNode node, String currEleName, String parentName){
+	public void generateCode(OutputTreeNode node, String currEleName, String parentName, int index){
 		if(node.getNodeType()==NodeType.ELEMENT){
-			createElement(currEleName,node,parentName);
-			setText(currEleName,node);
-		
-    		// add namespace support here in the future
-    		for(TreeNode child: node.getChildren()) {
-    			if(child.getNodeType()==NodeType.NAME_SPACE) { // namespaces
-    				addNameSpace(currEleName, (OutputTreeNode)child);
-    			}
-    		}
-    		
-    		addAttribute(currEleName, node);
-    		
-			int index = 0;
+			boolean isVirtualNode = node.isSubstitution() || node.isChoice();
+			if(!isVirtualNode) {
+				createElement(currEleName,node,parentName);
+				setText(currEleName,node);
+			
+	    		// add namespace support here in the future
+	    		for(TreeNode child: node.getChildren()) {
+	    			if(child.getNodeType()==NodeType.NAME_SPACE) { // namespaces
+	    				addNameSpace(currEleName, (OutputTreeNode)child);
+	    			}
+	    		}
+	    		
+	    		addAttribute(currEleName, node);
+				index = 0;
+			} else {
+				currEleName = parentName;
+			}
+			
 			for(TreeNode child:node.getChildren()){
 				if(!child.isGroup() && !child.isLoop()) {
-					generateCode((OutputTreeNode)child,currEleName+"_"+index++,currEleName);
+					if(isVirtualNode && noUseSubTree(child)) {
+						continue;
+					}
+					generateCode((OutputTreeNode)child,currEleName+"_"+index++,currEleName,index);
 				}
 			}
 			
-			createEmptyElement(node,currEleName,parentName);
+			if(!isVirtualNode) {
+				createEmptyElement(node,currEleName,parentName);
+			}
 		}
+	}
+	
+	private boolean noUseSubTree(TreeNode node) {
+		if(node.getExpression()!=null && !("").equals(node.getExpression())) {
+			return false;
+		}
+		for(TreeNode child:node.getChildren()){
+			if(!noUseSubTree(child)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private void createEmptyElement(OutputTreeNode node,String currEleName,String parentName) {
@@ -755,7 +777,7 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 					){
 
 <%
-					generateCode((OutputTreeNode)groupList.get(index).get(i),"group"+i+"_","subTreeRootParent");						
+					generateCode((OutputTreeNode)groupList.get(index).get(i),"group"+i+"_","subTreeRootParent",0);						
 %>	
 					if(groupbyList.size()<=<%=i%>){
 						groupbyList.add(new java.util.ArrayList<String>());
@@ -981,7 +1003,7 @@ if (needRoot) {
 <%
 	OutputTreeNode root = (OutputTreeNode)outputNode.getChildren().get(0); // get the root tree node
 	generateToolByDom4j.setAllMainNodes(root);
-	generateToolByDom4j.generateCode(root,"root","doc");
+	generateToolByDom4j.generateCode(root,"root","doc",0);
 %>
 		root4Group = subTreeRootParent;
 	}else{
@@ -1000,7 +1022,7 @@ generateToolByDom4j.generateGroupCode(index);
 			
 			OutputTreeNode loop = (OutputTreeNode)generateToolByDom4j.getLoopNode(root);
 			if(!isRootLoop){
-				generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent");
+				generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent",0);
 			}
 %>
 		}
