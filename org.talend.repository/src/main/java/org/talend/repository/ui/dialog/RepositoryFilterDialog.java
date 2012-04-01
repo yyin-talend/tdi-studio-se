@@ -644,6 +644,7 @@ public class RepositoryFilterDialog extends Dialog {
                 this.enableUserPatternBtn.getSelection() && canUserFilterEnable);
 
         preferenceStore.setValue(IRepositoryPrefConstants.USER_FILTER_TABLE_ENABLED, !allUsersBtn.getSelection());
+        repositoryView.refresh();
         super.okPressed();
     }
 
