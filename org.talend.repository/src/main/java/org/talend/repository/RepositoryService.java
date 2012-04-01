@@ -45,6 +45,7 @@ import org.talend.commons.utils.PasswordHelper;
 import org.talend.commons.utils.system.EclipseCommandLine;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.ComponentUtilities;
@@ -62,6 +63,7 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.properties.User;
@@ -77,6 +79,7 @@ import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.core.repository.utils.RepositoryPathProvider;
 import org.talend.core.ui.DisableLanguageActions;
+import org.talend.core.ui.IRulesProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.cwm.helper.ModelElementHelper;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -88,8 +91,11 @@ import org.talend.repository.model.ProjectNodeHelper;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.SalesforceModuleRepositoryObject;
 import org.talend.repository.plugin.integration.BindingActions;
 import org.talend.repository.plugin.integration.SwitchProjectAction;
+import org.talend.repository.ui.actions.AContextualAction;
+import org.talend.repository.ui.actions.routines.CreateRoutineAction;
 import org.talend.repository.ui.actions.sqlpattern.CreateSqlpatternAction;
 import org.talend.repository.ui.actions.sqlpattern.EditSqlpatternAction;
 import org.talend.repository.ui.dialog.ContextRepositoryReviewDialog;
@@ -657,6 +663,30 @@ public class RepositoryService implements IRepositoryService {
 
     public Set<MetadataTable> getTablesFromSpecifiedDataPackage(DatabaseConnection dbconn) {
         return ProjectNodeHelper.getTablesFromSpecifiedDataPackage(dbconn);
+    }
+
+    public Class getClassForSalesforceModule() {
+        return SalesforceModuleRepositoryObject.class;
+    }
+
+    public AContextualAction getCreateRoutineAction(IRepositoryView repositoryView) {
+        CreateRoutineAction createRoutineAction = new CreateRoutineAction(true);
+        createRoutineAction.setWorkbenchPart(repositoryView);
+        return createRoutineAction;
+    }
+
+    public String getRulesProviderPath(RulesItem currentRepositoryItem) {
+        IRulesProviderService rulesService = null;
+        if (PluginChecker.isRulesPluginLoaded()) {
+            rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(IRulesProviderService.class);
+            try {
+                rulesService.syncRule(currentRepositoryItem);
+                String path = rulesService.getRuleFile(currentRepositoryItem, ".xls").getLocation().toOSString(); //$NON-NLS-N$ //$NON-NLS-1$
+                return path;
+            } catch (SystemException e) {
+            }
+        }
+        return "";
     }
 
 }

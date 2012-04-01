@@ -65,7 +65,7 @@ public class FTPProviderService implements IFTPProviderService {
      * @see org.talend.core.ui.IFTPProviderService#newFTPWizard(org.talend.core.ui.IWorkbench, boolean,
      * org.talend.repository.model.RepositoryNode, java.lang.String[])
      */
-    public IWizard newFTPWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames) {
+    public IWizard newWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames) {
         if (node == null) {
             return null;
         }
