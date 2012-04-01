@@ -75,6 +75,10 @@ public class MetadataEmfFactory {
                 } else {
                     colType.setLength(metaCol.getLength());
                 }
+
+                if (metaCol.getOriginalLength() != null) {
+                    colType.setOriginalLength(metaCol.getOriginalLength());
+                }
                 colType.setName(metaCol.getLabel());
                 if (metaCol.getPrecision() == null) {
                     // colType.setPrecision(-1);
@@ -133,6 +137,12 @@ public class MetadataEmfFactory {
                 }
             } else {
                 metaCol.setLength(null);
+            }
+
+            if (colType.getOriginalLength() >= 0) {
+                metaCol.setOriginalLength(new Integer(colType.getOriginalLength()));
+            } else {
+                metaCol.setOriginalLength(null);
             }
             metaCol.setLabel(colType.getName());
             if (colType.isSetPrecision()) {
