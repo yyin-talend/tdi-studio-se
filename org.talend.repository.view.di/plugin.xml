@@ -915,30 +915,6 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
-            contentProvider="org.talend.repository.view.di.viewer.content.RecycleBinContentProvider"
-            icon="icons/recyclebinempty.png"
-            id="org.talend.repository.viewer.root.recycleBin"
-            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="RecycleBin"
-            priority="highest">
-         <triggerPoints>
-            <or>
-               <adapt
-                     type="org.talend.repository.model.ProjectRepositoryNode">
-               </adapt>
-               <instanceof
-                     value="org.talend.repository.model.ProjectRepositoryNode">
-               </instanceof>
-            </or>
-         </triggerPoints>
-         <possibleChildren>
-            <instanceof
-                  value="org.talend.repository.model.RepositoryNode">
-            </instanceof>
-         </possibleChildren>
-      </navigatorContent>
-      <navigatorContent
-            activeByDefault="true"
             id="org.talend.repository.view.content.di.fake.for.activation"
             name="di.fake.for.activation">
          <enablement>
