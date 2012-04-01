@@ -22,17 +22,18 @@
 	String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 	String copybook = ElementParameterParser.getValue(node,"__COPYBOOK__");
 	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+	String noX2cjFileStr = ElementParameterParser.getValue(node,"__NO_X2CJ_FILE__");
+	boolean noX2cjFile = (noX2cjFileStr!=null&&!("").equals(noX2cjFileStr))?("true").equals(noX2cjFileStr):true;
 	List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
 	String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
 	boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
+if(!noX2cjFile){//------11111
 %>
-
 	// open file
 	javax.xml.bind.JAXBContext jaxbContext_<%=cid %> = javax.xml.bind.JAXBContext.newInstance("net.sf.cobol2j");
 	javax.xml.bind.Unmarshaller unmarshaller_<%=cid %> = jaxbContext_<%=cid %>.createUnmarshaller();
 	Object o_<%=cid %> = unmarshaller_<%=cid %>.unmarshal(new java.io.FileInputStream(<%= copybook %>));
 	net.sf.cobol2j.FileFormat fF_<%=cid %> = (net.sf.cobol2j.FileFormat) o_<%=cid %>;
-    fF_<%=cid %>.setConversionTable(<%=encoding%>);
 	net.sf.cobol2j.RecordSet rset_<%=cid %> = new net.sf.cobol2j.RecordSet(new java.io.FileInputStream(<%= filename %>), fF_<%=cid %>);
 	java.util.Map recdefs_<%=cid %> = new net.sf.cobol2j.RecordsMap(fF_<%=cid %>);
 	
@@ -55,50 +56,124 @@
 				}
     		}
     		
-List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
-
-for(Map<String, String> schemaMap : schemas) {//------AAA
-	String schemaName = schemaMap.get("SCHEMA");
-	String code = schemaMap.get("CODE");
+	List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
+	for(Map<String, String> schemaMap : schemas) {//------AAA0
+		String schemaName = schemaMap.get("SCHEMA");
+		String code = schemaMap.get("CODE");
 	
-	IConnection justConn = null; //------->get the right output connection--->to get the columns info
-	if(conns != null && conns.size() > 0){
-		for(IConnection conn : conns){
-			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-				if(schemaName.equals(conn.getMetadataTable().getLabel())){
-					justConn = conn;
-					break;
+		IConnection justConn = null; //------->get the right output connection--->to get the columns info
+		if(conns != null && conns.size() > 0){
+			for(IConnection conn : conns){
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+					if(schemaName.equals(conn.getMetadataTable().getLabel())){
+						justConn = conn;
+						break;
+					}
 				}
 			}
 		}
-	}
 
-if(justConn != null){//------BBB
-	
-	IMetadataTable justMetadata = justConn.getMetadataTable();
-	List<IMetadataColumn> justColumnList = justMetadata.getListColumns();
+		if(justConn != null){//------BBB0
+		IMetadataTable justMetadata = justConn.getMetadataTable();
+		List<IMetadataColumn> justColumnList = justMetadata.getListColumns();
 %>
-	if(inrecord_<%=cid %>.get(0).equals("<%=code %>") || recdefs_<%=cid %>.size() == 1 ){
+			if(inrecord_<%=cid %>.get(0).equals("<%=code %>") || recdefs_<%=cid %>.size() == 1 ){
 	
-		<%=justConn.getName() %> = new <%=justConn.getName() %>Struct();
-<%		
-		int sizeListColumns = justColumnList.size();
-		for (int valueN=0; valueN<sizeListColumns; valueN++) {
-			IMetadataColumn column = justColumnList.get(valueN);
-			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-			if(javaType == JavaTypesManager.STRING){
+				<%=justConn.getName() %> = new <%=justConn.getName() %>Struct();
+<%
+				int sizeListColumns = justColumnList.size();
+				for (int valueN=0; valueN<sizeListColumns; valueN++) {
+					IMetadataColumn column = justColumnList.get(valueN);
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					if(javaType == JavaTypesManager.STRING){
 %>				
-				<%=justConn.getName() %>.<%=column.getLabel()%> = ((String)inrecord_<%=cid %>.get(<%=valueN%>))<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
+						<%=justConn.getName() %>.<%=column.getLabel()%> = (String)inrecord_<%=cid %>.get(<%=valueN%>);
 <%
-			}else {
+					}else {
 %>
-				<%=justConn.getName() %>.<%=column.getLabel()%> = (<%=javaType.getLabel() %>)inrecord_<%=cid %>.get(<%=valueN%>);
+						<%=justConn.getName() %>.<%=column.getLabel()%> = (<%=javaType.getLabel() %>)inrecord_<%=cid %>.get(<%=valueN%>);
 <%
-			}
-		}
+					}
+				}
 %>	
-	}	
+			}	
 <%
-	}//------BBB
-}//------AAA
+		}//------BBB0
+	}//------AAA0
+}else{//------11111
+	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+	if(conns!=null && conns.size()>0){//------conns
+		IConnection conn = conns.get(0);
+			int totalRealSize = 0;
+			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//--------AAA00
+				IMetadataTable justMetadata = conn.getMetadataTable();
+				List<IMetadataColumn> justColumnList = justMetadata.getListColumns();
+				int sizeListColumns = justColumnList.size();
+				for (int valueN=0; valueN<sizeListColumns; valueN++) {//------BBB00
+					IMetadataColumn column = justColumnList.get(valueN);
+					String orgainLength  = column.getOriginalSize();
+					totalRealSize = totalRealSize + orgainLength;
+				}//------BBB00
+			}//--------AAA00
+%>
+			java.io.FileInputStream fs_<%=cid %> = new java.io.FileInputStream(<%=filename %>);
+			java.nio.channels.FileChannel inChannel_<%=cid %>  = fs_<%=cid %>.getChannel();
+			java.nio.ByteBuffer bbRecord_<%=cid %> = java.nio.ByteBuffer.allocateDirect(<%=totalRealSize%>);
+			long iAvailabel_<%=cid %> = fs_<%=cid %>.available();
+			int iReadOffset_<%=cid %> = 0;
+			while(iAvailabel_<%=cid %> > 0 ){
+				iAvailabel_<%=cid %> = iAvailabel_<%=cid %> - <%=totalRealSize%>;
+				iReadOffset_<%=cid %> = inChannel_<%=cid %>.read(bbRecord_<%=cid %>);
+				bbRecord_<%=cid %>.flip();
+<%
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//------BBB1
+					IMetadataTable justMetadata = conn.getMetadataTable();
+					List<IMetadataColumn> justColumnList = justMetadata.getListColumns();
+					int sizeListColumns = justColumnList.size();
+					for (int valueN=0; valueN<sizeListColumns; valueN++) {//------BBB12
+						IMetadataColumn column = justColumnList.get(valueN);
+						int orgainLength = column.getOriginalSize();
+						int length = column.getLength();
+						String orgainType = column.getType();
+%>
+						byte[] bb_<%=conn.getName() %>_<%=column.getLabel()%> = new byte[<%=orgainLength %>];
+						bbRecord_<%=cid %>.get(bb_<%=conn.getName() %>_<%=column.getLabel()%>);
+<%
+						if(orgainType.equals("X")){
+%>				
+							<%=conn.getName() %>.<%=column.getLabel()%> = new String(bb_<%=conn.getName() %>_<%=column.getLabel()%>,<%=encoding%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
+<%
+						}else if(orgainType.equals("1")) {
+%>
+							<%=conn.getName() %>.<%=column.getLabel()%> = new java.lang.Long(java.nio.ByteBuffer.wrap(bb_<%=conn.getName() %>_<%=column.getLabel()%>).order(java.nio.ByteOrder.BIG_ENDIAN).getFloat());
+<%
+						}else if(orgainType.equals("2")) {
+%>
+							<%=conn.getName() %>.<%=column.getLabel()%> = new java.lang.Double(java.nio.ByteBuffer.wrap(bb_<%=conn.getName() %>_<%=column.getLabel()%>).order(java.nio.ByteOrder.BIG_ENDIAN).getDouble());
+<%
+						}else if(orgainType.equals("3")) {
+%>
+							cobolConversion.PackedDecimal pd_<%=conn.getName() %>_<%=column.getLabel()%> = new cobolConversion.PackedDecimal(bb_<%=conn.getName() %>_<%=column.getLabel()%>, 0, <%=length%>, 0);
+							<%=conn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(pd_<%=conn.getName() %>_<%=column.getLabel()%>.toString());
+<%
+						}else if(orgainType.equals("9")) {
+%>
+							<%=conn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(new String(bb_<%=conn.getName() %>_<%=column.getLabel()%>,<%=encoding%>));
+<%
+						}else if(orgainType.equals("B")) {
+%>
+							<%=conn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(new java.math.BigInteger(bb_<%=conn.getName() %>_<%=column.getLabel()%>),0);
+<%
+						}else if (orgainType.equals("T")) {
+%>
+							<%=conn.getName() %>.<%=column.getLabel()%> = bb_<%=conn.getName() %>_<%=column.getLabel()%>;
+<%
+						}
+					}//------BBB12
+				}//------BBB1
+%>
+				bbRecord_<%=cid %>.clear();
+<%
+	}//------conns
+}//------11111
 %>
