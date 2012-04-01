@@ -623,6 +623,12 @@ public class RepositoryFilterDialog extends Dialog {
     }
 
     @Override
+    protected void cancelPressed() {
+        repositoryView.refresh();
+        super.cancelPressed();
+    }
+
+    @Override
     protected void okPressed() {
         IPreferenceStore preferenceStore = RepositoryManager.getPreferenceStore();
 
