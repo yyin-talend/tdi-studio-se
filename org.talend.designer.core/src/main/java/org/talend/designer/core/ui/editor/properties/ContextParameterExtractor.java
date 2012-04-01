@@ -76,6 +76,10 @@ public final class ContextParameterExtractor {
                     // // repository context.");
                     // return;
                     // }
+                    // add for bug TDI-20336
+                    if (process == null) {
+                        return;
+                    }
                     IContextParameter parameter = buildParameterFrom(text, process.getContextManager(), parameterName);
                     if (parameter == null) { // some context have existed
                         return;
