@@ -117,6 +117,26 @@
                   value="org.talend.repository.model.RepositoryNode">
             </instanceof>
          </possibleChildren>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isContextTopNode">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -142,6 +162,26 @@
                   value="org.talend.repository.model.RepositoryNode">
             </instanceof>
          </possibleChildren>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isCodeTopNode">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -167,6 +207,26 @@
                   value="org.talend.repository.model.RepositoryNode">
             </instanceof>
          </possibleChildren>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.code.isRoutines">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -192,6 +252,26 @@
                   value="org.talend.repository.model.RepositoryNode">
             </instanceof>
          </possibleChildren>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isSqlTemplatesTopNode">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -217,6 +297,26 @@
                   value="org.talend.repository.model.RepositoryNode">
             </instanceof>
          </possibleChildren>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isMetadataTopNode">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -242,6 +342,26 @@
                </test>
             </and>
          </triggerPoints>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.metadata.isDbConnection">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -267,6 +387,26 @@
                </test>
             </and>
          </triggerPoints>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.metadata.isFileDelimited">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       
       
@@ -295,6 +435,26 @@
                </test>
             </and>
          </triggerPoints>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.metadata.isFilePositional">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -321,6 +481,26 @@
                </test>
             </and>
          </triggerPoints>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.metadata.isFileRegexp">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -347,6 +527,26 @@
                </test>
             </and>
          </triggerPoints>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.metadata.isFileXML">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -373,6 +573,26 @@
                </test>
             </and>
          </triggerPoints>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.metadata.isFileExcel">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -399,6 +619,26 @@
                </test>
             </and>
          </triggerPoints>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.metadata.isFileLDIF">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -425,6 +665,26 @@
                </test>
             </and>
          </triggerPoints>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.metadata.isLDAP">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -451,6 +711,26 @@
                </test>
             </and>
          </triggerPoints>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.metadata.isSalesforce">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -476,6 +756,26 @@
                </test>
             </and>
          </triggerPoints>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.metadata.isGenericSchema">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -501,6 +801,26 @@
                </test>
             </and>
          </triggerPoints>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.metadata.isWebService">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -526,6 +846,26 @@
                </instanceof>
             </or>
          </triggerPoints>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isDocTopNode">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -552,6 +892,26 @@
                   value="org.talend.repository.model.RepositoryNode">
             </instanceof>
          </possibleChildren>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isRulesTopNode">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
@@ -597,18 +957,81 @@
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
       <propertyTester
-            class="org.talend.repository.tester.NodeTester"
+            class="org.talend.repository.view.di.viewer.tester.NodeTester"
             id="org.talend.repository.node.tester"
             namespace="org.talend.repository.node"
-            properties="isJobBranch,isMetadataTopNode,isCodeTopNode,isRulesTopNode,isBusinessModelBranch,isDeleted"
+            properties="isJobBranch,isBusinessModelBranch"
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
       <propertyTester
-            class="org.talend.repository.tester.NodeTester"
+            class="org.talend.repository.view.di.viewer.tester.NodeTester"
             id="org.talend.repository.view.di.activation.tester"
             namespace="org.talend.dummy"
             properties="alwaysFalse"
             type="org.talend.repository.navigator.TalendRepositoryRoot">
+      </propertyTester>
+      <propertyTester
+            class="org.talend.repository.view.di.viewer.tester.DIMetadatasNodeTester"
+            id="org.talend.repository.node.tester.metadata.di"
+            namespace="org.talend.repository.node.metadata"
+            properties="isDbConnection,isFileDelimited,isFilePositional,isFileRegexp,isFileXML,isFileExcel,isFileLDIF,isLDAP,isSalesforce,isGenericSchema,isWebService"
+            type="org.talend.repository.model.RepositoryNode">
+      </propertyTester>
+      <propertyTester
+            class="org.talend.repository.view.di.viewer.tester.SchemaNodeTester"
+            id="org.talend.repository.node.tester.metadata.schema"
+            namespace="org.talend.repository.node.metadata"
+            properties="isSchema"
+            type="org.talend.repository.model.RepositoryNode">
+      </propertyTester>
+      <propertyTester
+            class="org.talend.repository.view.di.viewer.tester.SchemaColumnNodeTester"
+            id="org.talend.repository.node.tester.metadata.schema.column"
+            namespace="org.talend.repository.node.metadata"
+            properties="isSchemaColumn"
+            type="org.talend.repository.model.RepositoryNode">
+      </propertyTester>
+      <propertyTester
+            class="org.talend.repository.view.di.viewer.tester.QueryNodeTester"
+            id="org.talend.repository.node.tester.metadata.query"
+            namespace="org.talend.repository.node.metadata"
+            properties="isQuery"
+            type="org.talend.repository.model.RepositoryNode">
+      </propertyTester>
+      <propertyTester
+            class="org.talend.repository.view.di.viewer.tester.ContextNodeTester"
+            id="org.talend.repository.node.tester.context"
+            namespace="org.talend.repository.node"
+            properties="isContextTopNode"
+            type="org.talend.repository.model.RepositoryNode">
+      </propertyTester>
+      <propertyTester
+            class="org.talend.repository.view.di.viewer.tester.SqlTemplatesNodeTester"
+            id="org.talend.repository.node.tester.sqlTemplates"
+            namespace="org.talend.repository.node"
+            properties="isSqlTemplatesTopNode"
+            type="org.talend.repository.model.RepositoryNode">
+      </propertyTester>
+      <propertyTester
+            class="org.talend.repository.view.di.viewer.tester.RoutinesNodeTester"
+            id="org.talend.repository.node.tester.code.routines"
+            namespace="org.talend.repository.node.code"
+            properties="isRoutines"
+            type="org.talend.repository.model.RepositoryNode">
+      </propertyTester>
+      <propertyTester
+            class="org.talend.repository.view.di.viewer.tester.DocumentationNodeTester"
+            id="org.talend.repository.node.tester.doc"
+            namespace="org.talend.repository.node"
+            properties="isDocTopNode"
+            type="org.talend.repository.model.RepositoryNode">
+      </propertyTester>
+      <propertyTester
+            class="org.talend.repository.view.di.viewer.tester.RulesManagementNodeTester"
+            id="org.talend.repository.node.tester.rules"
+            namespace="org.talend.repository.node"
+            properties="isRulesTopNode"
+            type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
    </extension>
    <extension

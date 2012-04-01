@@ -6,7 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.talend.repository.view.di.DIRepositoryViewPlugin
 Bundle-Vendor: .Talend.
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.core.expressions,
+ org.eclipse.core.expressions;visibility:=reexport,
  org.eclipse.ui,
  org.eclipse.ui.navigator,
  org.talend.commons.ui,
@@ -21,4 +21,5 @@ Export-Package: org.talend.repository.view.di,
  org.talend.repository.view.di.viewer.content,
  org.talend.repository.view.di.viewer.content.code,
  org.talend.repository.view.di.viewer.content.metadata,
- org.talend.repository.view.di.viewer.content.rules
+ org.talend.repository.view.di.viewer.content.rules,
+ org.talend.repository.view.di.viewer.tester

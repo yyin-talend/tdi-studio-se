@@ -56,7 +56,37 @@
                   value="org.talend.repository.model.RepositoryNode">
             </instanceof>
          </possibleChildren>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.metadata.isFtp">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
       </navigatorContent>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="org.talend.repository.ftp.ui.viewer.tester.FtpMetadataNodeTester"
+            id="org.talend.repository.node.tester.metadata.ftp"
+            namespace="org.talend.repository.node.metadata"
+            properties="isFtp"
+            type="org.talend.repository.model.RepositoryNode">
+      </propertyTester>
    </extension>
 
 </plugin>

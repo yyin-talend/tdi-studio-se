@@ -13,7 +13,7 @@
 package org.talend.repository.view.di.viewer.content.code;
 
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.tester.NodeTester;
+import org.talend.repository.tester.CodeNodeTester;
 import org.talend.repository.view.di.viewer.content.SubEmptyTopNodeContentProvider;
 
 /**
@@ -21,7 +21,7 @@ import org.talend.repository.view.di.viewer.content.SubEmptyTopNodeContentProvid
  */
 public abstract class AbstractCodeContentProvider extends SubEmptyTopNodeContentProvider {
 
-    NodeTester nodeTester = new NodeTester();
+    CodeNodeTester nodeTester = new CodeNodeTester();
 
     /*
      * (non-Javadoc)
