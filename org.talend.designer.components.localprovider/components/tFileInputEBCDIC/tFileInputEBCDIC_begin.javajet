@@ -111,8 +111,16 @@ if(!noX2cjFile){//------11111
 				int sizeListColumns = justColumnList.size();
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {//------BBB00
 					IMetadataColumn column = justColumnList.get(valueN);
-					String orgainLength  = column.getOriginalSize();
-					totalRealSize = totalRealSize + orgainLength;
+					Integer orgainLength  = column.getOriginalLength();
+					if(orgainLength==null || orgainLength.intValue()==0) {
+%>
+//////////////////////////////////////////////////
+the original size in the column:<%=column.getLabel()%> should be bigger than 0
+//////////////////////////////////////////////////
+<%
+						break;
+					}
+					totalRealSize = totalRealSize + orgainLength.intValue();
 				}//------BBB00
 			}//--------AAA00
 %>
@@ -132,9 +140,17 @@ if(!noX2cjFile){//------11111
 					int sizeListColumns = justColumnList.size();
 					for (int valueN=0; valueN<sizeListColumns; valueN++) {//------BBB12
 						IMetadataColumn column = justColumnList.get(valueN);
-						int orgainLength = column.getOriginalSize();
-						int length = column.getLength();
+						Integer orgainLength = column.getOriginalLength();
+						Integer length = column.getLength();
 						String orgainType = column.getType();
+						if(orgainLength==null || orgainLength.intValue()==0 || orgainType==null || "".endsWith(orgainType.trim())) {
+%>
+//////////////////////////////////////////////////
+the original size in the column:<%=column.getLabel()%> in the schema should be bigger than 0 and DB Type shouldn't be null or Empty
+//////////////////////////////////////////////////
+<%
+							continue;
+						}
 %>
 						byte[] bb_<%=conn.getName() %>_<%=column.getLabel()%> = new byte[<%=orgainLength %>];
 						bbRecord_<%=cid %>.get(bb_<%=conn.getName() %>_<%=column.getLabel()%>);
@@ -167,6 +183,12 @@ if(!noX2cjFile){//------11111
 						}else if (orgainType.equals("T")) {
 %>
 							<%=conn.getName() %>.<%=column.getLabel()%> = bb_<%=conn.getName() %>_<%=column.getLabel()%>;
+<%
+						}else {
+%>
+//////////////////////////////////////////////////
+DB Type of the column:<%=column.getLabel()%> should be X, 1, 2, 3, 9, B, T
+//////////////////////////////////////////////////
 <%
 						}
 					}//------BBB12
