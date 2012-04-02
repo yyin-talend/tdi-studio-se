@@ -7,13 +7,33 @@ imports="
 %>
 	<%@ include file="../templates/DB/HelpClass/HelpClass.javajet"%>
 <%
+
 	class ConnectionUtil extends DefaultConnectionUtil{
 	
 		public void createURL(INode node) {
 			super.createURL(node);
+			String connectionMode = ElementParameterParser.getValue(node, "__CONNECTION_MODE__");
+			String hiveVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
+			
+			if(("HDP_1_0".equals(hiveVersion) && "STANDALONE".equals(connectionMode)) || ("APACHE_0_20_203".equals(hiveVersion) && "EMBEDDED".equals(connectionMode))) {
 %>
-		String url_<%=cid%> = "jdbc:hive://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+				if(true) {
+					throw new Exception("The Hive version and the connection mode are not compatible together. Please check your component configuration.");
+				}
+<%
+			}
+			
+			if("EMBEDDED".equals(connectionMode)) {
+%>
+				System.setProperty("hive.metastore.local", "false");
+				System.setProperty("hive.metastore.uris", "thrift://" + <%=dbhost%> + ":" + <%=dbport%>);
+				String url_<%=cid%> = "jdbc:hive://";
+<%
+			} else {
+%>
+				String url_<%=cid%> = "jdbc:hive://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
 <%	
+			}
 		}
 		
 		public void setAutoCommit(INode node) {

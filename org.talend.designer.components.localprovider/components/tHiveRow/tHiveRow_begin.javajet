@@ -19,31 +19,50 @@ imports="
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
     String commitEvery = "0";//ElementParameterParser.getValue(node, "__COMMIT_EVERY__");//hive jdbc not support setAutoCommit
     String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-	       dbquery = dbquery.replaceAll("\n"," ");
-    	   dbquery = dbquery.replaceAll("\r"," ");
+	dbquery = dbquery.replaceAll("\n"," ");
+	dbquery = dbquery.replaceAll("\r"," ");
     
 	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
 %>
 
 java.sql.Connection conn_<%=cid%> = null;
 <%
-String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-if(("true").equals(useExistingConn)) {
-	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-	String conn = "conn_" + connection;;
-	%>
-	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-	<%
-} else {
-	String javaDbDriver   = "org.apache.hadoop.hive.jdbc.HiveDriver";
-	%>
-    String url_<%=cid%> = "jdbc:hive://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
-    String dbUser_<%=cid %> = <%=dbuser%>;
-    String dbPwd_<%=cid %> = <%=dbpwd%>;    
-	java.lang.Class.forName("<%=javaDbDriver %>");
-	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
-	<%
-}	
+	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+	if(("true").equals(useExistingConn)) {
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+		String conn = "conn_" + connection;;
+		%>
+		conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+		<%
+	} else {
+		String javaDbDriver = "org.apache.hadoop.hive.jdbc.HiveDriver";
+		String connectionMode = ElementParameterParser.getValue(node, "__CONNECTION_MODE__");
+		String hiveVersion = ElementParameterParser.getValue(node, "__HIVE_VERSION__");
+		if(("HDP_1_0".equals(hiveVersion) && "STANDALONE".equals(connectionMode)) || ("APACHE_0_20_203".equals(hiveVersion) && "EMBEDDED".equals(connectionMode))) {
+%>
+			if(true) {
+				throw new Exception("The Hive version and the connection mode are not compatible together. Please check your component configuration.");
+			}
+<%
+		}
+		if("EMBEDDED".equals(connectionMode)) {
+%>
+			System.setProperty("hive.metastore.local", "false");
+			System.setProperty("hive.metastore.uris", "thrift://" + <%=dbhost%> + ":" + <%=dbport%>);
+			String url_<%=cid%> = "jdbc:hive://";
+<%
+		} else {
+%>
+			String url_<%=cid%> = "jdbc:hive://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+<%
+		}
+%>
+		String dbUser_<%=cid %> = <%=dbuser%>;
+		String dbPwd_<%=cid %> = <%=dbpwd%>;    
+		java.lang.Class.forName("<%=javaDbDriver %>");
+		conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
+<%
+	}	
 %>
 
 <%
