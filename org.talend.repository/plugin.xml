@@ -1162,6 +1162,13 @@
             id="org.talend.repository.model.migration.RenameModeParaForPigMigrationTask"
             name="Rename pig mode parameter">
       </projecttask>
+  	  <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.SetStandaloneModeForHiveComponentsMigrationTask"
+            description="Set the standalone value for the connection mode for old jobs for feature TDI-20301 "
+            id="org.talend.repository.model.migration.SetStandaloneModeForHiveComponentsMigrationTask"
+            name="Set the standalone value for the connection mode for old jobs.">
+      </projecttask>
       <projecttask
             beforeLogon="false"
             class="org.talend.repository.model.migration.RenameVersionParametersForPigMigrationTask"
