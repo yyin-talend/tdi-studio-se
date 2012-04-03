@@ -13,7 +13,6 @@
 package org.talend.sbi.engines.client.ui.preferences;
 
 import org.apache.log4j.Logger;
-import org.eclipse.gmf.runtime.common.ui.preferences.CheckBoxFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.events.SelectionEvent;
@@ -23,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
 import org.talend.core.model.properties.SpagoBiServer;
 import org.talend.sbi.engines.client.Activator;
 import org.talend.sbi.engines.client.i18n.Messages;
@@ -88,7 +88,7 @@ public class SpagoBiPreferencePage extends FieldEditorPreferencePage implements 
                 updateEnableStateFromDisplay();
             }
         };
-        spagoBiCheckButton.getCheckbox().addSelectionListener(listener);
+        spagoBiCheckButton.getButton().addSelectionListener(listener);
     }
 
     private void updateEnableStateFromDisplay() {
@@ -99,7 +99,7 @@ public class SpagoBiPreferencePage extends FieldEditorPreferencePage implements 
     private void updateEnableStateFromPreferences() {
         IPreferenceStore preferenceStore = getPreferenceStore();
         boolean spago = preferenceStore.getBoolean(SpagoPreferenceInitializer.SPAGO_STATUS);
-        spagoBiCheckButton.getCheckbox().setSelection(spago);
+        spagoBiCheckButton.getButton().setSelection(spago);
         editor.setEnabled(spago, parent);
     }
 

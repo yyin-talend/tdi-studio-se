@@ -13,7 +13,6 @@
 package org.talend.spagic.engines.client.ui.preferences;
 
 import org.apache.log4j.Logger;
-import org.eclipse.gmf.runtime.common.ui.preferences.CheckBoxFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.events.SelectionEvent;
@@ -23,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
 import org.talend.core.model.properties.SpagoBiServer;
 import org.talend.spagic.engines.client.Activator;
 
@@ -86,7 +86,7 @@ public class SpagicPreferencePage extends FieldEditorPreferencePage implements I
                 updateEnableStateFromDisplay();
             }
         };
-        spagicCheckButton.getCheckbox().addSelectionListener(listener);
+        spagicCheckButton.getButton().addSelectionListener(listener);
 
         // disable the spagic feature
         // spagicCheckButton.setEnabled(false, parent);
@@ -100,7 +100,7 @@ public class SpagicPreferencePage extends FieldEditorPreferencePage implements I
     private void updateEnableStateFromPreferences() {
         IPreferenceStore preferenceStore = getPreferenceStore();
         boolean spago = preferenceStore.getBoolean(SpagicPreferenceInitializer.SPAGIC_STATUS);
-        spagicCheckButton.getCheckbox().setSelection(spago);
+        spagicCheckButton.getButton().setSelection(spago);
         editor.setEnabled(spago, parent);
     }
 

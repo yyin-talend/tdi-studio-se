@@ -12,9 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.preferences;
 
-import org.eclipse.gmf.runtime.common.ui.preferences.FontFieldEditor;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.FontFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

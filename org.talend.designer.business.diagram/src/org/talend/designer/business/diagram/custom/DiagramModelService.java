@@ -15,9 +15,8 @@ package org.talend.designer.business.diagram.custom;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
+import org.eclipse.gmf.runtime.diagram.ui.editparts.CompartmentEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.NoteEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.internal.editparts.NoteAttachmentEditPart;
 import org.eclipse.gmf.runtime.notation.Node;
@@ -26,6 +25,8 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -33,21 +34,24 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.talend.core.model.business.BusinessAlignment;
 import org.talend.core.model.business.BusinessType;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.repository.IRepositoryEditorInput;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.business.diagram.custom.actions.CreateDiagramAction;
 import org.talend.designer.business.diagram.custom.actions.DeleteAssignmentAction;
 import org.talend.designer.business.diagram.custom.actions.DiagramResourceManager;
 import org.talend.designer.business.diagram.custom.commands.ChangeBusinessItemAlignmentCommand;
 import org.talend.designer.business.diagram.custom.edit.parts.BaseBusinessItemRelationShipEditPart;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
-import org.talend.designer.business.diagram.custom.properties.RepositoryFactoryProxyLabelProvider;
+import org.talend.designer.business.diagram.views.jobsettings.BusinessAppearanceComposite;
+import org.talend.designer.business.diagram.views.jobsettings.BusinessAssignmentComposite;
+import org.talend.designer.business.diagram.views.jobsettings.BusinessRulersAndGridComposite;
 import org.talend.designer.business.model.business.BusinessItem;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor;
-import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
 
 /**
  * DOC qian class global comment. An implementation of the IRunProcessService. <br/>
@@ -105,14 +109,6 @@ public class DiagramModelService implements IDiagramModelService {
         }
 
         return null;
-    }
-
-    public AdapterFactory getBusinessItemProviderAdapterFactory() {
-        return new BusinessItemProviderAdapterFactory();
-    }
-
-    public AdapterFactoryLabelProvider getRepositoryFactoryProxyLabelProvider(AdapterFactory factory) {
-        return new RepositoryFactoryProxyLabelProvider(factory);
     }
 
     public EObject getEObject(ISelection selection) {
@@ -209,6 +205,34 @@ public class DiagramModelService implements IDiagramModelService {
 
         DeleteAssignmentAction action = new DeleteAssignmentAction(selection);
         mgr.add(action);
+    }
+
+    @Override
+    public boolean isInstanceOfCompartmentEditPart(Object o) {
+        return o instanceof CompartmentEditPart;
+    }
+
+    @Override
+    public Object getBusinessAppearanceComposite(Composite parent, int style, TabbedPropertySheetWidgetFactory widgetFactory,
+            ISelection selection) {
+        return new BusinessAppearanceComposite(parent, SWT.NONE, widgetFactory, selection);
+    }
+
+    @Override
+    public Object getBusinessRulersAndGridComposite(Composite parent, int style, TabbedPropertySheetWidgetFactory widgetFactory,
+            IRepositoryObject obj) {
+        return new BusinessRulersAndGridComposite(parent, SWT.NONE, widgetFactory, obj);
+    }
+
+    @Override
+    public Object getBusinessAssignmentComposite(Composite parent, int style, TabbedPropertySheetWidgetFactory widgetFactory,
+            ISelection selection) {
+        return new BusinessAssignmentComposite(parent, SWT.NONE, widgetFactory, selection);
+    }
+
+    @Override
+    public boolean isInstanceOfBusinessAssignmentComposite(Object o) {
+        return o instanceof BusinessAssignmentComposite;
     }
 
 }

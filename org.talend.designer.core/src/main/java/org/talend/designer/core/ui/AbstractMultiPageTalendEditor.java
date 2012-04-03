@@ -40,7 +40,6 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
-import org.eclipse.gmf.runtime.diagram.ui.editparts.INodeEditPart;
 import org.eclipse.jdt.debug.core.IJavaBreakpointListener;
 import org.eclipse.jdt.debug.core.JDIDebugModel;
 import org.eclipse.jface.action.IAction;
@@ -1286,7 +1285,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         if (object instanceof ProcessPart) {
             for (EditPart editPart : (List<EditPart>) ((ProcessPart) object).getChildren()) {
                 if (editPart instanceof NodePart) {
-                    if (((INodeEditPart) editPart).getModel().equals(node)) {
+                    if (((NodePart) editPart).getModel().equals(node)) {
                         viewer.select(editPart);
                     }
                 }

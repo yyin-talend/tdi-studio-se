@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.designer.core.ui.views.jobsettings;
+package org.talend.designer.business.diagram.views.jobsettings;
 
 import java.util.List;
 
@@ -67,6 +67,8 @@ import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.designer.business.diagram.custom.properties.RepositoryFactoryProxyLabelProvider;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessFactory;
 import org.talend.designer.business.model.business.BusinessPackage;
@@ -76,7 +78,8 @@ import org.talend.designer.business.model.business.SAPFunction;
 import org.talend.designer.business.model.business.SQLPattern;
 import org.talend.designer.business.model.business.TableMetadata;
 import org.talend.designer.business.model.business.TalendItem;
-import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
+import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.designer.core.ui.views.jobsettings.tabs.AbstractTabComposite;
 import org.talend.designer.core.utils.EmfPropertyHelper;
 import org.talend.designer.core.utils.KeyHelper;
@@ -148,18 +151,14 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
     }
 
     public void createControls(Composite parent) {
-        // super.createControls(parent, aTabbedPropertySheetPage);
 
         composite = widgetFactory.createFlatFormComposite(parent);
 
-        // PTODO mhelleboid externalize tableviewer creation
-
-        adapterFactory = CorePlugin.getDefault().getDiagramModelService().getBusinessItemProviderAdapterFactory();
+        adapterFactory = new BusinessItemProviderAdapterFactory();
 
         tableViewer = new TableViewer(composite, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
         tableViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-        tableViewer.setLabelProvider(CorePlugin.getDefault().getDiagramModelService()
-                .getRepositoryFactoryProxyLabelProvider(adapterFactory));
+        tableViewer.setLabelProvider(new RepositoryFactoryProxyLabelProvider(adapterFactory));
 
         Table table = tableViewer.getTable();
         TableLayout tableLayout = new TableLayout();

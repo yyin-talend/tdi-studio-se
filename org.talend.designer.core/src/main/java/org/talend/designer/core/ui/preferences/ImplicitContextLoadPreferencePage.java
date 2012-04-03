@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.gmf.runtime.common.ui.preferences.CheckBoxFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -39,6 +38,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.database.conn.EDatabaseConnVar;
 import org.talend.core.database.conn.template.EDatabaseConnTemplate;
@@ -235,7 +235,7 @@ public class ImplicitContextLoadPreferencePage extends FieldEditorPreferencePage
             }
         };
 
-        implicitContextLoadField.getCheckbox().addSelectionListener(listener);
+        implicitContextLoadField.getButton().addSelectionListener(listener);
         fromFileField.getRadio().addSelectionListener(listener);
         fromDbField.getRadio().addSelectionListener(listener);
         dbTypeField.getComboBoxControl(dbTypeComposite).addSelectionListener(listener);

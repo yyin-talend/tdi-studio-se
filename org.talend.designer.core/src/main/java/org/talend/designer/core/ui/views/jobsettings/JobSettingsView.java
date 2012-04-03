@@ -241,11 +241,11 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             dynamicComposite = service.createProcessSVNHistoryComposite(parent, tabFactory.getWidgetFactory(),
                     (IRepositoryViewObject) data);
         } else if (EComponentCategory.APPEARANCE.equals(category)) {
-            dynamicComposite = new BusinessAppearanceComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
+            dynamicComposite = (IDynamicProperty)CorePlugin.getDefault().getDiagramModelService().getBusinessAppearanceComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
         } else if (EComponentCategory.RULERS_AND_GRID.equals(category)) {
-            dynamicComposite = new BusinessRulersAndGridComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), null);
+            dynamicComposite = (IDynamicProperty)CorePlugin.getDefault().getDiagramModelService().getBusinessRulersAndGridComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), null);
         } else if (EComponentCategory.ASSIGNMENT.equals(category)) {
-            dynamicComposite = new BusinessAssignmentComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
+            dynamicComposite = (IDynamicProperty)CorePlugin.getDefault().getDiagramModelService().getBusinessAssignmentComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
         }
 
         if (dynamicComposite != null) {
@@ -650,7 +650,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
         } else if (service != null && service.isSVNHistoryComposite(dc)) {
             return service.getSVNHistorySelection(dc);
-        } else if (dc instanceof BusinessAssignmentComposite) {
+        } else if (CorePlugin.getDefault().getDiagramModelService().isInstanceOfBusinessAssignmentComposite(dc)) {
             return CorePlugin.getDefault().getRepositoryService().getRepositoryTreeView().getSelection();
         }
 

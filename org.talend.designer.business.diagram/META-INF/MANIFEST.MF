@@ -28,5 +28,7 @@ Require-Bundle: org.eclipse.ui.ide,
  org.apache.batik.svggen,
  org.eclipse.ui.intro,
  org.apache.batik.ext.awt,
- org.talend.metadata.managment
+ org.talend.metadata.managment,
+ com.ibm.icu,
+ org.talend.libraries.apache
 Eclipse-LazyStart: true

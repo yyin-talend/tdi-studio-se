@@ -15,7 +15,6 @@ Require-Bundle: org.talend.model,
  org.eclipse.jdt.launching,
  org.talend.librariesmanager,
  org.talend.designer.core,
- org.eclipse.gmf.runtime.common.ui,
  org.talend.commons.ui,
  org.eclipse.jdt.ui,
  org.talend.utils,
@@ -27,7 +26,9 @@ Require-Bundle: org.talend.model,
  org.eclipse.gef,
  org.talend.libraries.csv;resolution:=optional,
  org.talend.libraries.uniserv;resolution:=optional,
- org.talend.libraries.mozilla;resolution:=optional
+ org.talend.libraries.mozilla;resolution:=optional,
+ org.eclipse.ui.workbench,
+ org.eclipse.jface.text
 Eclipse-LazyStart: true
 Export-Package: org.talend.designer.runprocess,
  org.talend.designer.runprocess.i18n,

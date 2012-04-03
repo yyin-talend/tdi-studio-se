@@ -16,7 +16,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.gmf.runtime.common.ui.preferences.CheckBoxFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -37,8 +36,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
 import org.talend.commons.ui.utils.workbench.preferences.ComboFieldEditor;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.database.conn.EDatabaseConnVar;
@@ -70,7 +68,7 @@ import org.talend.repository.ui.views.RepositoryView;
  * @deprecated see StatLogsProjectSettingPage
  * 
  */
-public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePage {
 
     public static final String CONNECTION_ITEM_LABEL = "_CONNECTION_ITEM_LABEL"; //$NON-NLS-1$
 
@@ -672,11 +670,11 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
                 updateEnableStateFromDisplay();
             }
         };
-        onStatCatcherField.getCheckbox().addSelectionListener(listener);
-        onLogCatcherField.getCheckbox().addSelectionListener(listener);
-        onMetterCatcherField.getCheckbox().addSelectionListener(listener);
-        onFilesField.getCheckbox().addSelectionListener(listener);
-        onDatabaseField.getCheckbox().addSelectionListener(listener);
+        onStatCatcherField.getButton().addSelectionListener(listener);
+        onLogCatcherField.getButton().addSelectionListener(listener);
+        onMetterCatcherField.getButton().addSelectionListener(listener);
+        onFilesField.getButton().addSelectionListener(listener);
+        onDatabaseField.getButton().addSelectionListener(listener);
         dbTypeField.getComboBoxControl(dbTypeComposite).addSelectionListener(listener);
 
         buttonShowRepository.addSelectionListener(new SelectionListener() {
@@ -741,15 +739,6 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
     protected void performDefaults() {
         super.performDefaults();
         updateEnableStateFromDisplay();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-     */
-    public void init(IWorkbench workbench) {
-
     }
 
     private String id;
