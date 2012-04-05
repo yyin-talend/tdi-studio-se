@@ -180,8 +180,9 @@ public final class EMFRepositoryNodeManager {
         IMetadataConnection iMetadataConnection = null;
         if (root != null) {
             try {
-                iMetadataConnection = ConvertionHelper.convert((DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root)
-                        .getConnection(), false, selectedContext);
+                DatabaseConnection databaseConnection = (DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root)
+                        .getConnection();
+                iMetadataConnection = ConvertionHelper.convert(databaseConnection, false, selectedContext);
                 dbMetaData = rnmanager.getDatabaseMetaData(iMetadataConnection);
             } catch (final Exception e) {
                 final String mainMsg = Messages.getString("EMFRepositoryNodeManager.DBConnection.Text"); //$NON-NLS-1$
