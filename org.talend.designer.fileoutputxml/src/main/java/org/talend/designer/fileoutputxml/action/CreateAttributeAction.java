@@ -83,10 +83,8 @@ public class CreateAttributeAction extends SelectionProviderAction {
                         @Override
                         public String isValid(String newText) {
                             for (int i = 0; i < nodes.size(); i++) {
-                                if (nodes.get(i).isAttribute()) {
-                                    if (newText.trim().equals(nodes.get(i).getLabel())) {
-                                        return Messages.getString("CreateAttributeAction.4"); //$NON-NLS-1$
-                                    }
+                                if (nodes.get(i).isAttribute() && newText.trim().equals(nodes.get(i).getLabel())) {
+                                    return Messages.getString("CreateAttributeAction.isValid"); //$NON-NLS-1$
                                 }
                             }
                             return null;
