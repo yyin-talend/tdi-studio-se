@@ -114,7 +114,7 @@ public final class ImportItemAction extends AContextualAction implements IWorkbe
                 rNode = (RepositoryNode) ((IStructuredSelection) selection).getFirstElement();
             }
 
-            ImportItemWizard wizard = new ImportItemWizard(rNode);
+            ImportItemWizard wizard = new ImportItemWizard(null);
             IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
             wizard.setWindowTitle(IMPORT_ITEM);
             wizard.init(workbench, (IStructuredSelection) selection);
