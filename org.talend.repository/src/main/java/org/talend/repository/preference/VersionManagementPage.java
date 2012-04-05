@@ -66,6 +66,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.composite.ThreeCompositesSashForm;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
@@ -76,6 +77,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
@@ -102,6 +104,8 @@ public class VersionManagementPage extends ProjectSettingPage {
     private Button versionBtn;
 
     private boolean isApplied;
+
+    private boolean allowVerchange = true;
 
     /*
      * (non-Javadoc)
@@ -427,6 +431,10 @@ public class VersionManagementPage extends ProjectSettingPage {
         fixedVersionBtn.setText(Messages.getString("VersionManagementDialog.FixedVersion")); //$NON-NLS-1$
         fixedVersionBtn.setSelection(true); // default
 
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
+
         Composite versionComposit = new Composite(option, SWT.NONE);
         GridLayout layout = new GridLayout(8, false);
         layout.horizontalSpacing = 1;
@@ -447,9 +455,11 @@ public class VersionManagementPage extends ProjectSettingPage {
         majorBtn = new Button(versionComposit, SWT.NONE);
         majorBtn.setText("M"); //$NON-NLS-1$
         majorBtn.setToolTipText(Messages.getString("VersionManagementDialog.MajorVersionTip")); //$NON-NLS-1$
+        majorBtn.setEnabled(allowVerchange);
         minorBtn = new Button(versionComposit, SWT.NONE);
         minorBtn.setText("m"); //$NON-NLS-1$
         minorBtn.setToolTipText(Messages.getString("VersionManagementDialog.MinorVersionTip")); //$NON-NLS-1$
+        minorBtn.setEnabled(allowVerchange);
 
         Label label = new Label(versionComposit, SWT.NONE);
         label.setText(""); //$NON-NLS-1$
@@ -743,8 +753,8 @@ public class VersionManagementPage extends ProjectSettingPage {
     }
 
     private void checkFixedButtons() {
-        majorBtn.setEnabled(isFixedVersion());
-        minorBtn.setEnabled(isFixedVersion());
+        majorBtn.setEnabled(isFixedVersion() && allowVerchange);
+        minorBtn.setEnabled(isFixedVersion() && allowVerchange);
         revertBtn.setEnabled(isFixedVersion());
         // versionLatest.setEnabled(isFixedVersion());
     }

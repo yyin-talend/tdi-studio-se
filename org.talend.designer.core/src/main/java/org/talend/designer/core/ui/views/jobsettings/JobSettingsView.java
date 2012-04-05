@@ -50,6 +50,7 @@ import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.core.ui.IHeaderFooterProviderService;
 import org.talend.core.ui.ISVNProviderService;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.business.diagram.custom.IDiagramModelService;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
@@ -90,6 +91,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
     private boolean selectedPrimary;
 
+    private boolean allowVerchange = true;
+
     private Process process;
 
     private Composite parent;
@@ -99,6 +102,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
     public JobSettingsView() {
         tabFactory = new HorizontalTabFactory();
         CorePlugin.getDefault().getRepositoryService().addRepositoryTreeViewListener(this);
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
     }
 
     public static String getViewNameLable() {
@@ -226,8 +232,10 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         } else if (EComponentCategory.MAIN.equals(category)) {
             dynamicComposite = new MainComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), (IRepositoryViewObject) data);
         } else if (EComponentCategory.VERSIONS.equals(category)) {
-            dynamicComposite = new ProcessVersionComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(),
-                    (IRepositoryViewObject) data);
+            if (allowVerchange) {
+                dynamicComposite = new ProcessVersionComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(),
+                        (IRepositoryViewObject) data);
+            }
         } else if (EComponentCategory.HEADERFOOTER.equals(category)) {
             if (GlobalServiceRegister.getDefault().isServiceRegistered(IHeaderFooterProviderService.class)) {
                 IHeaderFooterProviderService headerFooterService = (IHeaderFooterProviderService) GlobalServiceRegister
@@ -432,7 +440,11 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             if (!isJoblet && !route) {
                 category.add(EComponentCategory.STATSANDLOGS);
             }
-            category.add(EComponentCategory.VERSIONS);
+
+            if (allowVerchange) {
+                category.add(EComponentCategory.VERSIONS);
+            }
+
             if (GlobalServiceRegister.getDefault().isServiceRegistered(IHeaderFooterProviderService.class)) {
                 IHeaderFooterProviderService headerFooterService = (IHeaderFooterProviderService) GlobalServiceRegister
                         .getDefault().getService(IHeaderFooterProviderService.class);
