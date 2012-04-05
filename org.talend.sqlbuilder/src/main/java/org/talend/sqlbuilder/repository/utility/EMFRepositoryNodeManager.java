@@ -27,6 +27,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -34,6 +35,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -180,8 +182,14 @@ public final class EMFRepositoryNodeManager {
         IMetadataConnection iMetadataConnection = null;
         if (root != null) {
             try {
-                iMetadataConnection = ConvertionHelper.convert((DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root)
-                        .getConnection(), false, selectedContext);
+            	DatabaseConnection databaseConnection=(DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root).getConnection();
+                iMetadataConnection = ConvertionHelper.convert(databaseConnection, false, selectedContext);
+//                String databaseType = databaseConnection.getDatabaseType();
+//            	EDatabaseTypeName dbType = EDatabaseTypeName.getTypeFromDbType(databaseType);
+//            	if (dbType == EDatabaseTypeName.TERADATA) {
+//            	IMetadataConnection metadataConnection = ConvertionHelper.convert(databaseConnection);
+//                    ExtractMetaDataUtils.metadataCon = metadataConnection;
+//                }
                 dbMetaData = rnmanager.getDatabaseMetaData(iMetadataConnection);
             } catch (final Exception e) {
                 final String mainMsg = Messages.getString("EMFRepositoryNodeManager.DBConnection.Text"); //$NON-NLS-1$

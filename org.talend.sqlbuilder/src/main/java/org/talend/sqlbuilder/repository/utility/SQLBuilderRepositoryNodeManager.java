@@ -686,7 +686,7 @@ public class SQLBuilderRepositoryNodeManager {
         }
         try {
             if (sqlConn != null) {
-                DatabaseMetaData dm = ExtractMetaDataUtils.getDatabaseMetaData(sqlConn, dbType);
+                DatabaseMetaData dm = ExtractMetaDataUtils.getDatabaseMetaData(sqlConn, dbType,false,metadataConnectionTemp.getDatabase());
                 MetadataFillFactory.getDBInstance().fillCatalogs(dbConn, dm,
                         MetadataConnectionUtils.getPackageFilter(dbConn, dm, true));
                 MetadataFillFactory.getDBInstance().fillSchemas(dbConn, dm,
@@ -854,7 +854,7 @@ public class SQLBuilderRepositoryNodeManager {
                 iMetadataConnection.getSchema(), iMetadataConnection.getDriverClass(), iMetadataConnection.getDriverJarPath(),
                 iMetadataConnection.getDbVersionString(), iMetadataConnection.getAdditionalParams());
         String dbType = iMetadataConnection.getDbType();
-        DatabaseMetaData dbMetaData = ExtractMetaDataUtils.getDatabaseMetaData(ExtractMetaDataUtils.conn, dbType);
+        DatabaseMetaData dbMetaData = ExtractMetaDataUtils.getDatabaseMetaData(ExtractMetaDataUtils.conn, dbType,iMetadataConnection.isSqlMode(),iMetadataConnection.getDatabase());
         return dbMetaData;
     }
 
