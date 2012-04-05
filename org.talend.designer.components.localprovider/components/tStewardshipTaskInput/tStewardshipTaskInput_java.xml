@@ -84,6 +84,7 @@
 			<ITEM NAME="NEW" VALUE="new" />
 			<ITEM NAME="RESOLVED" VALUE="resolved" />
 			<ITEM NAME="LOCKED" VALUE="locked" />
+			<ITEM NAME="PENDING" VALUE="pending" />
 		 </ITEMS> 
     </PARAMETER>
     <PARAMETER NAME="STAR_RANKING" FIELD="CLOSED_LIST" NUM_ROW="30">
