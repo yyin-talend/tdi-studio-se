@@ -304,11 +304,14 @@ public class SchemaTypeController extends AbstractRepositoryController {
         data.right = new FormAttachment(labelLabel, STANDARD_BUTTON_WIDTH, SWT.RIGHT);
         if (resetBtn != null) {
             data.top = new FormAttachment(resetBtn, 0, SWT.CENTER);
+            resetBtn.setEnabled(!param.isReadOnly());
         } else {
             data.top = new FormAttachment(0, top);
         }
+
         data.height = STANDARD_HEIGHT - 2;
         btn.setLayoutData(data);
+        btn.setEnabled(!param.isReadOnly());
 
         // curRowSize = btnSize.y + ITabbedPropertyConstants.VSPACE;
         dynamicProperty.setCurRowSize(btnSize.y + ITabbedPropertyConstants.VSPACE);

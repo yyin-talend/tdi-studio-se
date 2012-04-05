@@ -15,8 +15,10 @@ package org.talend.designer.core.ui.views.properties;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
@@ -34,6 +36,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.PersistenceException;
@@ -77,6 +80,8 @@ import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -542,6 +547,22 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                             if (controller == null) {
                                 continue;
                             }
+                            if (!haveLoadMetadataNode()) {
+                                if (curParam.getFieldType() == EParameterFieldType.PROPERTY_TYPE
+                                        || curParam.getFieldType() == EParameterFieldType.SCHEMA_TYPE
+                                        || curParam.getFieldType() == EParameterFieldType.GUESS_SCHEMA
+                                        || curParam.getFieldType() == EParameterFieldType.QUERYSTORE_TYPE) {
+                                    curParam.setReadOnly(true);
+                                    Map<String, IElementParameter> eleMap = curParam.getChildParameters();
+                                    Iterator<Entry<String, IElementParameter>> ite = eleMap.entrySet().iterator();
+                                    while (ite.hasNext()) {
+                                        Entry<String, IElementParameter> entry = ite.next();
+                                        IElementParameter child = entry.getValue();
+                                        child.setReadOnly(true);
+                                    }
+                                }
+                            }
+
                             if (controller.hasDynamicRowSize()) {
                                 controller.setAdditionalHeightSize(additionalHeightSize);
                             }
@@ -1277,5 +1298,18 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      */
     public Composite getComposite() {
         return composite;
+    }
+
+    private boolean haveLoadMetadataNode() {
+        IRepositoryView viewPart = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                .findView(IRepositoryView.VIEW_ID);
+        IRepositoryNode root = viewPart.getRoot();
+        List<IRepositoryNode> chindren = root.getChildren();
+        for (IRepositoryNode repositoryNode : chindren) {
+            if (repositoryNode.getContentType() == ERepositoryObjectType.METADATA) {
+                return true;
+            }
+        }
+        return false;
     }
 }
