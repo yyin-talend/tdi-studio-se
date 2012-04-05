@@ -103,7 +103,18 @@
             		useStar = true;
             	}
             }
+			boolean hasDynamic = metadata.isDynamicSchema();
+			String dynamic = ElementParameterParser.getValue(node, "__DYNAMIC__");
+			boolean useExistingDynamic = "true".equals(ElementParameterParser.getValue(node, "__USE_EXISTING_DYNAMIC__"));
+            String dyn = "dynamic_"+dynamic;
+			if(useExistingDynamic){
 %>
+				routines.system.Dynamic dynamic_<%=cid %> = (routines.system.Dynamic)globalMap.get("<%=dyn%>");
+<%
+			}
+%>
+			int maxColumnCount_<%=cid %> = dynamic_<%=cid %>.getColumnCount();
+			dynamic_<%=cid %>.clearColumnValues();
 int nb_line_<%=cid%> = 0;
 int footer_<%=cid %>  = <%=footer%>;
 int nb_limit_<%=cid %> = <%=limit%>;
@@ -215,7 +226,34 @@ if (conns!=null) {
 %>
 	<%=firstConnName %>.<%=column.getLabel() %> = column_<%=cid %>;
 <%
-					} else {
+						} else if("id_Dynamic".equals(column.getTalendType())){
+							if(useExistingDynamic){
+%>							
+								routines.system.Dynamic dynamic_<%=cid %> = (routines.system.Dynamic)globalMap.get("<%=dyn%>");
+								int maxColumnCount_<%=cid %> = dynamic_<%=cid %>.getColumnCount();
+								int substringBegin<%=cid %> = begins_<%=cid %>[begins_<%=cid %>.length-1]; int substringEnd<%=cid %> =0;
+								for (int i=0;i<maxColumnCount_<%=cid %>;i++) {
+									routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i);
+									int currentFieldLength_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getLength();
+									substringEnd<%=cid %> = substringBegin<%=cid %>+currentFieldLength_<%=cid%>;
+									if(substringEnd<%=cid %> > row_<%=cid %>.length()){
+										continue;
+									}
+									String currentColumnValue_<%=cid%> = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);
+<%
+									if(isTrimAll || (hasDynamic &&(("true").equals(trimSelects.get(trimSelects.size()-1).get("TRIM"))))){
+%>			
+										currentColumnValue_<%=cid%> = currentColumnValue_<%=cid%>.trim();
+<%
+									}
+%>
+									dynamic_<%=cid %>.addColumnValue(currentColumnValue_<%=cid%>);
+									substringBegin<%=cid %> = substringEnd<%=cid %>; 
+								}
+								<%=firstConnName %>.<%=column.getLabel() %> = dynamic_<%=cid %>;
+<%
+							}
+					}else {
 %>
 	if(column_<%=cid %>.length() > 0) {
 <%
@@ -276,6 +314,8 @@ if (conns!=null) {
 %>
 	                    <%=firstConnName %>.<%=column.getLabel() %> = columnValue<%=cid %>[<%=valueN%>];
 <%
+					}else if("id_Dynamic".equals(column.getTalendType())){
+						
 					} else {
 %>
 	                    if(columnValue<%=cid %>[<%=valueN%>].length() > 0) {
@@ -654,6 +694,28 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 <%
 				continue;
 			}
+		if(i==(metadata.getListColumns().size()-1) && useExistingDynamic){
+%>
+			for (int i=0;i<maxColumnCount_<%=cid %>;i++) {
+				routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i);
+				int currentFieldLength_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getLength();
+				substringEnd<%=cid %> = substringBegin<%=cid %>+currentFieldLength_<%=cid%>;
+				if(substringEnd<%=cid %> > row_<%=cid %>.length()){
+					continue;
+				}
+				String currentColumnValue_<%=cid%> = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);
+<%
+			if(isTrimAll || (hasDynamic &&(("true").equals(trimSelects.get(trimSelects.size()-1).get("TRIM"))))){
+%>			
+				currentColumnValue_<%=cid%> = currentColumnValue_<%=cid%>.trim();
+<%
+			}
+%>
+				dynamic_<%=cid %>.addColumnValue(currentColumnValue_<%=cid%>);
+				substringBegin<%=cid %> = substringEnd<%=cid %>;
+			}
+<%
+		}
 %>
 		    if(substringBegin<%=cid %> >= rowLen_<%=cid %>){
 		    	columnValue<%=cid %>[<%=i%>]= "";
@@ -703,6 +765,25 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 				continue;
 			}
 			 
+<%
+			if(useExistingDynamic){
+%>
+			if(i_<%=cid %>==<%=metadata.getListColumns().size()%>-1){
+			 	for (int i=0;i<maxColumnCount_<%=cid %>;i++) {
+					routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i);
+					int currentFieldLength_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getLength();
+					substringEnd<%=cid %> = substringBegin<%=cid %>+currentFieldLength_<%=cid%>;
+					if(substringEnd<%=cid %> > row_<%=cid %>.length()){
+						continue;
+					}
+					String currentColumnValue_<%=cid%> = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);
+					dynamic_<%=cid %>.addColumnValue(currentColumnValue_<%=cid%>);
+					substringBegin<%=cid %> = substringEnd<%=cid %>; // don't remeber if +1 is needed
+				}
+			}
+<%
+			}
+%>
 		    if (substringBegin<%=cid %> >= rowLen_<%=cid %>) {
 		    	columnValue<%=cid %>[i_<%=cid %>] = "";
 		    } else{
@@ -746,6 +827,10 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 	    }
 				
         }
+		if(useExistingDynamic && !advanced){
+%>
+			<%=firstConnName %>.<%=metadata.getDynamicColumn().getLabel()%>=dynamic_<%=cid %>;
+<%		}
     }
 %>
         			
