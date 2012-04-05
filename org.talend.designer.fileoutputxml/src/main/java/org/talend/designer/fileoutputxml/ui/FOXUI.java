@@ -162,10 +162,10 @@ public class FOXUI {
         if (externalNode.getOriginalNode().getJobletNode() != null) {
             canModify = externalNode.getOriginalNode().isReadOnly();
         }
-        IElementParameter elem = externalNode.getElementParameter("PROPERTY_TYPE");
+        IElementParameter elem = externalNode.getElementParameter("PROPERTY_TYPE"); //$NON-NLS-1$
         if (elem != null) {
             String value = (String) elem.getValue();
-            if (value != null && value.equals("REPOSITORY")) {
+            if (value != null && value.equals("REPOSITORY")) { //$NON-NLS-1$
                 isRepository = true;
             }
         }
@@ -570,12 +570,25 @@ public class FOXUI {
                 }
             }
             String errorMessage = null;
-
+            // add for bug TDI-19844
+            List<FOXTreeNode> nodes = selectNode.getParent().getChildren();
+            if (!selectNode.getLabel().equals(newValue)) {
+                for (int i = 0; i < nodes.size(); i++) {
+                    if (nodes.get(i).isAttribute() && selectNode.isAttribute() && nodes.get(i).getLabel().equals(newValue)) {
+                        errorMessage = Messages.getString("FOXUI.existName"); //$NON-NLS-1$
+                    } else if (nodes.get(i).isNameSpace() && selectNode.isNameSpace() && nodes.get(i).getLabel().equals(newValue)) {
+                        errorMessage = Messages.getString("FOXUI.existName"); //$NON-NLS-1$
+                    } else if (!nodes.get(i).isAttribute() && !nodes.get(i).isNameSpace() && !selectNode.isAttribute()
+                            && !selectNode.isNameSpace() && nodes.get(i).getLabel().equals(newValue)) {
+                        errorMessage = Messages.getString("FOXUI.existName"); //$NON-NLS-1$
+                    }
+                }
+            }
             // modified for wzhang. fix value can contains space.
             if ("C4".equals(property)) { //$NON-NLS-1$
                 validateLabel = StringUtil.validateLabelForFixedValue(text.getText());
             } else {
-                if ("C1".equals(property) && selectNode != null && selectNode instanceof NameSpaceNode) {
+                if ("C1".equals(property) && selectNode != null && selectNode instanceof NameSpaceNode) { //$NON-NLS-1$
                     validateLabel = StringUtil.validateLabelForNameSpace(text.getText());
                 } else {
                     validateLabel = StringUtil.validateLabelForXML(text.getText());

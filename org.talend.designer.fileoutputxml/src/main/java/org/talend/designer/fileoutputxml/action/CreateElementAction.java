@@ -95,10 +95,9 @@ public class CreateElementAction extends SelectionProviderAction {
                         @Override
                         public String isValid(String newText) {
                             for (int i = 0; i < nodes.size(); i++) {
-                                if (!nodes.get(i).isAttribute()) {
-                                    if (newText.trim().equals(nodes.get(i).getLabel())) {
-                                        return Messages.getString("CreateElementAction.3"); //$NON-NLS-1$
-                                    }
+                                if (!nodes.get(i).isNameSpace() && !nodes.get(i).isAttribute()
+                                        && newText.trim().equals(nodes.get(i).getLabel())) {
+                                    return Messages.getString("CreateElementAction.isValid"); //$NON-NLS-1$
                                 }
                             }
                             return null;
