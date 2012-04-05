@@ -147,7 +147,7 @@ public final class DraggingInfosPopup {
             getShell().setBounds(newBounds);
 
             // to get round refresh problem
-            if (isVisible != isVisible) {
+            if (isVisible() != isVisible) {
                 setVisible(isVisible);
             } else {
                 mapperShell.redraw(boundsToRedraw.x, boundsToRedraw.y, boundsToRedraw.width, boundsToRedraw.height, false);
