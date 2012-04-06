@@ -37,6 +37,8 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
@@ -66,6 +68,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.MetadataColumnRepositoryObject;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
@@ -182,12 +185,15 @@ class ExportItemWizardPage extends WizardPage {
 
         createSelectionButton(itemComposite);
         CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
-        exportItemsTreeViewer.refresh();
+        // exportItemsTreeViewer.refresh();
+        exportItemsTreeViewer.getTree().setRedraw(false);
         // force loading all nodes
         exportItemsTreeViewer.expandAll();
         exportItemsTreeViewer.collapseAll();
+
         // expand to level of metadata connection
-        exportItemsTreeViewer.expandToLevel(2);
+        exportItemsTreeViewer.expandToLevel(3);
+        exportItemsTreeViewer.getTree().setRedraw(true);
 
         addTreeCheckedSelection();
         // if user has select some items in repository view, mark them as checked
@@ -228,6 +234,27 @@ class ExportItemWizardPage extends WizardPage {
 
             exportItemsTreeViewer.setCheckedElements(nodes.toArray());
         }
+    }
+
+    protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
+        if (node == null)
+            return false;
+        IRepositoryViewObject object = node.getObject();
+        if (object != null) {
+            // column
+            if (object instanceof MetadataColumnRepositoryObject) {
+                return false;
+            }
+            if (node.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
+                return false;
+            }
+        }
+        // hide the conn folder
+        if (object == null && node.getParent() != null && node.getParent().getObject() != null
+                && node.getParent().getObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
+            return false;
+        }
+        return true;
     }
 
     private void refreshExportDependNodes() {
@@ -407,6 +434,13 @@ class ExportItemWizardPage extends WizardPage {
                 return false;
             }
         };
+        filteredCheckboxTree.getViewer().addFilter(new ViewerFilter() {
+
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                return selectRepositoryNode(viewer, (RepositoryNode) parentElement, (RepositoryNode) element);
+            }
+        });
     }
 
     /**
