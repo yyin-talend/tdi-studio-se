@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.eclipse.swt.graphics.RGB;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnectionProperty;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -342,6 +343,12 @@ public class NodeConnector implements INodeConnector {
      * @see org.talend.core.model.process.INodeConnector#isMultiSchema()
      */
     public boolean isMultiSchema() {
+        IElementParameter schemaParam = parentNode.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+        if (schemaParam != null && schemaParam.getContext().equals("FLOW")) {
+            if (schemaParam.isShow(parentNode.getElementParameters())) {
+                return false;
+            }
+        }
         return this.multiSchema;
     }
 

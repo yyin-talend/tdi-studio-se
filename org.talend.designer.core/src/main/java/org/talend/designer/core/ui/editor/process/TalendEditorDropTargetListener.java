@@ -166,6 +166,7 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.QueryRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
@@ -993,6 +994,24 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS,
                             table.getLabel(), ConvertionHelper.convert(table));
                     list.add(ebcdicCmd);
+                }
+                // to judge it is a single schema or multischema for EBCDIC by the children of the node
+                List<String> names = new ArrayList<String>();
+                for (IRepositoryNode sibling : selectedNode.getChildren()) {
+                    names.add((String) sibling.getProperties(EProperties.LABEL));
+                }
+                List<IElementParameter> elementParameterList = (List<IElementParameter>) node.getElementParameters();
+                for (IElementParameter param : elementParameterList) {
+                    if (param.getFieldType().equals(EParameterFieldType.CHECK)) {
+                        if (param.getName().equals(EParameterName.REPOSITORY_COPYBOOK_NOXC2JFILE.getDisplayName())) {
+                            if (names.size() == 1) {
+                                // single schema do not display the table and xc2j file
+                                param.setValue(new Boolean(true));
+                            } else {
+                                param.setValue(new Boolean(false));
+                            }
+                        }
+                    }
                 }
             }
             // fore HL7, by gcui

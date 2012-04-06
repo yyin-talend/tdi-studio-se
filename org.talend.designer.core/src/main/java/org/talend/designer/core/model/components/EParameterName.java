@@ -51,6 +51,7 @@ public enum EParameterName {
     LOG_TO_STDOUT(Messages.getString("EParameterName.Log.Stdout")), //$NON-NLS-1$
     SCHEMA_TYPE(Messages.getString("EParameterName.schemaType")), //$NON-NLS-1$
     REPOSITORY_SCHEMA_TYPE("Repository"), //$NON-NLS-1$  Hidden parameter so no translation needed
+    REPOSITORY_COPYBOOK_NOXC2JFILE("NO_X2CJ_FILE"), //$NON-NLS-1$
     QUERYSTORE_TYPE(Messages.getString("EParameterName.queryType")), //$NON-NLS-1$
     REPOSITORY_QUERYSTORE_TYPE("Repository"), //$NON-NLS-1$  Hidden parameter so no translation needed
     PROPERTY_TYPE(Messages.getString("EParameterName.propertyType")), //$NON-NLS-1$

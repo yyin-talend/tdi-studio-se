@@ -158,8 +158,11 @@ public class ConnectionCreateAction extends SelectionAction {
             if (curNodeConnector.isMultiSchema()) {
                 for (int i = 0; i < node.getMetadataList().size(); i++) {
                     IMetadataTable table = (node.getMetadataList().get(i));
+                    String name = table.getTableName();
+                    if (name.equals(node.getUniqueName())) {
+                        continue;
+                    }
                     if (table.getAttachedConnector() == null || table.getAttachedConnector().equals(curNodeConnector.getName())) {
-                        String name = table.getTableName();
                         if (connecType.equals(EConnectionType.TABLE)) {
                             name = table.getLabel() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                         }
