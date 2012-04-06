@@ -6,7 +6,6 @@
 		org.talend.core.model.metadata.IMetadataTable
 		java.util.List
 		java.util.Map
-		java.util.ArrayList
 		org.talend.core.model.process.IConnection    
 		org.talend.core.model.process.IConnectionCategory
 	"
@@ -166,6 +165,30 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 						}
 					}
 				}
+				
+				/**
+				 * remove the whiteSpace Node between the elements when appending the source file under dom4j
+				 * @param root
+				 */
+				public void removeWhiteSpaceTextNode(org.dom4j.Element root) {
+					if(root != null) {
+						List<org.dom4j.Node> textNodes = new java.util.ArrayList<org.dom4j.Node>();
+						for (int i=0; i< root.nodeCount(); i++) {
+							if (root.node(i).getNodeType()==org.dom4j.Node.ELEMENT_NODE) {
+								removeWhiteSpaceTextNode((org.dom4j.Element)root.node(i));
+							} else if(root.node(i).getNodeType()==org.dom4j.Node.TEXT_NODE) {
+								textNodes.add(root.node(i));
+							} 
+						}
+						if(root.nodeCount() > 1) { // when root.nodeCount==1, that means the text node is the content of the element
+							for (org.dom4j.Node textNode: textNodes) {
+								if(textNode.getText()==null || "".equals(textNode.getText().trim())) {
+									root.remove(textNode);
+								} 
+							}
+						}
+					}
+				}
 			}
 
 			NestXMLTool_<%=cid%> nestXMLTool_<%=cid%> = new NestXMLTool_<%=cid%>();
@@ -179,6 +202,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 					try {
 						org.dom4j.io.SAXReader saxReader_<%=cid %>= new org.dom4j.io.SAXReader();
 						doc_<%=cid %> = saxReader_<%=cid %>.read(createFile<%=cid %>);
+						nestXMLTool_<%=cid%>.removeWhiteSpaceTextNode(doc_<%=cid %>.getRootElement());
 					} catch (Exception ex) {
 						ex.printStackTrace();
 						throw new Exception("can not find the file:" + fileName_<%=cid %>);
@@ -216,11 +240,8 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
 			<%
 			}
-
-			if (!isMerge || isCompact) {
 			%>
-				format_<%=cid %>.setTrimText(false);
-			<%}%>
+			format_<%=cid %>.setTrimText(false);
 			format_<%=cid %>.setEncoding(<%=encoding%>);
 			<%
 			int groupSize = 0;
