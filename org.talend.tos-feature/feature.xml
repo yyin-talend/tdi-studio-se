@@ -82,7 +82,6 @@
       <import plugin="org.talend.designer.core"/>
       <import plugin="org.eclipse.xsd"/>
       <import plugin="org.apache.log4j"/>
-      <import plugin="org.eclipse.datatools.enablement.oda.xml"/>
       <import plugin="org.talend.repository"/>
       <import plugin="org.talend.core"/>
       <import plugin="org.apache.axis"/>
