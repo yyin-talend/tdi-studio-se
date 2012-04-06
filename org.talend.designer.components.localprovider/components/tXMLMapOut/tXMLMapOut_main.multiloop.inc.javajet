@@ -64,6 +64,7 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //GODE GENERATE START
 	int index = -1;
+	int indexOfInputLoopNodesTable = 0;
 	for(OutputXmlTree currentOutputTable : outputTablesSortedByReject) {//TD128
 		String currentOutputTableName = currentOutputTable.getName();
 		//current output table action
@@ -91,7 +92,7 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 		for(int idx=0;idx<inputLoopNodesTables.size();idx++) {//TD256
 			//current output loop action
 			InputLoopNodesTable inputLoopNodesTable = inputLoopNodesTables.get(idx);
-			loopKey = "loopKey"+idx;
+			loopKey = "loopKey"+(indexOfInputLoopNodesTable++);
 			String isCurrentLoopRef = null;
 			if(parallelLoopExistInCurrentOutputTable) {
 				OutputTreeNode loop = loopTableToLoopNode.get(inputLoopNodesTable);
