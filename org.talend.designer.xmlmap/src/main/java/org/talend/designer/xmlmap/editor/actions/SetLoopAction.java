@@ -33,8 +33,6 @@ public class SetLoopAction extends SelectionAction {
 
     List<TreeNode> loopNodeList = new ArrayList<TreeNode>();
 
-    private boolean isLookup = false;
-
     // private List<TreeNode> nodesNeedToChangeMainStatus = new ArrayList<TreeNode>();
 
     public SetLoopAction(IWorkbenchPart part) {
@@ -80,7 +78,7 @@ public class SetLoopAction extends SelectionAction {
 
         AbstractInOutTree abstractTree = null;
         TreeNode docRoot = null;
-
+        boolean isLookup = false;
         // remove old loop
         if (model instanceof OutputTreeNode) {
             OutputTreeNode outputNode = (OutputTreeNode) model;
