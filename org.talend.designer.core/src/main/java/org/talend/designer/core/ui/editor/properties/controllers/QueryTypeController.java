@@ -36,6 +36,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElement;
@@ -114,7 +115,7 @@ public class QueryTypeController extends AbstractRepositoryController {
         guessQueryButton = (Button) dField1.getControl();
         guessQueryButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         buttonControl.setBackground(subComposite.getBackground());
-        guessQueryButton.setEnabled(!param.isReadOnly());
+        guessQueryButton.setEnabled(!param.isReadOnly() || !ExtractMetaDataUtils.haveLoadMetadataNode());
         guessQueryButton.setData(NAME, GUESS_QUERY_NAME);
         guessQueryButton.setData(PARAMETER_NAME, param.getName());
         guessQueryButton.setText(GUESS_QUERY_NAME);

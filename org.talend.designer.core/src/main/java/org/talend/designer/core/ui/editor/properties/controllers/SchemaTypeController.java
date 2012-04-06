@@ -311,7 +311,6 @@ public class SchemaTypeController extends AbstractRepositoryController {
 
         data.height = STANDARD_HEIGHT - 2;
         btn.setLayoutData(data);
-        btn.setEnabled(!param.isReadOnly());
 
         // curRowSize = btnSize.y + ITabbedPropertyConstants.VSPACE;
         dynamicProperty.setCurRowSize(btnSize.y + ITabbedPropertyConstants.VSPACE);
