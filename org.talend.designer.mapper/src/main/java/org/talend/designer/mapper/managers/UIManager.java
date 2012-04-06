@@ -54,6 +54,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.image.ImageUtils;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
@@ -73,6 +74,9 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.ui.metadata.dialog.CustomTableManager;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
@@ -784,6 +788,7 @@ public class UIManager extends AbstractUIManager {
             List<OutputTable> outputTables = mapperManager.getOutputTables();
             setTraceFilterParaMapper(preColumnSets, inputTables, changedNameColumns);
             setTraceFilterParaMapper(preColumnSets, outputTables, changedNameColumns);
+            refreshVisualMapImage();
         }
 
         mapperManager.updateEmfParameters(EParameterName.PREVIEW.getName());
@@ -870,6 +875,28 @@ public class UIManager extends AbstractUIManager {
 
         // ImageUtils.save(image, previewFilePath, SWT.IMAGE_BMP);
         // }
+    }
+
+    private void refreshVisualMapImage() {
+        AbstractMapComponent mapCom = mapperManager.getAbstractMapComponent();
+        if (mapCom == null) {
+            return;
+        }
+        INode component = mapCom.getOriginalNode();
+        if (component != null && component.getExternalNode() != null && component.getExternalNode().getScreenshot() != null) {
+            byte[] saveImageToData = ImageUtils.saveImageToData(component.getExternalNode().getScreenshot());
+            IProcess process = component.getProcess();
+            if (process instanceof IProcess2) {
+                IProcess2 processtmp = (IProcess2) process;
+                Item item = processtmp.getProperty().getItem();
+                if (item instanceof ProcessItem) {
+                    ProcessItem processItem = (ProcessItem) item;
+                    processItem.getProcess().getScreenshots().put(component.getUniqueName(), saveImageToData);
+                }
+
+            }
+
+        }
     }
 
     /**
