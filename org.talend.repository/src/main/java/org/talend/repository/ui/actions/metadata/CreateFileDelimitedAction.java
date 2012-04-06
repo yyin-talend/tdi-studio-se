@@ -27,8 +27,8 @@ import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.wizards.metadata.connection.files.delimited.DelimitedFileWizard;
 
 /**
@@ -97,8 +97,8 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
             delimitedFileWizard.setToolbar(true);
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), delimitedFileWizard);
         } else {
-            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new DelimitedFileWizard(PlatformUI
-                    .getWorkbench(), creation, repositoryNode, getExistingNames()));
+            wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), new DelimitedFileWizard(
+                    PlatformUI.getWorkbench(), creation, repositoryNode, getExistingNames()));
         }
 
         if (!creation) {
@@ -120,6 +120,10 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         switch (node.getType()) {
         case SIMPLE_FOLDER:
+            if (node.getObject() != null && node.getObject().getProperty().getItem().getState().isDeleted()) {
+                setEnabled(false);
+                return;
+            }
         case SYSTEM_FOLDER:
             if (factory.isUserReadOnlyOnCurrentProject() || !ProjectManager.getInstance().isInCurrentMainProject(node)) {
                 setEnabled(false);
