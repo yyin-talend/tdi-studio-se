@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:osgi="http://www.springframework.org/schema/osgi"
+		xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+		xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+			http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+			http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
+
+	<import resource="classpath:META-INF/cxf/cxf.xml"/>
+
+	<jaxrs:server id="service" address="@ENDPOINT_URI@">
+		<jaxrs:serviceBeans>
+			<ref bean="serviceBean"/>
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<ref bean="wrongCallHandler"/>
+			<ref bean="jsonProvider"/>
+			<ref bean="dom4jProvider"/>
+		</jaxrs:providers>
+	</jaxrs:server>
+
+	<bean id="callbackHandler" class="@JOBCLASSNAME@.QueuedMessageHandlerImpl"/>
+
+	<bean id="serviceBean" class="@JOBCLASSNAME@.RESTProvider_@REST_COMPONENT_ID@">
+		<constructor-arg ref="callbackHandler"/>
+	</bean>
+
+	<bean id="wrongCallHandler" class="@JOBCLASSNAME@.RestExceptionMapper_@REST_COMPONENT_ID@">
+		<constructor-arg ref="serviceBean"/>
+	</bean>
+
+	<bean id="dom4jProvider" class="@JOBCLASSNAME@.DOM4JProvider"/>
+
+	<bean id="jsonProvider" class="org.apache.cxf.jaxrs.provider.JSONProvider">
+		<property name="ignoreNamespaces" value="true"/>
+	</bean>
+
+	<osgi:service ref="callbackHandler" interface="routines.system.api.ESBProviderCallback">
+		<service-properties>
+			<entry key="job" value="@JOBCLASSNAME@"/>
+		</service-properties>
+	</osgi:service>
+
+</beans>

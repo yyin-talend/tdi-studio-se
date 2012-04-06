@@ -3,7 +3,11 @@
 
 	<!-- Talend Job OSGi blueprint descriptor -->
 
-	<bean id="job" class="@JOBCLASSNAME@" />
+	@ADDITIONAL_JOB_BUNDLE_CONFIG@
+
+	<bean id="job" class="@JOBCLASSNAME@">
+		@ADDITIONAL_JOB_BEAN_PARAMS@
+	</bean>
 
 	<service ref="job">
 		<interfaces>
