@@ -31,65 +31,68 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 /**
  * rdubois class global comment. Detailled comment
  */
-public class SetStandaloneModeForHiveComponentsMigrationTask extends
-		AbstractJobMigrationTask {
+public class SetStandaloneModeForHiveComponentsMigrationTask extends AbstractJobMigrationTask {
 
-	@Override
-	public ExecutionResult execute(Item item) {
-		try {
-			setStandaloneMode(item);
-			return ExecutionResult.SUCCESS_NO_ALERT;
-		} catch (Exception e) {
-			ExceptionHandler.process(e);
-			return ExecutionResult.FAILURE;
-		}
-	}
+    @Override
+    public ExecutionResult execute(Item item) {
+        try {
+            setStandaloneMode(item);
+            return ExecutionResult.SUCCESS_NO_ALERT;
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+            return ExecutionResult.FAILURE;
+        }
+    }
 
-	public Date getOrder() {
-		GregorianCalendar gc = new GregorianCalendar(2012, 4, 2, 18, 0, 0);
-		return gc.getTime();
-	}
+    public Date getOrder() {
+        GregorianCalendar gc = new GregorianCalendar(2012, 4, 2, 18, 0, 0);
+        return gc.getTime();
+    }
 
-	private void setStandaloneMode(Item item) throws Exception {
-		ProcessType processType = getProcessType(item);
-		java.util.List<IComponentFilter> filters = new java.util.ArrayList<IComponentFilter>();
-		filters.add(new NameComponentFilter("tHiveConnection"));
-		filters.add(new NameComponentFilter("tHiveRow"));
-		filters.add(new NameComponentFilter("tHiveInput"));
-		IComponentConversion addOption = new AddConnectionMode();
-		java.util.Iterator<IComponentFilter> iter = filters.iterator();
-		while (iter.hasNext()) {
-			IComponentFilter filter = (IComponentFilter) iter.next();
-			ModifyComponentsAction.searchAndModify(item, processType, filter,
-					Arrays.<IComponentConversion> asList(addOption));
-		}
-	}
+    private void setStandaloneMode(Item item) throws Exception {
+        ProcessType processType = getProcessType(item);
+        java.util.List<IComponentFilter> filters = new java.util.ArrayList<IComponentFilter>();
+        filters.add(new NameComponentFilter("tHiveConnection"));
+        filters.add(new NameComponentFilter("tHiveRow"));
+        filters.add(new NameComponentFilter("tHiveInput"));
+        IComponentConversion addOption = new AddConnectionMode();
+        java.util.Iterator<IComponentFilter> iter = filters.iterator();
+        while (iter.hasNext()) {
+            IComponentFilter filter = (IComponentFilter) iter.next();
+            ModifyComponentsAction.searchAndModify(item, processType, filter, Arrays.<IComponentConversion> asList(addOption));
+        }
+    }
 
-	private class AddConnectionMode implements IComponentConversion {
+    /**
+     * 
+     * rdubois AddConnectionMode class global comment. Detailled comment
+     */
+    private class AddConnectionMode implements IComponentConversion {
 
-		private String field = "CLOSED_LIST"; //$NON-NLS-1$
-		private String name = "CONNECTION_MODE"; //$NON-NLS-1$
+        private String field = "CLOSED_LIST"; //$NON-NLS-1$
 
-		public AddConnectionMode() {
-			super();
-		}
+        private String name = "CONNECTION_MODE"; //$NON-NLS-1$
 
-		public void transform(NodeType node) {
+        public AddConnectionMode() {
+            super();
+        }
 
-			if (ComponentUtilities.getNodeProperty(node, name) == null) {
-				ComponentUtilities.addNodeProperty(node, name, field);
-			}
+        public void transform(NodeType node) {
 
-			for (Object o : node.getElementParameter()) {
+            if (ComponentUtilities.getNodeProperty(node, name) == null) {
+                ComponentUtilities.addNodeProperty(node, name, field);
+            }
+
+            for (Object o : node.getElementParameter()) {
                 ElementParameterType para = (ElementParameterType) o;
                 if ("HIVE_VERSION".equals(para.getName())) { //$NON-NLS-1$
                     if (!("HDP_1_0".equals(para.getValue()))) {
-                		ComponentUtilities.setNodeValue(node, name, "STANDALONE");
+                        ComponentUtilities.setNodeValue(node, name, "STANDALONE");
                     }
                     break;
                 }
-			}
+            }
 
-		}
-	}
+        }
+    }
 }
