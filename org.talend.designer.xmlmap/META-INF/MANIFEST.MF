@@ -17,7 +17,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
  org.eclipse.gef,
- org.eclipse.datatools.enablement.oda.xml,
  org.eclipse.xsd,
  org.talend.libraries.apache,
  org.talend.model;visibility:=reexport,
@@ -27,5 +26,6 @@ Require-Bundle: org.eclipse.ui,
  org.talend.metadata.managment.ui,
  org.talend.designer.codegen,
  org.talend.designer.components.localprovider,
- org.talend.repository
+ org.talend.repository,
+ org.talend.datatools.xml
 Bundle-ActivationPolicy: lazy

@@ -15,9 +15,9 @@ package org.talend.componentdesigner.ui.composite.xmltree;
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
-import org.eclipse.datatools.enablement.oda.xml.util.ui.SchemaPopulationUtil;
 import org.talend.core.model.ModelPlugin;
+import org.talend.datatools.xml.utils.ATreeNode;
+import org.talend.datatools.xml.utils.SchemaPopulationUtil;
 
 /**
  * DOC rli class global comment. Detailled comment

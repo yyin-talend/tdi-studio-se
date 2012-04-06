@@ -10,7 +10,6 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.apache.xerces,
  org.talend.core,
  org.talend.repository,
- org.eclipse.datatools.enablement.oda.xml,
  org.apache.xerces,
  org.talend.commons.ui,
  org.talend.designer.codegen,
@@ -20,5 +19,6 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.talend.metadata.managment.ui,
  org.eclipse.swt,
  org.eclipse.jface,
- org.talend.libraries.apache
+ org.talend.libraries.apache,
+ org.talend.datatools.xml
 Eclipse-LazyStart: true

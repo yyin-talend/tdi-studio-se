@@ -234,20 +234,6 @@
    </requires>
 
    <plugin
-         id="org.eclipse.datatools.connectivity.oda"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.datatools.enablement.oda.xml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.talend.componentdesigner"
          download-size="0"
          install-size="0"
@@ -470,15 +456,13 @@
          id="org.apache.axis"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="true"/>
+         version="0.0.0"/>
 
    <plugin
          id="javax.xml.rpc"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="true"/>
+         version="0.0.0"/>
 
    <plugin
          id="javax.xml.soap"
@@ -785,9 +769,7 @@
          id="org.apache.commons.discovery"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="true"/>
-
+         version="0.0.0"/>
 
    <plugin
          id="javax.activation"
@@ -912,8 +894,7 @@
          id="org.eclipse.jdt.debug"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="true"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.osgi.services"
@@ -1115,40 +1096,41 @@
          id="org.talend.libraries.apache"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="true"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.talend.libraries.css"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="true"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.talend.libraries.dom4j-jaxen"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="true"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.talend.libraries.javacsv"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="true"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.talend.libraries.jexcel"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="true"/>
-
+         version="0.0.0"/>
 
    <plugin
          id="javax.mail.glassfish"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.talend.datatools.xml"
          download-size="0"
          install-size="0"
          version="0.0.0"
