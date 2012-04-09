@@ -524,12 +524,17 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     IProcess2 oldProcess = getProcess();
 
                     ICreateXtextProcessService n = CorePlugin.getDefault().getCreateXtextProcessService();
-                    ProcessType processType = n.convertDesignerEditorInput(
-                            ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
-                            oldProcess.getProperty());
-
                     Item item = oldProcess.getProperty().getItem();
-
+                    ProcessType processType = null;
+                    if (item instanceof ProcessItem) {
+                        processType = n.convertDesignerEditorInput(
+                                ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
+                                oldProcess.getProperty());
+                    } else if (item instanceof JobletProcessItem) {
+                        processType = n.convertJobletDesignerEditorInput(
+                                ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
+                                oldProcess.getProperty());
+                    }
                     if (item instanceof ProcessItem) {
 
                         ((Process) oldProcess).updateProcess(processType);
@@ -539,7 +544,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     oldProcess.getUpdateManager().updateAll();
                     designerEditor.setDirty(isDirty);
                 } catch (PersistenceException e) {
-                    ExceptionHandler.process(e);
                 }
                 IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                 if (workbenchPage != null) {
