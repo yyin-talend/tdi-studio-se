@@ -151,7 +151,7 @@ public class SetLoopAction extends SelectionAction {
                 }
                 // find input loop node and add to InputLoopNodesTable
                 List<TreeNode> sourceLoopNodes = new ArrayList<TreeNode>();
-                findChildSourceLoop(model, sourceLoopNodes);
+                XmlMapUtil.findChildSourceLoop(model, sourceLoopNodes);
                 if (!sourceLoopNodes.isEmpty()) {
                     InputLoopNodesTable createInputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
                     createInputLoopNodesTable.eAdapters().add(nodePart);
@@ -228,27 +228,6 @@ public class SetLoopAction extends SelectionAction {
                     inputLoopTable.getInputloopnodes().remove(oldLoop);
                 }
 
-            }
-        }
-
-    }
-
-    private void findChildSourceLoop(TreeNode treeNode, List<TreeNode> sourceLoopNodes) {
-        if (treeNode.getExpression() != null) {
-            EList<Connection> incomingConnections = treeNode.getIncomingConnections();
-            for (Connection connection : incomingConnections) {
-                if (connection.getSource() instanceof TreeNode) {
-                    TreeNode loopParentNode = XmlMapUtil.getLoopParentNode((TreeNode) connection.getSource());
-                    if (loopParentNode != null && !sourceLoopNodes.contains(loopParentNode)) {
-                        sourceLoopNodes.add(loopParentNode);
-                    }
-                }
-            }
-
-        }
-        if (!treeNode.getChildren().isEmpty()) {
-            for (TreeNode child : treeNode.getChildren()) {
-                findChildSourceLoop(child, sourceLoopNodes);
             }
         }
 

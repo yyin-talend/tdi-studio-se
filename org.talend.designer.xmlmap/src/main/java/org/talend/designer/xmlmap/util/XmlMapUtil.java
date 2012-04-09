@@ -381,8 +381,24 @@ public class XmlMapUtil {
         treeNode.getIncomingConnections().clear();
 
         if (treeNode instanceof OutputTreeNode) {
-            if (souceTreeNode != null && souceTreeNode instanceof TreeNode) {
-                XmlMapUtil.getLoopFunctionData(XmlMapUtil.getLoopParentNode(souceTreeNode), (OutputTreeNode) treeNode);
+            //
+            AbstractInOutTree abstractTree = XmlMapUtil.getAbstractInOutTree((TreeNode) treeNode);
+            if (abstractTree != null && abstractTree instanceof OutputXmlTree) {
+                List<TreeNode> sourceLoopNodes = new ArrayList<TreeNode>();
+                if (XmlMapUtil.hasDocument(abstractTree)) {
+                    TreeNode targetLoopNode = XmlMapUtil.getLoopParentNode((TreeNode) treeNode);
+                    findChildSourceLoop(targetLoopNode, sourceLoopNodes);
+                } else {
+                    for (TreeNode node : ((OutputXmlTree) abstractTree).getNodes()) {
+                        findChildSourceLoop(node, sourceLoopNodes);
+                    }
+                }
+                if (souceTreeNode != null && souceTreeNode instanceof TreeNode) {
+                    TreeNode sourceLoopNode = XmlMapUtil.getLoopParentNode(souceTreeNode);
+                    if (sourceLoopNode != null && !sourceLoopNodes.contains(sourceLoopNode)) {
+                        XmlMapUtil.getLoopFunctionData(sourceLoopNode, (OutputTreeNode) treeNode);
+                    }
+                }
             }
             OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
             if (!XmlMapUtil.isExpressionEditable(outputTreeNode) && outputTreeNode.isAggregate()) {
@@ -740,6 +756,28 @@ public class XmlMapUtil {
         return null;
     }
 
+    public static void findChildSourceLoop(TreeNode treeNode, List<TreeNode> sourceLoopNodes) {
+        if (treeNode == null) {
+            return;
+        }
+        if (treeNode.getExpression() != null) {
+            EList<Connection> incomingConnections = treeNode.getIncomingConnections();
+            for (Connection connection : incomingConnections) {
+                if (connection.getSource() instanceof TreeNode) {
+                    TreeNode loopParentNode = XmlMapUtil.getLoopParentNode((TreeNode) connection.getSource());
+                    if (loopParentNode != null && !sourceLoopNodes.contains(loopParentNode)) {
+                        sourceLoopNodes.add(loopParentNode);
+                    }
+                }
+            }
+        }
+        if (!treeNode.getChildren().isEmpty()) {
+            for (TreeNode child : treeNode.getChildren()) {
+                findChildSourceLoop(child, sourceLoopNodes);
+            }
+        }
+    }
+
     public static void getLoopFunctionData(TreeNode loopParentTreeNode, OutputTreeNode targetOutputNode) {
         //
         List<InputLoopNodesTable> listInputLoopNodesTablesEntry = null;
@@ -759,6 +797,15 @@ public class XmlMapUtil {
                     for (TreeNode treeNode : inputLoopNodesTable.getInputloopnodes()) {
                         if (treeNode.getXpath().equals(loopParentTreeNode.getXpath())) {
                             inputLoopNodesTable.getInputloopnodes().remove(loopParentTreeNode);
+                            int i = inputLoopNodesTable.getInputloopnodes().size();
+                            if (i == 0) {
+                                List<InputLoopNodesTable> inputLoopNodesTables = ((OutputXmlTree) abstractTree)
+                                        .getInputLoopNodesTables();
+                                if (inputLoopNodesTables.contains(inputLoopNodesTable)) {
+                                    inputLoopNodesTables.remove(inputLoopNodesTable);
+                                }
+                                loopParentNode.setInputLoopNodesTable(null);
+                            }
                             break;
                         }
                     }
@@ -773,6 +820,14 @@ public class XmlMapUtil {
                         for (TreeNode treeNode : inputLoopNodesTable.getInputloopnodes()) {
                             if (treeNode.getXpath().equals(loopParentTreeNode.getXpath())) {
                                 inputLoopNodesTable.getInputloopnodes().remove(loopParentTreeNode);
+                                int i = inputLoopNodesTable.getInputloopnodes().size();
+                                if (i == 0) {
+                                    List<InputLoopNodesTable> inputLoopNodesTables = ((OutputXmlTree) abstractTree)
+                                            .getInputLoopNodesTables();
+                                    if (inputLoopNodesTables.contains(inputLoopNodesTable)) {
+                                        inputLoopNodesTables.remove(inputLoopNodesTable);
+                                    }
+                                }
                                 break;
                             }
                         }
