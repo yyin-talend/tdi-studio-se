@@ -306,7 +306,11 @@ public enum EParameterName {
     // for validation rule
     VALIDATION_RULES(Messages.getString("EParameterName.validationRules")), //$NON-NLS-1$
     VALIDATION_RULE_TYPE(Messages.getString("EParameterName.validationRuleType")), //$NON-NLS-1$
-    REPOSITORY_VALIDATION_RULE_TYPE("Repository"); //$NON-NLS-1$ Hidden parameter so no translation needed
+    REPOSITORY_VALIDATION_RULE_TYPE("Repository"), //$NON-NLS-1$ Hidden parameter so no translation needed
+
+    // tAggregateRow
+    GROUPBYS("GROUPBYS"),
+    OPERATIONS("OPERATIONS");
 
     private String displayName;
 

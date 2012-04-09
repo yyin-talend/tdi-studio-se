@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
@@ -40,6 +41,7 @@ import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.ui.editor.cmd.PropertyTablePasteCommand;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.TableController;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PromptDefaultValueDialog.ColumnInfo;
 
@@ -86,14 +88,69 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
 
             @Override
             public boolean getEnabledState() {
-                return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts());
+                return super.getEnabledState()
+                        && (model == null || (!model.getElemParameter().isBasedOnSubjobStarts() && model.isButtonEnabled()));
             }
 
             @Override
             protected Object getObjectToAdd() {
                 PropertiesTableEditorModel tableEditorModel = (PropertiesTableEditorModel) getExtendedTableViewer()
                         .getExtendedControlModel();
-                return tableEditorModel.createNewEntry();
+
+                Object newEntry = tableEditorModel.createNewEntry();
+                if (tableEditorModel.isAggregateRow() && newEntry instanceof Map) {
+                    List<ColumnInfo> tableInputs = new ArrayList<ColumnInfo>();
+
+                    String[] displayNames = tableEditorModel.getElemParameter().getListItemsDisplayName();
+                    Object[] itemsValue = tableEditorModel.getElemParameter().getListItemsValue();
+                    String paramColumnsName = "COLUMN";// default name //$NON-NLS-1$
+                    for (int i = 0; i < itemsValue.length; i++) {
+                        if (itemsValue[i] instanceof IElementParameter) {
+                            IElementParameter tableParameter = (IElementParameter) itemsValue[i];
+                            if (tableParameter.getFieldType().equals(EParameterFieldType.COLUMN_LIST)) {
+                                paramColumnsName = tableParameter.getName();
+                            } else {
+                                ColumnInfo row = new ColumnInfo();
+                                row.name = displayNames[i];
+                                row.parameter = tableParameter;
+                                row.defaultValue = "";
+                                tableInputs.add(row);
+                            }
+                        }
+                    }
+
+                    Node node = (Node) tableEditorModel.getElement();
+                    String outputTableName = null;
+                    if (node.getMetadataList() != null && !node.getMetadataList().isEmpty()) {
+                        IMetadataTable metadata = node.getMetadataList().get(0);
+                        if (metadata.getListColumns() != null) {
+                            for (IMetadataColumn column : metadata.getListColumns()) {
+                                if (!tableEditorModel.exist(column.getLabel())) {
+                                    outputTableName = column.getLabel();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (outputTableName != null) {
+                        Map mapObject = (Map) newEntry;
+                        if (mapObject.containsKey(paramColumnsName)) {
+                            mapObject.put(paramColumnsName, outputTableName);
+                        }
+                        for (ColumnInfo col : tableInputs) {
+                            Object defaultValue = col.defaultValue;
+                            Object found = findDefaultName(outputTableName, col);
+                            if (found != null && !"".equals(found)) {
+                                defaultValue = found;
+                            }
+                            if (defaultValue != null) {
+                                mapObject.put(col.parameter.getName(), defaultValue);
+                            }
+                        }
+                    }
+                }
+
+                return newEntry;
             }
 
         };
@@ -118,7 +175,8 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
 
             @Override
             public boolean getEnabledState() {
-                return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts());
+                return super.getEnabledState()
+                        && (model == null || (!model.getElemParameter().isBasedOnSubjobStarts() && model.isButtonEnabled()));
             }
 
             @Override
@@ -132,6 +190,9 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                     // possibility to setup the default parameters value.
                     List<ColumnInfo> tableInputs = promptForDefaultValue(tableEditorModel.getTableViewer().getControl()
                             .getShell(), param);
+                    if (tableInputs == null) {
+                        return new ArrayList<Object>();
+                    }
 
                     String paramColumnsName = "COLUMN";// default name //$NON-NLS-1$
                     String paramSizeName = "SIZE"; // default name //$NON-NLS-1$
@@ -153,6 +214,9 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
 
                             List<Object> objects = new ArrayList<Object>();
                             for (IMetadataColumn column : metadata.getListColumns()) {
+                                if (tableEditorModel.exist(column.getLabel())) {
+                                    continue;
+                                }
 
                                 Object entry = tableEditorModel.createNewEntry();
                                 if (!(entry instanceof Map)) {
@@ -170,7 +234,12 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                                 }
                                 // set default values
                                 for (ColumnInfo col : tableInputs) {
-                                    mapObject.put(col.parameter.getName(), col.defaultValue);
+                                    Object defaultValue = col.defaultValue;
+                                    Object found = findDefaultName(column.getLabel(), col);
+                                    if (found != null && !"".equals(found)) {
+                                        defaultValue = found;
+                                    }
+                                    mapObject.put(col.parameter.getName(), defaultValue);
                                 }
 
                                 objects.add(entry);
@@ -203,8 +272,11 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                 }
 
                 PromptDefaultValueDialog dialog = new PromptDefaultValueDialog(shell, tableInputs);
-                dialog.open();
-                return tableInputs;
+                if (dialog.open() == Window.OK) {
+                    return tableInputs;
+                } else {
+                    return null;
+                }
             }
 
         };
@@ -261,5 +333,19 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                 return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts());
             }
         };
+    }
+
+    private Object findDefaultName(String outputName, ColumnInfo col) {
+        if (col.parameter != null && outputName != null) {
+            Object[] values = col.parameter.getListItemsValue();
+            if (values != null) {
+                for (Object o : values) {
+                    if (outputName.equals(o)) {
+                        return o;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

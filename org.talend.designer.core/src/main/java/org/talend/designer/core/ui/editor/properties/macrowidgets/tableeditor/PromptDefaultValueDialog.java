@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.TableEditor;
@@ -56,11 +55,10 @@ public class PromptDefaultValueDialog extends Dialog {
         setInput(inputs);
     }
 
-    @Override
-    protected void createButtonsForButtonBar(Composite parent) {
-        createButton(parent, IDialogConstants.OK_ID, "OK", true); //$NON-NLS-1$
-    }
-
+    // @Override
+    // protected void createButtonsForButtonBar(Composite parent) {
+    //        createButton(parent, IDialogConstants.OK_ID, "OK", true); //$NON-NLS-1$
+    // }
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
@@ -194,7 +192,9 @@ public class PromptDefaultValueDialog extends Dialog {
                 CCombo combo = (CCombo) control;
                 int index = combo.getSelectionIndex();
                 Object[] values = row.parameter.getListItemsValue();
-                row.defaultValue = values[index];
+                if (values.length > index && index != -1) {
+                    row.defaultValue = values[index];
+                }
             }
         }
         super.okPressed();

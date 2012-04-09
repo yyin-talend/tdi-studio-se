@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.nodes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -2414,6 +2415,8 @@ public class Node extends Element implements IGraphicalNode {
                 }
             }
             checkValidationRule(param);
+
+            checktAggregateRow(param);
         }
 
         IElementParameter enableParallelizeParameter = getElementParameter(EParameterName.PARALLELIZE.getName());
@@ -2421,6 +2424,52 @@ public class Node extends Element implements IGraphicalNode {
             boolean x = (Boolean) enableParallelizeParameter.getValue();
             if (x) {
                 addStatus(Process.PARALLEL_STATUS);
+            }
+        }
+    }
+
+    private void checktAggregateRow(IElementParameter param) {
+        EParameterFieldType fieldType = param.getFieldType();
+        if ("tAggregateRow".equals(component.getName()) && EParameterFieldType.TABLE.equals(fieldType)
+                && EParameterName.GROUPBYS.name().equals(param.getName())) {
+            Set<String> duplicatedColumns = new HashSet<String>();
+            List<String> existColumns = new ArrayList<String>();
+            if (param.getValue() instanceof List) {
+                for (Object obj : (List) param.getValue()) {
+                    if (obj instanceof Map) {
+                        Map childElement = (Map) obj;
+                        String outputColumnName = (String) childElement.get(param.getListItemsDisplayCodeName()[0]);
+                        if (existColumns.contains(outputColumnName)) {
+                            duplicatedColumns.add(outputColumnName);
+                        } else {
+                            existColumns.add(outputColumnName);
+                        }
+
+                    }
+                }
+            }
+            IElementParameter relatedParam = getElementParameter(EParameterName.OPERATIONS.name());
+            if (relatedParam != null && relatedParam.getValue() instanceof List) {
+                for (Object obj : (List) relatedParam.getValue()) {
+                    if (obj instanceof Map) {
+                        Map childElement = (Map) obj;
+                        String outputColumnName = (String) childElement.get(relatedParam.getListItemsDisplayCodeName()[0]);
+                        if (existColumns.contains(outputColumnName)) {
+                            duplicatedColumns.add(outputColumnName);
+                        } else {
+                            existColumns.add(outputColumnName);
+                        }
+
+                    }
+                }
+            }
+            if (!duplicatedColumns.isEmpty()) {
+                String errorMessage = "Duplicated output columns exist in Group by or Operations table: ";
+                for (String columnName : duplicatedColumns) {
+                    errorMessage += columnName + ",";
+                }
+                errorMessage = errorMessage.substring(0, errorMessage.length() - 1);
+                Problems.add(ProblemStatus.ERROR, this, errorMessage);
             }
         }
     }

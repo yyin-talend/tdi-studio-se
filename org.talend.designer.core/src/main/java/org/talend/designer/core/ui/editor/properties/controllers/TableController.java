@@ -103,6 +103,8 @@ public class TableController extends AbstractElementPropertySectionController {
                 parentComposite, SWT.NONE, tableEditorModel, !param.isBasedOnSchema(), false);
         tableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());
         tableEditorView.setReadOnly(param.isReadOnly() || param.isRepositoryValueUsed());
+        tableEditorModel.setModifiedBeanListenable(tableEditorView.getTableViewerCreator());
+        tableEditorModel.addModifiedBeanListenerForAggregateComponent();
 
         final Table table = tableEditorView.getTable();
 
@@ -606,7 +608,7 @@ public class TableController extends AbstractElementPropertySectionController {
                                 }
                             } else {
                                 if (o instanceof String) {
-                                    Integer nb = new Integer(tmpParam.getIndexOfItemFromList((String)o));
+                                    Integer nb = new Integer(tmpParam.getIndexOfItemFromList((String) o));
                                     if (nb == -1) {
                                         currentLine.put(items[j], (String) tmpParam.getDefaultClosedListValue());
                                     }

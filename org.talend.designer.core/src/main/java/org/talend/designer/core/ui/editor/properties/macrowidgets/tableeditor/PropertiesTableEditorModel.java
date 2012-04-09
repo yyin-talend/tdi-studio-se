@@ -19,7 +19,14 @@ import java.util.Map;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
+import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
+import org.talend.commons.utils.data.list.IListenableListListener;
+import org.talend.commons.utils.data.list.ListenableListEvent;
+import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EParameterFieldType;
@@ -29,7 +36,9 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.TableController;
 
 /**
@@ -49,6 +58,9 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
 
     private boolean dynamicData;
 
+    // added for tAggregate
+    private IElementParameter relatedParameter;
+
     /**
      * DOC amaumont PropertiesTableEditorModel constructor comment.
      */
@@ -65,6 +77,31 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
         this.process = process;
         this.elemParameter = elemParameter;
         registerDataList((List<B>) elemParameter.getValue());
+
+        // for tAggregateRow
+        if (element instanceof Node) {
+            IComponent component = ((Node) getElement()).getComponent();
+            if ("tAggregateRow".equals(component.getName())) {
+                String toFind = EParameterName.GROUPBYS.name();
+                Node node = (Node) getElement();
+                if (EParameterName.GROUPBYS.name().equals(getElemParameter().getName())) {
+                    toFind = EParameterName.OPERATIONS.name();
+                }
+                relatedParameter = node.getElementParameter(toFind);
+                this.addAfterOperationListListener(new IListenableListListener<B>() {
+
+                    @Override
+                    public void handleEvent(ListenableListEvent<B> event) {
+                        // set updataComponentParamName to force refresh table controller
+                        if (event.type == TYPE.ADDED || event.type == TYPE.REMOVED) {
+                            String updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
+                            ((Node) getElement()).setPropertyValue(updataComponentParamName, Boolean.TRUE);
+                        }
+                    }
+                });
+            }
+        }
+
     }
 
     public String getTitleName() {
@@ -210,4 +247,86 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
         return super.removeAll(c);
     }
 
+    public boolean isAggregateRow() {
+        if (relatedParameter != null) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 
+     * DOC Added for featerue TDI-7284
+     * 
+     * @return
+     */
+    public boolean isButtonEnabled() {
+        if (element instanceof Node && relatedParameter != null) {
+            Node node = (Node) element;
+            if (node.getMetadataList() != null && node.getMetadataList().get(0).getListColumns() != null) {
+                List<IMetadataColumn> columns = node.getMetadataList().get(0).getListColumns();
+                boolean foundNotExistColumn = false;
+                for (IMetadataColumn column : columns) {
+                    if (!exist(column.getLabel())) {
+                        foundNotExistColumn = true;
+                        break;
+                    }
+                }
+                if (foundNotExistColumn) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean exist(String columnName) {
+        if (element instanceof Node && relatedParameter != null && columnName != null) {
+            if (relatedParameter.getValue() instanceof List) {
+                for (Object obj : (List) relatedParameter.getValue()) {
+                    if (obj instanceof Map) {
+                        Map childElement = (Map) obj;
+                        if (columnName.equals(childElement.get(relatedParameter.getListItemsDisplayCodeName()[0]))) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            if (getElemParameter().getValue() instanceof List) {
+                for (Object obj : (List) getElemParameter().getValue()) {
+                    if (obj instanceof Map) {
+                        Map childElement = (Map) obj;
+                        if (columnName.equals(childElement.get(getElemParameter().getListItemsDisplayCodeName()[0]))) {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+        }
+        return false;
+    }
+
+    public void addModifiedBeanListenerForAggregateComponent() {
+        if (isAggregateRow()) {
+            this.addModifiedBeanListener(modifyListener);
+        }
+    }
+
+    IModifiedBeanListener modifyListener = new IModifiedBeanListener() {
+
+        @Override
+        public void handleEvent(ModifiedBeanEvent event) {
+            if (getTitles() != null && getTitles().length != 0) {
+                if (event.column.getTitle() != null && event.column.getTitle().equals(getTitles()[0])) {
+                    getElement().setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), true);
+                }
+            } else {
+                getElement().setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), true);
+            }
+        }
+
+    };
 }
