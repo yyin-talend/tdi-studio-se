@@ -934,6 +934,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     + ",javax.xml.ws;resolution:=optional" //$NON-NLS-1$
                     + ",javax.jws;resolution:=optional" //$NON-NLS-1$
                     + ",javax.jws.soap;resolution:=optional" //$NON-NLS-1$
+					+ ",org.slf4j;resolution:=optional" // http://jira.talendforge.org/browse/TESB-5489
+					+ ",org.apache.commons.logging;resolution:=optional" //
                     + ",org.apache.camel;version=\"[2.7,3)\"" //$NON-NLS-1$
                     + ",org.apache.camel.builder;version=\"[2.7,3)\"" //$NON-NLS-1$
                     + ",org.apache.camel.impl;version=\"[2.7,3)\"" //$NON-NLS-1$
