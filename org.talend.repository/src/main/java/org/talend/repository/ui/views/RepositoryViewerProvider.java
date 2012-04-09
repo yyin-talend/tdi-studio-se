@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -26,6 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.utils.RecombineRepositoryNodeUtil;
 
@@ -51,10 +53,16 @@ public class RepositoryViewerProvider {
     }
 
     protected IStructuredContentProvider getContextProvider() {
+        // can't reuse the content provider
+        // final StructuredViewer viewer = getRepView().getViewer();
+        // return (IStructuredContentProvider) viewer.getContentProvider();
         return new RepositoryContentProvider(getRepView());
     }
 
     protected ILabelProvider getLabelProvider() {
+        // can't reuse the label provider
+        // final StructuredViewer viewer = getRepView().getViewer();
+        // return (ILabelProvider) viewer.getLabelProvider();
         return new RepositoryLabelProvider(getRepView());
     }
 
@@ -82,7 +90,28 @@ public class RepositoryViewerProvider {
         final StructuredViewer viewer = getRepView().getViewer();
         final ViewerSorter sorter = viewer.getSorter();
         if (sorter != null) {
-            treeViewer.setSorter(sorter);
+            // TDI-20528
+            // treeViewer.setSorter(sorter);
+            treeViewer.setSorter(new ViewerSorter() {
+
+                @Override
+                public int compare(Viewer viewer, Object e1, Object e2) {
+                    if (e1 instanceof RepositoryNode && e2 instanceof RepositoryNode) {
+                        final RepositoryNode node1 = (RepositoryNode) e1;
+                        final RepositoryNode node2 = (RepositoryNode) e2;
+                        // do special for simple folder
+                        if (node1.getType() == IRepositoryNode.ENodeType.SIMPLE_FOLDER
+                                || node2.getType() == IRepositoryNode.ENodeType.SIMPLE_FOLDER) {
+                            return e1.toString().compareTo(e2.toString());
+                        } else {
+                            return sorter.compare(viewer, e1, e2);
+                        }
+                    }
+
+                    return super.compare(viewer, e1, e2);
+                }
+
+            });
         }
 
         treeViewer.setInput(getInputRoot(getRepView().getRoot()));
