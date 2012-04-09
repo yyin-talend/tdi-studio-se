@@ -17,12 +17,14 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 
-public class ImportExportPreferencePage extends FieldEditorPreferencePage {
+public class ImportExportPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
     private boolean isSaveUsed = true;
 
@@ -69,6 +71,12 @@ public class ImportExportPreferencePage extends FieldEditorPreferencePage {
 
         };
         isUsedCheckButton.getButton().addSelectionListener(listener);
+    }
+
+    @Override
+    public void init(IWorkbench workbench) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
