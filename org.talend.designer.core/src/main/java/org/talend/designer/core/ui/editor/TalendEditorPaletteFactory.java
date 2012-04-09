@@ -394,7 +394,8 @@ public final class TalendEditorPaletteFactory {
             }
             family = xmlComponent.getTranslatedFamilyName();
             oraFamily = xmlComponent.getOriginalFamilyName();
-            if (filter != null) {
+            if (filter != null && !filter.contains("(") && !filter.contains(")") && !filter.contains("[")
+                    && !filter.contains("]")) {
                 String regex = getFilterRegex();
                 needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
             }
@@ -424,7 +425,8 @@ public final class TalendEditorPaletteFactory {
             }
             // }
 
-            if (filter != null) {
+            if (filter != null && !filter.contains("(") && !filter.contains(")") && !filter.contains("[")
+                    && !filter.contains("]")) {
                 String regex = getFilterRegex();
                 if (!xmlComponent.getName().toLowerCase().matches(regex)
                         && !xmlComponent.getLongName().toLowerCase().matches(regex)) {
