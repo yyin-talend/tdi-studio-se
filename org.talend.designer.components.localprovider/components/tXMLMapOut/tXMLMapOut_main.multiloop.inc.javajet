@@ -134,10 +134,12 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 					java.util.List<String> absolutePathMappingsList_<%=cid%>_<%=index%> = new java.util.ArrayList<String>();
 					java.util.List<String> relativePathMappingsList_<%=cid%>_<%=index%> = new java.util.ArrayList<String>();
 					<%
+					//not filter for the first input loop in output table
+					boolean needFilter = !(idx==0 && nestedLoopWhileCount==1);
 					for (String key : outNodesXPath.keySet()) { 
 					    String val = outNodesXPath.get(key);
 					    //filter for output mapping
-					    if(!loopHelper.belongToCurrentLoop(inputLoopNode,key)) {//the node is not belong to current loop
+					    if(needFilter && !loopHelper.belongToCurrentLoop(inputLoopNode,key)) {//the node is not belong to current loop
 					    	continue;
 					    }
 					%>
