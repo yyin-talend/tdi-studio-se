@@ -10,8 +10,8 @@
             category="org.talend.core.root"
             class="org.talend.repository.ui.views.RepositoryView"
             icon="icons/nav_home_003.gif"
-            id="org.talend.repository.views.repository"
-            name="%RepositoryView.title"/>
+            id="org.talend.repository.views.repository.deprecated"
+            name="Repository [deprecated]"/>
    </extension>
    <extension
          point="org.talend.core.global_actions">
@@ -139,7 +139,7 @@
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
       <propertyContributor
-            contributorId="org.talend.repository.views.repository"
+            contributorId="org.talend.repository.cnf.view"
             labelProvider="org.talend.repository.ui.properties.PropsTitleLabelProvider">
          <propertyCategory category="main"/>
          <propertyCategory category="version"/>
@@ -148,7 +148,7 @@
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
-      <propertyTabs contributorId="org.talend.repository.views.repository">
+      <propertyTabs contributorId="org.talend.repository.cnf.view">
          <propertyTab
                category="main"
                id="repository.maintab"
@@ -162,7 +162,7 @@
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertySections">
-      <propertySections contributorId="org.talend.repository.views.repository">
+      <propertySections contributorId="org.talend.repository.cnf.view">
          <propertySection
                class="org.talend.repository.ui.properties.DateSection"
                enablesFor="1"

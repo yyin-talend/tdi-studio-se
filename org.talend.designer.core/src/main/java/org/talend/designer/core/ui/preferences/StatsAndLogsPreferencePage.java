@@ -49,6 +49,7 @@ import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.proposal.TalendProposalUtils;
 import org.talend.designer.core.DesignerPlugin;
@@ -60,7 +61,6 @@ import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 import org.talend.repository.ui.views.RepositoryContentProvider;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
@@ -441,9 +441,9 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
                 languagePrefix + EParameterName.REPOSITORY_PROPERTY_TYPE.getName()
                         + StatsAndLogsPreferencePage.CONNECTION_ITEM_LABEL);
 
-        RepositoryContentProvider contentProvider = (RepositoryContentProvider) RepositoryView.show().getViewer()
-                .getContentProvider();
-        RepositoryNode repositoryNode = contentProvider.getMetadataConNode();
+        RepositoryContentProvider contentProvider = (RepositoryContentProvider) RepositoryManagerHelper.getRepositoryView()
+                .getViewer().getContentProvider();
+        RepositoryNode repositoryNode = contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_CONNECTIONS);
         connectionItem = StatsAndLogsViewHelper.findConnectionItem(contentProvider, repositoryNode, dbTypeLabel);
 
         textRepositoryType = new Text(comboTypePanel, SWT.SINGLE | SWT.BORDER);
@@ -468,8 +468,8 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
             strsForDBType[i][1] = strValue[i];
         }
 
-        dbTypeField = new ComboFieldEditor(languagePrefix + EParameterName.DB_TYPE.getName(), EParameterName.DB_TYPE
-                .getDisplayName(), strsForDBType, dbTypeComposite);
+        dbTypeField = new ComboFieldEditor(languagePrefix + EParameterName.DB_TYPE.getName(),
+                EParameterName.DB_TYPE.getDisplayName(), strsForDBType, dbTypeComposite);
         gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.horizontalSpan = 4;
         dbTypeComposite.setLayoutData(gridData);
@@ -481,15 +481,15 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         hostField = new StringFieldEditor(languagePrefix + EParameterName.HOST.getName(), EParameterName.HOST.getDisplayName(),
                 parent);
         TalendProposalUtils.installOn(hostField.getTextControl(parent), null);
-        ContextParameterExtractor.installOn(hostField.getTextControl(parent), null, languagePrefix
-                + EParameterName.HOST.getName(), null);
+        ContextParameterExtractor.installOn(hostField.getTextControl(parent), null,
+                languagePrefix + EParameterName.HOST.getName(), null);
 
         portField = new StringFieldEditor(languagePrefix + EParameterName.PORT.getName(), EParameterName.PORT.getDisplayName(),
                 parent);
         TalendProposalUtils.installOn(portField.getTextControl(parent), null);
 
-        dbNameField = new StringFieldEditor(languagePrefix + EParameterName.DBNAME.getName(), EParameterName.DBNAME
-                .getDisplayName(), parent);
+        dbNameField = new StringFieldEditor(languagePrefix + EParameterName.DBNAME.getName(),
+                EParameterName.DBNAME.getDisplayName(), parent);
         TalendProposalUtils.installOn(dbNameField.getTextControl(parent), null);
 
         if (language == ECodeLanguage.JAVA) {
@@ -497,28 +497,28 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
                     EParameterName.PROPERTIES.getDisplayName(), parent);
             TalendProposalUtils.installOn(additionParamField.getTextControl(parent), null);
         }
-        schemaField = new StringFieldEditor(languagePrefix + EParameterName.SCHEMA_DB.getName(), EParameterName.SCHEMA_DB
-                .getDisplayName(), parent);
+        schemaField = new StringFieldEditor(languagePrefix + EParameterName.SCHEMA_DB.getName(),
+                EParameterName.SCHEMA_DB.getDisplayName(), parent);
         TalendProposalUtils.installOn(schemaField.getTextControl(parent), null);
 
         userField = new StringFieldEditor(languagePrefix + EParameterName.USER.getName(), EParameterName.USER.getDisplayName(),
                 parent);
         TalendProposalUtils.installOn(userField.getTextControl(parent), null);
 
-        passwordField = new StringFieldEditor(languagePrefix + EParameterName.PASS.getName(), EParameterName.PASS
-                .getDisplayName(), parent);
+        passwordField = new StringFieldEditor(languagePrefix + EParameterName.PASS.getName(),
+                EParameterName.PASS.getDisplayName(), parent);
         TalendProposalUtils.installOn(passwordField.getTextControl(parent), null);
 
-        dabasePathField = new FileFieldEditorWithQuotes(languagePrefix + EParameterName.DBFILE.getName(), EParameterName.DBFILE
-                .getDisplayName(), parent);
+        dabasePathField = new FileFieldEditorWithQuotes(languagePrefix + EParameterName.DBFILE.getName(),
+                EParameterName.DBFILE.getDisplayName(), parent);
         TalendProposalUtils.installOn(dabasePathField.getTextControl(parent), null);
 
-        statsTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_STATS.getName(), EParameterName.TABLE_STATS
-                .getDisplayName(), parent);
+        statsTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_STATS.getName(),
+                EParameterName.TABLE_STATS.getDisplayName(), parent);
         TalendProposalUtils.installOn(statsTableField.getTextControl(parent), null);
 
-        logsTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_LOGS.getName(), EParameterName.TABLE_LOGS
-                .getDisplayName(), parent);
+        logsTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_LOGS.getName(),
+                EParameterName.TABLE_LOGS.getDisplayName(), parent);
         TalendProposalUtils.installOn(logsTableField.getTextControl(parent), null);
 
         metterTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_METER.getName(),

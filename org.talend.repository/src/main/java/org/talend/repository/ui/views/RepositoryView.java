@@ -140,6 +140,7 @@ import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.actions.MoveObjectAction;
+import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.plugin.integration.SwitchProjectAction;
 import org.talend.repository.ui.actions.ActionsHelper;
 import org.talend.repository.ui.actions.CopyAction;
@@ -155,11 +156,10 @@ import org.talend.repository.ui.actions.RepositoryFilterAction;
  * 
  * $Id$
  * 
+ * @deprecated have replaced by CNF repository view (@see RepoViewCommonNavigator)
  */
 public class RepositoryView extends ViewPart implements IRepositoryView, ITabbedPropertySheetPageContributor,
         IRepositoryChangedListener, ISelectionListener {
-
-    public final static String ID = "org.talend.repository.views.repository"; //$NON-NLS-1$
 
     private static final String PERSPECTIVE_DI_ID = "org.talend.rcp.perspective"; //$NON-NLS-1$
 
@@ -213,7 +213,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * 
      * @see org.talend.core.ui.repository.views.IRepositoryView#getSystemFolders()
      */
-    public RepositoryNode getRoot() {
+    public IProjectRepositoryNode getRoot() {
         if (rootProjectNode == null) {
             rootProjectNode = createRootNode();
         }
@@ -457,7 +457,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     protected void expandFirstLevel() {
-        final RepositoryNode root = this.getRoot();
+        final IProjectRepositoryNode root = this.getRoot();
         if (root.getChildren().size() == 1) {
             viewer.setExpandedState(root.getChildren().get(0), true);
         }
@@ -707,7 +707,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                         && ERepositoryObjectType.SQLPATTERNS.equals(node.getContentType())
                         && (label.equals("Generic") || label.equals("UserDefined") || label.equals("MySQL")
                                 || label.equals("Netezza") || label.equals("Oracle") || label.equals("ParAccel") || label
-                                .equals("Teradata")) || label.equals("Hive")) {
+                                    .equals("Teradata")) || label.equals("Hive")) {
                     return true;
 
                 } else if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType()) && node.getObject() != null) {
@@ -1316,7 +1316,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     public String[] gatherMetadataChildenLabels() {
-        return contentProvider.gatherMetdataChildrens();
+        // return contentProvider.gatherMetdataChildrens();
+        return null;
     }
 
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {

@@ -20,7 +20,6 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -64,6 +63,7 @@ import org.talend.core.model.repository.DragAndDropManager;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.IDragAndDropServiceHandler;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.repository.ProjectManager;
@@ -73,12 +73,12 @@ import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.SAPFunctionRepositoryObject;
+import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.utils.RecombineRepositoryNodeUtil;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryLabelProvider;
 import org.talend.repository.ui.views.RepositoryTreeViewer;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * bqian check the content of the repository view. <br/>
@@ -214,7 +214,7 @@ public class RepositoryReviewDialog extends Dialog {
 
     protected IRepositoryView getRepView() {
         if (repView == null) {
-            repView = RepositoryView.show();
+            repView = RepositoryManagerHelper.getRepositoryView();
         }
         return repView;
     }
@@ -354,12 +354,8 @@ public class RepositoryReviewDialog extends Dialog {
         return container;
     }
 
-    private RepositoryNode getInput() {
-        IContentProvider contentProvider = getRepView().getViewer().getContentProvider();
-        if (contentProvider instanceof RepositoryContentProvider) {
-            return typeProcessor.getInputRoot((RepositoryContentProvider) contentProvider);
-        }
-        return null;
+    private IRepositoryNode getInput() {
+        return typeProcessor.getInputRoot(getRepView().getRoot());
 
     }
 
@@ -522,7 +518,7 @@ interface ITypeProcessor {
 
     boolean isSelectionValid(RepositoryNode node);
 
-    RepositoryNode getInputRoot(RepositoryContentProvider contentProvider);
+    IRepositoryNode getInputRoot(IProjectRepositoryNode projectRepoNode);
 
     ViewerFilter makeFilter();
 
@@ -548,8 +544,8 @@ abstract class MultiTypesProcessor implements ITypeProcessor {
 
     protected abstract List<ERepositoryObjectType> getTypes();
 
-    public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
-        return RecombineRepositoryNodeUtil.getFixingTypesInputRoot(contentProvider, getTypes());
+    public IRepositoryNode getInputRoot(IProjectRepositoryNode projectRepoNode) {
+        return RecombineRepositoryNodeUtil.getFixingTypesInputRoot(projectRepoNode, getTypes());
     }
 
     public boolean isSelectionValid(RepositoryNode node) {
@@ -848,8 +844,8 @@ class RepositoryTypeProcessor extends SingleTypeProcessor {
         if (repositoryType.equals(ERepositoryCategoryType.EDIFACT.getName())) {
             return ERepositoryObjectType.METADATA_EDIFACT;
         }
-		// http://jira.talendforge.org/browse/TESB-5218 LiXiaopeng
-		if (repositoryType.equals("SERVICES:OPERATION") || repositoryType.equals("WEBSERVICE")) { //$NON-NLS-1$
+        // http://jira.talendforge.org/browse/TESB-5218 LiXiaopeng
+        if (repositoryType.equals("SERVICES:OPERATION") || repositoryType.equals("WEBSERVICE")) { //$NON-NLS-1$
             if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
                 IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
                 return service.getServicesType();

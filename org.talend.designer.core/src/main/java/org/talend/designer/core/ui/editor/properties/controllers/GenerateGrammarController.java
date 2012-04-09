@@ -44,7 +44,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -64,6 +63,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.codegen.ITalendSynchronizer;
@@ -125,10 +125,10 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
 
             });
 
-            IRepositoryView viewPart = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .findView(IRepositoryView.VIEW_ID);
-
-            viewPart.refreshView();
+            IRepositoryView repoView = RepositoryManagerHelper.findRepositoryView();
+            if (repoView != null) {
+                repoView.refreshView();
+            }
             refreshProject();
         }
 

@@ -24,14 +24,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -71,6 +69,7 @@ import org.talend.core.model.properties.impl.PropertiesFactoryImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.SVNConstant;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.CoreRepositoryPlugin;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
@@ -104,7 +103,6 @@ import org.talend.repository.ui.login.connections.ConnectionUserPerReader;
 import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.utils.DBConnectionContextUtils;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryView;
 
 ;
 
@@ -194,7 +192,7 @@ public class RepositoryService implements IRepositoryService {
     // This method is used for the Action in RepositoryView to synchronize the sqlBuilder.
     // see DataBaseWizard, DatabaseTableWizard, AContextualAction
     public void notifySQLBuilder(List<IRepositoryViewObject> list) {
-        IRepositoryChangedListener listener = (IRepositoryChangedListener) RepositoryView.show();
+        IRepositoryChangedListener listener = (IRepositoryChangedListener) RepositoryManagerHelper.getRepositoryView();
         removeRepositoryChangedListener(listener);
         for (Iterator<IRepositoryViewObject> iter = list.iterator(); iter.hasNext();) {
             IRepositoryViewObject element = iter.next();
@@ -504,7 +502,7 @@ public class RepositoryService implements IRepositoryService {
         if (treeViewer != null) {
             treeViewer.addSelectionChangedListener(listener);
         } else {
-            RepositoryView.addPreparedListeners(listener);
+            // RepositoryView.addPreparedListeners(listener);
         }
     }
 
@@ -532,16 +530,9 @@ public class RepositoryService implements IRepositoryService {
             // bug 16594
             String perId = page.getPerspective().getId();
             if ((!"".equals(perId) || null != perId) && perId.equalsIgnoreCase(PERSPECTIVE_DI_ID)) {
-                IViewPart view = page.findView(RepositoryView.ID);
-                if (view == null) {
-                    try {
-                        view = page.showView(RepositoryView.ID);
-                    } catch (Exception e) {
-                        ExceptionHandler.process(e);
-                    }
-                }
-                if (view instanceof RepositoryView) {
-                    return ((RepositoryView) view).getViewer();
+                final IRepositoryView repositoryView = RepositoryManagerHelper.getRepositoryView();
+                if (repositoryView != null) {
+                    return (TreeViewer) repositoryView.getViewer();
                 }
             }
             return null;
@@ -577,33 +568,10 @@ public class RepositoryService implements IRepositoryService {
      * @return
      */
     public RepositoryNode getRootRepositoryNode(ERepositoryObjectType type) {
-        IRepositoryView view = RepositoryView.show();
+        IRepositoryView view = RepositoryManagerHelper.getRepositoryView();
         if (view != null) {
             ProjectRepositoryNode root = (ProjectRepositoryNode) view.getRoot();
             return root.getRootRepositoryNode(type);
-        }
-        return null;
-    }
-
-    public Action getRepositoryViewDoubleClickAction() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        if (page != null) {
-            // bug 16594
-            String perId = page.getPerspective().getId();
-            if ((!"".equals(perId) || null != perId) && perId.equalsIgnoreCase(PERSPECTIVE_DI_ID)) {
-                IViewPart view = page.findView(RepositoryView.ID);
-                if (view == null) {
-                    try {
-                        view = page.showView(RepositoryView.ID);
-
-                    } catch (Exception e) {
-                        ExceptionHandler.process(e);
-                    }
-                }
-                RepositoryView repositoryView = (RepositoryView) view;
-
-                return repositoryView.getDoubleClickAction();
-            }
         }
         return null;
     }

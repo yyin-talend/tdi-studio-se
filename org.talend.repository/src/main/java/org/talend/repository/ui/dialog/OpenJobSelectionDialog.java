@@ -19,8 +19,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * A job selection dialog used for opening jobs.
@@ -69,7 +69,7 @@ public class OpenJobSelectionDialog extends RepositoryReviewDialog {
             // RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             //
             // RepositoryView.show().expand(node);
-            RepositoryView.show().getViewer().setSelection(selection, true);
+            RepositoryManagerHelper.getRepositoryView().getViewer().setSelection(selection, true);
         } else {
             super.buttonPressed(buttonId);
         }

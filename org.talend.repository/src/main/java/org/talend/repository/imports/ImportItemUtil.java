@@ -203,20 +203,24 @@ public class ImportItemUtil {
 
             // take care, in cache it's RepositoryViewObject, not RepositoryObject
             for (IRepositoryViewObject current : cache.getItemsFromRepository().get(itemType)) {
-                if (itemRecord.getProperty().getLabel().equalsIgnoreCase(current.getLabel())
-                        && itemRecord.getProperty().getId() != current.getId()) {
-                    // To check SQLPattern in same path. see bug 0005038: unable to add a SQLPattern into repository.
-                    if (!isAllowMultipleName || current.getPath().equals(itemPath)) {
-                        nameAvailable = false;
+                final Property property = itemRecord.getProperty();
+                if (property != null) {
+                    if (property.getLabel() != null && property.getLabel().equalsIgnoreCase(current.getLabel())
+                            && property.getId() != current.getId()) {
+                        // To check SQLPattern in same path. see bug 0005038: unable to add a SQLPattern into
+                        // repository.
+                        if (!isAllowMultipleName || current.getPath().equals(itemPath)) {
+                            nameAvailable = false;
+                        }
+                        // overwrite the item with same label but diff id: 15787: import items does not overwrite some
+                        // elements
+                        if (!nameAvailable) {
+                            itemWithSameName = current;
+                        }
                     }
-                    // overwrite the item with same label but diff id: 15787: import items does not overwrite some
-                    // elements
-                    if (!nameAvailable) {
-                        itemWithSameName = current;
+                    if (property.getId() != null && property.getId().equalsIgnoreCase(current.getId())) {
+                        itemWithSameId = current;
                     }
-                }
-                if (itemRecord.getProperty().getId().equalsIgnoreCase(current.getId())) {
-                    itemWithSameId = current;
                 }
             }
             itemRecord.setExistingItemWithSameId(itemWithSameId);

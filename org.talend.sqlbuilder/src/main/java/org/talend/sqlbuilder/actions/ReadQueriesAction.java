@@ -14,8 +14,8 @@ package org.talend.sqlbuilder.actions;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.metadata.IMetadataConnection;
@@ -33,7 +33,6 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.QueryRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
-import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 
@@ -77,8 +76,11 @@ public class ReadQueriesAction extends AContextualAction {
             connParameters.setFirstOpenSqlBuilder(true); // first open Sql Builder,set true
         }
 
-        Shell parentShell = new Shell(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                .findView(IRepositoryView.VIEW_ID).getSite().getShell().getDisplay());
+        Display display = Display.getCurrent();
+        if (display == null) {
+            display = Display.getDefault();
+        }
+        Shell parentShell = new Shell(display);
         TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_REP);
         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
 

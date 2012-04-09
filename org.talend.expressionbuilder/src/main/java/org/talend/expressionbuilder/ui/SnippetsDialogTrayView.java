@@ -19,8 +19,8 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
 
@@ -102,7 +102,7 @@ public class SnippetsDialogTrayView extends RepositoryView {
         super.refresh();
         getViewer().setInput(this.getViewSite());
         RepositoryContentProvider contentProvider = (RepositoryContentProvider) getViewer().getContentProvider();
-        RepositoryNode snippetNode = contentProvider.getCodeNode();
+        RepositoryNode snippetNode = contentProvider.getRootRepositoryNode(ERepositoryObjectType.CODE);
         getViewer().setInput(snippetNode);
 
     }

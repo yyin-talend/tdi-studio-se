@@ -25,8 +25,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * A subclass of DialogTray to provider the function of snippets. <br/>
@@ -56,7 +56,7 @@ public class SnippetsDialogTray extends DialogTray {
         refreshButton.setText("Refresh"); //$NON-NLS-1$
         refreshButton.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
 
-        IRepositoryView view = RepositoryView.show();
+        IRepositoryView view = RepositoryManagerHelper.getRepositoryView();
 
         // TreeViewer viewer = (TreeViewer) view.getViewer();
         final SnippetsDialogTrayView repositoryView = new SnippetsDialogTrayView();

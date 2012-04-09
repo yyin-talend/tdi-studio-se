@@ -29,7 +29,6 @@ import org.talend.core.i18n.Messages;
 import org.talend.core.model.general.Project;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.dialog.PaletteSettingsDialog;
-import org.talend.repository.ui.dialog.VersionManagementDialog;
 
 /**
  * DOC qwei class global comment. Detailled comment
@@ -136,8 +135,8 @@ public class ProjectSettingsWizardPage extends WizardPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 setState = true;
-                VersionManagementDialog dialog = new VersionManagementDialog(getShell(), pro);
-                dialog.open();
+                // VersionManagementDialog dialog = new VersionManagementDialog(getShell(), pro);
+                // dialog.open();
             }
         });
     }

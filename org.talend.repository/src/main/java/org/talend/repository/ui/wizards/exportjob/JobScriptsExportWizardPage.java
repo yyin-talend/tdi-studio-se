@@ -90,6 +90,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
@@ -107,7 +108,6 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.views.RepositoryContentProvider;
-import org.talend.repository.ui.views.RepositoryView;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.action.JobExportAction;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
@@ -419,10 +419,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         GridLayout layout = new GridLayout();
         versionGroup.setLayout(layout);
         versionGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		versionGroup
-				.setText(Messages
-						.getString(
-								"JobScriptsExportWSWizardPage.newJobVersion", getProcessType())); //$NON-NLS-1$
+        versionGroup.setText(Messages.getString("JobScriptsExportWSWizardPage.newJobVersion", getProcessType())); //$NON-NLS-1$
         versionGroup.setFont(parent.getFont());
 
         versionGroup.setLayout(new GridLayout(1, true));
@@ -432,9 +429,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         left.setLayout(new GridLayout(3, false));
 
         Label label = new Label(left, SWT.NONE);
-		label.setText(Messages
-				.getString(
-						"JobScriptsExportWSWizardPage.newJobVersion.Label", getProcessType())); //$NON-NLS-1$
+        label.setText(Messages.getString("JobScriptsExportWSWizardPage.newJobVersion.Label", getProcessType())); //$NON-NLS-1$
 
         final Combo versionCombo = new Combo(left, SWT.PUSH);
         GridData gd = new GridData();
@@ -835,8 +830,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 items.put(item.getProperty().getId(), item);
             }
         }
-        RepositoryContentProvider repositoryContentProvider = (RepositoryContentProvider) RepositoryView.show().getViewer()
-                .getContentProvider();
+        RepositoryContentProvider repositoryContentProvider = (RepositoryContentProvider) RepositoryManagerHelper
+                .getRepositoryView().getViewer().getContentProvider();
         collectNodes(items, repositoryContentProvider.getChildren(repositoryNode));
     }
 

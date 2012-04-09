@@ -51,14 +51,13 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.business.diagram.custom.commands.UnassignTalendItemsFromBusinessAssignmentCommand;
 import org.talend.designer.business.diagram.custom.util.EmfPropertyHelper;
@@ -69,10 +68,11 @@ import org.talend.designer.business.model.business.BusinessFactory;
 import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.provider.BusinessItemProviderAdapterFactory;
 import org.talend.repository.model.IRepositoryNode;
-import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.ProjectRepositoryNode;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.actions.ActionsHelper;
 import org.talend.repository.ui.views.IRepositoryView;
 
@@ -189,23 +189,28 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection im
     }
 
     private void createSelectionListener() {
+
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
                 BusinessAssignment businessAssignment = getBusinessAssignment(event.getSelection());
                 if (businessAssignment != null) {
                     String id = businessAssignment.getTalendItem().getId();
-                    IRepositoryNode rootRepositoryNode = getRepositoryView().getRoot();
-                    selectChild(id, rootRepositoryNode);
+                    IRepositoryNode rootRepositoryNode = ProjectRepositoryNode.getInstance();
+                    final IRepositoryView repositoryView = RepositoryManagerHelper.findRepositoryView();
+                    if (repositoryView != null) {
+                        selectChild(repositoryView, id, rootRepositoryNode);
+                    }
                 }
             }
 
-            private void selectChild(String id, IRepositoryNode rootRepositoryNode) {
+            private void selectChild(IRepositoryView repositoryView, String id, IRepositoryNode rootRepositoryNode) {
+
                 for (IRepositoryNode repositoryNode : rootRepositoryNode.getChildren()) {
                     if (repositoryNode.getId() != null && repositoryNode.getId().equals(id)) {
-                        getRepositoryView().getViewer().setSelection(new StructuredSelection(repositoryNode));
+                        repositoryView.getViewer().setSelection(new StructuredSelection(repositoryNode));
                     } else {
-                        selectChild(id, (RepositoryNode) repositoryNode);
+                        selectChild(repositoryView, id, (RepositoryNode) repositoryNode);
                     }
                 }
             }
@@ -259,8 +264,8 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection im
 
             if (lastVersion != null) {
                 ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(lastVersion.getProperty().getItem());
-                RepositoryNode repositoryNode = new RepositoryNode(lastVersion, RepositoryNodeUtilities
-                        .getParentRepositoryNodeFromSelection(lastVersion), ENodeType.REPOSITORY_ELEMENT);
+                RepositoryNode repositoryNode = new RepositoryNode(lastVersion,
+                        RepositoryNodeUtilities.getParentRepositoryNodeFromSelection(lastVersion), ENodeType.REPOSITORY_ELEMENT);
                 repositoryNode.setProperties(EProperties.CONTENT_TYPE, itemType);
 
                 return repositoryNode;
@@ -268,12 +273,6 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection im
         } catch (PersistenceException e) {
         }
         return null;
-    }
-
-    private IRepositoryView getRepositoryView() {
-        IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IRepositoryView viewPart = (IRepositoryView) activePage.findView(IRepositoryView.VIEW_ID);
-        return viewPart;
     }
 
     private void handleLayout(Composite parent, Table table, TableColumn column1, TableColumn column2, TableColumn column3) {

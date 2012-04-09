@@ -192,6 +192,7 @@ import org.talend.repository.job.deletion.JobResource;
 import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.RepositoryConstants;
+import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC qzhang class global comment. Detailled comment
@@ -1014,7 +1015,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * @return contributorId String
      */
     public String getContributorId() {
-        return "org.talend.repository.views.repository"; //$NON-NLS-1$
+        return IRepositoryView.VIEW_ID;
     }
 
     /**

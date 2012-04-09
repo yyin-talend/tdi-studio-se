@@ -163,7 +163,8 @@ public class RepositoryFilterDialog extends Dialog {
         });
         treeViewer.expandAll();
         // treeViewer.collapseAll();
-        RepositoryNode referenceProjectNode = ((ProjectRepositoryNode) checkboxTreeViewer.getRoot()).getReferenceProjectNode();
+        RepositoryNode referenceProjectNode = ((ProjectRepositoryNode) checkboxTreeViewer.getRoot())
+                .getRootRepositoryNode(ERepositoryObjectType.REFERENCED_PROJECTS);
         if (referenceProjectNode != null) {
             treeViewer.collapseToLevel(referenceProjectNode, treeViewer.ALL_LEVELS);
         }
@@ -360,71 +361,13 @@ public class RepositoryFilterDialog extends Dialog {
                 continue;
             }
             if (split.length == 2) {
-                if (ERepositoryObjectType.BUSINESS_PROCESS.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getBusinessProcessNode(), false);
-                } else if (ERepositoryObjectType.PROCESS.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getProcessNode(), false);
-                } else if (ERepositoryObjectType.JOBLET.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getJobletNode(), false);
-                } else if (ERepositoryObjectType.CONTEXT.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getContextNode(), false);
-                } else if (ERepositoryObjectType.ROUTINES.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getRoutineNode(), false);
-                } else if (ERepositoryObjectType.SQLPATTERNS.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getSQLPatternNode(), false);
-                } else if (ERepositoryObjectType.METADATA.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataNode(), false);
-                } else if (ERepositoryObjectType.METADATA_CONNECTIONS.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataConNode(), false);
-                } else if (ERepositoryObjectType.METADATA_SAPCONNECTIONS.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataSAPConnectionNode(), false);
-                } else if (ERepositoryObjectType.METADATA_FILE_DELIMITED.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataFileNode(), false);
-                } else if (ERepositoryObjectType.METADATA_FILE_POSITIONAL.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataFilePositionalNode(), false);
-                } else if (ERepositoryObjectType.METADATA_FILE_REGEXP.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataFileRegexpNode(), false);
-                } else if (ERepositoryObjectType.METADATA_FILE_XML.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataFileXmlNode(), false);
-                } else if (ERepositoryObjectType.METADATA_FILE_EXCEL.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataFileExcelNode(), false);
-                } else if (ERepositoryObjectType.METADATA_FILE_LDIF.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataFileLdifNode(), false);
-                } else if (ERepositoryObjectType.METADATA_LDAP_SCHEMA.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataLDAPSchemaNode(), false);
-                } else if (ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataSalesforceSchemaNode(), false);
-                } else if (ERepositoryObjectType.METADATA_GENERIC_SCHEMA.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataGenericSchemaNode(), false);
-                } else if (ERepositoryObjectType.METADATA_FILE_EBCDIC.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataEbcdicConnectionNode(), false);
-                } else if (ERepositoryObjectType.METADATA_FILE_RULES.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataRulesNode(), false);
-                } else if (ERepositoryObjectType.METADATA_FILE_BRMS.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataBRMSConnectionNode(), false);
-                } else if (ERepositoryObjectType.METADATA_WSDL_SCHEMA.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataWSDLSchemaNode(), false);
-                } else if (ERepositoryObjectType.DOCUMENTATION.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getDocNode(), false);
-                } else if (ERepositoryObjectType.REFERENCED_PROJECTS.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getReferenceProjectNode(), false);
-                } else if (ERepositoryObjectType.METADATA_MDMCONNECTION.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataMDMConnectionNode(), false);
-                } else if (ERepositoryObjectType.METADATA_VALIDATION_RULES.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataValidationRulesNode(), false);
-                } else if (ERepositoryObjectType.METADATA_FILE_FTP.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataFTPConnectionNode(), false);
-                } else if (ERepositoryObjectType.METADATA_EDIFACT.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataEdifactNode(), false);
-                } else if (ERepositoryObjectType.METADATA_FILE_HL7.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getMetadataHL7ConnectionNode(), false);
-                } else if (ERepositoryObjectType.CODE.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getCodeNode(), false);
-                } else if (ERepositoryObjectType.JOB_SCRIPT.name().equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getJobScriptNode(), false);
-                } else if ("SURVIVORSHIP_FILE_ITEM".equals(split[1])) {
-                    checkboxTreeViewer.setChecked(root.getRootRepositoryNode((ERepositoryObjectType) ERepositoryObjectType
-                            .valueOf(ERepositoryObjectType.class, "SURVIVORSHIP_FILE_ITEM")), false);
+                ERepositoryObjectType foundType = null;
+                foundType = (ERepositoryObjectType) ERepositoryObjectType.valueOf(ERepositoryObjectType.class, split[1]);
+                if (foundType != null) {
+                    RepositoryNode rootRepositoryNode = root.getRootRepositoryNode(foundType);
+                    if (rootRepositoryNode != null) {
+                        checkboxTreeViewer.setChecked(rootRepositoryNode, false);
+                    }
                 } else {
                     IESBService service = null;
                     if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
@@ -433,17 +376,21 @@ public class RepositoryFilterDialog extends Dialog {
                     if (service != null) {
                         ERepositoryObjectType serviceType = service.getServicesType();
                         if (serviceType.name().equals(split[1])) {
-                            RepositoryNode servicesNode = ((ProjectRepositoryNode) root).getRootRepositoryNode(serviceType);
+                            RepositoryNode servicesNode = root.getRootRepositoryNode(serviceType);
                             checkboxTreeViewer.setChecked(servicesNode, false);
                         }
                     }
+
                 }
             } else if (split.length == 3) {
                 // child in sql pattern
                 if (ERepositoryObjectType.SQLPATTERNS.name().equals(split[1])) {
-                    for (IRepositoryNode node : root.getSQLPatternNode().getChildren()) {
-                        if (split[2] != null && split[2].equals(node.getProperties(EProperties.LABEL))) {
-                            checkboxTreeViewer.setChecked(node, false);
+                    RepositoryNode rootRepositoryNode = root.getRootRepositoryNode(ERepositoryObjectType.SQLPATTERNS);
+                    if (rootRepositoryNode != null) {
+                        for (IRepositoryNode node : rootRepositoryNode.getChildren()) {
+                            if (split[2] != null && split[2].equals(node.getProperties(EProperties.LABEL))) {
+                                checkboxTreeViewer.setChecked(node, false);
+                            }
                         }
                     }
                     // referenced ProjectRepositoryNode :root
@@ -459,7 +406,7 @@ public class RepositoryFilterDialog extends Dialog {
         if (mainRoot.getProject().getEmfProject().getTechnicalLabel().equals(projectName)) {
             return mainRoot;
         } else {
-            RepositoryNode referenceProjectNode = mainRoot.getReferenceProjectNode();
+            RepositoryNode referenceProjectNode = mainRoot.getRootRepositoryNode(ERepositoryObjectType.REFERENCED_PROJECTS);
             if (referenceProjectNode != null) {
                 for (IRepositoryNode node : referenceProjectNode.getChildren()) {
                     ProjectRepositoryNode rootNode = getRootNode((ProjectRepositoryNode) node, projectName);

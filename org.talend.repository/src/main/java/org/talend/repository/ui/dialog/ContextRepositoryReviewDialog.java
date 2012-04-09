@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.VersionUtils;
@@ -49,6 +48,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
@@ -359,8 +359,7 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
         designerCoreService.switchToCurComponentSettingsView();
         designerCoreService.switchToCurJobSettingsView();
         // refresh repository view
-        IRepositoryView view = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                .findView(IRepositoryView.VIEW_ID);
+        IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
         if (view != null) {
             view.refresh(ERepositoryObjectType.CONTEXT);
         }

@@ -50,6 +50,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -327,8 +328,7 @@ public class Problems {
              * @see java.lang.Runnable#run()
              */
             public void run() {
-                IRepositoryView viewPart = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                        .findView(IRepositoryView.VIEW_ID);
+                IRepositoryView viewPart = RepositoryManagerHelper.findRepositoryView();
                 if (viewPart != null) {
                     viewPart.refresh();
                 }

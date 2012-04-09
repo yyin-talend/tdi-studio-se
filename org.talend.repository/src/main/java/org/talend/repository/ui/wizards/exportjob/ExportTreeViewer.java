@@ -40,12 +40,12 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.views.RepositoryViewerProvider;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryView;
+import org.talend.repository.ui.views.RepositoryViewerProvider;
 
 /**
  * DOC achen class global comment. Detailled comment
@@ -256,7 +256,7 @@ public class ExportTreeViewer {
 
     protected IRepositoryView getRepView() {
         if (realRepView == null) {
-            realRepView = RepositoryView.show();
+            realRepView = RepositoryManagerHelper.getRepositoryView();
         }
         return realRepView;
     }

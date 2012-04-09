@@ -29,6 +29,7 @@ import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -36,7 +37,6 @@ import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  */
@@ -136,10 +136,12 @@ public final class ExportItemAction extends AContextualAction implements IWorkbe
         if (toolbarAction == false) {
             wizard.init(workbench, (IStructuredSelection) this.getSelection());
         } else {
-            IRepositoryView repositoryView = RepositoryView.show();
-            IStructuredSelection selection = (IStructuredSelection) repositoryView.getViewer().getSelection();
+            IRepositoryView repositoryView = RepositoryManagerHelper.getRepositoryView();
+            if (repositoryView != null) {
+                IStructuredSelection selection = (IStructuredSelection) repositoryView.getViewer().getSelection();
 
-            wizard.init(workbench, selection);
+                wizard.init(workbench, selection);
+            }
         }
 
         Shell activeShell = Display.getCurrent().getActiveShell();

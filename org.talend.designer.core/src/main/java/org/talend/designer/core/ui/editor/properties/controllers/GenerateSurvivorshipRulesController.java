@@ -28,12 +28,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQSurvivorshipService;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -91,10 +91,10 @@ public class GenerateSurvivorshipRulesController extends AbstractElementProperty
                 }
             });
 
-            IRepositoryView viewPart = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .findView(IRepositoryView.VIEW_ID);
-
-            viewPart.refreshView();
+            IRepositoryView repoView = RepositoryManagerHelper.findRepositoryView();
+            if (repoView != null) {
+                repoView.refreshView();
+            }
         }
 
     };

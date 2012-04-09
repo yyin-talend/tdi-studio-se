@@ -77,6 +77,7 @@ import org.talend.core.model.properties.helper.StatusHelper;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.repository.ProjectManager;
@@ -93,8 +94,8 @@ import org.talend.repository.model.RepositoryPreferenceStore;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.dialog.StatusConfirmSettingDialog;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
+import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryCheckBoxView;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * DOC gldu class global comment. Detailled comment
@@ -182,7 +183,8 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
         leftComposite.setLayoutData(gridData);
         RepositoryCheckBoxView view = new RepositoryCheckBoxView();
         try {
-            view.init(RepositoryView.show().getViewSite());
+            final IRepositoryView repositoryView = RepositoryManagerHelper.getRepositoryView();
+            view.init(repositoryView.getViewSite());
         } catch (PartInitException e) {
             ExceptionHandler.process(e);
         }
@@ -234,17 +236,17 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
         if (view == null) {
             return;
         }
-        final RepositoryNode root = view.getRoot();
+        final IProjectRepositoryNode root = view.getRoot();
         if (root instanceof IProjectRepositoryNode) {
             final IProjectRepositoryNode rootNode = (IProjectRepositoryNode) root;
             final TreeViewer viewer = view.getViewer();
             // metadata
-            IRepositoryNode metadataConNode = rootNode.getMetadataNode();
+            IRepositoryNode metadataConNode = rootNode.getRootRepositoryNode(ERepositoryObjectType.METADATA);
             if (metadataConNode != null) {
                 viewer.expandToLevel(metadataConNode, 1);
             }
             // code
-            IRepositoryNode codeNode = rootNode.getCodeNode();
+            IRepositoryNode codeNode = rootNode.getRootRepositoryNode(ERepositoryObjectType.CODE);
             if (codeNode != null) {
                 viewer.expandToLevel(codeNode, 1);
             }

@@ -24,10 +24,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.commands.ActionHandler;
 import org.eclipse.ui.handlers.IHandlerService;
-import org.eclipse.ui.internal.navigator.TextActionHandler;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
@@ -35,9 +33,6 @@ import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ICoreService;
-import org.talend.repository.ui.actions.CopyAction;
-import org.talend.repository.ui.actions.DeleteAction;
-import org.talend.repository.ui.actions.PasteAction;
 
 public class RepositoryNodeActionProvider extends CommonActionProvider {
 
@@ -157,14 +152,6 @@ public class RepositoryNodeActionProvider extends CommonActionProvider {
     public void fillActionBars(IActionBars actionBars) {
         super.fillActionBars(actionBars);
         actionBars.setGlobalActionHandler(ICommonActionConstants.OPEN, doubleClickAction);
-        actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), CopyAction.getInstance());
-        actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), PasteAction.getInstance());
-        actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), DeleteAction.getInstance());
-        // TODO TextActionHandler is an internal class and should not be used.
-        TextActionHandler textActionHandler = new TextActionHandler(actionBars);
-        textActionHandler.setCopyAction(CopyAction.getInstance());
-        textActionHandler.setPasteAction(PasteAction.getInstance());
-        textActionHandler.setDeleteAction(DeleteAction.getInstance());
 
     }
 

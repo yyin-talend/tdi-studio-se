@@ -33,6 +33,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.DesignerPlugin;
@@ -48,7 +49,6 @@ import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.RepositoryContentProvider;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * DOC hcw class global comment. Detailled comment
@@ -58,9 +58,9 @@ public class ImplicitContextLoadHelper {
     private static final IPreferenceStore PREFERENCE_STORE = DesignerPlugin.getDefault().getPreferenceStore();
 
     public static ConnectionItem findConnectionItemByLabel(String connectionLabel) {
-        RepositoryContentProvider contentProvider = (RepositoryContentProvider) RepositoryView.show().getViewer()
-                .getContentProvider();
-        RepositoryNode repositoryNode = contentProvider.getMetadataConNode();
+        RepositoryContentProvider contentProvider = (RepositoryContentProvider) RepositoryManagerHelper.getRepositoryView()
+                .getViewer().getContentProvider();
+        RepositoryNode repositoryNode = contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_CONNECTIONS);
 
         return findConnectionItemByLabel(contentProvider, repositoryNode, connectionLabel);
     }

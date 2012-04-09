@@ -1,32 +1,30 @@
 package org.talend.designer.business.diagram.custom.actions;
 
-import java.util.List;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.ProjectRepositoryNode;
@@ -34,7 +32,6 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -134,24 +131,6 @@ public class CreateDiagramAction extends AContextualAction implements IIntroActi
 
     }
 
-    public IRepositoryView getRepositoryView() {
-        IViewPart findView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                .findView(IRepositoryView.VIEW_ID);
-        return (IRepositoryView) findView;
-    }
-
-    public RepositoryNode getProcessNode() {
-        List<IRepositoryNode> children = getRepositoryView().getRoot().getChildren();
-        for (IRepositoryNode repositoryNode : children) {
-            if (repositoryNode.getContentType() == ERepositoryObjectType.BUSINESS_PROCESS) {
-                return (RepositoryNode) repositoryNode;
-            }
-
-        }
-
-        return null;
-    }
-
     /*
      * added by wchen for intro
      * 
@@ -175,21 +154,17 @@ public class CreateDiagramAction extends AContextualAction implements IIntroActi
         if (page != null) {
             String perId = page.getPerspective().getId();
             if ((!"".equals(perId) || null != perId) && perId.equalsIgnoreCase(PERSPECTIVE_DI_ID)) {
-                IViewPart view = page.findView(RepositoryView.ID);
-                if (view == null) {
-                    try {
-                        view = page.showView(RepositoryView.ID);
-                    } catch (Exception e) {
-                        ExceptionHandler.process(e);
-                    }
-                }
-                if (view instanceof RepositoryView) {
-                    RepositoryView reView = (RepositoryView) view;
+                IRepositoryView view = RepositoryManagerHelper.getRepositoryView();
+                if (view != null) {
 
                     Object type = params.get("type");
                     if (ERepositoryObjectType.BUSINESS_PROCESS.name().equals(type)) {
-                        RepositoryNode processNode = ((ProjectRepositoryNode) reView.getRoot()).getProcessNode();
-                        reView.getViewer().expandToLevel(processNode, 1);
+                        RepositoryNode processNode = ((ProjectRepositoryNode) view.getRoot())
+                                .getRootRepositoryNode(ERepositoryObjectType.BUSINESS_PROCESS);
+                        final StructuredViewer viewer = view.getViewer();
+                        if (viewer instanceof TreeViewer) {
+                            ((TreeViewer) viewer).expandToLevel(processNode, 1);
+                        }
                         this.repositoryNode = processNode;
                     }
                 }

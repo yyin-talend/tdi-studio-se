@@ -15,13 +15,18 @@ package org.talend.repository.ui.views;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.repository.model.RepositoryNode;
+import org.talend.core.model.utils.RepositoryManagerHelper;
+import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.utils.RecombineRepositoryNodeUtil;
 
 /**
@@ -40,16 +45,16 @@ public class RepositoryViewerProvider {
 
     protected IRepositoryView getRepView() {
         if (realRepView == null) {
-            realRepView = RepositoryView.show();
+            realRepView = RepositoryManagerHelper.getRepositoryView();
         }
         return realRepView;
     }
 
-    protected RepositoryContentProvider getContextProvider() {
+    protected IStructuredContentProvider getContextProvider() {
         return new RepositoryContentProvider(getRepView());
     }
 
-    protected RepositoryLabelProvider getLabelProvider() {
+    protected ILabelProvider getLabelProvider() {
         return new RepositoryLabelProvider(getRepView());
     }
 
@@ -70,16 +75,17 @@ public class RepositoryViewerProvider {
         TreeViewer treeViewer = createTreeViewer(parent, getStyle());
         treeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        final RepositoryContentProvider contentProvider = getContextProvider();
+        final IStructuredContentProvider contentProvider = getContextProvider();
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setLabelProvider(getLabelProvider());
 
-        ViewerSorter sorter = getRepView().getViewer().getSorter();
+        final StructuredViewer viewer = getRepView().getViewer();
+        final ViewerSorter sorter = viewer.getSorter();
         if (sorter != null) {
             treeViewer.setSorter(sorter);
         }
 
-        treeViewer.setInput(getInputRoot(contentProvider));
+        treeViewer.setInput(getInputRoot(getRepView().getRoot()));
 
         return treeViewer;
     }
@@ -88,7 +94,7 @@ public class RepositoryViewerProvider {
         return new CheckboxRepositoryTreeViewer(parent, style);
     }
 
-    protected RepositoryNode getInputRoot(final RepositoryContentProvider contentProvider) {
-        return RecombineRepositoryNodeUtil.getFixingTypesInputRoot(contentProvider, getCheckingTypes());
+    protected IRepositoryNode getInputRoot(final IProjectRepositoryNode projectRepoNode) {
+        return RecombineRepositoryNodeUtil.getFixingTypesInputRoot(projectRepoNode, getCheckingTypes());
     }
 }

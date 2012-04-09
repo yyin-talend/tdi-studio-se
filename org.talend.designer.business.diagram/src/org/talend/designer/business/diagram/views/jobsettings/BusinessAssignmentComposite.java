@@ -19,7 +19,6 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -50,7 +49,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
@@ -66,6 +64,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.business.diagram.custom.properties.RepositoryFactoryProxyLabelProvider;
 import org.talend.designer.business.diagram.i18n.Messages;
@@ -89,6 +88,7 @@ import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.actions.ActionsHelper;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -238,8 +238,12 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                         // }
                         // }
                         // }
-                        Action action = CorePlugin.getDefault().getRepositoryService().getRepositoryViewDoubleClickAction();
-                        action.run();
+
+                        // FIXME, hide this function temp
+                        // Action action =
+                        // CorePlugin.getDefault().getRepositoryService().getRepositoryViewDoubleClickAction();
+                        // action.run();
+
                     }
                 }
             }
@@ -253,14 +257,19 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
             public void selectionChanged(SelectionChangedEvent event) {
                 BusinessAssignment businessAssignment = getBusinessAssignment(event.getSelection());
                 if (businessAssignment != null) {
-                    IRepositoryNode rootRepositoryNode = getRepositoryView().getRoot();
-                    TalendItem item = businessAssignment.getTalendItem();
-                    //
-                    if (item instanceof Routine && rootRepositoryNode instanceof ProjectRepositoryNode) {
-                        RepositoryNodeUtilities.expandParentNode(getRepositoryView(),
-                                ((ProjectRepositoryNode) rootRepositoryNode).getCodeNode());
+                    final IRepositoryView repositoryView = getRepositoryView();
+                    if (repositoryView != null) {
+                        IProjectRepositoryNode rootRepositoryNode = repositoryView.getRoot();
+
+                        TalendItem item = businessAssignment.getTalendItem();
+                        //
+                        if (item instanceof Routine && rootRepositoryNode instanceof ProjectRepositoryNode) {
+                            RepositoryNodeUtilities.expandParentNode(getRepositoryView(),
+                                    ((ProjectRepositoryNode) rootRepositoryNode)
+                                            .getRootRepositoryNode(ERepositoryObjectType.CODE));
+                        }
+                        selectChild(item, (IRepositoryNode) rootRepositoryNode);
                     }
-                    selectChild(item, rootRepositoryNode);
                 }
             }
 
@@ -282,8 +291,10 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                             RepositoryNode node = RepositoryNodeUtilities.getMetadataTableFromConnection(item.getId());
 
                             IRepositoryView view = getRepositoryView();
-                            RepositoryNodeUtilities.expandParentNode(view, node);
-                            select(viewer, node);
+                            if (view != null) {
+                                RepositoryNodeUtilities.expandParentNode(view, node);
+                                select(viewer, node);
+                            }
 
                         }
                     } else if (item instanceof Query) {
@@ -351,7 +362,10 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                     return;
                 }
                 CorePlugin.getDefault().getRepositoryService().removeRepositoryTreeViewListener(viewer);
-                getRepositoryView().getViewer().setSelection(new StructuredSelection(repositoryNode));
+                final IRepositoryView repositoryView = getRepositoryView();
+                if (repositoryView != null) {
+                    repositoryView.getViewer().setSelection(new StructuredSelection(repositoryNode));
+                }
                 CorePlugin.getDefault().getRepositoryService().addRepositoryTreeViewListener(viewer);
             }
 
@@ -471,9 +485,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
     }
 
     private IRepositoryView getRepositoryView() {
-        IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IRepositoryView viewPart = (IRepositoryView) activePage.findView(IRepositoryView.VIEW_ID);
-        return viewPart;
+        return RepositoryManagerHelper.findRepositoryView();
     }
 
     private void handleLayout(Composite parent, Table table, TableColumn column1, TableColumn column2, TableColumn column3) {

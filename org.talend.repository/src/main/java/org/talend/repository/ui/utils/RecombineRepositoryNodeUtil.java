@@ -20,24 +20,25 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
-import org.talend.repository.ui.views.RepositoryContentProvider;
 
 /**
  * ggu class global comment. Detailled comment
  */
 public final class RecombineRepositoryNodeUtil {
 
-    public static RepositoryNode getFixingTypeInputRoot(RepositoryContentProvider contentProvider, ERepositoryObjectType type) {
+    public static IRepositoryNode getFixingTypeInputRoot(IProjectRepositoryNode projectRepoNode, ERepositoryObjectType type) {
         List<ERepositoryObjectType> types = new ArrayList<ERepositoryObjectType>();
         if (type != null) {
             types.add(type);
         }
-        return new RecombineRepositoryNodeUtil(types).getFixingTypesInputRoot(contentProvider);
+        return new RecombineRepositoryNodeUtil(types).getFixingTypesInputRoot(projectRepoNode);
     }
 
-    public static RepositoryNode getFixingTypesInputRoot(RepositoryContentProvider contentProvider, List<ERepositoryObjectType> types) {
-        return new RecombineRepositoryNodeUtil(types).getFixingTypesInputRoot(contentProvider);
+    public static IRepositoryNode getFixingTypesInputRoot(IProjectRepositoryNode projectRepoNode,
+            List<ERepositoryObjectType> types) {
+        return new RecombineRepositoryNodeUtil(types).getFixingTypesInputRoot(projectRepoNode);
     }
 
     private List<ERepositoryObjectType> types;
@@ -51,26 +52,26 @@ public final class RecombineRepositoryNodeUtil {
         return types;
     }
 
-    private RepositoryNode getFixingTypesInputRoot(RepositoryContentProvider contentProvider) {
+    private IRepositoryNode getFixingTypesInputRoot(IProjectRepositoryNode projectRepoNode) {
         RepositoryNode tmpRootNode = new RepositoryNode(null, null, null);
         TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "before getInputRoot, in MultiTypesProcessor"); //$NON-NLS-1$
 
-        List<RepositoryNode> rootNodes = getRepositoryNodesByTypes(contentProvider);
+        List<RepositoryNode> rootNodes = getRepositoryNodesByTypes(projectRepoNode);
         TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "finished main project, in MultiTypesProcessor"); //$NON-NLS-1$ 
 
         if (rootNodes != null) {
             tmpRootNode.getChildren().addAll(rootNodes);
         }
         // referenced project.
-        addSubReferencedProjectNodes(tmpRootNode, contentProvider.getRoot());
+        addSubReferencedProjectNodes(tmpRootNode, projectRepoNode);
         TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "finished ref-projects, in MultiTypesProcessor"); //$NON-NLS-1$
 
         return tmpRootNode;
     }
 
-    private void addSubReferencedProjectNodes(RepositoryNode contextNode, ProjectRepositoryNode parentRefProject) {
+    private void addSubReferencedProjectNodes(RepositoryNode contextNode, IProjectRepositoryNode parentRefProject) {
 
-        RepositoryNode referenceProjectNode = parentRefProject.getRootRepositoryNode(ERepositoryObjectType.REFERENCED_PROJECTS);
+        IRepositoryNode referenceProjectNode = parentRefProject.getRootRepositoryNode(ERepositoryObjectType.REFERENCED_PROJECTS);
         if (referenceProjectNode != null) {
             initNode(referenceProjectNode);
 
@@ -97,18 +98,12 @@ public final class RecombineRepositoryNodeUtil {
         }
     }
 
-    private List<RepositoryNode> getRepositoryNodesByTypes(Object provider) {
+    private List<RepositoryNode> getRepositoryNodesByTypes(IProjectRepositoryNode projectRepoNode) {
         List<RepositoryNode> rootNodes = new ArrayList<RepositoryNode>();
-        List<ERepositoryObjectType> types = getTypes();
-        if (types != null) {
-            for (ERepositoryObjectType type : types) {
-                RepositoryNode rootNode = null;
-                if (provider instanceof RepositoryContentProvider) {
-                    rootNode = ((RepositoryContentProvider) provider).getRootRepositoryNode(type);
-                }
-                if (provider instanceof ProjectRepositoryNode) {
-                    rootNode = ((ProjectRepositoryNode) provider).getRootRepositoryNode(type);
-                }
+        List<ERepositoryObjectType> prcessTypes = getTypes();
+        if (prcessTypes != null) {
+            for (ERepositoryObjectType type : prcessTypes) {
+                RepositoryNode rootNode = ((ProjectRepositoryNode) projectRepoNode).getRootRepositoryNode(type);
                 if (rootNode != null) {
                     initNode(rootNode);
                     rootNodes.add(rootNode);
@@ -118,10 +113,11 @@ public final class RecombineRepositoryNodeUtil {
         return rootNodes;
     }
 
-    protected final void initNode(RepositoryNode rootTypeNode) {
-        if (rootTypeNode.getParent() instanceof ProjectRepositoryNode && !rootTypeNode.isInitialized()) {
+    protected final void initNode(IRepositoryNode rootTypeNode) {
+        if (rootTypeNode.getParent() instanceof ProjectRepositoryNode && rootTypeNode instanceof RepositoryNode
+                && !((RepositoryNode) rootTypeNode).isInitialized()) {
             ((ProjectRepositoryNode) rootTypeNode.getParent()).initializeChildren(rootTypeNode);
-            rootTypeNode.setInitialized(true);
+            ((RepositoryNode) rootTypeNode).setInitialized(true);
         }
     }
 }

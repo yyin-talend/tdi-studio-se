@@ -72,15 +72,17 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.views.RepositoryContentProvider;
-import org.talend.repository.ui.views.RepositoryView;
 import org.talend.repository.ui.views.RepositoryViewerProvider;
 
 /**
@@ -358,12 +360,10 @@ class ExportItemWizardPage extends WizardPage {
             final IContentProvider contentProvider = exportItemsTreeViewer.getContentProvider();
             if (contentProvider instanceof RepositoryContentProvider) {
                 ProjectRepositoryNode root = ((RepositoryContentProvider) contentProvider).getRoot();
-                if (objectType == ERepositoryObjectType.METADATA) {
-                    exportItemsTreeViewer.expandToLevel(root.getMetadataNode(), 2);
-                } else if (objectType == ERepositoryObjectType.ROUTINES) {
-                    exportItemsTreeViewer.expandToLevel(root.getCodeNode(), 2);
-                } else if (objectType == ERepositoryObjectType.DOCUMENTATION) {
-                    exportItemsTreeViewer.expandToLevel(root.getDocNode(), 2);
+                RepositoryNode rootRepositoryNode = root.getRootRepositoryNode(objectType);
+                if (rootRepositoryNode != null
+                        && (objectType == ERepositoryObjectType.METADATA || objectType == ERepositoryObjectType.ROUTINES || objectType == ERepositoryObjectType.DOCUMENTATION)) {
+                    exportItemsTreeViewer.expandToLevel(rootRepositoryNode, 2);
                 }
             }
 
@@ -398,8 +398,11 @@ class ExportItemWizardPage extends WizardPage {
                 RepositoryViewerProvider provider = new RepositoryViewerProvider() {
 
                     @Override
-                    protected RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
-                        return contentProvider.getRoot(); // use the whole and same tree
+                    protected IRepositoryNode getInputRoot(IProjectRepositoryNode projectRepoNode) {
+                        if (projectRepoNode instanceof IRepositoryNode) {
+                            return (IRepositoryNode) projectRepoNode; // use the whole and same tree
+                        }
+                        return null;
                     }
 
                 };
@@ -977,8 +980,8 @@ class ExportItemWizardPage extends WizardPage {
                 items.put(item.getProperty().getId(), item);
             }
         }
-        RepositoryContentProvider repositoryContentProvider = (RepositoryContentProvider) RepositoryView.show().getViewer()
-                .getContentProvider();
+        RepositoryContentProvider repositoryContentProvider = (RepositoryContentProvider) RepositoryManagerHelper
+                .getRepositoryView().getViewer().getContentProvider();
         collectNodes(items, repositoryContentProvider.getChildren(repositoryNode));
     }
 

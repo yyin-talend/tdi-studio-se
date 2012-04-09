@@ -28,6 +28,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
@@ -38,7 +39,6 @@ import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  */
@@ -105,7 +105,7 @@ public final class ImportItemAction extends AContextualAction implements IWorkbe
 
         ISelection selection = this.getSelection();
         if (toolbarAction == true) {
-            IRepositoryView repositoryView = RepositoryView.show();
+            IRepositoryView repositoryView = RepositoryManagerHelper.getRepositoryView();
             selection = (IStructuredSelection) repositoryView.getViewer().getSelection();
         }
         if (selection instanceof IStructuredSelection) {

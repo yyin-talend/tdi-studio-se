@@ -67,6 +67,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.DesignerColorUtils;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.IUIRefresher;
@@ -161,12 +162,14 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     }
 
     private void setName() {
-        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-        ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
-        RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
-        if (repositoryNode != null) {
-            setTitleImage(labelProvider.getImage(repositoryNode.getObject()));
-            setPartName(labelProvider.getText(repositoryNode.getObject()));
+        IRepositoryView repoView = RepositoryManagerHelper.findRepositoryView();
+        if (repoView != null) {
+            ILabelProvider labelProvider = (ILabelProvider) repoView.getViewer().getLabelProvider();
+            RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
+            if (repositoryNode != null) {
+                setTitleImage(labelProvider.getImage(repositoryNode.getObject()));
+                setPartName(labelProvider.getText(repositoryNode.getObject()));
+            }
         }
     }
 
@@ -178,11 +181,13 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     @Override
     public Image getTitleImage() {
         if (item != null) {
-            IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-            ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
-            RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
-            if (repositoryNode != null) {
-                return labelProvider.getImage(repositoryNode.getObject());
+            IRepositoryView viewPart = RepositoryManagerHelper.findRepositoryView();
+            if (viewPart != null) {
+                ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
+                RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
+                if (repositoryNode != null) {
+                    return labelProvider.getImage(repositoryNode.getObject());
+                }
             }
         }
         return super.getTitleImage();
@@ -196,9 +201,11 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     @Override
     public String getPartName() {
         if (item != null) {
-            IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
-            ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
-            return labelProvider.getText(item.getProperty());
+            IRepositoryView viewPart = RepositoryManagerHelper.findRepositoryView();
+            if (viewPart != null) {
+                ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
+                return labelProvider.getText(item.getProperty());
+            }
         }
         return super.getPartName();
     }
