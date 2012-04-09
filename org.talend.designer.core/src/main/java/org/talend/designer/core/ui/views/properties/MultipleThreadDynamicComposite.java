@@ -15,10 +15,8 @@ package org.talend.designer.core.ui.views.properties;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
@@ -50,7 +48,6 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
-import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -544,20 +541,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
                             if (controller == null) {
                                 continue;
-                            }
-                            if (!ExtractMetaDataUtils.haveLoadMetadataNode()) {
-                                if (curParam.getFieldType() == EParameterFieldType.PROPERTY_TYPE
-                                        || curParam.getFieldType() == EParameterFieldType.SCHEMA_TYPE
-                                        || curParam.getFieldType() == EParameterFieldType.QUERYSTORE_TYPE) {
-                                    curParam.setReadOnly(true);
-                                    Map<String, IElementParameter> eleMap = curParam.getChildParameters();
-                                    Iterator<Entry<String, IElementParameter>> ite = eleMap.entrySet().iterator();
-                                    while (ite.hasNext()) {
-                                        Entry<String, IElementParameter> entry = ite.next();
-                                        IElementParameter child = entry.getValue();
-                                        child.setReadOnly(true);
-                                    }
-                                }
                             }
 
                             if (controller.hasDynamicRowSize()) {

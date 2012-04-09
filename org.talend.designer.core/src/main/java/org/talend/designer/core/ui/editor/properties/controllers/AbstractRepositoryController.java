@@ -46,6 +46,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
@@ -118,6 +119,10 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         combo.setEnabled(!propertyTypeParameter.isReadOnly());
         if (elem instanceof Node) {
             combo.setToolTipText(VARIABLE_TOOLTIP + propertyTypeParameter.getVariableName());
+        }
+        if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE || param.getFieldType() == EParameterFieldType.SCHEMA_TYPE
+                || param.getFieldType() == EParameterFieldType.QUERYSTORE_TYPE) {
+            combo.setEnabled(ExtractMetaDataUtils.haveLoadMetadataNode());
         }
 
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, propertyTypeParameter.getDisplayName());
