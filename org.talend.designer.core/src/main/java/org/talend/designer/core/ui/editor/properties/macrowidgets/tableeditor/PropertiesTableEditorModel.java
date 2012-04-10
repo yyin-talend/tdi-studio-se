@@ -21,9 +21,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
-import org.talend.commons.utils.data.list.IListenableListListener;
-import org.talend.commons.utils.data.list.ListenableListEvent;
-import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -88,17 +85,6 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
                     toFind = EParameterName.OPERATIONS.name();
                 }
                 relatedParameter = node.getElementParameter(toFind);
-                this.addAfterOperationListListener(new IListenableListListener<B>() {
-
-                    @Override
-                    public void handleEvent(ListenableListEvent<B> event) {
-                        // set updataComponentParamName to force refresh table controller
-                        if (event.type == TYPE.ADDED || event.type == TYPE.REMOVED) {
-                            String updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
-                            ((Node) getElement()).setPropertyValue(updataComponentParamName, Boolean.TRUE);
-                        }
-                    }
-                });
             }
         }
 
@@ -319,13 +305,8 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
 
         @Override
         public void handleEvent(ModifiedBeanEvent event) {
-            if (getTitles() != null && getTitles().length != 0) {
-                if (event.column.getTitle() != null && event.column.getTitle().equals(getTitles()[0])) {
-                    getElement().setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), true);
-                }
-            } else {
-                getElement().setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), true);
-            }
+            Node node = (Node) getElement();
+            node.checkAndRefreshNode();
         }
 
     };

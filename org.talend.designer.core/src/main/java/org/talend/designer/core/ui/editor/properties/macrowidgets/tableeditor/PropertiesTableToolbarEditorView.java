@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -88,14 +89,19 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
 
             @Override
             public boolean getEnabledState() {
-                return super.getEnabledState()
-                        && (model == null || (!model.getElemParameter().isBasedOnSubjobStarts() && model.isButtonEnabled()));
+                return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts());
             }
 
             @Override
             protected Object getObjectToAdd() {
+
                 PropertiesTableEditorModel tableEditorModel = (PropertiesTableEditorModel) getExtendedTableViewer()
                         .getExtendedControlModel();
+                if (!tableEditorModel.isButtonEnabled()) {
+                    MessageDialog.openInformation(tableEditorModel.getTableViewer().getControl().getShell(), "Information",
+                            "All output columns have been added already");
+                    return null;
+                }
 
                 Object newEntry = tableEditorModel.createNewEntry();
                 if (tableEditorModel.isAggregateRow() && newEntry instanceof Map) {
@@ -175,12 +181,16 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
 
             @Override
             public boolean getEnabledState() {
-                return super.getEnabledState()
-                        && (model == null || (!model.getElemParameter().isBasedOnSubjobStarts() && model.isButtonEnabled()));
+                return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts());
             }
 
             @Override
             protected List<Object> getObjectToAdd() {
+                if (!tableEditorModel.isButtonEnabled()) {
+                    MessageDialog.openInformation(tableEditorModel.getTableViewer().getControl().getShell(), "Information",
+                            "All output columns have been added already");
+                    return new ArrayList<Object>();
+                }
 
                 IElement element = tableEditorModel.getElement();
                 if (element != null && element instanceof INode) {

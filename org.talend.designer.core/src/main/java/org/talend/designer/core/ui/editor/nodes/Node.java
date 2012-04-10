@@ -2438,11 +2438,13 @@ public class Node extends Element implements IGraphicalNode {
                 for (Object obj : (List) param.getValue()) {
                     if (obj instanceof Map) {
                         Map childElement = (Map) obj;
-                        String outputColumnName = (String) childElement.get(param.getListItemsDisplayCodeName()[0]);
-                        if (existColumns.contains(outputColumnName)) {
-                            duplicatedColumns.add(outputColumnName);
-                        } else {
-                            existColumns.add(outputColumnName);
+                        Object outputColumnName = childElement.get(param.getListItemsDisplayCodeName()[0]);
+                        if (outputColumnName instanceof String) {
+                            if (existColumns.contains(outputColumnName)) {
+                                duplicatedColumns.add((String) outputColumnName);
+                            } else {
+                                existColumns.add((String) outputColumnName);
+                            }
                         }
 
                     }
@@ -2453,13 +2455,14 @@ public class Node extends Element implements IGraphicalNode {
                 for (Object obj : (List) relatedParam.getValue()) {
                     if (obj instanceof Map) {
                         Map childElement = (Map) obj;
-                        String outputColumnName = (String) childElement.get(relatedParam.getListItemsDisplayCodeName()[0]);
-                        if (existColumns.contains(outputColumnName)) {
-                            duplicatedColumns.add(outputColumnName);
-                        } else {
-                            existColumns.add(outputColumnName);
+                        Object outputColumnName = childElement.get(relatedParam.getListItemsDisplayCodeName()[0]);
+                        if (outputColumnName instanceof String) {
+                            if (existColumns.contains(outputColumnName)) {
+                                duplicatedColumns.add((String) outputColumnName);
+                            } else {
+                                existColumns.add((String) outputColumnName);
+                            }
                         }
-
                     }
                 }
             }
