@@ -28,9 +28,35 @@
 				routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = new routines.system.DynamicMetadata();
 <%
 				for(Map<String,String> map:mapping) {
+					if("Type".equals(map.get("PROPERTY"))){
 %>
-					dynamicMetadataColumn_<%=cid%>.set<%=map.get("PROPERTY")%>(<%=conn_name%>.<%=map.get("VALUE")%>);
+						if(<%=conn_name%>.<%=map.get("VALUE")%>==null||"".equals(<%=conn_name%>.<%=map.get("VALUE")%>)){
+							dynamicMetadataColumn_<%=cid%>.setType("id_String");
+						}else{
+							dynamicMetadataColumn_<%=cid%>.setType(<%=conn_name%>.<%=map.get("VALUE")%>);
+						}
 <%
+					}else if("DbType".equals(map.get("PROPERTY"))){
+%>
+						if(<%=conn_name%>.<%=map.get("VALUE")%>==null||"".equals(<%=conn_name%>.<%=map.get("VALUE")%>)){
+							dynamicMetadataColumn_<%=cid%>.setDbType("VARCHAR");
+						}else{
+							dynamicMetadataColumn_<%=cid%>.setDbType(<%=conn_name%>.<%=map.get("VALUE")%>);
+						}
+<%
+					}else if("Precision".equals(map.get("PROPERTY"))){
+%>
+						if(<%=conn_name%>.<%=map.get("VALUE")%>==null){
+							dynamicMetadataColumn_<%=cid%>.setPrecision(0);
+						}else{
+							dynamicMetadataColumn_<%=cid%>.setPrecision(<%=conn_name%>.<%=map.get("VALUE")%>);
+						}
+<%
+					}else{
+%>
+						dynamicMetadataColumn_<%=cid%>.set<%=map.get("PROPERTY")%>(<%=conn_name%>.<%=map.get("VALUE")%>);
+<%
+					}
 				}
 %>
 				dynamic_<%=cid%>.metadatas.add(dynamicMetadataColumn_<%=cid%>); 

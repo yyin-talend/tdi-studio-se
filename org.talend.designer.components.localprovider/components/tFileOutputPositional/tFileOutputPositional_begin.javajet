@@ -90,8 +90,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	}else{
     		writerClass = "java.io.BufferedWriter";
     	}
+		boolean hasDynamic = metadata.isDynamicSchema();
+		String dynamic = ElementParameterParser.getValue(node, "__DYNAMIC__");
+		boolean useExistingDynamic = "true".equals(ElementParameterParser.getValue(node, "__USE_EXISTING_DYNAMIC__"));
+        String dyn = "dynamic_"+dynamic;
+		if(useExistingDynamic){
 %>
+			routines.system.Dynamic dynamic_<%=cid %> = (routines.system.Dynamic)globalMap.get("<%=dyn%>");
+			int maxColumnCount_<%=cid %> = dynamic_<%=cid %>.getColumnCount();
+			dynamic_<%=cid %>.clearColumnValues();
 <%
+		}
     class FindConnStartConn{
 		IConnection findStartConn(IConnection conn){
 			INode node = conn.getSource();
@@ -156,6 +165,100 @@ Arrays_<%=cid %> arrays_<%=cid %> = new Arrays_<%=cid %>();
                 }
 %>
     			//get  and format output String begin
+<%
+				if("id_Dynamic".equals(column.getTalendType())){
+					if(useExistingDynamic){
+%>
+						routines.system.Dynamic dynamic_<%=cid %> = (routines.system.Dynamic)globalMap.get("<%=dyn%>");
+						int maxColumnCount_<%=cid %> = dynamic_<%=cid %>.getColumnCount();
+						for (int i=0;i<maxColumnCount_<%=cid %>;i++) {
+							routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i);
+							int currentFieldLength_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getLength();
+							tempStringB<%=cid %> = dynamicMetadataColumn_<%=cid%>.getName();
+<%
+	    					if(useByte){
+%>
+    							tempLengthB<%=cid %> = tempStringB<%=cid %>.getBytes(<%=encoding %>).length;
+<%
+    						}else{
+%>
+    							tempLengthB<%=cid %> = tempStringB<%=cid %>.length();
+<%
+    						}
+%>
+	    					if(tempLengthB<%=cid %><currentFieldLength_<%=cid%>){
+<%
+								if (("\'L\'").equals(format.get("ALIGN"))) {
+%>
+			    					for(int j=0;j<currentFieldLength_<%=cid%>-tempLengthB<%=cid %>;j++){
+			    						tempStringB<%=cid %>= tempStringB<%=cid %> + <%=format.get("PADDING_CHAR")%>;
+			    					}
+<%
+								} else if (("\'R\'").equals(format.get("ALIGN"))) {
+%>
+									for(int j=0;j<currentFieldLength_<%=cid%>-tempLengthB<%=cid %>;j++){
+			    						tempStringB<%=cid %>= <%=format.get("PADDING_CHAR")%> + tempStringB<%=cid %>;
+			    					}
+<%
+								} else {
+%>
+									int temp_<%=cid%> = currentFieldLength_<%=cid%>-tempLengthB<%=cid %>;
+									for(int j=0;j<temp_<%=cid%>/2;j++){
+			    						tempStringB<%=cid %>= <%=format.get("PADDING_CHAR")%> + tempStringB<%=cid %> + <%=format.get("PADDING_CHAR")%>;
+			    					}
+			    					if(temp_<%=cid%>%2==1){
+			    						tempStringB<%=cid %> = tempStringB<%=cid %> + <%=format.get("PADDING_CHAR")%>;
+			    					}
+<%
+								}
+%>
+							}else if(tempLengthB<%=cid %> > currentFieldLength_<%=cid%>){
+<%
+                    			if (("\'A\'").equals(format.get("KEEP"))) {
+                    			} else if (("\'R\'").equals(format.get("KEEP"))) {
+									if(useByte){
+%>
+                    					byteArray_<%=cid %>=arrays_<%=cid %>.copyOfRange(tempStringB<%=cid %>.getBytes(<%=encoding %>),tempLengthB<%=cid %> - currentFieldLength_<%=cid%>,tempLengthB<%=cid %>);
+	                    				tempStringB<%=cid %> = new String(byteArray_<%=cid %>,<%=encoding %>);
+<%
+                        			}else{
+%>
+										tempStringB<%=cid %> = tempStringB<%=cid %>.substring(tempLengthB<%=cid %>-currentFieldLength_<%=cid%>);
+<%
+									}
+								} else if (("\'M\'").equals(format.get("KEEP"))) {
+%>
+									int begin<%=cid %>=(tempLengthB<%=cid %>-currentFieldLength_<%=cid%>)/2;
+<%
+									if(useByte){
+%>
+										byteArray_<%=cid %>=arrays_<%=cid %>.copyOfRange(tempStringB<%=cid %>.getBytes(<%=encoding %>),begin<%=cid %>,begin<%=cid %> + currentFieldLength_<%=cid%>);
+		                    			tempStringB<%=cid %> = new String(byteArray_<%=cid %>,<%=encoding %>);
+<%
+									}else{
+%>
+    	                    			tempStringB<%=cid %> = tempStringB<%=cid %>.substring(begin<%=cid %>, begin<%=cid %>+currentFieldLength_<%=cid%>);
+<%
+	                    			}
+                    			} else {
+                    				if(useByte){
+%>
+	                    				byteArray_<%=cid %>=arrays_<%=cid %>.copyOfRange(tempStringB<%=cid %>.getBytes(<%=encoding %>),0,currentFieldLength_<%=cid%>);
+                    					tempStringB<%=cid %> = new String(byteArray_<%=cid %>,<%=encoding %>);
+<%
+                    				}else{
+%>
+                    					tempStringB<%=cid %> = tempStringB<%=cid %>.substring(0, currentFieldLength_<%=cid%>);
+<%									}
+                    			}
+%>
+							}
+	    					out<%=cid %>.write(tempStringB<%=cid %>);
+						}
+<%
+					}
+				}else{//not dynamic begin
+%>				
     			tempStringB<%=cid %>="<%=column.getLabel() %>";
     			<%if(useByte){%>
     			tempLengthB<%=cid %>=tempStringB<%=cid %>.getBytes(<%=encoding %>).length;
@@ -243,6 +346,7 @@ Arrays_<%=cid %> arrays_<%=cid %> = new Arrays_<%=cid %>();
                 //get  and format output String end
     			out<%=cid %>.write(tempStringB<%=cid %>);
 <%
+			}//not dynamic end
 	          if((i+1)%100==0){
 %>
               }
@@ -270,6 +374,119 @@ Arrays_<%=cid %> arrays_<%=cid %> = new Arrays_<%=cid %>();
 				  void setValue_<%=i/100%>(final <%=inConnName!=null?inConnName:conn.getName() %>Struct <%=conn.getName() %>,StringBuilder sb_<%=cid %>,String tempStringM<%=cid %>,int tempLengthM<%=cid %><% if(useByte){ %>,byte[] byteArray_<%=cid %>,Arrays_<%=cid %> arrays_<%=cid %><% } %>)throws IOException,java.io.UnsupportedEncodingException{
 <%
                 }
+                if("id_Dynamic".equals(column.getTalendType())){
+					if(useExistingDynamic){
+%>
+						routines.system.Dynamic dynamic_map_<%=cid %> =(routines.system.Dynamic)globalMap.get("<%=dyn%>");
+						routines.system.Dynamic dynamic_<%=cid %> = <%=conn.getName()%>.<%=column.getLabel()%>;//
+						int maxColumnCount_<%=cid %> = dynamic_map_<%=cid %>.getColumnCount();
+						String temp_<%=cid%>= "";
+						for (int i=0;i<maxColumnCount_<%=cid %>;i++) {
+							routines.system.DynamicMetadata metadata_<%=cid%> = dynamic_map_<%=cid %>.getColumnMetadata(i);
+							temp_<%=cid%> = String.valueOf(dynamic_<%=cid %>.getColumnValue(i));
+							String type_<%=cid%> = metadata_<%=cid%>.getType();
+							if("id_BigDecimal".equals(type_<%=cid%>)){
+								int precision_<%=cid%> = metadata_<%=cid%>.getPrecision();
+								if(precision_<%=cid%> !=0){
+									temp_<%=cid%> = (new BigDecimal(temp_<%=cid%>)).setScale(precision_<%=cid%>,java.math.RoundingMode.HALF_UP).toPlainString();
+								}
+							}
+							if("id_BigDecimal".equals(type_<%=cid%>) || "id_Short".equals(type_<%=cid%>) || "id_Integer".equals(type_<%=cid%>) || "id_Double".equals(type_<%=cid%>) || "id_Float".equals(type_<%=cid%>) || "id_Long".equals(type_<%=cid%>)){
+								temp_<%=cid%> = FormatterUtils.format_Number(temp_<%=cid%>, <%= thousandsSeparator %>, <%= decimalSeparator %>);
+							}
+							int columnLength_<%=cid%> = metadata_<%=cid%>.getLength();
+<%
+							if(useByte){
+%>
+    							int temp_length_<%=cid%> = temp_<%=cid%>.getBytes(<%=encoding %>).length;
+<%
+    						}else{
+%>
+    							int temp_length_<%=cid%> = temp_<%=cid%>.length();
+<%
+    						}
+%>
+							if(temp_length_<%=cid%> < columnLength_<%=cid%>){
+<%
+								if (("\'L\'").equals(format.get("ALIGN"))) {
+%>
+									sb_<%=cid %>.append(temp_<%=cid%>);
+			    					for(int j=0;j<columnLength_<%=cid%>-temp_length_<%=cid%>;j++){
+			    						sb_<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
+			    					}
+<%
+								} else if (("\'R\'").equals(format.get("ALIGN"))) {
+%>
+			    					for(int j=0;j<columnLength_<%=cid%>-temp_length_<%=cid%>;j++){
+			    						sb_<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
+			    					}
+									sb_<%=cid %>.append(temp_<%=cid%>);
+<%
+								} else {
+%>
+									int tempNum_<%=cid%> = columnLength_<%=cid%>-temp_length_<%=cid%>;
+									for(int j=0;j<tempNum_<%=cid%>/2;j++){
+			    						sb_<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
+			    					}
+			    					sb_<%=cid %>.append(temp_<%=cid%>);
+									for(int j=0;j<tempNum_<%=cid%>/2;j++){
+			    						sb_<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
+			    					}
+			    					if(tempNum_<%=cid%>%2==1){
+			    						sb_<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
+			    					}
+<%
+								}
+%>
+							}else{
+<%
+			                    if (("\'A\'").equals(format.get("KEEP"))) {
+%>
+			                        sb_<%=cid %>.append(temp_<%=cid%>);
+<%
+			                    } else if (("\'R\'").equals(format.get("KEEP"))) {
+			                    	 if(useByte){
+%>
+			                    		byteArray_<%=cid %>=arrays_<%=cid %>.copyOfRange(temp_<%=cid%>.getBytes(<%=encoding %>),temp_length_<%=cid%> - columnLength_<%=cid%>,temp_length_<%=cid%>);
+				                    	sb_<%=cid %>.append(new String(byteArray_<%=cid %>,<%=encoding %>));
+<%
+			                         }else{
+%>
+			    	                    sb_<%=cid %>.append(temp_<%=cid%>.substring(temp_length_<%=cid%>-columnLength_<%=cid%>));
+<%
+			                    	 }
+			                    } else if (("\'M\'").equals(format.get("KEEP"))) {
+%>
+			                        int begin<%=cid %>=(temp_length_<%=cid%>-columnLength_<%=cid%>)/2;
+<%
+									if(useByte){
+%>
+										byteArray_<%=cid %>=arrays_<%=cid %>.copyOfRange(temp_<%=cid%>.getBytes(<%=encoding %>),begin<%=cid %>,begin<%=cid %>+columnLength_<%=cid%>);
+				                    	sb_<%=cid %>.append(new String(byteArray_<%=cid %>,<%=encoding %>));
+<%
+									}else{
+%>
+			    	                    sb_<%=cid %>.append(temp_<%=cid%>.substring(begin<%=cid %>, begin<%=cid %>+columnLength_<%=cid%>));
+<%
+			                    	}
+			                    } else {
+			                    	if(useByte){
+%>
+			                    		byteArray_<%=cid %>=arrays_<%=cid %>.copyOfRange(temp_<%=cid%>.getBytes(<%=encoding %>),0,columnLength_<%=cid%>);
+			                    		sb_<%=cid %>.append(new String(byteArray_<%=cid %>,<%=encoding %>));
+<%
+			                    	}else{
+%>
+										sb_<%=cid %>.append(temp_<%=cid%>.substring(0, columnLength_<%=cid%>));
+<%
+									}
+								}
+%>
+							}
+						}
+<%
+					}
+				}else{
 %>
 				//get  and format output String begin
     			tempStringM<%=cid %>=<%				
@@ -384,6 +601,7 @@ Arrays_<%=cid %> arrays_<%=cid %> = new Arrays_<%=cid %>();
                  }
 <%
 				}
+				}//other columns (not dynamic)	end
 			}
 		}
                 if(sizeColumns>0&&(sizeColumns%100)>0){
