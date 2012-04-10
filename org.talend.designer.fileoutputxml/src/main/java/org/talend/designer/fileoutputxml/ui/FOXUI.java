@@ -547,16 +547,22 @@ public class FOXUI {
 
         Boolean validateLabel;
 
+        boolean validate = false;
+
         public void applyEditorValue() {
+            getControl().setBackground(getControl().getDisplay().getSystemColor(SWT.COLOR_WHITE));
             String text = getControl().getText();
-            onValueChanged(text, true, property);
+            onValueChanged(text, validate, property);
+            validate = false;
         }
 
         public void cancelEditor() {
+            getControl().setBackground(getControl().getDisplay().getSystemColor(SWT.COLOR_WHITE));
         }
 
         public void editorValueChanged(boolean oldValidState, boolean newValidState) {
-            onValueChanged(getControl().getText(), false, property);
+            validate = true;
+            // onValueChanged(getControl().getText(), false, property);
         }
 
         private void onValueChanged(final String newValue, boolean showAlertIfError, String property) {
@@ -571,16 +577,19 @@ public class FOXUI {
             }
             String errorMessage = null;
             // add for bug TDI-19844
-            List<FOXTreeNode> nodes = selectNode.getParent().getChildren();
-            if (!selectNode.getLabel().equals(newValue)) {
-                for (int i = 0; i < nodes.size(); i++) {
-                    if (nodes.get(i).isAttribute() && selectNode.isAttribute() && nodes.get(i).getLabel().equals(newValue)) {
-                        errorMessage = Messages.getString("FOXUI.existName"); //$NON-NLS-1$
-                    } else if (nodes.get(i).isNameSpace() && selectNode.isNameSpace() && nodes.get(i).getLabel().equals(newValue)) {
-                        errorMessage = Messages.getString("FOXUI.existName"); //$NON-NLS-1$
-                    } else if (!nodes.get(i).isAttribute() && !nodes.get(i).isNameSpace() && !selectNode.isAttribute()
-                            && !selectNode.isNameSpace() && nodes.get(i).getLabel().equals(newValue)) {
-                        errorMessage = Messages.getString("FOXUI.existName"); //$NON-NLS-1$
+            if (selectNode.getParent() != null) {
+                List<FOXTreeNode> nodes = selectNode.getParent().getChildren();
+                if (!selectNode.getLabel().equals(newValue)) {
+                    for (int i = 0; i < nodes.size(); i++) {
+                        if (nodes.get(i).isAttribute() && selectNode.isAttribute() && nodes.get(i).getLabel().equals(newValue)) {
+                            errorMessage = Messages.getString("FOXUI.existName"); //$NON-NLS-1$
+                        } else if (nodes.get(i).isNameSpace() && selectNode.isNameSpace()
+                                && nodes.get(i).getLabel().equals(newValue)) {
+                            errorMessage = Messages.getString("FOXUI.existName"); //$NON-NLS-1$
+                        } else if (!nodes.get(i).isAttribute() && !nodes.get(i).isNameSpace() && !selectNode.isAttribute()
+                                && !selectNode.isNameSpace() && nodes.get(i).getLabel().equals(newValue)) {
+                            errorMessage = Messages.getString("FOXUI.existName"); //$NON-NLS-1$
+                        }
                     }
                 }
             }
@@ -601,8 +610,8 @@ public class FOXUI {
             if (errorMessage == null) {
                 text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_WHITE));
             } else {
-                text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_RED));
                 if (showAlertIfError) {
+                    text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_RED));
                     text.setText(selectedText);
                     MessageDialog.openError(text.getShell(), "Invalid XML label.", errorMessage); //$NON-NLS-1$
                 }
