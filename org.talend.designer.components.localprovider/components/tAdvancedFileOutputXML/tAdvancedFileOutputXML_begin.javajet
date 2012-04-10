@@ -42,6 +42,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 		String xslType = ElementParameterParser.getValue(node, "__XSL_TYPE__");
 		String xslHref = ElementParameterParser.getValue(node, "__XSL_HREF__");
 		boolean split = "true".equals(ElementParameterParser.getValue(node, "__SPLIT__"));
+		boolean trim = "true".equals(ElementParameterParser.getValue(node, "__TRIM__"));
 		boolean isMerge= ("true").equals(ElementParameterParser.getValue(node, "__MERGE__"));
 		boolean isCompact = ("true").equals(ElementParameterParser.getValue(node, "__PRETTY_COMPACT__"));
 		boolean needFileValid = ("true").equals(ElementParameterParser.getValue(node, "__FILE_VALID__"));
@@ -241,7 +242,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 			<%
 			}
 			%>
-			format_<%=cid %>.setTrimText(false);
+			format_<%=cid %>.setTrimText(<%=trim%>);
 			format_<%=cid %>.setEncoding(<%=encoding%>);
 			<%
 			int groupSize = 0;
