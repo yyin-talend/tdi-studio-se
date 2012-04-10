@@ -1310,6 +1310,13 @@
       </projecttask>	  
       <projecttask
             beforeLogon="false"
+            class="org.talend.repository.model.migration.SetTrimToTrueAppendModeAdvancedFileOutputXMLComponentsMigrationTask"
+            description="Set true for trim option for the bug TDI-20394"
+            id="org.talend.repository.model.migration.SetTrimToTrueAppendModeAdvancedFileOutputXMLComponentsMigrationTask"
+            name="Set true for trim option for the bug TDI-20394">
+      </projecttask>
+      <projecttask
+            beforeLogon="false"
             class="org.talend.repository.model.migration.RenamePasswordParaForLdapMigrationTask"
             description="Rename ldap password parameter for bug18289 "
             id="org.talend.repository.model.migration.RenamePasswordParaForLdapMigrationTask"
