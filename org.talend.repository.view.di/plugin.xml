@@ -1021,21 +1021,6 @@
          </includes>
       </viewerContentBinding>
    </extension>
-   <extension
-         point="org.talend.repository.viewer.perspective.filter">
-      <perspectiveFilter
-            actionProviderId="org.talend.repository.viewer.PerspectiveFilterActionProvider"
-            perspectiveId="org.talend.rcp.perspective">
-         <includes>
-            <contentExtension
-                  pattern="org.talend.repository.viewer.code.*">
-            </contentExtension>
-            <contentExtension
-                  pattern="org.talend.repository.viewer.metadata.*">
-            </contentExtension>
-         </includes>
-      </perspectiveFilter>
-   </extension>
 
 
 </plugin>
