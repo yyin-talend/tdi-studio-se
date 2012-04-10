@@ -25,6 +25,7 @@ import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.Status;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -50,6 +51,9 @@ public class CheckAndUpdateStatusMigrationTask extends AbstractItemMigrationTask
      */
     @Override
     public ExecutionResult execute(Item item) {
+        if (ERepositoryObjectType.getItemType(item).isDQItemType() && !ERepositoryObjectType.getItemType(item).isDIItemType()) {
+            return ExecutionResult.NOTHING_TO_DO;
+        }
         try {
             boolean modified = updateStatus(item);
             if (modified) {
