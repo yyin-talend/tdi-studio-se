@@ -463,38 +463,41 @@ public class NodesPasteCommand extends Command {
                 for (ElementParameter param : (List<ElementParameter>) copiedNode.getElementParametersWithChildrens()) {
                     if (!EParameterName.UNIQUE_NAME.getName().equals(param.getName())) {
                         IElementParameter elementParameter = pastedNode.getElementParameter(param.getName());
-                        if (param.getFieldType() == EParameterFieldType.TABLE) {
-                            List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
-                            ArrayList newValues = new ArrayList();
-                            for (Map<String, Object> map : tableValues) {
-                                Map<String, Object> newMap = new HashMap<String, Object>();
-                                newMap.putAll(map);
-                                // rename schemas
-                                if (EParameterName.SCHEMAS.name().equals(param.getName()) && !oldMetaToNewMeta.isEmpty()) {
-                                    String newSchemaName = oldMetaToNewMeta.get(pastedNode.getUniqueName() + ":"
-                                            + map.get(EParameterName.SCHEMA.getName()));
-                                    if (newSchemaName != null) {
-                                        newMap.put(EParameterName.SCHEMA.getName(), newSchemaName);
+                        if (elementParameter != null) {
+                            if (param.getFieldType() == EParameterFieldType.TABLE) {
+                                List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
+                                ArrayList newValues = new ArrayList();
+                                for (Map<String, Object> map : tableValues) {
+                                    Map<String, Object> newMap = new HashMap<String, Object>();
+                                    newMap.putAll(map);
+                                    // rename schemas
+                                    if (EParameterName.SCHEMAS.name().equals(param.getName()) && !oldMetaToNewMeta.isEmpty()) {
+                                        String newSchemaName = oldMetaToNewMeta.get(pastedNode.getUniqueName() + ":"
+                                                + map.get(EParameterName.SCHEMA.getName()));
+                                        if (newSchemaName != null) {
+                                            newMap.put(EParameterName.SCHEMA.getName(), newSchemaName);
+                                        }
                                     }
+
+                                    newValues.add(newMap);
                                 }
-
-                                newValues.add(newMap);
-                            }
-                            elementParameter.setValue(newValues);
-                        } else {
-                            if (param.getParentParameter() != null) {
-                                String parentName = param.getParentParameter().getName();
-                                pastedNode.setPropertyValue(parentName + ":" + param.getName(), param.getValue()); //$NON-NLS-1$
+                                elementParameter.setValue(newValues);
                             } else {
-                                pastedNode.setPropertyValue(param.getName(), param.getValue());
+                                if (param.getParentParameter() != null) {
+                                    String parentName = param.getParentParameter().getName();
+                                    pastedNode.setPropertyValue(parentName + ":" + param.getName(), param.getValue()); //$NON-NLS-1$
+                                } else {
+                                    pastedNode.setPropertyValue(param.getName(), param.getValue());
 
-                                // See Bug 0005722: the pasted component don't keep the same read-only mode and didn;t
-                                // hide
-                                // the password.
+                                    // See Bug 0005722: the pasted component don't keep the same read-only mode and
+                                    // didn;t
+                                    // hide
+                                    // the password.
 
-                                elementParameter.setReadOnly(param.getOriginalityReadOnly());
+                                    elementParameter.setReadOnly(param.getOriginalityReadOnly());
 
-                                elementParameter.setRepositoryValueUsed(param.isRepositoryValueUsed());
+                                    elementParameter.setRepositoryValueUsed(param.isRepositoryValueUsed());
+                                }
                             }
                         }
                     }
