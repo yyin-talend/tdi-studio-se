@@ -2925,8 +2925,8 @@ public class Node extends Element implements IGraphicalNode {
                 if (getMetadataList() != null) {
                     for (IMetadataTable meta : getMetadataList()) {
                         String componentName = this.getComponent().getName();
-                        if (!componentName.equals("tRESTRequest") && meta.getListColumns().size() == 0
-                                && !isCheckMultiSchemaForMSField()) { // hywang add
+                        if (!componentName.equals("tRESTRequest") && !meta.getTableName().contains("tFileInputEBCDIC")
+                                && meta.getListColumns().size() == 0 && !isCheckMultiSchemaForMSField()) { // hywang add
                             String tableLabel = meta.getTableName();
                             if (meta.getLabel() != null) {
                                 tableLabel = meta.getLabel();
