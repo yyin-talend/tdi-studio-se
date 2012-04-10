@@ -27,10 +27,9 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.BusinessException;
@@ -498,11 +497,14 @@ public class RepositoryService implements IRepositoryService {
      * @see org.talend.repository.model.IRepositoryService#addRepositoryViewListener(org.eclipse.ui.ISelectionListener)
      */
     public void addRepositoryTreeViewListener(ISelectionChangedListener listener) {
-        TreeViewer treeViewer = getRepositoryTreeView();
-        if (treeViewer != null) {
-            treeViewer.addSelectionChangedListener(listener);
-        } else {
-            // RepositoryView.addPreparedListeners(listener);
+        IRepositoryView repositoryView = RepositoryManagerHelper.getRepositoryView();
+        if (repositoryView != null) {
+            StructuredViewer treeViewer = repositoryView.getViewer();
+            if (treeViewer != null) {
+                treeViewer.addSelectionChangedListener(listener);
+            } else {
+                // RepositoryView.addPreparedListeners(listener);
+            }
         }
     }
 
@@ -513,31 +515,12 @@ public class RepositoryService implements IRepositoryService {
      * ISelectionChangedListener)
      */
     public void removeRepositoryTreeViewListener(ISelectionChangedListener listener) {
-        TreeViewer treeViewer = getRepositoryTreeView();
-        if (treeViewer != null) {
-            treeViewer.removeSelectionChangedListener(listener);
-        }
-    }
-
-    /**
-     * yzhang Comment method "getRepositoryView".
-     * 
-     * @return
-     */
-    public TreeViewer getRepositoryTreeView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        if (page != null) {
-            // bug 16594
-            String perId = page.getPerspective().getId();
-            if ((!"".equals(perId) || null != perId) && perId.equalsIgnoreCase(PERSPECTIVE_DI_ID)) {
-                final IRepositoryView repositoryView = RepositoryManagerHelper.getRepositoryView();
-                if (repositoryView != null) {
-                    return (TreeViewer) repositoryView.getViewer();
-                }
+        IRepositoryView repositoryView = RepositoryManagerHelper.getRepositoryView();
+        if (repositoryView != null) {
+            StructuredViewer treeViewer = repositoryView.getViewer();
+            if (treeViewer != null) {
+                treeViewer.removeSelectionChangedListener(listener);
             }
-            return null;
-        } else {
-            return null;
         }
     }
 

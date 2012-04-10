@@ -35,6 +35,7 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -72,7 +73,6 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
@@ -189,7 +189,7 @@ class ExportItemWizardPage extends WizardPage {
         exportItemsTreeViewer.getTree().setRedraw(true);
         addTreeCheckedSelection();
         // if user has select some items in repository view, mark them as checked
-        if (!selection.isEmpty()) {
+        if (selection != null && !selection.isEmpty()) {
             // for bug 10969
             Set<RepositoryNode> newSelection = new HashSet<RepositoryNode>();
             for (RepositoryNode currentNode : (List<RepositoryNode>) selection.toList()) {
@@ -533,7 +533,7 @@ class ExportItemWizardPage extends WizardPage {
 
         archivePathField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));
 
-        if (selection.getFirstElement() instanceof RepositoryNode) {
+        if (selection != null && selection.getFirstElement() instanceof RepositoryNode) {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             String arcFileName;
             if (node.getObject() == null) {
@@ -980,9 +980,14 @@ class ExportItemWizardPage extends WizardPage {
                 items.put(item.getProperty().getId(), item);
             }
         }
-        RepositoryContentProvider repositoryContentProvider = (RepositoryContentProvider) RepositoryManagerHelper
-                .getRepositoryView().getViewer().getContentProvider();
-        collectNodes(items, repositoryContentProvider.getChildren(repositoryNode));
+        if (filteredCheckboxTree != null) {
+            IContentProvider contentProvider = filteredCheckboxTree.getViewer().getContentProvider();
+            if (contentProvider instanceof ITreeContentProvider) {
+                Object[] children = ((ITreeContentProvider) contentProvider).getChildren(repositoryNode);
+                collectNodes(items, children);
+            }
+        }
+
     }
 
     public boolean performCancel() {

@@ -99,8 +99,8 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.ContextParameterUtils;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
@@ -137,6 +137,7 @@ import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.IMetadataService;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -1994,7 +1995,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         if (metadataService != null) {
                             metadataService.openMetadataConnection(o, node);
                         }
-                        RepositoryManager.getRepositoryView().refresh();
+                        IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
+                        if (view != null) {
+                            view.refresh();
+                        }
                     }
                 } catch (Exception e) {
                     ExceptionHandler.process(e);

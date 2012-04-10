@@ -45,6 +45,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.EmptyRepositoryObject;
 import org.talend.core.model.repository.IRepositoryEditorInput;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
@@ -66,6 +67,7 @@ import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.IJobSettingsView;
+import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC ggu class global comment. Detailled comment
@@ -249,11 +251,14 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             dynamicComposite = service.createProcessSVNHistoryComposite(parent, tabFactory.getWidgetFactory(),
                     (IRepositoryViewObject) data);
         } else if (EComponentCategory.APPEARANCE.equals(category)) {
-            dynamicComposite = (IDynamicProperty)CorePlugin.getDefault().getDiagramModelService().getBusinessAppearanceComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
+            dynamicComposite = (IDynamicProperty) CorePlugin.getDefault().getDiagramModelService()
+                    .getBusinessAppearanceComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
         } else if (EComponentCategory.RULERS_AND_GRID.equals(category)) {
-            dynamicComposite = (IDynamicProperty)CorePlugin.getDefault().getDiagramModelService().getBusinessRulersAndGridComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), null);
+            dynamicComposite = (IDynamicProperty) CorePlugin.getDefault().getDiagramModelService()
+                    .getBusinessRulersAndGridComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), null);
         } else if (EComponentCategory.ASSIGNMENT.equals(category)) {
-            dynamicComposite = (IDynamicProperty)CorePlugin.getDefault().getDiagramModelService().getBusinessAssignmentComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
+            dynamicComposite = (IDynamicProperty) CorePlugin.getDefault().getDiagramModelService()
+                    .getBusinessAssignmentComposite(parent, SWT.NONE, tabFactory.getWidgetFactory(), selectedModel);
         }
 
         if (dynamicComposite != null) {
@@ -663,7 +668,10 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         } else if (service != null && service.isSVNHistoryComposite(dc)) {
             return service.getSVNHistorySelection(dc);
         } else if (CorePlugin.getDefault().getDiagramModelService().isInstanceOfBusinessAssignmentComposite(dc)) {
-            return CorePlugin.getDefault().getRepositoryService().getRepositoryTreeView().getSelection();
+            IRepositoryView repositoryView = RepositoryManagerHelper.findRepositoryView();
+            if (repositoryView != null) {
+                return repositoryView.getViewer().getSelection();
+            }
         }
 
         return null;

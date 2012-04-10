@@ -71,6 +71,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.SAPFunctionRepositoryObject;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
@@ -214,7 +215,7 @@ public class RepositoryReviewDialog extends Dialog {
 
     protected IRepositoryView getRepView() {
         if (repView == null) {
-            repView = RepositoryManagerHelper.getRepositoryView();
+            repView = RepositoryManagerHelper.findRepositoryView();
         }
         return repView;
     }
@@ -355,7 +356,7 @@ public class RepositoryReviewDialog extends Dialog {
     }
 
     private IRepositoryNode getInput() {
-        return typeProcessor.getInputRoot(getRepView().getRoot());
+        return typeProcessor.getInputRoot(ProjectRepositoryNode.getInstance());
 
     }
 

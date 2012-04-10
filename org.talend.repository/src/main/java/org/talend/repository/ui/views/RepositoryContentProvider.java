@@ -15,6 +15,9 @@ package org.talend.repository.ui.views;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingConfiguration;
@@ -51,13 +54,15 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     }
 
     public Object[] getElements(Object parent) {
-        if (parent.equals(getView().getViewSite())) {
-            IProjectRepositoryNode systemFolders = getView().getRoot();
-            if (systemFolders.getChildren().isEmpty()) {
-                initialize();
+        IRepositoryView view2 = getView();
+        if (view2 == null || parent.equals(view2.getViewSite())) {
+            IProjectRepositoryNode root = getRoot();
+            if (root != null) {
+                if (root.getChildren().isEmpty()) {
+                    initialize();
+                }
+                return root.getChildren().toArray();
             }
-
-            return systemFolders.getChildren().toArray();
         }
         return getChildren(parent);
     }
@@ -106,7 +111,18 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         String currentPerspective = IBrandingConfiguration.PERSPECTIVE_DI_ID;
 
         try {
-            currentPerspective = getView().getSite().getPage().getPerspective().getId();
+            IRepositoryView view2 = getView();
+            if (view2 != null) {
+                currentPerspective = view2.getSite().getPage().getPerspective().getId();
+            } else {
+                IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+                if (activeWorkbenchWindow != null) {
+                    IWorkbenchPage activePage = activeWorkbenchWindow.getActivePage();
+                    if (activePage != null) {
+                        currentPerspective = activePage.getPerspective().getId();
+                    }
+                }
+            }
         } catch (Exception e) {
             // do nothing
             // this exception is just in case, since for some specific cases, page can be null (shouldn't happen but..)
@@ -130,6 +146,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     }
 
     public ProjectRepositoryNode getRoot() {
-        return (ProjectRepositoryNode) getView().getRoot();
+        return ProjectRepositoryNode.getInstance();
     }
 }

@@ -39,7 +39,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.preferences.StatsAndLogsPreferencePage;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
@@ -61,6 +60,8 @@ public class StatsAndLogsViewHelper {
             + "+[\\.][^\\>\\<\\\\\\/\\!\\:\\|\\?\\\"\\'\\s\\.]+"; //$NON-NLS-1$
 
     public static final String OTHER_FILE_NAME_REGEX = "[^\\\"\\'\\s]*"; //$NON-NLS-1$
+
+    public static final String CONNECTION_ITEM_LABEL = "_CONNECTION_ITEM_LABEL"; //$NON-NLS-1$
 
     public static ConnectionItem findConnectionItem(RepositoryContentProvider contentProvider, RepositoryNode repositoryNode,
             String connectionLabel) {
@@ -849,7 +850,7 @@ public class StatsAndLogsViewHelper {
                 PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), itemId);
                 if (item != null) {
                     PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.REPOSITORY_PROPERTY_TYPE.getName()
-                            + StatsAndLogsPreferencePage.CONNECTION_ITEM_LABEL, item.getProperty().getLabel());
+                            + CONNECTION_ITEM_LABEL, item.getProperty().getLabel());
                 }
             }
         }

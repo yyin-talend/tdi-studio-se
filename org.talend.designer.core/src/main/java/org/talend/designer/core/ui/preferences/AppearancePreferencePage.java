@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.CorePlugin;
-import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -114,8 +114,10 @@ public class AppearancePreferencePage extends FieldEditorPreferencePage implemen
     @Override
     public void dispose() {
         super.dispose();
-        IRepositoryView view = RepositoryManager.getRepositoryView();
-        view.refresh();
+        IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
+        if (view != null) {
+            view.refresh();
+        }
     }
 
     public boolean performOk() {

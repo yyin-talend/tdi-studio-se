@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.repository.model.IRepositoryNode;
+import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.utils.RecombineRepositoryNodeUtil;
@@ -47,7 +48,7 @@ public class RepositoryViewerProvider {
 
     protected IRepositoryView getRepView() {
         if (realRepView == null) {
-            realRepView = RepositoryManagerHelper.getRepositoryView();
+            realRepView = RepositoryManagerHelper.findRepositoryView();
         }
         return realRepView;
     }
@@ -87,9 +88,17 @@ public class RepositoryViewerProvider {
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setLabelProvider(getLabelProvider());
 
-        final StructuredViewer viewer = getRepView().getViewer();
-        final ViewerSorter sorter = viewer.getSorter();
+        ViewerSorter sorter = null;
+        if (getRepView() != null) {
+            final StructuredViewer viewer = getRepView().getViewer();
+            sorter = viewer.getSorter();
+        }
+        if (sorter == null) {
+            // when the repository view is not opened, so used this one by default.
+            sorter = new RepositoryNameSorter();
+        }
         if (sorter != null) {
+            final ViewerSorter viewerSorter = sorter;
             // TDI-20528
             // treeViewer.setSorter(sorter);
             treeViewer.setSorter(new ViewerSorter() {
@@ -99,23 +108,31 @@ public class RepositoryViewerProvider {
                     if (e1 instanceof RepositoryNode && e2 instanceof RepositoryNode) {
                         final RepositoryNode node1 = (RepositoryNode) e1;
                         final RepositoryNode node2 = (RepositoryNode) e2;
-                        // do special for simple folder
+                        if (node1.isBin()) { // recycle bin is always in bottom
+                            return 1;
+                        }
+                        if (node2.isBin()) { // recycle bin is always in bottom
+                            return -1;
+                        }
+                        // do special for simple folder， TDI-20528
                         if (node1.getType() == IRepositoryNode.ENodeType.SIMPLE_FOLDER
                                 || node2.getType() == IRepositoryNode.ENodeType.SIMPLE_FOLDER) {
                             return e1.toString().compareTo(e2.toString());
                         } else {
-                            return sorter.compare(viewer, e1, e2);
+                            return viewerSorter.compare(viewer, e1, e2);
                         }
                     }
-
                     return super.compare(viewer, e1, e2);
+
                 }
 
             });
         }
-
-        treeViewer.setInput(getInputRoot(getRepView().getRoot()));
-
+        if (getRepView() != null) { // in fact, they are same
+            treeViewer.setInput(getInputRoot(getRepView().getRoot()));
+        } else {
+            treeViewer.setInput(getInputRoot(ProjectRepositoryNode.getInstance()));
+        }
         return treeViewer;
     }
 

@@ -227,20 +227,24 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
         RepositoryNode[] nodes = contentProvider.getContents();
         List<RepositoryNode> objects = new ArrayList<RepositoryNode>();
-        for (RepositoryNode n : nodes) {
-            processItems(objects, n);
-            for (RepositoryNode node : objects) {
-                if (isUseProjectSetting(node)) {
-                    if (!checkedObjects.contains(node)) {
-                        checkedObjects.add(node);
-                    }
+        if (nodes != null) {
+            for (RepositoryNode n : nodes) {
+                processItems(objects, n);
+                for (RepositoryNode node : objects) {
+                    if (isUseProjectSetting(node)) {
+                        if (!checkedObjects.contains(node)) {
+                            checkedObjects.add(node);
+                        }
 
+                    }
                 }
             }
         }
 
         viewer.setCheckedElements(checkedObjects.toArray());
-        viewer.setExpandedElements(contentProvider.getContents());
+        if (nodes != null) {
+            viewer.setExpandedElements(nodes);
+        }
 
     }
 
@@ -307,19 +311,22 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
         RepositoryNode[] nodes = statContentProvider.getContents();
         List<RepositoryNode> objects = new ArrayList<RepositoryNode>();
-        for (RepositoryNode n : nodes) {
-            processItems(objects, n);
-            for (RepositoryNode node : objects) {
-                if (isStatUseProjectSetting(node)) {
-                    if (!statCheckedObjects.contains(node)) {
-                        statCheckedObjects.add(node);
+        if (nodes != null) {
+            for (RepositoryNode n : nodes) {
+                processItems(objects, n);
+                for (RepositoryNode node : objects) {
+                    if (isStatUseProjectSetting(node)) {
+                        if (!statCheckedObjects.contains(node)) {
+                            statCheckedObjects.add(node);
+                        }
                     }
                 }
             }
         }
-
         statViewer.setCheckedElements(statCheckedObjects.toArray());
-        statViewer.setExpandedElements(statContentProvider.getContents());
+        if (nodes != null) {
+            statViewer.setExpandedElements(nodes);
+        }
     }
 
     private boolean isUseProjectSetting(RepositoryNode node) {
@@ -409,18 +416,22 @@ public class StatLogsAndImplicitcontextTreeViewPage extends ProjectSettingPage {
 
         @Override
         public Object[] getElements(Object parent) {
-            if (parent.equals(getView().getViewSite())) {
+            IRepositoryView view = getView();
+            if (view == null || parent.equals(view.getViewSite())) {
                 return getContents();
             }
             return getChildren(parent);
         }
 
         RepositoryNode[] getContents() {
-            ProjectRepositoryNode systemFolders = (ProjectRepositoryNode) getView().getRoot();
-            return new RepositoryNode[] { systemFolders.getRootRepositoryNode(ERepositoryObjectType.PROCESS) };
-            // return (RepositoryNode[])
-            // systemFolders.getRootRepositoryNode(ERepositoryObjectType.PROCESS).getChildren().toArray(
-            // new RepositoryNode[0]);
+            ProjectRepositoryNode root = getRoot();
+            if (root != null) {
+                RepositoryNode rootRepositoryNode = root.getRootRepositoryNode(ERepositoryObjectType.PROCESS);
+                if (rootRepositoryNode != null) {
+                    return new RepositoryNode[] { rootRepositoryNode };
+                }
+            }
+            return null;
         }
     }
 

@@ -112,7 +112,7 @@ public class ConfigRoutineLibraryAction extends AContextualAction {
      */
     protected void doRun() {
         ConfigExternalLibWizard wizard = new ConfigExternalLibWizard();
-        IWorkbench workbench = getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
+        IWorkbench workbench = getWorkbench();
         wizard.init(workbench, (IStructuredSelection) getSelection());
 
         Shell activeShell = Display.getCurrent().getActiveShell();

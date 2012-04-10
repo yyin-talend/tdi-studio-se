@@ -42,7 +42,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
-import org.talend.designer.core.ui.preferences.ImplicitContextLoadPreferencePage;
+import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
@@ -320,7 +320,7 @@ public class ImplicitContextLoadHelper {
         PREFERENCE_STORE.setValue(languagePrefix + getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE), itemId);
         if (item != null) {
             PREFERENCE_STORE.setValue(languagePrefix + getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE)
-                    + ImplicitContextLoadPreferencePage.CONNECTION_ITEM_LABEL, item.getProperty().getLabel());
+                    + StatsAndLogsViewHelper.CONNECTION_ITEM_LABEL, item.getProperty().getLabel());
         }
     }
 

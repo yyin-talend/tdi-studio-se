@@ -89,7 +89,7 @@ public class GenerateDocAsHTMLAction extends AContextualAction {
      */
     protected void doRun() {
         GenerateDocAsHTMLWizard processWizard = new GenerateDocAsHTMLWizard();
-        IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
+        IWorkbench workbench = getWorkbench();
         processWizard.setWindowTitle(GENERATE_DOC_AS_HTML);
         processWizard.init(workbench, (IStructuredSelection) this.getSelection());
 

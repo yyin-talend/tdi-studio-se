@@ -41,6 +41,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -81,6 +82,7 @@ import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.views.IJobSettingsView;
+import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.wizards.PropertiesWizard;
 
 /**
@@ -228,8 +230,14 @@ public class EditPropertiesAction extends AContextualAction {
                     RefactoringStatusEntry entry = entries[i];
                     errorMessage += "\n>>>" + entry.getMessage(); //$NON-NLS-1$
                 }
-                MessageDialog.openError(getViewPart().getViewSite().getShell(),
-                        Messages.getString("EditPropertiesAction.warning"), errorMessage); //$NON-NLS-1$
+                Shell shell = null;
+                IRepositoryView viewPart = getViewPart();
+                if (viewPart != null) {
+                    shell = viewPart.getViewSite().getShell();
+                } else {
+                    shell = Display.getCurrent().getActiveShell();
+                }
+                MessageDialog.openError(shell, Messages.getString("EditPropertiesAction.warning"), errorMessage); //$NON-NLS-1$
                 return;
             }
 

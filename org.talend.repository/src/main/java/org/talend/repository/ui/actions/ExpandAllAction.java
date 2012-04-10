@@ -19,11 +19,10 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
@@ -52,23 +51,25 @@ public class ExpandAllAction extends AContextualAction {
             return;
         }
         Object objNode = ((IStructuredSelection) selection).getFirstElement();
-        if (objNode != null) {
-            RepositoryNode node = (RepositoryNode) objNode;
-            if ((node.getProperties(EProperties.CONTENT_TYPE) != null)
-                    && (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.SVN_ROOT)) {
-                view.expand(node);
-                view.getViewer().refresh();
-                return;
+        if (view != null) {
+            if (objNode != null) {
+                RepositoryNode node = (RepositoryNode) objNode;
+                if ((node.getProperties(EProperties.CONTENT_TYPE) != null)
+                        && (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.SVN_ROOT)) {
+                    view.expand(node);
+                    view.getViewer().refresh();
+                    return;
+                }
             }
-        }
 
-        Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
-        for (Object obj : ((IStructuredSelection) selection).toArray()) {
-            expand(view, (RepositoryNode) obj, !view.getExpandedState(obj));
-            types.add(((RepositoryNode) obj).getContentType());
-        }
-        for (ERepositoryObjectType type : types) {
-            RepositoryManager.getRepositoryView().refresh(type);
+            Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
+            for (Object obj : ((IStructuredSelection) selection).toArray()) {
+                expand(view, (RepositoryNode) obj, !view.getExpandedState(obj));
+                types.add(((RepositoryNode) obj).getContentType());
+            }
+            for (ERepositoryObjectType type : types) {
+                view.refresh(type);
+            }
         }
     }
 

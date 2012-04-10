@@ -23,9 +23,9 @@ import org.eclipse.ui.IWorkbench;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.spagic.engines.client.Activator;
 import org.talend.spagic.engines.client.i18n.Messages;
@@ -67,8 +67,7 @@ public class DeployOnSpagicAction extends AContextualAction {
     }
 
     public boolean isVisible() {
-        return isEnabled()
-                && Activator.getDefault().getPreferenceStore().getBoolean(SpagicPreferenceInitializer.SPAGIC_STATUS);
+        return isEnabled() && Activator.getDefault().getPreferenceStore().getBoolean(SpagicPreferenceInitializer.SPAGIC_STATUS);
     }
 
     public DeployOnSpagicAction() {
@@ -80,7 +79,7 @@ public class DeployOnSpagicAction extends AContextualAction {
 
     protected void doRun() {
         SpagicDeployWizard processWizard = new SpagicDeployWizard();
-        IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
+        IWorkbench workbench = getWorkbench();
         processWizard.setWindowTitle(DEPLOYONSPAGIC);
         processWizard.init(workbench, (IStructuredSelection) this.getSelection());
 

@@ -142,7 +142,10 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         }
 
         try {
-            RepositoryManager.getRepositoryView().refresh(rEditorInput.getRepositoryNode());
+            IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
+            if (view != null) {
+                view.refresh(rEditorInput.getRepositoryNode());
+            }
             // see bug 1321
             item = (FileItem) rEditorInput.getItem();
             if (!rEditorInput.isReadOnly()) {

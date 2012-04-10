@@ -14,6 +14,7 @@ package org.talend.sqlbuilder.actions;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -27,7 +28,6 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
@@ -42,6 +42,7 @@ import org.talend.repository.model.QueryEMFRepositoryNode;
 import org.talend.repository.model.QueryRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
+import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.wizards.metadata.ContextSetsSelectionDialog;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
@@ -92,7 +93,17 @@ public class EditQueriesAction extends AContextualAction {
             connParameters.setQuery(""); //$NON-NLS-1$
         }
 
-        Shell parentShell = new Shell(getViewPart().getViewer().getControl().getDisplay());
+        IRepositoryView viewPart = getViewPart();
+        Display display = null;
+        if (viewPart != null) {
+            display = viewPart.getViewer().getControl().getDisplay();
+        } else {
+            display = Display.getCurrent();
+            if (display == null) {
+                display = Display.getDefault();
+            }
+        }
+        Shell parentShell = new Shell(display);
         TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_REP);
 
         Connection connection = dbConnectionItem.getConnection();
@@ -117,7 +128,10 @@ public class EditQueriesAction extends AContextualAction {
         dial.setConnParameters(connParameters);
         dial.open();
         // RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_CONNECTIONS);
-        RepositoryManager.getRepositoryView().refreshView();
+        IRepositoryView view = getViewPart();
+        if (view != null) {
+            view.refreshView();
+        }
     }
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {

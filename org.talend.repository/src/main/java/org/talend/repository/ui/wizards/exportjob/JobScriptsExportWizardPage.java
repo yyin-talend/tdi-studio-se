@@ -41,9 +41,11 @@ import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
@@ -90,7 +92,6 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
-import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
@@ -107,7 +108,6 @@ import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.utils.ZipToFile;
-import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.action.JobExportAction;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
@@ -830,9 +830,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 items.put(item.getProperty().getId(), item);
             }
         }
-        RepositoryContentProvider repositoryContentProvider = (RepositoryContentProvider) RepositoryManagerHelper
-                .getRepositoryView().getViewer().getContentProvider();
-        collectNodes(items, repositoryContentProvider.getChildren(repositoryNode));
+        if (this.treeViewer != null) {
+            IContentProvider contentProvider = this.treeViewer.getFilteredCheckboxTree().getViewer().getContentProvider();
+            if (contentProvider instanceof ITreeContentProvider) {
+                Object[] children = ((ITreeContentProvider) contentProvider).getChildren(repositoryNode);
+                collectNodes(items, children);
+            }
+        }
     }
 
     private static boolean isRepositoryFolder(RepositoryNode node) {

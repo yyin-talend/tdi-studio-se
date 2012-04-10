@@ -20,12 +20,11 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.RepositoryManagerHelper;
@@ -98,34 +97,28 @@ public final class ImportItemAction extends AContextualAction implements IWorkbe
         }
 
         // qli modified to fix the bug "6999".
-        final TreeViewer repositoryTreeView = CorePlugin.getDefault().getRepositoryService().getRepositoryTreeView();
-        if (repositoryTreeView != null) {
-            repositoryTreeView.getTree().setFocus();
+        IRepositoryView repositoryView = RepositoryManagerHelper.findRepositoryView();
+        if (repositoryView != null && repositoryView.getViewer() instanceof TreeViewer) {
+            ((TreeViewer) repositoryView.getViewer()).getTree().setFocus();
         }
 
         ISelection selection = this.getSelection();
-        if (toolbarAction == true) {
-            IRepositoryView repositoryView = RepositoryManagerHelper.getRepositoryView();
-            selection = (IStructuredSelection) repositoryView.getViewer().getSelection();
-        }
-        if (selection instanceof IStructuredSelection) {
-            RepositoryNode rNode = null;
-            if (((IStructuredSelection) selection).getFirstElement() instanceof RepositoryNode) {
-                rNode = (RepositoryNode) ((IStructuredSelection) selection).getFirstElement();
+        if (toolbarAction) {
+            if (repositoryView != null) {
+                selection = (IStructuredSelection) repositoryView.getViewer().getSelection();
             }
+        }
 
-            ImportItemWizard wizard = new ImportItemWizard(null);
-            IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
-            wizard.setWindowTitle(IMPORT_ITEM);
-            wizard.init(workbench, (IStructuredSelection) selection);
+        ImportItemWizard wizard = new ImportItemWizard(null);
+        wizard.setWindowTitle(IMPORT_ITEM);
+        wizard.init(PlatformUI.getWorkbench(), (IStructuredSelection) selection);
 
-            Shell activeShell = Display.getCurrent().getActiveShell();
-            WizardDialog dialog = new WizardDialog(activeShell, wizard);
-            if (dialog.open() == Window.OK) {
-                refresh();
-                if (wizard.isNeedToRefreshPalette()) {
-                    ComponentUtilities.updatePalette();
-                }
+        Shell activeShell = Display.getCurrent().getActiveShell();
+        WizardDialog dialog = new WizardDialog(activeShell, wizard);
+        if (dialog.open() == Window.OK) {
+            refresh();
+            if (wizard.isNeedToRefreshPalette()) {
+                ComponentUtilities.updatePalette();
             }
         }
     }

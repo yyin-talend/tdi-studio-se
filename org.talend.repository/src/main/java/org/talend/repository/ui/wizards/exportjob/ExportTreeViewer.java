@@ -40,7 +40,6 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
@@ -252,13 +251,6 @@ public class ExportTreeViewer {
                 return filterRepositoryNode(node);
             }
         });
-    }
-
-    protected IRepositoryView getRepView() {
-        if (realRepView == null) {
-            realRepView = RepositoryManagerHelper.getRepositoryView();
-        }
-        return realRepView;
     }
 
     public void addCheckStateListener(ICheckStateListener listener) {

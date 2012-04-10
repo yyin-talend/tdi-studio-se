@@ -24,12 +24,10 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -126,20 +124,18 @@ public final class ExportItemAction extends AContextualAction implements IWorkbe
 
     @Override
     protected void doRun() {
-        final TreeViewer repositoryTreeView = CorePlugin.getDefault().getRepositoryService().getRepositoryTreeView();
-        if (repositoryTreeView != null) {
-            repositoryTreeView.getTree().setFocus();
+        IRepositoryView repositoryView = getViewPart();
+        if (repositoryView != null && repositoryView.getViewer() instanceof TreeViewer) {
+            ((TreeViewer) repositoryView.getViewer()).getTree().setFocus();
         }
         ExportItemWizard wizard = new ExportItemWizard();
-        IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
+        IWorkbench workbench = getWorkbench();
         wizard.setWindowTitle(EXPORT_ITEM);
-        if (toolbarAction == false) {
+        if (!toolbarAction) {
             wizard.init(workbench, (IStructuredSelection) this.getSelection());
         } else {
-            IRepositoryView repositoryView = RepositoryManagerHelper.getRepositoryView();
             if (repositoryView != null) {
                 IStructuredSelection selection = (IStructuredSelection) repositoryView.getViewer().getSelection();
-
                 wizard.init(workbench, selection);
             }
         }

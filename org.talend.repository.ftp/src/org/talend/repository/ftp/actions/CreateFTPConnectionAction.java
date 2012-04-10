@@ -38,6 +38,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC hwang class global comment. Detailled comment
@@ -134,9 +135,12 @@ public class CreateFTPConnectionAction extends AbstractCreateAction {
         RepositoryNode metadataNode = dbConnectionNode.getParent();
         if (metadataNode != null) {
             // Force focus to the repositoryView and open Metadata and DbConnection nodes
-            getViewPart().setFocus();
-            getViewPart().expand(metadataNode, true);
-            getViewPart().expand(dbConnectionNode, true);
+            IRepositoryView viewPart = getViewPart();
+            if (viewPart != null) {
+                viewPart.setFocus();
+                viewPart.expand(metadataNode, true);
+                viewPart.expand(dbConnectionNode, true);
+            }
         }
 
         FTPConnection connection = null;
@@ -195,7 +199,10 @@ public class CreateFTPConnectionAction extends AbstractCreateAction {
         wizardDialog.create();
         wizardDialog.open();
 
-        RepositoryManager.getRepositoryView().expand(dbConnectionNode, true);
+        IRepositoryView view = getViewPart();
+        if (view != null) {
+            view.expand(dbConnectionNode, true);
+        }
 
         RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_FILE_FTP);
 

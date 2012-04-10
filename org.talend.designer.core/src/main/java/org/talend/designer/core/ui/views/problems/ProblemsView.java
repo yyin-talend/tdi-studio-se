@@ -61,7 +61,6 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.service.IDesignerPerlService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
@@ -71,6 +70,7 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.views.problems.Problems.Group;
 import org.talend.repository.documentation.ERepositoryActionName;
 import org.talend.repository.ui.actions.routines.AbstractRoutineAction;
+import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -307,7 +307,10 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
                     RoutineItem routine = getRoutineItem();
                     IEditorPart editor = openRoutineEditor(routine, false);
                     focusMarkerForRoutineEditor(editor);
-                    RepositoryManager.getRepositoryView().refresh(ERepositoryObjectType.ROUTINES);
+                    IRepositoryView view = getViewPart();
+                    if (view != null) {
+                        view.refresh(ERepositoryObjectType.ROUTINES);
+                    }
                 } catch (SystemException e) {
                     MessageBoxExceptionHandler.process(e);
                 } catch (PartInitException e) {

@@ -89,7 +89,7 @@ public class ExportJobScriptAction extends AContextualAction {
 
     protected void doRun() {
         JobScriptsExportWizard processWizard = new JobScriptsExportWizard();
-        IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
+        IWorkbench workbench = getWorkbench();
         processWizard.setWindowTitle(EXPORTJOBSCRIPTS);
         processWizard.init(workbench, (IStructuredSelection) this.getSelection());
 

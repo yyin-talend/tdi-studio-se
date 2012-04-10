@@ -30,7 +30,6 @@ import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
@@ -41,6 +40,7 @@ import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.actions.AContextualAction;
+import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -90,7 +90,10 @@ public class OpenDiagramAction extends AContextualAction implements IIntroAction
                 if (part instanceof BusinessDiagramEditor) {
                     ((BusinessDiagramEditor) part).setLastVersion(true);
                 }
-                RepositoryManager.getRepositoryView().refresh(repositoryNode);
+                IRepositoryView view = getViewPart();
+                if (view != null) {
+                    view.refresh(repositoryNode);
+                }
             }
         }
     }
@@ -156,8 +159,9 @@ public class OpenDiagramAction extends AContextualAction implements IIntroAction
             return getSelection();
         } else {
             RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(params.getProperty("nodeId"), false);
-            if (repositoryNode != null) {
-                RepositoryNodeUtilities.expandParentNode(getViewPart(), repositoryNode);
+            IRepositoryView viewPart = getViewPart();
+            if (repositoryNode != null && viewPart != null) {
+                RepositoryNodeUtilities.expandParentNode(viewPart, repositoryNode);
                 return new StructuredSelection(repositoryNode);
             }
             return null;

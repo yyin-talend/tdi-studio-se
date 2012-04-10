@@ -11,7 +11,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
@@ -42,8 +41,6 @@ import org.talend.repository.ui.views.IRepositoryView;
 public class CreateDiagramAction extends AContextualAction implements IIntroAction {
 
     private RepositoryNode repositoryNode;
-
-    private static final String PERSPECTIVE_DI_ID = "org.talend.rcp.perspective"; //$NON-NLS-1$
 
     public CreateDiagramAction() {
         super();
@@ -150,24 +147,18 @@ public class CreateDiagramAction extends AContextualAction implements IIntroActi
 
     private void setRepositoryNode(Properties params) {
         // bug 16594
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        if (page != null) {
-            String perId = page.getPerspective().getId();
-            if ((!"".equals(perId) || null != perId) && perId.equalsIgnoreCase(PERSPECTIVE_DI_ID)) {
-                IRepositoryView view = RepositoryManagerHelper.getRepositoryView();
-                if (view != null) {
+        IRepositoryView view = RepositoryManagerHelper.getRepositoryView();
+        if (view != null) {
 
-                    Object type = params.get("type");
-                    if (ERepositoryObjectType.BUSINESS_PROCESS.name().equals(type)) {
-                        RepositoryNode processNode = ((ProjectRepositoryNode) view.getRoot())
-                                .getRootRepositoryNode(ERepositoryObjectType.BUSINESS_PROCESS);
-                        final StructuredViewer viewer = view.getViewer();
-                        if (viewer instanceof TreeViewer) {
-                            ((TreeViewer) viewer).expandToLevel(processNode, 1);
-                        }
-                        this.repositoryNode = processNode;
-                    }
+            Object type = params.get("type");
+            if (ERepositoryObjectType.BUSINESS_PROCESS.name().equals(type)) {
+                RepositoryNode processNode = ((ProjectRepositoryNode) view.getRoot())
+                        .getRootRepositoryNode(ERepositoryObjectType.BUSINESS_PROCESS);
+                final StructuredViewer viewer = view.getViewer();
+                if (viewer instanceof TreeViewer) {
+                    ((TreeViewer) viewer).expandToLevel(processNode, 1);
                 }
+                this.repositoryNode = processNode;
             }
         }
     }

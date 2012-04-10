@@ -45,6 +45,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -137,7 +138,10 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
                 MessageBoxExceptionHandler.process(e);
             }
         } else {
-            getViewPart().refresh(ERepositoryObjectType.PROCESS);
+            IRepositoryView viewPart = getViewPart();
+            if (viewPart != null) {
+                viewPart.refresh(ERepositoryObjectType.PROCESS);
+            }
         }
     }
 
@@ -244,8 +248,9 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
             return getSelection();
         } else {
             RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(params.getProperty("nodeId"), false);
-            if (repositoryNode != null) {
-                RepositoryNodeUtilities.expandParentNode(getViewPart(), repositoryNode);
+            IRepositoryView viewPart = getViewPart();
+            if (repositoryNode != null && viewPart != null) {
+                RepositoryNodeUtilities.expandParentNode(viewPart, repositoryNode);
                 return new StructuredSelection(repositoryNode);
             }
             return null;

@@ -22,7 +22,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
@@ -142,7 +142,7 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
     @Override
     public void dispose() {
         super.dispose();
-        IRepositoryView view = RepositoryManager.getRepositoryView();
+        IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
         if (view != null) {
             view.refresh();
         }

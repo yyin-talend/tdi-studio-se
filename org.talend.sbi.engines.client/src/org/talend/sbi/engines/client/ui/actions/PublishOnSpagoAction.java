@@ -23,9 +23,9 @@ import org.eclipse.ui.IWorkbench;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.sbi.engines.client.Activator;
 import org.talend.sbi.engines.client.ui.preferences.SpagoPreferenceInitializer;
@@ -66,8 +66,7 @@ public final class PublishOnSpagoAction extends AContextualAction {
     }
 
     public boolean isVisible() {
-        return isEnabled()
-                && Activator.getDefault().getPreferenceStore().getBoolean(SpagoPreferenceInitializer.SPAGO_STATUS);
+        return isEnabled() && Activator.getDefault().getPreferenceStore().getBoolean(SpagoPreferenceInitializer.SPAGO_STATUS);
     }
 
     public PublishOnSpagoAction() {
@@ -79,7 +78,7 @@ public final class PublishOnSpagoAction extends AContextualAction {
 
     protected void doRun() {
         PublishOnSpagoExportWizard publishWizard = new PublishOnSpagoExportWizard();
-        IWorkbench workbench = this.getViewPart().getViewSite().getWorkbenchWindow().getWorkbench();
+        IWorkbench workbench = getWorkbench();
         publishWizard.setWindowTitle(EXPORTJOBSCRIPTS + " (SpagoBI)"); //$NON-NLS-1$
         publishWizard.init(workbench, (IStructuredSelection) this.getSelection());
 

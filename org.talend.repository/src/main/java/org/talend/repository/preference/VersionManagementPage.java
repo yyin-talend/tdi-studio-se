@@ -1066,8 +1066,10 @@ public class VersionManagementPage extends ProjectSettingPage {
                         // open projectSetting,change item Verson,then expand Tree,routine,jobscript and metadata always
                         // use old version.must refresh all tree.
                         // RepositoryManager.refresh(types);
-                        IRepositoryView view = RepositoryManager.getRepositoryView();
-                        view.refresh();
+                        IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
+                        if (view != null) {
+                            view.refresh();
+                        }
                     }
                 };
                 rwu.setAvoidUnloadResources(true);
