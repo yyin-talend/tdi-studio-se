@@ -21,8 +21,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.cursor.CursorHelper;
-import org.talend.core.model.components.IODataComponent;
-import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.BlockCode;
 import org.talend.core.model.process.EConnectionType;
@@ -43,6 +41,7 @@ import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
 import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
 import org.talend.designer.xmlmap.generation.GenerationManager;
 import org.talend.designer.xmlmap.generation.GenerationManagerFactory;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
@@ -160,8 +159,28 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
 
     @Override
     protected void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
-        // TODO Auto-generated method stub
-        System.out.println();
+        List<AbstractInOutTree> abstractTrees = new ArrayList<AbstractInOutTree>();
+        XmlMapData externalEmfData = (XmlMapData) getExternalEmfData();
+        abstractTrees.addAll(externalEmfData.getInputTrees());
+        abstractTrees.addAll(externalEmfData.getOutputTrees());
+        for (AbstractInOutTree abstractTree : abstractTrees) {
+            if (abstractTree.getName() != null && abstractTree.getName().equals(conectionName)) {
+                List<TreeNode> children = new ArrayList<TreeNode>();
+                if (abstractTree instanceof InputXmlTree) {
+                    children.addAll(((InputXmlTree) abstractTree).getNodes());
+                } else {
+                    children.addAll(((OutputXmlTree) abstractTree).getNodes());
+                }
+                for (TreeNode treeNode : children) {
+                    if (treeNode.getName() != null && treeNode.getName().equals(oldColumnName)
+                            && !oldColumnName.equals(newColumnName)) {
+                        treeNode.setName(newColumnName);
+                        XmlMapUtil.updateXPathAndExpression(externalEmfData, expressionManager, treeNode, newColumnName, 2, true);
+                    }
+                }
+            }
+        }
+
     }
 
     @Override
@@ -318,27 +337,6 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         if (mapperMain == null) {
             mapperMain = new MapperMain(this);
         }
-    }
-
-    @Override
-    public void metadataInputChanged(IODataComponent dataComponent, String connectionToApply) {
-        if (dataComponent.getTable() != null) {
-            XmlMapData externalEmfData = (XmlMapData) getExternalEmfData();
-            for (InputXmlTree inputTree : externalEmfData.getInputTrees()) {
-                if (inputTree.getName() != null && inputTree.getName().equals(connectionToApply)) {
-                    mapperHelper.rebuildInputTree(inputTree, dataComponent.getTable(), externalEmfData);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {
-        List<IMetadataTable> list = new ArrayList<IMetadataTable>();
-        if (dataComponent.getTable() != null) {
-            list.add(dataComponent.getTable());
-        }
-        mapperHelper.rebuildModelOutputs(list, (XmlMapData) getExternalEmfData());
     }
 
     @Override
