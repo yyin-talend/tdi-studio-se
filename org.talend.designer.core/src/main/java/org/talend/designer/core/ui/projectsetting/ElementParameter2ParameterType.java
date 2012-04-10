@@ -297,7 +297,8 @@ public class ElementParameter2ParameterType {
             ElementParameterType processParam = null;
             for (int i = 0; i < processParameters.size(); i++) {
                 ElementParameterType paramType = (ElementParameterType) processParameters.get(i);
-                if (paramType.getName().equals(pType.getName()) && paramType.getField().equals(pType.getField())) {
+                if (paramType.getName().equals(pType.getName()) && paramType.getField() != null
+                        && paramType.getField().equals(pType.getField())) {
                     processParam = paramType;
                 } else if (pType.getName().contains(":")) {
                     StringTokenizer token = new StringTokenizer(pType.getName(), ":"); //$NON-NLS-1$
