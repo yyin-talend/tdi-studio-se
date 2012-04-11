@@ -31,83 +31,85 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 /**
  * rdubois class global comment. Detailled comment
  */
-public class SetTrimToTrueAppendModeAdvancedFileOutputXMLComponentsMigrationTask
-		extends AbstractJobMigrationTask {
+public class SetTrimToTrueAppendModeAdvancedFileOutputXMLComponentsMigrationTask extends AbstractJobMigrationTask {
 
-	@Override
-	public ExecutionResult execute(Item item) {
-		try {
-			setTrimToTrue(item);
-			return ExecutionResult.SUCCESS_NO_ALERT;
-		} catch (Exception e) {
-			ExceptionHandler.process(e);
-			return ExecutionResult.FAILURE;
-		}
-	}
+    @Override
+    public ExecutionResult execute(Item item) {
+        try {
+            setTrimToTrue(item);
+            return ExecutionResult.SUCCESS_NO_ALERT;
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+            return ExecutionResult.FAILURE;
+        }
+    }
 
-	public Date getOrder() {
-		GregorianCalendar gc = new GregorianCalendar(2012, 4, 10, 12, 0, 0);
-		return gc.getTime();
-	}
+    public Date getOrder() {
+        GregorianCalendar gc = new GregorianCalendar(2012, 4, 10, 12, 0, 0);
+        return gc.getTime();
+    }
 
-	private void setTrimToTrue(Item item) throws Exception {
-		ProcessType processType = getProcessType(item);
-		IComponentConversion addTrim = new AddTrimOption();
-		IComponentFilter filter = new NameComponentFilter(
-				"tAdvancedFileOutputXML");
-		ModifyComponentsAction.searchAndModify(item, processType, filter,
-				Arrays.<IComponentConversion> asList(addTrim));
-	}
+    private void setTrimToTrue(Item item) throws Exception {
+        ProcessType processType = getProcessType(item);
+        IComponentConversion addTrim = new AddTrimOption();
+        IComponentFilter filter = new NameComponentFilter("tAdvancedFileOutputXML");
+        ModifyComponentsAction.searchAndModify(item, processType, filter, Arrays.<IComponentConversion> asList(addTrim));
+    }
 
-	private class AddTrimOption implements IComponentConversion {
+    /**
+     * 
+     * AddTrimOption class global comment. Detailled comment
+     */
+    private class AddTrimOption implements IComponentConversion {
 
-		private String field = "CHECK"; //$NON-NLS-1$
-		private String name = "TRIM"; //$NON-NLS-1$
+        private String field = "CHECK"; //$NON-NLS-1$
 
-		public AddTrimOption() {
-			super();
-		}
+        private String name = "TRIM"; //$NON-NLS-1$
 
-		public void transform(NodeType node) {
+        public AddTrimOption() {
+            super();
+        }
 
-			if (ComponentUtilities.getNodeProperty(node, name) == null) {
-				ComponentUtilities.addNodeProperty(node, name, field);
-			}
-			
-			boolean isMerge = false;
-			boolean isCompact = false;
-			
-			boolean mergeIsPassed = false;
-			boolean compactIsPassed = false;
+        public void transform(NodeType node) {
 
-			for (Object o : node.getElementParameter()) {
-				ElementParameterType para = (ElementParameterType) o;
-				if ("MERGE".equals(para.getName())) { //$NON-NLS-1$
-					mergeIsPassed = true;
-					if ("true".equals(para.getValue())) {
-						isMerge = true;
-					}
-				}
-				
-				if ("PRETTY_COMPACT".equals(para.getName())) { //$NON-NLS-1$
-					compactIsPassed = true;
-					if ("true".equals(para.getValue())) {
-						isCompact = true;
-					}
-				}
-				
-				if(mergeIsPassed && compactIsPassed) {
-					break;
-				}
-				
-			}
-						
-			if(isMerge && !isCompact) {
-				ComponentUtilities.setNodeValue(node, name, "true");
-			} else {
-				ComponentUtilities.setNodeValue(node, name, "false");
-			}
+            if (ComponentUtilities.getNodeProperty(node, name) == null) {
+                ComponentUtilities.addNodeProperty(node, name, field);
+            }
 
-		}
-	}
+            boolean isMerge = false;
+            boolean isCompact = false;
+
+            boolean mergeIsPassed = false;
+            boolean compactIsPassed = false;
+
+            for (Object o : node.getElementParameter()) {
+                ElementParameterType para = (ElementParameterType) o;
+                if ("MERGE".equals(para.getName())) { //$NON-NLS-1$
+                    mergeIsPassed = true;
+                    if ("true".equals(para.getValue())) {
+                        isMerge = true;
+                    }
+                }
+
+                if ("PRETTY_COMPACT".equals(para.getName())) { //$NON-NLS-1$
+                    compactIsPassed = true;
+                    if ("true".equals(para.getValue())) {
+                        isCompact = true;
+                    }
+                }
+
+                if (mergeIsPassed && compactIsPassed) {
+                    break;
+                }
+
+            }
+
+            if (isMerge && !isCompact) {
+                ComponentUtilities.setNodeValue(node, name, "true");
+            } else {
+                ComponentUtilities.setNodeValue(node, name, "false");
+            }
+
+        }
+    }
 }
