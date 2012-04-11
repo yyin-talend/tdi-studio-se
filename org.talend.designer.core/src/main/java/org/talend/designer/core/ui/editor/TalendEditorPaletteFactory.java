@@ -20,6 +20,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
@@ -394,10 +396,13 @@ public final class TalendEditorPaletteFactory {
             }
             family = xmlComponent.getTranslatedFamilyName();
             oraFamily = xmlComponent.getOriginalFamilyName();
-            if (filter != null && !filter.contains("(") && !filter.contains(")") && !filter.contains("[")
-                    && !filter.contains("]")) {
-                String regex = getFilterRegex();
-                needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
+            if (filter != null) {
+                Pattern pattern = Pattern.compile("^[A-Za-z0-9]+$");//$NON-NLS-1$
+                Matcher matcher = pattern.matcher(filter);
+                if (matcher.matches()) {
+                    String regex = getFilterRegex();
+                    needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
+                }
             }
             // if (isFavorite == false) {
             if ((oraFamily.equals("Misc") || oraFamily.equals("Miscellaneous")) && !noteAeeded && needAddNote) { //$NON-NLS-1$
@@ -425,12 +430,15 @@ public final class TalendEditorPaletteFactory {
             }
             // }
 
-            if (filter != null && !filter.contains("(") && !filter.contains(")") && !filter.contains("[")
-                    && !filter.contains("]")) {
-                String regex = getFilterRegex();
-                if (!xmlComponent.getName().toLowerCase().matches(regex)
-                        && !xmlComponent.getLongName().toLowerCase().matches(regex)) {
-                    continue;
+            if (filter != null) {
+                Pattern pattern = Pattern.compile("^[A-Za-z0-9]+$");//$NON-NLS-1$
+                Matcher matcher = pattern.matcher(filter);
+                if (matcher.matches()) {
+                    String regex = getFilterRegex();
+                    if (!xmlComponent.getName().toLowerCase().matches(regex)
+                            && !xmlComponent.getLongName().toLowerCase().matches(regex)) {
+                        continue;
+                    }
                 }
             }
 
