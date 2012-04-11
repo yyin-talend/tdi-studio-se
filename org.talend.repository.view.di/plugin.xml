@@ -28,7 +28,7 @@
             </instanceof>
          </possibleChildren>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -73,7 +73,7 @@
             </instanceof>
          </possibleChildren>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -95,7 +95,7 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
-            appearsBefore="org.talend.repository.viewer.root.code"
+            appearsBefore="org.talend.repository.viewer.root.sqlTemplates"
             contentProvider="org.talend.repository.view.di.viewer.content.ContextsContentProvider"
             icon="icons/contexts.gif"
             id="org.talend.repository.viewer.root.contexts"
@@ -118,7 +118,7 @@
             </instanceof>
          </possibleChildren>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -127,51 +127,6 @@
                   <test
                         forcePluginActivation="true"
                         property="org.talend.repository.node.isContextTopNode">
-                  </test>
-                  <not>
-                     <test
-                           forcePluginActivation="true"
-                           property="org.talend.repository.node.isDeleted">
-                     </test>
-                  </not>
-               </and>
-            </enablement>
-         </actionProvider>
-      </navigatorContent>
-      <navigatorContent
-            activeByDefault="true"
-            appearsBefore="org.talend.repository.viewer.root.sqlTemplates"
-            contentProvider="org.talend.repository.view.di.viewer.content.code.CodeTopNodeContentProvider"
-            icon="icons/code.png"
-            id="org.talend.repository.viewer.root.code"
-            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="Code"
-            priority="high">
-         <triggerPoints>
-            <or>
-               <adapt
-                     type="org.talend.repository.model.ProjectRepositoryNode">
-               </adapt>
-               <instanceof
-                     value="org.talend.repository.model.ProjectRepositoryNode">
-               </instanceof>
-            </or>
-         </triggerPoints>
-         <possibleChildren>
-            <instanceof
-                  value="org.talend.repository.model.RepositoryNode">
-            </instanceof>
-         </possibleChildren>
-         <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
-            <enablement>
-               <and>
-                  <instanceof
-                        value="org.talend.repository.model.RepositoryNode">
-                  </instanceof>
-                  <test
-                        forcePluginActivation="true"
-                        property="org.talend.repository.node.isCodeTopNode">
                   </test>
                   <not>
                      <test
@@ -208,7 +163,7 @@
             </instanceof>
          </possibleChildren>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -230,7 +185,7 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
-            appearsBefore="org.talend.repository.viewer.root.metadata"
+            appearsBefore="org.talend.repository.viewer.root.documentation"
             contentProvider="org.talend.repository.view.di.viewer.content.SqlTemplatesContentProvider"
             icon="icons/sqlTemplates.png"
             id="org.talend.repository.viewer.root.sqlTemplates"
@@ -253,7 +208,7 @@
             </instanceof>
          </possibleChildren>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -262,51 +217,6 @@
                   <test
                         forcePluginActivation="true"
                         property="org.talend.repository.node.isSqlTemplatesTopNode">
-                  </test>
-                  <not>
-                     <test
-                           forcePluginActivation="true"
-                           property="org.talend.repository.node.isDeleted">
-                     </test>
-                  </not>
-               </and>
-            </enablement>
-         </actionProvider>
-      </navigatorContent>
-      <navigatorContent
-            activeByDefault="true"
-            appearsBefore="org.talend.repository.viewer.root.documentation"
-            contentProvider="org.talend.repository.view.di.viewer.content.metadata.MetadataTopNodeContentProvider"
-            icon="icons/metadata.png"
-            id="org.talend.repository.viewer.root.metadata"
-            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="Metadata"
-            priority="high">
-         <triggerPoints>
-            <or>
-               <adapt
-                     type="org.talend.repository.model.ProjectRepositoryNode">
-               </adapt>
-               <instanceof
-                     value="org.talend.repository.model.ProjectRepositoryNode">
-               </instanceof>
-            </or>
-         </triggerPoints>
-         <possibleChildren>
-            <instanceof
-                  value="org.talend.repository.model.RepositoryNode">
-            </instanceof>
-         </possibleChildren>
-         <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
-            <enablement>
-               <and>
-                  <instanceof
-                        value="org.talend.repository.model.RepositoryNode">
-                  </instanceof>
-                  <test
-                        forcePluginActivation="true"
-                        property="org.talend.repository.node.isMetadataTopNode">
                   </test>
                   <not>
                      <test
@@ -343,7 +253,7 @@
             </and>
          </triggerPoints>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -388,7 +298,7 @@
             </and>
          </triggerPoints>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -436,7 +346,7 @@
             </and>
          </triggerPoints>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -482,7 +392,7 @@
             </and>
          </triggerPoints>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -528,7 +438,7 @@
             </and>
          </triggerPoints>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -574,7 +484,7 @@
             </and>
          </triggerPoints>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -620,7 +530,7 @@
             </and>
          </triggerPoints>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -666,7 +576,7 @@
             </and>
          </triggerPoints>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -712,7 +622,7 @@
             </and>
          </triggerPoints>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -757,7 +667,7 @@
             </and>
          </triggerPoints>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -802,7 +712,7 @@
             </and>
          </triggerPoints>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -811,6 +721,53 @@
                   <test
                         forcePluginActivation="true"
                         property="org.talend.repository.node.metadata.isWebService">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
+      </navigatorContent>
+      <navigatorContent
+            activeByDefault="true"
+            appearsBefore="org.talend.repository.viewer.metadata.genericSchemas"
+            contentProvider="org.talend.repository.view.di.viewer.content.rules.RulesTopNodeContentProvider"
+            icon="icons/rulesManagement.gif"
+            id="org.talend.repository.viewer.metadata.rules"
+            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
+            name="Rules Management"
+            priority="normal"
+            providesSaveables="true">
+         <triggerPoints>
+            <and>
+               <instanceof
+                     value="org.talend.repository.model.RepositoryNode">
+               </instanceof>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.isMetadataTopNode">
+               </test>
+            </and>
+         </triggerPoints>
+         <possibleChildren>
+            <instanceof
+                  value="org.talend.repository.model.RepositoryNode">
+            </instanceof>
+         </possibleChildren>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.isRulesTopNode">
                   </test>
                   <not>
                      <test
@@ -847,7 +804,7 @@
             </or>
          </triggerPoints>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof
@@ -856,52 +813,6 @@
                   <test
                         forcePluginActivation="true"
                         property="org.talend.repository.node.isDocTopNode">
-                  </test>
-                  <not>
-                     <test
-                           forcePluginActivation="true"
-                           property="org.talend.repository.node.isDeleted">
-                     </test>
-                  </not>
-               </and>
-            </enablement>
-         </actionProvider>
-      </navigatorContent>
-      <navigatorContent
-            activeByDefault="true"
-            appearsBefore="org.talend.repository.viewer.metadata.genericSchemas"
-            contentProvider="org.talend.repository.view.di.viewer.content.rules.RulesTopNodeContentProvider"
-            icon="icons/rulesManagement.gif"
-            id="org.talend.repository.viewer.metadata.rules"
-            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="Rules Management"
-            priority="normal">
-         <triggerPoints>
-            <and>
-               <instanceof
-                     value="org.talend.repository.model.RepositoryNode">
-               </instanceof>
-               <test
-                     forcePluginActivation="true"
-                     property="org.talend.repository.node.isMetadataTopNode">
-               </test>
-            </and>
-         </triggerPoints>
-         <possibleChildren>
-            <instanceof
-                  value="org.talend.repository.model.RepositoryNode">
-            </instanceof>
-         </possibleChildren>
-         <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
-            <enablement>
-               <and>
-                  <instanceof
-                        value="org.talend.repository.model.RepositoryNode">
-                  </instanceof>
-                  <test
-                        forcePluginActivation="true"
-                        property="org.talend.repository.node.isRulesTopNode">
                   </test>
                   <not>
                      <test
@@ -1009,17 +920,6 @@
             properties="isRulesTopNode"
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
-   </extension>
-   <extension
-         point="org.eclipse.ui.navigator.viewer">
-      <viewerContentBinding
-            viewerId="org.talend.repository.cnf.view">
-         <includes>
-            <contentExtension
-                  pattern="org.talend.repository.viewer.code.*">
-            </contentExtension>
-         </includes>
-      </viewerContentBinding>
    </extension>
 
 

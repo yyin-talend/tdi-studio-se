@@ -13,8 +13,8 @@
 package org.talend.repository.view.di.viewer.content.rules;
 
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.view.di.viewer.content.SubEmptyTopNodeContentProvider;
 import org.talend.repository.view.di.viewer.tester.RulesManagementNodeTester;
+import org.talend.repository.viewer.content.SubEmptyTopNodeContentProvider;
 
 public abstract class AbstractRulesContentProvider extends SubEmptyTopNodeContentProvider {
 

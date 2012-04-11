@@ -57,7 +57,7 @@
             </instanceof>
          </possibleChildren>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.RepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
             <enablement>
                <and>
                   <instanceof

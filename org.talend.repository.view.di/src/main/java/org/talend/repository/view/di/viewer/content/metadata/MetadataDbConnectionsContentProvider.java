@@ -15,6 +15,7 @@ package org.talend.repository.view.di.viewer.content.metadata;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.viewer.content.metadata.AbstractMetadataContentProvider;
 
 public class MetadataDbConnectionsContentProvider extends AbstractMetadataContentProvider {
 
