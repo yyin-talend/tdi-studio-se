@@ -547,7 +547,9 @@ class GenerateToolByDom4j{
 		return null;
 	}
 	
-	public void generateCode(OutputTreeNode node, String currEleName, String parentName, int index){
+	private int index = 0;
+	
+	public void generateCode(OutputTreeNode node, String currEleName, String parentName){
 		if(node.getNodeType()==NodeType.ELEMENT){
 			boolean isVirtualNode = node.isSubstitution() || node.isChoice();
 			if(!isVirtualNode) {
@@ -562,7 +564,6 @@ class GenerateToolByDom4j{
 	    		}
 	    		
 	    		addAttribute(currEleName, node);
-				index = 0;
 			} else {
 				currEleName = parentName;
 			}
@@ -572,7 +573,7 @@ class GenerateToolByDom4j{
 					if(isVirtualNode && noUseSubTree(child)) {
 						continue;
 					}
-					generateCode((OutputTreeNode)child,currEleName+"_"+index++,currEleName,index);
+					generateCode((OutputTreeNode)child,currEleName+"_"+index++,currEleName);
 				}
 			}
 			
@@ -777,7 +778,7 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 					){
 
 <%
-					generateCode((OutputTreeNode)groupList.get(index).get(i),"group"+i+"_","subTreeRootParent",0);						
+					generateCode((OutputTreeNode)groupList.get(index).get(i),"group"+i+"_","subTreeRootParent");						
 %>	
 					if(groupbyList.size()<=<%=i%>){
 						groupbyList.add(new java.util.ArrayList<String>());
@@ -1003,7 +1004,7 @@ if (needRoot) {
 <%
 	OutputTreeNode root = (OutputTreeNode)outputNode.getChildren().get(0); // get the root tree node
 	generateToolByDom4j.setAllMainNodes(root);
-	generateToolByDom4j.generateCode(root,"root","doc",0);
+	generateToolByDom4j.generateCode(root,"root","doc");
 %>
 		root4Group = subTreeRootParent;
 	}else{
@@ -1022,7 +1023,7 @@ generateToolByDom4j.generateGroupCode(index);
 			
 			OutputTreeNode loop = (OutputTreeNode)generateToolByDom4j.getLoopNode(root);
 			if(!isRootLoop){
-				generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent",0);
+				generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent");
 			}
 %>
 		}

@@ -570,7 +570,9 @@ class GenerateToolByDom4j{
 		}
 	}
 	
-	public void generateCode(OutputTreeNode node, String currEleName, String parentName ,int index){
+	private int index = 0;
+	
+	public void generateCode(OutputTreeNode node, String currEleName, String parentName){
 		if(node.getNodeType()==NodeType.ELEMENT){
 			boolean isVirtualNode = node.isSubstitution() || node.isChoice();
 			if(!isVirtualNode) {
@@ -585,7 +587,6 @@ class GenerateToolByDom4j{
 	    		}
 	    		
 	    		addAttribute(currEleName, node);
-	    		index = 0;
     		} else {
     			currEleName = parentName;
     		}
@@ -595,7 +596,7 @@ class GenerateToolByDom4j{
 					if(isVirtualNode && noUseSubTree(child)) {
 						continue;
 					}
-					generateCode((OutputTreeNode)child,currEleName+"_"+index++,currEleName,index);
+					generateCode((OutputTreeNode)child,currEleName+"_"+index++,currEleName);
 				} else if(child.isLoop()) {
 %>
 					<%=loopNodeToParentRef.get(child)%> = <%=currEleName%>;
@@ -813,7 +814,7 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 					){
 
 <%
-					generateCode((OutputTreeNode)groupList.get(index).get(i),"group"+i+"_","subTreeRootParent",0);						
+					generateCode((OutputTreeNode)groupList.get(index).get(i),"group"+i+"_","subTreeRootParent");						
 %>	
 					if(groupbyList.size()<=<%=i%>){
 						groupbyList.add(new java.util.ArrayList<String>());
@@ -1078,7 +1079,7 @@ XMLMapUtil xmu = new XMLMapUtil();
 if (needRoot) {
 	needRoot=false;
 <%
-	generateToolByDom4j.generateCode(root,"root","doc",0);
+	generateToolByDom4j.generateCode(root,"root","doc");
 %>
 		root4Group = subTreeRootParent;
 	}else{
@@ -1097,7 +1098,7 @@ generateToolByDom4j.generateGroupCode(index);
 			if(!isRootLoop){
 				if(generateToolByDom4j.loopNodes.size() == 1) {
 					OutputTreeNode loop = (OutputTreeNode)generateToolByDom4j.loopNodes.get(0);
-					generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent",0);
+					generateToolByDom4j.generateCode(loop,"loop","subTreeRootParent");
 				} else {
 					for(TreeNode loopNode : generateToolByDom4j.loopNodes) {
 						OutputTreeNode loop = (OutputTreeNode)loopNode;
@@ -1106,7 +1107,7 @@ generateToolByDom4j.generateGroupCode(index);
 %>
 						if(<%=isCurrentLoopRef%>) {
 <%
-						generateToolByDom4j.generateCode(loop,"loop",parentRef,0);
+						generateToolByDom4j.generateCode(loop,"loop",parentRef);
 %>
 						}
 <%
