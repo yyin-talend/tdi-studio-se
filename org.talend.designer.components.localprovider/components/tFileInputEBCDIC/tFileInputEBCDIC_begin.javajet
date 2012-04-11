@@ -22,12 +22,12 @@
 	String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 	String copybook = ElementParameterParser.getValue(node,"__COPYBOOK__");
 	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
-	String noX2cjFileStr = ElementParameterParser.getValue(node,"__NO_X2CJ_FILE__");
-	boolean noX2cjFile = (noX2cjFileStr!=null&&!("").equals(noX2cjFileStr))?("true").equals(noX2cjFileStr):true;
+	String customSetOriginalLengthStr = ElementParameterParser.getValue(node,"__NO_X2CJ_FILE__");
+	boolean customSetOriginalLength = (customSetOriginalLengthStr!=null&&!("").equals(customSetOriginalLengthStr))?("true").equals(customSetOriginalLengthStr):true;
 	List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
 	String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
 	boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
-if(!noX2cjFile){//------11111
+if(!customSetOriginalLength){//------11111
 %>
 	// open file
 	javax.xml.bind.JAXBContext jaxbContext_<%=cid %> = javax.xml.bind.JAXBContext.newInstance("net.sf.cobol2j");
@@ -152,37 +152,37 @@ the original size in the column:<%=column.getLabel()%> in the schema should be b
 							continue;
 						}
 %>
-						byte[] bb_<%=conn.getName() %>_<%=column.getLabel()%> = new byte[<%=orgainLength %>];
-						bbRecord_<%=cid %>.get(bb_<%=conn.getName() %>_<%=column.getLabel()%>);
+						byte[] bb_<%=column.getLabel()%>_<%=cid%> = new byte[<%=orgainLength %>];
+						bbRecord_<%=cid %>.get(bb_<%=column.getLabel()%>_<%=cid%>);
 <%
 						if(orgainType.equals("X")){
 %>				
-							<%=conn.getName() %>.<%=column.getLabel()%> = new String(bb_<%=conn.getName() %>_<%=column.getLabel()%>,<%=encoding%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
+							<%=conn.getName() %>.<%=column.getLabel()%> = new String(bb_<%=column.getLabel()%>_<%=cid%>,<%=encoding%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
 <%
 						}else if(orgainType.equals("1")) {
 %>
-							<%=conn.getName() %>.<%=column.getLabel()%> = new java.lang.Float(java.nio.ByteBuffer.wrap(bb_<%=conn.getName() %>_<%=column.getLabel()%>).order(java.nio.ByteOrder.BIG_ENDIAN).getFloat());
+							<%=conn.getName() %>.<%=column.getLabel()%> = new java.lang.Float(java.nio.ByteBuffer.wrap(bb_<%=column.getLabel()%>_<%=cid%>).order(java.nio.ByteOrder.BIG_ENDIAN).getFloat());
 <%
 						}else if(orgainType.equals("2")) {
 %>
-							<%=conn.getName() %>.<%=column.getLabel()%> = new java.lang.Double(java.nio.ByteBuffer.wrap(bb_<%=conn.getName() %>_<%=column.getLabel()%>).order(java.nio.ByteOrder.BIG_ENDIAN).getDouble());
+							<%=conn.getName() %>.<%=column.getLabel()%> = new java.lang.Double(java.nio.ByteBuffer.wrap(bb_<%=column.getLabel()%>_<%=cid%>).order(java.nio.ByteOrder.BIG_ENDIAN).getDouble());
 <%
 						}else if(orgainType.equals("3")) {
 %>
-							cobolConversion.PackedDecimal pd_<%=conn.getName() %>_<%=column.getLabel()%> = new cobolConversion.PackedDecimal(bb_<%=conn.getName() %>_<%=column.getLabel()%>, 0, <%=length%>, 0);
+							cobolConversion.PackedDecimal pd_<%=conn.getName() %>_<%=column.getLabel()%> = new cobolConversion.PackedDecimal(bb_<%=column.getLabel()%>_<%=cid%>, 0, <%=length%>, 0);
 							<%=conn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(pd_<%=conn.getName() %>_<%=column.getLabel()%>.toString());
 <%
 						}else if(orgainType.equals("9")) {
 %>
-							<%=conn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(new String(bb_<%=conn.getName() %>_<%=column.getLabel()%>,<%=encoding%>));
+							<%=conn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(new String(bb_<%=column.getLabel()%>_<%=cid%>,<%=encoding%>));
 <%
 						}else if(orgainType.equals("B")) {
 %>
-							<%=conn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(new java.math.BigInteger(bb_<%=conn.getName() %>_<%=column.getLabel()%>),0);
+							<%=conn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(new java.math.BigInteger(bb_<%=column.getLabel()%>_<%=cid%>),0);
 <%
 						}else if (orgainType.equals("T")) {
 %>
-							<%=conn.getName() %>.<%=column.getLabel()%> = bb_<%=conn.getName() %>_<%=column.getLabel()%>;
+							<%=conn.getName() %>.<%=column.getLabel()%> = bb_<%=column.getLabel()%>_<%=cid%>;
 <%
 						}else {
 %>

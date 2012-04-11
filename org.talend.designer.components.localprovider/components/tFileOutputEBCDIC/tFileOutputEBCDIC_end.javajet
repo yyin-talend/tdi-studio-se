@@ -9,9 +9,9 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();
-	String noX2cjFileStr = ElementParameterParser.getValue(node,"__NO_X2CJ_FILE__");
-	boolean noX2cjFile = (noX2cjFileStr!=null&&!("").equals(noX2cjFileStr))?("true").equals(noX2cjFileStr):true;
-if(!noX2cjFile){//------11111
+	String customSetOriginalLengthStr = ElementParameterParser.getValue(node,"__NO_X2CJ_FILE__");
+	boolean customSetOriginalLength = (customSetOriginalLengthStr!=null&&!("").equals(customSetOriginalLengthStr))?("true").equals(customSetOriginalLengthStr):true;
+if(!customSetOriginalLength){//------11111
 
 }else{
 %>

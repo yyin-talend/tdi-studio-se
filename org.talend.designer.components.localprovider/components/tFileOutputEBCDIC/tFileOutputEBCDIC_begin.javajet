@@ -14,12 +14,12 @@
 <%
 	String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 	String copybook = ElementParameterParser.getValue(node,"__COPYBOOK__");
-	String noX2cjFileStr = ElementParameterParser.getValue(node,"__NO_X2CJ_FILE__");
-	boolean noX2cjFile = (noX2cjFileStr!=null&&!("").equals(noX2cjFileStr))?("true").equals(noX2cjFileStr):true;
+	String customSetOriginalLengthStr = ElementParameterParser.getValue(node,"__NO_X2CJ_FILE__");
+	boolean customSetOriginalLength = (customSetOriginalLengthStr!=null&&!("").equals(customSetOriginalLengthStr))?("true").equals(customSetOriginalLengthStr):true;
 %>
   	int nb_line_<%=cid%> = 0;
 <%
-if(!noX2cjFile){//------11111
+if(!customSetOriginalLength){//------11111
 %>
     // write file
     javax.xml.bind.JAXBContext jaxbContextW_<%=cid %> = javax.xml.bind.JAXBContext.newInstance("net.sf.cobol2j");

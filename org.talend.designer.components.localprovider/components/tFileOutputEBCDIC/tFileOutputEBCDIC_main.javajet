@@ -16,9 +16,9 @@
     INode node = (INode)codeGenArgument.getArgument();
     String cid = node.getUniqueName();	
     String incomingName = (String)codeGenArgument.getIncomingName();
-	String noX2cjFileStr = ElementParameterParser.getValue(node,"__NO_X2CJ_FILE__");
-	boolean noX2cjFile = (noX2cjFileStr!=null&&!("").equals(noX2cjFileStr))?("true").equals(noX2cjFileStr):true;
-if(!noX2cjFile){//------11111
+	String customSetOriginalLengthStr = ElementParameterParser.getValue(node,"__NO_X2CJ_FILE__");
+	boolean customSetOriginalLength = (customSetOriginalLengthStr!=null&&!("").equals(customSetOriginalLengthStr))?("true").equals(customSetOriginalLengthStr):true;
+if(!customSetOriginalLength){//------11111
 		List< ? extends IConnection> conns = node.getIncomingConnections();
     	List<IMetadataTable> preMetadatas = null;
 		
@@ -42,85 +42,84 @@ if(!noX2cjFile){//------11111
 				}
 			}
 		}
-}else{//------11111
-	List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
-	String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
-	boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
+}else{//------1111
 	List<IMetadataTable> metadatas = node.getMetadataList();
-    if ((metadatas!=null)&&(metadatas.size()>0)) {
+    if ((metadatas!=null)&&(metadatas.size()>0)) {//------2222
 		List< ? extends IConnection> conns = node.getIncomingConnections();
-       	for (IConnection conn : conns) {
-    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-    			IMetadataTable metadata = metadatas.get(0);
-    			List<IMetadataColumn> columns = metadata.getListColumns();
-    			for (int i = 0; i < columns.size(); i++) {
-					IMetadataColumn column = columns.get(i);
-					Integer orgainLength = column.getOriginalLength();
-					Integer length = column.getLength();
-					String orgainType = column.getType();
-					if(orgainLength==null || orgainLength.intValue()==0 || orgainType==null || "".endsWith(orgainType.trim())) {
+       	for (IConnection conn : conns) {//------3333
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//------4444
+    			if( conn.getName() == incomingName ) {	//------5555
+	    			IMetadataTable metadata = metadatas.get(0);
+	    			List<IMetadataColumn> columns = metadata.getListColumns();
+	    			for (int i = 0; i < columns.size(); i++) {//------6666
+						IMetadataColumn column = columns.get(i);
+						Integer orgainLength = column.getOriginalLength();
+						Integer length = column.getLength();
+						String orgainType = column.getType();
+						if(orgainLength==null || orgainLength.intValue()==0 || orgainType==null || "".endsWith(orgainType.trim())) {
 %>
 //////////////////////////////////////////////////
 the original size in the column:<%=column.getLabel()%> in the schema should be bigger than 0 and DB Type shouldn't be null or Empty
 //////////////////////////////////////////////////
 <%
-						continue;
- 					}
+							continue;
+ 						}
 %>
-					byte[] bb_<%=conn.getName() %>_<%=column.getLabel()%> = new byte[<%=orgainLength %>];
+						byte[] bb_<%=column.getLabel()%>_<%=cid%> = new byte[<%=orgainLength %>];
 <%
-					if(orgainType.equals("X")){
+						if(orgainType.equals("X")){
 %>				
-						cobolConversion.EbcdicString <%=column.getLabel()%> = new cobolConversion.EbcdicString(new cobolConversion.EbcdicTable(), bb_<%=conn.getName() %>_<%=column.getLabel()%>, 0 , <%=length%>);
-						<%=column.getLabel()%>.toEbcdic(<%=conn.getName() %>.<%=column.getLabel()%>);
-						fOut_<%=cid%>.write(<%=column.getLabel()%>.getByteValueArray());
+							cobolConversion.EbcdicString <%=column.getLabel()%>_<%=cid%> = new cobolConversion.EbcdicString(new cobolConversion.EbcdicTable(), bb_<%=column.getLabel()%>_<%=cid%>, 0 , <%=length%>);
+							<%=column.getLabel()%>_<%=cid%>.toEbcdic(<%=conn.getName() %>.<%=column.getLabel()%>);
+							fOut_<%=cid%>.write(<%=column.getLabel()%>_<%=cid%>.getByteValueArray());
 <%
-					}else if(orgainType.equals("3")) {
+						}else if(orgainType.equals("3")) {
 %>
-						cobolConversion.PackedDecimal <%=column.getLabel()%> = new cobolConversion.PackedDecimal(bb_<%=conn.getName() %>_<%=column.getLabel()%>, 0, <%=length%>, 0);
-						<%=column.getLabel()%>.toPackedDecimal(<%=conn.getName()%>.<%=column.getLabel()%>.toPlainString());
-						fOut_<%=cid%>.write(<%=column.getLabel()%>.getByteValueArray());
+							cobolConversion.PackedDecimal <%=column.getLabel()%>_<%=cid%> = new cobolConversion.PackedDecimal(bb_<%=column.getLabel()%>_<%=cid%>, 0, <%=length%>, 0);
+							<%=column.getLabel()%>_<%=cid%>.toPackedDecimal(<%=conn.getName()%>.<%=column.getLabel()%>.toPlainString());
+							fOut_<%=cid%>.write(<%=column.getLabel()%>_<%=cid%>.getByteValueArray());
 <%
-					}else if(orgainType.equals("9")) {
+						}else if(orgainType.equals("9")) {
 %>
-						java.math.BigDecimal <%=column.getLabel()%> = <%=conn.getName() %>.<%=column.getLabel()%>;
-						byte[] bArr_<%=column.getLabel()%> = <%=column.getLabel()%>.toPlainString().getBytes("Cp037");
-						for(int j=0;j<bArr_<%=column.getLabel()%>.length;j++){
-							bb_<%=conn.getName() %>_<%=column.getLabel()%>[bb_<%=conn.getName() %>_<%=column.getLabel()%>.length-(j+1)] = bArr_<%=column.getLabel()%>[bArr_<%=column.getLabel()%>.length-(j+1)];
-						}
-						fOut_<%=cid%>.write(bb_<%=conn.getName() %>_<%=column.getLabel()%>);
+							java.math.BigDecimal <%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>;
+							byte[] bArr_<%=column.getLabel()%>_<%=cid%> = <%=column.getLabel()%>_<%=cid%>.toPlainString().getBytes("Cp037");
+							for(int j=0;j<bArr_<%=column.getLabel()%>_<%=cid%>.length;j++){
+								bb_<%=column.getLabel()%>_<%=cid%>[bb_<%=column.getLabel()%>_<%=cid%>.length-(j+1)] = bArr_<%=column.getLabel()%>_<%=cid%>[bArr_<%=column.getLabel()%>_<%=cid%>.length-(j+1)];
+							}
+							fOut_<%=cid%>.write(bb_<%=column.getLabel()%>_<%=cid%>);
 <%
-					}else if(orgainType.equals("B")) {
+						}else if(orgainType.equals("B")) {
 %>
-						java.math.BigInteger <%=column.getLabel()%> = <%=conn.getName() %>.<%=column.getLabel()%>.toBigInteger() ;
-						byte[] bArr_<%=column.getLabel()%> = <%=column.getLabel()%>.toByteArray();
-						for(int j=0;j<bArr_<%=column.getLabel()%>.length;j++){
-							bb_<%=conn.getName() %>_<%=column.getLabel()%>[bb_<%=conn.getName() %>_<%=column.getLabel()%>.length-(j+1)] = bArr_<%=column.getLabel()%>[j];
-						}
-						fOut_<%=cid%>.write(bb_<%=conn.getName() %>_<%=column.getLabel()%>);
+							java.math.BigInteger <%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>.toBigInteger() ;
+							byte[] bArr_<%=column.getLabel()%>_<%=cid%> = <%=column.getLabel()%>_<%=cid%>.toByteArray();
+							for(int j=0;j<bArr_<%=column.getLabel()%>_<%=cid%>.length;j++){
+								bb_<%=column.getLabel()%>_<%=cid%>[bb_<%=column.getLabel()%>_<%=cid%>.length-(j+1)] = bArr_<%=column.getLabel()%>_<%=cid%>[j];
+							}
+							fOut_<%=cid%>.write(bb_<%=column.getLabel()%>_<%=cid%>);
 <%
-					}else if (orgainType.equals("T")) {
+						}else if (orgainType.equals("T")) {
 %>
-						byte[] bArr_<%=column.getLabel()%> = <%=conn.getName() %>.<%=column.getLabel()%>;
-						for(int j=0;j<bArr_<%=column.getLabel()%>.length;j++){
-							bb_<%=conn.getName() %>_<%=column.getLabel()%>[j] = bArr_<%=column.getLabel()%>[j];
-						}
-						fOut_<%=cid%>.write(bb_<%=conn.getName() %>_<%=column.getLabel()%>);
+							byte[] bArr_<%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>;
+							for(int j=0;j<bArr_<%=column.getLabel()%>_<%=cid%>.length;j++){
+								bb_<%=column.getLabel()%>_<%=cid%>[j] = bArr_<%=column.getLabel()%>_<%=cid%>[j];
+							}
+							fOut_<%=cid%>.write(bb_<%=column.getLabel()%>_<%=cid%>);
 <%
-					}else {
+						}else {
 %>
 //////////////////////////////////////////////////
-DB Type of the column:<%=column.getLabel()%> should be X, 1, 2, 3, 9, B, T
+DB Type of the column:<%=column.getLabel()%> should be X, 3, 9, B, T
 //////////////////////////////////////////////////
 <%
-					}
+						}
 %>
-						fOut_<%=cid%>.flush();
+							fOut_<%=cid%>.flush();
 
 <%
-				}
-			}
-		}
-	}
-}
+					}//------66666
+				}//------5555
+			}//------4444
+		}//------3333
+	}//------2222
+}//------1111
 %>
