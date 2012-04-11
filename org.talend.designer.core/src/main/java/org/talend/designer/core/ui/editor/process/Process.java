@@ -478,6 +478,15 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param.setValue("");
         param.setReadOnly(false);
         addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName("HADOOP_APP_PATH");
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setFieldType(EParameterFieldType.TEXT);
+        param.setShow(false);
+        param.setValue("");
+        param.setReadOnly(false);
+        addElementParameter(param);
     }
 
     /**
@@ -3786,4 +3795,5 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     public String getBaseHelpLink() {
         return "org.talend.help.";
     }
+
 }

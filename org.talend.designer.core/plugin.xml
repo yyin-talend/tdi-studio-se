@@ -88,6 +88,12 @@
             id="org.talend.repository.prefs.exchange"
             name="%exchange">
       </page>
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.designer.core.ui.preferences.OozieSchedulerPreferencePage"
+            id="org.talend.designer.core.oozie.scheduler"
+            name="%oozie">
+      </page>
       
    </extension>
    <extension
