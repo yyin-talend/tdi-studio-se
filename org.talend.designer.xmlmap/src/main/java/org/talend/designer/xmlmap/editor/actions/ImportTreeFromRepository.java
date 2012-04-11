@@ -163,6 +163,8 @@ public class ImportTreeFromRepository extends SelectionAction {
             if (loopNode == null && !schemaNode.getChildren().isEmpty()) {
                 schemaNode.getChildren().get(0).setLoop(true);
                 schemaNode.getChildren().get(0).setMain(true);
+            } else if (loopNode != null) {
+                XmlMapUtil.upsetMainNode(loopNode);
             }
 
             AbstractInOutTree tree = null;
@@ -555,6 +557,12 @@ public class ImportTreeFromRepository extends SelectionAction {
                 }
             } else if (foxNode instanceof Attribute) {
                 createTreeNode.setNodeType(NodeType.ATTRIBUT);
+                if (realParent != null && realParent.getXpath() != null) {
+                    String realXpath = realParent.getXpath().substring(schemaNode.getXpath().length() + 1,
+                            realParent.getXpath().length());
+                    label = realXpath + XmlMapUtil.XPATH_SEPARATOR + label;
+                    createTreeNode.setName(label);
+                }
             } else if (foxNode instanceof NameSpaceNode) {
                 createTreeNode.setNodeType(NodeType.NAME_SPACE);
                 createTreeNode.setDefaultValue(foxNode.getDefaultValue());
