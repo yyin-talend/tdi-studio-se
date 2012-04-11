@@ -161,7 +161,7 @@ the original size in the column:<%=column.getLabel()%> in the schema should be b
 <%
 						}else if(orgainType.equals("1")) {
 %>
-							<%=conn.getName() %>.<%=column.getLabel()%> = new java.lang.Long(java.nio.ByteBuffer.wrap(bb_<%=conn.getName() %>_<%=column.getLabel()%>).order(java.nio.ByteOrder.BIG_ENDIAN).getFloat());
+							<%=conn.getName() %>.<%=column.getLabel()%> = new java.lang.Float(java.nio.ByteBuffer.wrap(bb_<%=conn.getName() %>_<%=column.getLabel()%>).order(java.nio.ByteOrder.BIG_ENDIAN).getFloat());
 <%
 						}else if(orgainType.equals("2")) {
 %>
