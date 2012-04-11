@@ -22,6 +22,10 @@
 	<PARAMETERS>
 	<PARAMETER NAME="PROPERTY" FIELD="PROPERTY_TYPE" SHOW="true"
 			NUM_ROW="1" REPOSITORY_VALUE="EBCDIC" />
+
+	<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" SHOW="true"
+		NUM_ROW="2" SHOW_IF="NO_X2CJ_FILE =='true'"/>
+			
 	
     <PARAMETER
       NAME="FILENAME"
@@ -32,16 +36,26 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/data.ebcdic"</DEFAULT>
     </PARAMETER>
-    
+
+	<PARAMETER NAME="MAPPING" 
+		FIELD="MAPPING_TYPE" NUM_ROW="120"
+		SHOW="false">
+		<DEFAULT>ebcdic_id</DEFAULT>
+	</PARAMETER>
+
     <PARAMETER
       NAME="COPYBOOK"
       FIELD="FILE"
       NUM_ROW="30"
       REQUIRED="true"
-      REPOSITORY_VALUE="XC2J_FILE"
+      REPOSITORY_VALUE="XC2J_FILE" SHOW_IF="NO_X2CJ_FILE =='false'"
 	>
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/copybook.xc2j"</DEFAULT>
     </PARAMETER>
+    
+	<PARAMETER NAME="NO_X2CJ_FILE" FIELD="CHECK" NUM_ROW="35">
+		<DEFAULT>false</DEFAULT>
+	</PARAMETER>
     
 	</PARAMETERS>
 	
@@ -58,6 +72,7 @@
 			<IMPORT NAME="jsr173" MODULE="jsr173_1.0_api.jar" REQUIRED="true" />
 			<IMPORT NAME="commons-lang" MODULE="commons-lang-2.4.jar" REQUIRED="true" />
 			<IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.1.jar" REQUIRED="true" />
+			<IMPORT NAME="cobolX" MODULE="cobolX.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 	
