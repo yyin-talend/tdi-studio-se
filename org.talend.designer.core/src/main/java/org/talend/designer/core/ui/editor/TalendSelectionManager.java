@@ -131,16 +131,18 @@ public class TalendSelectionManager extends SelectionManager {
                 ProcessPart processPart = (ProcessPart) parentPart.getContents();
                 List children = processPart.getChildren();
                 for (int i = 0; i < children.size(); i++) {
-                    List nodeList = ((SubjobContainerPart) children.get(i)).getChildren();
-                    nodeList.remove(sourcePart.getParent());
-                    nodeList.remove(targetPart.getParent());
-                    for (int j = 0; j < nodeList.size(); j++) {
-                        if (nodeList.get(j) instanceof NodeContainerPart) {
-                            NodePart nodePart = ((NodeContainerPart) nodeList.get(j)).getNodePart();
-                            NodeFigure figure = (NodeFigure) nodePart.getFigure();
-                            if (figure.containsPoint(getSelectPoint())) {
-                                setSelectPoint(null);
-                                return nodePart;
+                    if (children instanceof SubjobContainerPart) {
+                        List nodeList = ((SubjobContainerPart) children.get(i)).getChildren();
+                        nodeList.remove(sourcePart.getParent());
+                        nodeList.remove(targetPart.getParent());
+                        for (int j = 0; j < nodeList.size(); j++) {
+                            if (nodeList.get(j) instanceof NodeContainerPart) {
+                                NodePart nodePart = ((NodeContainerPart) nodeList.get(j)).getNodePart();
+                                NodeFigure figure = (NodeFigure) nodePart.getFigure();
+                                if (figure.containsPoint(getSelectPoint())) {
+                                    setSelectPoint(null);
+                                    return nodePart;
+                                }
                             }
                         }
                     }
