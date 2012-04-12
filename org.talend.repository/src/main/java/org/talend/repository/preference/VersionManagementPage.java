@@ -20,7 +20,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -100,8 +106,6 @@ import org.talend.repository.ui.views.RepositoryCheckBoxView;
  * DOC aimingchen class global comment. Detailled comment
  */
 public class VersionManagementPage extends ProjectSettingPage {
-
-    private Button versionBtn;
 
     private boolean isApplied;
 
@@ -352,6 +356,7 @@ public class VersionManagementPage extends ProjectSettingPage {
         removeBtn.setToolTipText(Messages.getString("VersionManagementDialog.RemoveTip")); //$NON-NLS-1$
         removeBtn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] selections = itemTable.getSelection();
                 itemTable.setRedraw(false);
@@ -524,6 +529,7 @@ public class VersionManagementPage extends ProjectSettingPage {
         });
         majorBtn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 String version = maxVersionText.getText();
                 version = VersionUtils.upMajor(version);
@@ -533,6 +539,7 @@ public class VersionManagementPage extends ProjectSettingPage {
         });
         minorBtn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 String version = maxVersionText.getText();
                 version = VersionUtils.upMinor(version);
@@ -542,6 +549,7 @@ public class VersionManagementPage extends ProjectSettingPage {
         });
         revertBtn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 maxVersionText.setText(VersionUtils.DEFAULT_VERSION); // set min version
                 researchMaxVersion();
@@ -763,9 +771,9 @@ public class VersionManagementPage extends ProjectSettingPage {
         }
         TableEditor[] editors = (TableEditor[]) item.getData(ITEM_EDITOR_KEY);
         if (editors != null) {
-            for (int j = 0; j < editors.length; j++) {
-                editors[j].getEditor().dispose();
-                editors[j].dispose();
+            for (TableEditor editor : editors) {
+                editor.getEditor().dispose();
+                editor.dispose();
             }
         }
         item.dispose();
@@ -871,6 +879,7 @@ public class VersionManagementPage extends ProjectSettingPage {
 
                 tableMajorBtn.addSelectionListener(new SelectionAdapter() {
 
+                    @Override
                     public void widgetSelected(SelectionEvent e) {
                         String version = object.getNewVersion();
                         version = VersionUtils.upMajor(version);
@@ -881,6 +890,7 @@ public class VersionManagementPage extends ProjectSettingPage {
                 });
                 tableMinorBtn.addSelectionListener(new SelectionAdapter() {
 
+                    @Override
                     public void widgetSelected(SelectionEvent e) {
                         String version = object.getNewVersion();
                         version = VersionUtils.upMinor(version);
@@ -1000,9 +1010,9 @@ public class VersionManagementPage extends ProjectSettingPage {
 
     @SuppressWarnings("restriction")
     private void updateItemsVersion() {
-        IRunnableWithProgress runnable = new IRunnableWithProgress() {
+        final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
-            public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+            public void run(final IProgressMonitor monitor) throws CoreException {
                 RepositoryWorkUnit<Object> rwu = new RepositoryWorkUnit<Object>(project, "Update items version") {
 
                     @Override
@@ -1020,8 +1030,9 @@ public class VersionManagementPage extends ProjectSettingPage {
                             if (repositoryObject != null && repositoryObject.getProperty() != null) {
                                 if (!object.getNewVersion().equals(repositoryObject.getVersion())) {
                                     final Item item = object.getItem();
-                                    item.getProperty().setVersion(object.getNewVersion());
-                                    monitor.subTask(item.getProperty().getLabel());
+                                    Property itemProperty = item.getProperty();
+                                    itemProperty.setVersion(object.getNewVersion());
+                                    monitor.subTask(itemProperty.getLabel());
 
                                     types.add(object.getRepositoryNode().getObjectType());
 
@@ -1029,13 +1040,13 @@ public class VersionManagementPage extends ProjectSettingPage {
                                         // for bug 12853 ,version management doesn't work for joblet because eResource
                                         // is null
                                         IRepositoryViewObject obj = null;
-                                        if (item.getProperty().eResource() == null) {
+                                        if (itemProperty.eResource() == null) {
                                             ItemState state = item.getState();
                                             if (state != null && state.getPath() != null) {
-                                                obj = FACTORY.getLastVersion(project, item.getProperty().getId(),
-                                                        state.getPath(), object.getRepositoryNode().getObjectType());
+                                                obj = FACTORY.getLastVersion(project, itemProperty.getId(), state.getPath(),
+                                                        object.getRepositoryNode().getObjectType());
                                             } else {
-                                                obj = FACTORY.getLastVersion(project, item.getProperty().getId());
+                                                obj = FACTORY.getLastVersion(project, itemProperty.getId());
                                             }
                                         }
                                         if (obj != null) {
@@ -1043,8 +1054,8 @@ public class VersionManagementPage extends ProjectSettingPage {
                                             FACTORY.save(project, obj.getProperty());
                                             builder.addOrUpdateItem(obj.getProperty().getItem(), true);
                                         } else {
-                                            String id = item.getProperty().getId();
-                                            FACTORY.save(project, item.getProperty());
+                                            String id = itemProperty.getId();
+                                            FACTORY.save(project, itemProperty);
                                             if (versionLatest.getSelection()) {
                                                 builder.updateItemVersion(item, object.getOldVersion(), id, versions, true);
                                             }
@@ -1062,14 +1073,16 @@ public class VersionManagementPage extends ProjectSettingPage {
                         } catch (PersistenceException e) {
                             ExceptionHandler.process(e);
                         }
+                        // the following is commented cause the refresh is now automatically done when file are changed
+                        // on the file system.
                         // for bug 20256,first open studio,don't expand repositoryTree,
                         // open projectSetting,change item Verson,then expand Tree,routine,jobscript and metadata always
                         // use old version.must refresh all tree.
                         // RepositoryManager.refresh(types);
-                        IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
-                        if (view != null) {
-                            view.refresh();
-                        }
+                        // IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
+                        // if (view != null) {
+                        // view.refresh();
+                        // }
                     }
                 };
                 rwu.setAvoidUnloadResources(true);
@@ -1078,9 +1091,33 @@ public class VersionManagementPage extends ProjectSettingPage {
             }
         };
 
+        IRunnableWithProgress iRunnableWithProgress = new IRunnableWithProgress() {
+
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                try {
+                    ISchedulingRule schedulingRule = workspace.getRoot();
+                    // try to find the project resource to limit the lock to the project instead of the root.
+                    Project currentProject = ProjectManager.getInstance().getCurrentProject();
+                    if (currentProject != null) {
+                        String technicalLabel = currentProject.getTechnicalLabel();
+                        IProject resourceProject = workspace.getRoot().getProject(technicalLabel);
+                        if (resourceProject != null) {
+                            schedulingRule = resourceProject;
+                        }
+                    }
+                    // the update the project files need to be done in the workspace runnable to avoid all notification
+                    // of changes before the end of the modifications.
+                    workspace.run(runnable, schedulingRule, IWorkspace.AVOID_UPDATE, monitor);
+                } catch (CoreException e) {
+                    ExceptionHandler.process(e);
+                }
+
+            }
+        };
         final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(null);
         try {
-            dialog.run(false, false, runnable);
+            dialog.run(false, false, iRunnableWithProgress);
         } catch (InvocationTargetException e) {
             ExceptionHandler.process(e);
         } catch (InterruptedException e) {
