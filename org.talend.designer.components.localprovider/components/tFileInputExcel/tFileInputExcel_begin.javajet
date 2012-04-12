@@ -613,6 +613,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		    	}
 		    }
 		}
+		List<Map<String, String>> dateSelect = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__DATESELECT__");
+		boolean converDatetoString = ("true").equals(ElementParameterParser.getValue(node, "__CONVERTDATETOSTRING__"));
 		String firstConnName = "";
 		if (conns!=null) {//3	 
 			if (conns.size()>0) {//4
@@ -623,6 +625,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//5
 %>
 			String[] temp_row_<%= cid %> = new String[<%=listColumns.size()%>];
+<%
+			if(converDatetoString){
+%>				
+				List<Boolean> datelist_<%=cid%> = new java.util.ArrayList<Boolean>();
+				List<String> patternlist_<%=cid%> = new java.util.ArrayList<String>();
+<%	
+				for(IMetadataColumn column:listColumns){
+					for(Map<String, String> line:dateSelect){// search in the date table
+						String columnName = line.get("SCHEMA_COLUMN");				
+						if(column.getLabel().equals(columnName)){
+%>
+							datelist_<%=cid%>.add(<%=line.get("CONVERTDATE")%>);
+							patternlist_<%=cid%>.add(<%=line.get("PATTERN")%>);
+<%
+						}
+					}
+				}	
+			}
+%>
 			int excel_end_column_<%=cid%>;
 			if(row_<%= cid %>==null){
 				excel_end_column_<%=cid%>=0;
@@ -646,7 +667,21 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                             break;
                         case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC:
                             if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell_<%=cid%>)) {
-                                temp_row_<%= cid %>[i] =cell_<%=cid%>.getDateCellValue().toString();
+<%
+								if(converDatetoString){
+%>
+                    	        	if(datelist_<%=cid%>.get(i)){
+                        	        	temp_row_<%= cid %>[i] = FormatterUtils.format_Date(cell_<%=cid%>.getDateCellValue(),patternlist_<%=cid%>.get(i));
+                            	   	} else{
+                                		temp_row_<%= cid %>[i] = cell_<%=cid%>.getDateCellValue().toString();
+                                	}
+<%
+								}else{
+%>
+									temp_row_<%= cid %>[i] =cell_<%=cid%>.getDateCellValue().toString();
+<%
+								}
+%>
                             } else {
                                 temp_row_<%= cid %>[i] = df_<%=cid %>.format(cell_<%=cid%>.getNumericCellValue());
                             }
@@ -661,7 +696,21 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                     break;
                                 case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC:
                                     if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell_<%=cid%>)) {
-                                        temp_row_<%= cid %>[i] =cell_<%=cid%>.getDateCellValue().toString();
+<%
+										if(converDatetoString){
+%>
+                    	        			if(datelist_<%=cid%>.get(i)){
+                        	        			temp_row_<%= cid %>[i] = FormatterUtils.format_Date(cell_<%=cid%>.getDateCellValue(),patternlist_<%=cid%>.get(i));
+                            	   			} else{
+                                				temp_row_<%= cid %>[i] =cell_<%=cid%>.getDateCellValue().toString();
+                                			}
+<%
+										}else{
+%>
+											temp_row_<%= cid %>[i] =cell_<%=cid%>.getDateCellValue().toString();
+<%
+										}
+%>
                                     } else {
                                          temp_row_<%= cid %>[i] = df_<%=cid %>.format(numberFormat_<%=cid%>.parse(dataFormat_<%=cid%>.formatCellValue(cell_<%=cid%>,workbook_<%= cid %>.getCreationHelper().createFormulaEvaluator())));
                                     }
