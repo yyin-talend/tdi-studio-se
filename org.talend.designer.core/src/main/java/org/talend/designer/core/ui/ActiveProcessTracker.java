@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -57,6 +60,16 @@ public class ActiveProcessTracker implements IPartListener {
     private static IProcess2 lastProcessOpened;
 
     private static boolean changedProcess;
+    
+    private static List<IJobTrackerListener> jobTrackerListeners = new ArrayList<IJobTrackerListener>();
+    
+    public static void addJobTrackerListener(IJobTrackerListener listener) {
+        jobTrackerListeners.add(listener);
+    }
+    
+    public static void removeJobTrackerListener(IJobTrackerListener listener) {
+        jobTrackerListeners.remove(listener);
+    }
 
     public IProcess2 getJobFromActivatedEditor(IWorkbenchPart part) {
         IWorkbenchPart testedPart = part;
@@ -105,6 +118,10 @@ public class ActiveProcessTracker implements IPartListener {
             setContextsView(process);
             // setStatsAndLogsView(process);
             JobSettings.switchToCurJobSettingsView();
+            
+            for (IJobTrackerListener listener : jobTrackerListeners) {
+                listener.focusOnJob(process);
+            }
 
             // if (process instanceof Process) {
             // Process p = (Process) process;
@@ -181,6 +198,9 @@ public class ActiveProcessTracker implements IPartListener {
                         lastProcessOpened = null;
                     }
                     currentProcess = null;
+                    for (IJobTrackerListener listener : jobTrackerListeners) {
+                        listener.allJobClosed();
+                    }
                 }
                 if (GlobalServiceRegister.getDefault().isServiceRegistered(ISQLBuilderService.class)) {
                     ISQLBuilderService sqlBuilderService = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(
@@ -256,6 +276,9 @@ public class ActiveProcessTracker implements IPartListener {
             addJobInProblemView(process);
         } else if (existedJobOpened) {
             currentProcess = process;
+            for (IJobTrackerListener listener : jobTrackerListeners) {
+                listener.focusOnJob(process);
+            }
         }
 
     }
