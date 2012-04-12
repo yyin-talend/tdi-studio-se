@@ -35,7 +35,6 @@ import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -56,6 +55,7 @@ import org.eclipse.ui.progress.WorkbenchJob;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.properties.ByteArray;
@@ -64,6 +64,7 @@ import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.DesignerColorUtils;
@@ -167,13 +168,26 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     private void setName() {
         IRepositoryView repoView = RepositoryManagerHelper.findRepositoryView();
         if (repoView != null) {
-            ILabelProvider labelProvider = (ILabelProvider) repoView.getViewer().getLabelProvider();
             RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
             if (repositoryNode != null) {
-                setTitleImage(labelProvider.getImage(repositoryNode.getObject()));
-                setPartName(labelProvider.getText(repositoryNode.getObject()));
+                setTitleImage(getTitleImage());
+                setPartName(getTitleText(repositoryNode.getObject()));
             }
         }
+    }
+
+    private String getTitleText(IRepositoryViewObject object) {
+        StringBuffer string = new StringBuffer();
+        string.append(object.getLabel());
+        if (!(object instanceof Folder)) {
+            string.append(" " + object.getVersion()); //$NON-NLS-1$
+        }
+        // nodes in the recycle bin
+        if (object.isDeleted()) {
+            String oldPath = object.getPath();
+            string.append(" (" + oldPath + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return string.toString();
     }
 
     /*
@@ -186,10 +200,9 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         if (item != null) {
             IRepositoryView viewPart = RepositoryManagerHelper.findRepositoryView();
             if (viewPart != null) {
-                ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
                 RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
                 if (repositoryNode != null) {
-                    return labelProvider.getImage(repositoryNode.getObject());
+                    return ImageProvider.getImage(repositoryNode.getIcon());
                 }
             }
         }
@@ -206,8 +219,8 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         if (item != null) {
             IRepositoryView viewPart = RepositoryManagerHelper.findRepositoryView();
             if (viewPart != null) {
-                ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
-                return labelProvider.getText(item.getProperty());
+                RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
+                return getTitleText(repositoryNode.getObject());
             }
         }
         return super.getPartName();
