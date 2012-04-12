@@ -840,6 +840,52 @@
             </and>
          </enablement>
       </navigatorContent>
+      <navigatorContent
+            activeByDefault="true"
+            appearsBefore="org.talend.repository.viewer.metadata.mdm"
+            contentProvider="org.talend.repository.view.di.viewer.content.metadata.MetadataMDMContentProvider"
+            icon="icons/mdm.png"
+            id="org.talend.repository.viewer.metadata.mdm"
+            labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
+            name="MDM"
+            priority="normal">
+            <possibleChildren>
+            <instanceof
+                  value="org.talend.repository.model.RepositoryNode">
+            </instanceof>
+         </possibleChildren>
+         <triggerPoints>
+            <and>
+               <instanceof
+                     value="org.talend.repository.model.RepositoryNode">
+               </instanceof>
+               <test
+                     forcePluginActivation="true"
+                     property="org.talend.repository.node.isMetadataTopNode">
+               </test>
+            </and>
+         </triggerPoints>
+         <actionProvider
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
+            <enablement>
+               <and>
+                  <instanceof
+                        value="org.talend.repository.model.RepositoryNode">
+                  </instanceof>
+                  <test
+                        forcePluginActivation="true"
+                        property="org.talend.repository.node.metadata.isMDM">
+                  </test>
+                  <not>
+                     <test
+                           forcePluginActivation="true"
+                           property="org.talend.repository.node.isDeleted">
+                     </test>
+                  </not>
+               </and>
+            </enablement>
+         </actionProvider>
+      </navigatorContent>
    </extension>
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
@@ -861,7 +907,7 @@
             class="org.talend.repository.view.di.viewer.tester.DIMetadatasNodeTester"
             id="org.talend.repository.node.tester.metadata.di"
             namespace="org.talend.repository.node.metadata"
-            properties="isDbConnection,isFileDelimited,isFilePositional,isFileRegexp,isFileXML,isFileExcel,isFileLDIF,isLDAP,isSalesforce,isGenericSchema,isWebService"
+            properties="isDbConnection,isFileDelimited,isFilePositional,isFileRegexp,isFileXML,isFileExcel,isFileLDIF,isLDAP,isSalesforce,isGenericSchema,isMDM,isWebService"
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
       <propertyTester

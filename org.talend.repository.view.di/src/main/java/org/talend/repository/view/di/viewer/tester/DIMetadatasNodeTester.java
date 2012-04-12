@@ -45,6 +45,8 @@ public class DIMetadatasNodeTester extends CoMetadataNodeTester {
 
     private static final String IS_WEB_SERVICE = "isWebService"; //$NON-NLS-1$
 
+    private static final String IS_MDM = "isMDM"; //$NON-NLS-1$
+
     protected ERepositoryObjectType findType(String property) {
         if (property != null) {
             if (IS_DB_CONNECTION.equals(property)) {
@@ -69,6 +71,8 @@ public class DIMetadatasNodeTester extends CoMetadataNodeTester {
                 return ERepositoryObjectType.METADATA_GENERIC_SCHEMA;
             } else if (IS_WEB_SERVICE.equals(property)) {
                 return ERepositoryObjectType.METADATA_WSDL_SCHEMA;
+            } else if (IS_MDM.equals(property)) {
+                return ERepositoryObjectType.METADATA_MDMCONNECTION;
             }
         }
         return null;
