@@ -17,10 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
@@ -56,6 +60,13 @@ public class ProblemsAnalyser {
 
         final XmlMapData copyOfMapData = mapperManager.getCopyOfMapData();
         if (copyOfMapData != null) {
+
+            // check problems for InputLoopTable in output
+            InputXmlTree mainInputTree = XmlMapUtil.getMainInputTree(copyOfMapData);
+            for (OutputXmlTree outputTree : copyOfMapData.getOutputTrees()) {
+                checkInputLoopTablesProblem(outputTree, mainInputTree);
+            }
+
             for (InputXmlTree inputTree : copyOfMapData.getInputTrees()) {
                 isMultipleDocType = false;
                 checkTreeNodesProblem(inputTree, inputTree.getNodes());
@@ -70,11 +81,83 @@ public class ProblemsAnalyser {
         return getProblems();
     }
 
-    public void checkLoopProblems(AbstractInOutTree abstractTree) {
+    private void checkInputLoopTablesProblem(OutputXmlTree outputTree, InputXmlTree mainInputTree) {
+        if (mainInputTree.isMultiLoops()) {
+            if (!XmlMapUtil.hasDocument(outputTree)) {
+                if (outputTree.getInputLoopNodesTables().size() == 1
+                        && outputTree.getInputLoopNodesTables().get(0).getInputloopnodes().isEmpty()) {
+                    for (OutputTreeNode outputNode : outputTree.getNodes()) {
+                        if (checkNodeInputLookTableProblem(outputNode, mainInputTree, false)) {
+                            String message = "Output tree " + outputTree.getName() + " have no source loop";
+                            addProblem(outputTree, new Problem(null, message, ProblemStatus.ERROR));
+                            break;
+                        }
+                    }
+                }
+
+            } else {
+                List<TreeNode> loopNodes = new ArrayList<TreeNode>();
+                XmlMapUtil.getChildLoops(loopNodes, outputTree.getNodes(), false);
+                if (!loopNodes.isEmpty()) {
+                    for (TreeNode node : loopNodes) {
+                        if (checkNodeInputLookTableProblem((OutputTreeNode) node, mainInputTree, true)) {
+                            String message = "Output loopNode" + node + " have no source loop";
+                            addProblem(outputTree, new Problem(null, message, ProblemStatus.ERROR));
+                        }
+
+                    }
+
+                }
+
+            }
+        }
+
+    }
+
+    private boolean checkNodeInputLookTableProblem(OutputTreeNode outputNode, InputXmlTree mainInputTree, boolean checkChildren) {
+        for (Connection connection : outputNode.getIncomingConnections()) {
+            if (connection.getSource() instanceof TreeNode) {
+                TreeNode source = (TreeNode) connection.getSource();
+                InputXmlTree abstractInOutTree = (InputXmlTree) XmlMapUtil.getAbstractInOutTree(source);
+                if (abstractInOutTree == mainInputTree) {
+                    return true;
+                } else {
+                    EList<LookupConnection> lookupIncomingConnections = source.getLookupIncomingConnections();
+                    for (LookupConnection lookupConn : lookupIncomingConnections) {
+                        TreeNode sourceNode = (TreeNode) lookupConn.getSource();
+                        AbstractInOutTree abstractInOutTree2 = XmlMapUtil.getAbstractInOutTree(sourceNode);
+                        if (abstractInOutTree2 == mainInputTree) {
+                            return true;
+                        }
+                    }
+                }
+
+                if (checkChildren && !outputNode.getChildren().isEmpty()) {
+                    for (TreeNode child : outputNode.getChildren()) {
+                        if (checkNodeInputLookTableProblem((OutputTreeNode) child, mainInputTree, checkChildren)) {
+                            return true;
+                        }
+                    }
+                }
+
+            }
+        }
+        return false;
+    }
+
+    public void checkProblems(AbstractInOutTree abstractTree) {
         // clear problems for the tree before recheck it
         if (treeAndProblems.get(abstractTree) != null) {
             treeAndProblems.get(abstractTree).clear();
         }
+        // check problems for InputLoopTable in output
+        final XmlMapData copyOfMapData = mapperManager.getCopyOfMapData();
+        // check problems for InputLoopTable in output
+        InputXmlTree mainInputTree = XmlMapUtil.getMainInputTree(copyOfMapData);
+        if (abstractTree instanceof OutputXmlTree) {
+            checkInputLoopTablesProblem((OutputXmlTree) abstractTree, mainInputTree);
+        }
+
         isMultipleDocType = false;
         List<? extends TreeNode> nodes = null;
         if (abstractTree instanceof InputXmlTree) {
@@ -91,18 +174,18 @@ public class ProblemsAnalyser {
         }
     }
 
-    private void checkTreeNodesProblem(AbstractInOutTree abstractTree, List<? extends TreeNode> treeNodes) {
+    private void checkTreeNodesProblem(AbstractInOutTree treeToCheck, List<? extends TreeNode> treeNodes) {
         for (TreeNode treeNode : treeNodes) {
             if (XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
                 if (!hasDocumentLoop(treeNode)) {
                     String message = ERROR_MESSAGE_START + treeNode.getXpath();
-                    addProblem(abstractTree, new Problem(null, message, ProblemStatus.ERROR));
+                    addProblem(treeToCheck, new Problem(null, message, ProblemStatus.ERROR));
                 }
                 if (!isMultipleDocType) {
                     isMultipleDocType = true;
                 } else {
                     String message = ERROR_MESSAGE_MULTIPLE_DOC_TYPE + treeNode.getXpath();
-                    addProblem(abstractTree, new Problem(null, message, ProblemStatus.ERROR));
+                    addProblem(treeToCheck, new Problem(null, message, ProblemStatus.ERROR));
                 }
             }
         }
@@ -147,7 +230,7 @@ public class ProblemsAnalyser {
     }
 
     public String getErrorMessage() {
-        String errorMessage = ERROR_MESSAGE_START;
+        String errorMessage = "";
         final List<Problem> problems = getProblems();
         if (problems.isEmpty()) {
             return null;
@@ -155,7 +238,7 @@ public class ProblemsAnalyser {
             for (Problem problem : problems) {
                 final String description = problem.getDescription();
                 if (description != null) {
-                    errorMessage = errorMessage + description.substring(ERROR_MESSAGE_START.length(), description.length()) + ",";
+                    errorMessage = errorMessage + description + ",";
                 }
             }
         }

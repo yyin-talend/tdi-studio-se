@@ -764,7 +764,14 @@ public class XmlMapUtil {
             EList<Connection> incomingConnections = treeNode.getIncomingConnections();
             for (Connection connection : incomingConnections) {
                 if (connection.getSource() instanceof TreeNode) {
-                    TreeNode loopParentNode = XmlMapUtil.getLoopParentNode((TreeNode) connection.getSource());
+                    TreeNode source = (TreeNode) connection.getSource();
+                    TreeNode loopParentNode = XmlMapUtil.getLoopParentNode(source);
+                    // check related lookup node
+                    if (loopParentNode == null) {
+                        for (LookupConnection lookupConn : source.getLookupIncomingConnections()) {
+                            loopParentNode = XmlMapUtil.getLoopParentNode((TreeNode) lookupConn.getSource());
+                        }
+                    }
                     if (loopParentNode != null && !sourceLoopNodes.contains(loopParentNode)) {
                         sourceLoopNodes.add(loopParentNode);
                     }
@@ -804,7 +811,6 @@ public class XmlMapUtil {
                                 if (inputLoopNodesTables.contains(inputLoopNodesTable)) {
                                     inputLoopNodesTables.remove(inputLoopNodesTable);
                                 }
-                                loopParentNode.setInputLoopNodesTable(null);
                             }
                             break;
                         }
@@ -835,5 +841,48 @@ public class XmlMapUtil {
                 }
             }
         }
+    }
+
+    public static List<TreeNode> getMultiLoopsForInputTree(InputXmlTree inputTree) {
+        List<TreeNode> loopNodes = new ArrayList<TreeNode>();
+        getChildLoops(loopNodes, inputTree.getNodes(), false);
+        return loopNodes;
+    }
+
+    public static void getChildLoops(List<TreeNode> loopNodes, List<? extends TreeNode> nodesToCheck, boolean onlyGetFirstLoop) {
+        if (onlyGetFirstLoop) {
+            if (!loopNodes.isEmpty()) {
+                return;
+            }
+        }
+        for (TreeNode node : nodesToCheck) {
+            if (node.isLoop()) {
+                loopNodes.add(node);
+            } else if (!node.getChildren().isEmpty()) {
+                getChildLoops(loopNodes, node.getChildren(), onlyGetFirstLoop);
+            }
+
+        }
+
+    }
+
+    public static TreeNode getFirstLoopOfATree(InputXmlTree inputTree) {
+        List<TreeNode> loopNodes = new ArrayList<TreeNode>();
+        getChildLoops(loopNodes, inputTree.getNodes(), true);
+        if (!loopNodes.isEmpty()) {
+            return loopNodes.get(0);
+        }
+        return null;
+    }
+
+    public static InputXmlTree getMainInputTree(XmlMapData mapdata) {
+        if (mapdata != null) {
+            for (InputXmlTree inputTree : mapdata.getInputTrees()) {
+                if (!inputTree.isLookup()) {
+                    return inputTree;
+                }
+            }
+        }
+        return null;
     }
 }

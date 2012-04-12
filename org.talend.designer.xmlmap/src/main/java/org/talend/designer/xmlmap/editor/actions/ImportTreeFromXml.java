@@ -95,7 +95,7 @@ public class ImportTreeFromXml extends SelectionAction {
                     mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) parentNode.eContainer());
                 }
                 if (treeNodeRoot.eContainer() instanceof AbstractInOutTree) {
-                    mapperManager.getProblemsAnalyser().checkLoopProblems((AbstractInOutTree) treeNodeRoot.eContainer());
+                    mapperManager.getProblemsAnalyser().checkProblems((AbstractInOutTree) treeNodeRoot.eContainer());
                     mapperManager.getMapperUI().updateStatusBar();
                 }
             }

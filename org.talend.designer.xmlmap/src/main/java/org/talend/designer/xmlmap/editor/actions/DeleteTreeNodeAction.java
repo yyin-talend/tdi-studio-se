@@ -12,10 +12,15 @@
 // ============================================================================
 package org.talend.designer.xmlmap.editor.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
@@ -98,10 +103,16 @@ public class DeleteTreeNodeAction extends SelectionAction {
                     }
 
                     parent.getChildren().remove(treeNode);
-
+                    if (input) {
+                        // remove delete loops in InputLoopTable for outputs
+                        List<TreeNode> subNodes = new ArrayList<TreeNode>();
+                        checkSubElementIsLoop(treeNode, subNodes);
+                        removeloopInOutputTree(subNodes);
+                    }
                 }
 
             }
+
             if (mapperManager != null) {
                 if (input) {
                     if (docRoot != null && docRoot.eContainer() instanceof InputXmlTree) {
@@ -114,13 +125,40 @@ public class DeleteTreeNodeAction extends SelectionAction {
                 }
 
                 if (docRoot != null && docRoot.eContainer() instanceof AbstractInOutTree) {
-                    mapperManager.getProblemsAnalyser().checkLoopProblems((AbstractInOutTree) docRoot.eContainer());
+                    mapperManager.getProblemsAnalyser().checkProblems((AbstractInOutTree) docRoot.eContainer());
                     mapperManager.getMapperUI().updateStatusBar();
                 }
 
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+    }
+
+    private void checkSubElementIsLoop(TreeNode subTreeNode, List<TreeNode> subLoops) {
+        if (subTreeNode == null) {
+            return;
+        }
+        TreeNode e = subTreeNode;
+        if (e.isLoop()) {
+            subLoops.add(e);
+        }
+        for (TreeNode treeNode : subTreeNode.getChildren()) {
+            checkSubElementIsLoop(treeNode, subLoops);
+        }
+    }
+
+    private void removeloopInOutputTree(List<TreeNode> oldLoops) {
+        EList<OutputXmlTree> outputTrees = mapperManager.getCopyOfMapData().getOutputTrees();
+        for (TreeNode oldLoop : oldLoops) {
+            for (OutputXmlTree outputTree : outputTrees) {
+                EList<InputLoopNodesTable> inputLoopNodesTables = outputTree.getInputLoopNodesTables();
+                for (InputLoopNodesTable inputLoopTable : inputLoopNodesTables) {
+                    inputLoopTable.getInputloopnodes().remove(oldLoop);
+                }
+
+            }
         }
 
     }

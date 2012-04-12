@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures.treeNode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
@@ -22,10 +25,15 @@ import org.eclipse.draw2d.MouseListener;
 import org.talend.datatools.xml.utils.XSDPopulationUtil2;
 import org.talend.designer.xmlmap.figures.cells.ITextCell;
 import org.talend.designer.xmlmap.figures.treetools.ToolBarButtonImageFigure;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 import org.talend.designer.xmlmap.ui.dialog.SetLoopFunctionDialog;
 import org.talend.designer.xmlmap.ui.resource.ImageInfo;
@@ -49,9 +57,12 @@ public class TreeBranchContent extends Figure implements ITextCell {
 
     private ToolBarButtonImageFigure loopButtonFigure;
 
+    private InputXmlTree inputMainTable;
+
     public TreeBranchContent(final TreeNode treeNode) {
         setDirectEditType(DirectEditType.NODE_NAME);
         this.treeNode = treeNode;
+
         GridLayout manager = new GridLayout(4, false);
         manager.horizontalSpacing = 5;
         manager.verticalSpacing = 1;
@@ -79,18 +90,40 @@ public class TreeBranchContent extends Figure implements ITextCell {
             @Override
             public void mousePressed(MouseEvent me) {
                 OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
-                SetLoopFunctionDialog nsDialog = new SetLoopFunctionDialog(null, outputTreeNode.getInputLoopNodesTable());
+                List<TreeNode> loopNodes = new ArrayList<TreeNode>();
+                if (inputMainTable != null && inputMainTable.isMultiLoops()) {
+                    loopNodes.addAll(XmlMapUtil.getMultiLoopsForInputTree(inputMainTable));
+                }
+                InputLoopNodesTable inputLoopNodesTable = null;
+                if (outputTreeNode.getInputLoopNodesTable() != null) {
+                    inputLoopNodesTable = outputTreeNode.getInputLoopNodesTable();
+                } else {
+                    inputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
+                    outputTreeNode.setInputLoopNodesTable(inputLoopNodesTable);
+                    AbstractInOutTree abstractInOutTree = XmlMapUtil.getAbstractInOutTree(outputTreeNode);
+                    if (abstractInOutTree != null) {
+                        ((OutputXmlTree) abstractInOutTree).getInputLoopNodesTables().add(inputLoopNodesTable);
+                    }
+                }
+                SetLoopFunctionDialog nsDialog = new SetLoopFunctionDialog(null, outputTreeNode.getInputLoopNodesTable(),
+                        loopNodes);
                 nsDialog.open();
             }
         });
 
         if (treeNode != null && treeNode instanceof OutputTreeNode) {
-            if (treeNode.isLoop()) {
-                OutputTreeNode targetOutputTreeNode = (OutputTreeNode) treeNode;
-                if (targetOutputTreeNode.getInputLoopNodesTable() != null
-                        && targetOutputTreeNode.getInputLoopNodesTable().getInputloopnodes().size() > 1) {
-                    this.add(loopButtonFigure);
+            XmlMapData xmlmapData = XmlMapUtil.getXmlMapData(treeNode);
+            if (xmlmapData != null) {
+                for (InputXmlTree inputTree : xmlmapData.getInputTrees()) {
+                    if (!inputTree.isLookup()) {
+                        this.inputMainTable = inputTree;
+                        break;
+                    }
                 }
+            }
+            // display loop setup button only when input main is multiloop
+            if (treeNode.isLoop() && inputMainTable != null && inputMainTable.isMultiLoops()) {
+                this.add(loopButtonFigure);
             }
         }
         this.add(statusFigure);
@@ -179,9 +212,7 @@ public class TreeBranchContent extends Figure implements ITextCell {
 
     public void updateLoopButtonFigure() {
         if (treeNode instanceof OutputTreeNode) {
-            OutputTreeNode outputNode = (OutputTreeNode) treeNode;
-            InputLoopNodesTable inputLoopNodesTable = outputNode.getInputLoopNodesTable();
-            if (inputLoopNodesTable != null && inputLoopNodesTable.getInputloopnodes().size() > 1) {
+            if (treeNode.isLoop() && inputMainTable != null && inputMainTable.isMultiLoops()) {
                 if (!this.getChildren().contains(loopButtonFigure)) {
                     this.add(loopButtonFigure, 1);
                 }

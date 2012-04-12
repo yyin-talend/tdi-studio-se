@@ -353,6 +353,9 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 refreshSourceConnections();
                 refreshTargetConnections();
                 break;
+            case XmlmapPackage.ABSTRACT_IN_OUT_TREE__MULTI_LOOPS:
+                
+                break;
             }
             break;
 

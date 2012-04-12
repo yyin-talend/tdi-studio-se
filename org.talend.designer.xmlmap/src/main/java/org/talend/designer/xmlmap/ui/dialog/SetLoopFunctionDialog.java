@@ -13,273 +13,239 @@
 package org.talend.designer.xmlmap.ui.dialog;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.Widget;
+import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
+import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButtonForExtendedTable;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.CopyPushButton;
+import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.commons.ui.swt.tableviewer.CellEditorValueAdapterFactory;
+import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
+import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
+import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.commons.utils.data.list.IListenableListListener;
+import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
-import org.talend.designer.xmlmap.ui.resource.ImageInfo;
-import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
+import org.talend.designer.xmlmap.ui.tabs.table.TreeSchemaTableEntry;
 
 /**
  * DOC hcyi class global comment. Detailled comment
  */
 public class SetLoopFunctionDialog extends Dialog {
 
-    private TableViewer viewer;
-
-    private Button upButton;
-
-    private Button downButton;
-
-    private SelectionListener selectionListener;
+    private Label statusLabel;
 
     private InputLoopNodesTable inputLoopNodesTable;
 
-    List<String> listData = new ArrayList<String>();
+    private List<TreeNode> inputLoops;
 
-    int sequence = 0;
+    ExtendedTableModel<TreeSchemaTableEntry> tableModel = null;
 
-    public SetLoopFunctionDialog(Shell parentShell, InputLoopNodesTable inputLoopNodesTable) {
+    AbstractDataTableEditorView<TreeSchemaTableEntry> tableViwer;
+
+    public SetLoopFunctionDialog(Shell parentShell, InputLoopNodesTable inputLoopNodesTable, List<TreeNode> inputLoops) {
         super(parentShell);
+        setShellStyle(getShellStyle() | SWT.RESIZE);
+        this.inputLoops = inputLoops;
         this.inputLoopNodesTable = inputLoopNodesTable;
         initData();
     }
 
-    public Control createDialogArea(Composite parent) {
-        Composite composite = (Composite) super.createDialogArea(parent);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 1;
-        composite.setLayout(layout);
-        GridData data = new GridData(GridData.FILL_BOTH);
-        data.horizontalSpan = 2;
-        composite.setLayoutData(data);
-        createTableControl(composite);
-
-        Composite barComposite = (Composite) super.createDialogArea(parent);
-        layout = new GridLayout();
-        layout.numColumns = 2;
-        barComposite.setLayout(layout);
-        data = new GridData(GridData.BEGINNING);
-        data.horizontalSpan = 1;
-        barComposite.setLayoutData(data);
-        createButtons(barComposite);
-
-        return parent;
+    @Override
+    protected void configureShell(Shell newShell) {
+        super.configureShell(newShell);
+        newShell.setText("Configure source loops");
     }
 
     private void initData() {
-        if (inputLoopNodesTable != null) {
-            for (int i = 0; i < inputLoopNodesTable.getInputloopnodes().size(); i++) {
-                TreeNode treeNode = inputLoopNodesTable.getInputloopnodes().get(i);
-                listData.add(i, treeNode.getXpath());
-            }
+        List<TreeSchemaTableEntry> inputLoopEntrys = new ArrayList<TreeSchemaTableEntry>();
+        tableModel = new ExtendedTableModel<TreeSchemaTableEntry>("Source Loops", inputLoopEntrys);
+        for (TreeNode sourceNode : inputLoopNodesTable.getInputloopnodes()) {
+            TreeSchemaTableEntry entry = new TreeSchemaTableEntry(sourceNode);
+            inputLoopEntrys.add(entry);
         }
     }
 
-    private IStructuredContentProvider createContentProvider() {
-        return new IStructuredContentProvider() {
+    public Control createDialogArea(Composite parent) {
+        Composite composite = new Composite(parent, SWT.BORDER);
+        GridLayout layout = new GridLayout();
+        composite.setLayout(layout);
+        GridData data = new GridData(GridData.FILL_BOTH);
+        composite.setLayoutData(data);
 
-            public Object[] getElements(Object inputElement) {
-                return ((List) inputElement).toArray();
+        tableViwer = new AbstractDataTableEditorView<TreeSchemaTableEntry>(composite, SWT.NONE, tableModel, false, true, false) {
+
+            @Override
+            protected void createColumns(TableViewerCreator<TreeSchemaTableEntry> tableViewerCreator, Table table) {
+                TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
+                column.setTitle("Sequence");
+                column.setWeight(40);
+
+                column.setBeanPropertyAccessors(new IBeanPropertyAccessors<TreeSchemaTableEntry, Object>() {
+
+                    public Object get(TreeSchemaTableEntry bean) {
+                        int index = getExtendedTableModel().getBeansList().indexOf(bean);
+                        return getExtendedTableModel().getBeansList().indexOf(bean);
+                    }
+
+                    public void set(TreeSchemaTableEntry bean, Object value) {
+                        // do nothing
+                    }
+                });
+
+                column = new TableViewerCreatorColumn(tableViewerCreator);
+                column.setTitle("Xpath");
+                column.setWeight(60);
+                String[] items = new String[inputLoops.size()];
+                for (int i = 0; i < inputLoops.size(); i++) {
+                    items[i] = inputLoops.get(i).getXpath();
+                }
+                CellEditorValueAdapter comboValueAdapter = CellEditorValueAdapterFactory
+                        .getComboAdapterForComboCellEditor("String");
+                ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(tableViewerCreator.getTable(), items, SWT.READ_ONLY);
+                column.setModifiable(true);
+                column.setCellEditor(cellEditor, comboValueAdapter);
+                column.setBeanPropertyAccessors(new IBeanPropertyAccessors<TreeSchemaTableEntry, Object>() {
+
+                    public Object get(TreeSchemaTableEntry bean) {
+                        return bean.getXPath();
+                    }
+
+                    public void set(TreeSchemaTableEntry bean, Object value) {
+                        for (TreeNode loopNode : inputLoops) {
+                            if (loopNode.getXpath().equals(value)) {
+                                bean.setTreeNode(loopNode);
+                            }
+                        }
+                    }
+                });
             }
 
-            public void dispose() {
-            }
+            @Override
+            protected ExtendedToolbarView initToolBar() {
+                ExtendedToolbarView toolbarView = new ExtendedToolbarView(getMainComposite(), SWT.NONE,
+                        this.getExtendedTableViewer()) {
 
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-            }
+                    @Override
+                    protected CopyPushButton createCopyPushButton() {
+                        return null;
+                    }
 
+                    @Override
+                    protected AddPushButton createAddPushButton() {
+                        return new AddPushButtonForExtendedTable(this.toolbar, getExtendedTableViewer()) {
+
+                            @Override
+                            public boolean getEnabledState() {
+                                return super.getEnabledState();
+                            }
+
+                            @Override
+                            protected Object getObjectToAdd() {
+                                TreeNode loopNodetoAdd = null;
+                                for (TreeNode loopNode : inputLoops) {
+                                    boolean found = false;
+                                    for (TreeSchemaTableEntry extendedModel : getExtendedTableModel().getBeansList()) {
+                                        if (loopNode.getXpath().equals(extendedModel.getXPath())) {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!found) {
+                                        loopNodetoAdd = loopNode;
+                                        break;
+                                    }
+                                }
+                                if (loopNodetoAdd == null && !inputLoops.isEmpty()) {
+                                    loopNodetoAdd = inputLoops.get(0);
+                                }
+                                if (loopNodetoAdd != null) {
+                                    TreeSchemaTableEntry entry = new TreeSchemaTableEntry(loopNodetoAdd);
+                                    return entry;
+                                }
+
+                                return null;
+                            }
+
+                        };
+                    }
+
+                };
+                return super.initToolBar();
+            }
         };
+        tableViwer.setGridDataSize(400, 120);
+        statusLabel = new Label(composite, SWT.NONE);
+        statusLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        tableModel.addAfterOperationListListener(new IListenableListListener<TreeSchemaTableEntry>() {
+
+            public void handleEvent(ListenableListEvent<TreeSchemaTableEntry> event) {
+                updateStatus(true);
+            }
+        });
+        tableModel.setModifiedBeanListenable(tableViwer.getTableViewerCreator());
+        tableModel.addModifiedBeanListener(new IModifiedBeanListener<TreeSchemaTableEntry>() {
+
+            public void handleEvent(ModifiedBeanEvent<TreeSchemaTableEntry> event) {
+                updateStatus(false);
+            }
+
+        });
+        return composite;
     }
 
-    private ITableLabelProvider createLabelProvider() {
-
-        return new ITableLabelProvider() {
-
-            public Image getColumnImage(Object element, int columnIndex) {
-                return null;
-            }
-
-            public String getColumnText(Object element, int columnIndex) {
-                String value = ((String) element);
-                if (columnIndex == 0) {
-                    sequence++;
-                    return sequence + "";
-                }
-                if (columnIndex == 1) {
-                    return value;
-                }
-                throw new IllegalStateException();
-            }
-
-            public void addListener(ILabelProviderListener listener) {
-            }
-
-            public void dispose() {
-            }
-
-            public boolean isLabelProperty(Object element, String property) {
-                return false;
-            }
-
-            public void removeListener(ILabelProviderListener listener) {
-            }
-
-        };
-    }
-
-    private void createButtons(Composite box) {
-        upButton = createPushButton(box, "ListEditor.up"); //$NON-NLS-1$
-        upButton.setImage(ImageProviderMapper.getImage(ImageInfo.SORT_UP));
-        downButton = createPushButton(box, "ListEditor.down"); //$NON-NLS-1$
-        downButton.setImage(ImageProviderMapper.getImage(ImageInfo.SORT_DOWN));
-    }
-
-    private Button createPushButton(Composite parent, String key) {
-        Button button = new Button(parent, SWT.PUSH);
-        button.setText(JFaceResources.getString(key));
-        button.setFont(parent.getFont());
-        GridData data = new GridData(GridData.FILL_HORIZONTAL);
-        data.widthHint = 30;
-        button.setLayoutData(data);
-        button.addSelectionListener(getSelectionListener());
-        return button;
-    }
-
-    public void createSelectionListener() {
-        selectionListener = new SelectionAdapter() {
-
-            public void widgetSelected(SelectionEvent event) {
-                Widget widget = event.widget;
-                if (widget == upButton) {
-                    upPressed();
-                } else if (widget == downButton) {
-                    downPressed();
-                }
-            }
-        };
-    }
-
-    private void downPressed() {
-        swap(false);
-    }
-
-    private TableViewer createTableControl(Composite parent) {
-        if (viewer == null) {
-            Table table = createTable(parent);
-            viewer = new TableViewer(table);
-            viewer.setContentProvider(createContentProvider());
-            viewer.setLabelProvider(createLabelProvider());
-            viewer.setInput(listData);
-            table.setFont(parent.getFont());
-            viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-                public void selectionChanged(SelectionChangedEvent event) {
-                }
-            });
-            viewer.addDoubleClickListener(new IDoubleClickListener() {
-
-                public void doubleClick(DoubleClickEvent event) {
-                }
-            });
+    private void updateStatus(boolean refreshTree) {
+        if (refreshTree) {
+            tableViwer.getTableViewerCreator().getTableViewer().refresh();
         }
-        return viewer;
-    }
-
-    private Table createTable(Composite parent) {
-        Table contextTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION);
-        contextTable.setLinesVisible(true);
-        contextTable.setHeaderVisible(true);
-
-        TableColumn colName = new TableColumn(contextTable, SWT.NONE);
-        colName.setText("Sequence"); //$NON-NLS-1$
-        colName.setWidth(100);
-        TableColumn colValue = new TableColumn(contextTable, SWT.NONE);
-        colValue.setText("input Loop Nodes"); //$NON-NLS-1$
-        colValue.setWidth(250);
-        return contextTable;
-    }
-
-    public int getNumberOfControls() {
-        return 2;
-    }
-
-    private SelectionListener getSelectionListener() {
-        if (selectionListener == null) {
-            createSelectionListener();
+        List<String> xpath = new ArrayList<String>();
+        boolean findDuplicated = false;
+        for (TreeSchemaTableEntry entry : tableModel.getBeansList()) {
+            if (xpath.contains(entry.getXPath())) {
+                findDuplicated = true;
+            } else {
+                xpath.add(entry.getXPath());
+            }
         }
-        return selectionListener;
-    }
 
-    protected void selectionChanged() {
-        int index = viewer.getTable().getSelectionIndex();
-        int size = viewer.getTable().getItemCount();
-        setControlEnable(upButton, size > 1 && index > 0);
-        setControlEnable(downButton, size > 1 && index >= 0 && index < size - 1);
-    }
-
-    public void setFocus() {
-        if (viewer != null) {
-            viewer.getTable().setFocus();
+        Button button = getButton(IDialogConstants.OK_ID);
+        if (findDuplicated) {
+            statusLabel.setText("Duplicated source loop node exist in the table ,please remove it.");
+            button.setEnabled(false);
+        } else {
+            statusLabel.setText("");
+            button.setEnabled(true);
         }
     }
 
-    private void swap(boolean up) {
-        int index = viewer.getTable().getSelectionIndex();
-        int target = up ? index - 1 : index + 1;
-
-        if (index >= 0 && (target >= 0 && target < viewer.getTable().getItemCount())) {
-            Collections.swap(listData, index, target);
-            inputLoopNodesTable.getInputloopnodes().move(index, target);
+    @Override
+    protected void okPressed() {
+        List<TreeNode> usedLoops = new ArrayList<TreeNode>();
+        for (TreeSchemaTableEntry entry : tableModel.getBeansList()) {
+            usedLoops.add(entry.getTreeNode());
         }
-        sequence = 0;
-        viewer.refresh();
-        selectionChanged();
+        inputLoopNodesTable.getInputloopnodes().clear();
+        inputLoopNodesTable.getInputloopnodes().addAll(usedLoops);
+
+        super.okPressed();
     }
 
-    private void upPressed() {
-        swap(true);
-    }
-
-    private void setEnabled(boolean enabled, Composite parent) {
-        setControlEnable(createTableControl(parent).getTable(), enabled);
-        setControlEnable(upButton, enabled);
-        setControlEnable(downButton, enabled);
-    }
-
-    private void setControlEnable(Control control, boolean enable) {
-        if (control != null && !control.isDisposed()) {
-            control.setEnabled(enable);
-        }
-    }
-
-    public List<String> getList() {
-        return this.listData;
-    }
 }

@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.EditPart;
+import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.OutputXmlTreeFigure;
 import org.talend.designer.xmlmap.figures.treeNode.RootTreeNodeFigure;
 import org.talend.designer.xmlmap.figures.treeNode.RowFigure;
@@ -85,6 +86,14 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
                         ((OutputXmlTreeFigure) inOutTreeEditPart.getFigure()).update(XmlmapPackage.TREE_NODE__TYPE);
                     }
                 }
+                break;
+            case XmlmapPackage.TREE_NODE__LOOP:
+                ((TreeNodeFigure) getFigure()).getElement().getBranchContent().updateLoopButtonFigure();
+                AbstractInOutTree abstractInOutTree = XmlMapUtil.getAbstractInOutTree((OutputTreeNode) getModel());
+                if (abstractInOutTree != null) {
+                    ((XmlMapGraphicViewer) getViewer()).getMapperManager().getProblemsAnalyser().checkProblems(abstractInOutTree);
+                    ((XmlMapGraphicViewer) getViewer()).getMapperManager().getMapperUI().updateStatusBar();
+                }
             }
             break;
         case Notification.ADD:
@@ -104,24 +113,6 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
             default:
                 break;
             }
-        }
-    }
-
-    @Override
-    public void activate() {
-        super.activate();
-        OutputTreeNode outputNode = (OutputTreeNode) getModel();
-        if (outputNode.getInputLoopNodesTable() != null) {
-            outputNode.getInputLoopNodesTable().eAdapters().add(this);
-        }
-    }
-
-    @Override
-    public void deactivate() {
-        super.deactivate();
-        OutputTreeNode outputNode = (OutputTreeNode) getModel();
-        if (outputNode.getInputLoopNodesTable() != null) {
-            outputNode.getInputLoopNodesTable().eAdapters().remove(this);
         }
     }
 }

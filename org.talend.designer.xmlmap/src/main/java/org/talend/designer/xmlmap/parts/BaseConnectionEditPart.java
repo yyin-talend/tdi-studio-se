@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.xmlmap.parts;
 
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 
 /**
@@ -46,6 +47,16 @@ public abstract class BaseConnectionEditPart extends AbstractConnectionEditPart 
     @Override
     protected void createEditPolicies() {
 
+    }
+
+    @Override
+    public EditPart getSource() {
+        return super.getSource();
+    }
+
+    @Override
+    public EditPart getTarget() {
+        return super.getTarget();
     }
 
 }

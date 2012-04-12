@@ -25,6 +25,10 @@ public class TreeSchemaTableEntry {
         this.treeNode = treeNode;
     }
 
+    public void setTreeNode(TreeNode treeNode) {
+        this.treeNode = treeNode;
+    }
+
     public String getXPath() {
         return treeNode.getXpath();
     }

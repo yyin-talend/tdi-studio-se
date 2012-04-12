@@ -342,12 +342,22 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
     @Override
     public void connectionStatusChanged(EConnectionType newValue, String connectionToApply) {
         XmlMapData externalEmfData = (XmlMapData) getExternalEmfData();
+        InputXmlTree mainTable = null;
         for (InputXmlTree inputTree : externalEmfData.getInputTrees()) {
             if (inputTree.getName() != null && inputTree.getName().equals(connectionToApply)) {
-                inputTree.setLookup(EConnectionType.FLOW_MAIN != newValue);
+                boolean value = EConnectionType.FLOW_MAIN != newValue;
+                inputTree.setLookup(value);
+                if (!value) {
+                    mainTable = inputTree;
+                }
             } else if (EConnectionType.FLOW_MAIN == newValue) {
                 inputTree.setLookup(true);
             }
+        }
+        // put the main table to the first place
+        if (mainTable != null) {
+            externalEmfData.getInputTrees().remove(mainTable);
+            externalEmfData.getInputTrees().add(0, mainTable);
         }
     }
 

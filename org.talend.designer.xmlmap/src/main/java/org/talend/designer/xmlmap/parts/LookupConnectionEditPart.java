@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
-import org.eclipse.gef.EditPart;
 import org.talend.designer.xmlmap.figures.routers.LookupConnectionRouter;
 import org.talend.designer.xmlmap.model.emf.xmlmap.IConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
@@ -34,16 +33,6 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
 public class LookupConnectionEditPart extends BaseConnectionEditPart {
 
     private LookupConnectionRouter cr;
-
-    @Override
-    public EditPart getSource() {
-        return super.getSource();
-    }
-
-    @Override
-    public EditPart getTarget() {
-        return super.getTarget();
-    }
 
     @Override
     protected void createEditPolicies() {

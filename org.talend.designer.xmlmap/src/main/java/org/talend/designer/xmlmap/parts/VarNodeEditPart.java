@@ -172,6 +172,7 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 refreshTargetConnections();
                 break;
             case XmlmapPackage.VAR_NODE__OUTGOING_CONNECTIONS:
+            case XmlmapPackage.VAR_NODE__FILTER_OUT_GOING_CONNECTIONS:
                 refreshSourceConnections();
                 break;
             }
@@ -181,6 +182,7 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 refreshTargetConnections();
                 break;
             case XmlmapPackage.VAR_NODE__OUTGOING_CONNECTIONS:
+            case XmlmapPackage.VAR_NODE__FILTER_OUT_GOING_CONNECTIONS:
                 refreshSourceConnections();
                 break;
             }

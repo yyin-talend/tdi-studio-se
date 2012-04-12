@@ -16,7 +16,6 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
-import org.eclipse.gef.EditPart;
 import org.talend.designer.xmlmap.figures.routers.CurveConnectionRouter;
 
 /**
@@ -25,16 +24,6 @@ import org.talend.designer.xmlmap.figures.routers.CurveConnectionRouter;
 public class ConnectionEditPart extends BaseConnectionEditPart {
 
     private CurveConnectionRouter curvrRouter;
-
-    @Override
-    public EditPart getSource() {
-        return super.getSource();
-    }
-
-    @Override
-    public EditPart getTarget() {
-        return super.getTarget();
-    }
 
     @Override
     protected IFigure createFigure() {

@@ -339,7 +339,7 @@ public class MapperManager implements ISelectionChangedListener {
                                         treeNode.getChildren().add(createTreeNode);
 
                                     }
-                                    problemsAnalyser.checkLoopProblems(selectedInputTree);
+                                    problemsAnalyser.checkProblems(selectedInputTree);
                                     mapperUI.updateStatusBar();
                                     refreshInputTreeSchemaEditor(selectedInputTree);
                                 }
@@ -499,7 +499,7 @@ public class MapperManager implements ISelectionChangedListener {
                                         treeNode.getChildren().add(createTreeNode);
 
                                     }
-                                    problemsAnalyser.checkLoopProblems(selectedOutputTree);
+                                    problemsAnalyser.checkProblems(selectedOutputTree);
                                     mapperUI.updateStatusBar();
                                     refreshOutputTreeSchemaEditor(selectedOutputTree);
                                 }

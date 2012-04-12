@@ -14,6 +14,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
@@ -154,7 +155,6 @@ public class SetLoopAction extends SelectionAction {
                 XmlMapUtil.findChildSourceLoop(model, sourceLoopNodes);
                 if (!sourceLoopNodes.isEmpty()) {
                     InputLoopNodesTable createInputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
-                    createInputLoopNodesTable.eAdapters().add(nodePart);
                     ((OutputTreeNode) model).setInputLoopNodesTable(createInputLoopNodesTable);
                     createInputLoopNodesTable.getInputloopnodes().addAll(sourceLoopNodes);
                     ((OutputXmlTree) abstractTree).getInputLoopNodesTables().add(createInputLoopNodesTable);
@@ -183,38 +183,49 @@ public class SetLoopAction extends SelectionAction {
             XmlMapUtil.upsetMainNode(model);
         }
         if (abstractTree != null) {
-            mapperManager.getProblemsAnalyser().checkLoopProblems(abstractTree);
+            mapperManager.getProblemsAnalyser().checkProblems(abstractTree);
             mapperManager.getMapperUI().updateStatusBar();
         }
     }
 
     private void addInputLoopNodesToOutput(TreeNode loopNode, TreeNode loopOrChild) {
-        if (!loopOrChild.getOutgoingConnections().isEmpty()) {
-            for (Connection connection : loopOrChild.getOutgoingConnections()) {
-                if (connection.getTarget() instanceof OutputTreeNode) {
-                    OutputTreeNode loopParentNode = (OutputTreeNode) XmlMapUtil.getLoopParentNode((OutputTreeNode) connection
-                            .getTarget());
-                    if (loopParentNode != null) {
-                        if (loopParentNode.getInputLoopNodesTable() != null) {
-                            loopParentNode.getInputLoopNodesTable().getInputloopnodes().add(loopNode);
-                        }
-                    } else {
-                        OutputXmlTree abstractInOutTree = (OutputXmlTree) XmlMapUtil
-                                .getAbstractInOutTree((OutputTreeNode) connection.getTarget());
-                        if (!XmlMapUtil.hasDocument(abstractInOutTree)) {
-                            EList<InputLoopNodesTable> inputLoopNodesTables = abstractInOutTree.getInputLoopNodesTables();
-                            if (inputLoopNodesTables.size() == 1) {
-                                InputLoopNodesTable inputLoopNodesTable = inputLoopNodesTables.get(0);
-                                inputLoopNodesTable.getInputloopnodes().add(loopNode);
-                            }
-                        }
-                    }
-                }
+        addInputLoopNodesToOutput(loopNode, loopOrChild.getOutgoingConnections());
+        // check related lookup nodes
+        if (!loopOrChild.getLookupOutgoingConnections().isEmpty()) {
+            for (LookupConnection lookupConnection : loopOrChild.getLookupOutgoingConnections()) {
+                TreeNode lookupTarget = (TreeNode) lookupConnection.getTarget();
+                addInputLoopNodesToOutput(loopNode, lookupTarget.getOutgoingConnections());
             }
+
         }
+
         if (!loopOrChild.getChildren().isEmpty()) {
             for (TreeNode child : loopOrChild.getChildren()) {
                 addInputLoopNodesToOutput(loopNode, child);
+            }
+        }
+    }
+
+    private void addInputLoopNodesToOutput(TreeNode loopNode, List<Connection> connections) {
+        for (Connection connection : connections) {
+            if (connection.getTarget() instanceof OutputTreeNode) {
+                OutputTreeNode loopParentNode = (OutputTreeNode) XmlMapUtil.getLoopParentNode((OutputTreeNode) connection
+                        .getTarget());
+                if (loopParentNode != null) {
+                    if (loopParentNode.getInputLoopNodesTable() != null) {
+                        loopParentNode.getInputLoopNodesTable().getInputloopnodes().add(loopNode);
+                    }
+                } else {
+                    OutputXmlTree abstractInOutTree = (OutputXmlTree) XmlMapUtil.getAbstractInOutTree((OutputTreeNode) connection
+                            .getTarget());
+                    if (!XmlMapUtil.hasDocument(abstractInOutTree)) {
+                        EList<InputLoopNodesTable> inputLoopNodesTables = abstractInOutTree.getInputLoopNodesTables();
+                        if (inputLoopNodesTables.size() == 1) {
+                            InputLoopNodesTable inputLoopNodesTable = inputLoopNodesTables.get(0);
+                            inputLoopNodesTable.getInputloopnodes().add(loopNode);
+                        }
+                    }
+                }
             }
         }
     }

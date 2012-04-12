@@ -22,12 +22,18 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.requests.DirectEditRequest;
+import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.InputXmlTreeFigure;
+import org.talend.designer.xmlmap.figures.OutputXmlTreeFigure;
 import org.talend.designer.xmlmap.figures.cells.IWidgetCell;
+import org.talend.designer.xmlmap.figures.treeNode.TreeNodeFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeCellEditorLocator;
 import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeDirectEditManager;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
@@ -92,6 +98,45 @@ public class InputXmlTreeEditPart extends AbstractInOutTreeEditPart {
             case XmlmapPackage.INPUT_XML_TREE__EXPRESSION_FILTER:
                 ((InputXmlTreeFigure) getFigure()).update(featureId);
                 break;
+            case XmlmapPackage.ABSTRACT_IN_OUT_TREE__MULTI_LOOPS:
+                if (getParent() instanceof XmlMapDataEditPart) {
+                    List childPart = ((XmlMapDataEditPart) getParent()).getChildren();
+                    for (Object o : childPart) {
+                        if (o instanceof OutputXmlTreeEditPart) {
+                            OutputXmlTreeEditPart outputPart = (OutputXmlTreeEditPart) o;
+                            boolean hasDocument = XmlMapUtil.hasDocument((OutputXmlTree) outputPart.getModel());
+                            if (!hasDocument) {
+                                OutputXmlTreeFigure outputTreeFigure = (OutputXmlTreeFigure) outputPart.getFigure();
+                                outputTreeFigure.update(XmlmapPackage.ABSTRACT_IN_OUT_TREE__MULTI_LOOPS);
+                            } else {
+                                List nodeChild = outputPart.getChildren();
+                                for (Object nc : nodeChild) {
+                                    if (nc instanceof OutputTreeNodeEditPart) {
+                                        refreshOutputNodeLoopFunctionBtn((OutputTreeNodeEditPart) nc);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    ((XmlMapGraphicViewer) getViewer()).getMapperManager().getProblemsAnalyser().checkProblems();
+                    ((XmlMapGraphicViewer) getViewer()).getMapperManager().getMapperUI().updateStatusBar();
+                }
+            }
+        }
+    }
+
+    private void refreshOutputNodeLoopFunctionBtn(OutputTreeNodeEditPart outputNodePart) {
+        OutputTreeNode outputNode = (OutputTreeNode) outputNodePart.getModel();
+        if (outputNode.isLoop()) {
+            TreeNodeFigure nodeFigure = (TreeNodeFigure) outputNodePart.getFigure();
+            if (nodeFigure != null) {
+                nodeFigure.getElement().getBranchContent().updateLoopButtonFigure();
+            }
+        } else if (!outputNodePart.getChildren().isEmpty()) {
+            for (Object nc : outputNodePart.getChildren()) {
+                if (nc instanceof OutputTreeNodeEditPart) {
+                    refreshOutputNodeLoopFunctionBtn((OutputTreeNodeEditPart) nc);
+                }
             }
         }
     }

@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.xmlmap.figures.treetools;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,14 +23,19 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.layout.TreeToolBarLayout;
 import org.talend.designer.xmlmap.figures.treesettings.TreeSettingsManager;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 import org.talend.designer.xmlmap.ui.dialog.SetLoopFunctionDialog;
 import org.talend.designer.xmlmap.ui.resource.ImageInfo;
@@ -59,6 +65,8 @@ public class TreeToolBarContainer extends Figure {
 
     private Image miniImage = ImageProviderMapper.getImage(ImageInfo.MINIMIZE_ICON);
 
+    private InputXmlTree inputMainTable;
+
     public TreeToolBarContainer(AbstractInOutTreeEditPart treePart) {
         this.abstractTreePart = treePart;
         this.abstractTree = (AbstractInOutTree) treePart.getModel();
@@ -71,34 +79,39 @@ public class TreeToolBarContainer extends Figure {
         manager.setSpacing(5);
         this.setLayoutManager(manager);
 
-        boolean isInputMain = false;
-        boolean isLookup = false;
-        if (abstractTree instanceof InputXmlTree) {
-            isInputMain = !((InputXmlTree) abstractTree).isLookup();
-            isLookup = ((InputXmlTree) abstractTree).isLookup();
+        if (abstractTree instanceof OutputXmlTree) {
+            if (abstractTree.eContainer() instanceof XmlMapData) {
+                XmlMapData xmlmapData = (XmlMapData) abstractTree.eContainer();
+                for (InputXmlTree inputTree : xmlmapData.getInputTrees()) {
+                    if (!inputTree.isLookup()) {
+                        this.inputMainTable = inputTree;
+                        break;
+                    }
+                }
+            }
+
+            setLoopFunctionButton = new SetLoopFunctionButton(ImageProviderMapper.getImage(ImageInfo.SETLOOPFUNCTION_BUTTON));
+            this.add(setLoopFunctionButton);
+            if (inputMainTable == null || !inputMainTable.isMultiLoops()) {
+                setLoopFunctionButton.setVisible(false);
+            }
         }
-        if (!isInputMain) {
-            if (!isLookup) {
-                setLoopFunctionButton = new SetLoopFunctionButton(ImageProviderMapper.getImage(ImageInfo.SETLOOPFUNCTION_BUTTON));
-                this.add(setLoopFunctionButton);
-            }
 
-            condensedButton = new CondensedButton(ImageProviderMapper.getImage(ImageInfo.CONDENSED_TOOL_ICON));
-            condensedButton.setSelected(abstractTree.isActivateCondensedTool());
-            this.add(condensedButton);
+        condensedButton = new CondensedButton(ImageProviderMapper.getImage(ImageInfo.CONDENSED_TOOL_ICON));
+        condensedButton.setSelected(abstractTree.isActivateCondensedTool());
+        this.add(condensedButton);
 
-            expressionFilterButton = new ExpressionFilterButton(ImageProviderMapper.getImage(ImageInfo.ACTIVATE_FILTER_ICON));
-            expressionFilterButton.setSelected(abstractTree.isActivateExpressionFilter());
-            this.add(expressionFilterButton);
+        expressionFilterButton = new ExpressionFilterButton(ImageProviderMapper.getImage(ImageInfo.ACTIVATE_FILTER_ICON));
+        expressionFilterButton.setSelected(abstractTree.isActivateExpressionFilter());
+        this.add(expressionFilterButton);
 
-            boolean isErrorReject = false;
-            if (abstractTree instanceof OutputXmlTree) {
-                isErrorReject = ((OutputXmlTree) abstractTree).isErrorReject();
-            }
-            if (isErrorReject) {
-                condensedButton.setEnabled(false);
-                expressionFilterButton.setEnabled(false);
-            }
+        boolean isErrorReject = false;
+        if (abstractTree instanceof OutputXmlTree) {
+            isErrorReject = ((OutputXmlTree) abstractTree).isErrorReject();
+        }
+        if (isErrorReject) {
+            condensedButton.setEnabled(false);
+            expressionFilterButton.setEnabled(false);
         }
 
         Image image = null;
@@ -148,10 +161,7 @@ public class TreeToolBarContainer extends Figure {
     public void updateLoopFunctionButton() {
         if (setLoopFunctionButton != null && abstractTree instanceof OutputXmlTree) {
             if (!XmlMapUtil.hasDocument(abstractTree)) {
-                List<InputLoopNodesTable> listInputLoopNodesTablesEntry = ((OutputXmlTree) abstractTree)
-                        .getInputLoopNodesTables();
-                if (listInputLoopNodesTablesEntry != null && listInputLoopNodesTablesEntry.size() == 1
-                        && listInputLoopNodesTablesEntry.get(0).getInputloopnodes().size() > 1) {
+                if (inputMainTable != null && inputMainTable.isMultiLoops()) {
                     setLoopFunctionButton.setVisible(true);
                 } else {
                     setLoopFunctionButton.setVisible(false);
@@ -207,13 +217,26 @@ public class TreeToolBarContainer extends Figure {
                 @Override
                 public void execute() {
                     if (abstractTree instanceof OutputXmlTree) {
-                        List<InputLoopNodesTable> listInputLoopNodesTablesEntry = ((OutputXmlTree) abstractTree)
-                                .getInputLoopNodesTables();
-                        if (listInputLoopNodesTablesEntry.size() == 1) {
-                            InputLoopNodesTable inputLoopNodesTable = listInputLoopNodesTablesEntry.get(0);
-                            SetLoopFunctionDialog nsDialog = new SetLoopFunctionDialog(null, inputLoopNodesTable);
-                            setLoopFunctionButton.setSelected(false);
-                            nsDialog.open();
+
+                        OutputXmlTree outputXmlTree = (OutputXmlTree) abstractTree;
+                        InputLoopNodesTable inputLoopNodesTable = null;
+                        if (!outputXmlTree.getInputLoopNodesTables().isEmpty()) {
+                            inputLoopNodesTable = outputXmlTree.getInputLoopNodesTables().get(0);
+                        } else {
+                            inputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
+                            outputXmlTree.getInputLoopNodesTables().add(inputLoopNodesTable);
+                        }
+                        List<TreeNode> loopNodes = new ArrayList<TreeNode>();
+                        if (inputMainTable != null && inputMainTable.isMultiLoops()) {
+                            loopNodes.addAll(XmlMapUtil.getMultiLoopsForInputTree(inputMainTable));
+                        }
+                        SetLoopFunctionDialog nsDialog = new SetLoopFunctionDialog(null, inputLoopNodesTable, loopNodes);
+                        setLoopFunctionButton.setSelected(false);
+                        if (nsDialog.open() == Window.OK) {
+                            ((XmlMapGraphicViewer) abstractTreePart.getViewer()).getMapperManager().getProblemsAnalyser()
+                                    .checkProblems(abstractTree);
+                            ((XmlMapGraphicViewer) abstractTreePart.getViewer()).getMapperManager().getMapperUI()
+                                    .updateStatusBar();
                         }
                     }
                 }
