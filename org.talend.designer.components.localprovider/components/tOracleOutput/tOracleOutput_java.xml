@@ -305,7 +305,7 @@
   	<PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="90"
+      NUM_ROW="20"
       REQUIRED="true"
       SHOW="false" 
     >
@@ -315,7 +315,7 @@
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
-      NUM_ROW="90"
+      NUM_ROW="30"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -326,7 +326,7 @@
       NAME="ADD_COLS"
       FIELD="TABLE"
       REQUIRED="false"
-      NUM_ROW="100"
+      NUM_ROW="35"
       NB_LINES="3"
     >
       <ITEMS>
@@ -347,7 +347,7 @@
     <PARAMETER
       NAME="USE_FIELD_OPTIONS"
       FIELD="CHECK"
-      NUM_ROW="120"
+      NUM_ROW="40"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -356,7 +356,7 @@
       NAME="FIELD_OPTIONS"
       FIELD="TABLE"
       REQUIRED="true"
-      NUM_ROW="130"
+      NUM_ROW="45"
       NB_LINES="5"
       SHOW_IF="USE_FIELD_OPTIONS == 'true'"
     >
@@ -372,7 +372,7 @@
     <PARAMETER
       NAME="USE_HINT_OPTIONS"
       FIELD="CHECK"
-      NUM_ROW="135"
+      NUM_ROW="50"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -381,7 +381,7 @@
       NAME="HINT_OPTIONS"
       FIELD="TABLE"
       REQUIRED="true"
-      NUM_ROW="136"
+      NUM_ROW="51"
       NB_LINES="5"      
 	  SHOW_IF="USE_HINT_OPTIONS == 'true'"
     >
@@ -406,7 +406,7 @@
     <PARAMETER
       NAME="CONVERT_COLUMN_TABLE_TO_UPPERCASE"
       FIELD="CHECK"
-      NUM_ROW="140"
+      NUM_ROW="55"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -414,13 +414,13 @@
   	<PARAMETER 
   	  NAME="ENABLE_DEBUG_MODE" 
   	  FIELD="CHECK"
-	  NUM_ROW="150">
+	  NUM_ROW="60">
 	  <DEFAULT>false</DEFAULT>
 	</PARAMETER>            
   	<PARAMETER 
   	  NAME="USE_BATCH_SIZE" 
   	  FIELD="CHECK"
-	  NUM_ROW="160"
+	  NUM_ROW="65"
 	  SHOW_IF="(USE_EXISTING_CONNECTION != 'true') AND ((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE')) "
 	  >
 	  <DEFAULT>true</DEFAULT>
@@ -429,7 +429,7 @@
   	<PARAMETER 
   	  NAME="BATCH_SIZE" 
   	  FIELD="TEXT"
-	  NUM_ROW="160"
+	  NUM_ROW="65"
 	  SHOW_IF="((USE_BATCH_SIZE == 'true') AND (USE_EXISTING_CONNECTION != 'true')) AND ((DATA_ACTION == 'INSERT') OR (DATA_ACTION == 'UPDATE') OR (DATA_ACTION == 'DELETE'))"
 	  >
 	  <DEFAULT>10000</DEFAULT>
@@ -438,14 +438,14 @@
 	<PARAMETER 
 		NAME="SUPPORT_NULL_WHERE" 
 		FIELD="CHECK"
-		NUM_ROW="170">
+		NUM_ROW="70">
 		  <DEFAULT>false</DEFAULT>
 	</PARAMETER>
 	
 	<PARAMETER 
 		NAME="USE_TIMESTAMP_FOR_DATE_TYPE" 
 		FIELD="CHECK"
-		NUM_ROW="180">
+		NUM_ROW="80">
 		  <DEFAULT>true</DEFAULT>
 	</PARAMETER>
 	
