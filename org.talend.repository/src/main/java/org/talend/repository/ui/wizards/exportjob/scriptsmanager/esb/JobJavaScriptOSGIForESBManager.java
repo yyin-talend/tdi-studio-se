@@ -389,8 +389,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     private boolean isRESTProviderJob(ProcessItem processItem) {
-        // return null != getRESTRequestComponent(processItem);
-        return false;
+        return null != getRESTRequestComponent(processItem);
     }
 
     private NodeType getRESTRequestComponent(ProcessItem processItem) {
