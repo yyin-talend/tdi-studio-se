@@ -486,6 +486,10 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 }
             }
         }
+        // in case after drag/drop the editor is dirty but can not get focus
+        if (editor.isDirty()) {
+            editor.setFocus();
+        }
         this.eraseTargetFeedback();
     }
 
