@@ -487,6 +487,15 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param.setValue("");
         param.setReadOnly(false);
         addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName("JOBID_FOR_OOZIE");
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setFieldType(EParameterFieldType.TEXT);
+        param.setShow(false);
+        param.setValue("");
+        param.setReadOnly(false);
+        addElementParameter(param);
     }
 
     /**
