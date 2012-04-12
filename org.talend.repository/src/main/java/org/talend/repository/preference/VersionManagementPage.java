@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -1097,15 +1096,6 @@ public class VersionManagementPage extends ProjectSettingPage {
                 IWorkspace workspace = ResourcesPlugin.getWorkspace();
                 try {
                     ISchedulingRule schedulingRule = workspace.getRoot();
-                    // try to find the project resource to limit the lock to the project instead of the root.
-                    Project currentProject = ProjectManager.getInstance().getCurrentProject();
-                    if (currentProject != null) {
-                        String technicalLabel = currentProject.getTechnicalLabel();
-                        IProject resourceProject = workspace.getRoot().getProject(technicalLabel);
-                        if (resourceProject != null) {
-                            schedulingRule = resourceProject;
-                        }
-                    }
                     // the update the project files need to be done in the workspace runnable to avoid all notification
                     // of changes before the end of the modifications.
                     workspace.run(runnable, schedulingRule, IWorkspace.AVOID_UPDATE, monitor);
