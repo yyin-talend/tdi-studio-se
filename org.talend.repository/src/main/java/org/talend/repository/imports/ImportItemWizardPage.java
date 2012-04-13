@@ -27,9 +27,16 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -61,7 +68,6 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
@@ -74,6 +80,7 @@ import org.eclipse.ui.internal.wizards.datatransfer.TarException;
 import org.eclipse.ui.internal.wizards.datatransfer.TarFile;
 import org.eclipse.ui.internal.wizards.datatransfer.TarLeveledStructureProvider;
 import org.eclipse.ui.internal.wizards.datatransfer.ZipLeveledStructureProvider;
+import org.osgi.framework.FrameworkUtil;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -103,10 +110,6 @@ class ImportItemWizardPage extends WizardPage {
     private Button itemFromDirectoryRadio;
 
     private Text directoryPathField;
-
-    private Table ecoTab;
-
-    private String[] fFilters = new String[] { "Name", "Description" }; //$NON-NLS-1$ //$NON-NLS-2$
 
     protected Shell shell;
 
@@ -890,9 +893,9 @@ class ImportItemWizardPage extends WizardPage {
         }
 
         try {
-            IRunnableWithProgress op = new IRunnableWithProgress() {
+            final IWorkspaceRunnable op = new IWorkspaceRunnable() {
 
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                public void run(IProgressMonitor monitor) throws CoreException {
                     IPath destinationPath = null;
                     String contentType = "";
                     if (rNode != null && rNode.getType().equals(ENodeType.SIMPLE_FOLDER)) {
@@ -905,19 +908,36 @@ class ImportItemWizardPage extends WizardPage {
 
                     repositoryUtil.importItemRecords(manager, itemRecords, monitor, overwrite, destinationPath, contentType);
                     if (repositoryUtil.hasErrors()) {
-                        throw new InvocationTargetException(new PersistenceException("")); //$NON-NLS-1$
+                        throw new CoreException(new Status(IStatus.ERROR, FrameworkUtil.getBundle(this.getClass())
+                                .getSymbolicName(), "Import erros")); //$NON-NLS-1$
                     }
 
                 }
 
             };
+            IRunnableWithProgress iRunnableWithProgress = new IRunnableWithProgress() {
 
-            new ProgressMonitorDialog(getShell()).run(true, true, op);
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                    try {
+                        ISchedulingRule schedulingRule = workspace.getRoot();
+                        // the update the project files need to be done in the workspace runnable to avoid all
+                        // notification
+                        // of changes before the end of the modifications.
+                        workspace.run(op, schedulingRule, IWorkspace.AVOID_UPDATE, monitor);
+                    } catch (CoreException e) {
+                        throw new InvocationTargetException(e);
+                    }
+
+                }
+            };
+
+            new ProgressMonitorDialog(getShell()).run(true, true, iRunnableWithProgress);
 
         } catch (InvocationTargetException e) {
             Throwable targetException = e.getTargetException();
             if (repositoryUtil.getRoutineExtModulesMap().isEmpty()) {
-                if (targetException instanceof PersistenceException) {
+                if (targetException instanceof CoreException) {
                     MessageDialog.openWarning(getShell(), Messages.getString("ImportItemWizardPage.ImportSelectedItems"), //$NON-NLS-1$
                             Messages.getString("ImportItemWizardPage.ErrorsOccured")); //$NON-NLS-1$
                 }
@@ -926,9 +946,10 @@ class ImportItemWizardPage extends WizardPage {
         } catch (InterruptedException e) {
             //
         }
-        ResourcesManager curManager = (ResourcesManager) this.manager;
-        if (curManager instanceof ProviderManager)
+        ResourcesManager curManager = this.manager;
+        if (curManager instanceof ProviderManager) {
             curManager.closeResource();
+        }
 
         selectedItems = null;
         itemRecords.clear();
