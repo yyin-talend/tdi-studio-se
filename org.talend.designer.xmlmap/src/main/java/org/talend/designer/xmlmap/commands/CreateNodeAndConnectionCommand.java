@@ -258,7 +258,7 @@ public class CreateNodeAndConnectionCommand extends Command {
     }
 
     private void createInputLoopTable(TreeNode sourceNode, OutputTreeNode targetOutputNode) {
-        TreeNode loopParentTreeNode = XmlMapUtil.getLoopParentNode((TreeNode) sourceNode);
+
         InputLoopNodesTable inputLoopNodesTable = null;
         AbstractInOutTree abstractTree = XmlMapUtil.getAbstractInOutTree(targetOutputNode);
         if (abstractTree != null && abstractTree instanceof OutputXmlTree) {
@@ -286,55 +286,56 @@ public class CreateNodeAndConnectionCommand extends Command {
             }
 
             // fix for TDI-20360
+            InputXmlTree inputTree = (InputXmlTree) XmlMapUtil.getAbstractInOutTree(sourceNode);
+            TreeNode loopParentTreeNode = null;
             List<TreeNode> soruceLoops = new ArrayList<TreeNode>();
-            if (loopParentTreeNode != null) {
-                soruceLoops.add(loopParentTreeNode);
-            }
 
-            if (loopParentTreeNode == null) {
-                InputXmlTree inputTree = (InputXmlTree) XmlMapUtil.getAbstractInOutTree(sourceNode);
-                if (inputTree != null) {
-                    if (!inputTree.isLookup() && inputLoopNodesTable.getInputloopnodes().isEmpty()) {
+            if (inputTree != null) {
+                if (!inputTree.isLookup() && inputTree.isMultiLoops()) {
+                    loopParentTreeNode = XmlMapUtil.getLoopParentNode((TreeNode) sourceNode);
+                    if (loopParentTreeNode != null) {
+                        soruceLoops.add(loopParentTreeNode);
+                    } else if (inputLoopNodesTable.getInputloopnodes().isEmpty()) {
                         loopParentTreeNode = XmlMapUtil.getFirstLoopOfATree(inputTree);
                         if (loopParentTreeNode != null) {
                             soruceLoops.add(loopParentTreeNode);
                         }
-                    } else {
-                        // if lookup node connected with main table and the source node is under loop , add this loop to
-                        // InputLoopTable for output
-                        inputTree = null;
-                        for (InputXmlTree input : xmlMapData.getInputTrees()) {
-                            if (!input.isLookup()) {
-                                inputTree = input;
-                                break;
-                            }
+                    }
+                } else {
+                    // if lookup node connected with main table and the source node is under loop , add this loop to
+                    // InputLoopTable for output
+                    inputTree = null;
+                    for (InputXmlTree input : xmlMapData.getInputTrees()) {
+                        if (!input.isLookup()) {
+                            inputTree = input;
+                            break;
                         }
-                        if (inputTree != null) {
-                            EList<LookupConnection> lookupIncomingConnections = sourceNode.getLookupIncomingConnections();
-                            boolean atLeastOneLookupFromMain = false;
-                            for (LookupConnection lookupConn : lookupIncomingConnections) {
-                                TreeNode sourceTreeNode = (TreeNode) lookupConn.getSource();
-                                AbstractInOutTree sourceTree = XmlMapUtil.getAbstractInOutTree(sourceTreeNode);
-                                // only check when source tree is main , for other case need to do it latter...
-                                if (sourceTree == inputTree) {
-                                    atLeastOneLookupFromMain = true;
-                                    loopParentTreeNode = XmlMapUtil.getLoopParentNode(sourceTreeNode);
-                                    if (loopParentTreeNode != null && !soruceLoops.contains(loopParentTreeNode)) {
-                                        soruceLoops.add(loopParentTreeNode);
-                                    }
-                                }
-                            }
-                            if (soruceLoops.isEmpty() && atLeastOneLookupFromMain) {
-                                loopParentTreeNode = XmlMapUtil.getFirstLoopOfATree(inputTree);
-                                if (loopParentTreeNode != null) {
+                    }
+                    if (inputTree != null && inputTree.isMultiLoops()) {
+                        EList<LookupConnection> lookupIncomingConnections = sourceNode.getLookupIncomingConnections();
+                        boolean atLeastOneLookupFromMain = false;
+                        for (LookupConnection lookupConn : lookupIncomingConnections) {
+                            TreeNode sourceTreeNode = (TreeNode) lookupConn.getSource();
+                            AbstractInOutTree sourceTree = XmlMapUtil.getAbstractInOutTree(sourceTreeNode);
+                            // only check when source tree is main , for other case need to do it latter...
+                            if (sourceTree == inputTree) {
+                                atLeastOneLookupFromMain = true;
+                                loopParentTreeNode = XmlMapUtil.getLoopParentNode(sourceTreeNode);
+                                if (loopParentTreeNode != null && !soruceLoops.contains(loopParentTreeNode)) {
                                     soruceLoops.add(loopParentTreeNode);
                                 }
                             }
                         }
+                        if (soruceLoops.isEmpty() && atLeastOneLookupFromMain) {
+                            loopParentTreeNode = XmlMapUtil.getFirstLoopOfATree(inputTree);
+                            if (loopParentTreeNode != null) {
+                                soruceLoops.add(loopParentTreeNode);
+                            }
+                        }
                     }
                 }
-
             }
+
             for (TreeNode sourceLoop : soruceLoops) {
                 if (!inputLoopNodesTable.getInputloopnodes().contains(sourceLoop)) {
                     inputLoopNodesTable.getInputloopnodes().add(sourceLoop);
