@@ -15,10 +15,14 @@ package org.talend.designer.core.ui.wizards;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IEditorPart;
@@ -108,8 +112,9 @@ public class OpenExistVersionProcessWizard extends Wizard {
 
     @Override
     public boolean performCancel() {
-        if (!getProperty().getVersion().equals(getOriginVersion()))
+        if (!getProperty().getVersion().equals(getOriginVersion())) {
             restoreVersion();
+        }
         return super.performCancel();
     }
 
@@ -124,20 +129,6 @@ public class OpenExistVersionProcessWizard extends Wizard {
         }
     }
 
-    private void unlockObject() {
-        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
-        try {
-            if (repositoryFactory.getStatus(processObject).equals(ERepositoryStatus.LOCK_BY_USER)) {
-                repositoryFactory.unlock(processObject);
-            }
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-        } catch (LoginException e) {
-            ExceptionHandler.process(e);
-        }
-        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.PROCESS);
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -146,35 +137,51 @@ public class OpenExistVersionProcessWizard extends Wizard {
     @Override
     public boolean performFinish() {
         if (mainPage.isCreateNewVersionJob()) {
-            if (!alreadyEditedByUser) {
-                refreshNewJob();
-                try {
-                    ProxyRepositoryFactory.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
-                } catch (Exception e) {
-                    ExceptionHandler.process(e);
-                }
-            }
 
-            try {
-                Item newCreated = null;
-                if (processObject.getProperty() != null && processObject.getProperty().getItem() != null) {
-                    newCreated = processObject.getProperty().getItem();
-                }
-                if (!(newCreated instanceof BusinessProcessItem)) {
-                    ProxyRepositoryFactory.getInstance().lock(processObject);
-                }
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            } catch (LoginException e) {
-                ExceptionHandler.process(e);
-            }
+            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 
-            boolean locked = processObject.getRepositoryStatus().equals(ERepositoryStatus.LOCK_BY_USER);
-            openAnotherVersion((RepositoryNode) processObject.getRepositoryNode(), !locked);
+                @Override
+                public void run(final IProgressMonitor monitor) throws CoreException {
+                    if (!alreadyEditedByUser) {
+                        refreshNewJob();
+                        try {
+                            ProxyRepositoryFactory.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
+                        } catch (Exception e) {
+                            ExceptionHandler.process(e);
+                        }
+                    }
+
+                    try {
+                        Item newCreated = null;
+                        if (processObject.getProperty() != null && processObject.getProperty().getItem() != null) {
+                            newCreated = processObject.getProperty().getItem();
+                        }
+                        if (!(newCreated instanceof BusinessProcessItem)) {
+                            ProxyRepositoryFactory.getInstance().lock(processObject);
+                        }
+                    } catch (PersistenceException e) {
+                        ExceptionHandler.process(e);
+                    } catch (LoginException e) {
+                        ExceptionHandler.process(e);
+                    }
+
+                    boolean locked = processObject.getRepositoryStatus().equals(ERepositoryStatus.LOCK_BY_USER);
+                    openAnotherVersion((RepositoryNode) processObject.getRepositoryNode(), !locked);
+                    try {
+                        ProxyRepositoryFactory.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+            };
+            IWorkspace workspace = ResourcesPlugin.getWorkspace();
             try {
-                ProxyRepositoryFactory.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
-            } catch (Exception e) {
-                ExceptionHandler.process(e);
+                ISchedulingRule schedulingRule = workspace.getRoot();
+                // the update the project files need to be done in the workspace runnable to avoid all notification
+                // of changes before the end of the modifications.
+                workspace.run(runnable, schedulingRule, IWorkspace.AVOID_UPDATE, null);
+            } catch (CoreException e) {
+                MessageBoxExceptionHandler.process(e);
             }
         } else {
             StructuredSelection selection = (StructuredSelection) mainPage.getSelection();
