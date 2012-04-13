@@ -17,8 +17,11 @@ public class OozieSchedulerPreferencePage extends FieldEditorPreferencePage impl
     }
 
     protected void createFieldEditors() {
-        // Composite main = createPageLayout(getFieldEditorParent());
-        // createOozieSchedulerSettingArea(main);
+        // UserName for acessing hadoop
+        StringFieldEditor userNameFE = new StringFieldEditor(ITalendCorePrefConstants.OOZIE_SCHEDULER_USER_NAME,
+                Messages.getString("OoziePreferencePage.userName"), getFieldEditorParent());
+        userNameFE.setEmptyStringAllowed(true);
+        addField(userNameFE);
 
         // Name Node End Point
         StringFieldEditor nameNodeFE = new StringFieldEditor(ITalendCorePrefConstants.OOZIE_SHCEDULER_NAME_NODE_ENDPOINT,
@@ -56,6 +59,9 @@ public class OozieSchedulerPreferencePage extends FieldEditorPreferencePage impl
 
         String pathValue = ps.getString(ITalendCorePrefConstants.OOZIE_SCHEDULER_PATH);
         pathFE.setStringValue(pathValue);
+
+        String userNameValue = ps.getString(ITalendCorePrefConstants.OOZIE_SCHEDULER_USER_NAME);
+        userNameFE.setStringValue(userNameValue);
     }
 
     /*
@@ -65,30 +71,5 @@ public class OozieSchedulerPreferencePage extends FieldEditorPreferencePage impl
      */
     @Override
     public void init(IWorkbench workbench) {
-        // TODO Auto-generated method stub
     }
-
-    // protected Composite createPageLayout(Composite parent) {
-    // Composite main = new Composite(parent, SWT.NULL);
-    // main.setLayout(new GridLayout(1, false));
-    // main.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-    // return main;
-    // }
-    //
-    // protected void createOozieSchedulerSettingArea(Composite parent) {
-    // Group settingGrp = new Group(parent, SWT.NONE);
-    // settingGrp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    // settingGrp.setLayout(new GridLayout(1, false));
-    // settingGrp.setText(OOZIE_GROUP_SETTING);
-    //
-    // // // Name Node End Point
-    // // addField(new StringFieldEditor(ITalendCorePrefConstants.OOZIE_SHCEDULER_NAME_NODE_ENDPOINT,
-    // // Messages.getString("OoziePreferencePage.nameNodeEndPoint"), settingGrp));
-    // // // Job Tracker End Point
-    // // addField(new StringFieldEditor(ITalendCorePrefConstants.OOZIE_SHCEDULER_JOB_TRACKER_ENDPOINT,
-    // // Messages.getString("OoziePreferencePage.jobTrackerEndPoint"), settingGrp));
-    // // // Oozie End Point
-    // // addField(new StringFieldEditor(ITalendCorePrefConstants.OOZIE_SHCEDULER_OOZIE_ENDPOINT,
-    // // Messages.getString("OoziePreferencePage.oozieEndPoint"), settingGrp));
-    // }
 }
