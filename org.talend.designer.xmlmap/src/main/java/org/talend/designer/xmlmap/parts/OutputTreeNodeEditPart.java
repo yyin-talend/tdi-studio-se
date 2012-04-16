@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.xmlmap.parts;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
@@ -23,9 +24,12 @@ import org.talend.designer.xmlmap.figures.treeNode.RootTreeNodeFigure;
 import org.talend.designer.xmlmap.figures.treeNode.RowFigure;
 import org.talend.designer.xmlmap.figures.treeNode.TreeNodeFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
+import org.talend.designer.xmlmap.util.InputLoopTableUtil;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -96,10 +100,26 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
                 }
             }
             break;
-        case Notification.ADD:
-        case Notification.ADD_MANY:
         case Notification.REMOVE:
         case Notification.REMOVE_MANY:
+            switch (featureId) {
+            case XmlmapPackage.ABSTRACT_NODE__INCOMING_CONNECTIONS:
+                // remove source loop node in parent loop of output node if needed .
+                Object oldObject = notification.getOldValue();
+                if (getViewer() instanceof XmlMapGraphicViewer) {
+                    InputXmlTree mainInputTree = ((XmlMapGraphicViewer) getViewer()).getMapperManager().getMainInputTree();
+                    if (oldObject instanceof Connection) {
+                        List list = new ArrayList();
+                        list.add(oldObject);
+                        InputLoopTableUtil.removeSourceLoopFromInputLoopTable(list, (OutputTreeNode) getModel(), mainInputTree);
+                    } else if (oldObject instanceof List) {
+                        InputLoopTableUtil.removeSourceLoopFromInputLoopTable((List) oldObject, (OutputTreeNode) getModel(),
+                                mainInputTree);
+                    }
+                }
+            }
+        case Notification.ADD:
+        case Notification.ADD_MANY:
             switch (featureId) {
             case XmlmapPackage.INPUT_LOOP_NODES_TABLE__INPUTLOOPNODES:
             case XmlmapPackage.OUTPUT_TREE_NODE__INPUT_LOOP_NODES_TABLE:

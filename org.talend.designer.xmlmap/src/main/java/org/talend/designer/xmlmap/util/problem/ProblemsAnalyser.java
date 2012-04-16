@@ -62,7 +62,7 @@ public class ProblemsAnalyser {
         if (copyOfMapData != null) {
 
             // check problems for InputLoopTable in output
-            InputXmlTree mainInputTree = XmlMapUtil.getMainInputTree(copyOfMapData);
+            InputXmlTree mainInputTree = mapperManager.getMainInputTree();
             for (OutputXmlTree outputTree : copyOfMapData.getOutputTrees()) {
                 checkInputLoopTablesProblem(outputTree, mainInputTree);
             }
@@ -82,6 +82,9 @@ public class ProblemsAnalyser {
     }
 
     private void checkInputLoopTablesProblem(OutputXmlTree outputTree, InputXmlTree mainInputTree) {
+        if (mainInputTree == null) {
+            return;
+        }
         if (mainInputTree.isMultiLoops()) {
             if (!XmlMapUtil.hasDocument(outputTree)) {
                 if (outputTree.getInputLoopNodesTables().size() == 1
@@ -153,7 +156,7 @@ public class ProblemsAnalyser {
         // check problems for InputLoopTable in output
         final XmlMapData copyOfMapData = mapperManager.getCopyOfMapData();
         // check problems for InputLoopTable in output
-        InputXmlTree mainInputTree = XmlMapUtil.getMainInputTree(copyOfMapData);
+        InputXmlTree mainInputTree = mapperManager.getMainInputTree();
         if (abstractTree instanceof OutputXmlTree) {
             checkInputLoopTablesProblem((OutputXmlTree) abstractTree, mainInputTree);
         }

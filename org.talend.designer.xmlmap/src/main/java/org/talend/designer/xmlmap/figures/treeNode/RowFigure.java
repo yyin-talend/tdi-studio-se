@@ -69,7 +69,7 @@ public class RowFigure extends Figure {
             this.add(expression);
         }
 
-        branchContent = new TreeBranchContent(treeNode);
+        branchContent = new TreeBranchContent(treeNodePart);
 
         treeBranch = new TreeBranch(branchContent, enableExpaned);
         this.add(treeBranch);

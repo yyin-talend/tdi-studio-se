@@ -23,6 +23,7 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.talend.datatools.xml.utils.XSDPopulationUtil2;
+import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.cells.ITextCell;
 import org.talend.designer.xmlmap.figures.treetools.ToolBarButtonImageFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
@@ -32,8 +33,8 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
-import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
+import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 import org.talend.designer.xmlmap.ui.dialog.SetLoopFunctionDialog;
 import org.talend.designer.xmlmap.ui.resource.ImageInfo;
@@ -59,9 +60,10 @@ public class TreeBranchContent extends Figure implements ITextCell {
 
     private InputXmlTree inputMainTable;
 
-    public TreeBranchContent(final TreeNode treeNode) {
+    public TreeBranchContent(final TreeNodeEditPart treeNodePart) {
         setDirectEditType(DirectEditType.NODE_NAME);
-        this.treeNode = treeNode;
+        this.treeNode = (TreeNode) treeNodePart.getModel();
+        inputMainTable = ((XmlMapGraphicViewer) treeNodePart.getViewer()).getMapperManager().getMainInputTree();
 
         GridLayout manager = new GridLayout(4, false);
         manager.horizontalSpacing = 5;
@@ -112,15 +114,6 @@ public class TreeBranchContent extends Figure implements ITextCell {
         });
 
         if (treeNode != null && treeNode instanceof OutputTreeNode) {
-            XmlMapData xmlmapData = XmlMapUtil.getXmlMapData(treeNode);
-            if (xmlmapData != null) {
-                for (InputXmlTree inputTree : xmlmapData.getInputTrees()) {
-                    if (!inputTree.isLookup()) {
-                        this.inputMainTable = inputTree;
-                        break;
-                    }
-                }
-            }
             // display loop setup button only when input main is multiloop
             if (treeNode.isLoop() && inputMainTable != null && inputMainTable.isMultiLoops()) {
                 this.add(loopButtonFigure);

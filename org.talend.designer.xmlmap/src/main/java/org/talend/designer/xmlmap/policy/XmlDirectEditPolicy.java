@@ -32,7 +32,7 @@ public class XmlDirectEditPolicy extends DirectEditPolicy {
                     if (editor instanceof ComboBoxCellEditor) {
                         ComboBoxCellEditor combo = (ComboBoxCellEditor) editor;
                         int selectIndex = (Integer) combo.getValue();
-                        command = new DirectEditCommand(model, type, combo.getItems()[selectIndex]);
+                        command = new DirectEditCommand(getHost(), model, type, combo.getItems()[selectIndex]);
                     }
                     break;
                 case LOOKUP_MODEL:

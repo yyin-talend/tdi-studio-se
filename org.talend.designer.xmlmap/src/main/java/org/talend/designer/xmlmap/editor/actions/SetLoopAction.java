@@ -133,7 +133,7 @@ public class SetLoopAction extends SelectionAction {
             }
 
             if (input) {
-                // check if child is mapped to output reomve the old loop in output node
+                // check if child is mapped to output remove the old loop in output node
                 removeloopInOutputTree(loopNodes);
                 // add input loopNodes to InputLoopNodesTable
                 addInputLoopNodesToOutput(model, model);

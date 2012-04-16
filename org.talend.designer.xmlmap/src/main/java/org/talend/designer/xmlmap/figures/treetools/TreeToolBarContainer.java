@@ -34,7 +34,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
-import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 import org.talend.designer.xmlmap.ui.dialog.SetLoopFunctionDialog;
@@ -70,6 +69,7 @@ public class TreeToolBarContainer extends Figure {
     public TreeToolBarContainer(AbstractInOutTreeEditPart treePart) {
         this.abstractTreePart = treePart;
         this.abstractTree = (AbstractInOutTree) treePart.getModel();
+        inputMainTable = ((XmlMapGraphicViewer) treePart.getViewer()).getMapperManager().getMainInputTree();
         createToolbar();
     }
 
@@ -80,16 +80,6 @@ public class TreeToolBarContainer extends Figure {
         this.setLayoutManager(manager);
 
         if (abstractTree instanceof OutputXmlTree) {
-            if (abstractTree.eContainer() instanceof XmlMapData) {
-                XmlMapData xmlmapData = (XmlMapData) abstractTree.eContainer();
-                for (InputXmlTree inputTree : xmlmapData.getInputTrees()) {
-                    if (!inputTree.isLookup()) {
-                        this.inputMainTable = inputTree;
-                        break;
-                    }
-                }
-            }
-
             setLoopFunctionButton = new SetLoopFunctionButton(ImageProviderMapper.getImage(ImageInfo.SETLOOPFUNCTION_BUTTON));
             this.add(setLoopFunctionButton);
             if (inputMainTable == null || !inputMainTable.isMultiLoops()) {
@@ -160,8 +150,8 @@ public class TreeToolBarContainer extends Figure {
 
     public void updateLoopFunctionButton() {
         if (setLoopFunctionButton != null && abstractTree instanceof OutputXmlTree) {
-            if (!XmlMapUtil.hasDocument(abstractTree)) {
-                if (inputMainTable != null && inputMainTable.isMultiLoops()) {
+            if (inputMainTable != null && inputMainTable.isMultiLoops()) {
+                if (!XmlMapUtil.hasDocument(abstractTree)) {
                     setLoopFunctionButton.setVisible(true);
                 } else {
                     setLoopFunctionButton.setVisible(false);

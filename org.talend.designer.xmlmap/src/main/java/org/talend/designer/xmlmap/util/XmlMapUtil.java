@@ -367,13 +367,9 @@ public class XmlMapUtil {
     }
 
     public static void detachConnectionsSouce(AbstractNode treeNode, XmlMapData mapData, boolean detachChildren) {
-        TreeNode souceTreeNode = null;
         for (Connection connection : treeNode.getIncomingConnections()) {
             AbstractNode source = connection.getSource();
             if (source.getOutgoingConnections().contains(connection)) {
-                if (source instanceof TreeNode) {
-                    souceTreeNode = (TreeNode) source;
-                }
                 source.getOutgoingConnections().remove(connection);
                 mapData.getConnections().remove(connection);
             }
@@ -381,25 +377,6 @@ public class XmlMapUtil {
         treeNode.getIncomingConnections().clear();
 
         if (treeNode instanceof OutputTreeNode) {
-            //
-            AbstractInOutTree abstractTree = XmlMapUtil.getAbstractInOutTree((TreeNode) treeNode);
-            if (abstractTree != null && abstractTree instanceof OutputXmlTree) {
-                List<TreeNode> sourceLoopNodes = new ArrayList<TreeNode>();
-                if (XmlMapUtil.hasDocument(abstractTree)) {
-                    TreeNode targetLoopNode = XmlMapUtil.getLoopParentNode((TreeNode) treeNode);
-                    findChildSourceLoop(targetLoopNode, sourceLoopNodes);
-                } else {
-                    for (TreeNode node : ((OutputXmlTree) abstractTree).getNodes()) {
-                        findChildSourceLoop(node, sourceLoopNodes);
-                    }
-                }
-                if (souceTreeNode != null && souceTreeNode instanceof TreeNode) {
-                    TreeNode sourceLoopNode = XmlMapUtil.getLoopParentNode(souceTreeNode);
-                    if (sourceLoopNode != null && !sourceLoopNodes.contains(sourceLoopNode)) {
-                        XmlMapUtil.getLoopFunctionData(sourceLoopNode, (OutputTreeNode) treeNode);
-                    }
-                }
-            }
             OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
             if (!XmlMapUtil.isExpressionEditable(outputTreeNode) && outputTreeNode.isAggregate()) {
                 outputTreeNode.setAggregate(false);
@@ -866,23 +843,4 @@ public class XmlMapUtil {
 
     }
 
-    public static TreeNode getFirstLoopOfATree(InputXmlTree inputTree) {
-        List<TreeNode> loopNodes = new ArrayList<TreeNode>();
-        getChildLoops(loopNodes, inputTree.getNodes(), true);
-        if (!loopNodes.isEmpty()) {
-            return loopNodes.get(0);
-        }
-        return null;
-    }
-
-    public static InputXmlTree getMainInputTree(XmlMapData mapdata) {
-        if (mapdata != null) {
-            for (InputXmlTree inputTree : mapdata.getInputTrees()) {
-                if (!inputTree.isLookup()) {
-                    return inputTree;
-                }
-            }
-        }
-        return null;
-    }
 }

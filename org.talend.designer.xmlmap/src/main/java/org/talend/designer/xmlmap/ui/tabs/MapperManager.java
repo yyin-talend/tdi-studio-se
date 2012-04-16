@@ -70,6 +70,8 @@ public class MapperManager implements ISelectionChangedListener {
 
     private OutputXmlTree selectedOutputTree;
 
+    private InputXmlTree mainInputTree;
+
     private ProblemsAnalyser problemsAnalyser;
 
     private XmlMapNodeDirectEditManager currentDirectEditManager;
@@ -87,6 +89,12 @@ public class MapperManager implements ISelectionChangedListener {
         this.copyOfMapData = copyOfMapData;
         problemsAnalyser = new ProblemsAnalyser(this);
         problemsAnalyser.checkProblems();
+        for (InputXmlTree input : copyOfMapData.getInputTrees()) {
+            if (!input.isLookup()) {
+                mainInputTree = input;
+                break;
+            }
+        }
     }
 
     public XmlMapComponent getMapperComponent() {
@@ -323,6 +331,9 @@ public class MapperManager implements ISelectionChangedListener {
                                     if (treeNode.getType() != null && treeNode.getType().equals(XmlMapUtil.DOCUMENT)) {
                                         XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
                                         treeNode.getChildren().clear();
+                                        if (selectedInputTree == mainInputTree) {
+                                            selectedInputTree.setMultiLoops(false);
+                                        }
                                     }
                                     treeNode.setType((String) event.newValue);
 
@@ -483,6 +494,7 @@ public class MapperManager implements ISelectionChangedListener {
                                     if (treeNode.getType() != null && treeNode.getType().equals(XmlMapUtil.DOCUMENT)) {
                                         XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
                                         treeNode.getChildren().clear();
+                                        selectedOutputTree.setMultiLoops(false);
                                     }
                                     treeNode.setType((String) event.newValue);
 
@@ -610,5 +622,9 @@ public class MapperManager implements ISelectionChangedListener {
             }
         }
         currentDirectEditManager = null;
+    }
+
+    public InputXmlTree getMainInputTree() {
+        return mainInputTree;
     }
 }
