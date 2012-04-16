@@ -29,6 +29,7 @@ String firstCellXStr = ElementParameterParser.getValue(node, "__FIRST_CELL_X__")
 String firstCellYStr = ElementParameterParser.getValue(node, "__FIRST_CELL_Y__");
 //modif end
 boolean keepCellFormating =  ElementParameterParser.getValue(node, "__KEEP_CELL_FORMATING__").equals("true");
+boolean isAutoFlush=("true").equals(ElementParameterParser.getValue(node, "__AUTO_FLUSH__" ));
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
@@ -242,6 +243,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			%>
     			nb_line_<%=cid %>++;
 <%
+				if(!isAutoFlush){
+%>
+    				xlsxTool_<%=cid%>.flushRowInMemory(nb_line_<%=cid %>,flushSize_<%=cid%>);
+<%
+				}
     		}
     	}
 

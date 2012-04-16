@@ -165,6 +165,14 @@
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER NAME="AUTO_FLUSH" FIELD="CHECK" REQUIRED="true" NUM_ROW="43" >
+		<DEFAULT>false</DEFAULT>
+	</PARAMETER>
+	
+	<PARAMETER NAME="FLUSH_SIZE" FIELD="TEXT" REQUIRED="true" NUM_ROW="43">
+		<DEFAULT>100</DEFAULT>
+	</PARAMETER>
+	
 	<PARAMETER NAME="ADVANCED_SEPARATOR" FIELD="CHECK" REQUIRED="true" NUM_ROW="46" >
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
@@ -201,10 +209,10 @@
       <IMPORT NAME="dom4j" MODULE="dom4j-1.6.1.jar" REQUIRED="true" />
       <IMPORT NAME="geronimo-stax-api" MODULE="geronimo-stax-api_1.0_spec-1.0.jar" REQUIRED="true" />
       <IMPORT NAME="log4j" MODULE="log4j-1.2.15.jar" REQUIRED="true" />
-      <IMPORT NAME="poi" MODULE="poi-3.7-20101029.jar" REQUIRED="true" />
-      <IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-3.7-20101029.jar" REQUIRED="true" />
-      <IMPORT NAME="poi-ooxml-schemas" MODULE="poi-ooxml-schemas-3.7-20101029.jar" REQUIRED="true" />
-      <IMPORT NAME="poi-scratchpad" MODULE="poi-scratchpad-3.7-20101029.jar" REQUIRED="true" />
+      <IMPORT NAME="poi" MODULE="poi-3.8-20120326.jar" REQUIRED="true" />
+      <IMPORT NAME="poi-ooxml" MODULE="poi-ooxml-3.8-20120326.jar" REQUIRED="true" />
+      <IMPORT NAME="poi-ooxml-schemas" MODULE="poi-ooxml-schemas-3.8-20120326.jar" REQUIRED="true" />
+      <IMPORT NAME="poi-scratchpad" MODULE="poi-scratchpad-3.8-20120326.jar" REQUIRED="true" />
       <IMPORT NAME="xmlbeans" MODULE="xmlbeans-2.3.0.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
