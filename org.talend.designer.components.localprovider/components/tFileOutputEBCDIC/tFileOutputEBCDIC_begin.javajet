@@ -17,6 +17,18 @@
 	String customSetOriginalLengthStr = ElementParameterParser.getValue(node,"__NO_X2CJ_FILE__");
 	boolean customSetOriginalLength = (customSetOriginalLengthStr!=null&&!("").equals(customSetOriginalLengthStr))?("true").equals(customSetOriginalLengthStr):true;
 %>
+java.io.File file_<%=cid %> = new java.io.File(<%=filename %>); 
+<%
+if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
+%>
+//create directory only if not exists
+ java.io.File parentFile_<%=cid%> = file_<%=cid %>.getParentFile();  
+ 	if(parentFile_<%=cid%> != null && !parentFile_<%=cid%>.exists()) {  
+ 	   parentFile_<%=cid%>.mkdirs();
+ 	} 
+<%
+}
+%>
   	int nb_line_<%=cid%> = 0;
 <%
 if(!customSetOriginalLength){//------11111
