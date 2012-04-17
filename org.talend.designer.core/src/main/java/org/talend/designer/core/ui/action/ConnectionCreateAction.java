@@ -187,6 +187,21 @@ public class ConnectionCreateAction extends SelectionAction {
             } else {
                 String menuName;
                 boolean addDefaultName = false;
+
+                // get linked metadata to connector
+                IMetadataTable table = null;
+                for (int i = 0; i < node.getMetadataList().size(); i++) {
+                    table = (node.getMetadataList().get(i));
+                    if (table.getTableName().equals(node.getUniqueName())) {
+                        break;
+                    }
+                }
+
+                // if EBCDIC + single schema mode, only have one output maximum
+                if (node.getComponent().getName().contains("EBCDIC") && node.isSingleSchemaForEBCDIC(table)
+                        && curNodeConnector.getCurLinkNbOutput() > 0) {
+                    return false;
+                }
                 if (connecType.equals(EConnectionType.TABLE)) {
                     addDefaultName = addDefaultName();
                     menuName = getNewOutputMenuName();
