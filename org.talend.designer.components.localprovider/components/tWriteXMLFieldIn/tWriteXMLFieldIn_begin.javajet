@@ -29,7 +29,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 	int nb_line_<%=cid%> = 0;
 	java.util.Queue<String> queue_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=cid%>");
-	do {
+	while(true) {
 			if (!queue_<%=cid%>.isEmpty()) {
 <%
 		}
