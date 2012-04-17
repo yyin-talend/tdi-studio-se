@@ -3591,6 +3591,10 @@ public class Node extends Element implements IGraphicalNode {
                 return true;
             }
         }
+        // the normal table should check
+        if (!meta.getTableName().equals(this.getUniqueName())) {
+            return true;
+        }
         return false;
     }
 
