@@ -128,6 +128,8 @@ public class ImportTreeFromRepository extends SelectionAction {
     @Override
     public void run() {
         targetAbsolutePath = null;
+        loopNode = null;
+        xpathAndOrder.clear();
         RepositoryXmlSelectionDialog reviewDialog = new RepositoryXmlSelectionDialog(shell, new String[] { "XML", "MDM" });
         if (reviewDialog.open() == Window.OK) {
             TreeNode treeNodeRoot = XmlMapUtil.getTreeNodeRoot(schemaNode);
@@ -184,13 +186,23 @@ public class ImportTreeFromRepository extends SelectionAction {
         if (!connection.isInputModel()) {
             String file = connection.getXmlFilePath();
             List<FOXTreeNode> list = new ArrayList<FOXTreeNode>();
+            // fix for TDI-20671 , root element is loop in output
+            String rootXpath = null;
+            if (!connection.getRoot().isEmpty()) {
+                rootXpath = connection.getRoot().get(0).getXMLPath();
+            } else if (!connection.getLoop().isEmpty()) {
+                rootXpath = connection.getLoop().get(0).getXMLPath();
+            }
+            if (rootXpath == null) {
+                return;
+            }
             File xmlFile = new File(file);
             if (xmlFile.exists()) {
-                list = TreeUtil.getFoxTreeNodesForXmlMap(xmlFile.getAbsolutePath(), connection.getRoot().get(0).getXMLPath());
+                list = TreeUtil.getFoxTreeNodesForXmlMap(xmlFile.getAbsolutePath(), rootXpath);
             } else if (connection.getFileContent() != null && connection.getFileContent().length > 0) {
                 String xsdFile = initFileContent(connection);
                 if (xsdFile != null && new File(xsdFile).exists()) {
-                    list = TreeUtil.getFoxTreeNodesForXmlMap(xsdFile, connection.getRoot().get(0).getXMLPath());
+                    list = TreeUtil.getFoxTreeNodesForXmlMap(xsdFile, rootXpath);
                 }
             }
 
@@ -689,7 +701,7 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     private void fillGroup(TreeNode loopElement, List<TreeNode> groupElements) {
         final EObject parent = loopElement.eContainer();
-        if (parent != null) {
+        if (parent instanceof TreeNode) {
             if (groupElements.contains(parent)) {
                 ((TreeNode) parent).setGroup(true);
             }
