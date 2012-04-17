@@ -752,6 +752,12 @@ class ImportItemWizardPage extends WizardPage {
                         }
                     }
                 }
+            } else {
+                if (itemRecord.getProperty() != null) {
+                    for (String error : itemRecord.getErrors()) {
+                        errors.add("'" + itemRecord.getItemName() + "' " + error); //$NON-NLS-1$ //$NON-NLS-2$
+                    }
+                }
             }
         }
         if (errorsList != null) {

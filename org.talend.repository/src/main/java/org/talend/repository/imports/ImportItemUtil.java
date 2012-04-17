@@ -31,6 +31,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
@@ -1172,16 +1174,37 @@ public class ImportItemUtil {
 
     @SuppressWarnings("unchecked")
     private boolean checkMigrationTasks(Project project, ItemRecord itemRecord, Project currentProject) {
-        List<String> itemMigrationTasks = new ArrayList(project.getMigrationTasks());
-        List<String> projectMigrationTasks = new ArrayList(currentProject.getMigrationTasks());
+        List<String> itemMigrationTasks = new ArrayList<String>(project.getMigrationTasks());
+        List<String> projectMigrationTasks = new ArrayList<String>(currentProject.getMigrationTasks());
 
         itemMigrationTasks.removeAll(getOptionnalMigrationTasks());
+
+        // check version + revision
+        String oldProjectVersion = project.getProductVersion();
+        String currentProjectVersion = currentProject.getProductVersion();
+        boolean currentVersionIsValid = isVersionValid(currentProjectVersion);
+        boolean oldVersionIsValid = isVersionValid(oldProjectVersion);
+        if (currentVersionIsValid && oldVersionIsValid) {
+            boolean canImport = canContinueImport(oldProjectVersion, currentProjectVersion);
+            if (!canImport) {
+                String message = "The version of " + project.getLabel() + " should be lower than the current project.";
+                itemRecord.addError(message);
+                log.info(message);
+
+                return false;
+            }
+        }
+
+        // Talend Platform Big Data edition-5.0.2.r78327 / Talend Open Studio for Data Integration-5.1.0NB.r80928
+
+        // the 2 are valid versions SO
 
         // 1. Check if all the migration tasks of the items are done in the
         // project:
         // if not, the item use a more recent version of TOS: impossible to
         // import (forward compatibility)
-        if (!projectMigrationTasks.containsAll(itemMigrationTasks)) {
+        // if no correct version and revision found in the productVersion, do same as before
+        if ((!currentVersionIsValid || !oldVersionIsValid) && !projectMigrationTasks.containsAll(itemMigrationTasks)) {
             itemMigrationTasks.removeAll(projectMigrationTasks);
 
             String message = Messages.getString("ImportItemUtil.message", itemRecord.getItemName(), itemMigrationTasks); //$NON-NLS-1$
@@ -1572,6 +1595,50 @@ public class ImportItemUtil {
 
     public Map<String, Set<String>> getRoutineExtModulesMap() {
         return routineExtModulesMap;
+    }
+
+    private boolean isVersionValid(String version) {
+        Pattern p = Pattern.compile("\\-(\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}).+r(\\d{1,6})");
+        Matcher matcher = p.matcher(version);
+        String product = null;
+        String commit = null;
+        while (matcher.find()) {
+            product = matcher.group(1);
+            commit = matcher.group(2);
+        }
+        if (product == null || commit == null) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean canContinueImport(String oldProjectVersion, String currentProjectVersion) {
+        Pattern p = Pattern.compile("\\-(\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}).+r(\\d{1,6})");
+        Matcher oldMatcher = p.matcher(oldProjectVersion);
+        Matcher currentMatcher = p.matcher(currentProjectVersion);
+
+        String oldProduct = null;
+        String oldCommit = null;
+        while (oldMatcher.find()) {
+            oldProduct = oldMatcher.group(1);
+            oldCommit = oldMatcher.group(2);
+        }
+        String currentProduct = null;
+        String currentCommit = null;
+        while (currentMatcher.find()) {
+            currentProduct = currentMatcher.group(1);
+            currentCommit = currentMatcher.group(2);
+            if (Integer.valueOf(oldCommit) > Integer.valueOf(currentCommit)) {
+                return false;
+            }
+        }
+        String cp = currentProduct.replaceAll("\\.", "");
+        String op = oldProduct.replaceAll("\\.", "");
+        if (Integer.valueOf(op) > Integer.valueOf(cp)) {
+            return false;
+        }
+
+        return true;
     }
 
 }
