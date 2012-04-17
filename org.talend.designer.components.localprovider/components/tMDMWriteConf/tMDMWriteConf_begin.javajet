@@ -102,5 +102,5 @@ org.talend.mdm.webservice.WSItemPK wspk_<%=cid %>;
 <%}%>
 
 	java.util.Queue<String> queue_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=virtualcid%>"); 
-	do {
+	while(true) {
 		if (!queue_<%=cid%>.isEmpty()) {
