@@ -136,7 +136,7 @@ skeleton="tXMLMap_java.skeleton"
 							if (expressionKey != null && !"".equals(expressionKey.trim())) {
 							
 								//filter for valid lookup key
-								if(parallelLoopExistInCurrentOutputTable || parallelRelationExistBetweenAllOutputTables) {
+								if(hasDocumentInMainInputTable && (parallelLoopExistInCurrentOutputTable || parallelRelationExistBetweenAllOutputTables)) {
 									if(!loopHelper.validLookupKey(leaf)) {
 										continue;
 									} else {
@@ -175,7 +175,7 @@ skeleton="tXMLMap_java.skeleton"
 				
 				/////////////////////////////////////////////////////
 				//set unvalidLookupKeyExistForHash
-				if((parallelLoopExistInCurrentOutputTable || parallelRelationExistBetweenAllOutputTables)) {
+				if(hasDocumentInMainInputTable && (parallelLoopExistInCurrentOutputTable || parallelRelationExistBetweenAllOutputTables)) {
 					LoopHelper nestLoopHelper = new LoopHelper(documentNodeInMainInputTable,outputTablesSortedByReject,inputTables);
 					for(int ii=0;ii<allInputLoopNodesTables.size();ii++) {
 						InputLoopNodesTable oneInputLoopNodesTable = allInputLoopNodesTables.get(ii);

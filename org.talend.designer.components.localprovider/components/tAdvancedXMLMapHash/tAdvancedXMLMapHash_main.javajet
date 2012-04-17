@@ -26,6 +26,7 @@
 		org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree
 		org.talend.designer.xmlmap.model.emf.xmlmap.VarTable
 		org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode
+		org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode
 		org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection
 		org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData
 		org.talend.designer.xmlmap.model.emf.xmlmap.NodeType
@@ -82,13 +83,12 @@
 									if(leaf == null) {
 										continue;
 									}
-									EList<LookupConnection> lookupConnections = leaf.getLookupIncomingConnections();
-									if(lookupConnections!=null && lookupConnections.size()>0) {
+									String expressionKey = leaf.getExpression();
+									if (expressionKey != null && !"".equals(expressionKey.trim())) {
 										if("id_Document".equals(columnType)) {
 											findFromDocumentType = true; 
 										} else {
 											findFromBasicType = true;
-											
 										}	
 									}
 									
@@ -161,29 +161,39 @@
 						});
 						
 						boolean parallelRelationExist = false;
+						
 						for(OutputXmlTree outputTable : outputTablesSortedByReject) {
-							List<InputLoopNodesTable> inputLoopNodesTables = outputTable.getInputLoopNodesTables();
-							allInputLoopNodesTables.addAll(inputLoopNodesTables);
+							List<OutputTreeNode> loopNodes = new ArrayList<OutputTreeNode>();
+							boolean docExist = false;
+							for(OutputTreeNode currentNode : outputTable.getNodes()) {
+								if("id_Document".equals(currentNode.getType())) {
+									getAllLoopNodes(currentNode,loopNodes);
+									docExist = true;
+								}
+							}
+							
+							if(docExist) {
+								for(OutputTreeNode loop : loopNodes) {
+									if(loop.getInputLoopNodesTable()!=null) {
+										allInputLoopNodesTables.add(loop.getInputLoopNodesTable());
+									}
+								}
+							} else {//only flat column exist
+								allInputLoopNodesTables.addAll(getValidInputLoopNodesTables(outputTable.getInputLoopNodesTables()));
+							}
 						}
+						
 						if(allInputLoopNodesTables.size()>0) {
-							for(int i=0;i<allInputLoopNodesTables.size();i++) {
+							for(int i=0;i<allInputLoopNodesTables.size()-1;i++) {
 								InputLoopNodesTable inputLoopNodesTable = allInputLoopNodesTables.get(i);
 								List<TreeNode> inputLoopNodes = inputLoopNodesTable.getInputloopnodes();
 								int size = inputLoopNodes.size();
-								for(int j=i+1;j<allInputLoopNodesTables.size();j++) {
-									InputLoopNodesTable nextInputLoopNodesTable = allInputLoopNodesTables.get(j);
-									List<TreeNode> nextInputLoopNodes = nextInputLoopNodesTable.getInputloopnodes();
-									int nextSize = nextInputLoopNodes.size();
-									if((size == nextSize) && (inputLoopNodes.containsAll(nextInputLoopNodes))) {
-										
-									} else {
-										parallelRelationExist = true;
-										break;
-									}
-									
-								}
 								
-								if(parallelRelationExist) {
+								InputLoopNodesTable nextInputLoopNodesTable = allInputLoopNodesTables.get(i+1);
+								List<TreeNode> nextInputLoopNodes = nextInputLoopNodesTable.getInputloopnodes();
+								int nextSize = nextInputLoopNodes.size();
+								if((size != nextSize) || (!inputLoopNodes.containsAll(nextInputLoopNodes))) {
+									parallelRelationExist = true;
 									break;
 								}
 							}

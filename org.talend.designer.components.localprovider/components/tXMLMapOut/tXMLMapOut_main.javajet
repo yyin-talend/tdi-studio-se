@@ -219,7 +219,11 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 		//check whether parallel relation exist
 		List<TreeNode> inputLoopNodesForPreviousOutputTable = null;
 		for(OutputXmlTree outputTable : outputTablesSortedByReject) {
-			List<InputLoopNodesTable> inputLoopNodesTables = outputTable.getInputLoopNodesTables();
+			if(outputTable.isMultiLoops()) {
+				isMultiLoop = true;
+			}
+			
+			List<InputLoopNodesTable> inputLoopNodesTables = getValidInputLoopNodesTables(outputTable.getInputLoopNodesTables());
 			
 			for(InputLoopNodesTable inputLoopNodesTable : inputLoopNodesTables) {
 				List<TreeNode> inputLoopNodesForCurrentOutputTable = inputLoopNodesTable.getInputloopnodes();

@@ -58,7 +58,7 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 
 	allInputLoopNodesTables = new ArrayList<InputLoopNodesTable>();
 	for(OutputXmlTree outputTable : outputTablesSortedByReject) {
-		List<InputLoopNodesTable> inputLoopNodesTables = outputTable.getInputLoopNodesTables();
+		List<InputLoopNodesTable> inputLoopNodesTables = getValidInputLoopNodesTables(outputTable.getInputLoopNodesTables());
 		allInputLoopNodesTables.addAll(inputLoopNodesTables);
 	}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,38 +72,65 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 			loopHelper.initForOneOutputTable(currentOutputTable);
 		}
 		
-		List<OutputTreeNode> loopNodes = new ArrayList<OutputTreeNode>();
-		Map<InputLoopNodesTable,OutputTreeNode> loopTableToLoopNode = new HashMap<InputLoopNodesTable,OutputTreeNode>();
+		//output loops in current output table
+		List<Object> outputLoops = new ArrayList<Object>();
 		
+		boolean onlyFlatOutput = true;//not support flat and doc output exist at the same time.
+		List<OutputTreeNode> loopNodes = new ArrayList<OutputTreeNode>();
 		for(OutputTreeNode currentNode : currentOutputTable.getNodes()) {
 			if("id_Document".equals(currentNode.getType())) {
 				treeUtil.getAllLoopNodes(currentNode,loopNodes);
+				onlyFlatOutput = false;
 			}
 		}
 		
-		for(OutputTreeNode loop : loopNodes) {
-			loopTableToLoopNode.put(loop.getInputLoopNodesTable(),loop);
+		List<InputLoopNodesTable> inputLoopNodesTables = getValidInputLoopNodesTables(currentOutputTable.getInputLoopNodesTables());
+		
+		//case 1 : no any loopNode in Document,but inputLoopNodesTable exist ==> only flat output,all the output loops come from inputLoopNodesTables
+		//case 2 : loopNode exist and inputLoopNodesTable exist or not, but some loopNode do not have inputLoopNodesTable ==> some output loop come fome input flat
+		
+		if(onlyFlatOutput) {
+			for(InputLoopNodesTable inputLoopNodesTable : inputLoopNodesTables) {
+				outputLoops.add(inputLoopNodesTable);
+			}
+			if(outputLoops.size()<1) {
+				outputLoops.add(new Object());
+			}
+		} else {//only Document output
+			for(OutputTreeNode loop : loopNodes) {
+				if(loop.getInputLoopNodesTable()!=null) {
+					outputLoops.add(loop.getInputLoopNodesTable());
+				} else {
+					outputLoops.add(new Object());
+				}
+			}
 		}
 		
-		List<InputLoopNodesTable> inputLoopNodesTables = currentOutputTable.getInputLoopNodesTables();
-		parallelLoopExistInCurrentOutputTable = inputLoopNodesTables.size() > 1;
+		parallelLoopExistInCurrentOutputTable = loopNodes.size() > 1;
 		
-		
-		for(int idx=0;idx<inputLoopNodesTables.size();idx++) {//TD256
+		for(int idx=0;idx<outputLoops.size();idx++) {//TD256
 			//current output loop action
-			InputLoopNodesTable inputLoopNodesTable = inputLoopNodesTables.get(idx);
+			Object outputLoop = outputLoops.get(idx);
+			currentInputLoopNodes = new ArrayList<TreeNode>();
+			if(outputLoop instanceof InputLoopNodesTable) {
+				InputLoopNodesTable inputLoopNodesTable = (InputLoopNodesTable)outputLoop;
+				currentInputLoopNodes = inputLoopNodesTable.getInputloopnodes();
+			}
 			loopKey = "loopKey"+(indexOfInputLoopNodesTable++);
 			String isCurrentLoopRef = null;
 			if(parallelLoopExistInCurrentOutputTable) {
-				OutputTreeNode loop = loopTableToLoopNode.get(inputLoopNodesTable);
-				if(loop!=null) {
-					isCurrentLoopRef = "subTreeLoop"+loopNodes.indexOf(loop);
-				}
+				isCurrentLoopRef = "subTreeLoop"+idx;
 			}
 			
-			currentInputLoopNodes = inputLoopNodesTable.getInputloopnodes();
 			int nestedLoopWhileCount = 0;
 			closeWhileCountForMultiResult = 0;
+			
+			if(!hasDocumentInMainInputTable && currentInputLoopNodes.size()<1) {
+%>
+					{
+<%
+			}
+			
 			for(TreeNode inputLoopNode : currentInputLoopNodes) {//TD512
 				index++;
 				if(hasDocumentInMainInputTable) {//TD1024
@@ -185,7 +212,9 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //START LOOK UP ACTION
 			//it is different with one loop when parallel happen
-			loopHelper.initForOneOutputTableLoop(currentInputLoopNodes);
+			if(hasDocumentInMainInputTable) {
+				loopHelper.initForOneOutputTableLoop(currentInputLoopNodes);
+			}
 			for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) {//TD513
 					hasOutgoingConnection = false;//reset the var for every lookup table 
 					InputXmlTree nextInputTable = inputTables.get(iInputTable);
@@ -692,6 +721,12 @@ for (VarTable varsTable : varsTables) {
 				}//close G_TXM_M_001
 <%
 			}//TD514
+			
+			if(!hasDocumentInMainInputTable && currentInputLoopNodes.size()<1) {
+%>
+					}
+<%
+			}
 			
 		}//TD256
 	}//TD128

@@ -577,9 +577,6 @@ class GenerateToolByDom4j{
 				}
 			}
 			
-			if(!isVirtualNode) {
-				createEmptyElement(node,currEleName,parentName);
-			}
 		}
 	}
 	
@@ -593,18 +590,6 @@ class GenerateToolByDom4j{
 			}
 		}
 		return true;
-	}
-
-	private void createEmptyElement(OutputTreeNode node,String currEleName,String parentName) {
-		if(!node.isMain() && !node.isGroup() && !node.isLoop() && !allowEmpty) {
-%>
-		if (<%=currEleName%>.content().size() == 0 
-			&& <%=currEleName%>.attributes().size() == 0 
-			&& <%=currEleName%>.declaredNamespaces().size() == 0) {
-            <%=parentName%>.remove(<%=currEleName%>);
-        }
-<%				
-		}
 	}
 
 	private void addNameSpace(String currEleName, OutputTreeNode node) {

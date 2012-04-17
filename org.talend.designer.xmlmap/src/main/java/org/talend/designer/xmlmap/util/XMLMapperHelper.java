@@ -35,12 +35,45 @@ public class XMLMapperHelper {
 		boolean isGeneratedAsVirtualComponent = false;
 
 		isGeneratedAsVirtualComponent = hasAggregateColumn(xmlMapperNode)
-				|| hasAllInOne(xmlMapperNode) || hasDocumentInMainInput(xmlMapperNode);
+				|| hasAllInOne(xmlMapperNode) || hasDocumentInMainInput(xmlMapperNode) || hasMultiLoops(xmlMapperNode);
 
 		return isGeneratedAsVirtualComponent;
 
 	}
 
+	private static boolean hasMultiLoops(final INode xmlMapperNode) {
+		boolean hasMultiLoops = false;
+
+		List<? extends IConnection> outConnections = (List<? extends IConnection>) xmlMapperNode
+				.getOutgoingConnections();
+
+		XmlMapData xmlMapData = (XmlMapData) ElementParameterParser
+				.getObjectValueXMLTree(xmlMapperNode);
+
+		if (xmlMapData != null && outConnections != null
+				&& outConnections.size() > 0) {
+			List<OutputXmlTree> outputTables = xmlMapData.getOutputTrees();
+
+			HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
+			for (IConnection connection : outConnections) {
+				hNameToConnection.put(connection.getName(), connection);
+			}
+
+			for (OutputXmlTree outputTable : outputTables) {
+				String tableName = outputTable.getName();
+				IConnection connection = hNameToConnection.get(tableName);
+				if (connection == null) {
+					continue;
+				}
+				if(outputTable.isMultiLoops()) {
+					hasMultiLoops = true;
+					break;
+				}
+			}
+		}
+		return hasMultiLoops;
+	}
+	
 	private static boolean hasAllInOne(final INode xmlMapperNode) {
 		boolean hasAllInOne = false;
 
