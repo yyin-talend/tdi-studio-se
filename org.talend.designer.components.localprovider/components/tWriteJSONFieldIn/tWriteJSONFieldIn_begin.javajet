@@ -30,7 +30,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	
 	String str_<%=cid %> = null;
 	
-	do {
+	while(true) {
 			if (!queue_<%=cid%>.isEmpty()) {
 <%
 		}

@@ -24,7 +24,12 @@ imports="
 	boolean usePartialUpdate = ("true").equals(ElementParameterParser.getValue(node,"__USE_PARTIAL_UPDATE__"));
 %>
 	}
-} while (!queue_<%=cid%>.isEmpty() || !(globalMap.containsKey("<%=virtualcid%>_FINISH")));
+	if (globalMap.containsKey("<%=virtualcid%>_FINISH") ) {
+		if (queue_<%=cid%>.isEmpty()) {
+			break;
+		}
+	}
+}
 globalMap.remove("<%=virtualcid%>_FINISH");
 <%
 if(!usePartialUpdate){

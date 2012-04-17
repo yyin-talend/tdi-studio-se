@@ -23,7 +23,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		if(conns!=null && conns.size()>0){
 %>
 	}
-} while (!queue_<%=cid%>.isEmpty() || !(globalMap.containsKey("<%=cid%>_FINISH")) );
+	if (globalMap.containsKey("<%=cid%>_FINISH") ) {
+		if (queue_<%=cid%>.isEmpty()) {
+			break;
+		}
+	}
+}
 globalMap.remove("<%=cid%>_FINISH");
 <%
 		}
