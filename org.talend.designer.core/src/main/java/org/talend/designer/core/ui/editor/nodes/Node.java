@@ -2925,8 +2925,8 @@ public class Node extends Element implements IGraphicalNode {
                 if (getMetadataList() != null) {
                     for (IMetadataTable meta : getMetadataList()) {
                         String componentName = this.getComponent().getName();
-                        if (!componentName.equals("tRESTRequest") && !meta.getTableName().contains("tFileInputEBCDIC")
-                                && meta.getListColumns().size() == 0 && !isCheckMultiSchemaForMSField()) { // hywang add
+                        if (!componentName.equals("tRESTRequest") && meta.getListColumns().size() == 0
+                                && !isCheckMultiSchemaForMSField() && isSingleSchemaForEBCDIC(meta)) {
                             String tableLabel = meta.getTableName();
                             if (meta.getLabel() != null) {
                                 tableLabel = meta.getLabel();
@@ -3573,6 +3573,25 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
         return needMultiSchema;
+    }
+
+    public boolean isSingleSchemaForEBCDIC(IMetadataTable meta) {
+        if (!getComponent().getName().contains("EBCDIC") || meta == null) {
+            return false;
+        }
+        String connector = meta.getAttachedConnector();
+        IElementParameter param = getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+        // get the element parameter attached to the current metadata.
+        // context normally should hold the connector information.
+        if (param != null && StringUtils.equals(connector, param.getContext())) {
+            // if we don't display the schema parameter, no need any check here.
+            if (param.isShow(getElementParameters())) {
+                // if schema is displayed for ebcdic component, then we should check
+                // the content of this schema
+                return true;
+            }
+        }
+        return false;
     }
 
     /*
