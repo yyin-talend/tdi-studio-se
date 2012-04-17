@@ -782,7 +782,7 @@
       <navigatorContent
             activeByDefault="true"
             appearsBefore="org.talend.repository.viewer.root.recycleBin"
-            contentProvider="org.talend.repository.view.di.viewer.content.DocumentationContentProvider"
+            contentProvider="org.talend.repository.view.di.viewer.content.doc.DocumentationContentProvider"
             icon="icons/documentation.gif"
             id="org.talend.repository.viewer.root.documentation"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
@@ -960,12 +960,30 @@
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
       <propertyTester
+            class="org.talend.repository.view.di.viewer.tester.GeneratedDocNodeTester"
+            id="org.talend.repository.node.tester.doc.generatedDoc"
+            namespace="org.talend.repository.node.doc"
+            properties="isGeneratedDocTopNode"
+            type="org.talend.repository.model.RepositoryNode">
+      </propertyTester>
+      <propertyTester
             class="org.talend.repository.view.di.viewer.tester.RulesManagementNodeTester"
             id="org.talend.repository.node.tester.rules"
             namespace="org.talend.repository.node"
             properties="isRulesTopNode"
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewerContentBinding
+            viewerId="org.talend.repository.cnf.view">
+         <includes>
+            <contentExtension
+                  pattern="org.talend.repository.viewer.doc.*">
+            </contentExtension>
+         </includes>
+      </viewerContentBinding>
    </extension>
 
 

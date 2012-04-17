@@ -72,15 +72,16 @@ public final class ExportItemAction extends AContextualAction implements IWorkbe
                 Object nodProperty = node.getProperties(EProperties.CONTENT_TYPE);
                 ERepositoryObjectType contentType = node.getContentType();
 
-                if (nodProperty != ERepositoryObjectType.JOB_DOC && nodProperty != ERepositoryObjectType.JOBLET_DOC
-                        && contentType != ERepositoryObjectType.GENERATED && contentType != ERepositoryObjectType.JOBS
-                        && contentType != ERepositoryObjectType.JOBLETS && contentType != ERepositoryObjectType.SQLPATTERNS
-                        && nodProperty != ERepositoryObjectType.METADATA_CON_CDC
-                        && nodProperty != ERepositoryObjectType.METADATA_CON_TABLE
-                        && nodProperty != ERepositoryObjectType.METADATA_CON_QUERY
-                        && nodProperty != ERepositoryObjectType.SVN_ROOT
-                        && nodProperty != ERepositoryObjectType.SERVICESOPERATION
-                        && nodProperty != ERepositoryObjectType.SERVICESPORT) {
+                if (!ERepositoryObjectType.JOB_DOC.equals(nodProperty) && !ERepositoryObjectType.JOBLET_DOC.equals(nodProperty)
+                        && !ERepositoryObjectType.GENERATED.equals(nodProperty)
+                        && !ERepositoryObjectType.JOBS.equals(nodProperty) && !ERepositoryObjectType.JOBLETS.equals(nodProperty)
+                        && !ERepositoryObjectType.SQLPATTERNS.equals(nodProperty)
+                        && !ERepositoryObjectType.METADATA_CON_CDC.equals(nodProperty)
+                        && !ERepositoryObjectType.METADATA_CON_TABLE.equals(nodProperty)
+                        && !ERepositoryObjectType.METADATA_CON_QUERY.equals(nodProperty)
+                        && !ERepositoryObjectType.SVN_ROOT.equals(nodProperty)
+                        && !ERepositoryObjectType.SERVICESOPERATION.equals(nodProperty)
+                        && !ERepositoryObjectType.SERVICESPORT.equals(nodProperty)) {
                     visible = true;
                 }
                 // for cdc

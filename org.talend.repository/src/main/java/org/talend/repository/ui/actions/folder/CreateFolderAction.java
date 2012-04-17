@@ -107,15 +107,16 @@ public class CreateFolderAction extends AContextualAction {
                 canWork = false;
                 break;
             case SYSTEM_FOLDER:
-                if (property == ERepositoryObjectType.GENERATED || property == ERepositoryObjectType.JOBS
-                        || property == ERepositoryObjectType.JOBLETS || property == ERepositoryObjectType.SQLPATTERNS
-                        || property == ERepositoryObjectType.REFERENCED_PROJECTS || property == ERepositoryObjectType.SVN_ROOT) {
+                if (ERepositoryObjectType.GENERATED.equals(property) || ERepositoryObjectType.JOBS.equals(property)
+                        || ERepositoryObjectType.JOBLETS.equals(property) || ERepositoryObjectType.SQLPATTERNS.equals(property)
+                        || ERepositoryObjectType.REFERENCED_PROJECTS.equals(property)
+                        || ERepositoryObjectType.SVN_ROOT.equals(property)) {
                     canWork = false;
                 }
                 break;
             case SIMPLE_FOLDER:
-                if (property == ERepositoryObjectType.JOB_DOC || property == ERepositoryObjectType.JOBLET_DOC
-                        || (property == ERepositoryObjectType.SQLPATTERNS && !isUnderUserDefined(node))) {
+                if (ERepositoryObjectType.JOB_DOC.equals(property) || ERepositoryObjectType.JOBLET_DOC.equals(property)
+                        || (ERepositoryObjectType.SQLPATTERNS.equals(property) && !isUnderUserDefined(node))) {
                     canWork = false;
                 }
                 if (node.getObject().getProperty().getItem().getState().isDeleted()) {
