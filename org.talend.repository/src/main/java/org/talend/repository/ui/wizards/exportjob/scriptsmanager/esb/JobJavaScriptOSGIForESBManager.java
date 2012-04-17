@@ -601,6 +601,16 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             endpointUri = endpointUri.substring(1, endpointUri.length() - 1);
         }
 
+        String jaxrsServiceProviders = "";
+        String additionalBeansConfig = "";
+        boolean useHttpBasicAuth = computeCheckElementValue("HTTP_BASIC_AUTH", elParams);
+        if (useHttpBasicAuth) {
+            jaxrsServiceProviders = "<ref bean=\"authenticationFilter\"/>";
+            additionalBeansConfig =
+                    "\t<bean id=\"authenticationFilter\" class=\"org.apache.cxf.jaxrs.security.JAASAuthenticationFilter\">"
+                    + "\n\t\t<property name=\"contextName\" value=\"karaf\"/>\n\t</bean>";
+        }
+
         FileReader fr = null;
         FileWriter fw = null;
         try {
@@ -614,7 +624,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             while (line != null) {
                 line = line.replace("@ENDPOINT_URI@", endpointUri) //$NON-NLS-1$
                         .replace("@JOBCLASSNAME@", jobClassName) //$NON-NLS-1$
-                        .replace("@REST_COMPONENT_ID@", restComponentId); //$NON-NLS-1$
+                        .replace("@REST_COMPONENT_ID@", restComponentId) //$NON-NLS-1$
+                        .replace("@JAXRS_SERVICE_PROVIDERS@", jaxrsServiceProviders) //$NON-NLS-1$
+                        .replace("@ADDITIONAL_BEANS_CONFIG@", additionalBeansConfig); //$NON-NLS-1$
 
                 bw.write(line + "\n"); //$NON-NLS-1$
                 line = br.readLine();

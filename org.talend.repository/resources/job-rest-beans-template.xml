@@ -18,8 +18,11 @@
 			<ref bean="wrongCallHandler"/>
 			<ref bean="jsonProvider"/>
 			<ref bean="dom4jProvider"/>
+			@JAXRS_SERVICE_PROVIDERS@
 		</jaxrs:providers>
 	</jaxrs:server>
+
+@ADDITIONAL_BEANS_CONFIG@
 
 	<bean id="callbackHandler" class="@JOBCLASSNAME@.QueuedMessageHandlerImpl"/>
 
