@@ -33,13 +33,12 @@
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
             activeByDefault="true"
-            appearsBefore="org.talend.repository.viewer.metadata.genericSchemas"
             contentProvider="org.talend.repository.ftp.ui.viewer.content.FtpContentProvider"
             icon="icons/ftp.png"
             id="org.talend.repository.viewer.metadata.ftp"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="FTP"
-            priority="normal">
+            priority="high">
          <triggerPoints>
             <and>
                <instanceof

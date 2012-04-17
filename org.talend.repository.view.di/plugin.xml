@@ -145,7 +145,7 @@
             id="org.talend.repository.viewer.code.routines"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="Routines"
-            priority="normal">
+            priority="higher">
          <triggerPoints>
             <and>
                <instanceof
@@ -185,7 +185,7 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
-            appearsBefore="org.talend.repository.viewer.root.documentation"
+            appearsBefore="org.talend.repository.viewer.root.metadata"
             contentProvider="org.talend.repository.view.di.viewer.content.SqlTemplatesContentProvider"
             icon="icons/sqlTemplates.png"
             id="org.talend.repository.viewer.root.sqlTemplates"
@@ -235,7 +235,8 @@
             icon="icons/dbConnections.gif"
             id="org.talend.repository.viewer.metadata.dbConnections"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="DB connections">
+            name="DB connections"
+            priority="high">
          <possibleChildren>
             <instanceof
                   value="org.talend.repository.model.RepositoryNode">
@@ -280,7 +281,8 @@
             icon="icons/fileDelimited.gif"
             id="org.talend.repository.viewer.metadata.dbDelimited"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="File delimited">
+            name="File delimited"
+            priority="higher">
          <possibleChildren>
             <instanceof
                   value="org.talend.repository.model.RepositoryNode">
@@ -328,7 +330,7 @@
             id="org.talend.repository.viewer.metadata.dbPositional"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="File Positional"
-            priority="normal">
+            priority="higher">
          <possibleChildren>
             <instanceof
                   value="org.talend.repository.model.RepositoryNode">
@@ -374,7 +376,7 @@
             id="org.talend.repository.viewer.metadata.dbRegexp"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="File Regexp"
-            priority="normal">
+            priority="higher">
          <possibleChildren>
             <instanceof
                   value="org.talend.repository.model.RepositoryNode">
@@ -420,7 +422,7 @@
             id="org.talend.repository.viewer.metadata.dbXML"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="File XML"
-            priority="normal">
+            priority="higher">
          <possibleChildren>
             <instanceof
                   value="org.talend.repository.model.RepositoryNode">
@@ -466,7 +468,7 @@
             id="org.talend.repository.viewer.metadata.dbExcel"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="File Excel"
-            priority="normal">
+            priority="higher">
          <possibleChildren>
             <instanceof
                   value="org.talend.repository.model.RepositoryNode">
@@ -512,7 +514,7 @@
             id="org.talend.repository.viewer.metadata.dbLDIF"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="File LDIF"
-            priority="normal">
+            priority="higher">
          <possibleChildren>
             <instanceof
                   value="org.talend.repository.model.RepositoryNode">
@@ -558,7 +560,7 @@
             id="org.talend.repository.viewer.metadata.ldap"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="LDAP"
-            priority="normal">
+            priority="higher">
          <possibleChildren>
             <instanceof
                   value="org.talend.repository.model.RepositoryNode">
@@ -604,7 +606,7 @@
             id="org.talend.repository.viewer.metadata.salesforce"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="Salesforce"
-            priority="normal">
+            priority="higher">
          <possibleChildren>
             <instanceof
                   value="org.talend.repository.model.RepositoryNode">
@@ -644,12 +646,13 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
+            appearsBefore="org.talend.repository.viewer.metadata.mdm"
             contentProvider="org.talend.repository.view.di.viewer.content.metadata.MetadataGenericSchemasContentProvider"
             icon="icons/genericSchemas.png"
             id="org.talend.repository.viewer.metadata.genericSchemas"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="Generic Schemas"
-            priority="normal">
+            priority="higher">
          <possibleChildren>
             <instanceof
                   value="org.talend.repository.model.RepositoryNode">
@@ -689,6 +692,7 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
+            appearsBefore="org.talend.repository.viewer.metadata.ftp"
             contentProvider="org.talend.repository.view.di.viewer.content.metadata.MetadataWebServiceContentProvider"
             icon="icons/webService.png"
             id="org.talend.repository.viewer.metadata.webService"
@@ -734,13 +738,13 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
-            appearsBefore="org.talend.repository.viewer.metadata.genericSchemas"
+            appearsBefore="org.talend.repository.viewer.metadata.webService"
             contentProvider="org.talend.repository.view.di.viewer.content.rules.RulesTopNodeContentProvider"
             icon="icons/rulesManagement.gif"
             id="org.talend.repository.viewer.metadata.rules"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="Rules Management"
-            priority="normal"
+            priority="high"
             providesSaveables="true">
          <triggerPoints>
             <and>
@@ -842,13 +846,13 @@
       </navigatorContent>
       <navigatorContent
             activeByDefault="true"
-            appearsBefore="org.talend.repository.viewer.metadata.mdm"
+            appearsBefore="org.talend.repository.viewer.metadata.webService"
             contentProvider="org.talend.repository.view.di.viewer.content.metadata.MetadataMDMContentProvider"
             icon="icons/mdm.png"
             id="org.talend.repository.viewer.metadata.mdm"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="MDM"
-            priority="normal">
+            priority="higher">
             <possibleChildren>
             <instanceof
                   value="org.talend.repository.model.RepositoryNode">
