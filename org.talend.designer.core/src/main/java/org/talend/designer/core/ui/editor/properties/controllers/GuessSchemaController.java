@@ -386,14 +386,14 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                         String talendType = null;
                         // to see if the language is java or perl
                         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                            if (schemaContent.size() > 5) {
+                            if (schemaContent.size() >= 5) {
                                 talendType = MetadataTalendType.getMappingTypeRetriever(dbmsId).getDefaultSelectedTalendType(
                                         schemaContent.get(4)[i - 1]);
                             } else {
                                 talendType = JavaTypesManager.STRING.getId();
                             }
                         } else {
-                            if (schemaContent.size() > 5) {
+                            if (schemaContent.size() >= 5) {
                                 talendType = PerlDataTypeHelper.getNewTalendTypeOfValue(schemaContent.get(4)[i - 1]);
                             } else {
                                 talendType = PerlTypesManager.STRING;
