@@ -31,4 +31,9 @@ public class RulesTopNodeContentProvider extends AbstractMetadataContentProvider
         return projectRepositoryNode.getRootRepositoryNode(ERepositoryObjectType.METADATA_RULES_MANAGEMENT);
     }
 
+    @Override
+    protected void refreshTopLevelNode() {
+        this.setReInit(false); // don't re-init
+        super.refreshTopLevelNode();
+    }
 }
