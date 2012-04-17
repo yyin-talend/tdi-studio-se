@@ -957,6 +957,13 @@
              id="org.talend.repository.model.migration.ChangeDefaultValueBug10232"
              name="Change check box default value to false">
        </projecttask>
+         <projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.ChangeDefaultValueMigrationTaskFeature20685"
+             description="Change automatic create dir check box default value to false"
+             id="org.talend.repository.model.migration.ChangeDefaultValueMigrationTaskFeature20685"
+             name="Change automatic create dir check box default value to false">
+       </projecttask>
        <projecttask
              beforeLogon="false"
              class="org.talend.repository.model.migration.ConnectionAddUniqueNameMigrationTask"
