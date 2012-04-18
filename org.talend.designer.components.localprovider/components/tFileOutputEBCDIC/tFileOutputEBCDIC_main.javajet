@@ -56,6 +56,8 @@ if(!customSetOriginalLength){//------11111
 						Integer orgainLength = column.getOriginalLength();
 						Integer length = column.getLength();
 						String orgainType = column.getType();
+						Integer precision = column.getPrecision();
+						if(precision==null) precision = 0;
 						if(orgainLength==null || orgainLength.intValue()==0 || orgainType==null || "".endsWith(orgainType.trim())) {
 %>
 //////////////////////////////////////////////////
@@ -75,7 +77,7 @@ the original size in the column:<%=column.getLabel()%> in the schema should be b
 <%
 						}else if(orgainType.equals("3")) {
 %>
-							cobolConversion.PackedDecimal <%=column.getLabel()%>_<%=cid%> = new cobolConversion.PackedDecimal(bb_<%=column.getLabel()%>_<%=cid%>, 0, <%=length%>, 0);
+							cobolConversion.PackedDecimal <%=column.getLabel()%>_<%=cid%> = new cobolConversion.PackedDecimal(bb_<%=column.getLabel()%>_<%=cid%>, 0, <%=length%>, <%=precision%>);
 							<%=column.getLabel()%>_<%=cid%>.toPackedDecimal(<%=conn.getName()%>.<%=column.getLabel()%>.toPlainString());
 							fOut_<%=cid%>.write(<%=column.getLabel()%>_<%=cid%>.getByteValueArray());
 <%
@@ -93,7 +95,7 @@ the original size in the column:<%=column.getLabel()%> in the schema should be b
 							java.math.BigInteger <%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>.toBigInteger() ;
 							byte[] bArr_<%=column.getLabel()%>_<%=cid%> = <%=column.getLabel()%>_<%=cid%>.toByteArray();
 							for(int j=0;j<bArr_<%=column.getLabel()%>_<%=cid%>.length;j++){
-								bb_<%=column.getLabel()%>_<%=cid%>[bb_<%=column.getLabel()%>_<%=cid%>.length-(j+1)] = bArr_<%=column.getLabel()%>_<%=cid%>[j];
+								bb_<%=column.getLabel()%>_<%=cid%>[j] = bArr_<%=column.getLabel()%>_<%=cid%>[j];
 							}
 							fOut_<%=cid%>.write(bb_<%=column.getLabel()%>_<%=cid%>);
 <%
