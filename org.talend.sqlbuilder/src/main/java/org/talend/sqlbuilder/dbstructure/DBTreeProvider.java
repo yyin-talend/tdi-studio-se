@@ -55,7 +55,6 @@ import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.views.RepositoryView;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.RepositoryNodeExt;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -108,9 +107,9 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
 
     private RepositoryNode selectedExtReposiotryNode;
 
-    public DBTreeProvider(RepositoryView repositoryView, ConnectionParameters connectionParameters) {
-        this(connectionParameters);
-    }
+    // public DBTreeProvider(RepositoryView repositoryView, ConnectionParameters connectionParameters) {
+    // this(connectionParameters);
+    // }
 
     public DBTreeProvider(ConnectionParameters connectionParameters) {
         this.connectionParameters = connectionParameters;

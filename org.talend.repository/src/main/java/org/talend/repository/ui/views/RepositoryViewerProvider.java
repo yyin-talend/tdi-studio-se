@@ -37,6 +37,33 @@ import org.talend.repository.ui.utils.RecombineRepositoryNodeUtil;
  */
 public class RepositoryViewerProvider {
 
+    public static final RepositoryViewerProvider ALL_NORMAL = new RepositoryViewerProvider() {
+
+        protected IRepositoryNode getInputRoot(final IProjectRepositoryNode projectRepoNode) {
+            if (projectRepoNode instanceof IRepositoryNode) {
+                return (IRepositoryNode) projectRepoNode;
+            }
+            return null;
+        }
+
+        @Override
+        protected TreeViewer createTreeViewer(Composite parent, int style) {
+            return new RepositoryTreeViewer(parent, style);
+        }
+
+    };
+
+    public static final RepositoryViewerProvider ALL_CHECKBOX = new RepositoryViewerProvider() {
+
+        protected IRepositoryNode getInputRoot(final IProjectRepositoryNode projectRepoNode) {
+            if (projectRepoNode instanceof IRepositoryNode) {
+                return (IRepositoryNode) projectRepoNode;
+            }
+            return null;
+        }
+
+    };
+
     private IRepositoryView realRepView;
 
     public RepositoryViewerProvider() {
@@ -84,10 +111,27 @@ public class RepositoryViewerProvider {
         TreeViewer treeViewer = createTreeViewer(parent, getStyle());
         treeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        final IStructuredContentProvider contentProvider = getContextProvider();
-        treeViewer.setContentProvider(contentProvider);
-        treeViewer.setLabelProvider(getLabelProvider());
+        addProviders(treeViewer);
 
+        checkSorter(treeViewer);
+
+        treeViewer.setInput(getInputRoot(getProjectRepositoryNode()));
+
+        return treeViewer;
+    }
+
+    protected void addProviders(TreeViewer treeViewer) {
+        final IStructuredContentProvider contentProvider = getContextProvider();
+        if (contentProvider != null) {
+            treeViewer.setContentProvider(contentProvider);
+        }
+        final ILabelProvider labelProvider = getLabelProvider();
+        if (labelProvider != null) {
+            treeViewer.setLabelProvider(labelProvider);
+        }
+    }
+
+    protected void checkSorter(TreeViewer treeViewer) {
         ViewerSorter sorter = null;
         if (getRepView() != null) {
             final StructuredViewer viewer = getRepView().getViewer();
@@ -128,12 +172,14 @@ public class RepositoryViewerProvider {
 
             });
         }
+    }
+
+    public IProjectRepositoryNode getProjectRepositoryNode() {
         if (getRepView() != null) { // in fact, they are same
-            treeViewer.setInput(getInputRoot(getRepView().getRoot()));
+            return getRepView().getRoot();
         } else {
-            treeViewer.setInput(getInputRoot(ProjectRepositoryNode.getInstance()));
+            return ProjectRepositoryNode.getInstance();
         }
-        return treeViewer;
     }
 
     protected TreeViewer createTreeViewer(final Composite parent, final int style) {
@@ -143,4 +189,5 @@ public class RepositoryViewerProvider {
     protected IRepositoryNode getInputRoot(final IProjectRepositoryNode projectRepoNode) {
         return RecombineRepositoryNodeUtil.getFixingTypesInputRoot(projectRepoNode, getCheckingTypes());
     }
+
 }

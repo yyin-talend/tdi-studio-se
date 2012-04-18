@@ -76,12 +76,10 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
-import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryViewerProvider;
 
@@ -395,17 +393,8 @@ class ExportItemWizardPage extends WizardPage {
 
             @Override
             protected CheckboxTreeViewer doCreateTreeViewer(Composite parent, int style) {
-                RepositoryViewerProvider provider = new RepositoryViewerProvider() {
+                RepositoryViewerProvider provider = RepositoryViewerProvider.ALL_CHECKBOX;
 
-                    @Override
-                    protected IRepositoryNode getInputRoot(IProjectRepositoryNode projectRepoNode) {
-                        if (projectRepoNode instanceof IRepositoryNode) {
-                            return (IRepositoryNode) projectRepoNode; // use the whole and same tree
-                        }
-                        return null;
-                    }
-
-                };
                 return (CheckboxTreeViewer) provider.createViewer(parent);
 
             }

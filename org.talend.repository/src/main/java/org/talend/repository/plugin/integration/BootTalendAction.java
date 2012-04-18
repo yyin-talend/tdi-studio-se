@@ -26,10 +26,10 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * DOC yzhang class global comment. Detailled comment
@@ -90,7 +90,7 @@ public class BootTalendAction extends AContextualAction implements IWorkbenchWin
 
         SwitchProjectAction switchAction = new SwitchProjectAction();
         switchAction.run();
-        IRepositoryView view = RepositoryView.show();
+        IRepositoryView view = RepositoryManagerHelper.getRepositoryView();
         if (view != null) {
             view.refresh();
         }

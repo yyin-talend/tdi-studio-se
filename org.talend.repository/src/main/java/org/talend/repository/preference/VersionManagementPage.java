@@ -33,7 +33,6 @@ import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
@@ -60,7 +59,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
@@ -81,7 +79,6 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.routines.RoutinesUtil;
-import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.CoreImageProvider;
@@ -98,8 +95,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.dialog.ItemsVersionConfirmDialog;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
-import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryCheckBoxView;
+import org.talend.repository.ui.views.RepositoryViewerProvider;
 
 /**
  * DOC aimingchen class global comment. Detailled comment
@@ -192,16 +188,12 @@ public class VersionManagementPage extends ProjectSettingPage {
         GridData gridData = new GridData(GridData.FILL_BOTH);
         gridData.widthHint = 210;
         leftComposite.setLayoutData(gridData);
-        RepositoryCheckBoxView view = new RepositoryCheckBoxView();
-        try {
-            final IRepositoryView repositoryView = RepositoryManagerHelper.getRepositoryView();
-            view.init(repositoryView.getViewSite());
-        } catch (PartInitException e) {
-            ExceptionHandler.process(e);
-        }
-        view.createPartControl(leftComposite);
-        processItems(versionObjects, (RepositoryNode) view.getRoot());
-        treeViewer = (CheckboxRepositoryTreeViewer) view.getViewer();
+
+        RepositoryViewerProvider provider = RepositoryViewerProvider.ALL_CHECKBOX;
+        treeViewer = (CheckboxRepositoryTreeViewer) provider.createViewer(leftComposite);
+
+        IProjectRepositoryNode projectRepositoryNode = provider.getProjectRepositoryNode();
+        processItems(versionObjects, (RepositoryNode) projectRepositoryNode);
         // filter
         treeViewer.addFilter(new ViewerFilter() {
 
@@ -241,24 +233,20 @@ public class VersionManagementPage extends ProjectSettingPage {
             }
         });
 
-        expandSomeNodes(view);
+        expandSomeNodes(projectRepositoryNode);
     }
 
-    private void expandSomeNodes(RepositoryCheckBoxView view) {
-        if (view == null) {
-            return;
-        }
-        final IProjectRepositoryNode rootNode = view.getRoot();
-        final TreeViewer viewer = view.getViewer();
+    private void expandSomeNodes(final IProjectRepositoryNode rootNode) {
+
         // metadata
         IRepositoryNode metadataConNode = rootNode.getRootRepositoryNode(ERepositoryObjectType.METADATA);
         if (metadataConNode != null) {
-            viewer.expandToLevel(metadataConNode, 1);
+            treeViewer.expandToLevel(metadataConNode, 1);
         }
         // code
         IRepositoryNode codeNode = rootNode.getRootRepositoryNode(ERepositoryObjectType.CODE);
         if (codeNode != null) {
-            viewer.expandToLevel(codeNode, 1);
+            treeViewer.expandToLevel(codeNode, 1);
         }
     }
 

@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
@@ -77,9 +78,8 @@ import org.talend.repository.model.SAPFunctionRepositoryObject;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.utils.RecombineRepositoryNodeUtil;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryContentProvider;
-import org.talend.repository.ui.views.RepositoryLabelProvider;
 import org.talend.repository.ui.views.RepositoryTreeViewer;
+import org.talend.repository.ui.views.RepositoryViewerProvider;
 
 /**
  * bqian check the content of the repository view. <br/>
@@ -302,11 +302,25 @@ public class RepositoryReviewDialog extends Dialog {
         viewContainer.setLayout(new GridLayout());
         viewContainer.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        repositoryTreeViewer = new RepositoryTreeViewer(viewContainer, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-        repositoryTreeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+        RepositoryViewerProvider provider = new RepositoryViewerProvider() {
 
-        repositoryTreeViewer.setContentProvider(new RepositoryContentProvider(getRepView()));
-        repositoryTreeViewer.setLabelProvider(new RepositoryLabelProvider(getRepView()));
+            @Override
+            protected IRepositoryNode getInputRoot(IProjectRepositoryNode projectRepoNode) {
+                return typeProcessor.getInputRoot(projectRepoNode);
+            }
+
+            @Override
+            protected TreeViewer createTreeViewer(Composite parent, int style) {
+                return new RepositoryTreeViewer(parent, style);
+            }
+
+        };
+
+        repositoryTreeViewer = (RepositoryTreeViewer) provider.createViewer(viewContainer);
+
+        TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "finshed createViewer"); //$NON-NLS-1$
+
+        repositoryTreeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
         addFilter(textFilter);
         if (dbSupportFilter != null) {
@@ -319,7 +333,6 @@ public class RepositoryReviewDialog extends Dialog {
         addFilter(filter);
         TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "finshed add Filters"); //$NON-NLS-1$
 
-        repositoryTreeViewer.setInput(getInput());
         TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "set input"); //$NON-NLS-1$ 
         repositoryTreeViewer.expandAll();
         TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "expandAll"); //$NON-NLS-1$

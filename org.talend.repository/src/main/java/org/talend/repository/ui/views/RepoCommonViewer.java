@@ -14,17 +14,19 @@ package org.talend.repository.ui.views;
 
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
+import org.eclipse.ui.navigator.CommonViewer;
 
-/***/
-public class RepositoryTreeViewer extends TreeViewer implements ITreeViewerListener {
+/**
+ * DOC ggu class global comment. Detailled comment
+ */
+public class RepoCommonViewer extends CommonViewer implements ITreeViewerListener {
 
     private AgentTreeViewerListener agent = new AgentTreeViewerListener();
 
-    public RepositoryTreeViewer(Composite parent, int style) {
-        super(parent, style);
+    public RepoCommonViewer(Composite aParent, int aStyle) {
+        super(IRepositoryView.VIEW_ID, aParent, aStyle);
     }
 
     protected boolean getExpanded(Item item) {

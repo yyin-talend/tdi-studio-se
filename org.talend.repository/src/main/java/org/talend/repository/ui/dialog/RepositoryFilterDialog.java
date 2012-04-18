@@ -26,8 +26,6 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -45,9 +43,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.PartInitException;
-import org.talend.core.GlobalServiceRegister;
-import org.talend.core.IESBService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Status;
@@ -64,10 +59,11 @@ import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryCheckBoxView;
 
 /**
  * DOC wchen class global comment. Detailled comment
+ * 
+ * @deprecated by TDI-19373/TDI-20695
  */
 public class RepositoryFilterDialog extends Dialog {
 
@@ -143,37 +139,38 @@ public class RepositoryFilterDialog extends Dialog {
     }
 
     private void createLeftContent(Composite parent) {
-        RepositoryCheckBoxView checkboxTreeViewer = new RepositoryCheckBoxView();
-        try {
-            checkboxTreeViewer.init(repositoryView.getViewSite());
-        } catch (PartInitException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        checkboxTreeViewer.createPartControl(parent);
-
-        treeViewer = (CheckboxRepositoryTreeViewer) checkboxTreeViewer.getViewer();
-        treeViewer.addFilter(new ViewerFilter() {
-
-            @Override
-            public boolean select(Viewer viewer, Object parentElement, Object element) {
-                return filterRepositoryNode(element);
-            }
-
-        });
-        treeViewer.expandAll();
-        // treeViewer.collapseAll();
-        RepositoryNode referenceProjectNode = ((ProjectRepositoryNode) checkboxTreeViewer.getRoot())
-                .getRootRepositoryNode(ERepositoryObjectType.REFERENCED_PROJECTS);
-        if (referenceProjectNode != null) {
-            treeViewer.collapseToLevel(referenceProjectNode, treeViewer.ALL_LEVELS);
-        }
-        String[] uncheckedNodesFromFilter = RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_NODE);
-        if (uncheckedNodesFromFilter != null && uncheckedNodesFromFilter.length > 0) {
-            uncheckedNode.addAll(Arrays.asList(uncheckedNodesFromFilter));
-        }
-
-        restoreTreeStatus(checkboxTreeViewer);
+        // RepositoryCheckBoxView checkboxTreeViewer = new RepositoryCheckBoxView();
+        // try {
+        // checkboxTreeViewer.init(repositoryView.getViewSite());
+        // } catch (PartInitException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // }
+        // checkboxTreeViewer.createPartControl(parent);
+        //
+        // treeViewer = (CheckboxRepositoryTreeViewer) checkboxTreeViewer.getViewer();
+        // treeViewer.addFilter(new ViewerFilter() {
+        //
+        // @Override
+        // public boolean select(Viewer viewer, Object parentElement, Object element) {
+        // return filterRepositoryNode(element);
+        // }
+        //
+        // });
+        // treeViewer.expandAll();
+        // // treeViewer.collapseAll();
+        // RepositoryNode referenceProjectNode = ((ProjectRepositoryNode) checkboxTreeViewer.getRoot())
+        // .getRootRepositoryNode(ERepositoryObjectType.REFERENCED_PROJECTS);
+        // if (referenceProjectNode != null) {
+        // treeViewer.collapseToLevel(referenceProjectNode, treeViewer.ALL_LEVELS);
+        // }
+        // String[] uncheckedNodesFromFilter =
+        // RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_NODE);
+        // if (uncheckedNodesFromFilter != null && uncheckedNodesFromFilter.length > 0) {
+        // uncheckedNode.addAll(Arrays.asList(uncheckedNodesFromFilter));
+        // }
+        //
+        // restoreTreeStatus(checkboxTreeViewer);
     }
 
     private void createRightContent(Composite parent) {
@@ -343,64 +340,64 @@ public class RepositoryFilterDialog extends Dialog {
 
     }
 
-    private void restoreTreeStatus(RepositoryCheckBoxView viewer) {
-        CheckboxRepositoryTreeViewer checkboxTreeViewer = (CheckboxRepositoryTreeViewer) viewer.getViewer();
-        checkboxTreeViewer.setAllChecked(true);
-
-        String[] array = RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_NODE);
-        if (array == null) {
-            return;
-        }
-        for (String uniqueSymble : array) {
-            String[] split = uniqueSymble.split(SEPARATOR);
-            if (split.length < 2) {
-                continue;
-            }
-            ProjectRepositoryNode root = getRootNode((ProjectRepositoryNode) viewer.getRoot(), split[0]);
-            if (root == null) {
-                continue;
-            }
-            if (split.length == 2) {
-                ERepositoryObjectType foundType = null;
-                foundType = (ERepositoryObjectType) ERepositoryObjectType.valueOf(ERepositoryObjectType.class, split[1]);
-                if (foundType != null) {
-                    RepositoryNode rootRepositoryNode = root.getRootRepositoryNode(foundType);
-                    if (rootRepositoryNode != null) {
-                        checkboxTreeViewer.setChecked(rootRepositoryNode, false);
-                    }
-                } else {
-                    IESBService service = null;
-                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
-                        service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
-                    }
-                    if (service != null) {
-                        ERepositoryObjectType serviceType = service.getServicesType();
-                        if (serviceType.name().equals(split[1])) {
-                            RepositoryNode servicesNode = root.getRootRepositoryNode(serviceType);
-                            checkboxTreeViewer.setChecked(servicesNode, false);
-                        }
-                    }
-
-                }
-            } else if (split.length == 3) {
-                // child in sql pattern
-                if (ERepositoryObjectType.SQLPATTERNS.name().equals(split[1])) {
-                    RepositoryNode rootRepositoryNode = root.getRootRepositoryNode(ERepositoryObjectType.SQLPATTERNS);
-                    if (rootRepositoryNode != null) {
-                        for (IRepositoryNode node : rootRepositoryNode.getChildren()) {
-                            if (split[2] != null && split[2].equals(node.getProperties(EProperties.LABEL))) {
-                                checkboxTreeViewer.setChecked(node, false);
-                            }
-                        }
-                    }
-                    // referenced ProjectRepositoryNode :root
-                } else if (ERepositoryObjectType.REFERENCED_PROJECTS.name().equals(split[1]) && "ROOT".equals(split[2])) {
-                    checkboxTreeViewer.setChecked(root, false);
-                }
-            }
-        }
-
-    }
+    // private void restoreTreeStatus(RepositoryCheckBoxView viewer) {
+    // CheckboxRepositoryTreeViewer checkboxTreeViewer = (CheckboxRepositoryTreeViewer) viewer.getViewer();
+    // checkboxTreeViewer.setAllChecked(true);
+    //
+    // String[] array = RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_NODE);
+    // if (array == null) {
+    // return;
+    // }
+    // for (String uniqueSymble : array) {
+    // String[] split = uniqueSymble.split(SEPARATOR);
+    // if (split.length < 2) {
+    // continue;
+    // }
+    // ProjectRepositoryNode root = getRootNode((ProjectRepositoryNode) viewer.getRoot(), split[0]);
+    // if (root == null) {
+    // continue;
+    // }
+    // if (split.length == 2) {
+    // ERepositoryObjectType foundType = null;
+    // foundType = (ERepositoryObjectType) ERepositoryObjectType.valueOf(ERepositoryObjectType.class, split[1]);
+    // if (foundType != null) {
+    // RepositoryNode rootRepositoryNode = root.getRootRepositoryNode(foundType);
+    // if (rootRepositoryNode != null) {
+    // checkboxTreeViewer.setChecked(rootRepositoryNode, false);
+    // }
+    // } else {
+    // IESBService service = null;
+    // if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+    // service = (IESBService) GlobalServiceRegister.getDefault().getService(IESBService.class);
+    // }
+    // if (service != null) {
+    // ERepositoryObjectType serviceType = service.getServicesType();
+    // if (serviceType.name().equals(split[1])) {
+    // RepositoryNode servicesNode = root.getRootRepositoryNode(serviceType);
+    // checkboxTreeViewer.setChecked(servicesNode, false);
+    // }
+    // }
+    //
+    // }
+    // } else if (split.length == 3) {
+    // // child in sql pattern
+    // if (ERepositoryObjectType.SQLPATTERNS.name().equals(split[1])) {
+    // RepositoryNode rootRepositoryNode = root.getRootRepositoryNode(ERepositoryObjectType.SQLPATTERNS);
+    // if (rootRepositoryNode != null) {
+    // for (IRepositoryNode node : rootRepositoryNode.getChildren()) {
+    // if (split[2] != null && split[2].equals(node.getProperties(EProperties.LABEL))) {
+    // checkboxTreeViewer.setChecked(node, false);
+    // }
+    // }
+    // }
+    // // referenced ProjectRepositoryNode :root
+    // } else if (ERepositoryObjectType.REFERENCED_PROJECTS.name().equals(split[1]) && "ROOT".equals(split[2])) {
+    // checkboxTreeViewer.setChecked(root, false);
+    // }
+    // }
+    // }
+    //
+    // }
 
     private ProjectRepositoryNode getRootNode(ProjectRepositoryNode mainRoot, String projectName) {
         if (mainRoot.getProject().getEmfProject().getTechnicalLabel().equals(projectName)) {

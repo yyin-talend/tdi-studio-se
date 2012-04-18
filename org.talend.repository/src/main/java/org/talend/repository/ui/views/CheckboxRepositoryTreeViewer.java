@@ -12,9 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.swt.SWT;
@@ -23,15 +20,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
-import org.talend.repository.model.IRepositoryNode;
-import org.talend.repository.model.RepositoryNode;
 
 /**
  * DOC hcw class global comment. Detailled comment
  */
 public class CheckboxRepositoryTreeViewer extends ContainerCheckedTreeViewer implements ITreeViewerListener {
 
-    private Map<String, Boolean> expanded = new HashMap<String, Boolean>();
+    private AgentTreeViewerListener agent = new AgentTreeViewerListener();
 
     private TreeItem lastClickedItem = null;
 
@@ -39,81 +34,27 @@ public class CheckboxRepositoryTreeViewer extends ContainerCheckedTreeViewer imp
         super(parent, style);
     }
 
-    private RepositoryNode getRepositoryNode(Item node) {
-        Object data = node.getData();
-        RepositoryNode repositoryNode = null;
-        if (data instanceof RepositoryNode) {
-            repositoryNode = (RepositoryNode) data;
-        }
-        return repositoryNode;
-    }
-
-    @Override
     protected boolean getExpanded(Item item) {
-        RepositoryNode repositoryNode = getRepositoryNode(item);
-        if (repositoryNode != null && repositoryNode.getId() != null) {
-            Boolean result = expanded.get(repositoryNode.getId());
-            if (result != null) {
-                if (item instanceof TreeItem) {
-                    TreeItem treeItem = (TreeItem) item;
-                    treeItem.setExpanded(result);
-                }
-            }
-        }
+        agent.getExpanded(item);
         return super.getExpanded(item);
     }
 
-    @Override
     public void setExpandedState(Object elementOrTreePath, boolean expanded) {
         if (expanded) {
-            internalExpand(elementOrTreePath);
+            agent.internalExpand(elementOrTreePath);
         } else {
-            internalCollapse(elementOrTreePath);
+            agent.internalCollapse(elementOrTreePath);
         }
         super.setExpandedState(elementOrTreePath, expanded);
     }
 
     public void treeCollapsed(TreeExpansionEvent event) {
-        Object element = event.getElement();
-        internalCollapse(element);
+        agent.treeCollapsed(event);
+
     }
 
     public void treeExpanded(TreeExpansionEvent event) {
-        Object element = event.getElement();
-        internalExpand(element);
-    }
-
-    private void internalCollapse(Object element) {
-        if (element instanceof RepositoryNode) {
-            RepositoryNode repositoryNode = (RepositoryNode) element;
-            if (idIsValid(repositoryNode)) {
-                expanded.put(repositoryNode.getId(), false);
-            }
-            emptyExpandedChildren(repositoryNode);
-        }
-    }
-
-    private void internalExpand(Object element) {
-        if (element instanceof RepositoryNode) {
-            RepositoryNode repositoryNode = (RepositoryNode) element;
-            if (idIsValid(repositoryNode)) {
-                expanded.put(repositoryNode.getId(), true);
-            }
-        }
-    }
-
-    private void emptyExpandedChildren(RepositoryNode repositoryNode) {
-        for (IRepositoryNode children : repositoryNode.getChildren()) {
-            if (idIsValid(children)) {
-                expanded.remove(children.getId());
-            }
-            emptyExpandedChildren((RepositoryNode) children);
-        }
-    }
-
-    private boolean idIsValid(IRepositoryNode repositoryNode) {
-        String id = repositoryNode.getId();
-        return id != null && !RepositoryNode.NO_ID.equals(id);
+        agent.treeExpanded(event);
     }
 
     @Override
