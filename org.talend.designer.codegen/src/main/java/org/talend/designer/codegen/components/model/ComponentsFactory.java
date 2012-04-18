@@ -429,8 +429,8 @@ public class ComponentsFactory implements IComponentsFactory {
             }
 
             if (!componentList.contains(currentComp)) {
-                currentComp
-                        .setResourceBundle(getComponentResourceBundle(currentComp, applicationPath + info.getUriString(), null));
+                currentComp.setResourceBundle(getComponentResourceBundle(currentComp, applicationPath + info.getUriString(),
+                        info.getPathSource(), null));
 
                 File currentFile = new File(applicationPath + info.getUriString());
                 loadIcons(currentFile.getParentFile(), currentComp);
@@ -733,7 +733,8 @@ public class ComponentsFactory implements IComponentsFactory {
                         if (componentList.contains(currentComp)) {
                             log.warn("Component " + currentComp.getName() + " already exists. Cannot load user version."); //$NON-NLS-1$ //$NON-NLS-2$
                         } else {
-                            currentComp.setResourceBundle(getComponentResourceBundle(currentComp, source.toString(), provider));
+                            currentComp.setResourceBundle(getComponentResourceBundle(currentComp, source.toString(), null,
+                                    provider));
                             loadIcons(currentFolder, currentComp);
                             componentList.add(currentComp);
                             if (isCustom) {
@@ -834,8 +835,8 @@ public class ComponentsFactory implements IComponentsFactory {
         return file;
     }
 
-    private ResourceBundle getComponentResourceBundle(IComponent currentComp, String source, AbstractComponentsProvider provider) {
-
+    private ResourceBundle getComponentResourceBundle(IComponent currentComp, String source, String cachedPathSource,
+            AbstractComponentsProvider provider) {
         try {
             AbstractComponentsProvider currentProvider = provider;
             if (currentProvider == null) {
@@ -844,8 +845,16 @@ public class ComponentsFactory implements IComponentsFactory {
                 for (AbstractComponentsProvider curProvider : providers) {
                     String path = new Path(curProvider.getInstallationFolder().toString()).toPortableString();
                     if (source.startsWith(path)) {
-                        currentProvider = curProvider;
-                        break;
+                        // fix for TDI-19889 and TDI-20507 to get the correct component provider
+                        if (cachedPathSource != null) {
+                            if (path.contains(cachedPathSource)) {
+                                currentProvider = curProvider;
+                                break;
+                            }
+                        } else {
+                            currentProvider = curProvider;
+                            break;
+                        }
                     }
                 }
             }

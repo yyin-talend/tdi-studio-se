@@ -71,13 +71,7 @@ public final class ComponentsProviderManager {
                     componentsProvider.setId(id);
                     componentsProvider.setFolderName(folderName);
                     componentsProvider.setContributer(contributerName);
-                    // fix for bug TDI-19889 ,put the UserComponentsProvider to the first place to get
-                    // correct component provider when compare the user component path with install folder
-                    if (id.equals("org.talend.designer.components.model.UserComponentsProvider")) {
-                        providers.add(0, componentsProvider);
-                    } else {
-                        providers.add(componentsProvider);
-                    }
+                    providers.add(componentsProvider);
                 } catch (CoreException e) {
                     log.error(Messages.getString("ComponentsProviderManager.unableLoad") + id, e); //$NON-NLS-1$
                 }
