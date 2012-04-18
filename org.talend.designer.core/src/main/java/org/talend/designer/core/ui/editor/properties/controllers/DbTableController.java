@@ -57,6 +57,7 @@ import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
@@ -404,7 +405,9 @@ public class DbTableController extends AbstractElementPropertySectionController 
         openSQLEditorButton.setEnabled(!param.isReadOnly());
         openSQLEditorButton.setData(NAME, SQLEDITOR);
         openSQLEditorButton.setData(PARAMETER_NAME, param.getName());
-
+        if (param.getFieldType() == EParameterFieldType.DBTABLE) {
+            openSQLEditorButton.setEnabled(ExtractMetaDataUtils.haveLoadMetadataNode());
+        }
         openSQLEditorButton.addSelectionListener(openSQLListener);
 
         return buttonControl;
