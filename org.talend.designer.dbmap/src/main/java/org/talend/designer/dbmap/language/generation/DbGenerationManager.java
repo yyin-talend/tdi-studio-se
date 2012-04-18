@@ -273,7 +273,7 @@ public abstract class DbGenerationManager {
                     ExternalDbMapEntry dbMapEntry = metadataTableEntries.get(i);
                     String expression = dbMapEntry.getExpression();
                     expression = initExpression(component, dbMapEntry);
-                    expression = addQuoteForSpecialChar(expression);
+                    expression = addQuoteForSpecialChar(expression, component);
                     // for (IMetadataColumn column : columns) {
                     // if (expression != null && column.getLabel().equals(dbMapEntry.getName())) {
                     //                            expression = expression.replaceFirst("." + dbMapEntry.getName(), //$NON-NLS-1$
@@ -736,19 +736,34 @@ public abstract class DbGenerationManager {
         }
     }
 
-    private String addQuoteForSpecialChar(String expression) {
-        int lastIndex = expression.lastIndexOf(".");
-        if (lastIndex > 0) {
-            String first = expression.substring(0, lastIndex).trim();
-            String second = expression.substring(lastIndex + 1, expression.length()).trim();
-            String exp = MetadataToolHelper.validateValue(second);
-            if (!exp.equals(second)) {
-                second = "\\\"" + second + "\\\"";
-            }
-            return first.trim() + "." + second.trim();
-        } else {
+    private String addQuoteForSpecialChar(String expression, DbMapComponent component) {
+        List<String> specialList = new ArrayList<String>();
+        List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+        if (inputConnections == null) {
             return expression;
         }
+        for (IConnection iconn : inputConnections) {
+            IMetadataTable metadataTable = iconn.getMetadataTable();
+            List<IMetadataColumn> lColumn = metadataTable.getListColumns();
+            for (IMetadataColumn co : lColumn) {
+                String columnLabel = co.getLabel();
+                String exp = MetadataToolHelper.validateValueNoLengthLimit(columnLabel);
+                if (!exp.equals(columnLabel)) {
+                    specialList.add(columnLabel);
+                }
+            }
+        }
+        for (String specialColumn : specialList) {
+            if (expression.contains(specialColumn)) {
+                int begin = expression.indexOf(specialColumn);
+                int length = specialColumn.length();
+                int allLength = expression.length();
+                expression = expression.substring(0, begin) + "\\\"" + expression.substring(begin, begin + length) + "\\\""
+                        + expression.substring(begin + length, allLength);
+                return expression;
+            }
+        }
+        return expression;
     }
 
     private String initExpression(DbMapComponent component, ExternalDbMapEntry dbMapEntry) {
