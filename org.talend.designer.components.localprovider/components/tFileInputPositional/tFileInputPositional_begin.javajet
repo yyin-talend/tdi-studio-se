@@ -727,7 +727,7 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 					int currentFieldLength_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getLength();
 					substringEnd<%=cid %> = substringBegin<%=cid %>+currentFieldLength_<%=cid%>;
 					if(substringEnd<%=cid %> > row_<%=cid %>.length()){
-						continue;
+						substringEnd<%=cid %> = row_<%=cid %>.length();
 					}
 <%
 					if(useByte){
@@ -825,7 +825,7 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 						int currentFieldLength_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getLength();
 						substringEnd<%=cid %> = substringBegin<%=cid %>+currentFieldLength_<%=cid%>;
 						if(substringEnd<%=cid %> > row_<%=cid %>.length()){
-							continue;
+							substringEnd<%=cid %> = row_<%=cid %>.length();
 						}
 <%
 						if(useByte){
