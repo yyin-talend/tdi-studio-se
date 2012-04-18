@@ -1598,6 +1598,9 @@ public class ImportItemUtil {
     }
 
     private boolean isVersionValid(String version) {
+        if (version == null) {
+            return false;
+        }
         Pattern p = Pattern.compile("\\-(\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}).+r(\\d{1,6})");
         Matcher matcher = p.matcher(version);
         String product = null;
