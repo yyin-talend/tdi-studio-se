@@ -31,6 +31,19 @@ public class DemoProjectBean {
     private EDemoProjectFileType demoProjectFileType;
 
     /**
+     * the plugin id where the demo src is
+     */
+    private String pluginId;
+           
+    public String getPluginId() {
+        return pluginId;
+    }
+   
+    public void setPluginId(String pluginId) {
+        this.pluginId = pluginId;
+    }
+
+    /**
      * Getter for archiveFilePath.
      * 
      * @return the archiveFilePath

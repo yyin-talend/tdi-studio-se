@@ -401,7 +401,8 @@ public class ImportProjectsUtilities {
                 demoProject.setDemoProjectFileType(EDemoProjectFileType.getDemoProjectFileTypeName(demoProjectFileType));
                 demoProject.setDemoProjectFilePath(demoProjectElement.attributeValue("demoFilePath")); //$NON-NLS-1$
                 demoProject.setDescriptionFilePath(demoProjectElement.attributeValue("descriptionFilePath")); //$NON-NLS-1$
-
+                //get the demo plugin Id                
+                demoProject.setPluginId(demoProjectElement.attributeValue("pluginId")); //$NON-NLS-1$                
                 if (demoProject.getProjectName().equals("ESBDEMOS")) {
                     if (!PluginChecker.isPluginLoaded("org.talend.repository.services")) {
                         continue;
@@ -413,6 +414,13 @@ public class ImportProjectsUtilities {
         return demoProjectList;
     }
 
+    private static String getMDMDemoPluginId(){
+        if (!PluginChecker.isPluginLoaded("org.talend.mdm.workbench.enterprise")) {//CE //$NON-NLS-1$ 
+            return "org.talend.mdm.repository"; //$NON-NLS-1$
+        }else{//EE
+            return "org.talend.mdm.repository.enterprise"; //$NON-NLS-1$
+        }
+    }
     /**
      * Gets the path of demo projects xml file.
      * 
@@ -421,7 +429,7 @@ public class ImportProjectsUtilities {
     private static List<File> getXMLFilePath() {
         List<File> xmlListFile = new ArrayList<File>();
         String[] pluginIDs = new String[] { ResourcesPlugin.PLUGIN_ID, "org.talend.resources.perl", //$NON-NLS-1$
-                ResourcesPlugin.TDQ_PLUGIN_ID }; //$NON-NLS-1$
+                ResourcesPlugin.TDQ_PLUGIN_ID , getMDMDemoPluginId()}; //$NON-NLS-1$
 
         for (int i = 0; i < pluginIDs.length; i++) {
             Bundle bundle = Platform.getBundle(pluginIDs[i]);
