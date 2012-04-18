@@ -33,8 +33,8 @@ boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node, 
 boolean isAppendFile = ("true").equals(ElementParameterParser.getValue(node, "__APPEND_FILE__" ));
 boolean isAppendSheet = ("true").equals(ElementParameterParser.getValue(node, "__APPEND_SHEET__" ));
 
-boolean isAutoFlush=("true").equals(ElementParameterParser.getValue(node, "__AUTO_FLUSH__" ));
-String flushSize=ElementParameterParser.getValue(node, "__FLUSH_SIZE__" );
+boolean flushOnRow=("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__" ));
+String flushRowNum=ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__" );
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -242,29 +242,17 @@ if(isIncludeHeader){
 		}else{ //version judgement /***excel 2007 xlsx*****/
 %>	
 		int nb_line_<%=cid%> = 0;
-		int rowAccessWindowSize_<%=cid%>=-1;
-		int flushSize_<%=cid%>=100;
-<%
-		if(flushSize!=null&&(!"".equals(flushSize))){
-%>
-			flushSize_<%=cid%>=<%=flushSize%>;
+		org.talend.ExcelTool xlsxTool_<%=cid%> = new org.talend.ExcelTool();
 <%	 
-		}
+		if(flushOnRow){
 %>
-			if(flushSize_<%=cid%><0 && flushSize_<%=cid%>!=-1){
-				flushSize_<%=cid%>=0;
-			}
-			//If Auto Flush and flushSize_<%=cid%> not Illegal, 
-			//Set flushSize_<%=cid%>=0(means close Auto flush);
-<%
-		if(isAutoFlush){
-%>
-			rowAccessWindowSize_<%=cid%>=flushSize_<%=cid%>;
+			int	flushRowNum_<%=cid%>=<%=flushRowNum%>;
+			int bufferCount_<%=cid%>=0;
+			xlsxTool_<%=cid%>.setRowAccessWindowSize(-1);
+			//turn-off auto flush
 <%		
 		} 
 %>
-		org.talend.ExcelTool xlsxTool_<%=cid%> = new org.talend.ExcelTool();
-		xlsxTool_<%=cid%>.setRowAccessWindowSize(rowAccessWindowSize_<%=cid%>);
 		xlsxTool_<%=cid%>.setSheet(<%=sheetname%>);
 		xlsxTool_<%=cid%>.setAppend(<%=isAppendFile%>,<%=isAppendSheet%>);
 		xlsxTool_<%=cid%>.setXY(<%=firstCellYAbsolute%>,<%=firstCellXStr%>,<%=firstCellYStr%>,<%=keepCellFormating%>);

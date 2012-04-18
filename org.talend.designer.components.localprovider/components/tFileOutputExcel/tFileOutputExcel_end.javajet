@@ -24,7 +24,7 @@
 	boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node, "__INCLUDEHEADER__"));
 	
 	String allColumnAutoSize = ElementParameterParser.getValue(node, "__IS_ALL_AUTO_SZIE__");
-	
+	boolean flushOnRow=("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__" ));
 	//modif start
 	boolean firstCellYAbsolute = ("true").equals(ElementParameterParser.getValue(node, "__FIRST_CELL_Y_ABSOLUTE__"));
 	String firstCellXStr = ElementParameterParser.getValue(node, "__FIRST_CELL_X__");
@@ -107,6 +107,17 @@
 	    		}
 	    	}
 	    }
+	%>
+	
+	<%
+				if(flushOnRow){
+	%>
+					if(bufferCount_<%=cid%>!=0){
+    					xlsxTool_<%=cid%>.flushRowInMemory();
+    					//flush all rocords in memory on disk.
+    				}
+	<%
+				}
 	%>
 	<%
 		if(useStream){

@@ -3,7 +3,6 @@ package org.talend;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
@@ -64,7 +63,7 @@ public class ExcelTool {
 
 	private Map<String, CellStyle> cellStylesMapping = null;
 
-	private int rowAccessWindowSize = SXSSFWorkbook.DEFAULT_WINDOW_SIZE;
+	private int rowAccessWindowSize = SXSSFWorkbook.DEFAULT_WINDOW_SIZE;//used in auto flush
 
 	public ExcelTool() {
 		cellStylesMapping = new HashMap<String, CellStyle>();
@@ -285,38 +284,19 @@ public class ExcelTool {
 		fileOutput.close();
 	}
 
-	public void flushRowInMemory(int rowNum, int flushSize) {
-
-		if (flushSize <= 0) {
-			flushSize = 0;
+	public void flushRowInMemory() throws Exception{
+		if (wb instanceof XSSFWorkbook) {
+			(new SXSSFSheet(new SXSSFWorkbook((XSSFWorkbook) wb, -1),
+					(XSSFSheet) sheet)).flushRows();
 		}
-		if (flushSize == 0) {
-			flush(flushSize);
-		} else {
-			if (rowNum % flushSize == 0) {
-				flush(flushSize);
+		if (wb instanceof SXSSFWorkbook) {
+			if (sheet instanceof XSSFSheet) {
+				(new SXSSFSheet((SXSSFWorkbook) wb, (XSSFSheet) sheet))
+						.flushRows();
 			}
-		}
-
-	}
-
-	public void flush(int flushSize) {
-		try {
-			if (wb instanceof XSSFWorkbook) {
-				(new SXSSFSheet(new SXSSFWorkbook((XSSFWorkbook) wb, -1),
-						(XSSFSheet) sheet)).flushRows(flushSize);
+			if (sheet instanceof SXSSFSheet) {
+				((SXSSFSheet) sheet).flushRows();
 			}
-			if (wb instanceof SXSSFWorkbook) {
-				if (sheet instanceof XSSFSheet) {
-					(new SXSSFSheet((SXSSFWorkbook) wb, (XSSFSheet) sheet))
-							.flushRows(flushSize);
-				}
-				if (sheet instanceof SXSSFSheet) {
-					((SXSSFSheet) sheet).flushRows(flushSize);
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -347,12 +327,13 @@ public class ExcelTool {
 
 		org.talend.ExcelTool xlsxTool_tFileOutputExcel_1 = new org.talend.ExcelTool();
 		xlsxTool_tFileOutputExcel_1.setSheet("Sheet1");
-		xlsxTool_tFileOutputExcel_1.setAppend(true, true);
+		xlsxTool_tFileOutputExcel_1.setAppend(true, false);
 		xlsxTool_tFileOutputExcel_1.setXY(false, 0, 20, false);
 		xlsxTool_tFileOutputExcel_1.setRowAccessWindowSize(100);
 		xlsxTool_tFileOutputExcel_1.prepareXlsxFile("C:/test/out3.xlsx");
 
 		xlsxTool_tFileOutputExcel_1.setFont("ARIAL");
+		int count=0;
 		for (int i = 0; i < 50000; i++) {
 			xlsxTool_tFileOutputExcel_1.addRow();
 			xlsxTool_tFileOutputExcel_1.addCellValue("2222222222");
@@ -361,7 +342,11 @@ public class ExcelTool {
 			xlsxTool_tFileOutputExcel_1.addCellValue("2222222222");
 			xlsxTool_tFileOutputExcel_1.addCellValue("2222222222");
 			xlsxTool_tFileOutputExcel_1.addCellValue("2222222222");
-			xlsxTool_tFileOutputExcel_1.flushRowInMemory(i + 1, 100);
+			count++;
+			if(count==1000){
+				xlsxTool_tFileOutputExcel_1.flushRowInMemory();
+				count=0;
+			}
 		}
 		xlsxTool_tFileOutputExcel_1.writeExcel("C:/test/out3.xlsx", false);
 
