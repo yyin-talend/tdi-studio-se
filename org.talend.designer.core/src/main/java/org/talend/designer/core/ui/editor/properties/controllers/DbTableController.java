@@ -78,6 +78,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.connections.TracesConnectionUtils;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
@@ -471,9 +472,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
                     if (connParameters == null) {
                         initConnectionParameters();
                     }
-                    ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(
-                            ISQLBuilderService.class);
-                    existConnection = service.createConnection(connParameters);
+                    existConnection = TracesConnectionUtils.createConnection(connParameters);
                 }
                 final DatabaseConnection con = existConnection;
                 IMetadataConnection iMetadataConnection = null;
