@@ -33,7 +33,8 @@ public class XMLNode {
 
     public boolean isDot = false;
 
-    private String value = null;
+    private StringBuffer value = new StringBuffer();
+    private boolean isNullValue = true;
 
     public XMLNode(String loopPath, String originPath, String nodePath, boolean isAsXML, boolean isDot) {
         this.loopPath = loopPath;
@@ -52,22 +53,21 @@ public class XMLNode {
     }
 
     public void addTextValue(String appendValue) {
-        if (value == null) {
-            value = "";
-        }
-
+    	isNullValue = false;
+    	
         if (appendValue != null) {
-            value = value + appendValue;
+        	value.append(appendValue);
         }
-
     }
 
     public String getTextValue() {
-        return value;
+    	if(isNullValue) return null;
+    	return value.toString();
     }
 
     public void resetValue() {
-        this.value = null;
+    	isNullValue = true;
+    	value.setLength(0);
     }
 
 }

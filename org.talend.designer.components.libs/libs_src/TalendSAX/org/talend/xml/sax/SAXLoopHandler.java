@@ -51,7 +51,7 @@ public class SAXLoopHandler extends DefaultHandler2 {
     // is read the text value
     private boolean[] outputTexts = null;
 
-    private String[] currentRow = null;
+    private Row currentRow = null;
 
     // to mark the value is set or not
     private boolean[] currentRowHaveValue = null;
@@ -136,7 +136,7 @@ public class SAXLoopHandler extends DefaultHandler2 {
         if (currentPath.equals(loopPath)) {
             isLooping = true;
             subLoopCount = 0;
-            currentRow = new String[this.loopCols.size() + 1];
+            currentRow = new Row(this.loopCols.size());
             currentRowHaveValue = new boolean[this.loopCols.size() + 1];
         }
         if (isLooping) {
@@ -152,18 +152,21 @@ public class SAXLoopHandler extends DefaultHandler2 {
                 outputTexts[i] = false;
                 
                 if (asXML && (currentPath.equals(column) || currentPath.startsWith(column + "/"))) {
-                    if (currentRow[i] == null)
-                        currentRow[i] = "";
-                    currentRow[i] = currentRow[i] + "<" + qName;
+                    currentRow.addTextValue(i, "<");
+                    currentRow.addTextValue(i, qName);
                     if (attributes.getLength() > 0) {
                         for (int m = 0; m < attributes.getLength(); m++) {
-                            currentRow[i] = currentRow[i] + " " + attributes.getQName(m) + "=" + "\"" + escapeEntityHelper.escapeAttributeEntities(attributes.getValue(m))
-                                    + "\"";
+                            currentRow.addTextValue(i, " ");
+                            currentRow.addTextValue(i, attributes.getQName(m));
+                            currentRow.addTextValue(i, "=");
+                            currentRow.addTextValue(i, "\"");
+                            currentRow.addTextValue(i, escapeEntityHelper.escapeAttributeEntities(attributes.getValue(m)));
+                            currentRow.addTextValue(i, "\"");
                         }
                     }
                     outputTexts[i] = true;
                     currentRowHaveValue[i] = false;
-                    currentRow[i] = currentRow[i] + ">";
+                    currentRow.addTextValue(i, ">");
                 } else if (isDot && (currentPath.equals(column) || currentPath.startsWith(column + "/"))) {
                 	outputTexts[i] = true;
                     currentRowHaveValue[i] = false;
@@ -173,7 +176,7 @@ public class SAXLoopHandler extends DefaultHandler2 {
                         if (currentPath.equals(column.substring(0, index - 1))) {
                             String attribute = attributes.getValue(column.substring(index + 1));
                             if (attribute != null && false == currentRowHaveValue[i]) {
-                                currentRow[i] = attribute;
+                            	currentRow.addTextValue(i, attribute);
                                 currentRowHaveValue[i] = true;
                             }
                         }
@@ -220,12 +223,7 @@ public class SAXLoopHandler extends DefaultHandler2 {
 	                	if(this.asXMLs.get(i) && !inCDATA) {
 	                    	text = escapeEntityHelper.escapeElementEntities(text);
 	                    }
-	                	
-	                    if (currentRow[i] == null) {
-	                        currentRow[i] = text;
-	                    } else {
-	                        currentRow[i] += text;
-	                    }
+	                	currentRow.addTextValue(i, text);
 	                }
             	}
 
@@ -256,9 +254,7 @@ public class SAXLoopHandler extends DefaultHandler2 {
         	for (int i = 0; i < selectColumns.size(); i++) {
         		if(outputTexts[i]) {
         			if(!currentRowHaveValue[i]) {
-        				if(currentRow[i]==null) {
-        					currentRow[i] = "";
-        				}
+        				currentRow.addTextValue(i, "");
         			}
         			currentRowHaveValue[i] = true;
         		}
@@ -267,7 +263,10 @@ public class SAXLoopHandler extends DefaultHandler2 {
         		boolean isDot = this.isDots.get(i);
         		if ((asXML || isDot) && (currentPath.equals(column) || currentPath.startsWith(column + "/"))) {
         			if(asXML) {
-        				currentRow[i] += "</" + qName + ">";
+        				currentRow.addTextValue(i, "</");
+        				currentRow.addTextValue(i, qName);
+        				currentRow.addTextValue(i, ">");
+        				
         			}
         			if(this.currentPath.equals(column)) {
         				currentRowHaveValue[i] = true;
@@ -293,7 +292,7 @@ public class SAXLoopHandler extends DefaultHandler2 {
                     String strKey = map.get("name");
                     int index = this.loopCols.indexOf(strKey);
                     if (index >= 0 && currentRowHaveValue[index] == false) {
-                        currentRow[index] = map.get("value");
+                        currentRow.addTextValue(index, map.get("value"));
                         currentRowHaveValue[index] = true;
                     }
                 }
@@ -304,8 +303,9 @@ public class SAXLoopHandler extends DefaultHandler2 {
             // System.out.print("|" + value);
             // }
             // System.out.println();
-            currentRow[currentRow.length - 1] = Integer.toString(subLoopCount);
-            entry.getRows().add(currentRow);
+            String[] rowResult = currentRow.getStringResult();
+            rowResult[rowResult.length - 1] = Integer.toString(subLoopCount);
+            entry.getRows().add(rowResult);
             // ===========add for bug7632==========================
             if (this.entry.getOriginalLoopPath() != null) {
                 this.saxLooper.addLoopOrder(this.entry.getOriginalLoopPath());
@@ -333,11 +333,7 @@ public class SAXLoopHandler extends DefaultHandler2 {
 			for (int i = 0; i < selectColumns.size(); i++) {
 	            if (this.asXMLs.get(i)) {
 	                if (outputTexts[i] && !currentRowHaveValue[i]) {
-	                	if(currentRow[i] == null) {
-	                		currentRow[i] = "<![CDATA[";
-	                	} else {
-	                		currentRow[i] += "<![CDATA[";
-	                	}
+	                	currentRow.addTextValue(i, "<![CDATA[");
 	                }
 	            }
 	        }
@@ -350,11 +346,51 @@ public class SAXLoopHandler extends DefaultHandler2 {
 			for (int i = 0; i < selectColumns.size(); i++) {
 	            if (this.asXMLs.get(i)) {
 	                if (outputTexts[i] && !currentRowHaveValue[i]) {
-	                	currentRow[i] += "]]>";
+	                	currentRow.addTextValue(i, "]]>");
 	                }
 	            }
 	        }
 		}
 	}
     
+	class Row {
+		
+		String[] values = null;
+		StringBuffer[] stringBuffers = null;
+		boolean[] isNullValue = null;
+		
+		Row(int columnCount) {
+			values = new String[columnCount+1];
+			
+			stringBuffers = new StringBuffer[columnCount];
+			for(int i=0;i<stringBuffers.length;i++) {
+				stringBuffers[i] = new StringBuffer();
+			}
+			
+			isNullValue = new boolean[columnCount];
+			for(int i=0;i<isNullValue.length;i++) {
+				isNullValue[i] = true;
+			}
+			
+		}
+		
+		void addTextValue(int columnIndex,String appendValue) {
+			isNullValue[columnIndex] = false;
+			
+			if(appendValue!=null) {
+				stringBuffers[columnIndex].append(appendValue);
+			}
+		}
+		
+		String[] getStringResult() {
+			for(int i=0;i<isNullValue.length;i++) {
+				if(!isNullValue[i]) {
+					values[i] = stringBuffers[i].toString();
+				}
+			}
+			return values;
+		}
+		
+		
+	}
 }
