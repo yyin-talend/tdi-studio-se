@@ -97,17 +97,13 @@ public abstract class AbstractXmlTreeSchemaTableView extends AbstractExtendedTab
         }
 
         TreeSchemaTableEntry bean = getExtendedTableModel().getBeansList().get(beanPosition);
-
-        int xPathLength = XmlMapUtil.getXPathLength(bean.getXPath());
-
         if (getExtendedTableModel() != null) {
             for (int i = 0; i < getExtendedTableModel().getBeansList().size(); i++) {
                 if (i == beanPosition) {
                     continue;
                 }
                 TreeSchemaTableEntry entry = getExtendedTableModel().getBeansList().get(i);
-                int pathLength = XmlMapUtil.getXPathLength(entry.getXPath());
-                if (entry.getName() != null && entry.getName().equals(newValue) && xPathLength == pathLength) {
+                if (bean.getXPath().equals(entry.getXPath())) {
                     isValidName = false;
                     return "Name alrady existed";
                 }
