@@ -46,6 +46,20 @@ java.io.File file_<%=cid %> = new java.io.File(<%=filename %>);
                         pw.append( '\n' );
                     }
                 }
+                
+                public String getBase64StringOrNot(boolean encodingBase64,String srcData,String encoding){
+                	String returnValue = "";
+                	try {
+						if(encodingBase64 && !netscape.ldap.util.LDIF.isPrintable(srcData.getBytes(encoding))){
+							returnValue = org.apache.commons.codec.binary.Base64.encodeBase64String(srcData.getBytes(encoding));
+						}else{
+							returnValue = srcData; 
+						}
+					}catch(Exception e){
+						e.printStackTrace();
+					}	
+					return returnValue;
+                } 
             } 
             
 		Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();

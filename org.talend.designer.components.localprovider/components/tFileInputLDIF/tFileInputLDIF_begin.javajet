@@ -61,6 +61,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         };
         
         String[] results_<%=cid %> = null;
+		List<List<byte[]>> resultsBinary_<%=cid %> = null;
         int nb_line_<%=cid %> = 0;
         
         ///////////////////////////////////
@@ -68,6 +69,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         for (netscape.ldap.util.LDIFRecord record_<%=cid %> = ldif_<%=cid %>.nextRecord(); record_<%=cid %> != null; record_<%=cid %> = ldif_<%=cid %>.nextRecord()) {
 
             results_<%=cid %> = new String[<%=listColumns.size() %>];
+            resultsBinary_<%=cid %> =  new java.util.ArrayList<List<byte[]>>();
             
             netscape.ldap.util.LDIFContent content_<%=cid %> = record_<%=cid %>.getContent();
 			netscape.ldap.LDAPAttribute[] attributes_<%=cid %> = null;
@@ -81,6 +83,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 
                 for (int i_<%=cid %> = 0; i_<%=cid %> < filters_<%=cid %>.length; i_<%=cid %>++) {
                 
+					resultsBinary_<%=cid %>.add(new java.util.ArrayList<byte[]>());
+
                     for (int j_<%=cid %> = 0; j_<%=cid %> < attributes_<%=cid %>.length; j_<%=cid %>++) {
                     
                         netscape.ldap.LDAPAttribute attribute_<%=cid %> = attributes_<%=cid %>[j_<%=cid %>];
@@ -108,6 +112,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 												}else{
                                 					value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
 												}
+		 											resultsBinary_<%=cid %>.get(i_<%=cid %>).add(byteValue_<%=cid%>);
                                 					results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
                                 			}
                                 		}
@@ -117,6 +122,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	                           	}else{
 %>
 										for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
+											resultsBinary_<%=cid %>.get(i_<%=cid %>).add(byteValue_<%=cid%>);
 	                           				String value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
                            					results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
                             			}
@@ -138,6 +144,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 
                 for (int i_<%=cid %> = 0; i_<%=cid %> < filters_<%=cid %>.length; i_<%=cid %>++) {
                 
+					resultsBinary_<%=cid %>.add(new java.util.ArrayList<byte[]>());
+
                     for (int j_<%=cid %> = 0; j_<%=cid %> < attributes_<%=cid %>.length; j_<%=cid %>++) {
                     
                         netscape.ldap.LDAPAttribute attribute_<%=cid %> = attributes_<%=cid %>[j_<%=cid %>];
@@ -168,6 +176,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 												}else{
                                 					value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
 												}
+													resultsBinary_<%=cid %>.get(i_<%=cid %>).add(byteValue_<%=cid%>);
                                 					results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
                                 			}
                                 		}
@@ -177,6 +186,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                            	 	}else{
 %>
 										for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
+											resultsBinary_<%=cid %>.get(i_<%=cid %>).add(byteValue_<%=cid%>);
 	    	                       			String value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
             	                			results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
                 	            		}
@@ -196,6 +206,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					netscape.ldap.LDAPModification[] modifications_<%=cid %> = modifyContent_<%=cid %>.getModifications();
 
 					for (int i_<%=cid %> = 0; i_<%=cid %> < filters_<%=cid %>.length; i_<%=cid %>++) {
+					
+						resultsBinary_<%=cid %>.add(new java.util.ArrayList<byte[]>());
 
 						for (netscape.ldap.LDAPModification modification_<%=cid %> : modifications_<%=cid %>) {
 							netscape.ldap.LDAPAttribute attribute_<%=cid %> = modification_<%=cid %>.getAttribute();
@@ -245,6 +257,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 													}else{
 		        	                   	    			value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
 													}
+													resultsBinary_<%=cid %>.get(i_<%=cid %>).add(byteValue_<%=cid%>);
 	                                				if(firstLoop_<%=cid %>){
 														results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + ":" + value_<%=cid %>;
 													}else{
@@ -259,6 +272,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                             		}else{
 %>
 	                          	 		for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
+											resultsBinary_<%=cid %>.get(i_<%=cid %>).add(byteValue_<%=cid%>);
 		                        	  	 	String value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
                             				if(firstLoop_<%=cid %>){
 												results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + ":" + value_<%=cid %>;
@@ -376,8 +390,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					} else if(javaType == JavaTypesManager.BYTE_ARRAY) { //byte[]
 %>
-					<%=firstConnName %>.<%=column.getLabel() %> = results_<%=cid %>[<%=i %>].getBytes(<%=encoding%>);
-	
+					<%=firstConnName %>.<%=column.getLabel() %> = resultsBinary_<%=cid %>.get(<%=i %>).get(0);
+<%
+					} else if(javaType == JavaTypesManager.LIST)  { // List<byte[]>
+%>						
+					<%=firstConnName %>.<%=column.getLabel() %> = resultsBinary_<%=cid %>.get(<%=i %>);
 <%
 					} else  { //other
 %>						
