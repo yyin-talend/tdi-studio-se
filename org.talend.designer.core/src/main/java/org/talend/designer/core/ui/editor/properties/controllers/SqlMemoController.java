@@ -58,6 +58,8 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -217,6 +219,9 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         openSQLEditorButton.setData(PARAMETER_NAME, param.getName());
         openSQLEditorButton.setEnabled(!param.isReadOnly());
         openSQLEditorButton.addSelectionListener(listenerSelection);
+        if (param.getFieldType() == EParameterFieldType.MEMO_SQL) {
+            openSQLEditorButton.setEnabled(ExtractMetaDataUtils.haveLoadMetadataNode());
+        }
 
         FormData data1 = new FormData();
         data1.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);

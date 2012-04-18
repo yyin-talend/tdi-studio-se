@@ -44,6 +44,7 @@ import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.CDCType;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
 import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -168,6 +169,9 @@ public class PropertyTypeController extends AbstractRepositoryController {
         button.setImage(ImageProvider.getImage(EImage.SAVE_ICON));
         button.setToolTipText(Messages.getString("PropertyTypeController.saveToMetadata")); //$NON-NLS-1$
         button.setData(PARAMETER_NAME, param.getName());
+        if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE) {
+            button.setEnabled(ExtractMetaDataUtils.haveLoadMetadataNode());
+        }
 
         lastControlUsed = button;
 
