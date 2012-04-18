@@ -67,6 +67,7 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.utils.AfterImportProjectUtil;
 import org.talend.resources.ResourcesPlugin;
 
 /**
@@ -91,7 +92,10 @@ public class ImportProjectsUtilities {
 
         importProject(shell, provider, new File(sourcePath), new Path(technicalName), true, false, monitor);
 
-        afterImportAs(newName, technicalName);
+        Project project=afterImportAs(newName, technicalName);
+        
+        //do additional actions after importing projects
+        AfterImportProjectUtil.runAfterImportProjectActions(new org.talend.core.model.general.Project(project));
     }
 
     /**
@@ -101,7 +105,7 @@ public class ImportProjectsUtilities {
      * @param technicalName
      * @throws InvocationTargetException
      */
-    private static void afterImportAs(String newName, String technicalName) throws InvocationTargetException {
+    private static Project afterImportAs(String newName, String technicalName) throws InvocationTargetException {
         // Rename in ".project" and "talendProject" or "talend.project"
         // TODO SML Optimize
         final IWorkspace workspace = org.eclipse.core.resources.ResourcesPlugin.getWorkspace();
@@ -128,12 +132,14 @@ public class ImportProjectsUtilities {
                 }
                 // ~ TDQ-4771
                 xmiManager.saveResource(loadProject.eResource());
+                return loadProject;
             } catch (PersistenceException e) {
                 //
             }
         } catch (IOException e) {
             throw new InvocationTargetException(e);
         }
+        return null;
     }
 
     private static void replaceInFile(String regex, String fileName, String replacement) throws IOException {
@@ -162,7 +168,10 @@ public class ImportProjectsUtilities {
             IProgressMonitor monitor) throws InvocationTargetException, InterruptedException, TarException, IOException {
         importArchiveProject(shell, technicalName, sourcePath, monitor);
 
-        afterImportAs(newName, technicalName);
+        Project project=afterImportAs(newName, technicalName);
+        
+        //do additional actions after importing projects
+        AfterImportProjectUtil.runAfterImportProjectActions(new org.talend.core.model.general.Project(project));
     }
 
     public static void importArchiveProject(Shell shell, String technicalName, String sourcePath, IProgressMonitor monitor)

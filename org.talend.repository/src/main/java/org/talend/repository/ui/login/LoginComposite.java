@@ -807,6 +807,9 @@ public class LoginComposite extends Composite {
                                 } else if (techName.equals("TDQEEDEMOJAVA")) { //$NON-NLS-1$
                                     pluginID = "org.talend.datacleansing.core.ui"; //$NON-NLS-1$
                                 }
+                                if(demoProjectBean.getPluginId()!=null){
+                                    pluginID=demoProjectBean.getPluginId();
+                                }
                                 Bundle bundle = Platform.getBundle(pluginID);
 
                                 URL url = FileLocator.resolve(bundle.getEntry(demoFilePath));
