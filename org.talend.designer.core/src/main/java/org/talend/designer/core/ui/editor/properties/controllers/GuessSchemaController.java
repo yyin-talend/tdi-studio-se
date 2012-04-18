@@ -83,6 +83,7 @@ import org.talend.core.utils.KeywordsValidator;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
+import org.talend.designer.core.ui.editor.connections.TracesConnectionUtils;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.uidialog.OpenContextChooseComboDialog;
@@ -323,10 +324,8 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
 
     private void runShadowProcess(final Property property, final Node inputNode, final IContext selectContext,
             final IElementParameter switchParam) {
-        ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(ISQLBuilderService.class);
-        DatabaseConnection connt = service.createConnection(connParameters);
+        DatabaseConnection connt = TracesConnectionUtils.createConnection(connParameters);
         String dbmsId = connt.getDbmsId();
-
         if (dbmsId == null) {
             Shell shell = Display.getCurrent().getActiveShell();
             MessageDialog.openError(shell, "No info about DB found !",
@@ -724,9 +723,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             initConnectionParameters();
         }
         final String tmpMemoSql = this.memoSQL;
-        ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(ISQLBuilderService.class);
-        final DatabaseConnection connt = service.createConnection(connParameters);
-
+        final DatabaseConnection connt = TracesConnectionUtils.createConnection(connParameters);
         IMetadataConnection iMetadataConnection = null;
         boolean isStatus = false;
         try {
