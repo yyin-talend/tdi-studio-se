@@ -19,6 +19,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -34,7 +35,13 @@ public class JobVersionUtils {
      */
     public static String getCurrentVersion(RepositoryNode repositoryNode) {
         try {
-            return ProxyRepositoryFactory.getInstance().getLastVersion(repositoryNode.getId()).getVersion();
+            // alert for bug TDI-20132
+            List<IRepositoryNode> nodeChildren = repositoryNode.getChildren();
+            if ((repositoryNode.getId() == "-1") && (nodeChildren != null) && (nodeChildren.size() == 1)) {
+                return ProxyRepositoryFactory.getInstance().getLastVersion(nodeChildren.get(0).getId()).getVersion();
+            } else {
+                return ProxyRepositoryFactory.getInstance().getLastVersion(repositoryNode.getId()).getVersion();
+            }
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
