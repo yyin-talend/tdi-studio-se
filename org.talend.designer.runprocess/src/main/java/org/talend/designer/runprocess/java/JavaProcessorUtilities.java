@@ -338,10 +338,15 @@ public class JavaProcessorUtilities {
      * @return
      */
     public static Set<String> getNeededLibrariesForProcess(IProcess process) {
-        Set<String> neededLibraries = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(process.getId(),
+        Set<String> neededLibraries = new HashSet<String>();
+        Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(process.getId(),
                 process.getVersion());
+        for (ModuleNeeded module : neededModules) {
+            neededLibraries.add(module.getModuleName());
+        }
+        
         if (process == null || !(process instanceof IProcess2)) {
-            if (neededLibraries == null) {
+            if (neededLibraries.isEmpty() && process != null) {
                 neededLibraries = process.getNeededLibraries(true);
                 if (neededLibraries == null) {
                     neededLibraries = new HashSet<String>();
@@ -357,7 +362,7 @@ public class JavaProcessorUtilities {
             return neededLibraries;
         }
         Property property = ((IProcess2) process).getProperty();
-        if (neededLibraries == null) {
+        if (neededLibraries.isEmpty()) {
             neededLibraries = process.getNeededLibraries(true);
             if (neededLibraries == null) {
                 neededLibraries = new HashSet<String>();

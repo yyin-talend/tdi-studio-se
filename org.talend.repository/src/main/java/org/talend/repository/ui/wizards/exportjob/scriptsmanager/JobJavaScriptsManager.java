@@ -51,6 +51,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.JobInfo;
@@ -195,6 +196,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             throws ProcessorException {
 
         Set<String> neededLibraries = null;
+        Set<ModuleNeeded> neededModules = null;
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             String selectedJobVersion = processItem.getProperty().getVersion();
@@ -208,16 +210,22 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 if (neededLibraries == null) {
                     neededLibraries = new HashSet<String>();
                 }
+                if (neededModules == null) {
+                    neededModules = new HashSet<ModuleNeeded>();
+                }
                 if (contextName != null) {
                     jobProcess = generateJobFiles(processItem, contextName, selectedJobVersion,
                             statisticPort != IProcessor.NO_STATISTICS || isOptionChoosed(ExportChoice.addStatistics),
                             tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren), progressMonitor);
                 }
-                neededLibraries.addAll(LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
-                        processItem.getProperty().getId(), selectedJobVersion));
+                neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
+                        processItem.getProperty().getId(), selectedJobVersion);
+                for (ModuleNeeded module : neededModules) {
+                    neededLibraries.add(module.getModuleName());
+                }
             } else {
                 LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processItem.getProperty().getId(),
-                        processItem.getProperty().getVersion(), neededLibraries);
+                        processItem.getProperty().getVersion(), neededModules);
                 LastGenerationInfo.getInstance().setLastMainJob(null);
             }
             List<URL> resources = new ArrayList<URL>();

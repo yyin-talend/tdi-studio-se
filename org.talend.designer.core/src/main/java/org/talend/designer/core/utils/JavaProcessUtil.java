@@ -13,8 +13,12 @@
 package org.talend.designer.core.utils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,7 +48,8 @@ import org.talend.librariesmanager.model.ModulesNeededProvider;
  */
 public class JavaProcessUtil {
 
-    public static Set<String> getNeededLibraries(final IProcess process, boolean withChildrens, boolean... isExportOSGI) {
+    public static Set<ModuleNeeded> getNeededModules(final IProcess process, boolean withChildrens) {
+        List<ModuleNeeded> modulesNeeded = new ArrayList<ModuleNeeded>();
         // see bug 4939: making tRunjobs work loop will cause a error of "out of memory"
         Set<ProcessItem> searchItems = new HashSet<ProcessItem>();
         if (withChildrens) {
@@ -58,37 +63,51 @@ public class JavaProcessUtil {
                 searchItems.add(processItem);
             }
         }
-        Set<String> neededLibraries = new HashSet<String>();
-        Set<String> bundleDefinedLibraries = new HashSet<String>();
-        getNeededLibraries(process, withChildrens, searchItems, neededLibraries, bundleDefinedLibraries, isExportOSGI);
-        neededLibraries.removeAll(bundleDefinedLibraries);
-        return neededLibraries;
-    }
 
-    private static void getNeededLibraries(final IProcess process, boolean withChildrens, Set<String> neededLibraries,
-            Set<String> bundleDefinedLibraries, boolean... isExportOSGI) {
-        // see bug 4939: making tRunjobs work loop will cause a error of "out of memory"
-        Set<ProcessItem> searchItems = new HashSet<ProcessItem>();
-        if (withChildrens) {
-            ProcessItem processItem = null;
-            if (process.getVersion() != null) {
-                processItem = ItemCacheManager.getProcessItem(process.getId(), process.getVersion());
+        // call recursive function to get all dependencies from job & subjobs
+        getNeededModules(process, withChildrens, searchItems, modulesNeeded);
+
+        // remove duplicates, and keep by priority the one got bundle dependency setup
+        Collections.sort(modulesNeeded, new Comparator<ModuleNeeded>(){
+
+            @Override
+            public int compare(ModuleNeeded arg0, ModuleNeeded arg1) {
+                if (arg0.getBundleName() == null && arg1.getBundleName() != null) {
+                    return 1;
+                }
+                if (arg0.getBundleName() != null && arg1.getBundleName() != null
+                        && "".equals(arg0.getBundleName()) && !"".equals(arg1.getBundleName())) {
+                    return 1;
+                }
+                return 0;
+            }
+            
+        });
+        Set<String> dedupModulesList = new HashSet<String>();
+        Iterator<ModuleNeeded> it = modulesNeeded.iterator();
+        while (it.hasNext()) {
+            ModuleNeeded module = it.next();
+            if (dedupModulesList.contains(module.getModuleName())) {
+                it.remove();
             } else {
-                processItem = ItemCacheManager.getProcessItem(process.getId());
-            }
-            if (processItem != null) {
-                searchItems.add(processItem);
+                dedupModulesList.add(module.getModuleName());
             }
         }
-        getNeededLibraries(process, withChildrens, searchItems, neededLibraries, bundleDefinedLibraries, isExportOSGI);
+        
+        return new HashSet<ModuleNeeded>(modulesNeeded);
     }
 
-    private static void getNeededLibraries(final IProcess process, boolean withChildrens, Set<ProcessItem> searchItems,
-            Set<String> neededLibraries, Set<String> bundleDefinedLibraries, boolean... isExportOSGI) {
-        boolean exportOSGI = false;
-        if (isExportOSGI != null && isExportOSGI.length == 1) {
-            exportOSGI = isExportOSGI[0];
+    public static Set<String> getNeededLibraries(final IProcess process, boolean withChildrens) {
+        Set<String> libsNeeded = new HashSet<String>();
+        for (ModuleNeeded module : getNeededModules(process, withChildrens)) {
+            libsNeeded.add(module.getModuleName());
         }
+
+        return libsNeeded;
+    }
+
+    private static void getNeededModules(final IProcess process, boolean withChildrens, Set<ProcessItem> searchItems,
+            List<ModuleNeeded> modulesNeeded) {
         IElementParameter headerParameter = process.getElementParameter(EParameterName.HEADER_LIBRARY.getName());
         if (headerParameter != null) {
             Object value = headerParameter.getValue();
@@ -98,7 +117,7 @@ public class JavaProcessUtil {
                         && headerLibraries.length() > headerLibraries.lastIndexOf(File.separatorChar) + 2) {
                     String substring = headerLibraries.substring(headerLibraries.lastIndexOf(File.separatorChar) + 2);
                     if (!"".equals(substring)) {//$NON-NLS-1$
-                        neededLibraries.add(getModuleValue(process, substring));
+                        modulesNeeded.add(getModuleValue(process, substring));
                     }
                 }
             }
@@ -112,7 +131,7 @@ public class JavaProcessUtil {
                         && footerLibraries.length() > footerLibraries.lastIndexOf(File.separatorChar) + 2) {
                     String substring = footerLibraries.substring(footerLibraries.lastIndexOf(File.separatorChar) + 2);
                     if (!"".equals(substring)) {//$NON-NLS-1$
-                        neededLibraries.add(getModuleValue(process, substring));
+                        modulesNeeded.add(getModuleValue(process, substring));
                     }
                 }
             }
@@ -120,7 +139,7 @@ public class JavaProcessUtil {
 
         IElementParameter elementParameter = process.getElementParameter(EParameterName.DRIVER_JAR.getName());
         if (elementParameter != null && elementParameter.getFieldType() == EParameterFieldType.TABLE) {
-            getModulsInTable(process, elementParameter, neededLibraries);
+            getModulesInTable(process, elementParameter, modulesNeeded);
         }
 
         if (process instanceof IProcess2) {
@@ -129,9 +148,7 @@ public class JavaProcessUtil {
                 List<ModuleNeeded> modulesNeededForRoutines = ModulesNeededProvider
                         .getModulesNeededForRoutines((ProcessItem) item);
                 if (modulesNeededForRoutines != null) {
-                    for (ModuleNeeded moduleNeeded : modulesNeededForRoutines) {
-                        neededLibraries.add(moduleNeeded.getModuleName());
-                    }
+                    modulesNeeded.addAll(modulesNeededForRoutines);
                 }
             }
         }
@@ -141,20 +158,7 @@ public class JavaProcessUtil {
             List<ModuleNeeded> moduleList = node.getModulesNeeded();
             for (ModuleNeeded needed : moduleList) {
                 if (needed.isRequired(node.getElementParameters())) {
-                    /**
-                     * For export job to OSGI: if current module needed DO NOT contains any bundle info (name/version),
-                     * same as now, we add the jars to the final export and we set the Bundle-Classpath. if current
-                     * module needed contains bundle info. We don't add the jar to the final export, we don't set any
-                     * Bundle-Classpath, but we add as Require-Bundle for example (following previous import info):
-                     * org.apache.commons.lang;bundle-version="2.6.0" (<name>;bundle-version="<version>")
-                     * */
-                    if (!exportOSGI) {
-                        neededLibraries.add(needed.getModuleName());
-                    } else if (needed.getBundleName() == null && needed.getBundleVersion() == null) {
-                        neededLibraries.add(needed.getModuleName());
-                    } else {
-                        bundleDefinedLibraries.add(needed.getModuleName());
-                    }
+                    modulesNeeded.add(needed);
                 }
             }
             for (IElementParameter curParam : node.getElementParameters()) {
@@ -165,10 +169,10 @@ public class JavaProcessUtil {
                 if (curParam.getFieldType().equals(EParameterFieldType.MODULE_LIST)) {
                     if (curParam.getValue() != null && !"".equals(curParam.getValue())) { // if the parameter //$NON-NLS-1$
                         // is not empty.
-                        neededLibraries.add(getModuleValue(process, (String) curParam.getValue()));
+                        modulesNeeded.add(getModuleValue(process, (String) curParam.getValue()));
                     }
                 } else if (curParam.getFieldType() == EParameterFieldType.TABLE) {
-                    getModulsInTable(process, curParam, neededLibraries);
+                    getModulesInTable(process, curParam, modulesNeeded);
                 }
 
                 // see feature 4720 Add libraries for different version DB components and tMomInput components
@@ -176,9 +180,9 @@ public class JavaProcessUtil {
                 // if (elementParameter != null && elementParameter.isShow(node.getElementParameters())
                 // && Boolean.TRUE.equals(elementParameter.getValue())) {
                 if (curParam.isShow(node.getElementParameters())) {
-                    findMoreLibraries(process, neededLibraries, curParam, true);
+                    findMoreLibraries(process, modulesNeeded, curParam, true);
                 } else {
-                    findMoreLibraries(process, neededLibraries, curParam, false);
+                    findMoreLibraries(process, modulesNeeded, curParam, false);
                 }
             }
 
@@ -206,15 +210,14 @@ public class JavaProcessUtil {
                         IProcess child = service.getProcessFromItem(subJobInfo.getProcessItem());
                         // Process child = new Process(subJobInfo.getProcessItem().getProperty());
                         // child.loadXmlFile();
-                        JavaProcessUtil.getNeededLibraries(child, true, searchItems, neededLibraries, bundleDefinedLibraries,
-                                isExportOSGI);
+                        JavaProcessUtil.getNeededModules(child, true, searchItems, modulesNeeded);
                     }
                 }
             }
         }
     }
 
-    private static void getModulsInTable(final IProcess process, IElementParameter curParam, Set<String> neededLibraries) {
+    private static void getModulesInTable(final IProcess process, IElementParameter curParam, List<ModuleNeeded> modulesNeeded) {
 
         if (!(curParam.getValue() instanceof List)) {
             return;
@@ -246,25 +249,20 @@ public class JavaProcessUtil {
                                                     for (int i = 0; i < jars.length; i++) {
                                                         String jar = jars[i];
                                                         jar = jar.substring(jar.lastIndexOf("\\") + 1);
-                                                        if (!neededLibraries.contains(jar)) {
-                                                            neededLibraries.add(jar);
-                                                        }
+                                                        ModuleNeeded module = new ModuleNeeded(null, jar, null, true);
+                                                        modulesNeeded.add(module);
                                                     }
                                                 } else {
                                                     value = value.substring(value.lastIndexOf("\\") + 1);
-                                                    if (!neededLibraries.contains(value)) {
-                                                        neededLibraries.add(value);
-                                                    }
+                                                    ModuleNeeded module = new ModuleNeeded(null, value, null, true);
+                                                    modulesNeeded.add(module);
                                                 }
                                             }
                                         }
                                     }
 
                                 } else {
-                                    moduleName = getModuleValue(process, moduleName);
-                                    if (!neededLibraries.contains(moduleName)) {
-                                        neededLibraries.add(moduleName);
-                                    }
+                                    modulesNeeded.add(getModuleValue(process, moduleName));
                                 }
                             }
                         }
@@ -275,7 +273,7 @@ public class JavaProcessUtil {
 
     }
 
-    private static String getModuleValue(final IProcess process, String moduleValue) {
+    private static ModuleNeeded getModuleValue(final IProcess process, String moduleValue) {
         if (ContextParameterUtils.isContainContextParam(moduleValue)) {
             String var = ContextParameterUtils.getVariableFromCode(moduleValue);
             if (var != null) {
@@ -289,11 +287,11 @@ public class JavaProcessUtil {
                     String paramvalue = param.getValue();
                     int a = paramvalue.lastIndexOf("\\"); //$NON-NLS-1$
                     String filename = paramvalue.substring(a + 1, paramvalue.length());
-                    return filename;
+                    return new ModuleNeeded(null, filename, null, true);
                 }
             }
         }
-        return TalendTextUtils.removeQuotes(moduleValue);
+        return new ModuleNeeded(null, TalendTextUtils.removeQuotes(moduleValue), null, true);
     }
 
     /**
@@ -302,7 +300,7 @@ public class JavaProcessUtil {
      * @param neededLibraries
      * @param curParam
      */
-    public static void findMoreLibraries(final IProcess process, Set<String> neededLibraries, IElementParameter curParam,
+    public static void findMoreLibraries(final IProcess process, List<ModuleNeeded> modulesNeeded, IElementParameter curParam,
             boolean flag) {
 
         Object value = curParam.getValue();
@@ -319,10 +317,12 @@ public class JavaProcessUtil {
                             if (driverName != null && !"".equals(driverName)) {
                                 boolean isContextMode = ContextParameterUtils.containContextVariables(driverName);
                                 if (isContextMode) {
-                                    getModulsInTable(process, curParam, neededLibraries);
+                                    getModulesInTable(process, curParam, modulesNeeded);
                                 } else {
-                                    neededLibraries.add((driverName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
-                                            TalendTextUtils.SINGLE_QUOTE, ""));//$NON-NLS-1$
+                                    ModuleNeeded module = new ModuleNeeded(null, (driverName).replaceAll(
+                                            TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
+                                            TalendTextUtils.SINGLE_QUOTE, ""), null, true);//$NON-NLS-1$
+                                    modulesNeeded.add(module);
                                 }
                             }
                         }
@@ -349,10 +349,12 @@ public class JavaProcessUtil {
                     String separator = ";"; //$NON-NLS-1$
                     if (jars.contains(separator)) {
                         for (String jar : jars.split(separator)) {
-                            neededLibraries.add(jar);
+                            ModuleNeeded module = new ModuleNeeded(null, jar, null, true);
+                            modulesNeeded.add(module);
                         }
                     } else {
-                        neededLibraries.add(jars);
+                        ModuleNeeded module = new ModuleNeeded(null, jars, null, true);
+                        modulesNeeded.add(module);
                     }
                 }
             }
@@ -367,7 +369,8 @@ public class JavaProcessUtil {
             }
 
             for (String jar : path.split(separator)) {
-                neededLibraries.add(jar);
+                ModuleNeeded module = new ModuleNeeded(null, jar, null, true);
+                modulesNeeded.add(module);
             }
         }
         if (curParam.getName().equals("HOTLIBS")) { //$NON-NLS-1$
@@ -376,7 +379,8 @@ public class JavaProcessUtil {
             for (Map<String, Object> line : tableValues) {
                 if (line.containsKey("LIBPATH") && !StringUtils.isEmpty((String) line.get("LIBPATH"))) {
                     String path = (String) line.get("LIBPATH");
-                    neededLibraries.add(TalendTextUtils.removeQuotes(path));
+                    ModuleNeeded module = new ModuleNeeded(null, TalendTextUtils.removeQuotes(path), null, true);
+                    modulesNeeded.add(module);
                 }
             }
         }

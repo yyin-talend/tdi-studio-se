@@ -15,9 +15,8 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.IPath;
@@ -146,7 +145,7 @@ public class GuessSchemaProcess {
         }
 
         for (IElementParameter param : node.getElementParameters()) {
-            Set<String> neededLibraries = new HashSet<String>();
+            List<ModuleNeeded> neededLibraries = new ArrayList<ModuleNeeded>();
             JavaProcessUtil.findMoreLibraries(process, neededLibraries, param, true); // add by hywang
             // for bug 8350
             // add for tJDBCInput component
@@ -154,7 +153,7 @@ public class GuessSchemaProcess {
                 if (!"".equals(param.getValue())) { //$NON-NLS-1$
                     // if the parameter is not empty.
                     String moduleValue = (String) param.getValue();
-                    neededLibraries.add(moduleValue); //$NON-NLS-1$
+                    neededLibraries.add(new ModuleNeeded(null, moduleValue, null, true)); //$NON-NLS-1$
                 }
                 if (param.isShow(node.getElementParameters())) {
                     JavaProcessUtil.findMoreLibraries(process, neededLibraries, param, true);
@@ -162,9 +161,9 @@ public class GuessSchemaProcess {
                     JavaProcessUtil.findMoreLibraries(process, neededLibraries, param, false);
                 }
             }
-            for (String lib : neededLibraries) {
+            for (ModuleNeeded module : neededLibraries) {
                 Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
-                libNode1.setPropertyValue("LIBRARY", "\"" + lib + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                libNode1.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 process.addNodeContainer(new NodeContainer(libNode1));
             }
         }

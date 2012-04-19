@@ -49,7 +49,6 @@ import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
@@ -137,6 +136,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // Gets talend libraries
 
         Set<String> neededLibraries = null;
+        Set<ModuleNeeded> neededModules = null;
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             itemToBeExport.add(processItem);
@@ -175,14 +175,22 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 if (neededLibraries == null) {
                     neededLibraries = new HashSet<String>();
                 }
+                if (neededModules == null) {
+                    neededModules = new HashSet<ModuleNeeded>();
+                }
                 generateJobFiles(processItem, contextName, jobVersion, statisticPort != IProcessor.NO_STATISTICS,
                         tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren),
                         true /* isExportAsOSGI */, progressMonitor);
-                neededLibraries.addAll(LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
-                        processItem.getProperty().getId() + "-osgi", jobVersion));
+                neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
+                        processItem.getProperty().getId(), jobVersion);
+                for (ModuleNeeded module : neededModules) {
+                    if (module.getBundleName() == null) { // if no bundle defined for this, add to the jars to export
+                        neededLibraries.add(module.getModuleName());
+                    }
+                }
             } else {
-                LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processItem.getProperty().getId() + "-osgi",
-                        processItem.getProperty().getVersion(), neededLibraries);
+                LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processItem.getProperty().getId(),
+                        processItem.getProperty().getVersion(), neededModules);
                 LastGenerationInfo.getInstance().setLastMainJob(null);
             }
 
@@ -233,9 +241,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     /**
-     *
+     * 
      * Add additional dependency libraries.
-     *
+     * 
      * @param processItem
      * @param libPath
      * @return
@@ -333,9 +341,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     /**
-     *
+     * 
      * Ensure that the string is not surrounded by quotes.
-     *
+     * 
      * @param string
      * @return
      */
@@ -353,7 +361,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * This method will return <code>true</code> if given job contains tESBProviderRequest or tESBConsumer component
-     *
+     * 
      * @param processItem
      * @author rzubairov
      * @return
@@ -410,7 +418,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Add user input dependency library path. DOC LiXP Comment method "computeAddtionalLibPath".
-     *
+     * 
      * @param processItem
      * @return
      */
@@ -520,7 +528,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             String inputFile = getPluginResourceUri("resources/" + itemType + "-template.xml"); //$NON-NLS-1$ //$NON-NLS-2$
             String targetFile = getTmpFolder() + PATH_SEPARATOR + "job.xml"; //$NON-NLS-1$
 
-            createJobBundleBlueprintConfig(processItem, inputFile, targetFile, jobName, jobClassName, itemType, isESBJob, isRESTJob);
+            createJobBundleBlueprintConfig(processItem, inputFile, targetFile, jobName, jobClassName, itemType, isESBJob,
+                    isRESTJob);
 
             files.add(targetFile);
         } catch (IOException e) {
@@ -561,7 +570,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Compute check field parameter value with a given parameter name
-     *
+     * 
      * @param paramName
      * @param elementParameterTypes
      * @return
@@ -577,7 +586,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Compute Text field parameter value with a given parameter name
-     *
+     * 
      * @param paramName
      * @param elementParameterTypes
      * @return
@@ -590,8 +599,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return cpType.getValue();
     }
 
-    private void createRestJobBundleSpringConfig(Item processItem,
-            String inputFile, String targetFile, String jobClassName) {
+    private void createRestJobBundleSpringConfig(Item processItem, String inputFile, String targetFile, String jobClassName) {
 
         NodeType restRequestComponent = getRESTRequestComponent((ProcessItem) processItem);
         EList elParams = restRequestComponent.getElementParameter();
@@ -606,8 +614,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         boolean useHttpBasicAuth = computeCheckElementValue("HTTP_BASIC_AUTH", elParams);
         if (useHttpBasicAuth) {
             jaxrsServiceProviders = "<ref bean=\"authenticationFilter\"/>";
-            additionalBeansConfig =
-                    "\t<bean id=\"authenticationFilter\" class=\"org.apache.cxf.jaxrs.security.JAASAuthenticationFilter\">"
+            additionalBeansConfig = "\t<bean id=\"authenticationFilter\" class=\"org.apache.cxf.jaxrs.security.JAASAuthenticationFilter\">"
                     + "\n\t\t<property name=\"contextName\" value=\"karaf\"/>\n\t</bean>";
         }
 
@@ -637,17 +644,23 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             logger.error(e);
         } finally {
             if (null != fr) {
-                try { fr.close(); } catch (IOException e) { }
+                try {
+                    fr.close();
+                } catch (IOException e) {
+                }
             }
             if (null != fw) {
-                try { fw.close(); } catch (IOException e) { }
+                try {
+                    fw.close();
+                } catch (IOException e) {
+                }
             }
         }
     }
 
     /**
      * Created OSGi Blueprint configuration for job bundle.
-     *
+     * 
      * @param processItem
      * @param inputFile
      * @param targetFile
@@ -656,9 +669,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      * @param itemType
      * @param isESBJob
      */
-    private void createJobBundleBlueprintConfig(Item processItem, String inputFile,
-            String targetFile, String jobName, String jobClassName, String itemType,
-            boolean isESBJob, boolean isRESTJob) {
+    private void createJobBundleBlueprintConfig(Item processItem, String inputFile, String targetFile, String jobName,
+            String jobClassName, String itemType, boolean isESBJob, boolean isRESTJob) {
 
         // http://jira.talendforge.org/browse/TESB-3677
         boolean hasSAM = false;
@@ -696,13 +708,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             }
         } else {
             if (isRESTJob) {
-                additionalJobBundleConfig = "<reference id=\"callbackHandler\""
-                        + "\n\t\t\t"
-                        + "interface=\"routines.system.api.ESBProviderCallback\""
-                        + "\n\t\t\t"
-                        + "filter=\"(job=" + jobClassName + ")\""
-                        + "\n\t\t\t"
-                        + "timeout=\"30000\" availability=\"mandatory\" />";
+                additionalJobBundleConfig = "<reference id=\"callbackHandler\"" + "\n\t\t\t"
+                        + "interface=\"routines.system.api.ESBProviderCallback\"" + "\n\t\t\t" + "filter=\"(job=" + jobClassName
+                        + ")\"" + "\n\t\t\t" + "timeout=\"30000\" availability=\"mandatory\" />";
                 additionalJobBeanParams = "<property name=\"providerCallback\" ref=\"callbackHandler\" />";
             }
         }
@@ -742,10 +750,16 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             logger.error(e);
         } finally {
             if (null != fr) {
-                try { fr.close(); } catch (IOException e) { }
+                try {
+                    fr.close();
+                } catch (IOException e) {
+                }
             }
             if (null != fw) {
-                try { fw.close(); } catch (IOException e) { }
+                try {
+                    fw.close();
+                } catch (IOException e) {
+                }
             }
         }
     }
@@ -845,18 +859,18 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         Manifest manifest = new Manifest();
         Attributes a = manifest.getMainAttributes();
 
-		// http://jira.talendforge.org/browse/TESB-5382 LiXiaopeng
-		String symbolicName = bundleName;
-		Project project = ProjectManager.getInstance().getCurrentProject();
-		if (project != null) {
-			String proName = project.getLabel();
-			if (proName != null) {
-				symbolicName = proName.toLowerCase() + "." + symbolicName;
-			}
-		}
+        // http://jira.talendforge.org/browse/TESB-5382 LiXiaopeng
+        String symbolicName = bundleName;
+        Project project = ProjectManager.getInstance().getCurrentProject();
+        if (project != null) {
+            String proName = project.getLabel();
+            if (proName != null) {
+                symbolicName = proName.toLowerCase() + "." + symbolicName;
+            }
+        }
         a.put(Attributes.Name.MANIFEST_VERSION, "1.0"); //$NON-NLS-1$
         a.put(new Attributes.Name("Bundle-Name"), bundleName); //$NON-NLS-1$
-		a.put(new Attributes.Name("Bundle-SymbolicName"), symbolicName); //$NON-NLS-1$
+        a.put(new Attributes.Name("Bundle-SymbolicName"), symbolicName); //$NON-NLS-1$
         a.put(new Attributes.Name("Bundle-Version"), getBundleVersion()); //$NON-NLS-1$
         a.put(new Attributes.Name("Bundle-ManifestVersion"), "2"); //$NON-NLS-1$ //$NON-NLS-2$
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
@@ -945,8 +959,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     + ",javax.xml.ws;resolution:=optional" //$NON-NLS-1$
                     + ",javax.jws;resolution:=optional" //$NON-NLS-1$
                     + ",javax.jws.soap;resolution:=optional" //$NON-NLS-1$
-					+ ",org.slf4j;resolution:=optional" // http://jira.talendforge.org/browse/TESB-5489
-					+ ",org.apache.commons.logging;resolution:=optional" //
+                    + ",org.slf4j;resolution:=optional" // http://jira.talendforge.org/browse/TESB-5489
+                    + ",org.apache.commons.logging;resolution:=optional" //
                     + ",org.apache.camel;version=\"[2.7,3)\"" //$NON-NLS-1$
                     + ",org.apache.camel.builder;version=\"[2.7,3)\"" //$NON-NLS-1$
                     + ",org.apache.camel.impl;version=\"[2.7,3)\"" //$NON-NLS-1$
@@ -958,13 +972,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     + ",org.osgi.framework;version=\"[1.5,2)\"" //$NON-NLS-1$
                     + ",org.osgi.service.blueprint;version=\"[1.0.0,2.0.0)\"" //$NON-NLS-1$
                     + ",routines.system.api" //$NON-NLS-1$
-                    + externalJMSImportSB.toString()
-                    + externalCXFImport);
+                    + externalJMSImportSB.toString() + externalCXFImport);
         } else {
             a.put(new Attributes.Name("Import-Package"), //$NON-NLS-1$
                     "routines.system.api;resolution:=optional" //$NON-NLS-1$
-                    + ",javax.xml.soap;resolution:=optional" //$NON-NLS-1$
-                    + ",javax.xml.ws.soap;resolution:=optional" //$NON-NLS-1$
+                            + ",javax.xml.soap;resolution:=optional" //$NON-NLS-1$
+                            + ",javax.xml.ws.soap;resolution:=optional" //$NON-NLS-1$
             );
         }
         if (itemToBeExport != null && !itemToBeExport.isEmpty()) {
@@ -988,20 +1001,19 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * DOC hywang Comment method "caculateDependenciesBundles".
-     *
+     * 
      * @return
      */
     private String caculateDependenciesBundles(ProcessItem processItem) {
         StringBuffer requiredBundles = new StringBuffer();
-        IDesignerCoreService designerCoreService = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
-                IDesignerCoreService.class);
-        IProcess fakeProcess = designerCoreService.getProcessFromProcessItem(processItem);
         // this list is used to avoid add dumplicated bundle
         List<String> alreadyAddedBundles = new ArrayList<String>();
 
         List<String> segments = new ArrayList<String>();
-        generateBundleSegmemnts(fakeProcess.getGeneratingNodes(), alreadyAddedBundles, segments);
-        generateBundleSegmemnts(fakeProcess.getGraphicalNodes(), alreadyAddedBundles, segments);
+        Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
+                processItem.getProperty().getId(), jobVersion);
+
+        generateBundleSegments(neededModules, alreadyAddedBundles, segments);
         int index = 0;
         for (String segment : segments) {
             if (index != segments.size() - 1) {
@@ -1015,24 +1027,20 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return requiredBundles.toString();
     }
 
-    protected void generateBundleSegmemnts(List<? extends INode> generateNodes, List<String> alreadyAddedBundles,
-            List<String> segments) {
-        for (INode generateNode : generateNodes) {
-            List<ModuleNeeded> modelneededForGenerateNode = generateNode.getComponent().getModulesNeeded();
-            for (ModuleNeeded module : modelneededForGenerateNode) {
-                String bundleName = module.getBundleName();
-                String bundleVersion = module.getBundleVersion();
-                // the last dependence should not contain "," and "\n"
-                String bundleToAdd = bundleName;
-                if (bundleVersion != null && !"".equals(bundleVersion)) {
-                    bundleToAdd = bundleName + ";bundle-version=" + TalendTextUtils.addQuotes(bundleVersion);
-                }
+    protected void generateBundleSegments(Set<ModuleNeeded> neededModules, List<String> alreadyAddedBundles, List<String> segments) {
+        for (ModuleNeeded module : neededModules) {
+            String bundleName = module.getBundleName();
+            String bundleVersion = module.getBundleVersion();
+            // the last dependence should not contain "," and "\n"
+            String bundleToAdd = bundleName;
+            if (bundleVersion != null && !"".equals(bundleVersion)) {
+                bundleToAdd = bundleName + ";bundle-version=" + TalendTextUtils.addQuotes(bundleVersion);
+            }
 
-                if (bundleToAdd != null && !"".equals(bundleToAdd)) {
-                    if (!alreadyAddedBundles.contains(bundleToAdd)) {
-                        segments.add(bundleToAdd);
-                        alreadyAddedBundles.add(bundleToAdd);
-                    }
+            if (bundleToAdd != null && !"".equals(bundleToAdd)) {
+                if (!alreadyAddedBundles.contains(bundleToAdd)) {
+                    segments.add(bundleToAdd);
+                    alreadyAddedBundles.add(bundleToAdd);
                 }
             }
         }
@@ -1102,12 +1110,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     }
                     ProcessItem selectedProcessItem;
                     if (resource.getNode() != null) {
-                        selectedProcessItem = ItemCacheManager.getProcessItem(resource.getNode()
-                                .getRoot().getProject(), item.getProperty().getId(), version);
+                        selectedProcessItem = ItemCacheManager.getProcessItem(resource.getNode().getRoot().getProject(), item
+                                .getProperty().getId(), version);
                     } else {
                         // if no node given, take in the current project only
-                        selectedProcessItem = ItemCacheManager.getProcessItem(item.getProperty()
-                                .getId(), version);
+                        selectedProcessItem = ItemCacheManager.getProcessItem(item.getProperty().getId(), version);
                     }
                     IProcess iProcess = designerService.getProcessFromProcessItem(selectedProcessItem);
                     neededLibraries = iProcess.getNeededLibraries(true);
