@@ -38,6 +38,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.genhtml.IJobSettingConstants;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -647,8 +648,8 @@ public class DesignerCoreService implements IDesignerCoreService {
      * org.talend.designer.core.IDesignerCoreService#getNeededLibrariesForProcess(org.talend.core.model.process.IProcess
      * , boolean)
      */
-    public Set<String> getNeededLibrariesForProcess(IProcess process, boolean withChildrens, boolean... exportAsOSGI) {
-        return JavaProcessUtil.getNeededLibraries(process, withChildrens, exportAsOSGI);
+    public Set<ModuleNeeded> getNeededLibrariesForProcess(IProcess process, boolean withChildrens) {
+        return JavaProcessUtil.getNeededModules(process, withChildrens);
     }
 
     /*

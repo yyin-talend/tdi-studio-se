@@ -48,7 +48,6 @@ import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ModuleNeeded;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
@@ -131,6 +130,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // Gets talend libraries
 
         Set<String> neededLibraries = null;
+        Set<ModuleNeeded> neededModules = null;
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             itemToBeExport.add(processItem);
@@ -168,14 +168,22 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 if (neededLibraries == null) {
                     neededLibraries = new HashSet<String>();
                 }
+                if (neededModules == null) {
+                    neededModules = new HashSet<ModuleNeeded>();
+                }
                 generateJobFiles(processItem, contextName, jobVersion, statisticPort != IProcessor.NO_STATISTICS,
                         tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren),
                         true /* isExportAsOSGI */, progressMonitor);
-                neededLibraries.addAll(LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
-                        processItem.getProperty().getId() + "-osgi", jobVersion));
+                neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
+                        processItem.getProperty().getId(), jobVersion);
+                for (ModuleNeeded module : neededModules) {
+                    if (module.getBundleName() == null) { // if no bundle defined for this, add to the jars to export
+                        neededLibraries.add(module.getModuleName());
+                    }
+                }
             } else {
-                LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processItem.getProperty().getId() + "-osgi",
-                        processItem.getProperty().getVersion(), neededLibraries);
+                LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processItem.getProperty().getId(),
+                        processItem.getProperty().getVersion(), neededModules);
                 LastGenerationInfo.getInstance().setLastMainJob(null);
             }
 
@@ -871,17 +879,16 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      */
     private String caculateDependenciesBundles(ProcessItem processItem) {
         StringBuffer requiredBundles = new StringBuffer();
-        IDesignerCoreService designerCoreService = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
-                IDesignerCoreService.class);
-        IProcess fakeProcess = designerCoreService.getProcessFromProcessItem(processItem);
         // List<? extends INode> generateNodes = fakeProcess.getGeneratingNodes();
         // this list is used to avoid add dumplicated bundle
         List<String> alreadyAddedBundles = new ArrayList<String>();
 
         List<String> segments = new ArrayList<String>();
         // generateBundleSegmemnts(generateNodes, alreadyAddedBundles, segments);
-        generateBundleSegmemnts(fakeProcess.getGeneratingNodes(), alreadyAddedBundles, segments);
-        generateBundleSegmemnts(fakeProcess.getGraphicalNodes(), alreadyAddedBundles, segments);
+        Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
+                processItem.getProperty().getId(), jobVersion);
+
+        generateBundleSegments(neededModules, alreadyAddedBundles, segments);
         int index = 0;
         for (String segment : segments) {
             if (index != segments.size() - 1) {
@@ -895,24 +902,20 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return requiredBundles.toString();
     }
 
-    protected void generateBundleSegmemnts(List<? extends INode> generateNodes, List<String> alreadyAddedBundles,
-            List<String> segments) {
-        for (INode generateNode : generateNodes) {
-            List<ModuleNeeded> modelneededForGenerateNode = generateNode.getComponent().getModulesNeeded();
-            for (ModuleNeeded module : modelneededForGenerateNode) {
-                String bundleName = module.getBundleName();
-                String bundleVersion = module.getBundleVersion();
-                // the last dependence should not contain "," and "\n"
-                String bundleToAdd = bundleName;
-                if (bundleVersion != null && !"".equals(bundleVersion)) {
-                    bundleToAdd = bundleName + ";bundle-version=" + TalendTextUtils.addQuotes(bundleVersion);
-                }
+    protected void generateBundleSegments(Set<ModuleNeeded> neededModules, List<String> alreadyAddedBundles, List<String> segments) {
+        for (ModuleNeeded module : neededModules) {
+            String bundleName = module.getBundleName();
+            String bundleVersion = module.getBundleVersion();
+            // the last dependence should not contain "," and "\n"
+            String bundleToAdd = bundleName;
+            if (bundleVersion != null && !"".equals(bundleVersion)) {
+                bundleToAdd = bundleName + ";bundle-version=" + TalendTextUtils.addQuotes(bundleVersion);
+            }
 
-                if (bundleToAdd != null && !"".equals(bundleToAdd)) {
-                    if (!alreadyAddedBundles.contains(bundleToAdd)) {
-                        segments.add(bundleToAdd);
-                        alreadyAddedBundles.add(bundleToAdd);
-                    }
+            if (bundleToAdd != null && !"".equals(bundleToAdd)) {
+                if (!alreadyAddedBundles.contains(bundleToAdd)) {
+                    segments.add(bundleToAdd);
+                    alreadyAddedBundles.add(bundleToAdd);
                 }
             }
         }
