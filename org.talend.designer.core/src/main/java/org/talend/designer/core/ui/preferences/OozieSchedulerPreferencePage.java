@@ -42,10 +42,10 @@ public class OozieSchedulerPreferencePage extends FieldEditorPreferencePage impl
         addField(oozieFE);
 
         // The path of last job
-        StringFieldEditor pathFE = new StringFieldEditor(ITalendCorePrefConstants.OOZIE_SCHEDULER_PATH,
-                Messages.getString("OoziePreferencePage.path"), getFieldEditorParent());
-        pathFE.setEmptyStringAllowed(true);
-        addField(pathFE);
+        // StringFieldEditor pathFE = new StringFieldEditor(ITalendCorePrefConstants.OOZIE_SCHEDULER_PATH,
+        // Messages.getString("OoziePreferencePage.path"), getFieldEditorParent());
+        // pathFE.setEmptyStringAllowed(true);
+        // addField(pathFE);
 
         IPreferenceStore ps = getPreferenceStore();
         String nameNodeEPValue = ps.getString(ITalendCorePrefConstants.OOZIE_SHCEDULER_NAME_NODE_ENDPOINT);
@@ -57,8 +57,8 @@ public class OozieSchedulerPreferencePage extends FieldEditorPreferencePage impl
         String oozieEPValue = ps.getString(ITalendCorePrefConstants.OOZIE_SHCEDULER_OOZIE_ENDPOINT);
         oozieFE.setStringValue(oozieEPValue);
 
-        String pathValue = ps.getString(ITalendCorePrefConstants.OOZIE_SCHEDULER_PATH);
-        pathFE.setStringValue(pathValue);
+        // String pathValue = ps.getString(ITalendCorePrefConstants.OOZIE_SCHEDULER_PATH);
+        // pathFE.setStringValue(pathValue);
 
         String userNameValue = ps.getString(ITalendCorePrefConstants.OOZIE_SCHEDULER_USER_NAME);
         userNameFE.setStringValue(userNameValue);
