@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2011 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2012 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -74,10 +74,16 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
             }
             if (node.isLooping) {
                 if (node.isAsXML && (this.currentPath.equals(node.nodePath) || this.currentPath.startsWith(node.nodePath + "/"))) {
-                    node.addTextValue("<" + qName);
+                    node.addTextValue("<");
+                    node.addTextValue(qName);
                     if (attributes.getLength() > 0) {
                         for (int m = 0; m < attributes.getLength(); m++) {
-                            node.addTextValue(" " + attributes.getQName(m) + "=" + "\"" + escapeEntityHelper.escapeAttributeEntities(attributes.getValue(m)) + "\"");
+                            node.addTextValue(" ");
+                            node.addTextValue(attributes.getQName(m));
+                            node.addTextValue("=");
+                            node.addTextValue("\"");
+                            node.addTextValue(escapeEntityHelper.escapeAttributeEntities(attributes.getValue(m)));
+                            node.addTextValue("\"");
                         }
                     }
                     node.outputText = true;
@@ -146,7 +152,10 @@ public class SimpleSAXLoopHandler extends DefaultHandler2 {
                 if ((node.isAsXML || node.isDot)
                         && (this.currentPath.equals(node.nodePath) || this.currentPath.startsWith(node.nodePath + "/"))) {
                     if (node.isAsXML) {
-                        node.addTextValue("</" + qName + ">");
+                        node.addTextValue("</");
+                        node.addTextValue(qName);
+                        node.addTextValue(">");
+                        
                     }
                     if (this.currentPath.equals(node.nodePath)) {
                         node.hasValue = true;
