@@ -112,7 +112,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 												}else{
                                 					value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
 												}
-		 											resultsBinary_<%=cid %>.get(i_<%=cid %>).add(byteValue_<%=cid%>);
+		 											resultsBinary_<%=cid %>.get(i_<%=cid %>).add(value_<%=cid%>.getBytes(<%=encoding%>));
                                 					results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
                                 			}
                                 		}
@@ -122,8 +122,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	                           	}else{
 %>
 										for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
-											resultsBinary_<%=cid %>.get(i_<%=cid %>).add(byteValue_<%=cid%>);
 	                           				String value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
+											resultsBinary_<%=cid %>.get(i_<%=cid %>).add(value_<%=cid%>.getBytes(<%=encoding%>));
                            					results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
                             			}
 <%
@@ -176,7 +176,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 												}else{
                                 					value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
 												}
-													resultsBinary_<%=cid %>.get(i_<%=cid %>).add(byteValue_<%=cid%>);
+													resultsBinary_<%=cid %>.get(i_<%=cid %>).add(value_<%=cid%>.getBytes(<%=encoding%>));
                                 					results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
                                 			}
                                 		}
@@ -186,8 +186,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                            	 	}else{
 %>
 										for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
-											resultsBinary_<%=cid %>.get(i_<%=cid %>).add(byteValue_<%=cid%>);
 	    	                       			String value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
+											resultsBinary_<%=cid %>.get(i_<%=cid %>).add(value_<%=cid%>.getBytes(<%=encoding%>));
             	                			results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + <%=valueSeparator%> + value_<%=cid %>;
                 	            		}
 <%
@@ -257,7 +257,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 													}else{
 		        	                   	    			value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
 													}
-													resultsBinary_<%=cid %>.get(i_<%=cid %>).add(byteValue_<%=cid%>);
+													resultsBinary_<%=cid %>.get(i_<%=cid %>).add(value_<%=cid%>.getBytes(<%=encoding%>));
 	                                				if(firstLoop_<%=cid %>){
 														results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + ":" + value_<%=cid %>;
 													}else{
@@ -272,8 +272,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                             		}else{
 %>
 	                          	 		for(byte[] byteValue_<%=cid%> : values_<%=cid %>) {
-											resultsBinary_<%=cid %>.get(i_<%=cid %>).add(byteValue_<%=cid%>);
 		                        	  	 	String value_<%=cid%> = netscape.ldap.util.LDIF.toPrintableString(byteValue_<%=cid%>);
+											resultsBinary_<%=cid %>.get(i_<%=cid %>).add(value_<%=cid%>.getBytes(<%=encoding%>));
                             				if(firstLoop_<%=cid %>){
 												results_<%=cid %>[i_<%=cid %>] = results_<%=cid %>[i_<%=cid %>] == null ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + ":" + value_<%=cid %>;
 											}else{
