@@ -85,7 +85,7 @@ imports="
 					<%
 					} else {
 					%>
-						{
+						if (pstmt_<%=cid %> !=null) {
 					<%
 					} 
 					%>		
