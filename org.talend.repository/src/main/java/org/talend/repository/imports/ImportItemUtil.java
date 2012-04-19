@@ -1180,20 +1180,20 @@ public class ImportItemUtil {
         itemMigrationTasks.removeAll(getOptionnalMigrationTasks());
 
         // check version + revision
-        String oldProjectVersion = project.getProductVersion();
-        String currentProjectVersion = currentProject.getProductVersion();
-        boolean currentVersionIsValid = isVersionValid(currentProjectVersion);
-        boolean oldVersionIsValid = isVersionValid(oldProjectVersion);
-        if (currentVersionIsValid && oldVersionIsValid) {
-            boolean canImport = canContinueImport(oldProjectVersion, currentProjectVersion);
-            if (!canImport) {
-                String message = "The version of " + project.getLabel() + " should be lower than the current project.";
-                itemRecord.addError(message);
-                log.info(message);
-
-                return false;
-            }
-        }
+        // String oldProjectVersion = project.getProductVersion();
+        // String currentProjectVersion = currentProject.getProductVersion();
+        // boolean currentVersionIsValid = isVersionValid(currentProjectVersion);
+        // boolean oldVersionIsValid = isVersionValid(oldProjectVersion);
+        // if (currentVersionIsValid && oldVersionIsValid) {
+        // boolean canImport = canContinueImport(oldProjectVersion, currentProjectVersion);
+        // if (!canImport) {
+        // String message = "The version of " + project.getLabel() + " should be lower than the current project.";
+        // itemRecord.addError(message);
+        // log.info(message);
+        //
+        // return false;
+        // }
+        // }
 
         // Talend Platform Big Data edition-5.0.2.r78327 / Talend Open Studio for Data Integration-5.1.0NB.r80928
 
@@ -1204,7 +1204,7 @@ public class ImportItemUtil {
         // if not, the item use a more recent version of TOS: impossible to
         // import (forward compatibility)
         // if no correct version and revision found in the productVersion, do same as before
-        if ((!currentVersionIsValid || !oldVersionIsValid) && !projectMigrationTasks.containsAll(itemMigrationTasks)) {
+        if (!projectMigrationTasks.containsAll(itemMigrationTasks)) {
             itemMigrationTasks.removeAll(projectMigrationTasks);
 
             String message = Messages.getString("ImportItemUtil.message", itemRecord.getItemName(), itemMigrationTasks); //$NON-NLS-1$
