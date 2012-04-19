@@ -22,15 +22,19 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.talend.core.model.general.Project;
 
+/**
+ * 
+ * class global comment. Detailled comment
+ */
 public class AfterImportProjectUtil {
+
     /**
      * 
      */
     private static final String CLASS = "class"; //$NON-NLS-1$
 
-   
     /**
-     * The extension id 
+     * The extension id
      */
     private static final String EXTENSION_POINT = "org.talend.repository.after_import_project_action"; //$NON-NLS-1$
 
@@ -55,9 +59,9 @@ public class AfterImportProjectUtil {
         return new ArrayList<IAfterImportProjectAction>();
     }
 
-    public static void runAfterImportProjectActions(Project project){
-        for(IAfterImportProjectAction action: getAfterImportProjectActions()){
-            action.run( project);
+    public static void runAfterImportProjectActions(Project project) {
+        for (IAfterImportProjectAction action : getAfterImportProjectActions()) {
+            action.run(project);
         }
     }
 }
