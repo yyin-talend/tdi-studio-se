@@ -391,9 +391,15 @@ Arrays_<%=cid %> arrays_<%=cid %> = new Arrays_<%=cid %>();
 									temp_<%=cid%> = (new BigDecimal(temp_<%=cid%>)).setScale(precision_<%=cid%>,java.math.RoundingMode.HALF_UP).toPlainString();
 								}
 							}
+<%
+						if(advancedSeparator){
+%>							
 							if("id_BigDecimal".equals(type_<%=cid%>) || "id_Short".equals(type_<%=cid%>) || "id_Integer".equals(type_<%=cid%>) || "id_Double".equals(type_<%=cid%>) || "id_Float".equals(type_<%=cid%>) || "id_Long".equals(type_<%=cid%>)){
 								temp_<%=cid%> = FormatterUtils.format_Number(temp_<%=cid%>, <%= thousandsSeparator %>, <%= decimalSeparator %>);
 							}
+<%
+						}
+%>
 							int columnLength_<%=cid%> = metadata_<%=cid%>.getLength();
 <%
 							if(useByte){
