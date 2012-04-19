@@ -321,12 +321,14 @@ skeleton="../templates/db_output_bulk.skeleton"
                 %>                
                 try {
 						int countSum_<%=cid%> = 0;
-						for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
-							if(countEach_<%=cid%> == -2 || countEach_<%=cid%> == -3) {
-								break;
-							}
-							countSum_<%=cid%> += countEach_<%=cid%>;
-						}             	
+						if (pstmt_<%=cid %> != null) {
+							for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
+								if(countEach_<%=cid%> == -2 || countEach_<%=cid%> == -3) {
+									break;
+								}
+								countSum_<%=cid%> += countEach_<%=cid%>;
+							}             	
+						}
             	    	<%if (("INSERT").equals(dataAction)) {
             	    	%>
             	    		insertedCount_<%=cid%> += countSum_<%=cid%>; 
