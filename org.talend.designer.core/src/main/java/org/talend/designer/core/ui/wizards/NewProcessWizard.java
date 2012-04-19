@@ -122,6 +122,10 @@ public class NewProcessWizard extends Wizard {
     @Override
     public void addPages() {
         mainPage = new NewProcessWizardPage(property, path);
+        // TDI-20399
+        if (property.getLabel() != null && !"".equals(property.getLabel())) {
+            mainPage.setNameModifiedByUser(true);
+        }
         addPage(mainPage);
         setWindowTitle(Messages.getString("NewProcessWizard.windowTitle")); //$NON-NLS-1$
     }
