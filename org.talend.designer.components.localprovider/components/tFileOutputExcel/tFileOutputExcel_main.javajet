@@ -30,6 +30,8 @@ String firstCellYStr = ElementParameterParser.getValue(node, "__FIRST_CELL_Y__")
 //modif end
 boolean keepCellFormating =  ElementParameterParser.getValue(node, "__KEEP_CELL_FORMATING__").equals("true");
 boolean flushOnRow=("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__" ));
+boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
+boolean isAppendFile = ("true").equals(ElementParameterParser.getValue(node, "__APPEND_FILE__" ));
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
@@ -243,7 +245,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			%>
     			nb_line_<%=cid %>++;
 <%
-				if(flushOnRow){
+				if(flushOnRow && (useStream || !isAppendFile)){
 %>
 					bufferCount_<%=cid%>++;
 					if(bufferCount_<%=cid%> >= flushRowNum_<%=cid%>){

@@ -18,8 +18,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelTool {
 
@@ -285,18 +283,8 @@ public class ExcelTool {
 	}
 
 	public void flushRowInMemory() throws Exception{
-		if (wb instanceof XSSFWorkbook) {
-			(new SXSSFSheet(new SXSSFWorkbook((XSSFWorkbook) wb, -1),
-					(XSSFSheet) sheet)).flushRows();
-		}
 		if (wb instanceof SXSSFWorkbook) {
-			if (sheet instanceof XSSFSheet) {
-				(new SXSSFSheet((SXSSFWorkbook) wb, (XSSFSheet) sheet))
-						.flushRows();
-			}
-			if (sheet instanceof SXSSFSheet) {
-				((SXSSFSheet) sheet).flushRows();
-			}
+			((SXSSFSheet) sheet).flushRows();
 		}
 	}
 
@@ -327,14 +315,14 @@ public class ExcelTool {
 
 		org.talend.ExcelTool xlsxTool_tFileOutputExcel_1 = new org.talend.ExcelTool();
 		xlsxTool_tFileOutputExcel_1.setSheet("Sheet1");
-		xlsxTool_tFileOutputExcel_1.setAppend(true, false);
+		xlsxTool_tFileOutputExcel_1.setAppend(true, true);
 		xlsxTool_tFileOutputExcel_1.setXY(false, 0, 20, false);
 		xlsxTool_tFileOutputExcel_1.setRowAccessWindowSize(100);
 		xlsxTool_tFileOutputExcel_1.prepareXlsxFile("C:/test/out3.xlsx");
 
 		xlsxTool_tFileOutputExcel_1.setFont("ARIAL");
 		int count=0;
-		for (int i = 0; i < 50000; i++) {
+		for (int i = 0; i < 50; i++) {
 			xlsxTool_tFileOutputExcel_1.addRow();
 			xlsxTool_tFileOutputExcel_1.addCellValue("2222222222");
 			xlsxTool_tFileOutputExcel_1.addCellValue("2222222222");

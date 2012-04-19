@@ -25,6 +25,7 @@
 	
 	String allColumnAutoSize = ElementParameterParser.getValue(node, "__IS_ALL_AUTO_SZIE__");
 	boolean flushOnRow=("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__" ));
+	boolean isAppendFile = ("true").equals(ElementParameterParser.getValue(node, "__APPEND_FILE__" ));
 	//modif start
 	boolean firstCellYAbsolute = ("true").equals(ElementParameterParser.getValue(node, "__FIRST_CELL_Y_ABSOLUTE__"));
 	String firstCellXStr = ElementParameterParser.getValue(node, "__FIRST_CELL_X__");
@@ -110,7 +111,7 @@
 	%>
 	
 	<%
-				if(flushOnRow){
+				if(flushOnRow && (useStream || !isAppendFile)){
 	%>
 					if(bufferCount_<%=cid%>!=0){
     					xlsxTool_<%=cid%>.flushRowInMemory();

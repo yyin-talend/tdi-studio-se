@@ -244,7 +244,7 @@ if(isIncludeHeader){
 		int nb_line_<%=cid%> = 0;
 		org.talend.ExcelTool xlsxTool_<%=cid%> = new org.talend.ExcelTool();
 <%	 
-		if(flushOnRow){
+		if(flushOnRow && (useStream || !isAppendFile)){
 %>
 			int	flushRowNum_<%=cid%>=<%=flushRowNum%>;
 			int bufferCount_<%=cid%>=0;
