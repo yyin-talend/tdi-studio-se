@@ -95,6 +95,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.dialog.ItemsVersionConfirmDialog;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
+import org.talend.repository.ui.views.RepoCommonViewerProvider;
 import org.talend.repository.ui.views.RepositoryViewerProvider;
 
 /**
@@ -121,7 +122,6 @@ public class VersionManagementPage extends ProjectSettingPage {
         gridLayout.horizontalSpacing = 0;
         composite.setLayout(gridLayout);
         GridData gridData = new GridData(GridData.FILL_BOTH);
-        gridData.heightHint = 400;
         gridData.widthHint = 570;
         composite.setLayoutData(gridData);
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
@@ -187,9 +187,10 @@ public class VersionManagementPage extends ProjectSettingPage {
     private void addRepositoryTreeViewer(Composite leftComposite) {
         GridData gridData = new GridData(GridData.FILL_BOTH);
         gridData.widthHint = 210;
+        gridData.heightHint = 400;
         leftComposite.setLayoutData(gridData);
 
-        RepositoryViewerProvider provider = RepositoryViewerProvider.ALL_CHECKBOX;
+        RepositoryViewerProvider provider = RepoCommonViewerProvider.CHECKBOX;
         treeViewer = (CheckboxRepositoryTreeViewer) provider.createViewer(leftComposite);
 
         IProjectRepositoryNode projectRepositoryNode = provider.getProjectRepositoryNode();

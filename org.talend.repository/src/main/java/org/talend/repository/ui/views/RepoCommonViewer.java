@@ -17,16 +17,17 @@ import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.ui.navigator.CommonViewer;
+import org.eclipse.ui.navigator.INavigatorContentService;
 
 /**
  * DOC ggu class global comment. Detailled comment
  */
-public class RepoCommonViewer extends CommonViewer implements ITreeViewerListener {
+public class RepoCommonViewer extends CommonViewer implements ITreeViewerListener, IRepoNavigatorContentService {
 
     private AgentTreeViewerListener agent = new AgentTreeViewerListener();
 
-    public RepoCommonViewer(Composite aParent, int aStyle) {
-        super(IRepositoryView.VIEW_ID, aParent, aStyle);
+    public RepoCommonViewer(String viewerId, Composite aParent, int aStyle) {
+        super(viewerId, aParent, aStyle);
     }
 
     protected boolean getExpanded(Item item) {
@@ -50,6 +51,11 @@ public class RepoCommonViewer extends CommonViewer implements ITreeViewerListene
 
     public void treeExpanded(TreeExpansionEvent event) {
         agent.treeExpanded(event);
+    }
+
+    @Override
+    public INavigatorContentService getNavigatorContentService() {
+        return super.getNavigatorContentService();
     }
 
 }

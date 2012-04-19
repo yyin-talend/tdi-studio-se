@@ -37,33 +37,6 @@ import org.talend.repository.ui.utils.RecombineRepositoryNodeUtil;
  */
 public class RepositoryViewerProvider {
 
-    public static final RepositoryViewerProvider ALL_NORMAL = new RepositoryViewerProvider() {
-
-        protected IRepositoryNode getInputRoot(final IProjectRepositoryNode projectRepoNode) {
-            if (projectRepoNode instanceof IRepositoryNode) {
-                return (IRepositoryNode) projectRepoNode;
-            }
-            return null;
-        }
-
-        @Override
-        protected TreeViewer createTreeViewer(Composite parent, int style) {
-            return new RepositoryTreeViewer(parent, style);
-        }
-
-    };
-
-    public static final RepositoryViewerProvider ALL_CHECKBOX = new RepositoryViewerProvider() {
-
-        protected IRepositoryNode getInputRoot(final IProjectRepositoryNode projectRepoNode) {
-            if (projectRepoNode instanceof IRepositoryNode) {
-                return (IRepositoryNode) projectRepoNode;
-            }
-            return null;
-        }
-
-    };
-
     private IRepositoryView realRepView;
 
     public RepositoryViewerProvider() {

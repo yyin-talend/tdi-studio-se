@@ -37,6 +37,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -80,6 +81,7 @@ import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.views.RepoCommonViewerProvider;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryViewerProvider;
 
@@ -393,7 +395,7 @@ class ExportItemWizardPage extends WizardPage {
 
             @Override
             protected CheckboxTreeViewer doCreateTreeViewer(Composite parent, int style) {
-                RepositoryViewerProvider provider = RepositoryViewerProvider.ALL_CHECKBOX;
+                RepositoryViewerProvider provider = RepoCommonViewerProvider.CHECKBOX;
 
                 return (CheckboxTreeViewer) provider.createViewer(parent);
 
@@ -421,7 +423,13 @@ class ExportItemWizardPage extends WizardPage {
 
             @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
-                return selectRepositoryNode(viewer, (RepositoryNode) parentElement, (RepositoryNode) element);
+                if (parentElement instanceof TreePath || element instanceof TreePath) {
+                    this.getClass();
+                }
+                if (parentElement instanceof RepositoryNode && element instanceof RepositoryNode) {
+                    return selectRepositoryNode(viewer, (RepositoryNode) parentElement, (RepositoryNode) element);
+                }
+                return true;
             }
         });
     }
