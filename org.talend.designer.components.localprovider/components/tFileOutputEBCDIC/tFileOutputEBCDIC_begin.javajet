@@ -30,6 +30,7 @@ if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
 }
 %>
   	int nb_line_<%=cid%> = 0;
+    java.io.FileOutputStream fOut_<%=cid %> = new java.io.FileOutputStream(<%= filename %>);
 <%
 if(!customSetOriginalLength){//------11111
 %>
@@ -38,11 +39,7 @@ if(!customSetOriginalLength){//------11111
     javax.xml.bind.Unmarshaller unmarshallerW_<%=cid %> = jaxbContextW_<%=cid %>.createUnmarshaller();
     Object oW_<%=cid %> = unmarshallerW_<%=cid %>.unmarshal(new java.io.FileInputStream(<%= copybook %>));
     net.sf.cobol2j.FileFormat fFW_<%=cid %> = (net.sf.cobol2j.FileFormat) oW_<%=cid %>;
-    net.sf.cobol2j.RecordWriter rwriter_<%=cid %> = new net.sf.cobol2j.RecordWriter( new java.io.FileOutputStream(<%= filename %>), fFW_<%=cid %> );
-<%
-}else{
-%>
-	java.io.FileOutputStream fOut_<%=cid%> = new java.io.FileOutputStream(<%= filename %>);
+    net.sf.cobol2j.RecordWriter rwriter_<%=cid %> = new net.sf.cobol2j.RecordWriter(fOut_<%=cid %>, fFW_<%=cid %> );
 <%
 }
 %>

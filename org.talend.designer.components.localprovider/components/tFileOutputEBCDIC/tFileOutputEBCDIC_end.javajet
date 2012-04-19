@@ -11,13 +11,7 @@
     String cid = node.getUniqueName();
 	String customSetOriginalLengthStr = ElementParameterParser.getValue(node,"__NO_X2CJ_FILE__");
 	boolean customSetOriginalLength = (customSetOriginalLengthStr!=null&&!("").equals(customSetOriginalLengthStr))?("true").equals(customSetOriginalLengthStr):true;
-if(!customSetOriginalLength){//------11111
-
-}else{
 %>
-			fOut_<%=cid%>.flush();
-			fOut_<%=cid%>.close();
-<%
-}
-%>
+	fOut_<%=cid%>.flush();
+	fOut_<%=cid%>.close();
 	globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid %>);
