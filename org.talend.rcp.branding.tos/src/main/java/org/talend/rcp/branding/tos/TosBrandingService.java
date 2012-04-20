@@ -68,7 +68,7 @@ public class TosBrandingService extends AbstractTalendBrandingService {
     }
 
     public String getAcronym() {
-        return "tos";
+        return "tos_di";
     }
 
     @Override
