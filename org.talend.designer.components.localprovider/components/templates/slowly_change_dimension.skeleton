@@ -1378,7 +1378,11 @@ public class CLASS {
                     setStatement.append("}\r\n");
                 }
             }
-            return setStatement.toString();
+            if("postgres_id".equals(getDBMSId())){
+            	return setStatement.toString().replaceAll("java.sql.Types.DATE", "java.sql.Types.TIMESTAMP");
+            }else{
+            	return setStatement.toString();
+            }
         }
     }
     public class DB2SCDManager extends SCDManager {
