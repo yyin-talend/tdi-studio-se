@@ -93,7 +93,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		boolean hasDynamic = metadata.isDynamicSchema();
 		String dynamic = ElementParameterParser.getValue(node, "__DYNAMIC__");
 		boolean useExistingDynamic = "true".equals(ElementParameterParser.getValue(node, "__USE_EXISTING_DYNAMIC__"));
-        String dyn = "dynamic_"+dynamic;
+        String dyn = dynamic+"_DYNAMIC";
 		if(useExistingDynamic){
 %>
 			routines.system.Dynamic dynamic_<%=cid %> = (routines.system.Dynamic)globalMap.get("<%=dyn%>");
