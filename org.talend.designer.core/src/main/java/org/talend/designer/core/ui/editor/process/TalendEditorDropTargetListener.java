@@ -991,9 +991,22 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             }
 
             // fore EBCDIC, by cli
-            if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_EBCDIC
-                    && PluginChecker.isEBCDICPluginLoaded()) {
-                for (MetadataTable table : (Set<MetadataTable>) ConnectionHelper.getTables(originalConnection)) {
+            if ((connectionItem instanceof EbcdicConnectionItem) && PluginChecker.isEBCDICPluginLoaded()) {
+                // TDI-20505:integration the drag/drop for EBCDIC connection and EBCDIC metadataTable
+                IRepositoryViewObject object = selectedNode.getObject();
+                if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_EBCDIC) {
+                    for (MetadataTable table : (Set<MetadataTable>) ConnectionHelper.getTables(originalConnection)) {
+                        Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS,
+                                table.getLabel(), ConvertionHelper.convert(table));
+                        list.add(ebcdicCmd);
+                    }
+                }
+                if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE) {
+                    MetadataTable table = null;
+                    if (object instanceof MetadataTableRepositoryObject) {
+                        table = ((MetadataTableRepositoryObject) object).getTable();
+                    }
+
                     Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS,
                             table.getLabel(), ConvertionHelper.convert(table));
                     list.add(ebcdicCmd);
@@ -1341,11 +1354,11 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 }
 
                 // for EBCDIC (bug 5860)
-                if (PluginChecker.isEBCDICPluginLoaded() && connectionItem instanceof EbcdicConnectionItem) {
-                    Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS,
-                            table.getLabel(), ConvertionHelper.convert(table));
-                    return ebcdicCmd;
-                }
+                // if (PluginChecker.isEBCDICPluginLoaded() && connectionItem instanceof EbcdicConnectionItem) {
+                // Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS,
+                // table.getLabel(), ConvertionHelper.convert(table));
+                // return ebcdicCmd;
+                // }
                 if (PluginChecker.isHL7PluginLoaded() && connectionItem instanceof HL7ConnectionItem) {
                     Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(node, IEbcdicConstant.TABLE_SCHEMAS,
                             table.getLabel(), ConvertionHelper.convert(table));
