@@ -16,29 +16,10 @@ imports="
 	String cid = node.getUniqueName();
 	boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas != null) && (metadatas.size() > 0)) {
-	IMetadataTable metadata = metadatas.get(0);
-	
-	if (metadata != null) {
-	
-		List<IMetadataColumn> columnList = metadata.getListColumns();
-		List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
-
-		// if output columns are defined
-		if (outgoingConns != null && outgoingConns.size() > 0){
-		
-			IConnection outgoingConn = outgoingConns.get(0);
-			if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
-				if(!useExistingConn){
+	if(!useExistingConn){
 %>
-stub_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
+		stub_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
 <%
-				}
-			}
-		}
 	}
-}
 %>
-          
-            
+
