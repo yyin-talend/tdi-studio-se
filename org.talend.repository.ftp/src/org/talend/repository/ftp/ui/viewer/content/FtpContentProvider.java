@@ -13,9 +13,9 @@
 package org.talend.repository.ftp.ui.viewer.content;
 
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.metadata.content.AbstractMetadataContentProvider;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.viewer.content.metadata.AbstractMetadataContentProvider;
 
 /**
  * 
