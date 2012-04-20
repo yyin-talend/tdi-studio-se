@@ -14,7 +14,6 @@ package org.talend.repository.ui.views;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +21,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.internal.ui.util.StringMatcher;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -41,8 +39,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceAdapter;
@@ -107,14 +103,9 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.JobDocumentationItem;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.properties.User;
-import org.talend.core.model.properties.impl.JobletDocumentationItemImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -137,7 +128,6 @@ import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.ProjectRepositoryNode;
-import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.actions.MoveObjectAction;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
@@ -148,7 +138,9 @@ import org.talend.repository.ui.actions.DeleteAction;
 import org.talend.repository.ui.actions.PasteAction;
 import org.talend.repository.ui.actions.RefreshAction;
 import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
-import org.talend.repository.ui.actions.RepositoryFilterAction;
+import org.talend.repository.viewer.ui.provider.RepositoryContentProvider;
+import org.talend.repository.viewer.ui.provider.RepositoryNameSorter;
+import org.talend.repository.viewer.ui.viewer.RepositoryTreeViewer;
 
 /**
  * 
@@ -185,7 +177,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private Action refreshAction;
 
-    private RepositoryFilterAction repositoryFilterAction;
+    // private RepositoryFilterAction repositoryFilterAction;
 
     private Listener dragDetectListener;
 
@@ -503,26 +495,26 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             }
         });
 
-        filterBtn.addMouseTrackListener(new RepositoryMouseTrackListener());
-        filterBtn.addMouseListener(new MouseAdapter() {
-
-            @Override
-            public void mouseUp(MouseEvent e) {
-                // right click
-                if (repositoryFilterAction != null) {
-                    if (e.button == 3) {
-                        repositoryFilterAction.openSetupDialog();
-                    } else {
-                        boolean useFilter = preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER);
-                        preferenceStore.setValue(IRepositoryPrefConstants.USE_FILTER, !useFilter);
-                        repositoryFilterAction.run();
-                        updateFilterImage();
-                    }
-                }
-
-            }
-
-        });
+        // filterBtn.addMouseTrackListener(new RepositoryMouseTrackListener());
+        // filterBtn.addMouseListener(new MouseAdapter() {
+        //
+        // @Override
+        // public void mouseUp(MouseEvent e) {
+        // // right click
+        // if (repositoryFilterAction != null) {
+        // if (e.button == 3) {
+        // repositoryFilterAction.openSetupDialog();
+        // } else {
+        // boolean useFilter = preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER);
+        // preferenceStore.setValue(IRepositoryPrefConstants.USE_FILTER, !useFilter);
+        // repositoryFilterAction.run();
+        // updateFilterImage();
+        // }
+        // }
+        //
+        // }
+        //
+        // });
     }
 
     private void updateFilterImage() {
@@ -535,210 +527,211 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     public void addFilters() {
         // filter by node : filter stable talend elements
-        viewer.addFilter(new ViewerFilter() {
-
-            @Override
-            public boolean select(Viewer viewer, Object parentElement, Object element) {
-                if (!preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER)) {
-                    return true;
-                }
-                String[] uncheckedNodesFromFilter = RepositoryManager
-                        .getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_NODE);
-
-                RepositoryNode node = (RepositoryNode) element;
-                ERepositoryObjectType contentType = node.getContentType();
-                if (uncheckedNodesFromFilter == null || contentType == null || node.isBin()) {
-                    return true;
-                }
-                String technicalLabel = node.getRoot().getProject().getEmfProject().getTechnicalLabel();
-                String uniqueSymbol = technicalLabel + SEPARATOR;
-                // sql patterns like Generic ,Mysql
-                if (contentType != null && ERepositoryObjectType.SQLPATTERNS.equals(contentType) && node.getId() != "-1") {
-                    uniqueSymbol = uniqueSymbol + contentType.name() + SEPARATOR + node.getProperties(EProperties.LABEL);
-                } else {
-                    uniqueSymbol = uniqueSymbol + contentType.name();
-                    if (node instanceof ProjectRepositoryNode) {
-                        uniqueSymbol = uniqueSymbol + SEPARATOR + "ROOT";//$NON-NLS-1$
-                    }
-
-                }
-                List<String> filters = Arrays.asList(uncheckedNodesFromFilter);
-                if (filters.contains(uniqueSymbol)) {
-                    return false;
-                }
-                return true;
-            }
-
-        });
+        // viewer.addFilter(new ViewerFilter() {
+        //
+        // @Override
+        // public boolean select(Viewer viewer, Object parentElement, Object element) {
+        // if (!preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER)) {
+        // return true;
+        // }
+        // String[] uncheckedNodesFromFilter = RepositoryManager
+        // .getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_NODE);
+        //
+        // RepositoryNode node = (RepositoryNode) element;
+        // ERepositoryObjectType contentType = node.getContentType();
+        // if (uncheckedNodesFromFilter == null || contentType == null || node.isBin()) {
+        // return true;
+        // }
+        // String technicalLabel = node.getRoot().getProject().getEmfProject().getTechnicalLabel();
+        // String uniqueSymbol = technicalLabel + SEPARATOR;
+        // // sql patterns like Generic ,Mysql
+        // if (contentType != null && ERepositoryObjectType.SQLPATTERNS.equals(contentType) && node.getId() != "-1") {
+        // uniqueSymbol = uniqueSymbol + contentType.name() + SEPARATOR + node.getProperties(EProperties.LABEL);
+        // } else {
+        // uniqueSymbol = uniqueSymbol + contentType.name();
+        // if (node instanceof ProjectRepositoryNode) {
+        //                        uniqueSymbol = uniqueSymbol + SEPARATOR + "ROOT";//$NON-NLS-1$
+        // }
+        //
+        // }
+        // List<String> filters = Arrays.asList(uncheckedNodesFromFilter);
+        // if (filters.contains(uniqueSymbol)) {
+        // return false;
+        // }
+        // return true;
+        // }
+        //
+        // });
 
         // filter by status and users: filter user created nodes REPOSITORY_ELEMENT
-        viewer.addFilter(new ViewerFilter() {
-
-            private StringMatcher[] matchers;
-
-            @Override
-            public boolean select(Viewer viewer, Object parentElement, Object element) {
-
-                if (!preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER)) {
-                    return true;
-                }
-
-                boolean visible = true;
-                RepositoryNode node = (RepositoryNode) element;
-                if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType()) || ENodeType.SIMPLE_FOLDER.equals(node.getType())) {
-                    visible = filterByUserStatusName(node);
-
-                }
-
-                return visible;
-            }
-
-            private boolean filterByUserStatusName(RepositoryNode node) {
-                String[] statusFilter = RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_STATUS);
-                String[] userFilter = RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_USER);
-                boolean enableNameFilter = RepositoryManager.getPreferenceStore().getBoolean(
-                        IRepositoryPrefConstants.TAG_USER_DEFINED_PATTERNS_ENABLED);
-                if (statusFilter == null && userFilter == null && !enableNameFilter) {
-                    return true;
-                }
-
-                boolean visible = true;
-
-                if (ENodeType.SIMPLE_FOLDER.equals(node.getType())) {
-                    visible = isStableItem(node);
-                    if (visible) {
-                        return true;
-                    }
-                    for (IRepositoryNode childNode : node.getChildren()) {
-                        visible = visible || filterByUserStatusName((RepositoryNode) childNode);
-                        if (visible) {
-                            return true;
-                        }
-                    }
-                    return visible;
-                }
-
-                List items = new ArrayList();
-                if (statusFilter != null && statusFilter.length > 0) {
-                    items.addAll(Arrays.asList(statusFilter));
-                }
-                if (userFilter != null && userFilter.length > 0) {
-                    items.addAll(Arrays.asList(userFilter));
-                }
-                if (node.getObject() != null) {
-                    Property property = node.getObject().getProperty();
-                    String statusCode = "";
-                    if (property != null) {
-                        statusCode = property.getStatusCode();
-                    }
-                    User author = node.getObject().getAuthor();
-                    String user = "";
-                    if (author != null) {
-                        user = author.getLogin();
-                    }
-                    if ((items.contains(statusCode) || items.contains(user)) && !isStableItem(node)) {
-                        visible = false;
-                    } else if (items.contains(RepositoryConstants.NOT_SET_STATUS)
-                            && (statusCode == null || "".equals(statusCode))) {
-                        visible = false;
-                        if (property != null) {
-                            Item item = property.getItem();
-                            if (item instanceof RoutineItem && ((RoutineItem) item).isBuiltIn() || item instanceof SQLPatternItem
-                                    && ((SQLPatternItem) item).isSystem() || item instanceof BusinessProcessItem
-                                    || item instanceof JobDocumentationItem || item instanceof JobletDocumentationItemImpl) {
-                                visible = true;
-                            }
-                        }
-
-                    }
-
-                }
-
-                // filter by name
-                String label = (String) node.getProperties(EProperties.LABEL);
-                if (visible && isMatchNameFilterPattern(label)) {
-                    visible = true;
-                } else {
-                    if (enableNameFilter && !isStableItem(node)) {
-                        visible = false;
-                    }
-                }
-
-                return visible;
-            }
-
-            private boolean isMatchNameFilterPattern(String label) {
-                boolean enable = RepositoryManager.getPreferenceStore().getBoolean(
-                        IRepositoryPrefConstants.TAG_USER_DEFINED_PATTERNS_ENABLED);
-                if (!enable) {
-                    return false;
-                }
-                if (label != null && label.length() > 0) {
-                    StringMatcher[] testMatchers = getMatchers();
-                    if (testMatchers != null) {
-                        for (int i = 0; i < testMatchers.length; i++) {
-                            if (testMatchers[i].match(label))
-                                return true;
-                        }
-                    }
-                }
-                return false;
-            }
-
-            private StringMatcher[] getMatchers() {
-                String userFilterPattern = RepositoryManager.getPreferenceStore().getString(
-                        IRepositoryPrefConstants.FILTER_BY_NAME);
-                String[] newPatterns = null;
-                if (userFilterPattern != null && !"".equals(userFilterPattern)) {
-                    newPatterns = RepositoryManager.convertFromString(userFilterPattern, RepositoryManager.PATTERNS_SEPARATOR);
-                }
-                if (newPatterns != null) {
-                    matchers = new StringMatcher[newPatterns.length];
-                    for (int i = 0; i < newPatterns.length; i++) {
-                        matchers[i] = new StringMatcher(newPatterns[i], true, false);
-                    }
-                }
-                return matchers;
-            }
-
-            private boolean isStableItem(RepositoryNode node) {
-                Object label = node.getProperties(EProperties.LABEL);
-                if (ENodeType.SIMPLE_FOLDER.equals(node.getType())
-                        && ERepositoryObjectType.SQLPATTERNS.equals(node.getContentType())
-                        && (label.equals("Generic") || label.equals("UserDefined") || label.equals("MySQL")
-                                || label.equals("Netezza") || label.equals("Oracle") || label.equals("ParAccel") || label
-                                    .equals("Teradata")) || label.equals("Hive")) {
-                    return true;
-
-                } else if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType()) && node.getObject() != null) {
-                    Item item = node.getObject().getProperty().getItem();
-                    if (item instanceof SQLPatternItem) {
-                        if (((SQLPatternItem) item).isSystem()) {
-                            return true;
-                        }
-                    } else if (item instanceof RoutineItem) {
-                        if (((RoutineItem) item).isBuiltIn()) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-
-            }
-
-            private boolean hasVisibleChildren(RepositoryNode node) {
-                boolean hasVisibleChildren = false;
-                List<IRepositoryNode> children = node.getChildren();
-                for (IRepositoryNode childNode : children) {
-                    hasVisibleChildren = hasVisibleChildren || filterByUserStatusName((RepositoryNode) childNode)
-                            || hasVisibleChildren((RepositoryNode) childNode);
-                    if (hasVisibleChildren) {
-                        return hasVisibleChildren;
-                    }
-                }
-                return hasVisibleChildren;
-            }
-        });
+        // viewer.addFilter(new ViewerFilter() {
+        //
+        // private StringMatcher[] matchers;
+        //
+        // @Override
+        // public boolean select(Viewer viewer, Object parentElement, Object element) {
+        //
+        // if (!preferenceStore.getBoolean(IRepositoryPrefConstants.USE_FILTER)) {
+        // return true;
+        // }
+        //
+        // boolean visible = true;
+        // RepositoryNode node = (RepositoryNode) element;
+        // if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType()) || ENodeType.SIMPLE_FOLDER.equals(node.getType())) {
+        // visible = filterByUserStatusName(node);
+        //
+        // }
+        //
+        // return visible;
+        // }
+        //
+        // private boolean filterByUserStatusName(RepositoryNode node) {
+        // String[] statusFilter =
+        // RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_STATUS);
+        // String[] userFilter = RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_USER);
+        // boolean enableNameFilter = RepositoryManager.getPreferenceStore().getBoolean(
+        // IRepositoryPrefConstants.TAG_USER_DEFINED_PATTERNS_ENABLED);
+        // if (statusFilter == null && userFilter == null && !enableNameFilter) {
+        // return true;
+        // }
+        //
+        // boolean visible = true;
+        //
+        // if (ENodeType.SIMPLE_FOLDER.equals(node.getType())) {
+        // visible = isStableItem(node);
+        // if (visible) {
+        // return true;
+        // }
+        // for (IRepositoryNode childNode : node.getChildren()) {
+        // visible = visible || filterByUserStatusName((RepositoryNode) childNode);
+        // if (visible) {
+        // return true;
+        // }
+        // }
+        // return visible;
+        // }
+        //
+        // List items = new ArrayList();
+        // if (statusFilter != null && statusFilter.length > 0) {
+        // items.addAll(Arrays.asList(statusFilter));
+        // }
+        // if (userFilter != null && userFilter.length > 0) {
+        // items.addAll(Arrays.asList(userFilter));
+        // }
+        // if (node.getObject() != null) {
+        // Property property = node.getObject().getProperty();
+        // String statusCode = "";
+        // if (property != null) {
+        // statusCode = property.getStatusCode();
+        // }
+        // User author = node.getObject().getAuthor();
+        // String user = "";
+        // if (author != null) {
+        // user = author.getLogin();
+        // }
+        // if ((items.contains(statusCode) || items.contains(user)) && !isStableItem(node)) {
+        // visible = false;
+        // } else if (items.contains(RepositoryConstants.NOT_SET_STATUS)
+        // && (statusCode == null || "".equals(statusCode))) {
+        // visible = false;
+        // if (property != null) {
+        // Item item = property.getItem();
+        // if (item instanceof RoutineItem && ((RoutineItem) item).isBuiltIn() || item instanceof SQLPatternItem
+        // && ((SQLPatternItem) item).isSystem() || item instanceof BusinessProcessItem
+        // || item instanceof JobDocumentationItem || item instanceof JobletDocumentationItemImpl) {
+        // visible = true;
+        // }
+        // }
+        //
+        // }
+        //
+        // }
+        //
+        // // filter by name
+        // String label = (String) node.getProperties(EProperties.LABEL);
+        // if (visible && isMatchNameFilterPattern(label)) {
+        // visible = true;
+        // } else {
+        // if (enableNameFilter && !isStableItem(node)) {
+        // visible = false;
+        // }
+        // }
+        //
+        // return visible;
+        // }
+        //
+        // private boolean isMatchNameFilterPattern(String label) {
+        // boolean enable = RepositoryManager.getPreferenceStore().getBoolean(
+        // IRepositoryPrefConstants.TAG_USER_DEFINED_PATTERNS_ENABLED);
+        // if (!enable) {
+        // return false;
+        // }
+        // if (label != null && label.length() > 0) {
+        // StringMatcher[] testMatchers = getMatchers();
+        // if (testMatchers != null) {
+        // for (int i = 0; i < testMatchers.length; i++) {
+        // if (testMatchers[i].match(label))
+        // return true;
+        // }
+        // }
+        // }
+        // return false;
+        // }
+        //
+        // private StringMatcher[] getMatchers() {
+        // String userFilterPattern = RepositoryManager.getPreferenceStore().getString(
+        // IRepositoryPrefConstants.FILTER_BY_NAME);
+        // String[] newPatterns = null;
+        // if (userFilterPattern != null && !"".equals(userFilterPattern)) {
+        // newPatterns = RepositoryManager.convertFromString(userFilterPattern, RepositoryManager.PATTERNS_SEPARATOR);
+        // }
+        // if (newPatterns != null) {
+        // matchers = new StringMatcher[newPatterns.length];
+        // for (int i = 0; i < newPatterns.length; i++) {
+        // matchers[i] = new StringMatcher(newPatterns[i], true, false);
+        // }
+        // }
+        // return matchers;
+        // }
+        //
+        // private boolean isStableItem(RepositoryNode node) {
+        // Object label = node.getProperties(EProperties.LABEL);
+        // if (ENodeType.SIMPLE_FOLDER.equals(node.getType())
+        // && ERepositoryObjectType.SQLPATTERNS.equals(node.getContentType())
+        // && (label.equals("Generic") || label.equals("UserDefined") || label.equals("MySQL")
+        // || label.equals("Netezza") || label.equals("Oracle") || label.equals("ParAccel") || label
+        // .equals("Teradata")) || label.equals("Hive")) {
+        // return true;
+        //
+        // } else if (ENodeType.REPOSITORY_ELEMENT.equals(node.getType()) && node.getObject() != null) {
+        // Item item = node.getObject().getProperty().getItem();
+        // if (item instanceof SQLPatternItem) {
+        // if (((SQLPatternItem) item).isSystem()) {
+        // return true;
+        // }
+        // } else if (item instanceof RoutineItem) {
+        // if (((RoutineItem) item).isBuiltIn()) {
+        // return true;
+        // }
+        // }
+        // }
+        // return false;
+        //
+        // }
+        //
+        // private boolean hasVisibleChildren(RepositoryNode node) {
+        // boolean hasVisibleChildren = false;
+        // List<IRepositoryNode> children = node.getChildren();
+        // for (IRepositoryNode childNode : children) {
+        // hasVisibleChildren = hasVisibleChildren || filterByUserStatusName((RepositoryNode) childNode)
+        // || hasVisibleChildren((RepositoryNode) childNode);
+        // if (hasVisibleChildren) {
+        // return hasVisibleChildren;
+        // }
+        // }
+        // return hasVisibleChildren;
+        // }
+        // });
 
     }
 
@@ -916,7 +909,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         IHandler handler1 = new ActionHandler(refreshAction);
         handlerService.activateHandler(refreshAction.getActionDefinitionId(), handler1);
 
-        repositoryFilterAction = new RepositoryFilterAction(this);
+        // repositoryFilterAction = new RepositoryFilterAction(this);
 
         contextualsActions = ActionsHelper.getRepositoryContextualsActions();
         for (ITreeContextualAction action : contextualsActions) {
@@ -1037,7 +1030,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private void fillLocalToolBar(IToolBarManager manager) {
         manager.add(refreshAction);
-        manager.add(repositoryFilterAction);
+        // manager.add(repositoryFilterAction);
     }
 
     @Override

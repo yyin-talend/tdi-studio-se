@@ -81,9 +81,8 @@ import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.ui.views.RepoCommonViewerProvider;
-import org.talend.repository.ui.views.RepositoryContentProvider;
-import org.talend.repository.ui.views.RepositoryViewerProvider;
+import org.talend.repository.viewer.ui.provider.RepoCommonViewerProvider;
+import org.talend.repository.viewer.ui.provider.RepositoryContentProvider;
 
 /**
  * Initialy copied from org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage.
@@ -395,7 +394,7 @@ class ExportItemWizardPage extends WizardPage {
 
             @Override
             protected CheckboxTreeViewer doCreateTreeViewer(Composite parent, int style) {
-                RepositoryViewerProvider provider = RepoCommonViewerProvider.CHECKBOX;
+                RepoCommonViewerProvider provider = RepoCommonViewerProvider.CHECKBOX;
 
                 return (CheckboxTreeViewer) provider.createViewer(parent);
 

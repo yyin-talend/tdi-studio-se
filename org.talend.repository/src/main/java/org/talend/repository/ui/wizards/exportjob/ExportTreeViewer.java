@@ -44,7 +44,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryViewerProvider;
+import org.talend.repository.viewer.ui.provider.RepositoryViewerProvider;
 
 /**
  * DOC achen class global comment. Detailled comment

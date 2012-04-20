@@ -76,12 +76,12 @@ import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.preference.ProjectSettingPage;
-import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryLabelProvider;
-import org.talend.repository.ui.views.RepositoryNameSorter;
 import org.talend.repository.ui.wizards.metadata.ShowAddedContextdialog;
+import org.talend.repository.viewer.ui.provider.RepositoryContentProvider;
+import org.talend.repository.viewer.ui.provider.RepositoryNameSorter;
+import org.talend.repository.viewer.ui.viewer.CheckboxRepositoryTreeViewer;
 
 /**
  * DOC achen class global comment. Detailled comment

@@ -94,9 +94,8 @@ import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.dialog.ItemsVersionConfirmDialog;
-import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
-import org.talend.repository.ui.views.RepoCommonViewerProvider;
-import org.talend.repository.ui.views.RepositoryViewerProvider;
+import org.talend.repository.viewer.ui.provider.RepoCommonViewerProvider;
+import org.talend.repository.viewer.ui.viewer.CheckboxRepositoryTreeViewer;
 
 /**
  * DOC aimingchen class global comment. Detailled comment
@@ -190,7 +189,7 @@ public class VersionManagementPage extends ProjectSettingPage {
         gridData.heightHint = 400;
         leftComposite.setLayoutData(gridData);
 
-        RepositoryViewerProvider provider = RepoCommonViewerProvider.CHECKBOX;
+        RepoCommonViewerProvider provider = RepoCommonViewerProvider.CHECKBOX;
         treeViewer = (CheckboxRepositoryTreeViewer) provider.createViewer(leftComposite);
 
         IProjectRepositoryNode projectRepositoryNode = provider.getProjectRepositoryNode();

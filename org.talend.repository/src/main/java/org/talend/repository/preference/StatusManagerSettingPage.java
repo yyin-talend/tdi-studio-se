@@ -90,9 +90,8 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryPreferenceStore;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.dialog.StatusConfirmSettingDialog;
-import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
-import org.talend.repository.ui.views.RepoCommonViewerProvider;
-import org.talend.repository.ui.views.RepositoryViewerProvider;
+import org.talend.repository.viewer.ui.provider.RepoCommonViewerProvider;
+import org.talend.repository.viewer.ui.viewer.CheckboxRepositoryTreeViewer;
 
 /**
  * DOC gldu class global comment. Detailled comment
@@ -179,7 +178,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
         gridData.heightHint = 400;
         leftComposite.setLayoutData(gridData);
 
-        RepositoryViewerProvider provider = RepoCommonViewerProvider.CHECKBOX;
+        RepoCommonViewerProvider provider = RepoCommonViewerProvider.CHECKBOX;
         treeViewer = (CheckboxRepositoryTreeViewer) provider.createViewer(leftComposite);
         // filter
         treeViewer.addFilter(new ViewerFilter() {

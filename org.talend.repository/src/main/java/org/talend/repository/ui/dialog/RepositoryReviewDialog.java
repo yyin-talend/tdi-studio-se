@@ -78,8 +78,8 @@ import org.talend.repository.model.SAPFunctionRepositoryObject;
 import org.talend.repository.model.nodes.IProjectRepositoryNode;
 import org.talend.repository.ui.utils.RecombineRepositoryNodeUtil;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryTreeViewer;
-import org.talend.repository.ui.views.RepositoryViewerProvider;
+import org.talend.repository.viewer.ui.provider.RepositoryViewerProvider;
+import org.talend.repository.viewer.ui.viewer.RepositoryTreeViewer;
 
 /**
  * bqian check the content of the repository view. <br/>

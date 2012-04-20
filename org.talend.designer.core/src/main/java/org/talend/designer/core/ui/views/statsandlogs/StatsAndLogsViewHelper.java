@@ -44,7 +44,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.views.RepositoryContentProvider;
+import org.talend.repository.viewer.ui.provider.RepositoryContentProvider;
 
 /**
  * ftang class global comment. Detailed comment. <br/>
