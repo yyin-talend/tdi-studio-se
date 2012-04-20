@@ -273,7 +273,7 @@ skeleton="../templates/db_output_bulk.skeleton"
         <%
     } else {
         %>
-        <%if (rejectConnName==null && (( useBatchSize && (("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) || ("INSERT").equals(dataAction)) ) {
+        <%if (rejectConnName==null && (( useBatchSize && (("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) )) ) {
     %>                
     try {
     	if(pstmt_<%=cid %> != null) {
@@ -289,11 +289,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		%>
 				pstmt_<%=cid %>.executeBatch(); 
 				pstmt_<%=cid %>.clearBatch(); 
-	    	<%if (("INSERT").equals(dataAction)) {
-	    	%>
-	    		insertedCount_<%=cid%> +=pstmt_<%=cid %>.getUpdateCount(); 
-	    	<%
-	    	}else if (("UPDATE").equals(dataAction)) {
+	    	<%if (("UPDATE").equals(dataAction)) {
 	    	%>
 	    		updatedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
 	    	<%
