@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.xmlmap.editor;
 
+import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
@@ -44,15 +45,12 @@ import org.talend.designer.xmlmap.editor.actions.SetGroupAction;
 import org.talend.designer.xmlmap.editor.actions.SetLoopAction;
 import org.talend.designer.xmlmap.editor.actions.SetLoopOptional;
 import org.talend.designer.xmlmap.editor.actions.SetSubstitutionAction;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
-import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.XmlMapDataEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
-import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
@@ -278,209 +276,116 @@ public class XmlMapEditor extends GraphicalEditor {
             // context menu should only display in the document tree
             List selectedEditParts = getGraphicalViewer().getSelectedEditParts();
             if (selectedEditParts != null && !selectedEditParts.isEmpty()) {
-
-                // get last selected part in case there are two objects in the list , see the change in
-                // XmlMapGraphicViewer primDeselectAll()
-                Object object = selectedEditParts.get(selectedEditParts.size() - 1);
-
-                if (object instanceof OutputTreeNodeEditPart) {
-                    OutputTreeNode model = (OutputTreeNode) ((OutputTreeNodeEditPart) object).getModel();
-                    if (XmlMapUtil.DOCUMENT.equals(model.getType()) || XmlMapUtil.getXPathLength(model.getXpath()) > 2) {
-                        ImportTreeFromXml importAction = (ImportTreeFromXml) getActionRegistry().getAction(ImportTreeFromXml.ID);
-                        importAction.update(object);
-                        importAction.setInput(false);
-                        if (importAction.isEnabled()) {
-                            menu.add(importAction);
-                        }
-
-                        CreateElementAction createElement = (CreateElementAction) getActionRegistry().getAction(
-                                CreateElementAction.ID);
-                        createElement.update(object);
-                        createElement.setInput(false);
-                        if (createElement.isEnabled()) {
-                            menu.add(createElement);
-                        }
-
-                        CreateAttributeAction createAttribute = (CreateAttributeAction) getActionRegistry().getAction(
-                                CreateAttributeAction.ID);
-                        createAttribute.update(object);
-                        createAttribute.setInput(false);
-                        if (createAttribute.isEnabled()) {
-                            menu.add(createAttribute);
-                        }
-
-                        CreateNameSpaceAction createNameSpace = (CreateNameSpaceAction) getActionRegistry().getAction(
-                                CreateNameSpaceAction.ID);
-                        createNameSpace.update(object);
-                        createNameSpace.setInput(false);
-                        if (createNameSpace.isEnabled()) {
-                            menu.add(createNameSpace);
-                        }
-
-                        FixValueAction fixValueAction = (FixValueAction) getActionRegistry().getAction(FixValueAction.ID);
-                        fixValueAction.update(object);
-                        if (fixValueAction.isEnabled()) {
-                            menu.add(fixValueAction);
-                        }
-
-                        AddChoiceAction addChoice = (AddChoiceAction) getActionRegistry().getAction(AddChoiceAction.ID);
-                        addChoice.update(object);
-                        addChoice.setInput(false);
-                        if (addChoice.isEnabled()) {
-                            menu.add(addChoice);
-                        }
-
-                        SetSubstitutionAction setSubs = (SetSubstitutionAction) getActionRegistry().getAction(
-                                SetSubstitutionAction.ID);
-                        setSubs.update(object);
-                        setSubs.setInput(false);
-                        if (setSubs.isEnabled()) {
-                            menu.add(setSubs);
-                        }
-
-                        SetLoopAction loopAction = (SetLoopAction) getActionRegistry().getAction(SetLoopAction.ID);
-                        loopAction.update(object);
-                        loopAction.setInput(false);
-                        if (loopAction.isEnabled()) {
-                            menu.add(loopAction);
-                        }
-
-                        SetLoopOptional loopOptinalAction = (SetLoopOptional) getActionRegistry().getAction(SetLoopOptional.ID);
-                        loopOptinalAction.update(object);
-                        if (loopOptinalAction.isEnabled()) {
-                            menu.add(loopOptinalAction);
-                        }
-
-                        SetGroupAction grouptAction = (SetGroupAction) getActionRegistry().getAction(SetGroupAction.ID);
-                        grouptAction.update(object);
-                        if (grouptAction.isEnabled()) {
-                            menu.add(grouptAction);
-                        }
-
-                        ImportTreeFromRepository importFromRepository = (ImportTreeFromRepository) getActionRegistry().getAction(
-                                ImportTreeFromRepository.ID);
-                        importFromRepository.update(object);
-                        importFromRepository.setInput(false);
-                        if (importFromRepository.isEnabled()) {
-                            menu.add(importFromRepository);
-                        }
-
-                        SetAggregateAction aggreateAction = (SetAggregateAction) getActionRegistry().getAction(
-                                SetAggregateAction.ID);
-                        aggreateAction.update(object);
-                        if (aggreateAction.isEnabled()) {
-                            menu.add(aggreateAction);
-                        }
-
-                        RenameTreeNodeAction renameTreeNodeAction = (RenameTreeNodeAction) getActionRegistry().getAction(
-                                RenameTreeNodeAction.ID);
-                        renameTreeNodeAction.update(object);
-                        if (renameTreeNodeAction.isEnabled()) {
-                            menu.add(renameTreeNodeAction);
-                        }
-
-                        DeleteTreeNodeAction action = (DeleteTreeNodeAction) getActionRegistry().getAction(
-                                DeleteTreeNodeAction.ID);
-                        action.update(object);
-                        action.setInput(false);
-                        if (action.isEnabled()) {
-                            menu.add(action);
-                        }
-
+                List output = new ArrayList();
+                List input = new ArrayList();
+                for (Object selected : selectedEditParts) {
+                    if (selected instanceof OutputTreeNodeEditPart) {
+                        output.add(selected);
+                    } else if (selected instanceof TreeNodeEditPart) {
+                        input.add(selected);
                     }
+                }
+                // if selected parts contians input node and also output node , don't show any menu
 
-                } else if (object instanceof TreeNodeEditPart) {
-                    TreeNode model = (TreeNode) ((TreeNodeEditPart) object).getModel();
-                    if (XmlMapUtil.DOCUMENT.equals(model.getType()) || XmlMapUtil.getXPathLength(model.getXpath()) > 2) {
-                        ImportTreeFromXml importAction = (ImportTreeFromXml) getActionRegistry().getAction(ImportTreeFromXml.ID);
-                        importAction.setInput(true);
-                        importAction.update(object);
-                        if (importAction.isEnabled()) {
-                            menu.add(importAction);
-                        }
+                if (!output.isEmpty() && !input.isEmpty()) {
+                    return;
+                }
+                boolean isInput = !input.isEmpty();
+                ImportTreeFromXml importAction = (ImportTreeFromXml) getActionRegistry().getAction(ImportTreeFromXml.ID);
+                importAction.update(selectedEditParts);
+                importAction.setInput(isInput);
+                if (importAction.isEnabled()) {
+                    menu.add(importAction);
+                }
 
-                        CreateElementAction createElement = (CreateElementAction) getActionRegistry().getAction(
-                                CreateElementAction.ID);
-                        createElement.setInput(true);
-                        createElement.update(object);
-                        if (createElement.isEnabled()) {
-                            menu.add(createElement);
-                        }
+                CreateElementAction createElement = (CreateElementAction) getActionRegistry().getAction(CreateElementAction.ID);
+                createElement.update(selectedEditParts);
+                createElement.setInput(isInput);
+                if (createElement.isEnabled()) {
+                    menu.add(createElement);
+                }
 
-                        CreateAttributeAction createAttribute = (CreateAttributeAction) getActionRegistry().getAction(
-                                CreateAttributeAction.ID);
-                        createAttribute.setInput(true);
-                        createAttribute.update(object);
-                        if (createAttribute.isEnabled()) {
-                            menu.add(createAttribute);
-                        }
+                CreateAttributeAction createAttribute = (CreateAttributeAction) getActionRegistry().getAction(
+                        CreateAttributeAction.ID);
+                createAttribute.update(selectedEditParts);
+                createAttribute.setInput(isInput);
+                if (createAttribute.isEnabled()) {
+                    menu.add(createAttribute);
+                }
 
-                        CreateNameSpaceAction createNameSpace = (CreateNameSpaceAction) getActionRegistry().getAction(
-                                CreateNameSpaceAction.ID);
-                        createNameSpace.setInput(true);
-                        createNameSpace.update(object);
-                        if (createNameSpace.isEnabled()) {
-                            menu.add(createNameSpace);
-                        }
+                CreateNameSpaceAction createNameSpace = (CreateNameSpaceAction) getActionRegistry().getAction(
+                        CreateNameSpaceAction.ID);
+                createNameSpace.update(selectedEditParts);
+                createNameSpace.setInput(isInput);
+                if (createNameSpace.isEnabled()) {
+                    menu.add(createNameSpace);
+                }
 
-                        FixValueAction fixValueAction = (FixValueAction) getActionRegistry().getAction(FixValueAction.ID);
-                        fixValueAction.update(object);
-                        if (fixValueAction.isEnabled()) {
-                            menu.add(fixValueAction);
-                        }
+                FixValueAction fixValueAction = (FixValueAction) getActionRegistry().getAction(FixValueAction.ID);
+                fixValueAction.update(selectedEditParts);
+                if (fixValueAction.isEnabled()) {
+                    menu.add(fixValueAction);
+                }
 
-                        AddChoiceAction addChoice = (AddChoiceAction) getActionRegistry().getAction(AddChoiceAction.ID);
-                        addChoice.update(object);
-                        addChoice.setInput(true);
-                        if (addChoice.isEnabled()) {
-                            menu.add(addChoice);
-                        }
+                AddChoiceAction addChoice = (AddChoiceAction) getActionRegistry().getAction(AddChoiceAction.ID);
+                addChoice.update(selectedEditParts);
+                addChoice.setInput(isInput);
+                if (addChoice.isEnabled()) {
+                    menu.add(addChoice);
+                }
 
-                        SetSubstitutionAction setSubs = (SetSubstitutionAction) getActionRegistry().getAction(
-                                SetSubstitutionAction.ID);
-                        setSubs.update(object);
-                        setSubs.setInput(true);
-                        if (setSubs.isEnabled()) {
-                            menu.add(setSubs);
-                        }
+                SetSubstitutionAction setSubs = (SetSubstitutionAction) getActionRegistry().getAction(SetSubstitutionAction.ID);
+                setSubs.update(selectedEditParts);
+                setSubs.setInput(isInput);
+                if (setSubs.isEnabled()) {
+                    menu.add(setSubs);
+                }
 
-                        SetLoopAction loopAction = (SetLoopAction) getActionRegistry().getAction(SetLoopAction.ID);
-                        loopAction.update(object);
-                        loopAction.setInput(true);
-                        if (loopAction.isEnabled()) {
-                            menu.add(loopAction);
-                        }
+                SetLoopAction loopAction = (SetLoopAction) getActionRegistry().getAction(SetLoopAction.ID);
+                loopAction.update(selectedEditParts);
+                loopAction.setInput(isInput);
+                if (loopAction.isEnabled()) {
+                    menu.add(loopAction);
+                }
 
-                        SetLoopOptional loopOptinalAction = (SetLoopOptional) getActionRegistry().getAction(SetLoopOptional.ID);
-                        loopOptinalAction.update(object);
-                        if (loopOptinalAction.isEnabled()) {
-                            menu.add(loopOptinalAction);
-                        }
+                SetLoopOptional loopOptinalAction = (SetLoopOptional) getActionRegistry().getAction(SetLoopOptional.ID);
+                loopOptinalAction.update(selectedEditParts);
+                if (loopOptinalAction.isEnabled()) {
+                    menu.add(loopOptinalAction);
+                }
 
-                        ImportTreeFromRepository importFromRepository = (ImportTreeFromRepository) getActionRegistry().getAction(
-                                ImportTreeFromRepository.ID);
-                        importFromRepository.setInput(true);
-                        importFromRepository.update(object);
-                        if (importFromRepository.isEnabled()) {
-                            menu.add(importFromRepository);
-                        }
+                SetGroupAction grouptAction = (SetGroupAction) getActionRegistry().getAction(SetGroupAction.ID);
+                grouptAction.update(selectedEditParts);
+                if (grouptAction.isEnabled()) {
+                    menu.add(grouptAction);
+                }
 
-                        RenameTreeNodeAction renameTreeNodeAction = (RenameTreeNodeAction) getActionRegistry().getAction(
-                                RenameTreeNodeAction.ID);
-                        renameTreeNodeAction.update(object);
-                        if (renameTreeNodeAction.isEnabled()) {
-                            menu.add(renameTreeNodeAction);
-                        }
+                ImportTreeFromRepository importFromRepository = (ImportTreeFromRepository) getActionRegistry().getAction(
+                        ImportTreeFromRepository.ID);
+                importFromRepository.update(selectedEditParts);
+                importFromRepository.setInput(isInput);
+                if (importFromRepository.isEnabled()) {
+                    menu.add(importFromRepository);
+                }
 
-                        DeleteTreeNodeAction deleteAction = (DeleteTreeNodeAction) getActionRegistry().getAction(
-                                DeleteTreeNodeAction.ID);
-                        deleteAction.setInput(true);
-                        deleteAction.update(object);
-                        if (deleteAction.isEnabled()) {
-                            menu.add(deleteAction);
-                        }
+                SetAggregateAction aggreateAction = (SetAggregateAction) getActionRegistry().getAction(SetAggregateAction.ID);
+                aggreateAction.update(selectedEditParts);
+                if (aggreateAction.isEnabled()) {
+                    menu.add(aggreateAction);
+                }
 
-                    }
+                RenameTreeNodeAction renameTreeNodeAction = (RenameTreeNodeAction) getActionRegistry().getAction(
+                        RenameTreeNodeAction.ID);
+                renameTreeNodeAction.update(selectedEditParts);
+                if (renameTreeNodeAction.isEnabled()) {
+                    menu.add(renameTreeNodeAction);
+                }
+
+                DeleteTreeNodeAction action = (DeleteTreeNodeAction) getActionRegistry().getAction(DeleteTreeNodeAction.ID);
+                action.update(selectedEditParts);
+                action.setInput(isInput);
+                if (action.isEnabled()) {
+                    menu.add(action);
                 }
             }
 

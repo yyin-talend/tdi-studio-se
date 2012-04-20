@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.xmlmap.editor.actions;
 
+import java.util.List;
+
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -93,26 +95,31 @@ public class AddChoiceAction extends SelectionAction {
         if (getSelectedObjects().isEmpty()) {
             return false;
         } else {
-            Object object = getSelectedObjects().get(0);
-            if (object instanceof TreeNodeEditPart) {
-                TreeNodeEditPart nodePart = (TreeNodeEditPart) object;
-                this.parent = (TreeNode) nodePart.getModel();
+            // get the last selection to run the action
+            Object s = getSelectedObjects().get(0);
+            if (s instanceof List && !((List) s).isEmpty()) {
+                List selectedarts = (List) s;
+                Object object = selectedarts.get(selectedarts.size() - 1);
+                if (object instanceof TreeNodeEditPart) {
+                    TreeNodeEditPart nodePart = (TreeNodeEditPart) object;
+                    this.parent = (TreeNode) nodePart.getModel();
 
-                if (parent.isChoice() || parent.isSubstitution()) {
-                    return false;
-                }
-
-                // can't create two or more choice under a node
-                EList<TreeNode> children = parent.getChildren();
-                for (int i = 0; i < children.size(); i++) {
-                    if (children.get(i).isChoice()) {
+                    if (parent.isChoice() || parent.isSubstitution()) {
                         return false;
                     }
-                }
 
-                boolean isElement = NodeType.ELEMENT.equals(parent.getNodeType());
-                if (isElement && XmlMapUtil.getXPathLength(parent.getXpath()) > 2) {
-                    return true;
+                    // can't create two or more choice under a node
+                    EList<TreeNode> children = parent.getChildren();
+                    for (int i = 0; i < children.size(); i++) {
+                        if (children.get(i).isChoice()) {
+                            return false;
+                        }
+                    }
+
+                    boolean isElement = NodeType.ELEMENT.equals(parent.getNodeType());
+                    if (isElement && XmlMapUtil.getXPathLength(parent.getXpath()) > 2) {
+                        return true;
+                    }
                 }
             }
         }

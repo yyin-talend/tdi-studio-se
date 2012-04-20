@@ -717,12 +717,17 @@ public class ImportTreeFromRepository extends SelectionAction {
         if (getSelectedObjects().isEmpty()) {
             return false;
         } else {
-            Object object = getSelectedObjects().get(0);
-            if (object instanceof TreeNodeEditPart) {
-                TreeNodeEditPart parentPart = (TreeNodeEditPart) object;
-                schemaNode = (TreeNode) parentPart.getModel();
-                if (schemaNode.eContainer() instanceof AbstractInOutTree && XmlMapUtil.DOCUMENT.equals(schemaNode.getType())) {
-                    return true;
+            // get the last selection to run the action
+            Object s = getSelectedObjects().get(0);
+            if (s instanceof List && !((List) s).isEmpty()) {
+                List selectedarts = (List) s;
+                Object object = selectedarts.get(selectedarts.size() - 1);
+                if (object instanceof TreeNodeEditPart) {
+                    TreeNodeEditPart parentPart = (TreeNodeEditPart) object;
+                    schemaNode = (TreeNode) parentPart.getModel();
+                    if (schemaNode.eContainer() instanceof AbstractInOutTree && XmlMapUtil.DOCUMENT.equals(schemaNode.getType())) {
+                        return true;
+                    }
                 }
             }
         }

@@ -34,6 +34,8 @@ public class SetLoopAction extends SelectionAction {
 
     List<TreeNode> loopNodeList = new ArrayList<TreeNode>();
 
+    private TreeNodeEditPart nodePart;
+
     // private List<TreeNode> nodesNeedToChangeMainStatus = new ArrayList<TreeNode>();
 
     public SetLoopAction(IWorkbenchPart part) {
@@ -48,21 +50,26 @@ public class SetLoopAction extends SelectionAction {
         if (getSelectedObjects().isEmpty()) {
             return false;
         }
-        if (getSelectedObjects().get(0) instanceof TreeNodeEditPart) {
-            TreeNodeEditPart nodePart = (TreeNodeEditPart) getSelectedObjects().get(0);
-            TreeNode model = (TreeNode) nodePart.getModel();
+        Object s = getSelectedObjects().get(0);
+        if (s instanceof List && !((List) s).isEmpty()) {
+            List selectedarts = (List) s;
+            Object obj = selectedarts.get(selectedarts.size() - 1);
+            if (obj instanceof TreeNodeEditPart) {
+                nodePart = (TreeNodeEditPart) obj;
+                TreeNode model = (TreeNode) nodePart.getModel();
 
-            if (NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType())
-                    || !(model.eContainer() instanceof TreeNode)) {
+                if (NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType())
+                        || !(model.eContainer() instanceof TreeNode)) {
+                    return false;
+                }
+
+                if (model.isLoop()) {
+                    return false;
+                }
+
+            } else {
                 return false;
             }
-
-            if (model.isLoop()) {
-                return false;
-            }
-
-        } else {
-            return false;
         }
 
         return true;
@@ -74,7 +81,6 @@ public class SetLoopAction extends SelectionAction {
 
     @Override
     public void run() {
-        TreeNodeEditPart nodePart = (TreeNodeEditPart) getSelectedObjects().get(0);
         TreeNode model = (TreeNode) nodePart.getModel();
 
         AbstractInOutTree abstractTree = null;

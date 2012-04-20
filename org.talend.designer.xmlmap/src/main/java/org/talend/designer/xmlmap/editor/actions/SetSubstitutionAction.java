@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.xmlmap.editor.actions;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.ui.actions.SelectionAction;
@@ -134,26 +136,30 @@ public class SetSubstitutionAction extends SelectionAction {
         if (getSelectedObjects().isEmpty()) {
             return false;
         } else {
-            Object object = getSelectedObjects().get(0);
-            if (object instanceof TreeNodeEditPart) {
-                TreeNodeEditPart nodePart = (TreeNodeEditPart) object;
-                this.selectedNode = (TreeNode) nodePart.getModel();
+            Object s = getSelectedObjects().get(0);
+            if (s instanceof List && !((List) s).isEmpty()) {
+                List selectedarts = (List) s;
+                Object object = selectedarts.get(selectedarts.size() - 1);
+                if (object instanceof TreeNodeEditPart) {
+                    TreeNodeEditPart nodePart = (TreeNodeEditPart) object;
+                    this.selectedNode = (TreeNode) nodePart.getModel();
 
-                if (selectedNode.isChoice() || selectedNode.isSubstitution()) {
-                    return false;
-                }
+                    if (selectedNode.isChoice() || selectedNode.isSubstitution()) {
+                        return false;
+                    }
 
-                if (hasSameNameWithParentSubs(selectedNode, selectedNode)) {
-                    return false;
-                }
+                    if (hasSameNameWithParentSubs(selectedNode, selectedNode)) {
+                        return false;
+                    }
 
-                boolean isElement = NodeType.ELEMENT.equals(selectedNode.getNodeType());
-                if (isElement && XmlMapUtil.getXPathLength(selectedNode.getXpath()) > 3) {
-                    return true;
+                    boolean isElement = NodeType.ELEMENT.equals(selectedNode.getNodeType());
+                    if (isElement && XmlMapUtil.getXPathLength(selectedNode.getXpath()) > 3) {
+                        return true;
+                    }
                 }
             }
-        }
 
+        }
         return false;
     }
 

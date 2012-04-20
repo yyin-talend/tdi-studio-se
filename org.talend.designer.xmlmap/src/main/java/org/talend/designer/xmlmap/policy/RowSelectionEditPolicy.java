@@ -23,6 +23,7 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.gef.handles.MoveHandle;
 import org.eclipse.gef.handles.MoveHandleLocator;
+import org.talend.designer.xmlmap.figures.treeNode.TreeNodeFigure;
 import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 
@@ -57,11 +58,16 @@ public class RowSelectionEditPolicy extends NonResizableEditPolicy {
                 AbstractInOutTreeEditPart inOutTreeEditPart = treeNodePart.getInOutTreeEditPart(treeNodePart);
                 if (inOutTreeEditPart != null) {
                     Rectangle treeBounds = inOutTreeEditPart.getFigure().getBounds();
+                    TreeNodeFigure treeNodeFigure = (TreeNodeFigure) treeNodePart.getFigure();
+                    Rectangle rowBounds = treeNodeFigure.getElement().getBounds();
                     Rectangle treeNodeBounds = owner.getFigure().getBounds();
+                    figure = new Figure();
                     if (treeBounds.x + 1 != treeNodeBounds.x || treeNodeBounds.width > treeBounds.width) {
-                        figure = new Figure();
-                        figure.setBounds(new Rectangle(treeBounds.x + 1, treeNodeBounds.y, treeBounds.width - 2,
-                                treeNodeBounds.height));
+                        figure.setBounds(new Rectangle(treeBounds.x + 1, treeNodeBounds.y, treeBounds.width - 2, rowBounds.height));
+                        return figure;
+                    } else {
+                        figure.setBounds(owner.getFigure().getBounds().getCopy());
+                        figure.getBounds().height = rowBounds.height;
                         return figure;
                     }
                 }

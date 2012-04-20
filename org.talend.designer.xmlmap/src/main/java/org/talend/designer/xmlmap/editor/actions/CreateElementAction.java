@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.xmlmap.editor.actions;
 
+import java.util.List;
+
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.dialogs.IInputValidator;
@@ -159,13 +161,18 @@ public class CreateElementAction extends SelectionAction {
         if (getSelectedObjects().isEmpty()) {
             return false;
         } else {
-            Object object = getSelectedObjects().get(0);
-            if (object instanceof TreeNodeEditPart) {
-                TreeNodeEditPart nodePart = (TreeNodeEditPart) object;
-                this.parent = (TreeNode) nodePart.getModel();
-                boolean isElement = NodeType.ELEMENT.equals(parent.getNodeType());
-                if (isElement && XmlMapUtil.getXPathLength(parent.getXpath()) > 2) {
-                    return true;
+            // get the last selection to run the action
+            Object s = getSelectedObjects().get(0);
+            if (s instanceof List && !((List) s).isEmpty()) {
+                List selectedarts = (List) s;
+                Object object = selectedarts.get(selectedarts.size() - 1);
+                if (object instanceof TreeNodeEditPart) {
+                    TreeNodeEditPart nodePart = (TreeNodeEditPart) object;
+                    this.parent = (TreeNode) nodePart.getModel();
+                    boolean isElement = NodeType.ELEMENT.equals(parent.getNodeType());
+                    if (isElement && XmlMapUtil.getXPathLength(parent.getXpath()) > 2) {
+                        return true;
+                    }
                 }
             }
         }
