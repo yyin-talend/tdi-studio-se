@@ -1204,7 +1204,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     @Override
     public Object getAdapter(final Class adapter) {
-        if (designerEditor.equals(getActiveEditor())) {
+        if (designerEditor != null && designerEditor.equals(getActiveEditor())) {
             return this.getActiveEditor().getAdapter(adapter);
         }
         /*
