@@ -12,13 +12,7 @@
 // ============================================================================
 package org.talend.repository.view.di.viewer.content.doc;
 
-import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.commons.utils.data.container.RootContainer;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.view.di.viewer.tester.GeneratedDocNodeTester;
@@ -63,26 +57,5 @@ public abstract class AbstractGeneratedDocContentProvider extends SubEmptyTopNod
     }
 
     abstract protected ERepositoryObjectType getTopLevelNodeType();
-
-    /**
-     * FIXME later, shall make this to work. and need check the triggerPoints in extension point.
-     * 
-     * And comment the line 792 "parent == docNode" in ProjectRepositoryNode to make the DocumentationContentProvider to
-     * work also.
-     */
-    @Override
-    protected void initializeChildren(RepositoryNode parent) {
-        try {
-            Project currentProject = ProjectManager.getInstance().getCurrentProject();
-
-            RootContainer<String, IRepositoryViewObject> jobsContainer = getFactory().getMetadata(currentProject,
-                    getTopLevelNodeType(), true);
-
-            convertChildren(currentProject, jobsContainer, parent, getTopLevelNodeType(), (RepositoryNode) parent.getRoot()
-                    .getRecBinNode());
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-        }
-    }
 
 }
