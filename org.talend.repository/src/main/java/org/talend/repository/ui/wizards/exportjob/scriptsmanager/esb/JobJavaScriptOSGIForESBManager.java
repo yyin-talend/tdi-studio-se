@@ -200,12 +200,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             // dynamic db xml mapping
             addXmlMapping(process[i], isOptionChoosed(ExportChoice.needSourceCode));
 
-            List<String> esbFiles = generateESBFiles(process[i].getItem(), esbJob);
-            osgiResource.addResources(getOSGIInfFolder(), buildUrlList(esbFiles));
-
             if (restJob) {
                 List<String> restSpringFiles = generateRestJobSpringFiles(process[i].getItem());
                 osgiResource.addResources(getMetaInfSpringFolder(), buildUrlList(restSpringFiles));
+            } else {
+                List<String> esbFiles = generateESBFiles(process[i].getItem(), esbJob);
+                osgiResource.addResources(getOSGIInfFolder(), buildUrlList(esbFiles));
             }
         }
 
@@ -241,9 +241,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     /**
-     * 
+     *
      * Add additional dependency libraries.
-     * 
+     *
      * @param processItem
      * @param libPath
      * @return
@@ -341,9 +341,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     /**
-     * 
+     *
      * Ensure that the string is not surrounded by quotes.
-     * 
+     *
      * @param string
      * @return
      */
@@ -361,7 +361,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * This method will return <code>true</code> if given job contains tESBProviderRequest or tESBConsumer component
-     * 
+     *
      * @param processItem
      * @author rzubairov
      * @return
@@ -418,7 +418,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Add user input dependency library path. DOC LiXP Comment method "computeAddtionalLibPath".
-     * 
+     *
      * @param processItem
      * @return
      */
@@ -544,7 +544,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             String inputFile = getPluginResourceUri("resources/job-rest-beans-template.xml"); //$NON-NLS-1$
             String targetFile = getTmpFolder() + PATH_SEPARATOR + "beans.xml"; //$NON-NLS-1$
 
-            createRestJobBundleSpringConfig(processItem, inputFile, targetFile, jobClassName);
+            createRestJobBundleSpringConfig(processItem, inputFile, targetFile, jobName, jobClassName);
 
             files.add(targetFile);
         } catch (IOException e) {
@@ -570,7 +570,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Compute check field parameter value with a given parameter name
-     * 
+     *
      * @param paramName
      * @param elementParameterTypes
      * @return
@@ -586,7 +586,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Compute Text field parameter value with a given parameter name
-     * 
+     *
      * @param paramName
      * @param elementParameterTypes
      * @return
@@ -599,15 +599,34 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return cpType.getValue();
     }
 
-    private void createRestJobBundleSpringConfig(Item processItem, String inputFile, String targetFile, String jobClassName) {
+    private void createRestJobBundleSpringConfig(Item processItem, String inputFile,
+            String targetFile, String jobName, String jobClassName) {
 
         NodeType restRequestComponent = getRESTRequestComponent((ProcessItem) processItem);
         EList elParams = restRequestComponent.getElementParameter();
-        String restComponentId = computeTextElementValue("UNIQUE_NAME", elParams);
+
+
         String endpointUri = computeTextElementValue("REST_ENDPOINT", elParams);
         if (endpointUri.startsWith("\"") && endpointUri.endsWith("\"")) {
-            endpointUri = endpointUri.substring(1, endpointUri.length() - 1);
+            endpointUri = endpointUri.substring(1, endpointUri.length() - 1); // remove Studio wrapping
         }
+        if (!endpointUri.isEmpty() && !endpointUri.contains("://") && !endpointUri.startsWith("/")) {
+            endpointUri = "/" + endpointUri;
+        }
+        if (endpointUri.contains("://")) {
+            try {
+                endpointUri = new URL(endpointUri).getPath();
+            } catch (MalformedURLException e) {
+                logger.error("Endpoint URI invalid: " + e);
+            }
+        }
+        if (endpointUri.equals("/services/") || endpointUri.equals("/services")) {
+            // pass as is
+        } else if (endpointUri.startsWith("/services/")) {
+            // remove forwarding "/services/" context as required by runtime
+            endpointUri = endpointUri.substring("/services/".length() - 1); // leave forwarding slash
+        }
+
 
         String jaxrsServiceProviders = "";
         String additionalBeansConfig = "";
@@ -630,8 +649,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             String line = br.readLine();
             while (line != null) {
                 line = line.replace("@ENDPOINT_URI@", endpointUri) //$NON-NLS-1$
+                        .replace("@JOBNAME@", jobName) //$NON-NLS-1$
                         .replace("@JOBCLASSNAME@", jobClassName) //$NON-NLS-1$
-                        .replace("@REST_COMPONENT_ID@", restComponentId) //$NON-NLS-1$
                         .replace("@JAXRS_SERVICE_PROVIDERS@", jaxrsServiceProviders) //$NON-NLS-1$
                         .replace("@ADDITIONAL_BEANS_CONFIG@", additionalBeansConfig); //$NON-NLS-1$
 
@@ -660,7 +679,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Created OSGi Blueprint configuration for job bundle.
-     * 
+     *
      * @param processItem
      * @param inputFile
      * @param targetFile
@@ -707,12 +726,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 additionalServiceProps = "<entry key=\"multithreading\" value=\"true\" />"; //$NON-NLS-1$
             }
         } else {
-            if (isRESTJob) {
-                additionalJobBundleConfig = "<reference id=\"callbackHandler\"" + "\n\t\t\t"
-                        + "interface=\"routines.system.api.ESBProviderCallback\"" + "\n\t\t\t" + "filter=\"(job=" + jobClassName
-                        + ")\"" + "\n\t\t\t" + "timeout=\"30000\" availability=\"mandatory\" />";
-                additionalJobBeanParams = "<property name=\"providerCallback\" ref=\"callbackHandler\" />";
-            }
+//            if (isRESTJob) {
+//                additionalJobBundleConfig = "<reference id=\"callbackHandler\"" + "\n\t\t\t"
+//                        + "interface=\"routines.system.api.ESBProviderCallback\"" + "\n\t\t\t" + "filter=\"(job=" + jobClassName
+//                        + ")\"" + "\n\t\t\t" + "timeout=\"30000\" availability=\"mandatory\" />";
+//                additionalJobBeanParams = "<property name=\"providerCallback\" ref=\"callbackHandler\" />";
+//            }
         }
 
         FileReader fr = null;
@@ -1001,7 +1020,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * DOC hywang Comment method "caculateDependenciesBundles".
-     * 
+     *
      * @return
      */
     private String caculateDependenciesBundles(ProcessItem processItem) {

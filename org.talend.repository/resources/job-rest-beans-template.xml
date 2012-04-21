@@ -24,13 +24,11 @@
 
 @ADDITIONAL_BEANS_CONFIG@
 
-	<bean id="callbackHandler" class="@JOBCLASSNAME@.QueuedMessageHandlerImpl"/>
-
-	<bean id="serviceBean" class="@JOBCLASSNAME@.RESTProvider_@REST_COMPONENT_ID@">
-		<constructor-arg ref="callbackHandler"/>
+	<bean id="serviceBean" class="@JOBCLASSNAME@.RestServiceProviderImpl4TalendJob">
+		<constructor-arg ref="job"/>
 	</bean>
 
-	<bean id="wrongCallHandler" class="@JOBCLASSNAME@.RestExceptionMapper_@REST_COMPONENT_ID@">
+	<bean id="wrongCallHandler" class="@JOBCLASSNAME@.ExceptionMapper4TalendJobRestService">
 		<constructor-arg ref="serviceBean"/>
 	</bean>
 
@@ -40,10 +38,18 @@
 		<property name="ignoreNamespaces" value="true"/>
 	</bean>
 
-	<osgi:service ref="callbackHandler" interface="routines.system.api.ESBProviderCallback">
-		<service-properties>
-			<entry key="job" value="@JOBCLASSNAME@"/>
-		</service-properties>
+	<bean id="job" class="@JOBCLASSNAME@">
+		<property name="runInTalendEsbRuntimeContainer" value="true" />
+	</bean>
+
+	<osgi:service ref="job">
+		<osgi:interfaces>
+			<value>routines.system.api.TalendJob</value>
+		</osgi:interfaces>
+		<osgi:service-properties>
+			<entry key="name" value="@JOBNAME@" />
+			<entry key="type" value="job" />
+		</osgi:service-properties>
 	</osgi:service>
 
 </beans>
