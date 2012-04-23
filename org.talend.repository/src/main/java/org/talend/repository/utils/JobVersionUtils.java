@@ -37,7 +37,8 @@ public class JobVersionUtils {
         try {
             // alert for bug TDI-20132
             List<IRepositoryNode> nodeChildren = repositoryNode.getChildren();
-            if ((repositoryNode.getId() == "-1") && (nodeChildren != null) && (nodeChildren.size() == 1)) {
+            if ("Folder".equals(repositoryNode.getObject().getRepositoryObjectType() + "")
+                    || ("-1".equals(repositoryNode.getId()) && nodeChildren != null) && (nodeChildren.size() == 1)) {
                 return ProxyRepositoryFactory.getInstance().getLastVersion(nodeChildren.get(0).getId()).getVersion();
             } else {
                 return ProxyRepositoryFactory.getInstance().getLastVersion(repositoryNode.getId()).getVersion();
