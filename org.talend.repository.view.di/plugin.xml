@@ -330,30 +330,12 @@
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
       <propertyTester
-            class="org.talend.repository.view.di.viewer.tester.DocumentationNodeTester"
+            class="org.talend.repository.view.di.viewer.tester.doc.DocumentationNodeTester"
             id="org.talend.repository.node.tester.doc"
             namespace="org.talend.repository.node"
             properties="isDocTopNode"
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
-      <propertyTester
-            class="org.talend.repository.view.di.viewer.tester.GeneratedDocNodeTester"
-            id="org.talend.repository.node.tester.doc.generatedDoc"
-            namespace="org.talend.repository.node.doc"
-            properties="isGeneratedDocTopNode"
-            type="org.talend.repository.model.RepositoryNode">
-      </propertyTester>
-   </extension>
-   <extension
-         point="org.eclipse.ui.navigator.viewer">
-      <viewerContentBinding
-            viewerId="org.talend.repository.cnf.view">
-         <includes>
-            <contentExtension
-                  pattern="org.talend.repository.viewer.doc.*">
-            </contentExtension>
-         </includes>
-      </viewerContentBinding>
    </extension>
 
 

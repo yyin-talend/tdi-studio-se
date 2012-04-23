@@ -13,7 +13,7 @@
 package org.talend.repository.view.di.viewer.content.doc;
 
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.view.di.viewer.tester.DocumentationNodeTester;
+import org.talend.repository.view.di.viewer.tester.doc.DocumentationNodeTester;
 import org.talend.repository.viewer.content.SubEmptyTopNodeContentProvider;
 
 /**
