@@ -21,8 +21,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
@@ -36,7 +34,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
  */
 public class SaveAsProcessAction extends Action {
 
-    private EditorPart editorPart;
+    private final EditorPart editorPart;
 
     public SaveAsProcessAction(EditorPart editorPart) {
         this.editorPart = editorPart;
@@ -50,8 +48,6 @@ public class SaveAsProcessAction extends Action {
         if (dlg.open() == Window.OK) {
 
             try {
-
-                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.PROCESS);
 
                 // Set readonly to false since created job will always be editable.
                 JobEditorInput newJobEditorInput = new ProcessEditorInput(processWizard.getProcess(), true, true, false);

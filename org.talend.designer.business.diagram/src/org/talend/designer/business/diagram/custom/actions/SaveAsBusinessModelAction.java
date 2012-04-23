@@ -26,8 +26,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.properties.BusinessProcessItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor;
 import org.talend.repository.editor.RepositoryEditorInput;
@@ -39,7 +37,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
  */
 public class SaveAsBusinessModelAction extends Action {
 
-    private EditorPart editorPart;
+    private final EditorPart editorPart;
 
     public SaveAsBusinessModelAction(EditorPart editorPart) {
         this.editorPart = editorPart;
@@ -53,9 +51,6 @@ public class SaveAsBusinessModelAction extends Action {
         if (dlg.open() == Window.OK) {
 
             try {
-
-                // 1.refresh
-                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.BUSINESS_PROCESS);
 
                 BusinessProcessItem businessProcessItem = businessModelWizard.getBusinessProcessItem();
 

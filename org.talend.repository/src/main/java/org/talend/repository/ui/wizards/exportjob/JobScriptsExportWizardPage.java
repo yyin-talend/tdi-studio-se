@@ -88,7 +88,6 @@ import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
-import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
@@ -236,7 +235,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         if ((processItem == null) && (nodes != null) && (nodes.length >= 1)) {
             IRepositoryViewObject repositoryObject = nodes[0].getObject();
             // add for bug TDI-20132
-            List<IRepositoryNode> nodesChildren = (List<IRepositoryNode>) nodes[0].getChildren();
+            List<IRepositoryNode> nodesChildren = nodes[0].getChildren();
             IRepositoryViewObject childObject = null;
             if ((nodesChildren != null) && (nodesChildren.size() >= 1)) {
                 childObject = nodesChildren.get(0).getObject();
@@ -345,6 +344,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     /**
      * (non-Javadoc) Method declared on IDialogPage.
      */
+    @Override
     public void createControl(Composite parent) {
 
         initializeDialogUnits(parent);
@@ -484,6 +484,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         chkButton.setSelection(false);
         chkButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 chkButton.setSelection(chkButton.getSelection());
                 zipOption = String.valueOf(chkButton.getSelection());
@@ -497,6 +498,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * 
      * @see org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1#validateSourceGroup()
      */
+    @Override
     public boolean validateSourceGroup() {
         return true;
     }
@@ -505,6 +507,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * Create the export options specification widgets.
      * 
      */
+    @Override
     public void createOptionsGroupButtons(Group optionsGroup) {
         Font font = optionsGroup.getFont();
         optionsGroup.setLayout(new GridLayout(1, true));
@@ -589,6 +592,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         gd.horizontalSpan = 2;
         jobItemButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
 
                 exportDependencies.setEnabled(jobItemButton.getSelection());
@@ -632,6 +636,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         setParametersValueButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 if (manager == null) {
                     manager = createJobScriptsManager();
@@ -863,9 +868,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     // for feature 11976
     class ParametersValuesDialog extends Dialog {
 
-        private String contextParameterName = Messages.getString("ParametersValuesDialog_Name"); //$NON-NLS-1$
+        private final String contextParameterName = Messages.getString("ParametersValuesDialog_Name"); //$NON-NLS-1$
 
-        private String contextParameterValue = Messages.getString("ParametersValuesDialog_Value"); //$NON-NLS-1$
+        private final String contextParameterValue = Messages.getString("ParametersValuesDialog_Value"); //$NON-NLS-1$
 
         private TableViewer tableViewer;
 
@@ -883,7 +888,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         private Button removeButton;
 
-        private String addParameterName = "new";
+        private final String addParameterName = "new";
 
         /**
          * DOC zli ParametersValuesDialog constructor comment.
@@ -1042,6 +1047,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             setContextButton.setText("Values from selected context");//$NON-NLS-N$
             setContextButton.addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     for (ContextParameterType contextType : contextEditableValuesList) {
                         for (ContextParameterType context : contextValueList) {
@@ -1314,6 +1320,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * 
      * @returns boolean
      */
+    @Override
     public boolean finish() {
         // TODO
         if (treeViewer != null) {
@@ -1379,7 +1386,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         }
 
         // end
-        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.PROCESS);
         ok = true;
         return ok;
     }
@@ -1422,6 +1428,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * 
      * @return java.lang.String
      */
+    @Override
     protected String getDestinationLabel() {
         return DataTransferMessages.ArchiveExport_destinationLabel;
     }
@@ -1448,6 +1455,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * Answer the contents of self's destination specification widget. If this value does not have a suffix then add it
      * first.
      */
+    @Override
     protected String getDestinationValue() {
         String idealSuffix = getOutputSuffix();
         String destinationText = super.getDestinationValue();
@@ -1491,11 +1499,12 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     /**
      * Open an appropriate destination browser so that the user can specify a source to import from.
      */
+    @Override
     protected void handleDestinationBrowseButtonPressed() {
         FileDialog dialog = new FileDialog(getContainer().getShell(), SWT.SAVE);
         dialog.setFilterExtensions(new String[] { "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
         dialog.setText(""); //$NON-NLS-1$
-        dialog.setFileName((String) this.getDefaultFileName().get(0));
+        dialog.setFileName(this.getDefaultFileName().get(0));
         String currentSourceString = getDestinationValue();
         int lastSeparatorIndex = currentSourceString.lastIndexOf(File.separator);
         if (lastSeparatorIndex != -1) {
@@ -1512,7 +1521,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
             String str = file.getName();
 
-            String s = (String) this.getDefaultFileName().get(0);
+            String s = this.getDefaultFileName().get(0);
 
             if (str.equals(s)) {
                 selectedFileName = b + "_" + this.getDefaultFileName().get(1) + this.getOutputSuffix(); //$NON-NLS-1$
@@ -1531,6 +1540,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     /**
      * Hook method for saving widget values for restoration by the next instance of this class.
      */
+    @Override
     protected void internalSaveWidgetValues() {
     }
 
@@ -1538,6 +1548,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * Hook method for restoring widget values to the values that they held last time this wizard was used to
      * completion.
      */
+    @Override
     protected void restoreWidgetValues() {
     }
 
@@ -1546,6 +1557,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * 
      * @see org.eclipse.ui.wizards.datatransfer.WizardFileSystemResourceExportPage1#destinationEmptyMessage()
      */
+    @Override
     protected String destinationEmptyMessage() {
         return ""; //$NON-NLS-1$
     }

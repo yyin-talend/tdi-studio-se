@@ -93,8 +93,6 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
@@ -130,33 +128,34 @@ import org.talend.designer.runprocess.ui.views.ProcessView;
  */
 public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
-    private ToolBar toolBar;
+    private final ToolBar toolBar;
 
-    private ToolItem itemDropDown;
+    private final ToolItem itemDropDown;
 
     private MenuItem debugMenuItem;
 
-    private Button killBtn;
+    private final Button killBtn;
 
-    private ProcessManager manager = ProcessManager.getInstance();
+    private final ProcessManager manager = ProcessManager.getInstance();
 
     private ProcessContextComposite contextComposite;
 
+    @Override
     public void setContextComposite(ProcessContextComposite contextComposite) {
         this.contextComposite = contextComposite;
     }
 
-    private Button clearTracePerfBtn;
+    private final Button clearTracePerfBtn;
 
     private static RunProcessContext processContext;
 
-    private StyledText consoleText;
+    private final StyledText consoleText;
 
     public HashMap<String, IProcessMessage> errorMessMap = new HashMap<String, IProcessMessage>();
 
     private boolean isAddedStreamListener;
 
-    private IStreamListener streamListener;
+    private final IStreamListener streamListener;
 
     private static final int MINIMUM_HEIGHT = 65;
 
@@ -170,9 +169,9 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
     private Text lineLimitText;
 
-    private Menu menu;
+    private final Menu menu;
 
-    private PropertyChangeListener pcl;
+    private final PropertyChangeListener pcl;
 
     private Double extend = new Double(0);
 
@@ -257,6 +256,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         menu = new Menu(execHeader);
         itemDropDown.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 if (event.detail == SWT.ARROW) {
                     Rectangle bounds = itemDropDown.getBounds();
@@ -264,9 +264,6 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
                     menu.setLocation(point);
                     menu.setVisible(true);
                 } else {
-                    // qli modified to fix the bug 6659.
-                    RepositoryManager.refreshCreatedNode(ERepositoryObjectType.ROUTINES);
-                    RepositoryManager.refreshCreatedNode(ERepositoryObjectType.JOBLET);
                     ToolItem item = (ToolItem) event.widget;
                     errorMessMap.clear();
                     if (item.getData().equals(ProcessView.DEBUG_ID)) {
@@ -285,6 +282,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         menuItem1.setData(ProcessView.DEBUG_ID);
         menuItem1.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 if (!itemDropDown.getData().equals(ProcessView.PAUSE_ID) && !itemDropDown.getData().equals(ProcessView.RESUME_ID)) {
                     itemDropDown.setText(menuItem1.getText());
@@ -307,6 +305,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
             debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_TRACE_ACTION));
             debugMenuItem.addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(SelectionEvent event) {
                     if (!itemDropDown.getData().equals(ProcessView.PAUSE_ID)
                             && !itemDropDown.getData().equals(ProcessView.RESUME_ID)) {
@@ -525,6 +524,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         lineLimitText.setText(count);
     }
 
+    @Override
     protected void addListeners() {
         clearTracePerfBtn.addSelectionListener(new SelectionAdapter() {
 
@@ -604,7 +604,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
             return;
         }
         if (getProcessContext().getProcess() instanceof IProcess2) {
-            ReplaceNodesInProcessProvider.beforeRunJobInGUI((IProcess2) getProcessContext().getProcess());
+            ReplaceNodesInProcessProvider.beforeRunJobInGUI(getProcessContext().getProcess());
         }
         CorePlugin.getDefault().getRunProcessService().saveJobBeforeRun(getProcessContext().getProcess());
         if (manager.getClearBeforeExec()) {
@@ -635,6 +635,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         return processContext;
     }
 
+    @Override
     public void setProcessContext(RunProcessContext processContext) {
         IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
         String languagePrefix = LanguageManager.getCurrentLanguage().toString() + "_"; //$NON-NLS-1$
@@ -674,6 +675,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         }
     }
 
+    @Override
     protected void fillConsole(Collection<IProcessMessage> messages) {
         consoleText.setText(""); //$NON-NLS-1$
 
@@ -798,6 +800,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         button.setLayoutData(data);
     }
 
+    @Override
     protected void appendToConsole(final IProcessMessage message) {
         manager.getProcessShell().getDisplay().asyncExec(new Runnable() {
 
@@ -884,10 +887,12 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         return p;
     }
 
+    @Override
     public boolean isHideConsoleLine() {
         return this.hideConsoleLine;
     }
 
+    @Override
     public void setHideconsoleLine(boolean infoview) {
         this.hideConsoleLine = infoview;
     }
@@ -896,6 +901,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
     }
 
+    @Override
     protected void setRunnable(boolean runnable) {
         if (!clearTracePerfBtn.isDisposed() && clearTracePerfBtn != null)
             clearTracePerfBtn.setEnabled(runnable);
@@ -914,6 +920,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
     }
 
+    @Override
     protected void setExecBtn(final boolean runnable) {
         if (!isDisposed()) {
             if (itemDropDown.getData().equals(ProcessView.DEBUG_ID)) {
@@ -970,6 +977,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         return false;
     }
 
+    @Override
     public void kill() {
         killBtn.setEnabled(false);
         // previousRow.setEnabled(false);
@@ -981,6 +989,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
 
     boolean debugMode = false;
 
+    @Override
     public void debug() {
         if (manager.getClearBeforeExec()) {
             processContext.clearMessages();
@@ -1188,6 +1197,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getComposite()
      */
+    @Override
     public Composite getComposite() {
         // TODO Auto-generated method stub
         return null;
@@ -1198,6 +1208,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getCurRowSize()
      */
+    @Override
     public int getCurRowSize() {
         // TODO Auto-generated method stub
         return 0;
@@ -1208,6 +1219,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getElement()
      */
+    @Override
     public Element getElement() {
         // TODO Auto-generated method stub
         return null;
@@ -1218,6 +1230,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getHashCurControls()
      */
+    @Override
     public BidiMap getHashCurControls() {
         // TODO Auto-generated method stub
         return null;
@@ -1228,6 +1241,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getPart()
      */
+    @Override
     public IMultiPageTalendEditor getPart() {
         // TODO Auto-generated method stub
         return null;
@@ -1239,6 +1253,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
      * @seeorg.talend.core.properties.tab.IDynamicProperty#getRepositoryAliasName(org.talend.core.model.properties.
      * ConnectionItem)
      */
+    @Override
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
         // TODO Auto-generated method stub
         return null;
@@ -1280,6 +1295,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getSection()
      */
+    @Override
     public EComponentCategory getSection() {
         // TODO Auto-generated method stub
         return null;
@@ -1290,6 +1306,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getTableIdAndDbSchemaMap()
      */
+    @Override
     public Map<String, String> getTableIdAndDbSchemaMap() {
         // TODO Auto-generated method stub
         return null;
@@ -1300,6 +1317,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getTableIdAndDbTypeMap()
      */
+    @Override
     public Map<String, String> getTableIdAndDbTypeMap() {
         // TODO Auto-generated method stub
         return null;
@@ -1310,6 +1328,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#refresh()
      */
+    @Override
     public void refresh() {
         // TODO Auto-generated method stub
         Display.getDefault().syncExec(new Runnable() {
@@ -1330,11 +1349,13 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#setCurRowSize(int)
      */
+    @Override
     public void setCurRowSize(int i) {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void getAllErrorMess(IProcessMessage psMess) {
         if (psMess.getType().equals(MsgType.STD_ERR)) {
             String mess = psMess.getContent();
@@ -1390,6 +1411,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         refreshNode(psMess);
     }
 
+    @Override
     public void refreshNode(final IProcessMessage psMess) {
         Display.getDefault().asyncExec(new Runnable() {
 
@@ -1464,6 +1486,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         });
     }
 
+    @Override
     public void refreshProgress(IProcessMessage psMess, Node node, String nodeUniqueName) {
         String mess = ""; //$NON-NLS-1$
         String uniqueName = ""; //$NON-NLS-1$
@@ -1508,6 +1531,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         return trunjobList;
     }
 
+    @Override
     protected void addPerlMark(IProcessMessage psMess) {
         if (psMess.getType().equals(MsgType.STD_ERR)) {
             String content = psMess.getContent();
@@ -1550,6 +1574,7 @@ public class DebugProcessTosComposite extends TraceDebugProcessComposite {
         }
     }
 
+    @Override
     public boolean hasProcess() {
         // TODO Auto-generated method stub
         return processContext != null;

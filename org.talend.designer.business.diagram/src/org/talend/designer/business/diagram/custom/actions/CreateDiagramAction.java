@@ -17,7 +17,6 @@ import org.eclipse.ui.intro.config.IIntroAction;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.images.OverlayImageProvider;
@@ -57,6 +56,7 @@ public class CreateDiagramAction extends AContextualAction implements IIntroActi
         setText(Messages.getString("CreateDiagramAction.CreateBusinessModel")); //$NON-NLS-1$
     }
 
+    @Override
     protected void doRun() {
         SimpleBusinessCreationWizard wizard = new SimpleBusinessCreationWizard(getActivePage().getWorkbenchWindow()
                 .getWorkbench(), getPath());
@@ -64,8 +64,6 @@ public class CreateDiagramAction extends AContextualAction implements IIntroActi
         WizardDialog wizardDialog = new WizardDialog(new Shell(), wizard);
         wizardDialog.create();
         wizardDialog.open();
-
-        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.BUSINESS_PROCESS);
     }
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {

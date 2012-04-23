@@ -28,8 +28,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.service.IDesignerPerlService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ITalendSynchronizer;
@@ -46,7 +44,7 @@ import org.talend.repository.ui.actions.routines.RoutineEditorInput;
  */
 public class SaveAsRoutineAction extends Action {
 
-    private EditorPart editorPart;
+    private final EditorPart editorPart;
 
     public SaveAsRoutineAction(EditorPart editorPart) {
         this.editorPart = editorPart;
@@ -60,8 +58,6 @@ public class SaveAsRoutineAction extends Action {
         if (dlg.open() == Window.OK) {
 
             try {
-
-                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.ROUTINES);
 
                 RoutineItem routineItem = processWizard.getRoutineItem();
 

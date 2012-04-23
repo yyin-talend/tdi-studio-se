@@ -26,8 +26,6 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.SQLPatternItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.ISQLPatternSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
@@ -43,7 +41,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
  */
 public class SaveAsSQLPatternAction extends Action {
 
-    private EditorPart editorPart;
+    private final EditorPart editorPart;
 
     public SaveAsSQLPatternAction(EditorPart editorPart) {
         this.editorPart = editorPart;
@@ -57,8 +55,6 @@ public class SaveAsSQLPatternAction extends Action {
         if (dlg.open() == Window.OK) {
 
             try {
-
-                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.SQLPATTERNS);
 
                 SQLPatternItem sqlpatternItem = processWizard.getSQLPatternItem();
 

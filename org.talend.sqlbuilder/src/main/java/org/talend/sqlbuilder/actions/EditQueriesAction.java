@@ -63,6 +63,7 @@ public class EditQueriesAction extends AContextualAction {
         setText(Messages.getString("EditQueriesAction.textEditQueries")); //$NON-NLS-1$
     }
 
+    @Override
     protected void doRun() {
         IStructuredSelection selection = (IStructuredSelection) getSelection();
         if (repositoryNode == null && selection != null) {
@@ -120,14 +121,13 @@ public class EditQueriesAction extends AContextualAction {
         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell, repositoryNode, selectedContext);
 
         if (connection instanceof DatabaseConnection) {
-            IMetadataConnection imetadataConnection = ConvertionHelper.convert((DatabaseConnection) connection, true);
+            IMetadataConnection imetadataConnection = ConvertionHelper.convert(connection, true);
             connParameters.setSchema(imetadataConnection.getSchema());
         }
         connParameters.setNodeReadOnly(false);
         connParameters.setFromRepository(true);
         dial.setConnParameters(connParameters);
         dial.open();
-        // RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_CONNECTIONS);
         IRepositoryView view = getViewPart();
         if (view != null) {
             view.refreshView();

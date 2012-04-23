@@ -29,8 +29,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.i18n.Messages;
 
@@ -83,6 +81,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
     /*
      * (non-Javadoc) Method declared on IWizard.
      */
+    @Override
     public void addPages() {
         super.addPages();
 
@@ -114,6 +113,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
     /*
      * (non-Javadoc) Method declared on IWizard.
      */
+    @Override
     public boolean performFinish() {
         boolean finish = mainPage.finish();
         if (!finish && !getShell().isDisposed()) {
@@ -133,7 +133,6 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
     @Override
     public boolean performCancel() {
         ProcessorUtilities.resetExportConfig();
-        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.PROCESS);
         selection = null;
         mainPage = null;
         return true;

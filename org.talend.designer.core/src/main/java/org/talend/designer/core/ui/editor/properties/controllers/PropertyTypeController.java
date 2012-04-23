@@ -48,7 +48,6 @@ import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
 import org.talend.core.model.param.ERepositoryCategoryType;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
@@ -60,7 +59,6 @@ import org.talend.core.model.properties.LinkRulesItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.RepositoryComponentManager;
@@ -533,8 +531,6 @@ public class PropertyTypeController extends AbstractRepositoryController {
                         if (metadataService != null) {
                             ConnectionItem connItem = metadataService.openMetadataConnection(true, realNode, node);
                             if (connItem != null) {
-                                // refresh
-                                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_CONNECTIONS);
 
                                 IElementParameter propertyParam = elem
                                         .getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
@@ -543,7 +539,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
 
                                 // 2. commnd
                                 Command cmd = new ChangeValuesFromRepository(
-                                        (Element) node,
+                                        node,
                                         connItem.getConnection(),
                                         propertyParam.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), connItem.getProperty().getId()); //$NON-NLS-1$
                                 executeCommand(cmd);

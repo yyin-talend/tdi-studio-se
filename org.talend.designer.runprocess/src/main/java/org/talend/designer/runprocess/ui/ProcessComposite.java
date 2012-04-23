@@ -93,8 +93,6 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.ui.branding.IBrandingService;
@@ -160,7 +158,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
 
     protected EComponentCategory section;
 
-    private Composite composite;
+    private final Composite composite;
 
     /** Performance button. */
     // private Button perfBtn;
@@ -217,7 +215,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
 
     public HashMap<String, IProcessMessage> errorMessMap = new HashMap<String, IProcessMessage>();
 
-    private ProcessManager processManager;
+    private final ProcessManager processManager;
 
     /**
      * DOC chuger ProcessComposite2 constructor comment.
@@ -387,11 +385,9 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         // final Menu menu = new Menu(execHeader);
         run.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent event) {
 
-                // qli modified to fix the bug 6659.
-                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.ROUTINES);
-                RepositoryManager.refreshCreatedNode(ERepositoryObjectType.JOBLET);
                 // ToolItem item = (ToolItem) event.widget;
                 errorMessMap.clear();
                 // if (item.getData().equals(ProcessView.DEBUG_ID)) {
@@ -693,8 +689,8 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
             @Override
             public void widgetSelected(SelectionEvent e) {
                 lineLimitText.setEditable(enableLineLimitButton.getSelection());
-                RunProcessPlugin.getDefault().getPluginPreferences().setValue(RunprocessConstants.ENABLE_CONSOLE_LINE_LIMIT,
-                        enableLineLimitButton.getSelection());
+                RunProcessPlugin.getDefault().getPluginPreferences()
+                        .setValue(RunprocessConstants.ENABLE_CONSOLE_LINE_LIMIT, enableLineLimitButton.getSelection());
             }
         });
 
@@ -712,8 +708,8 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                 if (!s.equals("")) { //$NON-NLS-1$
                     try {
                         Integer.parseInt(s);
-                        RunProcessPlugin.getDefault().getPluginPreferences().setValue(
-                                RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT, lineLimitText.getText() + s);
+                        RunProcessPlugin.getDefault().getPluginPreferences()
+                                .setValue(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT, lineLimitText.getText() + s);
                     } catch (Exception ex) {
                         e.doit = false;
                     }
@@ -723,17 +719,17 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         lineLimitText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                RunProcessPlugin.getDefault().getPluginPreferences().setValue(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT,
-                        lineLimitText.getText());
+                RunProcessPlugin.getDefault().getPluginPreferences()
+                        .setValue(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT, lineLimitText.getText());
             }
         });
 
-        boolean enable = RunProcessPlugin.getDefault().getPluginPreferences().getBoolean(
-                RunprocessConstants.ENABLE_CONSOLE_LINE_LIMIT);
+        boolean enable = RunProcessPlugin.getDefault().getPluginPreferences()
+                .getBoolean(RunprocessConstants.ENABLE_CONSOLE_LINE_LIMIT);
         enableLineLimitButton.setSelection(enable);
         lineLimitText.setEditable(enable);
-        String count = RunProcessPlugin.getDefault().getPluginPreferences().getString(
-                RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT);
+        String count = RunProcessPlugin.getDefault().getPluginPreferences()
+                .getString(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT);
         if (count.equals("")) { //$NON-NLS-1$
             count = "100"; //$NON-NLS-1$
         }
@@ -1296,7 +1292,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
             return;
         }
         if (getProcessContext().getProcess() instanceof IProcess2) {
-            ReplaceNodesInProcessProvider.beforeRunJobInGUI((IProcess2) getProcessContext().getProcess());
+            ReplaceNodesInProcessProvider.beforeRunJobInGUI(getProcessContext().getProcess());
         }
         CorePlugin.getDefault().getRunProcessService().saveJobBeforeRun(getProcessContext().getProcess());
         if (processContext.isClearBeforeExec()) {
@@ -1362,8 +1358,8 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                         // use this function to generate childrens also.
                         ProcessorUtilities.generateCode(processContext.getProcess(), context, false, false, true, monitor);
 
-                        ILaunchConfiguration config = ((Processor) processor).getDebugConfiguration(processContext
-                                .getStatisticsPort(), processContext.getTracesPort(), null);
+                        ILaunchConfiguration config = ((Processor) processor).getDebugConfiguration(
+                                processContext.getStatisticsPort(), processContext.getTracesPort(), null);
 
                         // see feature 0004820: The run job doesn't verify if
                         // code is correct before launching
@@ -1649,8 +1645,8 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                                 }
                             }
                             if (haveFind && tRunJobName.lastIndexOf("(") != -1 && tRunJobName.lastIndexOf(".java") != -1)
-                                tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1, tRunJobName
-                                        .lastIndexOf(".java"));
+                                tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1,
+                                        tRunJobName.lastIndexOf(".java"));
                             else
                                 tRunJobName = currenctJobName;
                         }

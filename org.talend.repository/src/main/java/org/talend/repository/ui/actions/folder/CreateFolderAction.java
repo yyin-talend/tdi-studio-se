@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -24,7 +23,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.ProjectManager;
@@ -59,6 +57,7 @@ public class CreateFolderAction extends AContextualAction {
      * 
      * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
      */
+    @Override
     protected void doRun() {
         ISelection selection = getSelection();
         Object obj = ((IStructuredSelection) selection).getFirstElement();
@@ -79,9 +78,6 @@ public class CreateFolderAction extends AContextualAction {
             WizardDialog dialog = new WizardDialog(activeShell, processWizard);
             dialog.setPageSize(400, 60);
             dialog.create();
-            if (dialog.open() == Window.OK) {
-                RepositoryManager.refreshCreatedNode(objectType);
-            }
         }
     }
 

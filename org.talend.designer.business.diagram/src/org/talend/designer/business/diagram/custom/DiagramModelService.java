@@ -207,30 +207,25 @@ public class DiagramModelService implements IDiagramModelService {
         mgr.add(action);
     }
 
-    @Override
     public boolean isInstanceOfCompartmentEditPart(Object o) {
         return o instanceof CompartmentEditPart;
     }
 
-    @Override
     public Object getBusinessAppearanceComposite(Composite parent, int style, TabbedPropertySheetWidgetFactory widgetFactory,
             ISelection selection) {
         return new BusinessAppearanceComposite(parent, SWT.NONE, widgetFactory, selection);
     }
 
-    @Override
     public Object getBusinessRulersAndGridComposite(Composite parent, int style, TabbedPropertySheetWidgetFactory widgetFactory,
             IRepositoryObject obj) {
         return new BusinessRulersAndGridComposite(parent, SWT.NONE, widgetFactory, obj);
     }
 
-    @Override
     public Object getBusinessAssignmentComposite(Composite parent, int style, TabbedPropertySheetWidgetFactory widgetFactory,
             ISelection selection) {
         return new BusinessAssignmentComposite(parent, SWT.NONE, widgetFactory, selection);
     }
 
-    @Override
     public boolean isInstanceOfBusinessAssignmentComposite(Object o) {
         return o instanceof BusinessAssignmentComposite;
     }

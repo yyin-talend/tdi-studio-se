@@ -27,7 +27,6 @@ import org.talend.core.model.metadata.builder.connection.FTPConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.FTPConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.ui.actions.metadata.AbstractCreateAction;
 import org.talend.core.ui.images.OverlayImageProvider;
@@ -77,6 +76,7 @@ public class CreateFTPConnectionAction extends AbstractCreateAction {
      * @see
      * org.talend.repository.ui.actions.metadata.AbstractCreateAction#init(org.talend.repository.model.RepositoryNode)
      */
+    @Override
     protected void init(RepositoryNode node) {
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
         if (!ERepositoryObjectType.METADATA_FILE_FTP.equals(nodeType)) {
@@ -121,6 +121,7 @@ public class CreateFTPConnectionAction extends AbstractCreateAction {
      * 
      * @see org.talend.repository.ui.actions.AContextualAction#doRun()
      */
+    @Override
     protected void doRun() {
         RepositoryNode dbConnectionNode = getCurrentRepositoryNode();
 
@@ -204,8 +205,6 @@ public class CreateFTPConnectionAction extends AbstractCreateAction {
             view.expand(dbConnectionNode, true);
         }
 
-        RepositoryManager.refreshCreatedNode(ERepositoryObjectType.METADATA_FILE_FTP);
-
     }
 
     /*
@@ -213,6 +212,7 @@ public class CreateFTPConnectionAction extends AbstractCreateAction {
      * 
      * @see org.talend.repository.ui.actions.AContextualAction#getClassForDoubleClick()
      */
+    @Override
     public Class getClassForDoubleClick() {
         return FTPConnectionItem.class;
     }
