@@ -211,8 +211,7 @@ public class CLASS {
 				return;
 			}
 			if(asOutput(node)) {
-				//TODO
-				outputNodeToLoopNode.put(node, this.inputLoopsInCurrentOutputTable.get(0));
+				outputNodeToLoopNode.put(node,null);
 			}
 			for(TreeNode childNode : node.getChildren()) {
 				initOutsideOfLoops(childNode);
@@ -220,16 +219,22 @@ public class CLASS {
 		}
 		
 		//for output mapping 
-		public boolean belongToCurrentLoop(TreeNode inputLoopNode,String xpath) {
+		public boolean belongToCurrentLoop(TreeNode inputLoopNode,String xpath,boolean isMainInputLoopInNestLoop) {
 			if(parallelLoopExistInCurrentOutputTable || nestedLoopExistInCurrentOutputTable) {
 				for(Map.Entry<TreeNode, TreeNode> entry : outputNodeToLoopNode.entrySet()) {
 					TreeNode outputNode = entry.getKey();
 					TreeNode loopNode = entry.getValue();
 					if(xpath.equals(outputNode.getXpath())) {
-						if(loopNode != inputLoopNode) {
-							return false;
+						if(isMainInputLoopInNestLoop) {
+							if(loopNode == null) {//outside of any input loop
+								return true;
+							}
+							return loopNode == inputLoopNode;
 						} else {
-							return true;
+							if(loopNode == null) {
+								return false;
+							}
+							return loopNode == inputLoopNode;
 						}
 					}
 				}
