@@ -52,4 +52,9 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<!-- Wiring the counter repository -->
+	<bean class="org.apache.cxf.management.counters.CounterRepository">
+		<property name="bus" ref="cxf" /> 
+	</bean>
+
 </beans>

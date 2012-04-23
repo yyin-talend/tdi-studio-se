@@ -997,6 +997,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     "routines.system.api;resolution:=optional" //$NON-NLS-1$
                             + ",javax.xml.soap;resolution:=optional" //$NON-NLS-1$
                             + ",javax.xml.ws.soap;resolution:=optional" //$NON-NLS-1$
+                            + ",org.apache.cxf.management.counters" //$NON-NLS-1$
             );
         }
         if (itemToBeExport != null && !itemToBeExport.isEmpty()) {
