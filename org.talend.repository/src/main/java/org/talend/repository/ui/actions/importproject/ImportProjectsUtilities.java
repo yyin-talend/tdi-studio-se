@@ -449,13 +449,16 @@ public class ImportProjectsUtilities {
                 if (ResourcesPlugin.TDQ_PLUGIN_ID.equals(pluginIDs[i])) {
                     fullPath = PluginConstant.EMPTY_STRING;
                 }
-
+                URL fileUrl=FileLocator.find(bundle, new Path(fullPath), null);
                 try {
-                    url = FileLocator.toFileURL(FileLocator.find(bundle, new Path(fullPath), null));
+                    if(fileUrl!=null){
+                        url = FileLocator.toFileURL(fileUrl);
+                    }
                 } catch (IOException e) {
                     ExceptionHandler.process(e);
                 }
-
+                if(url==null)
+                    continue;
                 File xmlFilePath = new File(url.getPath());
                 if (xmlFilePath.exists()) {
                     String files[] = xmlFilePath.list(new FilenameFilter() {
