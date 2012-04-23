@@ -42,7 +42,8 @@ public class PrimitiveModel extends AbstractStructureModel {
             TypeModel tm = (TypeModel) parent;
             String extensionName = tm.getType().getName();
             String parentDisplayName = tm.getDisplayName();
-            int extensionIndex = parentDisplayName.indexOf(extensionName);
+            // int extensionIndex = parentDisplayName.indexOf(extensionName);
+            int extensionIndex = parentDisplayName.lastIndexOf(extensionName);// changed for bug TDI-19467
             parentName = parentDisplayName.substring(0, extensionIndex - 1);
         }
 
