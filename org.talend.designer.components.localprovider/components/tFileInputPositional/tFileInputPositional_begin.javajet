@@ -108,6 +108,7 @@
 			boolean useExistingDynamic = "true".equals(ElementParameterParser.getValue(node, "__USE_EXISTING_DYNAMIC__"));
             String dyn = dynamic+"_DYNAMIC";
 			if(useExistingDynamic){
+				useStar = true;
 %>
 				routines.system.Dynamic dynamic_<%=cid %> = (routines.system.Dynamic)globalMap.get("<%=dyn%>");
 				int maxColumnCount_<%=cid %> = dynamic_<%=cid %>.getColumnCount();
