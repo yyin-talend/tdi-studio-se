@@ -1378,11 +1378,7 @@ public class CLASS {
                     setStatement.append("}\r\n");
                 }
             }
-            if("postgres_id".equals(getDBMSId())){
-            	return setStatement.toString().replaceAll("java.sql.Types.DATE", "java.sql.Types.TIMESTAMP");
-            }else{
-            	return setStatement.toString();
-            }
+            return setStatement.toString();
         }
     }
     public class DB2SCDManager extends SCDManager {
@@ -1799,6 +1795,106 @@ public class CLASS {
                 return "0";
             }            
         }        
+        public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType) {
+            StringBuilder setStatement = new StringBuilder();
+            boolean isObject = false;
+            if(generatedType.equals("Character")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.CHAR);\r\n");
+            } else if(generatedType.equals("java.util.Date")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.TIMESTAMP);\r\n");
+            } else if(generatedType.equals("byte[]")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.ARRAY);\r\n");
+            } else if(generatedType.equals("Long") || generatedType.equals("Byte") || generatedType.equals("Integer") || generatedType.equals("Short")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.INTEGER);\r\n");
+            } else if(generatedType.equals("String")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.VARCHAR);\r\n");
+            } else if(generatedType.equals("Object")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.OTHER);\r\n");
+            } else if(generatedType.equals("Boolean")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.BOOLEAN);\r\n");
+            } else if(generatedType.equals("Double")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.DOUBLE);\r\n");
+            } else if(generatedType.equals("Float")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.FLOAT);\r\n");
+            }
+            if(!variable.equals("null")) {
+                if(isObject) {
+                    setStatement.append("} else {\r\n");
+                }
+                if(generatedType.equals("byte[]")) {
+                    generatedType = "Bytes";
+                } else if(generatedType.equals("java.util.Date")) {
+                    generatedType = "Date";
+                } else if(generatedType.equals("Integer")) {
+                    generatedType = "Int";
+                } else {
+                    if(generatedType.length() >= 1) {
+                        generatedType = generatedType.substring(0, 1).toUpperCase() + generatedType.substring(1);
+                    }
+                }
+                if(generatedType.equals("Char") || generatedType.equals("Character")) {
+                    if(isObject) {
+                        setStatement.append("if(" + variable + " == null) {\r\n");
+                    } else {
+                        setStatement.append("if(String.valueOf(" + variable + ").toLowerCase().equals(\"null\")) {\r\n");
+                    }
+                    setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.CHAR);\r\n");
+                    setStatement.append("} else if(" + variable + " == '\\0') {\r\n");
+                    setStatement.append(pstmt + ".setString(" + paramIndex + ", \"\");\r\n");
+                    setStatement.append("} else {\r\n");
+                    setStatement.append(pstmt + ".setString(" + paramIndex + ", String.valueOf(" + variable + "));\r\n");
+                    setStatement.append("}\r\n");
+                } else if(generatedType.equals("Date")) {
+                    setStatement.append("if(" + variable + " != null) {\r\n");
+                    setStatement.append(pstmt + ".setTimestamp(" + paramIndex + ", new java.sql.Timestamp(" + variable + ".getTime()));\r\n");
+                    setStatement.append("} else {\r\n");
+                    setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.TIMESTAMP);\r\n");
+                    setStatement.append("}\r\n");
+                } else {
+                    setStatement.append(pstmt + ".set" + generatedType + "(" + paramIndex + ", " + variable + ");\r\n");
+                }
+                if(isObject) {
+                    setStatement.append("}\r\n");
+                }
+            }
+            return setStatement.toString();
+        }
     }
     public class PostgrePlusSCDManager extends SCDManager {
         public PostgrePlusSCDManager(String cid) {
