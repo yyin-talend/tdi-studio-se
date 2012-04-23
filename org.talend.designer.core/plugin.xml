@@ -730,5 +730,10 @@
              id="org.talend.designer.core.tAmazonOracleFilter"
              name="tAmazonOracleXXX">
        </DragAndDropFilter>
+       <DragAndDropFilter
+             clazz="org.talend.designer.core.ui.editor.process.TMDMComponentDndFilter"
+             id="org.talend.designer.core.tMDMComponentDndFilter"
+             name="tMDMXXX">
+       </DragAndDropFilter>
     </extension>
 </plugin>
