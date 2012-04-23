@@ -6,8 +6,10 @@ import java.util.List;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -51,6 +53,16 @@ public class SetGroupAction extends SelectionAction {
                         || !(model.eContainer() instanceof TreeNode) || model.isChoice() || model.isSubstitution()) { //$NON-NLS-N$
                     return false;
                 }
+
+                // fixed for TDI-20808 ,disable group and aggregate for 501
+                AbstractInOutTree abstractTree = XmlMapUtil.getAbstractInOutTree(model);
+                if (abstractTree instanceof OutputXmlTree) {
+                    OutputXmlTree outputTree = ((OutputXmlTree) abstractTree);
+                    if (outputTree.isMultiLoops()) {
+                        return false;
+                    }
+                }
+
                 OutputTreeNode findDownLoopNode = findDownLoopNode(model);
                 if (findDownLoopNode == null) {
                     return false;

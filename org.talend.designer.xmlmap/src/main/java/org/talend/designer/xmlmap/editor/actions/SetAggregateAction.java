@@ -66,7 +66,12 @@ public class SetAggregateAction extends SelectionAction {
 
                 AbstractInOutTree abstractTree = XmlMapUtil.getAbstractInOutTree(model);
                 if (abstractTree instanceof OutputXmlTree) {
-                    if (((OutputXmlTree) abstractTree).isAllInOne()) {
+                    OutputXmlTree outputTree = ((OutputXmlTree) abstractTree);
+                    if (outputTree.isAllInOne()) {
+                        return false;
+                    }
+                    // fixed for TDI-20808 ,disable group and aggregate for 501
+                    if (outputTree.isMultiLoops()) {
                         return false;
                     }
                 }
