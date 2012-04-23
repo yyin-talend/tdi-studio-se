@@ -411,7 +411,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             processor.setProcessorStates(IProcessor.STATES_EDIT);
 
             // modified by wzhang to fix bug 8180 in thales branding.
-            if (useCodeView) {
+            if (useCodeView && !(processor.getProperty().getItem() instanceof JobletProcessItem)) {
                 FileEditorInput input = createFileEditorInput();
                 codeEditor.setInput(input);
             }
