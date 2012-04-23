@@ -147,6 +147,8 @@ public class ImportItemUtil {
 
     private RestoreFolderUtil restoreFolder;
 
+    private boolean isImportItems = false;
+
     public void clear() {
         deletedItems.clear();
     }
@@ -224,6 +226,10 @@ public class ImportItemUtil {
                         itemWithSameId = current;
                     }
                 }
+            }
+            // add for bug TDI-20608
+            if (isImportItems) {
+                nameAvailable = true;
             }
             itemRecord.setExistingItemWithSameId(itemWithSameId);
             boolean idAvailable = itemWithSameId == null;
@@ -1054,6 +1060,8 @@ public class ImportItemUtil {
         }
         projects.clear();
         routineExtModulesMap.clear();
+        // if it is importItems,set true
+        this.isImportItems = true;
         List<ItemRecord> items = new ArrayList<ItemRecord>();
 
         int nbItems = 0;
