@@ -399,10 +399,11 @@ public final class TalendEditorPaletteFactory {
             if (filter != null) {
                 Pattern pattern = Pattern.compile("^[A-Za-z0-9]+$");//$NON-NLS-1$
                 Matcher matcher = pattern.matcher(filter);
-                if (matcher.matches()) {
-                    String regex = getFilterRegex();
-                    needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
+                if (!matcher.matches() && filter != "") {
+                    filter = "None";
                 }
+                String regex = getFilterRegex();
+                needAddNote = "Note".toLowerCase().matches(regex); //$NON-NLS-1$
             }
             // if (isFavorite == false) {
             if ((oraFamily.equals("Misc") || oraFamily.equals("Miscellaneous")) && !noteAeeded && needAddNote) { //$NON-NLS-1$
