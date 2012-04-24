@@ -10,7 +10,7 @@
             icon="icons/businessModels.gif"
             id="org.talend.repository.viewer.root.businessModels"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="BusinessModels"
+            name="%NavigatorContent.businessModels"
             priority="high">
          <triggerPoints>
             <or>
@@ -55,7 +55,7 @@
             icon="icons/jobDesigns.gif"
             id="org.talend.repository.viewer.root.jobDesigns"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="Job Designs"
+            name="%NavigatorContent.jobDesigns"
             priority="high"
             providesSaveables="true">
          <triggerPoints>
@@ -101,7 +101,7 @@
             icon="icons/contexts.gif"
             id="org.talend.repository.viewer.root.contexts"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="Contexts"
+            name="%NavigatorContent.contexts"
             priority="high">
          <triggerPoints>
             <or>
@@ -145,7 +145,7 @@
             icon="icons/routines.gif"
             id="org.talend.repository.viewer.code.routines"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="Routines"
+            name="%NavigatorContent.routines"
             priority="higher">
          <triggerPoints>
             <and>
@@ -191,7 +191,7 @@
             icon="icons/sqlTemplates.png"
             id="org.talend.repository.viewer.root.sqlTemplates"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="SQL Templates"
+            name="%NavigatorContent.sqlTemplates"
             priority="high">
          <triggerPoints>
             <or>
@@ -238,7 +238,7 @@
             icon="icons/documentation.gif"
             id="org.talend.repository.viewer.root.documentation"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
-            name="Documentation"
+            name="%NavigatorContent.documentation"
             priority="normal">
          <possibleChildren>
             <instanceof
@@ -279,7 +279,7 @@
       <navigatorContent
             activeByDefault="true"
             id="org.talend.repository.view.content.di.fake.for.activation"
-            name="di.fake.for.activation">
+            name="%NavigatorContent.activation">
          <enablement>
             <and>
                <instanceof
