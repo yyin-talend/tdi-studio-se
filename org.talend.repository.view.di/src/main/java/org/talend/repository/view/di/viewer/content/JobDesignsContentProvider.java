@@ -47,14 +47,16 @@ public class JobDesignsContentProvider extends ProjectRepoDirectChildrenNodeCont
      */
     @Override
     public Saveable[] getSaveables() {
-        Saveable[] saveables = null;
-        IEditorPart currEditorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        if (currEditorPart == null)
-            saveables = new Saveable[0];
-        else {
-            if (currEditorPart.isDirty()) {
-                saveables = new Saveable[1];
-                saveables[0] = new TalendSaveablePart(currEditorPart);
+        Saveable[] saveables = new Saveable[0];
+        if (PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage() != null) {
+            IEditorPart currEditorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+            if (currEditorPart == null)
+                saveables = new Saveable[0];
+            else {
+                if (currEditorPart.isDirty()) {
+                    saveables = new Saveable[1];
+                    saveables[0] = new TalendSaveablePart(currEditorPart);
+                }
             }
         }
         return saveables;
