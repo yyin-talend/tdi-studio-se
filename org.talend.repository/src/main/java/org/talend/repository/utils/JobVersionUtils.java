@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
@@ -36,17 +37,56 @@ public class JobVersionUtils {
     public static String getCurrentVersion(RepositoryNode repositoryNode) {
         try {
             // alert for bug TDI-20132
-            List<IRepositoryNode> nodeChildren = repositoryNode.getChildren();
-            if ("Folder".equals(repositoryNode.getObject().getRepositoryObjectType() + "")
-                    || ("-1".equals(repositoryNode.getId()) && nodeChildren != null) && (nodeChildren.size() == 1)) {
-                return ProxyRepositoryFactory.getInstance().getLastVersion(nodeChildren.get(0).getId()).getVersion();
-            } else {
+            if (repositoryNode.getObject() != null
+                    && !repositoryNode.getObject().getRepositoryObjectType().equals(ERepositoryObjectType.FOLDER)) {
                 return ProxyRepositoryFactory.getInstance().getLastVersion(repositoryNode.getId()).getVersion();
             }
+            List<IRepositoryNode> nodeChildren = repositoryNode.getChildren();
+            if (nodeChildren != null) {
+                for (IRepositoryNode node : nodeChildren) {
+                    if (node.getObject() != null
+                            && node.getObject().getRepositoryObjectType().equals(ERepositoryObjectType.FOLDER)) {
+                        String currentVersion = getCurrentVersion((RepositoryNode) node);
+                        if (currentVersion != null && !"".equals(currentVersion)) {
+                            return currentVersion;
+                        }
+                    } else {
+                        if (node.getObject() != null) {
+                            return ProxyRepositoryFactory.getInstance().getLastVersion(node.getId()).getVersion();
+                        }
+                    }
+                }
+            }
+
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
+        return "";
+    }
+
+    /**
+     * wfy Comment method "getCurrentID",fixed bug TDI-20132.
+     * 
+     * @return
+     */
+    public static String getCurrentID(RepositoryNode repositoryNode) {
+        List<IRepositoryNode> nodeChildren = repositoryNode.getChildren();
+        if (nodeChildren != null) {
+            for (IRepositoryNode node : nodeChildren) {
+                if (node.getObject() != null && node.getObject().getRepositoryObjectType().equals(ERepositoryObjectType.FOLDER)) {
+                    String currentID = getCurrentID((RepositoryNode) node);
+                    if (currentID != null && !"".equals(currentID)) {
+                        return currentID;
+                    }
+                } else {
+                    if (node.getObject() != null) {
+                        return node.getId();
+                    }
+                }
+            }
+        }
         return ""; //$NON-NLS-1$
+
     }
 
     /**
@@ -56,9 +96,16 @@ public class JobVersionUtils {
      */
     public static String[] getAllVersions(RepositoryNode repositoryNode) {
         List<String> versionList = new ArrayList<String>();
+        String nodeID = "";
+        if (repositoryNode.getObject() != null
+                && !repositoryNode.getObject().getRepositoryObjectType().equals(ERepositoryObjectType.FOLDER)) {
+            nodeID = repositoryNode.getId();
+        } else {
+            nodeID = getCurrentID(repositoryNode);
+        }
         try {
             List<IRepositoryViewObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
-                    repositoryNode.getRoot().getProject(), repositoryNode.getId(), false);
+                    repositoryNode.getRoot().getProject(), nodeID, false);
             for (IRepositoryViewObject repositoryObject : allVersion) {
                 versionList.add(repositoryObject.getVersion());
             }
