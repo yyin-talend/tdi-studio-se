@@ -82,7 +82,6 @@ import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.viewer.ui.provider.RepoCommonViewerProvider;
-import org.talend.repository.viewer.ui.provider.RepositoryContentProvider;
 
 /**
  * Initialy copied from org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage.
@@ -356,12 +355,10 @@ class ExportItemWizardPage extends WizardPage {
         }
         if (objectType != null) {
             CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
-            final IContentProvider contentProvider = exportItemsTreeViewer.getContentProvider();
-            if (contentProvider instanceof RepositoryContentProvider) {
-                ProjectRepositoryNode root = ((RepositoryContentProvider) contentProvider).getRoot();
-                RepositoryNode rootRepositoryNode = root.getRootRepositoryNode(objectType);
-                if (rootRepositoryNode != null
-                        && (objectType == ERepositoryObjectType.METADATA || objectType == ERepositoryObjectType.ROUTINES || objectType == ERepositoryObjectType.DOCUMENTATION)) {
+            if (objectType == ERepositoryObjectType.METADATA || objectType == ERepositoryObjectType.ROUTINES
+                    || objectType == ERepositoryObjectType.DOCUMENTATION) {
+                RepositoryNode rootRepositoryNode = ProjectRepositoryNode.getInstance().getRootRepositoryNode(objectType);
+                if (rootRepositoryNode != null) {
                     exportItemsTreeViewer.expandToLevel(rootRepositoryNode, 2);
                 }
             }

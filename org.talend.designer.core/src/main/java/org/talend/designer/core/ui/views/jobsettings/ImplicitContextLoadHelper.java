@@ -33,7 +33,6 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.DesignerPlugin;
@@ -45,10 +44,6 @@ import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.IRepositoryNode;
-import org.talend.repository.model.IRepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.viewer.ui.provider.RepositoryContentProvider;
 
 /**
  * DOC hcw class global comment. Detailled comment
@@ -56,37 +51,6 @@ import org.talend.repository.viewer.ui.provider.RepositoryContentProvider;
 public class ImplicitContextLoadHelper {
 
     private static final IPreferenceStore PREFERENCE_STORE = DesignerPlugin.getDefault().getPreferenceStore();
-
-    public static ConnectionItem findConnectionItemByLabel(String connectionLabel) {
-        RepositoryContentProvider contentProvider = (RepositoryContentProvider) RepositoryManagerHelper.getRepositoryView()
-                .getViewer().getContentProvider();
-        RepositoryNode repositoryNode = contentProvider.getRootRepositoryNode(ERepositoryObjectType.METADATA_CONNECTIONS);
-
-        return findConnectionItemByLabel(contentProvider, repositoryNode, connectionLabel);
-    }
-
-    public static ConnectionItem findConnectionItemByLabel(RepositoryContentProvider contentProvider,
-            RepositoryNode repositoryNode, String connectionLabel) {
-
-        ConnectionItem connectionItem = null;
-
-        if ((repositoryNode.getType() == ENodeType.SYSTEM_FOLDER || repositoryNode.getType() == ENodeType.SIMPLE_FOLDER)
-                && contentProvider.getChildren(repositoryNode).length > 0) {
-            for (IRepositoryNode node : repositoryNode.getChildren()) {
-                connectionItem = findConnectionItemByLabel(contentProvider, (RepositoryNode) node, connectionLabel);
-                if (connectionItem != null) {
-                    return connectionItem;
-                }
-            }
-        }
-
-        if (repositoryNode.getObject() != null && repositoryNode.getObject().getLabel().equals(connectionLabel)) {
-            return (ConnectionItem) repositoryNode.getObject().getProperty().getItem();
-        }
-
-        return connectionItem;
-
-    }
 
     public static String getRepositoryTypeLabel(ConnectionItem connectionItem) {
         if (connectionItem == null) {
