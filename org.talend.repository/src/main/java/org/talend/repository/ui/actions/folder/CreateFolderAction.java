@@ -78,6 +78,7 @@ public class CreateFolderAction extends AContextualAction {
             WizardDialog dialog = new WizardDialog(activeShell, processWizard);
             dialog.setPageSize(400, 60);
             dialog.create();
+            dialog.open();
         }
     }
 
