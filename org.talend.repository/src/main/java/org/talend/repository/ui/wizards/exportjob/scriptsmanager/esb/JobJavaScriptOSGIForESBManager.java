@@ -907,6 +907,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
             StringBuffer externalJMSImportSB = new StringBuffer();
             String externalCXFImport = "";
+
+			// http://jira.talendforge.org/browse/TESB-5670 LiXiaopeng
+			String httpImportPkgs = "";
             Set<String> jmsImportPkgs = new HashSet<String>();
 
             for (ProcessItem pi : itemToBeExport) {
@@ -926,6 +929,14 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                                 + ",org.talend.esb.sam.agent.feature;version=\"[2.0.0,6.0.0)\"";
                         continue;
                     }
+
+					if ("cHttp".equals(next.getComponentName())) {
+						httpImportPkgs = ",org.apache.camel.component.http,"
+								+ "org.apache.commons.httpclient.protocol,"
+								+ "org.apache.commons.httpclient.params";
+
+						continue;
+					}
 
                     // http://jira.talendforge.org/browse/TESB-4072, compute
                     // additional import packages
@@ -991,7 +1002,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     + ",org.osgi.framework;version=\"[1.5,2)\"" //$NON-NLS-1$
                     + ",org.osgi.service.blueprint;version=\"[1.0.0,2.0.0)\"" //$NON-NLS-1$
                     + ",routines.system.api" //$NON-NLS-1$
-                    + externalJMSImportSB.toString() + externalCXFImport);
+					+ externalJMSImportSB.toString()
+					+ externalCXFImport
+					+ httpImportPkgs);
         } else {
             a.put(new Attributes.Name("Import-Package"), //$NON-NLS-1$
                     "routines.system.api;resolution:=optional" //$NON-NLS-1$
