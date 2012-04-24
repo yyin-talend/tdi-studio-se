@@ -303,7 +303,8 @@ class GenerateMethodUtil {
 			} else {
 				if(NodeType.ELEMENT.equals(group.getNodeType()))
 				for (TreeNode element : group.getChildren()) {
-					if (!element.isMain() && !element.isLoop()) {
+					boolean isVirtualNode = element.isSubstitution() || element.isChoice();
+					if ((!element.isMain() && !element.isLoop()) || isVirtualNode) {
 						list.addAll(getGroupByNodeList(element));
 					}
 				}
@@ -835,8 +836,11 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 	private void generateGroupCmpCode(OutputTreeNode node, int index) {
 		for(TreeNode tmpNode : node.getChildren()) {
 			if((tmpNode.isGroup()) && !tmpNode.isLoop()) {
-				groupbyNodeList.get(index).add(generateMethodUtil.getGroupByNodeList(tmpNode));
-				groupList.get(index).add(tmpNode);
+				boolean isVirtualNode = tmpNode.isSubstitution() || tmpNode.isChoice();
+				if(!isVirtualNode) {
+					groupbyNodeList.get(index).add(generateMethodUtil.getGroupByNodeList(tmpNode));
+					groupList.get(index).add(tmpNode);
+				}
 				generateGroupCmpCode((OutputTreeNode)tmpNode, index);
 			}
 		}
