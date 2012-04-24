@@ -238,8 +238,8 @@ if (conns!=null) {
 								routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i);
 								int currentFieldLength_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getLength();
 								substringEnd<%=cid %> = substringBegin<%=cid %>+currentFieldLength_<%=cid%>;
-								if(substringEnd<%=cid %> > row_<%=cid %>.length()){
-									substringEnd<%=cid %> = row_<%=cid %>.length();
+								if(substringEnd<%=cid %> > rowLen_<%=cid %>){
+									substringEnd<%=cid %> = rowLen_<%=cid %>;
 								}
 <%
 								if(useByte){
@@ -252,14 +252,14 @@ if (conns!=null) {
 									String currentColumnValue_<%=cid%> = row_<%=cid %>.substring(substringBegin<%=cid %>, substringEnd<%=cid %>);
 <%
 								}
-								if(isTrimAll || (hasDynamic &&(("true").equals(trimSelects.get(trimSelects.size()-1).get("TRIM"))))){
-%>
-									currentColumnValue_<%=cid%> = currentColumnValue_<%=cid%>.trim();
-<%
-								}
 								if(advanced){
 %>
 									currentColumnValue_<%=cid%> = TalendString.talendTrim(currentColumnValue_<%=cid%>, <%=paddingChar %>, <%=align %>);
+<%
+								}
+								if(isTrimAll || (hasDynamic &&(("true").equals(trimSelects.get(trimSelects.size()-1).get("TRIM"))))){
+%>
+									currentColumnValue_<%=cid%> = currentColumnValue_<%=cid%>.trim();
 <%
 								}
 								if(advancedSeparator) { 
@@ -727,8 +727,8 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 					routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i);
 					int currentFieldLength_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getLength();
 					substringEnd<%=cid %> = substringBegin<%=cid %>+currentFieldLength_<%=cid%>;
-					if(substringEnd<%=cid %> > row_<%=cid %>.length()){
-						substringEnd<%=cid %> = row_<%=cid %>.length();
+					if(substringEnd<%=cid %> > rowLen_<%=cid %>){
+						substringEnd<%=cid %> = rowLen_<%=cid %>;
 					}
 <%
 					if(useByte){
@@ -825,8 +825,8 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
 						routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i);
 						int currentFieldLength_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getLength();
 						substringEnd<%=cid %> = substringBegin<%=cid %>+currentFieldLength_<%=cid%>;
-						if(substringEnd<%=cid %> > row_<%=cid %>.length()){
-							substringEnd<%=cid %> = row_<%=cid %>.length();
+						if(substringEnd<%=cid %> > rowLen_<%=cid %>){
+							substringEnd<%=cid %> = rowLen_<%=cid %>;
 						}
 <%
 						if(useByte){
