@@ -45,7 +45,8 @@ public enum EElementType {
                 EComponentCategory.DEBUGRUN,
                 EComponentCategory.ADVANCESETTING,
                 EComponentCategory.TARGET),
-    SCHEDULE_4_HADOOP(EComponentCategory.SCHEDULE_4_HADOOP_EXECUTE_JOB, EComponentCategory.SCHEDULE_4_HADOOP_MONITORING);
+    SCHEDULE_4_HADOOP(EComponentCategory.SCHEDULE_4_HADOOP_EXECUTE_JOB, EComponentCategory.SCHEDULE_4_HADOOP_MONITORING),
+    SCHEDULE_4_HADOOP_NON_WINDOWS(EComponentCategory.SCHEDULE_4_HADOOP_EXECUTE_JOB);
 
     private EComponentCategory[] categories;
 
