@@ -24,6 +24,7 @@ imports="
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	String axTable = ElementParameterParser.getValue(node,"__TABLE__");
+	String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
 	
 	List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__");
@@ -121,6 +122,29 @@ class VariantTool{
 		}
 		return "new org.jinterop.dcom.core.JIVariant.EMPTY";
 	}
+	
+	public String whereStatement(Column column, String connectionType){
+		if("DCOM".equals(connectionType)){
+			return column.name + " " + column.operator + " \\\"\"+" + column.value + "+\"\\\"";
+		}else{
+			StringBuffer whereStatement = new StringBuffer();
+			whereStatement.append(column.name);
+			whereStatement.append(" ");
+			whereStatement.append(column.operator);
+			whereStatement.append(" ");
+			if(("Int").equals(column.dataType) || ("Float").equals(column.dataType) || ("Double").equals(column.dataType)
+				|| ("Short").equals(column.dataType) || ("Long").equals(column.dataType) || ("BigDecimal").equals(column.dataType)){
+				whereStatement.append("\"+");
+				whereStatement.append(column.value);
+				whereStatement.append("+\"");
+			}else{
+				whereStatement.append("\\\"\"+");
+				whereStatement.append(column.value);
+				whereStatement.append("+\"\\\"");
+			}	
+			return whereStatement.toString();
+		}
+	}
 }
 VariantTool vTool = new VariantTool();
 
@@ -176,9 +200,11 @@ for(Column column : stmtStructure) {
             if(column.column.isKey()) {
             	if(whereStmt.length()>0){
             		whereStmt.append(" && ");
-            		whereStmt.append("%1." + replacedColumn.name + " " + replacedColumn.operator + " \\\"\"+" + replacedColumn.value + "+\"\\\"" );
+            		//whereStmt.append("%1." + replacedColumn.name + " " + replacedColumn.operator + " \\\"\"+" + replacedColumn.value + "+\"\\\"" );
+            		whereStmt.append("%1." + vTool.whereStatement(replacedColumn, connectionType));
             	}else{
-            		whereStmt.append(" %1." + replacedColumn.name + " " + replacedColumn.operator + " \\\"\"+" + replacedColumn.value+ "+\"\\\"");
+            		//whereStmt.append(" %1." + replacedColumn.name + " " + replacedColumn.operator + " \\\"\"+" + replacedColumn.value+ "+\"\\\"");
+            		whereStmt.append(" %1." + vTool.whereStatement(replacedColumn, connectionType));
             	}
             } else {
                 updateValueList.add(replacedColumn);
@@ -193,9 +219,11 @@ for(Column column : stmtStructure) {
             if(column.column.isKey()) {
             	if(whereStmt.length()>0){
             		whereStmt.append(" && ");
-            		whereStmt.append("%1." + column.name + " " + column.operator + " \\\"\"+" + column.value+"+\"\\\"");
+            		//whereStmt.append("%1." + column.name + " " + column.operator + " \\\"\"+" + column.value+"+\"\\\"");
+            		whereStmt.append("%1." + vTool.whereStatement(column, connectionType));
             	}else{
-            		whereStmt.append(" %1." + column.name + " " + column.operator + " \\\"\"+" + column.value+"+\"\\\"");
+            		//whereStmt.append(" %1." + column.name + " " + column.operator + " \\\"\"+" + column.value+"+\"\\\"");
+            		whereStmt.append(" %1." + vTool.whereStatement(column, connectionType));
             	}
             } else {
                 updateValueList.add(column);
@@ -208,11 +236,17 @@ for(Column column : stmtStructure) {
 if(!("INSERT").equals(dataAction)){
 	String executeStmt = "\"select forupdate %1 where"+whereStmt.toString()+"\"";
 %>
-	record_<%=cid%>.callMethod("ExecuteStmt", new Object[] { <%=vTool.vStr(executeStmt)%>});
+	<%if("DCOM".equals(connectionType)){%>
+		record_<%=cid%>.callMethod("ExecuteStmt", new Object[] { <%=vTool.vStr(executeStmt)%>});
+	<%}else{%>
+		dynRec_<%=cid%>.invoke("ExecuteStmt", new Object[] { <%=executeStmt%> });
+	<%}%>
 <%
 }else{
 %>
-	record_<%=cid%>.callMethod("InitValue");
+	<%if("DCOM".equals(connectionType)){%>
+		record_<%=cid%>.callMethod("InitValue");
+	<%}%>
 <%
 }
 
@@ -225,12 +259,20 @@ if(incomingConnName != null && columnList != null){
     if(("INSERT").equals(dataAction)){
 		for(Column column : insertValueList){
 %>
-	record_<%=cid%>.put("field",new Object[]{<%=vTool.vStr("\""+column.name+"\"")%>,<%=vTool.vCulomnVale(column,incomingConnName)%>});
+			<%if("DCOM".equals(connectionType)){%>
+				record_<%=cid%>.put("field",new Object[]{<%=vTool.vStr("\""+column.name+"\"")%>,<%=vTool.vCulomnVale(column,incomingConnName)%>});
+			<%}else{%>
+				dynRec_<%=cid%>.invoke("set_Field", new Object[] { "<%=column.name%>", <%=incomingConnName%>.<%=column.name%> });
+			<%}%>
 <%
 		}
 %>
     try{
-        record_<%=cid%>.callMethod("Insert");
+    	<%if("DCOM".equals(connectionType)){%>
+        	record_<%=cid%>.callMethod("Insert");
+        <%}else{%>
+        	dynRec_<%=cid%>.invoke("Insert");
+        <%}%>
         insertedCount_<%=cid%>++;
         nb_line_<%=cid%>++;
     }catch(Exception e){
@@ -265,16 +307,31 @@ if(incomingConnName != null && columnList != null){
 	}else if(("UPDATE").equals(dataAction)){
 %>
         try{
-            while(record_<%=cid%>.get("Found").getObjectAsBoolean()){
+        	<%if("DCOM".equals(connectionType)){%>
+            	while(record_<%=cid%>.get("Found").getObjectAsBoolean()){
+            <%}else{%>
+            	while(((Boolean)dynRec_<%=cid%>.accessGenericProperty("Found")).booleanValue()){
+            		netBC_<%=cid%>.invoke("TTSBegin");
+            <%}%>
 <%
 		for(Column column : updateValueList){
 %>
+			<%if("DCOM".equals(connectionType)){%>
 				record_<%=cid%>.put("field",new Object[]{<%=vTool.vStr("\""+column.name+"\"")%>,<%=vTool.vCulomnVale(column,incomingConnName)%>});
+			<%}else{%>
+				dynRec_<%=cid%>.invoke("set_Field", new Object[]{"<%=column.name%>", <%=incomingConnName%>.<%=column.name%>});
+			<%}%>
 <%
 		}
 %>	
+			<%if("DCOM".equals(connectionType)){%>
 				record_<%=cid%>.callMethod("Update");
                 record_<%=cid%>.callMethod("Next");
+            <%}else{%>
+            	dynRec_<%=cid%>.invoke("Update");
+            	netBC_<%=cid%>.invoke("TTSCommit");
+            	dynRec_<%=cid%>.invoke("Next");
+            <%}%>
                 updatedCount_<%=cid%>++;
             }
             nb_line_<%=cid%>++;
@@ -309,18 +366,36 @@ if(incomingConnName != null && columnList != null){
 <%
 	}else if (("INSERT_OR_UPDATE").equals(dataAction)){
 %>
+		
+        <%if("DCOM".equals(connectionType)){%>
 		if(record_<%=cid%>.get("Found").getObjectAsBoolean()){
             try{
 				while(record_<%=cid%>.get("Found").getObjectAsBoolean()){
+		<%}else{%>
+		if(((Boolean)dynRec_<%=cid%>.accessGenericProperty("Found")).booleanValue()){
+            try{
+				while(((Boolean)dynRec_<%=cid%>.accessGenericProperty("Found")).booleanValue()){
+					netBC_<%=cid%>.invoke("TTSBegin");
+        <%}%>
 <%
 		for(Column column : updateValueList){
 %>
-					record_<%=cid%>.put("field",new Object[]{<%=vTool.vStr("\""+column.name+"\"")%>,<%=vTool.vCulomnVale(column,incomingConnName)%>});
+					<%if("DCOM".equals(connectionType)){%>
+						record_<%=cid%>.put("field",new Object[]{<%=vTool.vStr("\""+column.name+"\"")%>,<%=vTool.vCulomnVale(column,incomingConnName)%>});
+					<%}else{%>
+						dynRec_<%=cid%>.invoke("set_Field", new Object[]{"<%=column.name%>", <%=incomingConnName%>.<%=column.name%>});
+					<%}%>
 <%
 		}
 %>	
-					record_<%=cid%>.callMethod("Update");
-                	record_<%=cid%>.callMethod("Next");
+					<%if("DCOM".equals(connectionType)){%>
+						record_<%=cid%>.callMethod("Update");
+		                record_<%=cid%>.callMethod("Next");
+		            <%}else{%>
+		            	dynRec_<%=cid%>.invoke("Update");
+		            	netBC_<%=cid%>.invoke("TTSCommit");
+		            	dynRec_<%=cid%>.invoke("Next");
+		            <%}%>
                 	updatedCount_<%=cid%>++;
             	}
             }catch(Exception e){
@@ -356,11 +431,19 @@ if(incomingConnName != null && columnList != null){
 <%
 			for(Column column : insertValueList){
 %>
-				record_<%=cid%>.put("field",new Object[]{<%=vTool.vStr("\""+column.name+"\"")%>,<%=vTool.vCulomnVale(column,incomingConnName)%>});
+				<%if("DCOM".equals(connectionType)){%>
+					record_<%=cid%>.put("field",new Object[]{<%=vTool.vStr("\""+column.name+"\"")%>,<%=vTool.vCulomnVale(column,incomingConnName)%>});
+				<%}else{%>
+					dynRec_<%=cid%>.invoke("set_Field", new Object[] { "<%=column.name%>", <%=incomingConnName%>.<%=column.name%> });
+				<%}%>
 <%
 			}
 %>
-                record_<%=cid%>.callMethod("Insert");
+                <%if("DCOM".equals(connectionType)){%>
+		        	record_<%=cid%>.callMethod("Insert");
+		        <%}else{%>
+		        	dynRec_<%=cid%>.invoke("Insert");
+		        <%}%>
         		insertedCount_<%=cid%>++;
             }catch(Exception e)
             {
@@ -398,16 +481,31 @@ if(incomingConnName != null && columnList != null){
 %>
 		int updateFlag_<%=cid%>=0;
         try{
-       		while(record_<%=cid%>.get("Found").getObjectAsBoolean()){
+       		<%if("DCOM".equals(connectionType)){%>
+            	while(record_<%=cid%>.get("Found").getObjectAsBoolean()){
+            <%}else{%>
+            	while(((Boolean)dynRec_<%=cid%>.accessGenericProperty("Found")).booleanValue()){
+            		netBC_<%=cid%>.invoke("TTSBegin");
+            <%}%>
 <%
 		for(Column column : updateValueList){
 %>
-				record_<%=cid%>.put("field",new Object[]{<%=vTool.vStr("\""+column.name+"\"")%>,<%=vTool.vCulomnVale(column,incomingConnName)%>});
+				<%if("DCOM".equals(connectionType)){%>
+					record_<%=cid%>.put("field",new Object[]{<%=vTool.vStr("\""+column.name+"\"")%>,<%=vTool.vCulomnVale(column,incomingConnName)%>});
+				<%}else{%>
+					dynRec_<%=cid%>.invoke("set_Field", new Object[]{"<%=column.name%>", <%=incomingConnName%>.<%=column.name%>});
+				<%}%>
 <%
 		}
 %>	
-				record_<%=cid%>.callMethod("Update");
-                record_<%=cid%>.callMethod("Next");
+                <%if("DCOM".equals(connectionType)){%>
+					record_<%=cid%>.callMethod("Update");
+	                record_<%=cid%>.callMethod("Next");
+	            <%}else{%>
+	            	dynRec_<%=cid%>.invoke("Update");
+	            	netBC_<%=cid%>.invoke("TTSCommit");
+	            	dynRec_<%=cid%>.invoke("Next");
+	            <%}%>
                 updateFlag_<%=cid%>++;
                 updatedCount_<%=cid%>++;
             }
@@ -446,11 +544,19 @@ if(incomingConnName != null && columnList != null){
 <%
 			for(Column column : insertValueList){
 %>
-				record_<%=cid%>.put("field",new Object[]{<%=vTool.vStr("\""+column.name+"\"")%>,<%=vTool.vCulomnVale(column,incomingConnName)%>});
+				<%if("DCOM".equals(connectionType)){%>
+					record_<%=cid%>.put("field",new Object[]{<%=vTool.vStr("\""+column.name+"\"")%>,<%=vTool.vCulomnVale(column,incomingConnName)%>});
+				<%}else{%>
+					dynRec_<%=cid%>.invoke("set_Field", new Object[] { "<%=column.name%>", <%=incomingConnName%>.<%=column.name%> });
+				<%}%>
 <%
 			}
 %>
-                record_<%=cid%>.callMethod("Insert");
+                <%if("DCOM".equals(connectionType)){%>
+		        	record_<%=cid%>.callMethod("Insert");
+		        <%}else{%>
+		        	dynRec_<%=cid%>.invoke("Insert");
+		        <%}%>
         		insertedCount_<%=cid%>++;
             }catch(Exception e){
                 whetherReject_<%=cid%> = true;
@@ -483,11 +589,21 @@ if(incomingConnName != null && columnList != null){
 	}else if (("DELETE").equals(dataAction)){
 %>
     try{
+    	<%if("DCOM".equals(connectionType)){%>
 	    while(record_<%=cid%>.get("Found").getObjectAsBoolean()){
 			record_<%=cid%>.callMethod("Delete");
             record_<%=cid%>.callMethod("Next");
             updatedCount_<%=cid%>++;
         }
+        <%}else{%>
+        while(((Boolean)dynRec_<%=cid%>.accessGenericProperty("Found")).booleanValue()){
+            netBC_<%=cid%>.invoke("TTSBegin");
+			dynRec_<%=cid%>.invoke("Delete");
+            netBC_<%=cid%>.invoke("TTSCommit");
+            dynRec_<%=cid%>.invoke("Next");
+            updatedCount_<%=cid%>++;
+        }	
+        <%}%>
     }catch(Exception e){
         whetherReject_<%=cid%> = true;
 <%

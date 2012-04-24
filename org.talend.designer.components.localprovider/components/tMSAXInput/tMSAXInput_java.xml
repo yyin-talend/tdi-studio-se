@@ -40,11 +40,28 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:MSAX"
     />
-
+    <PARAMETER NAME="CONNECTION_TYPE" FIELD="CLOSED_LIST" NUM_ROW="5"
+			REQUIRED="true">
+			<ITEMS DEFAULT="DCOM">
+				<ITEM NAME="DCOM" VALUE="DCOM" />
+				<ITEM NAME="DOTNET" VALUE="DOTNET" />
+			</ITEMS>
+	</PARAMETER>
+    
+    <PARAMETER 
+        NAME="ASSEMBLY_NAME" 
+        FIELD="FILE" 
+        NUM_ROW="6"
+        SHOW_IF="CONNECTION_TYPE == 'DOTNET'"
+        REQUIRED="true"
+    >
+		<DEFAULT>"C:\\Program Files (x86)\\Microsoft Dynamics AX\\60\\Client\\Bin\\Microsoft.Dynamics.BusinessConnectorNet.dll"</DEFAULT>
+	</PARAMETER>
+    
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="10"
       REPOSITORY_VALUE="SERVER_NAME"
       REQUIRED="true"
     >
@@ -52,19 +69,29 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="DOMAIN"
+      NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="3"
-      REPOSITORY_VALUE="DOMAIN"
+      NUM_ROW="10"
       REQUIRED="true"
+      SHOW_IF="CONNECTION_TYPE == 'DOTNET'"
     >
-      <DEFAULT>""</DEFAULT>
+      <DEFAULT></DEFAULT>
     </PARAMETER>
     
     <PARAMETER
+      NAME="AOS_SERVER_INSTANCE"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      REQUIRED="true"
+      SHOW_IF="CONNECTION_TYPE == 'DOTNET'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="15"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
     >
@@ -74,9 +101,49 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="15"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="DOMAIN"
+      FIELD="TEXT"
+      NUM_ROW="15"
+      REPOSITORY_VALUE="DOMAIN"
+      REQUIRED="true"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="COMPANY"
+      FIELD="TEXT"
+      NUM_ROW="16"
+      REQUIRED="true"
+      SHOW_IF="CONNECTION_TYPE == 'DOTNET'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="LANGUAGE"
+      FIELD="TEXT"
+      NUM_ROW="16"
+      REQUIRED="true"
+      SHOW_IF="CONNECTION_TYPE == 'DOTNET'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="CONFIGURATION_FILE"
+      FIELD="FILE"
+      NUM_ROW="17"
+      REQUIRED="true"
+      SHOW_IF="CONNECTION_TYPE == 'DOTNET'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -84,7 +151,7 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="5"
+      NUM_ROW="20"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -92,7 +159,7 @@
     <PARAMETER
       NAME="TABLE"
       FIELD="TEXT"
-      NUM_ROW="6"
+      NUM_ROW="30"
     >
       <DEFAULT>"EmplTable"</DEFAULT>
     </PARAMETER>
@@ -101,7 +168,7 @@
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO"
-      NUM_ROW="8"
+      NUM_ROW="40"
       REQUIRED="true"
     >
       <DEFAULT>"select * from %1 where %1.Name == \"axapta\""</DEFAULT>
@@ -112,14 +179,15 @@
 
    <CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="MSAX-JInterop" MODULE="a-j-interop.jar" REQUIRED="true" />
-       <IMPORT NAME="MSAX-Iwonbat" MODULE="b-iwombat.jar" REQUIRED="true" />
-       <IMPORT NAME="MSAX-Jarapac" MODULE="b-jarapac.jar" REQUIRED="true" />
-       <IMPORT NAME="MSAX-Jcifs" MODULE="b-jcifs-1.2.9.jar" REQUIRED="true" />
-       <IMPORT NAME="MSAX-Jcifs-ntlm-auth" MODULE="b-jcifs-ntlm-auth.jar" REQUIRED="true" />
-       <IMPORT NAME="MSAX-Ncacn_ip_tcp" MODULE="b-ncacn_ip_tcp.jar" REQUIRED="true" />
-       <IMPORT NAME="MSAX-Ncacn_np" MODULE="b-ncacn_np.jar" REQUIRED="true" />
-       <IMPORT NAME="MSAX-Ntlm-securityt" MODULE="b-ntlm-security.jar" REQUIRED="true" />
+       <IMPORT NAME="MSAX-JInterop" MODULE="a-j-interop.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
+       <IMPORT NAME="MSAX-Iwonbat" MODULE="b-iwombat.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
+       <IMPORT NAME="MSAX-Jarapac" MODULE="b-jarapac.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
+       <IMPORT NAME="MSAX-Jcifs" MODULE="b-jcifs-1.2.9.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
+       <IMPORT NAME="MSAX-Jcifs-ntlm-auth" MODULE="b-jcifs-ntlm-auth.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
+       <IMPORT NAME="MSAX-Ncacn_ip_tcp" MODULE="b-ncacn_ip_tcp.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'" />
+       <IMPORT NAME="MSAX-Ncacn_np" MODULE="b-ncacn_np.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
+       <IMPORT NAME="MSAX-Ntlm-securityt" MODULE="b-ntlm-security.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DCOM'"/>
+       <IMPORT NAME="MSAX-NET-CONNECTOR" MODULE="janet-java-1.0.jar" REQUIRED="false" REQUIRED_IF="CONNECTION_TYPE == 'DOTNET'"/>
      </IMPORTS>
    </CODEGENERATION>
 

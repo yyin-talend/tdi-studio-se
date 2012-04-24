@@ -9,10 +9,20 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-%>
-	axapta3_<%=cid%>.callMethod("TTSCommit");
-	axapta3_<%=cid%>.callMethod("Logoff");
 	
+	String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
+	
+	if("DCOM".equals(connectionType)){
+	%>
+		axapta3_<%=cid%>.callMethod("TTSCommit");
+		axapta3_<%=cid%>.callMethod("Logoff");
+	<%
+	}else{
+	%>
+		netBC_<%=cid%>.invoke("Logoff");
+	<%
+	}
+	%>
 	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
 	nb_line_update_<%=cid%>=nb_line_update_<%=cid%> + updatedCount_<%=cid%>;
 	nb_line_inserted_<%=cid%>=nb_line_inserted_<%=cid%> + insertedCount_<%=cid%>;
