@@ -12,11 +12,8 @@
 // ============================================================================
 package org.talend.repository.view.di;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.talend.repository.navigator.TalendRepositoryRoot;
-import org.talend.repository.view.di.viewer.content.ContentAdapterFactory;
 
 /**
  * The activator class controls the plug-in life cycle register adapters
@@ -44,17 +41,6 @@ public class DIRepositoryViewPlugin extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
-        registerAllAdapters();
-    }
-
-    /**
-     * Register all adatpters caus using the extension points does not activate the adapters automatically.
-     * 
-     * DOC sgandon Comment method "registerAllAdapters".
-     */
-    private void registerAllAdapters() {
-        Platform.getAdapterManager().registerAdapters(new ContentAdapterFactory(), TalendRepositoryRoot.class);
-
     }
 
     /*
