@@ -524,7 +524,6 @@ public class TOSLoginComposite extends Composite {
         deleteButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
-                refresh();
                 Shell activeShell = Display.getCurrent().getActiveShell();
                 SelectDeleteProjectDialog dialog = new SelectDeleteProjectDialog(activeShell, true);
                 if (dialog.open() == Dialog.OK) {
@@ -556,6 +555,7 @@ public class TOSLoginComposite extends Composite {
                         }
                     }
                 }
+                refresh();
             }
         });
 
