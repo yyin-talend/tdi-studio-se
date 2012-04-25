@@ -56,8 +56,7 @@
             id="org.talend.repository.viewer.root.jobDesigns"
             labelProvider="org.talend.repository.viewer.label.RepositoryViewLabelProvider"
             name="%NavigatorContent.jobDesigns"
-            priority="high"
-            providesSaveables="true">
+            priority="high">
          <triggerPoints>
             <or>
                <adapt
