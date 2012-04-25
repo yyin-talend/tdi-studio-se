@@ -292,7 +292,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="phone_fax" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="email1" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="email2" NULLABLE="true" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="3" NAME="email_opt_out" NULLABLE="true" TYPE="id_String"/>
+         <!--<COLUMN KEY="false" LENGTH="3" NAME="email_opt_out" NULLABLE="true" TYPE="id_String"/>-->
          <COLUMN KEY="false" LENGTH="255" NAME="primary_address_street" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="primary_address_city" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="primary_address_state" NULLABLE="true" TYPE="id_String"/>
@@ -314,7 +314,7 @@
          <COLUMN KEY="true" LENGTH="255" NAME="campaign_id" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="portal_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="portal_app" NULLABLE="true" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="1" NAME="invalid_email" NULLABLE="true" TYPE="id_Integer"/>
+         <!--<COLUMN KEY="false" LENGTH="1" NAME="invalid_email" NULLABLE="true" TYPE="id_Integer"/>-->
          <COLUMN KEY="false" LENGTH="255" NAME="modified_by_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="created_by_name" NULLABLE="true" TYPE="id_String"/>
       </TABLE>
@@ -746,7 +746,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="email2" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="assistant" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="assistant_phone" NULLABLE="true" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="3" NAME="email_opt_out" NULLABLE="true" TYPE="id_String"/>
+         <!--<COLUMN KEY="false" LENGTH="3" NAME="email_opt_out" NULLABLE="true" TYPE="id_String"/>-->
          <COLUMN KEY="false" LENGTH="255" NAME="primary_address_street" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="primary_address_city" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="primary_address_state" NULLABLE="true" TYPE="id_String"/>
@@ -758,7 +758,7 @@
          <COLUMN KEY="false" LENGTH="255" NAME="alt_address_postalcode" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="alt_address_country" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="description" NULLABLE="true" TYPE="id_String"/>
-         <COLUMN KEY="false" LENGTH="1" NAME="invalid_email" NULLABLE="true" TYPE="id_Integer"/>
+         <!--<COLUMN KEY="false" LENGTH="1" NAME="invalid_email" NULLABLE="true" TYPE="id_Integer"/>-->
          <COLUMN KEY="true" LENGTH="255" NAME="lead_id" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="false" LENGTH="255" NAME="account_name" NULLABLE="true" TYPE="id_String"/>
          <COLUMN KEY="true" LENGTH="255" NAME="campaign_id" NULLABLE="true" TYPE="id_String"/>
