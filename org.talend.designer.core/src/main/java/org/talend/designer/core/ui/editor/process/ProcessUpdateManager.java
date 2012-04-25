@@ -2063,16 +2063,11 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 final Property property = jobletItem.getProperty();
                 final String id = property.getId();
                 final Date modificationDate = property.getModificationDate();
-                // TDI-20096
-                boolean isReload = false;
-                final Property propertyProcess = this.getProcess().getProperty();
-                final Date modificationDateProcess = propertyProcess.getModificationDate();
-                if (modificationDate != null && modificationDateProcess != null
-                        && !modificationDate.equals(modificationDateProcess)
-                        && modificationDate.compareTo(modificationDateProcess) > 0) {
-                    isReload = true;
-                }
-                if ((isReload || onlySimpleShow) && !getProcess().getId().equals(id)) {
+
+                final Date oldDate = this.jobletReferenceMap.get(id);
+
+                if (((oldDate != null && !modificationDate.equals(oldDate)) || onlySimpleShow)
+                        && !getProcess().getId().equals(id)) {
                     List<INode> jobletNodes = findRelatedJobletNode(getProcess(), property.getLabel(), null);
                     if (jobletNodes != null && !jobletNodes.isEmpty()) {
                         String source = UpdatesConstants.JOBLET + UpdatesConstants.COLON + property.getLabel();

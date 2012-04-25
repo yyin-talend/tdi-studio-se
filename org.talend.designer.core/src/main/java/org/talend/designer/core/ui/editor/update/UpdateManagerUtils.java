@@ -43,6 +43,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
@@ -586,7 +587,7 @@ public final class UpdateManagerUtils {
             if (!executed) {
                 command.execute();
             }
-            if (result.isFromItem()) {
+            if (result.isFromItem() || result.getResultType() == EUpdateResult.JOBLET_UPDATE) {
                 // save updated process
                 saveModifiedItem(result);
             }
