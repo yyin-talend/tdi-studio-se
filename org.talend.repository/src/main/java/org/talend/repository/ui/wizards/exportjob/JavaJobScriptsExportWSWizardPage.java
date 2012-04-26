@@ -528,15 +528,16 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                         directoryNames[i] = (directoryNames[i].charAt(0) + "").toUpperCase() + directoryNames[i].substring(1);//$NON-NLS-1$
                         addDestinationItem(directoryNames[i]);
                     }
-                    setDestinationValue(directoryNames[0].substring(0, (directoryNames[0].lastIndexOf("\\") + 1)) + saName);//$NON-NLS-1$
                 }
+                File file = new File(directoryNames[0]);
+                File dest = new File(file.getParentFile(), saName);
+                setDestinationValue(dest.getAbsolutePath());
             } else {
                 String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
                 IPath path = new Path(userDir).append(saName);
-                saDestinationFilePath = path.toOSString();
-                setDestinationValue(saDestinationFilePath);
+                setDestinationValue(path.toOSString());
             }
-
+            saDestinationFilePath = this.getDestinationValue();
             sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
             zipOption = "false"; // Do not extract the ZIP //$NON-NLS-1$
@@ -563,8 +564,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                         directoryNames[i] = (directoryNames[i].charAt(0) + "").toUpperCase() + directoryNames[i].substring(1);//$NON-NLS-1$
                         addDestinationItem(directoryNames[i]);
                     }
-                    setDestinationValue(directoryNames[0].substring(0, (directoryNames[0].lastIndexOf("\\") + 1)) + fileName);//$NON-NLS-1$
                 }
+                File dest = new File(new File(directoryNames[0]).getParentFile(), fileName);
+                setDestinationValue(dest.getAbsolutePath());
             } else {
                 setDefaultDestination();
             }
@@ -629,8 +631,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                         directoryNames[i] = (directoryNames[i].charAt(0) + "").toUpperCase() + directoryNames[i].substring(1);//$NON-NLS-1$
                         addDestinationItem(directoryNames[i]);
                     }
-                    setDestinationValue(directoryNames[0].substring(0, (directoryNames[0].lastIndexOf("\\") + 1)) + fileName);//$NON-NLS-1$
                 }
+                File dest = new File(new File(directoryNames[0]).getParentFile(), fileName);
+                setDestinationValue(dest.getAbsolutePath());
             } else {
                 setDefaultDestinationForOSGI();
             }
@@ -651,8 +654,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                         directoryNames[i] = (directoryNames[i].charAt(0) + "").toUpperCase() + directoryNames[i].substring(1);//$NON-NLS-1$
                         addDestinationItem(directoryNames[i]);
                     }
-                    setDestinationValue(directoryNames[0].substring(0, (directoryNames[0].lastIndexOf("\\") + 1)) + fileName);//$NON-NLS-1$
                 }
+                File dest = new File(new File(directoryNames[0]).getParentFile(), fileName);
+                setDestinationValue(dest.getAbsolutePath());
             } else {
                 setDefaultDestination();
             }
