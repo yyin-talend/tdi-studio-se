@@ -1,0 +1,152 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tUniservRTMailSearch</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa78577.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tUniservRTMailOutput.html" title="tUniservRTMailOutput"><link rel="next" href="tUniservRTPost.html" title="tUniservRTPost"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tUniservRTMailSearch"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tUniservRTMailSearch"></a>tUniservRTMailSearch</h2></div></div></div><div class="mediaobject"><img src="../images/component_tuniservrtmailsearch_icon.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+			<span class="italic">This component will be available in the <span class="bold"><strong>Palette</strong></span> of the studio on the condition that you have subscribed to
+				the relevant edition of <span class="italic">Data Quality Service Hub
+					Studio</span>.</span>
+		</p></td></tr></table></div><div class="section" title="tUniservRTMailSearch properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e58192"></a>tUniservRTMailSearch properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Data quality</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="bold"><strong>tUniservRTMailSearch</strong></span> searches for
+								similar data based on the given input record.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="bold"><strong>tUniservRTMailSearch</strong></span> searches for
+								duplicate values and adds additional data to each record.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e. it defines the number of
+								fields that will be processed and passed on to the next component.
+								The schema is either built-in or remote in the <span class="bold"><strong>Repository</strong></span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host name</em></span>
+							</p>
+						</td><td valign="top">Server host name between double quotation marks.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">Listening port number of the server between double
+							quotation marks.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Service</em></span>
+							</p>
+						</td><td>
+							<p>The service name is <code class="code">"mail"</code> by default. Enter a new
+								name if necessary (e.g. due to service suffix), between double
+								quotation marks. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Maximum of displayed duplicates (0 = All)</em></span>
+							</p>
+						</td><td>
+							<p>Enter the maximum number of duplicates to be displayed in the
+									<span class="bold"><strong>Run</strong></span> view. The default value is
+								0, which means that all duplicates will be displayed (up to 1000
+								duplicates can be displayed). </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use rejects</em></span>
+							</p>
+						</td><td>
+							<p>Select this check box to set parameters based on which duplicate
+								records should be added to the reject flow. Then set the: </p>
+							<p><span class="bold"><strong>Element</strong></span>: Duplicate count. </p>
+							<p><span class="bold"><strong>Operator</strong></span>: &lt;, &lt;=, =, &gt;=, &gt;. </p>
+							<p><span class="bold"><strong>Value</strong></span>: Enter the number
+								manually.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Uniserv Parameters</em></span>
+							</p>
+						</td><td valign="top">
+							<p>For detailed information, please refer to the Uniserv user manual
+									<span class="italic">mailRetrieval</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td>Select this check box to collect log data at the Job and the
+							component levels.</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="bold"><strong>tUniservRTMailSearch</strong></span> requires an
+								input component and one or more output components.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>To use <span class="bold"><strong>tUniservRTMailSearch</strong></span>, the
+								Uniserv software <span class="italic">mailRetrieval</span>
+								must be installed.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Before the first use of <span class="bold"><strong>tUniservRTMailSearch</strong></span>, an index pool must be
+									created. You can create the index pool with <span class="bold"><strong>tUniservRTMailBulk</strong></span>.</p></td></tr></table></div>
+						</td></tr></tbody></table></div><p>
+			<span>&nbsp;</span>
+		</p></div><div class="section" title="Scenario: Adding contacts to the mailRetrieval index pool"><div class="titlepage"><div><div><h3 class="title"><a name="add_contact_to_index_pool"></a>Scenario: Adding contacts to the mailRetrieval index pool</h3></div></div></div><p>This scenario describes a batch job that adds contacts to the index pool of <span class="italic">mailRetrieval</span>. Before the addition, it must be checked
+			whether these contacts already exist.</p><p>The input file for this scenario is already saved in the <span class="bold"><strong>Repository</strong></span>, so that all schema metadata is available.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Please note that the data from the input source must be related to the same
+				country.</p></td></tr></table></div><div class="procedure" title="Procedure&nbsp;6.1.&nbsp;Dropping and connecting the components"><a name="d0e58492"></a><p class="title"><b>Procedure&nbsp;6.1.&nbsp;Dropping and connecting the components</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>In the <span class="bold"><strong>Repository</strong></span> view, expand the <span class="bold"><strong>Metadata</strong></span> node and the directory in which the file is
+					saved. Then drag this file into the design workspace. </p><p>The dialog box below appears.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailsearch_1.png"></div></li><li class="step" title="Step 2"><p>Select <span class="bold"><strong>tFileInputDelimited</strong></span> and then click
+						<span class="bold"><strong>OK</strong></span> to close the dialog box. </p><p>The component is displayed in the workspace. </p></li><li class="step" title="Step 3"><p>Drag the following components from the <span class="bold"><strong>Palette</strong></span> into the design workspace: two <span class="bold"><strong>tMap</strong></span> components, <span class="bold"><strong>tUniservRTMailSearch</strong></span> and <span class="bold"><strong>tUniservRTMailOutput</strong></span> .</p></li><li class="step" title="Step 4"><p>Connect the components via <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailsearch_2.png"></div><p>During the process, accept the schema from <span class="bold"><strong>tUniservRTMailSearch</strong></span> by clicking <span class="bold"><strong>Yes</strong></span> in the validation window.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtconvertname_3.png"></div></li></ol></div><div class="procedure" title="Procedure&nbsp;6.2.&nbsp;Configuring the components"><a name="d0e58558"></a><p class="title"><b>Procedure&nbsp;6.2.&nbsp;Configuring the components</b></p><ol class="procedure" type="1"><li class="step" title="Step 1"><p>Double-click <span class="bold"><strong>tMap_1</strong></span> to open the schema
+					mapping window. On the left is the structure of the input file and on the right
+					is the schema of <span class="bold"><strong>tUniservRTMailSearch</strong></span>. At the
+					bottom lies the <span class="bold"><strong>Schema Editor</strong></span>, where you can
+					find the attributes of the individual columns and edit them. </p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailsearch_3.png"></div></li><li class="step" title="Step 2"><p>Assign the columns of the input file to the respective columns of <span class="bold"><strong>tUniservRTMailSearch</strong></span>. For this purpose, select a
+					column of the input source and drag it onto the appropriate column on the right
+					side. </p></li><li class="step" title="Step 3"><p>When your input list contains a reference ID, you should adopt it. In order to
+					do so, create a new column <span class="italic">IN_DBREF</span> in the
+						<span class="bold"><strong>Schema Editor</strong></span> and connect it with your
+					reference ID.</p><p>Click <span class="bold"><strong>OK</strong></span> to close the window.</p></li><li class="step" title="Step 4"><p>Double-click <span class="bold"><strong>tUniservRTMailSearch</strong></span> to open its
+						<span class="bold"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailsearch_4.png"></div></li><li class="step" title="Step 5"><p>Under <span class="bold"><strong>Maximum of displayed "duplicates"</strong></span>,
+					enter <span class="italic">0</span> to display all the duplicates.</p><p>Select <span class="bold"><strong>Define rejects</strong></span> to open the rejects
+					definition window.</p></li><li class="step" title="Step 6"><p>Click the <span class="bold"><strong>[+]</strong></span> button to insert a new line in
+					the window. Select <span class="italic">Duplicate count</span> under the
+					element column, <span class="italic">&gt;</span> under the operator column,
+					and <span class="italic">0</span> under the value column. So all the
+					existing contacts are disqualified and only the new contact will be added to the
+					index pool.</p></li><li class="step" title="Step 7"><p>Enter the <span class="bold"><strong>Advanced settings</strong></span> view and check
+					the parameters. Reasonable parameters are preset. Detailed information can be
+					found in the manual <span class="italic">mailRetrieval</span>.</p></li><li class="step" title="Step 8"><p>Double-click <span class="bold"><strong>tMap_3</strong></span> to open schema mapping
+					window. On the left is the schema of <span class="bold"><strong>tUniservRTMailSearch</strong></span> and on the right is the schema of <span class="bold"><strong>tUniservRTMailOutput</strong></span>.</p></li><li class="step" title="Step 9"><p>Click <span class="bold"><strong>Auto map!</strong></span> to assign the fields
+					automatically.</p></li><li class="step" title="Step 10"><p>The only field that must be assigned manually is the reference ID. In order to
+					do so, drag <span class="italic">OUT-DBREF</span> from the left side onto
+					the field <span class="italic">IN_DBREF</span> on the right side.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailsearch_5.png"></div><p>Click <span class="bold"><strong>OK</strong></span> to close the dialog box.</p></li><li class="step" title="Step 11"><p>Double-click <span class="bold"><strong>tUniservRTMailOutput</strong></span> to open the
+						<span class="bold"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailsearch_6.png"></div><p>From the <span class="bold"><strong>Action on Data</strong></span> list, select
+						<span class="italic">Insert or update</span>. This way, all new
+					contacts are added to the index pool.</p></li></ol></div></div></div></body></html>

@@ -1,0 +1,90 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tUniservRTMailOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tUniservRTMailBulk.html" title="tUniservRTMailBulk"><link rel="next" href="tUniservRTMailSearch.html" title="tUniservRTMailSearch"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="fr" class="section" title="tUniservRTMailOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tUniservRTMailOutput"></a>tUniservRTMailOutput</h2></div></div></div><div class="mediaobject"><img src="../images/component_tuniservrtmailoutput_icon.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="italic">Ce composant est disponible dans la <span class="bold"><strong>Palette</strong></span> du Studio uniquement si vous avez souscrit &agrave; l'&eacute;dition correspondante
+        de <span class="italic">Data Quality Service Hub Studio</span>.</span></p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tUniservRTMailOutput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e56340"></a>Propri&eacute;t&eacute;s du tUniservRTMailOutput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+              <p><span class="bold"><strong>Famille de composant</strong></span></p>
+            </td><td valign="top">
+              <p>Data Quality</p>
+            </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+              <p><span class="bold"><strong>Fonction</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p>Le <span class="bold"><strong>tUniservRTMailOutput</strong></span> met &agrave; jour le pool
+                d'index utilis&eacute; pour les recherches de doublons.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="bold"><strong>Objectif</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p>La <span class="bold"><strong>tUniservRTMailOutput</strong></span> garde le pool d'index
+                synchronis&eacute;.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="bold"><strong>Basic settings</strong></span></p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit schema</em></span></p>
+            </td><td valign="top">
+              <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le nombre de champs
+                qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local (Built-in)
+                soit distant dans le <span class="bold"><strong>Repository</strong></span>. </p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Host name</em></span></p>
+            </td><td valign="top">Nom de l'h&ocirc;te du serveur, entre guillemets doubles.</td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Port</em></span></p>
+            </td><td valign="top">Num&eacute;ro du port d'&eacute;coute du serveur, entre guillemets
+              doubles.</td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Service</em></span></p>
+            </td><td>
+              <p>Le nom du service est <code class="code">"mail"</code> par d&eacute;faut. Saisissez une nouveau nom
+                si n&eacute;cessaire (si le suffixe du service change, par exemple), entre guillemets
+                doubles. </p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Action on data</em></span></p>
+            </td><td>
+              <p>Op&eacute;rations r&eacute;alisables dans le pool d'index :</p>
+              <p><span class="bold"><strong>Insert</strong></span> : ins&egrave;re un nouvel enregistrement dans
+                le pool d'index. Cette requ&ecirc;te &eacute;choue si l'enregistrement poss&eacute;dant la m&ecirc;me
+                r&eacute;f&eacute;rence existe d&eacute;j&agrave; dans le pool.</p>
+              <p><span class="bold"><strong>Update</strong></span> : met &agrave; jour un enregistrement existant
+                dans le pool. Cette requ&ecirc;te &eacute;choue si aucun enregistrement ne poss&egrave;de le nom de la
+                r&eacute;f&eacute;rence donn&eacute;e. </p>
+              <p><span class="bold"><strong>Insert or update</strong></span> : ins&egrave;re un nouvel
+                enregistrement dans le pool d'index. Si un enregistrement poss&egrave;de d&eacute;j&agrave; la r&eacute;f&eacute;rence
+                donn&eacute;e, il sera mis &agrave; jour.</p>
+              <p><span class="bold"><strong>Update or insert</strong></span> : met &agrave; jour un enregistrement
+                avec la r&eacute;f&eacute;rence donn&eacute;e. Si aucun enregistrement ne poss&egrave;de la r&eacute;f&eacute;rence donn&eacute;e, il
+                sera cr&eacute;&eacute;.</p>
+              <p><span class="bold"><strong>Delete</strong></span> : supprime l'enregistrement
+                correspondant &agrave; la r&eacute;f&eacute;rence donn&eacute;e dans le pool d'index.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="bold"><strong>Advanced settings</strong></span></p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>Uniserv Parameters</em></span>
+              </p>
+            </td><td valign="top">
+              <p>Pour plus d'informations, consultez le manuel utilisateur d'Uniserv <span class="bluebold">mailRetrieval</span>.</p>
+            </td></tr><tr><td>
+              <p>&nbsp;</p>
+            </td><td valign="top">
+              <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+            </td><td>Cochez cette case pour collecter les donn&eacute;es d'identification au niveau du Job et
+              du composant.</td></tr><tr><td valign="top">
+              <p><span class="bold"><strong>Utilisation</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p>Le <span class="bold"><strong>tUniservRTMailOutput</strong></span> met &agrave; jour les pool
+                d'index et passe l'ensemble d'entr&eacute;e. La sortie contient le statut de l'op&eacute;ration.
+                Si l'op&eacute;ration &eacute;choue, un message d'erreur message s'affiche.</p>
+            </td></tr><tr><td valign="top">
+              <p><span class="bold"><strong>Limitation</strong></span></p>
+            </td><td colspan="2" valign="top">
+              <p>Pour utiliser le <span class="bold"><strong>tUniservRTMailOutput</strong></span>, le
+                logiciel Uniserv <span class="italic">mailRetrieval</span> doit &ecirc;tre
+                install&eacute;.</p>
+              <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Avant d'utiliser le <span class="bold"><strong>tUniservRTMailOutput</strong></span> pour
+                  la premi&egrave;re fois, un pool d'index doit &ecirc;tre cr&eacute;&eacute;. Cr&eacute;ez-en un &agrave; l'aide du
+                  composant <span class="bold"><strong>tUniservRTMailBulk</strong></span>.</p></td></tr></table></div>
+            </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e56585"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez <a class="xref" href="tUniservRTMailSearch.html#add_contact_to_index_pool" title="Sc&eacute;nario : Ajouter des contacts au pool d'index de mailRetrieval">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario : Ajouter des contacts au pool d'index de mailRetrieval&nbsp;&raquo;</a>.</p></div></div></body></html>

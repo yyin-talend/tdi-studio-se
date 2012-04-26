@@ -1,0 +1,107 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tExtractEBCDICFields</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch16.html" title="Chapter&nbsp;16.&nbsp;Processing components"><link rel="prev" href="tExtractDelimitedFields.html" title="tExtractDelimitedFields"><link rel="next" href="tExtractPositionalFields.html" title="tExtractPositionalFields"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tExtractEBCDICFields"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tExtractEBCDICFields"></a>tExtractEBCDICFields</h2></div></div></div><div class="mediaobject"><img src="../images/tExtractEBCDICFields_icon32_white.png"></div><div class="section" title="tExtractEBCDICFields properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e238673"></a>tExtractEBCDICFields properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Processing/Fields</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tExtractEBCDICFields </strong></span>generates
+                                multiple columns from a given column using regex matching.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tExtractEBCDICFields</strong></span> allows you
+                                to use regular expressions to extract data from a formatted
+                                string.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Field</em></span></p>
+                        </td><td valign="top">
+                            <p>Select an incoming field from the <span class="bold"><strong>Field</strong></span> list to extract.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Die on error</em></span></p>
+                        </td><td valign="top">
+                            <p>This check box is selected by default. Clear the check box to skip
+                                the row on error and complete the process for error-free rows. If
+                                needed, you can retrieve the rows on error via a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Reject</strong></span> connection.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span></p>
+                        </td><td valign="top"><p>Select an option from the list to edit either the Built-in or Repository schema for the data
+                            to be processed.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Built-in</strong></span>: Select this option to edit the Built-in schema for
+                            the data to be processed.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="bold"><strong>Repository</strong></span>: Select this option to edit the Repository schema
+                            you select. The field that follows is completed automatically using
+                            the schema you select.</p>
+                        </td></tr><tr><td><p>&nbsp;</p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Edit schema</em></span></p>
+                        </td><td valign="top"><p>Click <span class="bold"><strong>[...]</strong></span> to edit the Built-in or Repository schema for the
+                            data to be processed.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Sync columns</em></span></p>
+                        </td><td valign="top">
+                            <p>Click this button to retrieve the schema defined in the input component.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This button is available only when an input component is
+                                        connected to this component via a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>
+                                        connection.</p></td></tr></table></div>
+                        </td></tr><tr><td>
+                            <p>&nbsp;<span class="bold"><strong>Advanced settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Encoding</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the encoding type from the list or select <span class="bold"><strong>Custom</strong></span> and define it manually. This field
+                                is compulsory for DB data handling.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Trim all column</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to remove leading and trailing whitespaces
+                                from defined columns.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Select this check box to gather the processing
+                                metadata at the Job level as well as at each component level.</p>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Enable parallel execution</em></span></td><td valign="top">
+                            <p>Select this check box to perform high-speed data processing, by
+                                treating multiple data flows simultaneously. </p>
+                            <p> In the <span class="bold"><strong>Number of parallel
+                                    executions</strong></span> field, either:</p>
+                            <p> - Enter the number of parallel executions desired.</p>
+                            <p> - Press <span class="bold"><strong>Ctrl + Space</strong></span> and select
+                                the appropriate context variable from the list.</p>
+                            <p> For further information, see <span class="bluebold">Talend Open Studio</span>
+                                <span class="italic">User Guide</span>.</p>
+                            <div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="italic"> The <span class="bold"><strong>Number of
+                                            parallel executions</strong></span> field is not available
+                                        with the parallelization function. Therefore, you must use a
+                                            <span class="bold"><strong>tCreateTable</strong></span> component
+                                        if you want to create a table.</span></p></td></tr></table></div>
+                            <div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+                                    <span class="emphasis"><em>When parallel execution is enabled, it is not possible
+                                        to use global variables to retrieve return values in a
+                                        SubJob.</em></span></p></td></tr></table></div>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component handles flow of data therefore it requires input
+                                and output components. It allows you to extract data from a
+                                delimited field, using a <span class="bold"><strong>Row</strong></span> &gt;
+                                    <span class="bold"><strong>Main</strong></span> link, and enables you to
+                                create a reject flow filtering data which type does not match the
+                                defined type.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>n/a</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e238985"></a>Related scenario</h3></div></div></div><p>For a related scenario, see <a class="xref" href="tExtractRegexFields.html#tExtractRegexFields_sce" title="Scenario: Extracting name, domain and TLD from e-mail addresses">the section called &#8220;Scenario: Extracting name, domain and TLD from e-mail addresses&#8221;</a>.</p></div></div></body></html>

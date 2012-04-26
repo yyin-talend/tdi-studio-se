@@ -1,0 +1,210 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tDBInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa29876.html" title="Chapter&nbsp;7.&nbsp;Database components"><link rel="prev" href="tDB2SP.html" title="tDB2SP"><link rel="next" href="tDBOutput.html" title="tDBOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tDBInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tDBInput"></a>tDBInput</h2></div></div></div><div class="mediaobject"><img src="../images/tDBInput.png"></div><div class="section" title="tDBInput properties"><div class="titlepage"><div><div><h3 class="title"><a name="Raa50487-dup-2"></a>tDBInput properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Databases/DB Generic</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="bold"><strong>tDBInput</strong></span> reads a database and
+								extracts fields based on a query. </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>To use this component, relevant DBMSs' ODBC drivers should be installed and the
+									corresponding ODBC connections should be configured via the
+									database connection configuration wizard.</p></td></tr></table></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="bold"><strong>tDBInput</strong></span> executes a DB query with
+								a strictly defined order which must correspond to the schema
+								definition. Then it passes on the field list to the next component
+								via a Main row link. </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>For performance reasons, a specific Input component (e.g.: <span class="bold"><strong>tMySQLInput</strong></span> for MySQL database) should always be
+									preferred to the generic component.</p></td></tr></table></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Property type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Either <span class="bold"><strong>Built-in</strong></span> or <span class="bold"><strong>Repository</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>: No property data stored
+								centrally.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>: Select the repository
+								file in which the properties are stored. The fields that follow are
+								completed automatically using the data retrieved.&nbsp;</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<div class="mediaobject"><img src="../images/Save_Icon.png"></div>
+						</td><td valign="top">
+							<p>Click this icon to open the database connection configuration wizard and store the
+								database connection parameters you set in the component <span class="bold"><strong>Basic settings </strong></span>view.</p>
+							<p> For more information about setting up and storing database
+								connection parameters, see <span class="bluebold">Talend Open Studio</span>
+								<span class="bold"><strong>User Guide</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the data source defined via the database connection configuration
+								wizard.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> and
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>DB user authentication data.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields to be processed and passed on to the next component. The
+								schema is either <span class="bold"><strong>Built-in</strong></span> or stored
+								remotely in the <span class="bold"><strong>Repository</strong></span>. </p>
+							<p> </p>
+							
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>: The schema is created
+								and stored locally for this component only. Related topic: see
+									<span class="bluebold">Talend Open Studio</span>
+								<span class="bold"><strong>User Guide</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>: The schema already
+								exists and is stored in the Repository, hence can be reused. Related
+								topic: see <span class="bluebold">Talend Open Studio</span>
+								<span class="bold"><strong>User Guide</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Name of the source table where changes made to data should be
+								captured.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Query type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Either <span class="bold"><strong>Built-in</strong></span> or <span class="bold"><strong>Repository</strong></span>. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>: Fill in manually the
+								query statement or build it graphically using SQLBuilder</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>: Select the relevant
+								query stored in the Repository. The Query field gets accordingly
+								filled in.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Query</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Enter your DB query paying particularly attention to properly
+								sequence the fields in order to match the schema definition. </p>
+						</td></tr><tr><td valign="top">
+							<p><a name="Xaa3626858"></a>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim all the String/Char columns</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to remove leading and trailing whitespace
+								from all the String/Char columns.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Trim column</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Remove leading and trailing whitespace from defined
+								columns.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to collect log data at the component
+								level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component offers the flexibility of the DB query and covers
+								all possible SQL queries using a generic ODBC connection.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Scenario 1: Displaying selected data from DB table"><div class="titlepage"><div><div><h3 class="title"><a name="Raa95556"></a>Scenario 1: Displaying selected data from DB table</h3></div></div></div><p>The following scenario creates a two-component Job, reading data from a database using
+			a DB query and outputting delimited data into the standard output (console).</p><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="italic">As a prerequisite of this Job, the MySQL ODBC driver must
+					have been installed and the corresponding ODBC connection must have been
+					configured.</span></p></td></tr></table></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Drop a <span class="bold"><strong>tDBInput</strong></span> and <span class="bold"><strong>tLogRow</strong></span> component from the <span class="bold"><strong>Palette</strong></span> to the design workspace.</p></li><li class="step" title="Step 2"><p>Connect the components using <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> link.</p><div class="mediaobject"><img src="../images/Use_Case_tDBInput1.png"></div></li><li class="step" title="Step 3"><p> Double-click <span class="bold"><strong>tDBInput</strong></span> to open its <span class="bold"><strong>Basic settings</strong></span> view in the <span class="bold"><strong>Component</strong></span> tab.</p><div class="mediaobject"><img src="../images/Use_Case_tDBInput2.png"></div></li><li class="step" title="Step 4"><p>Keep the property type as <span class="bold"><strong>Built-In</strong></span>.</p></li><li class="step" title="Step 5"><p>Fill in the database name, the username and password in the corresponding fields.</p></li><li class="step" title="Step 6"><p>Keep the schema as <span class="bold"><strong>Built-In</strong></span>.This means that
+					it is available for this Job and on this station only. </p></li><li class="step" title="Step 7"><p>Click <span class="bold"><strong>Edit Schema</strong></span> and create a 2-column description
+					including shop code and sales.</p></li><li class="step" title="Step 8"><p>Enter the table name in the corresponding field.</p></li><li class="step" title="Step 9"><p>Type in the query making sure it includes all columns in the same order as defined in the
+					Schema. In this case, as we&#8217;ll select all columns of the schema, the asterisk
+					symbol makes sense.</p></li><li class="step" title="Step 10"><p> Click on the second component to define it.</p></li><li class="step" title="Step 11"><p>Enter the fields separator. In this case, a pipe separator. </p></li><li class="step" title="Step 12"><p>Now go to the <span class="bold"><strong>Run </strong></span>tab, and click on <span class="bold"><strong>Run</strong></span> to execute the Job.</p><p>The DB is parsed and queried data is extracted from the specified table and
+					passed on to the job log console. You can view the output file straight on the
+					console. </p><div class="mediaobject"><img src="../images/Use_Case_tDBInput3.png"></div></li></ol></div></div><div class="section" title="Scenario 2: Using StoreSQLQuery variable"><div class="titlepage"><div><div><h3 class="title"><a name="Raa80338"></a>Scenario 2: Using StoreSQLQuery variable</h3></div></div></div><p>StoreSQLQuery is a variable that can be used to debug a <span class="bold"><strong>tDBInput</strong></span> scenario which does not operate correctly. It allows you to
+			dynamically feed the SQL query set in your <span class="bold"><strong>tDBInput</strong></span>
+			component. </p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Use the same scenario as scenario 1 above and add a third component,
+						<span class="bold"><strong>tJava</strong></span>.</p></li><li class="step" title="Step 2"><p> Connect <span class="bold"><strong>tDBInput</strong></span> to <span class="bold"><strong>tJava</strong></span> using a trigger connection of the <span class="bold"><strong>OnComponentOk</strong></span> type. In this case, we want the <span class="bold"><strong>tDBInput</strong></span> to run before the <span class="bold"><strong>tJava</strong></span> component.</p><div class="mediaobject"><img src="../images/Use_Case_tDBInput4_var.png"></div></li><li class="step" title="Step 3"><p> Set both <span class="bold"><strong>tDBInput</strong></span> and <span class="bold"><strong>tLogRow</strong></span> component as in <span class="bold"><strong>tDBInput</strong></span> scenario 1.</p></li><li class="step" title="Step 4"><p> Click anywhere on the design workspace to display the <span class="bold"><strong>Contexts</strong></span> property panel.</p></li><li class="step" title="Step 5"><p> Create a new parameter called explicitly <span class="bold"><strong>StoreSQLQuery</strong></span>. Enter a default value of 1. This value of 1 means
+					the <span class="bold"><strong>StoreSQLQuery</strong></span> is &#8220;true&#8221; for a use in the
+					QUERY global variable.</p></li><li class="step" title="Step 6"><p> Click on the <span class="bold"><strong>tJava</strong></span> component to display the
+						<span class="bold"><strong>Component</strong></span> view. Enter the
+						<code class="code">System.Out.println(&#8220;&#8221;)</code>command to display the query content,
+					press <span class="bold"><strong>Ctrl+Space bar</strong></span> to access the variable
+					list and select the global variable QUERY.</p><div class="mediaobject"><img src="../images/Use_Case_tDBInput5_var.png"></div></li><li class="step" title="Step 7"><p> Go to your <span class="bold"><strong>Run tab</strong></span> and execute the Job.
+				</p></li><li class="step" title="Step 8"><p> The query entered in the <span class="bold"><strong>tDBInput</strong></span> component
+					shows at the end of the job results, on the log:</p><div class="mediaobject"><img src="../images/Use_Case_tDBInput6_var.png"></div><p>
+					
+				</p></li></ol></div></div></div></body></html>

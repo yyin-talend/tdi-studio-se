@@ -1,0 +1,248 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tBonitaInstantiateProcess</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch02.html" title="Chapter&nbsp;2.&nbsp;Business components"><link rel="prev" href="tBonitaDeploy.html" title="tBonitaDeploy"><link rel="next" href="tCentricCRMInput.html" title="tCentricCRMInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tBonitaInstantiateProcess"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tBonitaInstantiateProcess"></a>tBonitaInstantiateProcess</h2></div></div></div><div class="mediaobject"><img src="../images/tBonitaInstantiateProcess_icon32_white.png"></div><div class="section" title="tBonitaInstantiateProcess Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e2812"></a>tBonitaInstantiateProcess Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Business/Bonita</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component instantiates a process already deployed in a Bonita
+								Runtime engine.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>This component starts an instance for a specific process deployed
+								in a Bonita Runtime engine.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e., it defines the number of
+								fields that will be processed and passed on to the next component.
+								The schema is either built-in or remote in the Repository. </p>
+							<p> Click <span class="bold"><strong>Edit Schema</strong></span> to make
+								changes to the schema. Note that if you make changes, the schema
+								automatically becomes built-in.</p>
+							<p> In this component the schema is related to the Module
+								selected.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Bonita version</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select a version number for the Bonita Runtime engine.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Bonita Runtime Environment File</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Browse to, or enter the path to the Bonita Runtime environment file.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This field is displayed only when you select Bonita
+										version 5.3.1 from the <span class="bold"><strong>Bonita
+											version</strong></span> list.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Bonita Runtime Home</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Browse to, or enter the path to the Bonita Runtime environment
+								directory.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This field is displayed only when you select Bonita version
+									5.6.1 from the <span class="bold"><strong>Bonita version</strong></span>
+									list. </p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Bonita Runtime Jaas File </em></span>
+							</p>
+						</td><td valign="top">
+							<p>Browse to, or enter the path to the Bonita Runtime jaas
+								file.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Bonita Runtime logging file</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Browse to, or enter the path to the Bonita Runtime logging
+								file.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use Process ID</em></span>
+							</p>
+						</td><td valign="top">
+							<p>This check box is cleared by default to activate the <span class="bold"><strong>process name</strong></span> and the <span class="bold"><strong>process version</strong></span> fields in order for you
+								to enter the underlying information of a specific process you want
+								to instantiate. This information is used to automatically generate
+								the ID of this process.</p>
+							<p> Once checked, the <span class="bold"><strong>Process definition
+									ID</strong></span> field is activated in which you can enter the
+								required Definition ID of this process</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> The <span class="bold"><strong>process definition ID</strong></span> is
+									created when the process is deployed into the Bonita Runtime
+									engine.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>User name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in your user name used to instantiate this process.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Password</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Type in your password used to instantiate this process</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Die on error</em></span>
+							</p>
+						</td><td valign="top">
+							<p>This check box is cleared by default, meaning to skip the row on
+								error and to complete the process for error-free rows.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Select this check box to gather the Job processing metadata at a
+								Job level as well as at each component level.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Usually used as a stand-alone component or as an output
+								component.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Connections</strong></span>
+							</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>Outgoing links (from one component to another):</p>
+							<p>
+								<span class="bold"><strong>Trigger</strong></span>: Run if; On Component Ok;
+								On Component Error, On Subjob Ok, On Subjob Error.</p>
+							<p> </p>
+							<p> Incoming links (from one component to another):</p>
+							<p>
+								<span class="bold"><strong>Row</strong></span>: Main (providing the input
+								parameters to this process)</p>
+							<p>
+								<span class="bold"><strong>Trigger</strong></span>: Run if, On Component Ok,
+								On Component Error, On Subjob Ok, On Subjob Error </p>
+							<p> </p>
+							<p> For further information regarding connections, see <span class="italic">Connection types</span> in the Talend Open
+								Studio User Guide.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Global Variables</strong></span>
+							</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Process Instance UUID</strong></span>: Indicates
+								the identifier number of the process instance being created. This is
+								available as a <span class="bold"><strong>Flow</strong></span>
+								variable.</p>
+							<p> Returns a string. </p>
+							<p> </p>
+							<p> For further information about variables, see <span class="italic">How to use a variable in a Job</span> in the
+								Talend Open Studio User Guide.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Scenario: Executing a Bonita process via a Talend Job"><div class="titlepage"><div><div><h3 class="title"><a name="Raa71703"></a>Scenario: Executing a Bonita process via a Talend Job</h3></div></div></div><p>This scenario describes a Job that deploys a Bonita process into the Bonita Runtime
+			and executes this process, in which a personnel request is treated.</p><div class="mediaobject"><img src="../images/Use_Case_tBonitaInstan1.png"></div><p>The Job in this scenario uses three components.</p><p>-<span class="bold"><strong> tBonitaDeploy</strong></span>: this component deploys a Bonita
+			process into the Bonita Runtime.</p><p>-<span class="bold"><strong> tFixedFlowInput</strong></span>: this component generates the
+			schema used as execution parameters of this deployed process.</p><p>-<span class="bold"><strong> tBonitaInstantiateProcess</strong></span>: this component executes
+			this deployed process.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> When generating schema using <span class="bold"><strong>tFixedFlowInput</strong></span>,
+				the column names of the schema must be identical with those of the Bonita parameters
+				used to execute the same process by this Bonita.</p></td></tr></table></div><p>Before beginning to replicate this schema, prepare your Bonita.bar file that is the
+			process exported from the Bonita system and will be deployed into the Bonita Runtime
+			engine. In this scenario, this file is <span class="emphasis"><em>TEST--4.0.bar</em></span>. This process
+			can be checked via the Bonita interface.</p><div class="mediaobject"><img src="../images/Use_Case_tBonitaInstan0.png"></div><div class="section" title="Setting up the Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e3276"></a>Setting up the Job</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Drop <span class="bold"><strong>tBonitaDeploy</strong></span>, <span class="bold"><strong>tFixedFlowInput</strong></span> and <span class="bold"><strong>tBonitaInstantiateProcess</strong></span> onto the design workspace.</p></li><li class="step" title="Step 2"><p> Right-click <span class="bold"><strong>tBonitaDeploy</strong></span> and connect
+							<span class="bold"><strong>tBonitaDeploy </strong></span>to <span class="bold"><strong>tFixedFlowInput</strong></span> using a <span class="bold"><strong>Trigger&gt; On
+							Subjob Ok</strong></span> connection.</p></li><li class="step" title="Step 3"><p> Right-click <span class="bold"><strong>tFixedFlowInput</strong></span> and connect
+						this component to <span class="bold"><strong>tBonitaInstantiateProcess</strong></span>
+						using a <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> connection.</p></li></ol></div></div><div class="section" title="Configuring the Basic settings of tBonitaDeploy"><div class="titlepage"><div><div><h4 class="title"><a name="d0e3322"></a>Configuring the Basic settings of tBonitaDeploy</h4></div></div></div><p>To replicate this scenario, proceed as follows:</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Double-click <span class="bold"><strong>tBonitaDeploy</strong></span> to open its
+							<span class="bold"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><img src="../images/Use_Case_tBonitaInstan2.png"></div></li><li class="step" title="Step 2"><p>Select Bonita version 5.3.1 from the <span class="bold"><strong>Bonita
+							version</strong></span> list. The version you select should be in sync with
+						the version number of the Bonita Runtime engine you are using.</p></li><li class="step" title="Step 3"><p> In the <span class="bold"><strong>Bonita Runtime Configuration</strong></span>
+						area, browse to the Bonita Runtime variable files. In the <span class="bold"><strong>Bonita Runtime Environment file</strong></span> field, browse to
+						the <span class="emphasis"><em>bonita-environnement.xml</em></span> file; in the <span class="bold"><strong>Bonita Runtime Jaas File</strong></span> field, browse to the
+							<span class="emphasis"><em>jaas-standard.cfg</em></span> file; in the <span class="bold"><strong>Bonita Runtime Logging File</strong></span> field, browse to the
+							<span class="emphasis"><em>logging.properties</em></span> file.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>For users based on Bonita version 5.2.3, only the <span class="bold"><strong>Bonita Runtime Jaas File</strong></span> field and the
+								<span class="bold"><strong>Bonita Runtime Logging File</strong></span> field
+							need to be filled.</p><div class="mediaobject"><img src="../images/use_case_tbonitainstan7.png"></div><p>For users based on Bonita version 5.6.1, in the <span class="bold"><strong>Bonita Runtime Home</strong></span> field, browse to the Bonita Runtime
+							environment directory.</p><div class="mediaobject"><img src="../images/use_case_tbonitainstan9.png"></div></td></tr></table></div></li><li class="step" title="Step 4"><p> In the <span class="bold"><strong>Business Archive</strong></span> field, browse to
+						the Bonita .bar file that is the process exported from your Bonita system
+						and will be deployed into the Bonita Runtime engine.</p></li><li class="step" title="Step 5"><p> In the <span class="bold"><strong>Username</strong></span> and the <span class="bold"><strong>Password</strong></span> fields, type in your authentication
+						information to connect to your Bonita.</p></li></ol></div></div><div class="section" title="Configuring the Basic settings of tFixedFlowInput"><div class="titlepage"><div><div><h4 class="title"><a name="d0e3405"></a>Configuring the Basic settings of tFixedFlowInput</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Double-click <span class="bold"><strong>tFixedFlowInput</strong></span> to open its
+							<span class="bold"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><img src="../images/Use_Case_tBonitaInstan3.png"></div></li><li class="step" title="Step 2"><p> Click the three-dot button next to <span class="bold"><strong>Edit
+							schema</strong></span> to open the schema editor.</p><div class="mediaobject"><img src="../images/Use_Case_tBonitaInstan4.png"></div></li><li class="step" title="Step 3"><p> In the schema editor, click the plus button to add one row. </p></li><li class="step" title="Step 4"><p> In the schema editor, click the new row and type in the new name:
+							<span class="emphasis"><em>Name</em></span> and click <span class="bold"><strong>OK</strong></span>.</p></li><li class="step" title="Step 5"><p> In the <span class="bold"><strong>Mode</strong></span> area of the <span class="bold"><strong>Basic settings</strong></span> view, select the <span class="bold"><strong>Use inline table</strong></span> option and click the plus button
+						to add one row in the table.</p></li><li class="step" title="Step 6"><p> In the inline table, click the added row and type in the person's name
+						from your personnel between the quotation marks: <span class="emphasis"><em>ychen</em></span>,
+						whose request will be treated by this deployed process.</p></li></ol></div></div><div class="section" title="Configuring the Basic settings of tBonitaInstantiateProcess"><div class="titlepage"><div><div><h4 class="title"><a name="d0e3460"></a>Configuring the Basic settings of tBonitaInstantiateProcess</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p> Double-click <span class="bold"><strong>tBonitaInstantiateProcess</strong></span>
+						to open its <span class="bold"><strong>Basic settings</strong></span> view.</p><div class="mediaobject"><img src="../images/Use_Case_tBonitaInstan5.png"></div></li><li class="step" title="Step 2"><p> Select Bonita version 5.3.1 from the <span class="bold"><strong>Bonita
+							version</strong></span> list. The version you select should be in sync with
+						the version number of the Bonita Runtime engine you are using.</p></li><li class="step" title="Step 3"><p> In the <span class="bold"><strong>Bonita Runtime Configuration</strong></span>
+						area, browse to the Bonita Runtime variable files. In the <span class="bold"><strong>Bonita Runtime Environment file</strong></span> field, browse to
+						the <span class="emphasis"><em>bonita-environnement.xml</em></span> file; in the <span class="bold"><strong>Bonita Runtime Jaas File</strong></span> field, browse to the
+							<span class="emphasis"><em>jaas-standard.cfg</em></span> file; in the <span class="bold"><strong>Bonita Runtime Logging File</strong></span> field, browse to the
+							<span class="emphasis"><em>logging.properties</em></span> file.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>For users based on Bonita version 5.2.3, only the <span class="bold"><strong>Bonita Runtime Jaas File</strong></span> field and the
+								<span class="bold"><strong>Bonita Runtime Logging File</strong></span> field
+							need to be filled.</p><div class="mediaobject"><img src="../images/use_case_tbonitainstan8.png"></div><p>For users based on Bonita version 5.6.1, in the <span class="bold"><strong>Bonita Runtime Home</strong></span> field, browse to the Bonita Runtime
+							environment directory.</p><div class="mediaobject"><img src="../images/use_case_tbonitainstan10.png"></div></td></tr></table></div></li><li class="step" title="Step 4"><p> Select the <span class="bold"><strong>Use Process ID</strong></span> check box to
+						activate the <span class="bold"><strong>Process Definition Id</strong></span>
+						field.</p></li><li class="step" title="Step 5"><p> In the <span class="bold"><strong>Process Definition Id</strong></span> field,
+						click between the quotation marks and press <span class="bold"><strong>Ctrl+space</strong></span> to open the auto-completion drop-down list
+						containing the available global variables for this Job.</p></li><li class="step" title="Step 6"><p> Double-click the variable you need use to add it between the quotation
+						marks. In this scenario, double-click
+							<span class="emphasis"><em>tBonitaDeploy_1_ProcessDefinitionUUID</em></span>, which
+						retrieves the process definition ID of the process being deployed by
+							<span class="bold"><strong>tBonitaDeploy</strong></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p> If the process of interest was deployed and thus <span class="bold"><strong>tBonitaDeploy</strong></span> is not used, clear the
+								<span class="bold"><strong>Use Process ID</strong></span> check box to
+							activate the <span class="bold"><strong>Process name</strong></span> and the
+								<span class="bold"><strong>Process version</strong></span> fields and fill in
+							the corresponding information to the two fields. <span class="bold"><strong>tBonitaInstantiateProcess</strong></span> concatenates the process name
+							and the process version you type in to construct the process definition
+							ID.</p></td></tr></table></div></li><li class="step" title="Step 7"><p> In the <span class="bold"><strong>Username</strong></span> and <span class="bold"><strong>Password</strong></span> fields, enter the username and password
+						to connect to your Bonita.</p></li></ol></div></div><div class="section" title="Job Execution"><div class="titlepage"><div><div><h4 class="title"><a name="d0e3580"></a>Job Execution</h4></div></div></div><p> Press <span class="bold"><strong>F6</strong></span> to run the Job.</p><div class="mediaobject"><img src="../images/Use_Case_tBonitaInstan6.png"></div><p>This process is deployed into the Bonita Runtime and an instance is created for
+				the personnel requests.</p></div></div></div></body></html>

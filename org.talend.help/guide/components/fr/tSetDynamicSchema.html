@@ -1,0 +1,55 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tSetDynamicSchema</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch05.html" title="Chapitre&nbsp;5.&nbsp;Composants Custom Code"><link rel="prev" href="tLibraryLoad.html" title="tLibraryLoad"><link rel="next" href="tSetGlobalVar.html" title="tSetGlobalVar"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="fr" class="section" title="tSetDynamicSchema"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tSetDynamicSchema"></a>tSetDynamicSchema</h2></div></div></div><div class="mediaobject"><img src="../images/tsetdynamicschema_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tSetDynamicSchema"><div class="titlepage"><div><div><h3 class="title"><a name="d0e66465"></a>Propri&eacute;t&eacute;s du tSetDynamicSchema</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top"><p><span class="bold"><strong>Famille de composant</strong></span></p>
+                        </td><td valign="top"><p>Custom Code</p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top"><p><span class="bold"><strong>Fonction</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le composant <span class="bold"><strong>tSetDynamicSchema</strong></span> vous permet de configurer un
+                                sch&eacute;ma dynamique pouvant &ecirc;tre r&eacute;utilis&eacute; par des composants du (des)
+                                sous-job(s) suivant(s) afin de r&eacute;cup&eacute;rer des donn&eacute;es de colonnes
+                                inconnues.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Objectif</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Le <span class="bold"><strong>tSetDynamicSchema</strong></span> est utilis&eacute; pour cr&eacute;er un sch&eacute;ma
+                                dynamique permettant aux composants incapables de retrouver la
+                                structure des donn&eacute;es g&eacute;r&eacute;es &agrave; partir des s&eacute;parateurs de champs,
+                                comme le <span class="bold"><strong>tFileInputPositional</strong></span> et le
+                                    <span class="bold"><strong>tFileOutputPositional</strong></span>, de
+                                r&eacute;cup&eacute;rer les donn&eacute;es provenant de colonnes inconnues.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Basic
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit schema</em></span></p>
+                        </td><td valign="top">
+                            <p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+                                nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+                                sch&eacute;ma est soit local (Built-in) soit distant dans le <span class="bold"><strong>Repository</strong></span>. </p>
+                            <p>Cliquez sur <span class="bold"><strong>Edit schema</strong></span> pour
+                                modifier le sch&eacute;ma. Notez que si vous modifiez le sch&eacute;ma, il devient
+                                automatiquement built-in.</p>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top"><span class="bold"><strong>Built-in</strong></span> : Le sch&eacute;ma
+                            sera cr&eacute;&eacute; et conserv&eacute; pour ce composant seulement. Voir &eacute;galement&nbsp;le
+                                <span class="italic">Guide utilisateur de</span>
+                            <span class="bluebold">Talend Enterprise Studio</span>.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top"><span class="bold"><strong>Repository</strong></span> : Le sch&eacute;ma
+                            existe d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+                            r&eacute;utilis&eacute; dans divers projets et Jobs. Voir &eacute;galement&nbsp;le <span class="italic">Guide utilisateur de</span>
+                            <span class="bluebold">Talend Enterprise Studio</span>.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="italic">Sync columns</span></td><td valign="top">Permet de synchroniser le sch&eacute;ma du fichier d&#8217;entr&eacute;e
+                            avec le sch&eacute;ma du fichier de sortie. La fonction Sync ne s&#8217;affiche que
+                            lorsqu&#8217;une connexion de type <span class="bold"><strong>Row</strong></span> est
+                            connect&eacute;e au composant de sortie.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Parameters</em></span></td><td valign="top">
+                            <p>Ce tableau contient deux colonnes.</p>
+                            <p><span class="bold"><strong>Property</strong></span> : Propri&eacute;t&eacute; de l'entr&eacute;e
+                                du sch&eacute;ma : <span class="italic">ColumnName</span>, <span class="italic">DBName</span>, <span class="italic">Type</span>, <span class="italic">DBType</span>,
+                                    <span class="italic">Length</span>, <span class="italic">Precision</span>, <span class="italic">Nullable</span> ou <span class="italic">Key</span>.</p>
+                            <p><span class="bold"><strong>Value</strong></span> : Valeur assign&eacute;e &agrave; cette
+                                propri&eacute;t&eacute;.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Advanced
+                                settings</strong></span></p>
+                        </td><td valign="top"><p><span class="emphasis"><em>tStatCatcher
+                                Statistics</em></span></p>
+                        </td><td valign="top"><p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du Job ainsi qu'au niveau de
+                                chaque composant.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Utilisation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant est g&eacute;n&eacute;ralement utilis&eacute; comme composant de fin dans un sous-job.</p>
+                        </td></tr><tr><td valign="top"><p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top"><p>Ce composant n&eacute;cessite un composant d'entr&eacute;e afin de d&eacute;finir la structure des donn&eacute;es &agrave;
+                                configurer dans le sch&eacute;ma dynamique.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e66660"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute; utilisant le composant <span class="bold"><strong>tSetDynamicSchema</strong></span>, consultez <a class="xref" href="tFileInputPositional.html#jzhang-20120422-file-tfileinputpositioonal_dynamic" title="Sc&eacute;nario 2 : G&eacute;rer un fichier positionnel &agrave; partir d'un sch&eacute;ma dynamique">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario 2 : G&eacute;rer un fichier positionnel &agrave; partir d'un sch&eacute;ma dynamique&nbsp;&raquo;</a> du composant
+                <span class="bold"><strong>tFileInputPositional</strong></span>.</p></div></div></body></html>

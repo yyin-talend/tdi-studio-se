@@ -1,0 +1,397 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMysqlInvalidRows</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch07.html" title="Chapitre&nbsp;7.&nbsp;Composants Data Quality"><link rel="prev" href="tMultiPatternCheck.html" title="tMultiPatternCheck"><link rel="next" href="tMysqlValidRows.html" title="tMysqlValidRows"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="fr" class="section" title="tMysqlInvalidRows"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMysqlInvalidRows"></a>tMysqlInvalidRows</h2></div></div></div><div class="mediaobject"><img src="../images/tMySQLInvalidRows_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+			<span class="emphasis"><em>Ce composant est disponible dans la </em></span>
+			<span class="bold"><strong>Palette</strong></span>
+			<span class="emphasis"><em> du studio uniquement si vous avez souscrit &agrave; l&#8217;&eacute;dition correspondante de </em></span>
+			<span class="bluebold">
+				Talend Enterprise Data Quality
+			</span>
+			<span class="emphasis"><em>.</em></span>
+		</p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tMysqlInvalidRows"><div class="titlepage"><div><div><h3 class="title"><a name="d0e195611"></a>Propri&eacute;t&eacute;s du tMysqlInvalidRows</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Data Quality</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="bold"><strong>tMysqlInvalidRows</strong></span> v&eacute;rifie les
+								lignes d&#8217;une base de donn&eacute;es par rapport &agrave; des mod&egrave;les de bases de
+								donn&eacute;es ou &agrave; des r&egrave;gles de qualit&eacute; de donn&eacute;es sp&eacute;cifiques &agrave;
+									<span class="bluebold">Talend Enterprise Data Quality</span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le <span class="bold"><strong>tMysqlInvalidRows</strong></span> vous permet
+								d&#8217;extraire des lignes d&#8217;une base de donn&eacute;es qui ne correspondent pas
+								&agrave; un mod&egrave;le ou &agrave; une r&egrave;gle de qualit&eacute; de donn&eacute;es. Vous pouvez
+								impl&eacute;menter n&#8217;importe quelle correction n&eacute;cessaire.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Validation type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Peut &ecirc;tre <span class="bold"><strong>Regex pattern
+									validation</strong></span> ou <span class="bold"><strong>DQ rule
+									validation</strong></span>.</p>
+						</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top"><span class="bold"><strong>Regex pattern
+								validation</strong></span> : Valide les donn&eacute;es dans la base de donn&eacute;e
+							par rapport &agrave; des mod&egrave;les de regex.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">&nbsp;</td><td valign="top"><span class="bold"><strong>DQ rule validation</strong></span> :
+							Valide les donn&eacute;es dans la base de donn&eacute;es par rapport &agrave; des r&egrave;gles de
+							qualit&eacute; de donn&eacute;es.</td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+							<span class="emphasis"><em>Property type</em></span>
+						</td><td valign="top">Peut &ecirc;tre <span class="bold"><strong>Built-in</strong></span> ou
+								<span class="bold"><strong>Repository</strong></span>.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in&nbsp;</strong></span>: Propri&eacute;t&eacute;s utilis&eacute;es
+								ponctuellement.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository&nbsp;</strong></span>: S&eacute;lectionnez le
+								fichier de propri&eacute;t&eacute;s du composant. Les champs suivants sont alors
+								pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es collect&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use an existing connection</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez la case et cliquez sur le composant <span class="bold"><strong>tMysqlConnection</strong></span> ad&eacute;quat dans la liste <span class="bold"><strong>Component list</strong></span> pour r&eacute;utiliser les
+								informations de connexion que vous avez d&eacute;j&agrave; d&eacute;finies.</p>
+							<p> </p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Lorsqu&#8217;un Job contient un Job parent et un Job enfant, la
+									liste <span class="bold"><strong>Component List</strong></span> pr&eacute;sente
+									uniquement les composants de connexion du Job du m&ecirc;me niveau. Si
+									vous souhaitez utiliser une connexion existant dans un autre
+									niveau, v&eacute;rifiez que les composants de connexion disponibles
+									partagent la m&ecirc;me connexion.</p><p>Pour plus d&#8217;informations concernant le partage d&#8217;une connexion
+									&agrave; travers diff&eacute;rents niveaux de Jobs, consultez <span class="bold"><strong>Use or register a shared DB
+										connection</strong></span> dans tous les composants de base de
+									donn&eacute;es que vous utilisez.</p></td></tr></table></div>
+							<p>Sinon, vous pouvez &eacute;galement d&eacute;sactiver le composant de connexion
+								et utiliser les <span class="bold"><strong>Dynamic settings</strong></span> du
+								composant, afin de param&eacute;trer manuellement la connexion. Dans ce
+								cas, v&eacute;rifiez que le nom de la connexion est unique et distinct tout
+								au long des deux niveaux de Jobs. Pour plus d&#8217;informations
+								concernant les param&egrave;tres dynamiques (<span class="bold"><strong>Dynamic
+									settings</strong></span>), consultez le <span class="bold"><strong>Guide
+									utilisateur</strong></span> de votre Studio. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Adresse IP du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Num&eacute;ro du port d&#8217;&eacute;coute du serveur de base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Database</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Nom de la base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Username</em></span> et
+								<span class="emphasis"><em>Password</em></span></p>
+						</td><td valign="top">
+							<p>Informations d&#8217;identification de l&#8217;utilisateur de la base de
+								donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
+								sch&eacute;ma est soit local (<span class="bold"><strong>built-in)</strong></span>
+								soit distant dans le <span class="bold"><strong>Repository</strong></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et
+								conserv&eacute; ponctuellement pour ce composant seulement. Voir
+								&eacute;galement&nbsp;le <span class="italic">Guide utilisateur de</span>
+								<span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="bold"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le Repository. Ainsi, il peut &ecirc;tre
+								r&eacute;utilisable dans divers projets et Job designs. Voir &eacute;galement&nbsp;le
+									<span class="italic">Guide utilisateur de
+									</span><span class="bluebold">Talend Enterprise Studio</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Table Name</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nom de la table devant &ecirc;tre lue.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Disponible uniquement pour <span class="bold"><strong>Regex
+											pattern validation</strong></span>.</p></td></tr></table></div>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Analyzed column</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez la colonne &agrave; analyser dans la liste des colonnes du
+								sch&eacute;ma.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Disponible uniquement pour <span class="bold"><strong>Regex
+											pattern validation</strong></span>.</p></td></tr></table></div>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Custom pattern</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case afin de d&eacute;finir manuellement l&#8217;expression
+								r&eacute;guli&egrave;re personnalis&eacute;e par rapport &agrave; laquelle vous voulez v&eacute;rifier
+								les lignes de la base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Disponible uniquement pour <span class="bold"><strong>Regex
+											pattern validation</strong></span>.</p></td></tr></table></div>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Patterns list</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez le mod&egrave;le dans la liste par rapport auquel vous
+								souhaitez v&eacute;rifier les lignes de la base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Disponible uniquement pour <span class="bold"><strong>DQ Rule
+										validation</strong></span>.</p></td></tr></table></div>
+						</td><td valign="top">
+							<span class="italic">DQ rule list</span>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez dans la liste la r&egrave;gle par rapport &agrave; laquelle vous
+								souhaitez v&eacute;rifier les lignes de la base de donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Disponible uniquement pour <span class="bold"><strong>DQ Rule
+										validation</strong></span>.</p></td></tr></table></div>
+						</td><td valign="top">
+							<span class="italic">Query type</span>
+						</td><td valign="top">Peut &ecirc;tre <span class="bold"><strong>Built-In</strong></span> ou
+								<span class="bold"><strong>Repository</strong></span>.</td></tr><tr><td>&nbsp;</td><td valign="top">&nbsp;</td><td valign="top"><span class="bold"><strong>Built-In</strong></span> : Saisissez
+							manuellement l'instruction de la requ&ecirc;te ou construisez-la graphiquement
+							&agrave; l'aide du SQL Builder.</td></tr><tr><td>&nbsp;</td><td valign="top">&nbsp;</td><td valign="top"><span class="bold"><strong>Repository</strong></span> :
+							S&eacute;lectionnez la requ&ecirc;te correspondante stock&eacute;e dans le Repository. Le
+							champ <span class="bold"><strong>Query</strong></span> est renseign&eacute;
+							automatiquement.</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="italic">Guess Query</span>
+						</td><td valign="top">Cliquez sur le bouton <span class="bold"><strong>Guess
+								Query</strong></span> afin de g&eacute;n&eacute;rer la requ&ecirc;te correspondant au sch&eacute;ma
+							de la table dans le champ <span class="bold"><strong>Query</strong></span>.</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="italic">Guess schema</span>
+						</td><td valign="top">Cliquez sur le bouton <span class="bold"><strong>Guess
+								schema</strong></span> afin de r&eacute;cup&eacute;rer le sch&eacute;ma de la table.</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="italic">Query</span>
+						</td><td valign="top">
+							<p>Saisissez votre requ&ecirc;te de base de donn&eacute;es en faisant attention &agrave;
+								ce que l&#8217;ordre des champs corresponde &agrave; celui d&eacute;fini dans le
+								sch&eacute;ma.</p>
+						</td></tr><tr><td>
+							<span class="bold"><strong>Advanced settings</strong></span>
+						</td><td valign="top">
+							<span class="emphasis"><em>Additional JDBC Parameters</em></span>
+						</td><td valign="top">
+							<p>Ajoutez des informations de connexion suppl&eacute;mentaires n&eacute;cessaires
+								&agrave; la connexion &agrave; la base de donn&eacute;es. Cette option n'est pas
+								disponible lorsque vous cochez la case <span class="bold"><strong>Use an
+									existing connection</strong></span> dans la vue <span class="bold"><strong>Basic settings</strong></span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Vous pouvez appuyer sur les touches <span class="bold"><strong>Ctrl+Espace</strong></span> pour acc&eacute;der &agrave; la liste des
+										variables globales pr&eacute;d&eacute;finies.</p></td></tr></table></div>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="emphasis"><em>Enable stream</em></span>
+						</td><td valign="top">
+							<p>Cochez cette case pour activer le mode flux sur la mise en
+								m&eacute;moire. Cela vous permet de lire des tables volumineuses sans
+								consommer beaucoup de m&eacute;moire, afin d'optimiser les
+								performances.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="emphasis"><em>Trim all the String/Char columns</em></span>
+						</td><td valign="top">
+							<p>Cochez cette case pour supprimer les espaces en d&eacute;but et en fin de
+								champ dans toutes les colonnes contenant des cha&icirc;nes de
+								caract&egrave;res.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<span class="emphasis"><em>Trim column</em></span>
+						</td><td valign="top">
+							<p>Cochez cette case pour supprimer les espaces en d&eacute;but et en fin de
+								champ dans les colonnes s&eacute;lectionn&eacute;es.</p>
+						</td></tr><tr><td valign="top">
+							<p> </p>
+						</td><td valign="top">
+							<p>
+								<span class="italic">tStatCatcher Statistics</span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du
+								Job, aussi bien au niveau du Job qu&#8217;au niveau de chaque composant.
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant peut &ecirc;tre utilis&eacute; comme composant de d&eacute;but ou
+								interm&eacute;diaire. Il requiert un flux de sortie.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario&nbsp;: Lire des adresses e-mail d&#8217;une table d&#8217;une base de donn&eacute;es et r&eacute;cup&eacute;rer des donn&eacute;es sp&eacute;cifiques, notamment des lignes invalides"><div class="titlepage"><div><div><h3 class="title"><a name="Raa46471"></a>Sc&eacute;nario&nbsp;: Lire des adresses e-mail d&#8217;une table d&#8217;une base de donn&eacute;es et r&eacute;cup&eacute;rer
+			des donn&eacute;es sp&eacute;cifiques, notamment des lignes invalides</h3></div></div></div><p>Ce sc&eacute;nario est un Job &agrave; deux composants cr&eacute;&eacute; dans <span class="bluebold">Talend Enterprise Studio</span>. Dans ce Job, le <span class="bold"><strong>tMysqlInvalidRows</strong></span> lit des adresses e-mail des gens d'un pays sp&eacute;cifique,
+			d&#8217;une table d&#8217;une base de donn&eacute;es MySQL, filtre les donn&eacute;es &agrave; l'aide d'une clause WHERE
+			afin de r&eacute;duire le processus de validation , v&eacute;rifie la valeur des adresses e-mails, par
+			rapport aux mod&egrave;les de <span class="bluebold">Talend Enterprise Data Quality</span> donn&eacute;s, et
+			extrait les donn&eacute;es, notamment les lignes invalides, puis les affiche dans la
+			console.</p><p>Ci-dessous est la table de la base de donn&eacute;es que vous utilisez dans l&#8217;exemple.
+			Certains clients habitent aux Etats-Unis et d'autres au Canada. La colonne
+				<span class="emphasis"><em>Email</em></span> contient des donn&eacute;es invalides. Le composant <span class="bold"><strong>tMysqlInvalidRows</strong></span> filtre les donn&eacute;es dans la colonne
+				<span class="italic">Email</span> afin de lire uniquement les adresses
+			e-mails des clients des Etats-Unis, puis valide ces adresses par rapport au mod&egrave;le
+				<span class="italic">EmailAddress</span>.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInvalidRows.png"></div><p>Dans ce sc&eacute;nario, vous avez d&eacute;j&agrave; stock&eacute; les sch&eacute;mas de la table d&#8217;entr&eacute;e dans le
+				<span class="bold"><strong>Repository</strong></span>. Pour plus d&#8217;informations sur le
+			stockage des sch&eacute;mas de m&eacute;tadonn&eacute;es dans l&#8217;arborescence du <span class="bold"><strong>Repository</strong></span>, consultez le <span class="italic">Guide utilisateur
+				de</span>
+			<span class="bluebold">Talend Enterprise Studio</span>.</p><div class="procedure" title="Proc&eacute;dure&nbsp;7.8.&nbsp;Construire le Job"><a name="d0e196316"></a><p class="title"><b>Proc&eacute;dure&nbsp;7.8.&nbsp;Construire le Job</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans l&#8217;arborescence du <span class="bold"><strong>Repository</strong></span>, d&eacute;veloppez
+					les n&#339;uds <span class="bold"><strong>Metadata </strong></span>et <span class="bold"><strong>Db
+						Connections</strong></span> o&ugrave; vous avez stock&eacute; les sch&eacute;mas d&#8217;entr&eacute;e, puis
+					glissez la m&eacute;tadonn&eacute;e de connexion correspondant dans l&#8217;espace de mod&eacute;lisation
+					graphique.</p><p>La bo&icirc;te de dialogue <span class="bold"><strong>[Components]</strong></span>
+					s&#8217;ouvre.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInvalidRows2.png"></div></li><li class="step" title="&Eacute;tape 2"><p>S&eacute;lectionnez <span class="bold"><strong>tMysqlInvalidRows </strong></span>dans la liste,
+					et cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+					dialogue.</p><p>Le composant <span class="bold"><strong>tMysqlInvalidRows</strong></span> appara&icirc;t dans
+					l&#8217;espace de mod&eacute;lisation graphique. La table MySQL utilis&eacute;e dans ce sc&eacute;nario est
+					appel&eacute;e <span class="emphasis"><em>customers</em></span>. Elle contient les colonnes <span class="italic">customer_id</span>, <span class="italic">account_num</span>, <span class="italic">Iname</span>, <span class="italic">fname</span>, <span class="italic">country</span>
+					et <span class="emphasis"><em>Email</em></span> concernant les clients.</p></li><li class="step" title="&Eacute;tape 3"><p>Glissez le <span class="bold"><strong>tLogRow</strong></span> de la <span class="bold"><strong>Palette</strong></span> dans l&#8217;espace de mod&eacute;lisation
+					graphique.</p></li><li class="step" title="&Eacute;tape 4"><p>Connectez les deux composants &agrave; l&#8217;aide d&#8217;un lien <span class="bold"><strong>Main
+						Row</strong></span>.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInvalidRows1.png"></div></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;7.9.&nbsp;Configurer le sch&eacute;ma"><a name="d0e196392"></a><p class="title"><b>Proc&eacute;dure&nbsp;7.9.&nbsp;Configurer le sch&eacute;ma</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="bold"><strong>tMysqlInvalid Rows</strong></span> afin
+					d&#8217;afficher sa vue <span class="bold"><strong>Basic settings</strong></span> et d&eacute;finir ses
+					propri&eacute;t&eacute;s.</p><div class="mediaobject"><img src="../images/Use_Case_tMysqlInvalidRows3.png"></div><p>Tous les champs relatifs &agrave; la connexion sont automatiquement renseign&eacute;s. Si
+					vous ne d&eacute;finissez pas vos fichiers d&#8217;entr&eacute;e dans le <span class="bold"><strong>Repository</strong></span>, remplissez les champs manuellement, apr&egrave;s avoir
+					s&eacute;lectionn&eacute; <span class="bold"><strong>Built-in</strong></span> dans le champ <span class="bold"><strong>Property Type</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Dans la liste <span class="bold"><strong>Validation type</strong></span>, s&eacute;lectionnez
+						<span class="italic">Regex pattern validation</span>.</p><p>Cela valide les donn&eacute;es dans les lignes s&eacute;lectionn&eacute;es par rapport &agrave; un mod&egrave;le
+					de regex. Pour un exemple de sc&eacute;nario concernant la validation de donn&eacute;es par
+					rapport &agrave; des r&egrave;gles de qualit&eacute; de donn&eacute;es, consultez <a class="xref" href="tMysqlInvalidRows.html#ychen-20120418-data_quality-tmysqlinvalidrows_dq_rule" title="Sc&eacute;nario 2 : V&eacute;rifier une table client par rapport une r&egrave;gle de qualit&eacute; de donn&eacute;es pour s&eacute;lectionner les enregistrements clients">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario 2 : V&eacute;rifier une table client par rapport une r&egrave;gle de qualit&eacute; de donn&eacute;es
+			pour s&eacute;lectionner les enregistrements clients&nbsp;&raquo;</a>.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans le champ <span class="bold"><strong>Table Name</strong></span>, saisissez le nom de
+					la table de la base de donn&eacute;es sur laquelle vous souhaitez ex&eacute;cuter le Job,
+						<span class="italic">customer1</span> dans cet exemple.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans le champ <span class="bold"><strong>Where clause</strong></span>, saisissez la
+					clause WHERE qui restreint le nombre de lignes analys&eacute;es.</p><p>Dans ce sc&eacute;nario, analysez uniquement les adresses e-mail des clients habitant
+					aux Etats-Unis.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans la liste <span class="bold"><strong>Analyzed column</strong></span>, s&eacute;lectionnez
+					la colonne que vous souhaitez analyser, <span class="emphasis"><em>Email</em></span> dans cet
+					exemple.</p></li><li class="step" title="&Eacute;tape 6"><p>Dans la liste <span class="bold"><strong>Patterns list</strong></span>, s&eacute;lectionnez le
+					mod&egrave;le de base de donn&eacute;es <span class="bluebold">Talend Enterprise Data Quality</span> par
+					rapport auquel vous voulez v&eacute;rifier la colonne <span class="emphasis"><em>Email</em></span>,
+						<span class="emphasis"><em>Email Address</em></span> dans cet exemple.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Si vous cochez la case <span class="bold"><strong>Custom pattern</strong></span>,
+						vous pouvez personnaliser l&#8217;expression r&eacute;guli&egrave;re par rapport &agrave; laquelle vos
+						donn&eacute;es seront v&eacute;rifi&eacute;es.</p></td></tr></table></div></li><li class="step" title="&Eacute;tape 7"><p>Double-cliquez sur le <span class="bold"><strong>tLogRow</strong></span> afin d&#8217;ouvrir
+					sa vue <span class="bold"><strong>Basic settings</strong></span> et d&eacute;finir ses propri&eacute;t&eacute;s
+					comme n&eacute;cessaire.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;7.10.&nbsp;Ex&eacute;cuter le Job"><a name="d0e196487"></a><p class="title"><b>Proc&eacute;dure&nbsp;7.10.&nbsp;Ex&eacute;cuter le Job</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Sauvegardez votre Job en appuyant sur les touches <span class="bold"><strong>Ctrl+S</strong></span>.</p></li><li class="step" title="&Eacute;tape 2"><p>Appuyez sur <span class="bold"><strong>F6</strong></span> pour l&#8217;ex&eacute;cuter.</p></li></ol></div><div class="mediaobject"><img src="../images/Use_Case_tMysqlInvalidRows4.png"></div><p>Le composant <span class="bold"><strong>tMysqlInvalidRows</strong></span> a analys&eacute; les adresses
+			e-mail uniquement pour les clients des Etats-Unis, dans la table de la base de donn&eacute;es
+			MySQL en la comparant avec le mod&egrave;le SQL s&eacute;lectionn&eacute; (<span class="emphasis"><em>Email
+			Address</em></span>), puis a extrait toutes les donn&eacute;es filtr&eacute;es, notamment les adresses
+			e-mail invalides devant &ecirc;tre corrig&eacute;es.</p></div><div class="section" title="Sc&eacute;nario 2 : V&eacute;rifier une table client par rapport une r&egrave;gle de qualit&eacute; de donn&eacute;es pour s&eacute;lectionner les enregistrements clients"><div class="titlepage"><div><div><h3 class="title"><a name="ychen-20120418-data_quality-tmysqlinvalidrows_dq_rule"></a>Sc&eacute;nario 2 : V&eacute;rifier une table client par rapport une r&egrave;gle de qualit&eacute; de donn&eacute;es
+			pour s&eacute;lectionner les enregistrements clients</h3></div></div></div><p>Ce sc&eacute;nario pr&eacute;sente un Job &agrave; trois composants permettant de v&eacute;rifier une table client
+			MySQL par rapport &agrave; une r&egrave;gle de qualit&eacute; de donn&eacute;es, afin d'effectuer une requ&ecirc;te sur
+			des enregistrements clients sp&eacute;cifiques.</p><div class="mediaobject" align="center"><img src="../images/use_case-tmysqlinvalidrows-dq_rules1.png" align="middle"></div><p>Les composants sont les suivants :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>un <span class="bold"><strong>tMysqlConnection</strong></span> : ce composant cr&eacute;e la
+					connexion &agrave; la base de donn&eacute;es MySQL afin que les autres composants puissent la
+					r&eacute;utiliser.</p></li><li class="listitem"><p>un <span class="bold"><strong>tMysqlInvalidRows</strong></span> : ce composant r&eacute;utilise
+					la connexion cr&eacute;&eacute;e par le <span class="bold"><strong>tMysqlConnection</strong></span> et
+					interroge les enregistrements clients qui vous int&eacute;ressent, par rapport &agrave; la
+					r&egrave;gle de qualit&eacute; de donn&eacute;es.</p></li><li class="listitem"><p>un <span class="bold"><strong>tLogRow</strong></span> : ce composant pr&eacute;sente les
+					r&eacute;sultats de l'ex&eacute;cution du Job.</p></li></ul></div><p>Pour reproduire ce sc&eacute;nario, suivez les &eacute;tapes des sections suivantes.</p><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d0e196547"></a>D&eacute;poser et relier les composants</h4></div></div></div><p>Proc&eacute;dez comme suit :</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>De la <span class="bold"><strong>Palette</strong></span>, d&eacute;posez un <span class="bold"><strong>tMysqlConnection</strong></span>, un <span class="bold"><strong>tMysqlInvalidRows</strong></span> et un <span class="bold"><strong>tLogRow</strong></span> dans l'espace de mod&eacute;lisation graphique.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Un composant dans l'espace de mod&eacute;lisation graphique peut &ecirc;tre nomm&eacute;
+							comme vous le souhaitez. Pour plus d'informations concernant le nommage
+							des composants, consultez le <span class="italic">Guide utilisateur
+								de</span>
+							<span class="italic">Talend Enterprise Studio</span></p></td></tr></table></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez-droit sur le <span class="bold"><strong>tMysqlConnection</strong></span> et
+						s&eacute;lectionnez <span class="bold"><strong>Trigger</strong></span> &gt; <span class="bold"><strong>OnSubjobOk</strong></span> afin de relier ce composant au
+							<span class="bold"><strong>tMysqlInvalidRows</strong></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>R&eacute;p&eacute;tez l'op&eacute;ration mais s&eacute;lectionnez <span class="bold"><strong>Row</strong></span>
+						&gt; <span class="bold"><strong>Main</strong></span> pour connecter le composant
+							<span class="bold"><strong>tMysqlInvalidRows</strong></span> au <span class="bold"><strong>tLogRow</strong></span>.</p></li></ol></div></div><div class="section" title="Configurer la connexion &agrave; la base de donn&eacute;es"><div class="titlepage"><div><div><h4 class="title"><a name="d0e196606"></a>Configurer la connexion &agrave; la base de donn&eacute;es</h4></div></div></div><p>Pour configurer la connexion &agrave; la base de donn&eacute;es MySQL, proc&eacute;dez comme suit
+				:</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="bold"><strong>tMysqlConnection</strong></span>
+						afin d'ouvrir sa vue <span class="bold"><strong>Component</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-tmysqlinvalidrows-dq_rules2.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Dans le champ <span class="bold"><strong>DB version</strong></span>, s&eacute;lectionnez la
+						version de votre base de donn&eacute;es MySQL. S&eacute;lectionnez <span class="bold"><strong>Mysql 5</strong></span> dans cet exemple.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans le champ <span class="bold"><strong>Host</strong></span>, saisissez l'adresse
+						IP du serveur de la base de donn&eacute;es &agrave; laquelle se connecter. Dans ce
+						sc&eacute;nario, saisissez <span class="italic">localhost</span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans le champ <span class="bold"><strong>Port</strong></span>, saisissez le num&eacute;ro
+						du port de la base de donn&eacute;es &agrave; laquelle se connecter. Saisissez <span class="italic">3306</span> dans cet exemple.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans le champ <span class="bold"><strong>Database</strong></span>, saisissez le nom
+						de la base de donn&eacute;es dans laquelle vous souhaitez v&eacute;rifier la table client.
+						Dans ce sc&eacute;nario, saisissez <span class="italic">crm</span>.</p></li><li class="step" title="&Eacute;tape 6"><p>Dans les champs <span class="bold"><strong>Username</strong></span> et <span class="bold"><strong>Password</strong></span>, saisissez les informations
+						d'authentification &agrave; la base de donn&eacute;es. Dans cet exemple, saisissez
+							<span class="italic">root</span> dans les deux champs.</p></li></ol></div></div><div class="section" title="Configurer la requ&ecirc;te sur les enregistrements clients"><div class="titlepage"><div><div><h4 class="title"><a name="d0e196672"></a>Configurer la requ&ecirc;te sur les enregistrements clients</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="bold"><strong>tMysqlInvalidRows</strong></span>
+						pour ouvrir sa vue <span class="bold"><strong>Component</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-tmysqlinvalidrows-dq_rules3.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Dans le champ <span class="bold"><strong>Validation type</strong></span>,
+						s&eacute;lectionnez <span class="bold"><strong>DQ rule validation</strong></span> afin
+						d'utiliser la r&egrave;gle de qualit&eacute; de donn&eacute;es.</p></li><li class="step" title="&Eacute;tape 3"><p>Cochez la case <span class="bold"><strong>Use an existing connection</strong></span>
+						afin de r&eacute;utiliser la connexion cr&eacute;&eacute;e par le <span class="bold"><strong>tMysqlConnection</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p> Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+						champ <span class="bold"><strong>Edit schema</strong></span> afin d'ouvrir l'&eacute;diteur
+						de sch&eacute;ma.</p><div class="mediaobject" align="center"><img src="../images/use_case-tmysqlinvalidrows-dq_rules4.png" align="middle"></div></li><li class="step" title="&Eacute;tape 5"><p>Cliquez trois fois sur le bouton <span class="bold"><strong>[+]</strong></span> pour
+						ajouter trois lignes et renommez-les respectivement <span class="italic">Name</span>, <span class="italic">DOB</span> et <span class="italic">Email</span>,.</p></li><li class="step" title="&Eacute;tape 6"><p>Dans la ligne <span class="italic">DOB</span>, s&eacute;lectionnez
+							<span class="bold"><strong>VARCHAR</strong></span> dans la colonne <span class="bold"><strong>DB type</strong></span>. Saisissez <span class="italic">19</span> dans la colonne <span class="bold"><strong>Length</strong></span>
+						et <span class="italic">0</span> dans la colonne <span class="bold"><strong>Precision</strong></span>.</p></li><li class="step" title="&Eacute;tape 7"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider ces
+						modifications et accepter la propagation propos&eacute;e par la fen&ecirc;tre
+						pop-up.</p></li><li class="step" title="&Eacute;tape 8"><p>Dans le champ <span class="bold"><strong>Table name</strong></span>, saisissez le
+						chemin d'acc&egrave;s &agrave; la table de la base de donn&eacute;es &agrave; v&eacute;rifier. Saisissez
+							<span class="italic">cust</span> dans cet exemple.</p></li><li class="step" title="&Eacute;tape 9"><p>Dans le champ <span class="bold"><strong>Where clause</strong></span>, saisissez la
+						clause WHERE &agrave; utiliser, en plus de la r&egrave;gle de qualit&eacute; de donn&eacute;es, afin
+						d'interroger les donn&eacute;es clients qui vous int&eacute;ressent. Dans ce sc&eacute;nario,
+						saisissez entre guillemets <code class="code">`cust`.`Email` like 's%'</code> afin de
+						r&eacute;cup&eacute;rer les enregistrements d'e-mail commen&ccedil;ant par la lettre <span class="italic">s</span> ou <span class="italic">S</span>.</p></li><li class="step" title="&Eacute;tape 10"><p>Dans le champ <span class="bold"><strong>DQ rule list</strong></span>, s&eacute;lectionnez
+						la r&egrave;gle de qualit&eacute; de donn&eacute;es &agrave; utiliser. Dans ce sc&eacute;nario, s&eacute;lectionnez
+							<span class="italic">cust_age</span>. Cette r&egrave;gle est une r&egrave;gle
+						de d&eacute;mo qui se pr&eacute;sente comme suit
+						:</p><pre class="programlisting"><code class="code">18&lt;=((TO_DAYS(NOW())-TO_DAYS(DOB))/365)</code></pre><p>
+					</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Vous pouvez regarder quelles sont les r&egrave;gles de qualit&eacute; de donn&eacute;es
+							disponibles dans <span class="bold"><strong>Libraries &gt; Rules &gt;
+								SQL</strong></span> de la vue <span class="bold"><strong>DQ
+								Repository</strong></span>. La r&egrave;gle <span class="italic">cust_age</span> peut &ecirc;tre import&eacute;e du projet <span class="bold"><strong>TDQEEDEMOJAVA</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-tmysqlinvalidrows-dq_rules6.png" align="middle"></div><p>Pour plus d'informations concernant la vue <span class="bold"><strong>DQ
+								Repository</strong></span> et ses &eacute;l&eacute;ments, ainsi que comment importer le
+							projet d&eacute;mo de qualit&eacute; de donn&eacute;es, consultez le <span class="italic">Guide utilisateur de</span>
+							<span class="italic">Talend Enterprise Data Quality</span></p></td></tr></table></div></li><li class="step" title="&Eacute;tape 11"><p>Cliquez sur le bouton <span class="bold"><strong>Guess Query</strong></span> pour
+						g&eacute;n&eacute;rer la requ&ecirc;te correspondante utilisant la clause NOT.</p></li><li class="step" title="&Eacute;tape 12"><p>Dans le champ <span class="bold"><strong>Query</strong></span>, changez <span class="italic">18</span> en <span class="italic">20</span>
+						afin que la clause soit la suivante :</p><pre class="programlisting"><code class="code">"SELECT `Name`, `DOB`, `Email` FROM `crm`.`cust` 
+  WHERE (NOT ( 20&gt;((TO_DAYS(NOW())-TO_DAYS(DOB))/365) )
+  AND `cust`.`Email` like 's%')"</code></pre><p>Cette clause vous permet de s&eacute;lectionner les clients dont l'&acirc;ge est
+						sup&eacute;rieur &agrave; <span class="italic">20</span>.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e196856"></a>Ex&eacute;cuter le Job </h4></div></div></div><p>Le <span class="bold"><strong>tLogRow</strong></span> est utilis&eacute; pour pr&eacute;senter les
+				r&eacute;sultats d'ex&eacute;cution du Job. Vous pouvez configurer le mode de pr&eacute;sentation dans sa
+				vue <span class="bold"><strong>Component</strong></span>.</p><p>Pour ce faire, double-cliquez sur le <span class="bold"><strong>tLogRow</strong></span> afin
+				d'ouvrir sa vue <span class="bold"><strong>Component</strong></span>. Dans la zone <span class="bold"><strong>Mode</strong></span>, s&eacute;lectionnez l'option <span class="bold"><strong>Table
+					(print values in cells of a table)</strong></span>.</p><div class="procedure"><ul class="procedure"><li class="step" title="&Eacute;tape 1"><p>Pour ex&eacute;cuter le Job, appuyez sur <span class="bold"><strong>F6</strong></span>. </p></li></ul></div><p>La vue <span class="bold"><strong>Run</strong></span> s'ouvre automatiquement et vous pouvez
+				v&eacute;rifier les r&eacute;sultats d'ex&eacute;cution.</p><div class="mediaobject" align="center"><img src="../images/use_case-tmysqlinvalidrows-dq_rules5.png" align="middle"></div><p>Vous pouvez remarquer que les enregistrements clients commen&ccedil;ant par la lettre S
+				sont r&eacute;cup&eacute;r&eacute;s et que l'&acirc;ge de ces personnes est sup&eacute;rieur &agrave; 20.</p></div></div></div></body></html>

@@ -1,0 +1,113 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tUniservRTMailBulk</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch06.html" title="Chapitre&nbsp;6.&nbsp;Composants Data Quality"><link rel="prev" href="tUniservRTConvertName.html" title="tUniservRTConvertName"><link rel="next" href="tUniservRTMailOutput.html" title="tUniservRTMailOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="fr" class="section" title="tUniservRTMailBulk"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tUniservRTMailBulk"></a>tUniservRTMailBulk</h2></div></div></div><div class="mediaobject"><img src="../images/component_tuniservrtmailbulk_icon.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="italic">Ce composant est disponible dans la <span class="bold"><strong>Palette</strong></span> du Studio uniquement si vous
+                                avez souscrit &agrave; l'&eacute;dition correspondante de <span class="italic">Data Quality Service Hub
+                        Studio</span>.</span></p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tUniservRTMailBulk"><div class="titlepage"><div><div><h3 class="title"><a name="d0e56001"></a>Propri&eacute;t&eacute;s du tUniservRTMailBulk</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Famille de
+                                                  composant</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p>Data Quality</p>
+                                                </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Fonction</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Le <span class="bold"><strong>tUniservRTMailBulk</strong></span> cr&eacute;&eacute; un pool
+                                                  d'index pour <span class="italic">mailRetrieval</span> avec des donn&eacute;es
+                                                  d'entr&eacute;e pr&eacute;d&eacute;finies.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Objectif</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Le <span class="bold"><strong>tUniservRTMailBulk</strong></span> pr&eacute;pare le pool
+                                                  d'index pour la recherche de doublons.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Basic
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Schema</em></span> et
+                                                  <span class="emphasis"><em>Edit schema</em></span></p>
+                                                </td><td valign="top">
+                                                  <p>Un sch&eacute;ma est une description de lignes,
+                                                  i.e., il d&eacute;finit le nombre de champs qui sont
+                                                  trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma
+                                                  est soit local (Built-in) soit distant dans le
+                                                  <span class="bold"><strong>Repository</strong></span>.
+                                                  </p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Host name</em></span></p>
+                                                </td><td valign="top">Nom de l'h&ocirc;te du serveur, entre
+                                                  guillemets doubles.</td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Port</em></span></p>
+                                                </td><td valign="top">Num&eacute;ro du port d'&eacute;coute du
+                                                  serveur, entre guillemets doubles.</td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Service</em></span></p>
+                                                </td><td>
+                                                  <p>Le nom du service est <code class="code">"mail"</code>
+                                                  par d&eacute;faut. Saisissez une nouvelle valeur si
+                                                  n&eacute;cessaire (si le suffixe du service change, par
+                                                  exemple), entre guillemets doubles.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Advanced
+                                                  settings</strong></span></p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>Uniserv Parameters</em></span>
+                                                  </p>
+                                                </td><td valign="top">
+                                                  <p>Pour plus d'informations, veuillez consulter
+                                                  le manuel utilisateur Uniserv <span class="italic">mailRetrieval</span>.</p>
+                                                </td></tr><tr><td>
+                                                  <p>&nbsp;</p>
+                                                </td><td valign="top">
+                                                  <p><span class="emphasis"><em>tStatCatcher
+                                                  Statistics</em></span></p>
+                                                </td><td>Cochez cette case pour collecter les donn&eacute;es
+                                                  de log au niveau du Job et de chaque
+                                                  composant.</td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Usage</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Le <span class="bold"><strong>tUniservRTMailBulk</strong></span> pr&eacute;pare le pool
+                                                  d'index pour une recherche de doublons.</p>
+                                                </td></tr><tr><td valign="top">
+                                                  <p><span class="bold"><strong>Limitation</strong></span></p>
+                                                </td><td colspan="2" valign="top">
+                                                  <p>Pour utiliser le composant <span class="bold"><strong>tUniservRTMailBulk</strong></span>, le
+                                                  logiciel Uniserv <span class="bluebold"></span> doit &ecirc;tre
+                                                  install&eacute;.</p>
+                                                  <p>Vous aurez besoin d'un composant d'entr&eacute;e et
+                                                  d'un composant de mapping pour lire l'adresse
+                                                  provenant d'une base de donn&eacute;es ou d'un fichier.
+                                                  Le composant ne poss&egrave;de pas de connexion de
+                                                  sortie.</p>
+                                                </td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario : Cr&eacute;er un pool d'index"><div class="titlepage"><div><div><h3 class="title"><a name="d0e56199"></a>Sc&eacute;nario : Cr&eacute;er un pool d'index</h3></div></div></div><p>Ce sc&eacute;nario d&eacute;crit un Job chargeant une liste d'adresses d'une base de donn&eacute;es
+                        SQL vers un pool d'index.</p><p>La base de donn&eacute;es de ce sc&eacute;nario est d&eacute;j&agrave; sauvegard&eacute;e dans le <span class="bold"><strong>Repository</strong></span>, toutes les m&eacute;tadonn&eacute;es de sch&eacute;ma
+                        sont donc d&eacute;j&agrave; disponibles.</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans la vue <span class="bold"><strong>Repository</strong></span>,
+                                        d&eacute;veloppez le n&#339;ud <span class="bold"><strong>Metadata</strong></span>
+                                        et le r&eacute;pertoire dans lequel est sauvegard&eacute; le fichier.
+                                        Glissez ce fichier dans l'espace de mod&eacute;lisation
+                                        graphique.</p><p>La bo&icirc;te de dialogue suivante s'ouvre :</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailbulk_1.png"></div></li><li class="step" title="&Eacute;tape 2"><p>S&eacute;lectionnez le composant <span class="bold"><strong>tMysqlInput</strong></span> et cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la bo&icirc;te de
+                                        dialogue. </p><p>Le composant appara&icirc;t dans l'espace de mod&eacute;lisation
+                                        graphique.</p></li><li class="step" title="&Eacute;tape 3"><p>Glissez les composants suivants de la <span class="bold"><strong>Palette</strong></span> dans l'espace de mod&eacute;lisation
+                                        graphique: <span class="bold"><strong>tMap</strong></span> et
+                                                <span class="bold"><strong>tUniservRTMailBulk</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Connectez les composants &agrave; l'aide de liens <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>, comme illustr&eacute; ci-dessous.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailbulk_2.png"></div><p>Acceptez le sch&eacute;ma du <span class="bold"><strong>tUniservRTConvertName</strong></span> en cliquant sur
+                                                <span class="bold"><strong>Yes</strong></span> dans la fen&ecirc;tre
+                                        qui appara&icirc;t.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtconvertname_3.png"></div></li><li class="step" title="&Eacute;tape 5"><p>Double-cliquez sur le <span class="bold"><strong>tMap_1</strong></span>
+                                        pour ouvrir la fen&ecirc;tre de mapping. &Agrave; gauche se trouve le
+                                        sch&eacute;ma du fichier de la base de donn&eacute;es et &agrave; droite se
+                                        trouve le sch&eacute;ma du <span class="bold"><strong>tUniservRTMailBulk</strong></span> (et donc l'entr&eacute;e du
+                                        Job). En bas se trouve le <span class="bold"><strong>Schema
+                                                editor</strong></span>, o&ugrave; vous pouvez trouver et &eacute;diter
+                                        les attributs de chaque colonne.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailbulk_3.png"></div></li><li class="step" title="&Eacute;tape 6"><p>Assignez les colonnes de la source d'entr&eacute;e &agrave; leurs colonnes
+                                        du <span class="bold"><strong>tUniservRTMailBulk</strong></span>
+                                        respectives. Pour ce faire, s&eacute;lectionnez une colonne de la
+                                        source d'entr&eacute;e et glissez-la dans la colonne du m&ecirc;me nom du
+                                        c&ocirc;t&eacute; droit. La signification de chaque argument est d&eacute;crite
+                                        dans le manuel utilisateur Uniserv <span class="italic">mailRetrieval</span>.</p></li><li class="step" title="&Eacute;tape 7"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour fermer la
+                                        fen&ecirc;tre de dialogue.</p></li><li class="step" title="&Eacute;tape 8"><p>Double-cliquez sur le <span class="bold"><strong>tUniservRTMailBulk</strong></span> pour ouvrir sa vue
+                                                <span class="bold"><strong>Basic
+                                        settings</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailbulk_4.png"></div></li><li class="step" title="&Eacute;tape 9"><p>Renseignez les informations relatives au serveur et sp&eacute;cifiez
+                                        le service.</p></li><li class="step" title="&Eacute;tape 10"><p>Dans la vue <span class="bold"><strong>Advanced
+                                        settings</strong></span>, adaptez les param&egrave;tres serveur.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtmailbulk_5.png"></div></li></ol></div></div></div></body></html>

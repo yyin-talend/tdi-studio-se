@@ -1,6 +1,38 @@
 <?xml version="1.0" encoding="ISO-8859-15"?>
 
 <contexts>
+  <context id="tAS400Close">
+    <description>Ferme une connexion AS400 sélectionnée.</description>
+    <topic href="guide/components/fr/tAS400Close.html" label="tAS400Close Component Documentation"/>
+  </context>
+  <context id="tAS400Commit">
+    <description>Commite toutes les transactions qui n'ont pas encore été commitées dans la connexion AS400 sélectionnée</description>
+    <topic href="guide/components/fr/tAS400Commit.html" label="tAS400Commit Component Documentation"/>
+  </context>
+  <context id="tAS400Connection">
+    <description>Crée une connexion à une base de données AS400</description>
+    <topic href="guide/components/fr/tAS400Connection.html" label="tAS400Connection Component Documentation"/>
+  </context>
+  <context id="tAS400Input">
+    <description>Lit une table et extrait les champs à partir d'une requête SQL</description>
+    <topic href="guide/components/fr/tAS400Input.html" label="tAS400Input Component Documentation"/>
+  </context>
+  <context id="tAS400LastInsertId">
+    <description>Retrouve le dernier ID inséré dans une connexion AS400</description>
+    <topic href="guide/components/fr/tAS400LastInsertId.html" label="tAS400LastInsertId Component Documentation"/>
+  </context>
+  <context id="tAS400Output">
+    <description>Insère ou met à jour des lignes dans une table.</description>
+    <topic href="guide/components/fr/tAS400Output.html" label="tAS400Output Component Documentation"/>
+  </context>
+  <context id="tAS400Rollback">
+    <description>Annule toutes les transactions qui n'ont pas encore été commitées dans la connexion AS400 sélectionnée</description>
+    <topic href="guide/components/fr/tAS400Rollback.html" label="tAS400Rollback Component Documentation"/>
+  </context>
+  <context id="tAS400Row">
+    <description>Exécute une requête SQL à chaque itération de flux Talend</description>
+    <topic href="guide/components/fr/tAS400Row.html" label="tAS400Row Component Documentation"/>
+  </context>
   <context id="tAccessBulkExec">
     <description>Demande à une base de données Access de charger un fichier de chargement de masse dans une base de données définie</description>
     <topic href="guide/components/fr/tAccessBulkExec.html" label="tAccessBulkExec Component Documentation"/>
@@ -50,11 +82,11 @@
     <topic href="guide/components/fr/tAdvancedFileOutputXML.html" label="tAdvancedFileOutputXML Component Documentation"/>
   </context>
   <context id="tAggregateRow">
-    <description>Fonction correspondant au GroupBy SQL. Reçoit un flux et l'agrège sur une ou plusieurs colonne(s). La clé d'agrégation et le résultat pertinent des opérations (tels que min, max, sum etc) sont fournis pour chaque ligne de sortie.</description>
+    <description>Fonction correspondant au GroupBy SQL. Reçoit un flux et l'agrège sur une ou plusieurs colonne(s). La clé d'agrégation et le résultat pertinent des opérations (tels que min, max, sum etc) sont fournis pour chaque ligne de sortie. </description>
     <topic href="guide/components/fr/tAggregateRow.html" label="tAggregateRow Component Documentation"/>
   </context>
   <context id="tAggregateSortedRow">
-    <description>Fonction correspondant au GroupBy SQL. Reçoit un flux et l'agrège sur une ou plusieurs colonne(s). La clé d'agrégation et le résultat pertinent des opérations (tels que min, max, sum etc) sont fournis pour chaque ligne de sortie.</description>
+    <description>Fonction correspondant au GroupBy SQL. Reçoit un flux et l'agrège sur une ou plusieurs colonne(s). La clé d'agrégation et le résultat pertinent des opérations (tels que min, max, sum etc) sont fournis pour chaque ligne de sortie. </description>
     <topic href="guide/components/fr/tAggregateSortedRow.html" label="tAggregateSortedRow Component Documentation"/>
   </context>
   <context id="tAlfrescoOutput">
@@ -121,38 +153,6 @@
     <description>Lit le fichier de log  d'accès d'un serveur Apache HTTP</description>
     <topic href="guide/components/fr/tApacheLogInput.html" label="tApacheLogInput Component Documentation"/>
   </context>
-  <context id="tAS400Close">
-    <description>Ferme une connexion AS400 sélectionnée.</description>
-    <topic href="guide/components/fr/tAS400Close.html" label="tAS400Close Component Documentation"/>
-  </context>
-  <context id="tAS400Commit">
-    <description>Commite toutes les transactions qui n'ont pas encore été commitées dans la connexion AS400 sélectionnée</description>
-    <topic href="guide/components/fr/tAS400Commit.html" label="tAS400Commit Component Documentation"/>
-  </context>
-  <context id="tAS400Connection">
-    <description>Crée une connexion à une base de données AS400</description>
-    <topic href="guide/components/fr/tAS400Connection.html" label="tAS400Connection Component Documentation"/>
-  </context>
-  <context id="tAS400Input">
-    <description>Lit une table et extrait les champs à partir d'une requête SQL</description>
-    <topic href="guide/components/fr/tAS400Input.html" label="tAS400Input Component Documentation"/>
-  </context>
-  <context id="tAS400LastInsertId">
-    <description>Retrouve le dernier ID inséré dans une connexion AS400</description>
-    <topic href="guide/components/fr/tAS400LastInsertId.html" label="tAS400LastInsertId Component Documentation"/>
-  </context>
-  <context id="tAS400Output">
-    <description>Insère ou met à jour des lignes dans une table.</description>
-    <topic href="guide/components/fr/tAS400Output.html" label="tAS400Output Component Documentation"/>
-  </context>
-  <context id="tAS400Rollback">
-    <description>Annule toutes les transactions qui n'ont pas encore été commitées dans la connexion AS400 sélectionnée</description>
-    <topic href="guide/components/fr/tAS400Rollback.html" label="tAS400Rollback Component Documentation"/>
-  </context>
-  <context id="tAS400Row">
-    <description>Exécute une requête SQL à chaque itération de flux Talend</description>
-    <topic href="guide/components/fr/tAS400Row.html" label="tAS400Row Component Documentation"/>
-  </context>
   <context id="tAssert">
     <description>Envoie un message déclencheur au tAssertCatcher et ne bloque pas l'exécution du Job principal</description>
     <topic href="guide/components/fr/tAssert.html" label="tAssert Component Documentation"/>
@@ -170,7 +170,7 @@
     <topic href="guide/components/fr/tBonitaDeploy.html" label="tBonitaDeploy Component Documentation"/>
   </context>
   <context id="tBonitaInstantiateProcess">
-    <description>Instancie et lance un processus existant dans Bonita Runtime.</description>
+    <description>Instancie et lance un processus existant dans Bonita Runtime. </description>
     <topic href="guide/components/fr/tBonitaInstantiateProcess.html" label="tBonitaInstantiateProcess Component Documentation"/>
   </context>
   <context id="tBufferInput">
@@ -293,6 +293,10 @@
     <description>Exécute une requête SQL à chaque itération de flux Talend</description>
     <topic href="guide/components/fr/tDBSQLRow.html" label="tDBSQLRow Component Documentation"/>
   </context>
+  <context id="tDTDValidator">
+    <description>Valide l'entrée XML par rapport à un fichier DTD</description>
+    <topic href="guide/components/fr/tDTDValidator.html" label="tDTDValidator Component Documentation"/>
+  </context>
   <context id="tDenormalize">
     <description>Concatène les différents champs en une liste ou une chaîne de caractères délimitée</description>
     <topic href="guide/components/fr/tDenormalize.html" label="tDenormalize Component Documentation"/>
@@ -312,10 +316,6 @@
   <context id="tDotNETRow">
     <description>Passe des valeurs d'un flux  à la méthode d'un objet .NET</description>
     <topic href="guide/components/fr/tDotNETRow.html" label="tDotNETRow Component Documentation"/>
-  </context>
-  <context id="tDTDValidator">
-    <description>Valide l'entrée XML par rapport à un fichier DTD</description>
-    <topic href="guide/components/fr/tDTDValidator.html" label="tDTDValidator Component Documentation"/>
   </context>
   <context id="tEDIFACTtoXML">
     <description>Génère un document XML à partir d'un fichier EDIFACT</description>
@@ -421,10 +421,6 @@
     <description>Exécute une requête SQL à chaque itération de flux Talend</description>
     <topic href="guide/components/fr/tEXARow.html" label="tEXARow Component Documentation"/>
   </context>
-  <context id="tEXistConnection">
-    <description>Se connecte à la base de donnée EXist</description>
-    <topic href="guide/components/fr/tEXistConnection.html" label="tEXistConnection Component Documentation"/>
-  </context>
   <context id="tEXistDelete">
     <description>Supprime des ressources d'une base de données eXist</description>
     <topic href="guide/components/fr/tEXistDelete.html" label="tEXistDelete Component Documentation"/>
@@ -468,6 +464,42 @@
   <context id="tExtractXMLField">
     <description>Extrait les données des champs d'entrée comme le fait le tFileInputXML</description>
     <topic href="guide/components/fr/tExtractXMLField.html" label="tExtractXMLField Component Documentation"/>
+  </context>
+  <context id="tFTPConnection">
+    <description>Crée une connexion à un serveur FTP</description>
+    <topic href="guide/components/fr/tFTPConnection.html" label="tFTPConnection Component Documentation"/>
+  </context>
+  <context id="tFTPDelete">
+    <description>Supprime les fichiers en utilisant File Transfert Protocol</description>
+    <topic href="guide/components/fr/tFTPDelete.html" label="tFTPDelete Component Documentation"/>
+  </context>
+  <context id="tFTPFileExist">
+    <description>Vérifie si un fichier existe sur un site FTP distant</description>
+    <topic href="guide/components/fr/tFTPFileExist.html" label="tFTPFileExist Component Documentation"/>
+  </context>
+  <context id="tFTPFileList">
+    <description>Liste un répertoire FTP</description>
+    <topic href="guide/components/fr/tFTPFileList.html" label="tFTPFileList Component Documentation"/>
+  </context>
+  <context id="tFTPFileProperties">
+    <description>Crée une seule ligne de flux avec les propriétés du fichier</description>
+    <topic href="guide/components/fr/tFTPFileProperties.html" label="tFTPFileProperties Component Documentation"/>
+  </context>
+  <context id="tFTPGet">
+    <description>Récupère des fichier par File Transfer Protocol</description>
+    <topic href="guide/components/fr/tFTPGet.html" label="tFTPGet Component Documentation"/>
+  </context>
+  <context id="tFTPPut">
+    <description>Envoie les fichier en utilisant le File Transfert Procotol</description>
+    <topic href="guide/components/fr/tFTPPut.html" label="tFTPPut Component Documentation"/>
+  </context>
+  <context id="tFTPRename">
+    <description>Renomme des fichiers distants en utilisant File Transfer Protocol</description>
+    <topic href="guide/components/fr/tFTPRename.html" label="tFTPRename Component Documentation"/>
+  </context>
+  <context id="tFTPTruncate">
+    <description>Supprimer les fichiers avec File Transfert Protocol</description>
+    <topic href="guide/components/fr/tFTPTruncate.html" label="tFTPTruncate Component Documentation"/>
   </context>
   <context id="tFileArchive">
     <description>Fichiers d'archive</description>
@@ -521,10 +553,6 @@
     <description>Lit un fichier LDIF entrée par entrée</description>
     <topic href="guide/components/fr/tFileInputLDIF.html" label="tFileInputLDIF Component Documentation"/>
   </context>
-  <context id="tFileInputMail">
-    <description>Extrait des champs depuis un fichier mail d'entrée. Ne traite qu'une entrée à la fois.</description>
-    <topic href="guide/components/fr/tFileInputMail.html" label="tFileInputMail Component Documentation"/>
-  </context>
   <context id="tFileInputMSDelimited">
     <description>Lit un fichier complexe</description>
     <topic href="guide/components/fr/tFileInputMSDelimited.html" label="tFileInputMSDelimited Component Documentation"/>
@@ -536,6 +564,10 @@
   <context id="tFileInputMSXML">
     <description>Lit un fichier XML multi-niveaux</description>
     <topic href="guide/components/fr/tFileInputMSXML.html" label="tFileInputMSXML Component Documentation"/>
+  </context>
+  <context id="tFileInputMail">
+    <description>Extrait des champs depuis un fichier mail d'entrée. Ne traite qu'une entrée à la fois.</description>
+    <topic href="guide/components/fr/tFileInputMail.html" label="tFileInputMail Component Documentation"/>
   </context>
   <context id="tFileInputPositional">
     <description>Lit un fichier ligne par ligne et extrait les champs selon leur position dans une chaîne de caractères</description>
@@ -677,42 +709,6 @@
     <description>Crée une boucle sur une liste pour un lien Iterate</description>
     <topic href="guide/components/fr/tForeach.html" label="tForeach Component Documentation"/>
   </context>
-  <context id="tFTPConnection">
-    <description>Crée une connexion à un serveur FTP</description>
-    <topic href="guide/components/fr/tFTPConnection.html" label="tFTPConnection Component Documentation"/>
-  </context>
-  <context id="tFTPDelete">
-    <description>Supprime les fichiers en utilisant File Transfert Protocol</description>
-    <topic href="guide/components/fr/tFTPDelete.html" label="tFTPDelete Component Documentation"/>
-  </context>
-  <context id="tFTPFileExist">
-    <description>Vérifie si un fichier existe sur un site FTP distant</description>
-    <topic href="guide/components/fr/tFTPFileExist.html" label="tFTPFileExist Component Documentation"/>
-  </context>
-  <context id="tFTPFileList">
-    <description>Liste un répertoire FTP</description>
-    <topic href="guide/components/fr/tFTPFileList.html" label="tFTPFileList Component Documentation"/>
-  </context>
-  <context id="tFTPFileProperties">
-    <description>Crée une seule ligne de flux avec les propriétés du fichier</description>
-    <topic href="guide/components/fr/tFTPFileProperties.html" label="tFTPFileProperties Component Documentation"/>
-  </context>
-  <context id="tFTPGet">
-    <description>Récupère des fichier par File Transfer Protocol</description>
-    <topic href="guide/components/fr/tFTPGet.html" label="tFTPGet Component Documentation"/>
-  </context>
-  <context id="tFTPPut">
-    <description>Envoie les fichier en utilisant le File Transfert Procotol</description>
-    <topic href="guide/components/fr/tFTPPut.html" label="tFTPPut Component Documentation"/>
-  </context>
-  <context id="tFTPRename">
-    <description>Renomme des fichiers distants en utilisant File Transfer Protocol</description>
-    <topic href="guide/components/fr/tFTPRename.html" label="tFTPRename Component Documentation"/>
-  </context>
-  <context id="tFTPTruncate">
-    <description>Supprimer les fichiers avec File Transfert Protocol</description>
-    <topic href="guide/components/fr/tFTPTruncate.html" label="tFTPTruncate Component Documentation"/>
-  </context>
   <context id="tFuzzyMatch">
     <description>Compare une colonne du flux principal à une colonne du flux lookup et détecte les divergences</description>
     <topic href="guide/components/fr/tFuzzyMatch.html" label="tFuzzyMatch Component Documentation"/>
@@ -773,26 +769,6 @@
     <description>Exécute un fichier script Groovy</description>
     <topic href="guide/components/fr/tGroovyFile.html" label="tGroovyFile Component Documentation"/>
   </context>
-  <context id="tHashInput">
-    <description>Remplit une mémoire tampon hachée</description>
-    <topic href="guide/components/fr/tHashInput.html" label="tHashInput Component Documentation"/>
-  </context>
-  <context id="tHashOutput">
-    <description>Remplit une mémoire tampon hachée</description>
-    <topic href="guide/components/fr/tHashOutput.html" label="tHashOutput Component Documentation"/>
-  </context>
-  <context id="tHiveClose">
-    <description>Ferme une connexion Hive sélectionnée.</description>
-    <topic href="guide/components/fr/tHiveClose.html" label="tHiveClose Component Documentation"/>
-  </context>
-  <context id="tHiveConnection">
-    <description>Crée une connexion à une base de données Hive</description>
-    <topic href="guide/components/fr/tHiveConnection.html" label="tHiveConnection Component Documentation"/>
-  </context>
-  <context id="tHiveRow">
-    <description>Exécute une requête SQL à chaque itération de flux Talend</description>
-    <topic href="guide/components/fr/tHiveRow.html" label="tHiveRow Component Documentation"/>
-  </context>
   <context id="tHL7Input">
     <description>Lit des messages HL7</description>
     <topic href="guide/components/fr/tHL7Input.html" label="tHL7Input Component Documentation"/>
@@ -812,6 +788,26 @@
   <context id="tHSQLDbRow">
     <description>Exécute une requête SQL à chaque itération de flux Talend</description>
     <topic href="guide/components/fr/tHSQLDbRow.html" label="tHSQLDbRow Component Documentation"/>
+  </context>
+  <context id="tHashInput">
+    <description>Remplit une mémoire tampon hachée</description>
+    <topic href="guide/components/fr/tHashInput.html" label="tHashInput Component Documentation"/>
+  </context>
+  <context id="tHashOutput">
+    <description>Remplit une mémoire tampon hachée</description>
+    <topic href="guide/components/fr/tHashOutput.html" label="tHashOutput Component Documentation"/>
+  </context>
+  <context id="tHiveClose">
+    <description>Ferme une connexion Hive sélectionnée.</description>
+    <topic href="guide/components/fr/tHiveClose.html" label="tHiveClose Component Documentation"/>
+  </context>
+  <context id="tHiveConnection">
+    <description>Crée une connexion à une base de données Hive</description>
+    <topic href="guide/components/fr/tHiveConnection.html" label="tHiveConnection Component Documentation"/>
+  </context>
+  <context id="tHiveRow">
+    <description>Exécute une requête SQL à chaque itération de flux Talend</description>
+    <topic href="guide/components/fr/tHiveRow.html" label="tHiveRow Component Documentation"/>
   </context>
   <context id="tInfiniteLoop">
     <description>Crée une boucle infinie via un lien Iterate</description>
@@ -933,38 +929,6 @@
     <description>Transforme un lien Iterate en flux d'entrée</description>
     <topic href="guide/components/fr/tIterateToFlow.html" label="tIterateToFlow Component Documentation"/>
   </context>
-  <context id="tJasperOutput">
-    <description>Produit un rapport</description>
-    <topic href="guide/components/fr/tJasperOutput.html" label="tJasperOutput Component Documentation"/>
-  </context>
-  <context id="tJasperOutputExec">
-    <description>Produit un rapport</description>
-    <topic href="guide/components/fr/tJasperOutputExec.html" label="tJasperOutputExec Component Documentation"/>
-  </context>
-  <context id="tJava">
-    <description>Permettre d'entrer manuellement le code Java d'initialisation d'un composant</description>
-    <topic href="guide/components/fr/tJava.html" label="tJava Component Documentation"/>
-  </context>
-  <context id="tJavaDBInput">
-    <description>Lit une table d'une base de données Java et extrait les champs à partir d'une requête SQL</description>
-    <topic href="guide/components/fr/tJavaDBInput.html" label="tJavaDBInput Component Documentation"/>
-  </context>
-  <context id="tJavaDBOutput">
-    <description>Insère ou met à jour des lignes dans une table d'une base de données Java.</description>
-    <topic href="guide/components/fr/tJavaDBOutput.html" label="tJavaDBOutput Component Documentation"/>
-  </context>
-  <context id="tJavaDBRow">
-    <description>Exécute une requête SQL à chaque itération de flux Talend</description>
-    <topic href="guide/components/fr/tJavaDBRow.html" label="tJavaDBRow Component Documentation"/>
-  </context>
-  <context id="tJavaFlex">
-    <description>Permet d'entrer les parties d'initialisation, principale et de fin du code d'un composant</description>
-    <topic href="guide/components/fr/tJavaFlex.html" label="tJavaFlex Component Documentation"/>
-  </context>
-  <context id="tJavaRow">
-    <description>Permet de saisir manuellement la partie principale de code Java dans un composant</description>
-    <topic href="guide/components/fr/tJavaRow.html" label="tJavaRow Component Documentation"/>
-  </context>
   <context id="tJDBCClose">
     <description>Ferme une connexion JDBC sélectionnée.</description>
     <topic href="guide/components/fr/tJDBCClose.html" label="tJDBCClose Component Documentation"/>
@@ -1013,6 +977,38 @@
     <description>Envoie un message au serveur MQ</description>
     <topic href="guide/components/fr/tJMSOutput.html" label="tJMSOutput Component Documentation"/>
   </context>
+  <context id="tJasperOutput">
+    <description>Produit un rapport</description>
+    <topic href="guide/components/fr/tJasperOutput.html" label="tJasperOutput Component Documentation"/>
+  </context>
+  <context id="tJasperOutputExec">
+    <description>Produit un rapport</description>
+    <topic href="guide/components/fr/tJasperOutputExec.html" label="tJasperOutputExec Component Documentation"/>
+  </context>
+  <context id="tJava">
+    <description>Permettre d'entrer manuellement le code Java d'initialisation d'un composant</description>
+    <topic href="guide/components/fr/tJava.html" label="tJava Component Documentation"/>
+  </context>
+  <context id="tJavaDBInput">
+    <description>Lit une table d'une base de données Java et extrait les champs à partir d'une requête SQL</description>
+    <topic href="guide/components/fr/tJavaDBInput.html" label="tJavaDBInput Component Documentation"/>
+  </context>
+  <context id="tJavaDBOutput">
+    <description>Insère ou met à jour des lignes dans une table d'une base de données Java.</description>
+    <topic href="guide/components/fr/tJavaDBOutput.html" label="tJavaDBOutput Component Documentation"/>
+  </context>
+  <context id="tJavaDBRow">
+    <description>Exécute une requête SQL à chaque itération de flux Talend</description>
+    <topic href="guide/components/fr/tJavaDBRow.html" label="tJavaDBRow Component Documentation"/>
+  </context>
+  <context id="tJavaFlex">
+    <description>Permet d'entrer les parties d'initialisation, principale et de fin du code d'un composant</description>
+    <topic href="guide/components/fr/tJavaFlex.html" label="tJavaFlex Component Documentation"/>
+  </context>
+  <context id="tJavaRow">
+    <description>Permet de saisir manuellement la partie principale de code Java dans un composant</description>
+    <topic href="guide/components/fr/tJavaRow.html" label="tJavaRow Component Documentation"/>
+  </context>
   <context id="tJoin">
     <description>Crée un inner ou outer join entre le flux principal des données et le flux lookup</description>
     <topic href="guide/components/fr/tJoin.html" label="tJoin Component Documentation"/>
@@ -1056,34 +1052,6 @@
   <context id="tLoop">
     <description>Crée une boucle via un lien Iterate</description>
     <topic href="guide/components/fr/tLoop.html" label="tLoop Component Documentation"/>
-  </context>
-  <context id="tMap">
-    <description>Permettre les jointures, le filtrage des colonnes ou des lignes, les transformations, et les sorties multiples</description>
-    <topic href="guide/components/fr/tMap.html" label="tMap Component Documentation"/>
-  </context>
-  <context id="tMarketoInput">
-    <description>Extrait des données d'un système Marketo</description>
-    <topic href="guide/components/fr/tMarketoInput.html" label="tMarketoInput Component Documentation"/>
-  </context>
-  <context id="tMarketoListOperation">
-    <description>appeler la liste des opérations dans le système Marketo</description>
-    <topic href="guide/components/fr/tMarketoListOperation.html" label="tMarketoListOperation Component Documentation"/>
-  </context>
-  <context id="tMarketoOutput">
-    <description>Ecrit dans le système Marketo</description>
-    <topic href="guide/components/fr/tMarketoOutput.html" label="tMarketoOutput Component Documentation"/>
-  </context>
-  <context id="tMaxDBInput">
-    <description>Lit une table et extrait les champs à partir d'une requête SQL</description>
-    <topic href="guide/components/fr/tMaxDBInput.html" label="tMaxDBInput Component Documentation"/>
-  </context>
-  <context id="tMaxDBOutput">
-    <description>Insère ou met à jour des lignes dans une table</description>
-    <topic href="guide/components/fr/tMaxDBOutput.html" label="tMaxDBOutput Component Documentation"/>
-  </context>
-  <context id="tMaxDBRow">
-    <description>Exécute une requête SQL à chaque itération de flux Talend</description>
-    <topic href="guide/components/fr/tMaxDBRow.html" label="tMaxDBRow Component Documentation"/>
   </context>
   <context id="tMDMBulkLoad">
     <description>Ecrit une structure xml dans le service Web Talend MDM</description>
@@ -1133,50 +1101,6 @@
     <description>Ecrit une structure XML dans un Service Web</description>
     <topic href="guide/components/fr/tMDMViewSearch.html" label="tMDMViewSearch Component Documentation"/>
   </context>
-  <context id="tMemorizeRows">
-    <description>Stocke les N dernières lignes du flux afin de faciliter leur récupération</description>
-    <topic href="guide/components/fr/tMemorizeRows.html" label="tMemorizeRows Component Documentation"/>
-  </context>
-  <context id="tMicrosoftCRMInput">
-    <description>Lit dans Microsoft CRM</description>
-    <topic href="guide/components/fr/tMicrosoftCRMInput.html" label="tMicrosoftCRMInput Component Documentation"/>
-  </context>
-  <context id="tMicrosoftCRMOutput">
-    <description>Ecrit dans Microsoft CRM</description>
-    <topic href="guide/components/fr/tMicrosoftCRMOutput.html" label="tMicrosoftCRMOutput Component Documentation"/>
-  </context>
-  <context id="tMicrosoftMQInput">
-    <description>Lit les messages de la file de Microsoft Message</description>
-    <topic href="guide/components/fr/tMicrosoftMQInput.html" label="tMicrosoftMQInput Component Documentation"/>
-  </context>
-  <context id="tMicrosoftMQOutput">
-    <description>Ecrit le contenu d'un message dans la file Microsoft Message</description>
-    <topic href="guide/components/fr/tMicrosoftMQOutput.html" label="tMicrosoftMQOutput Component Documentation"/>
-  </context>
-  <context id="tMomCommit">
-    <description>Commite toutes les transactions n'ayant pas encore été commitées dans une session MOM sélectionnée</description>
-    <topic href="guide/components/fr/tMomCommit.html" label="tMomCommit Component Documentation"/>
-  </context>
-  <context id="tMomInput">
-    <description>Lit des messages d'un serveur MQ</description>
-    <topic href="guide/components/fr/tMomInput.html" label="tMomInput Component Documentation"/>
-  </context>
-  <context id="tMomMessageIdList">
-    <description>Récupère une liste d'ID de messages depuis un serveur MQ</description>
-    <topic href="guide/components/fr/tMomMessageIdList.html" label="tMomMessageIdList Component Documentation"/>
-  </context>
-  <context id="tMomOutput">
-    <description>Ecrit un message dans un serveur MQ</description>
-    <topic href="guide/components/fr/tMomOutput.html" label="tMomOutput Component Documentation"/>
-  </context>
-  <context id="tMomRollback">
-    <description>Annule toutes les transactions n'ayant pas encore été commitées dans une session MOM sélectionnée</description>
-    <topic href="guide/components/fr/tMomRollback.html" label="tMomRollback Component Documentation"/>
-  </context>
-  <context id="tMondrianInput">
-    <description>Exécute une requête MDX dans Mondrian et retrouve les données plates</description>
-    <topic href="guide/components/fr/tMondrianInput.html" label="tMondrianInput Component Documentation"/>
-  </context>
   <context id="tMSAXInput">
     <description>Lit un serveur Microsoft AX à partir d'une requête SQL</description>
     <topic href="guide/components/fr/tMSAXInput.html" label="tMSAXInput Component Documentation"/>
@@ -1184,10 +1108,6 @@
   <context id="tMSAXOutput">
     <description>Ecrit des données dans un serveur Microsoft AX</description>
     <topic href="guide/components/fr/tMSAXOutput.html" label="tMSAXOutput Component Documentation"/>
-  </context>
-  <context id="tMsgBox">
-    <description>Affiche une boîte de message</description>
-    <topic href="guide/components/fr/tMsgBox.html" label="tMsgBox Component Documentation"/>
   </context>
   <context id="tMSSqlBulkExec">
     <description>Charge efficacement les données d'un fichier</description>
@@ -1248,6 +1168,82 @@
   <context id="tMSSqlTableList">
     <description>Itère sur un ensemble de nom de tables définies dans une connexion DB</description>
     <topic href="guide/components/fr/tMSSqlTableList.html" label="tMSSqlTableList Component Documentation"/>
+  </context>
+  <context id="tMap">
+    <description>Permettre les jointures, le filtrage des colonnes ou des lignes, les transformations, et les sorties multiples</description>
+    <topic href="guide/components/fr/tMap.html" label="tMap Component Documentation"/>
+  </context>
+  <context id="tMarketoInput">
+    <description>Extrait des données d'un système Marketo</description>
+    <topic href="guide/components/fr/tMarketoInput.html" label="tMarketoInput Component Documentation"/>
+  </context>
+  <context id="tMarketoListOperation">
+    <description>appeler la liste des opérations dans le système Marketo</description>
+    <topic href="guide/components/fr/tMarketoListOperation.html" label="tMarketoListOperation Component Documentation"/>
+  </context>
+  <context id="tMarketoOutput">
+    <description>Ecrit dans le système Marketo</description>
+    <topic href="guide/components/fr/tMarketoOutput.html" label="tMarketoOutput Component Documentation"/>
+  </context>
+  <context id="tMaxDBInput">
+    <description>Lit une table et extrait les champs à partir d'une requête SQL</description>
+    <topic href="guide/components/fr/tMaxDBInput.html" label="tMaxDBInput Component Documentation"/>
+  </context>
+  <context id="tMaxDBOutput">
+    <description>Insère ou met à jour des lignes dans une table</description>
+    <topic href="guide/components/fr/tMaxDBOutput.html" label="tMaxDBOutput Component Documentation"/>
+  </context>
+  <context id="tMaxDBRow">
+    <description>Exécute une requête SQL à chaque itération de flux Talend</description>
+    <topic href="guide/components/fr/tMaxDBRow.html" label="tMaxDBRow Component Documentation"/>
+  </context>
+  <context id="tMemorizeRows">
+    <description>Stocke les N dernières lignes du flux afin de faciliter leur récupération</description>
+    <topic href="guide/components/fr/tMemorizeRows.html" label="tMemorizeRows Component Documentation"/>
+  </context>
+  <context id="tMicrosoftCrmInput">
+    <description>Lit dans Microsoft CRM</description>
+    <topic href="guide/components/fr/tMicrosoftCrmInput.html" label="tMicrosoftCrmInput Component Documentation"/>
+  </context>
+  <context id="tMicrosoftCrmOutput">
+    <description>Ecrit dans Microsoft CRM</description>
+    <topic href="guide/components/fr/tMicrosoftCrmOutput.html" label="tMicrosoftCrmOutput Component Documentation"/>
+  </context>
+  <context id="tMicrosoftMQInput">
+    <description>Lit les messages de la file de Microsoft Message</description>
+    <topic href="guide/components/fr/tMicrosoftMQInput.html" label="tMicrosoftMQInput Component Documentation"/>
+  </context>
+  <context id="tMicrosoftMQOutput">
+    <description>Ecrit le contenu d'un message dans la file Microsoft Message</description>
+    <topic href="guide/components/fr/tMicrosoftMQOutput.html" label="tMicrosoftMQOutput Component Documentation"/>
+  </context>
+  <context id="tMomCommit">
+    <description>Commite toutes les transactions n'ayant pas encore été commitées dans une session MOM sélectionnée</description>
+    <topic href="guide/components/fr/tMomCommit.html" label="tMomCommit Component Documentation"/>
+  </context>
+  <context id="tMomInput">
+    <description>Lit des messages d'un serveur MQ</description>
+    <topic href="guide/components/fr/tMomInput.html" label="tMomInput Component Documentation"/>
+  </context>
+  <context id="tMomMessageIdList">
+    <description>Récupère une liste d'ID de messages depuis un serveur MQ</description>
+    <topic href="guide/components/fr/tMomMessageIdList.html" label="tMomMessageIdList Component Documentation"/>
+  </context>
+  <context id="tMomOutput">
+    <description>Ecrit un message dans un serveur MQ</description>
+    <topic href="guide/components/fr/tMomOutput.html" label="tMomOutput Component Documentation"/>
+  </context>
+  <context id="tMomRollback">
+    <description>Annule toutes les transactions n'ayant pas encore été commitées dans une session MOM sélectionnée</description>
+    <topic href="guide/components/fr/tMomRollback.html" label="tMomRollback Component Documentation"/>
+  </context>
+  <context id="tMondrianInput">
+    <description>Exécute une requête MDX dans Mondrian et retrouve les données plates</description>
+    <topic href="guide/components/fr/tMondrianInput.html" label="tMondrianInput Component Documentation"/>
+  </context>
+  <context id="tMsgBox">
+    <description>Affiche une boîte de message</description>
+    <topic href="guide/components/fr/tMsgBox.html" label="tMsgBox Component Documentation"/>
   </context>
   <context id="tMysqlBulkExec">
     <description>Demande à une base de données MySQL de charger un fichier massif dans la base de données définie</description>
@@ -1429,6 +1425,10 @@
     <description>Itère sur un ensemble de nom de tables définies dans une connexion DB</description>
     <topic href="guide/components/fr/tOracleTableList.html" label="tOracleTableList Component Documentation"/>
   </context>
+  <context id="tPOP">
+    <description>Récupère des e-mails depuis un serveur et les enregistre dans le fichier et le répertoire spécifiés</description>
+    <topic href="guide/components/fr/tPOP.html" label="tPOP Component Documentation"/>
+  </context>
   <context id="tPaloCheckElements">
     <description>Vérifie l'existence d'éléments donnés dans la base de données ou le cube Palo</description>
     <topic href="guide/components/fr/tPaloCheckElements.html" label="tPaloCheckElements Component Documentation"/>
@@ -1528,10 +1528,6 @@
   <context id="tParseRecordSet">
     <description>Analyse un ensemble d'enregistrements</description>
     <topic href="guide/components/fr/tParseRecordSet.html" label="tParseRecordSet Component Documentation"/>
-  </context>
-  <context id="tPOP">
-    <description>Récupère des e-mails depuis un serveur et les enregistre dans le fichier et le répertoire spécifiés</description>
-    <topic href="guide/components/fr/tPOP.html" label="tPOP Component Documentation"/>
   </context>
   <context id="tPostgresPlusBulkExec">
     <description>Charge efficacement les données d'un fichier</description>
@@ -1637,6 +1633,18 @@
     <description>Démarre un pré-Job</description>
     <topic href="guide/components/fr/tPrejob.html" label="tPrejob Component Documentation"/>
   </context>
+  <context id="tREST">
+    <description>Envoie un message pour un service Web RESTful et récupère la réponse.</description>
+    <topic href="guide/components/fr/tREST.html" label="tREST Component Documentation"/>
+  </context>
+  <context id="tRSSInput">
+    <description>Entrée RSS</description>
+    <topic href="guide/components/fr/tRSSInput.html" label="tRSSInput Component Documentation"/>
+  </context>
+  <context id="tRSSOutput">
+    <description>Sortie de xml RSS</description>
+    <topic href="guide/components/fr/tRSSOutput.html" label="tRSSOutput Component Documentation"/>
+  </context>
   <context id="tReplace">
     <description>Remplace une expression par une autre</description>
     <topic href="guide/components/fr/tReplace.html" label="tReplace Component Documentation"/>
@@ -1649,33 +1657,149 @@
     <description>Duplique une rangée autant que nécessaire</description>
     <topic href="guide/components/fr/tReplicate.html" label="tReplicate Component Documentation"/>
   </context>
-  <context id="tREST">
-    <description>Envoie un message pour un service Web RESTful et récupère la réponse.</description>
-    <topic href="guide/components/fr/tREST.html" label="tREST Component Documentation"/>
-  </context>
-  <context id="tRESTRequest">
-    <description>ESB REST Service Provider Component that receives the REST Request and pass it along with the flow or iterate.</description>
-    <topic href="guide/components/fr/tRESTRequest.html" label="tRESTRequest Component Documentation"/>
-  </context>
-  <context id="tRESTResponse">
-    <description>ESB REST Service Provider response component</description>
-    <topic href="guide/components/fr/tRESTResponse.html" label="tRESTResponse Component Documentation"/>
-  </context>
   <context id="tRowGenerator">
     <description>Génère autant de lignes et de champs que nécessaire et alimente chaque champ avec une valeur prise au hasard dans une liste fournie</description>
     <topic href="guide/components/fr/tRowGenerator.html" label="tRowGenerator Component Documentation"/>
   </context>
-  <context id="tRSSInput">
-    <description>Entrée RSS</description>
-    <topic href="guide/components/fr/tRSSInput.html" label="tRSSInput Component Documentation"/>
-  </context>
-  <context id="tRSSOutput">
-    <description>Sortie de xml RSS</description>
-    <topic href="guide/components/fr/tRSSOutput.html" label="tRSSOutput Component Documentation"/>
-  </context>
   <context id="tRunJob">
     <description>Lancer un autre Job Talend stocké dans le projet.</description>
     <topic href="guide/components/fr/tRunJob.html" label="tRunJob Component Documentation"/>
+  </context>
+  <context id="tSAPBWInput">
+    <description>Lit une table de base de données et extrait des champs à partir d'une requête SQL</description>
+    <topic href="guide/components/fr/tSAPBWInput.html" label="tSAPBWInput Component Documentation"/>
+  </context>
+  <context id="tSAPCommit">
+    <description>Commite toutes les transactions n'ayant pas encore été commitées dans une connexion SAP sélectionnée</description>
+    <topic href="guide/components/fr/tSAPCommit.html" label="tSAPCommit Component Documentation"/>
+  </context>
+  <context id="tSAPConnection">
+    <description>Crée une connexion au système SAP</description>
+    <topic href="guide/components/fr/tSAPConnection.html" label="tSAPConnection Component Documentation"/>
+  </context>
+  <context id="tSAPInput">
+    <description>Extrait des données d'un système SAP</description>
+    <topic href="guide/components/fr/tSAPInput.html" label="tSAPInput Component Documentation"/>
+  </context>
+  <context id="tSAPOutput">
+    <description>Ecrit dans un système SAP</description>
+    <topic href="guide/components/fr/tSAPOutput.html" label="tSAPOutput Component Documentation"/>
+  </context>
+  <context id="tSAPRollback">
+    <description>Annule toutes les transactions n'ayant pas encore été commitées dans une connexion SAP sélectionnée </description>
+    <topic href="guide/components/fr/tSAPRollback.html" label="tSAPRollback Component Documentation"/>
+  </context>
+  <context id="tSCPClose">
+    <description>Ferme une connexion SCP sélectionnée.</description>
+    <topic href="guide/components/fr/tSCPClose.html" label="tSCPClose Component Documentation"/>
+  </context>
+  <context id="tSCPConnection">
+    <description>Crée une connexion à un serveur SCP</description>
+    <topic href="guide/components/fr/tSCPConnection.html" label="tSCPConnection Component Documentation"/>
+  </context>
+  <context id="tSCPDelete">
+    <description>Efface des fichiers en utilisant le protocole SCP</description>
+    <topic href="guide/components/fr/tSCPDelete.html" label="tSCPDelete Component Documentation"/>
+  </context>
+  <context id="tSCPFileExists">
+    <description>Vérifie l'existence d'un fichier en utilisant le protocole SCP</description>
+    <topic href="guide/components/fr/tSCPFileExists.html" label="tSCPFileExists Component Documentation"/>
+  </context>
+  <context id="tSCPFileList">
+    <description>Liste les fichiers en utilisant le protocole SCP</description>
+    <topic href="guide/components/fr/tSCPFileList.html" label="tSCPFileList Component Documentation"/>
+  </context>
+  <context id="tSCPGet">
+    <description>Copie les fichiers en utilisant le protocole SCP</description>
+    <topic href="guide/components/fr/tSCPGet.html" label="tSCPGet Component Documentation"/>
+  </context>
+  <context id="tSCPPut">
+    <description>Copie les fichiers en utilisant le protocole SCP</description>
+    <topic href="guide/components/fr/tSCPPut.html" label="tSCPPut Component Documentation"/>
+  </context>
+  <context id="tSCPRename">
+    <description>Renomme les fichiers en utilisant le protocole SCP</description>
+    <topic href="guide/components/fr/tSCPRename.html" label="tSCPRename Component Documentation"/>
+  </context>
+  <context id="tSCPTruncate">
+    <description>Copie les fichiers en utilisant le protocole SCP</description>
+    <topic href="guide/components/fr/tSCPTruncate.html" label="tSCPTruncate Component Documentation"/>
+  </context>
+  <context id="tSOAP">
+    <description>Envoie un message Soap et récupère le message Soap de réponse</description>
+    <topic href="guide/components/fr/tSOAP.html" label="tSOAP Component Documentation"/>
+  </context>
+  <context id="tSPSSInput">
+    <description>Lit les données depuis un fichier SAV</description>
+    <topic href="guide/components/fr/tSPSSInput.html" label="tSPSSInput Component Documentation"/>
+  </context>
+  <context id="tSPSSOutput">
+    <description>Enregistre les données dans des fichiers SAV</description>
+    <topic href="guide/components/fr/tSPSSOutput.html" label="tSPSSOutput Component Documentation"/>
+  </context>
+  <context id="tSPSSProperties">
+    <description>Retrouve les informations des fichiers SAV</description>
+    <topic href="guide/components/fr/tSPSSProperties.html" label="tSPSSProperties Component Documentation"/>
+  </context>
+  <context id="tSPSSStructure">
+    <description>Retrouve les informations sur les Variables dans les fichiers SAV</description>
+    <topic href="guide/components/fr/tSPSSStructure.html" label="tSPSSStructure Component Documentation"/>
+  </context>
+  <context id="tSQLTemplateAggregate">
+    <description>Référence une table à utiliser dans le tELTAggregate</description>
+    <topic href="guide/components/fr/tSQLTemplateAggregate.html" label="tSQLTemplateAggregate Component Documentation"/>
+  </context>
+  <context id="tSQLTemplateCommit">
+    <description>Appelle un tELTCommit</description>
+    <topic href="guide/components/fr/tSQLTemplateCommit.html" label="tSQLTemplateCommit Component Documentation"/>
+  </context>
+  <context id="tSQLTemplateFilterColumns">
+    <description>Référence une table à utiliser dans le tELTFilterColumns</description>
+    <topic href="guide/components/fr/tSQLTemplateFilterColumns.html" label="tSQLTemplateFilterColumns Component Documentation"/>
+  </context>
+  <context id="tSQLTemplateFilterRows">
+    <description>Référence une table à utiliser dans le tELTFilterRows</description>
+    <topic href="guide/components/fr/tSQLTemplateFilterRows.html" label="tSQLTemplateFilterRows Component Documentation"/>
+  </context>
+  <context id="tSQLTemplateMerge">
+    <description>Référence une table à utiliser dans le tELTMerge</description>
+    <topic href="guide/components/fr/tSQLTemplateMerge.html" label="tSQLTemplateMerge Component Documentation"/>
+  </context>
+  <context id="tSQLTemplateRollback">
+    <description>Appelle un tELTRollback</description>
+    <topic href="guide/components/fr/tSQLTemplateRollback.html" label="tSQLTemplateRollback Component Documentation"/>
+  </context>
+  <context id="tSQLiteClose">
+    <description>Ferme une connexion SQLite sélectionnée.</description>
+    <topic href="guide/components/fr/tSQLiteClose.html" label="tSQLiteClose Component Documentation"/>
+  </context>
+  <context id="tSQLiteCommit">
+    <description>Commite toutes les transactions n'ayant pas encore été commitées dans une connexion SQLite</description>
+    <topic href="guide/components/fr/tSQLiteCommit.html" label="tSQLiteCommit Component Documentation"/>
+  </context>
+  <context id="tSQLiteConnection">
+    <description>Crée une connexion vers une base de données SQLite</description>
+    <topic href="guide/components/fr/tSQLiteConnection.html" label="tSQLiteConnection Component Documentation"/>
+  </context>
+  <context id="tSQLiteInput">
+    <description>Lit une table SQLite et extrait les champs à partir d'une requête SQL</description>
+    <topic href="guide/components/fr/tSQLiteInput.html" label="tSQLiteInput Component Documentation"/>
+  </context>
+  <context id="tSQLiteOutput">
+    <description>Insère ou met à jour des lignes dans une table SQLLite</description>
+    <topic href="guide/components/fr/tSQLiteOutput.html" label="tSQLiteOutput Component Documentation"/>
+  </context>
+  <context id="tSQLiteRollback">
+    <description>Annule toutes les transactions n'ayant pas encore été commitées dans une connexion SQLite</description>
+    <topic href="guide/components/fr/tSQLiteRollback.html" label="tSQLiteRollback Component Documentation"/>
+  </context>
+  <context id="tSQLiteRow">
+    <description>Exécute une requête SQL à chaque itération de flux Talend</description>
+    <topic href="guide/components/fr/tSQLiteRow.html" label="tSQLiteRow Component Documentation"/>
+  </context>
+  <context id="tSSH">
+    <description>Exécute des commandes au travers de SSH</description>
+    <topic href="guide/components/fr/tSSH.html" label="tSSH Component Documentation"/>
   </context>
   <context id="tSageX3Input">
     <description>Extrait des données d'un système Sage</description>
@@ -1725,77 +1849,17 @@
     <description>Filtrer les lignes selon leur numéro</description>
     <topic href="guide/components/fr/tSampleRow.html" label="tSampleRow Component Documentation"/>
   </context>
-  <context id="tSAPBWInput">
-    <description>Lit une table de base de données et extrait des champs à partir d'une requête SQL</description>
-    <topic href="guide/components/fr/tSAPBWInput.html" label="tSAPBWInput Component Documentation"/>
-  </context>
-  <context id="tSAPCommit">
-    <description>Commite toutes les transactions n'ayant pas encore été commitées dans une connexion SAP sélectionnée</description>
-    <topic href="guide/components/fr/tSAPCommit.html" label="tSAPCommit Component Documentation"/>
-  </context>
-  <context id="tSAPConnection">
-    <description>Crée une connexion au système SAP</description>
-    <topic href="guide/components/fr/tSAPConnection.html" label="tSAPConnection Component Documentation"/>
-  </context>
-  <context id="tSAPInput">
-    <description>Extrait des données d'un système SAP</description>
-    <topic href="guide/components/fr/tSAPInput.html" label="tSAPInput Component Documentation"/>
-  </context>
-  <context id="tSAPOutput">
-    <description>Ecrit dans un système SAP</description>
-    <topic href="guide/components/fr/tSAPOutput.html" label="tSAPOutput Component Documentation"/>
-  </context>
-  <context id="tSAPRollback">
-    <description>Annule toutes les transactions n'ayant pas encore été commitées dans une connexion SAP sélectionnée</description>
-    <topic href="guide/components/fr/tSAPRollback.html" label="tSAPRollback Component Documentation"/>
-  </context>
-  <context id="tSASInput">
+  <context id="tSasInput">
     <description>Lit une table Sas et extrait des champs à partir d'une requête SQL</description>
-    <topic href="guide/components/fr/tSASInput.html" label="tSASInput Component Documentation"/>
+    <topic href="guide/components/fr/tSasInput.html" label="tSasInput Component Documentation"/>
   </context>
-  <context id="tSASOutput">
+  <context id="tSasOutput">
     <description>Insère ou met à jour des lignes dans une table d'une base de données</description>
-    <topic href="guide/components/fr/tSASOutput.html" label="tSASOutput Component Documentation"/>
+    <topic href="guide/components/fr/tSasOutput.html" label="tSasOutput Component Documentation"/>
   </context>
   <context id="tSchemaComplianceCheck">
     <description>Vérifie les colonnes depuis un schéma</description>
     <topic href="guide/components/fr/tSchemaComplianceCheck.html" label="tSchemaComplianceCheck Component Documentation"/>
-  </context>
-  <context id="tSCPClose">
-    <description>Ferme une connexion SCP sélectionnée.</description>
-    <topic href="guide/components/fr/tSCPClose.html" label="tSCPClose Component Documentation"/>
-  </context>
-  <context id="tSCPConnection">
-    <description>Crée une connexion à un serveur SCP</description>
-    <topic href="guide/components/fr/tSCPConnection.html" label="tSCPConnection Component Documentation"/>
-  </context>
-  <context id="tSCPDelete">
-    <description>Efface des fichiers en utilisant le protocole SCP</description>
-    <topic href="guide/components/fr/tSCPDelete.html" label="tSCPDelete Component Documentation"/>
-  </context>
-  <context id="tSCPFileExists">
-    <description>Vérifie l'existence d'un fichier en utilisant le protocole SCP</description>
-    <topic href="guide/components/fr/tSCPFileExists.html" label="tSCPFileExists Component Documentation"/>
-  </context>
-  <context id="tSCPFileList">
-    <description>Liste les fichiers en utilisant le protocole SCP</description>
-    <topic href="guide/components/fr/tSCPFileList.html" label="tSCPFileList Component Documentation"/>
-  </context>
-  <context id="tSCPGet">
-    <description>Copie les fichiers en utilisant le protocole SCP</description>
-    <topic href="guide/components/fr/tSCPGet.html" label="tSCPGet Component Documentation"/>
-  </context>
-  <context id="tSCPPut">
-    <description>Copie les fichiers en utilisant le protocole SCP</description>
-    <topic href="guide/components/fr/tSCPPut.html" label="tSCPPut Component Documentation"/>
-  </context>
-  <context id="tSCPRename">
-    <description>Renomme les fichiers en utilisant le protocole SCP</description>
-    <topic href="guide/components/fr/tSCPRename.html" label="tSCPRename Component Documentation"/>
-  </context>
-  <context id="tSCPTruncate">
-    <description>Copie les fichiers en utilisant le protocole SCP</description>
-    <topic href="guide/components/fr/tSCPTruncate.html" label="tSCPTruncate Component Documentation"/>
   </context>
   <context id="tSendMail">
     <description>Envoie des e-mails avec ou sans pièce jointe et/ou des en-têtes personnalisés</description>
@@ -1817,10 +1881,6 @@
     <description>Met en pause un sous-job à la fin de chaque itération</description>
     <topic href="guide/components/fr/tSleep.html" label="tSleep Component Documentation"/>
   </context>
-  <context id="tSOAP">
-    <description>Envoie un message Soap et récupère le message Soap de réponse</description>
-    <topic href="guide/components/fr/tSOAP.html" label="tSOAP Component Documentation"/>
-  </context>
   <context id="tSocketInput">
     <description>Se connecte à un socket et reçoit des données jusqu'à réception du message de fermeture</description>
     <topic href="guide/components/fr/tSocketInput.html" label="tSocketInput Component Documentation"/>
@@ -1836,78 +1896,6 @@
   <context id="tSplitRow">
     <description>Découpe une ligne en plusieurs lignes</description>
     <topic href="guide/components/fr/tSplitRow.html" label="tSplitRow Component Documentation"/>
-  </context>
-  <context id="tSPSSInput">
-    <description>Lit les données depuis un fichier SAV</description>
-    <topic href="guide/components/fr/tSPSSInput.html" label="tSPSSInput Component Documentation"/>
-  </context>
-  <context id="tSPSSOutput">
-    <description>Enregistre les données dans des fichiers SAV</description>
-    <topic href="guide/components/fr/tSPSSOutput.html" label="tSPSSOutput Component Documentation"/>
-  </context>
-  <context id="tSPSSProperties">
-    <description>Retrouve les informations des fichiers SAV</description>
-    <topic href="guide/components/fr/tSPSSProperties.html" label="tSPSSProperties Component Documentation"/>
-  </context>
-  <context id="tSPSSStructure">
-    <description>Retrouve les informations sur les Variables dans les fichiers SAV</description>
-    <topic href="guide/components/fr/tSPSSStructure.html" label="tSPSSStructure Component Documentation"/>
-  </context>
-  <context id="tSQLiteClose">
-    <description>Ferme une connexion SQLite sélectionnée.</description>
-    <topic href="guide/components/fr/tSQLiteClose.html" label="tSQLiteClose Component Documentation"/>
-  </context>
-  <context id="tSQLiteCommit">
-    <description>Commite toutes les transactions n'ayant pas encore été commitées dans une connexion SQLite</description>
-    <topic href="guide/components/fr/tSQLiteCommit.html" label="tSQLiteCommit Component Documentation"/>
-  </context>
-  <context id="tSQLiteConnection">
-    <description>Crée une connexion vers une base de données SQLite</description>
-    <topic href="guide/components/fr/tSQLiteConnection.html" label="tSQLiteConnection Component Documentation"/>
-  </context>
-  <context id="tSQLiteInput">
-    <description>Lit une table SQLite et extrait les champs à partir d'une requête SQL</description>
-    <topic href="guide/components/fr/tSQLiteInput.html" label="tSQLiteInput Component Documentation"/>
-  </context>
-  <context id="tSQLiteOutput">
-    <description>Insère ou met à jour des lignes dans une table SQLLite</description>
-    <topic href="guide/components/fr/tSQLiteOutput.html" label="tSQLiteOutput Component Documentation"/>
-  </context>
-  <context id="tSQLiteRollback">
-    <description>Annule toutes les transactions n'ayant pas encore été commitées dans une connexion SQLite</description>
-    <topic href="guide/components/fr/tSQLiteRollback.html" label="tSQLiteRollback Component Documentation"/>
-  </context>
-  <context id="tSQLiteRow">
-    <description>Exécute une requête SQL à chaque itération de flux Talend</description>
-    <topic href="guide/components/fr/tSQLiteRow.html" label="tSQLiteRow Component Documentation"/>
-  </context>
-  <context id="tSQLTemplateAggregate">
-    <description>Référence une table à utiliser dans le tELTAggregate</description>
-    <topic href="guide/components/fr/tSQLTemplateAggregate.html" label="tSQLTemplateAggregate Component Documentation"/>
-  </context>
-  <context id="tSQLTemplateCommit">
-    <description>Appelle un tELTCommit</description>
-    <topic href="guide/components/fr/tSQLTemplateCommit.html" label="tSQLTemplateCommit Component Documentation"/>
-  </context>
-  <context id="tSQLTemplateFilterColumns">
-    <description>Référence une table à utiliser dans le tELTFilterColumns</description>
-    <topic href="guide/components/fr/tSQLTemplateFilterColumns.html" label="tSQLTemplateFilterColumns Component Documentation"/>
-  </context>
-  <context id="tSQLTemplateFilterRows">
-    <description>Référence une table à utiliser dans le tELTFilterRows</description>
-    <topic href="guide/components/fr/tSQLTemplateFilterRows.html" label="tSQLTemplateFilterRows Component Documentation"/>
-  </context>
-  <context id="tSQLTemplateMerge">
-    <description>Référence une table à utiliser dans le tELTMerge</description>
-    <topic href="guide/components/fr/tSQLTemplateMerge.html" label="tSQLTemplateMerge Component Documentation"/>
-  </context>
-  <context id="tSQLTemplateRollback">
-    <description>Appelle un tELTRollback</description>
-    <topic href="guide/components/fr/tSQLTemplateRollback.html" label="tSQLTemplateRollback Component Documentation"/>
-  </context>
-  <context id="tSSH">
-    <description>Exécute des commandes au travers de SSH</description>
-    <topic href="guide/components/fr/tSSH.html" label="tSSH Component Documentation"/>
   </context>
   <context id="tStatCatcher">
     <description>Ecoute l'option StatCatcher si cochée dans les propriétés du composant, et fournit les informations standards de log dans la sortie définie</description>
@@ -1945,10 +1933,6 @@
     <description>Crée une connexion à une base de données Sybase</description>
     <topic href="guide/components/fr/tSybaseConnection.html" label="tSybaseConnection Component Documentation"/>
   </context>
-  <context id="tSybaseInput">
-    <description>Lit une table Sybase et extrait les champs à partir d'une requête SQL</description>
-    <topic href="guide/components/fr/tSybaseInput.html" label="tSybaseInput Component Documentation"/>
-  </context>
   <context id="tSybaseIQBulkExec">
     <description>Demande à une base de données Sybase IQ de charger un fichier de chargement en masse dans la base de données définie</description>
     <topic href="guide/components/fr/tSybaseIQBulkExec.html" label="tSybaseIQBulkExec Component Documentation"/>
@@ -1956,6 +1940,10 @@
   <context id="tSybaseIQOutputBulkExec">
     <description>Charge efficacement les données d'un flux</description>
     <topic href="guide/components/fr/tSybaseIQOutputBulkExec.html" label="tSybaseIQOutputBulkExec Component Documentation"/>
+  </context>
+  <context id="tSybaseInput">
+    <description>Lit une table Sybase et extrait les champs à partir d'une requête SQL</description>
+    <topic href="guide/components/fr/tSybaseInput.html" label="tSybaseInput Component Documentation"/>
   </context>
   <context id="tSybaseOutput">
     <description>Insère ou met à jour des lignes dans une table Sybase.</description>
@@ -2149,9 +2137,9 @@
     <description>Appeler un Webservice et lire son résultat</description>
     <topic href="guide/components/fr/tWebServiceInput.html" label="tWebServiceInput Component Documentation"/>
   </context>
-  <context id="tWriteJsonField">
+  <context id="tWriteJSONField">
     <description>Crée une structure JSON à partir de lignes séparées en champs</description>
-    <topic href="guide/components/fr/tWriteJsonField.html" label="tWriteJsonField Component Documentation"/>
+    <topic href="guide/components/fr/tWriteJSONField.html" label="tWriteJSONField Component Documentation"/>
   </context>
   <context id="tWriteXMLField">
     <description>Crée une structure XML à partir de lignes découpées en champs</description>
@@ -2184,10 +2172,6 @@
   <context id="tExtractDynamicFields">
     <description>tExtractDynamicFields</description>
     <topic href="guide/components/fr/tExtractDynamicFields.html" label="tExtractDynamicFields Component Documentation"/>
-  </context>
-  <context id="tExtractEDIField">
-    <description>Extrait un champ EDI</description>
-    <topic href="guide/components/fr/tExtractEDIField.html" label="tExtractEDIField Component Documentation"/>
   </context>
   <context id="tIngresCDC">
     <description>Composant CDC Ingres</description>
@@ -2236,6 +2220,14 @@
   <context id="tWriteDynamicFields">
     <description>tWriteDynamicFields</description>
     <topic href="guide/components/fr/tWriteDynamicFields.html" label="tWriteDynamicFields Component Documentation"/>
+  </context>
+  <context id="tBRMS">
+    <description>Ecrit une structure XML dans le Service Web Talend</description>
+    <topic href="guide/components/fr/tBRMS.html" label="tBRMS Component Documentation"/>
+  </context>
+  <context id="tRules">
+    <description>Lit un fichier XML multi-niveaux</description>
+    <topic href="guide/components/fr/tRules.html" label="tRules Component Documentation"/>
   </context>
   <context id="tFSAggregate">
     <description>Agréger les enregistrements dans un fichier basé sur les groupse de clés</description>
@@ -2293,21 +2285,9 @@
     <description>Insère ou met à jour des lignes dans une table HBase</description>
     <topic href="guide/components/fr/tHBaseOutput.html" label="tHBaseOutput Component Documentation"/>
   </context>
-  <context id="tHDFSConnection">
-    <description>Create a connection to HDFS</description>
-    <topic href="guide/components/fr/tHDFSConnection.html" label="tHDFSConnection Component Documentation"/>
-  </context>
   <context id="tHDFSGet">
     <description>Obtient des fichiers du système de fichiers Hadoop</description>
     <topic href="guide/components/fr/tHDFSGet.html" label="tHDFSGet Component Documentation"/>
-  </context>
-  <context id="tHDFSInput">
-    <description>Reads data from HDFS</description>
-    <topic href="guide/components/fr/tHDFSInput.html" label="tHDFSInput Component Documentation"/>
-  </context>
-  <context id="tHDFSOutput">
-    <description>Writes data to HDFS</description>
-    <topic href="guide/components/fr/tHDFSOutput.html" label="tHDFSOutput Component Documentation"/>
   </context>
   <context id="tHDFSPut">
     <description>Place des fichiers dans le système de fichiers Hadoop</description>
@@ -2417,13 +2397,13 @@
     <description>Vérifier la validité des colonnes en expression régulière Java.</description>
     <topic href="guide/components/fr/tMultiPatternCheck.html" label="tMultiPatternCheck Component Documentation"/>
   </context>
-  <context id="tMysqlInvalidRows">
+  <context id="tMySQLInvalidRows">
     <description>Collecte les lignes d'une base de données qui ne correspondent pas à une expression régulière donnée.</description>
-    <topic href="guide/components/fr/tMysqlInvalidRows.html" label="tMysqlInvalidRows Component Documentation"/>
+    <topic href="guide/components/fr/tMySQLInvalidRows.html" label="tMySQLInvalidRows Component Documentation"/>
   </context>
-  <context id="tMysqlValidRows">
+  <context id="tMySQLValidRows">
     <description>Collecte les lignes d'une base de données correspondant à une expression régulière donnée.</description>
-    <topic href="guide/components/fr/tMysqlValidRows.html" label="tMysqlValidRows Component Documentation"/>
+    <topic href="guide/components/fr/tMySQLValidRows.html" label="tMySQLValidRows Component Documentation"/>
   </context>
   <context id="tOracleInvalidRows">
     <description>Collecte les lignes d'une base de données ne correpondant pas à une expression régulière donnée.</description>
@@ -2505,7 +2485,7 @@
     <description>Compose un champ avec toutes les données d'entrée</description>
     <topic href="guide/components/fr/tThresholdViolationAlert.html" label="tThresholdViolationAlert Component Documentation"/>
   </context>
-    <context id="tPetalsInput">
+  <context id="tPetalsInput">
     <description>Transférer des données de l'ESB Petals à un Job Talend</description>
     <topic href="guide/components/fr/tPetalsInput.html" label="tPetalsInput Component Documentation"/>
   </context>
@@ -2513,12 +2493,120 @@
     <description>Transférer des données d'un Job Talend à l'ESB Petals</description>
     <topic href="guide/components/fr/tPetalsOutput.html" label="tPetalsOutput Component Documentation"/>
   </context>
-  <context id="tBRMS">
-    <description>Ecrit une structure XML dans le Service Web Talend</description>
-    <topic href="guide/components/fr/tBRMS.html" label="tBRMS Component Documentation"/>
+  <context id="tUniservBTGeneric">
+    <description>Exécution d'un job DQ Batch Suite</description>
+    <topic href="guide/components/fr/tUniservBTGeneric.html" label="tUniservBTGeneric Component Documentation"/>
   </context>
-  <context id="tRules">
-    <description>Lit un fichier XML multi-niveaux</description>
-    <topic href="guide/components/fr/tRules.html" label="tRules Component Documentation"/>
+  <context id="tUniservRTMailBulk">
+    <description>Créer un pool d'index avec les données d'entrée</description>
+    <topic href="guide/components/fr/tUniservRTMailBulk.html" label="tUniservRTMailBulk Component Documentation"/>
+  </context>
+  <context id="tUniservRTMailOutput">
+    <description>Charger le pool d'index avec les données d'entrée</description>
+    <topic href="guide/components/fr/tUniservRTMailOutput.html" label="tUniservRTMailOutput Component Documentation"/>
+  </context>
+  <context id="tUniservRTMailSearch">
+    <description>Rechercher une adresse similaire dans le pool d'index</description>
+    <topic href="guide/components/fr/tUniservRTMailSearch.html" label="tUniservRTMailSearch Component Documentation"/>
+  </context>
+  <context id="tEXistConnection">
+    <description>Creates a connection to a EXist database</description>
+    <topic href="guide/components/fr/tEXistConnection.html" label="tEXistConnection Component Documentation"/>
+  </context>
+  <context id="tExtractEBCDICFields">
+    <description>Generates multiple columns from one byte[] column using column originalLength size</description>
+    <topic href="guide/components/fr/tExtractEBCDICFields.html" label="tExtractEBCDICFields Component Documentation"/>
+  </context>
+  <context id="tGreenplumGPLoad">
+    <description>Bulk load data from a file or named-pipe using greenplum's gpload utility </description>
+    <topic href="guide/components/fr/tGreenplumGPLoad.html" label="tGreenplumGPLoad Component Documentation"/>
+  </context>
+  <context id="tHttpRequest">
+    <description>Request a URI by POST or GET method, specially post parameters from file when POST method chosen</description>
+    <topic href="guide/components/fr/tHttpRequest.html" label="tHttpRequest Component Documentation"/>
+  </context>
+  <context id="tPivotToColumnsDelimited">
+    <description>Writes to a file an aggregated crosstable with simple separated fields</description>
+    <topic href="guide/components/fr/tPivotToColumnsDelimited.html" label="tPivotToColumnsDelimited Component Documentation"/>
+  </context>
+  <context id="tSetKerberosConfiguration">
+    <description>Configres Kerberos.</description>
+    <topic href="guide/components/fr/tSetKerberosConfiguration.html" label="tSetKerberosConfiguration Component Documentation"/>
+  </context>
+  <context id="tExtractEDIField">
+    <description>Generates multiple columns from a given edifact file</description>
+    <topic href="guide/components/fr/tExtractEDIField.html" label="tExtractEDIField Component Documentation"/>
+  </context>
+  <context id="tSetDynamicSchema">
+    <description>Create a dynamic column</description>
+    <topic href="guide/components/fr/tSetDynamicSchema.html" label="tSetDynamicSchema Component Documentation"/>
+  </context>
+  <context id="tHCatalogInput">
+    <description>Read data from HCatalog</description>
+    <topic href="guide/components/fr/tHCatalogInput.html" label="tHCatalogInput Component Documentation"/>
+  </context>
+  <context id="tHCatalogLoad">
+    <description>Load a file from HDFS to HCatalog</description>
+    <topic href="guide/components/fr/tHCatalogLoad.html" label="tHCatalogLoad Component Documentation"/>
+  </context>
+  <context id="tHCatalogOperation">
+    <description>Execute a HCatalog DDL</description>
+    <topic href="guide/components/fr/tHCatalogOperation.html" label="tHCatalogOperation Component Documentation"/>
+  </context>
+  <context id="tHCatalogOutput">
+    <description>Writes data to HCatalog</description>
+    <topic href="guide/components/fr/tHCatalogOutput.html" label="tHCatalogOutput Component Documentation"/>
+  </context>
+  <context id="tHDFSConnection">
+    <description>Create a connection to HDFS</description>
+    <topic href="guide/components/fr/tHDFSConnection.html" label="tHDFSConnection Component Documentation"/>
+  </context>
+  <context id="tHDFSDelete">
+    <description>Delete file or directory on HDFS</description>
+    <topic href="guide/components/fr/tHDFSDelete.html" label="tHDFSDelete Component Documentation"/>
+  </context>
+  <context id="tHDFSInput">
+    <description>Reads data from HDFS</description>
+    <topic href="guide/components/fr/tHDFSInput.html" label="tHDFSInput Component Documentation"/>
+  </context>
+  <context id="tHDFSOutput">
+    <description>Writes data to HDFS</description>
+    <topic href="guide/components/fr/tHDFSOutput.html" label="tHDFSOutput Component Documentation"/>
+  </context>
+  <context id="tHiveInput">
+    <description>Reads a Hive table and extracts fields based on an HiveQL query</description>
+    <topic href="guide/components/fr/tHiveInput.html" label="tHiveInput Component Documentation"/>
+  </context>
+  <context id="tMatchGroupHadoop">
+    <description>Creates groups of similar records</description>
+    <topic href="guide/components/fr/tMatchGroupHadoop.html" label="tMatchGroupHadoop Component Documentation"/>
+  </context>
+  <context id="tESBProviderFault">
+    <description>Service provider fault component</description>
+    <topic href="guide/components/fr/tESBProviderFault.html" label="tESBProviderFault Component Documentation"/>
+  </context>
+  <context id="tESBProviderRequest">
+    <description>ESB Service Provider Component that receives the Service Request and pass it along with the flow or iterate</description>
+    <topic href="guide/components/fr/tESBProviderRequest.html" label="tESBProviderRequest Component Documentation"/>
+  </context>
+  <context id="tESBProviderResponse">
+    <description>Service provider response component</description>
+    <topic href="guide/components/fr/tESBProviderResponse.html" label="tESBProviderResponse Component Documentation"/>
+  </context>
+  <context id="tRESTRequest">
+    <description>ESB REST Service Provider Component that receives the REST Request and pass it along with the flow or iterate</description>
+    <topic href="guide/components/fr/tRESTRequest.html" label="tRESTRequest Component Documentation"/>
+  </context>
+  <context id="tRESTResponse">
+    <description>ESB REST Service Provider response component</description>
+    <topic href="guide/components/fr/tRESTResponse.html" label="tRESTResponse Component Documentation"/>
+  </context>
+  <context id="tUniservRTConvertName">
+    <description>Name analysis - enables the analysis and positioning of name elements of an address. </description>
+    <topic href="guide/components/fr/tUniservRTConvertName.html" label="tUniservRTConvertName Component Documentation"/>
+  </context>
+  <context id="tUniservRTPost">
+    <description>Postal validation - enables the postal verification and correction of addresses.</description>
+    <topic href="guide/components/fr/tUniservRTPost.html" label="tUniservRTPost Component Documentation"/>
   </context>
 </contexts>

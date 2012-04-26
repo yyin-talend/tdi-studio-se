@@ -1,0 +1,410 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMatchGroupHadoop</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch07.html" title="Chapitre&nbsp;7.&nbsp;Composants Data Quality"><link rel="prev" href="tMatchGroup.html" title="tMatchGroup"><link rel="next" href="tMultiPatternCheck.html" title="tMultiPatternCheck"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="fr" class="section" title="tMatchGroupHadoop"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMatchGroupHadoop"></a>tMatchGroupHadoop</h2></div></div></div><div class="mediaobject"><img src="../images/tMatchGroupHadoop_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Ce composant est disponible dans la
+				</em></span><span class="bold"><strong>Palette</strong></span><span class="emphasis"><em>
+				du studio uniquement si vous avez souscrit &agrave; l&#8217;&eacute;dition correspondante de
+				</em></span><span class="bluebold">Talend Enterprise Data Quality</span><span class="emphasis"><em>.</em></span>
+		</p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tMatchGroupHadoop"><div class="titlepage"><div><div><h3 class="title"><a name="ychen-20111020-data_quality-properties"></a>Propri&eacute;t&eacute;s du tMatchGroupHadoop</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Data Quality</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Bas&eacute; sur Hadoop, le composant <span class="bold"><strong>tMatchGroupHadoop</strong></span> utilise une (des) r&egrave;gle(s) de mise
+								en correspondance afin de comparer des colonnes dans un flux
+								d'entr&eacute;e volumineux et regroupe les doublons trouv&eacute;s dans le flux de
+								sortie.</p>
+							<p>Lorsque plusieurs <span class="bold"><strong>tMatchGroupHadoop</strong></span> sont utilis&eacute;s de mani&egrave;re
+								s&eacute;quentielle, le premier cr&eacute;e les groupes d'enregistrements
+								similaires et les suivants affinent les groupes re&ccedil;us du composant
+								pr&eacute;c&eacute;dent.</p>
+							<p>Lors de la d&eacute;finition d'un groupe, le premier enregistrement trait&eacute; devient
+								l'enregistrement ma&icirc;tre du groupe. Les autres enregistrements sont
+								calcul&eacute;s selon leur distance par rapport &agrave; cet enregistrement ma&icirc;tre
+								et sont ensuite ajout&eacute;s au groupe de l'enregistrement ma&icirc;tre. En
+								affinant les groupes donn&eacute;s, un groupe contenant un seul
+								enregistrement (la taille du groupe est "1") est compar&eacute; aux autres
+								enregistrements ma&icirc;tre des autres groupes et est fusionn&eacute; dans l'un
+								des autres groupes, si la distance recalcul&eacute;e le permet.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Si vous avez plus d'un <span class="bold"><strong>tMatchGroupHadoop</strong></span> dans votre Job, les
+										distances et les scores de correspondance peuvent &ecirc;tre
+										incoh&eacute;rents lorsque le crit&egrave;re d&eacute;fini pour calculer est
+										diff&eacute;rent dans chaque composant.</p></td></tr></table></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>S'il y a plusieurs composants <span class="bold"><strong>tMatchGroupHadoop</strong></span> dans votre Job, le sch&eacute;ma
+										doit &ecirc;tre le m&ecirc;me pour tous les <span class="bold"><strong>tMatchGroupHadoop</strong></span> reli&eacute;s dans le Job.</p></td></tr></table></div>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant vous permet d&#8217;assurer la qualit&eacute; de vos donn&eacute;es provenant de n&#8217;importe
+								quelle source volumineuse.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une
+								description de lignes, i.e., il d&eacute;finit le nombre de champs qui sont
+								trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local
+									(<span class="bold"><strong>Built-in</strong></span>) soit distant dans le
+									<span class="bold"><strong>Repository</strong></span>. </p>
+							<p>Cliquez sur <span class="bold"><strong>Sync columns</strong></span> pour
+								r&eacute;cup&eacute;rer le sch&eacute;ma du composant pr&eacute;c&eacute;dent dans le Job.</p>
+							<p>Le sch&eacute;ma de sortie de ce composant contient les champs suivants
+								:</p>
+							<p><span class="emphasis"><em>GID&nbsp;</em></span>:
+								repr&eacute;sente l&#8217;identifiant du groupe.</p>
+							<p><span class="emphasis"><em>GRP_SIZE&nbsp;</em></span>: compte le nombre
+								d&#8217;enregistrements dans le groupe, ce nombre est calcul&eacute; uniquement
+								sur l&#8217;enregistrement ma&icirc;tre.</p>
+							<p><span class="emphasis"><em>MASTER&nbsp;</em></span>: identifie l&#8217;enregistrement
+								utilis&eacute; dans les comparaisons de correspondance. Il y a au moins un
+								enregistrement ma&icirc;tre par groupe.</p>
+							<p>Chaque enregistrement
+								d&#8217;entr&eacute;e sera compar&eacute; &agrave; enregistrement ma&icirc;tre. S&#8217;il y a
+								correspondance, il sera dans le groupe.</p>
+							<p><span class="emphasis"><em>SCORE&nbsp;</em></span>: mesure la distance entre
+								l&#8217;enregistrement d&#8217;entr&eacute;e et l&#8217;enregistrement ma&icirc;tre selon
+								l&#8217;algorithme de correspondance utilis&eacute;.</p>
+							<p><span class="italic">Matching_Distances</span> : pr&eacute;sente
+								la distance calcul&eacute;e d'un enregistrement par rapport &agrave; son
+								enregistrement ma&icirc;tre.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top"><span class="bold"><strong>Built-in</strong></span>&nbsp;: Le sch&eacute;ma est cr&eacute;&eacute; et conserv&eacute; ponctuellement
+							pour ce composant seulement. Voir &eacute;galement&nbsp;le <span class="italic">Guide utilisateur de </span><span class="bluebold">Talend Enterprise Studio</span>.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top"><span class="bold"><strong>Repository</strong></span>&nbsp;: Le sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans le
+							Repository. Ainsi, il peut &ecirc;tre r&eacute;utilisable dans divers projets et Job
+							Designs. Voir &eacute;galement&nbsp;le <span class="italic">Guide utilisateur
+								de</span>
+							<span class="bluebold">Talend Enterprise Studio</span>.</td></tr><tr><td>&nbsp;</td><td><span class="italic">Link with a
+							tMatchGroupHadoop</span></td><td valign="top">Cochez cette case et, dans le champ <span class="bold"><strong>Component</strong></span>, s&eacute;lectionnez le <span class="bold"><strong>tMatchGroupHadoop</strong></span> correspondant afin de
+							r&eacute;utiliser les informations de connexion &agrave; Hadoop pr&eacute;c&eacute;demment
+							d&eacute;finies.</td></tr><tr><td>&nbsp;</td><td><span class="italic">Hadoop Version</span></td><td valign="top">S&eacute;lectionnez la version d'Hadoop que vous
+							utilisez.</td></tr><tr><td valign="top"><p><span class="italic">Hadoop configuration</span>
+				</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Indisponible si vous utilisez un lien existant.</p></td></tr></table></div><p>
+						</p></td><td><span class="italic">Host</span></td><td valign="top">Saisissez l'adresse IP de votre serveur Hadoop.</td></tr><tr><td>&nbsp;</td><td><span class="italic">Port</span></td><td valign="top">Saisissez le num&eacute;ro du port d'&eacute;coute du serveur
+							Hadoop.</td></tr><tr><td>&nbsp;</td><td><span class="italic">HDFS directory</span></td><td valign="top">Saisissez l'emplacement dans le HDFS utilis&eacute;s pour
+							traiter les donn&eacute;es de grand volume.</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><em>Key Definition</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Input Key Attribute</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez la (les) colonne(s) du flux d&#8217;entr&eacute;e sur lequel vous
+								souhaitez appliquer un algorithme de correspondance.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Matching Type</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez l&#8217;algorithme de correspondance dans la liste&nbsp;:</p>
+							<p><span class="bold"><strong>Exact Match&nbsp;</strong></span>: associe chaque
+								entr&eacute;e trait&eacute;e &agrave; toutes les entr&eacute;es possibles de r&eacute;f&eacute;rence qui ont
+								exactement la m&ecirc;me valeur.</p>
+							<p><span class="bold"><strong>Exact - ignore case</strong></span>&nbsp;: fait
+								correspondre chaque entr&eacute;e trait&eacute;e &agrave; toutes les entr&eacute;es de r&eacute;f&eacute;rence
+								possibles ayant les m&ecirc;mes valeurs, en ignorant la valeur de la
+								casse.</p>
+							<p><span class="bold"><strong>Soundex&nbsp;</strong></span>: algorithme phon&eacute;tique
+								utile pour la comparaison de pr&eacute;noms, selon la prononciation
+								britannique.</p>
+							<p><span class="bold"><strong>Levenshtein&nbsp;</strong></span>: cette option se
+								base sur la th&eacute;orie de la distance d&#8217;&eacute;dition. Elle calcule le nombre
+								d&#8217;insertions, suppressions ou substitutions n&eacute;cessaires pour qu&#8217;une
+								entr&eacute;e corresponde &agrave; l&#8217;entr&eacute;e de r&eacute;f&eacute;rence.</p>
+							<p><span class="bold"><strong>Metaphone&nbsp;</strong></span>: Cette option se base
+								sur un algorithme phon&eacute;tique afin d&#8217;indexer les entr&eacute;es selon leur
+								prononciation. Elle charge d&#8217;abord la phon&eacute;tique de toutes les
+								entr&eacute;es du flux lookup de r&eacute;f&eacute;rence, puis v&eacute;rifie toutes les entr&eacute;es
+								du flux principal par rapport aux entr&eacute;es du flux de
+								r&eacute;f&eacute;rence.</p>
+							<p><span class="bold"><strong>Double Metaphone&nbsp;</strong></span>: nouvelle
+								version de l&#8217;algorithme phon&eacute;tique M&eacute;taphone, qui produit des
+								r&eacute;sultats plus pr&eacute;cis. Il peut retourner un code primaire et un code
+								secondaire pour une cha&icirc;ne de caract&egrave;res. Cela est utile dans des
+								cas ambigus, mais &eacute;galement pour de multiples variantes de noms de
+								famille aux origines communes.</p>
+							<p><span class="bold"><strong>Soundex FR</strong></span>&nbsp;: algorithme
+								phon&eacute;tique utile pour la comparaison de pr&eacute;noms, selon la
+								prononciation fran&ccedil;aise.</p>
+							<p><span class="bold"><strong>Jaro-Winkler</strong></span>&nbsp;; fait correspondre
+								les entr&eacute;es trait&eacute;es selon des erreurs d&#8217;orthographe.</p>
+							<p><span class="bold"><strong>q-grams</strong></span>&nbsp;: fait correspondre les
+								entr&eacute;es trait&eacute;es en divisant les cha&icirc;nes de caract&egrave;res en blocs de
+								lettres de longueur q, afin de cr&eacute;er un nombre de longueurs
+								q-grammes. Le r&eacute;sultat de correspondance est donn&eacute; comme le nombre
+								de correspondances entre les q-grammes d&#8217;entr&eacute;e et de r&eacute;f&eacute;rence,
+								divis&eacute; par le nombre de q-grammes possibles.</p>
+							<p><span class="bold"><strong>custom...&nbsp;</strong></span>: permet de charger un
+								algorithme externe de mise en correspondance &agrave; partir d&#8217;une
+								biblioth&egrave;que Java. La colonne <span class="bold"><strong>Custom Matcher
+									Class</strong></span> est activ&eacute;e lorsque vous s&eacute;lectionnez cette
+								option.</p>
+							<p>Pour plus d'informations concernant le chargement d'une biblioth&egrave;que Java externe,
+								consultez <a class="xref" href="tLibraryLoad.html" title="tLibraryLoad">la section intitul&eacute;e &laquo;&nbsp;tLibraryLoad&nbsp;&raquo;</a>.</p>
+							<p>Pour plus d&#8217;informations concernant la cr&eacute;ation d&#8217;un algorithme de
+								correspondance personnalis&eacute;, consultez&nbsp;<a class="xref" href="tRecordMatching.html#Raa71983" title="Cr&eacute;er un algorithme de correspondance personnalis&eacute;">la section intitul&eacute;e &laquo;&nbsp;Cr&eacute;er un algorithme de correspondance personnalis&eacute;&nbsp;&raquo;</a>.</p>
+							<p>Pour un sc&eacute;nario associ&eacute; concernant l&#8217;utilisation d&#8217;un algorithme
+								de correspondance personnalis&eacute;, consultez&nbsp;<a class="xref" href="tRecordMatching.html#Raa64731" title="Sc&eacute;nario&nbsp;2&nbsp;: Utiliser un algorithme de mise en correspondance personnalis&eacute; pour faire correspondre des entr&eacute;es">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;2&nbsp;: Utiliser un algorithme de mise en correspondance personnalis&eacute; pour faire
+            correspondre des entr&eacute;es&nbsp;&raquo;</a>.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">Custom matcher
+							class</span></td><td valign="top">
+							<p>Saisissez le chemin d'acc&egrave;s &agrave; la classe personnalis&eacute;e (algorithme
+								externe de mise en correspondance) que vous souhaitez utiliser. Vous
+								d&eacute;finissez vous-m&ecirc;me ce chemin d'acc&egrave;s dans le fichier de votre
+								biblioth&egrave;que (fichier <span class="emphasis"><em>.jar</em></span>).</p>
+							<p>Par exemple, pour utiliser une classe
+									<span class="emphasis"><em>MyDistance.class</em></span> stock&eacute;e dans le r&eacute;pertoire
+									<span class="emphasis"><em>org/talend/mydistance</em></span> dans une biblioth&egrave;que
+								personnalis&eacute;e <span class="emphasis"><em>mydistance.jar</em></span>, le chemin d'acc&egrave;s
+								&agrave; saisir est
+								<span class="emphasis"><em>org.talend.mydistance.MyDistance</em></span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Confidence Weight</em></span>
+							</p>
+						</td><td valign="top">
+							<p>D&eacute;finissez un poids num&eacute;rique pour chaque attribut (colonne) de la
+								d&eacute;finition de cl&eacute;. Les valeurs doivent &ecirc;tre sup&eacute;rieures &agrave; 0.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><em>Blocking Definition</em></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Input Column</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Au besoin, s&eacute;lectionnez la
+								(les) colonne(s) de flux d&#8217;entr&eacute;e selon laquelle (lesquelles) vous
+								souhaitez partitionner les donn&eacute;es trait&eacute;es en blocs, ce qui est
+								habituellement appel&eacute; &#8220;blocking&#8221;. </p>
+							<p>La cr&eacute;ation de blocs (ou de
+								groupes) r&eacute;duit le nombre de paires d&#8217;enregistrements n&eacute;cessitant
+								examen. Lors de la cr&eacute;ation de blocs, les donn&eacute;es d&#8217;entr&eacute;e sont
+								partitionn&eacute;es en blocs exhaustifs cr&eacute;&eacute;s pour augmenter la proportion
+								de correspondances observ&eacute;es lors de la r&eacute;duction du nombre de
+								paires &agrave; comparer. Les comparaisons sont limit&eacute;es aux paires
+								d&#8217;enregistrements dans chaque bloc.</p>
+							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Utiliser des colonnes de bloc est tr&egrave;s utile lorsque vous
+									traitez des donn&eacute;es tr&egrave;s volumineuses.</p></td></tr></table></div>
+						</td></tr><tr><td>
+							<p>&nbsp; <span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Matching Algorithm</em></span>
+							</p>
+						</td><td valign="top">
+							<p>S&eacute;lectionnez un algorithme
+								dans la liste. </p>
+							<p><span class="bold"><strong>Simple VSR Matcher&nbsp;</strong></span>: Cet algorithme est bas&eacute; sur une
+								m&eacute;thode de Mod&egrave;le Vectoriel (Vector Space Retrieval) qui sp&eacute;cifie
+								comment deux enregistrements peuvent correspondre.</p>
+							<p><span class="bold"><strong>Match Interval</strong></span>&nbsp;: Saisissez la
+								probabilit&eacute; de correspondance. Deux enregistrements de donn&eacute;es
+								correspondent lorsque la probabilit&eacute; est sup&eacute;rieure &agrave; la valeur
+								d&eacute;finie.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Sort the output data by GID</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case afin de regrouper les donn&eacute;es de sortie par l&#8217;ID
+								du groupe.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Output distance details</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour remplir une colonne fixe de sortie <span class="emphasis"><em>MATCHING_DISTANCES</em></span> donnant le d&eacute;tail de la distance
+								entre chaque colonne. Cette case devient indisponible lorsque vous
+								cochez la case <span class="bold"><strong>Link with a
+									tMatchGroupHadoop</strong></span>.</p>
+						</td></tr><tr><td><p><span class="italic">Hadoop Properties</span></p>
+						<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Indisponible si vous utilisez un lien existant.</p></td></tr></table></div></td><td valign="top"><span class="italic">Property</span></td><td valign="top">
+							<p>Si vous souhaitez utiliser une configuration personnalis&eacute;e pour
+								Hadoop, renseignez cette table en saisissant la ou les propri&eacute;t&eacute;(s)
+								&agrave; personnaliser. Lors de l'ex&eacute;cution, la ou les propri&eacute;t&eacute;s
+								personnalis&eacute;e(s) &eacute;crasera(ont) les propri&eacute;t&eacute;s d&eacute;finies pr&eacute;c&eacute;demment
+								pour Hadoop.</p>
+							<p>Pour plus d'informations concernant les propri&eacute;t&eacute;s requises par
+								Hadoop, consultez la documentation Hadoop.</p>
+								</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">Value</span></td><td valign="top">
+							<p>Saisissez la valeur des propri&eacute;t&eacute;s personnalis&eacute;es utilis&eacute;es pour
+								vous connecter &agrave; Hadoop.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les m&eacute;tadonn&eacute;es de process du
+								Job, aussi bien au niveau du Job qu&#8217;au niveau de chaque composant.
+							</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant est un composant interm&eacute;diaire. Il requiert un flux
+								d&#8217;entr&eacute;e et un flux de sortie. Il requiert &eacute;galement une connexion &agrave;
+								Hadoop afin de traiter un grand volume de donn&eacute;es.</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Grouper des enregistrements client volumineux en plusieurs passes de correspondance"><div class="titlepage"><div><div><h3 class="title"><a name="ychen-20111205-tMatchGroupHadoop-multiple_passes"></a>Grouper des enregistrements client volumineux en plusieurs passes de correspondance </h3></div></div></div><p>Le Job de ce sc&eacute;nario se connecte &agrave; un syst&egrave;me Hadoop donn&eacute; et regroupe les enregistrements
+			client volumineux via plusieurs passes subs&eacute;quentes. L'objectif est de trouver les
+			clients utilisant les m&ecirc;mes noms de famille. Chaque passe fournit ses correspondances &agrave;
+			la passe qui suit, afin qu'elle affine ces correspondances.</p><div class="mediaobject" align="center"><img src="../images/tmatchgroupHadoop-scenario.png" align="middle"></div><p>Les composants de ce Job sont les suivants :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>un <span class="bold"><strong>tFixedFlowInput</strong></span> : fournit les
+					enregistrements client &agrave; traiter.</p></li><li class="listitem"><p>deux <span class="bold"><strong>tGenKey</strong></span> : g&eacute;n&egrave;rent les cl&eacute;s &agrave; utiliser par les
+					composants <span class="bold"><strong>tMatchGroupHadoop</strong></span> qui
+					suivent.</p></li><li class="listitem"><p>deux <span class="bold"><strong>tMatchGroupHadoop</strong></span> : regroupent les enregistrements
+					client ou affinent les groupes d&eacute;finis de correspondance &agrave; l'aide du syst&egrave;me
+					Hadoop donn&eacute;. Chaque <span class="bold"><strong>tMatchGroupHadoop</strong></span> d&eacute;finit
+					une passe pour mettre en correspondance les enregistrements re&ccedil;us.</p><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Les deux <span class="bold"><strong>tMatchGroupHadoop</strong></span> doivent
+							avoir le m&ecirc;me sch&eacute;ma.</p></td></tr></table></div></li><li class="listitem"><p><span class="bold"><strong>tMap</strong></span> : indexe la colonne des cl&eacute;s g&eacute;n&eacute;r&eacute;es
+					par le composant <span class="bold"><strong>tGenKey</strong></span> pr&eacute;c&eacute;dent afin de
+					diff&eacute;rencier cette colonne de celle de l'autre <span class="bold"><strong>tGenKey</strong></span>pour que les composants <span class="bold"><strong>tMatchGroupHadoop</strong></span> puissent les utiliser.</p></li><li class="listitem"><p><span class="bold"><strong>tSortRow</strong></span> : organise dans un ordre donn&eacute; les
+					enregistrements d'entr&eacute;e afin de cr&eacute;er une vue claire des r&eacute;sultats d'ex&eacute;cution
+					du Job.</p></li><li class="listitem"><p>deux <span class="bold"><strong>tLogRow</strong></span> : pr&eacute;sentent les r&eacute;sultats d'ex&eacute;cution de
+					chaque <span class="bold"><strong>tMatchGroupHadoop</strong></span>.</p></li></ul></div><p>Pour reproduire ce sc&eacute;nario, proc&eacute;dez comme dans les sections suivantes.</p><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d0e194309"></a>D&eacute;poser et relier les composants</h4></div></div></div><p>Pour ce faire, effectuez les op&eacute;rations suivantes :</p><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>D&eacute;posez un <span class="bold"><strong>tFixedFlowInput</strong></span>, deux <span class="bold"><strong>tGenKey</strong></span>, deux <span class="bold"><strong>tMatchGroupHadoop</strong></span>, un <span class="bold"><strong>tMap</strong></span>
+						et deux <span class="bold"><strong>tLogRow</strong></span> de la <span class="bold"><strong>Palette</strong></span> dans l'espace de mod&eacute;lisation graphique.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Un composant utilis&eacute; dans l'espace de travail peut &ecirc;tre nomm&eacute; comme
+							vous le souhaitez. Dans ce sc&eacute;nario, le <span class="bold"><strong>tFixedFlowInput</strong></span> est nomm&eacute;
+								<span class="emphasis"><em>incoming_customers</em></span>. Pour plus d'informations
+							concernant le renommage d'un composant, consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de <span class="bluebold">Talend Enterprise Studio</span>.</p></td></tr></table></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez-droit sur le <span class="bold"><strong>tFixedFlowInput</strong></span> pour ouvrir son
+						menu contextuel et s&eacute;lectionnez <span class="bold"><strong>Row</strong></span> &gt;
+							<span class="bold"><strong>Main</strong></span> afin de relier ce composant au
+						premier <span class="bold"><strong>tGenKey</strong></span> (nomm&eacute; <span class="italic">lname_postcode</span>).</p></li><li class="step" title="&Eacute;tape 3"><p>R&eacute;p&eacute;tez l'op&eacute;ration pour cr&eacute;er un lien <span class="bold"><strong>Main</strong></span> entre le
+						premier <span class="bold"><strong>tGenKey</strong></span> et le <span class="bold"><strong>tMap</strong></span>, vers le second <span class="bold"><strong>tGenKey</strong></span>  (nomm&eacute; <span class="italic">lname_initial</span>), renommez le lien de sortie en <span class="italic">out</span>, vers le premier <span class="bold"><strong>tMatchGroupHadoop</strong></span>, vers le premier <span class="bold"><strong>tLogRow</strong></span>, vers le second <span class="bold"><strong>tMatchGroupHadoop</strong></span> puis vers le second <span class="bold"><strong>tLogRow</strong></span>.</p></li></ol></div><p>Les composants du sc&eacute;nario sont tous plac&eacute;s et connect&eacute;s. Vous pouvez les
+				configurer. </p></div><div class="section" title="Configurer le flux d'entr&eacute;e"><div class="titlepage"><div><div><h4 class="title"><a name="d0e194404"></a>Configurer le flux d'entr&eacute;e</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="procedure" title="Proc&eacute;dure&nbsp;7.1.&nbsp;Configurer les donn&eacute;es d'entr&eacute;e"><a name="d0e194409"></a><p class="title"><b>Proc&eacute;dure&nbsp;7.1.&nbsp;Configurer les donn&eacute;es d'entr&eacute;e</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="bold"><strong>tFixedFlowInput</strong></span> pour ouvrir sa vue <span class="bold"><strong>Component</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/tmatchgroupHadoop-inputflow.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
+						champ <span class="bold"><strong>Edit schema</strong></span> pour ouvrir l'&eacute;diteur du
+						sch&eacute;ma.</p><div class="mediaobject" align="center"><img src="../images/tmatchgroupHadoop-input_schema.png" align="middle"></div></li><li class="step" title="&Eacute;tape 3"><p>Cliquez huit fois sur le bouton <span class="bold"><strong>[+]</strong></span> pour
+						ajouter huit lignes. Ce sont les huit colonnes du sch&eacute;ma d'entr&eacute;e.</p></li><li class="step" title="&Eacute;tape 4"><p>Renommez ces lignes respectivement <span class="italic">account_num</span>, <span class="italic">lname</span>,
+							<span class="italic">fname</span>, <span class="italic">mi</span>, <span class="italic">address1</span>, <span class="italic">city</span>, <span class="italic">state_province</span> et <span class="italic">postal_code</span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans la colonne <span class="bold"><strong>Type</strong></span>, s&eacute;lectionnez le
+						type de donn&eacute;es des colonnes qui vous int&eacute;ressent. Dans cet exemple,
+						s&eacute;lectionnez <span class="bold"><strong>Long</strong></span> pour la colonne <span class="italic">account_num</span>.</p></li><li class="step" title="&Eacute;tape 6"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider ces
+						modifications et acceptez la propagation propos&eacute;e par la bo&icirc;te de
+						dialogue.</p></li><li class="step" title="&Eacute;tape 7"><p>Dans la zone <span class="bold"><strong>Mode</strong></span> de la vue <span class="bold"><strong>Basic settings</strong></span>, s&eacute;lectionnez <span class="bold"><strong>Use Inline Content (delimited file)</strong></span> pour saisir
+						les donn&eacute;es d'entr&eacute;e qui vous int&eacute;ressent.</p></li><li class="step" title="&Eacute;tape 8"><p>Dans le champ <span class="bold"><strong>Content</strong></span>, saisissez ou
+						collez les donn&eacute;es d'entr&eacute;e &agrave; traiter. Ces donn&eacute;es doivent correspondre au
+						sch&eacute;ma d&eacute;fini. Les enregistrements client utilis&eacute;s dans cet exemple sont
+						fournis par le Job de d&eacute;mo <span class="italic">D4_hadoop_group_family_multipass</span> que vous pouvez importer
+						avec le projet D&eacute;mo DQ. Pour plus d'informations concernant l'import d'un
+						projet, consultez le <span class="bold"><strong>Guide utilisateur</strong></span> de
+							<span class="bluebold">Talend Enterprise Studio</span>.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;7.2.&nbsp;Configurer la g&eacute;n&eacute;ration de cl&eacute; pour la premi&egrave;re passe"><a name="d0e194514"></a><p class="title"><b>Proc&eacute;dure&nbsp;7.2.&nbsp;Configurer la g&eacute;n&eacute;ration de cl&eacute; pour la premi&egrave;re passe</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le premier <span class="bold"><strong>tGenKey</strong></span>
+						(nomm&eacute; <span class="italic">lname_postcode</span>) pour ouvrir la vue
+							<span class="bold"><strong>Component</strong></span>. </p><div class="mediaobject" align="center"><img src="../images/tmatchgroupHadoop-genkey1.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Sous la table <span class="bold"><strong>Algorithm</strong></span>, cliquez sur le
+						bouton <span class="bold"><strong>[+]</strong></span> pour ajouter deux lignes.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la colonne <span class="bold"><strong>column</strong></span>, cliquez sur la
+						nouvelle ligne et s&eacute;lectionnez dans la liste la colonne que vous souhaitez
+						traiter &agrave; l'aide d'un algorithme. Dans cet exemple, s&eacute;lectionnez
+							<span class="emphasis"><em>lname</em></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Effectuez la m&ecirc;me op&eacute;ration sur la seconde ligne afin de s&eacute;lectionner
+							<span class="emphasis"><em>postal_code</em></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans la colonne <span class="bold"><strong>pre-algorithm</strong></span>, cliquez sur la nouvelle
+						ligne et s&eacute;lectionnez dans la liste l'algorithme que vous souhaitez
+						appliquer &agrave; la colonne correspondante. Dans cet exemple, s&eacute;lectionnez
+							<span class="bold"><strong>remove diacritical marks and upper case</strong></span>
+						pour supprimer les marques diacritiques et changer les champs de la colonne
+							<span class="italic">lname</span> en majuscules avant de g&eacute;n&eacute;rer
+						le code de cette colonne.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Cette conversion ne modifie pas vos donn&eacute;es brutes.</p></td></tr></table></div></li><li class="step" title="&Eacute;tape 6"><p>Dans la colonne <span class="bold"><strong>algorithm</strong></span>, cliquez sur la
+						nouvelle ligne et s&eacute;lectionnez dans la liste l'algorithme que vous souhaitez
+						appliquer &agrave; la colonne correspondante. Dans cet exemple, s&eacute;lectionnez
+							<span class="bold"><strong>N first characters of each word</strong></span>.</p></li><li class="step" title="&Eacute;tape 7"><p>R&eacute;p&eacute;tez l'op&eacute;ration pour la seconde ligne, dans la colonne <span class="bold"><strong>algorithm</strong></span>, s&eacute;lectionnez <span class="bold"><strong>first N characters of the string</strong></span>.</p></li><li class="step" title="&Eacute;tape 8"><p>Cliquez dans la colonne <span class="bold"><strong>Value</strong></span> &agrave; c&ocirc;t&eacute; de
+						la colonne <span class="bold"><strong>algorithm</strong></span> et saisissez la valeur
+						pour l'algorithme s&eacute;lectionn&eacute;, si n&eacute;cessaire. Dans ce sc&eacute;nario, saisissez
+							<span class="emphasis"><em>1</em></span> pour les deux lignes, ce que signifie que la
+						premi&egrave;re lettre de chaque champ dans les colonnes correspondantes sera
+						utilis&eacute; pour g&eacute;n&eacute;rer les cl&eacute;s.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;7.3.&nbsp;Indexer la colonne des cl&eacute;s g&eacute;n&eacute;r&eacute;es"><a name="d0e194601"></a><p class="title"><b>Proc&eacute;dure&nbsp;7.3.&nbsp;Indexer la colonne des cl&eacute;s g&eacute;n&eacute;r&eacute;es</b></p><p>Vous devez indexer la colonne des cl&eacute;s g&eacute;n&eacute;r&eacute;es provenant du premier composant <span class="bold"><strong>tGenKey</strong></span>. Pour ce faire, proc&eacute;dez comme suit :</p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="bold"><strong>tMap</strong></span> pour ouvrir son
+						&eacute;diteur.</p><div class="mediaobject" align="center"><img src="../images/tmatchgroupHadoop-tmap.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Du c&ocirc;t&eacute; de l'entr&eacute;e (&agrave; gauche), dans la partie sup&eacute;rieure, s&eacute;lectionnez toutes les
+						colonnes d'entr&eacute;e, en, par exemple, cliquant sur l'une d'entre elles, en
+						appuyant sur <span class="bold"><strong>Ctrl+A</strong></span> et d&eacute;posez-les du c&ocirc;t&eacute;
+						de la sortie (&agrave; droite). Les colonnes d'entr&eacute;e et de sortie sont
+						mapp&eacute;es.</p></li><li class="step" title="&Eacute;tape 3"><p>Du c&ocirc;t&eacute; droit de l'onglet <span class="bold"><strong>Schema editor</strong></span>, dans la partie
+						inf&eacute;rieure, cliquez sur la ligne <span class="italic">T_GEN_KEY</span> dans la colonne <span class="bold"><strong>Column</strong></span> et renommez-la en <span class="italic">T_GEN_KEY_1</span>. Cette colonne est index&eacute;e.</p></li><li class="step" title="&Eacute;tape 4"><p>Cliquez sur <span class="bold"><strong>OK</strong></span> pour valider ces modifications et
+						acceptez la propagation propos&eacute;e par la bo&icirc;te de dialogue.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;7.4.&nbsp;Configurer la g&eacute;n&eacute;ration de cl&eacute; pour la seconde passe"><a name="d0e194645"></a><p class="title"><b>Proc&eacute;dure&nbsp;7.4.&nbsp;Configurer la g&eacute;n&eacute;ration de cl&eacute; pour la seconde passe</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le second <span class="bold"><strong>tGenKey</strong></span> (nomm&eacute; <span class="italic">lname_initial</span>) pour ouvrir sa vue <span class="bold"><strong>Component</strong></span>. </p><div class="mediaobject" align="center"><img src="../images/tmatchgroupHadoop-genkey2.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Sous la table <span class="bold"><strong>Algorithm</strong></span>, cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> pour ajouter une ligne &agrave; la table.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la colonne <span class="bold"><strong>column</strong></span>, cliquez sur la nouvelle ligne et
+						s&eacute;lectionnez dans la liste la colonne que vous souhaitez traiter &agrave; l'aide
+						d'un algorithme. Dans cet exemple, s&eacute;lectionnez
+							<span class="emphasis"><em>account_num</em></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans la colonne <span class="bold"><strong>algorithm</strong></span>, cliquez sur la nouvelle ligne
+						et s&eacute;lectionnez dans la liste l'algorithme que vous souhaitez appliquer &agrave; la
+						colonne correspondante. Dans cet exemple, s&eacute;lectionnez <span class="bold"><strong>first N characters of the string</strong></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Cliquez dans la colonne <span class="bold"><strong>Value</strong></span> &agrave; c&ocirc;t&eacute; de la colonne
+							<span class="bold"><strong>algorithm</strong></span> et saisissez la valeur de
+						l'algorithme s&eacute;lectionn&eacute;, si n&eacute;cessaire. Dans ce sc&eacute;nario, saisissez
+							<span class="emphasis"><em>1</em></span>, ce qui signifie que la premi&egrave;re lettre de chaque
+						champ de la colonne correspondante sera utilis&eacute; pour g&eacute;n&eacute;rer les cl&eacute;s
+						requises.</p></li></ol></div></div><div class="section" title="Configurer les deux passes"><div class="titlepage"><div><div><h4 class="title"><a name="d0e194702"></a>Configurer les deux passes</h4></div></div></div><p>Vous devez configurer les deux passes afin de grouper les donn&eacute;es d'entr&eacute;e &agrave; l'aide des deux colonnes de cl&eacute;s g&eacute;n&eacute;r&eacute;es.</p><div class="procedure" title="Proc&eacute;dure&nbsp;7.5.&nbsp;Configurer la premi&egrave;re passe"><a name="d0e194707"></a><p class="title"><b>Proc&eacute;dure&nbsp;7.5.&nbsp;Configurer la premi&egrave;re passe</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le premier <span class="bold"><strong>tMatchGroupHadoop</strong></span> (nomm&eacute; <span class="italic">pass1</span>) afin d'afficher sa vue <span class="bold"><strong>Component</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/tmatchgroupHadoop-pass1.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Si n&eacute;cessaire, cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; de <span class="bold"><strong>Edit schema</strong></span>
+						pour ouvrir l'&eacute;diteur de sch&eacute;ma et visualiser le sch&eacute;ma r&eacute;cup&eacute;r&eacute; du
+						composant pr&eacute;c&eacute;dent dans le Job.</p><div class="mediaobject" align="center"><img src="../images/tmatchgroupHadoop-pass1_schema.png" align="middle"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Puisqu'il y a deux composants <span class="bold"><strong>tMatchGroupHadoop</strong></span> reli&eacute;s dans ce Job, assurez-vous que
+							le sch&eacute;ma est identique dans les deux composants.</p></td></tr></table></div></li><li class="step" title="&Eacute;tape 3"><p>Dans le champ <span class="bold"><strong>Hadoop version</strong></span>,
+						s&eacute;lectionnez le syst&egrave;me Hadoop disponible auquel se connecter.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans la zone <span class="bold"><strong>Hadoop configuration</strong></span>,
+						saisissez les informations d'authentification dans les champs correspondants
+						: <span class="bold"><strong>Host</strong></span>, <span class="bold"><strong>Port</strong></span> et <span class="bold"><strong>HDFS
+						directory</strong></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans la table <span class="bold"><strong>Key definition</strong></span>, cliquez sur
+						le bouton <span class="bold"><strong>[+]</strong></span> pour ajouter &agrave; la liste les
+						colonnes sur lesquelles vous souhaitez effectuer l'op&eacute;ration de mise en
+						correspondance, <span class="italic">lname</span> dans ce
+						sc&eacute;nario.</p></li><li class="step" title="&Eacute;tape 6"><p>Cliquez sur la premi&egrave;re et la deuxi&egrave;me cellules de la colonne <span class="bold"><strong>Matching type</strong></span> et s&eacute;lectionnez dans la liste
+						la/les m&eacute;thode(s) &agrave; utiliser pour l'op&eacute;ration de mise en correspondance,
+							<span class="emphasis"><em>Jaro-Winkler</em></span> dans cet exemple.</p></li><li class="step" title="&Eacute;tape 7"><p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> sous la table
+							<span class="bold"><strong>Blocking Definition</strong></span> pour ajouter une
+						ligne puis cliquez dans cette ligne et s&eacute;lectionnez dans la liste la colonne
+						que vous souhaitez utiliser comme valeur de bloc, <span class="italic">T_GEN_KEY</span> dans cet exemple. </p><p>Utiliser une valeur de bloc r&eacute;duit le nombre de paires d'enregistrements
+						n&eacute;cessitant examen. Les donn&eacute;es d'entr&eacute;e sont partitionn&eacute;es en blocs
+						exhaustifs bas&eacute;s sur une cl&eacute; fonctionnelle. Cela r&eacute;duit le nombre de paires
+						&agrave; comparer, puisque la comparaison est restreinte aux paires
+						d'enregistrements &agrave; l'int&eacute;rieur d'un m&ecirc;me bloc. </p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;7.6.&nbsp;Configurer la seconde passe"><a name="d0e194799"></a><p class="title"><b>Proc&eacute;dure&nbsp;7.6.&nbsp;Configurer la seconde passe</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le second <span class="bold"><strong>tMatchGroupHadoop</strong></span> (nomm&eacute;
+							<span class="italic">pass2</span>) pour afficher sa vue <span class="bold"><strong>Component</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/tmatchgroupHadoop-pass2.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; de
+							<span class="bold"><strong>Edit schema</strong></span> pour ouvrir l'&eacute;diteur de
+						sch&eacute;ma et vous assurer que le sch&eacute;ma du second <span class="bold"><strong>tMatchGroupHadoop</strong></span> est identique &agrave; celui du premier <span class="bold"><strong>tMatchGroupHadoop</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/tmatchgroupHadoop-pass2_schema.png" align="middle"></div></li><li class="step" title="&Eacute;tape 3"><p>Cochez la case <span class="bold"><strong>Link with a tMatchGroupHadoop</strong></span> afin de
+						r&eacute;utiliser la connexion au syst&egrave;me Hadoop d&eacute;fini dans le <span class="bold"><strong>tMatchGroupHadoop</strong></span> pr&eacute;c&eacute;dent.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans la table <span class="bold"><strong>Key definition</strong></span>, cliquez sur le bouton
+							<span class="bold"><strong>[+]</strong></span> pour ajouter &agrave; la liste les
+						colonnes sur lesquelles vous souhaitez effectuer l'op&eacute;ration de mise en
+						correspondance, <span class="italic">lname</span> dans ce
+						sc&eacute;nario.</p></li><li class="step" title="&Eacute;tape 5"><p>Cliquez dans la cellule de la colonne <span class="bold"><strong>Matching type</strong></span> et
+						s&eacute;lectionnez dans la liste la/les m&eacute;thode(s) &agrave; utiliser pour l'op&eacute;ration de
+						mise en correspondance, <span class="italic">Jaro-Winkler</span> dans
+						cet exemple.</p></li><li class="step" title="&Eacute;tape 6"><p>Cliquez sur le bouton <span class="bold"><strong>[+]</strong></span> sous la table <span class="bold"><strong>Blocking Definition</strong></span> pour ajouter une ligne puis
+						cliquez dans cette ligne et s&eacute;lectionnez dans la liste la colonne que vous
+						souhaitez utiliser comme valeur de bloc, <span class="italic">T_GEN_KEY</span> dans cet exemple. Ainsi, l'op&eacute;ration de mise en
+						correspondance est effectu&eacute;e uniquement entre les enregistrements ma&icirc;tre
+						ayant la m&ecirc;me cl&eacute;, dans cet exemple, le m&ecirc;me caract&egrave;re initial des num&eacute;ros
+						de compte. </p><p>Avec cette passe, ce Job traite les groupe de correspondance fournis par le <span class="bold"><strong>tMatchGroupHadoop</strong></span> pr&eacute;c&eacute;dent. Il s&eacute;lectionne les
+						groupes avec un seul enregistrement &agrave; comparer avec les autres
+						enregistrements ma&icirc;tre lorsqu'ils ont la m&ecirc;me cl&eacute; g&eacute;n&eacute;r&eacute;e.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;7.7.&nbsp;Trier les enregistrements d'entr&eacute;e"><a name="d0e194882"></a><p class="title"><b>Proc&eacute;dure&nbsp;7.7.&nbsp;Trier les enregistrements d'entr&eacute;e</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="bold"><strong>tSortRow</strong></span> pour ouvrir sa
+						vue <span class="bold"><strong>Component</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/tmatchgrouphadoop-sortrow.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Sous la table <span class="bold"><strong>Criteria</strong></span>, cliquez deux fois sur le bouton
+							<span class="bold"><strong>[+]</strong></span> pour ajouter deux lignes.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la premi&egrave;re ligne, s&eacute;lectionnez <span class="italic">GID</span> pour la
+						colonne <span class="bold"><strong>Schema column</strong></span>, <span class="italic">alpha</span> pour la colonne <span class="bold"><strong>Sort num or alpha</strong></span> et <span class="italic">asc</span>
+						pour la colonne <span class="bold"><strong>Order asc or desc</strong></span>. Cela
+						signifie que le tri s'effectue sur la colonne <span class="italic">GID</span> du sch&eacute;ma d'entr&eacute;e, de mani&egrave;re ascendante au niveau de
+						l'ordre alphab&eacute;tique. Les autres colonnes sont tri&eacute;es selon leur colonne
+							<span class="italic">GID</span>.</p></li><li class="step" title="&Eacute;tape 4"><p>R&eacute;p&eacute;tez l'op&eacute;ration pour s&eacute;lectionner <span class="italic">GRP_SIZE</span>,
+							<span class="italic">num</span> et <span class="italic">desc</span> pour la second ligne.</p></li></ol></div><p>Vous pouvez ex&eacute;cuter ce Job.</p><p>Le composant <span class="bold"><strong>tLogRow</strong></span> est utilis&eacute; pour pr&eacute;senter les
+				r&eacute;sultats d'ex&eacute;cution du Job. Vous pouvez configurer le mode de pr&eacute;sentation des
+				r&eacute;sultats dans sa vue <span class="bold"><strong>Component</strong></span>.</p><p>Pour ce faire, double-cliquez sur le <span class="bold"><strong>tLogRow</strong></span> qui vous
+				int&eacute;resse et, dans la zone <span class="bold"><strong>Mode</strong></span>, s&eacute;lectionnez
+				l'option <span class="bold"><strong>Table (print values in cells of a
+				table)</strong></span>.</p><p>Pour ex&eacute;cuter ce Job, appuyez sur <span class="bold"><strong>F6</strong></span>. </p><p>Une fois ex&eacute;cut&eacute;, la vue <span class="bold"><strong>Run</strong></span> s'ouvre automatiquement et
+				vous pouvez visualiser les r&eacute;sultats d'ex&eacute;cution.</p><p>Le r&eacute;sultat apr&egrave;s la premi&egrave;re passe est le suivant :</p><div class="mediaobject" align="center"><img src="../images/tmatchgrouphadoop_multipass1.png" align="middle"></div><p>Le r&eacute;sultat apr&egrave;s la seconde passe se pr&eacute;sente comme suit :</p><div class="mediaobject" align="center"><img src="../images/tmatchgrouphadoop_multipass2.png" align="middle"></div><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Pour des raisons de place sur la page, les r&eacute;sultats ne sont pas pr&eacute;sent&eacute;s en
+					entier.</p></td></tr></table></div><p>Lorsque vous comparez, par exemple, le nom du client <span class="italic">Alexander</span> dans les r&eacute;sultats des deux passes, vous pouvez voir qu'il
+				y a plus de clients dont le nom de famille est <span class="italic">Alexander</span> regroup&eacute;s apr&egrave;s la seconde passe :</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Durant la premi&egrave;re passe, <span class="italic">Jeremy Alexander</span>, <span class="italic">Bob Alexander</span> et <span class="italic">Maxine
+							Alexander</span> ne sont pas distribu&eacute;s dans le m&ecirc;me groupe car
+						l'op&eacute;ration de mise en correspondance est effectu&eacute;e uniquement sur chaque
+						bloc d&eacute;fini dans la colonne <span class="italic">T_GEN_KEY_1</span>,
+						alors qu'ils appartiennent &agrave; des blocs diff&eacute;rents, respectivement, A9, A8 et
+						A3.</p></li><li class="listitem"><p>Durant la seconde passe, la mise en correspondance effectu&eacute;e utilise les
+						blocs d&eacute;finis dans la colonne <span class="italic">T_GEN_KEY</span>.
+						Comme le nom de ces trois clients appartient au bloc <span class="italic">2</span>, ils sont regroup&eacute;s apr&egrave;s calcul de la distance les
+						s&eacute;parant. Vous pouvez &eacute;galement lire, dans la colonne <span class="italic">MASTER</span>, que <span class="italic">Jeremy
+							Alexander</span> est l'enregistrement ma&icirc;tre de son groupe. </p></li></ul></div></div></div></div></body></html>

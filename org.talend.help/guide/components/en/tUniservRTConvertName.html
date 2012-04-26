@@ -1,0 +1,173 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title></title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="Raa78577.html" title="Chapter&nbsp;6.&nbsp;Data Quality components"><link rel="prev" href="tUniservBTGeneric.html" title="tUniservBTGeneric"><link rel="next" href="tUniservRTMailBulk.html" title="tUniservRTMailBulk"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tUniservRTConvertName"></a></h2></div></div></div><div class="mediaobject"><img src="../images/component_tuniservrtconvertname_icon.png"></div><div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>
+			<span class="italic">This component will be available in the <span class="bold"><strong>Palette</strong></span> of the studio on the condition that you have subscribed to
+				the relevant edition of <span class="italic">Data Quality Service Hub
+					Studio</span>.</span>
+		</p></td></tr></table></div><div class="section" title="tUniservRTConvertName properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e57012"></a>tUniservRTConvertName properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Component family</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Data quality</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Function</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="bold"><strong>tUniservRTConvertName</strong></span> analyzes
+								the name line against the context. For individual persons, it
+								divides the name line into segments (name, first name, title, name
+								prefixes, name suffixes, etc.) and creates the address key. </p>
+							<p>The component recognizes company or institution addresses and is
+								able to provide the form of the organization separately. It also
+								divides lines that contain information on several persons to
+								separate lines and is able to recognize certain patterns that do not
+								belong to the name information in the name line (customer number,
+								handling notes, etc.) and remove them or move them to special memo
+								fields.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Purpose</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="bold"><strong>tUniservRTConvertName</strong></span> provides
+								the basis for a uniform structuring and population of person and
+								company names in the database as well as the personalized
+								salutation.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+								schema</em></span></p>
+						</td><td valign="top">
+							<p>A schema is a row description, i.e. it defines the number of
+								fields that will be processed and passed on to the next component.
+								The schema is either built-in or remote in the Repository. </p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Host name</em></span>
+							</p>
+						</td><td valign="top">Server host name between double quotation marks.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Port</em></span>
+							</p>
+						</td><td valign="top">Listening port number of the server between double
+							quotation marks.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Service</em></span>
+							</p>
+						</td><td>
+							<p>The service type/name is <code class="code">"cname_d"</code> by default. Enter
+								a new name if necessary (e.g. due to service suffix), between double
+								quotation marks. Available services: </p>
+							<p>Germany <code class="code">"cname_d</code>" </p>
+							<p>Italy <code class="code">"cname_i"</code>
+							</p>
+							<p>Austria <code class="code">"cname_a"</code>
+							</p>
+							<p>Netherlands <code class="code">"cname_nl"</code>
+							</p>
+							<p>Switzerland <code class="code">"cname_ch"</code>
+							</p>
+							<p>Belgium <code class="code">"cname_b"</code>
+							</p>
+							<p>France <code class="code">"cname_f"</code>
+							</p>
+							<p>Spain <code class="code">"cname_e"</code></p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use rejects</em></span>
+							</p>
+						</td><td>
+							<p>Select this option to separately output data sets from a certain
+								result class of the onward name analysis. Enter the respective
+								result class in the field <span class="bold"><strong>if result class is
+									greater or equal to</strong></span>. </p>
+							<p>If this option is not selected, the sets are still output via the
+									<span class="bold"><strong>Main</strong></span> connection even if the
+								analysis failed. </p>
+							<p>If the option is selected, but the <span class="bold"><strong>Rejects</strong></span> connection is not established, the sets are
+								simply sorted out when the analysis failed.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Advanced settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Analysis Configuration</em></span>
+							</p>
+						</td><td valign="top">
+							<p>For detailed information, please refer to the Uniserv user manual
+									<span class="italic">convert-name</span>.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Output Configuration</em></span>
+							</p>
+						</td><td>For detailed information, please refer to the Uniserv user manual
+								<span class="italic">convert-name</span>.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Configuration of not recognized input</em></span>
+							</p>
+						</td><td>For detailed information, please refer to the Uniserv user manual
+								<span class="italic">convert-name</span>.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Configuration of free fields</em></span>
+							</p>
+						</td><td>For detailed information, please refer to the Uniserv user manual
+								<span class="italic">convert-name</span>.</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Cache Configuration</em></span>
+							</p>
+						</td><td>For detailed information, please refer to the Uniserv user manual
+								<span class="italic">convert-name</span>.</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Usage</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p><span class="bold"><strong>tUniservRTConvertName</strong></span> provides
+								the basis for a uniform structuring and population of person and
+								company names in the database as well as the personalized
+								salutation.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="bold"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">To use <span class="bold"><strong>tUniservRTConvertName</strong></span>, the Uniserv software <span class="italic">convert-name</span> must be installed.</td></tr></tbody></table></div><p>
+			<span>&nbsp;</span>
+		</p></div><div class="section" title="Scenario: Analysis of a name line and assignment of the salutation"><div class="titlepage"><div><div><h3 class="title"><a name="d0e57368"></a>Scenario: Analysis of a name line and assignment of the salutation</h3></div></div></div><p>This scenario describes a batch job that analyzes the person names in a file and
+			assigns them a salutation.</p><p>The input file for this scenario is already saved in the <span class="bold"><strong>Repository</strong></span>, so that all schema metadata is available. </p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Please observe that the data from the input source must all be related to the same
+				country.</p></td></tr></table></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="Step 1"><p>In the <span class="bold"><strong>Repository</strong></span> view, expand the <span class="bold"><strong>Metadata</strong></span> node and the directory in which the file is
+					saved. Then drag this file into the design workspace. </p><p>The dialog box below appears.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtconvertname_1.png"></div></li><li class="step" title="Step 2"><p>Select <span class="bold"><strong>tFileInputDelimited</strong></span> and then click
+						<span class="bold"><strong>OK</strong></span> to close the dialog box. </p><p>The component is displayed in the workspace. The file used in this scenario is
+					called <span class="italic">SampleAddresses.</span>.</p></li><li class="step" title="Step 3"><p>Drag the following components from the <span class="bold"><strong>Palette</strong></span> into the design workspace: two <span class="bold"><strong>tMap</strong></span> components, <span class="bold"><strong>tUniservRTConvertName,</strong></span> and <span class="bold"><strong>tFileOutputDelimited.</strong></span>.</p></li><li class="step" title="Step 4"><p>Connect the components via <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span>.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtconvertname_2.png"></div><p>During the process, accept the schema from <span class="bold"><strong>tUniservRTConvertName</strong></span> by clicking <span class="bold"><strong>Yes</strong></span> in the validation window.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtconvertname_3.png"></div></li><li class="step" title="Step 5"><p>Double-click <span class="bold"><strong>tMap_1</strong></span> to open the schema
+					mapping window. On the left is the structure of the input file, on the right is
+					the schema of <span class="bold"><strong>tUniservRTConvertName</strong></span>. At the
+					bottom lies the <span class="bold"><strong>Schema Editor</strong></span>, where you can
+					find the attributes of the individual columns and edit them. </p><div class="mediaobject"><img src="../images/use_case_tuniservrtconvertname_4.png"></div></li><li class="step" title="Step 6"><p>Assign the columns of the input source to the respective columns of <span class="bold"><strong>tUniservRTConvertName</strong></span>. For this purpose, select a
+					column of the input source and drag it onto the appropriate column on the right
+					side. If fields from the input file are to be passed on to the output file, like
+					the address fields or IDs, you have to define additional fields.</p></li><li class="step" title="Step 7"><p>Click <span class="bold"><strong>OK</strong></span> to close the dialog box.</p></li><li class="step" title="Step 8"><p>Double-click <span class="bold"><strong>tUniservRTConvertName</strong></span> to open
+					its <span class="bold"><strong>Basic Settings</strong></span> view.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtconvertname_5.png"></div></li><li class="step" title="Step 9"><p>Fill in the server information and specify the country-specific
+					service.</p></li><li class="step" title="Step 10"><p>Double-click <span class="bold"><strong>tMap_3</strong></span> to open the mapping
+					window. On the left is the schema of <span class="bold"><strong>tUniservRTConvertName</strong></span> and on the right is the schema of the
+					output file.</p><div class="mediaobject"><img src="../images/use_case_tuniservrtconvertname_6.png"></div></li><li class="step" title="Step 11"><p>Click <span class="bold"><strong>OK</strong></span> to close the window.</p></li><li class="step" title="Step 12"><p>Double-click <span class="bold"><strong>tFileOutputDelimited</strong></span> and enter
+					the details for the output file.</p></li></ol></div></div></div></body></html>

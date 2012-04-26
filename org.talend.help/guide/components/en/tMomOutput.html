@@ -1,0 +1,238 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tMomOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch12.html" title="Chapter&nbsp;12.&nbsp;Internet components"><link rel="prev" href="tMomMessageIdList.html" title="tMomMessageIdList"><link rel="next" href="tMomRollback.html" title="tMomRollback"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="EN" class="section" title="tMomOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tMomOutput"></a>tMomOutput</h2></div></div></div><div class="mediaobject"><img src="../images/tMomOutput_icon32_white.png"></div><div class="section" title="tMomOutput Properties"><div class="titlepage"><div><div><h3 class="title"><a name="d0e214639"></a>tMomOutput Properties</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+                            <p><span class="bold"><strong>Component family</strong></span></p>
+                        </td><td valign="top">
+                            <p>Internet </p>
+                        </td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Function</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Adds a message to a Message-Oriented middleware system queue in
+                                order for it to be fetched asynchronously.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Purpose</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p><span class="bold"><strong>tMomOutput</strong></span> makes it possible to
+                                set up asynchronous communications via a MOM server.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Basic settings</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>MQ Server</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the MOM server to be used from the list. According to the
+                                server selected, the parameters required differ slightly.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Host/Port</em></span></p>
+                        </td><td valign="top">
+                            <p>Fill in the MOM server and Port Host name or IP address.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Username</em></span></p>
+                        </td><td valign="top">
+                            <p>Connection login to the server.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Password</em></span></p>
+                        </td><td valign="top">
+                            <p>Connection password to the server.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Schema</em></span> and <span class="emphasis"><em>Edit
+                                Schema</em></span></p>
+                        </td><td valign="top">
+                            <p>A schema is a row description, i.e., it defines the number of
+                                fields that will be processed and passed on to the next component. </p>
+                            <p> In the context of <span class="bold"><strong>tMomOutput</strong></span>
+                                usage, the schema is read-only but will change according to the
+                                incoming schema. Only one-column schema is expected by the server to
+                                contain the <span class="bold"><strong>Messages</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Websphere</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Channel</em></span></p>
+                        </td><td valign="top">
+                            <p>Fill this field with the name of the channel through which the
+                                data connection is established. The default value is
+                                    <span class="emphasis"><em>DC.SVRCONN</em></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Message Body Type</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the message body type, either: <span class="bold"><strong>Text</strong></span>, <span class="bold"><strong>Bytes</strong></span> or
+                                    <span class="bold"><strong>Map</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Queue Manager</em></span></p>
+                        </td><td valign="top">
+                            <p>A system program that provides a logical container for the message
+                                queue and is responsible for transferring data to other queue
+                                managers via message channels. Fill this field with the name of the
+                                queue manager to which the data connection is made.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Message Queue</em></span></p>
+                        </td><td valign="top">
+                            <p>A queue from which message queueing applications can put messages
+                                on, and get messages. Fill this field with the name of the message
+                                queue.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Is using message id to set</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to set messages according to their
+                                ids.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>JBoss Messaging</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>To</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the message destination, respecting the syntax required by
+                                the server; this must include the type and name of the target
+                                folder. e.g.: queue/A or topic/testtopic</p>
+                            <p> Note that the field is case-sensitive.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Message Type</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the message type, either: <span class="bold"><strong>topic</strong></span> or <span class="bold"><strong>queue</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Message Body Type</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the message body type, either: <span class="bold"><strong>Text</strong></span>, <span class="bold"><strong>Bytes</strong></span> or
+                                    <span class="bold"><strong>Map</strong></span>.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>ActiveMQ</strong></span></p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>To</em></span></p>
+                        </td><td valign="top">
+                            <p>Type in the message destination, respecting the syntax required by
+                                the server; this must include the type and name of the target
+                                folder. e.g.: queue/A or topic/testtopic</p>
+                            <p> Note that the field is case-sensitive.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Message Type</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the message type, either: <span class="bold"><strong>topic</strong></span> or <span class="bold"><strong>queue</strong></span>.</p>
+                        </td></tr><tr><td>
+                            <p>&nbsp;</p>
+                        </td><td valign="top">
+                            <p><span class="emphasis"><em>Message Body Type</em></span></p>
+                        </td><td valign="top">
+                            <p>Select the message body type, either: <span class="bold"><strong>Text</strong></span>, <span class="bold"><strong>Bytes</strong></span> or
+                                    <span class="bold"><strong>Map</strong></span>.</p>
+                        </td></tr><tr><td valign="top"><span class="bold"><strong>Advanced
+                            settings</strong></span></td><td valign="top"><span class="emphasis"><em>Delivery Mode</em></span></td><td valign="top"><p>Select a delivery mode supported by JMS:</p>
+                            <p><span class="bold"><strong>Not Persistent</strong></span>: This delivery
+                                mode does not require that the message be logged to stable
+                                storage.</p>
+                            <p><span class="bold"><strong>Persistent</strong></span>: This delivery mode
+                                requires that the message be logged to stable storage as part of the
+                                client's send operation.</p>
+                            <p>For further information about the delivery modes, see <a class="link" href="https://publib.boulder.ibm.com/iseries/v5r2/ic2924/books/csqzaw07.pdf" target="_top">https://publib.boulder.ibm.com/iseries/v5r2/ic2924/books/csqzaw07.pdf</a>.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This check box is enabled when the MQ server is ActiveMQ or
+                                    JBoss Messaging.</p></td></tr></table></div>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Set Transacted</em></span></td><td valign="top"><p>Select this check box to transact the session. For
+                                further information about this paramater, see <a class="link" href="https://publib.boulder.ibm.com/iseries/v5r2/ic2924/books/csqzaw07.pdf" target="_top">https://publib.boulder.ibm.com/iseries/v5r2/ic2924/books/csqzaw07.pdf</a>.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Selecting this check box will ignore the settings in the
+                                        <span class="bold"><strong>Acknowledgement Mode</strong></span> list
+                                    in the Advanced settings view of <span class="bold"><strong>tMomInput</strong></span>. This check box is enabled when the MQ
+                                    server is ActiveMQ or JBoss Messaging.</p></td></tr></table></div>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Set Jms Header</em></span></td><td valign="top"><p>Select this check box to send the Jms headers
+                                through the mapping from Jms fields onto MQ Series fields on the MQ
+                                server. When this checkbox is checked, you can specify the header
+                                name and the header value in the line(s) you added by clicking the
+                                plus button in the <span class="bold"><strong>Parameters</strong></span>
+                                table. For further information about the usage of Jms headers, see
+                                    <a class="link" href="https://publib.boulder.ibm.com/iseries/v5r2/ic2924/books/csqzaw07.pdf" target="_top">https://publib.boulder.ibm.com/iseries/v5r2/ic2924/books/csqzaw07.pdf</a>.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This check box is enabled when the MQ server is ActiveMQ or
+                                    JBoss Messaging.</p></td></tr></table></div>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Set Jms Properties</em></span></td><td valign="top"><p>Select this check box to send the Jms properties
+                                mapped onto MQMD fields on the MQ server. When this checkbox is
+                                checked, you can specify the property name, the property type and
+                                the property value in the line(s) you added by clicking the plus
+                                button in the <span class="bold"><strong>Parameters</strong></span> table. For
+                                further information about the usage of Jms properties, see <a class="link" href="https://publib.boulder.ibm.com/iseries/v5r2/ic2924/books/csqzaw07.pdf" target="_top">https://publib.boulder.ibm.com/iseries/v5r2/ic2924/books/csqzaw07.pdf</a>.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This check box is enabled when the MQ server is ActiveMQ or
+                                    JBoss Messaging.</p></td></tr></table></div>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Use format</em></span></td><td valign="top"><p>Select this check box to specify the WebSphere
+                                message format in the <span class="bold"><strong>WebSphere Message
+                                    Format</strong></span> field. The default format is <span class="italic">MQSTR</span>.</p>
+                            <p>For further information about WebSphere message format, see <a class="link" href="http://publib.boulder.ibm.com/infocenter/wtxdoc/v8r2m0/index.jsp?topic=/com.ibm.websphere.dtx.adapibmmq.doc/references/r_ibmmq_Message_Format_FORMAT.htm" target="_top">http://publib.boulder.ibm.com/infocenter/wtxdoc/v8r2m0/index.jsp?topic=/com.ibm.websphere.dtx.adapibmmq.doc/references/r_ibmmq_Message_Format_FORMAT.htm</a>.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This check box is available only when the MQ server is
+                                    WebSphere MQ.</p></td></tr></table></div></td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Include Header</em></span></td><td valign="top"><p>Select this check box to enable the check box for: </p>
+                            <p><span class="bold"><strong>MQRFH2 fixed Portion</strong></span>: Select this
+                                check box and click the plus button to add one or more lines to
+                                specify the field name and the value for the fixed portion of MQRFH2
+                                header.</p>
+                            <p>and the check boxes for the variable portion which contains the
+                                following three folders:</p>
+                            <p><span class="bold"><strong>MCD folder</strong></span>: Select this check box
+                                and click the plus button to add one or more lines to specify the
+                                field name and the value for the properties that describe the format
+                                of the message.</p>
+                            <p><span class="bold"><strong>JMS folder</strong></span>: Select this check box
+                                and click the plus button to add one or more lines to specify the
+                                field name and the value for the transportation of JMS header fields
+                                and JMSX properties.</p>
+                            <p><span class="bold"><strong>USR folder</strong></span>: Select this check box
+                                and click the plus button to add one or more lines to specify the
+                                field name and the value for the transportation of
+                                application-defined properties associated with the message.</p>
+                            <p>For further information about MQRFH2 header, see <a class="link" href="https://publib.boulder.ibm.com/iseries/v5r2/ic2924/books/csqzaw07.pdf" target="_top">https://publib.boulder.ibm.com/iseries/v5r2/ic2924/books/csqzaw07.pdf</a>.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This check box is available only when the MQ server is
+                                    WebSphere MQ.</p></td></tr></table></div>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top"><span class="emphasis"><em>Set CipherSpec</em></span></td><td valign="top"><p>Select this check box to enable the CipherSpec
+                                list from which you can specify the CipherSpec to be used with
+                                WebSphere MQ SSL.</p>
+                            <p>For further information about CipherSpec, see <a class="link" href="http://publib.boulder.ibm.com/infocenter/wmqv6/v6r0/index.jsp?topic=%2Fcom.ibm.mq.csqzas.doc%2Fsy12870_.htm" target="_top">http://publib.boulder.ibm.com/infocenter/wmqv6/v6r0/index.jsp?topic=%2Fcom.ibm.mq.csqzas.doc%2Fsy12870_.htm</a>.</p>
+                            <div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>This check box is available only when the MQ server is
+                                    WebSphere MQ.</p></td></tr></table></div>
+                        </td></tr><tr><td valign="top">&nbsp;</td><td valign="top">
+                            <p><span class="emphasis"><em>tStatCatcher Statistics</em></span></p>
+                        </td><td valign="top">
+                            <p>Select this check box to gather the Job processing metadata at a
+                                Job level as well as at each component level.</p>
+                        </td></tr><tr><td>&nbsp;</td><td valign="top"><span class="emphasis"><em>Enable parallel execution</em></span></td><td valign="top">
+                            <p>Select this check box to perform high-speed data processing, by
+                                treating multiple data flows simultaneously. </p>
+                            <p>In the <span class="bold"><strong>Number of parallel
+                                    executions</strong></span> field, either:</p>
+                            <p>- Enter the number of parallel executions desired.</p>
+                            <p>- Press <span class="bold"><strong>Ctrl + Space</strong></span> and select
+                                the appropriate context variable from the list.</p>
+                            <p> </p>
+                            <p>For further information, see <span class="bluebold">Talend Open Studio</span>
+                                <span class="italic">User Guide</span>.</p>
+                            <div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="italic">The <span class="bold"><strong>Action on
+                                            table</strong></span> field is not available with the
+                                        parallelization function. Therefore, you must use a
+                                            <span class="bold"><strong>tCreateTable</strong></span> component
+                                        if you want to create a table.</span></p></td></tr></table></div>
+                            <div class="warning" title="Warning" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Warning]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>When parallel execution is enabled, it is not
+                                        possible to use global variables to retrieve return values
+                                        in a Subjob.</em></span></p></td></tr></table></div>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Usage</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>This component must be linked to an input or intermediary
+                                component.</p>
+                        </td></tr><tr><td valign="top">
+                            <p><span class="bold"><strong>Limitation</strong></span></p>
+                        </td><td colspan="2" valign="top">
+                            <p>Make sure the relevant Websphere MQ, JBoss Messaging or ActiveMQ
+                                server is launched.</p>
+                        </td></tr></tbody></table></div></div><div class="section" title="Related scenario"><div class="titlepage"><div><div><h3 class="title"><a name="d0e215289"></a>Related scenario</h3></div></div></div><p>For a related scenario, see <a class="xref" href="tMomInput.html" title="tMomInput">the section called &#8220;tMomInput&#8221;</a></p></div></div></body></html>
