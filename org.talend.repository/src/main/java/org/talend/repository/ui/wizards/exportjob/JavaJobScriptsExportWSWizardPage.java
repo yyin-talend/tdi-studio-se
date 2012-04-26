@@ -360,7 +360,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
                 optionsGroupComposite.dispose();
                 createOptionsGroupButtons(pageComposite);
-
+                pageComposite.setSize(pageComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
                 pageComposite.layout();
                 JobExportType comboType = JobExportType.getTypeFromString(exportTypeCombo.getText());
                 if (comboType.equals(JobExportType.WSWAR) || comboType.equals(JobExportType.OSGI)) {
