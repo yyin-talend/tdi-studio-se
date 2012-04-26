@@ -37,7 +37,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -65,8 +64,10 @@ import org.eclipse.ui.internal.WorkbenchImages;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.metadata.MetadataColumnRepositoryObject;
 import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
@@ -131,6 +132,10 @@ class ExportItemWizardPage extends WizardPage {
         this.selection = selection;
         setDescription(Messages.getString("ExportItemWizardPage.description")); //$NON-NLS-1$
         setImageDescriptor(WorkbenchImages.getImageDescriptor(IWorkbenchGraphicConstants.IMG_WIZBAN_EXPORT_WIZ));
+
+        TimeMeasure.display = CommonsPlugin.isDebugMode();
+        TimeMeasure.displaySteps = CommonsPlugin.isDebugMode();
+        TimeMeasure.measureActive = CommonsPlugin.isDebugMode();
     }
 
     private CheckboxTreeViewer getItemsTreeViewer() {
@@ -138,6 +143,9 @@ class ExportItemWizardPage extends WizardPage {
     }
 
     public void createControl(Composite parent) {
+
+        TimeMeasure.begin(this.getClass().getSimpleName());
+
         Composite workArea = new Composite(parent, SWT.NONE);
         setControl(workArea);
 
@@ -145,7 +153,15 @@ class ExportItemWizardPage extends WizardPage {
         workArea.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
 
         createItemRoot(workArea);
+        TimeMeasure.step(this.getClass().getSimpleName(), "finished to createItemRoot"); //$NON-NLS-1$
+
         createItemList(workArea);
+        TimeMeasure.step(this.getClass().getSimpleName(), "finished to createItemList"); //$NON-NLS-1$
+
+        TimeMeasure.end(this.getClass().getSimpleName());
+        TimeMeasure.display = false;
+        TimeMeasure.displaySteps = false;
+        TimeMeasure.measureActive = false;
     }
 
     private String reloadExportPath(String pathType) {
@@ -174,6 +190,7 @@ class ExportItemWizardPage extends WizardPage {
         GridDataFactory.swtDefaults().span(2, 1).applyTo(label);
 
         createTreeViewer(itemComposite);
+        TimeMeasure.step(this.getClass().getSimpleName(), "finished to createTreeViewer"); //$NON-NLS-1$
 
         createSelectionButton(itemComposite);
         CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
@@ -181,10 +198,15 @@ class ExportItemWizardPage extends WizardPage {
         exportItemsTreeViewer.getTree().setRedraw(false);
         // force loading all nodes
         exportItemsTreeViewer.expandAll();
+        TimeMeasure.step(this.getClass().getSimpleName(), "finished to expandAll"); //$NON-NLS-1$
         exportItemsTreeViewer.collapseAll();
+        TimeMeasure.step(this.getClass().getSimpleName(), "finished to collapseAll"); //$NON-NLS-1$
         // expand to level of metadata connection
         exportItemsTreeViewer.expandToLevel(3);
+        TimeMeasure.step(this.getClass().getSimpleName(), "finished to expandToLevel"); //$NON-NLS-1$
         exportItemsTreeViewer.getTree().setRedraw(true);
+        TimeMeasure.step(this.getClass().getSimpleName(), "finished to redraw"); //$NON-NLS-1$
+
         addTreeCheckedSelection();
         // if user has select some items in repository view, mark them as checked
         if (selection != null && !selection.isEmpty()) {
@@ -221,12 +243,13 @@ class ExportItemWizardPage extends WizardPage {
                 expandParent(exportItemsTreeViewer, node);
                 checkElement(node, nodes);
             }
-
+            TimeMeasure.step(this.getClass().getSimpleName(), "finished to collect nodes"); //$NON-NLS-1$
             exportItemsTreeViewer.setCheckedElements(nodes.toArray());
+            TimeMeasure.step(this.getClass().getSimpleName(), "finished to check nodes"); //$NON-NLS-1$
         }
     }
 
-    protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
+    protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode node) {
         if (node == null)
             return false;
         IRepositoryViewObject object = node.getObject();
@@ -419,11 +442,8 @@ class ExportItemWizardPage extends WizardPage {
 
             @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
-                if (parentElement instanceof TreePath || element instanceof TreePath) {
-                    this.getClass();
-                }
-                if (parentElement instanceof RepositoryNode && element instanceof RepositoryNode) {
-                    return selectRepositoryNode(viewer, (RepositoryNode) parentElement, (RepositoryNode) element);
+                if (element instanceof RepositoryNode) {
+                    return selectRepositoryNode(viewer, (RepositoryNode) element);
                 }
                 return true;
             }
