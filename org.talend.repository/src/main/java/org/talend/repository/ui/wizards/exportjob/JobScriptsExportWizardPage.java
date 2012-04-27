@@ -1327,10 +1327,11 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             treeViewer.removeCheckStateListener(checkStateListener);
         }
 
-        if (manager == null) {
-            manager = createJobScriptsManager();
+        List<ContextParameterType> contextEditableResultValuesList = null;
+        if (manager != null) {
+            contextEditableResultValuesList = manager.getContextEditableResultValuesList();
         }
-        List<ContextParameterType> contextEditableResultValuesList = manager.getContextEditableResultValuesList();
+        manager = createJobScriptsManager();
 
         // Save dirty editors if possible but do not stop if not all are saved
         saveDirtyEditors();

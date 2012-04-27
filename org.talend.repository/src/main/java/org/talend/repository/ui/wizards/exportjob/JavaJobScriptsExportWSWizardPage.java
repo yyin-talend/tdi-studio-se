@@ -179,7 +179,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     protected JobExportType exportTypeFixed;
 
-    private Map<String, List<ContextTypeDefinition>> ctxToTypeDefs = new HashMap<String, List<ContextTypeDefinition>>();
+    private final Map<String, List<ContextTypeDefinition>> ctxToTypeDefs = new HashMap<String, List<ContextTypeDefinition>>();
 
     private List<ContextTypeDefinition> currentCtxTypes;
 
@@ -219,6 +219,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }// else ignors it
     }
 
+    @Override
     public JobExportType getCurrentExportType1() {
         if (exportTypeCombo != null && !exportTypeCombo.getText().equals("")) { //$NON-NLS-1$
             return JobExportType.getTypeFromLabel(exportTypeCombo.getText());
@@ -448,7 +449,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         } else {
             dialog.setText(""); //$NON-NLS-1$
             // this is changed by me shenhaize
-            dialog.setFileName((String) getDefaultFileName().get(0));
+            dialog.setFileName(getDefaultFileName().get(0));
             String currentSourceString = getDestinationValue();
             int lastSeparatorIndex = currentSourceString.lastIndexOf(File.separator);
             if (lastSeparatorIndex != -1) {
@@ -469,7 +470,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
             String str = file.getName();
 
-            String s = (String) getDefaultFileName().get(0);
+            String s = getDefaultFileName().get(0);
 
             if (str.equals(s)) {
                 if (getDefaultFileName().get(1) != null && !"".equals(getDefaultFileName().get(1))) {
@@ -945,6 +946,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
     }
 
+    @Override
     protected void restoreWidgetValues() {
 
         IDialogSettings settings = getDialogSettings();
@@ -1136,6 +1138,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
     }
 
+    @Override
     protected boolean validateOptionsGroup() {
 
         boolean isValid = false;
@@ -1204,6 +1207,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         gd.horizontalSpan = 2;
         jobItemButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
 
                 exportDependencies.setEnabled(jobItemButton.getSelection());
@@ -1405,7 +1409,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     @Override
     public boolean finish() {
-        manager = createJobScriptsManager();
         manager.setDestinationPath(getDestinationValue());
         if (exportTypeCombo != null && JobExportType.getTypeFromString(exportTypeCombo.getText()).equals(JobExportType.PETALSESB)) {
             if (!ensureTargetFileIsValid(new File(saDestinationFilePath)))
