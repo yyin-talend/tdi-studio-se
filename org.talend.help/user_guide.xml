@@ -1,6 +1,13 @@
-<?xml version="1.0" encoding="ISO-8859-15"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc>
+<toc label="Talend User documentation">
+<topic label="Online ressources">
+    <topic label="Installation Guide" href="http://talendforge.org/wiki/doku.php?id=doc:installation_guide"/> 
+    <topic label="User Guide" href="http://www.talend.com/downloads-talend.htm#documentation"/> 
+    <topic label="Tutorials (flash)" href="http://www.talend.com/tos/tutorials/menu.php"/>
+  </topic>  
+
   <topic label="Components">
     <topic label="tAS400CDC" href="guide/components/en/tAS400CDC.html"/>
     <topic label="tAS400Close" href="guide/components/en/tAS400Close.html"/>
@@ -356,8 +363,8 @@
     <topic label="tMaxDBOutput" href="guide/components/en/tMaxDBOutput.html"/>
     <topic label="tMaxDBRow" href="guide/components/en/tMaxDBRow.html"/>
     <topic label="tMemorizeRows" href="guide/components/en/tMemorizeRows.html"/>
-    <topic label="tMicrosoftCRMInput" href="guide/components/en/tMicrosoftCRMInput.html"/>
-    <topic label="tMicrosoftCRMOutput" href="guide/components/en/tMicrosoftCRMOutput.html"/>
+    <topic label="tMicrosoftCrmInput" href="guide/components/en/tMicrosoftCrmInput.html"/>
+    <topic label="tMicrosoftCrmOutput" href="guide/components/en/tMicrosoftCrmOutput.html"/>
     <topic label="tMicrosoftMQInput" href="guide/components/en/tMicrosoftMQInput.html"/>
     <topic label="tMicrosoftMQOutput" href="guide/components/en/tMicrosoftMQOutput.html"/>
     <topic label="tMomCommit" href="guide/components/en/tMomCommit.html"/>
@@ -375,7 +382,7 @@
     <topic label="tMysqlCommit" href="guide/components/en/tMysqlCommit.html"/>
     <topic label="tMysqlConnection" href="guide/components/en/tMysqlConnection.html"/>
     <topic label="tMysqlInput" href="guide/components/en/tMysqlInput.html"/>
-    <topic label="tMysqlInvalidRows" href="guide/components/en/tMysqlInvalidRows.html"/>
+    <topic label="tMySQLInvalidRows" href="guide/components/en/tMySQLInvalidRows.html"/>
     <topic label="tMysqlLastInsertId" href="guide/components/en/tMysqlLastInsertId.html"/>
     <topic label="tMysqlOutput" href="guide/components/en/tMysqlOutput.html"/>
     <topic label="tMysqlOutputBulk" href="guide/components/en/tMysqlOutputBulk.html"/>
@@ -386,7 +393,7 @@
     <topic label="tMysqlSCDELT" href="guide/components/en/tMysqlSCDELT.html"/>
     <topic label="tMysqlSP" href="guide/components/en/tMysqlSP.html"/>
     <topic label="tMysqlTableList" href="guide/components/en/tMysqlTableList.html"/>
-    <topic label="tMysqlValidRows" href="guide/components/en/tMysqlValidRows.html"/>
+    <topic label="tMySQLValidRows" href="guide/components/en/tMySQLValidRows.html"/>
     <topic label="tNamedPipeClose" href="guide/components/en/tNamedPipeClose.html"/>
     <topic label="tNamedPipeOpen" href="guide/components/en/tNamedPipeOpen.html"/>
     <topic label="tNamedPipeOutput" href="guide/components/en/tNamedPipeOutput.html"/>
@@ -516,8 +523,8 @@
     <topic label="tSAPInput" href="guide/components/en/tSAPInput.html"/>
     <topic label="tSAPOutput" href="guide/components/en/tSAPOutput.html"/>
     <topic label="tSAPRollback" href="guide/components/en/tSAPRollback.html"/>
-    <topic label="tSASInput" href="guide/components/en/tSASInput.html"/>
-    <topic label="tSASOutput" href="guide/components/en/tSASOutput.html"/>
+    <topic label="tSasInput" href="guide/components/en/tSasInput.html"/>
+    <topic label="tSasOutput" href="guide/components/en/tSasOutput.html"/>
     <topic label="tSCPClose" href="guide/components/en/tSCPClose.html"/>
     <topic label="tSCPConnection" href="guide/components/en/tSCPConnection.html"/>
     <topic label="tSCPDelete" href="guide/components/en/tSCPDelete.html"/>
@@ -648,7 +655,7 @@
     <topic label="tWebService" href="guide/components/en/tWebService.html"/>
     <topic label="tWebServiceInput" href="guide/components/en/tWebServiceInput.html"/>
     <topic label="tWriteDynamicFields" href="guide/components/en/tWriteDynamicFields.html"/>
-    <topic label="tWriteJsonField" href="guide/components/en/tWriteJsonField.html"/>
+    <topic label="tWriteJSONField" href="guide/components/en/tWriteJSONField.html"/>
     <topic label="tWriteXMLField" href="guide/components/en/tWriteXMLField.html"/>
     <topic label="tXMLMap" href="guide/components/en/tXMLMap.html"/>
     <topic label="tXMLRPCInput" href="guide/components/en/tXMLRPCInput.html"/>
