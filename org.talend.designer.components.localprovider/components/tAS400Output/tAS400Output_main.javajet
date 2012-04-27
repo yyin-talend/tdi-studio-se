@@ -241,6 +241,9 @@ skeleton="../templates/db_output_bulk.skeleton"
         whetherReject_<%=cid%> = false;
         <%	
         if(("INSERT").equals(dataAction)) {
+%>
+		try {
+<%
             int counter = 1;
             for(Column column : colStruct) {
                 if(column.isInsertable()) {
@@ -271,7 +274,6 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
     		%>
-            try {
                 insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 nb_line_<%=cid%>++;
             } catch(java.sql.SQLException e) {
@@ -304,6 +306,9 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
             <%
     	} else if(("UPDATE").equals(dataAction)) {
+%>
+		    try {
+<%
     	    int counterCol = 1;
             for(Column column : colStruct) {
                 if(column.isUpdatable()) {
@@ -367,7 +372,6 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
     		%>
-            try {
                 updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 nb_line_<%=cid%>++;
             } catch(java.sql.SQLException e) {
@@ -427,6 +431,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     			checkCount_<%=cid%> = rs_<%=cid%>.getInt(1);
     		}
     		if(checkCount_<%=cid%> > 0) {
+    			try {
     			<%
     			int counterCol = 1;
                 for(Column column : colStruct) {
@@ -489,7 +494,6 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                 }                
     			%>
-                try {
         			updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmtUpdate_<%=cid %>.executeUpdate();
                 } catch(java.sql.SQLException e) {
                     whetherReject_<%=cid%> = true;
@@ -520,6 +524,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     %>
                 }
     		} else {
+    			try {
     			<%
     			int counterInsert = 1;
                 for(Column columnInsert : colStruct) {
@@ -551,7 +556,6 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                 }                
     			%>
-                try {
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
                 } catch(java.sql.SQLException e) {
                     whetherReject_<%=cid%> = true;
@@ -588,6 +592,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     	} else if (("UPDATE_OR_INSERT").equals(dataAction)) {
     	    %>
     	    int updateFlag_<%=cid%>=0;
+            try {
     	    <%
     		int counterColUpdate = 1;
             for(Column columnUpdate : colStruct) {
@@ -651,7 +656,6 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
     		%>	
-            try {
                 updateFlag_<%=cid%>=pstmtUpdate_<%=cid %>.executeUpdate();
                 updatedCount_<%=cid%> = updatedCount_<%=cid%>+updateFlag_<%=cid%>;
             } catch(java.sql.SQLException e) {
@@ -684,6 +688,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
             
             if(updateFlag_<%=cid%> == 0) {
+            	try {
 				<%
             	if(isEnableDebug) {
             	%>
@@ -720,7 +725,6 @@ skeleton="../templates/db_output_bulk.skeleton"
                     <%
                 }                
         		%>
-                try {
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
                 } catch(java.sql.SQLException e) {
                     whetherReject_<%=cid%> = true;
@@ -754,6 +758,9 @@ skeleton="../templates/db_output_bulk.skeleton"
             nb_line_<%=cid%>++;
             <%    	
     	} else if (("DELETE").equals(dataAction)) {
+    		%>
+            try {
+    		<%
     	    int keyCounter = 1;
             for(Column column : colStruct) {
                 if(column.isDeleteKey()) {
@@ -791,7 +798,6 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
     		%>
-            try {
                 deletedCount_<%=cid%> = deletedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
             } catch(java.sql.SQLException e) {
                 whetherReject_<%=cid%> = true;
