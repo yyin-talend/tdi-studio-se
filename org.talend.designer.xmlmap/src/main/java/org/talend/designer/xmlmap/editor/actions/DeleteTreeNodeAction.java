@@ -63,6 +63,10 @@ public class DeleteTreeNodeAction extends SelectionAction {
             Object s = getSelectedObjects().get(0);
             if (s instanceof List && !((List) s).isEmpty()) {
                 List selectedarts = (List) s;
+                Object lastSelection = selectedarts.get(selectedarts.size() - 1);
+                if (!(lastSelection instanceof TreeNodeEditPart)) {
+                    return false;
+                }
                 for (Object obj : selectedarts) {
                     if (obj instanceof TreeNodeEditPart) {
                         TreeNodeEditPart nodePart = (TreeNodeEditPart) obj;
@@ -77,8 +81,6 @@ public class DeleteTreeNodeAction extends SelectionAction {
                             enable = false;
                         }
 
-                    } else {
-                        enable = false;
                     }
                     if (!enable) {
                         return enable;
@@ -124,6 +126,20 @@ public class DeleteTreeNodeAction extends SelectionAction {
                                 checkSubElementIsLoop(treeNode, subNodes);
                                 removeloopInOutputTree(subNodes);
                             }
+                            // check if tree is multiloop
+                            List<TreeNode> loopNodes = new ArrayList<TreeNode>();
+                            if (docRoot != null && docRoot.eContainer() instanceof AbstractInOutTree) {
+                                AbstractInOutTree tree = (AbstractInOutTree) docRoot.eContainer();
+                                if (tree.isMultiLoops()) {
+                                    List<TreeNode> nodesToCheck = new ArrayList<TreeNode>();
+                                    nodesToCheck.add(docRoot);
+                                    XmlMapUtil.getChildLoops(loopNodes, nodesToCheck, false);
+                                    if (loopNodes.size() < 2) {
+                                        tree.setMultiLoops(false);
+                                    }
+                                }
+                            }
+
                         }
 
                     }
