@@ -1401,7 +1401,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     @Override
     public boolean finish() {
-        manager = createJobScriptsManager();
         manager.setDestinationPath(getDestinationValue());
         if (exportTypeCombo != null && JobExportType.getTypeFromString(exportTypeCombo.getText()).equals(JobExportType.PETALSESB)) {
             if (!ensureTargetFileIsValid(new File(saDestinationFilePath)))
