@@ -1409,12 +1409,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     @Override
     public boolean finish() {
-        manager.setDestinationPath(getDestinationValue());
         if (exportTypeCombo != null && JobExportType.getTypeFromString(exportTypeCombo.getText()).equals(JobExportType.PETALSESB)) {
             if (!ensureTargetFileIsValid(new File(saDestinationFilePath)))
                 return true;
             File suFile = null;
-            suFile = new File(manager.getDestinationPath());
+            suFile = new File(getDestinationValue());
             // suFile = new File(new File(directory, suName).getAbsolutePath());
             suFile.exists();
             boolean ok = true;
