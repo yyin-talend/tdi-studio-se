@@ -12,7 +12,14 @@
 // ============================================================================
 package org.talend.repository.ftp.ui.wizards;
 
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -239,7 +246,7 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
      */
 
     public boolean performFinish() {
-        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
             if (creation) {
                 String nextId = factory.getNextId();
@@ -247,10 +254,21 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
                 factory.create(connectionItem, propertiesWizardPage.getDestinationPath());
             } else {
                 RepositoryUpdateManager.updateFileConnection(connectionItem);
-                factory.save(connectionItem);
-                closeLockStrategy();
+                IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                IWorkspaceRunnable operation = new IWorkspaceRunnable() {
+
+                    public void run(IProgressMonitor monitor) throws CoreException {
+                        try {
+                            factory.save(connectionItem);
+                            closeLockStrategy();
+                        } catch (PersistenceException e) {
+                            throw new CoreException(new Status(IStatus.ERROR, "", "", e));
+                        }
+                    }
+                };
+                workspace.run(operation, null);
             }
-        } catch (PersistenceException e) {
+        } catch (Exception e) {
             String detailError = e.toString();
             new ErrorDialogWidthDetailArea(getShell(), PID, "", //$NON-NLS-1$
                     detailError);
