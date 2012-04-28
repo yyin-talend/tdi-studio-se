@@ -913,11 +913,16 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 	
 	private void generateGroupCmpCode(OutputTreeNode node, int index) {
 		for(TreeNode tmpNode : node.getChildren()) {
-			if((tmpNode.isGroup()) && !tmpNode.isLoop()) {
+			if(tmpNode.isLoop()) {
+				return;
+			}
+			
+			if(tmpNode.isGroup()) {
 				groupbyNodeList.get(index).add(generateMethodUtil.getGroupByNodeList(tmpNode));
 				groupList.get(index).add(tmpNode);
-				generateGroupCmpCode((OutputTreeNode)tmpNode, index);
 			}
+			
+			generateGroupCmpCode((OutputTreeNode)tmpNode, index);
 		}
 	}
 }
