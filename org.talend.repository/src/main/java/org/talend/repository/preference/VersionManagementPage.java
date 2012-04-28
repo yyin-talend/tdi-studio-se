@@ -478,6 +478,7 @@ public class VersionManagementPage extends ProjectSettingPage {
 
         eachVersionBtn = new Button(option, SWT.RADIO);
         eachVersionBtn.setText(Messages.getString("VersionManagementDialog.EachVersion")); //$NON-NLS-1$
+        eachVersionBtn.setEnabled(allowVerchange);
 
         versionLatest = new Button(option, SWT.CHECK);
         versionLatest.setText(Messages.getString("VersionManagementDialog.FixVersion"));
