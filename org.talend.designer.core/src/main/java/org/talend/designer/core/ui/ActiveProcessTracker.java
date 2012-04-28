@@ -60,15 +60,19 @@ public class ActiveProcessTracker implements IPartListener {
     private static IProcess2 lastProcessOpened;
 
     private static boolean changedProcess;
-    
+
     private static List<IJobTrackerListener> jobTrackerListeners = new ArrayList<IJobTrackerListener>();
-    
+
     public static void addJobTrackerListener(IJobTrackerListener listener) {
+        if (currentProcess != null) {
+            listener.focusOnJob(currentProcess);
+        }
         jobTrackerListeners.add(listener);
     }
-    
+
     public static void removeJobTrackerListener(IJobTrackerListener listener) {
         jobTrackerListeners.remove(listener);
+        listener.allJobClosed();
     }
 
     public IProcess2 getJobFromActivatedEditor(IWorkbenchPart part) {
@@ -118,7 +122,7 @@ public class ActiveProcessTracker implements IPartListener {
             setContextsView(process);
             // setStatsAndLogsView(process);
             JobSettings.switchToCurJobSettingsView();
-            
+
             for (IJobTrackerListener listener : jobTrackerListeners) {
                 listener.focusOnJob(process);
             }
