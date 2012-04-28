@@ -128,11 +128,17 @@ skeleton="../templates/db_output_bulk.skeleton"
 
                 }
                 %>
-                try{
-                    //insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
+               <%if (rejectConnName == null && useBatchSize){
+    			%>
                     pstmt_<%=cid %>.addBatch();
-                    
                     nb_line_<%=cid%>++;
+                    <%if(!("").equals(batchSize) && !("0").equals(batchSize)){%>
+					batchSizeCounter_<%=cid%>++;
+					<%}%>
+                <%}else{%>
+				try{
+					nb_line_<%=cid%>++;
+					insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 }catch(Exception e)
                 {
                     whetherReject_<%=cid%> = true;
@@ -163,6 +169,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                     %>
                 }
                 <%
+            }
     	}else if(("UPDATE").equals(dataAction)){
     		int counterCol = 1;
     		
@@ -217,8 +224,8 @@ skeleton="../templates/db_output_bulk.skeleton"
     		}else {    		
     		%>
             try{
-                updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 nb_line_<%=cid%>++;
+                updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
             }catch(Exception e)
             {
                 whetherReject_<%=cid%> = true;
@@ -559,7 +566,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     		pstmt_<%=cid %>.addBatch();
     		nb_line_<%=cid%>++;    		 
 			
-    		  <%if (useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
+    		  <%if (!("").equals(batchSize) && !("0").equals(batchSize)) {
     		  %>
     		  batchSizeCounter_<%=cid%>++;
     		  <%
@@ -632,9 +639,10 @@ skeleton="../templates/db_output_bulk.skeleton"
     		if(!("").equals(batchSize) && !("0").equals(batchSize)) {
     		%>
     			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
-                <%if ( (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+                <%if ((("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
                 %>                                                
                 try {
+            	    	batchSizeCounter_<%=cid%> = 0;             	                	                	
 						pstmt_<%=cid %>.executeBatch();                	
 						pstmt_<%=cid %>.clearBatch();
             	    	<%
@@ -651,8 +659,18 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
             	    	<%
             	    	}%>                         	    	
-            	    	batchSizeCounter_<%=cid%> = 0;             	                	                	
                 }catch (java.sql.BatchUpdateException e){
+                	<%if(("true").equals(dieOnError)) {
+                	%>
+						throw(e);
+                	<%
+                	}else {
+                	%>
+                	System.err.println(e.getMessage());
+                	<%
+                	}%>
+                
+                }catch (java.sql.SQLException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
                 		throw(e);
@@ -682,8 +700,7 @@ skeleton="../templates/db_output_bulk.skeleton"
         	    commitCounter_<%=cid%>++;
         
                 if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>){
-
-				<%if ((rejectConnName==null ) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
+				<%if (useBatchSize && (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
                 %>
                 try {
                 		pstmt_<%=cid %>.executeBatch();
@@ -712,6 +729,16 @@ skeleton="../templates/db_output_bulk.skeleton"
                 	<%
                 	}%>
                 
+                }catch (java.sql.SQLException e){
+                	<%if(("true").equals(dieOnError)) {
+                	%>
+                		throw(e);
+                	<%
+                	}else {
+                	%>
+                	System.err.println(e.getMessage());
+                	<%
+                	}%>
                 }            	                              
                 <%
                 }%>
