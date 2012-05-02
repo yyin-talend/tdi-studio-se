@@ -249,7 +249,7 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
 
         // (feature 4258)
         if (Platform.OS_LINUX.equals(getTargetPlatform())) {
-            cmd = (String[]) ArrayUtils.add(cmd, "$*"); //$NON-NLS-1$
+            cmd = (String[]) ArrayUtils.add(cmd, "\"$@\""); //$NON-NLS-1$
         } else if (Platform.OS_WIN32.equals(getTargetPlatform())) {
             cmd = (String[]) ArrayUtils.add(cmd, "%*"); //$NON-NLS-1$
         }
