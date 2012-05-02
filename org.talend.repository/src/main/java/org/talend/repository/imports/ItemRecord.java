@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.runtime.image.IImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
@@ -29,6 +30,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryContentHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryContentManager;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.CoreImageProvider;
 
 /**
@@ -91,8 +93,15 @@ public class ItemRecord {
 
     public String getItemName() {
         if (itemName == null) {
-            itemName = ERepositoryObjectType.getItemType(property.getItem()).toString() + " " + property.getLabel() //$NON-NLS-1$
-                    + " " + property.getVersion(); //$NON-NLS-1$
+            IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                    IBrandingService.class);
+            boolean allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
+            if (allowVerchange) {
+                itemName = ERepositoryObjectType.getItemType(property.getItem()).toString() + " " + property.getLabel() //$NON-NLS-1$
+                        + " " + property.getVersion(); //$NON-NLS-1$
+            } else {
+                itemName = ERepositoryObjectType.getItemType(property.getItem()).toString() + " " + property.getLabel(); //$NON-NLS-1$
+            }
         }
         return itemName;
     }
@@ -202,7 +211,15 @@ public class ItemRecord {
 
     public String getLabel() {
         if (label == null) {
-            label = property.getLabel() + " " + property.getVersion(); //$NON-NLS-1$
+            IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                    IBrandingService.class);
+            boolean allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
+            if (allowVerchange) {
+                label = property.getLabel() + " " + property.getVersion(); //$NON-NLS-1$
+            } else {
+                label = property.getLabel();
+            }
+
         }
         return label;
     }

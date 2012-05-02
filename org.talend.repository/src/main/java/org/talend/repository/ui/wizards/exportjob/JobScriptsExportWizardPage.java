@@ -175,7 +175,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     protected Button chkButton;
 
-    String selectedJobVersion;
+    String selectedJobVersion = "0.1";
 
     private String originalRootFolderName;
 

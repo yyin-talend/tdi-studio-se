@@ -466,7 +466,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
         } else if (obj instanceof IRepositoryViewObject) {
             category.add(EComponentCategory.MAIN);
-            category.add(EComponentCategory.VERSIONS);
+            if (allowVerchange) {
+                category.add(EComponentCategory.VERSIONS);
+            }
 
             if (service != null
                     && service.isProjectInSvnMode()
@@ -478,7 +480,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 category.add(EComponentCategory.MAIN);
                 category.add(EComponentCategory.APPEARANCE);
                 category.add(EComponentCategory.RULERS_AND_GRID);
-                category.add(EComponentCategory.VERSIONS);
+                if (allowVerchange) {
+                    category.add(EComponentCategory.VERSIONS);
+                }
             }
         } else {
             BusinessType type = CorePlugin.getDefault().getDiagramModelService().getBusinessModelType(obj);
@@ -642,7 +646,10 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     repositoryObject = new EmptyRepositoryObject();
                     return;
                 }
-                String title = repositoryObject.getLabel() + " " + repositoryObject.getVersion(); //$NON-NLS-1$
+                String title = repositoryObject.getLabel(); //$NON-NLS-1$
+                if (allowVerchange) {
+                    title = repositoryObject.getLabel() + " " + repositoryObject.getVersion(); //$NON-NLS-1$
+                }
 
                 setElement(repositoryObject, type + SEPARATOR + title, ImageProvider.getImage(repositoryNode.getIcon()));
             }

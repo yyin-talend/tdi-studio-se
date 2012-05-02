@@ -58,6 +58,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Information;
@@ -72,6 +73,7 @@ import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.IUIRefresher;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.action.SaveAsRoutineAction;
 import org.talend.designer.core.ui.action.SaveAsSQLPatternAction;
@@ -179,7 +181,10 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     private String getTitleText(IRepositoryViewObject object) {
         StringBuffer string = new StringBuffer();
         string.append(object.getLabel());
-        if (!(object instanceof Folder)) {
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        boolean allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
+        if (!(object instanceof Folder) && allowVerchange) {
             string.append(" " + object.getVersion()); //$NON-NLS-1$
         }
         // nodes in the recycle bin
