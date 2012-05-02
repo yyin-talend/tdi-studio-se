@@ -48,11 +48,13 @@ import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.i18n.Messages;
@@ -270,7 +272,14 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         createDestinationGroup(destinationNameFieldInnerComposite);
         // createExportTree(pageComposite);
         if (!isMultiNodes()) {
-            createJobVersionGroup(pageComposite);
+            IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                    IBrandingService.class);
+            boolean allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
+            if (allowVerchange) {
+                createJobVersionGroup(pageComposite);
+            } else {
+                selectedJobVersion = "0.1";
+            }
         }
 
         createExportTypeGroup(pageComposite);
