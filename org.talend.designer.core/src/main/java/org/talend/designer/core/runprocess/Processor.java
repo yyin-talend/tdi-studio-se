@@ -47,6 +47,7 @@ import org.talend.designer.runprocess.IProcessMessageManager;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -249,9 +250,9 @@ public abstract class Processor implements IProcessor, IEclipseProcessor {
 
         // (feature 4258)
         if (Platform.OS_LINUX.equals(getTargetPlatform())) {
-            cmd = (String[]) ArrayUtils.add(cmd, "\"$@\""); //$NON-NLS-1$
+            cmd = (String[]) ArrayUtils.add(cmd, JobScriptsManager.CMDFORUNIX); //$NON-NLS-1$
         } else if (Platform.OS_WIN32.equals(getTargetPlatform())) {
-            cmd = (String[]) ArrayUtils.add(cmd, "%*"); //$NON-NLS-1$
+            cmd = (String[]) ArrayUtils.add(cmd, JobScriptsManager.CMDFORWIN); //$NON-NLS-1$
         }
         return cmd;
     }

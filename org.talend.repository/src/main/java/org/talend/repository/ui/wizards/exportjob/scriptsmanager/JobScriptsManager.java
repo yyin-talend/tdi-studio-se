@@ -93,7 +93,7 @@ public abstract class JobScriptsManager {
 
     public static final String CMDFORWIN = "%*"; //$NON-NLS-1$
 
-    public static final String CMDFORUNIX = "$*"; //$NON-NLS-1$
+    public static final String CMDFORUNIX = "\"$@\""; //$NON-NLS-1$
 
     private String selectedJobVersion; //$NON-NLS-1$
 
