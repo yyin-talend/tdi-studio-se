@@ -353,6 +353,7 @@ public class RepositoryReviewDialog extends Dialog {
     }
 
     private RepositoryNode getInput() {
+        getRepView().refresh();
         IContentProvider contentProvider = getRepView().getViewer().getContentProvider();
         if (contentProvider instanceof RepositoryContentProvider) {
             return typeProcessor.getInputRoot((RepositoryContentProvider) contentProvider);
