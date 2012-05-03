@@ -700,6 +700,7 @@ java.io.BufferedReader lr_<%=cid %> = new java.io.BufferedReader(new java.io.Fil
 int nb_line_data_<%=cid %> = 0;
 int nb_line_bad_<%=cid %> = 0;
 int nb_line_inserted_<%=cid %> = 0;
+int nb_line_discarded_<%=cid %> = 0;
 
 /*	1.get log file all lines count	
 	2.get "Total logical records read" line number from file end.	
@@ -707,12 +708,31 @@ int nb_line_inserted_<%=cid %> = 0;
 String tempLine_<%=cid %> = "";
 int countLines_<%=cid %> =0;//log file lines count
 //1
+boolean isEnglish_<%=cid %> = false;
 while ((tempLine_<%=cid %> = lr_<%=cid %>.readLine() )!= null) {
 	countLines_<%=cid %>++;
+	if(!isEnglish_<%=cid %> && tempLine_<%=cid %>.contains("Total logical records")){
+		isEnglish_<%=cid %> = true;
+	}
 }
 lr_<%=cid %>.close();
 //need new instance to readLine .
 lr_<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(logf_<%=cid %>));
+if(isEnglish_<%=cid %>){
+	for (int i_<%=cid %>=0; i_<%=cid %><= countLines_<%=cid %>; i_<%=cid %>++) {
+		tempLine_<%=cid %> = lr_<%=cid %>.readLine();
+		if(tempLine_<%=cid %>.contains("Rows successfully loaded")){
+			nb_line_inserted_<%=cid %> = Integer.parseInt(tempLine_<%=cid %>.substring(0,tempLine_<%=cid %>.indexOf("Rows successfully loaded")).trim());
+		}
+		if(tempLine_<%=cid %>.contains("Total logical records read")){
+			nb_line_data_<%=cid %> = Integer.parseInt(tempLine_<%=cid %>.substring(tempLine_<%=cid %>.indexOf(":") + 1).trim());
+		}
+		if(tempLine_<%=cid %>.contains("Total logical records rejected")){
+			nb_line_bad_<%=cid %> = Integer.parseInt(tempLine_<%=cid %>.substring(tempLine_<%=cid %>.indexOf(":") + 1).trim());
+			break;
+		}
+	}
+}else{
 //2
 for (int i_<%=cid %>=0; i_<%=cid %><= countLines_<%=cid %> - 10; i_<%=cid %>++) {
 	lr_<%=cid %>.readLine();
@@ -727,15 +747,19 @@ tempLine_<%=cid %> = lr_<%=cid %>.readLine();
 if (tempLine_<%=cid %> != null) {
 	nb_line_bad_<%=cid %> = Integer.parseInt(tempLine_<%=cid %>.substring(tempLine_<%=cid %>.indexOf(":") + 1).trim());
 }
+tempLine_<%=cid %> = lr_<%=cid %>.readLine();
+if (tempLine_<%=cid %> != null) {
+	nb_line_discarded_<%=cid %> = Integer.parseInt(tempLine_<%=cid %>.substring(tempLine_<%=cid %>.indexOf(":") + 1).trim());
+}
+	nb_line_inserted_<%=cid %> = nb_line_data_<%=cid %> - nb_line_bad_<%=cid %> - nb_line_discarded_<%=cid %>;
+}
 lr_<%=cid %>.close();
-
-nb_line_inserted_<%=cid %> = nb_line_data_<%=cid %> - nb_line_bad_<%=cid %>;
 
 globalMap.put("<%=cid %>_NB_LINE_DATA", nb_line_data_<%=cid %>);
 
 globalMap.put("<%=cid %>_NB_LINE_BAD", nb_line_bad_<%=cid %>);
 
-globalMap.put("<%=cid %>_NB_LINE_INSERTED", nb_line_data_<%=cid %> - nb_line_inserted_<%=cid %>);
+globalMap.put("<%=cid %>_NB_LINE_INSERTED", nb_line_inserted_<%=cid %>);
 
 globalMap.put("<%=cid %>_RETURN_CODE", exitCode_<%=cid%>);
 
