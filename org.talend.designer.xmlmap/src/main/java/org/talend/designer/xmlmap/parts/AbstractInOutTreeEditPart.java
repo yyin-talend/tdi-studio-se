@@ -95,7 +95,7 @@ public class AbstractInOutTreeEditPart extends BaseEditPart implements NodeEditP
     protected List getModelTargetConnections() {
         return ((AbstractInOutTree) getModel()).getFilterIncomingConnections();
     }
-
+    
     protected boolean cleanAggregateAndGroup(List<? extends TreeNode> nodes) {
         boolean changed = false;
         for (TreeNode obj : nodes) {
@@ -125,7 +125,7 @@ public class AbstractInOutTreeEditPart extends BaseEditPart implements NodeEditP
                 changed = true;
             }
             if (!outputNode.getChildren().isEmpty()) {
-                changed = cleanAggregateAndGroup(outputNode.getChildren()) || changed;
+                changed = cleanGroup(outputNode.getChildren()) || changed;
             }
         }
 
@@ -141,7 +141,7 @@ public class AbstractInOutTreeEditPart extends BaseEditPart implements NodeEditP
                 changed = true;
             }
             if (!outputNode.getChildren().isEmpty()) {
-                changed = cleanAggregateAndGroup(outputNode.getChildren()) || changed;
+                changed = cleanAggregate(outputNode.getChildren()) || changed;
             }
         }
 
