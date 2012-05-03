@@ -23,6 +23,8 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.talend.designer.xmlmap.figures.anchors.FilterTreeAnchor;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.policy.DragAndDropEditPolicy;
 import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 
@@ -92,6 +94,58 @@ public class AbstractInOutTreeEditPart extends BaseEditPart implements NodeEditP
     @Override
     protected List getModelTargetConnections() {
         return ((AbstractInOutTree) getModel()).getFilterIncomingConnections();
+    }
+
+    protected boolean cleanAggregateAndGroup(List<? extends TreeNode> nodes) {
+        boolean changed = false;
+        for (TreeNode obj : nodes) {
+            OutputTreeNode outputNode = (OutputTreeNode) obj;
+            if (outputNode.isAggregate()) {
+                outputNode.setAggregate(false);
+                changed = true;
+            }
+            if (outputNode.isGroup()) {
+                outputNode.setGroup(false);
+                changed = true;
+            }
+            if (!outputNode.getChildren().isEmpty()) {
+                changed = cleanAggregateAndGroup(outputNode.getChildren()) || changed;
+            }
+        }
+
+        return changed;
+    }
+
+    protected boolean cleanGroup(List<? extends TreeNode> nodes) {
+        boolean changed = false;
+        for (TreeNode obj : nodes) {
+            OutputTreeNode outputNode = (OutputTreeNode) obj;
+            if (outputNode.isGroup()) {
+                outputNode.setGroup(false);
+                changed = true;
+            }
+            if (!outputNode.getChildren().isEmpty()) {
+                changed = cleanAggregateAndGroup(outputNode.getChildren()) || changed;
+            }
+        }
+
+        return changed;
+    }
+
+    protected boolean cleanAggregate(List<? extends TreeNode> nodes) {
+        boolean changed = false;
+        for (TreeNode obj : nodes) {
+            OutputTreeNode outputNode = (OutputTreeNode) obj;
+            if (outputNode.isAggregate()) {
+                outputNode.setAggregate(false);
+                changed = true;
+            }
+            if (!outputNode.getChildren().isEmpty()) {
+                changed = cleanAggregateAndGroup(outputNode.getChildren()) || changed;
+            }
+        }
+
+        return changed;
     }
 
 }

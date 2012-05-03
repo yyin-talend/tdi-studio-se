@@ -22,6 +22,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
+import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -32,6 +33,8 @@ public class SetAggregateAction extends SelectionAction {
     public static String ID = "xml map set as aggregate action";
 
     private OutputTreeNodeEditPart nodePart;
+
+    private MapperManager mapperManager;
 
     public SetAggregateAction(IWorkbenchPart part) {
         super(part);
@@ -64,6 +67,12 @@ public class SetAggregateAction extends SelectionAction {
                     return false;
                 }
 
+                boolean isInputMultiLoops = false;
+
+                if (mapperManager.getMainInputTree() != null && mapperManager.getMainInputTree().isMultiLoops()) {
+                    isInputMultiLoops = true;
+                }
+
                 AbstractInOutTree abstractTree = XmlMapUtil.getAbstractInOutTree(model);
                 if (abstractTree instanceof OutputXmlTree) {
                     OutputXmlTree outputTree = ((OutputXmlTree) abstractTree);
@@ -71,10 +80,11 @@ public class SetAggregateAction extends SelectionAction {
                         return false;
                     }
                     // fixed for TDI-20808 ,disable group and aggregate for 501
-                    if (outputTree.isMultiLoops()) {
+                    if (isInputMultiLoops && outputTree.isMultiLoops()) {
                         return false;
                     }
                 }
+
                 if (!model.isAggregate()) {
                     setText("As aggregate element");
                 } else {
@@ -96,6 +106,10 @@ public class SetAggregateAction extends SelectionAction {
     public void run() {
         OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
         model.setAggregate(!model.isAggregate());
+    }
+
+    public void setMapperManager(MapperManager mapperManager) {
+        this.mapperManager = mapperManager;
     }
 
 }

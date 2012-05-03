@@ -140,6 +140,7 @@ public class XmlMapEditor extends GraphicalEditor {
         fixValueAction.setMapperManager(mapperManager);
 
         SetAggregateAction aggreagteAction = new SetAggregateAction(this);
+        aggreagteAction.setMapperManager(mapperManager);
         getActionRegistry().registerAction(aggreagteAction);
         getSelectionActions().add(aggreagteAction.getId());
 

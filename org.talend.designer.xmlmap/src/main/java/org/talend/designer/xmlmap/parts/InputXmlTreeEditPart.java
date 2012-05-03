@@ -118,11 +118,31 @@ public class InputXmlTreeEditPart extends AbstractInOutTreeEditPart {
                             }
                         }
                     }
+                    boolean changed = clearOutputAggregateIfNeeded();
+                    if (changed) {
+                        ((XmlMapDataEditPart) getParent()).refresh();
+                    }
                     ((XmlMapGraphicViewer) getViewer()).getMapperManager().getProblemsAnalyser().checkProblems();
                     ((XmlMapGraphicViewer) getViewer()).getMapperManager().getMapperUI().updateStatusBar();
                 }
             }
         }
+    }
+
+    protected boolean clearOutputAggregateIfNeeded() {
+        // clear aggregate in output table if input main and output are both multiloops
+        if (((InputXmlTree) getModel()).isMultiLoops() && getParent() instanceof XmlMapDataEditPart) {
+            List childPart = ((XmlMapDataEditPart) getParent()).getChildren();
+            for (Object o : childPart) {
+                if (o instanceof OutputXmlTreeEditPart) {
+                    OutputXmlTree outputModel = (OutputXmlTree) ((OutputXmlTreeEditPart) o).getModel();
+                    if (outputModel.isMultiLoops()) {
+                        return cleanAggregate(outputModel.getNodes());
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private void refreshOutputNodeLoopFunctionBtn(OutputTreeNodeEditPart outputNodePart) {

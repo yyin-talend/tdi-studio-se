@@ -23,9 +23,8 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.talend.designer.xmlmap.figures.OutputXmlTreeFigure;
 import org.talend.designer.xmlmap.figures.cells.IWidgetCell;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
-import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeCellEditorLocator;
 import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeDirectEditManager;
@@ -90,35 +89,28 @@ public class OutputXmlTreeEditPart extends AbstractInOutTreeEditPart {
             case XmlmapPackage.ABSTRACT_IN_OUT_TREE__MULTI_LOOPS:
                 // fix for TDI-20808 , clean aggreage and groups if it's multiloops
                 OutputXmlTree model = (OutputXmlTree) getModel();
+                boolean changed = false;
                 if (model.isMultiLoops()) {
-                    boolean changed = cleanAggregateAndGroup(model.getNodes());
-                    if (changed) {
-                        refreshChildren();
+                    changed = cleanGroup(model.getNodes());
+
+                }
+                if (model.isMultiLoops() && getParent() instanceof XmlMapDataEditPart) {
+                    List childPart = ((XmlMapDataEditPart) getParent()).getChildren();
+                    for (Object o : childPart) {
+                        if (o instanceof InputXmlTreeEditPart) {
+                            InputXmlTree inputTree = (InputXmlTree) ((InputXmlTreeEditPart) o).getModel();
+                            if (inputTree.isMultiLoops() && !inputTree.isLookup()) {
+                                changed = cleanAggregate(model.getNodes()) || changed;
+                                break;
+                            }
+                        }
                     }
                 }
-
+                if (changed) {
+                    refreshChildren();
+                }
             }
         }
-    }
-
-    private boolean cleanAggregateAndGroup(List<? extends TreeNode> nodes) {
-        boolean changed = false;
-        for (TreeNode obj : nodes) {
-            OutputTreeNode outputNode = (OutputTreeNode) obj;
-            if (outputNode.isAggregate()) {
-                outputNode.setAggregate(false);
-                changed = true;
-            }
-            if (outputNode.isGroup()) {
-                outputNode.setGroup(false);
-                changed = true;
-            }
-            if (!outputNode.getChildren().isEmpty()) {
-                changed = cleanAggregateAndGroup(outputNode.getChildren()) || changed;
-            }
-        }
-
-        return changed;
     }
 
     @Override
