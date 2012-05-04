@@ -171,27 +171,29 @@ imports="
 						  		isBase64 = "true".equals(row.get("UPDATEBASE64"));
 						  		Integer precision = null;
 						  		boolean isNullable = false;
+						  		String dbColumnName = null;
 						  		for(IMetadataColumn column : columnList){
 						  			if(column.getLabel().equals(name)){
 										javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 										pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 										precision = column.getPrecision();
 										isNullable = column.isNullable();
+										dbColumnName = column.getOriginalDbColumnName();
 						  			}
 								}
 					  			if (!"REMOVE_ATTRIBUTE".equals(option)) {
 					  					if(javaType == JavaTypesManager.BYTE_ARRAY){
 %>
-											base64_<%=cid%>.checkByteArrayUpdate(<%=isBase64%>,"<%=name%>",forUpate<%=cid%>,<%=conn.getName() %>.<%=name%>);
+											base64_<%=cid%>.checkByteArrayUpdate(<%=isBase64%>,"<%=dbColumnName %>",forUpate<%=cid%>,<%=conn.getName() %>.<%=name%>);
 <%																  					
 										}else if(javaType == JavaTypesManager.STRING){
 %>										
 											 // Create attribute before, to add multiple values if necessary and don't add any value if empty or null
-											 attrForUpdate_<%=cid%> = new javax.naming.directory.BasicAttribute("<%=name%>");
+											 attrForUpdate_<%=cid%> = new javax.naming.directory.BasicAttribute("<%=dbColumnName %>");
 											 if(<%=conn.getName() %>.<%=name%> != null){										
 							    				 for(String value_<%=cid%> : <%=conn.getName() %>.<%=name%>.trim().split(<%=separator%>)){
 							    					 if(value_<%=cid%> != null && !"".equals(value_<%=cid%>)){
-							    					 	base64_<%=cid%>.checkStringUpdateAttr(<%=isBase64%>,"<%=name%>",attrForUpdate_<%=cid%>,value_<%=cid%>);
+							    					 	base64_<%=cid%>.checkStringUpdateAttr(<%=isBase64%>,"<%=dbColumnName %>",attrForUpdate_<%=cid%>,value_<%=cid%>);
 							    					 }
 									    		 }
 									    	 }
@@ -222,12 +224,12 @@ imports="
 <%
 											}
 %>
-												base64_<%=cid%>.checkStringUpdate(<%=isBase64%>,"<%=name%>",forUpate<%=cid%>,incomingColumn_<%=cid%>);
+												base64_<%=cid%>.checkStringUpdate(<%=isBase64%>,"<%=dbColumnName %>",forUpate<%=cid%>,incomingColumn_<%=cid%>);
 <%
 										}
   								} else {
 %>
-							  		forUpate<%=cid%>.add(new javax.naming.directory.BasicAttribute("<%=name%>"));
+							  		forUpate<%=cid%>.add(new javax.naming.directory.BasicAttribute("<%=dbColumnName %>"));
 <%
   								}
   								if ("ADD".equals(option)) {
