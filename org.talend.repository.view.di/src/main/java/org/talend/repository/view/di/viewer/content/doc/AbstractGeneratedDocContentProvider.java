@@ -56,6 +56,12 @@ public abstract class AbstractGeneratedDocContentProvider extends SubEmptyTopNod
         return projectNode.getRootRepositoryNode(getTopLevelNodeType());
     }
 
+    @Override
+    public void initRepositoryNode() {
+        // not need re-init it.
+        // super.initAndClear();
+    }
+
     abstract protected ERepositoryObjectType getTopLevelNodeType();
 
 }
