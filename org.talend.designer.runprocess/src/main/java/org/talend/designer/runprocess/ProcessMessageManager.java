@@ -50,6 +50,9 @@ public class ProcessMessageManager implements IProcessMessageManager {
                 .getString(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT);
         if (!"".equals(line) && line != null) {
             lineLimit = (Integer.parseInt(line));
+            if (lineLimit <= 0) {
+                lineLimit = 1; // can't have 0 size buffer
+            }
             messages = new BoundedFifoBuffer(lineLimit);
         } else {
             messages = new BoundedFifoBuffer(LIMIT_MESSAGES);
