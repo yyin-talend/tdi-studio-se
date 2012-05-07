@@ -72,8 +72,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     } else {
         tableName_<%=cid%> = dbschema_<%=cid%> + "].[" + <%=dbtable%>;
     }
-	
-    java.sql.Timestamp timestamp_<%=cid%> = null;
+	org.talend.designer.components.util.mssql.MSSqlGenerateTimestampUtil mssqlGTU_<%=cid%> = org.talend.designer.components.util.mssql.MSSqlUtilFactory.getMSSqlGenerateTimestampUtil();	
     String tmpValue_<%=cid%> = null;    
     <%
     if(isEnableSaveMemMode) {
@@ -143,12 +142,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                     <%
                 } else if(("Timestamp").equals(generatedType)) {
                     %>
-                    timestamp_<%=cid%> = resultSet_<%=cid%>.getTimestamp(<%=index%>);
-                    if(timestamp_<%=cid%> != null) {
-                        <%=struct%>.<%=searchColumn.getColumnName()%> = new java.util.Date(timestamp_<%=cid%>.getTime());
-                    } else {
-                        <%=struct%>.<%=searchColumn.getColumnName()%> = null;
-                    }
+                     <%=struct%>.<%=searchColumn.getColumnName()%> = mssqlGTU_<%=cid%>.getDate(resultSet_<%=cid %>.getMetaData(), resultSet_<%=cid %>, <%=index%>);
                     <%
                 } else {
                     %>

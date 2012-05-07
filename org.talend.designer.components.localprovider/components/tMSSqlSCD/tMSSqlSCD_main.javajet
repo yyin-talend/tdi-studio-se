@@ -121,12 +121,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                     <%
                 } else if(("Timestamp").equals(generatedType)) {
                     %>
-                    timestamp_<%=cid%> = searchingResult_<%=cid%>.getTimestamp(<%=index%>);
-                    if(timestamp_<%=cid%> != null) {
-                        lookUpValue_<%=cid%>.<%=searchingColumn.getColumnName()%> = new java.util.Date(timestamp_<%=cid%>.getTime());
-                    } else {
-                        lookUpValue_<%=cid%>.<%=searchingColumn.getColumnName()%> = null;
-                    }
+                     lookUpValue_<%=cid%>.<%=searchingColumn.getColumnName()%> = mssqlGTU_<%=cid%>.getDate(searchingResult_<%=cid %>.getMetaData(), searchingResult_<%=cid %>, <%=index%>);
                     <%
                 } else {
                     %>
