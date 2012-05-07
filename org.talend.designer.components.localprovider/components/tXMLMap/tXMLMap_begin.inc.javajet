@@ -755,9 +755,11 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 <%
 						for(int j=0;j<groupbyNodeList.get(index).get(i).size();j++){
 							TreeNode attr = groupbyNodeList.get(index).get(i).get(j);
+							if(attr.getExpression()!=null && !("").equals(attr.getExpression()) ){
 %>
-					|| ( groupbyList.get(<%=i%>).get(<%=j%>)!=null ? !groupbyList.get(<%=i%>).get(<%=j%>).equals(<%generateMethodUtil.generateExprCode(attr.getExpression());%>) : <%generateMethodUtil.generateExprCode(attr.getExpression());%>!=null )
+					|| ( groupbyList.get(<%=i%>).get(<%=j%>)!=null ? !groupbyList.get(<%=i%>).get(<%=j%>).equals(FormatterUtils.format(<%generateMethodUtil.generateExprCode(attr.getExpression()); %>,<%=attr.getPattern()%>)) : FormatterUtils.format(<%generateMethodUtil.generateExprCode(attr.getExpression()); %>,<%=attr.getPattern()%>)!=null )
 <% 
+							}
 						}
 			
 %>
@@ -774,9 +776,11 @@ if(valueMap.get("<%=currEleName%>")!=null) {//open if 8080
 <% 
 					for(int j=0;j<groupbyNodeList.get(index).get(i).size();j++){
 						TreeNode attr = groupbyNodeList.get(index).get(i).get(j);
+						if(attr.getExpression()!=null && !("").equals(attr.getExpression()) ){
 %>
-						groupbyList.get(<%=i%>).add(<%generateMethodUtil.generateExprCode(attr.getExpression());%>);
+						groupbyList.get(<%=i%>).add(FormatterUtils.format(<%generateMethodUtil.generateExprCode(attr.getExpression()); %>,<%=attr.getPattern()%>));
 <% 
+						}
 					}
 %>
 					isNewElement=true;
