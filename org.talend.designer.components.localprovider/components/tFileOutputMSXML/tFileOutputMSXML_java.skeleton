@@ -18,6 +18,8 @@ public class CLASS {
         
         public String defaultValue = null;
         
+        public int order = 0;
+        
         public boolean hasDefaultValue = false;
 
         // special node
@@ -39,7 +41,8 @@ public class CLASS {
 
         public List<XMLNode> elements = new LinkedList<XMLNode>(); // the main element is the last element
 
-        public XMLNode(String path, String type, XMLNode parent, String column, String value) {
+        public XMLNode(String path, String type, XMLNode parent, String column, String value,int order) {
+        	this.order = order;
             this.path = path;
             this.parent = parent;
             this.type = type;
@@ -73,6 +76,19 @@ public class CLASS {
         public boolean isSubTreeParent(){
             return 2 == (special & 2);
         }
+        
+        public List<XMLNode> getNextSiblings() {
+        	List<XMLNode> result = new ArrayList<XMLNode>();
+        	if(parent!=null && parent.elements!=null){
+        		for(XMLNode sibing : parent.elements){
+        			if(order < sibing.order){
+        				result.add(sibing);
+        			}
+        		}
+        	}
+        	return result;
+        }
+        
     }
 
     public XMLNode getInsertNode(XMLNode root, List<XMLNode> mainNode, List<String> listPreConns) {
@@ -184,19 +200,25 @@ public class CLASS {
         if (tmpTable != null && tmpTable.size() > 0) {
             for (Map<String, String> tmpMap : tmpTable) {
                 XMLNode tmpNew = null;
+                
+                int currOrder = 0;
+                if(tmpMap.get("ORDER")!=null && !"".equals(tmpMap.get("ORDER").trim())){
+            		currOrder = Integer.parseInt(tmpMap.get("ORDER"));
+            	}
+            	
                 if (tmpMap.get("ATTRIBUTE").equals("attri")) {
-                    tmpNew = new XMLNode(tmpMap.get("PATH"), "ATTRIBUTE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
+                    tmpNew = new XMLNode(tmpMap.get("PATH"), "ATTRIBUTE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"),currOrder);
                     tmpNew.sourceName = tmpMap.get("SOURCE");
                     tmpParent.attributes.add(tmpNew);
                 } else if (tmpMap.get("ATTRIBUTE").equals("ns")) {
-                    tmpNew = new XMLNode(tmpMap.get("PATH"), "NAMESPACE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
+                    tmpNew = new XMLNode(tmpMap.get("PATH"), "NAMESPACE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"),currOrder);
                     tmpNew.sourceName = tmpMap.get("SOURCE");
                     tmpParent.namespaces.add(tmpNew);
                 } else {
                     if (tmpParent == null) {
-                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
+                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"),currOrder);
                         tmpNew.sourceName = tmpMap.get("SOURCE");
-                        tmpNew.special |= 1;
+                        //tmpNew.special |= 1;
                         root = tmpNew;
                     } else {
                         String tmpParentPath = tmpMap.get("PATH").substring(0, tmpMap.get("PATH").lastIndexOf("/"));
@@ -205,7 +227,7 @@ public class CLASS {
                             tmpParent = tmpParent.parent;
                         }
 
-                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
+                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"),currOrder);
                         tmpNew.sourceName = tmpMap.get("SOURCE");
 
                         tmpParent.elements.add(tmpNew);
@@ -268,6 +290,26 @@ public class CLASS {
         
     }
     
+   	
+    public boolean allOrderValid(List<Map<String, String>> rootTable, List<Map<String, String>> groupTable,
+            List<Map<String, String>> loopTable) {
+    	List<List<Map<String, String>>> tables = new ArrayList<List<Map<String, String>>>();
+        tables.add(rootTable);
+        tables.add(groupTable);
+        tables.add(loopTable);
+        
+        for (List<Map<String, String>> table : tables) {
+        	for (Map<String, String> row : table) {
+        		if(row.get("ORDER")==null || "".equals(row.get("ORDER").trim())) {
+        			return false;
+        		}
+        	}
+        }
+        
+        return true;
+    
+    }
+    
     // return [0] is root(XMLNode), [1] is groups(List<XMLNode>), [2] loop(XMLNode)
     public Object[] getTree(List<Map<String, String>> rootTable, List<Map<String, String>> groupTable,
             List<Map<String, String>> loopTable, List<IMetadataColumn> colList) {
@@ -280,7 +322,7 @@ public class CLASS {
         List<XMLNode> mains = new ArrayList<XMLNode>();
         List<XMLNode> groups = new ArrayList<XMLNode>();
         XMLNode loop = null;
-
+        
         XMLNode tmpParent = null;
         XMLNode tmpMainNode = null;
         if (loopTable == null || loopTable.size() == 0) {
@@ -291,16 +333,22 @@ public class CLASS {
             tmpParent = tmpMainNode;
             for (Map<String, String> tmpMap : tmpTable) {
                 XMLNode tmpNew = null;
+                
+                int currOrder = 0;
+                if(tmpMap.get("ORDER")!=null && !"".equals(tmpMap.get("ORDER").trim())){
+            		currOrder = Integer.parseInt(tmpMap.get("ORDER"));
+            	}
+                
                 if (tmpMap.get("ATTRIBUTE").equals("attri")) {
-                    tmpNew = new XMLNode(tmpMap.get("PATH"), "ATTRIBUTE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
+                    tmpNew = new XMLNode(tmpMap.get("PATH"), "ATTRIBUTE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"),currOrder);
                     tmpParent.attributes.add(tmpNew);
                 } else if (tmpMap.get("ATTRIBUTE").equals("ns")) {
-                    tmpNew = new XMLNode(tmpMap.get("PATH"), "NAMESPACE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
+                    tmpNew = new XMLNode(tmpMap.get("PATH"), "NAMESPACE", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"),currOrder);
                     tmpParent.namespaces.add(tmpNew);
                 } else {
                     if (tmpParent == null) {
-                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
-                        tmpNew.special |= 1;
+                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"),currOrder);
+                        //tmpNew.special |= 1;
                         root = tmpNew;
                         mains.add(root);
                     } else {
@@ -308,7 +356,7 @@ public class CLASS {
                         while (tmpParent != null && !tmpParentPath.equals(tmpParent.path)) {
                             tmpParent = tmpParent.parent;
                         }
-                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"));
+                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"), tmpMap.get("VALUE"),currOrder);
                         tmpParent.elements.add(tmpNew);
                         if (tmpMap.get("ATTRIBUTE").equals("main")) {
                             if (tmpTable == groupTable) {
