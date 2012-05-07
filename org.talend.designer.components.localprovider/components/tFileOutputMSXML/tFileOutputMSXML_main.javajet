@@ -107,6 +107,9 @@ class GenerateToolByDom4j{
 	boolean outputAsXSD = false;
 	XMLTool tool = null;
 	NamespaceHelper namespaceHelper = null;
+	
+	boolean allOrderValid = false;
+	
 	public void generateCode(XMLNode node, String currEleName, String parentName){
 		if(("ELEMENT").equals(node.type)){
 			createElement(currEleName,node,parentName);
@@ -143,10 +146,61 @@ class GenerateToolByDom4j{
 				}
 			}
 		}
-	}	
+	}
+		
 	private void createElement(String currEleName, XMLNode node, String parentName){
 		int index = node.name.indexOf(":");
-		if(index>0 && node.parent!=null){
+		
+		if((5==(node.special & 5)) && allOrderValid){
+			namespaceHelper.lookupNamespace(node);
+			String uri = namespaceHelper.getUri();
+			uri = uri == null ? "" : uri;
+			String prefix = namespaceHelper.getPrefix();
+			String localName = namespaceHelper.getLocalName();
+		
+%>
+		org.dom4j.QName qname_<%=currEleName%>_<%=cid%> = org.dom4j.DocumentHelper.createQName("<%=localName%>",org.dom4j.DocumentHelper.createNamespace("<%=prefix%>","<%=uri%>"));
+		org.dom4j.Element <%=currEleName%>_<%=cid%> = org.dom4j.DocumentHelper.createElement(qname_<%=currEleName%>_<%=cid%>);
+		
+		java.util.List<org.dom4j.Element> allElements_<%=currEleName%>_<%=cid%> = <%=parentName%>_<%=cid%>.elements();
+		java.util.List<org.dom4j.Element> elements_<%=currEleName%>_<%=cid%> = <%=parentName%>_<%=cid%>.elements(qname_<%=currEleName%>_<%=cid%>);
+		int order_<%=currEleName%>_<%=cid%> = allElements_<%=currEleName%>_<%=cid%>.size();
+		int app_size_<%=cid %> = elements_<%=currEleName%>_<%=cid%>.size();
+		if(app_size_<%=cid %> > 0){
+			order_<%=currEleName%>_<%=cid%> = 1 + allElements_<%=currEleName%>_<%=cid%>.indexOf(elements_<%=currEleName%>_<%=cid%>.get(app_size_<%=cid %>-1));
+		}else{
+<%
+			List<XMLNode> nextSiblings = node.getNextSiblings();
+			int size = nextSiblings.size();
+			for(int i=0;i<size;i++) {//TD512
+				XMLNode nextSibling = nextSiblings.get(i);
+				namespaceHelper.lookupNamespace(nextSibling);
+				uri = namespaceHelper.getUri();
+				uri = uri == null ? "" : uri;
+				prefix = namespaceHelper.getPrefix();
+				localName = namespaceHelper.getLocalName();
+%>
+			org.dom4j.QName qname_sibling_<%=currEleName%>_<%=cid%>_<%=i%> = org.dom4j.DocumentHelper.createQName("<%=localName%>",org.dom4j.DocumentHelper.createNamespace("<%=prefix%>","<%=uri%>"));
+			org.dom4j.Element sibling_<%=currEleName%>_<%=cid%>_<%=i%> = <%=parentName%>_<%=cid%>.element(qname_sibling_<%=currEleName%>_<%=cid%>_<%=i%>);
+			int index_sibling_<%=currEleName%>_<%=cid%>_<%=i%> = allElements_<%=currEleName%>_<%=cid%>.indexOf(sibling_<%=currEleName%>_<%=cid%>_<%=i%>);
+			if(index_sibling_<%=currEleName%>_<%=cid%>_<%=i%> > -1) {
+				order_<%=currEleName%>_<%=cid%> = index_sibling_<%=currEleName%>_<%=cid%>_<%=i%>;
+			} else {
+<%
+			
+			}//TD512
+			
+			while(size-- > 0) {
+%>
+			}
+<%
+			}
+%>
+		}
+		<%=parentName%>_<%=cid%>.elements().add(order_<%=currEleName%>_<%=cid%>,<%=currEleName%>_<%=cid%>);
+<%
+		}else{
+			if(index>0 && node.parent!=null){
 %>
 		org.dom4j.Element <%=currEleName%>_<%=cid%>;
 		if (<%=parentName%>_<%=cid%>.getNamespaceForPrefix("<%=node.name.substring(0,index)%>") == null) {
@@ -155,17 +209,20 @@ class GenerateToolByDom4j{
         	<%=currEleName%>_<%=cid%> = <%=parentName%>_<%=cid%>.addElement("<%=node.name%>");
         }
 <%
-		}else{
+			}else{
 %>
 		org.dom4j.Element <%=currEleName%>_<%=cid%> = <%=parentName%>_<%=cid%>.addElement("<%=node.name%>");
 <%
+			}
 		}
+		
 		if(0!=(node.special & 2)){
 %>
 		subTreeRootParent_<%=cid%> = <%=currEleName%>_<%=cid%>;
 <%
 		}
 	}
+	
 	private void setText(String currEleName, XMLNode node){
 		if(node.relatedColumn!=null){
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(node.relatedColumn.getTalendType());
@@ -451,6 +508,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 XMLNode root = mainList.get(0);                
             	XMLNode loop = (XMLNode)treeObjs[2];
             	
+            	//only all the orders are valid,we will consider the order. 
+            	Boolean allOrderValid = allOrderValid(rootTable,groupTable,loopTable);
+            	
         		NamespaceHelper namespaceHelper = new NamespaceHelper(root);
     	        
                 if(!("true").equals(allowEmpty)){
@@ -487,6 +547,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	    generateToolByDom4j.cid = cid;
 	    generateToolByDom4j.tool = tool;
 	    generateToolByDom4j.namespaceHelper = namespaceHelper;
+	    generateToolByDom4j.allOrderValid = allOrderValid;
 	    
 	    //start generate code
 %>
@@ -590,10 +651,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				int j=0;
 				for(j=0;j<listNodes.size();j++){
 					org.dom4j.Element tempElem =listNodes.get(j);
-//					String tmpPath=tempElem.getName();
-//					if(tempElem.getNamespacePrefix() !=null && !tempElem.getNamespacePrefix().equals("")){
-//						tmpPath = tempElem.getNamespacePrefix() + ":" + tmpPath;
-//					}
 					java.util.Map<String,String> currentDeclaredNamespacesMapping = null;
 					<%=namespaceHelper.buildCurrentGroupDeclaredNamespacesMapping("currentDeclaredNamespacesMapping")%>
 					if(DocumentHelper.compareNodes("<%=currentFinalGroupXpath %>",tempElem,uriToPrefixForDefaultNamespace_<%=sourceName %>_<%=cid%>,currentDeclaredNamespacesMapping,<%if(sourceName.equals(firstConnName)) {%>false<%} else {%>true<%}%>)){
