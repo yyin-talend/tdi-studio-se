@@ -149,7 +149,7 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
                             if (found != null && !"".equals(found)) {
                                 defaultValue = found;
                             }
-                            if (defaultValue != null) {
+                            if (defaultValue != null && !"".equals(defaultValue)) {
                                 mapObject.put(col.parameter.getName(), defaultValue);
                             }
                         }
