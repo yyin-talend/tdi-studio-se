@@ -252,6 +252,9 @@ if(useExistingConn){
         for (String key : input_table_map.keySet()) {
 		%>          
 			input_table_<%=cid %> = importParameterList_<%=cid %>.getTable(<%=key %>);
+			if(input_table_<%=cid %>.getNumRows() > 0){
+				input_table_<%=cid %>.deleteAllRows();
+			}
 	        input_table_<%=cid %>.appendRow();
 			<%
 			List<SchemaUtil.SAPSchema> oneTableNamelist = input_table_map.get(key);
@@ -298,6 +301,9 @@ if(useExistingConn){
         for (String key : table_input_map.keySet()) {
 		%>          
 			table_input_<%=cid %> = tableParameterList_<%=cid %>.getTable(<%=key %>);
+			if(table_input_<%=cid %>.getNumRows() > 0){
+				table_input_<%=cid %>.deleteAllRows();
+			}
 	        table_input_<%=cid %>.appendRow();
 			<%
 			List<SchemaUtil.SAPSchema> oneTableNamelist = table_input_map.get(key);
