@@ -70,6 +70,16 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
 
     private boolean isToolBar;
 
+    private String originaleObjectLabel;
+
+    private String originalVersion;
+
+    private String originalPurpose;
+
+    private String originalDescription;
+
+    private String originalStatus;
+
     /**
      * DOC Administrator FTPWizard constructor comment.
      * 
@@ -116,6 +126,13 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
             isRepositoryObjectEditable();
             initLockStrategy();
             break;
+        }
+        if (!creation) {
+            this.originaleObjectLabel = this.connectionItem.getProperty().getDisplayName();
+            this.originalVersion = this.connectionItem.getProperty().getVersion();
+            this.originalDescription = this.connectionItem.getProperty().getDescription();
+            this.originalPurpose = this.connectionItem.getProperty().getPurpose();
+            this.originalStatus = this.connectionItem.getProperty().getStatusCode();
         }
         // initialize the context mode
         ConnectionContextHelper.checkContextMode(connectionItem);
@@ -164,6 +181,13 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
             isRepositoryObjectEditable();
             initLockStrategy();
             break;
+        }
+        if (!creation) {
+            this.originaleObjectLabel = this.connectionItem.getProperty().getDisplayName();
+            this.originalVersion = this.connectionItem.getProperty().getVersion();
+            this.originalDescription = this.connectionItem.getProperty().getDescription();
+            this.originalPurpose = this.connectionItem.getProperty().getPurpose();
+            this.originalStatus = this.connectionItem.getProperty().getStatusCode();
         }
         // initialize the context mode
         ConnectionContextHelper.checkContextMode(connectionItem);
@@ -234,9 +258,16 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
      * @see org.eclipse.jface.wizard.IWizard#performCancel()
      */
 
+    @Override
     public boolean performCancel() {
-        closeLockStrategy();
-        return true;
+        if (!creation) {
+            connectionItem.getProperty().setVersion(this.originalVersion);
+            connectionItem.getProperty().setDisplayName(this.originaleObjectLabel);
+            connectionItem.getProperty().setDescription(this.originalDescription);
+            connectionItem.getProperty().setPurpose(this.originalPurpose);
+            connectionItem.getProperty().setStatusCode(this.originalStatus);
+        }
+        return super.performCancel();
     }
 
     /*
