@@ -28,6 +28,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
         
+        boolean checkDiskSpace = ("true").equals(ElementParameterParser.getValue(node,"__CHECK_DISK_SPACE__"));
+        
         boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
         
         boolean isCreateDir = ("true").equals(ElementParameterParser.getValue(node,"__CREATE__"));
@@ -36,7 +38,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 		int nb_line_<%=cid%> = 0;
 		String rowSeparator_<%=cid %> = <%=rowSeparator.length()==0||("").equals(rowSeparator)?"\"\\n\"" : rowSeparator %>;
-		String fieldSeparator_<%=cid %> = <%=fieldSeparator.length()==0||("").equals(fieldSeparator)?"\";\"" : fieldSeparator %>;
+		String fieldSeparator_<%=cid %> = <%=fieldSeparator.length()==0||("").equals(fieldSeparator)?"\",\"" : fieldSeparator %>;
 		char escapeChar_<%=cid %> = <%=escapeChar.length()==0||("").equals(escapeChar)?"'\\\\'" : escapeChar + ".charAt(0)"%>;
 		char textEnclosure_<%=cid %> = <%=textEnclosure.length()==0||("").equals(textEnclosure)?"'\"'" : textEnclosure + ".charAt(0)"%>;
 		
@@ -69,6 +71,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
       	csvWriter_<%=cid %>.setTextQualifier(textEnclosure_<%=cid %>); 
       	csvWriter_<%=cid %>.setForceQualifier(true);        
 <%
+		if(checkDiskSpace){
+%>
+      	long diskSpace_<%=cid %> = 0;
+<%
+		}
     }
 }
 %>

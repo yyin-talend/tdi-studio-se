@@ -21,6 +21,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
     
+        boolean checkDiskSpace = ("true").equals(ElementParameterParser.getValue(node,"__CHECK_DISK_SPACE__"));
     	boolean flushOnRow = ("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__"));
     	String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
     	
@@ -88,7 +89,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             			} 
 
             			%>
+	            			<%if(checkDiskSpace){%>
+	            				diskSpace_<%=cid%> = file_<%=cid %>.getFreeSpace();
+	            				if(diskSpace_<%=cid%> <= 0){
+									throw new java.io.IOException("The disk space is not enough,please check it!");
+								}
+	            			<%}%>
             			    csvWriter_<%=cid%>.writeRecord(row_<%=cid%>);	
+	            			<%if(checkDiskSpace){%>
+        			    		csvWriter_<%=cid%>.flush();
+	            			<%}%>
             			    <% if(flushOnRow) { %>
         		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {            			    
             			    		csvWriter_<%=cid%>.flush();
