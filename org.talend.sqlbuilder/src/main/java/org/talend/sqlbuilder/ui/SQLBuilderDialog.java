@@ -767,9 +767,17 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
 
                                     // bug 17980
                                     wapperDriver = sessionTreeNode.getWapperDriver();
-                                    // bug 22619
-                                    ExtractMetaDataUtils.closeConnection();
-                                    if (wapperDriver != null) {
+                                    // bug 20892:specify for derby need close connection,no need to close connection for
+                                    // other dbs
+                                    // bug 22619 improved by 20892
+                                    String dbType = sessionTreeNode.getDatabaseConnection().getDatabaseType();
+
+                                    String driverClassName = sessionTreeNode.getDatabaseConnection().getDriverClass();
+                                    if (wapperDriver != null
+                                            && (driverClassName.equals(EDatabase4DriverClassName.JAVADB_EMBEDED.getDriverClass())
+                                                    || dbType.equals(EDatabaseTypeName.JAVADB_EMBEDED.getDisplayName())
+                                                    || dbType.equals(EDatabaseTypeName.JAVADB_DERBYCLIENT.getDisplayName()) || dbType
+                                                    .equals(EDatabaseTypeName.JAVADB_JCCJDBC.getDisplayName()))) {
                                         try {
                                             wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
                                         } catch (SQLException e) {
