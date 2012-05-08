@@ -716,7 +716,19 @@ class ExportItemWizardPage extends WizardPage {
                 IRepositoryViewObject obj = null;
                 String id = relation.getId();
                 if (RelationshipItemBuilder.ROUTINE_RELATION.equals(relation.getType())) {
-                    obj = RoutinesUtil.getRoutineFromName(id);
+                    // TDI-20915
+                    org.talend.core.model.general.Project mainProject = ProjectManager.getInstance().getCurrentProject();
+                    obj = RoutinesUtil.getRoutineFromName(mainProject, id);
+                    if (obj == null) {
+                        List<org.talend.core.model.general.Project> refProjects = ProjectManager.getInstance()
+                                .getReferencedProjects(mainProject);
+                        for (org.talend.core.model.general.Project refPro : refProjects) {
+                            obj = RoutinesUtil.getRoutineFromName(refPro, id);
+                            if (obj != null) {
+                                break;
+                            }
+                        }
+                    }
                 } else {
                     if (id != null && id.indexOf(" - ") != -1) { //$NON-NLS-1$
                         id = id.substring(0, id.lastIndexOf(" - ")); //$NON-NLS-1$
