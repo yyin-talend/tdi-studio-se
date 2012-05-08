@@ -125,14 +125,11 @@ the original size in the column:<%=column.getLabel()%> should be bigger than 0
 			}//--------AAA00
 %>
 			java.io.FileInputStream fs_<%=cid %> = new java.io.FileInputStream(<%=filename %>);
-			java.nio.channels.FileChannel inChannel_<%=cid %>  = fs_<%=cid %>.getChannel();
-			java.nio.ByteBuffer bbRecord_<%=cid %> = java.nio.ByteBuffer.allocateDirect(<%=totalRealSize%>);
-			long iAvailabel_<%=cid %> = fs_<%=cid %>.available();
+			byte[] bb_row_<%=cid %> = new byte[<%=totalRealSize %>];
+			java.nio.ByteBuffer bbRecord_<%=cid %> = null;
 			int iReadOffset_<%=cid %> = 0;
-			while(iAvailabel_<%=cid %> > 0 ){
-				iAvailabel_<%=cid %> = iAvailabel_<%=cid %> - <%=totalRealSize%>;
-				iReadOffset_<%=cid %> = inChannel_<%=cid %>.read(bbRecord_<%=cid %>);
-				bbRecord_<%=cid %>.flip();
+			while((iReadOffset_<%=cid %> = fs_<%=cid %>.read(bb_row_<%=cid %>))!= -1){
+				bbRecord_<%=cid %> = java.nio.ByteBuffer.wrap(bb_row_<%=cid %>);
 <%
 				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//------BBB1
 					IMetadataTable justMetadata = conn.getMetadataTable();
