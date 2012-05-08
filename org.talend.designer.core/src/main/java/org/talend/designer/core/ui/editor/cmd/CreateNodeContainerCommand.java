@@ -18,9 +18,11 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.components.EComponentType;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IGraphicalNode;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -34,7 +36,7 @@ import org.talend.designer.core.ui.views.problems.Problems;
  */
 public class CreateNodeContainerCommand extends CreateCommand {
 
-    private NodeContainer nodeContainer;
+    private final NodeContainer nodeContainer;
 
     /**
      * Create the node on the given diagram.
@@ -75,12 +77,15 @@ public class CreateNodeContainerCommand extends CreateCommand {
         return true;
     }
 
+    @Override
     public void execute() {
         if (this.location != null) {
             this.nodeContainer.getNode().setLocation(this.location);
         }
         AbstractProcessProvider provider = AbstractProcessProvider.findProcessProviderFromPID(nodeContainer.getNode()
                 .getComponent().getPluginExtension());
+        IElementParameter ep = nodeContainer.getNode().getElementParameter(EParameterName.UNIQUE_NAME.getName());
+        process.addUniqueNodeName(ep.getValue().toString());
         if (provider == null || (provider != null && provider.containNodeInMemoryNotProcess())) {
             this.process.addNodeContainer(this.nodeContainer);
             process.checkStartNodes();
@@ -106,6 +111,7 @@ public class CreateNodeContainerCommand extends CreateCommand {
         }
     }
 
+    @Override
     public void undo() {
         this.process.removeNodeContainer(this.nodeContainer);
         // process.checkProcess();
@@ -114,6 +120,7 @@ public class CreateNodeContainerCommand extends CreateCommand {
         Problems.refreshProblemTreeView();
     }
 
+    @Override
     public void redo() {
         this.execute();
     }
