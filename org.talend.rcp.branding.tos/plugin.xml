@@ -60,7 +60,10 @@
             introId="org.talend.rcp.tos.intro"
             productId="org.talend.rcp.branding.tos.product">
       </introProductBinding>
-   </extension>
+   </extension> 
+    <extension point="org.eclipse.ui.splashHandlers">
+        <splashHandlerProductBinding productId="org.talend.rcp.branding.tos.product" splashId="org.talend.rcp.splashHandler"/>
+    </extension>
       <extension
          id="application"
          point="org.eclipse.core.runtime.applications">
