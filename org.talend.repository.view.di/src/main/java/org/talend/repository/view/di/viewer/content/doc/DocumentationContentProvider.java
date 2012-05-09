@@ -44,6 +44,11 @@ public class DocumentationContentProvider extends ProjectRepoDirectChildrenNodeC
         RepositoryNode topLevelNode = getTopLevelNode();
         if (topLevelNode != null) {
             IRepositoryNode generatedNode = topLevelNode.getRoot().getRootRepositoryNode(ERepositoryObjectType.GENERATED);
+            // add for bug TDI-21013
+            IRepositoryNode clearJobs = generatedNode.getRoot().getRootRepositoryNode(ERepositoryObjectType.JOBS);
+            IRepositoryNode clearJoblets = generatedNode.getRoot().getRootRepositoryNode(ERepositoryObjectType.JOBLETS);
+            clearJobs.getChildren().clear();
+            clearJoblets.getChildren().clear();
             if (generatedNode != null && !topLevelNode.getChildren().contains(topLevelNode)) {
                 topLevelNode.getChildren().add(generatedNode); // add back
             }
