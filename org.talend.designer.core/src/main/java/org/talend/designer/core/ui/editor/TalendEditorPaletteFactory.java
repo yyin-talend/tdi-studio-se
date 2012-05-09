@@ -399,7 +399,7 @@ public final class TalendEditorPaletteFactory {
             if (filter != null) {
                 Pattern pattern = Pattern.compile("^[A-Za-z0-9]+$");//$NON-NLS-1$
                 Matcher matcher = pattern.matcher(filter);
-                if (!matcher.matches() && filter != "") {
+                if (!matcher.matches() && filter.length() != 0) {
                     filter = "None";
                 }
                 String regex = getFilterRegex();
