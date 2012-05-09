@@ -255,19 +255,23 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             if (o instanceof NodeType) {
                 NodeType currentNode = (NodeType) o;
                 String componentName = currentNode.getComponentName();
-                if ("cMessagingEndpoint".equals(componentName)) {
-                    for (Object e : currentNode.getElementParameter()) {
-                        ElementParameterType p = (ElementParameterType) e;
-                        if ("HOTLIBS".equals(p.getName())) {
-                            for (Object pv : p.getElementValue()) {
-                                ElementValueType evt = (ElementValueType) pv;
-                                String evtValue = evt.getValue();
-                                IPath path = libPath.append(evtValue);
-                                libFiles.add(path.toFile());
-                            }
-                        }
-                    }
-                }
+
+				// http://jira.talendforge.org/browse/TESB-5755
+				// if ("cMessagingEndpoint".equals(componentName)) {
+				// for (Object e : currentNode.getElementParameter()) {
+				// ElementParameterType p = (ElementParameterType) e;
+				// if ("HOTLIBS".equals(p.getName())) {
+				// for (Object pv : p.getElementValue()) {
+				// ElementValueType evt = (ElementValueType) pv;
+				// String evtValue = evt.getValue();
+				// IPath path = libPath.append(evtValue);
+				// libFiles.add(path.toFile());
+				// }
+				// }
+				// }
+				// }
+				// End 5755
+
                 // http: // jira.talendforge.org/browse/TESB-3812
                 if ("cConfig".equals(componentName)) {
                     for (Object e : currentNode.getElementParameter()) {
@@ -429,19 +433,22 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             if (o instanceof NodeType) {
                 NodeType currentNode = (NodeType) o;
                 String componentName = currentNode.getComponentName();
-                if ("cMessagingEndpoint".equals(componentName)) {
-                    for (Object e : currentNode.getElementParameter()) {
-                        ElementParameterType p = (ElementParameterType) e;
-                        if ("HOTLIBS".equals(p.getName())) {
-                            for (Object pv : p.getElementValue()) {
-                                ElementValueType evt = (ElementValueType) pv;
-                                String evtValue = evt.getValue();
-                                sb.append(evtValue);
-                                sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
-                            }
-                        }
-                    }
-                }
+
+				// http://jira.talendforge.org/browse/TESB-5755
+				// if ("cMessagingEndpoint".equals(componentName)) {
+				// for (Object e : currentNode.getElementParameter()) {
+				// ElementParameterType p = (ElementParameterType) e;
+				// if ("HOTLIBS".equals(p.getName())) {
+				// for (Object pv : p.getElementValue()) {
+				// ElementValueType evt = (ElementValueType) pv;
+				// String evtValue = evt.getValue();
+				// sb.append(evtValue);
+				// sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+				// }
+				// }
+				// }
+				// }
+				// End 5755
                 if ("cConfig".equals(componentName)) {
                     for (Object e : currentNode.getElementParameter()) {
                         ElementParameterType p = (ElementParameterType) e;
