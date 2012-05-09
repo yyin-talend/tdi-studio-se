@@ -142,7 +142,10 @@ public class ImportTreeFromXml extends SelectionAction {
                 }
             }
             createTreeNode.setXpath(XmlMapUtil.getXPath(xPath, label, createTreeNode.getNodeType()));
-            if (foxNode.getDataType() != null && "".equals(foxNode.getDataType())) {
+            if (foxNode.getDataType() != null && !"".equals(foxNode.getDataType())) {
+                if (foxNode.getDataType().equals("id_Date")) {
+                    createTreeNode.setPattern("\"dd-MM-yyyy\"");//$NON-NLS-1$
+                }
                 createTreeNode.setType(foxNode.getDataType());
             } else {
                 createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
