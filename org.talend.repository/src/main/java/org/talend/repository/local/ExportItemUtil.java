@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.SystemUtils;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -46,6 +46,8 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.time.TimeMeasure;
+import org.talend.core.CorePlugin;
+import org.talend.core.ILibraryManagerService;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataManager;
@@ -66,7 +68,6 @@ import org.talend.core.model.repository.RepositoryContentManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.utils.ResourceFilenameHelper;
 import org.talend.designer.core.model.utils.emf.component.impl.IMPORTTypeImpl;
-import org.talend.librariesmanager.prefs.PreferencesUtilities;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.IFileExporterFullPath;
@@ -74,6 +75,7 @@ import org.talend.repository.documentation.TarFileExporterFullPath;
 import org.talend.repository.documentation.ZipFileExporterFullPath;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.ResourceModelUtils;
 
 /***/
 public class ExportItemUtil {
@@ -290,6 +292,7 @@ public class ExportItemUtil {
             allItems = sortItemsByProject(allItems, itemProjectMap);
 
             itemProjectMap.clear();
+            Set<String> jarNameList = new HashSet<String>();
 
             Iterator<Item> iterator = allItems.iterator();
             while (iterator.hasNext()) {
@@ -329,8 +332,6 @@ public class ExportItemUtil {
                 }
 
                 if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-                    List jarNameList = new ArrayList();
-
                     if (item instanceof RoutineItem) {
                         List list = ((RoutineItem) item).getImports();
                         for (int i = 0; i < list.size(); i++) {
@@ -338,16 +339,6 @@ public class ExportItemUtil {
                             jarNameList.add(jarName.toString());
                         }
 
-                    }
-                    // String path = CorePlugin.getDefault().getLibrariesService().getJavaLibrariesPath();
-                    String path = PreferencesUtilities.getLibrariesPath(ECodeLanguage.JAVA);
-
-                    for (int j = 0; j < jarNameList.size(); j++) {
-                        String jarName = (String) jarNameList.get(j);
-                        IPath jarPath = new Path(getNeedProjectPath()).append("lib").append(jarName);//$NON-NLS-1$ 
-                        String filePath = new Path(destinationDirectory.toString()).append(jarPath.toString()).toString();
-                        copyJarToDestination(new Path(path).append(jarName).toString(), filePath);
-                        toExport.put(new File(filePath), jarPath);
                     }
                 }
                 progressMonitor.worked(1);
@@ -375,6 +366,18 @@ public class ExportItemUtil {
                 TimeMeasure.step("exportItems", "export item: " + label);
             }
 
+            ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
+
+            // add the routines of the jars at the end, to at them only once in the export.
+            for (String jarName : jarNameList) {
+                IPath jarPath = new Path(getNeedProjectPath()).append("lib");//$NON-NLS-1$ 
+                String filePath = new Path(destinationDirectory.toString()).append(jarPath.toString()).toPortableString();
+                if (repositoryBundleService.contains(jarName)) {
+                    repositoryBundleService.retrieve(jarName, filePath, new NullProgressMonitor());
+                    toExport.put(new File(new Path(filePath).append(jarName).toPortableString()), jarPath.append(jarName));
+                }
+            }
+
             progressMonitor.worked(1);
 
         } catch (Exception e) {
@@ -394,8 +397,17 @@ public class ExportItemUtil {
     private File createTmpDirectory() throws IOException {
         File tmpDirectory = null;
         int suffix = 0;
+        org.talend.core.model.general.Project project = ProjectManager.getInstance().getCurrentProject();
+        IProject physProject;
+        String tmpFolder = System.getProperty("user.dir"); //$NON-NLS-1$
+        try {
+            physProject = ResourceModelUtils.getProject(project);
+            tmpFolder = physProject.getFolder("temp").getLocation().toPortableString(); //$NON-NLS-1$
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
         while (tmpDirectory == null || tmpDirectory.exists()) {
-            tmpDirectory = new File(SystemUtils.getJavaIoTmpDir(), "talendExportItems" + suffix); //$NON-NLS-1$
+            tmpDirectory = new File(tmpFolder + File.separatorChar + "talendExportItems" + suffix); //$NON-NLS-1$
             suffix++;
         }
 
