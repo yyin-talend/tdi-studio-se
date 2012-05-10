@@ -134,13 +134,13 @@
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT NAME="Java_DOM4J1.6" MODULE="dom4j-1.6.1.jar"
-				REQUIRED="true" />
+				REQUIRED_IF="GENERATION_MODE == 'DOM4J'" />
 			<IMPORT NAME="Java_JAXEN1.1" MODULE="jaxen-1.1.1.jar"
-				REQUIRED="true" />
+				REQUIRED_IF="GENERATION_MODE == 'DOM4J'" />
 			<IMPORT NAME="Java_xercesImpl" MODULE="xercesImpl.jar"
-				REQUIRED="true" />
+				REQUIRED_IF="GENERATION_MODE == 'XERCES'" />
 			<IMPORT NAME="Java_talendSAX" MODULE="TalendSAX.jar"
-				REQUIRED="true" />
+				REQUIRED_IF="GENERATION_MODE == 'SAX'" />
 		</IMPORTS>
 	</CODEGENERATION>
 

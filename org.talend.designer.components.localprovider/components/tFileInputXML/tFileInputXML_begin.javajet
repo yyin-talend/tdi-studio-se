@@ -646,6 +646,23 @@ java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = (java.util.List<
 XML_API_<%=cid%> xml_api_<%=cid%> = new XML_API_<%=cid%>();
 String str_<%=cid %> = "";
 org.dom4j.Node node_<%=cid%> = null;
+
+//init all mapping xpaths
+<%
+	for (int i=0;i<mapping.size();i++) {
+		String query = mapping.get(i).get("QUERY");
+%>
+org.dom4j.XPath xTmp<%=i%>_<%=cid%> = org.dom4j.DocumentHelper.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>,<%=loopQuery%>));
+xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
+<%
+		if(("true").equals(ignore_NS_Str)){
+%>
+xTmp<%=i%>_<%=cid%>.setNamespaceContext(namespaceContext_<%=cid%>);
+<%
+		}
+	}
+%>
+
 for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
 <%
 // *** SAX *** //
@@ -831,21 +848,42 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 						}
 %>
-	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>,<%=loopQuery%>));
-    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
+    Object obj<%=i%>_<%=cid%> = xTmp<%=i%>_<%=cid%>.evaluate(temp_<%=cid%>);
+    if(obj<%=i%>_<%=cid%> == null) {
+    	node_<%=cid%> = null;
 <%
-						if(("true").equals(ignore_NS_Str)){
+						if(("true").equals(nodeCheck)){
 %>
-	xTmp<%=i%>_<%=cid%>.setNamespaceContext(namespaceContext_<%=cid%>);
+		str_<%=cid %> = null;
+<%
+							
+						}else{
+%>
+    	str_<%=cid %> = "";
 <%
 						}
 %>
-    Object obj<%=i%>_<%=cid%> = xTmp<%=i%>_<%=cid%>.evaluate(temp_<%=cid%>);
-    if(obj<%=i%>_<%=cid%> instanceof String || obj<%=i%>_<%=cid%> instanceof Number){
+    	
+    } else if(obj<%=i%>_<%=cid%> instanceof org.dom4j.Node) {
+    	node_<%=cid%> = (org.dom4j.Node)obj<%=i%>_<%=cid%>;
+<%
+						if(("true").equals(nodeCheck)){
+%>
+		str_<%=cid %> = node_<%=cid %>.asXML();
+<%
+							
+						}else{
+%>
+    	str_<%=cid %> = org.jaxen.function.StringFunction.evaluate(node_<%=cid %>,org.jaxen.dom4j.DocumentNavigator.getInstance());
+<%
+						}
+%>
+    } else if(obj<%=i%>_<%=cid%> instanceof String || obj<%=i%>_<%=cid%> instanceof Number){
     	node_<%=cid%> = temp_<%=cid%>;
     	str_<%=cid %> = String.valueOf(obj<%=i%>_<%=cid%>);
-    }else{
-    	node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
+    } else if(obj<%=i%>_<%=cid%> instanceof java.util.List){
+    	java.util.List<org.dom4j.Node> nodes_<%=cid%> = (java.util.List<org.dom4j.Node>)obj<%=i%>_<%=cid%>;
+    	node_<%=cid%> = nodes_<%=cid%>.size()>0 ? nodes_<%=cid%>.get(0) : null;
 <%
 						if(("true").equals(nodeCheck)){
 %>
@@ -854,7 +892,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							
 						}else{
 %>
-    	str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>);
+    	str_<%=cid %> = node_<%=cid %>==null?"":org.jaxen.function.StringFunction.evaluate(node_<%=cid %>,org.jaxen.dom4j.DocumentNavigator.getInstance());
 <%
 						}
 %>
