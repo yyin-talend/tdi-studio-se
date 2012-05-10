@@ -20,6 +20,8 @@ public class SetGroupAction extends SelectionAction {
 
     private List<TreeNode> subGroupTraceNames = new ArrayList<TreeNode>();
 
+    private OutputTreeNodeEditPart nodePart;
+
     public SetGroupAction(IWorkbenchPart part) {
         super(part);
         setId(ID);
@@ -32,33 +34,45 @@ public class SetGroupAction extends SelectionAction {
         if (getSelectedObjects().isEmpty()) {
             return false;
         }
-        if (getSelectedObjects().get(0) instanceof OutputTreeNodeEditPart) {
-            OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getSelectedObjects().get(0);
-            OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
+        Object s = getSelectedObjects().get(0);
+        if (s instanceof List && !((List) s).isEmpty()) {
+            List selectedarts = (List) s;
+            Object obj = selectedarts.get(selectedarts.size() - 1);
+            if (obj instanceof OutputTreeNodeEditPart) {
+                nodePart = (OutputTreeNodeEditPart) obj;
+                OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
 
-            if (model.eContainer() instanceof TreeNode && XmlMapUtil.DOCUMENT.equals(((TreeNode) model.eContainer()).getType())) {
-                return false;
-            }
-
-            if (NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType())
-                    || !(model.eContainer() instanceof TreeNode)) { //$NON-NLS-N$
-                return false;
-            }
-            OutputTreeNode findDownLoopNode = findDownLoopNode(model);
-            if (findDownLoopNode == null) {
-                return false;
-            }
-
-            if (isRemove) {
-                if (model.isGroup()) {
-                    return true;
-                } else {
+                if (model.eContainer() instanceof TreeNode
+                        && XmlMapUtil.DOCUMENT.equals(((TreeNode) model.eContainer()).getType())) {
                     return false;
                 }
-            }
 
-        } else {
-            return false;
+                if (NodeType.ATTRIBUT.equals(model.getNodeType()) || NodeType.NAME_SPACE.equals(model.getNodeType())
+                        || !(model.eContainer() instanceof TreeNode)) { //$NON-NLS-N$
+                    return false;
+                }
+                OutputTreeNode findDownLoopNode = findDownLoopNode(model);
+                if (findDownLoopNode == null) {
+                    return false;
+                }
+                if (!model.isGroup()) {
+                    setText("As group element");
+                    isRemove = false;
+                } else {
+                    setText("Remove group element");
+                    isRemove = true;
+                }
+
+                if (isRemove) {
+                    if (model.isGroup()) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            } else {
+                return false;
+            }
         }
 
         return true;
@@ -84,8 +98,7 @@ public class SetGroupAction extends SelectionAction {
     }
 
     private void findGroupNodeTrace(List list, TreeNode loopNode) {
-        if (getSelectedObjects().get(0) instanceof OutputTreeNodeEditPart) {
-            OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getSelectedObjects().get(0);
+        if (nodePart != null) {
             OutputTreeNode selectedNode = (OutputTreeNode) nodePart.getModel();
             OutputTreeNode rootNode = null;
             if (loopNode instanceof OutputTreeNode) {
@@ -109,22 +122,10 @@ public class SetGroupAction extends SelectionAction {
 
     public void update(Object selection) {
         setSelection(new StructuredSelection(selection));
-        if (selection instanceof OutputTreeNodeEditPart) {
-            OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getSelectedObjects().get(0);
-            OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
-            if (!model.isGroup()) {
-                setText("As group element");
-                isRemove = false;
-            } else {
-                setText("Remove group element");
-                isRemove = true;
-            }
-        }
     }
 
     @Override
     public void run() {
-        OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getSelectedObjects().get(0);
         OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
         OutputTreeNode outputDocumentRoot = (OutputTreeNode) XmlMapUtil.getTreeNodeRoot(model);
         if (outputDocumentRoot != null) {

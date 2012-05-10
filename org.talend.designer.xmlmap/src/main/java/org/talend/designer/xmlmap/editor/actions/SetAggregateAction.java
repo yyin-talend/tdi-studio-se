@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.xmlmap.editor.actions;
 
+import java.util.List;
+
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
@@ -29,6 +31,8 @@ public class SetAggregateAction extends SelectionAction {
 
     public static String ID = "xml map set as aggregate action";
 
+    private OutputTreeNodeEditPart nodePart;
+
     public SetAggregateAction(IWorkbenchPart part) {
         super(part);
         setId(ID);
@@ -44,26 +48,36 @@ public class SetAggregateAction extends SelectionAction {
         if (getSelectedObjects().isEmpty()) {
             return false;
         }
-        if (getSelectedObjects().get(0) instanceof OutputTreeNodeEditPart) {
-            OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getSelectedObjects().get(0);
-            OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
-            // root can't be aggregate
-            if (NodeType.NAME_SPACE.equals(model.getNodeType()) || !(model.eContainer() instanceof OutputTreeNode)) {
-                return false;
-            }
-            if (!XmlMapUtil.isExpressionEditable(model)) {
-                return false;
-            }
-
-            AbstractInOutTree abstractTree = XmlMapUtil.getAbstractInOutTree(model);
-            if (abstractTree instanceof OutputXmlTree) {
-                if (((OutputXmlTree) abstractTree).isAllInOne()) {
+        Object s = getSelectedObjects().get(0);
+        if (s instanceof List && !((List) s).isEmpty()) {
+            List selectedarts = (List) s;
+            Object obj = selectedarts.get(selectedarts.size() - 1);
+            if (obj instanceof OutputTreeNodeEditPart) {
+                nodePart = (OutputTreeNodeEditPart) obj;
+                OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
+                // root can't be aggregate
+                if (NodeType.NAME_SPACE.equals(model.getNodeType()) || !(model.eContainer() instanceof OutputTreeNode)) {
                     return false;
                 }
+                if (!XmlMapUtil.isExpressionEditable(model)) {
+                    return false;
+                }
+
+                AbstractInOutTree abstractTree = XmlMapUtil.getAbstractInOutTree(model);
+                if (abstractTree instanceof OutputXmlTree) {
+                    if (((OutputXmlTree) abstractTree).isAllInOne()) {
+                        return false;
+                    }
+                }
+                if (!model.isAggregate()) {
+                    setText("As aggregate element");
+                } else {
+                    setText("Remove aggregate element");
+                }
+            } else {
+                return false;
             }
 
-        } else {
-            return false;
         }
 
         return true;
@@ -71,20 +85,10 @@ public class SetAggregateAction extends SelectionAction {
 
     public void update(Object selection) {
         setSelection(new StructuredSelection(selection));
-        if (selection instanceof OutputTreeNodeEditPart) {
-            OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getSelectedObjects().get(0);
-            OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
-            if (!model.isAggregate()) {
-                setText("As aggregate element");
-            } else {
-                setText("Remove aggregate element");
-            }
-        }
     }
 
     @Override
     public void run() {
-        OutputTreeNodeEditPart nodePart = (OutputTreeNodeEditPart) getSelectedObjects().get(0);
         OutputTreeNode model = (OutputTreeNode) nodePart.getModel();
         model.setAggregate(!model.isAggregate());
     }

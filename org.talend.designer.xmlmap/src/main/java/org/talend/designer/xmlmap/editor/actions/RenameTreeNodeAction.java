@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.xmlmap.editor.actions;
 
+import java.util.List;
+
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.dialogs.IInputValidator;
@@ -100,7 +102,11 @@ public class RenameTreeNodeAction extends SelectionAction {
             return false;
         } else {
             boolean enable = true;
-            for (Object obj : getSelectedObjects()) {
+            // get the last selection to run the action
+            Object s = getSelectedObjects().get(0);
+            if (s instanceof List && !((List) s).isEmpty()) {
+                List selectedarts = (List) s;
+                Object obj = selectedarts.get(selectedarts.size() - 1);
                 if (obj instanceof TreeNodeEditPart) {
                     TreeNodeEditPart nodePart = (TreeNodeEditPart) obj;
                     this.selectedNode = (TreeNode) nodePart.getModel();
@@ -115,6 +121,7 @@ public class RenameTreeNodeAction extends SelectionAction {
                     enable = false;
                 }
             }
+
             return enable;
         }
     }

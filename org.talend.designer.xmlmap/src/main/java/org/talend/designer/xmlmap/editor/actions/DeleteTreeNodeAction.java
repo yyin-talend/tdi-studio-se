@@ -12,6 +12,10 @@
 // ============================================================================
 package org.talend.designer.xmlmap.editor.actions;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
@@ -54,22 +58,31 @@ public class DeleteTreeNodeAction extends SelectionAction {
             return false;
         } else {
             boolean enable = true;
-            for (Object obj : getSelectedObjects()) {
-                if (obj instanceof TreeNodeEditPart) {
-                    TreeNodeEditPart nodePart = (TreeNodeEditPart) obj;
-                    TreeNode treeNode = (TreeNode) nodePart.getModel();
-                    int xPathLength = XmlMapUtil.getXPathLength(treeNode.getXpath());
-                    if (xPathLength <= 2) {
-                        enable = false;
-                    }
-                    // can't delete root
-                    if (treeNode.eContainer() instanceof TreeNode
-                            && XmlMapUtil.DOCUMENT.equals(((TreeNode) treeNode.eContainer()).getType())) {
-                        enable = false;
-                    }
+            Object s = getSelectedObjects().get(0);
+            if (s instanceof List && !((List) s).isEmpty()) {
+                List selectedarts = (List) s;
+                Object lastSelection = selectedarts.get(selectedarts.size() - 1);
+                if (!(lastSelection instanceof TreeNodeEditPart)) {
+                    return false;
+                }
+                for (Object obj : selectedarts) {
+                    if (obj instanceof TreeNodeEditPart) {
+                        TreeNodeEditPart nodePart = (TreeNodeEditPart) obj;
+                        TreeNode treeNode = (TreeNode) nodePart.getModel();
+                        int xPathLength = XmlMapUtil.getXPathLength(treeNode.getXpath());
+                        if (xPathLength <= 2) {
+                            enable = false;
+                        }
+                        // can't delete root
+                        if (treeNode.eContainer() instanceof TreeNode
+                                && XmlMapUtil.DOCUMENT.equals(((TreeNode) treeNode.eContainer()).getType())) {
+                            enable = false;
+                        }
 
-                } else {
-                    enable = false;
+                    }
+                    if (!enable) {
+                        return enable;
+                    }
                 }
             }
             return enable;
@@ -80,27 +93,36 @@ public class DeleteTreeNodeAction extends SelectionAction {
     public void run() {
         try {
             TreeNode docRoot = null;
-            for (Object obj : getSelectedObjects()) {
-                TreeNodeEditPart nodePart = (TreeNodeEditPart) obj;
-                TreeNode treeNode = (TreeNode) nodePart.getModel();
-                if (treeNode.eContainer() instanceof TreeNode) {
-                    TreeNode parent = (TreeNode) treeNode.eContainer();
-                    if (docRoot == null) {
-                        docRoot = XmlMapUtil.getTreeNodeRoot(parent);
-                    }
-                    XmlMapUtil.detachNodeConnections(treeNode, mapperManager.getCopyOfMapData(), true);
-                    // if delete loop , clean group and main
-                    if (treeNode.isLoop()) {
-                        if (treeNode instanceof OutputTreeNode && XmlMapUtil.findUpGroupNode((OutputTreeNode) treeNode) != null) {
-                            XmlMapUtil.cleanSubGroup(docRoot);
+            Object s = getSelectedObjects().get(0);
+            if (s instanceof List && !((List) s).isEmpty()) {
+                List selectedarts = new ArrayList((List) s);
+                Iterator iter = selectedarts.iterator();
+                while (iter.hasNext()) {
+                    Object obj = iter.next();
+                    if (obj instanceof TreeNodeEditPart) {
+                        TreeNodeEditPart nodePart = (TreeNodeEditPart) obj;
+                        TreeNode treeNode = (TreeNode) nodePart.getModel();
+                        if (treeNode.eContainer() instanceof TreeNode) {
+                            TreeNode parent = (TreeNode) treeNode.eContainer();
+                            if (docRoot == null) {
+                                docRoot = XmlMapUtil.getTreeNodeRoot(parent);
+                            }
+                            XmlMapUtil.detachNodeConnections(treeNode, mapperManager.getCopyOfMapData(), true);
+                            // if delete loop , clean group and main
+                            if (treeNode.isLoop()) {
+                                if (treeNode instanceof OutputTreeNode
+                                        && XmlMapUtil.findUpGroupNode((OutputTreeNode) treeNode) != null) {
+                                    XmlMapUtil.cleanSubGroup(docRoot);
+                                }
+                                XmlMapUtil.clearMainNode(docRoot);
+                            }
+
+                            parent.getChildren().remove(treeNode);
+
                         }
-                        XmlMapUtil.clearMainNode(docRoot);
+
                     }
-
-                    parent.getChildren().remove(treeNode);
-
                 }
-
             }
             if (mapperManager != null) {
                 if (input) {
