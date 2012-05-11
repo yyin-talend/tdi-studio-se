@@ -546,8 +546,18 @@ public class CLASS {
 			if(isGroupOrLoopInMain(currNode)) {
 				OutputTreeNode parent = (OutputTreeNode)currNode.eContainer();
 				OutputTreeNode tmpNode = parent;
-				while(tmpNode!=null && isGroupOrLoopInMain(tmpNode)){
-    				currPos++;
+				while(tmpNode!=null){
+					boolean isGroupOrLoopInMain = isGroupOrLoopInMain(tmpNode);
+					boolean isVirtualNode = isVirtualNode(tmpNode);
+					
+					if(!isGroupOrLoopInMain && !isVirtualNode) {
+						break;
+					}
+					
+					if(isGroupOrLoopInMain && !isVirtualNode) {
+    					currPos++;
+    				}
+    				
     				tmpNode = (OutputTreeNode)tmpNode.eContainer();
     			}
 			}
@@ -558,6 +568,10 @@ public class CLASS {
 			return currNode.isMain() && (currNode.isGroup() || currNode.isLoop());
 		}
 		
+		private static boolean isVirtualNode(OutputTreeNode currNode) {
+			return currNode.isSubstitution() || currNode.isChoice();
+		}
+		
 		private void countGroupNode(OutputTreeNode node) {
 			EList<TreeNode> children = node.getChildren();
 			
@@ -566,7 +580,7 @@ public class CLASS {
 				
 			} else {
 				//branch maybe Group
-				if(node.isGroup()) {
+				if(node.isGroup() && !isVirtualNode(node)) {
 					groupCount++;
 				}
 				
