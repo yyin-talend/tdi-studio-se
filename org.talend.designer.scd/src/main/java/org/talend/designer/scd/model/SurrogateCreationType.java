@@ -61,6 +61,29 @@ public enum SurrogateCreationType {
         this.value = value;
     }
 
+    /**
+     * Gets the type by the given name. Created by Marvin Wang on May 11, 2012.
+     * 
+     * @param name
+     * @return
+     */
+    public static SurrogateCreationType getTypeByName(String name) {
+        SurrogateCreationType[] types = SurrogateCreationType.values();
+        for (SurrogateCreationType type : types) {
+            if (type.getName().equals(name))
+                return type;
+        }
+        return null;
+    }
+
+    /**
+     * Invokers must insure the given value <code>i</code> can map to the index of <code>SurrogateCreationType</code>.
+     * If can not, please refer to the method {@link SurrogateCreationType#getTypeByName(String)}. Created by Marvin
+     * Wang on May 11, 2012.
+     * 
+     * @param i
+     * @return
+     */
     public static SurrogateCreationType getTypeByIndex(int i) {
         if (indexTypeMap == null) {
             indexTypeMap = new HashMap<Integer, SurrogateCreationType>();
