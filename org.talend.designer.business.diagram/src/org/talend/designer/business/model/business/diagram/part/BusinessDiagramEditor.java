@@ -63,7 +63,6 @@ import org.talend.designer.business.model.business.diagram.providers.BusinessDia
 import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.repository.editor.RepositoryEditorInput;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 
@@ -92,6 +91,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     /**
      * @generated
      */
+    @Override
     protected String getEditingDomainID() {
         return "org.talend.designer.business.diagram.EditingDomain"; //$NON-NLS-1$
     }
@@ -99,6 +99,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     /**
      * @generated
      */
+    @Override
     protected TransactionalEditingDomain createEditingDomain() {
         TransactionalEditingDomain domain = super.createEditingDomain();
         domain.setID(getEditingDomainID());
@@ -108,6 +109,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     /**
      * @generated
      */
+    @Override
     protected void setDocumentProvider(IEditorInput input) {
         if (input.getAdapter(IFile.class) != null) {
             setDocumentProvider(new BusinessDocumentProvider());
@@ -119,6 +121,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     /**
      * @generated
      */
+    @Override
     protected void configureGraphicalViewer() {
         super.configureGraphicalViewer();
 
@@ -144,10 +147,12 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     /**
      * @generated
      */
+    @Override
     protected PreferencesHint getPreferencesHint() {
         return BusinessDiagramEditorPlugin.DIAGRAM_PREFERENCES_HINT;
     }
 
+    @Override
     protected void initializeGraphicalViewer() {
         super.initializeGraphicalViewer();
         getDiagramGraphicalViewer().addDropTargetListener(new BusinessDiagramDropTargetListener(getDiagramGraphicalViewer()));
@@ -155,6 +160,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
 
     RepositoryEditorInput repositoryEditorInput;
 
+    @Override
     public void setInput(IEditorInput input) {
         super.setInput(input);
         Object obj = input.getAdapter(RepositoryEditorInput.class);
@@ -163,6 +169,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         }
     }
 
+    @Override
     public void doSave(IProgressMonitor progressMonitor) {
         super.doSave(progressMonitor);
         if (repositoryEditorInput != null) {
@@ -230,6 +237,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     // }
     // }
 
+    @Override
     public boolean isEditable() {
         if (repositoryEditorInput != null) {
             if (repositoryEditorInput.isReadOnly()) {
@@ -255,6 +263,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         return propertyIsDirty || super.isDirty();
     }
 
+    @Override
     public void dispose() {
         getSite().setSelectionProvider(null);
         getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(this);
@@ -281,15 +290,16 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             repositoryEditorInput.setRepositoryNode(null); // retrieve the node.
             repositoryNode = repositoryEditorInput.getRepositoryNode();
         }
-        if (repositoryNode != null) {
-            if (repFactory.getStatus(repositoryEditorInput.getItem()) == ERepositoryStatus.DELETED) {
-                RepositoryManager.refreshDeletedNode(null);
-            } else {
-                RepositoryManager.refreshSavedNode(repositoryNode);
-            }
-        }
+        // if (repositoryNode != null) {
+        // if (repFactory.getStatus(repositoryEditorInput.getItem()) == ERepositoryStatus.DELETED) {
+        // RepositoryManager.refreshDeletedNode(null);
+        // } else {
+        // RepositoryManager.refreshSavedNode(repositoryNode);
+        // }
+        // }
     }
 
+    @Override
     public void init(final IEditorSite site, final IEditorInput editorInput) throws PartInitException {
         super.init(site, editorInput);
         if (editorInput instanceof RepositoryEditorInput) {
@@ -302,6 +312,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
 
     private AdapterImpl dirtyListener = new AdapterImpl() {
 
+        @Override
         public void notifyChanged(Notification notification) {
             if (notification.getEventType() != Notification.REMOVING_ADAPTER
                     && notification.getEventType() != Notification.RESOLVE) {
@@ -457,11 +468,12 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
 
     @Override
     public void setFocus() {
-        ISelection selection = getSelection();
+        getSelection();
 
         super.setFocus();
     }
 
+    @Override
     public boolean isLastVersion(Item item) {
         if (lastVersion != null) {
             return lastVersion;
@@ -504,6 +516,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
      * 
      * @see org.talend.core.ui.ILastVersionChecker#setLastVersion(java.lang.Boolean)
      */
+    @Override
     public void setLastVersion(Boolean lastVersion) {
         this.lastVersion = lastVersion;
     }

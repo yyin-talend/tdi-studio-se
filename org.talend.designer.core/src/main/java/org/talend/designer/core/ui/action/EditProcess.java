@@ -59,8 +59,6 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
 
     private static final String OPEN_LABEL = Messages.getString("EditProcess.openJob"); //$NON-NLS-1$
 
-    private static final String DBPROJECT_LABEL = "teneo";
-
     private Properties params;
 
     public EditProcess() {
@@ -76,6 +74,7 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
+    @Override
     protected void doRun() {
         ISelection selection = getSelectedObject();
         if (selection == null) {
@@ -86,7 +85,7 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
             return;
         }
         RepositoryNode node = (RepositoryNode) obj;
-        Property property = (Property) node.getObject().getProperty();
+        Property property = node.getObject().getProperty();
         ProcessItem processItem = null;
 
         if (property != null) {
@@ -131,18 +130,19 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
                 if (editorPart instanceof AbstractMultiPageTalendEditor) {
                     ((AbstractMultiPageTalendEditor) editorPart).updateTitleImage();
                 }
-                refresh(obj);
+                // refresh(obj);
             } catch (PartInitException e) {
                 MessageBoxExceptionHandler.process(e);
             } catch (PersistenceException e) {
                 MessageBoxExceptionHandler.process(e);
             }
-        } else {
-            IRepositoryView viewPart = getViewPart();
-            if (viewPart != null) {
-                viewPart.refresh(ERepositoryObjectType.PROCESS);
-            }
         }
+        // else {
+        // IRepositoryView viewPart = getViewPart();
+        // if (viewPart != null) {
+        // viewPart.refresh(ERepositoryObjectType.PROCESS);
+        // }
+        // }
     }
 
     /*
@@ -151,6 +151,7 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
      * @see org.talend.repository.ui.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
@@ -237,6 +238,7 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
      * 
      * @see org.eclipse.ui.intro.config.IIntroAction#run(org.eclipse.ui.intro.IIntroSite, java.util.Properties)
      */
+    @Override
     public void run(IIntroSite site, Properties params) {
         this.params = params;
         PlatformUI.getWorkbench().getIntroManager().closeIntro(PlatformUI.getWorkbench().getIntroManager().getIntro());

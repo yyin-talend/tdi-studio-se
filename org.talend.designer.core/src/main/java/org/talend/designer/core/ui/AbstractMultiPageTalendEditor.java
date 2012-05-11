@@ -117,7 +117,6 @@ import org.talend.core.ui.branding.IBrandingConfiguration;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.utils.AccessingEmfJob;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IMultiPageTalendEditor;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.i18n.Messages;
@@ -188,11 +187,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     protected IRepositoryWorkUnitListener repositoryWorkListener = new IRepositoryWorkUnitListener() {
 
+        @Override
         public void workUnitFinished() {
             revisionChanged = true;
             if (display != null) {
                 display.asyncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         setName();
                     }
@@ -229,10 +230,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     private IPartListener partListener = new IPartListener() {
 
+        @Override
         public void partOpened(IWorkbenchPart part) {
 
         }
 
+        @Override
         public void partClosed(IWorkbenchPart part) {
             if (part == AbstractMultiPageTalendEditor.this) {
                 restorePropertyInformation();
@@ -262,12 +265,15 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             }
         }
 
+        @Override
         public void partActivated(IWorkbenchPart part) {
         }
 
+        @Override
         public void partBroughtToTop(IWorkbenchPart part) {
         }
 
+        @Override
         public void partDeactivated(IWorkbenchPart part) {
         }
 
@@ -364,20 +370,21 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             setReadOnly(true);
             revisionChanged = true;
         }
-        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
-                    ICamelDesignerCoreService.class);
-            boolean isCamel = camelService.isInstanceofCamelRoutes(processEditorInput.getItem());
-            ERepositoryObjectType repositoryNodeType = camelService.getRoutes();
-            if (isCamel) {
-                RepositoryManager.refresh(repositoryNodeType);
-            }
-        }
-        if (processEditorInput.getItem() instanceof ProcessItem) {
-            RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
-        } else {
-            RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
-        }
+        // if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+        // ICamelDesignerCoreService camelService = (ICamelDesignerCoreService)
+        // GlobalServiceRegister.getDefault().getService(
+        // ICamelDesignerCoreService.class);
+        // boolean isCamel = camelService.isInstanceofCamelRoutes(processEditorInput.getItem());
+        // ERepositoryObjectType repositoryNodeType = camelService.getRoutes();
+        // if (isCamel) {
+        // RepositoryManager.refresh(repositoryNodeType);
+        // }
+        // }
+        // if (processEditorInput.getItem() instanceof ProcessItem) {
+        // RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
+        // } else {
+        // RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
+        // }
         getSite().getWorkbenchWindow().getPartService().addPartListener(partListener);
 
     }
@@ -387,6 +394,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      * 
      * @see org.talend.repository.editor.INameRefresher#refreshName()
      */
+    @Override
     public void refreshName() {
         try {
             JobResourceManager jobResourceManager = JobResourceManager.getInstance();
@@ -754,8 +762,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 file.delete(true, null);
                 file.create(byteArrayInputStream, true, null);
                 file.setContents(byteArrayInputStream, 0, null);
-            } else
+            } else {
                 file.create(byteArrayInputStream, true, null);
+            }
 
             // the way to get the xtextEditor programmly
             IEditorInput editorInput = new FileEditorInput(file);
@@ -893,8 +902,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
             }
         }
-        if (designerEditor != null && dirtyListener != null)
+        if (designerEditor != null && dirtyListener != null) {
             designerEditor.getProcess().getProperty().eAdapters().add(dirtyListener);
+        }
     }
 
     protected void updateRunJobContext() {
@@ -920,10 +930,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(shell);
             IRunnableWithProgress runnable = new IRunnableWithProgress() {
 
+                @Override
                 public void run(final IProgressMonitor monitor) {
                     monitor.beginTask(Messages.getString("AbstractMultiPageTalendEditor_pleaseWait"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     Display.getDefault().syncExec(new Runnable() {
 
+                        @Override
                         public void run() {
                             IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
                             factory.executeRepositoryWorkUnit(new RepositoryWorkUnit<Object>("..", this) { //$NON-NLS-1$
@@ -1182,17 +1194,19 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      * Closes all project files on project close.
      */
 
+    @Override
     public void resourceChanged(final IResourceChangeEvent event) {
         if (event.getType() == IResourceChangeEvent.PRE_CLOSE) {
             Display.getDefault().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
-                    for (int i = 0; i < pages.length; i++) {
+                    for (IWorkbenchPage page : pages) {
                         if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject()
                                 .equals(event.getResource())) {
-                            IEditorPart editorPart = pages[i].findEditor(designerEditor.getEditorInput());
-                            pages[i].closeEditor(editorPart, true);
+                            IEditorPart editorPart = page.findEditor(designerEditor.getEditorInput());
+                            page.closeEditor(editorPart, true);
                         }
                     }
                 }
@@ -1217,6 +1231,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     /**
      * Will allow to propagate the Delete evenement in the designer.
      */
+    @Override
     public void selectionChanged(final IWorkbenchPart part, final ISelection selection) {
         if (this.equals(getSite().getPage().getActiveEditor())) {
             if (selection instanceof StructuredSelection) {
@@ -1264,6 +1279,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      * 
      * @return the process
      */
+    @Override
     public IProcess2 getProcess() {
         if (designerEditor == null) {
             return null;
@@ -1353,6 +1369,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         return (TalendJavaEditor) this.codeEditor;
     }
 
+    @Override
     public AbstractTalendEditor getTalendEditor() {
         return designerEditor;
     }
@@ -1410,16 +1427,16 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             ExceptionHandler.process(e);
         }
 
-        if (AbstractProcessProvider.isExtensionProcessForJoblet(getProcess())) {
-            RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
-        } else {
-            RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
-                ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
-                        .getService(ICamelDesignerCoreService.class);
-                RepositoryManager.refresh(camelService.getRoutes());
-            }
-        }
+        // if (AbstractProcessProvider.isExtensionProcessForJoblet(getProcess())) {
+        // RepositoryManager.refresh(ERepositoryObjectType.JOBLET);
+        // } else {
+        // RepositoryManager.refresh(ERepositoryObjectType.PROCESS);
+        // if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
+        // ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
+        // .getService(ICamelDesignerCoreService.class);
+        // RepositoryManager.refresh(camelService.getRoutes());
+        // }
+        // }
         processEditorInput.dispose();
         processEditorInput = null;
         designerEditor = null;
@@ -1436,6 +1453,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      * 
      * @see org.eclipse.ui.part.MultiPageEditorPart#initializePageSwitching()
      */
+    @Override
     protected void initializePageSwitching() {
 
     }
@@ -1444,29 +1462,35 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     class JobletCodeEditInput extends PlatformObject implements IEditorInput {
 
+        @Override
         public Object getAdapter(Class adapter) {
             // TODO Auto-generated method stub
             return null;
         }
 
+        @Override
         public boolean exists() {
             return true;
         }
 
+        @Override
         public ImageDescriptor getImageDescriptor() {
             // TODO Auto-generated method stub
             return null;
         }
 
+        @Override
         public String getName() {
             return "";
         }
 
+        @Override
         public IPersistableElement getPersistable() {
             // TODO Auto-generated method stub
             return null;
         }
 
+        @Override
         public String getToolTipText() {
             // TODO Auto-generated method stub
             return null;

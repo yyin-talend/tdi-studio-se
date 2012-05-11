@@ -19,9 +19,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.common.util.EList;
@@ -51,7 +48,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.ui.progress.WorkbenchJob;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -80,7 +76,6 @@ import org.talend.designer.core.ui.action.SaveAsSQLPatternAction;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.editor.RepositoryEditorInput;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
@@ -145,10 +140,6 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         }
 
         try {
-            IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
-            if (view != null) {
-                view.refresh(rEditorInput.getRepositoryNode());
-            }
             // see bug 1321
             item = (FileItem) rEditorInput.getItem();
             if (!rEditorInput.isReadOnly()) {
@@ -252,16 +243,17 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         } catch (LoginException e) {
             ExceptionHandler.process(e);
         }
-        RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
-        if (repositoryNode != null) {
-            if (repFactory.getStatus(item) == ERepositoryStatus.DELETED) {
-                RepositoryManager.refreshDeletedNode(null);
-            } else {
-                RepositoryManager.refresh(repositoryNode.getObjectType());
-            }
-        }
-        if (!isEditable)
+        // RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
+        // if (repositoryNode != null) {
+        // if (repFactory.getStatus(item) == ERepositoryStatus.DELETED) {
+        // RepositoryManager.refreshDeletedNode(null);
+        // } else {
+        // RepositoryManager.refresh(repositoryNode.getObjectType());
+        // }
+        // }
+        if (!isEditable) {
             rEditorInput.getFile().setReadOnly(false);
+        }
         // force clean jobsettings
         IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         if (activeWorkbenchWindow != null) {
@@ -359,53 +351,6 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
     }
 
-    private void startRefreshJob(final IProxyRepositoryFactory repFactory) {
-        Job refreshJob = new WorkbenchJob("") {//$NON-NLS-1$
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.ui.progress.UIJob#runInUIThread(org.eclipse.core.runtime.IProgressMonitor)
-             */
-            @Override
-            public IStatus runInUIThread(IProgressMonitor monitor) {
-                try {
-                    CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject()
-                            .build(IncrementalProjectBuilder.AUTO_BUILD, null);
-                } catch (CoreException e1) {
-                    ExceptionHandler.process(e1);
-                }
-                // check syntax error
-                addProblems();
-
-                try {
-                    // cause it to update MaxInformationLevel
-                    repFactory.save(item.getProperty());
-                } catch (Exception e) {
-
-                }
-
-                // add dirtyListener
-                propertyIsDirty = false;
-                EList adapters = item.getProperty().eAdapters();
-                // if (!(item instanceof RoutineItem)) {
-                adapters.add(dirtyListener);
-                firePropertyChange(IEditorPart.PROP_DIRTY);
-                // }
-
-                // update image in repository
-                RepositoryManager.refreshSavedNode(rEditorInput.getRepositoryNode());
-                // update editor image
-                setTitleImage(getTitleImage());
-                return Status.OK_STATUS;
-            }
-        };
-        refreshJob.setSystem(true);
-
-        refreshJob.schedule(300);
-
-    }
-
     /**
      * add routine compilation errors into problems view.
      */
@@ -428,6 +373,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
                 propertyIsDirty = true;
                 Display.getDefault().syncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         firePropertyChange(IEditorPart.PROP_DIRTY);
                     }
@@ -461,6 +407,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
      * 
      * @see org.talend.core.ui.IUIRefresher#refreshName()
      */
+    @Override
     public void refreshName() {
 
         ICompilationUnit unit = (ICompilationUnit) this.getInputJavaElement();
@@ -479,9 +426,11 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
                 IRunnableWithProgress r = new IRunnableWithProgress() {
 
+                    @Override
                     public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         Display.getDefault().asyncExec(new Runnable() {
 
+                            @Override
                             public void run() {
                                 try {
                                     operation.run(monitor);
@@ -499,8 +448,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
                 if (conditionStatus != null && conditionStatus.hasError()) {
                     String errorMessage = "Rename " + unit.getElementName() + " to " + newName + " has errors!"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     RefactoringStatusEntry[] entries = conditionStatus.getEntries();
-                    for (int i = 0; i < entries.length; i++) {
-                        RefactoringStatusEntry entry = entries[i];
+                    for (RefactoringStatusEntry entry : entries) {
                         errorMessage += "\n>>>" + entry.getMessage(); //$NON-NLS-1$
                     }
                     MessageDialog.openError(this.getSite().getShell(), "Warning", errorMessage); //$NON-NLS-1$
@@ -517,6 +465,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
     }
 
     // reference:Process.isLastVersion(Item item)
+    @Override
     public boolean isLastVersion(Item item) {
         if (item.getProperty() != null) {
             try {
@@ -544,6 +493,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         return false;
     }
 
+    @Override
     public boolean isEditorInputModifiable() {
         return isEditable();
     }
@@ -553,10 +503,12 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
      * 
      * @see org.talend.core.ui.ILastVersionChecker#setLastVersion(java.lang.Boolean)
      */
+    @Override
     public void setLastVersion(Boolean lastVersion) {
         // not used yet
     }
 
+    @Override
     protected void createActions() {
         super.createActions();
         getAction(IJavaEditorActionDefinitionIds.SHOW_IN_BREADCRUMB).setEnabled(false);
