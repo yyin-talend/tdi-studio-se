@@ -397,11 +397,17 @@ class GenerateMethodUtil {
 			List<TreeNode> list = new ArrayList<TreeNode>();
 			for (TreeNode attri : group.getChildren()) {
 				if(NodeType.ATTRIBUT.equals(attri.getNodeType())) {
-					list.add(attri);
+					String expression = attri.getExpression();
+					if(expression!=null && !"".equals(expression)) {
+						list.add(attri);
+					}
 				}
 			}
 			if (NodeType.ELEMENT.equals(group.getNodeType()) && group.getChildren().size()==0) {
-				list.add(group);
+				String expression = group.getExpression();
+				if(expression!=null && !"".equals(expression)) {
+					list.add(group);
+				}
 			} else {
 				if(NodeType.ELEMENT.equals(group.getNodeType()))
 				for (TreeNode element : group.getChildren()) {
