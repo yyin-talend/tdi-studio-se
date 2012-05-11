@@ -198,7 +198,7 @@ public class SurrogateSection extends ScdSection {
 
             public void run() {
                 int index = creationCombo.getSelectionIndex();
-                SurrogateCreationType type = SurrogateCreationType.getTypeByIndex(index);
+                SurrogateCreationType type = SurrogateCreationType.getTypeByIndex(index + 1);
                 key.setCreation(type);
                 if (type == SurrogateCreationType.ROUTINE) {
                     stack.topControl = routineFieldComp; // routineText;

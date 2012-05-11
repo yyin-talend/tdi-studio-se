@@ -706,7 +706,9 @@ public class ScdManager {
     public String[] getSurrogateCreationTypeNames() {
         List<String> allTypeNames = new ArrayList<String>();
         for (String type : SurrogateCreationType.getAllTypeNames()) {
-            allTypeNames.add(type);
+            // Add one line below to filter the type AUTO_INCREMENT. Done by Marvin Wang on May 11, 2012.
+            if (!SurrogateCreationType.AUTO_INCREMENT.getName().equals(type))
+                allTypeNames.add(type);
         }
         if (!enableOracle()) {
             allTypeNames.remove(SurrogateCreationType.DB_SEQUENCE.getName());
