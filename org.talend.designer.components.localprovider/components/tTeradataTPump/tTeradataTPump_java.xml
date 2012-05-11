@@ -57,7 +57,6 @@
       NAME="HOST"
       FIELD="TEXT"
       NUM_ROW="3"
-      REPOSITORY_VALUE="SERVER_NAME"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
