@@ -142,7 +142,9 @@ final class TalendDndHelper {
                 boolean flag = filterComponent(component, name, type);
 
                 if (((componentProductname != null && productNameWanted.endsWith(componentProductname)) && value) || flag) {
-                    if (isOracleAmazonStringContained(new Node(component), name.getDBType(), emfComponent.getName())) {
+                    // TDI-21082:in case the component has no dbType,such as copybook,should judge its NPE
+                    if (name.getDBType() != null
+                            && isOracleAmazonStringContained(new Node(component), name.getDBType(), emfComponent.getName())) {
 
                         continue;
 
