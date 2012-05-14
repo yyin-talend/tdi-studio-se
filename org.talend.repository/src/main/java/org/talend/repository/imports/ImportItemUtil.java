@@ -125,19 +125,19 @@ public class ImportItemUtil {
 
     private static Logger log = Logger.getLogger(ImportItemUtil.class);
 
-    private XmiResourceManager xmiResourceManager = new XmiResourceManager();
+    private final XmiResourceManager xmiResourceManager = new XmiResourceManager();
 
     private boolean hasErrors = false;
 
     private static RepositoryObjectCache cache = new RepositoryObjectCache();
 
-    private TreeBuilder treeBuilder = new TreeBuilder();
+    private final TreeBuilder treeBuilder = new TreeBuilder();
 
-    private Set<String> deletedItems = new HashSet<String>();
+    private final Set<String> deletedItems = new HashSet<String>();
 
-    private Map<IPath, Project> projects = new HashMap<IPath, Project>();
+    private final Map<IPath, Project> projects = new HashMap<IPath, Project>();
 
-    private Map<String, Set<String>> routineExtModulesMap = new HashMap<String, Set<String>>();
+    private final Map<String, Set<String>> routineExtModulesMap = new HashMap<String, Set<String>>();
 
     private boolean statAndLogsSettingsReloaded = false;
 
@@ -395,6 +395,7 @@ public class ImportItemUtil {
                 final IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
                 // bug 10520
                 final Set<String> overwriteDeletedItems = new HashSet<String>();
+                final Set<String> idDeletedBeforeImport = new HashSet<String>();
 
                 Map<String, String> nameToIdMap = new HashMap<String, String>();
 
@@ -424,8 +425,8 @@ public class ImportItemUtil {
                 for (ItemRecord itemRecord : itemRecords) {
                     if (!monitor.isCanceled()) {
                         if (itemRecord.isValid()) {
-                            importItemRecord(manager, itemRecord, overwrite, destinationPath, overwriteDeletedItems, contentType,
-                                    monitor);
+                            importItemRecord(manager, itemRecord, overwrite, destinationPath, overwriteDeletedItems,
+                                    idDeletedBeforeImport, contentType, monitor);
 
                             monitor.worked(1);
                         }
@@ -504,7 +505,7 @@ public class ImportItemUtil {
     }
 
     private void checkDeletedFolders() {
-        List<FolderItem> foldersList = (List<FolderItem>) ProjectManager.getInstance().getFolders(
+        List<FolderItem> foldersList = ProjectManager.getInstance().getFolders(
                 ProjectManager.getInstance().getCurrentProject().getEmfProject());
         for (FolderItem folderItem : foldersList) {
             setPathToDeleteIfNeed(folderItem);
@@ -558,7 +559,8 @@ public class ImportItemUtil {
     }
 
     private void importItemRecord(ResourcesManager manager, ItemRecord itemRecord, boolean overwrite, IPath destinationPath,
-            final Set<String> overwriteDeletedItems, String contentType, final IProgressMonitor monitor) {
+            final Set<String> overwriteDeletedItems, final Set<String> idDeletedBeforeImport, String contentType,
+            final IProgressMonitor monitor) {
         monitor.subTask(Messages.getString("ImportItemWizardPage.Importing") + itemRecord.getItemName()); //$NON-NLS-1$
         resolveItem(manager, itemRecord);
 
@@ -622,11 +624,14 @@ public class ImportItemUtil {
                     /* only delete when name exsit rather than id exist */
                     if (itemRecord.getState().equals(ItemRecord.State.NAME_EXISTED)
                             || itemRecord.getState().equals(ItemRecord.State.NAME_AND_ID_EXISTED)) {
-                        // TDI-19535 (check if exists, delete all items with same id)
-                        List<IRepositoryViewObject> allVersionToDelete = repFactory.getAllVersion(ProjectManager.getInstance()
-                                .getCurrentProject(), lastVersion.getId(), false);
-                        for (IRepositoryViewObject currentVersion : allVersionToDelete) {
-                            repFactory.forceDeleteObjectPhysical(lastVersion, currentVersion.getVersion());
+                        if (!idDeletedBeforeImport.contains(id)) {
+                            // TDI-19535 (check if exists, delete all items with same id)
+                            List<IRepositoryViewObject> allVersionToDelete = repFactory.getAllVersion(ProjectManager
+                                    .getInstance().getCurrentProject(), lastVersion.getId(), false);
+                            for (IRepositoryViewObject currentVersion : allVersionToDelete) {
+                                repFactory.forceDeleteObjectPhysical(lastVersion, currentVersion.getVersion());
+                            }
+                            idDeletedBeforeImport.add(id);
                         }
                     }
                     lastVersion = null;
@@ -1446,15 +1451,15 @@ public class ImportItemUtil {
 
         static ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
-        private Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
+        private final Set<ERepositoryObjectType> types = new HashSet<ERepositoryObjectType>();
 
-        private Map<String, Boolean> lockState = new HashMap<String, Boolean>();
+        private final Map<String, Boolean> lockState = new HashMap<String, Boolean>();
 
         // key is id of IRepositoryObject, value is a list of IRepositoryObject
         // with same id
-        private Map<String, List<IRepositoryViewObject>> cache = new HashMap<String, List<IRepositoryViewObject>>();
+        private final Map<String, List<IRepositoryViewObject>> cache = new HashMap<String, List<IRepositoryViewObject>>();
 
-        private Map<ERepositoryObjectType, List<IRepositoryViewObject>> itemsFromRepository = new HashMap<ERepositoryObjectType, List<IRepositoryViewObject>>();
+        private final Map<ERepositoryObjectType, List<IRepositoryViewObject>> itemsFromRepository = new HashMap<ERepositoryObjectType, List<IRepositoryViewObject>>();
 
         public List<IRepositoryViewObject> findObjectsByItem(ItemRecord itemRecord) throws PersistenceException {
             Item item = itemRecord.getItem();
