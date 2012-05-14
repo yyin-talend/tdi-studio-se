@@ -27,6 +27,13 @@
             isEditAction="true"
             level="10"
             name="Update documentation"/>
+       <Action
+             class="org.talend.repository.ui.actions.GenerateDocAsHTMLAction"
+             id="org.talend.repository.ui.actions.GenerateDocAsHTMLAction"
+             isEditAction="true"
+             isReadAction="true"
+             name="Generate Doc As HTML">
+       </Action>
          
    </extension>
 
