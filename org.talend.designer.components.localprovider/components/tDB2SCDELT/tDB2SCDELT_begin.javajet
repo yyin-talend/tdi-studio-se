@@ -217,6 +217,7 @@ if(columnList != null && columnList.size() > 0) {
         for(IMetadataColumn column : columnList) {
         	if(endDateField!=null && endDateField.equals(column.getLabel())){
         		endDateFieldType=column.getType();
+        		break;
         	}
         }
         %>
