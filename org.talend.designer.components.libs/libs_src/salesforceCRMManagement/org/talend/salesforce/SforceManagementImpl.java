@@ -98,23 +98,53 @@ public class SforceManagementImpl implements SforceManagement {
     }
 
     private void setHttpProxy(Options options) {
-        String host = System.getProperty("http.proxyHost");
-        String port = System.getProperty("http.proxyPort");
-        String user = System.getProperty("http.proxyUser");
-        String pwd = System.getProperty("http.proxyPassword");
-
-        if (host != null) {
+        String httpsHost = System.getProperty("https.proxyHost");
+        String httpsPort = System.getProperty("https.proxyPort");
+        String httpsUser = System.getProperty("https.proxyUser");
+        String httpsPwd = System.getProperty("https.proxyPassword");
+        if (httpsHost != null) {
             ProxyProperties proxyProperties = new ProxyProperties();
-            proxyProperties.setProxyName(host);
-            if (port != null)
-                proxyProperties.setProxyPort(Integer.parseInt(port));
-            if (user != null && !"".equals(user))
-                proxyProperties.setUserName(user);
-            if (pwd != null && !"".equals(pwd))
-                proxyProperties.setPassWord(pwd);
+            proxyProperties.setProxyName(httpsHost);
+            if (httpsPort != null)
+                proxyProperties.setProxyPort(Integer.parseInt(httpsPort));
+            if (httpsUser != null && !"".equals(httpsUser))
+                proxyProperties.setUserName(httpsUser);
+            if (httpsPwd != null && !"".equals(httpsPwd))
+                proxyProperties.setPassWord(httpsPwd);
             options.setProperty(HTTPConstants.PROXY, proxyProperties);
+        } else {
+            String host = System.getProperty("http.proxyHost");
+            String port = System.getProperty("http.proxyPort");
+            String user = System.getProperty("http.proxyUser");
+            String pwd = System.getProperty("http.proxyPassword");
+            if (host != null) {
+                ProxyProperties proxyProperties = new ProxyProperties();
+                proxyProperties.setProxyName(host);
+                if (port != null)
+                    proxyProperties.setProxyPort(Integer.parseInt(port));
+                if (user != null && !"".equals(user))
+                    proxyProperties.setUserName(user);
+                if (pwd != null && !"".equals(pwd))
+                    proxyProperties.setPassWord(pwd);
+                options.setProperty(HTTPConstants.PROXY, proxyProperties);
+            } else {
+                String socksHost = System.getProperty("socksProxyHost");
+                String socksPort = System.getProperty("socksProxyPort");
+                String socksUser = System.getProperty("java.net.socks.username");
+                String socksPwd = System.getProperty("java.net.socks.password");
+                if (socksHost != null) {
+                    ProxyProperties proxyProperties = new ProxyProperties();
+                    proxyProperties.setProxyName(socksHost);
+                    if (socksPort != null)
+                        proxyProperties.setProxyPort(Integer.parseInt(socksPort));
+                    if (socksUser != null && !"".equals(socksUser))
+                        proxyProperties.setUserName(socksUser);
+                    if (socksPwd != null && !"".equals(socksPwd))
+                        proxyProperties.setPassWord(socksPwd);
+                    options.setProperty(HTTPConstants.PROXY, proxyProperties);
+                }
+            }
         }
-
         // options.setProperty(org.apache.axis2.transport.http.HTTPConstants.HTTP_PROTOCOL_VERSION,
         // HTTPConstants.HEADER_PROTOCOL_10);
     }
