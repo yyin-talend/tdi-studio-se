@@ -15,6 +15,10 @@ package org.talend.designer.runprocess.shadow;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.repository.model.ComponentsFactoryProvider;
+
 /**
  * DOC cantoine class global comment. Detailled comment <br/>
  * 
@@ -42,10 +46,14 @@ public class FileInputXmlNode extends FileInputNode {
         Object[] paramValues = new Object[] { filename, loopQuery, mapping, limitLoop, encoding, "Dom4j" }; //$NON-NLS-1$
         // Object[] paramValues = new Object[] { filename, loopQuery, mapping, limitLoop, encoding, "Xerces" }; //$NON-NLS-1$
 
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tFileInputXML");
+        this.setElementParameters(component.createElementParameters(this));
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {
-                ObjectElementParameter param = new ObjectElementParameter(paramNames[i], paramValues[i]);
-                addParameter(param);
+                IElementParameter param = this.getElementParameter(paramNames[i]);
+                if (param != null) {
+                    param.setValue(paramValues[i]);
+                }
             }
         }
     }
