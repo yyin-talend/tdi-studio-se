@@ -105,7 +105,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
  */
 class ImportItemWizardPage extends WizardPage {
 
-    private ImportItemUtil repositoryUtil = new ImportItemUtil();
+    private final ImportItemUtil repositoryUtil = new ImportItemUtil();
 
     private Button itemFromDirectoryRadio;
 
@@ -145,7 +145,7 @@ class ImportItemWizardPage extends WizardPage {
 
     private TableViewer errorsList;
 
-    private List<String> errors = new ArrayList<String>();
+    private final List<String> errors = new ArrayList<String>();
 
     private ResourcesManager manager;
 
@@ -164,6 +164,8 @@ class ImportItemWizardPage extends WizardPage {
     private ZipFile sourceFile;
 
     private TarFile sourceTarFile;
+
+    boolean itemErrorIsExists = false;
 
     @SuppressWarnings("restriction")
     protected ImportItemWizardPage(RepositoryNode rNode, String pageName) {
@@ -749,6 +751,9 @@ class ImportItemWizardPage extends WizardPage {
                             && itemRecord.getProperty().getVersion().equals(reObject.getVersion())) {
                         for (String error : itemRecord.getErrors()) {
                             errors.add("'" + itemRecord.getItemName() + "' " + error); //$NON-NLS-1$ //$NON-NLS-2$
+                            if (error.contains(Messages.getString("RepositoryUtil.nameUsed"))) {
+                                itemErrorIsExists = true;
+                            }
                         }
                     }
                 }
@@ -756,6 +761,9 @@ class ImportItemWizardPage extends WizardPage {
                 if (itemRecord.getProperty() != null) {
                     for (String error : itemRecord.getErrors()) {
                         errors.add("'" + itemRecord.getItemName() + "' " + error); //$NON-NLS-1$ //$NON-NLS-2$
+                        if (error.contains(Messages.getString("RepositoryUtil.nameUsed"))) {
+                            itemErrorIsExists = true;
+                        }
                     }
                 }
             }
@@ -778,7 +786,11 @@ class ImportItemWizardPage extends WizardPage {
     private ItemRecord[] checkValidItems() {
         ItemRecord[] validItems = getValidItems();
         boolean hasValidItems = validItems.length > 0;
-
+        if (itemErrorIsExists) {
+            itemListInfo.setText(Messages.getString("ImportItemWizardPage.NoValidItemsForExists"));
+        } else {
+            itemListInfo.setText(Messages.getString("ImportItemWizardPage.NoValidItems"));
+        }
         itemListInfo.setVisible(!hasValidItems);
         return validItems;
     }
