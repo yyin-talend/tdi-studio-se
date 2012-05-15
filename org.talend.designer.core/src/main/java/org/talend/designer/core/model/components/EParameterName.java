@@ -55,6 +55,7 @@ public enum EParameterName {
     QUERYSTORE_TYPE(Messages.getString("EParameterName.queryType")), //$NON-NLS-1$
     REPOSITORY_QUERYSTORE_TYPE("Repository"), //$NON-NLS-1$  Hidden parameter so no translation needed
     PROPERTY_TYPE(Messages.getString("EParameterName.propertyType")), //$NON-NLS-1$
+    SK_CREATION(Messages.getString("EParameterName.SK_CREATION")),
     REPOSITORY_PROPERTY_TYPE("Repository"), //$NON-NLS-1$  Hidden parameter so no translation needed
     CONDITION(Messages.getString("EParameterName.condition")), //$NON-NLS-1$
     ROUTETYPE(Messages.getString("EParameterName.routeType")),
