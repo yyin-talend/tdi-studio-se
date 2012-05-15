@@ -285,7 +285,7 @@ public class SurrogateSection extends ScdSection {
         } else if (key.getCreation() == SurrogateCreationType.DB_SEQUENCE) {
             dbSequenceText.setText(key.getComplement());
         }
-        creationCombo.select(key.getCreation().getIndex());
+        creationCombo.select(key.getCreation().getIndex() - 1);
         // activate event to switch component in stack layout
         creationSwitch.run();
     }
