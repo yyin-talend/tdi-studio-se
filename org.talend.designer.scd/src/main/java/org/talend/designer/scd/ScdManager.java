@@ -707,14 +707,13 @@ public class ScdManager {
     public String[] getSurrogateCreationTypeNames() {
         List<String> allTypeNames = new ArrayList<String>();
         IElementParameter param = getComponent().getElementParameter(EParameterName.SK_CREATION.getName());
-        for (String type : SurrogateCreationType.getAllDisplayCodeNames()) {
+        for (SurrogateCreationType type : SurrogateCreationType.values()) {
             if (param != null) {
-                if (ArrayUtils.contains(param.getListItemsDisplayCodeName(), type)) {
-                    allTypeNames.add(type);
+                if (ArrayUtils.contains(param.getListItemsDisplayCodeName(), type.name())) {
+                    allTypeNames.add(type.getName());
                 }
-            } else {
-                allTypeNames.add(type);
-            }
+            } else
+                allTypeNames.add(type.getName());
         }
         return allTypeNames.toArray(new String[0]);
     }
