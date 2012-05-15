@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -705,13 +706,15 @@ public class ScdManager {
 
     public String[] getSurrogateCreationTypeNames() {
         List<String> allTypeNames = new ArrayList<String>();
-        for (String type : SurrogateCreationType.getAllTypeNames()) {
-            // Add one line below to filter the type AUTO_INCREMENT. Done by Marvin Wang on May 11, 2012.
-            if (!SurrogateCreationType.AUTO_INCREMENT.getName().equals(type))
+        IElementParameter param = getComponent().getElementParameter(EParameterName.SK_CREATION.getName());
+        for (String type : SurrogateCreationType.getAllDisplayCodeNames()) {
+            if (param != null) {
+                if (ArrayUtils.contains(param.getListItemsDisplayCodeName(), type)) {
+                    allTypeNames.add(type);
+                }
+            } else {
                 allTypeNames.add(type);
-        }
-        if (!enableOracle()) {
-            allTypeNames.remove(SurrogateCreationType.DB_SEQUENCE.getName());
+            }
         }
         return allTypeNames.toArray(new String[0]);
     }
@@ -719,7 +722,8 @@ public class ScdManager {
     public boolean enableOracle() {
         IElementParameter param = getComponent().getElementParameter(EParameterName.PROPERTY_TYPE.getName());
         if (param != null && param.getRepositoryValue() != null) {
-            if (param.getRepositoryValue().toLowerCase().endsWith("oracle")) {
+            String value = param.getRepositoryValue().toLowerCase();
+            if (value.endsWith("oracle") || value.endsWith("ingres")) {
                 return true;
             }
         }

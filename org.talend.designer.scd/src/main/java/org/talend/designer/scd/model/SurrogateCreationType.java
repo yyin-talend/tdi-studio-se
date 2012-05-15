@@ -104,6 +104,23 @@ public enum SurrogateCreationType {
         return valueTypeMap.get(v);
     }
 
+    /**
+     * Gets all the display code names like "AUTO_INCREMENT", "INPUT_FIELD" and so on.
+     * 
+     * @return
+     */
+    public static String[] getAllDisplayCodeNames() {
+        if (allTypeNames == null) {
+            allTypeNames = new String[values().length];
+            int i = 0;
+            for (SurrogateCreationType t : values()) {
+                allTypeNames[i++] = t.name();
+            }
+        }
+
+        return allTypeNames;
+    }
+
     public static String[] getAllTypeNames() {
         if (allTypeNames == null) {
             allTypeNames = new String[values().length];
