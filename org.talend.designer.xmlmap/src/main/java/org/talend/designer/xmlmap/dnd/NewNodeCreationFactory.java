@@ -12,26 +12,57 @@
 // ============================================================================
 package org.talend.designer.xmlmap.dnd;
 
-import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.requests.CreationFactory;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 
 /**
  * wchen class global comment. Detailled comment
  */
 public class NewNodeCreationFactory implements CreationFactory {
 
-    private Object toTransfer;
+    private DropType dropType;
 
-    public NewNodeCreationFactory(Object toTransfer) {
-        this.toTransfer = toTransfer;
+    private NodeType nodeType;
+
+    private AbstractNode newObject;
+
+    public NewNodeCreationFactory(DropType dropType, NodeType nodeType) {
+        this.dropType = dropType;
+        this.nodeType = nodeType;
+        if (nodeType == null) {
+            nodeType = NodeType.ELEMENT;
+        }
     }
 
-    public Object getNewObject() {
-        return toTransfer;
+    public AbstractNode getNewObject() {
+        if (newObject == null && dropType != null) {
+            switch (dropType) {
+            case DROP_OUTPUT_DOC_CHILD:
+                OutputTreeNode outputNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                outputNode.setNodeType(nodeType);
+                newObject = outputNode;
+                break;
+            case DROP_INSERT_INPUT:
+                newObject = XmlmapFactory.eINSTANCE.createTreeNode();
+                break;
+            case DROP_INSERT_OUTPUT:
+                newObject = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                break;
+            case DROP_INSERT_VAR:
+                newObject = XmlmapFactory.eINSTANCE.createVarNode();
+                break;
+            default:
+                break;
+            }
+        }
+        return newObject;
     }
 
-    public Object getObjectType() {
-        return RequestConstants.REQ_CREATE;
+    public DropType getObjectType() {
+        return dropType;
     }
 
 }

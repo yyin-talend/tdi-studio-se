@@ -46,6 +46,13 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
         TemplateTransfer.getInstance().setTemplate(template);
     }
 
+    /**
+     * 
+     * DOC talend Comment method "getTemplate".
+     * 
+     * @param event
+     * @return the validate drag able node list
+     */
     protected Object getTemplate(DragSourceEvent event) {
         final RootEditPart rootEditPart = getViewer().getRootEditPart();
         if (rootEditPart instanceof AbstractGraphicalEditPart) {
@@ -69,7 +76,9 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
 
         List toTransfer = new ArrayList();
         for (Object o : selection) {
-            // all selected parts should be in the same zone , or clean toTransfer list can't drag
+            // all drag able parts should be in the same zone , if one selection in the last selected zone is not valid
+            // , clean toTransfer list can't drag
+            // do not clean toTransfer by node type ,in some case selection in other zones won't be cleaned
             if (lastSelection instanceof OutputTreeNodeEditPart) {
                 toTransfer.clear();
                 break;

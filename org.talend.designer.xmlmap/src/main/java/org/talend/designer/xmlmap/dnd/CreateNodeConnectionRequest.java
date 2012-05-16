@@ -14,35 +14,35 @@ package org.talend.designer.xmlmap.dnd;
 
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.requests.CreateRequest;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 
 /**
  * wchen class global comment. Detailled comment
  */
 public class CreateNodeConnectionRequest extends CreateRequest {
 
-    public static final int DROP_EXPRESSION = 0;
-
-    public static final int DROP_TREE = 1;
-
     private EditPart targetEditPart;
-
-    private int dropType;
 
     public CreateNodeConnectionRequest(EditPart targetEditPart) {
         this.targetEditPart = targetEditPart;
-        setDropType(DROP_TREE);
     }
 
     public EditPart getTargetEditPart() {
         return this.targetEditPart;
     }
 
-    public void setDropType(int dropType) {
-        this.dropType = dropType;
+    @Override
+    public AbstractNode getNewObject() {
+        if (getFactory() instanceof NewNodeCreationFactory) {
+            return ((NewNodeCreationFactory) getFactory()).getNewObject();
+        }
+        return null;
     }
 
-    public int getDropType() {
-        return dropType;
+    public DropType getNewObjectType() {
+        if (getFactory() instanceof NewNodeCreationFactory) {
+            return ((NewNodeCreationFactory) getFactory()).getObjectType();
+        }
+        return null;
     }
-
 }

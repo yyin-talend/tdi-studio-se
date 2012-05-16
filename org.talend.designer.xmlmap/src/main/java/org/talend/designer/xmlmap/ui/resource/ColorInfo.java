@@ -44,7 +44,8 @@ public enum ColorInfo {
 
     COLOR_TREE_LINES(128, 128, 128),
 
-    COLOR_SELECTION(49, 106, 197)
+    COLOR_SELECTION(49, 106, 197),
+    COLOR_DRAGGING_INSERTION_INDICATOR(0, 78, 152), // blue
 
     ;
 
