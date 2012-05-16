@@ -640,6 +640,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         addJobItem(allResources, process, isOptionChoosed(ExportChoice.needJobItem), resource);
         addDependencies(allResources, process, isOptionChoosed(ExportChoice.needDependencies), resource);
         addSourceCode(allResources, process, isOptionChoosed(ExportChoice.needSourceCode), resource);
+        addDependenciesSourceCode(allResources, resource, isOptionChoosed(ExportChoice.needSourceCode));
 
         Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
         for (JobInfo subjobInfo : subjobInfos) {

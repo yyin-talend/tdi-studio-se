@@ -870,11 +870,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             return exportChoiceMap;
         }
 
-        if (comboType.equals(JobExportType.WSWAR)) {
-            exportChoiceMap.put(ExportChoice.needMetaInfo, true);
-        } else {
-            exportChoiceMap.put(ExportChoice.needMetaInfo, false);
-        }
         // fix bug 9150, export items and code source, added by nma
         exportChoiceMap.put(ExportChoice.needJobItem, jobScriptButton.getSelection());
         exportChoiceMap.put(ExportChoice.needSourceCode, jobScriptButton.getSelection());
@@ -887,6 +882,16 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         exportChoiceMap.put(ExportChoice.needJobScript, jobScriptButton.getSelection());
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
         exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
+
+        if (comboType.equals(JobExportType.WSWAR)) {
+            exportChoiceMap.put(ExportChoice.needMetaInfo, true);
+            exportChoiceMap.put(ExportChoice.needJobItem, true);
+            exportChoiceMap.put(ExportChoice.needDependencies, true);
+            exportChoiceMap.put(ExportChoice.needSourceCode, true);
+        } else {
+            exportChoiceMap.put(ExportChoice.needMetaInfo, false);
+        }
+
         return exportChoiceMap;
     }
 
