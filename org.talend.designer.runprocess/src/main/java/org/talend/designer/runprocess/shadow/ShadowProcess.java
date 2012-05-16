@@ -19,23 +19,26 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.utils.PathUtils;
-import org.talend.core.CorePlugin;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.utils.CsvArray;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessStreamTrashReader;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.repository.ProjectManager;
+import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.preview.ExcelSchemaBean;
 import org.talend.repository.preview.IProcessDescription;
 import org.talend.repository.preview.SalesforceSchemaBean;
@@ -111,20 +114,15 @@ public class ShadowProcess<T extends IProcessDescription> {
         this.description = description;
         String filePath = description.getFilepath();
 
+        IPath tempPath = getTmpFolderPath();
         if (filePath != null) {
             this.inPath = filePath;
             this.outPath = buildTempCSVFilename(new Path(filePath));
         } else if (type.name().equals("LDAP_SCHEMA")) { //$NON-NLS-1$
-            IPath tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
-                    ITalendCorePrefConstants.FILE_PATH_TEMP));
             this.outPath = tempPath.append(TEMP_LDAP_SCHEMA_FILE_NAME + "." + CSV_EXT); //$NON-NLS-1$
         } else if (type.name().equals("WSDL_SCHEMA")) { //$NON-NLS-1$
-            IPath tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
-                    ITalendCorePrefConstants.FILE_PATH_TEMP));
             this.outPath = tempPath.append(TEMP_WSDL_SCHEMA_FILE_NAME + "." + CSV_EXT); //$NON-NLS-1$
         } else if (type.name().equals("SALESFORCE_SCHEMA")) { //$NON-NLS-1$
-            IPath tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
-                    ITalendCorePrefConstants.FILE_PATH_TEMP));
             this.outPath = tempPath.append(TEMP_SALEFORCE_SCHEMA_FILE_NAME + "." + CSV_EXT); //$NON-NLS-1$
         }
         this.type = type;
@@ -298,7 +296,7 @@ public class ShadowProcess<T extends IProcessDescription> {
         return ps;
     }
 
-    private static IPath buildTempCSVFilename(IPath inPath) {
+    private IPath buildTempCSVFilename(IPath inPath) {
         String filename = inPath.lastSegment();
         if (inPath.getFileExtension() != null) {
             filename = filename.substring(0, filename.length() - inPath.getFileExtension().length());
@@ -310,8 +308,7 @@ public class ShadowProcess<T extends IProcessDescription> {
 
         filename += CSV_EXT;
         IPath tempPath;
-        tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
-                ITalendCorePrefConstants.FILE_PATH_TEMP));
+        tempPath = getTmpFolderPath();
         tempPath = tempPath.append(filename);
 
         return tempPath;
@@ -426,6 +423,20 @@ public class ShadowProcess<T extends IProcessDescription> {
             this.proxyParameters = proxyParameters;
         }
 
+    }
+
+    private IPath getTmpFolderPath() {
+        Project project = ProjectManager.getInstance().getCurrentProject();
+        IProject physProject;
+        String tmpFolder = System.getProperty("user.dir"); //$NON-NLS-1$
+        try {
+            physProject = ResourceModelUtils.getProject(project);
+            tmpFolder = physProject.getFolder("temp").getLocation().toPortableString(); //$NON-NLS-1$
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        tmpFolder = tmpFolder + "/preview"; //$NON-NLS-1$
+        return new Path(tmpFolder);
     }
 
 }
