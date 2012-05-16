@@ -76,6 +76,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.ui.metadata.dialog.CustomTableManager;
 import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
@@ -892,6 +893,9 @@ public class UIManager extends AbstractUIManager {
                 if (item instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) item;
                     processItem.getProcess().getScreenshots().put(component.getUniqueName(), saveImageToData);
+                } else if (item instanceof JobletProcessItem) {
+                    JobletProcessItem jobletItem = (JobletProcessItem) item;
+                    jobletItem.getJobletProcess().getScreenshots().put(component.getUniqueName(), saveImageToData);
                 }
 
             }
