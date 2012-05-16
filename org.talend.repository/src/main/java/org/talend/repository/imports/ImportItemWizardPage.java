@@ -165,8 +165,6 @@ class ImportItemWizardPage extends WizardPage {
 
     private TarFile sourceTarFile;
 
-    boolean itemErrorIsExists = false;
-
     @SuppressWarnings("restriction")
     protected ImportItemWizardPage(RepositoryNode rNode, String pageName) {
 
@@ -747,13 +745,9 @@ class ImportItemWizardPage extends WizardPage {
                 RepositoryViewObject reObject = (RepositoryViewObject) itemRecord.getExistingItemWithSameId();
                 if (itemRecord.getProperty() != null && reObject != null) {
                     if (itemRecord.getProperty().getId().equals(reObject.getId())
-                            && itemRecord.getProperty().getLabel().equals(reObject.getLabel())
-                            && itemRecord.getProperty().getVersion().equals(reObject.getVersion())) {
+                            && itemRecord.getProperty().getLabel().equals(reObject.getLabel())) {
                         for (String error : itemRecord.getErrors()) {
                             errors.add("'" + itemRecord.getItemName() + "' " + error); //$NON-NLS-1$ //$NON-NLS-2$
-                            if (error.contains(Messages.getString("RepositoryUtil.nameUsed"))) {
-                                itemErrorIsExists = true;
-                            }
                         }
                     }
                 }
@@ -761,9 +755,6 @@ class ImportItemWizardPage extends WizardPage {
                 if (itemRecord.getProperty() != null) {
                     for (String error : itemRecord.getErrors()) {
                         errors.add("'" + itemRecord.getItemName() + "' " + error); //$NON-NLS-1$ //$NON-NLS-2$
-                        if (error.contains(Messages.getString("RepositoryUtil.nameUsed"))) {
-                            itemErrorIsExists = true;
-                        }
                     }
                 }
             }
@@ -786,11 +777,7 @@ class ImportItemWizardPage extends WizardPage {
     private ItemRecord[] checkValidItems() {
         ItemRecord[] validItems = getValidItems();
         boolean hasValidItems = validItems.length > 0;
-        if (itemErrorIsExists) {
-            itemListInfo.setText(Messages.getString("ImportItemWizardPage.NoValidItemsForExists"));
-        } else {
-            itemListInfo.setText(Messages.getString("ImportItemWizardPage.NoValidItems"));
-        }
+
         itemListInfo.setVisible(!hasValidItems);
         return validItems;
     }
