@@ -40,8 +40,7 @@ public class DocumentationContentProvider extends ProjectRepoDirectChildrenNodeC
     }
 
     @Override
-    protected void beforeRefreshTopLevelNode() {
-        RepositoryNode topLevelNode = getTopLevelNode();
+    protected void beforeRefreshTopLevelNode(RepositoryNode topLevelNode) {
         if (topLevelNode != null) {
             IRepositoryNode generatedNode = topLevelNode.getRoot().getRootRepositoryNode(ERepositoryObjectType.GENERATED);
             // add for bug TDI-21013
