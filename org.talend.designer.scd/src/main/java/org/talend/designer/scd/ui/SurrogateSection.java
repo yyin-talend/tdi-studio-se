@@ -145,27 +145,27 @@ public class SurrogateSection extends ScdSection {
         dragDropManager.addDropSupport(inputFieldLabel, delegate);
 
         // show DB_SEQUENCE in OraleSCD
-        final boolean enableOracle = getScdManager().enableOracle();
-        if (enableOracle) {
-            dbSequenceComp = new Composite(complementComp, SWT.NONE);
-            GridLayoutFactory.fillDefaults().applyTo(dbSequenceComp);
-            dbSequenceText = new Text(dbSequenceComp, SWT.BORDER);
-            dbSequenceText.addModifyListener(new ModifyListener() {
+        // final boolean enableOracle = getScdManager().enableOracle();
+        // if (enableOracle) {
+        dbSequenceComp = new Composite(complementComp, SWT.NONE);
+        GridLayoutFactory.fillDefaults().applyTo(dbSequenceComp);
+        dbSequenceText = new Text(dbSequenceComp, SWT.BORDER);
+        dbSequenceText.addModifyListener(new ModifyListener() {
 
-                public void modifyText(ModifyEvent e) {
-                    if (StringUtils.isEmpty(dbSequenceText.getText())) {
-                        dbSequenceText.setBackground(ERROR_COLOR);
-                    } else {
-                        dbSequenceText.setBackground(white);
-                    }
-                    if (key.getCreation() == SurrogateCreationType.DB_SEQUENCE) {
-                        key.setComplement(dbSequenceText.getText());
-                    }
+            public void modifyText(ModifyEvent e) {
+                if (StringUtils.isEmpty(dbSequenceText.getText())) {
+                    dbSequenceText.setBackground(ERROR_COLOR);
+                } else {
+                    dbSequenceText.setBackground(white);
                 }
-            });
-            GridDataFactory.fillDefaults().hint(SURROGATE_FIELD_WIDTH, SWT.DEFAULT).applyTo(dbSequenceText);
-            TalendProposalUtils.installOn(dbSequenceText, null);
-        }
+                if (key.getCreation() == SurrogateCreationType.DB_SEQUENCE) {
+                    key.setComplement(dbSequenceText.getText());
+                }
+            }
+        });
+        GridDataFactory.fillDefaults().hint(SURROGATE_FIELD_WIDTH, SWT.DEFAULT).applyTo(dbSequenceText);
+        TalendProposalUtils.installOn(dbSequenceText, null);
+        // }
 
         final Composite routineFieldComp = new Composite(complementComp, SWT.NONE);
         GridLayoutFactory.fillDefaults().applyTo(routineFieldComp);
@@ -197,8 +197,9 @@ public class SurrogateSection extends ScdSection {
         creationSwitch = new Runnable() {
 
             public void run() {
-                int index = creationCombo.getSelectionIndex();
-                SurrogateCreationType type = SurrogateCreationType.getTypeByIndex(index + 1);
+                String diaplayName = creationCombo.getText();
+                // SurrogateCreationType type = SurrogateCreationType.getTypeByIndex(index + 1);
+                SurrogateCreationType type = SurrogateCreationType.getTypeByName(diaplayName);
                 key.setCreation(type);
                 if (type == SurrogateCreationType.ROUTINE) {
                     stack.topControl = routineFieldComp; // routineText;
@@ -209,9 +210,9 @@ public class SurrogateSection extends ScdSection {
                         routineText.setBackground(white);
                     }
                     inputFieldLabel.setText(""); //$NON-NLS-1$
-                    if (enableOracle) {
-                        dbSequenceText.setText("");//$NON-NLS-1$
-                    }
+                    // if (enableOracle) {
+                    dbSequenceText.setText("");//$NON-NLS-1$
+                    // }
                 } else if (type == SurrogateCreationType.INPUT_FIELD) {
                     stack.topControl = inputFieldComp; // inputFieldLabel;
                     if (StringUtils.isEmpty(inputFieldLabel.getText())) {
@@ -221,10 +222,11 @@ public class SurrogateSection extends ScdSection {
                         inputFieldLabel.setBackground(null);
                     }
                     routineText.setText(""); //$NON-NLS-1$
-                    if (enableOracle) {
-                        dbSequenceText.setText("");//$NON-NLS-1$
-                    }
-                } else if (type == SurrogateCreationType.DB_SEQUENCE && enableOracle) {
+                    // if (enableOracle) {
+                    dbSequenceText.setText("");//$NON-NLS-1$
+                    // }
+                } else if (type == SurrogateCreationType.DB_SEQUENCE) {
+                    // else if (type == SurrogateCreationType.DB_SEQUENCE && enableOracle) {
                     stack.topControl = dbSequenceComp; // dbSequenceText;
                     if (StringUtils.isEmpty(dbSequenceText.getText())) {
                         dbSequenceText.setBackground(ERROR_COLOR);
@@ -238,9 +240,9 @@ public class SurrogateSection extends ScdSection {
                     stack.topControl = emptyLabel;
                     routineText.setText(""); //$NON-NLS-1$
                     inputFieldLabel.setText(""); //$NON-NLS-1$
-                    if (enableOracle) {
-                        dbSequenceText.setText("");//$NON-NLS-1$     
-                    }
+                    // if (enableOracle) {
+                    dbSequenceText.setText("");//$NON-NLS-1$     
+                    // }
                     key.setComplement(""); //$NON-NLS-1$
                 }
                 scdManager.fireFieldChange();
@@ -285,9 +287,29 @@ public class SurrogateSection extends ScdSection {
         } else if (key.getCreation() == SurrogateCreationType.DB_SEQUENCE) {
             dbSequenceText.setText(key.getComplement());
         }
-        creationCombo.select(key.getCreation().getIndex() - 1);
+        creationCombo.select(getIndexByCreationType(key.getCreation()));
         // activate event to switch component in stack layout
         creationSwitch.run();
+    }
+
+    /**
+     * Get the index for creation combo by <code>SurrogateCreationType</code>. Created by Marvin Wang on May 16, 2012.
+     * 
+     * @param type
+     * @return
+     */
+    private int getIndexByCreationType(SurrogateCreationType type) {
+        int index = 0;
+        String[] items = creationCombo.getItems();
+        if (items != null && items.length > 0) {
+            for (int i = 0; i < items.length; i++) {
+                if (type.getName().equals(items[i])) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+        return index;
     }
 
     @Override

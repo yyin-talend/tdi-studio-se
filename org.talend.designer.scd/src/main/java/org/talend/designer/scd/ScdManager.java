@@ -718,16 +718,16 @@ public class ScdManager {
         return allTypeNames.toArray(new String[0]);
     }
 
-    public boolean enableOracle() {
-        IElementParameter param = getComponent().getElementParameter(EParameterName.PROPERTY_TYPE.getName());
-        if (param != null && param.getRepositoryValue() != null) {
-            String value = param.getRepositoryValue().toLowerCase();
-            if (value.endsWith("oracle") || value.endsWith("ingres")) {
-                return true;
-            }
-        }
-        return false;
-    }
+    // public boolean enableOracle() {
+    // IElementParameter param = getComponent().getElementParameter(EParameterName.PROPERTY_TYPE.getName());
+    // if (param != null && param.getRepositoryValue() != null) {
+    // String value = param.getRepositoryValue().toLowerCase();
+    // if (value.endsWith("oracle") || value.endsWith("ingres")) {
+    // return true;
+    // }
+    // }
+    // return false;
+    // }
 
     /**
      * DOC chuang Comment method "removeGeneratedColumns".
