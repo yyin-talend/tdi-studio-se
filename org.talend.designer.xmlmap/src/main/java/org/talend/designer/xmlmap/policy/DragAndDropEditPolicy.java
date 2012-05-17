@@ -25,6 +25,7 @@ import org.eclipse.gef.dnd.TemplateTransfer;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.GraphicalEditPolicy;
 import org.eclipse.swt.graphics.Color;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.designer.xmlmap.commands.CreateDocChildrenCommand;
 import org.talend.designer.xmlmap.commands.InsertNewColumnCommand;
 import org.talend.designer.xmlmap.commands.UpdateExpressionCommand;
@@ -155,7 +156,7 @@ public class DragAndDropEditPolicy extends GraphicalEditPolicy {
                     try {
                         getFeedbackLayer().remove(indicator);
                     } catch (Exception e) {
-                        System.out.println(e.getStackTrace());
+                        ExceptionHandler.process(e);
                     }
                 }
             }

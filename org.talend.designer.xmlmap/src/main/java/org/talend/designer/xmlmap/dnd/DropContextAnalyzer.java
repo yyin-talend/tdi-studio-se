@@ -77,7 +77,6 @@ public class DropContextAnalyzer {
         }
         Object targetModel = targetEditPart.getModel();
         targetFigure = targetEditPart.getFigure().findFigureAt(dropLocation.x, dropLocation.y);
-        System.out.println(targetFigure);
         boolean isTragetOutputNode = targetModel instanceof OutputTreeNode;
         boolean isTragetInputNode = targetModel instanceof TreeNode && !(targetModel instanceof OutputTreeNode);
         boolean isVar = targetModel instanceof VarNode;

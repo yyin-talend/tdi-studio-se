@@ -60,7 +60,6 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
     @Override
     protected Request createTargetRequest() {
         CreateNodeConnectionRequest request = new CreateNodeConnectionRequest(getTargetEditPart());
-        System.out.println("xxx");
         return request;
     }
 
@@ -216,7 +215,6 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
 
         DropContextAnalyzer analyzer = new DropContextAnalyzer((TransferedObject) object,
                 (AbstractGraphicalEditPart) getTargetEditPart(), getDropLocation());
-        System.out.println(analyzer.isDropValid());
         if (analyzer.isDropValid()) {
             event.detail = analyzer.getDetail();
             NewNodeCreationFactory factory = new NewNodeCreationFactory(analyzer.getDropType(), null);
