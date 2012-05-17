@@ -32,7 +32,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IStartup;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.commons.ui.runtime.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.designer.runprocess.java.JavaProcessorUtilities;
@@ -87,7 +86,7 @@ public class DeleteAllJobWhenStartUp implements IStartup {
                     }
                 }
             } catch (CoreException e) {
-                RuntimeExceptionHandler.process(e);
+                ExceptionHandler.process(e);
             }
         }
         IProject rootProject = null;
@@ -157,7 +156,7 @@ public class DeleteAllJobWhenStartUp implements IStartup {
                 javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
 
             } catch (CoreException e) {
-                RuntimeExceptionHandler.process(e);
+                ExceptionHandler.process(e);
             }
         }
 
