@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
+import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
-import org.talend.core.model.process.IConnection;
 import org.talend.designer.xmlmap.dnd.DropType;
 import org.talend.designer.xmlmap.dnd.TransferdType;
 import org.talend.designer.xmlmap.dnd.TransferedObject;
@@ -185,10 +185,10 @@ public class InsertNewColumnCommand extends Command {
     private void createInputMetadataColumn(String sourceTreeName, String targetTreeName, String sourceNodeName,
             String targetNodeName, int index) {
         IMetadataTable metadataTarget = null;
-        List<? extends IConnection> connections = manager.getMapperComponent().getIncomingConnections();
-        for (IConnection incoming : connections) {
-            if (incoming.getName().equals(targetTreeName)) {
-                metadataTarget = incoming.getMetadataTable();
+        List<IODataComponent> inputs = manager.getMapperComponent().getIODataComponents().getInputs();
+        for (IODataComponent incoming : inputs) {
+            if (targetTreeName != null && targetTreeName.equals(incoming.getConnection().getName())) {
+                metadataTarget = incoming.getTable();
             }
         }
 
@@ -237,11 +237,11 @@ public class InsertNewColumnCommand extends Command {
     }
 
     private IMetadataColumn getSourceColumn(String sourceTreeName, String sourceNodeName) {
-        List<? extends IConnection> connections = manager.getMapperComponent().getIncomingConnections();
+        List<IODataComponent> inputs = manager.getMapperComponent().getIODataComponents().getInputs();
         IMetadataColumn columnSource = null;
-        for (IConnection incoming : connections) {
-            if (incoming.getName().equals(sourceTreeName)) {
-                IMetadataTable metadataSource = incoming.getMetadataTable();
+        for (IODataComponent incoming : inputs) {
+            if (sourceTreeName != null && sourceTreeName.equals(incoming.getConnection().getName())) {
+                IMetadataTable metadataSource = incoming.getTable();
                 for (IMetadataColumn column : metadataSource.getListColumns()) {
                     if (column.getLabel().equals(sourceNodeName)) {
                         columnSource = column;

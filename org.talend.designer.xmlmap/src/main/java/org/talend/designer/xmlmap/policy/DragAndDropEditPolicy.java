@@ -176,14 +176,14 @@ public class DragAndDropEditPolicy extends GraphicalEditPolicy {
             // Color color = ColorConstants.red;
 
             Point start = new Point(getBounds().x + 5, getBounds().y + 5);
-            Point end = new Point(getBounds().x + getBounds().width, getBounds().y + 5);
+            Point end = new Point(getBounds().x + getBounds().width - 5, getBounds().y + 5);
 
             graphics.setBackgroundColor(color);
             graphics.setForegroundColor(color);
 
             graphics.drawLine(start, end);
-            // graphics.fillPolygon(new int[] { start.x, start.y, start.x + 5, start.y + 5, start.x, start.y + 10 });
-            // graphics.fillPolygon(new int[] { end.x, end.y, end.x - 5, end.y - 5, end.x, end.y + 10 });
+            graphics.fillPolygon(new int[] { start.x, start.y, start.x - 5, start.y + 5, start.x - 5, start.y - 5 });
+            graphics.fillPolygon(new int[] { end.x, end.y, end.x + 5, end.y - 5, end.x + 5, end.y + 5 });
         }
     }
 }
