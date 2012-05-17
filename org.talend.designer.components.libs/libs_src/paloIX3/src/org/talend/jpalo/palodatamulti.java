@@ -116,12 +116,20 @@ public class palodatamulti {
 	}
 	
 	private String[] replaceStringArrWithElementId(String[] strArr){
-		for(int i=0;i<strArr.length;i++){
-			paloelement plElm = alPaloElements.get(i).getElement(strArr[i]);
-			if(null==plElm) strArr[i]="-1";
-			else strArr[i] = String.valueOf(plElm.getElementIdentifier());
+		//for bug TDI-19873
+		String[] pathArr = new String[alPaloElements.size()];
+		paloelement plElm = null;
+		for (int i = 0; i < alPaloElements.size(); i++) {
+			for (int j = 0; j < strArr.length; j++) {
+				plElm = alPaloElements.get(i).getElement(strArr[j]);
+				if (plElm == null && pathArr[i] == null) {
+					pathArr[i] = "-1";
+				} else if (plElm != null) {
+					pathArr[i] = String.valueOf(plElm.getElementIdentifier());
+				}
+			}
 		}
-		return strArr;
+		return pathArr;
 	}
 	
 }
