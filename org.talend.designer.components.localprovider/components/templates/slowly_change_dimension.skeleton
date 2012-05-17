@@ -945,6 +945,10 @@ public class CLASS {
             }
             return selectionSQL.toString();
         }
+        protected String getDBSequenceWithSchemaPrefix (SCDConfiger scdConfiger) {
+        	return "\" + ((schema_" + cid +"!= null && schema_" +cid+".trim()!=\"\")?schema_"+cid+" +\".\":\"\")" +     
+            getSequence(scdConfiger.getSurrogateKeySequence());
+        }
         public String createInsertionSQL(SCDConfiger scdConfiger) {
             StringBuilder insertionSQL = new StringBuilder();
             insertionSQL.append("INSERT INTO "  + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
@@ -960,8 +964,7 @@ public class CLASS {
             }
             if(scdConfiger.getSurrogateKeyValueType().equals("DB_SEQUENCE")) {
                 insertColumns = getLProtectedChar() + surrogateKeyField + getRProtectedChar();
-                insertValues = "\" + ((schema_" + cid +"!= null && schema_" +cid+".trim()!=\"\")?schema_"+cid+" +\".\":\"\")" +     
-                    getSequence(scdConfiger.getSurrogateKeySequence());
+                insertValues = getDBSequenceWithSchemaPrefix(scdConfiger);
             }
             if(isEqualWithSK) {
                 for(Column column : sourceKeys) {
@@ -1395,7 +1398,7 @@ public class CLASS {
             return "\\\"";
         }
         protected String getSequence(String surrogateKeySequence) {
-            return "nextval for \" + " + surrogateKeySequence + " + \"";
+            return "+ \" nextval for \"+((schema_" + cid +"!= null && schema_" +cid+".trim()!=\"\")?schema_"+cid+" +\".\":\"\") +\"" + surrogateKeySequence + "\" + \"";
         }
         protected String getIncrement() {
             return "";
@@ -1423,7 +1426,10 @@ public class CLASS {
             } else {
                 return "0";
             }            
-        }        
+        }
+        protected String getDBSequenceWithSchemaPrefix (SCDConfiger scdConfiger) {
+        	return "\" " +getSequence(scdConfiger.getSurrogateKeySequence());
+        }
     }
     public class IngresSCDManager extends SCDManager {
         public IngresSCDManager(String cid) {
@@ -1439,7 +1445,7 @@ public class CLASS {
             return "\\\"";
         }
         protected String getSequence(String surrogateKeySequence) {
-            return "\" + " + surrogateKeySequence + " + \".nextval";
+        	return "+ \"" + surrogateKeySequence + "\" + \".nextval";
         }
         protected String getIncrement() {
             return "";
@@ -1766,7 +1772,7 @@ public class CLASS {
             return "\\\"";
         }
         protected String getSequence(String surrogateKeySequence) {
-            return "\" + " + surrogateKeySequence + " + \".nextval";
+        	return "+ \"nextval('\"+((dbSchema_" + cid +"!= null && dbSchema_" +cid+".trim()!=\"\")?dbSchema_"+cid+" +\".\":\"\") +\"" + surrogateKeySequence + "\"+ \"')\" + \"";
         }
         protected String getIncrement() {
             return "";
@@ -1895,6 +1901,9 @@ public class CLASS {
             }
             return setStatement.toString();
         }
+        protected String getDBSequenceWithSchemaPrefix (SCDConfiger scdConfiger) {
+        	return "\" " +getSequence(scdConfiger.getSurrogateKeySequence());
+        }
     }
     public class PostgrePlusSCDManager extends SCDManager {
         public PostgrePlusSCDManager(String cid) {
@@ -1910,7 +1919,7 @@ public class CLASS {
             return "\\\"";
         }
         protected String getSequence(String surrogateKeySequence) {
-            return "\" + " + surrogateKeySequence + " + \".nextval";
+        	return "+ \"nextval('\"+((dbSchema_" + cid +"!= null && dbSchema_" +cid+".trim()!=\"\")?dbSchema_"+cid+" +\".\":\"\") +\"" + surrogateKeySequence + "\"+ \"')\" + \"";
         }
         protected String getIncrement() {
             return "";
@@ -1938,7 +1947,10 @@ public class CLASS {
             } else {
                 return "0";
             }            
-        }        
+        }
+		protected String getDBSequenceWithSchemaPrefix (SCDConfiger scdConfiger) {
+        	return "\" " +getSequence(scdConfiger.getSurrogateKeySequence());
+        }
     }
     public class SybaseSCDManager extends SCDManager {
         public SybaseSCDManager(String cid) {
