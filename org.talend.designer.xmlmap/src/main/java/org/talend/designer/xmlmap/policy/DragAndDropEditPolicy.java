@@ -79,19 +79,18 @@ public class DragAndDropEditPolicy extends GraphicalEditPolicy {
                             break;
                         case DROP_EXPRESSION:
                             if (targetEditPart instanceof AbstractNodePart)
-                                command = new UpdateExpressionCommand(toDrop, (AbstractNodePart) targetEditPart,
-                                        manager.getCopyOfMapData());
+                                command = new UpdateExpressionCommand(toDrop, (AbstractNodePart) targetEditPart, manager);
                             break;
                         case DROP_OUTPUT_DOC_CHILD:
                             if (targetEditPart instanceof OutputTreeNodeEditPart && rq.getNewObject() instanceof OutputTreeNode) {
                                 command = new CreateDocChildrenCommand(toDrop, (OutputTreeNodeEditPart) targetEditPart,
-                                        (OutputTreeNode) rq.getNewObject(), manager.getCopyOfMapData());
+                                        (OutputTreeNode) rq.getNewObject(), manager);
                             }
                             break;
                         case DROP_INSERT_OUTPUT:
                         case DROP_INSERT_VAR:
-                            command = new InsertNewColumnCommand(toDrop, targetEditPart, rq.getNewObject(),
-                                    manager.getCopyOfMapData());
+                        case DROP_INSERT_INPUT:
+                            command = new InsertNewColumnCommand(toDrop, targetEditPart, rq.getNewObject(), manager, dropType);
                         default:
                             break;
                         }
@@ -182,8 +181,8 @@ public class DragAndDropEditPolicy extends GraphicalEditPolicy {
             graphics.setForegroundColor(color);
 
             graphics.drawLine(start, end);
-            graphics.fillPolygon(new int[] { start.x, start.y, start.x + 5, start.y + 5, start.x, start.y + 10 });
-            graphics.fillPolygon(new int[] { end.x, end.y, end.x - 5, end.y - 5, end.x, end.y + 10 });
+            // graphics.fillPolygon(new int[] { start.x, start.y, start.x + 5, start.y + 5, start.x, start.y + 10 });
+            // graphics.fillPolygon(new int[] { end.x, end.y, end.x - 5, end.y - 5, end.x, end.y + 10 });
         }
     }
 }

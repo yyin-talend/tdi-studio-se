@@ -17,24 +17,29 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
+import org.talend.designer.xmlmap.ui.tabs.MapperManager;
+import org.talend.designer.xmlmap.util.InputLoopTableUtil;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 public class CreateDocChildrenCommand extends Command {
 
     TransferedObject objects;
 
-    protected OutputTreeNodeEditPart targetEditPart;
+    private OutputTreeNodeEditPart targetEditPart;
 
-    OutputTreeNode createdNode;
+    private OutputTreeNode createdNode;
 
-    protected XmlMapData xmlMapData;
+    private MapperManager manager;
+
+    private XmlMapData xmlMapData;
 
     public CreateDocChildrenCommand(TransferedObject objects, OutputTreeNodeEditPart targetEditPart, OutputTreeNode createdNode,
-            XmlMapData xmlMapData) {
+            MapperManager manager) {
         this.objects = objects;
         this.targetEditPart = targetEditPart;
         this.createdNode = createdNode;
-        this.xmlMapData = xmlMapData;
+        this.manager = manager;
+        this.xmlMapData = manager.getCopyOfMapData();
     }
 
     @Override
@@ -89,6 +94,8 @@ public class CreateDocChildrenCommand extends Command {
                                 }
                             }
                         }
+                        InputLoopTableUtil
+                                .addSourceLoopToInputLoopTable(sourceNode, targetOutputNode, manager.getMainInputTree());
                     }
                 } else if (objects.getType() == TransferdType.VAR) {
                     // VARE ==>OUTPUT

@@ -16,20 +16,25 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.AbstractNodePart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
+import org.talend.designer.xmlmap.ui.tabs.MapperManager;
+import org.talend.designer.xmlmap.util.InputLoopTableUtil;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 public class UpdateExpressionCommand extends Command {
 
     TransferedObject objects;
 
-    protected AbstractNodePart targetEditPart;
+    private AbstractNodePart targetEditPart;
 
-    protected XmlMapData xmlMapData;
+    private XmlMapData xmlMapData;
 
-    public UpdateExpressionCommand(TransferedObject objects, AbstractNodePart targetEditPart, XmlMapData xmlMapData) {
+    private MapperManager manager;
+
+    public UpdateExpressionCommand(TransferedObject objects, AbstractNodePart targetEditPart, MapperManager manager) {
         this.objects = objects;
         this.targetEditPart = targetEditPart;
-        this.xmlMapData = xmlMapData;
+        this.manager = manager;
+        this.xmlMapData = manager.getCopyOfMapData();
     }
 
     @Override
@@ -61,6 +66,8 @@ public class UpdateExpressionCommand extends Command {
                                     && !"".equals(model.getExpression())) {
                                 model.setDefaultValue("");
                             }
+                            InputLoopTableUtil.addSourceLoopToInputLoopTable((TreeNode) sourceNode, model,
+                                    manager.getMainInputTree());
                         }
                     }
                     // INPUT => INPUT

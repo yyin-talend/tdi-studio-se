@@ -19,11 +19,13 @@ import org.eclipse.swt.dnd.DND;
 import org.talend.designer.xmlmap.figures.ExpressionFigure;
 import org.talend.designer.xmlmap.figures.treesettings.FilterTextArea;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -75,10 +77,13 @@ public class DropContextAnalyzer {
         }
         Object targetModel = targetEditPart.getModel();
         targetFigure = targetEditPart.getFigure().findFigureAt(dropLocation.x, dropLocation.y);
-
+        System.out.println(targetFigure);
         boolean isTragetOutputNode = targetModel instanceof OutputTreeNode;
         boolean isTragetInputNode = targetModel instanceof TreeNode && !(targetModel instanceof OutputTreeNode);
         boolean isVar = targetModel instanceof VarNode;
+        boolean isDropInputTree = targetModel instanceof InputXmlTree;
+        boolean isDropOutputTree = targetModel instanceof OutputXmlTree;
+        boolean isDropVarTable = targetModel instanceof VarTable;
 
         // drop expression
         if (targetFigure instanceof ExpressionFigure) {
@@ -88,7 +93,7 @@ public class DropContextAnalyzer {
                 return XmlMapUtil.isExpressionEditable((TreeNode) targetModel);
             } else if (isTragetInputNode) {
                 // INPUT => INPUT ,can't dnd in the same tree
-                boolean isValid = checkInputDropValid((TreeNode) targetModel);
+                boolean isValid = checkDropInputValid(targetModel);
                 if (isValid) {
                     isValid = XmlMapUtil.isExpressionEditable((TreeNode) targetModel);
                 }
@@ -103,16 +108,26 @@ public class DropContextAnalyzer {
         } else {
             if (objects.getType() == TransferdType.INPUT) {
                 if (isTragetOutputNode) {
-                    return checkOutputDropDocChildValid(targetModel);
-                } else if (isVar) {
+                    return checkDropOutputDocChildValid(targetModel);
+                } else if (isVar || isDropVarTable) {
                     dropType = DropType.DROP_INSERT_VAR;
+                    return true;
+                } else if (isDropInputTree) {
+                    dropType = DropType.DROP_INSERT_INPUT;
+                    return checkDropInputValid(targetModel);
+                } else if (isDropOutputTree) {
+                    dropType = DropType.DROP_INSERT_OUTPUT;
                     return true;
                 }
 
             } else if (objects.getType() == TransferdType.VAR) {
                 if (isTragetOutputNode) {
-                    return checkOutputDropDocChildValid(targetModel);
+                    return checkDropOutputDocChildValid(targetModel);
+                } else if (isDropOutputTree) {
+                    dropType = DropType.DROP_INSERT_OUTPUT;
+                    return true;
                 }
+
             }
 
         }
@@ -120,7 +135,7 @@ public class DropContextAnalyzer {
         return false;
     }
 
-    private boolean checkOutputDropDocChildValid(Object targetModel) {
+    private boolean checkDropOutputDocChildValid(Object targetModel) {
         OutputTreeNode outputNode = (OutputTreeNode) targetModel;
         NodeType nodeType = outputNode.getNodeType();
         if (outputNode.eContainer() instanceof OutputTreeNode && nodeType != NodeType.ATTRIBUT && nodeType != NodeType.NAME_SPACE) {
@@ -134,26 +149,33 @@ public class DropContextAnalyzer {
 
     }
 
-    private boolean checkInputDropValid(TreeNode target) {
-        if (objects.getType() == TransferdType.INPUT) {
-            for (Object obj : objects.getToTransfer()) {
-                TreeNodeEditPart part = (TreeNodeEditPart) obj;
-                AbstractInOutTree srouceTree = XmlMapUtil.getAbstractInOutTree((TreeNode) part.getModel());
-                AbstractInOutTree targetTree = XmlMapUtil.getAbstractInOutTree(target);
-                if (srouceTree == targetTree) {
-                    return false;
-                }
-                if (srouceTree.eContainer() instanceof XmlMapData) {
-                    XmlMapData mapdata = ((XmlMapData) srouceTree.eContainer());
-                    int indexSource = mapdata.getInputTrees().indexOf(srouceTree);
-                    int indexTarget = mapdata.getInputTrees().indexOf(targetTree);
-                    if (indexTarget < indexSource) {
+    private boolean checkDropInputValid(Object target) {
+        if (!(target instanceof TreeNode) && !(target instanceof InputXmlTree))
+            if (objects.getType() == TransferdType.INPUT) {
+                for (Object obj : objects.getToTransfer()) {
+                    TreeNodeEditPart part = (TreeNodeEditPart) obj;
+                    AbstractInOutTree srouceTree = XmlMapUtil.getAbstractInOutTree((TreeNode) part.getModel());
+                    AbstractInOutTree targetTree = null;
+                    if (target instanceof InputXmlTree) {
+                        targetTree = (InputXmlTree) target;
+                    } else {
+
+                        targetTree = XmlMapUtil.getAbstractInOutTree((TreeNode) target);
+                    }
+                    if (srouceTree == targetTree) {
                         return false;
                     }
+                    if (srouceTree.eContainer() instanceof XmlMapData) {
+                        XmlMapData mapdata = ((XmlMapData) srouceTree.eContainer());
+                        int indexSource = mapdata.getInputTrees().indexOf(srouceTree);
+                        int indexTarget = mapdata.getInputTrees().indexOf(targetTree);
+                        if (indexTarget < indexSource) {
+                            return false;
+                        }
+                    }
                 }
-            }
 
-        }
+            }
         return true;
     }
 
