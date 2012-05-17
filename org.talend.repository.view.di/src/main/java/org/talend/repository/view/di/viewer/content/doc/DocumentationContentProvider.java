@@ -39,17 +39,24 @@ public class DocumentationContentProvider extends ProjectRepoDirectChildrenNodeC
         return ERepositoryObjectType.DOCUMENTATION;
     }
 
-    @Override
-    protected void beforeRefreshTopLevelNode(RepositoryNode topLevelNode) {
+    protected void resetTopLevelNode(RepositoryNode topLevelNode) {
+        super.resetTopLevelNode(topLevelNode);
+
         if (topLevelNode != null) {
             IRepositoryNode generatedNode = topLevelNode.getRoot().getRootRepositoryNode(ERepositoryObjectType.GENERATED);
-            // add for bug TDI-21013
-            IRepositoryNode clearJobs = generatedNode.getRoot().getRootRepositoryNode(ERepositoryObjectType.JOBS);
-            IRepositoryNode clearJoblets = generatedNode.getRoot().getRootRepositoryNode(ERepositoryObjectType.JOBLETS);
-            clearJobs.getChildren().clear();
-            clearJoblets.getChildren().clear();
-            if (generatedNode != null && !topLevelNode.getChildren().contains(topLevelNode)) {
-                topLevelNode.getChildren().add(generatedNode); // add back
+            if (generatedNode != null) {
+                if (!topLevelNode.getChildren().contains(topLevelNode)) {
+                    topLevelNode.getChildren().add(generatedNode); // add back
+                }
+                // add for bug TDI-21013
+                IRepositoryNode clearJobs = generatedNode.getRoot().getRootRepositoryNode(ERepositoryObjectType.JOBS);
+                IRepositoryNode clearJoblets = generatedNode.getRoot().getRootRepositoryNode(ERepositoryObjectType.JOBLETS);
+                if (clearJobs != null) {
+                    clearJobs.getChildren().clear();
+                }
+                if (clearJoblets != null) {
+                    clearJoblets.getChildren().clear();
+                }
             }
         }
     }
