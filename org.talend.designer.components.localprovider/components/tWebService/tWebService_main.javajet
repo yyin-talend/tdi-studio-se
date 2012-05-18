@@ -69,12 +69,12 @@ if (incomingConnections != null && !incomingConnections.isEmpty()) {
 <%    		
         		}
 %>
-				paramMap_<%=cid%>.put("<%=element%>",inputValueObject_<%=cid%>);
+				paramMap_<%=cid%>.put(util_<%=cid%>.removePunctuation("<%=element%>"),inputValueObject_<%=cid%>);
 <%
         		if(anyTypePattern.matcher(element).matches()){
 %>		
 					anyTypeQName_<%=cid%> = new javax.xml.namespace.QName("<%=namespace%>","anyType"); 
-					paramMap_<%=cid%>.put("<%=element%>"+"_type",anyTypeQName_<%=cid%>);	
+					paramMap_<%=cid%>.put(util_<%=cid%>.removePunctuation("<%=element%>"+"_type"),anyTypeQName_<%=cid%>);	
 <%
 				}
 			}
@@ -147,18 +147,18 @@ for(IMetadataTable metadata:metadatas){
                     			realExpression = expression.substring(expression.indexOf("(")+1,expression.indexOf(",")).trim();
                     			delimiter = expression.substring(expression.indexOf("\"")+1,expression.lastIndexOf("\""));
 %>
-					outputValue_<%=cid%> = util_<%=cid%>.normalize(util_<%=cid%>.getValue(outMap_<%=cid%>,"<%=realExpression%>").toString(),"<%=delimiter%>");
+					outputValue_<%=cid%> = util_<%=cid%>.normalize(util_<%=cid%>.getValue(outMap_<%=cid%>,util_<%=cid%>.removePunctuation("<%=realExpression%>")).toString(),"<%=delimiter%>");
 <%
                     		}else if(denormalizePattern.matcher(expression).matches()){
                     			realExpression = expression.substring(expression.indexOf("(")+1,expression.indexOf(",")).trim();
                     			delimiter = expression.substring(expression.indexOf("\"")+1,expression.lastIndexOf("\""));
 %>    				
-        			outputValue_<%=cid%> = util_<%=cid%>.denormalize((List)util_<%=cid%>.getValue(outMap_<%=cid%>,"<%=realExpression%>"),"<%=delimiter%>");    				
+        			outputValue_<%=cid%> = util_<%=cid%>.denormalize((List)util_<%=cid%>.getValue(outMap_<%=cid%>,util_<%=cid%>.removePunctuation("<%=realExpression%>")),"<%=delimiter%>");    				
 <%    		
                     		}else{
                     			realExpression=expression.trim();
 %>
- 					outputValue_<%=cid%> = util_<%=cid%>.getValue(outMap_<%=cid%>,"<%=realExpression%>");
+ 					outputValue_<%=cid%> = util_<%=cid%>.getValue(outMap_<%=cid%>,util_<%=cid%>.removePunctuation("<%=realExpression%>"));
 <%
     						}
 %>
