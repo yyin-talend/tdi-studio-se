@@ -238,7 +238,20 @@ for (INode node : graphicalNodes) {
 		System.out.println(uri);
 
 	} else if ("cCXF".equals(componentName)) {
-		String url = ElementParameterParser.getValue(node,"__ADDRESS__").trim();
+		String url = ElementParameterParser.getValue(node, "__ADDRESS__").trim();
+
+		if ("true".equals(ElementParameterParser.getValue(node, "__ENABLE_SL__"))) {
+			List<? extends IConnection> conns = node.getIncomingConnections();
+			if (!conns.isEmpty()) {
+				INode source = conns.get(0).getSource();
+				if (!("cErrorHandler".equals(source.getComponent().getName())
+						&& source.getIncomingConnections().isEmpty())) {
+					// consumer role
+					url = "((null == bundleContext) ? " + url + " : \"locator://locator/\")";
+				}
+			}
+		}
+
 		String serviceType = ElementParameterParser.getValue(node, "__SERVICE_TYPE__");
 
 		StringBuilder sb = new StringBuilder();
@@ -509,17 +522,17 @@ for (INode node : graphicalNodes) {
 	} else if ("cHttp".equals(componentName)) {
 
 		StringBuffer sb = new StringBuffer();
-		
+
 		String resourceUri = ElementParameterParser.getValue(node, "__URI__");
 		sb.append(resourceUri);
 
 		boolean hasParam = false;
-		
+
 		String method = ElementParameterParser.getValue(node, "__METHOD__");
 		if("GET".equals(method)||"HEAD".equals(method)){
 			List<Map<String, String>> parameters = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__PARAMETERS__");
 			String encodeCharset = ElementParameterParser.getValue(node, "__ENCODER_CHARSET__");
-			
+
 			for (Map<String, String> map : parameters) {
 				String argName = map.get("KEY").trim();
 				String argValue = map.get("VALUE").trim();
@@ -547,7 +560,7 @@ for (INode node : graphicalNodes) {
 				}
 			}
 		}
-		
+
 		uri = sb.toString();
 	} else {
 		continue;
