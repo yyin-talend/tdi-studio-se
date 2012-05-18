@@ -72,7 +72,6 @@ import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.i18n.Messages;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.genhtml.CSSParserUtils;
@@ -106,6 +105,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+import org.talend.designer.documentation.i18.Messages;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -145,7 +145,7 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
 
     private static Map<Integer, ByteArrayOutputStream> logoImageCache = new HashMap<Integer, ByteArrayOutputStream>();
 
-    private static String userDocImageOldPath = "";
+    private static String userDocImageOldPath = ""; //$NON-NLS-1$
 
     private Project project;
 
@@ -236,10 +236,10 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
             ProcessType processType = null;
             if (resource.getItem() instanceof ProcessItem) {
                 processType = ((ProcessItem) resource.getItem()).getProcess();
-                innerContent = (byte[]) processType.getScreenshots().get("process");
+                innerContent = (byte[]) processType.getScreenshots().get("process"); //$NON-NLS-1$
             } else if (resource.getItem() instanceof JobletProcessItem) {
                 processType = ((JobletProcessItem) resource.getItem()).getJobletProcess();
-                innerContent = (byte[]) processType.getScreenshots().get("process");
+                innerContent = (byte[]) processType.getScreenshots().get("process"); //$NON-NLS-1$
             }
 
             if (innerContent != null) {
@@ -295,18 +295,18 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
             org.w3c.dom.Document document = builder.parse(new File(resource));
             org.w3c.dom.Element rootElement = document.getDocumentElement();
 
-            NodeList list = rootElement.getElementsByTagName("style");
+            NodeList list = rootElement.getElementsByTagName("style"); //$NON-NLS-1$
             org.w3c.dom.Element element = (org.w3c.dom.Element) list.item(0);
             String value = element.getChildNodes().item(0).getNodeValue();
             if (value != null) {
                 if (folder != null) {
-                    CSSParserUtils.createCssFile(value, folder + File.separator + "default.css");
+                    CSSParserUtils.createCssFile(value, folder + File.separator + "default.css"); //$NON-NLS-1$
                 }
-                if (cssfile != null && !cssfile.equals("")) {
+                if (cssfile != null && !cssfile.equals("")) { //$NON-NLS-1$
                     if (folder != null) {
                         String cssName = new File(cssfile).getName();
-                        if (cssName.equalsIgnoreCase("default.css")) {
-                            cssName = "User_" + cssName;
+                        if (cssName.equalsIgnoreCase("default.css")) { //$NON-NLS-1$
+                            cssName = "User_" + cssName; //$NON-NLS-1$
                         }
                         File file = new File(folder + File.separator + cssName);
                         if (!file.exists()) {
@@ -404,7 +404,7 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
         boolean isCheck = CorePlugin.getDefault().getPreferenceStore().getBoolean(ITalendCorePrefConstants.USE_CSS_TEMPLATE);
         String cssFile = CorePlugin.getDefault().getPreferenceStore().getString(ITalendCorePrefConstants.CSS_FILE_PATH);
         String temXslPath = null;
-        if (isCheck && cssFile != null && !cssFile.equals("")) {
+        if (isCheck && cssFile != null && !cssFile.equals("")) { //$NON-NLS-1$
             String tempFolderPath = checkTempDirIsExists(resource);
             temXslPath = tempFolderPath + File.separator + (new File(xslFilePath)).getName();
             File temXslFile = new File(temXslPath);
@@ -431,10 +431,10 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
         ProcessType processType = null;
         if (resource.getItem() instanceof ProcessItem) {
             processType = ((ProcessItem) resource.getItem()).getProcess();
-            innerContent = (byte[]) processType.getScreenshots().get("process");
+            innerContent = (byte[]) processType.getScreenshots().get("process"); //$NON-NLS-1$
         } else if (resource.getItem() instanceof JobletProcessItem) {
             processType = ((JobletProcessItem) resource.getItem()).getJobletProcess();
-            innerContent = (byte[]) processType.getScreenshots().get("process");
+            innerContent = (byte[]) processType.getScreenshots().get("process"); //$NON-NLS-1$
             ;
         }
 
@@ -448,9 +448,9 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
             Image pdfImage = new Image(null, bais);
             int width = pdfImage.getImageData().width;
             int percent = 22 * 32 * 100 / width;
-            ImageUtils.save(ImageUtils.scale(pdfImage, percent), picFolderPath + File.separatorChar + "pdf_" + picName,
+            ImageUtils.save(ImageUtils.scale(pdfImage, percent), picFolderPath + File.separatorChar + "pdf_" + picName, //$NON-NLS-1$
                     SWT.IMAGE_PNG);
-            picList.add(new File(picFolderPath + File.separatorChar + "pdf_" + picName).toURL());
+            picList.add(new File(picFolderPath + File.separatorChar + "pdf_" + picName).toURL()); //$NON-NLS-1$
             pdfImage.dispose();
         }
         for (NodeType node : (List<NodeType>) processType.getNode()) {
@@ -474,7 +474,7 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
                 Image pdfImage = new Image(null, bais);
                 int width = pdfImage.getImageData().width;
                 int percent = 22 * 32 * 100 / width;
-                ImageUtils.save(ImageUtils.scale(pdfImage, percent), picFolderPath + File.separatorChar + "pdf_" + picName,
+                ImageUtils.save(ImageUtils.scale(pdfImage, percent), picFolderPath + File.separatorChar + "pdf_" + picName, //$NON-NLS-1$
                         SWT.IMAGE_PNG);
                 picList.add(new File(picFolderPath + File.separatorChar + picName).toURL());
                 pdfImage.dispose();
@@ -546,7 +546,7 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
         // for pdf
         File originalXmlFile = new File(xmlFilePath);
         if (originalXmlFile.exists()) {
-            String pdfXmlPath = tempFolderPath + File.separatorChar + "pdf_" + jobName + IHTMLDocConstants.XML_FILE_SUFFIX;
+            String pdfXmlPath = tempFolderPath + File.separatorChar + "pdf_" + jobName + IHTMLDocConstants.XML_FILE_SUFFIX; //$NON-NLS-1$
             File pdfXmlFile = new File(pdfXmlPath);
             if (pdfXmlFile.exists()) {
                 pdfXmlFile.delete();
@@ -556,7 +556,7 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
             SAXReader saxReader = new SAXReader();
             Document document = saxReader.read(pdfXmlFile);
             Attribute attri = (Attribute) document.selectNodes("/project/job/preview/@picture").get(0); //$NON-NLS-1$
-            attri.setValue(IHTMLDocConstants.PICTUREFOLDERPATH + "pdf_" + jobName + IHTMLDocConstants.JOB_PREVIEW_PIC_SUFFIX);
+            attri.setValue(IHTMLDocConstants.PICTUREFOLDERPATH + "pdf_" + jobName + IHTMLDocConstants.JOB_PREVIEW_PIC_SUFFIX); //$NON-NLS-1$
 
             List attributeList = document.selectNodes("/project/job/externalNodeComponents/component/@preview"); //$NON-NLS-1$
             for (int i = 0; i < attributeList.size(); i++) {
@@ -569,7 +569,7 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
             XMLHandler.generateXMLFile(tempFolderPath, pdfXmlPath, document);
 
             HTMLHandler.clearExternalNodeFileCache();
-            String htmlPdfPath = tempFolderPath + File.separatorChar + "pdf_" + jobName + IHTMLDocConstants.HTML_FILE_SUFFIX;
+            String htmlPdfPath = tempFolderPath + File.separatorChar + "pdf_" + jobName + IHTMLDocConstants.HTML_FILE_SUFFIX; //$NON-NLS-1$
             HTMLHandler.generateHTMLFile(tempFolderPath, xslFilePath, pdfXmlPath, htmlPdfPath, this.externalNodeHTMLMap);
         }
 
@@ -1264,23 +1264,23 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
 
         Element descr = jobElement.addElement("description"); //$NON-NLS-1$
         // bug 22608
-        String jobDescriptionStr = HTMLDocUtils.checkString(property.getDescription()).replaceAll("\\r\\n", "<br/>");
+        String jobDescriptionStr = HTMLDocUtils.checkString(property.getDescription()).replaceAll("\\r\\n", "<br/>"); //$NON-NLS-1$ //$NON-NLS-2$
         StringBuffer sb = new StringBuffer();
         if (jobDescriptionStr != null) {
-            String[] jobDescriptions = jobDescriptionStr.split("<br/>");
+            String[] jobDescriptions = jobDescriptionStr.split("<br/>"); //$NON-NLS-1$
             for (String str : jobDescriptions) {
                 String ss = str;
                 if (str != null && str.length() > 120) {
                     while (ss.length() > 120) {
                         int k = ss.length() / 120;
                         for (int i = 0; i < k; i++) {
-                            sb.append(ss.substring(0, 120) + "<br/>");
+                            sb.append(ss.substring(0, 120) + "<br/>"); //$NON-NLS-1$
                             ss = ss.substring(120, ss.length());
                         }
                     }
                     sb.append(ss);
                 } else {
-                    sb.append(str + "<br/>");
+                    sb.append(str + "<br/>"); //$NON-NLS-1$
                 }
             }
         }
@@ -1331,7 +1331,7 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
         projectElement.addAttribute("docType", getDocTypeAttribute()); //$NON-NLS-1$
         String company = CorePlugin.getDefault().getPreferenceStore().getString(ITalendCorePrefConstants.DOC_COMPANY_NAME);
         if (company != null) {
-            projectElement.addAttribute("company", company);
+            projectElement.addAttribute("company", company); //$NON-NLS-1$
         }
 
         Element proDesc = projectElement.addElement("pro-description"); //$NON-NLS-1$
@@ -1350,58 +1350,56 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
      */
     protected Element generateMessages(Element element) {
         // Job.xsl and other common strings
-        element.addAttribute("i18n.job.generated.documetation", Messages.getString("HTMLDocGenerator_generate_document")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.project.name", Messages.getString("HTMLDocGenerator.project_name")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.generated.date", Messages.getString("HTMLDocGenerator.generation_date")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.author", Messages.getString("HTMLDocGenerator.author")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.summary", Messages.getString("HTMLDocGenerator.summary")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.project.description", Messages.getString("HTMLDocGenerator.project_description")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.job.description", Messages.getString("HTMLDocGenerator.job_description")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.job.preview.picture", Messages.getString("HTMLDocGenerator.job_preview_picture")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.job.setting", Messages.getString("HTMLDocGenerator.job_settings")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.context.list", Messages.getString("HTMLDocGenerator.context_list")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.component.list", Messages.getString("HTMLDocGenerator.component_list")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.components.description", Messages.getString("HTMLDocGenerator.component_description")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.source.code", Messages.getString("HTMLDocGenerator.source_code")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.properties", Messages.getString("HTMLDocGenerator.properties")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.values", Messages.getString("HTMLDocGenerator.values")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.name", Messages.getString("HTMLDocGenerator.name")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.language", Messages.getString("HTMLDocGenerator.language")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.description", Messages.getString("HTMLDocGenerator.description")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.author.min", Messages.getString("HTMLDocGenerator.author1")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.version", Messages.getString("HTMLDocGenerator.version")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.purpose", Messages.getString("HTMLDocGenerator.purpose")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.status", Messages.getString("HTMLDocGenerator.status")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.creation", Messages.getString("HTMLDocGenerator.creation")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.modification", Messages.getString("HTMLDocGenerator.modification")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.extract.settings", Messages.getString("HTMLDocGenerator.extra_settings")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.value", Messages.getString("HTMLDocGenerator.value")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute(
-                "i18n.job.stats.logs", Messages.getString("HTMLDocGenerator.status") + " & " + Messages.getString("EComponentCategory_logs")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-        element.addAttribute("i18n.job.context", Messages.getString("HTMLDocGenerator.context")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.promt", Messages.getString("HTMLDocGenerator.prompt")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.need.promt", Messages.getString("HTMLDocGenerator.need_prompt")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.type", Messages.getString("HTMLDocGenerator.type")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.source", Messages.getString("HTMLDocGenerator.source")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.component.name", Messages.getString("HTMLDocGenerator.component_name")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.component.type", Messages.getString("HTMLDocGenerator.component_type")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.component", Messages.getString("HTMLDocGenerator.component")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.unique.name", Messages.getString("HTMLDocGenerator.unique_name")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.input", Messages.getString("HTMLDocGenerator.input")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.label", Messages.getString("HTMLDocGenerator.label")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.output", Messages.getString("HTMLDocGenerator.output")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.component.parameters", Messages.getString("HTMLDocGenerator.component_parameters")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.schema.for", Messages.getString("HTMLDocGenerator.schema_for") + " "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        element.addAttribute("i18n.job.column", Messages.getString("HTMLDocGenerator.column")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.key", Messages.getString("HTMLDocGenerator.key")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.length", Messages.getString("HTMLDocGenerator.length")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.precision", Messages.getString("HTMLDocGenerator.precision")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.nullable", Messages.getString("HTMLDocGenerator.nullable")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.comment", Messages.getString("HTMLDocGenerator.comment")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute(
-                "i18n.job.original.function.parameters", Messages.getString("HTMLDocGenerator.original_function_para")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.ended", Messages.getString("HTMLDocGenerator.ended")); //$NON-NLS-1$ //$NON-NLS-2$
-        element.addAttribute("i18n.job.content", Messages.getString("HTMLDocGenerator.content")); //$NON-NLS-1$ //$NON-NLS-2$
+        element.addAttribute("i18n.job.generated.documetation", Messages.HTMLDocGenerator_Generated_documentation); //$NON-NLS-1$
+        element.addAttribute("i18n.job.project.name", Messages.HTMLDocGenerator_Project_Name); //$NON-NLS-1$
+        element.addAttribute("i18n.job.generated.date", Messages.HTMLDocGenerator_GENERATION_DATE); //$NON-NLS-1$
+        element.addAttribute("i18n.job.author", Messages.HTMLDocGenerator_AUTHOR); //$NON-NLS-1$
+        element.addAttribute("i18n.job.summary", Messages.HTMLDocGenerator_Summary); //$NON-NLS-1$
+        element.addAttribute("i18n.job.project.description", Messages.HTMLDocGenerator_Project_Description); //$NON-NLS-1$
+        element.addAttribute("i18n.job.job.description", Messages.HTMLDocGenerator_Description); //$NON-NLS-1$
+        element.addAttribute("i18n.job.job.preview.picture", Messages.HTMLDocGenerator_Preview_Picture); //$NON-NLS-1$
+        element.addAttribute("i18n.job.job.setting", Messages.HTMLDocGenerator_Settings); //$NON-NLS-1$
+        element.addAttribute("i18n.job.context.list", Messages.HTMLDocGenerator_Context_List); //$NON-NLS-1$
+        element.addAttribute("i18n.job.component.list", Messages.HTMLDocGenerator_Component_List); //$NON-NLS-1$
+        element.addAttribute("i18n.job.components.description", Messages.HTMLDocGenerator_Components_Description); //$NON-NLS-1$
+        element.addAttribute("i18n.job.source.code", Messages.HTMLDocGenerator_Source_Code); //$NON-NLS-1$
+        element.addAttribute("i18n.job.properties", Messages.HTMLDocGenerator_Properties); //$NON-NLS-1$
+        element.addAttribute("i18n.job.values", Messages.HTMLDocGenerator_Values); //$NON-NLS-1$
+        element.addAttribute("i18n.job.name", Messages.HTMLDocGenerator_Name); //$NON-NLS-1$
+        element.addAttribute("i18n.job.language", Messages.HTMLDocGenerator_Language); //$NON-NLS-1$
+        element.addAttribute("i18n.job.description", Messages.HTMLDocGenerator_Description); //$NON-NLS-1$
+        element.addAttribute("i18n.job.author.min", Messages.HTMLDocGenerator_Author); //$NON-NLS-1$
+        element.addAttribute("i18n.job.version", Messages.HTMLDocGenerator_Version); //$NON-NLS-1$
+        element.addAttribute("i18n.job.purpose", Messages.HTMLDocGenerator_Purpose); //$NON-NLS-1$
+        element.addAttribute("i18n.job.status", Messages.HTMLDocGenerator_Status); //$NON-NLS-1$
+        element.addAttribute("i18n.job.creation", Messages.HTMLDocGenerator_Creation); //$NON-NLS-1$
+        element.addAttribute("i18n.job.modification", Messages.HTMLDocGenerator_Modification); //$NON-NLS-1$
+        element.addAttribute("i18n.job.extract.settings", Messages.HTMLDocGenerator_Extra_settings); //$NON-NLS-1$
+        element.addAttribute("i18n.job.value", Messages.HTMLDocGenerator_Value); //$NON-NLS-1$
+        element.addAttribute("i18n.job.stats.logs", Messages.HTMLDocGenerator_Status + " & " + Messages.HTMLDocGenerator_Logs); //$NON-NLS-1$ //$NON-NLS-3$
+        element.addAttribute("i18n.job.context", Messages.HTMLDocGenerator_Context); //$NON-NLS-1$
+        element.addAttribute("i18n.job.promt", Messages.HTMLDocGenerator_Prompt); //$NON-NLS-1$
+        element.addAttribute("i18n.job.need.promt", Messages.HTMLDocGenerator_Need_Prompt); //$NON-NLS-1$
+        element.addAttribute("i18n.job.type", Messages.HTMLDocGenerator_Type); //$NON-NLS-1$
+        element.addAttribute("i18n.job.source", Messages.HTMLDocGenerator_Source); //$NON-NLS-1$
+        element.addAttribute("i18n.job.component.name", Messages.HTMLDocGenerator_Component_Name); //$NON-NLS-1$
+        element.addAttribute("i18n.job.component.type", Messages.HTMLDocGenerator_Component_Type); //$NON-NLS-1$
+        element.addAttribute("i18n.job.component", Messages.HTMLDocGenerator_Component); //$NON-NLS-1$
+        element.addAttribute("i18n.job.unique.name", Messages.HTMLDocGenerator_UNIQUE_NAME); //$NON-NLS-1$
+        element.addAttribute("i18n.job.input", Messages.HTMLDocGenerator_INPUT); //$NON-NLS-1$
+        element.addAttribute("i18n.job.label", Messages.HTMLDocGenerator_LABEL); //$NON-NLS-1$
+        element.addAttribute("i18n.job.output", Messages.HTMLDocGenerator_OUTPUT); //$NON-NLS-1$
+        element.addAttribute("i18n.job.component.parameters", Messages.HTMLDocGenerator_Component_Parameters); //$NON-NLS-1$
+        element.addAttribute("i18n.job.schema.for", Messages.HTMLDocGenerator_Schema_for + " "); //$NON-NLS-1$ //$NON-NLS-3$
+        element.addAttribute("i18n.job.column", Messages.HTMLDocGenerator_Column); //$NON-NLS-1$
+        element.addAttribute("i18n.job.key", Messages.HTMLDocGenerator_Key); //$NON-NLS-1$
+        element.addAttribute("i18n.job.length", Messages.HTMLDocGenerator_Length); //$NON-NLS-1$
+        element.addAttribute("i18n.job.precision", Messages.HTMLDocGenerator_Precision); //$NON-NLS-1$
+        element.addAttribute("i18n.job.nullable", Messages.HTMLDocGenerator_Nullable); //$NON-NLS-1$
+        element.addAttribute("i18n.job.comment", Messages.HTMLDocGenerator_Comment); //$NON-NLS-1$
+        element.addAttribute("i18n.job.original.function.parameters", Messages.HTMLDocGenerator_Original_Function_Parameters); //$NON-NLS-1$
+        element.addAttribute("i18n.job.ended", Messages.HTMLDocGenerator_ended); //$NON-NLS-1$
+        element.addAttribute("i18n.job.content", Messages.HTMLDocGenerator_content); //$NON-NLS-1$
 
         return element;
     }
@@ -1538,7 +1536,7 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
         ByteArrayOutputStream result = logoImageCache.get(type);
         if (documentationPluginLoaded) {
             String userLogoPath = CorePlugin.getDefault().getPreferenceStore().getString(ITalendCorePrefConstants.DOC_USER_LOGO);
-            if (userLogoPath != null && !"".equals(userLogoPath)) {
+            if (userLogoPath != null && !"".equals(userLogoPath)) { //$NON-NLS-1$
                 if (result == null || !userLogoPath.equals(userDocImageOldPath)) {
                     userDocImageOldPath = userLogoPath;
                     result = new ByteArrayOutputStream(3072);

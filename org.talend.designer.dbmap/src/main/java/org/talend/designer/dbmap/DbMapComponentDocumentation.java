@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.core.i18n.Messages;
 import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.genhtml.HTMLHandler;
 import org.talend.core.model.genhtml.IHTMLDocConstants;
@@ -24,6 +23,7 @@ import org.talend.core.model.process.IExternalData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapEntry;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
+import org.talend.designer.dbmap.i18n.Messages;
 
 public class DbMapComponentDocumentation implements IComponentDocumentation {
 

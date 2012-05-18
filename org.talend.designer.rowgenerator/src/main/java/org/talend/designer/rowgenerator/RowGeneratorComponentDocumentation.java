@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.core.i18n.Messages;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.genhtml.HTMLDocUtils;
@@ -42,6 +41,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 
 /**

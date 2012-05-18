@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.core.i18n.Messages;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.genhtml.HTMLDocUtils;
@@ -43,6 +42,7 @@ import org.talend.core.model.process.INode;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
+import org.talend.designer.mapper.i18n.Messages;
 
 /**
  * This class is used for generating HTML file for Component 'tMap'. <br/>
