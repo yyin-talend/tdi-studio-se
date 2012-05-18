@@ -98,9 +98,9 @@ public class ExcelTool {
 			if (isAbsY && keepCellFormat) {
 				initPreXlsx(fileName);
 			}
-			InputStream inp = new FileInputStream(fileName);
-			wb = WorkbookFactory.create(inp);
 			if (appendWorkbook) {
+				InputStream inp = new FileInputStream(fileName);
+				wb = WorkbookFactory.create(inp);
 				sheet = wb.getSheet(sheetName);
 				if (sheet != null) {
 					if (appendSheet) {
@@ -113,9 +113,8 @@ public class ExcelTool {
 					sheet = wb.createSheet(sheetName);
 				}
 			} else {
-				for (int i = wb.getNumberOfSheets() - 1; i >= 0; i--) {
-					wb.removeSheetAt(i);
-				}
+				xlsxFile.delete();
+				wb = new SXSSFWorkbook(rowAccessWindowSize);
 				sheet = wb.createSheet(sheetName);
 			}
 		} else {
