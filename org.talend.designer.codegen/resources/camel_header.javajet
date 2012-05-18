@@ -156,12 +156,21 @@ for (INode node : processNodes) {
 						<% for (Map<String, String> custProp : customProperties) { %>
 							slCustomProps_<%=cid%>.put(<%=custProp.get("NAME")%>, <%=custProp.get("VALUE")%>);
 						<% } %>
-						<% if (node.getIncomingConnections().isEmpty()) { %>
-							// provider
-							locatorFeature.setAvailableEndpointProperties(slCustomProps_<%=cid%>);
-						<% } else { %>
-							// consumer
+<%
+							boolean actAsConsumer = false;
+							List<? extends IConnection> conns = node.getIncomingConnections();
+							if (!conns.isEmpty()) {
+								INode source = conns.get(0).getSource();
+								if (!("cErrorHandler".equals(source.getComponent().getName())
+										&& source.getIncomingConnections().isEmpty())) {
+									actAsConsumer = true;
+								}
+							}
+%>
+						<% if (actAsConsumer) { %>
 							locatorFeature.setRequiredEndpointProperties(slCustomProps_<%=cid%>);
+						<% } else { %>
+							locatorFeature.setAvailableEndpointProperties(slCustomProps_<%=cid%>);
 						<% } %>
 					<% } %>
 
