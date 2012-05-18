@@ -98,9 +98,9 @@ public class ExcelTool {
             if (isAbsY && keepCellFormat) {
                 initPreXlsx(fileName);
             }
-            InputStream inp = new FileInputStream(fileName);
-            wb = WorkbookFactory.create(inp);
             if (appendWorkbook) {
+            	InputStream inp = new FileInputStream(fileName);
+                wb = WorkbookFactory.create(inp);
                 sheet = wb.getSheet(sheetName);
                 if (sheet != null) {
                     if (appendSheet) {
@@ -113,13 +113,8 @@ public class ExcelTool {
                     sheet = wb.createSheet(sheetName);
                 }
             } else {
-                List<Integer> indexs = new ArrayList<Integer>();
-                for (XSSFSheet sheet : (XSSFWorkbook) wb) {
-                    indexs.add(wb.getSheetIndex(sheet));
-                }
-                for (int i = indexs.size() - 1; i >= 0; i--) {
-                    wb.removeSheetAt(indexs.get(i));
-                }
+            	xlsxFile.delete();
+            	wb = new XSSFWorkbook();
                 sheet = wb.createSheet(sheetName);
             }
         } else {
