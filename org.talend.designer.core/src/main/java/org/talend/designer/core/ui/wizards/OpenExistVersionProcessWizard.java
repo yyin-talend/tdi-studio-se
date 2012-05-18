@@ -203,7 +203,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
         return true;
     }
 
-    private boolean refreshNewJob() {
+    protected boolean refreshNewJob() {
         if (alreadyEditedByUser) {
             return false;
         }
