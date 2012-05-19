@@ -54,7 +54,11 @@ public class FolderWizardPage extends WizardPage {
         this.defaultLabel = defaultLabel;
 
         setTitle(Messages.getString("NewFolderWizard.title")); //$NON-NLS-1$
-        setDescription(DESC);
+        if (defaultLabel == null) {
+            setDescription(DESC);
+        } else {
+            setDescription("");
+        }
 
         nameStatus = createOkStatus();
     }
@@ -102,11 +106,11 @@ public class FolderWizardPage extends WizardPage {
     protected void checkFieldsValue() {
         // Field Name
         if (nameText.getText().length() == 0) {
-            nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
-                    .getString("NewFolderWizard.nameEmpty"), null); //$NON-NLS-1$
+            nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
+                    Messages.getString("NewFolderWizard.nameEmpty"), null); //$NON-NLS-1$
         } else if (!Pattern.matches(RepositoryConstants.FOLDER_PATTERN, nameText.getText())) {
-            nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
-                    .getString("NewFolderWizard.nameIncorrect"), null); //$NON-NLS-1$
+            nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
+                    Messages.getString("NewFolderWizard.nameIncorrect"), null); //$NON-NLS-1$
         } else if ((defaultLabel == null || !defaultLabel.equals(nameText.getText()))
                 && !((FolderWizard) getWizard()).isValid(nameText.getText())) {
             nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages.getString(
@@ -132,7 +136,7 @@ public class FolderWizardPage extends WizardPage {
             setErrorMessage(message2);
             setMessage(""); //$NON-NLS-1$
         } else {
-            if (message2.length() == 0) {
+            if (message2.length() == 0 && defaultLabel == null) {
                 message2 = DESC;
             }
             setMessage(message2);

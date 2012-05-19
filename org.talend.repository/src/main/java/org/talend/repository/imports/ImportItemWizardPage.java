@@ -914,7 +914,7 @@ class ImportItemWizardPage extends WizardPage {
                     repositoryUtil.importItemRecords(manager, itemRecords, monitor, overwrite, destinationPath, contentType);
                     if (repositoryUtil.hasErrors()) {
                         throw new CoreException(new Status(IStatus.ERROR, FrameworkUtil.getBundle(this.getClass())
-                                .getSymbolicName(), "Import erros")); //$NON-NLS-1$
+                                .getSymbolicName(), "Import errors")); //$NON-NLS-1$
                     }
 
                 }
