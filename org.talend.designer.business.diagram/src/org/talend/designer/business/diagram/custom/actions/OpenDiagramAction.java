@@ -21,9 +21,14 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPerspectiveDescriptor;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.properties.BusinessProcessItem;
@@ -33,6 +38,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.ui.branding.IBrandingConfiguration;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor;
 import org.talend.repository.ProjectManager;
@@ -158,6 +164,28 @@ public class OpenDiagramAction extends AContextualAction implements IIntroAction
         if (params == null) {
             return getSelection();
         } else {
+
+            IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            if (null == workbenchWindow) {
+                return null;
+            }
+            IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
+            if (null == workbenchPage) {
+                return null;
+            }
+
+            IPerspectiveDescriptor currentPerspective = workbenchPage.getPerspective();
+            if (!IBrandingConfiguration.PERSPECTIVE_DI_ID.equals(currentPerspective.getId())) {
+                // show di perspective
+                try {
+                    workbenchWindow.getWorkbench().showPerspective(IBrandingConfiguration.PERSPECTIVE_DI_ID, workbenchWindow);
+                    workbenchPage = workbenchWindow.getActivePage();
+                } catch (WorkbenchException e) {
+                    ExceptionHandler.process(e);
+                    return null;
+                }
+            }
+
             RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(params.getProperty("nodeId"), false);
             IRepositoryView viewPart = getViewPart();
             if (repositoryNode != null && viewPart != null) {

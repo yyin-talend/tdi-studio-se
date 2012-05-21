@@ -11,14 +11,20 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IPerspectiveDescriptor;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.ui.branding.IBrandingConfiguration;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.repository.ProjectManager;
@@ -144,6 +150,28 @@ public class CreateDiagramAction extends AContextualAction implements IIntroActi
     }
 
     private void setRepositoryNode(Properties params) {
+
+        IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (null == workbenchWindow) {
+            return;
+        }
+        IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
+        if (null == workbenchPage) {
+            return;
+        }
+
+        IPerspectiveDescriptor currentPerspective = workbenchPage.getPerspective();
+        if (!IBrandingConfiguration.PERSPECTIVE_DI_ID.equals(currentPerspective.getId())) {
+            // show di perspective
+            try {
+                workbenchWindow.getWorkbench().showPerspective(IBrandingConfiguration.PERSPECTIVE_DI_ID, workbenchWindow);
+                workbenchPage = workbenchWindow.getActivePage();
+            } catch (WorkbenchException e) {
+                ExceptionHandler.process(e);
+                return;
+            }
+        }
+
         // bug 16594
         IRepositoryView view = RepositoryManagerHelper.getRepositoryView();
         if (view != null) {

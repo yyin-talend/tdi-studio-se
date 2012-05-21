@@ -25,9 +25,12 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.intro.IIntroSite;
 import org.eclipse.ui.intro.config.IIntroAction;
 import org.talend.commons.exception.PersistenceException;
@@ -38,6 +41,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.ui.branding.IBrandingConfiguration;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -201,27 +205,40 @@ public class CreateProcess extends AContextualAction implements IIntroAction {
     }
 
     private void selectRootObject(Properties params) {
-        // bug 16594
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        if (page != null) {
-            String perId = page.getPerspective().getId();
-            if ((!"".equals(perId) || null != perId) && perId.equalsIgnoreCase(PERSPECTIVE_DI_ID)) {
-                IRepositoryView view = RepositoryManagerHelper.getRepositoryView();
-                if (view != null) {
+        IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (null == workbenchWindow) {
+            return;
+        }
+        IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
+        if (null == workbenchPage) {
+            return;
+        }
 
-                    Object type = params.get("type");
-                    if (ERepositoryObjectType.PROCESS.name().equals(type)) {
-                        IRepositoryNode processNode = ((ProjectRepositoryNode) view.getRoot())
-                                .getRootRepositoryNode(ERepositoryObjectType.PROCESS);
-                        if (processNode != null) {
-                            setWorkbenchPart(view);
-                            final StructuredViewer viewer = view.getViewer();
-                            if (viewer instanceof TreeViewer) {
-                                ((TreeViewer) viewer).expandToLevel(processNode, 1);
-                            }
-                            viewer.setSelection(new StructuredSelection(processNode));
-                        }
+        IPerspectiveDescriptor currentPerspective = workbenchPage.getPerspective();
+        if (!IBrandingConfiguration.PERSPECTIVE_DI_ID.equals(currentPerspective.getId())) {
+            // show di perspective
+            try {
+                workbenchWindow.getWorkbench().showPerspective(IBrandingConfiguration.PERSPECTIVE_DI_ID, workbenchWindow);
+                workbenchPage = workbenchWindow.getActivePage();
+            } catch (WorkbenchException e) {
+                ExceptionHandler.process(e);
+                return;
+            }
+        }
+
+        IRepositoryView view = RepositoryManagerHelper.getRepositoryView();
+        if (view != null) {
+            Object type = params.get("type");
+            if (ERepositoryObjectType.PROCESS.name().equals(type)) {
+                IRepositoryNode processNode = ((ProjectRepositoryNode) view.getRoot())
+                        .getRootRepositoryNode(ERepositoryObjectType.PROCESS);
+                if (processNode != null) {
+                    setWorkbenchPart(view);
+                    final StructuredViewer viewer = view.getViewer();
+                    if (viewer instanceof TreeViewer) {
+                        ((TreeViewer) viewer).expandToLevel(processNode, 1);
                     }
+                    viewer.setSelection(new StructuredSelection(processNode));
                 }
             }
         }
