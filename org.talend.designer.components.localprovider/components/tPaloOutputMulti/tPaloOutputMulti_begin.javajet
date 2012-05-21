@@ -89,8 +89,7 @@ if(useExistingConnection){
 					for(org.talend.jpalo.palodimension plDim_<%=cid %> : pCB_<%=cid %>.getDimensions().getDimensions()){
 						alPaloElements_<%=cid %>.add(plDim_<%=cid %>.getElements());
 					}
-					//for bug TDI-19873
-					org.talend.jpalo.palodatamulti plDT_<%=cid %> = new org.talend.jpalo.palodatamulti(pConn_<%=cid %>, pDB_<%=cid %>, <%=sCommitSize%>, alPaloElements_<%=cid %>.size(),alPaloElements_<%=cid %>);
+					org.talend.jpalo.palodatamulti plDT_<%=cid %> = new org.talend.jpalo.palodatamulti(pConn_<%=cid %>, pDB_<%=cid %>, <%=sCommitSize%>, <%=sizeColumns%>,alPaloElements_<%=cid %>);
 					String[] strArrToAdd_<%=cid %> = new String[<%=sizeColumns%>];
 <%
 				}
