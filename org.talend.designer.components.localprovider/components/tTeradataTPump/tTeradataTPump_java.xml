@@ -54,6 +54,14 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="HOST"
+      FIELD="TEXT"
+      NUM_ROW="3"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+	
+    <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
       NUM_ROW="3"

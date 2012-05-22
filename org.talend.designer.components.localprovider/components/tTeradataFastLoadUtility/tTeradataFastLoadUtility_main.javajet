@@ -22,6 +22,7 @@ String dbuser= ElementParameterParser.getValue(node, "__USER__");
 String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
 String table= ElementParameterParser.getValue(node, "__TABLE__");
 
+String dbhost= ElementParameterParser.getValue(node, "__HOST__");
 String scriptPath= ElementParameterParser.getValue(node, "__SCRIPT_PATH__");
 String execution= ElementParameterParser.getValue(node, "__EXECUTION__");
 String loadFile= ElementParameterParser.getValue(node, "__LOAD_FILE__");
@@ -72,7 +73,7 @@ java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(<%=scriptPath%>+<%=tabl
 StringBuilder script_<%=cid%> = new StringBuilder();
 fw_<%=cid %>.write("SESSIONS 8;"+ "<%=lineSeparator%>");
 fw_<%=cid %>.write("SET RECORD VARTEXT \""+<%=separator%>+"\";"+ "<%=lineSeparator%>");
-fw_<%=cid %>.write("LOGON "+<%=dbuser%>+","+<%=dbpwd%>+";"+ "<%=lineSeparator%>");
+fw_<%=cid %>.write("LOGON "+<%if(dbhost!=null && !"\"\"".equals(dbhost)){%><%=dbhost%>+"/"+<%}%><%=dbuser%>+","+<%=dbpwd%>+";"+ "<%=lineSeparator%>");
 <%
 if(("CLEAR").equals(tableAction)){
 %>
