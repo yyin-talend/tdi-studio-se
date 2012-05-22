@@ -30,8 +30,19 @@ public class OracleComponentHelperTest {
      */
     @Test
     public void testFilterOracleConnectionType() {
-        String type = "ORACLE_SID";
-        assertEquals(StatsAndLogsConstants.ORACLE_WITH_SID_CONN_TYPE, OracleComponentHelper.filterOracleConnectionType(type));
+        assertEquals(StatsAndLogsConstants.ORACLE_WITH_SID_CONN_TYPE,
+                OracleComponentHelper.filterOracleConnectionType(JobSettingsConstants.ORACLE_INPUT_SID_ALIAS));
+        assertEquals(StatsAndLogsConstants.ORACLE_OCI,
+                OracleComponentHelper.filterOracleConnectionType(JobSettingsConstants.ORACLE_OUTPUT_OCI_ALIAS));
+        assertEquals(StatsAndLogsConstants.ORACLE_WITH_SERVICE_CONN_TYPE,
+                OracleComponentHelper.filterOracleConnectionType(JobSettingsConstants.ORACLE_OUTPUT_SN_ALIAS));
+        assertEquals(StatsAndLogsConstants.ORACLE_WITH_SID_CONN_TYPE,
+                OracleComponentHelper.filterOracleConnectionType(JobSettingsConstants.ORACLE_OUTPUT_SID_ALIAS));
+        assertEquals(StatsAndLogsConstants.ORACLE_WITH_SERVICE_CONN_TYPE,
+                OracleComponentHelper.filterOracleConnectionType(JobSettingsConstants.ORACLE_INOUT_SN_ALIAS));
+
+        assertEquals(StatsAndLogsConstants.JDBC_OUTPUT,
+                OracleComponentHelper.filterOracleConnectionType(StatsAndLogsConstants.JDBC_OUTPUT));
     }
 
     /**
@@ -41,8 +52,19 @@ public class OracleComponentHelperTest {
      */
     @Test
     public void testFilterOracleComponentName() {
-        String component = "tOracleOutput_oci";
-        assertEquals(JobSettingsConstants.ORACLE_OUTPUT, OracleComponentHelper.filterOracleComponentName(component));
+        assertEquals(JobSettingsConstants.ORACLE_OUTPUT,
+                OracleComponentHelper.filterOracleComponentName(JobSettingsConstants.ORACLE_OUTPUT_OCI_ALIAS));
+        assertEquals(JobSettingsConstants.ORACLE_OUTPUT,
+                OracleComponentHelper.filterOracleComponentName(JobSettingsConstants.ORACLE_OUTPUT_SN_ALIAS));
+        assertEquals(JobSettingsConstants.ORACLE_OUTPUT,
+                OracleComponentHelper.filterOracleComponentName(JobSettingsConstants.ORACLE_OUTPUT_SID_ALIAS));
+
+        assertEquals(JobSettingsConstants.ORACLE_INPUT,
+                OracleComponentHelper.filterOracleComponentName(JobSettingsConstants.ORACLE_INOUT_SN_ALIAS));
+        assertEquals(JobSettingsConstants.ORACLE_INPUT,
+                OracleComponentHelper.filterOracleComponentName(JobSettingsConstants.ORACLE_INPUT_SID_ALIAS));
+        assertEquals(JobSettingsConstants.ORACLE_INPUT,
+                OracleComponentHelper.filterOracleComponentName(JobSettingsConstants.ORACLE_INOUT_OCI_ALIAS));
     }
 
 }
