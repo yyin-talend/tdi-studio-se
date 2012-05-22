@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.wizards;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -26,6 +29,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
@@ -274,7 +279,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
                     try {
                         if (item instanceof JobScriptItem) {
                             IProject fsProject = ResourceModelUtils.getProject(ProjectManager.getInstance().getCurrentProject());
-                            openXtextEditor(node, fsProject);
+                            openXtextEditor(node, fsProject, readonly);
                         }
                     } catch (PersistenceException e) {
                         ExceptionHandler.process(e);
@@ -302,7 +307,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
         getProperty().setVersion(getOriginVersion());
     }
 
-    private void openXtextEditor(RepositoryNode repositoryNode, IProject fsProject) {
+    private void openXtextEditor(RepositoryNode repositoryNode, IProject fsProject, boolean readonly) {
         try {
             if (ProjectManager.getInstance().isInCurrentMainProject(repositoryNode)) {
                 IFile linkedFile = createWorkspaceLink(
@@ -312,7 +317,17 @@ public class OpenExistVersionProcessWizard extends Wizard {
                                 .getFile(repositoryNode.getObject().getProperty().getLabel()).getLocation(), repositoryNode
                                 .getObject().getProperty().getVersion());
                 IWorkbenchPage page = getActivePage();
-                IDE.openEditor(page, linkedFile);
+                IEditorPart editor = IDE.openEditor(page, linkedFile);
+                if (readonly) {
+                    IDocumentProvider provider = ((AbstractDecoratedTextEditor) editor).getDocumentProvider();
+                    Class p = provider.getClass();
+                    Class[] type = new Class[1];
+                    type[0] = Boolean.TYPE;
+                    Object[] para = new Object[1];
+                    para[0] = Boolean.TRUE;
+                    Method method = p.getMethod("setReadOnly", type);
+                    method.invoke(provider, para);
+                }
             } else {
                 JobScriptItem jobScriptItem = (JobScriptItem) repositoryNode.getObject().getProperty().getItem();
                 IFile file = ResourcesPlugin
@@ -321,9 +336,29 @@ public class OpenExistVersionProcessWizard extends Wizard {
                         .getFile(new Path(jobScriptItem.eResource().getURI().path()).removeFirstSegments(1).removeFileExtension());
                 IFile linkedFile = createWorkspaceLink(fsProject, file.getLocation(), "");
                 IWorkbenchPage page = getActivePage();
-                IDE.openEditor(page, linkedFile);
+                IEditorPart editor = IDE.openEditor(page, linkedFile);
+                if (readonly) {
+                    IDocumentProvider provider = ((AbstractDecoratedTextEditor) editor).getDocumentProvider();
+                    Class p = provider.getClass();
+                    Class[] type = new Class[1];
+                    type[0] = Boolean.TYPE;
+                    Object[] para = new Object[1];
+                    para[0] = Boolean.TRUE;
+                    Method method = p.getMethod("setReadOnly", type);
+                    method.invoke(provider, para);
+                }
             }
         } catch (CoreException e) {
+            ExceptionHandler.process(e);
+        } catch (SecurityException e) {
+            ExceptionHandler.process(e);
+        } catch (NoSuchMethodException e) {
+            ExceptionHandler.process(e);
+        } catch (IllegalArgumentException e) {
+            ExceptionHandler.process(e);
+        } catch (IllegalAccessException e) {
+            ExceptionHandler.process(e);
+        } catch (InvocationTargetException e) {
             ExceptionHandler.process(e);
         }
     }
