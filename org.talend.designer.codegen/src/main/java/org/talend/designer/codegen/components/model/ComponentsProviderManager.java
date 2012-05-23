@@ -44,63 +44,50 @@ public final class ComponentsProviderManager {
 
     public ArrayList<AbstractComponentsProvider> getProviders() {
         loadComponentsProvidersFromExtension();
-        return providers;
+        return new ArrayList<AbstractComponentsProvider>(providers);
     }
 
     private void loadComponentsProvidersFromExtension() {
-        providers = new ArrayList<AbstractComponentsProvider>();
+        if (providers == null) {
+            providers = new ArrayList<AbstractComponentsProvider>();
 
-        IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-        IExtensionPoint extensionPoint = extensionRegistry.getExtensionPoint("org.talend.core.components_provider"); //$NON-NLS-1$
-        IExtension[] extensions = extensionPoint.getExtensions();
-        for (IExtension extension : extensions) {
-            IConfigurationElement[] configurationElements = extension.getConfigurationElements();
-            for (IConfigurationElement configurationElement : configurationElements) {
-                String id = configurationElement.getAttribute("id"); //$NON-NLS-1$
-                String folderName = configurationElement.getAttribute("folderName"); //$NON-NLS-1$
-                String contributerName = configurationElement.getContributor().getName();
-                IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                        IBrandingService.class);
-                if (!brandingService.isPoweredOnlyCamel()
-                        && id.equals("org.talend.designer.camel.components.localprovider.CamelLocalComponentsProvider")) {
-                    folderName = "camel";
-                }
-                try {
-                    AbstractComponentsProvider componentsProvider = (AbstractComponentsProvider) configurationElement
-                            .createExecutableExtension("class"); //$NON-NLS-1$
-                    componentsProvider.setId(id);
-                    componentsProvider.setFolderName(folderName);
-                    componentsProvider.setContributer(contributerName);
-                    providers.add(componentsProvider);
-                } catch (CoreException e) {
-                    log.error(Messages.getString("ComponentsProviderManager.unableLoad") + id, e); //$NON-NLS-1$
+            IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+            IExtensionPoint extensionPoint = extensionRegistry.getExtensionPoint("org.talend.core.components_provider"); //$NON-NLS-1$
+            IExtension[] extensions = extensionPoint.getExtensions();
+            for (IExtension extension : extensions) {
+                IConfigurationElement[] configurationElements = extension.getConfigurationElements();
+                for (IConfigurationElement configurationElement : configurationElements) {
+                    String id = configurationElement.getAttribute("id"); //$NON-NLS-1$
+                    String folderName = configurationElement.getAttribute("folderName"); //$NON-NLS-1$
+                    String contributerName = configurationElement.getContributor().getName();
+                    IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                            IBrandingService.class);
+                    if (!brandingService.isPoweredOnlyCamel()
+                            && id.equals("org.talend.designer.camel.components.localprovider.CamelLocalComponentsProvider")) {
+                        folderName = "camel";
+                    }
+                    try {
+                        AbstractComponentsProvider componentsProvider = (AbstractComponentsProvider) configurationElement
+                                .createExecutableExtension("class"); //$NON-NLS-1$
+                        componentsProvider.setId(id);
+                        componentsProvider.setFolderName(folderName);
+                        componentsProvider.setContributer(contributerName);
+                        providers.add(componentsProvider);
+                    } catch (CoreException e) {
+                        log.error(Messages.getString("ComponentsProviderManager.unableLoad") + id, e); //$NON-NLS-1$
+                    }
                 }
             }
         }
     }
 
     public AbstractComponentsProvider loadUserComponentsProvidersFromExtension() {
-        providers = new ArrayList<AbstractComponentsProvider>();
-
-        IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-        IExtensionPoint extensionPoint = extensionRegistry.getExtensionPoint("org.talend.core.components_provider"); //$NON-NLS-1$
-        IExtension[] extensions = extensionPoint.getExtensions();
-        for (IExtension extension : extensions) {
-            IConfigurationElement[] configurationElements = extension.getConfigurationElements();
-            for (IConfigurationElement configurationElement : configurationElements) {
-                String id = configurationElement.getAttribute("id"); //$NON-NLS-1$
-                if ("org.talend.designer.components.model.UserComponentsProvider".equals(id)) {//$NON-NLS-1$
-                    String folderName = configurationElement.getAttribute("folderName"); //$NON-NLS-1$
-                    try {
-                        AbstractComponentsProvider componentsProvider = (AbstractComponentsProvider) configurationElement
-                                .createExecutableExtension("class"); //$NON-NLS-1$
-                        componentsProvider.setId(id);
-                        componentsProvider.setFolderName(folderName);
-                        return componentsProvider;
-                    } catch (CoreException e) {
-                        log.error(Messages.getString("ComponentsProviderManager.unableLoad") + id, e); //$NON-NLS-1$
-                    }
-                }
+        if (providers == null) {
+            loadComponentsProvidersFromExtension();
+        }
+        for (AbstractComponentsProvider provider : providers) {
+            if ("org.talend.designer.components.model.UserComponentsProvider".equals(provider.getId())) {
+                return provider;
             }
         }
         return null;
