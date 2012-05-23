@@ -30,10 +30,14 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.PlatformObject;
+import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.notify.Notification;
@@ -52,7 +56,6 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -66,10 +69,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.EditorReference;
+import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.internal.WorkbenchPage;
-import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.eclipse.ui.internal.registry.EditorDescriptor;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
@@ -766,19 +767,34 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 file.create(byteArrayInputStream, true, null);
             }
 
+            String pointId = "org.talend.metalanguage.jobscript.JobScriptForMultipage";
             // the way to get the xtextEditor programmly
             IEditorInput editorInput = new FileEditorInput(file);
-            IEditorDescriptor desc = WorkbenchPlugin.getDefault().getEditorRegistry()
-                    .findEditor("org.talend.metalanguage.jobscript.JobScriptForMultipage");
 
-            WorkbenchPage page = (WorkbenchPage) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-            EditorReference ref = new EditorReference(page.getEditorManager(), new FileEditorInput(file), (EditorDescriptor) desc);
+            IExtensionPoint ep = RegistryFactory.getRegistry().getExtensionPoint("org.eclipse.ui.editors");
+            IExtension[] extensions = ep.getExtensions();
+            IExtension ex;
+            IConfigurationElement confElem = null;
+            for (int i = 0; i < extensions.length; i++) {
+                ex = extensions[i];
+                if (ex.getContributor().getName().equals("org.talend.metalanguage.jobscript.ui")) {
+                    for (IConfigurationElement c : ex.getConfigurationElements()) {
+                        
+                        if (c.getName().equals("editor") && c.getAttribute("id").equals(pointId)) {
+                            confElem = c;
+                            break;
+                        }
+                    }
+                }
+            }
 
-            IEditorPart editorPart = ref.getEditor(true);
+            if (confElem != null) {
+                TextEditor editor = (TextEditor) confElem.createExecutableExtension("class");
 
-            if (editorPart != null) {
-                int index = addPage(editorPart, editorInput);
-                setPageText(index, "Jobscript");
+                if (editor != null) {
+                    int index = addPage(editor, editorInput);
+                    setPageText(index, "Jobscript");
+                }
             }
         } catch (PartInitException e) {
             ExceptionHandler.process(e);
