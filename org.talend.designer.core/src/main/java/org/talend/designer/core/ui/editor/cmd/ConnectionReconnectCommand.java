@@ -31,6 +31,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.ConnectionManager;
+import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 
@@ -265,7 +266,11 @@ public class ConnectionReconnectCommand extends Command {
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() - 1);
             connector = newTarget.getConnectorFromType(newLineStyle);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() + 1);
-
+            //
+            if (connection != null && connection instanceof Connection) {
+                Connection con = (Connection) connection;
+                con.setConnected(true);
+            }
             connection.reconnect(oldSource, newTarget, newLineStyle);
             connection.updateName();
 
