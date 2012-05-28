@@ -100,6 +100,13 @@ int nb_file_<%=cid%> = 0;
       session_<%=cid%>.setPassword(<%=pass%>); 
     <%}%>
     session_<%=cid%>.setUserInfo(defaultUserInfo_<%=cid%>); 
+	<%if (!useProxy) {%>
+  	if(("true").equals(System.getProperty("http.proxySet")) ){
+  		com.jcraft.jsch.ProxyHTTP proxy_<%=cid%> = new com.jcraft.jsch.ProxyHTTP(System.getProperty("http.proxyHost"),Integer.parseInt(System.getProperty("http.proxyPort")));
+  		proxy_<%=cid%>.setUserPasswd(System.getProperty("http.proxyUser"),System.getProperty("http.proxyPassword"));
+  		session_<%=cid%>.setProxy(proxy_<%=cid%>);
+  	}
+	<%}%>
     session_<%=cid%>.connect();
     com.jcraft.jsch. Channel channel_<%=cid%>=session_<%=cid%>.openChannel("sftp");
     channel_<%=cid%>.connect();
@@ -122,7 +129,6 @@ int nb_file_<%=cid%> = 0;
   }
   %>  
   String localdir<%=cid %> = <%=localdir%>;
-
   for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) {
 
 <%} else {%>
