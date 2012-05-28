@@ -58,6 +58,7 @@
 						hSet.add(conn.getName() + templateOrigin);
 						IMetadataTable metadata = conn.getMetadataTable();
 						
+						boolean isNeedEquals=false;
 						
 						Set<String> hashableColumnsNames = new HashSet<String>();
 						if(conn.getTarget() instanceof IHashableInputConnections) {
@@ -108,6 +109,9 @@
 								}
 							}
 						}
+						if(conn.getTarget().getUniqueName().startsWith("tHashOutput")){
+							isNeedEquals=true;
+						}
 						boolean hasAtLeastOneKey = hashableColumnsNames.size() > 0;
 						
 %>
@@ -116,7 +120,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
     final static byte[] commonByteArrayLock = new byte[0];
     static byte[] commonByteArray = new byte[0];
 <%
-	if(hasAtLeastOneKey) {
+	if(hasAtLeastOneKey || isNeedEquals) {
 %>
 	private static final int DEFAULT_HASHCODE = 1;
     private static final int PRIME = 31;
@@ -155,7 +159,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
     %>
     
     <%
-	if(hasAtLeastOneKey) { // T_SH_001
+	if(hasAtLeastOneKey || isNeedEquals) { // T_SH_001_01
 	%>
     
 	@Override
@@ -166,7 +170,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 	<%
 		if (metadata !=null) {
 			for (IMetadataColumn column: metadata.getListColumns()) {
-				if (hashableColumnsNames.contains(column.getLabel())) {
+				if (hashableColumnsNames.contains(column.getLabel()) || isNeedEquals) {
 
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 
@@ -214,7 +218,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 		<%	
 		if (metadata !=null) {
 			for (IMetadataColumn column: metadata.getListColumns()) {
-				if (hashableColumnsNames.contains(column.getLabel())) {
+				if (hashableColumnsNames.contains(column.getLabel()) || isNeedEquals) {
 
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 
@@ -246,7 +250,13 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
     	
 		return true;
     }
-
+    
+<%
+    }// T_SH_001_01
+%>
+<%
+	if(hasAtLeastOneKey) { // T_SH_001_02
+%>
 	public void copyDataTo(<%=conn.getName() %>Struct<%=templateOrigin %> other) {
 
 		<%
@@ -277,7 +287,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
     
     
     <%
-	} // T_SH_001
+	} // T_SH_001_02
 	%>
 
 <%
