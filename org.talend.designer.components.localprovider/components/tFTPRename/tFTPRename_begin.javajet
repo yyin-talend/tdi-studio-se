@@ -93,7 +93,9 @@ if (sftp) {
 	<%if (!useProxy) {%>
   	if(("true").equals(System.getProperty("http.proxySet")) ){
   		com.jcraft.jsch.ProxyHTTP proxy_<%=cid%> = new com.jcraft.jsch.ProxyHTTP(System.getProperty("http.proxyHost"),Integer.parseInt(System.getProperty("http.proxyPort")));
-  		proxy_<%=cid%>.setUserPasswd(System.getProperty("http.proxyUser"),System.getProperty("http.proxyPassword"));
+  		if(!"".equals(System.getProperty("http.proxyUser"))){
+  			proxy_<%=cid%>.setUserPasswd(System.getProperty("http.proxyUser"),System.getProperty("http.proxyPassword"));
+  		}
   		session_<%=cid%>.setProxy(proxy_<%=cid%>);
   	}
 	<%}%>
