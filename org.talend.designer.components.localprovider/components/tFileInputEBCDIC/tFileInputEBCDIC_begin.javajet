@@ -168,8 +168,8 @@ the original size in the column:<%=column.getLabel()%> in the schema should be b
 <%
 						}else if(orgainType.equals("3")) {
 %>
-							cobolConversion.PackedDecimal pd_<%=conn.getName() %>_<%=column.getLabel()%> = new cobolConversion.PackedDecimal(bb_<%=column.getLabel()%>_<%=cid%>, 0, <%=length%>, <%=precision%>);
-							<%=conn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(pd_<%=conn.getName() %>_<%=column.getLabel()%>.toString());
+							cobolConversion.PackedDecimal pd_<%=conn.getName() %>_<%=column.getLabel()%> = new cobolConversion.PackedDecimal(bb_<%=column.getLabel()%>_<%=cid%>, 0, <%=length%> - <%=precision%> , <%=precision%>);
+							<%=conn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(pd_<%=conn.getName() %>_<%=column.getLabel()%>.toString().trim());
 <%
 						}else if(orgainType.equals("9")) {
 %>

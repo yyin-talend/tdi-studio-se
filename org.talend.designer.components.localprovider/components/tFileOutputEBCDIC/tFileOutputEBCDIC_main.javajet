@@ -77,7 +77,7 @@ the original size in the column:<%=column.getLabel()%> in the schema should be b
 <%
 						}else if(orgainType.equals("3")) {
 %>
-							cobolConversion.PackedDecimal <%=column.getLabel()%>_<%=cid%> = new cobolConversion.PackedDecimal(bb_<%=column.getLabel()%>_<%=cid%>, 0, <%=length%>, <%=precision%>);
+							cobolConversion.PackedDecimal <%=column.getLabel()%>_<%=cid%> = new cobolConversion.PackedDecimal(bb_<%=column.getLabel()%>_<%=cid%>, 0, <%=length%> - <%=precision%>, <%=precision%>);
 							<%=column.getLabel()%>_<%=cid%>.toPackedDecimal(<%=conn.getName()%>.<%=column.getLabel()%>.toPlainString());
 							fOut_<%=cid%>.write(<%=column.getLabel()%>_<%=cid%>.getByteValueArray());
 <%
