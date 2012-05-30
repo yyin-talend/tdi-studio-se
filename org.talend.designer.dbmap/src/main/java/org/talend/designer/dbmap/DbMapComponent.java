@@ -41,6 +41,7 @@ import org.talend.designer.dbmap.language.generation.DbGenerationManager;
 import org.talend.designer.dbmap.language.generation.GenericDbGenerationManager;
 import org.talend.designer.dbmap.language.mysql.MysqlGenerationManager;
 import org.talend.designer.dbmap.language.oracle.OracleGenerationManager;
+import org.talend.designer.dbmap.language.postgres.PostgresGenerationManager;
 import org.talend.designer.dbmap.language.teradata.TeradataGenerationManager;
 import org.talend.designer.dbmap.model.emf.dbmap.DBMapData;
 import org.talend.designer.dbmap.model.emf.dbmap.DBMapperTableEntry;
@@ -541,8 +542,10 @@ public class DbMapComponent extends AbstractMapComponent {
                 generationManager = new OracleGenerationManager();
             } else if (value.contains("tELTMysqlMap")) { //$NON-NLS-1$
                 generationManager = new MysqlGenerationManager();
+            } else if (value.contains("tELTPostgresqlMap")) { //$NON-NLS-1$
+                generationManager = new PostgresGenerationManager();
             } else if (value.contains("tELTJDBCMap") || value.contains("tELTMSSqlMap") || value.contains("tELTSybaseMap") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    || value.contains("tELTPostgresqlMap")) { //$NON-NLS-1$
+            ) { //$NON-NLS-1$
                 generationManager = new GenericDbGenerationManager();
             } else {
                 throw new IllegalArgumentException(Messages.getString("DbMapComponent.unknowValue") + value); //$NON-NLS-1$
