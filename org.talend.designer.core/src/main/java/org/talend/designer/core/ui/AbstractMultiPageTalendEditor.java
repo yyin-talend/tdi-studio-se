@@ -48,6 +48,7 @@ import org.eclipse.gmf.runtime.diagram.ui.editparts.INodeEditPart;
 import org.eclipse.jdt.debug.core.IJavaBreakpointListener;
 import org.eclipse.jdt.debug.core.JDIDebugModel;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -151,6 +152,7 @@ import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.job.deletion.JobResourceManager;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 
@@ -773,7 +775,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 ex = extensions[i];
                 if (ex.getContributor().getName().equals("org.talend.metalanguage.jobscript.ui")) {
                     for (IConfigurationElement c : ex.getConfigurationElements()) {
-                        
+
                         if (c.getName().equals("editor") && c.getAttribute("id").equals(pointId)) {
                             confElem = c;
                             break;
@@ -847,13 +849,26 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      */
     @Override
     public void doSave(final IProgressMonitor monitor) {
+        Item curItem = getProcess().getProperty().getItem();
+        IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
+        IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
+        try {
+            repFactory.updateLockStatus();
+        } catch (PersistenceException e1) {
+            ExceptionHandler.process(e1);
+        }
+        ERepositoryStatus status = repFactory.getStatus(curItem);
+        if (!status.equals(ERepositoryStatus.LOCK_BY_USER)) {
+            MessageDialog.openWarning(getEditor(0).getEditorSite().getShell(),
+                    Messages.getString("AbstractMultiPageTalendEditor.canNotSaveTitle"),
+                    Messages.getString("AbstractMultiPageTalendEditor.canNotSaveMessage"));
+            return;
+        }
         if (!isDirty()) {
             return;
         }
         updateRunJobContext();
         designerEditor.getProcess().getProperty().eAdapters().remove(dirtyListener);
-        IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
-        IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         display = getSite().getShell().getDisplay();
         repFactory.addRepositoryWorkUnitListener(repositoryWorkListener);
 
