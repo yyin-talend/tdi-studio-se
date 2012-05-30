@@ -139,6 +139,14 @@
       </TABLE>
     </PARAMETER>     
 	
+	<PARAMETER
+      NAME="TABLE"
+      FIELD="DBTABLE"
+      NUM_ROW="70"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
  	<PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
