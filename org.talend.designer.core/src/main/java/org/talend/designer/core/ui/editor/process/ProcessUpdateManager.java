@@ -1830,8 +1830,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 && param.getFieldType() != EParameterFieldType.MEMO_SQL
                                 && !("tMDMReceive".equals(node.getComponent().getName()) && "XPATH_PREFIX".equals(param //$NON-NLS-1$ //$NON-NLS-2$
                                         .getRepositoryValue()))
-                                && !("tSAPOutput".equals(node.getComponent().getName()) && param.getDisplayName() != null && param
-                                        .getDisplayName().equals("Mapping"))) {
+                                && !("tSAPOutput".equals(node.getComponent().getName()) && param.getName().equals(
+                                        UpdatesConstants.MAPPING))) {
                             param.setRepositoryValueUsed(true);
                             param.setReadOnly(true);
                         }
