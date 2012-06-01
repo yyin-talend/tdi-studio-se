@@ -73,65 +73,95 @@ public class JobExportAction implements IRunnableWithProgress {
 
     private String bundleVersion;
 
-	private String type = "Job";
+    private String type = "Job";
 
     public JobExportAction(List<RepositoryNode> nodes, String jobVersion, String bundleVersion, JobScriptsManager manager,
-			String directoryName, String type) {
-		this(nodes, jobVersion, jobVersion, manager, directoryName);
-		this.type = type;
+            String directoryName, String type) {
+        this(nodes, jobVersion, jobVersion, manager, directoryName);
+        this.type = type;
     }
 
-	public JobExportAction(List<RepositoryNode> nodes, String jobVersion,
-			String bundleVersion, JobScriptsManager manager,
-			String directoryName) {
-		super();
-		this.nodes = nodes;
-		this.jobVersion = jobVersion;
-		this.bundleVersion = bundleVersion;
-		this.manager = manager;
-		this.directoryName = directoryName;
-	}
-
-	public JobExportAction(List<RepositoryNode> nodes, String jobVersion,
-			JobScriptsManager manager, String directoryName, String type) {
-		this(nodes, jobVersion, jobVersion, manager, directoryName, type);
+    public JobExportAction(List<RepositoryNode> nodes, String jobVersion, String bundleVersion, JobScriptsManager manager,
+            String directoryName) {
+        super();
+        this.nodes = nodes;
+        this.jobVersion = jobVersion;
+        this.bundleVersion = bundleVersion;
+        this.manager = manager;
+        this.directoryName = directoryName;
     }
 
-	public JobExportAction(List<RepositoryNode> nodes, String jobVersion,
-			JobScriptsManager manager, String directoryName) {
-		this(nodes, jobVersion, jobVersion, manager, directoryName);
-	}
+    public JobExportAction(List<RepositoryNode> nodes, String jobVersion, JobScriptsManager manager, String directoryName,
+            String type) {
+        this(nodes, jobVersion, jobVersion, manager, directoryName, type);
+    }
+
+    public JobExportAction(List<RepositoryNode> nodes, String jobVersion, JobScriptsManager manager, String directoryName) {
+        this(nodes, jobVersion, jobVersion, manager, directoryName);
+    }
 
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         final EventLoopProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
 
-		progressMonitor
-				.beginTask(
-						Messages.getString(
-								"JobScriptsExportWizardPage.newExportJobScript", type), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-        for (RepositoryNode node : nodes) {
-            if (jobVersion != null && jobVersion.equals(JobScriptsExportWizardPage.ALL_VERSIONS)) {
-                String[] allVersions = JobVersionUtils.getAllVersions(node);
-                for (String version : allVersions) {
-					monitor.subTask(Messages
-							.getString(
-									"JobScriptsExportWizardPage.newExportJob0", type, node.getLabel(), version)); //$NON-NLS-1$
-                    if (!exportJobScript(nodes, version, bundleVersion, progressMonitor)) {
+        progressMonitor.beginTask(
+                Messages.getString("JobScriptsExportWizardPage.newExportJobScript", type), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+        // int i = 0;
+        // int nodeSize = nodes.size();
+        // manager.setTmpFleDeleted(false);
+        // Changed by Marvin Wang on Jun.1, 2012 for bug TDI-21244, the original codes have some logical problems.
+        if (nodes != null && nodes.size() > 0) {
+            int size = nodes.size();
+            if (size == 1) {
+                if (jobVersion != null && jobVersion.equals(JobScriptsExportWizardPage.ALL_VERSIONS)) {
+                    String[] allVersions = JobVersionUtils.getAllVersions(nodes.get(0));
+                    for (String version : allVersions) {
+                        monitor.subTask(Messages.getString(
+                                "JobScriptsExportWizardPage.newExportJob0", type, nodes.get(0).getLabel(), version)); //$NON-NLS-1$
+                        // Commentted by Marvin Wang on Jun.1, 2012.
+                        // FIXME Here will export all nodes for each loop. Maybe only the lastest version can be saved,
+                        // caz the privious versions are deleted.
+                        if (!exportJobScript(nodes, version, bundleVersion, progressMonitor)) {
+                            return;
+                        }
+                    }
+                } else {
+                    if (!exportJobScript(nodes, jobVersion, bundleVersion, progressMonitor)) {
                         return;
                     }
+                    monitor.subTask(Messages.getString("JobScriptsExportWizardPage.newExportSuccess", type, nodes.get(0)
+                            .getLabel(), jobVersion));
                 }
-            } else {
-				monitor.subTask(Messages
-						.getString(
-								"JobScriptsExportWizardPage.newExportJob1", type, node.getLabel(), jobVersion)); //$NON-NLS-1$
+            } else if (size > 1) {
                 if (!exportJobScript(nodes, jobVersion, bundleVersion, progressMonitor)) {
                     return;
                 }
+                monitor.subTask(Messages.getString("JobScriptsExportWizardPage.newExportSuccess", "all"));
             }
-			monitor.subTask(Messages
-					.getString(
-							"JobScriptsExportWizardPage.newExportJobSucessful", type, node.getLabel(), jobVersion)); //$NON-NLS-1$
         }
+        // for (RepositoryNode node : nodes) {
+        // // if (i == nodeSize - 1)
+        // // manager.setTmpFleDeleted(true);
+        // List<RepositoryNode> exportedNode = new ArrayList<RepositoryNode>();
+        // exportedNode.add(node);
+        // if (jobVersion != null && jobVersion.equals(JobScriptsExportWizardPage.ALL_VERSIONS)) {
+        // String[] allVersions = JobVersionUtils.getAllVersions(node);
+        // for (String version : allVersions) {
+        // monitor.subTask(Messages
+        //                            .getString("JobScriptsExportWizardPage.newExportJob0", type, node.getLabel(), version)); //$NON-NLS-1$
+        // if (!exportJobScript(nodes, version, bundleVersion, progressMonitor)) {
+        // return;
+        // }
+        // }
+        // } else {
+        //                monitor.subTask(Messages.getString("JobScriptsExportWizardPage.newExportJob1", type, node.getLabel(), jobVersion)); //$NON-NLS-1$
+        // if (!exportJobScript(nodes, jobVersion, bundleVersion, progressMonitor)) {
+        // return;
+        // }
+        // }
+        // // i++;
+        // monitor.subTask(Messages.getString(
+        //                    "JobScriptsExportWizardPage.newExportJobSucessful", type, node.getLabel(), jobVersion)); //$NON-NLS-1$
+        // }
         progressMonitor.done();
     }
 
@@ -249,8 +279,7 @@ public class JobExportAction implements IRunnableWithProgress {
                 }
             }
         }
-		monitor.subTask(Messages.getString(
-				"JobScriptsExportWizardPage.exportSuccess", type)); //$NON-NLS-1$
+        monitor.subTask(Messages.getString("JobScriptsExportWizardPage.newExportSuccess", type)); //$NON-NLS-1$
         reBuildJobZipFile(processes);
         return true;
     }
