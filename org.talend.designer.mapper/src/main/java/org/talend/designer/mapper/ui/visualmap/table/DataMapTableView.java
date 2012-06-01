@@ -2448,7 +2448,9 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                     expressionProposalStyledText = styledTextHandler.getContentProposalAdapter();
                     expressionProposalProviderForExpressionFilter.init(table, getValidZonesForExpressionFilterField(),
                             table.getExpressionFilter());
-                    expressionProposalStyledText.setContentProposalProvider(expressionProposalProviderForExpressionFilter);
+                    if (expressionProposalStyledText != null) {
+                        expressionProposalStyledText.setContentProposalProvider(expressionProposalProviderForExpressionFilter);
+                    }
                     mapperManager.getUiManager().selectLinks(DataMapTableView.this,
                             Arrays.<ITableEntry> asList(currentExpressionFilterEntry), true, false);
                     colorExpressionFilterFromProblems(table, false);
