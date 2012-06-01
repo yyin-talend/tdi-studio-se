@@ -518,7 +518,7 @@ public class ImportItemUtil {
             return true;
         }
         boolean allDeleted = folderItem.getType().getValue() == FolderType.FOLDER && folderItem.getChildren().size() != 0;
-        for (Item item : (List<Item>) folderItem.getChildren()) {
+        for (Item item : new ArrayList<Item>(folderItem.getChildren())) {
             if (item instanceof FolderItem) {
                 if (!setPathToDeleteIfNeed((FolderItem) item)) {
                     allDeleted = false;

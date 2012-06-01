@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -161,7 +162,7 @@ public class ComponentsFactory implements IComponentsFactory {
             List<ComponentSetting> components = (List<ComponentSetting>) currentProject.getEmfProject().getComponentsSettings();
             return components;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     private boolean isComponentVisible(String componentName) {
@@ -288,18 +289,22 @@ public class ComponentsFactory implements IComponentsFactory {
 
         XsdValidationCacheManager.getInstance().load();
         // 1.Load Component from extension point: components_provider
+        if (isCreated) {
+            try {
+                reloadComponentsFromCache();
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+                // if any exception happen, reset all cache
+                cache.getComponentEntryMap().clear();
+                isCreated = false;
+            }
+        }
+
         if (!isCreated) {
             loadComponentsFromComponentsProviderExtension();
         }
 
         // TimeMeasure.step("initComponents", "loadComponentsFromProvider");
-        if (isCreated) {
-            try {
-                reloadComponentsFromCache();
-            } catch (BusinessException e) {
-                ExceptionHandler.process(e);
-            }
-        }
         // 2.Load Component from extension point: component_definition
         loadComponentsFromExtensions();
         // TimeMeasure.step("initComponents", "loadComponentsFromExtension[joblets?]");

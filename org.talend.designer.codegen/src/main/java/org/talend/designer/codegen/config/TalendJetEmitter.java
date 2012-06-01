@@ -56,6 +56,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.talend.commons.debug.TalendDebugHandler;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.model.components.ComponentCompilations;
 import org.talend.designer.codegen.i18n.Messages;
 
 /**
@@ -335,7 +336,10 @@ public class TalendJetEmitter extends JETEmitter {
 
                 subProgressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETBuilding_message", //$NON-NLS-1$
                         new Object[] { project.getName() }));
-                project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new SubProgressMonitor(subProgressMonitor, 1));
+
+                if (!ComponentCompilations.getMarkers()) {
+                    project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new SubProgressMonitor(subProgressMonitor, 1));
+                }
 
                 IMarker[] markers = targetFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
                 boolean errors = false;

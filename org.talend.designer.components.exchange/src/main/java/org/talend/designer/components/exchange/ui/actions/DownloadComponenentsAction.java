@@ -116,7 +116,7 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
             // Start Code Generation Init
             ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
                     ICodeGeneratorService.class);
-            Job job = codeGenService.initializeTemplates();
+            Job job = codeGenService.refreshTemplates();
             job.addJobChangeListener(new JobChangeAdapter() {
 
                 @Override

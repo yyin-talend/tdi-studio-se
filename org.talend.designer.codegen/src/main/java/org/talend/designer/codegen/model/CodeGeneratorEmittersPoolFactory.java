@@ -48,11 +48,11 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.io.IOUtils;
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentCompilations;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
@@ -120,7 +120,11 @@ public final class CodeGeneratorEmittersPoolFactory {
 
         public IStatus doRun() {
             try {
+                TimeMeasure.display = CommonsPlugin.isDebugMode();
+                TimeMeasure.displaySteps = CommonsPlugin.isDebugMode();
+                TimeMeasure.measureActive = CommonsPlugin.isDebugMode();
 
+                TimeMeasure.begin("initialize Jet Emitters");
                 ComponentsFactoryProvider.saveComponentVisibilityStatus();
 
                 jetFilesCompileFail.clear();
@@ -131,9 +135,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 } else {
                     monitorWrap = new NullProgressMonitor();
                 }
-                RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                        Context.REPOSITORY_CONTEXT_KEY);
-                ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
+                ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
 
                 CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
                         .getInstance();
@@ -203,12 +205,15 @@ public final class CodeGeneratorEmittersPoolFactory {
                         "CodeGeneratorEmittersPoolFactory.componentCompiled", (System.currentTimeMillis() - startTime))); //$NON-NLS-1$
                 initialized = true;
 
-                // remove compilations markers
-                ComponentCompilations.deleteMarkers();
+                ComponentCompilations.addMarkers();
                 initializeStart = false;
 
             } catch (Exception e) {
                 log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.initialException"), e); //$NON-NLS-1$
+                TimeMeasure.end("initialize Jet Emitters");
+                TimeMeasure.display = false;
+                TimeMeasure.displaySteps = false;
+                TimeMeasure.measureActive = false;
                 return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID,
                         Messages.getString("CodeGeneratorEmittersPoolFactory.initialException"), e); //$NON-NLS-1$
             } finally {
@@ -220,6 +225,10 @@ public final class CodeGeneratorEmittersPoolFactory {
                     ExceptionHandler.process(e);
                 }
             }
+            TimeMeasure.end("initialize Jet Emitters");
+            TimeMeasure.display = false;
+            TimeMeasure.displaySteps = false;
+            TimeMeasure.measureActive = false;
             if (jetFilesCompileFail.size() > 0) {
                 StringBuilder message = new StringBuilder();
                 for (JetBean tmpJetBean : jetFilesCompileFail) {
@@ -418,39 +427,13 @@ public final class CodeGeneratorEmittersPoolFactory {
                 // error already loggued
                 emitterPool = new HashMap<JetBean, JETEmitter>();
             }
+        } else {
+            ComponentCompilations.deleteMarkers();
         }
 
-        // for (JetBean jetBean : components) {
-        // if (!emitterPool.containsKey(jetBean)) {
-        // // System.out.println("The new file is not in JetPersistence* cache:" +
-        // // jetBean.getTemplateFullUri());
-        // TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader(),
-        // jetBean
-        // .getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(), dummyEmitter
-        // .getTalendEclipseHelper());
-        // emitter.initialize(sub);
-        //
-        // if (emitter.getMethod() != null) {
-        // jetBean.setMethod(emitter.getMethod());
-        // jetBean.setClassName(emitter.getMethod().getDeclaringClass().getName());
-        // alreadyCompiledEmitters.add(jetBean);
-        // } else {
-        // jetFilesCompileFail.add(jetBean);
-        // }
-        // emitterPool.put(jetBean, emitter);
-        // monitorBuffer++;
-        // if (monitorBuffer % 100 == 0) {
-        // monitorWrap.worked(100);
-        // monitorBuffer = 0;
-        // }
-        // }
-        // }
         synchronizedComponent(components, sub, alreadyCompiledEmitters, dummyEmitter, monitorBuffer, monitorWrap);
 
         monitorWrap.worked(monitorBuffer);
-        // } catch (JETException e) {
-        //            log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.jetEmitterInitialException") + e.getMessage(), e); //$NON-NLS-1$
-        // }
         try {
             EmfEmittersPersistenceFactory.getInstance(codeLanguage).saveEmittersPool(
                     extractEmfPersistenData(alreadyCompiledEmitters));
@@ -468,6 +451,8 @@ public final class CodeGeneratorEmittersPoolFactory {
             List<JetBean> alreadyCompiledEmitters, TalendJetEmitter dummyEmitter, int monitorBuffer, IProgressMonitor monitorWrap) {
         for (JetBean jetBean : components) {
             if (!emitterPool.containsKey(jetBean)) {
+                ComponentCompilations.deleteMarkers();
+
                 // System.out.println("The new file is not in JetPersistence* cache:" + getFullTemplatePath(jetBean));
                 TalendJetEmitter emitter = new TalendJetEmitter(getFullTemplatePath(jetBean), jetBean.getClassLoader(),
                         jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),

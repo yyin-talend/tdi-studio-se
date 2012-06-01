@@ -18,6 +18,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ILibraryManagerService;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.ComponentCompilations;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
@@ -118,17 +119,19 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      * 
      * @see org.talend.designer.codegen.ICodeGeneratorService#refreshTemplates()
      */
-    public void refreshTemplates() {
+    public Job refreshTemplates() {
         // this will force to refresh all components libs when install run ctrl+f3
         ILibraryManagerService librairesManagerService = (ILibraryManagerService) GlobalServiceRegister.getDefault().getService(
                 ILibraryManagerService.class);
         librairesManagerService.clearCache();
-
+        ComponentCompilations.deleteMarkers();
         ComponentsFactoryProvider.getInstance().resetCache();
-        CodeGeneratorEmittersPoolFactory.initialize();
+        Job job = CodeGeneratorEmittersPoolFactory.initialize();
         CorePlugin.getDefault().getLibrariesService().syncLibraries();
         IDesignerCoreService designerCoreService = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                 IDesignerCoreService.class);
         designerCoreService.getLastGeneratedJobsDateMap().clear();
+        
+        return job;
     }
 }
