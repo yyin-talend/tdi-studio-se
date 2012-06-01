@@ -272,7 +272,9 @@ public abstract class DbGenerationManager {
                     ExternalDbMapEntry dbMapEntry = metadataTableEntries.get(i);
                     String expression = dbMapEntry.getExpression();
                     expression = initExpression(component, dbMapEntry);
-                    expression = addQuoteForSpecialChar(expression, component);
+                    if (!isPostgres()) {
+                        expression = addQuoteForSpecialChar(expression, component);
+                    }
                     // for (IMetadataColumn column : columns) {
                     // if (expression != null && column.getLabel().equals(dbMapEntry.getName())) {
                     //                            expression = expression.replaceFirst("." + dbMapEntry.getName(), //$NON-NLS-1$
@@ -506,10 +508,20 @@ public abstract class DbGenerationManager {
         return sqlQuery;
     }
 
+    protected String addQuit(String exp) {
+        return exp;
+    }
+
+    protected boolean isPostgres() {
+        return false;
+    }
+
     private String handleQuery(String query) {
         if (query != null) {
             if (!query.trim().endsWith("\"")) { //$NON-NLS-1$
                 query = query + "\""; //$NON-NLS-1$
+            } else if (isPostgres() && query.trim().endsWith("\\\"")) {
+                query = query + " \"";
             } else {
                 if (query.trim().endsWith("+ \"")) { //$NON-NLS-1$
                     query = query.substring(0, query.lastIndexOf("+ \"")); //$NON-NLS-1$
@@ -609,6 +621,7 @@ public abstract class DbGenerationManager {
             entryName = getOriginalColumnName(entryName, component, table);
 
             String locationInputEntry = language.getLocation(table.getName(), entryName);
+            locationInputEntry = addQuit(locationInputEntry);
             sbWhere.append(DbMapSqlConstants.SPACE);
             sbWhere.append(locationInputEntry);
             sbWhere.append(getSpecialRightJoin(table));
@@ -671,13 +684,13 @@ public abstract class DbGenerationManager {
                     sb.append(DbMapSqlConstants.COMMA);
                     sb.append(DbMapSqlConstants.SPACE);
                 }
-                sb.append(inputTable.getTableName());
+                sb.append(addQuit(inputTable.getTableName()));
                 sb.append(DbMapSqlConstants.SPACE);
-                sb.append(alias);
+                sb.append(addQuit(alias));
                 aliasAlreadyDeclared.add(alias);
             } else {
                 if (writingInJoin) {
-                    sb.append(inputTable.getName());
+                    sb.append(addQuit(inputTable.getName()));
                 }
             }
         } else {
@@ -731,7 +744,7 @@ public abstract class DbGenerationManager {
                 }
             }
             if (!replace) {
-                sb.append(inputTable.getName());
+                sb.append(addQuit(inputTable.getName()));
             }
         }
     }
@@ -838,7 +851,7 @@ public abstract class DbGenerationManager {
             }
 
         }
-        return expression;
+        return addQuit(expression);
     }
 
     private String getOriginalColumnName(String entryName, DbMapComponent component, ExternalDbMapTable table) {
