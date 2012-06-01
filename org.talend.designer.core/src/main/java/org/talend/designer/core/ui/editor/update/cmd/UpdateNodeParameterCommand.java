@@ -65,6 +65,7 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.service.IDesignerMapperService;
 import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.IEBCDICProviderService;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -672,6 +673,16 @@ public class UpdateNodeParameterCommand extends Command {
                                 }
                                 return;
                             }
+                        }
+                    }
+
+                    if (PluginChecker.isJobLetPluginLoaded()) {
+                        IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                                IJobletProviderService.class);
+                        if (service != null && service.isJobletInOutComponent(node)) {
+                            node.setPropertyValue(
+                                    EParameterName.SCHEMA_TYPE.getName() + ":" + EParameterName.SCHEMA_TYPE.getName(),
+                                    EmfComponent.BUILTIN);
                         }
                     }
                     node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
