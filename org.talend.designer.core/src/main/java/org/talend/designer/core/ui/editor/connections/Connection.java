@@ -971,6 +971,34 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             source.removeOutput(this);
             target.removeInput(this);
+            // bug TDI-21099
+            boolean isChange = false;
+            if (source instanceof Node) {
+                List<IConnection> outputs = (List<IConnection>) ((Node) source).getOutputs();
+                for (IConnection con : outputs) {
+                    if (con.getSource() != null && this.getSource() != null && con.getSource().equals(this.getSource())) {
+                        outputs.remove(con);
+                        source.addOutput(this);
+                        isChange = true;
+                        break;
+                    }
+                }
+            }
+            if (target instanceof Node) {
+                List<IConnection> inputs = (List<IConnection>) ((Node) target).getInputs();
+                for (IConnection con : inputs) {
+                    if (con.getTarget() != null && this.getTarget() != null && con.getTarget().equals(this.getTarget())) {
+                        inputs.remove(con);
+                        target.addInput(this);
+                        break;
+                    }
+                }
+            }
+            if (isChange) {
+                source.removeOutput(this);
+                target.removeInput(this);
+            }
+
             updateAllId();
             isConnected = false;
 
@@ -982,6 +1010,15 @@ public class Connection extends Element implements IConnection, IPerformance {
                 }
             }
         }
+    }
+
+    /**
+     * Sets the isConnected.
+     * 
+     * @param isConnected the isConnected to set
+     */
+    public void setConnected(boolean isConnected) {
+        this.isConnected = isConnected;
     }
 
     /**
