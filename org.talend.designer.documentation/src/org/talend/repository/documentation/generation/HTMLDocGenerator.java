@@ -359,7 +359,8 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
         String jobPath = resource.getItem().getProperty().getItem().getState().getPath();
 
         // Used for generating/updating all jobs' documentaiton only.
-        if (targetPath.endsWith(this.repositoryObjectType.toString().toLowerCase())) {
+        if (jobName != null && !(jobName).equals(this.repositoryObjectType.toString().toLowerCase())
+                && targetPath.endsWith(this.repositoryObjectType.toString().toLowerCase())) {
             targetPath = targetPath + IPath.SEPARATOR + jobPath + IPath.SEPARATOR + jobName;
         }
         String version = ""; //$NON-NLS-1$
