@@ -86,7 +86,7 @@ COMPATIBILITY="ALL"
     	NUM_ROW="5"
     	SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     	>
-      <DEFAULT>"admin"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
     <PARAMETER 
@@ -96,7 +96,7 @@ COMPATIBILITY="ALL"
     	NUM_ROW="6"
     	SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     	>
-      <DEFAULT>"admin"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER NAME="XQUERY" FIELD="FILE" REQUIRED="true" NUM_ROW="7">

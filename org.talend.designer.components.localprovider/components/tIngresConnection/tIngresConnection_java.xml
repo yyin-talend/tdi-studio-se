@@ -59,7 +59,7 @@
       NUM_ROW="3"
       REPOSITORY_VALUE="SERVER_NAME"
     >
-      <DEFAULT>"INGRES"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
  

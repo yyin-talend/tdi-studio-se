@@ -58,7 +58,7 @@
       REQUIRED="true"
       REPOSITORY_VALUE="SERVER_NAME"
     >
-      <DEFAULT>"localhost"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -88,7 +88,7 @@
       REQUIRED="true"
       REPOSITORY_VALUE="USERNAME"
     >
-      <DEFAULT>"root"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
     <PARAMETER

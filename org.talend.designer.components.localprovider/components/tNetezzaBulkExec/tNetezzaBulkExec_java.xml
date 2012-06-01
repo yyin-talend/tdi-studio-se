@@ -72,7 +72,7 @@
       REPOSITORY_VALUE="SERVER_NAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>"127.0.1.10"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -104,7 +104,7 @@
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>"system"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -115,7 +115,7 @@
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>"admin"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -126,7 +126,7 @@
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>"admin"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -135,7 +135,7 @@
       NUM_ROW="7"
       REQUIRED="true"
     >
-      <DEFAULT>"mytable"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 <!--
     <PARAMETER

@@ -91,7 +91,7 @@
       REPOSITORY_VALUE="SCHEMA"
 	  SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>"dbo"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>	
 	
     <PARAMETER
@@ -478,7 +478,6 @@
   <CODEGENERATION>
     <IMPORTS>
       <IMPORT NAME="Driver-jTDS" MODULE="jtds-1.2.5.jar" REQUIRED="true" />
-      <IMPORT NAME="Talend_MssqlUtil" MODULE="talend_DB_mssqlUtil.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
    

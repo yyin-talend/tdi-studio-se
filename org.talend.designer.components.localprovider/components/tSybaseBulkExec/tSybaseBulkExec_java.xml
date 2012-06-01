@@ -100,7 +100,7 @@
       REPOSITORY_VALUE="USERNAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>"sa"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -160,7 +160,7 @@
       NUM_ROW="60"
       REQUIRED="true"
     >
-      <DEFAULT>"mytable"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

@@ -79,7 +79,7 @@
       REPOSITORY_VALUE="SERVER_NAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>"SYBASE"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -123,7 +123,7 @@
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>"sa"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -166,7 +166,7 @@
       NUM_ROW="7"
       REQUIRED="true"
     >
-      <DEFAULT>"select * from sysobjects "</DEFAULT>
+      <DEFAULT>"update mytable set name = 'talend' where id = 1"</DEFAULT>
     </PARAMETER>
     
     

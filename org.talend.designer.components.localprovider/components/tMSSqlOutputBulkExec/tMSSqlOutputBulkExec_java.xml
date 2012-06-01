@@ -78,7 +78,7 @@
       REPOSITORY_VALUE="SERVER_NAME"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false')"          
     >
-      <DEFAULT>"localhost"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>      
 
     <PARAMETER
@@ -99,7 +99,7 @@
       REPOSITORY_VALUE="SCHEMA"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false')"
     >
-      <DEFAULT>"dbo"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 	
     
@@ -141,7 +141,7 @@
       FIELD="TEXT"
       NUM_ROW="6"
     >
-      <DEFAULT>"table name"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

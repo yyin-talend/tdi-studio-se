@@ -77,7 +77,7 @@
       NUM_ROW="3"
       REPOSITORY_VALUE="SCHEMA"
     >
-      <DEFAULT>"dbo"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

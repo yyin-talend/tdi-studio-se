@@ -66,7 +66,7 @@ COMPATIBILITY="ALL"
     	REQUIRED="true" 
     	NUM_ROW="4"
     	>
-      <DEFAULT>"admin"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
     <PARAMETER 
@@ -75,7 +75,7 @@ COMPATIBILITY="ALL"
     	REQUIRED="true" 
     	NUM_ROW="5"
     	>
-      <DEFAULT>"admin"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
   </PARAMETERS>

@@ -96,7 +96,7 @@
       NUM_ROW="5"
       REQUIRED="true"
     >
-      <DEFAULT>"mytable"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>   
      
      <PARAMETER

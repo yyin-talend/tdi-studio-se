@@ -79,7 +79,7 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REPOSITORY_VALUE="SERVER_NAME"
     >
-      <DEFAULT>"localhost"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
     <PARAMETER

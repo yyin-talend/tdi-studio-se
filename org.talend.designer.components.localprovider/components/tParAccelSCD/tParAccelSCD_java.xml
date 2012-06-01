@@ -70,7 +70,7 @@
       REPOSITORY_VALUE="SERVER_NAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>"localhost"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 	
     <PARAMETER
@@ -170,7 +170,6 @@
       SHOW="false"
     >
       <ITEMS DEFAULT="AUTO_INCREMENT">
-      	<ITEM NAME="AUTO_INCREMENT"   VALUE="AUTO_INCREMENT" />
         <ITEM NAME="DB_SEQUENCE"      VALUE="DB_SEQUENCE"/>
         <ITEM NAME="INPUT_FIELD"      VALUE="INPUT_FIELD"/>
         <ITEM NAME="ROUTINE"          VALUE="ROUTINE"/>

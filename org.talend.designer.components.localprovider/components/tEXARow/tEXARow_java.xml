@@ -159,7 +159,7 @@
       FIELD="MEMO_SQL"
       NUM_ROW="7"
     >
-      <DEFAULT>"select * from exa_all_objects "</DEFAULT>
+      <DEFAULT>"update mytable set name = 'talend' where id = 1"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER

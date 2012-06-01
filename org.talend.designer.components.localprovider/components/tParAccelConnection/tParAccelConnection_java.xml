@@ -89,7 +89,7 @@
       NUM_ROW="3"
       REPOSITORY_VALUE="SCHEMA"
     >
-      <DEFAULT>"public"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

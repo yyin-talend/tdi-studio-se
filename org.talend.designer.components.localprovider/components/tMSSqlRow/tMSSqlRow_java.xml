@@ -67,7 +67,7 @@
       REPOSITORY_VALUE="SERVER_NAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>"localhost"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -87,7 +87,7 @@
       REPOSITORY_VALUE="SCHEMA"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>"dbo"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -179,7 +179,7 @@
       FIELD="MEMO_SQL"
       NUM_ROW="9"
     >
-      <DEFAULT>"select id, name from employee"</DEFAULT>
+      <DEFAULT>"update mytable set name = 'talend' where id = 1"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER

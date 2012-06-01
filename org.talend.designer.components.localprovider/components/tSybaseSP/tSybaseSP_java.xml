@@ -107,7 +107,7 @@
       REPOSITORY_VALUE="USERNAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>"sa"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 	
     <PARAMETER

@@ -67,7 +67,7 @@
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>"localhost"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -176,7 +176,7 @@
       FIELD="MEMO_SQL"
       NUM_ROW="8"
     >
-      <DEFAULT>"select id, name from employee"</DEFAULT>
+      <DEFAULT>"update mytable set name = 'talend' where id = 1"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER

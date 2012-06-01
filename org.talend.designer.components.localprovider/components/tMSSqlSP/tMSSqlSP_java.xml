@@ -87,7 +87,7 @@
       REPOSITORY_VALUE="SCHEMA"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
-      <DEFAULT>"dbo"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 	
 	

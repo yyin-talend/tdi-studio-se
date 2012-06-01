@@ -68,7 +68,7 @@
       REPOSITORY_VALUE="SERVER_NAME"
       SHOW_IF="((ACTION=='INSERT') or (ACTION=='UPDATE')) and (USE_EXISTING_CONNECTION == 'false')"          
     >
-      <DEFAULT>"localhost"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>      
 
     <PARAMETER
@@ -88,7 +88,7 @@
       REPOSITORY_VALUE="SCHEMA"
       SHOW_IF="((ACTION=='INSERT') or (ACTION=='UPDATE')) and (USE_EXISTING_CONNECTION == 'false')"          
     >
-      <DEFAULT>"dbo"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
         
    	<PARAMETER
@@ -107,7 +107,7 @@
       NUM_ROW="3"
       SHOW_IF="ACTION=='EXPORT'"          
     >
-      <DEFAULT>"DB SERVER"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>    
     
     <PARAMETER
@@ -147,7 +147,7 @@
       REQUIRED="true"
       SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"
     >
-      <DEFAULT>"employee"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

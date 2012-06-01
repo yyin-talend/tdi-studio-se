@@ -74,7 +74,7 @@
       REPOSITORY_VALUE="SERVER_NAME"
       SHOW_IF="(RUNNING_MODE=='HSQLDB_SERVER' or RUNNING_MODE=='HSQLDB_WEBSERVER')"
     >
-      <DEFAULT>"localhost"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -125,7 +125,7 @@
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
     >
-      <DEFAULT>"root"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
     <PARAMETER

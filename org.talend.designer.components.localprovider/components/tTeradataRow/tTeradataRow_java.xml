@@ -157,7 +157,7 @@
       NUM_ROW="7"
       REQUIRED="true"
     >
-      <DEFAULT>"select * from teradata "</DEFAULT>
+      <DEFAULT>"update mytable set name = 'talend' where id = 1"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
