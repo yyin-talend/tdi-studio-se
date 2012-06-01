@@ -510,8 +510,20 @@ private class TalendException extends Exception {
 					}
 				}
 				//end
+				
+				//get the start node of subjob
+				INode designSubjobStartNode = node.getDesignSubjobStartNode();
+				String startNodeName = designSubjobStartNode.getUniqueName();
+				List<? extends IConnection> connections = designSubjobStartNode.getOutgoingConnections(EConnectionType.FLOW_REF);
+				if(connections.size() > 0) {
+					INode targetMainNode = connections.get(0).getTarget();
+					if(targetMainNode!=null) {
+						startNodeName = targetMainNode.getDesignSubjobStartNode().getUniqueName();
+					}
+				}
+				
 				%>
-				<%=node.getDesignSubjobStartNode().getUniqueName() %>_onSubJobError(exception, errorComponent, globalMap);
+				<%=startNodeName %>_onSubJobError(exception, errorComponent, globalMap);
 
 			}
 			<%
