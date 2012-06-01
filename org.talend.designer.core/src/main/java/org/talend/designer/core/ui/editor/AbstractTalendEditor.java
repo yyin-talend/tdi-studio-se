@@ -61,6 +61,7 @@ import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
@@ -148,7 +149,6 @@ import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ITalendEditor;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.NodePartKeyHander;
 import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
@@ -161,6 +161,7 @@ import org.talend.designer.core.ui.action.ModifyOutputOrderAction;
 import org.talend.designer.core.ui.action.TalendConnectionCreationTool;
 import org.talend.designer.core.ui.action.ToggleSubjobsAction;
 import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
+import org.talend.designer.core.ui.editor.cmd.ConnectionReconnectCommand;
 import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNodeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -1431,7 +1432,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                         if (targetConnection != null) {
                             NodeContainer nodeContainer = new NodeContainer(node);
                             if (getProcess() instanceof Process) {
-                                execCommandStack(new CreateNodeContainerCommand((Process) getProcess(), nodeContainer, point));
+                                CreateNodeContainerCommand createCmd = new CreateNodeContainerCommand((Process) getProcess(),
+                                        nodeContainer, point);
+                                execCommandStack(createCmd);
+
                                 // reconnect the node
                                 Node originalTarget = (Node) targetConnection.getTarget();
                                 INodeConnector targetConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
@@ -1460,20 +1464,31 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                         }
                                     }
                                 }
-                                // bug 22272:if reconnect new target,the input line style of the target must be suitable
-                                // for its compoment.
-                                EConnectionType reconnectNewInputStyle = targetConnection.getLineStyle();
-                                if (ConnectionManager.canConnectToTarget(targetConnection.getSource(), originalTarget, node,
-                                        targetConnection.getLineStyle(), targetConnection.getName(), targetConnector.getName())) {
-                                    reconnectNewInputStyle = ConnectionManager.getNewConnectionType();
-                                }
-                                if (reconnectNewInputStyle.equals(EConnectionType.FLOW_MAIN)) {
-                                    targetConnection.reconnect(targetConnection.getSource(), node, EConnectionType.FLOW_MAIN);
-                                } else if (reconnectNewInputStyle.equals(EConnectionType.FLOW_MERGE)) {
-                                    targetConnection.reconnect(targetConnection.getSource(), node, EConnectionType.FLOW_MERGE);
-                                } else if (reconnectNewInputStyle.equals(EConnectionType.FLOW_REF)) {
-                                    targetConnection.reconnect(targetConnection.getSource(), node, EConnectionType.FLOW_REF);
-                                }
+                                // // bug 22272:if reconnect new target,the input line style of the target must be
+                                // suitable
+                                // // for its compoment.
+                                // EConnectionType reconnectNewInputStyle = targetConnection.getLineStyle();
+                                // if (ConnectionManager.canConnectToTarget(targetConnection.getSource(),
+                                // originalTarget, node,
+                                // targetConnection.getLineStyle(), targetConnection.getName(),
+                                // targetConnector.getName())) {
+                                // reconnectNewInputStyle = ConnectionManager.getNewConnectionType();
+                                // }
+                                // if (reconnectNewInputStyle.equals(EConnectionType.FLOW_MAIN)) {
+                                // targetConnection.reconnect(targetConnection.getSource(), node,
+                                // EConnectionType.FLOW_MAIN);
+                                // } else if (reconnectNewInputStyle.equals(EConnectionType.FLOW_MERGE)) {
+                                // targetConnection.reconnect(targetConnection.getSource(), node,
+                                // EConnectionType.FLOW_MERGE);
+                                // } else if (reconnectNewInputStyle.equals(EConnectionType.FLOW_REF)) {
+                                // targetConnection.reconnect(targetConnection.getSource(), node,
+                                // EConnectionType.FLOW_REF);
+                                // }
+
+                                ConnectionReconnectCommand cmd2 = new ConnectionReconnectCommand(targetConnection);
+                                cmd2.setNewTarget(node);
+                                execCommandStack(cmd2);
+
                                 // System.out.print("new: " + targetConnection.getSource().getUniqueName() + "-----"
                                 // + targetConnection.getUniqueName() + "----->"
                                 // + targetConnection.getTarget().getUniqueName() + "(new)");
