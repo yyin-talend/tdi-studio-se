@@ -138,6 +138,14 @@
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>     
+
+	<PARAMETER  
+		NAME="TABLE"  
+		FIELD="DBTABLE"  
+		NUM_ROW="70"  
+		>  
+		<DEFAULT>""</DEFAULT>  
+	</PARAMETER>  
 	
  	<PARAMETER
       NAME="QUERYSTORE"
