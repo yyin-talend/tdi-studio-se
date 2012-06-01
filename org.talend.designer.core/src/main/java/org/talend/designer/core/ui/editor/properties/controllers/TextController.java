@@ -41,6 +41,8 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
+import org.talend.designer.core.ui.projectsetting.ProjectSettingMultipleThreadDynamicComposite;
+import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -102,7 +104,8 @@ public class TextController extends AbstractElementPropertySectionController {
             labelText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
         if (!elem.isReadOnly()) {
-            if (param.isRepositoryValueUsed()) {
+            if (param.isRepositoryValueUsed()
+                    && !(subComposite.getParent() instanceof StatsAndLogsComposite || subComposite.getParent() instanceof ProjectSettingMultipleThreadDynamicComposite)) {
                 addRepositoryPropertyListener(labelText);
             }
             if (param.isRequired()) {
