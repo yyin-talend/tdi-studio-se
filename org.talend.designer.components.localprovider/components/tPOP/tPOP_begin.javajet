@@ -165,18 +165,8 @@ for (int counter_<%=cid %> = 0; counter_<%=cid %> < msgs_<%=cid %>.length; count
     java.io.File file_<%=cid %> = new java.io.File(<%=outputDirectory %>, filename_<%=cid %>);
     java.io.OutputStream os_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>);
     
-    while (enums_<%=cid %>.hasMoreElements()) {
-      javax.mail.Header header_<%=cid %> = (javax.mail.Header) enums_<%=cid %>.nextElement();
-      os_<%=cid %>.write(new StringBuilder(header_<%=cid %>.getName()).append(": ").append(header_<%=cid %>.getValue()).append("\r\n").toString().getBytes());
-    }
-    os_<%=cid %>.write("\r\n".getBytes());
-    java.io.InputStream in_<%=cid %> = message_<%=cid %>.getInputStream();
-    byte[] buffer_<%=cid %> = new byte[1024];
-    int length_<%=cid %> = 0;
-  
-    while ((length_<%=cid %> = in_<%=cid %>.read(buffer_<%=cid %>, 0, 1024)) != -1) {
-      os_<%=cid %>.write(buffer_<%=cid %>, 0, length_<%=cid %>);
-    }
+    //for bug TDI-21323 
+    message_<%=cid %>.writeTo(os_<%=cid %>);
     os_<%=cid %>.close();
     nb_email_<%=cid %>++;
     globalMap.put("<%=cid %>_CURRENT_FILE", filename_<%=cid %>);
