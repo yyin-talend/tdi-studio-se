@@ -1824,11 +1824,14 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     }
                     for (IElementParameter param : node.getElementParameters()) {
                         String repositoryValue = param.getRepositoryValue();
-                        if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
+                        if (param.isShow(node.getElementParameters())
+                                && (repositoryValue != null)
                                 && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))
                                 && param.getFieldType() != EParameterFieldType.MEMO_SQL
                                 && !("tMDMReceive".equals(node.getComponent().getName()) && "XPATH_PREFIX".equals(param //$NON-NLS-1$ //$NON-NLS-2$
-                                        .getRepositoryValue()))) {
+                                        .getRepositoryValue()))
+                                && !("tSAPOutput".equals(node.getComponent().getName()) && param.getName().equals(
+                                        UpdatesConstants.MAPPING))) {
                             param.setRepositoryValueUsed(true);
                             param.setReadOnly(true);
                         }
