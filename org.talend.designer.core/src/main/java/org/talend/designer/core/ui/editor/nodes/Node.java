@@ -237,6 +237,10 @@ public class Node extends Element implements IGraphicalNode {
 
     private EConnectionType virtualLinkTo;
 
+    private static final String TPREJOB_STR = "tPrejob"; //$NON-NLS-1$
+
+    private static final String TPOSTJOB_STR = "tPostjob"; //$NON-NLS-1$
+
     /**
      * Getter for index.
      * 
@@ -2614,6 +2618,55 @@ public class Node extends Element implements IGraphicalNode {
         }
     }
 
+    /**
+     * 
+     * DOC hcyi Comment method "checkHasMultiPrejobOrPostJobComponents".
+     */
+    private void checkHasMultiPrejobOrPostJobComponents() {
+        if (PluginChecker.isJobLetPluginLoaded()) {
+            IJobletProviderService jobletService = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            if (jobletService != null) {
+                if (jobletService.isJobletComponent(this)) {
+                    Map<String, List<INode>> multiNodes = new HashMap<String, List<INode>>();
+                    jobletService.getMultiPrejobOrPostjobNodes(this, multiNodes);
+                    if (multiNodes.containsKey(TPREJOB_STR)) {
+                        List<INode> nodes = multiNodes.get(TPREJOB_STR);
+                        if (nodes.size() > 1) {
+                            String errorMessage = Messages.getString("Node.checkHasMultiPrejobOrPostJobComponents", TPREJOB_STR); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        } else if (nodes.size() == 1) {
+                            for (INode node : process.getGraphicalNodes()) {
+                                String componentName = node.getComponent().getName();
+                                if (componentName != null && componentName.equals(TPREJOB_STR)) {
+                                    String errorMessage = Messages.getString(
+                                            "Node.checkHasMultiPrejobOrPostJobComponents", TPREJOB_STR); //$NON-NLS-1$
+                                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                }
+                            }
+                        }
+                    }
+                    if (multiNodes.containsKey(TPOSTJOB_STR)) {
+                        List<INode> nodes = multiNodes.get(TPOSTJOB_STR);
+                        if (nodes.size() > 1) {
+                            String errorMessage = Messages.getString("Node.checkHasMultiPrejobOrPostJobComponents", TPOSTJOB_STR); //$NON-NLS-1$
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        } else if (nodes.size() == 1) {
+                            for (INode node : process.getGraphicalNodes()) {
+                                String componentName = node.getComponent().getName();
+                                if (componentName != null && componentName.equals(TPOSTJOB_STR)) {
+                                    String errorMessage = Messages.getString(
+                                            "Node.checkHasMultiPrejobOrPostJobComponents", TPOSTJOB_STR); //$NON-NLS-1$
+                                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void checkLinks() {
         boolean isJoblet = false;
         if (PluginChecker.isJobLetPluginLoaded()) {
@@ -3132,6 +3185,8 @@ public class Node extends Element implements IGraphicalNode {
             checkMultiComponents();
             checkStartLinks();
             checkParallelizeStates();
+            // TDI-21298
+            checkHasMultiPrejobOrPostJobComponents();
             // feature 2,add a new extension point to intercept the validation action for Uniserv
             List<ICheckNodesService> checkNodeServices = CheckNodeManager.getCheckNodesService();
             for (ICheckNodesService checkService : checkNodeServices) {
