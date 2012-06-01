@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.controllers;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,7 @@ import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.CDCType;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.designerproperties.PropertyConstants.CDCTypeMode;
 import org.talend.core.model.param.ERepositoryCategoryType;
@@ -56,6 +58,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkRulesItem;
+import org.talend.core.model.properties.MDMConnectionItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -85,6 +88,8 @@ import org.talend.repository.ui.dialog.RepositoryReviewDialog;
  */
 public class PropertyTypeController extends AbstractRepositoryController {
 
+    private Map<String, Object> oldMdmConValues = new HashMap<String, Object>();
+
     public PropertyTypeController(IDynamicProperty dp) {
         super(dp);
     }
@@ -107,6 +112,38 @@ public class PropertyTypeController extends AbstractRepositoryController {
             if (param.getElement() instanceof INode) {
                 if (canSaveProperty(param)) {
                     lastControlUsed = addButton(subComposite, param, lastControlUsed, numInRow, top);
+                }
+            }
+        }
+        // TDI-21102
+        if (EmfComponent.REPOSITORY.equals(param.getChildParameters().get("PROPERTY_TYPE").getValue())) { //$NON-NLS-1$
+            if (param.getElement() != null && param.getElement() instanceof INode) {
+                INode node = (INode) param.getElement();
+                if (node != null && "tMDMReceive".equals(node.getComponent().getName())) {
+                    IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                    IElementParameter repositoryParam = param.getChildParameters().get(
+                            EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                    String connectionLastSelected = (String) repositoryParam.getValue();
+                    try {
+                        if (!StringUtils.isEmpty(connectionLastSelected)) {
+                            IRepositoryViewObject repobj = factory.getLastVersion(connectionLastSelected);
+                            if (repobj != null && repobj.getProperty() != null) {
+                                Item item = repobj.getProperty().getItem();
+                                if (item != null && item instanceof MDMConnectionItem) {
+                                    Connection connection = ((MDMConnectionItem) item).getConnection();
+                                    if (connection != null && connection instanceof MDMConnection) {
+                                        oldMdmConValues.clear();
+                                        oldMdmConValues.put("username", ((MDMConnection) connection).getUsername());
+                                        oldMdmConValues.put("password", ((MDMConnection) connection).getPassword());
+                                        oldMdmConValues.put("server", ((MDMConnection) connection).getServer());
+                                        oldMdmConValues.put("port", ((MDMConnection) connection).getPort());
+                                    }
+                                }
+                            }
+                        }
+                    } catch (PersistenceException e) {
+                        ExceptionHandler.process(e);
+                    }
                 }
             }
         }
@@ -498,6 +535,10 @@ public class PropertyTypeController extends AbstractRepositoryController {
                     if (ERepositoryCategoryType.MDM.getName().equals(repositoryValue)) { //$NON-NLS-1$
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION);
+                        final IMetadataService metadataService = CorePlugin.getDefault().getMetadataService();
+                        if (metadataService != null) {
+                            metadataService.fillOldMdmConValues(oldMdmConValues);
+                        }
                     }
                     // sap
                     if (ERepositoryCategoryType.SAP.getName().equals(repositoryValue)) { //$NON-NLS-1$
