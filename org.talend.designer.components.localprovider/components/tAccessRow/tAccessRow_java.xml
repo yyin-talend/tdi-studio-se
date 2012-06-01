@@ -84,7 +84,7 @@
 		</PARAMETER>
 
 		<PARAMETER NAME="QUERY" FIELD="MEMO_SQL" NUM_ROW="60">
-			<DEFAULT>"update mytable set name = 'talend' where id = 1"</DEFAULT>
+			<DEFAULT>"select id, name from employee"</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="DIE_ON_ERROR" FIELD="CHECK" NUM_ROW="70">

@@ -139,7 +139,7 @@
       FIELD="MEMO_SQL"
       NUM_ROW="7"
     >
-      <DEFAULT>"update mytable set name = 'talend' where id = 1"</DEFAULT>
+      <DEFAULT>"select * from mytable"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
