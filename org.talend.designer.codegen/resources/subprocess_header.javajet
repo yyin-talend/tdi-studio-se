@@ -73,7 +73,7 @@
 						
 							//only for the lookup branch of the tJoin
 							boolean isLookOftJoin = false;
-							boolean isLookOftRecordMatching = true;
+							boolean isLookOftRecordMatching = false;
 							if(conn.getLineStyle().equals(EConnectionType.FLOW_REF)){
 								IProcess process = conn.getTarget().getProcess();
 								for (INode tjoinNode : process.getNodesOfType("tJoin")) {
