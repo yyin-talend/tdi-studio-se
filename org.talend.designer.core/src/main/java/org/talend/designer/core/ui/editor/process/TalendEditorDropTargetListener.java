@@ -146,6 +146,7 @@ import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
+import org.talend.designer.core.ui.editor.cmd.ConnectionReconnectCommand;
 import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
@@ -1572,7 +1573,6 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             viewOriginalPosition = viewport.getViewLocation();
         }
         Point point = new Point(originalPoint.x + viewOriginalPosition.x, originalPoint.y + viewOriginalPosition.y);
-        CompoundCommand command = new CompoundCommand();
 
         org.talend.designer.core.ui.editor.connections.Connection targetConnection = CreateComponentOnLinkHelper
                 .getSelectedConnection();
@@ -1584,20 +1584,49 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         if (targetConnection != null) {
             NodeContainer nodeContainer = new NodeContainer(node);
             IProcess2 p = editor.getProcess();
+            // TDI-21099
             if (p instanceof Process) {
-                Process process = (Process) p;
-                execCommandStack(new CreateNodeContainerCommand(process, nodeContainer, point));
+                CreateNodeContainerCommand createCmd = new CreateNodeContainerCommand((Process) p, nodeContainer, point);
+                execCommandStack(createCmd);
                 // reconnect the node
-                INode targetNode = targetConnection.getTarget();
-                updateConnectionCommand(targetConnection, node, command);
-                execCommandStack(command);
+                Node originalTarget = (Node) targetConnection.getTarget();
+                INodeConnector targetConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
+                for (INodeConnector connector : node.getConnectorsFromType(EConnectionType.FLOW_MAIN)) {
+                    if (connector.getMaxLinkOutput() != 0) {
+                        targetConnector = connector;
+                        break;
+                    }
+                }
+                ConnectionCreateCommand.setCreatingConnection(true);
+                // FIXME perhaps, this is not good fix, need check it later
+                // bug 21411
+                if (PluginChecker.isJobLetPluginLoaded()) {
+                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                            IJobletProviderService.class);
+                    if (service != null && service.isJobletComponent(targetConnection.getTarget())) {
+                        if (targetConnection.getTarget() instanceof Node) {
+                            NodeContainer jobletContainer = ((Node) targetConnection.getTarget()).getNodeContainer();
+                            // remove the old connection in the container
+                            jobletContainer.getInputs().remove(targetConnection);
+                        }
+                    }
+                }
+                ConnectionReconnectCommand cmd2 = new ConnectionReconnectCommand(targetConnection);
+                cmd2.setNewTarget(node);
+                execCommandStack(cmd2);
+
+                List<Object> nodeArgs = CreateComponentOnLinkHelper.getTargetArgs(targetConnection, node);
+                ConnectionCreateCommand nodeCmd = new ConnectionCreateCommand(node, targetConnector.getName(), nodeArgs, false);
+                nodeCmd.setTarget(originalTarget);
+                execCommandStack(nodeCmd);
                 if (node.getComponent().getName().equals("tMap")) {
                     CreateComponentOnLinkHelper.setupTMap(node);
                 }
-                if (targetNode.getComponent().getName().equals("tMap")) {
-                    CreateComponentOnLinkHelper.updateTMap(targetNode, targetConnection, node.getOutgoingConnections().get(0));
+                if (originalTarget.getComponent().getName().equals("tMap")) {
+                    CreateComponentOnLinkHelper
+                            .updateTMap(originalTarget, targetConnection, node.getOutgoingConnections().get(0));
                 }
-                targetNode.renameData(targetConnection.getName(), node.getOutgoingConnections().get(0).getName());
+                originalTarget.renameData(targetConnection.getName(), node.getOutgoingConnections().get(0).getName());
                 executed = true;
             }
         }
