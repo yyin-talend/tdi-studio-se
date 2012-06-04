@@ -1464,26 +1464,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                         }
                                     }
                                 }
-                                // // bug 22272:if reconnect new target,the input line style of the target must be
-                                // suitable
-                                // // for its compoment.
-                                // EConnectionType reconnectNewInputStyle = targetConnection.getLineStyle();
-                                // if (ConnectionManager.canConnectToTarget(targetConnection.getSource(),
-                                // originalTarget, node,
-                                // targetConnection.getLineStyle(), targetConnection.getName(),
-                                // targetConnector.getName())) {
-                                // reconnectNewInputStyle = ConnectionManager.getNewConnectionType();
-                                // }
-                                // if (reconnectNewInputStyle.equals(EConnectionType.FLOW_MAIN)) {
-                                // targetConnection.reconnect(targetConnection.getSource(), node,
-                                // EConnectionType.FLOW_MAIN);
-                                // } else if (reconnectNewInputStyle.equals(EConnectionType.FLOW_MERGE)) {
-                                // targetConnection.reconnect(targetConnection.getSource(), node,
-                                // EConnectionType.FLOW_MERGE);
-                                // } else if (reconnectNewInputStyle.equals(EConnectionType.FLOW_REF)) {
-                                // targetConnection.reconnect(targetConnection.getSource(), node,
-                                // EConnectionType.FLOW_REF);
-                                // }
 
                                 ConnectionReconnectCommand cmd2 = new ConnectionReconnectCommand(targetConnection);
                                 cmd2.setNewTarget(node);
@@ -1493,15 +1473,17 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                 // + targetConnection.getUniqueName() + "----->"
                                 // + targetConnection.getTarget().getUniqueName() + "(new)");
 
-                                INodeConnector nodeConnector = node.getConnectorFromName(targetConnector.getName());
-                                nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() + 1);
+                                // INodeConnector nodeConnector = node.getConnectorFromName(targetConnector.getName());
+                                // nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() + 1);
                                 List<Object> nodeArgs = CreateComponentOnLinkHelper.getTargetArgs(targetConnection, node);
                                 ConnectionCreateCommand nodeCmd = new ConnectionCreateCommand(node, targetConnector.getName(),
                                         nodeArgs, false);
                                 nodeCmd.setTarget(originalTarget);
-                                INodeConnector originalNodeConnector = originalTarget.getConnectorFromName(targetConnection
-                                        .getTargetNodeConnector().getName());
-                                originalNodeConnector.setCurLinkNbInput(originalNodeConnector.getCurLinkNbInput() - 1);
+                                // INodeConnector originalNodeConnector =
+                                // originalTarget.getConnectorFromName(targetConnection
+                                // .getTargetNodeConnector().getName());
+                                // originalNodeConnector.setCurLinkNbInput(originalNodeConnector.getCurLinkNbInput() -
+                                // 1);
                                 execCommandStack(nodeCmd);
 
                                 // System.out.println("-----" + nodeCmd.getConnection().getUniqueName() + "(new)----->"
