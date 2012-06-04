@@ -630,11 +630,12 @@ public class MultiSchemasManager {
     public String getOriginalValue(String value) {
         if (value != null) {
             IProcess process = this.getMultiSchemasComponent().getProcess();
-            if (process != null) {
+            // TDI-21049:if not context mode,no need to deal with it use below code.
+            if (process != null && ContextParameterUtils.containContextVariables(value)) {
                 // add for bug9559
                 String newValue = null;
                 if (value.contains("+")) {//$NON-NLS-1$
-                    // not noly use context variable .
+                    // not only use context variable .
                     String[] split = value.split("\\+");//$NON-NLS-1$ 
                     for (int i = 0; i < split.length; i++) {
                         split[i] = split[i].trim();
