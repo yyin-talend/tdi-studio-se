@@ -607,6 +607,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
 
         final CustomDialogCellEditor cellEditor = new CustomDialogCellEditor(CellValueType.SCHEMA_ID) {
 
+            @Override
             protected Object openDialogBox(Control cellEditorWindow) {
                 Object obj = super.openDialogBox(cellEditorWindow);
                 if (obj == null) {
@@ -2449,7 +2450,9 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                     expressionProposalStyledText = styledTextHandler.getContentProposalAdapter();
                     expressionProposalProviderForExpressionFilter.init(table, getValidZonesForExpressionFilterField(),
                             table.getExpressionFilter());
-                    expressionProposalStyledText.setContentProposalProvider(expressionProposalProviderForExpressionFilter);
+                    if (expressionProposalStyledText != null) {
+                        expressionProposalStyledText.setContentProposalProvider(expressionProposalProviderForExpressionFilter);
+                    }
                     mapperManager.getUiManager().selectLinks(DataMapTableView.this,
                             Arrays.<ITableEntry> asList(currentExpressionFilterEntry), true, false);
                     colorExpressionFilterFromProblems(table, false);
@@ -3066,7 +3069,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
 
         private CellValueType type;
 
-        private Map<String, String> oldMappingMap = new HashMap<String, String>();
+        private final Map<String, String> oldMappingMap = new HashMap<String, String>();
 
         public CustomDialogCellEditor() {
             type = CellValueType.BOOL;
@@ -3076,6 +3079,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
             this.type = type;
         }
 
+        @Override
         protected Object openDialogBox(Control cellEditorWindow) {
             Shell shell = cellEditorWindow.getShell();
             if (type == CellValueType.BOOL) {
