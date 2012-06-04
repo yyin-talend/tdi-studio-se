@@ -220,6 +220,22 @@ public class SalesforceBulkAPI {
         // System.out.println(job);
         return job;
     }
+    
+    private int countQuotes(String value){
+        if (value == null || "".equals(value)) {
+            return 0;
+        } else {
+            char c = '\"';
+            int num = 0;
+            char[] chars = value.toCharArray();
+            for (int i = 0; i < chars.length; i++) {
+                if (c == chars[i]) {
+                    num++;
+                }
+            }
+            return num;
+        }
+    }
 
     private List<BatchInfo> createBatchesFromCSVFile() throws IOException, AsyncApiException {
         List<BatchInfo> batchInfos = new ArrayList<BatchInfo>();
@@ -234,7 +250,25 @@ public class SalesforceBulkAPI {
             int currentBytes = 0;
             int currentLines = 0;
             String nextLine;
+            boolean needStart=true;
+            boolean needEnds=true;
             while ((nextLine = rdr.readLine()) != null) {
+                int num=countQuotes(nextLine);
+                //nextLine is header or footer of the record
+                if (num % 2 == 1) {
+                    if (!needStart) {
+                        needEnds = false;
+                    } else {
+                        needStart = false;
+                    }
+                } else {
+                //nextLine is a whole record or middle of the record
+                    if (needEnds && needStart) {
+                        needEnds = false;
+                        needStart = false;
+                    }
+                }
+                
                 byte[] bytes = (nextLine + "\n").getBytes("UTF-8");
 
                 // Create a new batch when our batch size limit is reached
@@ -251,7 +285,11 @@ public class SalesforceBulkAPI {
                 }
                 tmpOut.write(bytes);
                 currentBytes += bytes.length;
-                currentLines++;
+                if(!needStart && !needEnds){
+                    currentLines++;
+                    needStart=true;
+                    needEnds=true;
+                }
             }
             // Finished processing all rows
             // Create a final batch for any remaining data
