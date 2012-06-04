@@ -37,6 +37,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.utils.AbstractResourceChangesService;
 import org.talend.core.repository.utils.TDQServiceRegister;
@@ -343,6 +344,7 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
             };
             ProxyRepositoryFactory.getInstance().executeRepositoryWorkUnit(repositoryWorkUnit);
             setReturnValue(true);
+            RepositoryManager.refresh(targetNode.getContentType());
             monitor.done();
         }
     }
