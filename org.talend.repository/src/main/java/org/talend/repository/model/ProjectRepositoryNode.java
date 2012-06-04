@@ -1049,6 +1049,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                     }
                 }
 
+                if (connection != null) {
                 QueriesConnection queriesConnection = connection.getQueries();
                 if (queriesConnection != null) {
                     for (Query query : queriesConnection.getQuery()) {
@@ -1060,7 +1061,7 @@ public class ProjectRepositoryNode extends RepositoryNode implements IProjectRep
                         }
                     }
                 }
-
+                }
             }
         }
     }
