@@ -54,6 +54,7 @@ public class ChangeAS400DBVersionMigrationTask extends AbstractItemMigrationTask
     public ExecutionResult execute(Item item) {
         ConnectionItem connectionItem = (ConnectionItem) item;
         DatabaseConnection connection = (DatabaseConnection) connectionItem.getConnection();
+        if (connection != null) {
         if (connection.getDatabaseType().equals("AS400")) {
             if (connection.getDbVersionString() != null && connection.getDbVersionString().equals(NOTEXIST)) {
                 connection.setDbVersionString(EXIST);
@@ -67,6 +68,7 @@ public class ChangeAS400DBVersionMigrationTask extends AbstractItemMigrationTask
             }
         } else {
             return ExecutionResult.NOTHING_TO_DO;
+        }
         }
         return ExecutionResult.NOTHING_TO_DO;
     }
