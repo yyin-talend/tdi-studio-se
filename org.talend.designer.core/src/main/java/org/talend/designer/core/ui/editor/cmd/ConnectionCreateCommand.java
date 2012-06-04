@@ -357,13 +357,17 @@ public class ConnectionCreateCommand extends Command {
         if (newLineStyle == null) {
             newLineStyle = source.getConnectorFromName(connectorName).getDefaultConnectionType();
         }
-        if (newMetadata != null) {
-            source.getMetadataList().add(newMetadata);
-            this.connection = new Connection(source, target, newLineStyle, connectorName, metaName, connectionName,
-                    monitorConnection);
-        } else {
-            this.connection = new Connection(source, target, newLineStyle, connectorName, metaName, connectionName, metaName,
-                    monitorConnection);
+        if (connection == null) {
+            if (newMetadata != null) {
+                source.getMetadataList().add(newMetadata);
+                this.connection = new Connection(source, target, newLineStyle, connectorName, metaName, connectionName,
+                        monitorConnection);
+            } else {
+                this.connection = new Connection(source, target, newLineStyle, connectorName, metaName, connectionName, metaName,
+                        monitorConnection);
+            }
+        } else { // in case of redo, reuse the same instance
+            connection.reconnect(source, target, newLineStyle);
         }
         INodeConnector nodeConnectorSource, nodeConnectorTarget;
         nodeConnectorSource = connection.getSourceNodeConnector();

@@ -1138,10 +1138,7 @@ public class Node extends Element implements IGraphicalNode {
                                 MetadataTool.copyTable(dbmsId, inputTable, targetTable);
                                 ChangeMetadataCommand cmc = new ChangeMetadataCommand(this, null, null, targetTable,
                                         inputSchemaParam);
-                                CommandStack cmdStack = getCommandStack();
-                                if (cmdStack != null) {
-                                    cmdStack.execute(cmc);
-                                }
+                                cmc.execute();
 
                                 ColumnListController.updateColumnList(this, null, true);
                             }
