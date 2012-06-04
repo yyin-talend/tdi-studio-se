@@ -544,7 +544,7 @@ public class DbMapComponent extends AbstractMapComponent {
                 generationManager = new MysqlGenerationManager();
             } else if (value.contains("tELTPostgresqlMap")) { //$NON-NLS-1$
                 generationManager = new PostgresGenerationManager();
-            } else if (value.contains("tELTJDBCMap") || value.contains("tELTMSSqlMap") || value.contains("tELTSybaseMap") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            } else if (value.contains("tELTJDBCMap") || value.contains("tELTMSSqlMap") || value.contains("tELTSybaseMap") || value.contains("tELTNetezzaMap") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             ) { //$NON-NLS-1$
                 generationManager = new GenericDbGenerationManager();
             } else {
