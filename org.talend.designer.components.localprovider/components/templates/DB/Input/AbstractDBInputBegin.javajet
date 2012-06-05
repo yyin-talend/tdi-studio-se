@@ -204,8 +204,24 @@ imports="
 								} else if(("Dynamic").equals(typeToGenerate)) {
 %>
                                   <%=firstConnName%>.<%=column.getLabel()%>=dcg_<%=cid%>;
-                                  routines.system.DynamicUtils.readColumnsFromDatabase(<%=firstConnName%>.<%=column.getLabel()%>, rs_<%=cid%>, fixedColumnCount_<%=cid%>);
+<% //for bug TDI-20886
+									if ("id_MSSQL".equalsIgnoreCase(dbms)) {
+%>
+										List<Object> list_<%=cid %> = new java.util.ArrayList<Object>();
+					    				for(int i_<%=cid %> = <%=metadata.getListColumns().size()%>; i_<%=cid %>  <= rsmd_<%=cid%>.getColumnCount(); i_<%=cid %> ++){
+						 					if ("NTEXT".equals(rsmd_tMSSqlInput_1.getColumnTypeName(i_<%=cid %> ).toUpperCase())) {
+												net.sourceforge.jtds.jdbc.ClobImpl clob_tMSSqlInput_1_<%=cid %> = (net.sourceforge.jtds.jdbc.ClobImpl) rs_tMSSqlInput_1.getClob(i_<%=cid %>);
+						 						net.sourceforge.jtds.jdbc.TalendNTextImpl tNTextImpl_tMSSqlInput_1_<%=cid %> = new net.sourceforge.jtds.jdbc.TalendNTextImpl(clob_tMSSqlInput_1_<%=cid %>);
+							  					list_<%=cid %>.add(tNTextImpl_tMSSqlInput_1_<%=cid %>.getValue());
+						   					}
+   	 				    				}
+                                 		 routines.system.DynamicUtils.readColumnsFromDatabase_Mssql(<%=firstConnName%>.<%=column.getLabel()%>, rs_<%=cid%>, fixedColumnCount_<%=cid%>,list_<%=cid %>);
 <%
+									}else{
+%>
+                                		 routines.system.DynamicUtils.readColumnsFromDatabase(<%=firstConnName%>.<%=column.getLabel()%>, rs_<%=cid%>, fixedColumnCount_<%=cid%>);
+<%
+									}
 								} else if(typeToGenerate.equals("Geometry")) {
 %>
                                 	org.postgis.Geometry o = org.postgis.PGgeometry.geomFromString(rs_<%=cid %>.getObject(<%=currentColNo%>).toString());
