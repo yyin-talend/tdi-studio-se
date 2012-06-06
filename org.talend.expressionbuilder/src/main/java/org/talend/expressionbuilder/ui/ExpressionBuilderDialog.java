@@ -26,6 +26,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -95,6 +96,8 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
 
     private String expressionForTable = null;
 
+    private static boolean isESCClose = true;
+
     /**
      * Create the dialog
      * 
@@ -157,6 +160,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
     public void create() {
         super.create();
         addUndoOperationListener(container);
+        isESCClose = true;
     }
 
     /**
@@ -312,6 +316,13 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
     @Override
     public boolean close() {
         testComposite.stopServerThread();
+        if (isESCClose) {
+            boolean flag = MessageDialog.openConfirm(getParentShell(), Messages.getString("ExpressionBuilderDialog.message"),
+                    Messages.getString("ExpressionBuilderDialog.Confirm"));
+            if (!flag) {
+                return false;
+            }
+        }
         return super.close();
     }
 
@@ -371,7 +382,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
                 ExpressionPersistance.getInstance().saveExpression(new Expression(expression, testComposite.getVariableList()));
             }
         }
-
+        isESCClose = false;
         super.okPressed();
     }
 
