@@ -207,6 +207,7 @@ public class CategoryComposite extends Composite {
             new UIRelationShipLinker(categoryViewer, functionViewer, descriptionText);
         }
         initializeData(categoryViewer);
+        categoryViewer.getList().setFocus();
     }
 
     /**
