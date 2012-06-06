@@ -67,7 +67,7 @@ public class CategoryComposite extends Composite {
 
     final ListViewer functionViewer;
 
-    private TextTransfer textTransfer = TextTransfer.getInstance();
+    private final TextTransfer textTransfer = TextTransfer.getInstance();
 
     CategoryManager manager = null;
 
@@ -207,6 +207,7 @@ public class CategoryComposite extends Composite {
             new UIRelationShipLinker(categoryViewer, functionViewer, descriptionText);
         }
         initializeData(categoryViewer);
+        categoryViewer.getList().setFocus();
     }
 
     /**
