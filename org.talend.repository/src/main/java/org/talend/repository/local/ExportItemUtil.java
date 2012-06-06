@@ -136,8 +136,8 @@ public class ExportItemUtil {
     public void exportItems(File destination, Collection<Item> items, boolean exportAllVersions, IProgressMonitor progressMonitor)
             throws Exception {
         // bug 11301 :export 0 items
-        if (items == null || items.size() == 0) {
-            return;
+        if (items == null) {
+            items = new ArrayList<Item>();
         }
 
         Collection<Item> otherVersions = new ArrayList<Item>();
@@ -294,6 +294,13 @@ public class ExportItemUtil {
             itemProjectMap.clear();
             Set<String> jarNameList = new HashSet<String>();
 
+            computeProjectFileAndPath(destinationDirectory);
+            if (!toExport.containsKey(projectFile)) {
+                createProjectResource(resourceSet, allItems);
+                saveResources(resourceSet);
+                toExport.put(projectFile, projectPath);
+            }
+
             Iterator<Item> iterator = allItems.iterator();
             while (iterator.hasNext()) {
                 Item item = iterator.next();
@@ -301,12 +308,6 @@ public class ExportItemUtil {
 
                 String label = item.getProperty().getLabel();
 
-                computeProjectFileAndPath(destinationDirectory);
-                if (!toExport.containsKey(projectFile)) {
-                    createProjectResource(resourceSet, allItems);
-                    toExport.put(projectFile, projectPath);
-
-                }
                 if (ERepositoryObjectType.getItemType(item).isResourceItem()) {
                     Collection<EObject> copiedObjects = copyObjects(item);
 
