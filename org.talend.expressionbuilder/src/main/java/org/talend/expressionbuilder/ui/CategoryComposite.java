@@ -155,12 +155,15 @@ public class CategoryComposite extends Composite {
         source.setTransfer(new Transfer[] { textTransfer });
         source.addDragListener(new DragSourceListener() {
 
+            @Override
             public void dragStart(DragSourceEvent event) {
                 // CLabel functionLabel = getSource(event);
-                if (functionList.getSelection().equals("")) //$NON-NLS-1$
+                if (functionList.getSelection().equals("")) {
                     event.doit = false;
+                }
             }
 
+            @Override
             public void dragSetData(DragSourceEvent event) {
                 if (textTransfer.isSupportedType(event.dataType)) {
                     Function function = (Function) ((IStructuredSelection) functionViewer.getSelection()).getFirstElement();
@@ -172,6 +175,7 @@ public class CategoryComposite extends Composite {
                 }
             }
 
+            @Override
             public void dragFinished(DragSourceEvent event) {
 
             }
@@ -207,6 +211,7 @@ public class CategoryComposite extends Composite {
             new UIRelationShipLinker(categoryViewer, functionViewer, descriptionText);
         }
         initializeData(categoryViewer);
+        categoryViewer.getList().setFocus();
     }
 
     /**
@@ -237,6 +242,7 @@ public class CategoryComposite extends Composite {
         UIRelationShipLinker(ListViewer categoryViewer, final ListViewer functionViewer, final Object docDisplayer) {
             categoryViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+                @Override
                 public void selectionChanged(SelectionChangedEvent event) {
 
                     try {
@@ -262,6 +268,7 @@ public class CategoryComposite extends Composite {
 
             functionViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+                @Override
                 public void selectionChanged(SelectionChangedEvent event) {
                     Function function = (Function) ((IStructuredSelection) event.getSelection()).getFirstElement();
                     if (function != null && function.getDescription() != null) {
@@ -284,6 +291,7 @@ public class CategoryComposite extends Composite {
 
             functionViewer.addDoubleClickListener(new IDoubleClickListener() {
 
+                @Override
                 public void doubleClick(DoubleClickEvent event) {
 
                     try {
@@ -414,6 +422,7 @@ public class CategoryComposite extends Composite {
          * 
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
+        @Override
         public int compare(IContentProposal o1, IContentProposal o2) {
             return o1.getContent().compareToIgnoreCase(o2.getContent());
         }
