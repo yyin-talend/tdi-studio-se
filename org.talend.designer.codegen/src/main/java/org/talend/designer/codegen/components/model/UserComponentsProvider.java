@@ -95,15 +95,18 @@ public class UserComponentsProvider extends AbstractComponentsProvider {
         // synchroniz shared custom component
         if (PluginChecker.isSVNProviderPluginLoaded()) {
             Project currentProject = ProjectManager.getInstance().getCurrentProject();
-            String projectLabel = currentProject.getTechnicalLabel();
-            String sourcePath = new Path(Platform.getInstanceLocation().getURL().getPath()).toFile().getPath()
-                    + File.separatorChar + projectLabel + File.separatorChar
-                    + ERepositoryObjectType.getFolderName(ERepositoryObjectType.COMPONENTS);
-            File source = new File(sourcePath);
-            if (source.exists()) {
-                for (File file : source.listFiles(ff)) {
-                    FilesUtils.copyFolder(file, new File(installationFolder.getAbsolutePath() + File.separator + file.getName()),
-                            true, ff, null, true, false);
+            if (currentProject != null) {
+                String projectLabel = currentProject.getTechnicalLabel();
+                String sourcePath = new Path(Platform.getInstanceLocation().getURL().getPath()).toFile().getPath()
+                        + File.separatorChar + projectLabel + File.separatorChar
+                        + ERepositoryObjectType.getFolderName(ERepositoryObjectType.COMPONENTS);
+                File source = new File(sourcePath);
+                if (source.exists()) {
+                    for (File file : source.listFiles(ff)) {
+                        FilesUtils.copyFolder(file,
+                                new File(installationFolder.getAbsolutePath() + File.separator + file.getName()), true, ff, null,
+                                true, false);
+                    }
                 }
             }
         }

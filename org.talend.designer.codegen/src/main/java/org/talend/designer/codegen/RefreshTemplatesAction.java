@@ -15,6 +15,7 @@ package org.talend.designer.codegen;
 import org.eclipse.jface.action.Action;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.components.ComponentCompilations;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -39,6 +40,7 @@ public class RefreshTemplatesAction extends Action {
      */
     @Override
     public void run() {
+        ComponentCompilations.deleteMarkers();
         ComponentsFactoryProvider.getInstance().resetCache();
         CodeGeneratorEmittersPoolFactory.initialize();
         CorePlugin.getDefault().getLibrariesService().syncLibraries();

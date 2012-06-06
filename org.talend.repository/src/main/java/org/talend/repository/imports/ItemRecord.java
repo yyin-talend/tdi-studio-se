@@ -246,6 +246,9 @@ public class ItemRecord {
     }
 
     public ERepositoryObjectType getRepositoryType() {
+        if (repositoryType == null) {
+            repositoryType = ERepositoryObjectType.getItemType(property.getItem());
+        }
         return repositoryType;
     }
 

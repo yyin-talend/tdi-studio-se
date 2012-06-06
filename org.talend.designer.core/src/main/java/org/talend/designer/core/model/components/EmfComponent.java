@@ -146,8 +146,6 @@ public class EmfComponent extends AbstractComponent {
 
     private Map<String, ImageDescriptor> imageRegistry;
 
-    private final ECodeLanguage codeLanguage;
-
     public static final String BUILTIN = "BUILT_IN"; //$NON-NLS-1$
 
     public static final String REPOSITORY = "REPOSITORY"; //$NON-NLS-1$
@@ -233,8 +231,6 @@ public class EmfComponent extends AbstractComponent {
             info = (ComponentInfo) cache.getComponentEntryMap().get(getName());
             isLoaded = true;
         }
-        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage();
     }
 
     public ResourceBundle getResourceBundle() {
@@ -410,7 +406,7 @@ public class EmfComponent extends AbstractComponent {
         nodeRet.setName("ERROR_MESSAGE"); //$NON-NLS-1$
         listReturn.add(nodeRet);
 
-        if (codeLanguage.equals(ECodeLanguage.PERL)) {
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
             nodeRet = new NodeReturn();
             nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
             nodeRet.setVarName("PERL_ERROR_MESSAGE"); //$NON-NLS-1$
