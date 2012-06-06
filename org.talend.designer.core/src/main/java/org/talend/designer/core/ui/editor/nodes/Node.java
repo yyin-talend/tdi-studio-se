@@ -2625,37 +2625,25 @@ public class Node extends Element implements IGraphicalNode {
                     IJobletProviderService.class);
             if (jobletService != null) {
                 if (jobletService.isJobletComponent(this)) {
-                    Map<String, List<INode>> multiNodes = new HashMap<String, List<INode>>();
-                    jobletService.getMultiPrejobOrPostjobNodes(this, multiNodes);
-                    if (multiNodes.containsKey(TPREJOB_STR)) {
-                        List<INode> nodes = multiNodes.get(TPREJOB_STR);
-                        if (nodes.size() > 1) {
-                            String errorMessage = Messages.getString("Node.checkHasMultiPrejobOrPostJobComponents", TPREJOB_STR); //$NON-NLS-1$
-                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                        } else if (nodes.size() == 1) {
-                            for (INode node : process.getGraphicalNodes()) {
-                                String componentName = node.getComponent().getName();
-                                if (componentName != null && componentName.equals(TPREJOB_STR)) {
-                                    String errorMessage = Messages.getString(
-                                            "Node.checkHasMultiPrejobOrPostJobComponents", TPREJOB_STR); //$NON-NLS-1$
-                                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                                }
+                    Map<String, INode> multiNodes = new HashMap<String, INode>();
+                    for (INode node : process.getGeneratingNodes()) {
+                        String componentName = node.getComponent().getName();
+                        if (componentName != null && componentName.equals(TPREJOB_STR)) {
+                            if (!multiNodes.containsKey(TPREJOB_STR)) {
+                                multiNodes.put(TPREJOB_STR, node);
+                            } else {
+                                String errorMessage = Messages.getString(
+                                        "Node.checkHasMultiPrejobOrPostJobComponents", TPREJOB_STR); //$NON-NLS-1$
+                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
                         }
-                    }
-                    if (multiNodes.containsKey(TPOSTJOB_STR)) {
-                        List<INode> nodes = multiNodes.get(TPOSTJOB_STR);
-                        if (nodes.size() > 1) {
-                            String errorMessage = Messages.getString("Node.checkHasMultiPrejobOrPostJobComponents", TPOSTJOB_STR); //$NON-NLS-1$
-                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                        } else if (nodes.size() == 1) {
-                            for (INode node : process.getGraphicalNodes()) {
-                                String componentName = node.getComponent().getName();
-                                if (componentName != null && componentName.equals(TPOSTJOB_STR)) {
-                                    String errorMessage = Messages.getString(
-                                            "Node.checkHasMultiPrejobOrPostJobComponents", TPOSTJOB_STR); //$NON-NLS-1$
-                                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                                }
+                        if (componentName != null && componentName.equals(TPOSTJOB_STR)) {
+                            if (!multiNodes.containsKey(TPOSTJOB_STR)) {
+                                multiNodes.put(TPOSTJOB_STR, node);
+                            } else {
+                                String errorMessage = Messages.getString(
+                                        "Node.checkHasMultiPrejobOrPostJobComponents", TPOSTJOB_STR); //$NON-NLS-1$
+                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
                         }
                     }
