@@ -81,8 +81,18 @@ imports="
 	    }
 	    
 		public void generateStringResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String trimMethod) {
+			if("NTEXT".equalsIgnoreCase(column.getType())){
 %>
-            tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
+				net.sourceforge.jtds.jdbc.ClobImpl clob_<%=cid %> = (net.sourceforge.jtds.jdbc.ClobImpl) rs_<%=cid %>.getClob(<%=currentColNo %>);
+				net.sourceforge.jtds.jdbc.TalendNTextImpl tNTextImpl_<%=cid %> = new net.sourceforge.jtds.jdbc.TalendNTextImpl(clob_<%=cid %>);
+				tmpContent_<%=cid%> = tNTextImpl_<%=cid %>.getValue();
+<%
+			}else{
+%>
+           		tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
+<%
+			}
+%>
             if(tmpContent_<%=cid%> != null) {
             	if (talendToDBList_<%=cid %> .contains(rsmd_<%=cid %>.getColumnTypeName(<%=currentColNo%>).toUpperCase(java.util.Locale.ENGLISH))) {
             		<%=firstConnName%>.<%=column.getLabel()%> = FormatterUtils.formatUnwithE(Double.valueOf(tmpContent_<%=cid%>));
