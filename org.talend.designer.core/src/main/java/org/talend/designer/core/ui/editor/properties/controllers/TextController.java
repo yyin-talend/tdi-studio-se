@@ -41,8 +41,8 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
-import org.talend.designer.core.ui.projectsetting.ProjectSettingMultipleThreadDynamicComposite;
-import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
+import org.talend.designer.core.ui.projectsetting.ImplicitContextLoadElement;
+import org.talend.designer.core.ui.projectsetting.StatsAndLogsElement;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -105,7 +105,8 @@ public class TextController extends AbstractElementPropertySectionController {
         }
         if (!elem.isReadOnly()) {
             if (param.isRepositoryValueUsed()
-                    && !(subComposite.getParent() instanceof StatsAndLogsComposite || subComposite.getParent() instanceof ProjectSettingMultipleThreadDynamicComposite)) {
+                    && !(elem instanceof org.talend.designer.core.ui.editor.process.Process
+                            || elem instanceof StatsAndLogsElement || elem instanceof ImplicitContextLoadElement)) {
                 addRepositoryPropertyListener(labelText);
             }
             if (param.isRequired()) {
