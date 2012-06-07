@@ -298,6 +298,15 @@ public class ImportItemUtil {
                         itemRecord.setExistingItemWithSameId(itemWithSameName);
                         result = true;
                     }
+                    // TDI-21399,TDI-21401
+                    // if item is locked, cannot overwrite
+                    if (result && overwrite && itemWithSameName != null) {
+                        ERepositoryStatus status = itemWithSameName.getRepositoryStatus();
+                        if (status == ERepositoryStatus.LOCK_BY_OTHER || status == ERepositoryStatus.LOCK_BY_USER) {
+                            itemRecord.addError(Messages.getString("RepositoryUtil.itemLocked")); //$NON-NLS-1$
+                            return false;
+                        }
+                    }
 
                 } else {
                     // same name and same id
@@ -1084,7 +1093,8 @@ public class ImportItemUtil {
                         boolean alreadyInList = false;
                         for (ItemRecord currentItemRecord : items) {
                             if (StringUtils.equals(currentItemRecord.getProperty().getId(), itemRecord.getProperty().getId())
-                                    && StringUtils.equals(currentItemRecord.getProperty().getVersion(), itemRecord.getProperty().getVersion())) {
+                                    && StringUtils.equals(currentItemRecord.getProperty().getVersion(), itemRecord.getProperty()
+                                            .getVersion())) {
                                 // if have any duplicate item from same project & same folder, just don't do anything,
                                 // no need to display.
                                 alreadyInList = true;
