@@ -291,6 +291,15 @@ public class ImportItemUtil {
                         itemRecord.setExistingItemWithSameId(itemWithSameName);
                         result = true;
                     }
+                    // TDI-21399
+                    // if item is locked, cannot overwrite
+                    if (result && overwrite && itemWithSameName != null) {
+                        ERepositoryStatus status = itemWithSameName.getRepositoryStatus();
+                        if (status == ERepositoryStatus.LOCK_BY_OTHER || status == ERepositoryStatus.LOCK_BY_USER) {
+                            itemRecord.addError(Messages.getString("RepositoryUtil.itemLocked")); //$NON-NLS-1$
+                            return false;
+                        }
+                    }
 
                 } else {
                     // same name and same id

@@ -746,6 +746,15 @@ class ImportItemWizardPage extends WizardPage {
                         for (String error : itemRecord.getErrors()) {
                             errors.add("'" + itemRecord.getItemName() + "' " + error); //$NON-NLS-1$ //$NON-NLS-2$
                         }
+                    } else {
+                        // TDI-21399
+                        // if item is locked, cannot overwrite
+                        ERepositoryStatus status = reObject.getRepositoryStatus();
+                        if (status == ERepositoryStatus.LOCK_BY_OTHER || status == ERepositoryStatus.LOCK_BY_USER) {
+                            for (String error : itemRecord.getErrors()) {
+                                errors.add("'" + itemRecord.getItemName() + "' " + error); //$NON-NLS-1$ //$NON-NLS-2$
+                            }
+                        }
                     }
                 }
             } else {
