@@ -289,17 +289,21 @@ public class ExportItemUtil {
 
             items.clear();
 
+            if (allItems.isEmpty()) {
+                computeProjectFileAndPath(destinationDirectory);
+                if (!toExport.containsKey(projectFile)) {
+                    createProjectResource(resourceSet, allItems);
+                    saveResources(resourceSet);
+                    toExport.put(projectFile, projectPath);
+
+                    return toExport;
+                }
+            }
+
             allItems = sortItemsByProject(allItems, itemProjectMap);
 
             itemProjectMap.clear();
             Set<String> jarNameList = new HashSet<String>();
-
-            computeProjectFileAndPath(destinationDirectory);
-            if (!toExport.containsKey(projectFile)) {
-                createProjectResource(resourceSet, allItems);
-                saveResources(resourceSet);
-                toExport.put(projectFile, projectPath);
-            }
 
             Iterator<Item> iterator = allItems.iterator();
             while (iterator.hasNext()) {
@@ -308,6 +312,11 @@ public class ExportItemUtil {
 
                 String label = item.getProperty().getLabel();
 
+                computeProjectFileAndPath(destinationDirectory);
+                if (!toExport.containsKey(projectFile)) {
+                    createProjectResource(resourceSet, allItems);
+                    toExport.put(projectFile, projectPath);
+                }
                 if (ERepositoryObjectType.getItemType(item).isResourceItem()) {
                     Collection<EObject> copiedObjects = copyObjects(item);
 
