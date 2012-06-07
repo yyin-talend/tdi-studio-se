@@ -216,7 +216,7 @@ if (canGenerate) {
 <%
 	if (!containsMultiSelecct) {
 %>
-		statement_<%=cid%>.execute();
+		statement_<%=cid%>.executeUpdate();
 <%
 	} else {
 %>
