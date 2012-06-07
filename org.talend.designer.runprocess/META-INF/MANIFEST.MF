@@ -27,7 +27,8 @@ Require-Bundle: org.talend.model,
  org.eclipse.gef,
  org.talend.libraries.javacsv;resolution:=optional,
  org.talend.libraries.uniserv;resolution:=optional,
- org.talend.libraries.mozilla;resolution:=optional
+ org.talend.libraries.mozilla;resolution:=optional,
+ org.talend.designer.codegen
 Eclipse-LazyStart: true
 Export-Package: org.talend.designer.runprocess,
  org.talend.designer.runprocess.i18n,
