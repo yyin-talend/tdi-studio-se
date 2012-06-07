@@ -41,6 +41,8 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
+import org.talend.designer.core.ui.projectsetting.ImplicitContextLoadElement;
+import org.talend.designer.core.ui.projectsetting.StatsAndLogsElement;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -102,12 +104,15 @@ public class TextController extends AbstractElementPropertySectionController {
             labelText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
         if (!elem.isReadOnly()) {
-            if (param.isRepositoryValueUsed()) {
+            if (param.isRepositoryValueUsed()
+                    && !(elem instanceof org.talend.designer.core.ui.editor.process.Process
+                            || elem instanceof StatsAndLogsElement || elem instanceof ImplicitContextLoadElement)) {
                 addRepositoryPropertyListener(labelText);
             }
             if (param.isRequired()) {
                 labelText.addModifyListener(new ModifyListener() {
 
+                    @Override
                     public void modifyText(ModifyEvent e) {
                         checkTextError(param, labelText, labelText.getText());
                     }
@@ -188,6 +193,7 @@ public class TextController extends AbstractElementPropertySectionController {
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // TODO Auto-generated method stub
 
