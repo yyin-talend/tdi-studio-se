@@ -103,7 +103,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
     public void addPages() {
         mainPage = new OpenExistVersionProcessPage(alreadyEditedByUser, processObject);
         addPage(mainPage);
-        setWindowTitle(Messages.getString("OpenExistVersionProcessWizard")); //$NON-NLS-1$
+        setWindowTitle(Messages.getString("OpenExistVersionProcessWizard.windowTitle")); //$NON-NLS-1$
     }
 
     /**
