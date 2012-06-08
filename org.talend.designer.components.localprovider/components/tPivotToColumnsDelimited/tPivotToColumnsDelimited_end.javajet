@@ -52,33 +52,41 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
        }  
 %>
     
-    out<%=cid%>.write(pivot_Keys<%=cid%>.substring(0,pivot_Keys<%=cid%>.length()<=0?0:pivot_Keys<%=cid%>.length()-1));
+	for(int i = 0; i < pivot_Keys<%=cid%>.size(); i++) {
+		out<%=cid%>.write(pivot_Keys<%=cid%>.get(i));
+		if(i == pivot_Keys<%=cid%>.size()-1) {
+			break;
+		}
+		out<%=cid%>.write(<%=fieldSeparator%>);
+	}
     
     out<%=cid%>.write(<%=rowSeparator%>);
 
-    for(int i = 0;group_Keys_Split<%=cid%>!=null && i<group_Keys_Split<%=cid%>.length;i++){
+    for(int i = 0;i<group_Keys<%=cid%>.size();i++){
         
-        out<%=cid%>.write(group_Keys_Split<%=cid%>[i]);
+        for(int j = 0; j < group_Keys<%=cid%>.get(i).size(); j++) {
+			out<%=cid%>.write(group_Keys<%=cid%>.get(i).get(j));
+			out<%=cid%>.write(<%=fieldSeparator%>);
+		}
         
-        out<%=cid%>.write(<%=fieldSeparator%>);
-        
-        String aggOut<%=cid%> = (String)aggregation<%=cid%>.get(group_Keys_Split<%=cid%>[i]);
+        java.util.List<String> aggOut<%=cid%> = aggregation<%=cid%>.get(group_Keys<%=cid%>.get(i));
 
-        int gap<%=cid%> = routines.system.StringUtils.splitNotRegex(aggOut<%=cid%>,<%=fieldSeparator%>).length - routines.system.StringUtils.splitNotRegex(pivot_Keys<%=cid%>,<%=fieldSeparator%>).length;
+        int gap<%=cid%> = aggOut<%=cid%>.size() - pivot_Keys<%=cid%>.size();
         
         if(gap<%=cid%> < 0){
         
-        	for(int k=0;k<-1-gap<%=cid%>;k++)
-        	   	
-        		aggOut<%=cid%> = aggOut<%=cid%> + <%=fieldSeparator%>;
+        	for(int k=0;k<-gap<%=cid%>;k++)
+				aggOut<%=cid%>.add("");
 	
-        }else if(gap<%=cid%> == 0){
-        
-        	aggOut<%=cid%> = aggOut<%=cid%>.substring(0,aggOut<%=cid%>.lastIndexOf(<%=fieldSeparator%>));
-        
         }
 
-        out<%=cid %>.write(aggOut<%=cid%>);
+		for(int j = 0; j < aggOut<%=cid%>.size(); j++) {
+			out<%=cid%>.write(aggOut<%=cid%>.get(j));
+			if(j == aggOut<%=cid%>.size()-1) {
+				break;
+			}
+			out<%=cid%>.write(<%=fieldSeparator%>);
+		}
         
         out<%=cid%>.write(<%=rowSeparator%>);
 
@@ -91,7 +99,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
     <%}else{%>  ////////////////////////////////   CSV    /////////    
 
-    int rowSize<%=cid%> = routines.system.StringUtils.splitNotRegex(pivot_Keys<%=cid%>,<%=fieldSeparator%>).length + <%=groupbys.size()%>;
+    int rowSize<%=cid%> = pivot_Keys<%=cid%>.size() + <%=groupbys.size()%>;
     
     String[] finalStr<%=cid%> = new String[rowSize<%=cid%>];
 
@@ -106,9 +114,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
        }  
 %>
 
-    for (int i=0; pivot_Keys_Split<%=cid%>!=null && i<pivot_Keys_Split<%=cid%>.length; i++) {
+    for (int i=0; i<pivot_Keys<%=cid%>.size(); i++) {
 
-        finalStr<%=cid%>[i+<%=groupbys.size()%>] = pivot_Keys_Split<%=cid%>[i];
+        finalStr<%=cid%>[i+<%=groupbys.size()%>] = pivot_Keys<%=cid%>.get(i);
 
    }  
     
@@ -117,28 +125,26 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     
     CsvWriter<%=cid%>.flush();
 
-    for(int i = 0;group_Keys_Split<%=cid%>!=null && i<group_Keys_Split<%=cid%>.length;i++){
+    for(int i = 0;i<group_Keys<%=cid%>.size();i++){
         
         finalStr<%=cid%> = new String[rowSize<%=cid%>];
 
-        String[] gkSplit<%=cid%> = routines.system.StringUtils.splitNotRegex(group_Keys_Split<%=cid%>[i],<%=fieldSeparator%>);
+        java.util.List<String> gkSplit<%=cid%> = group_Keys<%=cid%>.get(i);
         
 <%  for (int i=0; i<groupbys.size(); i++) {
             
         Map<String, String> groupby = groupbys.get(i);
 %>
         
-        finalStr<%=cid%>[<%=i%>] = gkSplit<%=cid%>[<%=i%>];
+        finalStr<%=cid%>[<%=i%>] = gkSplit<%=cid%>.get(<%=i%>);
 
 <%  }  %>
         
-        String aggOut<%=cid%> = (String)aggregation<%=cid%>.get(group_Keys_Split<%=cid%>[i]);
+        java.util.List<String> aggOut<%=cid%> = aggregation<%=cid%>.get(gkSplit<%=cid%>);
 
-        String[] aggSplit<%=cid%> = routines.system.StringUtils.splitNotRegex(aggOut<%=cid%>,<%=fieldSeparator%>);    
-        
-  for (int j=0; j<aggSplit<%=cid%>.length; j++) {
+  for (int j=0; j<aggOut<%=cid%>.size(); j++) {
 
-        finalStr<%=cid%>[j+<%=groupbys.size()%>] =  aggSplit<%=cid%>[j];
+        finalStr<%=cid%>[j+<%=groupbys.size()%>] =  aggOut<%=cid%>.get(j);
 
   } 
         
