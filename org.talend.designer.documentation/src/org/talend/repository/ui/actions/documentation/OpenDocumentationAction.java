@@ -21,8 +21,13 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.internal.browser.WebBrowserEditor;
 import org.eclipse.ui.internal.browser.WebBrowserEditorInput;
+import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.properties.DocumentationItem;
@@ -31,8 +36,8 @@ import org.talend.core.model.properties.LinkDocumentationItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.wizards.documentation.LinkDocumentationHelper;
 import org.talend.repository.ui.wizards.documentation.LinkUtils;
@@ -137,8 +142,8 @@ public class OpenDocumentationAction extends AContextualAction {
     }
 
     private void showErrorMessage() {
-        MessageDialog.openError(Display.getCurrent().getActiveShell(), Messages
-                .getString("ExtractDocumentationAction.fileErrorTitle"), //$NON-NLS-1$
+        MessageDialog.openError(Display.getCurrent().getActiveShell(),
+                Messages.getString("ExtractDocumentationAction.fileErrorTitle"), //$NON-NLS-1$
                 Messages.getString("ExtractDocumentationAction.fileErrorMessages")); //$NON-NLS-1$
     }
 
@@ -234,6 +239,26 @@ public class OpenDocumentationAction extends AContextualAction {
         WebBrowserEditor browser = new WebBrowserEditor();
 
         WebBrowserEditorInput input = new WebBrowserEditorInput(url);
+        // add for bug TDI-21189 at 2012-6-8,that a document exist is only opened one time in studio
+        try {
+            IWorkbenchPage page = getActivePage();
+            IEditorReference[] iEditorReference = page.getEditorReferences();
+            for (IEditorReference editors : iEditorReference) {
+                if ("org.eclipse.ui.browser.editor".equals(editors.getId())) {
+                    IEditorPart iEditorPart = editors.getEditor(true);
+                    if (iEditorPart != null && iEditorPart instanceof WebBrowserEditor) {
+                        WebBrowserEditorInput webBrowserEditorInput = (WebBrowserEditorInput) iEditorPart.getEditorInput();
+                        if (webBrowserEditorInput != null && url.equals(webBrowserEditorInput.getURL())) {
+                            // page.activate(iEditorPart);
+                            iEditorPart.init(iEditorPart.getEditorSite(), webBrowserEditorInput);
+                            return;
+                        }
+                    }
+                }
+            }
+        } catch (PartInitException e) {
+            MessageBoxExceptionHandler.process(e);
+        }
 
         input.setName(item.getProperty().getLabel());
         input.setToolTipText(item.getProperty().getLabel() + " " + item.getProperty().getVersion()); //$NON-NLS-1$
