@@ -309,23 +309,26 @@ public class Schema2XMLDragAndDropHandler {
             FOXTreeNode targetNode = (FOXTreeNode) (targetItem.getData());
 
             if (dragdedData.size() == 1 && isDropRelatedColumn(event)) {
-                if (!targetNode.hasChildren()) {
-                    IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
-                    targetNode.setDefaultValue(null);
-                    targetNode.setColumn(metaColumn);
-                    targetNode.setTable(table);
-                    targetNode.setRow(row);
-                    linker.getXMLViewer().refresh(targetNode);
-                    linker.getXMLViewer().expandAll();
+                // Changed by Marvin Wang on Jun. 8, 2012 for bug TDI-21396.
+                // Drag all nodes to related column directly with no checking. Do not worry about the root element, caz
+                // it has shilded the operation.
+                // if (!targetNode.hasChildren()) {
+                IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
+                targetNode.setDefaultValue(null);
+                targetNode.setColumn(metaColumn);
+                targetNode.setTable(table);
+                targetNode.setRow(row);
+                linker.getXMLViewer().refresh(targetNode);
+                linker.getXMLViewer().expandAll();
 
-                    Display display = linker.getSource().getDisplay();
-                    Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
-                    linker.getSource().getShell().setCursor(cursor);
+                Display display = linker.getSource().getDisplay();
+                Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
+                linker.getSource().getShell().setCursor(cursor);
 
-                    linker.valuedChanged(targetItem);
+                linker.valuedChanged(targetItem);
 
-                    linker.getSource().getShell().setCursor(null);
-                }
+                linker.getSource().getShell().setCursor(null);
+                // }
             } else if (dragdedData.size() > 0) {
                 DragAndDrogDialog dialog = null;
                 if (getManager().getFoxComponent().istWriteJSONField()) {
