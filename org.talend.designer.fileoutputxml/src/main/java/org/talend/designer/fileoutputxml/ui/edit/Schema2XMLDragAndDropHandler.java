@@ -133,14 +133,17 @@ public class Schema2XMLDragAndDropHandler {
      */
     class TreeDragSourceListener implements TransferDragSourceListener {
 
+        @Override
         public void dragFinished(DragSourceEvent event) {
             event.getSource();
         }
 
+        @Override
         public void dragSetData(DragSourceEvent event) {
             event.getSource();
         }
 
+        @Override
         public void dragStart(DragSourceEvent event) {
             TableItem[] items = linker.getSource().getSelection();
             if (items.length == 0) {
@@ -158,6 +161,7 @@ public class Schema2XMLDragAndDropHandler {
             }
         }
 
+        @Override
         public Transfer getTransfer() {
             return LocalDataTransfer.getInstance();
         }
@@ -172,6 +176,7 @@ public class Schema2XMLDragAndDropHandler {
      */
     public class TableDropTargetListener implements TransferDropTargetListener {
 
+        @Override
         public void dragEnter(DropTargetEvent event) {
         }
 
@@ -193,12 +198,15 @@ public class Schema2XMLDragAndDropHandler {
             return null;
         }
 
+        @Override
         public void dragLeave(DropTargetEvent event) {
         }
 
+        @Override
         public void dragOperationChanged(DropTargetEvent event) {
         }
 
+        @Override
         public void dropAccept(DropTargetEvent event) {
 
         }
@@ -208,6 +216,7 @@ public class Schema2XMLDragAndDropHandler {
          * 
          * @see org.eclipse.jface.util.TransferDropTargetListener#getTransfer()
          */
+        @Override
         public Transfer getTransfer() {
             return LocalDataTransfer.getInstance();
         }
@@ -217,6 +226,7 @@ public class Schema2XMLDragAndDropHandler {
          * 
          * @see org.eclipse.jface.util.TransferDropTargetListener#isEnabled(org.eclipse.swt.dnd.DropTargetEvent)
          */
+        @Override
         public boolean isEnabled(DropTargetEvent event) {
             FOXManager manager = getManager();
             if (manager != null) {
@@ -237,6 +247,7 @@ public class Schema2XMLDragAndDropHandler {
             return true;
         }
 
+        @Override
         public void dragOver(DropTargetEvent event) {
             // System.out.println("\n>>drop");
             DropTarget dropTarget = (DropTarget) event.getSource();
@@ -284,6 +295,7 @@ public class Schema2XMLDragAndDropHandler {
          * 
          * @see org.eclipse.swt.dnd.DropTargetListener#drop(org.eclipse.swt.dnd.DropTargetEvent)
          */
+        @Override
         public void drop(DropTargetEvent event) {
             // System.out.println("\n>>drop");
             DropTarget dropTarget = (DropTarget) event.getSource();
@@ -309,23 +321,26 @@ public class Schema2XMLDragAndDropHandler {
             FOXTreeNode targetNode = (FOXTreeNode) (targetItem.getData());
 
             if (dragdedData.size() == 1 && isDropRelatedColumn(event)) {
-                if (!targetNode.hasChildren()) {
-                    IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
-                    targetNode.setDefaultValue(null);
-                    targetNode.setColumn(metaColumn);
-                    targetNode.setTable(table);
-                    targetNode.setRow(row);
-                    linker.getXMLViewer().refresh(targetNode);
-                    linker.getXMLViewer().expandAll();
+                // Changed by Marvin Wang on Jun. 8, 2012 for bug TDI-21396.
+                // Drag all nodes to related column directly with no checking. Do not worry about the root element, caz
+                // it has shilded the operation.
+                // if (!targetNode.hasChildren()) {
+                IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
+                targetNode.setDefaultValue(null);
+                targetNode.setColumn(metaColumn);
+                targetNode.setTable(table);
+                targetNode.setRow(row);
+                linker.getXMLViewer().refresh(targetNode);
+                linker.getXMLViewer().expandAll();
 
-                    Display display = linker.getSource().getDisplay();
-                    Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
-                    linker.getSource().getShell().setCursor(cursor);
+                Display display = linker.getSource().getDisplay();
+                Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
+                linker.getSource().getShell().setCursor(cursor);
 
-                    linker.valuedChanged(targetItem);
+                linker.valuedChanged(targetItem);
 
-                    linker.getSource().getShell().setCursor(null);
-                }
+                linker.getSource().getShell().setCursor(null);
+                // }
             } else if (dragdedData.size() > 0) {
                 DragAndDrogDialog dialog = null;
                 if (getManager().getFoxComponent().istWriteJSONField()) {
@@ -480,8 +495,9 @@ public class Schema2XMLDragAndDropHandler {
 
         // reset all the treeNode add row to relative column
         private void setTreeNodeRow(FOXTreeNode root, String row) {
-            if (root == null)
+            if (root == null) {
                 return;
+            }
             root.setRow(row);
             if (root instanceof Element) {
                 Element element = (Element) root;
