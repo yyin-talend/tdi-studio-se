@@ -31,8 +31,10 @@ String connName = null;
 boolean schemaEmpty = false;
 if (node.getIncomingConnections().size() > 0) {
 	IConnection conn = node.getIncomingConnections().get(0);
-	connName = conn.getName();
-	schemaEmpty = conn.getMetadataTable().getListColumns().size()==0;
+	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+		connName = conn.getName();
+		schemaEmpty = conn.getMetadataTable().getListColumns().size()==0;
+	}
 }
 if (useMessageFromSchema && (connName==null || schemaEmpty)) {
 %>
