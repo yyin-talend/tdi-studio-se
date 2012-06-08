@@ -63,6 +63,7 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPersistableElement;
+import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -281,6 +282,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
 
     };
+
+    private IPropertyListener propertyListener = null;
 
     /**
      * DOC hcw Comment method "restorePropertyInformation".
@@ -528,43 +531,14 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 ((ISyntaxCheckableEditor) codeEditor).validateSyntax();
             }
         } else if (newPageIndex == 0 && oldPageIndex == 2) {
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
-                try {
-                    boolean isDirty = getEditor(2).isDirty();
-                    getEditor(2).doSave(null);
-                    IProcess2 oldProcess = getProcess();
-
-                    ICreateXtextProcessService n = CorePlugin.getDefault().getCreateXtextProcessService();
-                    Item item = oldProcess.getProperty().getItem();
-                    ProcessType processType = null;
-                    if (item instanceof ProcessItem) {
-                        processType = n.convertDesignerEditorInput(
-                                ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
-                                oldProcess.getProperty());
-                    } else if (item instanceof JobletProcessItem) {
-                        processType = n.convertJobletDesignerEditorInput(
-                                ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
-                                oldProcess.getProperty());
-                    }
-                    if (item instanceof ProcessItem) {
-
-                        ((Process) oldProcess).updateProcess(processType);
-                    } else if (item instanceof JobletProcessItem) {
-                        ((Process) oldProcess).updateProcess(processType);
-                    }
-                    oldProcess.getUpdateManager().updateAll();
-                    designerEditor.setDirty(isDirty);
-                } catch (PersistenceException e) {
-                }
-                IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-                if (workbenchPage != null) {
-                    IViewPart view = workbenchPage.findView(ContextsView.ID);
-                    if (view != null) {
-                        ContextsView contextsView = (ContextsView) view;
-                        contextsView.getContextViewComposite().setTabEnable(true);
-                        contextsView.getContextViewComposite().getContextTemplateComposite().getViewer().getTree()
-                                .setEnabled(true);
-                    }
+            covertJobscriptOnPageChange();
+            IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+            if (workbenchPage != null) {
+                IViewPart view = workbenchPage.findView(ContextsView.ID);
+                if (view != null) {
+                    ContextsView contextsView = (ContextsView) view;
+                    contextsView.getContextViewComposite().setTabEnable(true);
+                    contextsView.getContextViewComposite().getContextTemplateComposite().getViewer().getTree().setEnabled(true);
                 }
             }
 
@@ -600,6 +574,21 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     } else {
                         file.create(byteArrayInputStream, true, null);
                     }
+                    if (propertyListener == null) {
+                        propertyListener = new IPropertyListener() {
+
+                            @Override
+                            public void propertyChanged(Object source, int propId) {
+                                if (getEditor(2).isDirty()) {
+                                    getProcess().setProcessModified(true);
+                                    getProcess().setNeedRegenerateCode(true);
+                                }
+                            }
+
+                        };
+                        getEditor(2).addPropertyListener(propertyListener);
+                    }
+
                 } catch (PartInitException e) {
                     ExceptionHandler.process(e);
                 } catch (CoreException e) {
@@ -631,6 +620,38 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
         oldPageIndex = getActivePage();
 
+    }
+
+    private void covertJobscriptOnPageChange() {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
+            try {
+                boolean isDirty = getEditor(2).isDirty();
+                getEditor(2).doSave(null);
+                IProcess2 oldProcess = getProcess();
+
+                ICreateXtextProcessService n = CorePlugin.getDefault().getCreateXtextProcessService();
+                Item item = oldProcess.getProperty().getItem();
+                ProcessType processType = null;
+                if (item instanceof ProcessItem) {
+                    processType = n.convertDesignerEditorInput(
+                            ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
+                            oldProcess.getProperty());
+                } else if (item instanceof JobletProcessItem) {
+                    processType = n.convertJobletDesignerEditorInput(
+                            ((IFile) getEditor(2).getEditorInput().getAdapter(IResource.class)).getLocation().toOSString(),
+                            oldProcess.getProperty());
+                }
+                if (item instanceof ProcessItem) {
+
+                    ((Process) oldProcess).updateProcess(processType);
+                } else if (item instanceof JobletProcessItem) {
+                    ((Process) oldProcess).updateProcess(processType);
+                }
+                oldProcess.getUpdateManager().updateAll();
+                designerEditor.setDirty(isDirty);
+            } catch (PersistenceException e) {
+            }
+        }
     }
 
     /**
@@ -881,6 +902,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         if (getActivePage() == 0 || getActivePage() == 1) {
             getEditor(0).doSave(monitor);
         } else if (getActivePage() == 2) {
+            boolean isDirty = getEditor(2).isDirty();
             getEditor(2).doSave(monitor);
             try {
                 IProcess2 oldProcess = getProcess();
@@ -895,6 +917,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
                 if (item instanceof ProcessItem) {
                     ((Process) designerEditor.getProcess()).updateProcess(processType);
+                    if (isDirty) {
+                        getProcess().setProcessModified(true);
+                        getProcess().setNeedRegenerateCode(true);
+                    }
                 } else if (item instanceof JobletProcessItem) {
                     AbstractProcessProvider processProvider = AbstractProcessProvider
                             .findProcessProviderFromPID(IComponent.JOBLET_PID);
@@ -1055,6 +1081,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
 
         if (oldPageIndex == 2) {
+            covertJobscriptOnPageChange();
             ParametersType parameters = processItem.getProcess().getParameters();
             if (parameters != null && parameters.getRoutinesParameter() != null && parameters.getRoutinesParameter().size() == 0) {
                 try {
