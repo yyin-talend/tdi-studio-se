@@ -34,6 +34,7 @@ public class OracleGenerationManager extends DbGenerationManager {
         return super.buildSqlSelect(component, outputTableName);
     }
 
+    @Override
     protected String getSpecialRightJoin(ExternalDbMapTable table) {
         // when use oracle's right join (+)
         if (language.getJoin(table.getJoinType()) == OracleLanguage.ORACLEJOIN.RIGHT_OUTER_JOIN_ORACLE) {
@@ -42,12 +43,18 @@ public class OracleGenerationManager extends DbGenerationManager {
         return DbMapSqlConstants.EMPTY;
     }
 
+    @Override
     protected String getSpecialLeftJoin(ExternalDbMapTable table) {
         // when use oracle's left join (+)
         if (language.getJoin(table.getJoinType()) == OracleLanguage.ORACLEJOIN.LEFT_OUTER_JOIN_ORACLE) {
             return JOIN + DbMapSqlConstants.SPACE;
         }
         return DbMapSqlConstants.EMPTY;
+    }
+
+    @Override
+    protected boolean isOracle() {
+        return true;
     }
 
 }
