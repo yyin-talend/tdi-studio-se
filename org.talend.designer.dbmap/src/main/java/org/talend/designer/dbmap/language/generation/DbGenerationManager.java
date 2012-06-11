@@ -273,7 +273,7 @@ public abstract class DbGenerationManager {
                     ExternalDbMapEntry dbMapEntry = metadataTableEntries.get(i);
                     String expression = dbMapEntry.getExpression();
                     expression = initExpression(component, dbMapEntry);
-                    if (!isPostgres()) {
+                    if (isOracle()) {
                         expression = addQuoteForSpecialChar(expression, component);
                     }
                     // for (IMetadataColumn column : columns) {
@@ -517,6 +517,10 @@ public abstract class DbGenerationManager {
         return false;
     }
 
+    protected boolean isOracle() {
+        return false;
+    }
+
     private String handleQuery(String query) {
         if (query != null) {
             if (!query.trim().endsWith("\"")) { //$NON-NLS-1$
@@ -751,6 +755,7 @@ public abstract class DbGenerationManager {
 
     private String addQuoteForSpecialChar(String expression, DbMapComponent component) {
         List<String> specialList = new ArrayList<String>();
+        Map<String, List<String>> map = new HashMap<String, List<String>>();
         List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
         if (inputConnections == null) {
             return expression;
@@ -767,6 +772,30 @@ public abstract class DbGenerationManager {
             }
         }
         for (String specialColumn : specialList) {
+            if (expression.contains(specialColumn)) {
+                if (map.get(expression) == null) {
+                    List<String> list = new ArrayList<String>();
+                    list.add(specialColumn);
+                    map.put(expression, list);
+                } else {
+                    List<String> list = map.get(expression);
+                    list.add(specialColumn);
+                }
+            }
+        }
+        if (map.size() > 0) {
+            List<String> list = map.get(expression);
+            for (int i = 0; i < list.size() - 1; i++) {
+                String first = list.get(i);
+                String second = list.get(i + 1);
+                String temp;
+                if (first.length() > second.length()) {
+                    temp = first;
+                    first = second;
+                    second = temp;
+                }
+            }
+            String specialColumn = list.get(list.size() - 1);
             if (expression.contains(specialColumn)) {
                 int begin = expression.indexOf(specialColumn);
                 int length = specialColumn.length();

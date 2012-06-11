@@ -50,4 +50,9 @@ public class OracleGenerationManager extends DbGenerationManager {
         return DbMapSqlConstants.EMPTY;
     }
 
+    @Override
+    protected boolean isOracle() {
+        return true;
+    }
+
 }
