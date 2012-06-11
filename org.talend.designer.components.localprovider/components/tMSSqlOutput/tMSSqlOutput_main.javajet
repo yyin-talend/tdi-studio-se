@@ -47,6 +47,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     
     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
+	boolean ignoreDateOutofRange = ("true").equals(ElementParameterParser.getValue(node,"__IGNORE_DATE_OUTOF_RANGE__"));
     
      String useBatchSize = ElementParameterParser.getValue(node, "__USE_BATCH_SIZE__");
      
@@ -128,7 +129,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             return typeToGenerate;
         }
         
-        public void generateSetStmt(String typeToGenerate, Column column, String incomingConnName, String cid){
+        public void generateSetStmt(String typeToGenerate, Column column, String incomingConnName, String cid,boolean ignoreDateOutofRange,String dbmsId){
             boolean isObject = false;                               
             String prefix = "pstmt_";                             
             %>
@@ -227,6 +228,21 @@ skeleton="../templates/db_output_bulk.skeleton"
                     date_<%=cid %> = <%=incomingConnName%>.<%=column.getName()%>.getTime();
                     if (date_<%=cid %> < year1_<%=cid %> || date_<%=cid %> >= year10000_<%=cid %>) {
                         <%=prefix+cid%>.setString(counter<%=cid%>, "0000-00-00 00:00:00");
+                <%if(ignoreDateOutofRange){
+                	String dbType = column.getColumn().getType();
+					if(dbType==null || "".equals(dbType.trim())){
+						MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(dbmsId);
+						dbType = mappingType.getDefaultSelectedDbType(column.getColumn().getTalendType());
+					}
+                	if(("DATE".equals(dbType) || "DATETIME2".equals(dbType) || "DATETIMEOFFSET".equals(dbType))){
+                		String pattern = column.getColumn().getPattern();
+                %>
+				    }else if(date_<%=cid %> < year2_<%=cid %>){
+                    	<%=prefix+cid%>.setString(counter<%=cid%>,TalendDate.formatDate(<%=pattern%>, <%=incomingConnName%>.<%=column.getName()%>));
+				<%
+					}
+				}
+				%>
                     } else {
                         <%=prefix+cid%>.setTimestamp(counter<%=cid%>, new java.sql.Timestamp(date_<%=cid %>));
                     }
@@ -473,7 +489,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                 if(column.isInsertable()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                     %>
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate,String.valueOf(ignoreDateOutofRange), column, counter, incomingConnName, cid, NORMAL_TYPE,null)%>
                     <%
                     if(isEnableDebug) {
                         %>
@@ -572,7 +588,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 		                for(Column column : colStruct) {
 		                    if(column.isInsertable()) {
 		                        String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
-		                        siOperation.generateSetStmt(typeToGenerate,column,incomingConnName,cid);
+		                        siOperation.generateSetStmt(typeToGenerate,column,incomingConnName,cid,ignoreDateOutofRange,dbmsId);
 		                        %>
 		                        counter<%=cid%>++;
 		                        <%
@@ -652,7 +668,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                 if(column.isUpdatable()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                     %>
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counterCol, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate,String.valueOf(ignoreDateOutofRange), column, counterCol, incomingConnName, cid, NORMAL_TYPE,null)%>
                     <%
                     if(isEnableDebug) {
                         %>
@@ -693,7 +709,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                      //#############                      
                     %>                
                     
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counterCol, incomingConnName, cid, NORMAL_TYPE, " + count_")%>
+                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate,String.valueOf(ignoreDateOutofRange), column, counterCol, incomingConnName, cid, NORMAL_TYPE, " + count_")%>
                     <%
                     if(isEnableDebug) {
                         %>
@@ -780,7 +796,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                      //#############                      
                     %>                    
                     
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, columnIndex, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate,String.valueOf(ignoreDateOutofRange), column, columnIndex, incomingConnName, cid, NORMAL_TYPE,null)%>
                     <%
                     columnIndex++;
                 }
@@ -807,7 +823,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                     if(column.isUpdatable()) {
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                         %>
-                        <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counterCol, incomingConnName, cid, UPDATE_TYPE)%>
+                        <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate,String.valueOf(ignoreDateOutofRange), column, counterCol, incomingConnName, cid, UPDATE_TYPE,null)%>
                         <%
                         if(isEnableDebug) {
                             %>
@@ -847,7 +863,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
 	                     //#############                      
 	                    %>
                                                          
-                        <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counterCol, incomingConnName, cid, UPDATE_TYPE, " + count_")%>
+                        <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate,String.valueOf(ignoreDateOutofRange), column, counterCol, incomingConnName, cid, UPDATE_TYPE, " + count_")%>
                         <%
                         if(isEnableDebug) {
                             %>
@@ -913,7 +929,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                     if(columnInsert.isInsertable()) {
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnInsert.getColumn().getTalendType(), columnInsert.getColumn().isNullable());
                         %>
-                        <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, columnInsert, counterInsert, incomingConnName, cid, INSERT_TYPE)%>
+                        <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, String.valueOf(ignoreDateOutofRange), columnInsert, counterInsert, incomingConnName, cid, INSERT_TYPE,null)%>
                         <%
                         if(isEnableDebug) {
                             %>
@@ -995,7 +1011,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                 if(columnUpdate.isUpdatable()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnUpdate.getColumn().getTalendType(), columnUpdate.getColumn().isNullable());
                     %>
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE)%>
+                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, String.valueOf(ignoreDateOutofRange), columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE,null)%>
                     <%
                     if(isEnableDebug) {
                         %>
@@ -1035,7 +1051,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                          //#############                      
                         %>                    
                     
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE, " + count_")%>
+                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, String.valueOf(ignoreDateOutofRange), columnUpdate, counterColUpdate, incomingConnName, cid, UPDATE_TYPE, " + count_")%>
                     <%
                     if(isEnableDebug) {
                         %>
@@ -1110,7 +1126,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                     if(column.isInsertable()) {
                         String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
                         %>
-                        <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, INSERT_TYPE)%>
+                        <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, String.valueOf(ignoreDateOutofRange), column, counter, incomingConnName, cid, INSERT_TYPE,null)%>
                         <%
                         if(isEnableDebug) {
                             %>
@@ -1207,7 +1223,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                      //#############                      
                     %>                     
                     
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, keyCounter, incomingConnName, cid, NORMAL_TYPE)%>
+                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, String.valueOf(ignoreDateOutofRange), column, keyCounter, incomingConnName, cid, NORMAL_TYPE,null)%>
                     <%
                     if(isEnableDebug) {
                         %>
@@ -1292,7 +1308,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                      //#############                      
                     %>                 
                 
-                <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, columnIndex, incomingConnName, cid, NORMAL_TYPE)%>
+                <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, String.valueOf(ignoreDateOutofRange), column, columnIndex, incomingConnName, cid, NORMAL_TYPE,null)%>
                 <%
                 columnIndex++;
             }
@@ -1320,7 +1336,7 @@ if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("t
                 if(columnInsert.isInsertable()) {
                     String typeToGenerate = JavaTypesManager.getTypeToGenerate(columnInsert.getColumn().getTalendType(), columnInsert.getColumn().isNullable());
                     %>
-                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, columnInsert, counterInsert, incomingConnName, cid, INSERT_TYPE)%>
+                    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, String.valueOf(ignoreDateOutofRange), columnInsert, counterInsert, incomingConnName, cid, INSERT_TYPE,null)%>
                     <%
                     if(isEnableDebug) {
                         %>

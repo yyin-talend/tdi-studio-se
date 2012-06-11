@@ -245,7 +245,14 @@
 	        <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
 	      </ITEMS>
 	    </PARAMETER>
-
+		
+		<PARAMETER 
+	  	  NAME="IGNORE_DATE_OUTOF_RANGE" 
+	  	  FIELD="CHECK"
+		  NUM_ROW="14">
+		  <DEFAULT>false</DEFAULT>
+		</PARAMETER>
+		
 	  	<PARAMETER 
 	  	  NAME="ENABLE_DEBUG_MODE" 
 	  	  FIELD="CHECK"
