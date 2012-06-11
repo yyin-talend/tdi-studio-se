@@ -75,7 +75,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.runprocess.IRunProcessService;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
 
@@ -260,12 +259,10 @@ public class GenerateGrammarController extends AbstractElementPropertySectionCon
     private void generateJavaFile() {
         Node node = (Node) elem;
 
-        final String PROJECT_NAME = ProjectManager.getInstance().getCurrentProject().getTechnicalLabel().toLowerCase();
         final String JOB_NAME = node.getProcess().getName().toLowerCase();
         final String COMPONENT_NAME = node.getUniqueName().toLowerCase();
 
-        String javaClassName = StringUtils.capitalize(PROJECT_NAME) + StringUtils.capitalize(JOB_NAME)
-                + StringUtils.capitalize(COMPONENT_NAME);
+        String javaClassName = StringUtils.capitalize(JOB_NAME) + StringUtils.capitalize(COMPONENT_NAME);
         ITDQItemService service = (ITDQItemService) GlobalServiceRegister.getDefault().getService(ITDQItemService.class);
         File fileCreated = null;
         try {
