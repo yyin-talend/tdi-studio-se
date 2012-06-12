@@ -27,16 +27,12 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -907,9 +903,9 @@ class ImportItemWizardPage extends WizardPage {
         }
 
         try {
-            final IWorkspaceRunnable op = new IWorkspaceRunnable() {
+            IRunnableWithProgress iRunnableWithProgress = new IRunnableWithProgress() {
 
-                public void run(IProgressMonitor monitor) throws CoreException {
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     IPath destinationPath = null;
                     String contentType = "";
                     if (rNode != null && rNode.getType().equals(ENodeType.SIMPLE_FOLDER)) {
@@ -922,25 +918,8 @@ class ImportItemWizardPage extends WizardPage {
 
                     repositoryUtil.importItemRecords(manager, itemRecords, monitor, overwrite, destinationPath, contentType);
                     if (repositoryUtil.hasErrors()) {
-                        throw new CoreException(new Status(IStatus.ERROR, FrameworkUtil.getBundle(this.getClass())
-                                .getSymbolicName(), "Import errors")); //$NON-NLS-1$
-                    }
-
-                }
-
-            };
-            IRunnableWithProgress iRunnableWithProgress = new IRunnableWithProgress() {
-
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    IWorkspace workspace = ResourcesPlugin.getWorkspace();
-                    try {
-                        ISchedulingRule schedulingRule = workspace.getRoot();
-                        // the update the project files need to be done in the workspace runnable to avoid all
-                        // notification
-                        // of changes before the end of the modifications.
-                        workspace.run(op, schedulingRule, IWorkspace.AVOID_UPDATE, monitor);
-                    } catch (CoreException e) {
-                        throw new InvocationTargetException(e);
+                        throw new InvocationTargetException(new CoreException(new Status(IStatus.ERROR, FrameworkUtil.getBundle(
+                                this.getClass()).getSymbolicName(), "Import errors"))); //$NON-NLS-1$
                     }
 
                 }
