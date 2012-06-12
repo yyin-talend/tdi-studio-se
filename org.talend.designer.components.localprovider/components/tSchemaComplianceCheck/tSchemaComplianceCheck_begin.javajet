@@ -72,6 +72,14 @@
 	final boolean useFasteDateChecker = "true".equals(ElementParameterParser.getValue(node, "__FAST_DATE_CHECK__"));
 	final boolean emptyIsNull = "true".equals(ElementParameterParser.getValue(node, "__EMPTY_IS_NULL__"));
 	final boolean allEmptyAreNull = "true".equals(ElementParameterParser.getValue(node, "__ALL_EMPTY_ARE_NULL__"));
+	
+	List<Map<String, String>> list = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__EMPTY_NULL_TABLE__");
+	final List<String> listEmptyAsNull = new ArrayList<String>();
+	for(Map<String, String> map : list){
+		if("true".equals(map.get("EMPTY_NULL"))){
+			listEmptyAsNull.add(map.get("SCHEMA_COLUMN"));
+		}
+	}
 
 	class SchemaChecker { //CLASS SCHEMACHECKER START
 		boolean anotherChecked = "true".equals(ElementParameterParser.getValue(node, "__CHECK_ANOTHER__"));
@@ -88,8 +96,13 @@
 <%
 				if (_bNullable){ //CONDITION_00110 START
 %>
-		<%=_sInConnName%>.<%=colName%> != null  && (!"".equals(<%=_sInConnName%>.<%=colName%>)) 
+		<%=_sInConnName%>.<%=colName%> != null
 <%
+					if(allEmptyAreNull || listEmptyAsNull.contains(metadataColumn.getLabel())) {
+%>
+		&& (!"".equals(<%=_sInConnName%>.<%=colName%>))
+<%
+					}
 				}else if(!isPrimitive){ //CONDITION_00110 ELSE IF
 %>
 		<%=_sInConnName%>.<%=colName%> != null
@@ -191,8 +204,13 @@
 <%
 				if (_bNullable){ //CONDITION_00141 START
 %>
-	<%=_sInConnName%>.<%=colName%> != null  && (!"".equals(<%=_sInConnName%>.<%=colName%>)) 
+	<%=_sInConnName%>.<%=colName%> != null 
 <%
+					if(allEmptyAreNull || listEmptyAsNull.contains(metadataColumn.getLabel())) {
+%>
+	&& (!"".equals(<%=_sInConnName%>.<%=colName%>))					
+<%
+					}
 				}else if (!isPrimitive){ //CONDITION_00141 ELSE IF
 %> 
 	<%=_sInConnName%>.<%=colName%> != null
@@ -282,8 +300,13 @@
 <%
 					if (_bNullable){ //CONDITION_001511 START
 %>
-		<%=_sInConnName%>.<%=colName%> != null  && (!"".equals(<%=_sInConnName%>.<%=colName%>)) 
+		<%=_sInConnName%>.<%=colName%> != null 
 <%
+						if(allEmptyAreNull || listEmptyAsNull.contains(metadataColumn.getLabel())) {
+%>
+		&& (!"".equals(<%=_sInConnName%>.<%=colName%>))
+<%
+						}
 					}else if (!isPrimitive){ //CONDITION_001511 ELSE IF
 %> 
 		<%=_sInConnName%>.<%=colName%> != null
@@ -333,14 +356,7 @@
 			} //CONDITION_00150 STOP
 		} //METHOD_TESTDATE STOP
 
-		public void testNull(String _sInConnName, IMetadataColumn metadataColumn, String cid, List<Map<String, String>> list){ //METHOD_TESTNULL START
-			List<String> listEmptyAsNull = new ArrayList<String>();
-			for(Map<String, String> map : list){
-				if("true".equals(map.get("EMPTY_NULL"))){
-					listEmptyAsNull.add(map.get("SCHEMA_COLUMN"));
-				}
-			}
-
+		public void testNull(String _sInConnName, IMetadataColumn metadataColumn, String cid){ //METHOD_TESTNULL START
 			boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType(metadataColumn.getTalendType(), metadataColumn.isNullable());
 			if (!isPrimitive){ //CONDITION_00160 START
 				if(emptyIsNull && !allEmptyAreNull){ //CONDITION_001601 START - for the migration task
@@ -515,8 +531,7 @@
 
 		// NULL checking
 		if (!bNullable){
-			List<Map<String, String>> list = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__EMPTY_NULL_TABLE__");
-			checker.testNull(sInConnName, inColumn, cid, list);
+			checker.testNull(sInConnName, inColumn, cid);
 		}
 
 		// type checking
