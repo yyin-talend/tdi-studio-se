@@ -234,18 +234,18 @@
 	}else { 
 		//the others all use the ZIP to decompression
 		<%if(isPasswordNeeded ){ %>
-			System.out.println("Processing archive "+ tmpFileURL_<%=cid%> + ", please wait...");
+			System.out.println("Processing archive "+ zipFileURL_<%=cid%> + ", please wait...");
 			System.out.println();
 			 if( !<%=password%>.equals("") ){
 				 <%if (rootName!=true) {%> 
-				 	java.io.File file_<%=cid %> = new java.io.File(tmpFileURL_<%=cid%>);
+				 	java.io.File file_<%=cid %> = new java.io.File(zipFileURL_<%=cid%>);
 				 <%}%>
 				 if(<%=isArchiveValid%>){
 					 if(!org.talend.archive.IntegrityUtil.isEncryptedZipValid(file_<%=cid %>, <%=password%>)){
-						 throw new RuntimeException ("The file " + tmpFileURL_<%=cid %> + " is corrupted, process terminated..." );
+						 throw new RuntimeException ("The file " + zipFileURL_<%=cid %> + " is corrupted, process terminated..." );
 					 }
 				 }
-			 java.io.InputStream target_<%=cid%> = new java.io.FileInputStream(tmpFileURL_<%=cid%>); 
+			 java.io.InputStream target_<%=cid%> = new java.io.FileInputStream(zipFileURL_<%=cid%>); 
 			 target_<%=cid%> = 
 				 new javax.crypto.CipherInputStream(target_<%=cid%>, 
 						 org.talend.archive.IntegrityUtil.createCipher(javax.crypto.Cipher.DECRYPT_MODE, <%=password%>)); 
@@ -279,7 +279,7 @@
 			}
     <%  }
 		else {%>
-    	    System.out.println("Processing archive " + tmpFileURL_<%=cid%> + ", please wait...");
+    	    System.out.println("Processing archive " + zipFileURL_<%=cid%> + ", please wait...");
     	    System.out.println();
     	    
 			if(<%=isArchiveValid%> && !org.talend.archive.IntegrityUtil.isZipValid(new java.io.File(zipFileURL_<%=cid %>))){
