@@ -264,6 +264,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 } catch (CoreException e) {
                     ExceptionHandler.process(e);
                 }
+                changeContextsViewStatus(true);
             }
         }
 
@@ -500,6 +501,18 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     // only convert process and jobscript when select between designer and jboscript page.
     int oldPageIndex = -1;
 
+    private void changeContextsViewStatus(boolean flag) {
+        IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        if (workbenchPage != null) {
+            IViewPart view = workbenchPage.findView(ContextsView.ID);
+            if (view != null) {
+                ContextsView contextsView = (ContextsView) view;
+                contextsView.getContextViewComposite().setTabEnable(flag);
+                contextsView.getContextViewComposite().getContextTemplateComposite().getViewer().getTree().setEnabled(flag);
+            }
+        }
+    }
+
     /**
      * Calculates the contents of page 2 when the it is activated.
      */
@@ -523,18 +536,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             if (codeEditor instanceof ISyntaxCheckableEditor && LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
                 ((ISyntaxCheckableEditor) codeEditor).validateSyntax();
             }
+            changeContextsViewStatus(true);
         } else if (newPageIndex == 0 && oldPageIndex == 2) {
 
             covertJobscriptOnPageChange();
-            IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-            if (workbenchPage != null) {
-                IViewPart view = workbenchPage.findView(ContextsView.ID);
-                if (view != null) {
-                    ContextsView contextsView = (ContextsView) view;
-                    contextsView.getContextViewComposite().setTabEnable(true);
-                    contextsView.getContextViewComposite().getContextTemplateComposite().getViewer().getTree().setEnabled(true);
-                }
-            }
+            changeContextsViewStatus(true);
         } else if (newPageIndex == 2) {
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ICreateXtextProcessService.class)) {
                 ICreateXtextProcessService convertJobtoScriptService = CorePlugin.getDefault().getCreateXtextProcessService();
@@ -584,16 +590,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 } catch (InvocationTargetException e) {
                     ExceptionHandler.process(e);
                 }
-                IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-                if (workbenchPage != null) {
-                    IViewPart view = workbenchPage.findView(ContextsView.ID);
-                    if (view != null) {
-                        ContextsView contextsView = (ContextsView) view;
-                        contextsView.getContextViewComposite().setTabEnable(false);
-                        contextsView.getContextViewComposite().getContextTemplateComposite().getViewer().getTree()
-                                .setEnabled(false);
-                    }
-                }
+                changeContextsViewStatus(false);
 
                 if (propertyListener == null) {
                     propertyListener = new IPropertyListener() {
