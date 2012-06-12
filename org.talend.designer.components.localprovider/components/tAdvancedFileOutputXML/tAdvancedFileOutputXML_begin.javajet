@@ -320,9 +320,6 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				}
 			}
 		}
-%>
-			try{
-<%
 	}
 }
 %>

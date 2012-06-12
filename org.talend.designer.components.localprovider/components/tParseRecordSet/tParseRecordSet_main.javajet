@@ -49,8 +49,17 @@ if (outputConns!=null && outputConns.size()>0) {
     if (outputMetadata!=null) {
     	List<IMetadataColumn> columns= outputMetadata.getListColumns();
 %>
-    while (re_<%=cid%>.next()) {
-    	nb_line_<%=cid%>++;	
+	boolean hasNextRecord_<%=cid%>=false;
+    while (true) {
+	try{
+		hasNextRecord_<%=cid%>=re_<%=cid%>.next();
+	}catch(Exception e_<%=cid%>){
+		hasNextRecord_<%=cid%>=false;
+	}
+	if (!hasNextRecord_<%=cid%>) {
+		break;
+	}
+	nb_line_<%=cid%>++;	
 <%
 		//get the mapping column 
 		for (Map<String, String> tmpMap:attriTable) { 
