@@ -36,10 +36,17 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -48,6 +55,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
+import org.osgi.framework.FrameworkUtil;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -402,93 +410,114 @@ public class ImportItemUtil {
 
             @Override
             public void run() throws PersistenceException {
-                final IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-                // bug 10520
-                final Set<String> overwriteDeletedItems = new HashSet<String>();
-                final Set<String> idDeletedBeforeImport = new HashSet<String>();
+                final IWorkspaceRunnable op = new IWorkspaceRunnable() {
 
-                Map<String, String> nameToIdMap = new HashMap<String, String>();
+                    public void run(IProgressMonitor monitor) throws CoreException {
 
-                for (ItemRecord itemRecord : itemRecords) {
-                    if (!monitor.isCanceled()) {
-                        if (itemRecord.isValid()) {
-                            if (itemRecord.getState() == State.ID_EXISTED) {
-                                String id = nameToIdMap.get(itemRecord.getProperty().getLabel()
-                                        + ERepositoryObjectType.getItemType(itemRecord.getProperty().getItem()).toString());
-                                if (id == null) {
-                                    /*
-                                     * if id exsist then need to genrate new id for this job,in this case the job won't
-                                     * override the old one
-                                     */
-                                    id = EcoreUtil.generateUUID();
-                                    nameToIdMap.put(
-                                            itemRecord.getProperty().getLabel()
+                        final IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+                        // bug 10520
+                        final Set<String> overwriteDeletedItems = new HashSet<String>();
+                        final Set<String> idDeletedBeforeImport = new HashSet<String>();
+
+                        Map<String, String> nameToIdMap = new HashMap<String, String>();
+
+                        for (ItemRecord itemRecord : itemRecords) {
+                            if (!monitor.isCanceled()) {
+                                if (itemRecord.isValid()) {
+                                    if (itemRecord.getState() == State.ID_EXISTED) {
+                                        String id = nameToIdMap.get(itemRecord.getProperty().getLabel()
+                                                + ERepositoryObjectType.getItemType(itemRecord.getProperty().getItem())
+                                                        .toString());
+                                        if (id == null) {
+                                            /*
+                                             * if id exsist then need to genrate new id for this job,in this case the
+                                             * job won't override the old one
+                                             */
+                                            id = EcoreUtil.generateUUID();
+                                            nameToIdMap.put(itemRecord.getProperty().getLabel()
                                                     + ERepositoryObjectType.getItemType(itemRecord.getProperty().getItem())
                                                             .toString(), id);
+                                        }
+                                        itemRecord.getProperty().setId(id);
+                                    }
                                 }
-                                itemRecord.getProperty().setId(id);
                             }
                         }
-                    }
-                }
 
-                for (ItemRecord itemRecord : itemRecords) {
-                    if (!monitor.isCanceled()) {
-                        if (itemRecord.isValid()) {
-                            importItemRecord(manager, itemRecord, overwrite, destinationPath, overwriteDeletedItems,
-                                    idDeletedBeforeImport, contentType, monitor);
+                        for (ItemRecord itemRecord : itemRecords) {
+                            if (!monitor.isCanceled()) {
+                                if (itemRecord.isValid()) {
+                                    importItemRecord(manager, itemRecord, overwrite, destinationPath, overwriteDeletedItems,
+                                            idDeletedBeforeImport, contentType, monitor);
 
-                            monitor.worked(1);
+                                    monitor.worked(1);
+                                }
+                            }
+                        }
+
+                        // deploy routines Jar
+                        if (!getRoutineExtModulesMap().isEmpty()) {
+                            Set<String> extRoutines = new HashSet<String>();
+                            for (String id : getRoutineExtModulesMap().keySet()) {
+                                Set<String> set = getRoutineExtModulesMap().get(id);
+                                if (set != null) {
+                                    extRoutines.addAll(set);
+                                }
+                            }
+                            if (manager instanceof ProviderManager || manager instanceof ZipFileManager) {
+                                deployJarToDesForArchive(manager, extRoutines);
+                            } else {
+                                deployJarToDes(manager, extRoutines);
+                            }
+                        }
+
+                        if (PluginChecker.isJobLetPluginLoaded()) {
+                            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault()
+                                    .getService(IJobletProviderService.class);
+                            if (service != null) {
+                                service.loadComponentsFromProviders();
+                            }
+                        }
+                        // cannot cancel this part
+                        //                monitor.beginTask(Messages.getString("ImportItemWizardPage.ApplyMigrationTasks"), itemRecords.size() + 1); //$NON-NLS-1$
+                        // for (ItemRecord itemRecord : itemRecords) {
+                        // if (itemRecord.isImported()) {
+                        // applyMigrationTasks(itemRecord, monitor);
+                        // }
+                        // monitor.worked(1);
+                        // }
+                        checkDeletedFolders();
+                        monitor.done();
+
+                        TimeMeasure.step("importItemRecords", "before save");
+                        if (RelationshipItemBuilder.getInstance().isNeedSaveRelations()) {
+                            RelationshipItemBuilder.getInstance().saveRelations();
+                            TimeMeasure.step("importItemRecords", "save relations");
+                        } else {
+                            // only save the project here if no relation need to be saved, since project will already be
+                            // saved
+                            // with relations
+                            try {
+                                factory.saveProject(ProjectManager.getInstance().getCurrentProject());
+                            } catch (PersistenceException e) {
+                                throw new CoreException(new Status(IStatus.ERROR, FrameworkUtil.getBundle(this.getClass())
+                                        .getSymbolicName(), "Import errors", e));
+                            }
+                            TimeMeasure.step("importItemRecords", "save project");
                         }
                     }
+
+                };
+                IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                try {
+                    ISchedulingRule schedulingRule = workspace.getRoot();
+                    // the update the project files need to be done in the workspace runnable to avoid all
+                    // notification
+                    // of changes before the end of the modifications.
+                    workspace.run(op, schedulingRule, IWorkspace.AVOID_UPDATE, monitor);
+                } catch (CoreException e) {
+                    // ?
                 }
-
-                // deploy routines Jar
-                if (!getRoutineExtModulesMap().isEmpty()) {
-                    Set<String> extRoutines = new HashSet<String>();
-                    for (String id : getRoutineExtModulesMap().keySet()) {
-                        Set<String> set = getRoutineExtModulesMap().get(id);
-                        if (set != null) {
-                            extRoutines.addAll(set);
-                        }
-                    }
-                    if (manager instanceof ProviderManager || manager instanceof ZipFileManager) {
-                        deployJarToDesForArchive(manager, extRoutines);
-                    } else {
-                        deployJarToDes(manager, extRoutines);
-                    }
-                }
-
-                if (PluginChecker.isJobLetPluginLoaded()) {
-                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                            IJobletProviderService.class);
-                    if (service != null) {
-                        service.loadComponentsFromProviders();
-                    }
-                }
-                // cannot cancel this part
-                //                monitor.beginTask(Messages.getString("ImportItemWizardPage.ApplyMigrationTasks"), itemRecords.size() + 1); //$NON-NLS-1$
-                // for (ItemRecord itemRecord : itemRecords) {
-                // if (itemRecord.isImported()) {
-                // applyMigrationTasks(itemRecord, monitor);
-                // }
-                // monitor.worked(1);
-                // }
-                checkDeletedFolders();
-                monitor.done();
-
-                TimeMeasure.step("importItemRecords", "before save");
-                if (RelationshipItemBuilder.getInstance().isNeedSaveRelations()) {
-                    RelationshipItemBuilder.getInstance().saveRelations();
-                    TimeMeasure.step("importItemRecords", "save relations");
-                } else {
-                    // only save the project here if no relation need to be saved, since project will already be saved
-                    // with relations
-                    factory.saveProject(ProjectManager.getInstance().getCurrentProject());
-
-                    TimeMeasure.step("importItemRecords", "save project");
-                }
-
             }
         };
         repositoryWorkUnit.setAvoidUnloadResources(true);
