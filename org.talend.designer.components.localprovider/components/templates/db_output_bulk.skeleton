@@ -1710,7 +1710,7 @@ public class CLASS {
 				"\n\"\\n" +
 				  column.getOriginalDbColumnName() 
 				+ "="
-				+ "char(0)");
+				+ ("VARCHAR".equalsIgnoreCase(column.getType())? "text(0)" : "char(0)"));
 			
 				// add these only if not last entry
 				if (counter < columnList.size()){
