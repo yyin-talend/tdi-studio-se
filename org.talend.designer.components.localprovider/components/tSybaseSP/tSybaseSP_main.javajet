@@ -121,7 +121,7 @@ if (inConnection == null) {
 		}
 	}
 }
-
+boolean returnRS = false;
 if (canGenerate) {
 	// Search outgoing schema
 	IMetadataTable metadata = null;
@@ -210,20 +210,28 @@ if (canGenerate) {
 				statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
 	  			<%
 			}
+			
+			if ("RECORDSET".equals(argType)){
+				returnRS = true;
+			}
 		}
 		
 		%>
-<%
-	if (!containsMultiSelecct) {
-%>
+	<%
+	if (!returnRS) {
+	%>
 		statement_<%=cid%>.executeUpdate();
-<%
-	} else {
-%>
+	<%
+	} else if(!containsMultiSelecct){
+	%>
+		statement_<%=cid%>.execute();
+	<%
+	}else
+	%>
 		statement_<%=cid%>.executeQuery();
-<%
+	<%
 	}
-%>
+	%>
 		<%
 		
 		List<? extends IConnection> outConnections = node.getOutgoingConnections();
