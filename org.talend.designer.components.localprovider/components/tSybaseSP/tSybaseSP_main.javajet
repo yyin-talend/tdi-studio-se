@@ -226,7 +226,7 @@ if (canGenerate) {
 	%>
 		statement_<%=cid%>.execute();
 	<%
-	}else
+	}else{
 	%>
 		statement_<%=cid%>.executeQuery();
 	<%
