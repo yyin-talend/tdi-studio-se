@@ -12,6 +12,15 @@
 // ============================================================================
 package org.talend.designer.dbmap.language.oracle;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataToolHelper;
+import org.talend.core.model.process.IConnection;
 import org.talend.designer.dbmap.DbMapComponent;
 import org.talend.designer.dbmap.external.data.ExternalDbMapTable;
 import org.talend.designer.dbmap.language.generation.DbGenerationManager;
@@ -53,8 +62,59 @@ public class OracleGenerationManager extends DbGenerationManager {
     }
 
     @Override
-    protected boolean isOracle() {
-        return true;
+    protected String addQuoteForSpecialChar(String expression, DbMapComponent component) {
+        List<String> specialList = new ArrayList<String>();
+        Map<String, List<String>> map = new HashMap<String, List<String>>();
+        List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+        if (inputConnections == null) {
+            return expression;
+        }
+        for (IConnection iconn : inputConnections) {
+            IMetadataTable metadataTable = iconn.getMetadataTable();
+            List<IMetadataColumn> lColumn = metadataTable.getListColumns();
+            for (IMetadataColumn co : lColumn) {
+                String columnLabel = co.getLabel();
+                String exp = MetadataToolHelper.validateValueNoLengthLimit(columnLabel);
+                if (!exp.equals(columnLabel)) {
+                    specialList.add(columnLabel);
+                }
+            }
+        }
+        for (String specialColumn : specialList) {
+            if (expression.contains(specialColumn)) {
+                if (map.get(expression) == null) {
+                    List<String> list = new ArrayList<String>();
+                    list.add(specialColumn);
+                    map.put(expression, list);
+                } else {
+                    List<String> list = map.get(expression);
+                    list.add(specialColumn);
+                }
+            }
+        }
+        if (map.size() > 0) {
+            List<String> list = map.get(expression);
+            for (int i = 0; i < list.size() - 1; i++) {
+                String first = list.get(i);
+                String second = list.get(i + 1);
+                String temp;
+                if (first.length() > second.length()) {
+                    temp = first;
+                    first = second;
+                    second = temp;
+                }
+            }
+            String specialColumn = list.get(list.size() - 1);
+            if (expression.contains(specialColumn)) {
+                int begin = expression.indexOf(specialColumn);
+                int length = specialColumn.length();
+                int allLength = expression.length();
+                expression = expression.substring(0, begin) + "\\\"" + expression.substring(begin, begin + length) + "\\\""
+                        + expression.substring(begin + length, allLength);
+                return expression;
+            }
+        }
+        return expression;
     }
 
 }
