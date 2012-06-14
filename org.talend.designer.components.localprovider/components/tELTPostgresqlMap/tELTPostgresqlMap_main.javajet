@@ -29,7 +29,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-    org.talend.designer.dbmap.language.generation.GenericDbGenerationManager gm = new org.talend.designer.dbmap.language.generation.GenericDbGenerationManager();
+    org.talend.designer.dbmap.language.postgres.PostgresGenerationManager gm =  new org.talend.designer.dbmap.language.postgres.PostgresGenerationManager();
     String uniqueNameComponent = null;
     IDbLanguage currentLanguage = gm.getLanguage();
 
