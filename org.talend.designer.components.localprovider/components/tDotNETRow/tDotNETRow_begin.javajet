@@ -33,7 +33,7 @@
      for (int i = 0; i < values.size(); i++) {
          Map<String,String> line = values.get(i);
      %>
-     <%=line.get("VALUE") %>
+     <%=line.get("PARAMETER") %>
      <%
         if (i < values.size() - 1) {
         %>
