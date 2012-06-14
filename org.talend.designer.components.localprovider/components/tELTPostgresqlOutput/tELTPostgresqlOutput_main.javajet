@@ -53,13 +53,13 @@ imports="
 		<%
 	}
 	
-	if((dbschema != null) && (!"\"\"".equals(dbschema.replaceAll(" ", "").trim()))) {
+	if((dbschema != null) && (!"".equals(dbschema.trim())) && (!"\"".equals(dbschema.replaceAll(" ", "").trim()))) {
 	%>
-		tableName_<%=cid%> = <%=dbschema%> + "." + <%=useDifferentTable? differenttable:"\""+dbtable +"\""%>;
+		tableName_<%=cid%> = "\""+<%=dbschema%> + "\".\"" + <%=useDifferentTable? differenttable:"\""+dbtable +"\""%> + "\"";
 	<%
 	}else {
 	%>
-		tableName_<%=cid%> = <%=useDifferentTable? differenttable:"\""+dbtable +"\""%>;
+		tableName_<%=cid%> = "\""+<%=useDifferentTable? differenttable:"\""+dbtable +"\""%> + "\"";
 	<%
 	}
 	
@@ -253,7 +253,8 @@ boolean firstNoneKey = true;
 boolean isfirstKey = true;
 for(Column colStmt:stmtStructure){
 	String suffix = ",";
-	
+	String colName="\\\""+colStmt.getName()+"\\\"";
+	colStmt.setName(colName);
 	if (colStmt.getColumn().isKey()){
 		if (isfirstKey) {
 			isfirstKey = false;
