@@ -143,7 +143,9 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
     public void dispose() {
         super.dispose();
         IRepositoryView view = RepositoryManager.getRepositoryView();
-        view.refresh();
+        if (view != null) {
+            view.refresh();
+        }
     }
 
     private void checkDBTimeout() {

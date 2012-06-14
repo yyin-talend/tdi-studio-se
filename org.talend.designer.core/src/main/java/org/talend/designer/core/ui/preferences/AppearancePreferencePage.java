@@ -115,7 +115,9 @@ public class AppearancePreferencePage extends FieldEditorPreferencePage implemen
     public void dispose() {
         super.dispose();
         IRepositoryView view = RepositoryManager.getRepositoryView();
-        view.refresh();
+        if (view != null) {
+            view.refresh();
+        }
     }
 
     public boolean performOk() {

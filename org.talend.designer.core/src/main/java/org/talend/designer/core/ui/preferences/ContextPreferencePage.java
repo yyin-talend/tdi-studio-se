@@ -36,8 +36,8 @@ public class ContextPreferencePage extends FieldEditorPreferencePage implements 
 
     @Override
     protected void createFieldEditors() {
-        addField(new BooleanFieldEditor(ITalendCorePrefConstants.CONTEXT_GROUP_BY_SOURCE, Messages
-                .getString("CorePreferencePage.groupBySource"), //$NON-NLS-1$
+        addField(new BooleanFieldEditor(ITalendCorePrefConstants.CONTEXT_GROUP_BY_SOURCE,
+                Messages.getString("CorePreferencePage.groupBySource"), //$NON-NLS-1$
                 getFieldEditorParent()));
 
     }
@@ -50,7 +50,9 @@ public class ContextPreferencePage extends FieldEditorPreferencePage implements 
     public void dispose() {
         super.dispose();
         IRepositoryView view = RepositoryManager.getRepositoryView();
-        view.refresh();
+        if (view != null) {
+            view.refresh();
+        }
     }
 
     public boolean performOk() {
