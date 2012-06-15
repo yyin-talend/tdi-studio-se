@@ -19,6 +19,7 @@ String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 String dbuser = ElementParameterParser.getValue(node, "__USER__");
 String dbpwd  = ElementParameterParser.getValue(node, "__PASS__");
 String spName = ElementParameterParser.getValue(node, "__SP_NAME__");
+String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 boolean isFunction = ("true").equals(ElementParameterParser.getValue(node, "__IS_FUNCTION__"));
 List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SP_ARGS__");
 boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
@@ -26,8 +27,10 @@ String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 if(useExistingConn){
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;
+	String schema = "dbschema_" + connection;
     %>
     java.sql.Connection connection_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+    String dbschema_<%=cid%>= (String)globalMap.get("<%=schema%>");
     <%
 } else {       
     %>
@@ -44,11 +47,24 @@ if(useExistingConn){
 	}
 %>
     java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
+	String dbschema_<%=cid%>= <%=dbschema%>; 
     <%
 }
 %>
-java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{<%=isFunction ? "? = " : ""%>call " + <%=spName%> + "(
+String spName_<%=cid%> = <%=spName%>;
+if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() != 0) {
+	spName_<%=cid%> = dbschema_<%=cid%> + "." + spName_<%=cid%>;
+} 
 <%
+if(isFunction){
+%>
+java.sql.PreparedStatement statement_<%=cid%> = connection_<%=cid%>.prepareStatement("select " + spName_<%=cid%> + "(
+<%
+}else{
+%>
+java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{call " + <%=spName%> + "(
+<%
+}
 boolean isFirstArg = true;
 for (int i = 0; i < spArgs.size(); i++) {
 	if(!("RECORDSET").equals(spArgs.get(i).get("TYPE"))){
@@ -60,7 +76,7 @@ for (int i = 0; i < spArgs.size(); i++) {
 		}
 	}
 }
-%>)}");
+%>)<%if(!isFunction){%>}<%}%>");
 
 <%
 String timeoutInterval = ElementParameterParser.getValue(node, "__TIMEOUT_INTERVAL__");

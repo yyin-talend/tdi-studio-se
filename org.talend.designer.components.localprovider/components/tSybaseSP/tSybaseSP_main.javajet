@@ -136,11 +136,14 @@ if (canGenerate) {
 		List<IMetadataColumn> columnList = metadata.getListColumns();
 		
 		// Iterate over procedure arguments
+		int functionIndex = 0;
 		for (int i = 0; i < spArgs.size(); i++) {
 			Map<String, String> spArg = spArgs.get(i);
 			String argName = spArg.get("COLUMN");
 			String argType = spArg.get("TYPE");
-			
+			if(isFunction &&!("IN").equals(argType)){
+				throw new RuntimeException("Select on the list the schema column, the value to be returned is based on!");
+			}
 			// Search Java type of argument, based on schema column
 			String typeToGenerate = null;
 			boolean nullable = false;
@@ -159,6 +162,9 @@ if (canGenerate) {
 			// Note: first argument in JDBC is arg #1, and for functions, arg #1 is return value
 			int argIndex = i + 1;
 			
+			if(isFunction){
+				argIndex =++functionIndex;
+			}
 			// Input argument
 			if (("IN").equals(argType) || ("INOUT").equals(argType)) {
 				if (nullable) {
@@ -205,7 +211,7 @@ if (canGenerate) {
 			}
 			
 			// Output argument
-			if (("OUT").equals(argType) || ("INOUT").equals(argType)) {
+			if (!isFunction &&(("OUT").equals(argType) || ("INOUT").equals(argType))) {
 				%>
 				statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
 	  			<%
@@ -218,7 +224,11 @@ if (canGenerate) {
 		
 		%>
 	<%
-	if (!returnRS) {
+	if (isFunction) {
+	%>
+		java.sql.ResultSet rs_<%=cid%> = statement_<%=cid%>.executeQuery();
+	<%
+	} else if(!returnRS){
 	%>
 		statement_<%=cid%>.executeUpdate();
 	<%
@@ -286,6 +296,32 @@ if (canGenerate) {
 									method = typeToGenerate.substring(0, 1).toUpperCase() + typeToGenerate.substring(1);
 					  			}
 					  			
+					  			if(isFunction){
+					  				%>
+					  				while(rs_<%=cid%>.next()){
+					  				<%
+							  			if (method.equalsIgnoreCase("char") || ("Character").equals(method)) {
+									 		%>
+									 		tmpString_<%=cid%> = rs_<%=cid%>.getString(<%=argIndex%>);
+								  			if (tmpString_<%=cid%> != null && tmpString_<%=cid%>.length() > 0) {
+								  				<%=firstOutConnection.getName()%>.<%=argName%> = tmpString_<%=cid%>.charAt(0);
+									  		}
+									  		<%
+								  		} else if (("Date").equals(method)) {
+											%>
+											tmpDate_<%=cid%> = rs_<%=cid%>.getDate(<%=argIndex%>);
+											if (tmpDate_<%=cid%> != null)
+												<%=firstOutConnection.getName()%>.<%=argName%> = new java.util.Date(tmpDate_<%=cid%>.getTime());
+											<%
+										} else {
+											%>
+											<%=firstOutConnection.getName()%>.<%=argName%> = rs_<%=cid%>.get<%=method%>(<%=argIndex%>);
+											<%
+										}
+					  				%>
+					  				}
+					  				<%
+					  			}else{
 					  			if (method.equalsIgnoreCase("char") || ("Character").equals(method)) {
 							 		%>
 							 		tmpString_<%=cid%> = statement_<%=cid%>.getString(<%=argIndex%>);
@@ -312,6 +348,7 @@ if (canGenerate) {
 									}
 									<%
 								}
+								}							
 							}
 							
 							for (int j = connectionIndex + 1; j < outConnections.size(); j++) {
