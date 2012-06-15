@@ -29,7 +29,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
-import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
@@ -192,7 +191,7 @@ public class JobExportAction implements IRunnableWithProgress {
         return value;
     }
 
-    boolean exportJobScript(List<RepositoryNode> nodes, String version, String bundleVersion, IProgressMonitor monitor) {
+    private boolean exportJobScript(List<RepositoryNode> nodes, String version, String bundleVersion, IProgressMonitor monitor) {
         manager.setJobVersion(version);
         manager.setBundleVersion(bundleVersion);
 
@@ -245,7 +244,7 @@ public class JobExportAction implements IRunnableWithProgress {
         ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
                 getTempDestinationValue());
 
-        executeExportOperation(exporterOperation);
+        executeExportOperation(exporterOperation, monitor);
 
         // path can like name/name
         manager.deleteTempFiles();
@@ -390,17 +389,16 @@ public class JobExportAction implements IRunnableWithProgress {
      * Export the passed resource and recursively export all of its child resources (iff it's a container). Answer a
      * boolean indicating success.
      */
-    protected boolean executeExportOperation(ArchiveFileExportOperationFullPath op) {
+    private boolean executeExportOperation(ArchiveFileExportOperationFullPath op, IProgressMonitor monitor) {
         op.setCreateLeadupStructure(true);
         op.setUseCompression(true);
 
-        IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
         try {
-            progressService.run(false, true, op);
+            op.run(monitor);
         } catch (InvocationTargetException e) {
             ExceptionHandler.process(e);
         } catch (InterruptedException e) {
-            ExceptionHandler.process(e);
+            return false;
         }
 
         IStatus status = op.getStatus();
