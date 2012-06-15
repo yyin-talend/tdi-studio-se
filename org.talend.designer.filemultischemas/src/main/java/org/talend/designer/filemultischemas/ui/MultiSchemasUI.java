@@ -1473,7 +1473,8 @@ public class MultiSchemasUI {
 
     private void launch() {
         try {
-            CsvArray csvArray = getMultiSchemaManager().getCsvArrayForMultiSchemaDelimited(fileField.getText(),
+            String filePath = this.multiSchemaManager.getOriginalValue(this.getConnection().getFilePath());
+            CsvArray csvArray = getMultiSchemaManager().getCsvArrayForMultiSchemaDelimited(filePath,
                     multiSeparatorsText.getText(), encodingCombo.getText(), keyValuesText.getText(),
                     multiSchemaManager.getSelectedColumnIndex());
             processor.setCsvArray(csvArray);
