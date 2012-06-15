@@ -29,6 +29,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -251,5 +252,12 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
             return null;
 
         }
+    }
+
+    protected void refreshRelatedItem(Item item) {
+        super.refreshRelatedItem(item);
+        // refresh doc
+        getViewPart().refresh(ERepositoryObjectType.JOB_DOC);
+
     }
 }

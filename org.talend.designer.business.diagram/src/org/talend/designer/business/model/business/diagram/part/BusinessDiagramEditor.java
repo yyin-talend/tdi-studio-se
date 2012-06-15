@@ -63,7 +63,6 @@ import org.talend.designer.business.model.business.diagram.providers.BusinessDia
 import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.repository.editor.RepositoryEditorInput;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 
@@ -274,7 +273,6 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         } catch (LoginException e) {
-            ExceptionHandler.process(e);
         }
         RepositoryNode repositoryNode = repositoryEditorInput.getRepositoryNode();
         if (repositoryNode == null) {
@@ -282,11 +280,13 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             repositoryNode = repositoryEditorInput.getRepositoryNode();
         }
         if (repositoryNode != null) {
-            if (repFactory.getStatus(repositoryEditorInput.getItem()) == ERepositoryStatus.DELETED) {
-                RepositoryManager.refreshDeletedNode(null);
-            } else {
-                RepositoryManager.refreshSavedNode(repositoryNode);
-            }
+            // if (repFactory.getStatus(repositoryEditorInput.getItem()) == ERepositoryStatus.DELETED) {
+            // RepositoryManager.refreshDeletedNode(null);
+            // } else {
+            // RepositoryManager.refreshSavedNode(repositoryNode);
+            // }
+
+            RepositoryManager.refresh(ERepositoryObjectType.BUSINESS_PROCESS);
         }
     }
 
@@ -394,7 +394,6 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
 
         }
         getDiagramEditorInput().getItem().getProperty().eAdapters().add(dirtyListener);
-
     }
 
     public boolean isAlreadyOpened() {

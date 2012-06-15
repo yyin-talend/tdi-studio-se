@@ -39,9 +39,9 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.ui.wizards.metadata.connection.database.DatabaseWizard;
 
 /**
@@ -105,7 +105,12 @@ public class CreateConnectionAction extends AbstractCreateAction {
                 repositoryNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_CONNECTIONS);
             }
         }
-        RepositoryManager.getRepositoryView().refresh();
+        // RepositoryManager.getRepositoryView().refresh();
+        // Set<ERepositoryObjectType> typesToRefresh = new HashSet<ERepositoryObjectType>();
+        // typesToRefresh.add(ERepositoryObjectType.CONTEXT);
+        // typesToRefresh.add(ERepositoryObjectType.METADATA_CONNECTIONS);
+        // RepositoryManager.refresh(typesToRefresh);
+
         RepositoryNode metadataNode = repositoryNode.getParent();
         if (metadataNode != null) {
             // Force focus to the repositoryView and open Metadata and DbConnection nodes
@@ -163,6 +168,8 @@ public class CreateConnectionAction extends AbstractCreateAction {
         }
 
         if (!creation) {
+            RepositoryManager.refreshSavedNode(repositoryNode);
+
             Property property = node.getObject().getProperty();
             Property updatedProperty = null;
             if (getNeededVersion() == null) {

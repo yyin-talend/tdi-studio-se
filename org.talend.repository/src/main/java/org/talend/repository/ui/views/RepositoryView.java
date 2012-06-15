@@ -108,6 +108,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.BusinessProcessItem;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobDocumentationItem;
 import org.talend.core.model.properties.Property;
@@ -904,7 +905,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     public void dragFinished() {
-        refresh();
+        // refresh();
         LocalSelectionTransfer.getTransfer().setSelection(null);
         LocalSelectionTransfer.getTransfer().setSelectionSetTime(0);
     }
@@ -1151,16 +1152,28 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     public void refresh(Object object) {
 
         if (object != null) {
-            // maybe, no effect.
-            viewer.refresh(object);
-            viewer.setExpandedState(object, true);
+            // try to find object type
+            boolean typeFound = false;
             if (object instanceof RepositoryNode) {
                 RepositoryNode node = (RepositoryNode) object;
                 ERepositoryObjectType type = node.getObjectType();
                 if (type == null) {
                     type = node.getContentType();
                 }
+                if (type != null) {
+                    typeFound = true;
+                }
                 refresh(type);
+
+                if (node.getObject() != null && node.getObject().getProperty() != null
+                        && node.getObject().getProperty().getItem() instanceof ConnectionItem) {
+                    refresh(ERepositoryObjectType.CONTEXT);
+                }
+
+            }
+            if (!typeFound) {
+                viewer.refresh(object);
+                viewer.setExpandedState(object, true);
             }
         } else {
             // refresh();
@@ -1182,6 +1195,19 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             RepositoryNode rootNode = researchRootRepositoryNode(type);
             refreshAllChildNodes(rootNode);
         }
+        refreshContextByType(type);
+    }
+
+    private void refreshContextByType(ERepositoryObjectType type) {
+        if (type == ERepositoryObjectType.METADATA_CONNECTIONS || type == ERepositoryObjectType.METADATA_FILE_DELIMITED
+                || type == ERepositoryObjectType.METADATA_FILE_POSITIONAL || type == ERepositoryObjectType.METADATA_FILE_REGEXP
+                || type == ERepositoryObjectType.METADATA_FILE_XML || type == ERepositoryObjectType.METADATA_FILE_EXCEL
+                || type == ERepositoryObjectType.METADATA_FILE_LDIF || type == ERepositoryObjectType.METADATA_LDAP_SCHEMA
+                || type == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA
+                || type == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA || type == ERepositoryObjectType.METADATA_WSDL_SCHEMA) {
+            refresh(ERepositoryObjectType.CONTEXT);
+
+        }
     }
 
     private RepositoryNode researchRootRepositoryNode(ERepositoryObjectType type) {
@@ -1200,7 +1226,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     public void refreshAllChildNodes(RepositoryNode rootNode) {
         if (rootNode != null) {
             rootNode.setInitialized(false);
-            if (!rootNode.getContentType().equals(ERepositoryObjectType.METADATA))
+            if (rootNode.getContentType() != null && !rootNode.getContentType().equals(ERepositoryObjectType.METADATA))
                 rootNode.getChildren().clear();
             // for bug 11786
             if (rootNode.getParent() instanceof ProjectRepositoryNode) {
@@ -1213,7 +1239,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             // so need refresh recyle bin. if empty recyle bin,must delete job documents,don't need refresh recyle bin.
             // if refresh throw exception.
             final ProjectRepositoryNode root = (ProjectRepositoryNode) getRoot();
-            if (!rootNode.getContentType().equals(ERepositoryObjectType.DOCUMENTATION)) {
+            if (rootNode.getContentType() != null && !rootNode.getContentType().equals(ERepositoryObjectType.DOCUMENTATION)) {
                 root.getRecBinNode().setInitialized(false);
                 root.getRecBinNode().getChildren().clear();
                 contentProvider.getChildren(root.getRecBinNode());
