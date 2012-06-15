@@ -794,7 +794,7 @@ public class TalendForgeDialog extends TrayDialog {
                 String pseudonym = userNameText.getText().trim();
                 try {
                     success = RegisterManagement.getInstance().createUser(email, pseudonym, password, "", "",
-                            countryCombo.getText(), isProxyEnable, proxyHost, proxyPort);
+                            countryCombo.getText(), isProxyEnable, proxyHost, proxyPort, proxyUser, proxyPassword);
                     if (success) {
                         IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
                         String connectionEmail = project.getAuthor().getLogin();
@@ -1032,7 +1032,7 @@ public class TalendForgeDialog extends TrayDialog {
                 boolean success = false;
                 try {
                     success = RegisterManagement.getInstance().createUser(username, password, "", "", "", isProxyEnable,
-                            proxyHost, proxyPort);
+                            proxyHost, proxyPort, proxyUser, proxyPassword);
                 } catch (BusinessException e1) {
                     ExceptionHandler.process(e1);
                 }
