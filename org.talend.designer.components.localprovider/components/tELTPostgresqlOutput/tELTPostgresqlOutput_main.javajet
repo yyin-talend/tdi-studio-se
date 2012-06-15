@@ -53,7 +53,7 @@ imports="
 		<%
 	}
 	
-	if((dbschema != null) && (!"".equals(dbschema.trim())) && (!"\"".equals(dbschema.replaceAll(" ", "").trim()))) {
+	if((dbschema != null) && (!"\"\"".equals(dbschema.replaceAll(" ", "").trim()))) {
 	%>
 		tableName_<%=cid%> = "\""+<%=dbschema%> + "\".\"" + <%=useDifferentTable? differenttable:"\""+dbtable +"\""%> + "\"";
 	<%
