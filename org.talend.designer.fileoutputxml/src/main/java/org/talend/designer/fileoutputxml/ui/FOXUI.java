@@ -162,10 +162,10 @@ public class FOXUI {
         if (externalNode.getOriginalNode().getJobletNode() != null) {
             canModify = externalNode.getOriginalNode().isReadOnly();
         }
-        IElementParameter elem = externalNode.getElementParameter("PROPERTY_TYPE"); //$NON-NLS-1$
+        IElementParameter elem = externalNode.getElementParameter("PROPERTY_TYPE");
         if (elem != null) {
             String value = (String) elem.getValue();
-            if (value != null && value.equals("REPOSITORY")) { //$NON-NLS-1$
+            if (value != null && value.equals("REPOSITORY")) {
                 isRepository = true;
             }
         }
@@ -547,22 +547,16 @@ public class FOXUI {
 
         Boolean validateLabel;
 
-        boolean validate = false;
-
         public void applyEditorValue() {
-            getControl().setBackground(getControl().getDisplay().getSystemColor(SWT.COLOR_WHITE));
             String text = getControl().getText();
-            onValueChanged(text, validate, property);
-            validate = false;
+            onValueChanged(text, true, property);
         }
 
         public void cancelEditor() {
-            getControl().setBackground(getControl().getDisplay().getSystemColor(SWT.COLOR_WHITE));
         }
 
         public void editorValueChanged(boolean oldValidState, boolean newValidState) {
-            validate = true;
-            // onValueChanged(getControl().getText(), false, property);
+            onValueChanged(getControl().getText(), false, property);
         }
 
         private void onValueChanged(final String newValue, boolean showAlertIfError, String property) {
@@ -576,28 +570,12 @@ public class FOXUI {
                 }
             }
             String errorMessage = null;
-            // add for bug TDI-19844
-            if (selectNode.getParent() != null) {
-                List<FOXTreeNode> nodes = selectNode.getParent().getChildren();
-                if (!selectNode.getLabel().equals(newValue)) {
-                    for (int i = 0; i < nodes.size(); i++) {
-                        if (nodes.get(i).isAttribute() && selectNode.isAttribute() && nodes.get(i).getLabel().equals(newValue)) {
-                            errorMessage = Messages.getString("FOXUI.existName"); //$NON-NLS-1$
-                        } else if (nodes.get(i).isNameSpace() && selectNode.isNameSpace()
-                                && nodes.get(i).getLabel().equals(newValue)) {
-                            errorMessage = Messages.getString("FOXUI.existName"); //$NON-NLS-1$
-                        } else if (!nodes.get(i).isAttribute() && !nodes.get(i).isNameSpace() && !selectNode.isAttribute()
-                                && !selectNode.isNameSpace() && nodes.get(i).getLabel().equals(newValue)) {
-                            errorMessage = Messages.getString("FOXUI.existName"); //$NON-NLS-1$
-                        }
-                    }
-                }
-            }
+
             // modified for wzhang. fix value can contains space.
             if ("C4".equals(property)) { //$NON-NLS-1$
                 validateLabel = StringUtil.validateLabelForFixedValue(text.getText());
             } else {
-                if ("C1".equals(property) && selectNode != null && selectNode instanceof NameSpaceNode) { //$NON-NLS-1$
+                if ("C1".equals(property) && selectNode != null && selectNode instanceof NameSpaceNode) {
                     validateLabel = StringUtil.validateLabelForNameSpace(text.getText());
                 } else {
                     validateLabel = StringUtil.validateLabelForXML(text.getText());
@@ -610,8 +588,8 @@ public class FOXUI {
             if (errorMessage == null) {
                 text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_WHITE));
             } else {
+                text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_RED));
                 if (showAlertIfError) {
-                    text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_RED));
                     text.setText(selectedText);
                     MessageDialog.openError(text.getShell(), "Invalid XML label.", errorMessage); //$NON-NLS-1$
                 }
