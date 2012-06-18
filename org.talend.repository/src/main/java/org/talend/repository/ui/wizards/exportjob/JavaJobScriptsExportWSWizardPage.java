@@ -1388,6 +1388,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
             validateOptionsGroup();
         }
+        if (getCurrentExportType1().equals(JobExportType.PETALSESB)) {
+            if (isMultiNodes()) {
+                setErrorMessage(Messages.getString("JavaJobScriptsExportWSWizardPage.singleJobExport"));
+            }
+        }
         if (getCurrentExportType1().equals(JobExportType.JBOSSESB)) {
             if (isMultiNodes()) {
                 setErrorMessage(Messages.getString("JavaJobScriptsExportWSWizardPage.singleJobExport"));
