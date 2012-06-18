@@ -12,8 +12,6 @@
 // ============================================================================
 package org.talend.designer.fileoutputxml.action;
 
-import java.util.List;
-
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
@@ -75,8 +73,7 @@ public class CreateNameSpaceAction extends SelectionProviderAction {
         String label = null;
         String defaultValue = null;
         while (!StringUtil.validateLabelForNameSpace(label) || !StringUtil.validateLabelForFixedValue(defaultValue)) {
-            final List<FOXTreeNode> nodes = node.getChildren();
-            NameSpaceDialog nsDialog = new NameSpaceDialog(null, nodes);
+            NameSpaceDialog nsDialog = new NameSpaceDialog(null);
             int status = nsDialog.open();
             if (status == nsDialog.OK) {
                 defaultValue = nsDialog.getNSValue();
@@ -90,7 +87,6 @@ public class CreateNameSpaceAction extends SelectionProviderAction {
             }
         }
         FOXTreeNode child = new NameSpaceNode(label);
-        child.setNameSpace(true);
         child.setDefaultValue(defaultValue);
         // add by wzhang. set the row name
         child.setRow(node.getRow());

@@ -12,9 +12,6 @@
 // ============================================================================
 package org.talend.designer.fileoutputxml.action;
 
-import java.util.List;
-
-import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -76,20 +73,8 @@ public class CreateAttributeAction extends SelectionProviderAction {
     private void createChildNode(FOXTreeNode node) {
         String label = ""; //$NON-NLS-1$
         while (!org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil.validateLabelForXML(label)) {
-            final List<FOXTreeNode> nodes = node.getChildren();
             InputDialog dialog = new InputDialog(null, Messages.getString("CreateAttributeAction.1"), //$NON-NLS-1$
-                    Messages.getString("CreateAttributeAction.2"), "", new IInputValidator() { //$NON-NLS-1$ //$NON-NLS-2$
-
-                        @Override
-                        public String isValid(String newText) {
-                            for (int i = 0; i < nodes.size(); i++) {
-                                if (nodes.get(i).isAttribute() && newText.trim().equals(nodes.get(i).getLabel())) {
-                                    return Messages.getString("CreateAttributeAction.isValid"); //$NON-NLS-1$
-                                }
-                            }
-                            return null;
-                        }
-                    }); //$NON-NLS-1$ //$NON-NLS-2$
+                    Messages.getString("CreateAttributeAction.2"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
             int status = dialog.open();
             if (status == InputDialog.OK) {
                 label = dialog.getValue().trim();
@@ -99,7 +84,6 @@ public class CreateAttributeAction extends SelectionProviderAction {
             }
         }
         FOXTreeNode child = new Attribute(label);
-        child.setAttribute(true);
         // add by wzhang. set the row name
         child.setRow(node.getRow());
         node.addChild(child);
