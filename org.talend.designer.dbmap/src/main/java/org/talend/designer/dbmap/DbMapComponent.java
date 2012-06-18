@@ -82,6 +82,7 @@ public class DbMapComponent extends AbstractMapComponent {
      * 
      * @see org.talend.core.model.process.AbstractExternalNode#initialize()
      */
+    @Override
     public void initialize() {
         super.initialize();
         initMapperMain(false);
@@ -93,6 +94,7 @@ public class DbMapComponent extends AbstractMapComponent {
      * 
      * @see org.talend.designer.core.model.components.IExternalComponent#getPersistentData()
      */
+    @Override
     public IExternalData getExternalData() {
         if (this.externalData == null) {
             this.externalData = new ExternalDbMapData();
@@ -111,6 +113,7 @@ public class DbMapComponent extends AbstractMapComponent {
      * 
      * @see org.talend.designer.core.model.components.IExternalComponent#open(org.eclipse.swt.widgets.Display)
      */
+    @Override
     public int open(final Display display) {
         // TimeMeasure.start("Total open");
         // TimeMeasure.display = false;
@@ -143,6 +146,7 @@ public class DbMapComponent extends AbstractMapComponent {
     /**
      * DOC amaumont Comment method "refreshMapperConnectorData".
      */
+    @Override
     public void restoreMapperModelFromInternalData() {
         mapperMain.loadModelFromInternalData();
         metadataListOut = mapperMain.getMetadataListOut();
@@ -153,7 +157,7 @@ public class DbMapComponent extends AbstractMapComponent {
     /**
      * Sort outgoingConnections for code generation as visible output zone of tMap.
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void sortOutputsConnectionsLikeVisualOrder() {
 
         if (!MapperMain.isStandAloneMode()) {
@@ -192,6 +196,7 @@ public class DbMapComponent extends AbstractMapComponent {
      * 
      * @see org.talend.designer.core.model.components.IExternalComponent#open()
      */
+    @Override
     public int open(final Composite parent) {
         // initMapperMain();
         // mapperMain.createModelFromExternalData(getIODataComponents(), getMetadataList(), externalData, true);
@@ -205,6 +210,7 @@ public class DbMapComponent extends AbstractMapComponent {
      * 
      * @see org.talend.designer.core.model.components.IExternalComponent#setPersistentData(java.lang.Object)
      */
+    @Override
     public void setExternalData(IExternalData externalData) {
         this.externalData = (ExternalDbMapData) externalData;
     }
@@ -230,6 +236,7 @@ public class DbMapComponent extends AbstractMapComponent {
      * 
      * @see org.talend.core.model.process.INode#getMetadataList()
      */
+    @Override
     public List<IMetadataTable> getMetadataList() {
         return this.metadataListOut;
     }
@@ -239,75 +246,10 @@ public class DbMapComponent extends AbstractMapComponent {
      * 
      * @see org.talend.core.model.process.INode#setMetadataList(java.util.List)
      */
+    @Override
     public void setMetadataList(List<IMetadataTable> metadataTablesOut) {
         this.metadataListOut = metadataTablesOut;
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.AbstractExternalNode#setExternalXmlData(java.io.InputStream)
-     */
-    // public void loadDataIn(InputStream in, Reader stringReader) throws IOException, ClassNotFoundException {
-    // StringBuilder input = null;
-    // if (stringReader != null) {
-    // Unmarshaller unmarshaller = new Unmarshaller(ExternalDbMapData.class);
-    // unmarshaller.setWhitespacePreserve(true);
-    // try {
-    // BufferedReader r = new BufferedReader(stringReader);
-    // input = new StringBuilder();
-    // String line;
-    // while ((line = r.readLine()) != null) {
-    // input.append(line);
-    //                    input.append("\r\n"); //$NON-NLS-0$
-    // }
-    // // see 13019 ,remove all table-entries node when load job which contains db mapper components from old
-    // // version's tos
-    //                String buf = input.toString().replaceAll("<table-entries .*?>.*?</table-entries>", ""); //$NON-NLS-0$ //$NON-NLS-1$
-    // stringReader.close();
-    // stringReader = new StringReader(buf);
-    // externalData = (ExternalDbMapData) unmarshaller.unmarshal(stringReader);
-    // } catch (MarshalException e) {
-    // ExceptionHandler.process(e);
-    // } catch (ValidationException e) {
-    // ExceptionHandler.process(e);
-    // } finally {
-    // if (stringReader != null) {
-    // stringReader.close();
-    // }
-    // }
-    // }
-    // }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IExternalNode#loadDataOut(java.io.OutputStream, java.io.Writer)
-     */
-    // public void loadDataOut(final OutputStream out, Writer writer) throws IOException {
-    //
-    // initMapperMain();
-    // mapperMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData,
-    // getMetadataList(), false);
-    // ExternalDbMapData data = mapperMain.buildExternalData();
-    // if (mapperMain != null && data != null) {
-    //
-    // try {
-    // Marshaller marshaller = new Marshaller(writer);
-    // marshaller.marshal(externalData);
-    // } catch (MarshalException e) {
-    // ExceptionHandler.process(e);
-    // } catch (ValidationException e) {
-    // ExceptionHandler.process(e);
-    // } catch (IOException e) {
-    // ExceptionHandler.process(e);
-    // } finally {
-    // if (writer != null) {
-    // writer.close();
-    // }
-    // }
-    // }
-    // }
 
     @Override
     public void buildExternalData(AbstractExternalData abstractData) {
@@ -388,6 +330,7 @@ public class DbMapComponent extends AbstractMapComponent {
         return emfMapperData;
     }
 
+    @Override
     public void renameInputConnection(String oldConnectionName, String newConnectionName) {
         if (oldConnectionName == null || newConnectionName == null) {
             throw new NullPointerException();
@@ -407,6 +350,7 @@ public class DbMapComponent extends AbstractMapComponent {
         }
     }
 
+    @Override
     public void renameOutputConnection(String oldName, String newName) {
         if (oldName == null || newName == null) {
             throw new NullPointerException();
@@ -421,6 +365,7 @@ public class DbMapComponent extends AbstractMapComponent {
         }
     }
 
+    @Override
     protected void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
         if (conectionName == null || oldColumnName == null || newColumnName == null) {
             throw new NullPointerException();
@@ -495,8 +440,7 @@ public class DbMapComponent extends AbstractMapComponent {
         }
         TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
         // loop on all locations of current expression
-        for (int i = 0; i < tableEntryLocations.length; i++) {
-            TableEntryLocation currentLocation = tableEntryLocations[i];
+        for (TableEntryLocation currentLocation : tableEntryLocations) {
             if (tableRenamed && oldLocation.tableName.equals(currentLocation.tableName)) {
                 oldLocation.columnName = currentLocation.columnName;
                 newLocation.columnName = currentLocation.columnName;
@@ -542,10 +486,10 @@ public class DbMapComponent extends AbstractMapComponent {
                 generationManager = new OracleGenerationManager();
             } else if (value.contains("tELTMysqlMap")) { //$NON-NLS-1$
                 generationManager = new MysqlGenerationManager();
-            } else if (value.contains("tELTPostgresqlMap")) { //$NON-NLS-1$
+            } else if (value.contains("tELTPostgresqlMap") || value.contains("tELTGreenplumMap")) { //$NON-NLS-1$  //$NON-NLS-2$
                 generationManager = new PostgresGenerationManager();
-            } else if (value.contains("tELTJDBCMap") || value.contains("tELTMSSqlMap") || value.contains("tELTSybaseMap") || value.contains("tELTNetezzaMap") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            ) { //$NON-NLS-1$
+            } else if (value.startsWith("tELT") && value.endsWith("Map")) //$NON-NLS-1$ //$NON-NLS-2$
+            {
                 generationManager = new GenericDbGenerationManager();
             } else {
                 throw new IllegalArgumentException(Messages.getString("DbMapComponent.unknowValue") + value); //$NON-NLS-1$
@@ -560,6 +504,7 @@ public class DbMapComponent extends AbstractMapComponent {
      * 
      * @see org.talend.core.model.process.IExternalNode#getComponentDocumentation(java.lang.String, java.lang.String)
      */
+    @Override
     public IComponentDocumentation getComponentDocumentation(String componentName, String tempFolderPath) {
         DbMapComponentDocumentation componentDocumentation = new DbMapComponentDocumentation();
         componentDocumentation.setComponentName(componentName);
@@ -580,6 +525,7 @@ public class DbMapComponent extends AbstractMapComponent {
      * @param renameAction true to rename in all expressions, false to get boolean if present in one of the expressions
      * @return
      */
+    @Override
     protected boolean hasOrRenameData(String oldName, String newName, boolean renameAction) {
         if (oldName == null || newName == null && renameAction) {
             throw new NullPointerException();
@@ -633,6 +579,7 @@ public class DbMapComponent extends AbstractMapComponent {
      * 
      * @see org.talend.core.model.process.IExternalNode#getTMapExternalData()
      */
+    @Override
     public IExternalData getTMapExternalData() {
         // TODO Auto-generated method stub
         return null;
