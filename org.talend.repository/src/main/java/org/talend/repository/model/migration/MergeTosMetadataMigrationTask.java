@@ -38,6 +38,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.EDatabaseSchemaOrCatalogMapping;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
@@ -116,6 +117,7 @@ public class MergeTosMetadataMigrationTask extends AbstractItemMigrationTask {
                                         .doSwitch(migratedResource.getContents().get(0));
                                 // do not check for null caus DB connection is already check above
                                 String databaseType = databaseConnection.getDatabaseType();
+                                databaseConnection.setDriverClass(ExtractMetaDataUtils.getDriverClassByDbType(databaseType));
                                 EDatabaseTypeName currentType = EDatabaseTypeName.getTypeFromDbType(databaseType);
                                 EDatabaseSchemaOrCatalogMapping curCatalog = currentType.getCatalogMappingField();
                                 EDatabaseSchemaOrCatalogMapping curSchema = currentType.getSchemaMappingField();
