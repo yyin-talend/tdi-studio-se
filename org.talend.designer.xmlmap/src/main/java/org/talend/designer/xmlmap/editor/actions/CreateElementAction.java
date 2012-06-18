@@ -22,6 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
@@ -140,6 +141,8 @@ public class CreateElementAction extends SelectionAction {
 
             if (open == Window.OK && mapperManager != null) {
                 TreeNode docRoot = XmlMapUtil.getTreeNodeRoot(parent);
+                mapperManager.getProblemsAnalyser().checkProblems((AbstractInOutTree) docRoot.eContainer());
+                mapperManager.getMapperUI().updateStatusBar();
                 if (input) {
                     if (docRoot != null && docRoot.eContainer() instanceof InputXmlTree) {
                         mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) docRoot.eContainer());
@@ -149,7 +152,6 @@ public class CreateElementAction extends SelectionAction {
                         mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) docRoot.eContainer());
                     }
                 }
-
             }
         }
 

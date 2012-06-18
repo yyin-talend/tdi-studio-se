@@ -136,7 +136,7 @@ public class DeleteTreeNodeAction extends SelectionAction {
                 }
 
                 if (docRoot != null && docRoot.eContainer() instanceof AbstractInOutTree) {
-                    mapperManager.getProblemsAnalyser().checkLoopProblems((AbstractInOutTree) docRoot.eContainer());
+                    mapperManager.getProblemsAnalyser().checkProblems((AbstractInOutTree) docRoot.eContainer());
                     mapperManager.getMapperUI().updateStatusBar();
                 }
 

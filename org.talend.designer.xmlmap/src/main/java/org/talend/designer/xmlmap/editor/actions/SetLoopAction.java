@@ -116,7 +116,7 @@ public class SetLoopAction extends SelectionAction {
         XmlMapUtil.upsetMainNode(model);
 
         if (abstractTree != null) {
-            mapperManager.getProblemsAnalyser().checkLoopProblems(abstractTree);
+            mapperManager.getProblemsAnalyser().checkProblems(abstractTree);
             mapperManager.getMapperUI().updateStatusBar();
         }
 

@@ -70,7 +70,7 @@ public class ProblemsAnalyser {
         return getProblems();
     }
 
-    public void checkLoopProblems(AbstractInOutTree abstractTree) {
+    public void checkProblems(AbstractInOutTree abstractTree) {
         // clear problems for the tree before recheck it
         if (treeAndProblems.get(abstractTree) != null) {
             treeAndProblems.get(abstractTree).clear();
@@ -92,6 +92,7 @@ public class ProblemsAnalyser {
     }
 
     private void checkTreeNodesProblem(AbstractInOutTree abstractTree, List<? extends TreeNode> treeNodes) {
+        boolean multiDocChecked = false;
         for (TreeNode treeNode : treeNodes) {
             if (XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
                 if (!hasDocumentLoop(treeNode)) {
@@ -100,9 +101,10 @@ public class ProblemsAnalyser {
                 }
                 if (!isMultipleDocType) {
                     isMultipleDocType = true;
-                } else {
-                    String message = ERROR_MESSAGE_MULTIPLE_DOC_TYPE + treeNode.getXpath();
+                } else if (!multiDocChecked) {
+                    String message = ERROR_MESSAGE_MULTIPLE_DOC_TYPE + abstractTree.getName();
                     addProblem(abstractTree, new Problem(null, message, ProblemStatus.ERROR));
+                    multiDocChecked = true;
                 }
             }
         }
@@ -147,7 +149,9 @@ public class ProblemsAnalyser {
     }
 
     public String getErrorMessage() {
-        String errorMessage = ERROR_MESSAGE_START;
+        String errorMessage1 = ERROR_MESSAGE_START;
+        String errorMessage2 = ERROR_MESSAGE_MULTIPLE_DOC_TYPE;
+        String message = null;
         final List<Problem> problems = getProblems();
         if (problems.isEmpty()) {
             return null;
@@ -155,12 +159,31 @@ public class ProblemsAnalyser {
             for (Problem problem : problems) {
                 final String description = problem.getDescription();
                 if (description != null) {
-                    errorMessage = errorMessage + description.substring(ERROR_MESSAGE_START.length(), description.length()) + ",";
+                    if (description.contains(ERROR_MESSAGE_START)) {
+                        errorMessage1 = errorMessage1 + description.substring(ERROR_MESSAGE_START.length(), description.length())
+                                + ",";
+                    } else if (description.contains(ERROR_MESSAGE_MULTIPLE_DOC_TYPE)) {
+                        errorMessage2 = errorMessage2
+                                + description.substring(ERROR_MESSAGE_MULTIPLE_DOC_TYPE.length(), description.length()) + ",";
+                    }
                 }
             }
         }
 
-        return errorMessage.substring(0, errorMessage.length() - 1);
+        if (!errorMessage1.equals(ERROR_MESSAGE_START)) {
+            errorMessage1 = errorMessage1.substring(0, errorMessage1.length() - 1);
+            message = errorMessage1;
+        }
+        if (!errorMessage2.equals(ERROR_MESSAGE_MULTIPLE_DOC_TYPE)) {
+            errorMessage2 = errorMessage2.substring(0, errorMessage2.length() - 1);
+            if (message != null) {
+                message = message + ";" + errorMessage2;
+            } else {
+                message = errorMessage2;
+            }
+        }
+
+        return message == null ? "" : message;
     }
 
 }

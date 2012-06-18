@@ -162,7 +162,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                 tree = (OutputXmlTree) parentNode.eContainer();
             }
             if (tree != null) {
-                mapperManager.getProblemsAnalyser().checkLoopProblems(tree);
+                mapperManager.getProblemsAnalyser().checkProblems(tree);
                 mapperManager.getMapperUI().updateStatusBar();
             }
         }
