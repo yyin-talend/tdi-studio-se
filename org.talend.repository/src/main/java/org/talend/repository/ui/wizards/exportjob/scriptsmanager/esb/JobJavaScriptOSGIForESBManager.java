@@ -47,6 +47,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IOsgiDependenciesService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IProcess;
@@ -62,7 +63,6 @@ import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
-import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.runprocess.IProcessor;
@@ -164,11 +164,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
                     + PACKAGE_SEPARATOR; //$NON-NLS-1$
 
-            // Add additional route dependencies jars LiXiaopeng 2011-9-22
-            if (itemType.equals(ROUTE)) {
-                String addtionalLibPath = computeAddtionalLibPath(processItem);
-                standardJars += addtionalLibPath;
-            }
             ProcessorUtilities.setExportConfig(JAVA, standardJars, libPath); //$NON-NLS-1$
 
             if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
@@ -239,111 +234,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         return urlList;
     }
-
-    /**
-     *
-     * Add additional dependency libraries.
-     *
-     * @param processItem
-     * @param libPath
-     * @return
-     */
-    private List<URL> computeAddtionalLibs(ProcessItem processItem, IPath libPath) {
-        List<File> libFiles = new ArrayList<File>();
-        ProcessType processType = processItem.getProcess();
-        for (Object o : processType.getNode()) {
-            if (o instanceof NodeType) {
-                NodeType currentNode = (NodeType) o;
-                String componentName = currentNode.getComponentName();
-
-				// http://jira.talendforge.org/browse/TESB-5755
-				// if ("cMessagingEndpoint".equals(componentName)) {
-				// for (Object e : currentNode.getElementParameter()) {
-				// ElementParameterType p = (ElementParameterType) e;
-				// if ("HOTLIBS".equals(p.getName())) {
-				// for (Object pv : p.getElementValue()) {
-				// ElementValueType evt = (ElementValueType) pv;
-				// String evtValue = evt.getValue();
-				// IPath path = libPath.append(evtValue);
-				// libFiles.add(path.toFile());
-				// }
-				// }
-				// }
-				// }
-				// End 5755
-
-                // http: // jira.talendforge.org/browse/TESB-3812
-                if ("cConfig".equals(componentName)) {
-                    for (Object e : currentNode.getElementParameter()) {
-                        ElementParameterType p = (ElementParameterType) e;
-                        if ("DRIVER_JAR".equals(p.getName())) {
-                            for (Object pv : p.getElementValue()) {
-                                ElementValueType evt = (ElementValueType) pv;
-                                String evtValue = evt.getValue();
-                                IPath path = libPath.append(evtValue);
-                                libFiles.add(path.toFile());
-                            }
-                        }
-                    }
-                }
-                // http://jira.talendforge.org/browse/TESB-4910
-                if ("cJMSConnectionFactory".equals(componentName)) {
-                    String value = computeTextElementValue("MQ_TYPE", currentNode.getElementParameter());
-                    // http://jira.talendforge.org/browse/TESB-3828
-                    if ("WebSphere MQ".equals(value)) {
-                        for (Object e : currentNode.getElementParameter()) {
-                            ElementParameterType p = (ElementParameterType) e;
-                            if ("WMQ_DRIVER_JAR".equals(p.getName())) {
-                                for (Object pv : p.getElementValue()) {
-                                    ElementValueType evt = (ElementValueType) pv;
-                                    String evtValue = evt.getValue();
-                                    IPath path = libPath.append(evtValue);
-                                    libFiles.add(path.toFile());
-                                }
-                            }
-                        }
-                    } else if ("Other".equals(value)) {
-                        for (Object e : currentNode.getElementParameter()) {
-                            ElementParameterType p = (ElementParameterType) e;
-                            if ("OTHER_DRIVER_JAR".equals(p.getName())) {
-                                for (Object pv : p.getElementValue()) {
-                                    ElementValueType evt = (ElementValueType) pv;
-                                    String evtValue = evt.getValue();
-                                    IPath path = libPath.append(evtValue);
-                                    libFiles.add(path.toFile());
-                                }
-                            }
-                        }
-                    }
-                }
-                // Deal with cTalendJob. LiXiaopeng 2011-9-19 TESB 3121
-                if ("cTalendJob".equals(componentName)) {
-                    for (Object e : currentNode.getElementParameter()) {
-                        ElementParameterType p = (ElementParameterType) e;
-                        if ("LIBRARY".equals(p.getName())) {
-                            String evtValue = p.getValue();
-                            evtValue = unquotes(evtValue);
-                            IPath path = libPath.append(evtValue);
-                            libFiles.add(path.toFile());
-                        }
-                    }
-                }
-            }
-        }
-
-        Set<URL> list = new HashSet<URL>();
-        try {
-            for (File lib : libFiles) {
-                URL url = lib.toURL();
-                list.add(url);
-            }
-
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
-        return new ArrayList<URL>(list);
-    }
-
     /**
      *
      * Ensure that the string is not surrounded by quotes.
@@ -418,98 +308,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             }
         }
         return result;
-    }
-
-    /**
-     * Add user input dependency library path. DOC LiXP Comment method "computeAddtionalLibPath".
-     *
-     * @param processItem
-     * @return
-     */
-    private String computeAddtionalLibPath(ProcessItem processItem) {
-        StringBuffer sb = new StringBuffer();
-        ProcessType processType = processItem.getProcess();
-        for (Object o : processType.getNode()) {
-            if (o instanceof NodeType) {
-                NodeType currentNode = (NodeType) o;
-                String componentName = currentNode.getComponentName();
-
-				// http://jira.talendforge.org/browse/TESB-5755
-				// if ("cMessagingEndpoint".equals(componentName)) {
-				// for (Object e : currentNode.getElementParameter()) {
-				// ElementParameterType p = (ElementParameterType) e;
-				// if ("HOTLIBS".equals(p.getName())) {
-				// for (Object pv : p.getElementValue()) {
-				// ElementValueType evt = (ElementValueType) pv;
-				// String evtValue = evt.getValue();
-				// sb.append(evtValue);
-				// sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
-				// }
-				// }
-				// }
-				// }
-				// End 5755
-                if ("cConfig".equals(componentName)) {
-                    for (Object e : currentNode.getElementParameter()) {
-                        ElementParameterType p = (ElementParameterType) e;
-                        if ("DRIVER_JAR".equals(p.getName())) {
-                            for (Object pv : p.getElementValue()) {
-                                ElementValueType evt = (ElementValueType) pv;
-                                String evtValue = evt.getValue();
-                                sb.append(evtValue);
-                                sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
-                            }
-                        }
-                    }
-                }
-
-                // http://jira.talendforge.org/browse/TESB-3812
-                // Update OSGI Export of cJMS
-                if ("cJMSConnectionFactory".equals(componentName)) {
-                    String value = computeTextElementValue("MQ_TYPE", currentNode.getElementParameter());
-                    // http://jira.talendforge.org/browse/TESB-3828
-                    if ("WebSphere MQ".equals(value)) {
-                        for (Object e : currentNode.getElementParameter()) {
-                            ElementParameterType p = (ElementParameterType) e;
-                            if ("WMQ_DRIVER_JAR".equals(p.getName())) {
-                                for (Object pv : p.getElementValue()) {
-                                    ElementValueType evt = (ElementValueType) pv;
-                                    String evtValue = evt.getValue();
-                                    sb.append(evtValue);
-                                    sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
-                                }
-                            }
-                        }
-                    } else if ("Other".equals(value)) {
-                        for (Object e : currentNode.getElementParameter()) {
-                            ElementParameterType p = (ElementParameterType) e;
-                            if ("OTHER_DRIVER_JAR".equals(p.getName())) {
-                                for (Object pv : p.getElementValue()) {
-                                    ElementValueType evt = (ElementValueType) pv;
-                                    String evtValue = evt.getValue();
-                                    sb.append(evtValue);
-                                    sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
-                                }
-                            }
-                        }
-                    }
-                }
-                if ("cTalendJob".equals(componentName)) {
-                    for (Object e : currentNode.getElementParameter()) {
-                        ElementParameterType p = (ElementParameterType) e;
-                        if ("LIBRARY".equals(p.getName())) {
-                            for (Object pv : p.getElementValue()) {
-                                ElementValueType evt = (ElementValueType) pv;
-                                String evtValue = evt.getValue();
-                                sb.append(evtValue);
-                                sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return sb.toString();
     }
 
     protected ExportFileResource getOsgiResource() {
@@ -911,107 +709,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         a.put(new Attributes.Name("Export-Package"), sb.toString()); //$NON-NLS-1$
         if (ROUTE.equals(itemType)) {
-
-            StringBuffer externalJMSImportSB = new StringBuffer();
-            String externalCXFImport = "";
-
-			// http://jira.talendforge.org/browse/TESB-5670 LiXiaopeng
-			String httpImportPkgs = "";
-            Set<String> jmsImportPkgs = new HashSet<String>();
-
-            for (ProcessItem pi : itemToBeExport) {
-                ProcessType process = pi.getProcess();
-                if (process == null) {
-                    continue;
-                }
-                EList nodes = process.getNode();
-                Iterator iterator = nodes.iterator();
-
-                while (iterator.hasNext()) {
-                    NodeType next = (NodeType) iterator.next();
-
-                    if ("cCXF".equals(next.getComponentName())) {
-                        externalCXFImport = ",org.apache.camel.component.cxf,org.apache.cxf.feature"
-                                + ",org.talend.esb.servicelocator.cxf;version=\"[2.0.0,6.0.0)\""
-                                + ",org.talend.esb.sam.agent.feature;version=\"[2.0.0,6.0.0)\"";
-                        continue;
-                    }
-
-					if ("cHttp".equals(next.getComponentName())) {
-						httpImportPkgs = ",org.apache.camel.component.http,"
-								+ "org.apache.commons.httpclient.protocol,"
-								+ "org.apache.commons.httpclient.params";
-
-						continue;
-					}
-
-                    // http://jira.talendforge.org/browse/TESB-4072, compute
-                    // additional import packages
-                    if ("cJMSConnectionFactory".equals(next.getComponentName())) {
-
-                        // add basic packages
-                        jmsImportPkgs.add("org.apache.camel.component.jms");
-                        jmsImportPkgs.add("javax.jms");
-
-                        String value = computeTextElementValue("MQ_TYPE", next.getElementParameter());
-
-                        if ("ActiveMQ".equals(value)) {
-                            // add ActiveMQ packages
-                            jmsImportPkgs.add("org.apache.activemq");
-                            boolean ampPool = computeCheckElementValue("AMQ_POOL", next.getElementParameter());
-                            // http://jira.talendforge.org/browse/TESB-4923
-                            if (ampPool) {
-                                jmsImportPkgs.add("org.apache.activemq.pool");
-                                jmsImportPkgs.add("org.apache.commons.pool");
-                            }
-
-                        } else if ("WebSphere MQ".equals(value)) {
-                            // add WMQ packages
-                            jmsImportPkgs.add("javax.transaction");
-                            boolean useAuth = computeCheckElementValue("WMQ_AUTH", next.getElementParameter());
-                            if (useAuth) {
-                                // add Spring JMS packages
-                                jmsImportPkgs.add("org.springframework.jms.connection");
-                            }
-                        }
-
-                        continue;
-                    }
-
-                }
-            }
-
-            // compute JMS import packages
-            if (jmsImportPkgs.size() > 0) {
-                for (String pkg : jmsImportPkgs) {
-                    externalJMSImportSB.append(",").append(pkg);
-                }
-            }
-
-            // end add
-            a.put(new Attributes.Name("Require-Bundle"), "org.apache.camel.camel-core");
-            a.put(new Attributes.Name("Import-Package"), "javax.xml.bind" //$NON-NLS-1$
-                    + ",javax.xml.bind.annotation" //$NON-NLS-1$
-                    + ",javax.xml.namespace" //$NON-NLS-1$
-                    + ",javax.xml.ws;resolution:=optional" //$NON-NLS-1$
-                    + ",javax.jws;resolution:=optional" //$NON-NLS-1$
-                    + ",javax.jws.soap;resolution:=optional" //$NON-NLS-1$
-                    + ",org.slf4j;resolution:=optional" // http://jira.talendforge.org/browse/TESB-5489
-                    + ",org.apache.commons.logging;resolution:=optional" //
-                    + ",org.apache.camel;version=\"[2.7,3)\"" //$NON-NLS-1$
-                    + ",org.apache.camel.builder;version=\"[2.7,3)\"" //$NON-NLS-1$
-                    + ",org.apache.camel.impl;version=\"[2.7,3)\"" //$NON-NLS-1$
-                    + ",org.apache.camel.management;version=\"[2.7,3)\"" //$NON-NLS-1$
-                    + ",org.apache.camel.model;version=\"[2.7,3)\"" //$NON-NLS-1$
-                    + ",org.apache.camel.osgi;version=\"[2.7,3)\"" //$NON-NLS-1$
-                    + ",org.apache.camel.spi;version=\"[2.7,3)\"" //$NON-NLS-1$
-                    + ",org.apache.camel.view;version=\"[2.7,3)\"" //$NON-NLS-1$
-                    + ",org.osgi.framework;version=\"[1.5,2)\"" //$NON-NLS-1$
-                    + ",org.osgi.service.blueprint;version=\"[1.0.0,2.0.0)\"" //$NON-NLS-1$
-                    + ",routines.system.api" //$NON-NLS-1$
-					+ externalJMSImportSB.toString()
-					+ externalCXFImport
-					+ httpImportPkgs);
+        	addRouterOsgiDependencies(libResource, itemToBeExport, a);
         } else {
             a.put(new Attributes.Name("Import-Package"), //$NON-NLS-1$
                     "routines.system.api;resolution:=optional" //$NON-NLS-1$
@@ -1019,24 +717,71 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                             + ",javax.xml.ws.soap;resolution:=optional" //$NON-NLS-1$
                             + ",org.apache.cxf.management.counters" //$NON-NLS-1$
             );
-        }
-        if (itemToBeExport != null && !itemToBeExport.isEmpty()) {
-            for (ProcessItem pi : itemToBeExport) {
-                /*
-                 * need to fill bundle depedence informations for every component,feature 0023460
-                 */
-                String requiredBundles = caculateDependenciesBundles(pi);
-                if (requiredBundles != null && !"".equals(requiredBundles)) {
-                    a.put(new Attributes.Name("Require-Bundle"), requiredBundles);
-                }
+            if (itemToBeExport != null && !itemToBeExport.isEmpty()) {
+            	for (ProcessItem pi : itemToBeExport) {
+            		/*
+            		 * need to fill bundle depedence informations for every component,feature 0023460
+            		 */
+            		String requiredBundles = caculateDependenciesBundles(pi);
+            		if (requiredBundles != null && !"".equals(requiredBundles)) {
+            			a.put(new Attributes.Name("Require-Bundle"), requiredBundles);
+            		}
+            	}
             }
-        }
-        if (!libResource.getAllResources().isEmpty()) {
-            a.put(new Attributes.Name("Bundle-ClassPath"), getClassPath(libResource)); //$NON-NLS-1$
+            if (!libResource.getAllResources().isEmpty()) {
+            	a.put(new Attributes.Name("Bundle-ClassPath"), getClassPath(libResource)); //$NON-NLS-1$
+            }
         }
         a.put(new Attributes.Name("Export-Service"), "routines.system.api.TalendJob;name=" + bundleName + ";type=" + itemType); //$NON-NLS-1$
 
         return manifest;
+    }
+
+    private void addRouterOsgiDependencies(ExportFileResource libResource,
+    		List<ProcessItem> itemToBeExport, Attributes a) {
+    	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    	IProject project = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
+    	IPath libPath = project.getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
+    	for(ProcessItem pi: itemToBeExport){
+    		ProcessType process = pi.getProcess();
+    		IOsgiDependenciesService dependenciesService = (IOsgiDependenciesService) GlobalServiceRegister.getDefault().getService(
+    				IOsgiDependenciesService.class);
+    		if(dependenciesService!=null){
+    			Map<String, String> bundleDependences = dependenciesService.getBundleDependences(process, pi.getProperty().getAdditionalProperties());
+    			//process external libs
+    			String externalLibs = bundleDependences.get(IOsgiDependenciesService.BUNDLE_CLASSPATH);
+    			String[] libs = externalLibs.split(IOsgiDependenciesService.ITEM_SEPARATOR);
+    			Set<URL> list = new HashSet<URL>();
+    			for(String s: libs){
+    				try {
+    					if(s.isEmpty()){
+    						continue;
+    					}
+    					IPath path = libPath.append(s);
+						URL url = path.toFile().toURL();
+						list.add(url);
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+						continue;
+					}
+    			}
+    			libResource.addResources(new ArrayList<URL>(list));
+    			
+    			// add manifest items
+    			String requireBundles = bundleDependences.get(IOsgiDependenciesService.REQUIRE_BUNDLE);
+    			if(requireBundles!=null && !"".equals(requireBundles)){
+    				a.put(new Attributes.Name("Require-Bundle"), requireBundles);
+    			}
+    			String importPackages = bundleDependences.get(IOsgiDependenciesService.IMPORT_PACKAGE);
+    			if(importPackages!=null && !"".equals(importPackages)){
+    				a.put(new Attributes.Name("Import-Package"), importPackages);
+    			}
+    			if (!libResource.getAllResources().isEmpty()) {
+    				a.put(new Attributes.Name("Bundle-ClassPath"), getClassPath(libResource)); //$NON-NLS-1$
+    			}
+    		}
+
+    	}
     }
 
     /**
@@ -1125,14 +870,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         IPath libPath = project.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
         File file = libPath.toFile();
         File[] files = file.listFiles(FilesUtils.getAcceptModuleFilesFilter());
-
-        // Add additional route dependencies jars LiXiaopeng 2011-9-22
-        for (ExportFileResource export : process) {
-            Item item = export.getItem();
-            if (item instanceof ProcessItem) {
-                list.addAll(computeAddtionalLibs((ProcessItem) item, libPath));
-            }
-        }
 
         if (!useBeans) {
             // Gets all the jar files
