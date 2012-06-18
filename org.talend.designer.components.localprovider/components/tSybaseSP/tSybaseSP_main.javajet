@@ -141,8 +141,13 @@ if (canGenerate) {
 			Map<String, String> spArg = spArgs.get(i);
 			String argName = spArg.get("COLUMN");
 			String argType = spArg.get("TYPE");
-			if(isFunction &&!("IN").equals(argType)){
-				throw new RuntimeException("Select on the list the schema column, the value to be returned is based on!");
+			if(i>0 && isFunction &&!("IN").equals(argType)){
+			%>
+				if(true){
+					throw new RuntimeException("Select on the list the schema column, the value to be returned is based on!  You should select \"IN\" as input parameter type only when \"is function\" is checked!");
+				}
+			<%
+				break;
 			}
 			// Search Java type of argument, based on schema column
 			String typeToGenerate = null;
@@ -162,11 +167,11 @@ if (canGenerate) {
 			// Note: first argument in JDBC is arg #1, and for functions, arg #1 is return value
 			int argIndex = i + 1;
 			
-			if(isFunction){
-				argIndex =++functionIndex;
-			}
 			// Input argument
 			if (("IN").equals(argType) || ("INOUT").equals(argType)) {
+				if(isFunction){
+					argIndex =++functionIndex;
+				}
 				if (nullable) {
 					%>
 					if (<%=inConnectionName%>.<%=argName%> == null) {
