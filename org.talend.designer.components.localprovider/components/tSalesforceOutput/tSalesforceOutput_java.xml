@@ -3267,6 +3267,14 @@
 		</PARAMETER>
 		
 		<PARAMETER 
+	       NAME="IGNORE_NULL" 
+	       FIELD="CHECK" 
+	       REQUIRED="true"
+		   NUM_ROW="25" >
+		   <DEFAULT>false</DEFAULT>
+		</PARAMETER>
+		
+		<PARAMETER 
 			NAME="PROXY_HOST" 
 			FIELD="TEXT"
 			NUM_ROW="30"

@@ -30,6 +30,8 @@ String customModulename = ElementParameterParser.getValue(node, "__CUSTOM_MODULE
 
 boolean retreiveInsertID = ("true").equals(ElementParameterParser.getValue(node, "__RETREIVE_INSERT_ID__"));
 boolean extendedInsert = ("true").equals(ElementParameterParser.getValue(node, "__EXTENDINSERT__"));
+
+boolean ignoreNullValue = ("true").equals(ElementParameterParser.getValue(node, "__IGNORE_NULL__"));
 %>
 
 <%
@@ -130,7 +132,7 @@ Object[] resultMessageObj_<%=cid%> = null;
 <%				
 					}
 %>
-						<%if(!("Id".equals(column.getLabel()) && ("upsert".equals(action)))){%>
+						<%if(!ignoreNullValue && !("Id".equals(column.getLabel()) && ("upsert".equals(action)))){%>
 					    else{
 							nullList_<%=cid %>.add("<%=column.getLabel() %>");
 						}
