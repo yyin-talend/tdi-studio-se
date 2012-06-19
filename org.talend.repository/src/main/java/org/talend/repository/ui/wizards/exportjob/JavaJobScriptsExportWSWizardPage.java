@@ -1173,6 +1173,13 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 setErrorMessage(null);
                 isValid = true;
             }
+
+            if (getCurrentExportType1().equals(JobExportType.PETALSESB)) {
+                if (isMultiNodes()) {
+                    setErrorMessage(Messages.getString("JavaJobScriptsExportWSWizardPage.singleJobExport"));
+                    isValid = false;
+                }
+            }
         }
 
         setPageComplete(isValid);
