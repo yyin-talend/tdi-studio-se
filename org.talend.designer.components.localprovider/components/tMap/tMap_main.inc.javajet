@@ -1422,17 +1422,15 @@ if(!isVirtualOut) { // T_TM_M_320
                 || !checkingSyntax && outputConnection != null) {
 	            	lastValidOutputTableName = outputTableName;
 	            }
-			} else if(hasJoinedTable(outputTableName,data)&& outputConnection!=null){
+			} else if(outputTable.getIsJoinTableOf() == null && hasJoinedTable(outputTableName,data) && outputConnection != null){
 			
 			    if (outputConnection != null) {
                 	sb.append(cr + outputTableName + " = null;");
             	}
             	
 				sb.append(cr + outputTableName + "_List.clear();");
-                if(checkingSyntax 
-                || !checkingSyntax && outputConnection != null) {
-	            	lastValidOutputTableName = outputTableName;
-	            }
+			}else if(outputTable.getIsJoinTableOf() != null){
+	            lastValidOutputTableName = outputTableName;
 			}
 
         }
