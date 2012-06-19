@@ -1350,6 +1350,15 @@ public class MultiSchemasUI {
                         if (metadataTable == null) {
                             metadataTable = new org.talend.core.model.metadata.MetadataTable();
                         }
+                        metadataTable.getListColumns().clear();
+                        SchemasKeyData keydata = (SchemasKeyData) schemaTreeViewer.getInput();
+                        for (int i = 0; i < keydata.getChildren().size(); i++) {
+                            if (selectedData.getUniqueRecord().equals(keydata.getChildren().get(i).getUniqueRecord())) {
+                                metadataTable.getListColumns().addAll(keydata.getChildren().get(i).getMetadataColumns());
+                                break;
+                            }
+                        }
+
                         MetadataDialog dialog = new MetadataDialog(MultiSchemasUI.this.getShell(), metadataTable,
                                 getMultiSchemasComponent(), new CommandStackForComposite(MultiSchemasUI.this.getShell()));
                         dialog.setText("Schema of " + selectedData.getUniqueRecord()); //$NON-NLS-N$
