@@ -200,7 +200,13 @@ public class MultiSchemasManager {
             SchemasKeyData schemaData = findSchemasKeyData(rootSchemasKeyData, newKey);
             if (schemaData == null) {
                 schemaData = new SchemasKeyData(key);
-                schemaData.setSeparator(csvArrayBean.getSeparators().get(i));
+                // TDI-6803
+                String separator = csvArrayBean.getSeparators().get(i);
+                if (separator != null && separator.equals("\\")) {
+                    schemaData.setSeparator("\\\\");
+                } else {
+                    schemaData.setSeparator(separator);
+                }
                 schemaData.setUniqueRecord(generateUniqueRecordName(null, rootSchemasKeyData));
 
                 rootSchemasKeyData.addChild(schemaData);
