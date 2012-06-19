@@ -31,6 +31,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
@@ -118,7 +119,7 @@ public class FileInputDelimitedNode extends FileInputNode {
                     // } else {
                     // cr.setEscapeMode(CsvReader.ESCAPE_MODE_DOUBLED);
                     // }
-                    List items = cr.parse(new File(filename));
+                    List items = cr.parse(new File(TalendTextUtils.removeQuotes(filename)));
                     for (int i = 0; i < headerRows && items.size() > 0; i++) {
                         // do nothing, just ignore the header part
                     }
