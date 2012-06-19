@@ -84,7 +84,7 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     private MapperManager mapperManager;
 
-    private TreeNode parentNode;
+    private TreeNode schemaNode;
 
     private Shell shell;
 
@@ -102,6 +102,8 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     private List<String> targetAbsolutePath;
 
+    private TreeNode inputLoop = null;
+
     /**
      * DOC talend ImportTreeFromRepository constructor comment.
      * 
@@ -117,12 +119,13 @@ public class ImportTreeFromRepository extends SelectionAction {
     @Override
     public void run() {
         targetAbsolutePath = null;
+        inputLoop = null;
         RepositoryXmlSelectionDialog reviewDialog = new RepositoryXmlSelectionDialog(shell, new String[] { "XML", "MDM" });
         if (reviewDialog.open() == Window.OK) {
-            TreeNode treeNodeRoot = XmlMapUtil.getTreeNodeRoot(parentNode);
+            TreeNode treeNodeRoot = XmlMapUtil.getTreeNodeRoot(schemaNode);
 
             XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getCopyOfMapData(), true);
-            parentNode.getChildren().clear();
+            schemaNode.getChildren().clear();
             RepositoryNode repositoryNode = reviewDialog.getResult();
 
             Item item = repositoryNode.getObject().getProperty().getItem();
@@ -140,26 +143,35 @@ public class ImportTreeFromRepository extends SelectionAction {
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             } finally {
-                if (parentNode.getChildren().isEmpty()) {
+                if (schemaNode.getChildren().isEmpty()) {
                     TreeNode rootNode = createModel();
                     rootNode.setName("root");
                     rootNode.setNodeType(NodeType.ELEMENT);
                     rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-                    rootNode.setXpath(XmlMapUtil.getXPath(parentNode.getXpath(), "root", NodeType.ELEMENT));
+                    rootNode.setXpath(XmlMapUtil.getXPath(schemaNode.getXpath(), "root", NodeType.ELEMENT));
                     rootNode.setLoop(true);
                     rootNode.setMain(true);
-                    parentNode.getChildren().add(rootNode);
+                    schemaNode.getChildren().add(rootNode);
                     showError();
+                } else if (inputLoop != null) {
+                    // remove loop on root node if it have child elements
+                    if (inputLoop.eContainer() == schemaNode) {
+                        if (!XmlMapUtil.isExpressionEditable(inputLoop)) {
+                            inputLoop.setLoop(false);
+                            inputLoop.setMain(false);
+                        }
+                    }
+
                 }
             }
 
             AbstractInOutTree tree = null;
-            if (parentNode.eContainer() instanceof InputXmlTree) {
-                mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
-                tree = (InputXmlTree) parentNode.eContainer();
-            } else if (parentNode.eContainer() instanceof OutputXmlTree) {
-                mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) parentNode.eContainer());
-                tree = (OutputXmlTree) parentNode.eContainer();
+            if (schemaNode.eContainer() instanceof InputXmlTree) {
+                mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) schemaNode.eContainer());
+                tree = (InputXmlTree) schemaNode.eContainer();
+            } else if (schemaNode.eContainer() instanceof OutputXmlTree) {
+                mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) schemaNode.eContainer());
+                tree = (OutputXmlTree) schemaNode.eContainer();
             }
             if (tree != null) {
                 mapperManager.getProblemsAnalyser().checkProblems(tree);
@@ -196,7 +208,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                     list = TreeUtil.getFoxTreeNodesForXmlMap(xsdFile, absoluteXPathQuery);
                 }
             }
-            prepareEmfTree(list, parentNode, null, absoluteXPathQuery);
+            prepareEmfTree(list, schemaNode, null, absoluteXPathQuery);
         }
 
     }
@@ -230,25 +242,11 @@ public class ImportTreeFromRepository extends SelectionAction {
                 createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
             }
 
-            String tempXpath = null;
-            if (xmlPath == null) {
-                if (foxNode instanceof Attribute) {
-                    tempXpath = XmlMapUtil.XPATH_SEPARATOR + XmlMapUtil.XPATH_ATTRIBUTE + foxNode.getLabel();
-                } else {
-                    tempXpath = XmlMapUtil.XPATH_SEPARATOR + foxNode.getLabel();
-                }
-            } else {
-                if (foxNode instanceof Attribute) {
-                    tempXpath = xmlPath + XmlMapUtil.XPATH_SEPARATOR + XmlMapUtil.XPATH_ATTRIBUTE + foxNode.getLabel();
-                } else {
-                    tempXpath = xmlPath + XmlMapUtil.XPATH_SEPARATOR + foxNode.getLabel();
-                }
-            }
-
+            // tempXpath is current xpath remove schema node xpath like: row1:newColumn1
+            String tempXpath = createTreeNode.getXpath().substring(schemaNode.getXpath().length() + 1);
             if (tempXpath.equals(absoluteXPathQuery)) {
-                if (!(parent.eContainer() instanceof AbstractInOutTree)) {
-                    createTreeNode.setLoop(true);
-                }
+                createTreeNode.setLoop(true);
+                inputLoop = createTreeNode;
             } else if (!isMappedChild(tempXpath, absoluteXPathQuery)) {
                 continue;
             }
@@ -295,7 +293,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                         this.schemaTargets = conceptTargets;
                         List<FOXTreeNode> list = TreeUtil.getFoxTreeNodesForXmlMap(getTempTemplateXSDFile().getAbsolutePath(),
                                 loopExpression);
-                        TreeNode pNode = parentNode;
+                        TreeNode pNode = schemaNode;
                         if (MdmConceptType.RECEIVE.equals(selected.getConceptType())) {
                             if (prefix != null && !"".equals(prefix)) {
                                 String[] preValues = prefix.split(XmlMapUtil.XPATH_SEPARATOR);
@@ -442,10 +440,10 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     private void prepareModelFromOutput(List<XMLFileNode> root, List<XMLFileNode> loop, List<XMLFileNode> group) {
         TreeNode rootNode = null;
-        TreeNode lastTreeNode = parentNode;
+        TreeNode lastTreeNode = schemaNode;
 
         TreeNode temp = null;
-        TreeNode mainNode = parentNode;
+        TreeNode mainNode = schemaNode;
         String mainPath = null;
         String lastXmlPath = null;
 
@@ -587,7 +585,7 @@ public class ImportTreeFromRepository extends SelectionAction {
         }
 
         if (rootNode != null) {
-            parentNode.getChildren().add(rootNode);
+            schemaNode.getChildren().add(rootNode);
         }
 
     }
@@ -614,7 +612,7 @@ public class ImportTreeFromRepository extends SelectionAction {
         temp.setName(name);
         temp.setDefaultValue(defaultValue);
         temp.setNodeType(NodeType.ELEMENT);
-        if (lastTreeNode == parentNode) { // root node of a document
+        if (lastTreeNode == schemaNode) { // root node of a document
             temp.setXpath(XmlMapUtil.getXPath(lastTreeNode.getXpath(), temp.getName(), temp.getNodeType()));
             return temp;
         }
@@ -708,8 +706,8 @@ public class ImportTreeFromRepository extends SelectionAction {
                 Object object = selectedarts.get(selectedarts.size() - 1);
                 if (object instanceof TreeNodeEditPart) {
                     TreeNodeEditPart parentPart = (TreeNodeEditPart) object;
-                    parentNode = (TreeNode) parentPart.getModel();
-                    if (parentNode.eContainer() instanceof AbstractInOutTree && XmlMapUtil.DOCUMENT.equals(parentNode.getType())) {
+                    schemaNode = (TreeNode) parentPart.getModel();
+                    if (schemaNode.eContainer() instanceof AbstractInOutTree && XmlMapUtil.DOCUMENT.equals(schemaNode.getType())) {
                         return true;
                     }
                 }
