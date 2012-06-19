@@ -45,7 +45,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.PartInitException;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IESBService;
 import org.talend.core.model.general.Project;
@@ -64,7 +63,8 @@ import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.CheckboxRepositoryTreeViewer;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryCheckBoxView;
+import org.talend.repository.ui.views.RepositoryContentProvider;
+import org.talend.repository.ui.views.RepositoryViewerProvider;
 
 /**
  * DOC wchen class global comment. Detailled comment
@@ -143,16 +143,17 @@ public class RepositoryFilterDialog extends Dialog {
     }
 
     private void createLeftContent(Composite parent) {
-        RepositoryCheckBoxView checkboxTreeViewer = new RepositoryCheckBoxView();
-        try {
-            checkboxTreeViewer.init(repositoryView.getViewSite());
-        } catch (PartInitException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        checkboxTreeViewer.createPartControl(parent);
 
-        treeViewer = (CheckboxRepositoryTreeViewer) checkboxTreeViewer.getViewer();
+        RepositoryViewerProvider provider = new RepositoryViewerProvider() {
+
+            @Override
+            protected RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
+                return contentProvider.getRoot();
+            }
+
+        };
+
+        treeViewer = (CheckboxRepositoryTreeViewer) provider.createViewer(parent);
         treeViewer.addFilter(new ViewerFilter() {
 
             @Override
@@ -163,7 +164,8 @@ public class RepositoryFilterDialog extends Dialog {
         });
         treeViewer.expandAll();
         // treeViewer.collapseAll();
-        RepositoryNode referenceProjectNode = ((ProjectRepositoryNode) checkboxTreeViewer.getRoot()).getReferenceProjectNode();
+        RepositoryNode referenceProjectNode = ((ProjectRepositoryNode) ((RepositoryContentProvider) treeViewer
+                .getContentProvider()).getRoot()).getReferenceProjectNode();
         if (referenceProjectNode != null) {
             treeViewer.collapseToLevel(referenceProjectNode, treeViewer.ALL_LEVELS);
         }
@@ -172,7 +174,7 @@ public class RepositoryFilterDialog extends Dialog {
             uncheckedNode.addAll(Arrays.asList(uncheckedNodesFromFilter));
         }
 
-        restoreTreeStatus(checkboxTreeViewer);
+        restoreTreeStatus(treeViewer);
     }
 
     private void createRightContent(Composite parent) {
@@ -342,8 +344,7 @@ public class RepositoryFilterDialog extends Dialog {
 
     }
 
-    private void restoreTreeStatus(RepositoryCheckBoxView viewer) {
-        CheckboxRepositoryTreeViewer checkboxTreeViewer = (CheckboxRepositoryTreeViewer) viewer.getViewer();
+    private void restoreTreeStatus(CheckboxRepositoryTreeViewer checkboxTreeViewer) {
         checkboxTreeViewer.setAllChecked(true);
 
         String[] array = RepositoryManager.getFiltersByPreferenceKey(IRepositoryPrefConstants.FILTER_BY_NODE);
@@ -355,7 +356,9 @@ public class RepositoryFilterDialog extends Dialog {
             if (split.length < 2) {
                 continue;
             }
-            ProjectRepositoryNode root = getRootNode((ProjectRepositoryNode) viewer.getRoot(), split[0]);
+            ProjectRepositoryNode root = getRootNode(
+                    (ProjectRepositoryNode) ((RepositoryContentProvider) checkboxTreeViewer.getContentProvider()).getRoot(),
+                    split[0]);
             if (root == null) {
                 continue;
             }

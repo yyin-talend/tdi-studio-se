@@ -47,7 +47,6 @@ import org.talend.commons.expressionbuilder.Variable;
 import org.talend.commons.ui.expressionbuilder.IExpressionDataBean;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.service.ICorePerlService;
@@ -81,8 +80,6 @@ public class ExpressionComposite extends Composite {
     TrayDialog trayDialog = null;
 
     private IEditorPart editorPart;
-
-    private Button insertSnippetsButton;
 
     private TextTransfer textTransfer = TextTransfer.getInstance();
 
@@ -153,19 +150,6 @@ public class ExpressionComposite extends Composite {
         upperOperationButtonBar.setLayout(gridLayout);
         upperOperationButtonBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.HORIZONTAL_ALIGN_END));
         upperOperationButtonBar.setData("nsd", null); //$NON-NLS-1$
-
-        if (PluginChecker.isSnippetsPluginLoaded()) {
-            gridLayout.numColumns = 4;
-            insertSnippetsButton = new Button(upperOperationButtonBar, SWT.TOGGLE);
-            insertSnippetsButton.setText(TEXT_OPEN_SNIPPETS);
-            insertSnippetsButton.addSelectionListener(new SelectionAdapter() {
-
-                public void widgetSelected(SelectionEvent e) {
-                    Button b = (Button) e.widget;
-                    processSnippetsTray(b.getSelection());
-                }
-            });
-        }
 
         final Button wrapButton = new Button(upperOperationButtonBar, SWT.CHECK);
         wrapButton.setText("Wrap"); //$NON-NLS-1$
@@ -386,23 +370,6 @@ public class ExpressionComposite extends Composite {
         final Button rightBracketbutton = new Button(lowerOperationButtonBar, SWT.NONE);
         rightBracketbutton.setText(")"); //$NON-NLS-1$
         rightBracketbutton.addMouseListener(buttonListener);
-
-    }
-
-    private void processSnippetsTray(boolean open) {
-        if (open) {
-            if (trayDialog.getTray() != null) {
-                // already open.
-                return;
-            }
-            SnippetsDialogTray tray = new SnippetsDialogTray();
-            tray.setEditor(editorPart);
-            insertSnippetsButton.setText(TEXT_CLOSE_SNIPPETS);
-            trayDialog.openTray(tray);
-        } else {
-            insertSnippetsButton.setText(TEXT_OPEN_SNIPPETS);
-            trayDialog.closeTray();
-        }
 
     }
 

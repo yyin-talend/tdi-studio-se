@@ -20,6 +20,8 @@ import org.talend.core.CorePlugin;
 
 /**
  * ggu class global comment. Detailled comment
+ * 
+ * @deprecated
  */
 public class RepositoryCheckBoxView extends RepositoryView {
 
