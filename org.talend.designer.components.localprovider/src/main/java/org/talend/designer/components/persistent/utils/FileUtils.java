@@ -25,7 +25,7 @@ public final class FileUtils {
         super();
     }
 
-    public static void createParentFolderIfNotExists(String filePath) throws IOException {
+    public static synchronized void createParentFolderIfNotExists(String filePath) throws IOException {
 
         File file = new File(filePath);
         File parentFile = file.getParentFile();
