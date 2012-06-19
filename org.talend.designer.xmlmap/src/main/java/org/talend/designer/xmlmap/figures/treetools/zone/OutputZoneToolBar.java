@@ -221,6 +221,7 @@ public class OutputZoneToolBar extends ZoneToolBar {
                                 .getCurrentSelectedOutputXmlTree();
                         if (currentSelectedOutputXmlTree != null) {
                             OutputXmlTree outputTree = (OutputXmlTree) currentSelectedOutputXmlTree.getModel();
+                            int indexOf = mapDataPart.getModelChildren().indexOf(outputTree);
                             XmlMapComponent mapperComponent = manager.getMapperComponent();
 
                             mapperComponent.getProcess().removeUniqueConnectionName(outputTree.getName());
@@ -230,6 +231,18 @@ public class OutputZoneToolBar extends ZoneToolBar {
                             }
                             mapData.getOutputTrees().remove(outputTree);
                             XmlMapUtil.detachFilterSource(outputTree, mapData);
+
+                            indexOf = indexOf - 1;
+                            if (indexOf > -1
+                                    && (EditPart) mapDataPart.getChildren().get(indexOf) instanceof OutputXmlTreeEditPart) {
+                                mapDataPart.getViewer().select((EditPart) mapDataPart.getChildren().get(indexOf));
+                            } else if (indexOf > -1 && indexOf + 1 < mapDataPart.getChildren().size()
+                                    && (EditPart) mapDataPart.getChildren().get(indexOf + 1) instanceof OutputXmlTreeEditPart) {
+                                mapDataPart.getViewer().select((EditPart) mapDataPart.getChildren().get(indexOf + 1));
+                            } else {
+                                manager.getMapperUI().getTabFolderEditors().getOutputMetaEditorView()
+                                        .setMetadataTableEditor(null);
+                            }
                         }
                         if (mapData.getOutputTrees().isEmpty() && min_size.isEnabled()) {
                             min_size.setEnabled(false);
