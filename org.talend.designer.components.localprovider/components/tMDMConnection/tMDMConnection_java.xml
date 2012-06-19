@@ -62,13 +62,14 @@
     <IMPORTS>
       <IMPORT NAME="MDM-Webservice" MODULE="mdm_webservice.jar" REQUIRED="true" />
       <IMPORT NAME="SOAP-axis" MODULE="axis.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" REQUIRED="true" />
+      <IMPORT NAME="SOAP-jaxrpc" MODULE="jaxrpc.jar" BundleID="" REQUIRED="true" />
+      <IMPORT NAME="SOAP-jaxrpc-api" MODULE="jaxrpc-api.jar" REQUIRED="true" />
+      <IMPORT NAME="SOAP-saaj" MODULE="saaj.jar" BundleID="" REQUIRED="true" />
       <IMPORT NAME="SOAP-wsdl" MODULE="wsdl4j-1.6.2.jar" BundleID="org.apache.servicemix.bundles.wsdl4j" REQUIRED="true" />
       <IMPORT NAME="SOAP-discovery" MODULE="commons-discovery-0.2.jar" REQUIRED="true" />
-      <IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.1.jar" REQUIRED="true" /> 
-      <IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" REQUIRED="true" />  
-      <IMPORT NAME="SOAP-JAF" MODULE="activation.jar" REQUIRED="true" />   
+      <IMPORT NAME="SOAP-logging" MODULE="commons-logging-1.0.4.jar" REQUIRED="true" /> 
+      <IMPORT NAME="SOAP-JavaMail" MODULE="mail.jar" BundleID="" REQUIRED="true" />  
+      <IMPORT NAME="SOAP-JAF" MODULE="activation.jar" BundleID="" REQUIRED="true" />    
     </IMPORTS>
   </CODEGENERATION>
 
