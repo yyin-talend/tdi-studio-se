@@ -40,6 +40,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptESBManager;
@@ -87,6 +88,7 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
         for (ExportFileResource proces : process) {
             ProcessItem processItem = (ProcessItem) proces.getItem();
             String selectedJobVersion = processItem.getProperty().getVersion();
+            String directoryName = processItem.getProperty().getLabel();
 
             // Generate job files
             String libPath = calculateLibraryPathFromDirectory(proces.getDirectoryName());
@@ -103,7 +105,7 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
             }
 
             // Job libraries - routines, libraries, etc...
-            ExportFileResource libResource = new ExportFileResource(processItem, null);
+            ExportFileResource libResource = new ExportFileResource(processItem, directoryName);
             resources.add(libResource);
 
             List<URL> talendLibraries = getExternalLibraries(true, process);
@@ -124,12 +126,12 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
             libResource.addResources(getJobScripts(processItem, selectedJobVersion, true));
 
             // Job sources
-            ExportFileResource srcResource = new ExportFileResource(processItem, null);
+            ExportFileResource srcResource = new ExportFileResource(processItem, directoryName);
             addSourceCode(process, processItem, needSource, srcResource, selectedJobVersion);
             resources.add(srcResource);
 
             // Contexts
-            ExportFileResource contextResource = new ExportFileResource(processItem, null);
+            ExportFileResource contextResource = new ExportFileResource(processItem, directoryName);
             addContextScripts(contextResource, selectedJobVersion, NEED_CONTEXT);
             resources.add(contextResource);
 
@@ -147,8 +149,11 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
             ExportFileResource wsdlFile = generateWsdlFile(processItem);
             resources.add(wsdlFile);
         }
+        String directoryName = ProjectManager.getInstance().getCurrentProject().getTechnicalLabel();
+
         // routines src
         ExportFileResource routinesSrcResource = new ExportFileResource();
+        routinesSrcResource.setDirectoryName(directoryName);
         addDependenciesSourceCode(process, routinesSrcResource, needSource);
         resources.add(routinesSrcResource);
 
@@ -392,9 +397,8 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
         } catch (IOException e) {
             ExceptionHandler.process(e);
         }
-
         // Create the ExportFileResource
-        ExportFileResource metaInfResource = new ExportFileResource(item, null);
+        ExportFileResource metaInfResource = new ExportFileResource(item, jobName);
         List<URL> urlList = new ArrayList<URL>();
         try {
             if (f != null)
