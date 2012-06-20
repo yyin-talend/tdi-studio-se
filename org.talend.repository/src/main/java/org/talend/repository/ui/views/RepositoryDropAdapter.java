@@ -15,7 +15,14 @@ package org.talend.repository.ui.views;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -25,6 +32,7 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.ui.part.PluginDropAdapter;
+import org.osgi.framework.FrameworkUtil;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -158,8 +166,9 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
      */
     @Override
     public boolean validateDrop(Object target, int operation, TransferData transferType) {
-        if (target == null)
+        if (target == null) {
             return false;
+        }
         super.validateDrop(target, operation, transferType);
         boolean isValid = true;
         for (Object obj : ((StructuredSelection) getViewer().getSelection()).toArray()) {
@@ -302,7 +311,7 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
                         }
                         MessageDialog.openInformation(getViewer().getControl().getShell(),
                                 Messages.getString("RepositoryDropAdapter_moveTitle"), //$NON-NLS-1$
-                                errorMsg); //$NON-NLS-1$ 
+                                errorMsg);
                         setReturnValue(false);
                         return;
                     }
@@ -331,14 +340,31 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
 
                 @Override
                 protected void run() throws LoginException, PersistenceException {
+                    final IWorkspaceRunnable op = new IWorkspaceRunnable() {
+
+                        public void run(IProgressMonitor monitor) throws CoreException {
+                            try {
+                                for (Object obj : ((StructuredSelection) data).toArray()) {
+                                    final RepositoryNode sourceNode = (RepositoryNode) obj;
+                                    monitor.subTask(Messages.getString("RepositoryDropAdapter.moving") + sourceNode.getObject().getLabel()); //$NON-NLS-1$
+                                    MoveObjectAction.getInstance().execute(sourceNode, targetNode, true);
+                                }
+                            } catch (Exception e) {
+                                throw new CoreException(new org.eclipse.core.runtime.Status(IStatus.ERROR, FrameworkUtil
+                                        .getBundle(this.getClass()).getSymbolicName(), "Error", e));
+                            }
+                        };
+
+                    };
+                    IWorkspace workspace = ResourcesPlugin.getWorkspace();
                     try {
-                        for (Object obj : ((StructuredSelection) data).toArray()) {
-                            final RepositoryNode sourceNode = (RepositoryNode) obj;
-                            monitor.subTask(Messages.getString("RepositoryDropAdapter.moving") + sourceNode.getObject().getLabel()); //$NON-NLS-1$
-                            MoveObjectAction.getInstance().execute(sourceNode, targetNode, true);
-                        }
-                    } catch (Exception e) {
-                        throw new PersistenceException(e);
+                        ISchedulingRule schedulingRule = workspace.getRoot();
+                        // the update the project files need to be done in the workspace runnable to avoid all
+                        // notification
+                        // of changes before the end of the modifications.
+                        workspace.run(op, schedulingRule, IWorkspace.AVOID_UPDATE, new NullProgressMonitor());
+                    } catch (CoreException e) {
+                        throw new PersistenceException(e.getCause());
                     }
                 }
             };
