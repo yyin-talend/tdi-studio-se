@@ -55,7 +55,7 @@
 			</ITEMS>
 		</PARAMETER>
 		<PARAMETER NAME="METHODNAME" FIELD="CLOSED_LIST" NUM_ROW="30" REQUIRED="true" SHOW_IF="VERSION_SELECTION=='VTIGER_50'">
-			<ITEMS DEFAULT="LoginToVtiger">
+			<ITEMS DEFAULT="loginToVtiger">
 				<ITEM NAME="loginToVtiger" VALUE="loginToVtiger" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
 				<ITEM NAME="addMessageToContact" VALUE="addMessageToContact" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
 				<ITEM NAME="addEmailAttachment" VALUE="addEmailAttachment" SHOW_IF="(MODULENAME=='OUTLOOK_PLUGIN')"/>
