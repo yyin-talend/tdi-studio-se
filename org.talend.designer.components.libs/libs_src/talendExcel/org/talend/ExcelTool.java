@@ -104,7 +104,9 @@ public class ExcelTool {
 				sheet = wb.getSheet(sheetName);
 				if (sheet != null) {
 					if (appendSheet) {
-						curY = sheet.getLastRowNum() + 1;
+					    if(sheet.getLastRowNum()!=0 || sheet.getRow(0)!=null){
+							curY = sheet.getLastRowNum() + 1;
+						}
 					} else {
 						wb.removeSheetAt(wb.getSheetIndex(sheetName));
 						sheet = wb.createSheet(sheetName);
@@ -219,14 +221,15 @@ public class ExcelTool {
 
 	private CellStyle getPreCellStyle() {
 		if (isAbsY && keepCellFormat) {
+			CellStyle preCellStyle =null;
 			if (preCell == null) {
-				return null;
+				preCellStyle = preSheet.getColumnStyle(curCell.getColumnIndex());
 			} else {
-				CellStyle preCellStyle = preCell.getCellStyle();
-				CellStyle targetCellStyle = wb.createCellStyle();
-				targetCellStyle.cloneStyleFrom(preCellStyle);
-				return targetCellStyle;
+				preCellStyle = preCell.getCellStyle();
 			}
+			CellStyle targetCellStyle = wb.createCellStyle();
+			targetCellStyle.cloneStyleFrom(preCellStyle);
+			return targetCellStyle;
 		} else {
 			return null;
 		}
