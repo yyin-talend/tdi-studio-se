@@ -40,6 +40,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptESBManager;
@@ -87,6 +88,7 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
         for (ExportFileResource proces : process) {
             ProcessItem processItem = (ProcessItem) proces.getItem();
             String selectedJobVersion = processItem.getProperty().getVersion();
+            String directoryName = processItem.getProperty().getLabel();
 
             // Generate job files
             String libPath = calculateLibraryPathFromDirectory(proces.getDirectoryName());
@@ -103,7 +105,7 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
             }
 
             // Job libraries - routines, libraries, etc...
-            ExportFileResource libResource = new ExportFileResource(processItem, null);
+            ExportFileResource libResource = new ExportFileResource(processItem, directoryName);
             resources.add(libResource);
 
             List<URL> talendLibraries = getExternalLibraries(true, process);
@@ -124,12 +126,12 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
             libResource.addResources(getJobScripts(processItem, selectedJobVersion, true));
 
             // Job sources
-            ExportFileResource srcResource = new ExportFileResource(processItem, null);
+            ExportFileResource srcResource = new ExportFileResource(processItem, directoryName);
             addSourceCode(process, processItem, needSource, srcResource, selectedJobVersion);
             resources.add(srcResource);
 
             // Contexts
-            ExportFileResource contextResource = new ExportFileResource(processItem, null);
+            ExportFileResource contextResource = new ExportFileResource(processItem, directoryName);
             addContextScripts(contextResource, selectedJobVersion, NEED_CONTEXT);
             resources.add(contextResource);
 
@@ -147,8 +149,11 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
             ExportFileResource wsdlFile = generateWsdlFile(processItem);
             resources.add(wsdlFile);
         }
+
+        String directoryName = ProjectManager.getInstance().getCurrentProject().getTechnicalLabel();
         // routines src
         ExportFileResource routinesSrcResource = new ExportFileResource();
+        routinesSrcResource.setDirectoryName(directoryName);
         addDependenciesSourceCode(process, routinesSrcResource, needSource);
         resources.add(routinesSrcResource);
 
@@ -266,8 +271,9 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
         // Extra SU parameters: the output attachments the SE will query
         for (ContextTypeDefinition def : PetalsTemporaryOptionsKeeper.INSTANCE.getContexts()) {
             if (def.getExportType() != ContextExportType.OUT_ATTACHMENT
-                    && def.getExportType() != ContextExportType.PARAMETER_AND_OUT_ATTACHMENT)
+                    && def.getExportType() != ContextExportType.PARAMETER_AND_OUT_ATTACHMENT) {
                 continue;
+            }
 
             sb.append("\t\t\t<talend:output-attachment>"); //$NON-NLS-1$
             sb.append(def.getDefinition().getName());
@@ -282,19 +288,22 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
         File f = null;
         try {
             File jobFolder = new File(getTmpFolder() + PATH_SEPARATOR + jobName);
-            if (!jobFolder.exists() && !jobFolder.mkdir())
+            if (!jobFolder.exists() && !jobFolder.mkdir()) {
                 throw new IOException("Could not create the directory to store the job resources."); //$NON-NLS-1$
+            }
 
             f = new File(jobFolder, "jbi.xml"); //$NON-NLS-1$
-            if (!f.exists() && !f.createNewFile())
+            if (!f.exists() && !f.createNewFile()) {
                 throw new IOException("Could not create temporary jbi.xml file during an export operation for PEtALS."); //$NON-NLS-1$
+            }
 
             ByteArrayInputStream in = new ByteArrayInputStream(sb.toString().getBytes());
             FileOutputStream out = new FileOutputStream(f);
             byte[] buf = new byte[1024];
             int len;
-            while ((len = in.read(buf)) > 0)
+            while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
+            }
             out.close();
 
         } catch (IOException e) {
@@ -305,8 +314,9 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
         ExportFileResource metaInfResource = new ExportFileResource(item, "META-INF"); //$NON-NLS-1$
         List<URL> urlList = new ArrayList<URL>();
         try {
-            if (f != null)
+            if (f != null) {
                 urlList.add(f.toURL());
+            }
 
         } catch (MalformedURLException e) {
             ExceptionHandler.process(e);
@@ -373,20 +383,23 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
         File f = null;
         try {
             File jobFolder = new File(getTmpFolder() + PATH_SEPARATOR + jobName);
-            if (!jobFolder.exists() && !jobFolder.mkdir())
+            if (!jobFolder.exists() && !jobFolder.mkdir()) {
                 throw new IOException("Could not create the directory to store the job resources."); //$NON-NLS-1$
+            }
 
             f = new File(jobFolder, jobName + ".wsdl"); //$NON-NLS-1$
-            if (!f.exists() && !f.createNewFile())
+            if (!f.exists() && !f.createNewFile()) {
                 throw new IOException("Could not create temporary WSDL file during an export operation for PEtALS."); //$NON-NLS-1$
+            }
 
             String content = new WsdlGenerator().generate(wsdlBean);
             ByteArrayInputStream in = new ByteArrayInputStream(content.getBytes());
             FileOutputStream out = new FileOutputStream(f);
             byte[] buf = new byte[1024];
             int len;
-            while ((len = in.read(buf)) > 0)
+            while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
+            }
             out.close();
 
         } catch (IOException e) {
@@ -394,11 +407,12 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
         }
 
         // Create the ExportFileResource
-        ExportFileResource metaInfResource = new ExportFileResource(item, null);
+        ExportFileResource metaInfResource = new ExportFileResource(item, jobName);
         List<URL> urlList = new ArrayList<URL>();
         try {
-            if (f != null)
+            if (f != null) {
                 urlList.add(f.toURL());
+            }
 
         } catch (MalformedURLException e) {
             ExceptionHandler.process(e);
@@ -431,8 +445,9 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
         File jarFile = null;
         try {
             File jobFolder = new File(getTmpFolder() + PATH_SEPARATOR + jobName);
-            if (!jobFolder.exists() && !jobFolder.mkdir())
+            if (!jobFolder.exists() && !jobFolder.mkdir()) {
                 throw new IOException("Could not create the directory to store the job resources."); //$NON-NLS-1$
+            }
 
             jarFile = new File(jobFolder, "contexts.jar"); //$NON-NLS-1$
             FileOutputStream stream = new FileOutputStream(jarFile);
@@ -453,8 +468,9 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
 
                     FileInputStream in = new FileInputStream(toBeJared);
                     int nRead;
-                    while ((nRead = in.read(buffer, 0, buffer.length)) > 0)
+                    while ((nRead = in.read(buffer, 0, buffer.length)) > 0) {
                         out.write(buffer, 0, nRead);
+                    }
                     in.close();
                 }
             }
@@ -473,8 +489,9 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
         ExportFileResource jaredContextResource = new ExportFileResource(item, null);
         List<URL> urlList = new ArrayList<URL>();
         try {
-            if (jarFile != null)
+            if (jarFile != null) {
                 urlList.add(jarFile.toURL());
+            }
 
         } catch (MalformedURLException e) {
             ExceptionHandler.process(e);

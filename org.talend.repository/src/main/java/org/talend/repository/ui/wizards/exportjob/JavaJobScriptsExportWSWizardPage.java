@@ -470,8 +470,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         if (selectedFileName == null) {
             return;
         }
-        if (!selectedFileName.endsWith(getOutputSuffix()))
+        if (!selectedFileName.endsWith(getOutputSuffix())) {
             selectedFileName += getOutputSuffix();
+        }
         // when user change the name of job,will add the version auto
         if (selectedFileName != null && !selectedFileName.endsWith(getSelectedJobVersion() + getOutputSuffix())) {
             String b = selectedFileName.substring(0, (selectedFileName.length() - 4));
@@ -484,7 +485,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             if (str.equals(s)) {
                 if (getDefaultFileName().get(1) != null && !"".equals(getDefaultFileName().get(1))) {
                     selectedFileName = b + ((JobExportType.OSGI.equals(jobExportType)) ? "-" : "_") + getDefaultFileName().get(1)
-                            + getOutputSuffix(); //$NON-NLS-1$
+                            + getOutputSuffix();
                 } else {
                     selectedFileName = b + getOutputSuffix();
                 }
@@ -499,11 +500,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             setDestinationValue(selectedFileName);
 
             if (getDialogSettings() != null) {
-                IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$
+                IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);
                 if (section == null) {
-                    section = getDialogSettings().addNewSection(DESTINATION_FILE);//$NON-NLS-1$
+                    section = getDialogSettings().addNewSection(DESTINATION_FILE);
                 }
-                section.put(DESTINATION_FILE, selectedFileName);//$NON-NLS-1$//$NON-NLS-1$
+                section.put(DESTINATION_FILE, selectedFileName);
             }
 
         }
@@ -516,11 +517,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         if (source instanceof Combo) {
             String destination = ((Combo) source).getText();
             if (getDialogSettings() != null) {
-                IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$
+                IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);
                 if (section == null) {
-                    section = getDialogSettings().addNewSection(DESTINATION_FILE);//$NON-NLS-1$
+                    section = getDialogSettings().addNewSection(DESTINATION_FILE);
                 }
-                section.put(DESTINATION_FILE, destination);//$NON-NLS-1$
+                section.put(DESTINATION_FILE, destination);
             }
         }
     }
@@ -557,8 +558,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             List<String> contextNames = getJobContexts(getProcessItem());
             contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
             contextCombo.setVisibleItemCount(contextNames.size());
-            if (contextNames.size() > 0)
+            if (contextNames.size() > 0) {
                 contextCombo.select(0);
+            }
         }
     }
 
@@ -581,9 +583,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 setDefaultDestination();
             }
 
-            IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$
+            IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);
             if (section == null) {
-                section = getDialogSettings().addNewSection(DESTINATION_FILE);//$NON-NLS-1$
+                section = getDialogSettings().addNewSection(DESTINATION_FILE);
             }
             if (exportDependencies != null && !exportDependencies.isDisposed()) {
                 exportDependencies.setSelection(settings.getBoolean(STORE_DEPENDENCIES_ID));
@@ -786,8 +788,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         if (settings != null) {
             if (getCurrentExportType1().equals(JobExportType.PETALSESB)) {
                 String[] directoryNames = settings.getArray(PETALS_EXPORT_DESTINATIONS);
-                if (directoryNames == null)
+                if (directoryNames == null) {
                     directoryNames = new String[0];
+                }
 
                 directoryNames = addToHistory(directoryNames, saDestinationFilePath);
                 settings.put(PETALS_EXPORT_DESTINATIONS, directoryNames);
@@ -966,16 +969,17 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
             String[] directoryNames = settings.getArray(PETALS_EXPORT_DESTINATIONS);
-            if (directoryNames == null || directoryNames.length == 0)
+            if (directoryNames == null || directoryNames.length == 0) {
                 return;
+            }
 
             if (directoryNames[0].endsWith(getPetalsDefaultSaName())) {
                 setDestinationValue(directoryNames[0]);
                 saDestinationFilePath = directoryNames[0];
             }
 
-            for (int i = 0; i < directoryNames.length; i++) {
-                addDestinationItem(directoryNames[i]);
+            for (String directoryName : directoryNames) {
+                addDestinationItem(directoryName);
             }
         }
     }
@@ -1111,8 +1115,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             public void widgetSelected(SelectionEvent e) {
 
                 int index = contextCombo.getSelectionIndex();
-                if (index < 0)
+                if (index < 0) {
                     return;
+                }
 
                 // Get the context types
                 String value = contextCombo.getItem(index);
@@ -1137,8 +1142,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 // Update the link label
                 int exportedCtxCount = 0;
                 for (ContextTypeDefinition ctx : currentCtxTypes) {
-                    if (ctx.getExportType() != ContextExportType.NOT_EXPORTED)
+                    if (ctx.getExportType() != ContextExportType.NOT_EXPORTED) {
                         exportedCtxCount++;
+                    }
                 }
 
                 exposedContextsLink.setText(Messages.getString("PetalsJobScriptsExportWizardPage.EditTheExposedContexts_") + exportedCtxCount + ")</a>"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1175,6 +1181,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
         }
 
+        if (getCurrentExportType1().equals(JobExportType.PETALSESB)) {
+            if (isMultiNodes()) {
+                setErrorMessage(Messages.getString("JavaJobScriptsExportWSWizardPage.singleJobExport"));
+                isValid = false;
+            }
+        }
         setPageComplete(isValid);
         return isValid;
     }
@@ -1408,6 +1420,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 }
             }
         }
+        if (getCurrentExportType1().equals(JobExportType.PETALSESB)) {
+            if (isMultiNodes()) {
+                setErrorMessage(Messages.getString("JavaJobScriptsExportWSWizardPage.singleJobExport"));
+            }
+        }
         if (getCurrentExportType1().equals(JobExportType.OSGI)) {
             if (isMultiNodes()) {
                 setErrorMessage("This type of export support actually only a single job export.");
@@ -1424,8 +1441,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     @Override
     public boolean finish() {
         if (exportTypeCombo != null && JobExportType.getTypeFromString(exportTypeCombo.getText()).equals(JobExportType.PETALSESB)) {
-            if (!ensureTargetFileIsValid(new File(saDestinationFilePath)))
+            if (!ensureTargetFileIsValid(new File(saDestinationFilePath))) {
                 return true;
+            }
             File suFile = null;
             suFile = new File(getDestinationValue());
             // suFile = new File(new File(directory, suName).getAbsolutePath());
@@ -1437,9 +1455,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
                 // The super class packages the job in the SU file
                 if ((ok = super.finish()) == true) {
-                    if (desc == null)
+                    if (desc == null) {
                         desc = ""; //$NON-NLS-1$
-                    else {
+                    } else {
                         // Replace XML mark-up characters
                         desc = desc.replaceAll("<", "&lt;"); //$NON-NLS-1$ //$NON-NLS-2$
                         desc = desc.replaceAll(">", "&gt;"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -1465,11 +1483,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         if (exportTypeCombo != null && JobExportType.getTypeFromString(exportTypeCombo.getText()).equals(JobExportType.JBOSSESB)) {
             if (getDialogSettings() != null) {
-                IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);//$NON-NLS-1$
+                IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);
                 if (section == null) {
-                    section = getDialogSettings().addNewSection(DESTINATION_FILE);//$NON-NLS-1$
+                    section = getDialogSettings().addNewSection(DESTINATION_FILE);
                 }
-                section.put(ESB_EXPORT_TYPE, esbTypeCombo.getText());//$NON-NLS-1$//$NON-NLS-1$
+                section.put(ESB_EXPORT_TYPE, esbTypeCombo.getText());
                 section.put(ESB_SERVICE_NAME, esbServiceName.getText());
                 section.put(ESB_CATEGORY, esbCategory.getText());
                 section.put(QUERY_MESSAGE_NAME, esbQueueMessageName.getText());
