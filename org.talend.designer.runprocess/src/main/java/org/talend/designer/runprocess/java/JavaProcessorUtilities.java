@@ -320,7 +320,7 @@ public class JavaProcessorUtilities {
                     }
                 }
             }
-            classpathEntryArray = (IClasspathEntry[]) classpathEntryList.toArray(new IClasspathEntry[classpathEntryList.size()]);
+            classpathEntryArray = classpathEntryList.toArray(new IClasspathEntry[classpathEntryList.size()]);
             if (modified) {
                 javaProject.setRawClasspath(classpathEntryArray, null);
             }
@@ -349,9 +349,6 @@ public class JavaProcessorUtilities {
                 neededLibraries = process.getNeededLibraries(true);
                 if (neededLibraries == null) {
                     neededLibraries = new HashSet<String>();
-                    for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
-                        neededLibraries.add(moduleNeeded.getModuleName());
-                    }
                 }
             } else {
                 for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
