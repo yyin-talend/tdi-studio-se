@@ -116,7 +116,9 @@ public class <%=process.getName()%> implements <%=talendJobInterfaces%> {
 
 <% if (talendEsbJobFactory) { %>
 	public TalendESBJob newTalendESBJob() {
-		return new <%=process.getName()%>();
+		<%=process.getName()%> talendESBJob = new <%=process.getName()%>();
+		talendESBJob.setDataSources((java.util.Map<String, javax.sql.DataSource>) globalMap.get(KEY_DB_DATASOURCES));
+		return talendESBJob;
 	}
 <% } %>
 
@@ -246,6 +248,13 @@ private RunTrace runTrace = new RunTrace();
 %>
 
 public boolean isExportedAsOSGI = <%=exportAsOSGI%>;
+
+	// OSGi DataSource
+	private final static String KEY_DB_DATASOURCES = "KEY_DB_DATASOURCES";
+
+	public void setDataSources(java.util.Map<String, javax.sql.DataSource> dataSources) {
+		globalMap.put(KEY_DB_DATASOURCES, dataSources);
+	}
 
 <%
 	for (INode logCatcher : process.getNodesOfType("tLogCatcher")) {
