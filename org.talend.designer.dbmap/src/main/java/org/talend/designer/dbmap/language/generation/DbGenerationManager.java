@@ -406,7 +406,7 @@ public abstract class DbGenerationManager {
                 List<ExternalDbMapEntry> customConditionsEntries = outputTable.getCustomConditionsEntries();
                 if (customConditionsEntries != null) {
                     for (ExternalDbMapEntry entry : customConditionsEntries) {
-                        String exp = entry.getExpression();
+                        String exp = initExpression(component, entry);
                         if (exp != null && !DbMapSqlConstants.EMPTY.equals(exp.trim())) {
                             if (containWith(exp, DbMapSqlConstants.GROUP_BY_PATTERN, true)
                                     || containWith(exp, DbMapSqlConstants.ORDER_BY_PATTERN, true)) {
@@ -507,19 +507,11 @@ public abstract class DbGenerationManager {
         return sqlQuery;
     }
 
-    protected String addQuit(String exp) {
-        return exp;
-    }
-
-    protected boolean isPostgres() {
-        return false;
-    }
-
     private String handleQuery(String query) {
         if (query != null) {
             if (!query.trim().endsWith("\"")) { //$NON-NLS-1$
                 query = query + "\""; //$NON-NLS-1$
-            } else if (isPostgres() && query.trim().endsWith("\\\"")) {
+            } else if (query.trim().endsWith("\\\"")) {
                 query = query + " \"";
             } else {
                 if (query.trim().endsWith("+ \"")) { //$NON-NLS-1$
@@ -547,7 +539,7 @@ public abstract class DbGenerationManager {
         return false;
     }
 
-    private List<String> getContextList(DbMapComponent component) {
+    protected List<String> getContextList(DbMapComponent component) {
         List<String> contextList = new ArrayList<String>();
         IProcess process = component.getProcess();
         IContext context = process.getContextManager().getDefaultContext();
@@ -618,8 +610,13 @@ public abstract class DbGenerationManager {
             }
             String entryName = dbMapEntry.getName();
             entryName = getOriginalColumnName(entryName, component, table);
-            String locationInputEntry = language.getLocation(table.getName(), entryName);
-            locationInputEntry = addQuit(locationInputEntry);
+            String tableName = table.getName();
+            if (table.getAlias() == null) {
+                tableName = getHandledTableName(component, table.getName());
+            } else {
+                tableName = getHandledField(table.getName());
+            }
+            String locationInputEntry = language.getLocation(tableName, getHandledField(entryName));
             sbWhere.append(DbMapSqlConstants.SPACE);
             sbWhere.append(locationInputEntry);
             sbWhere.append(getSpecialRightJoin(table));
@@ -682,13 +679,13 @@ public abstract class DbGenerationManager {
                     sb.append(DbMapSqlConstants.COMMA);
                     sb.append(DbMapSqlConstants.SPACE);
                 }
-                sb.append(addQuit(inputTable.getTableName()));
+                sb.append(getHandledTableName(component, inputTable.getTableName()));
                 sb.append(DbMapSqlConstants.SPACE);
-                sb.append(addQuit(alias));
+                sb.append(getHandledField(alias));
                 aliasAlreadyDeclared.add(alias);
             } else {
                 if (writingInJoin) {
-                    sb.append(addQuit(inputTable.getName()));
+                    sb.append(getHandledTableName(component, inputTable.getName()));
                 }
             }
         } else {
@@ -699,59 +696,71 @@ public abstract class DbGenerationManager {
                 sb.append(DbMapSqlConstants.COMMA);
                 sb.append(DbMapSqlConstants.SPACE);
             }
+            buildTableDeclaration(component, sb, inputTable);
 
-            String inputTableName = inputTable.getName();
-            List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
-            boolean replace = false;
-            if (inputConnections != null) {
-                for (IConnection iconn : inputConnections) {
-                    IMetadataTable metadataTable = iconn.getMetadataTable();
-                    String tName = iconn.getName();
-                    if (tName.equals(inputTableName) && metadataTable != null) {
-                        String tableName = metadataTable.getTableName();
-                        String tableColneName = tableName;
-                        tableColneName = MetadataToolHelper.validateTableName(tableColneName);
-                        if (inputTableName.contains(".") && tableName != null) {
-                            MapExpressionParser mapParser2 = new MapExpressionParser("\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*");
-                            List<Map<String, String>> tableNameList = mapParser2.parseInTableEntryLocations(inputTableName);
-                            for (Map<String, String> tableNameMap : tableNameList) {
-                                Set<Entry<String, String>> setTable = tableNameMap.entrySet();
-                                Iterator<Entry<String, String>> iteTable = setTable.iterator();
+        }
+    }
 
-                                while (iteTable.hasNext()) {
-                                    Entry<String, String> tableEntry = iteTable.next();
-                                    String tableLabel = tableEntry.getKey();
-                                    String schemaValue = tableEntry.getValue();
-                                    if (tableLabel.equals(metadataTable.getLabel()) && tableColneName.equals(tableLabel)) {
-                                        sb.append(schemaValue);
-                                        sb.append(".");
-                                        sb.append(tableName);
-                                        replace = true;
-                                    }
+    protected void buildTableDeclaration(DbMapComponent component, StringBuilder sb, ExternalDbMapTable inputTable) {
+        String inputTableName = inputTable.getName();
+        List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
+        boolean replace = false;
+        if (inputConnections != null) {
+            for (IConnection iconn : inputConnections) {
+                IMetadataTable metadataTable = iconn.getMetadataTable();
+                String tName = iconn.getName();
+                if (tName.equals(inputTableName) && metadataTable != null) {
+                    String tableName = metadataTable.getTableName();
+                    String tableColneName = tableName;
+                    tableColneName = MetadataToolHelper.validateTableName(tableColneName);
+                    if (inputTableName.contains(".") && tableName != null) {
+                        MapExpressionParser mapParser2 = new MapExpressionParser("\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*");
+                        List<Map<String, String>> tableNameList = mapParser2.parseInTableEntryLocations(inputTableName);
+                        for (Map<String, String> tableNameMap : tableNameList) {
+                            Set<Entry<String, String>> setTable = tableNameMap.entrySet();
+                            Iterator<Entry<String, String>> iteTable = setTable.iterator();
+
+                            while (iteTable.hasNext()) {
+                                Entry<String, String> tableEntry = iteTable.next();
+                                String tableLabel = tableEntry.getKey();
+                                String schemaValue = tableEntry.getValue();
+                                if (tableLabel.equals(metadataTable.getLabel()) && tableColneName.equals(tableLabel)) {
+                                    sb.append(schemaValue);
+                                    sb.append(".");
+                                    sb.append(tableName);
+                                    replace = true;
                                 }
+                            }
 
-                            }
-                        } else if (tableName != null) {
-                            if (inputTableName.equals(metadataTable.getLabel()) && tableColneName.equals(inputTableName)) {
-                                sb.append(tableName);
-                                replace = true;
-                            }
+                        }
+                    } else if (tableName != null) {
+                        if (inputTableName.equals(metadataTable.getLabel()) && tableColneName.equals(inputTableName)) {
+                            sb.append(tableName);
+                            replace = true;
                         }
                     }
-
                 }
-            }
-            if (!replace) {
-                sb.append(addQuit(inputTable.getName()));
+
             }
         }
+        if (!replace) {
+            sb.append(inputTable.getName());
+        }
+    }
+
+    protected String getHandledTableName(DbMapComponent component, String name) {
+        return name;
+    }
+
+    protected String getHandledField(String field) {
+        return field;
     }
 
     protected String addQuoteForSpecialChar(String expression, DbMapComponent component) {
         return expression;
     }
 
-    private String initExpression(DbMapComponent component, ExternalDbMapEntry dbMapEntry) {
+    protected String initExpression(DbMapComponent component, ExternalDbMapEntry dbMapEntry) {
         String expression = dbMapEntry.getExpression();
         boolean flag = false;
         if (expression != null) {
@@ -827,7 +836,7 @@ public abstract class DbGenerationManager {
         if (flag) {
             expression = TalendQuoteUtils.checkStringQuotationMarks(expression);
         }
-        return addQuit(expression);
+        return expression;
     }
 
     private String getOriginalColumnName(String entryName, DbMapComponent component, ExternalDbMapTable table) {
@@ -851,7 +860,7 @@ public abstract class DbGenerationManager {
         return entryName;
     }
 
-    private List<String> getConnectionContextList(DbMapComponent component) {
+    protected List<String> getConnectionContextList(DbMapComponent component) {
         List<String> contextList = new ArrayList<String>();
         List<IConnection> inputConnections = (List<IConnection>) component.getIncomingConnections();
         List<Map<String, String>> itemNameList = null;
