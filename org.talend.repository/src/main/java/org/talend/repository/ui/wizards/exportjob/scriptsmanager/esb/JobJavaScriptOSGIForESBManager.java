@@ -743,11 +743,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     	IProject project = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
     	IPath libPath = project.getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
     	for(ProcessItem pi: itemToBeExport){
-    		ProcessType process = pi.getProcess();
     		IOsgiDependenciesService dependenciesService = (IOsgiDependenciesService) GlobalServiceRegister.getDefault().getService(
     				IOsgiDependenciesService.class);
     		if(dependenciesService!=null){
-    			Map<String, String> bundleDependences = dependenciesService.getBundleDependences(process, pi.getProperty().getAdditionalProperties());
+    			Map<String, String> bundleDependences = dependenciesService.getBundleDependences(pi, pi.getProperty().getAdditionalProperties());
     			//process external libs
     			String externalLibs = bundleDependences.get(IOsgiDependenciesService.BUNDLE_CLASSPATH);
     			String[] libs = externalLibs.split(IOsgiDependenciesService.ITEM_SEPARATOR);
