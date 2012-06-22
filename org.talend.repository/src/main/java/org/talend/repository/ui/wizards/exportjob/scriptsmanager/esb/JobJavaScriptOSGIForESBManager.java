@@ -21,6 +21,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -196,10 +197,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             addXmlMapping(process[i], isOptionChoosed(ExportChoice.needSourceCode));
 
             if (restJob) {
-                List<String> restSpringFiles = generateRestJobSpringFiles(process[i].getItem());
+                List<String> restSpringFiles = generateRestJobSpringFiles(processItem);
                 osgiResource.addResources(getMetaInfSpringFolder(), buildUrlList(restSpringFiles));
             } else {
-                List<String> esbFiles = generateESBFiles(process[i].getItem(), esbJob);
+                List<String> esbFiles = generateESBFiles(processItem, esbJob);
                 osgiResource.addResources(getOSGIInfFolder(), buildUrlList(esbFiles));
             }
         }
@@ -310,6 +311,25 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return result;
     }
 
+    private boolean isDBConnectionJob(ProcessItem processItem) {
+        return !getDBConnectionComponents(processItem).isEmpty();
+    }
+
+    private List<NodeType> getDBConnectionComponents(ProcessItem processItem) {
+        List<NodeType> result = new ArrayList<NodeType>();
+        ProcessType processType = processItem.getProcess();
+        for (Object o : processType.getNode()) {
+            if (o instanceof NodeType) {
+                NodeType component = (NodeType) o;
+                String componentName = component.getComponentName();
+                if ("tJDBCConnection".equals(componentName)) {
+                    result.add(component);
+                }
+            }
+        }
+        return result;
+    }
+
     protected ExportFileResource getOsgiResource() {
         return new ExportFileResource(null, ""); //$NON-NLS-1$;
     }
@@ -321,14 +341,14 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         .getVersion());
     }
 
-    protected List<String> generateESBFiles(Item processItem, boolean isESBJob) {
+    protected List<String> generateESBFiles(ProcessItem processItem, boolean isESBJob) {
         List<String> files = new ArrayList<String>();
         try {
             if (itemType == null) {
                 itemType = JOB;
             }
 
-            boolean isRESTJob = JOB.equals(itemType) && isRESTProviderJob((ProcessItem) processItem);
+            boolean isRESTJob = JOB.equals(itemType) && isRESTProviderJob( processItem);
 
             String inputFile = getPluginResourceUri("resources/" + itemType + "-template.xml"); //$NON-NLS-1$ //$NON-NLS-2$
             String targetFile = getTmpFolder() + PATH_SEPARATOR + "job.xml"; //$NON-NLS-1$
@@ -343,7 +363,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return files;
     }
 
-    protected List<String> generateRestJobSpringFiles(Item processItem) {
+    protected List<String> generateRestJobSpringFiles(ProcessItem processItem) {
         List<String> files = new ArrayList<String>();
         try {
             String inputFile = getPluginResourceUri("resources/job-rest-beans-template.xml"); //$NON-NLS-1$
@@ -404,10 +424,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return cpType.getValue();
     }
 
-    private void createRestJobBundleSpringConfig(Item processItem, String inputFile,
+    private void createRestJobBundleSpringConfig(ProcessItem processItem, String inputFile,
             String targetFile, String jobName, String jobClassName) {
 
-        NodeType restRequestComponent = getRESTRequestComponent((ProcessItem) processItem);
+        NodeType restRequestComponent = getRESTRequestComponent(processItem);
         EList elParams = restRequestComponent.getElementParameter();
 
 
@@ -493,14 +513,14 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      * @param itemType
      * @param isESBJob
      */
-    private void createJobBundleBlueprintConfig(Item processItem, String inputFile, String targetFile, String jobName,
+    private void createJobBundleBlueprintConfig(ProcessItem processItem, String inputFile, String targetFile, String jobName,
             String jobClassName, String itemType, boolean isESBJob, boolean isRESTJob) {
 
         // http://jira.talendforge.org/browse/TESB-3677
         boolean hasSAM = false;
 
         if (ROUTE.equals(itemType)) {
-            ProcessType process = ((ProcessItem) processItem).getProcess();
+            ProcessType process = processItem.getProcess();
             if (process != null) {
                 EList nodes = process.getNode();
                 Iterator iterator = nodes.iterator();
@@ -526,7 +546,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         String additionalJobBeanParams = "";
         if (isESBJob) {
             additionalJobInterfaces = "<value>routines.system.api.TalendESBJob</value>"; //$NON-NLS-1$
-            if (isESBProviderJob((ProcessItem) processItem)) {
+            if (isESBProviderJob(processItem)) {
                 additionalJobInterfaces += "\n\t\t\t<value>routines.system.api.TalendESBJobFactory</value>"; //$NON-NLS-1$
                 additionalServiceProps = "<entry key=\"multithreading\" value=\"true\" />"; //$NON-NLS-1$
             }
@@ -537,6 +557,40 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 //                        + ")\"" + "\n\t\t\t" + "timeout=\"30000\" availability=\"mandatory\" />";
 //                additionalJobBeanParams = "<property name=\"providerCallback\" ref=\"callbackHandler\" />";
 //            }
+        }
+        // OSGi DataSource
+        List<NodeType> dbComponents = getDBConnectionComponents(processItem);
+        if (!dbComponents.isEmpty()) {
+        	additionalJobBeanParams +=
+        		  "\n\t\t<property name=\"dataSources\">" 
+        		+ "\n\t\t\t<map>";
+        	
+        	for (NodeType dbComponent : dbComponents) {
+        		EList<?> elementParameterTypes = dbComponent.getElementParameter();
+        		String id = computeTextElementValue("UNIQUE_NAME", elementParameterTypes);
+        		String beanPool = id + "Pool";
+
+        		additionalJobBeanParams +=
+            		"\n\t\t\t\t<entry key=\"" + id + "\" value-ref=\"" + beanPool + "\" />";
+
+        		String beanDataSource = id + "DataSource";
+        		String url = computeTextElementValue("URL", elementParameterTypes);
+				URI jdbcURI = URI.create(url.substring(6, url.length() - 1)); // remove jdbc: and quotes
+            	additionalJobBundleConfig +=
+              		  "\n\t<bean id=\"" + beanDataSource + "\" class=\"org.apache.derby.jdbc.ClientConnectionPoolDataSource\">"
+                      + "\n\t\t<property name=\"serverName\" value=\"" + jdbcURI.getHost() + "\"/>"
+                      + "\n\t\t<property name=\"portNumber\" value=\"" + jdbcURI.getPort() + "\"/>"
+                      + "\n\t\t<property name=\"databaseName\" value=\"" + jdbcURI.getPath() + "\"/>"
+                      + "\n\t\t<property name=\"user\" value=" + computeTextElementValue("USER", elementParameterTypes) + "/>"
+                      + "\n\t\t<property name=\"password\" value=" + computeTextElementValue("PASS", elementParameterTypes) + "/>"
+                      + "\n\t</bean>"
+                      + "\n\t<bean id=\"" + beanPool + "\" class=\"org.apache.commons.dbcp.datasources.SharedPoolDataSource\" destroy-method=\"close\">"
+                      + "\n\t\t<property name=\"connectionPoolDataSource\" ref=\"" + beanDataSource + "\"/>"
+                      + "\n\t</bean>";
+			}
+        	additionalJobBeanParams +=
+        		  "\n\t\t\t</map>"
+        		+ "\n\t\t</property>";
         }
 
         FileReader fr = null;
@@ -711,11 +765,18 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         if (ROUTE.equals(itemType)) {
         	addRouterOsgiDependencies(libResource, itemToBeExport, a);
         } else {
+        	String additionalImports = ""; //$NON-NLS-1$
+        	for (ProcessItem processItem : itemToBeExport) {
+				if (isDBConnectionJob(processItem)) {
+					additionalImports = ",org.apache.commons.dbcp.datasources";
+				}
+			}
             a.put(new Attributes.Name("Import-Package"), //$NON-NLS-1$
                     "routines.system.api;resolution:=optional" //$NON-NLS-1$
                             + ",javax.xml.soap;resolution:=optional" //$NON-NLS-1$
                             + ",javax.xml.ws.soap;resolution:=optional" //$NON-NLS-1$
                             + ",org.apache.cxf.management.counters" //$NON-NLS-1$
+                            + additionalImports
             );
             if (itemToBeExport != null && !itemToBeExport.isEmpty()) {
             	for (ProcessItem pi : itemToBeExport) {
