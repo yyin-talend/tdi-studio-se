@@ -2409,8 +2409,21 @@ public class Node extends Element implements IGraphicalNode {
                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
                         } else {
-                            String errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
-                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                            //TESB-6191
+                        	if(getComponent() != null && "cTalendJob".equals(getComponent().getName())){
+                                IElementParameter fromRepository = getElementParameter("FROM_REPOSITORY_JOB");
+                                Object isFromRepository = fromRepository.getValue();
+                                if(isFromRepository!=null && "true".equals(isFromRepository.toString())){
+                                    String errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
+                                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                }else{
+                                    // ignore the cTalendJob validation if it's not use the "FROM_REPOSITORY_JOB"
+                                    // DO nothing
+                                }
+                            }else{
+                                String errorMessage = Messages.getString("Node.parameterEmpty", param.getDisplayName()); //$NON-NLS-1$
+                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                            }
                         }
                     }
                 }
