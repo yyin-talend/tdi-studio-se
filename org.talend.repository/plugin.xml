@@ -1302,6 +1302,13 @@
               id="org.talend.repository.model.migration.AddAdditionalFieldMigrationTask"
               name="Add additionalField to the job model">
         </projecttask>
+		<projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.ChangeItemValueMigrationTaskBug21568"
+             description="ChangeItemValueMigrationTaskBug21568"
+             id="org.talend.repository.model.migration.ChangeItemValueMigrationTaskBug21568"
+             name="ChangeItemValueMigrationTaskBug21568">
+		</projecttask>
 
    </extension>
    
