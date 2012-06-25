@@ -173,7 +173,7 @@
 				REQUIRED="true" />
 			<IMPORT NAME="mylin-smooks" MODULE="milyn-smooks-all-1.4.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="jaxen" MODULE="jaxen-1.1.1.jar"
+			<IMPORT NAME="jaxen" MODULE="jaxen-1.1.1.jar" BundleID="org.apache.servicemix.bundles.jaxen"
 				REQUIRED="true" />
 			<IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.jar"
 				REQUIRED="true" />	
@@ -181,7 +181,7 @@
 				REQUIRED="true" />	
 			<IMPORT NAME="commons-lang" MODULE="commons-lang-2.4.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="dom4j" MODULE="dom4j-1.6.1.jar"
+			<IMPORT NAME="dom4j" MODULE="dom4j-1.6.1.jar" BundleID="org.apache.servicemix.bundles.dom4j"
 				REQUIRED="true" />
 	</IMPORTS>
   </CODEGENERATION>

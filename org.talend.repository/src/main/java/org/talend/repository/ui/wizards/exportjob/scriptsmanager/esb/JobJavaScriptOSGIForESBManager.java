@@ -294,6 +294,26 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     private boolean isRESTProviderJob(ProcessItem processItem) {
         return null != getRESTRequestComponent(processItem);
     }
+    
+    private boolean isRESTClientJob(ProcessItem processItem) {
+        return null != getComponentByName(processItem, "tRESTClient");
+    }    
+    
+    private NodeType getComponentByName(ProcessItem processItem, String name) {
+        NodeType result = null;
+        ProcessType processType = processItem.getProcess();
+        for (Object o : processType.getNode()) {
+            if (o instanceof NodeType) {
+                NodeType component = (NodeType) o;
+                String componentName = component.getComponentName();
+                if (name.equals(componentName)) {
+                    result = component;
+                    break;
+                }
+            }
+        }
+        return result;
+    }    
 
     private NodeType getRESTRequestComponent(ProcessItem processItem) {
         NodeType result = null;
@@ -784,6 +804,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             		 * need to fill bundle depedence informations for every component,feature 0023460
             		 */
             		String requiredBundles = caculateDependenciesBundles(pi);
+            		requiredBundles = addAdditionalRequiredBundles(pi, requiredBundles);
             		if (requiredBundles != null && !"".equals(requiredBundles)) {
             			a.put(new Attributes.Name("Require-Bundle"), requiredBundles);
             		}
@@ -796,6 +817,18 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         a.put(new Attributes.Name("Export-Service"), "routines.system.api.TalendJob;name=" + bundleName + ";type=" + itemType); //$NON-NLS-1$
 
         return manifest;
+    }
+    
+    private String addAdditionalRequiredBundles(ProcessItem pi, String requiredBundles) {
+    	if (isRESTClientJob(pi) || isRESTProviderJob(pi)) {
+    		String bundlesToAdd = "org.apache.cxf.cxf-rt-frontend-jaxrs" 
+    							+ ",org.apache.cxf.cxf-rt-rs-extension-providers";
+    		// check if we need add ',' after already existing bundles
+    		requiredBundles = (requiredBundles != null && !"".equals(requiredBundles)) ? requiredBundles + "," : "";
+   			requiredBundles = requiredBundles + bundlesToAdd;
+    	}
+    	
+    	return requiredBundles;
     }
 
     private void addRouterOsgiDependencies(ExportFileResource libResource,
