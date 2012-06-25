@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
@@ -79,6 +80,12 @@ public class MetadataEmfFactory {
                 if (metaCol.getOriginalLength() != null) {
                     colType.setOriginalLength(metaCol.getOriginalLength());
                 }
+                if (metaCol.getAdditionalField().size() > 0) {
+                    for (String key : metaCol.getAdditionalField().keySet()) {
+                        colType.getAdditionalField().put(key, metaCol.getAdditionalField().get(key));
+                    }
+                }
+
                 colType.setName(metaCol.getLabel());
                 if (metaCol.getPrecision() == null) {
                     // colType.setPrecision(-1);
@@ -143,6 +150,14 @@ public class MetadataEmfFactory {
                 metaCol.setOriginalLength(new Integer(colType.getOriginalLength()));
             } else {
                 metaCol.setOriginalLength(null);
+            }
+
+            if (colType.getAdditionalField().size() > 0) {
+                Iterator it = colType.getAdditionalField().keySet().iterator();
+                while (it.hasNext()) {
+                    String key = (String) it.next();
+                    metaCol.getAdditionalField().put(key, (String) colType.getAdditionalField().get(key));
+                }
             }
             metaCol.setLabel(colType.getName());
             if (colType.isSetPrecision()) {
