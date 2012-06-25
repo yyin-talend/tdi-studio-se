@@ -407,6 +407,10 @@ public class JavaProcessorUtilities {
                     ExceptionHandler.process(e);
                 }
             }
+
+			// http://jira.talendforge.org/browse/TESB-5887 LiXiaopeng 2012-6-19
+			// Synchronize Route resources
+			camelService.synchronizeRouteResource(property.getItem());
         }
         return neededLibraries;
     }
@@ -652,4 +656,5 @@ public class JavaProcessorUtilities {
             ExceptionHandler.process(e);
         }
     }
+
 }

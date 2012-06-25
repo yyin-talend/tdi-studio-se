@@ -311,7 +311,12 @@ public enum EParameterName {
 
     // tAggregateRow
     GROUPBYS("GROUPBYS"),
-    OPERATIONS("OPERATIONS");
+    OPERATIONS("OPERATIONS"),
+
+    // Route Resource Type
+    ROUTE_RESOURCE_TYPE("ROUTE_RESOURCE_TYPE"),
+    ROUTE_RESOURCE_TYPE_RES_URI("ROUTE_RESOURCE_TYPE_RES_URI"),
+    ROUTE_RESOURCE_TYPE_ID("ROUTE_RESOURCE_TYPE_ID");
 
     private String displayName;
 

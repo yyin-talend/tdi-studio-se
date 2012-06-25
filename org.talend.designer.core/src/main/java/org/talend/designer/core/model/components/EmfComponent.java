@@ -1323,6 +1323,47 @@ public class EmfComponent extends AbstractComponent {
             newParam.setRequired(true);
             newParam.setParentParameter(parentParam);
         }
+
+        // http://jira.talendforge.org/browse/TESB-6285 Xiaopeng Li
+        if (type == EParameterFieldType.ROUTE_RESOURCE_TYPE) {
+            ElementParameter newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.BASIC);
+            newParam.setName(EParameterName.ROUTE_RESOURCE_TYPE_ID.getName());
+            if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
+                newParam.setDisplayName(EParameterName.ROUTE_RESOURCE_TYPE_ID.getDisplayName());
+            } else {
+                newParam.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME)); //$NON-NLS-1$
+            }
+            newParam.setListItemsDisplayName(new String[] {});
+            newParam.setListItemsValue(new String[] {});
+            newParam.setValue(""); //$NON-NLS-1$
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setFieldType(EParameterFieldType.TECHNICAL);
+            if (xmlParam.isSetSHOW()) {
+                newParam.setShow(xmlParam.isSHOW());
+            }
+            newParam.setRequired(true);
+            newParam.setParentParameter(parentParam);
+
+            newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.BASIC);
+            newParam.setName(EParameterName.ROUTE_RESOURCE_TYPE_RES_URI.getName());
+            if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
+                newParam.setDisplayName(EParameterName.ROUTE_RESOURCE_TYPE_RES_URI.getDisplayName());
+            } else {
+                newParam.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME)); //$NON-NLS-1$
+            }
+            newParam.setListItemsDisplayName(new String[] {});
+            newParam.setListItemsValue(new String[] {});
+            newParam.setValue(""); //$NON-NLS-1$
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setFieldType(EParameterFieldType.TECHNICAL);
+            if (xmlParam.isSetSHOW()) {
+                newParam.setShow(xmlParam.isSHOW());
+            }
+            newParam.setRequired(true);
+            newParam.setParentParameter(parentParam);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -1466,6 +1507,9 @@ public class EmfComponent extends AbstractComponent {
                 param.setValue(""); // TODO to change ? //$NON-NLS-1$
                 break;
             case PROPERTY_TYPE:
+                param.setValue(""); //$NON-NLS-1$
+                break;
+            case ROUTE_RESOURCE_TYPE:
                 param.setValue(""); //$NON-NLS-1$
                 break;
             case JAVA_COMMAND:
