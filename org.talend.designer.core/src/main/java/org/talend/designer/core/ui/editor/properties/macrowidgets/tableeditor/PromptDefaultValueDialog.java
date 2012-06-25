@@ -193,8 +193,12 @@ public class PromptDefaultValueDialog extends Dialog {
             } else if (field == EParameterFieldType.CLOSED_LIST || field == EParameterFieldType.PREV_COLUMN_LIST) {
                 CCombo combo = (CCombo) control;
                 int index = combo.getSelectionIndex();
-                Object[] values = row.parameter.getListItemsValue();
-                row.defaultValue = values[index];
+                if (index == -1) {
+                    row.defaultValue = "";
+                } else {
+                    Object[] values = row.parameter.getListItemsValue();
+                    row.defaultValue = values[index];
+                }
             }
         }
         super.okPressed();
