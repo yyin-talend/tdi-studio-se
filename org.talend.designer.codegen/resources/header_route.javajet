@@ -258,7 +258,17 @@ for (INode node : graphicalNodes) {
 		sb.append("\"cxf://\"+").append(url).append("+\"?" + serviceType + "=\"");
 
 		if ("wsdlURL".equals(serviceType)) {
-			String filePath = ElementParameterParser.getValue(node, "__WSDL_FILE__");
+		
+			//http://jira.talendforge.org/browse/TESB-6226
+		    String filePath = "";
+			
+			String wsdlType = ElementParameterParser.getValue(node, "__WSDL_TYPE__");
+			if("file".equals(wsdlType)){
+			  filePath =  ElementParameterParser.getValue(node, "__WSDL_FILE__");
+			}else{
+				filePath =  ElementParameterParser.getValue(node, "__ROUTE_RESOURCE_TYPE_RES_URI__");
+				filePath = "\"" + filePath + "\"";
+			}
 			filePath.replaceAll("\\\\","/");
 			sb.append("+").append(filePath);
 		} else {
