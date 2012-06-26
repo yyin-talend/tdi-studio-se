@@ -44,7 +44,7 @@
 
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="DOM4J" MODULE="dom4j-1.6.1.jar" REQUIRED="true" />
+      <IMPORT NAME="DOM4J" MODULE="dom4j-1.6.1.jar" BundleID="org.apache.servicemix.bundles.dom4j" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
 
