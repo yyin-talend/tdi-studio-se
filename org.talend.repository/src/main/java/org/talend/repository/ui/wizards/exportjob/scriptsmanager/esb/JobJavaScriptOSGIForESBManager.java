@@ -104,6 +104,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private static final String SPRING = "spring"; //$NON-NLS-1$
 
+	private static final String ROUTE_RESOURCES = "route_resources";
+
     private String jobName;
 
     private String jobClassName;
@@ -203,6 +205,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 List<String> esbFiles = generateESBFiles(processItem, esbJob);
                 osgiResource.addResources(getOSGIInfFolder(), buildUrlList(esbFiles));
             }
+
+			// Add Route Resource http://jira.talendforge.org/browse/TESB-6227
+			if (ROUTE.equals(itemType)) {
+				addOSGIRouteResources(osgiResource, processItem);
+			}
+
         }
 
         // Gets talend libraries
@@ -223,7 +231,31 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return list;
     }
 
-    private List<URL> buildUrlList(List<String> files) {
+	/**
+	 * Get all route resource needed.
+	 * 
+	 * @param osgiResource
+	 * @param processItem
+	 */
+	private void addOSGIRouteResources(ExportFileResource osgiResource,
+			ProcessItem processItem) {
+
+		ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister
+				.getDefault().getService(ICamelDesignerCoreService.class);
+		List<IPath> paths = camelService.synchronizeRouteResource(processItem);
+		for (IPath path : paths) {
+			IPath relativePath = path.removeLastSegments(1)
+					.removeFirstSegments(6);
+			try {
+				URL url = path.toFile().toURI().toURL();
+				osgiResource.addResource(relativePath.toString(), url);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private List<URL> buildUrlList(List<String> files) {
         List<URL> urlList = new ArrayList<URL>();
         try {
             for (String file : files) {
