@@ -244,8 +244,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 				.getDefault().getService(ICamelDesignerCoreService.class);
 		List<IPath> paths = camelService.synchronizeRouteResource(processItem);
 		for (IPath path : paths) {
-			IPath relativePath = path.removeLastSegments(1)
-					.removeFirstSegments(6);
+			IPath relativePath = path.removeLastSegments(1);
+			while (!relativePath.toString().startsWith(ROUTE_RESOURCES)) {
+				relativePath = relativePath.removeFirstSegments(1);
+			}
 			try {
 				URL url = path.toFile().toURI().toURL();
 				osgiResource.addResource(relativePath.toString(), url);
