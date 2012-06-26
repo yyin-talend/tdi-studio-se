@@ -368,7 +368,7 @@ public class PackedDecimal extends DataStructure {
 			case 7:
 			case 8:
 			case 9:
-				if ((Digit != 0) || (Significant) || (NbDigit/2 == getPackedSize(_IntSize,_DecSize) -_DecSize)) {
+				if ((Digit != 0) || (Significant) || (NbDigit -1 == _IntSize)) {
 					Significant = true; /*
 										 * Anyway all incoming 0 will be
 										 * significant
