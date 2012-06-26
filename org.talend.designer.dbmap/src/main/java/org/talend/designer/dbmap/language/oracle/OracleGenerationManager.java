@@ -13,6 +13,7 @@
 package org.talend.designer.dbmap.language.oracle;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,12 +72,14 @@ public class OracleGenerationManager extends DbGenerationManager {
         }
         for (IConnection iconn : inputConnections) {
             IMetadataTable metadataTable = iconn.getMetadataTable();
-            List<IMetadataColumn> lColumn = metadataTable.getListColumns();
-            for (IMetadataColumn co : lColumn) {
-                String columnLabel = co.getLabel();
-                String exp = MetadataToolHelper.validateValueNoLengthLimit(columnLabel);
-                if (!exp.equals(columnLabel)) {
-                    specialList.add(columnLabel);
+            if (metadataTable != null) {
+                List<IMetadataColumn> lColumn = metadataTable.getListColumns();
+                for (IMetadataColumn co : lColumn) {
+                    String columnLabel = co.getLabel();
+                    String exp = MetadataToolHelper.validateValueNoLengthLimit(columnLabel);
+                    if (!exp.equals(columnLabel)) {
+                        specialList.add(columnLabel);
+                    }
                 }
             }
         }
@@ -94,16 +97,7 @@ public class OracleGenerationManager extends DbGenerationManager {
         }
         if (map.size() > 0) {
             List<String> list = map.get(expression);
-            for (int i = 0; i < list.size() - 1; i++) {
-                String first = list.get(i);
-                String second = list.get(i + 1);
-                String temp;
-                if (first.length() > second.length()) {
-                    temp = first;
-                    first = second;
-                    second = temp;
-                }
-            }
+            Collections.sort(list);
             String specialColumn = list.get(list.size() - 1);
             if (expression.contains(specialColumn)) {
                 int begin = expression.indexOf(specialColumn);
