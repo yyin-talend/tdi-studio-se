@@ -29,6 +29,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
+import org.talend.designer.xmlmap.util.XmlMapConnectionBuilder;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Attribute;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
@@ -90,6 +91,7 @@ public class ImportTreeFromXml extends SelectionAction {
                 parentNode.getChildren().get(0).setMain(true);
 
                 if (parentNode.eContainer() instanceof InputXmlTree) {
+                    XmlMapConnectionBuilder.rebuildLinks(parentNode, mapperManager.getCopyOfMapData());
                     mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
                 } else if (parentNode.eContainer() instanceof OutputXmlTree) {
                     mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) parentNode.eContainer());

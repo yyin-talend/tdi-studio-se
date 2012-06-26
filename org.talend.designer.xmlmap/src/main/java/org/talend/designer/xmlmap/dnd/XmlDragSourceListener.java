@@ -25,12 +25,12 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.talend.designer.xmlmap.figures.sash.ISash;
-import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
+import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
@@ -90,7 +90,7 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
                 }
                 if (o instanceof TreeNodeEditPart) {
                     TreeNodeEditPart nodePart = (TreeNodeEditPart) o;
-                    if (isDragable((TreeNode) nodePart.getModel())) {
+                    if (XmlMapUtil.isDragable((TreeNode) nodePart.getModel())) {
                         toTransfer.add(o);
                     } else {
                         toTransfer.clear();
@@ -115,20 +115,6 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
         }
 
         return object;
-    }
-
-    // only leaf nodes or element without sub elements can be drag
-    private boolean isDragable(TreeNode treeNode) {
-        if (treeNode.getChildren().isEmpty()) {
-            return true;
-        } else {
-            for (TreeNode child : treeNode.getChildren()) {
-                if (!NodeType.ATTRIBUT.equals(child.getNodeType()) && !NodeType.NAME_SPACE.equals(child.getNodeType())) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     public void dragSetData(DragSourceEvent event) {

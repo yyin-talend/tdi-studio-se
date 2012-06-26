@@ -843,4 +843,18 @@ public class XmlMapUtil {
 
     }
 
+    // only leaf nodes or element without sub elements can be drag
+    public static boolean isDragable(TreeNode treeNode) {
+        if (treeNode.getChildren().isEmpty()) {
+            return true;
+        } else {
+            for (TreeNode child : treeNode.getChildren()) {
+                if (!NodeType.ATTRIBUT.equals(child.getNodeType()) && !NodeType.NAME_SPACE.equals(child.getNodeType())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }
