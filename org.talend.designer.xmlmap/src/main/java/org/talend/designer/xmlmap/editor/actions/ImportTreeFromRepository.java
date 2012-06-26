@@ -64,6 +64,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.dialog.RepositoryXmlSelectionDialog;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
+import org.talend.designer.xmlmap.util.XmlMapConnectionBuilder;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IRepositoryNode.EProperties;
@@ -169,6 +170,7 @@ public class ImportTreeFromRepository extends SelectionAction {
 
             AbstractInOutTree tree = null;
             if (schemaNode.eContainer() instanceof InputXmlTree) {
+                XmlMapConnectionBuilder.rebuildLinks(schemaNode, mapperManager.getCopyOfMapData());
                 mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) schemaNode.eContainer());
                 tree = (InputXmlTree) schemaNode.eContainer();
             } else if (schemaNode.eContainer() instanceof OutputXmlTree) {
