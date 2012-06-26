@@ -1296,7 +1296,13 @@
               id="org.talend.repository.model.migration.AddCopyBookXc2jFileMigrationTask"
               name="AddCopyBookXc2jFileMigrationTask">
         </projecttask>
-
+		<projecttask
+              beforeLogon="false"
+              class="org.talend.repository.model.migration.AddAdditionalFieldMigrationTask"
+              id="org.talend.repository.model.migration.AddAdditionalFieldMigrationTask"
+              name="Add additionalField to the job model">
+        </projecttask>
+        
    </extension>
    
    <extension
