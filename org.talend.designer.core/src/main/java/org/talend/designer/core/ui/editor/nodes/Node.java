@@ -2441,25 +2441,25 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
 
-        checkSpecialRouteComponents();
+        checkRouteComponents();
     }
 
     /**
-     * Check special Route components DOC xpli Comment method "checkSpecialRouteComponents".
+     * Check special Route components DOC xpli Comment method "checkRouteComponents".
      */
-    private void checkSpecialRouteComponents() {
+    private void checkRouteComponents() {
         // http://jira.talendforge.org/browse/TESB-6294
         if (this.getComponent().getName().equals("cCXF")) {
             IElementParameter resourceParam = this.getElementParameter(EParameterName.ROUTE_RESOURCE_TYPE_ID.getName());
             IElementParameter wsdlFileParam = this.getElementParameter("WSDL_FILE");
             IElementParameter serviceParam = this.getElementParameter("SERVICE_TYPE");
-            IElementParameter wsdTypeParam = this.getElementParameter("WSDL_TYPE");
+            IElementParameter wsdlTypeParam = this.getElementParameter("WSDL_TYPE");
             IElementParameter clazzParam = this.getElementParameter("SERVICE_CLASS");
 
             // Select WSDL
             if (serviceParam != null && "wsdlURL".equals(serviceParam.getValue())) {
                 // Select File
-                if (wsdTypeParam != null && "file".equals(wsdTypeParam.getValue())) {
+                if (wsdlTypeParam != null && "file".equals(wsdlTypeParam.getValue())) {
                     // WSDL file is empty
                     if (wsdlFileParam == null || wsdlFileParam.getValue() == null
                             || wsdlFileParam.getValue().toString().isEmpty()
@@ -2468,7 +2468,7 @@ public class Node extends Element implements IGraphicalNode {
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                 } // Select Repository
-                else if (wsdTypeParam != null && "repo".equals(wsdTypeParam.getValue())) {
+                else if (wsdlTypeParam != null && "repo".equals(wsdlTypeParam.getValue())) {
                     // WSDL file is empty
                     if (resourceParam == null || resourceParam.getValue() == null
                             || resourceParam.getValue().toString().isEmpty()) {
@@ -2478,7 +2478,7 @@ public class Node extends Element implements IGraphicalNode {
                 }
             }
             // Select Service class
-            if (serviceParam != null && "serviceClass".equals(serviceParam.getValue())) {
+            else if (serviceParam != null && "serviceClass".equals(serviceParam.getValue())) {
                 // Service class is empty
                 if (clazzParam == null || clazzParam.getValue() == null || clazzParam.getValue().toString().isEmpty()) {
                     String errorMessage = Messages.getString("Node.parameterEmpty", clazzParam.getDisplayName()); //$NON-NLS-1$
