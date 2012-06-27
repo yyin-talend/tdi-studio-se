@@ -21,7 +21,7 @@ import java.util.Map;
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.MultiSchemasUtil;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.process.IElementParameter;
@@ -161,7 +161,8 @@ public class ChangeMultiSchemasCommand extends Command {
             map.put(IMultiSchemaConstant.FIELDDELIMITED, TalendTextUtils.addQuotes(keyData.getSeparator()));
             newValueList.add(map);
             //
-            String connectionBaseName = MetadataTool.validateColumnName(MultiSchemasUtil.getConnectionBaseName(uniqueRecord), 0);
+            String connectionBaseName = MetadataToolHelper.validateColumnName(
+                    MultiSchemasUtil.getConnectionBaseName(uniqueRecord), 0);
             String uniqueConnName = node.getProcess().generateUniqueConnectionName(connectionBaseName);
             MetadataTable table = new MetadataTable();
             table.setLabel(uniqueRecord);
@@ -359,12 +360,12 @@ public class ChangeMultiSchemasCommand extends Command {
             final String tableLabel = table.getLabel();
             schemaNames.add(tableLabel);
 
-            IMetadataTable mappingTable = MetadataTool.getMetadataTableFromNode(node, tableLabel);
+            IMetadataTable mappingTable = MetadataToolHelper.getMetadataTableFromNode(node, tableLabel);
             if (mappingTable == null) { // added
                 needAddedTables.add(table);
                 process.addUniqueConnectionName(table.getTableName());
             } else {
-                MetadataTool.copyTable(table, mappingTable);
+                MetadataToolHelper.copyTable(table, mappingTable);
             }
         }
         // record removed table

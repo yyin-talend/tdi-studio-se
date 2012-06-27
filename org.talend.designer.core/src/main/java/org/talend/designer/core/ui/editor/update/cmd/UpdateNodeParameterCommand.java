@@ -30,7 +30,7 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -214,7 +214,7 @@ public class UpdateNodeParameterCommand extends Command {
 
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void updateProperty() {
         Object updateObject = result.getUpdateObject();
         if (updateObject == null) {
@@ -398,7 +398,7 @@ public class UpdateNodeParameterCommand extends Command {
                                     List<String> objectValueList = (List<String>) objectValue;
                                     for (int i = 0; i < objectValueList.size(); i++) {
                                         Map<String, Object> map = new HashedMap();
-                                        map.put("VALUE", TalendTextUtils.addQuotes((String) objectValueList.get(i)));
+                                        map.put("VALUE", TalendTextUtils.addQuotes(objectValueList.get(i)));
                                         paramMaps.add(map);
                                     }
                                 }
@@ -430,7 +430,7 @@ public class UpdateNodeParameterCommand extends Command {
         }
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void updateSchema() {
         Object updateObject = result.getUpdateObject();
         if (updateObject == null) {
@@ -455,9 +455,10 @@ public class UpdateNodeParameterCommand extends Command {
                                     if (parameter.size() >= 2) {
                                         IMetadataTable newTable = (IMetadataTable) parameter.get(0);
                                         String schemaName = (String) parameter.get(1);
-                                        IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(node, schemaName);
+                                        IMetadataTable metadataTable = MetadataToolHelper.getMetadataTableFromNode(node,
+                                                schemaName);
                                         if (metadataTable != null) {
-                                            MetadataTool.copyTable(newTable, metadataTable);
+                                            MetadataToolHelper.copyTable(newTable, metadataTable);
                                         }
                                         syncSchemaForEBCDIC(node, metadataTable);
                                     }
@@ -470,8 +471,9 @@ public class UpdateNodeParameterCommand extends Command {
                         if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
                             IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault()
                                     .getService(IDesignerMapperService.class);
-                            if (service == null || externalNode == null || externalNode.getExternalData() == null)
+                            if (service == null || externalNode == null || externalNode.getExternalData() == null) {
                                 return;
+                            }
                             List<Object> parameter = (List<Object>) result.getParameter();
                             if (parameter.size() == 2) {
                                 if (node.getComponent() != null && "tMap".equals(node.getComponent().getName())) { //$NON-NLS-1$
@@ -559,7 +561,8 @@ public class UpdateNodeParameterCommand extends Command {
                                             }
                                         }
                                     } else {
-                                        MetadataTool.copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
+                                        MetadataToolHelper.copyTable(newTable,
+                                                node.getMetadataFromConnector(nodeConnector.getName()));
                                     }
                                 }
                             }
@@ -586,12 +589,13 @@ public class UpdateNodeParameterCommand extends Command {
                                 final String newSchemaName = sourceIdAndChildName[1];
                                 Map<String, Object> lineValue = (Map<String, Object>) parameter.get(3);
                                 if (lineValue != null) {
-                                    IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(node, oldSchemaName);
+                                    IMetadataTable metadataTable = MetadataToolHelper.getMetadataTableFromNode(node,
+                                            oldSchemaName);
                                     Object schemaName = lineValue.get(IEbcdicConstant.FIELD_SCHEMA);
                                     if (metadataTable != null && schemaName != null) {
                                         lineValue.put(IEbcdicConstant.FIELD_SCHEMA, newSchemaName);
 
-                                        MetadataTool.copyTable(newTable, metadataTable);
+                                        MetadataToolHelper.copyTable(newTable, metadataTable);
                                         syncSchemaForEBCDIC(node, metadataTable);
                                         metadataTable.setLabel(newSchemaName);
 
@@ -606,8 +610,9 @@ public class UpdateNodeParameterCommand extends Command {
                     if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
                         IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault().getService(
                                 IDesignerMapperService.class);
-                        if (service == null || externalNode == null || externalNode.getExternalData() == null)
+                        if (service == null || externalNode == null || externalNode.getExternalData() == null) {
                             return;
+                        }
                         IExternalData externalData = externalNode.getExternalData();
                         parameter = (List<Object>) result.getParameter();
                         if (parameter.size() == 3) {
@@ -631,7 +636,8 @@ public class UpdateNodeParameterCommand extends Command {
                         if (newTable != null) {
                             for (INodeConnector nodeConnector : node.getListConnector()) {
                                 if (nodeConnector.getBaseSchema().equals(newTable.getAttachedConnector())) {
-                                    MetadataTool.copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
+                                    MetadataToolHelper
+                                            .copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
                                 }
                             }
                         }
@@ -646,7 +652,8 @@ public class UpdateNodeParameterCommand extends Command {
                         if (newTable != null) {
                             for (INodeConnector nodeConnector : node.getListConnector()) {
                                 if (nodeConnector.getBaseSchema().equals(repositoryParam.getContext())) {
-                                    MetadataTool.copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
+                                    MetadataToolHelper
+                                            .copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
                                 }
                             }
                         }
@@ -699,7 +706,7 @@ public class UpdateNodeParameterCommand extends Command {
                 IRepositoryViewObject toReload = null;
                 IMetadataTable tableToReload = null;
                 if (parameter instanceof List) {
-                    List listParameter = (List) parameter;
+                    List listParameter = parameter;
                     connectionId = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
                     tableLabel = ((String) listParameter.get(0)).split(UpdatesConstants.SEGMENT_LINE)[0];
                 }

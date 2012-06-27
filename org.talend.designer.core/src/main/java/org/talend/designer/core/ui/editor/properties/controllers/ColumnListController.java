@@ -46,7 +46,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -141,6 +141,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
     IControlCreator cbCtrl = new IControlCreator() {
 
+        @Override
         public Control createControl(final Composite parent, final int style) {
             CCombo cb = new CCombo(parent, style);
             return cb;
@@ -264,6 +265,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // TODO Auto-generated method stub
     }
@@ -418,9 +420,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             }
             if (param.getFieldType() == EParameterFieldType.TABLE) {
                 Object[] itemsValue = param.getListItemsValue();
-                for (int j = 0; j < itemsValue.length; j++) {
-                    if (itemsValue[j] instanceof IElementParameter) {
-                        IElementParameter tmpParam = (IElementParameter) itemsValue[j];
+                for (Object element2 : itemsValue) {
+                    if (element2 instanceof IElementParameter) {
+                        IElementParameter tmpParam = (IElementParameter) element2;
                         columnList = getColumnList(element, tmpParam.getContext());
                         String[] tableColumnNameList = columnList.toArray(new String[0]);
                         if (tmpParam.getFieldType() == EParameterFieldType.COLUMN_LIST) {
@@ -500,7 +502,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                         newLine = TableController.createNewLine(param);
                         newLine.put(codes[0], columnName);
                         if (!StringUtils.isEmpty(edifactId)) {
-                            org.talend.core.model.metadata.builder.connection.Connection connection = MetadataTool
+                            org.talend.core.model.metadata.builder.connection.Connection connection = MetadataToolHelper
                                     .getConnectionFromRepository(edifactId);
                             if (connection != null && connection instanceof EDIFACTConnection) {
                                 List<org.talend.core.model.metadata.builder.connection.MetadataTable> tables = ConnectionHelper
@@ -523,17 +525,16 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                             Node node = (Node) element;
                             String familyName = node.getComponent().getOriginalFamilyName();
                             /** need add second parameter for hbase input/output component **/
-                            if (familyName != null && familyName.equals("Databases/HBase")) { //$NON-NLS-N$
+                            if (familyName != null && familyName.equals("Databases/HBase")) {
                                 for (IElementParameter par : node.getElementParametersWithChildrens()) {
                                     if (par.getName().equals("REPOSITORY_PROPERTY_TYPE")) {
                                         String hbaseConnectionId = par.getValue().toString();
                                         String columnFamily = null;
-                                        org.talend.core.model.metadata.builder.connection.Connection connection = MetadataTool
+                                        org.talend.core.model.metadata.builder.connection.Connection connection = MetadataToolHelper
                                                 .getConnectionFromRepository(hbaseConnectionId);
                                         if (connection != null && connection instanceof DatabaseConnection) {
                                             /* use imetadataconnection because maybe it's in context model */
-                                            IMetadataConnection metadataConnection = ConvertionHelper
-                                                    .convert((DatabaseConnection) connection);
+                                            IMetadataConnection metadataConnection = ConvertionHelper.convert(connection);
                                             List<org.talend.core.model.metadata.builder.connection.MetadataTable> tables = ConnectionHelper
                                                     .getTablesWithOrders(connection);
                                             boolean find = false;
@@ -543,7 +544,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                                                     if (column.getLabel() != null && column.getLabel().equals(columnName)) {
                                                         for (TaggedValue tv : column.getTaggedValue()) {
                                                             String tag = tv.getTag();
-                                                            if (tag != null && tag.equals("COLUMN FAMILY")) {//$NON-NLS-N$
+                                                            if (tag != null && tag.equals("COLUMN FAMILY")) {
                                                                 String value = tv.getValue();
                                                                 if (value != null) {
                                                                     columnFamily = value;
@@ -599,7 +600,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     listItemsShowIf[j] = null;
                     listItemsNotShowIf[j] = null;
                     newParam = new ElementParameter(element);
-                    newParam.setName(columnName); //$NON-NLS-1$
+                    newParam.setName(columnName);
                     newParam.setDisplayName(""); //$NON-NLS-1$
                     newParam.setFieldType(EParameterFieldType.TEXT);
                     newParam.setValue(""); //$NON-NLS-1$
@@ -849,8 +850,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         for (ColumnNameChanged colChanged : columnsChanged) {
             String newName = preRowLookup + colChanged.getNewName();
             ColumnNameChanged theChanged = null;
-            for (int j = 0; j < columnNameList.length; j++) {
-                if (newName.equals(columnNameList[j])) {
+            for (String element : columnNameList) {
+                if (newName.equals(element)) {
                     theChanged = colChanged;
                     break;
                 }
@@ -901,8 +902,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         for (ColumnNameChanged colChanged : columnsChanged) {
             boolean found = false;
             String newName = preRowLookup + colChanged.getNewName();
-            for (int j = 0; j < columnNameList.length; j++) {
-                if (newName.equals(columnNameList[j])) {
+            for (String element : columnNameList) {
+                if (newName.equals(element)) {
                     found = true;
                     break;
                 }

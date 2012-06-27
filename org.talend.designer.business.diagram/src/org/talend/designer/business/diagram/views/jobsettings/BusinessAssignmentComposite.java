@@ -57,7 +57,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.business.BusinessType;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
 import org.talend.core.model.properties.RoutineItem;
@@ -187,15 +187,18 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
 
         tableViewer.setCellModifier(new ICellModifier() {
 
+            @Override
             public boolean canModify(Object element, String property) {
                 return property.equals(columnProperties[2]);
             }
 
+            @Override
             public Object getValue(Object element, String property) {
                 return EmfPropertyHelper.getValue(itemPropertyDescriptor, element);
 
             }
 
+            @Override
             public void modify(Object element, String property, Object value) {
                 if (element instanceof TableItem) {
                     TableItem tableItem = (TableItem) element;
@@ -221,6 +224,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
     private void createDoubleClickListener() {
         tableViewer.addDoubleClickListener(new IDoubleClickListener() {
 
+            @Override
             public void doubleClick(DoubleClickEvent event) {
 
                 BusinessAssignment businessAssignment = getBusinessAssignment(event.getSelection());
@@ -254,6 +258,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
     private void createSelectionListener() {
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 BusinessAssignment businessAssignment = getBusinessAssignment(event.getSelection());
                 if (businessAssignment != null) {
@@ -284,7 +289,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                         curNode = RepositoryNodeUtilities.getRepositoryNode(lastVersion);
                         select(viewer, curNode);
                     } else if (item instanceof TableMetadata) {
-                        MetadataTable table = MetadataTool.getMetadataTableFromRepository(item.getId());
+                        MetadataTable table = MetadataToolHelper.getMetadataTableFromRepository(item.getId());
                         if (table != null) {
                             String id = item.getId().split(" - ")[0]; //$NON-NLS-1$
 
@@ -298,8 +303,8 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
 
                         }
                     } else if (item instanceof Query) {
-                        org.talend.core.model.metadata.builder.connection.Query query = MetadataTool.getQueryFromRepository(item
-                                .getId());
+                        org.talend.core.model.metadata.builder.connection.Query query = MetadataToolHelper
+                                .getQueryFromRepository(item.getId());
                         if (query != null) {
                             String id = item.getId().split(" - ")[0]; //$NON-NLS-1$
                             IRepositoryView view = getRepositoryView();
@@ -309,7 +314,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                         }
 
                     } else if (item instanceof SAPFunction) {
-                        SAPFunctionUnit function = MetadataTool.getSAPFunctionFromRepository(item.getId());
+                        SAPFunctionUnit function = MetadataToolHelper.getSAPFunctionFromRepository(item.getId());
                         if (function != null) {
                             IRepositoryView view = getRepositoryView();
                             RepositoryNode node = RepositoryNodeUtilities.getSAPFunctionFromConnection(item.getId());
@@ -390,6 +395,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
 
+            @Override
             public void menuAboutToShow(IMenuManager mgr) {
                 BusinessAssignment businessAssignment = getBusinessAssignment(tableViewer.getSelection());
                 if (businessAssignment != null) {
@@ -448,18 +454,19 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
                     return repositoryNode;
                 }
             } else if (item instanceof TableMetadata) {
-                MetadataTable table = MetadataTool.getMetadataTableFromRepository(item.getId());
+                MetadataTable table = MetadataToolHelper.getMetadataTableFromRepository(item.getId());
                 if (table != null) {
                     return RepositoryNodeUtilities.getMetadataTableFromConnection(item.getId());
                 }
 
             } else if (item instanceof Query) {
-                org.talend.core.model.metadata.builder.connection.Query query = MetadataTool.getQueryFromRepository(item.getId());
+                org.talend.core.model.metadata.builder.connection.Query query = MetadataToolHelper.getQueryFromRepository(item
+                        .getId());
                 if (query != null) {
                     return RepositoryNodeUtilities.getQueryFromConnection(item.getId());
                 }
             } else if (item instanceof SAPFunction) {
-                SAPFunctionUnit function = MetadataTool.getSAPFunctionFromRepository(item.getId());
+                SAPFunctionUnit function = MetadataToolHelper.getSAPFunctionFromRepository(item.getId());
                 if (function != null) {
                     return RepositoryNodeUtilities.getSAPFunctionFromConnection(item.getId());
                 }
@@ -518,6 +525,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
     private void createKeyListener(Table table) {
         table.addKeyListener(new KeyAdapter() {
 
+            @Override
             public void keyPressed(KeyEvent event) {
                 ISelection selection = tableViewer.getSelection();
                 if (selection instanceof IStructuredSelection) {

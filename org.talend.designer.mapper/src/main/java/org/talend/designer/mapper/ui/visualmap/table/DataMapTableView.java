@@ -125,7 +125,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.Problem;
@@ -1335,8 +1335,9 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
      * @return
      */
     private GlobalMapEntry getGlobalMapEntryByNameFromList(List<GlobalMapEntry> list, String name) {
-        if (list == null || name == null)
+        if (list == null || name == null) {
             return null;
+        }
         for (GlobalMapEntry mapEntry : list) {
             if (name.equals(mapEntry.getName())) {
                 return mapEntry;
@@ -3104,7 +3105,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                     String id = dialog.getResult().getObject().getProperty().getId();
                     String name = dialog.getResult().getObject().getLabel();
                     String value = id + " - " + name; //$NON-NLS-1$
-                    IMetadataTable repositoryMetadata = MetadataTool.getMetadataFromRepository(value);
+                    IMetadataTable repositoryMetadata = MetadataToolHelper.getMetadataFromRepository(value);
                     List<IMetadataColumn> columns = repositoryMetadata.getListColumns();
                     if (columns != null) {
                         MetadataTableEditorView metadataEditorView = mapperManager.getUiManager()
@@ -3173,7 +3174,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
     public void propertyChange(PropertyChangeEvent evt) {
         notifyFocusLost();
         String request = evt.getPropertyName();
-        if (request.equals("positionChange") || request.equals(ConnectionTrace.TRACE_PROP)) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (request.equals("positionChange") || request.equals(ConnectionTrace.TRACE_PROP)) { //$NON-NLS-1$ 
             if (!tableViewerCreatorForColumns.getTable().isDisposed()) {
                 tableViewerCreatorForColumns.refresh();
                 InputsZone inputsZone = mapperManager.getUiManager().getInputsZone();
@@ -3191,8 +3192,9 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
      * @return
      */
     protected String getSchemaDisplayName(String id) {
-        if (id == null)
+        if (id == null) {
             return null;
+        }
         String[] values = id.split(" - ");
         String itemId = values[0];
         String name = values[1];

@@ -39,7 +39,7 @@ import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.FTPConnection;
@@ -128,6 +128,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
     }
 
+    @Override
     public void retrieveRefInformation() {
         jobletReferenceMap.clear();
 
@@ -1365,7 +1366,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             IMetadataTable metadataTable = null;
                                             // metadataTable =
                                             // node.getMetadataFromConnector(schemaTypeParam.getContext());
-                                            metadataTable = MetadataTool.getMetadataTableFromNode(node, schemaName);
+                                            metadataTable = MetadataToolHelper.getMetadataTableFromNode(node, schemaName);
 
                                             if (metadataTable != null
                                                     && (onlySimpleShow || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
@@ -1507,7 +1508,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             if ((param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath)
                                     || (repositoryConnection instanceof SalesforceSchemaConnection
                                             && "MODULENAME".equals(repositoryValue) && !((SalesforceSchemaConnection) repositoryConnection)
-                                            .isUseCustomModuleName())) {
+                                                .isUseCustomModuleName())) {
                                 continue;
                             }
                             IMetadataTable table = null;
@@ -1684,7 +1685,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                                         }
                                     } else if (value instanceof Boolean && objectValue instanceof Boolean) {
-                                        sameValues = ((Boolean) value).equals((Boolean) objectValue);
+                                        sameValues = ((Boolean) value).equals(objectValue);
                                     }
                                 }
                             } else if (param.getFieldType().equals(EParameterFieldType.TABLE)
@@ -2096,6 +2097,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
      * 
      * @deprecated seems have unused it.
      */
+    @Deprecated
     private List<UpdateResult> checkJobletNodesPropertyChanger() {
         if (getProcess() == null || getNodePropertyChanger() == null) {
             return Collections.emptyList();
@@ -2196,10 +2198,12 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         return null;
     }
 
+    @Override
     public List<UpdateResult> getUpdatesNeeded(EUpdateItemType type) {
         return getUpdatesNeeded(type, false);
     }
 
+    @Override
     public List<UpdateResult> getUpdatesNeeded(EUpdateItemType type, boolean onlySimpleShow) {
 
         if (type == null) {
@@ -2244,6 +2248,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         return tmpResults;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public boolean executeUpdates(List<UpdateResult> results) {
         return UpdateManagerUtils.executeUpdates(results);

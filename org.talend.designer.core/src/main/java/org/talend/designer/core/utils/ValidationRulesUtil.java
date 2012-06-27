@@ -13,7 +13,6 @@
 package org.talend.designer.core.utils;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -27,7 +26,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.HL7Connection;
 import org.talend.core.model.metadata.builder.connection.ValidationRulesConnection;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
@@ -265,7 +264,7 @@ public class ValidationRulesUtil {
                 }
                 if (hl7Output && !component.getName().equals("tHL7Output")) { //$NON-NLS-1$
                     value = false;
-                } else if (hl7Related && !hl7Output && !component.getName().equals("tHL7Input")) {//$NON-NLS-N$ bug15632
+                } else if (hl7Related && !hl7Output && !component.getName().equals("tHL7Input")) {// bug15632
                     value = false;
                 }
 
@@ -370,8 +369,7 @@ public class ValidationRulesUtil {
 
     public static void removeRejectConnection(INode node) {
         List<Connection> connectionList = new ArrayList<Connection>();
-        for (Iterator<? extends IConnection> iterator = node.getOutgoingConnections().iterator(); iterator.hasNext();) {
-            IConnection connection = iterator.next();
+        for (IConnection connection : node.getOutgoingConnections()) {
             if ("VALIDATION_REJECT".equals(connection.getConnectorName()) && connection instanceof Connection) { //$NON-NLS-1$
                 connectionList.add((Connection) connection);
                 break;
@@ -473,7 +471,7 @@ public class ValidationRulesUtil {
             }
             if (connection != null) {
                 IMetadataTable inputTable = connection.getMetadataTable();
-                MetadataTool.copyTable(null, inputTable, table);
+                MetadataToolHelper.copyTable(null, inputTable, table);
             }
             List<IMetadataColumn> listColumns = table.getListColumns();
             boolean isHasErrorMsgCol = false;

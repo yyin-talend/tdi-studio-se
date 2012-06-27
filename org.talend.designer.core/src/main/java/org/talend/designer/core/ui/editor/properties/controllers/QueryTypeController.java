@@ -30,7 +30,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -106,6 +106,7 @@ public class QueryTypeController extends AbstractRepositoryController {
             int top) {
         final DecoratedField dField1 = new DecoratedField(subComposite, SWT.PUSH, new IControlCreator() {
 
+            @Override
             public Control createControl(Composite parent, int style) {
                 return new Button(parent, style);
             }
@@ -165,7 +166,7 @@ public class QueryTypeController extends AbstractRepositoryController {
                 String paramName = (String) button.getData(PARAMETER_NAME);
                 String value = id + " - " + name; //$NON-NLS-1$
 
-                Query query = MetadataTool.getQueryFromRepository(value);
+                Query query = MetadataToolHelper.getQueryFromRepository(value);
                 if (query != null) {
                     IElementParameter queryText = getQueryTextElementParameter(elem);
                     if (queryText != null) {
@@ -201,11 +202,11 @@ public class QueryTypeController extends AbstractRepositoryController {
                 final Object value = repositorySchemaTypeParameter.getValue();
                 if (elem instanceof Node) {
                     /* value can be devided means the value like "connectionid - label" */
-                    String[] keySplitValues = value.toString().split(" - "); //$NON-NLS-N$
+                    String[] keySplitValues = value.toString().split(" - ");
                     if (keySplitValues.length > 1) {
 
-                        String connectionId = value.toString().split(" - ")[0]; //$NON-NLS-N$
-                        String tableLabel = value.toString().split(" - ")[1]; //$NON-NLS-N$
+                        String connectionId = value.toString().split(" - ")[0];
+                        String tableLabel = value.toString().split(" - ")[1];
                         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                         Item item = null;
                         try {
@@ -342,11 +343,11 @@ public class QueryTypeController extends AbstractRepositoryController {
                 querySelected = (String) repositoryParam.getValue();
 
                 /* value can be devided means the value like "connectionid - label" */
-                String[] keySplitValues = querySelected.toString().split(" - "); //$NON-NLS-N$
+                String[] keySplitValues = querySelected.toString().split(" - ");
                 if (keySplitValues.length > 1) {
 
-                    String connectionId = querySelected.split(" - ")[0]; //$NON-NLS-N$
-                    String queryLabel = querySelected.split(" - ")[1]; //$NON-NLS-N$
+                    String connectionId = querySelected.split(" - ")[0];
+                    String queryLabel = querySelected.split(" - ")[1];
                     IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                     Item item = null;
                     try {

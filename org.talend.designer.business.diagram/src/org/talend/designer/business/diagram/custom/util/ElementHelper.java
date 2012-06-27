@@ -27,11 +27,11 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.image.ImageUtils;
-import org.talend.commons.ui.runtime.image.OverlayImage;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
+import org.talend.commons.ui.runtime.image.OverlayImage;
 import org.talend.commons.ui.runtime.image.OverlayImage.EPosition;
 import org.talend.core.CorePlugin;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
@@ -97,8 +97,8 @@ public class ElementHelper {
                     if (assignment instanceof BusinessAssignment) {
                         TalendItem talendItem = ((BusinessAssignment) assignment).getTalendItem();
                         if (talendItem != null) {
-                            IRepositoryViewObject obj = CorePlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
-                                    talendItem.getId());
+                            IRepositoryViewObject obj = CorePlugin.getDefault().getProxyRepositoryFactory()
+                                    .getLastVersion(talendItem.getId());
                             if (obj != null) {
                                 ERepositoryObjectType type = obj.getRepositoryObjectType();
                                 Item item = obj.getProperty().getItem();
@@ -117,9 +117,9 @@ public class ElementHelper {
                                 labels.add(label);
                             } else {
 
-                                MetadataTable table = MetadataTool.getMetadataTableFromRepository(talendItem.getId());
-                                Query query = MetadataTool.getQueryFromRepository(talendItem.getId());
-                                SAPFunctionUnit function = MetadataTool.getSAPFunctionFromRepository(talendItem.getId());
+                                MetadataTable table = MetadataToolHelper.getMetadataTableFromRepository(talendItem.getId());
+                                Query query = MetadataToolHelper.getQueryFromRepository(talendItem.getId());
+                                SAPFunctionUnit function = MetadataToolHelper.getSAPFunctionFromRepository(talendItem.getId());
                                 if (table != null) {
                                     img = ImageDescriptor.createFromFile(ECoreImage.class,
                                             ECoreImage.METADATA_TABLE_ICON.getPath()).createImage();

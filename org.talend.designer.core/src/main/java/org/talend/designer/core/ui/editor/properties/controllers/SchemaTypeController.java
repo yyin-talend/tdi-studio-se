@@ -41,7 +41,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -253,7 +253,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
 
             }
 
-            if (top == 0 && node.getComponent().getName().equals(TUNISERVBTGENERIC)) { //$NON-NLS-1$
+            if (top == 0 && node.getComponent().getName().equals(TUNISERVBTGENERIC)) {
                 Button newButton = null;
                 if (resetBtn != null) {
                     newButton = resetBtn;
@@ -261,7 +261,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     newButton = btn;
                 }
                 Button retrieveSchemaButton = createAdditionalButton(subComposite, newButton, btnSize, param, RETRIEVE_SCHEMA,
-                        RETRIEVE_SCHEMA, top); //$NON-NLS-1$ //$NON-NLS-2$
+                        RETRIEVE_SCHEMA, top);
                 retrieveSchemaButton.setData(NAME, RETRIEVE_SCHEMA);
 
                 lastControlUsed = retrieveSchemaButton;
@@ -484,7 +484,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
         String fullParamName = paramName + ":" + getRepositoryChoiceParamName(); //$NON-NLS-1$
         IElementParameter schemaParam = elem.getElementParameter(fullParamName);
         String schemaId = (String) schemaParam.getValue();
-        org.talend.core.model.metadata.builder.connection.Connection connection = MetadataTool
+        org.talend.core.model.metadata.builder.connection.Connection connection = MetadataToolHelper
                 .getConnectionFromRepository(schemaId);
         String[] names = schemaId.split(" - "); //$NON-NLS-1$
 
@@ -518,7 +518,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
      */
     private RepositoryNode findRepositoryNode(String label, String id, RepositoryNode root) {
         String name = (String) root.getProperties(EProperties.LABEL);
-        String rootID = (String) root.getId();
+        String rootID = root.getId();
         RepositoryNode toReturn = null;
         if (label.equals(name) && !id.equals(rootID)) {
             toReturn = root;
@@ -766,12 +766,11 @@ public class SchemaTypeController extends AbstractRepositoryController {
                                     Map<IMetadataTable, Boolean> oneInput = inputInfos.get(inputNode);
                                     inputMetaCopy = (IMetadataTable) oneInput.keySet().toArray()[0];
                                     if (count == 0) {
-                                        changeMetadataCommand = new ChangeMetadataCommand(node, param, (Node) inputNode,
-                                                inputNode.getMetadataList().get(0), inputMetaCopy, originaleOutputTable,
-                                                outputMetaCopy);
+                                        changeMetadataCommand = new ChangeMetadataCommand(node, param, inputNode, inputNode
+                                                .getMetadataList().get(0), inputMetaCopy, originaleOutputTable, outputMetaCopy);
                                     } else {
                                         changeMetadataCommand = changeMetadataCommand.chain(new ChangeMetadataCommand(node,
-                                                param, (Node) inputNode, inputNode.getMetadataList().get(0), inputMetaCopy,
+                                                param, inputNode, inputNode.getMetadataList().get(0), inputMetaCopy,
                                                 originaleOutputTable, outputMetaCopy));
                                     }
                                     count++;
@@ -896,8 +895,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
 
                 org.talend.core.model.metadata.builder.connection.Connection connection = null;
                 if (elem instanceof Node) {
-                    IMetadataTable repositoryMetadata = MetadataTool.getMetadataFromRepository(value);
-                    connection = MetadataTool.getConnectionFromRepository(value);
+                    IMetadataTable repositoryMetadata = MetadataToolHelper.getMetadataFromRepository(value);
+                    connection = MetadataToolHelper.getConnectionFromRepository(value);
 
                     // For SAP see bug 5423
                     if (((Node) elem).getUniqueName().startsWith("tSAP")) { //$NON-NLS-1$
@@ -1080,10 +1079,10 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 String schemaSelected = (String) repositorySchemaType.getValue();
 
                 /* value can be devided means the value like "connectionid - label" */
-                String[] keySplitValues = schemaSelected.toString().split(" - "); //$NON-NLS-N$ //$NON-NLS-1$
+                String[] keySplitValues = schemaSelected.toString().split(" - "); //$NON-NLS-1$
                 if (keySplitValues.length > 1) {
-                    String connectionId = keySplitValues[0]; //$NON-NLS-N$
-                    String tableLabel = keySplitValues[1]; //$NON-NLS-N$
+                    String connectionId = keySplitValues[0];
+                    String tableLabel = keySplitValues[1];
                     IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                     Item item = null;
                     try {

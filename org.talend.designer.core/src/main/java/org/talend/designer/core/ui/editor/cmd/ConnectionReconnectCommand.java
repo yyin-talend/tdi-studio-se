@@ -21,7 +21,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
@@ -109,6 +109,7 @@ public class ConnectionReconnectCommand extends Command {
         newTarget = nodeTarget;
     }
 
+    @Override
     public boolean canExecute() {
         boolean canExecute = false;
         if (!connection.isActivate()) {
@@ -172,7 +173,7 @@ public class ConnectionReconnectCommand extends Command {
                 if (connector.getBaseSchema().equals(baseConnector)) {
                     IMetadataTable meta = newNode.getMetadataFromConnector(connector.getName());
                     meta.setComment(newSchema.getComment());
-                    MetadataTool.copyTable(newSchema, meta);
+                    MetadataToolHelper.copyTable(newSchema, meta);
                 }
             }
         }
@@ -183,6 +184,7 @@ public class ConnectionReconnectCommand extends Command {
      * 
      * @see org.eclipse.gef.commands.Command#execute()
      */
+    @Override
     public void execute() {
         metadataChanges.clear();
         if (newSource != null) {
@@ -307,6 +309,7 @@ public class ConnectionReconnectCommand extends Command {
         }
     }
 
+    @Override
     public void undo() {
         if (newSource != null) {
             INodeConnector connector = oldSource.getConnectorFromName(connectorName);

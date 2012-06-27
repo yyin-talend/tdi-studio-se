@@ -55,7 +55,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
@@ -106,6 +106,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // TODO Auto-generated method stub
 
@@ -113,10 +114,12 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     SelectionListener listenerSelection = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
 
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand();
             executeCommand(cmd);
@@ -203,6 +206,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
         final DecoratedField dField1 = new DecoratedField(subComposite, SWT.PUSH, new IControlCreator() {
 
+            @Override
             public Control createControl(Composite parent, int style) {
                 return new Button(parent, style);
             }
@@ -234,6 +238,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
         IControlCreator txtCtrl = new IControlCreator() {
 
+            @Override
             public Control createControl(final Composite parent, final int style) {
                 return createColorStyledText(parent, style);
             }
@@ -273,6 +278,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         }
         queryText.addKeyListener(new KeyListener() {
 
+            @Override
             public void keyPressed(KeyEvent e) {
                 if (switchParam != null) {
                     switchParam.setValue(Boolean.FALSE);
@@ -280,6 +286,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
             }
 
+            @Override
             public void keyReleased(KeyEvent e) {
             }
 
@@ -346,6 +353,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         IControlCreator txtCtrl = new IControlCreator() {
 
+            @Override
             public Control createControl(final Composite parent, final int style) {
                 return createColorStyledText(parent, style);
             }
@@ -421,7 +429,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         // open sql builder in repository mode, just use query object, no need for connection information
         ConnectionParameters connParameters = new ConnectionParameters();
         String queryId = (String) elem.getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
-        Query query = MetadataTool.getQueryFromRepository(queryId);
+        Query query = MetadataToolHelper.getQueryFromRepository(queryId);
         DatabaseConnectionItem item = findRepositoryItem(queryId);
         if (item != null) {
             connParameters.setRepositoryName(item.getProperty().getLabel());

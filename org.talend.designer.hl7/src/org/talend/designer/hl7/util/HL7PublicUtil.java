@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.HL7FileNode;
 import org.talend.designer.hl7.model.PrimitiveModel;
@@ -175,11 +175,11 @@ public class HL7PublicUtil {
         node.setMain(true);
         Object[] children = getChildList(treeNode);// treeNode.getChildren();
         if (children != null) {
-            for (int i = 0; i < children.length; i++) {
+            for (Object element : children) {
 
-                if (getChildList(children[i]).length > 0) {
-                    HL7TreeNode childEle = cloneATreeNode(children[i], label);
-                    String tlabel = getLabel(children[i], true);
+                if (getChildList(element).length > 0) {
+                    HL7TreeNode childEle = cloneATreeNode(element, label);
+                    String tlabel = getLabel(element, true);
                     childEle.setLabel(tlabel);
                     if (childEle instanceof Element) {
                         ((Element) childEle).setRow(label);
@@ -188,11 +188,11 @@ public class HL7PublicUtil {
                     node.addChild(childEle);
                 } else {
                     HL7TreeNode childEle = new Element();
-                    String tlabel = getLabel(children[i], false);
+                    String tlabel = getLabel(element, false);
                     childEle.setLabel(tlabel);
                     if (childEle instanceof Element) {
                         ((Element) childEle).setRow(label);
-                        ((Element) childEle).setColumnName(getLabel(children[i], true));
+                        ((Element) childEle).setColumnName(getLabel(element, true));
                     }
                     childEle.setMain(false);
                     node.addChild(childEle);
@@ -378,10 +378,10 @@ public class HL7PublicUtil {
             Segment segment = (Segment) parentElement;
             SegmentModel sm = new SegmentModel(segment, segment, 0, 0);
             TypeModel[] models = sm.getTypes();
-            for (int i = 0; i < models.length; i++) {
-                values.add(models[i]);
-                if (getChildren(models[i]).size() > 0) {
-                    values.addAll(getChildren(models[i]));
+            for (TypeModel model : models) {
+                values.add(model);
+                if (getChildren(model).size() > 0) {
+                    values.addAll(getChildren(model));
                 }
             }
             return values;
@@ -390,10 +390,10 @@ public class HL7PublicUtil {
         if (parentElement instanceof SegmentModel) {
             SegmentModel sm = (SegmentModel) parentElement;
             TypeModel[] models = sm.getTypes();
-            for (int i = 0; i < models.length; i++) {
-                values.add(models[i]);
-                if (getChildren(models[i]).size() > 0) {
-                    values.addAll(getChildren(models[i]));
+            for (TypeModel model : models) {
+                values.add(model);
+                if (getChildren(model).size() > 0) {
+                    values.addAll(getChildren(model));
                 }
             }
             return values;
@@ -403,10 +403,10 @@ public class HL7PublicUtil {
             TypeModel tm = (TypeModel) parentElement;
 
             PrimitiveModel[] models = tm.getPrimitives();
-            for (int i = 0; i < models.length; i++) {
-                values.add(models[i]);
-                if (getChildren(models[i]).size() > 0) {
-                    values.addAll(getChildren(models[i]));
+            for (PrimitiveModel model : models) {
+                values.add(model);
+                if (getChildren(model).size() > 0) {
+                    values.addAll(getChildren(model));
                 }
             }
             return values;
@@ -513,7 +513,7 @@ public class HL7PublicUtil {
         if (obj instanceof PrimitiveModel) {
             if (forMeatble) {
                 label = ((PrimitiveModel) obj).getDisplayName();
-                label = MetadataTool.validateValue(label);
+                label = MetadataToolHelper.validateValue(label);
             } else {
                 label = ((PrimitiveModel) obj).getDisplayName();
             }

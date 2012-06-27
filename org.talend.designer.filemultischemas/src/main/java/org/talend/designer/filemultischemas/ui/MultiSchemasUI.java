@@ -91,7 +91,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.Escape;
 import org.talend.core.model.metadata.builder.connection.FieldSeparator;
@@ -796,6 +796,7 @@ public class MultiSchemasUI {
         csvRadio = new Button(group, SWT.RADIO);
         csvRadio.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 getConnection().setCsvOption(csvRadio.getSelection());
                 if (csvRadio.getSelection()) {
@@ -1066,7 +1067,7 @@ public class MultiSchemasUI {
             }
 
             public Object getValue(Object element, String property) {
-                String record = ""; //$NON-NLS-N$
+                String record = "";
                 if (element != null) {
                     if (element instanceof SchemasKeyData) {
                         SchemasKeyData key = (SchemasKeyData) element;
@@ -1177,6 +1178,7 @@ public class MultiSchemasUI {
 
         schemaTreeViewer.getTree().addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 getUIManager().refreshSchemasDetailView(schemaTreeViewer, schemaDetailsViewer, getSchemaDetailModel());
             }
@@ -1211,6 +1213,7 @@ public class MultiSchemasUI {
                 //
             }
 
+            @Override
             public void keyReleased(KeyEvent e) {
                 //
             }
@@ -1272,12 +1275,12 @@ public class MultiSchemasUI {
 
                         SchemasKeyData data = (SchemasKeyData) input;
                         List<SchemasKeyData> all = data.getChildren();
-                        SchemasKeyData newData = new SchemasKeyData(dialog.getRecordValue()); //$NON-NLS-N$
-                        newData.setSeparator(dialog.getSepValue()); //$NON-NLS-N$
-                        newData.setUniqueRecord(dialog.getKeyValue()); //$NON-NLS-N$
+                        SchemasKeyData newData = new SchemasKeyData(dialog.getRecordValue());
+                        newData.setSeparator(dialog.getSepValue());
+                        newData.setUniqueRecord(dialog.getKeyValue());
 
-                        final IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(getMultiSchemasComponent(),
-                                dialog.getKeyValue());
+                        final IMetadataTable metadataTable = MetadataToolHelper.getMetadataTableFromNode(
+                                getMultiSchemasComponent(), dialog.getKeyValue());
                         if (metadataTable != null) {
                             multiSchemaManager.createMultiSchemasColumns(newData, metadataTable.clone(true));
                         } else {
@@ -1345,7 +1348,7 @@ public class MultiSchemasUI {
                     Object element = ((IStructuredSelection) selection).getFirstElement();
                     if (element instanceof SchemasKeyData) {
                         selectedData = (SchemasKeyData) element;
-                        IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(getMultiSchemasComponent(),
+                        IMetadataTable metadataTable = MetadataToolHelper.getMetadataTableFromNode(getMultiSchemasComponent(),
                                 selectedData.getUniqueRecord());
                         if (metadataTable == null) {
                             metadataTable = new org.talend.core.model.metadata.MetadataTable();
@@ -1361,7 +1364,7 @@ public class MultiSchemasUI {
 
                         MetadataDialog dialog = new MetadataDialog(MultiSchemasUI.this.getShell(), metadataTable,
                                 getMultiSchemasComponent(), new CommandStackForComposite(MultiSchemasUI.this.getShell()));
-                        dialog.setText("Schema of " + selectedData.getUniqueRecord()); //$NON-NLS-N$
+                        dialog.setText("Schema of " + selectedData.getUniqueRecord());
                         if (Window.OK == dialog.open()) {
                             metadataTable = dialog.getOutputMetaData();
                             if (!selectedData.getMetadataColumns().isEmpty()) {
@@ -1542,7 +1545,7 @@ public class MultiSchemasUI {
         boolean checkFieldSeparator = false;
 
         if (!checkString(getRowSeperator()) || !checkString(getFieldSeperator(useMultiSaparators.getSelection()))) {
-            previewInformationLabel.setText(Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
+            previewInformationLabel.setText(Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ 
             return false;
         }
         // escape Char Combo
@@ -1615,7 +1618,7 @@ public class MultiSchemasUI {
             return false;
         }
 
-        previewInformationLabel.setText(Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$ //$NON-NLS-2$
+        previewInformationLabel.setText(Messages.getString("FileStep2.previewProgress")); //$NON-NLS-1$ 
         return true;
     }
 
@@ -1696,12 +1699,12 @@ public class MultiSchemasUI {
         paramsMap.put(EParameterName.FIELDSEPARATOR, fieldSeparatorText.getText());
         paramsMap.put(EParameterName.ROWSEPARATOR, rowSeparatorText.getText());
         String textEnclosure = textEnclosureCombo.getText();
-        if (EMPTY_VALUE.equals(textEnclosure)) {//$NON-NLS-1$
+        if (EMPTY_VALUE.equals(textEnclosure)) {
             textEnclosure = empty;
         }
         paramsMap.put(EParameterName.TEXT_ENCLOSURE, textEnclosure);
         String escapeChar = escapeCharCombo.getText();
-        if (EMPTY_VALUE.equals(escapeChar)) {//$NON-NLS-1$
+        if (EMPTY_VALUE.equals(escapeChar)) {
             escapeChar = empty;
         }
         paramsMap.put(EParameterName.ESCAPE_CHAR, escapeChar);

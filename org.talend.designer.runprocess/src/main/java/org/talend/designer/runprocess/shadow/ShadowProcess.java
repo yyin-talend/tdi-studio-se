@@ -27,7 +27,7 @@ import org.talend.commons.ui.utils.PathUtils;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -166,17 +166,17 @@ public class ShadowProcess<T extends IProcessDescription> {
             currentProcessEncoding = TalendTextUtils.removeQuotes(description.getEncoding());
         }
 
-        FileOutputDelimitedNode outNode = new FileOutputDelimitedNode(TalendTextUtils
-                .addQuotes("" + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
+        FileOutputDelimitedNode outNode = new FileOutputDelimitedNode(
+                TalendTextUtils.addQuotes("" + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding()); //$NON-NLS-1$ 
         switch (type) {
 
         case FILE_DELIMITED:
 
         case FILE_CSV:
-            FileInputDelimitedNode inDelimitedNode = new FileInputDelimitedNode(inPath, description //$NON-NLS-1$ //$NON-NLS-2$
-                    .getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(), description.getHeaderRow(),
-                    description.getFooterRow(), description.getEscapeCharacter(), description.getTextEnclosure(), description
-                            .getRemoveEmptyRowsToSkip(), description.isSplitRecord(), description.getEncoding(), type);
+            FileInputDelimitedNode inDelimitedNode = new FileInputDelimitedNode(inPath, description.getRowSeparator(),
+                    description.getFieldSeparator(), description.getLimitRows(), description.getHeaderRow(),
+                    description.getFooterRow(), description.getEscapeCharacter(), description.getTextEnclosure(),
+                    description.getRemoveEmptyRowsToSkip(), description.isSplitRecord(), description.getEncoding(), type);
             ps = new FileinToDelimitedProcess<FileInputDelimitedNode>(inDelimitedNode, outNode);
             break;
 
@@ -189,8 +189,8 @@ public class ShadowProcess<T extends IProcessDescription> {
             break;
 
         case FILE_REGEXP:
-            FileInputRegExpNode inRegExpNode = new FileInputRegExpNode(inPath, description.getRowSeparator(), description
-                    .getPattern(), description.getLimitRows(), description.getHeaderRow(), description.getFooterRow(),
+            FileInputRegExpNode inRegExpNode = new FileInputRegExpNode(inPath, description.getRowSeparator(),
+                    description.getPattern(), description.getLimitRows(), description.getHeaderRow(), description.getFooterRow(),
                     description.getRemoveEmptyRowsToSkip(), description.getEncoding());
             ps = new FileinToDelimitedProcess<FileInputRegExpNode>(inRegExpNode, outNode);
             break;
@@ -208,10 +208,10 @@ public class ShadowProcess<T extends IProcessDescription> {
             break;
         case FILE_EXCEL:
             // hywang add for excel 2007
-            String versionCheck = "false"; //$NON-NLS-N$
+            String versionCheck = "false";
             String afterRemoveQuotesPath = TalendTextUtils.removeQuotes(inPath);
-            if (afterRemoveQuotesPath.endsWith(".xlsx")) { //$NON-NLS-N$
-                versionCheck = "true"; //$NON-NLS-N$
+            if (afterRemoveQuotesPath.endsWith(".xlsx")) {
+                versionCheck = "true";
             }
 
             FileInputExcelNode excelNode = null;
@@ -220,8 +220,8 @@ public class ShadowProcess<T extends IProcessDescription> {
             excelNode = new FileInputExcelNode(inPath,
                     description.getSchema(),
                     description.getEncoding() == null ? TalendTextUtils.addQuotes("ISO-8859-1") : description.getEncoding(), //$NON-NLS-1$
-                    Integer.toString(description.getLimitRows()), Integer.toString(description.getHeaderRow()), Integer
-                            .toString(description.getFooterRow()), Boolean.toString(description.getRemoveEmptyRowsToSkip()),
+                    Integer.toString(description.getLimitRows()), Integer.toString(description.getHeaderRow()),
+                    Integer.toString(description.getFooterRow()), Boolean.toString(description.getRemoveEmptyRowsToSkip()),
                     excelBean, versionCheck);
 
             outNode.setMetadataList(excelNode.getMetadataList());
@@ -232,7 +232,7 @@ public class ShadowProcess<T extends IProcessDescription> {
             outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes("" //$NON-NLS-1$
                     + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
 
-            FileInputLdifNode inLdifNode = new FileInputLdifNode(inPath, description.getSchema(), description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
+            FileInputLdifNode inLdifNode = new FileInputLdifNode(inPath, description.getSchema(), description.getEncoding());
             outNode.setMetadataList(inLdifNode.getMetadataList());
             ps = new FileinToDelimitedProcess<FileInputLdifNode>(inLdifNode, outNode);
             break;
@@ -249,9 +249,9 @@ public class ShadowProcess<T extends IProcessDescription> {
                 List<IMetadataColumn> listColumns = metadataTable.getListColumns();
                 for (IMetadataColumn metadataColumn : listColumns) {
                     String label = metadataColumn.getLabel();
-                    boolean validColumnName = MetadataTool.isValidColumnName(label);
+                    boolean validColumnName = MetadataToolHelper.isValidColumnName(label);
                     if (!validColumnName) {
-                        metadataColumn.setLabel(label.replaceAll("[^a-zA-Z0-9_]", "_"));//$NON-NLS-N$//$NON-NLS-N$
+                        metadataColumn.setLabel(label.replaceAll("[^a-zA-Z0-9_]", "_"));
                     }
                 }
             }
@@ -271,8 +271,8 @@ public class ShadowProcess<T extends IProcessDescription> {
             break;
 
         case SALESFORCE_SCHEMA:
-            SalesforceSchemaInputNode inSalesforceNode = new SalesforceSchemaInputNode(description.getSchema(), description
-                    .getSalesforceSchemaBean());
+            SalesforceSchemaInputNode inSalesforceNode = new SalesforceSchemaInputNode(description.getSchema(),
+                    description.getSalesforceSchemaBean());
             outNode.setMetadataList(inSalesforceNode.getMetadataList());
             SalesforceSchemaBean salesforceSchemaBean = description.getSalesforceSchemaBean();
             boolean uesHttp = salesforceSchemaBean.isUesHttp();
@@ -373,7 +373,7 @@ public class ShadowProcess<T extends IProcessDescription> {
         String error = ProcessStreamTrashReader.readErrorStream(process);
         if (outputErrorAsException) {
             if (error != null) {
-                throw new ProcessorException(error); //$NON-NLS-1$
+                throw new ProcessorException(error);
             }
         } else {
             if (error != null) {

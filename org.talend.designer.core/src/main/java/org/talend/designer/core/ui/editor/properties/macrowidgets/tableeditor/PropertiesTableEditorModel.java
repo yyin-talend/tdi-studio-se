@@ -25,7 +25,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
@@ -131,7 +131,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
      * @return the items
      */
     public String[] getItems() {
-        return (String[]) elemParameter.getListItemsDisplayCodeName();
+        return elemParameter.getListItemsDisplayCodeName();
     }
 
     /**
@@ -140,7 +140,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
      * @return the itemsNotShowIf
      */
     public String[] getItemsNotShowIf() {
-        return (String[]) elemParameter.getListItemsNotShowIf();
+        return elemParameter.getListItemsNotShowIf();
     }
 
     /**
@@ -149,7 +149,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
      * @return the itemsShowIf
      */
     public String[] getItemsShowIf() {
-        return (String[]) elemParameter.getListItemsShowIf();
+        return elemParameter.getListItemsShowIf();
     }
 
     /**
@@ -158,7 +158,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
      * @return the itemsValue
      */
     public Object[] getItemsValue() {
-        return (Object[]) elemParameter.getListItemsValue();
+        return elemParameter.getListItemsValue();
     }
 
     /**
@@ -218,7 +218,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
             List<IMetadataTable> metadatasToRemove = new ArrayList<IMetadataTable>();
             for (Map<String, Object> line : (List<Map<String, Object>>) c) {
                 String schemaName = (String) line.get(schemaType);
-                IMetadataTable metadata = MetadataTool.getMetadataTableFromNodeTableName(node, schemaName);
+                IMetadataTable metadata = MetadataToolHelper.getMetadataTableFromNodeTableName(node, schemaName);
                 if (metadata != null) {
                     metadatasToRemove.add(metadata);
                     IDesignerCoreService service = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(

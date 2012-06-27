@@ -20,7 +20,7 @@ import java.util.Map;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
@@ -95,6 +95,7 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
         this.connection = connection;
     }
 
+    @Override
     protected void initFromExternalData(ExternalMapperTable externalMapperTable) {
         super.initFromExternalData(externalMapperTable);
         expressionFilterEntry = new ExpressionFilterEntry(this);
@@ -120,7 +121,7 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
         }
 
         if (isRepository) {
-            IMetadataTable table = MetadataTool.getMetadataFromRepository(id);
+            IMetadataTable table = MetadataToolHelper.getMetadataFromRepository(id);
             if (table == null) {
                 this.id = null;
                 this.isRepository = false;

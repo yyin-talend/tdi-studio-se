@@ -12,7 +12,7 @@ import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.image.OverlayImage;
 import org.talend.commons.ui.runtime.image.OverlayImage.EPosition;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
@@ -42,15 +42,16 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
             if (columnIndex == 0) {
                 IRepositoryViewObject lastVersion = getLastVersion(object);
                 if (lastVersion == null) {
-                    MetadataTable table = MetadataTool.getMetadataTableFromRepository(assignment.getTalendItem().getId());
+                    MetadataTable table = MetadataToolHelper.getMetadataTableFromRepository(assignment.getTalendItem().getId());
                     if (table != null) {
                         return image;
                     }
-                    Query query = MetadataTool.getQueryFromRepository(assignment.getTalendItem().getId());
+                    Query query = MetadataToolHelper.getQueryFromRepository(assignment.getTalendItem().getId());
                     if (query != null) {
                         return image;
                     }
-                    SAPFunctionUnit function = MetadataTool.getSAPFunctionFromRepository(assignment.getTalendItem().getId());
+                    SAPFunctionUnit function = MetadataToolHelper
+                            .getSAPFunctionFromRepository(assignment.getTalendItem().getId());
                     if (function != null) {
                         return image;
                     }
@@ -97,22 +98,26 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
         try {
             if (columnIndex == 0) {
                 if (lastVersion == null) {
-                    MetadataTable table = MetadataTool.getMetadataTableFromRepository(assignment.getTalendItem().getId());
+                    MetadataTable table = MetadataToolHelper.getMetadataTableFromRepository(assignment.getTalendItem().getId());
                     if (table != null) {
-                        if (SubItemHelper.isDeleted(table))
+                        if (SubItemHelper.isDeleted(table)) {
                             columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.Deleted"); //$NON-NLS-1$
+                        }
                         return columnText;
                     }
-                    Query query = MetadataTool.getQueryFromRepository(assignment.getTalendItem().getId());
+                    Query query = MetadataToolHelper.getQueryFromRepository(assignment.getTalendItem().getId());
                     if (query != null) {
-                        if (SubItemHelper.isDeleted(query))
+                        if (SubItemHelper.isDeleted(query)) {
                             columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.Deleted"); //$NON-NLS-1$
+                        }
                         return columnText;
                     }
-                    SAPFunctionUnit function = MetadataTool.getSAPFunctionFromRepository(assignment.getTalendItem().getId());
+                    SAPFunctionUnit function = MetadataToolHelper
+                            .getSAPFunctionFromRepository(assignment.getTalendItem().getId());
                     if (function != null) {
-                        if (SubItemHelper.isDeleted(function))
+                        if (SubItemHelper.isDeleted(function)) {
                             columnText += Messages.getString("RepositoryFactoryProxyLabelProvider.Deleted"); //$NON-NLS-1$
+                        }
                         return columnText;
                     }
                     TalendItem item = assignment.getTalendItem();
@@ -151,8 +156,8 @@ public class RepositoryFactoryProxyLabelProvider extends AdapterFactoryLabelProv
             if (lastVersion != null) {
                 String label = lastVersion.getProperty().getLabel();
                 if (!label.equals(columnText)) {
-                    ChangeTalendItemLabelCommand command = new ChangeTalendItemLabelCommand(((BusinessAssignment) object)
-                            .getTalendItem(), label);
+                    ChangeTalendItemLabelCommand command = new ChangeTalendItemLabelCommand(
+                            ((BusinessAssignment) object).getTalendItem(), label);
                     try {
                         command.execute(null, null);
                     } catch (ExecutionException e) {

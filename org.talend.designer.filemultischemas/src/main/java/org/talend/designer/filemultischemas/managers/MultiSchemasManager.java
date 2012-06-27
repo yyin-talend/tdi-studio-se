@@ -36,7 +36,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.types.JavaDataTypeHelper;
@@ -551,7 +551,7 @@ public class MultiSchemasManager {
                 SchemasKeyData data = new SchemasKeyData(code);
                 final String schemaName = line.get(IMultiSchemaConstant.SCHEMA);
                 if (schemaName != null) {
-                    final IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(getMultiSchemasComponent(),
+                    final IMetadataTable metadataTable = MetadataToolHelper.getMetadataTableFromNode(getMultiSchemasComponent(),
                             schemaName);
                     if (metadataTable != null) {
                         data.setUniqueRecord(schemaName);
