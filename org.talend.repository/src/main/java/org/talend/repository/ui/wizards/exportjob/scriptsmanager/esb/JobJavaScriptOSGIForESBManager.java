@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -41,6 +42,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.EMap;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.osgi.framework.Bundle;
@@ -59,6 +61,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
@@ -814,8 +817,18 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         for (ProcessItem pi : itemToBeExport) {
             sb.append(delim).append(getPackageName(pi));
             delim = ",";
+			// Add Route Resource Export packages
+			// http://jira.talendforge.org/browse/TESB-6227
+			if (ROUTE.equals(itemType)) {
+				String routeResourcePackages = addRouteResourcePackages(pi);
+				if (!routeResourcePackages.isEmpty()) {
+					sb.append(delim).append(routeResourcePackages);
+				}
+			}
         }
+
         a.put(new Attributes.Name("Export-Package"), sb.toString()); //$NON-NLS-1$
+
         if (ROUTE.equals(itemType)) {
         	addRouterOsgiDependencies(libResource, itemToBeExport, a);
         } else {
@@ -853,6 +866,45 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return manifest;
     }
     
+	/**
+	 * Add route resource packages.
+	 */
+	private String addRouteResourcePackages(ProcessItem item) {
+		Set<String> pkgs = new HashSet<String>();
+		EMap additionalProperties = item.getProperty()
+				.getAdditionalProperties();
+		if (additionalProperties == null) {
+			return "";
+		}
+		Object resourcesObj = additionalProperties.get("ROUTE_RESOURCES_PROP");
+		if (resourcesObj == null) {
+			return "";
+		}
+
+		String[] resourceIds = resourcesObj.toString().split(",");
+		String exportPkg = "";
+		for (String id : resourceIds) {
+			try {
+				IRepositoryViewObject rvo = ProxyRepositoryFactory
+						.getInstance().getLastVersion(id);
+				if (rvo != null) {
+
+					Item it = rvo.getProperty().getItem();
+					String path = it.getState().getPath();
+					if (path != null && !path.isEmpty()) {
+						exportPkg = "route_resources." + path.replace("/", ".");
+					} else {
+						exportPkg = "route_resources";
+					}
+					pkgs.add(exportPkg);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return StringUtils.join(pkgs.toArray(), ",");
+	}
+
     private String addAdditionalRequiredBundles(ProcessItem pi, String requiredBundles) {
     	if (isRESTClientJob(pi) || isRESTProviderJob(pi)) {
     		String bundlesToAdd = "org.apache.cxf.cxf-rt-frontend-jaxrs" 
