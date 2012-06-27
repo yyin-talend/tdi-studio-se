@@ -137,6 +137,10 @@ public class DragAndDropEditPolicy extends GraphicalEditPolicy {
                             getFeedbackLayer().add(indicator);
 
                         }
+                    } else {
+                        if (indicator != null && getFeedbackLayer() != null && indicator.getParent() == getFeedbackLayer()) {
+                            getFeedbackLayer().remove(indicator);
+                        }
                     }
                     break;
                 }
