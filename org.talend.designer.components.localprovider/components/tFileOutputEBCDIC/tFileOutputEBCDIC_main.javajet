@@ -17,6 +17,7 @@
     String cid = node.getUniqueName();	
     String incomingName = (String)codeGenArgument.getIncomingName();
 	String customSetOriginalLengthStr = ElementParameterParser.getValue(node,"__NO_X2CJ_FILE__");
+	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 	boolean customSetOriginalLength = (customSetOriginalLengthStr!=null&&!("").equals(customSetOriginalLengthStr))?("true").equals(customSetOriginalLengthStr):true;
 if(!customSetOriginalLength){//------11111
 		List< ? extends IConnection> conns = node.getIncomingConnections();
@@ -82,12 +83,13 @@ the original size in the column:<%=column.getLabel()%> in the schema should be b
 							fOut_<%=cid%>.write(<%=column.getLabel()%>_<%=cid%>.getByteValueArray());
 <%
 						}else if(orgainType.equals("9")) {
+							String isImpliedDecimalStr = column.getAdditionalField().get("ImpliedDecimal");
+							boolean isImpliedDecimal = (isImpliedDecimalStr!=null&&!("").equals(isImpliedDecimalStr))?("true").equals(isImpliedDecimalStr):true;
+							String isSignedStr = column.getAdditionalField().get("Signed");
+							boolean isSigned = (isSignedStr!=null&&!("").equals(isSignedStr))?("true").equals(isSignedStr):true;
 %>
 							java.math.BigDecimal <%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>;
-							byte[] bArr_<%=column.getLabel()%>_<%=cid%> = <%=column.getLabel()%>_<%=cid%>.toPlainString().getBytes("Cp037");
-							for(int j=0;j<bArr_<%=column.getLabel()%>_<%=cid%>.length;j++){
-								bb_<%=column.getLabel()%>_<%=cid%>[bb_<%=column.getLabel()%>_<%=cid%>.length-(j+1)] = bArr_<%=column.getLabel()%>_<%=cid%>[bArr_<%=column.getLabel()%>_<%=cid%>.length-(j+1)];
-							}
+							bb_<%=column.getLabel()%>_<%=cid%> = cobolConversion.EBCDICWriteType9.writeType9Value(<%=length %>,<%=precision %>,<%=column.getLabel()%>_<%=cid%>,<%=isSigned %>,<%=isImpliedDecimal %>,<%=encoding %>);
 							fOut_<%=cid%>.write(bb_<%=column.getLabel()%>_<%=cid%>);
 <%
 						}else if(orgainType.equals("B")) {
