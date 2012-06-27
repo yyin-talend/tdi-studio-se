@@ -1342,7 +1342,7 @@ public class EmfComponent extends AbstractComponent {
             if (xmlParam.isSetSHOW()) {
                 newParam.setShow(xmlParam.isSHOW());
             }
-            newParam.setRequired(true);
+            newParam.setRequired(false);
             newParam.setParentParameter(parentParam);
 
             newParam = new ElementParameter(node);
@@ -1361,7 +1361,7 @@ public class EmfComponent extends AbstractComponent {
             if (xmlParam.isSetSHOW()) {
                 newParam.setShow(xmlParam.isSHOW());
             }
-            newParam.setRequired(true);
+            newParam.setRequired(false);
             newParam.setParentParameter(parentParam);
         }
     }
