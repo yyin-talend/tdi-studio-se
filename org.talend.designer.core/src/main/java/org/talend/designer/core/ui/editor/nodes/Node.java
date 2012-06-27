@@ -2440,6 +2440,53 @@ public class Node extends Element implements IGraphicalNode {
                 addStatus(Process.PARALLEL_STATUS);
             }
         }
+
+        checkSpecialRouteComponents();
+    }
+
+    /**
+     * Check special Route components DOC xpli Comment method "checkSpecialRouteComponents".
+     */
+    private void checkSpecialRouteComponents() {
+        // http://jira.talendforge.org/browse/TESB-6294
+        if (this.getComponent().getName().equals("cCXF")) {
+            IElementParameter resourceParam = this.getElementParameter(EParameterName.ROUTE_RESOURCE_TYPE_ID.getName());
+            IElementParameter wsdlFileParam = this.getElementParameter("WSDL_FILE");
+            IElementParameter serviceParam = this.getElementParameter("SERVICE_TYPE");
+            IElementParameter wsdTypeParam = this.getElementParameter("WSDL_TYPE");
+            IElementParameter clazzParam = this.getElementParameter("SERVICE_CLASS");
+
+            // Select WSDL
+            if (serviceParam != null && "wsdlURL".equals(serviceParam.getValue())) {
+                // Select File
+                if (wsdTypeParam != null && "file".equals(wsdTypeParam.getValue())) {
+                    // WSDL file is empty
+                    if (wsdlFileParam == null || wsdlFileParam.getValue() == null
+                            || wsdlFileParam.getValue().toString().isEmpty()
+                            || wsdlFileParam.getValue().toString().equals("\"\"")) {
+                        String errorMessage = Messages.getString("Node.parameterEmpty", wsdlFileParam.getDisplayName()); //$NON-NLS-1$
+                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                    }
+                } // Select Repository
+                else if (wsdTypeParam != null && "repo".equals(wsdTypeParam.getValue())) {
+                    // WSDL file is empty
+                    if (resourceParam == null || resourceParam.getValue() == null
+                            || resourceParam.getValue().toString().isEmpty()) {
+                        String errorMessage = Messages.getString("Node.parameterEmpty", resourceParam.getDisplayName()); //$NON-NLS-1$
+                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                    }
+                }
+            }
+            // Select Service class
+            if (serviceParam != null && "serviceClass".equals(serviceParam.getValue())) {
+                // Service class is empty
+                if (clazzParam == null || clazzParam.getValue() == null || clazzParam.getValue().toString().isEmpty()) {
+                    String errorMessage = Messages.getString("Node.parameterEmpty", clazzParam.getDisplayName()); //$NON-NLS-1$
+                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                }
+            }
+        }
+
     }
 
     private void checktAggregateRow(IElementParameter param) {
