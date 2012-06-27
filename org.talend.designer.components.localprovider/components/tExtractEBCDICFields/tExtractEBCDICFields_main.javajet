@@ -184,8 +184,10 @@ the original size in the column:<%=column.getLabel()%> in the schema should be b
 				<%=outConn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(pd_<%=outConn.getName() %>_<%=column.getLabel()%>.toString().trim());
 <%
 			}else if(orgainType.equals("9")) {
+				String isImpliedDecimalStr = column.getAdditionalField().get("ImpliedDecimal");
+				boolean isImpliedDecimal = (isImpliedDecimalStr!=null&&!("").equals(isImpliedDecimalStr))?("true").equals(isImpliedDecimalStr):true;
 %>
-				<%=outConn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(new String(bb_<%=outConn.getName() %>_<%=column.getLabel()%>,<%=encoding%>));
+				<%=outConn.getName() %>.<%=column.getLabel()%> = cobolConversion.EBCDICReadType9.readType9Value(bb_<%=outConn.getName() %>_<%=column.getLabel()%>,<%=precision %>,<%=isImpliedDecimal %>,<%=encoding %>);
 <%
 			}else if(orgainType.equals("B")) {
 %>
