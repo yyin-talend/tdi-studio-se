@@ -12,16 +12,27 @@
 // ============================================================================
 package org.talend.designer.xmlmap.dnd;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
-import org.eclipse.gef.requests.CreateRequest;
+import org.eclipse.gef.Request;
+import org.eclipse.gef.requests.CreationFactory;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class CreateNodeConnectionRequest extends CreateRequest {
+public class CreateNodeConnectionRequest extends Request {
 
     private EditPart targetEditPart;
+
+    private Point location;
+
+    private CreationFactory creationFactory;
+
+    private List newObjects = new ArrayList();
 
     public CreateNodeConnectionRequest(EditPart targetEditPart) {
         this.targetEditPart = targetEditPart;
@@ -31,12 +42,17 @@ public class CreateNodeConnectionRequest extends CreateRequest {
         return this.targetEditPart;
     }
 
-    @Override
     public AbstractNode getNewObject() {
         if (getFactory() instanceof NewNodeCreationFactory) {
-            return ((NewNodeCreationFactory) getFactory()).getNewObject();
+            AbstractNode newObject = ((NewNodeCreationFactory) getFactory()).getNewObject();
+            newObjects.add(newObject);
+            return newObject;
         }
         return null;
+    }
+
+    public List getNewObjects() {
+        return this.newObjects;
     }
 
     public DropType getNewObjectType() {
@@ -45,4 +61,21 @@ public class CreateNodeConnectionRequest extends CreateRequest {
         }
         return null;
     }
+
+    public void setLocation(Point location) {
+        this.location = location;
+    }
+
+    public Point getLocation() {
+        return this.location;
+    }
+
+    protected CreationFactory getFactory() {
+        return creationFactory;
+    }
+
+    public void setFactory(CreationFactory factory) {
+        creationFactory = factory;
+    }
+
 }
