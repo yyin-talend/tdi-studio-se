@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.xmlmap.dnd;
 
+import java.util.List;
+
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LayoutManager;
 import org.eclipse.draw2d.geometry.Point;
@@ -20,8 +22,8 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.dnd.AbstractTransferDropTargetListener;
 import org.eclipse.gef.dnd.TemplateTransfer;
-import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
@@ -49,12 +51,12 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
 /**
  * wchen class global comment. Detailled comment
  */
-public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
+public class XmlDropTargetListener extends AbstractTransferDropTargetListener {
 
     private IFigure targetFigure;
 
     public XmlDropTargetListener(EditPartViewer viewer) {
-        super(viewer);
+        super(viewer, TemplateTransfer.getInstance());
     }
 
     @Override
@@ -323,17 +325,25 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
     }
 
     private void selectAddedObject() {
-        Object model = getCreateRequest().getNewObject();
-        if (model == null)
-            return;
-        EditPartViewer viewer = getViewer();
-        viewer.getControl().forceFocus();
-        Object editpart = viewer.getEditPartRegistry().get(model);
-        if (editpart instanceof EditPart) {
-            // Force a layout first.
-            getViewer().flush();
-            viewer.select((EditPart) editpart);
+        List newObjects = getCreateRequest().getNewObjects();
+        for (int i = 0; i < newObjects.size(); i++) {
+            Object model = newObjects.get(i);
+            EditPartViewer viewer = getViewer();
+            viewer.getControl().forceFocus();
+            Object editpart = viewer.getEditPartRegistry().get(model);
+            boolean added = false;
+            if (editpart instanceof EditPart) {
+                if (!added) {
+                    // Force a layout first.
+                    getViewer().flush();
+                    viewer.select((EditPart) editpart);
+                    added = true;
+                } else {
+                    viewer.appendSelection((EditPart) editpart);
+                }
+            }
         }
+
     }
 
     /*
@@ -348,6 +358,21 @@ public class XmlDropTargetListener extends TemplateTransferDropTargetListener {
             return true;
         }
         return super.isEnabled(event);
+    }
+
+    @Override
+    protected void updateTargetRequest() {
+        CreateNodeConnectionRequest request = getCreateRequest();
+        request.setLocation(getDropLocation());
+    }
+
+    protected CreateNodeConnectionRequest getCreateRequest() {
+        return ((CreateNodeConnectionRequest) getTargetRequest());
+    }
+
+    @Override
+    protected void handleExitingEditPart() {
+        eraseTargetFeedback();
     }
 
 }

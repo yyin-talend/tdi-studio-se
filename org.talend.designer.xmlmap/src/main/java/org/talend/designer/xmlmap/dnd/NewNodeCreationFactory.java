@@ -27,8 +27,6 @@ public class NewNodeCreationFactory implements CreationFactory {
 
     private NodeType nodeType;
 
-    private AbstractNode newObject;
-
     public NewNodeCreationFactory(DropType dropType, NodeType nodeType) {
         this.dropType = dropType;
         this.nodeType = nodeType;
@@ -38,27 +36,23 @@ public class NewNodeCreationFactory implements CreationFactory {
     }
 
     public AbstractNode getNewObject() {
-        if (newObject == null && dropType != null) {
+        if (dropType != null) {
             switch (dropType) {
             case DROP_OUTPUT_DOC_CHILD:
                 OutputTreeNode outputNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
                 outputNode.setNodeType(nodeType);
-                newObject = outputNode;
-                break;
+                return outputNode;
             case DROP_INSERT_INPUT:
-                newObject = XmlmapFactory.eINSTANCE.createTreeNode();
-                break;
+                return XmlmapFactory.eINSTANCE.createTreeNode();
             case DROP_INSERT_OUTPUT:
-                newObject = XmlmapFactory.eINSTANCE.createOutputTreeNode();
-                break;
+                return XmlmapFactory.eINSTANCE.createOutputTreeNode();
             case DROP_INSERT_VAR:
-                newObject = XmlmapFactory.eINSTANCE.createVarNode();
-                break;
+                return XmlmapFactory.eINSTANCE.createVarNode();
             default:
                 break;
             }
         }
-        return newObject;
+        return null;
     }
 
     public DropType getObjectType() {

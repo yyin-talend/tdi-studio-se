@@ -3,12 +3,14 @@ package org.talend.designer.xmlmap.commands;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.designer.xmlmap.dnd.CreateNodeConnectionRequest;
 import org.talend.designer.xmlmap.dnd.TransferdType;
 import org.talend.designer.xmlmap.dnd.TransferedObject;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
@@ -27,17 +29,17 @@ public class CreateDocChildrenCommand extends Command {
 
     private OutputTreeNodeEditPart targetEditPart;
 
-    private OutputTreeNode createdNode;
-
     private MapperManager manager;
 
     private XmlMapData xmlMapData;
 
-    public CreateDocChildrenCommand(TransferedObject objects, OutputTreeNodeEditPart targetEditPart, OutputTreeNode createdNode,
-            MapperManager manager) {
+    private CreateNodeConnectionRequest rq;
+
+    public CreateDocChildrenCommand(TransferedObject objects, OutputTreeNodeEditPart targetEditPart,
+            CreateNodeConnectionRequest rq, MapperManager manager) {
         this.objects = objects;
         this.targetEditPart = targetEditPart;
-        this.createdNode = createdNode;
+        this.rq = rq;
         this.manager = manager;
         this.xmlMapData = manager.getCopyOfMapData();
     }
@@ -47,8 +49,10 @@ public class CreateDocChildrenCommand extends Command {
         // only drop output can create a new node now
         OutputTreeNode targetOutputNode = (OutputTreeNode) targetEditPart.getModel();
         String expression = "";
+
         if (objects.getToTransfer() != null) {
             for (Object obj : objects.getToTransfer()) {
+                OutputTreeNode createdNode = (OutputTreeNode) rq.getNewObject();
                 AbstractNode source = null;
                 if (objects.getType() == TransferdType.INPUT) {
                     TreeNodeEditPart part = (TreeNodeEditPart) obj;
@@ -123,7 +127,7 @@ public class CreateDocChildrenCommand extends Command {
                 // check if need update outputTree InputLoopNodesTable
             }
         }
-
+        manager.refreshOutputTreeSchemaEditor((OutputXmlTree) XmlMapUtil.getAbstractInOutTree(targetOutputNode));
     }
 
     private void createConnection(AbstractNode sourceNode, AbstractNode targetNode) {

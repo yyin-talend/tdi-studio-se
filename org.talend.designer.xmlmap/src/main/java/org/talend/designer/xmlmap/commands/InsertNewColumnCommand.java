@@ -8,6 +8,7 @@ import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
+import org.talend.designer.xmlmap.dnd.CreateNodeConnectionRequest;
 import org.talend.designer.xmlmap.dnd.DropType;
 import org.talend.designer.xmlmap.dnd.TransferdType;
 import org.talend.designer.xmlmap.dnd.TransferedObject;
@@ -32,8 +33,6 @@ public class InsertNewColumnCommand extends Command {
 
     private EditPart targetEditPart;
 
-    private AbstractNode createdNode;
-
     private XmlMapData xmlMapData;
 
     private TransferedObject objects;
@@ -42,11 +41,13 @@ public class InsertNewColumnCommand extends Command {
 
     private MapperManager manager;
 
-    public InsertNewColumnCommand(TransferedObject objects, EditPart targetEditPart, AbstractNode createdNode,
+    private CreateNodeConnectionRequest rq;
+
+    public InsertNewColumnCommand(TransferedObject objects, EditPart targetEditPart, CreateNodeConnectionRequest rq,
             MapperManager manager, DropType dropType) {
         this.objects = objects;
         this.targetEditPart = targetEditPart;
-        this.createdNode = createdNode;
+        this.rq = rq;
         this.manager = manager;
         this.xmlMapData = manager.getCopyOfMapData();
         this.dropType = dropType;
@@ -54,11 +55,12 @@ public class InsertNewColumnCommand extends Command {
 
     @Override
     public void execute() {
-        if (createdNode == null || objects.getToTransfer() == null || targetEditPart == null || dropType == null) {
+        if (rq == null || objects.getToTransfer() == null || targetEditPart == null || dropType == null) {
             return;
         }
         Object targetModel = targetEditPart.getModel();
         for (Object obj : objects.getToTransfer()) {
+            AbstractNode createdNode = rq.getNewObject();
             // INPUT => OUTPUT INSERT
             if (objects.getType() == TransferdType.INPUT) {
                 TreeNodeEditPart part = (TreeNodeEditPart) obj;
@@ -87,7 +89,7 @@ public class InsertNewColumnCommand extends Command {
                         }
                         createConnection(sourceNode, createdNode);
                         AbstractInOutTree abstractTree = XmlMapUtil.getAbstractInOutTree(sourceNode);
-                        createOutputMetadataColumn(abstractTree.getName(), outputTree.getName(), sourceNode.getName(),
+                        createOutputMetadataColumn(abstractTree.getName(), outputTree.getName(), sourceNode,
                                 createdNode.getName(), index);
                     }
                     break;
@@ -112,8 +114,8 @@ public class InsertNewColumnCommand extends Command {
                         inputTree.getNodes().add((TreeNode) createdNode);
                         createLookupConnection(sourceNode, (TreeNode) createdNode);
                         AbstractInOutTree abstractTree = XmlMapUtil.getAbstractInOutTree(sourceNode);
-                        createInputMetadataColumn(abstractTree.getName(), inputTree.getName(), sourceNode.getName(),
-                                createdNode.getName(), -1);
+                        createInputMetadataColumn(abstractTree.getName(), inputTree.getName(), sourceNode, createdNode.getName(),
+                                -1);
                     }
                 default:
                     break;
@@ -155,35 +157,41 @@ public class InsertNewColumnCommand extends Command {
                             outputTree.getNodes().add((OutputTreeNode) createdNode);
                         }
                         createConnection(sourceNode, createdNode);
-                        List<IMetadataTable> metadataTargets = manager.getMapperComponent().getMetadataList();
-                        IMetadataTable metadataTarget = null;
-                        if (metadataTargets != null) {
-                            for (IMetadataTable target : metadataTargets) {
-                                if (target.getTableName().equals(outputTree.getName())) {
-                                    metadataTarget = target;
-                                }
-                            }
-                            if (metadataTarget != null) {
-                                IMetadataColumn createNewColumn = new MetadataColumn();
-                                createNewColumn.setLabel(outputNode.getName());
-                                // createNewColumn.setType(outputNode.getType());
-                                createNewColumn.setTalendType(outputNode.getType());
-                                createNewColumn.setNullable(true);
-                                metadataTarget.getListColumns().add(createNewColumn);
-                                manager.getMapperUI().getTabFolderEditors().getOutputMetaEditorView().getTableViewerCreator()
-                                        .refresh();
-                            }
-                        }
+                        createOutputMetadataColumn(null, outputTree.getName(), sourceNode, createdNode.getName(), index);
+                        // List<IMetadataTable> metadataTargets = manager.getMapperComponent().getMetadataList();
+                        // IMetadataTable metadataTarget = null;
+                        // if (metadataTargets != null) {
+                        // for (IMetadataTable target : metadataTargets) {
+                        // if (target.getTableName().equals(outputTree.getName())) {
+                        // metadataTarget = target;
+                        // }
+                        // }
+                        // if (metadataTarget != null) {
+                        // IMetadataColumn createNewColumn = new MetadataColumn();
+                        // createNewColumn.setLabel(outputNode.getName());
+                        // createNewColumn.setTalendType(outputNode.getType());
+                        // createNewColumn.setNullable(true);
+                        // metadataTarget.getListColumns().add(createNewColumn);
+                        // }
+                        // }
                     }
 
                 }
             }
-
         }
+
+        switch (dropType) {
+        case DROP_INSERT_OUTPUT:
+            manager.getMapperUI().getTabFolderEditors().getOutputMetaEditorView().getTableViewerCreator().refresh();
+        case DROP_INSERT_INPUT:
+            manager.getMapperUI().getTabFolderEditors().getOutputMetaEditorView().getTableViewerCreator().refresh();
+        }
+
     }
 
-    private void createInputMetadataColumn(String sourceTreeName, String targetTreeName, String sourceNodeName,
+    private void createInputMetadataColumn(String sourceTreeName, String targetTreeName, TreeNode sourceNode,
             String targetNodeName, int index) {
+        String sourceNodeName = sourceNode.getName();
         IMetadataTable metadataTarget = null;
         List<IODataComponent> inputs = manager.getMapperComponent().getIODataComponents().getInputs();
         for (IODataComponent incoming : inputs) {
@@ -192,24 +200,18 @@ public class InsertNewColumnCommand extends Command {
             }
         }
 
-        if (metadataTarget != null && sourceTreeName != null) {
-            IMetadataColumn columnSource = getSourceColumn(sourceTreeName, sourceNodeName);
-            if (columnSource != null) {
-                IMetadataColumn createNewColumn = new MetadataColumn(columnSource);
-                createNewColumn.setLabel(targetNodeName);
-                if (index != -1) {
-                    metadataTarget.getListColumns().add(index, createNewColumn);
-                } else {
-                    metadataTarget.getListColumns().add(createNewColumn);
-                }
-                manager.getMapperUI().getTabFolderEditors().getInputMetaEditorView().getTableViewerCreator().refresh();
+        if (metadataTarget != null) {
+            IMetadataColumn columnSource = null;
+            if (sourceTreeName != null) {
+                columnSource = getSourceColumn(sourceTreeName, sourceNodeName);
             }
-
+            creatMeatadataColumn(columnSource, targetNodeName, sourceNode, metadataTarget, index);
         }
     }
 
-    private void createOutputMetadataColumn(String sourceTreeName, String targetTreeName, String sourceNodeName,
+    private void createOutputMetadataColumn(String sourceTreeName, String targetTreeName, AbstractNode sourceNode,
             String targetNodeName, int index) {
+        String sourceNodeName = sourceNode.getName();
         IMetadataTable metadataTarget = null;
         List<IMetadataTable> metadataTargets = manager.getMapperComponent().getMetadataList();
         if (metadataTargets != null) {
@@ -219,21 +221,41 @@ public class InsertNewColumnCommand extends Command {
                 }
             }
         }
-
-        if (metadataTarget != null && sourceTreeName != null) {
-            IMetadataColumn columnSource = getSourceColumn(sourceTreeName, sourceNodeName);
-            if (columnSource != null) {
-                IMetadataColumn createNewColumn = new MetadataColumn(columnSource);
-                createNewColumn.setLabel(targetNodeName);
-                if (index != -1) {
-                    metadataTarget.getListColumns().add(index, createNewColumn);
-                } else {
-                    metadataTarget.getListColumns().add(createNewColumn);
-                }
-                manager.getMapperUI().getTabFolderEditors().getOutputMetaEditorView().getTableViewerCreator().refresh();
+        if (metadataTarget != null) {
+            IMetadataColumn columnSource = null;
+            if (sourceTreeName != null) {
+                columnSource = getSourceColumn(sourceTreeName, sourceNodeName);
             }
-
+            creatMeatadataColumn(columnSource, targetNodeName, sourceNode, metadataTarget, index);
         }
+    }
+
+    private void creatMeatadataColumn(IMetadataColumn columnSource, String targetNodeName, AbstractNode sourceNode,
+            IMetadataTable metadataTarget, int index) {
+
+        IMetadataColumn createNewColumn = null;
+        if (columnSource != null) {
+            // dnd schema column
+            createNewColumn = new MetadataColumn(columnSource);
+            createNewColumn.setLabel(targetNodeName);
+        } else {
+            // dnd doc child
+            createNewColumn = new MetadataColumn();
+            createNewColumn.setLabel(targetNodeName);
+            createNewColumn.setType(sourceNode.getType());
+            createNewColumn.setTalendType(sourceNode.getType());
+            if (sourceNode instanceof TreeNode) {
+                createNewColumn.setKey(((TreeNode) sourceNode).isKey());
+                createNewColumn.setNullable(((TreeNode) sourceNode).isNullable());
+                createNewColumn.setPattern(((TreeNode) sourceNode).getPattern());
+            }
+        }
+        if (index != -1) {
+            metadataTarget.getListColumns().add(index, createNewColumn);
+        } else {
+            metadataTarget.getListColumns().add(createNewColumn);
+        }
+
     }
 
     private IMetadataColumn getSourceColumn(String sourceTreeName, String sourceNodeName) {

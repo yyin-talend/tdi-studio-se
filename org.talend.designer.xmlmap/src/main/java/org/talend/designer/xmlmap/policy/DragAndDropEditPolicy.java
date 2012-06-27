@@ -19,7 +19,6 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.Request;
-import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.dnd.TemplateTransfer;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
@@ -52,7 +51,7 @@ public class DragAndDropEditPolicy extends GraphicalEditPolicy {
 
     @Override
     public EditPart getTargetEditPart(Request request) {
-        if (RequestConstants.REQ_CREATE.equals(request.getType())) {
+        if (request instanceof CreateNodeConnectionRequest) {
             return getHost();
         }
         return null;
@@ -84,14 +83,14 @@ public class DragAndDropEditPolicy extends GraphicalEditPolicy {
                             break;
                         case DROP_OUTPUT_DOC_CHILD:
                             if (targetEditPart instanceof OutputTreeNodeEditPart && rq.getNewObject() instanceof OutputTreeNode) {
-                                command = new CreateDocChildrenCommand(toDrop, (OutputTreeNodeEditPart) targetEditPart,
-                                        (OutputTreeNode) rq.getNewObject(), manager);
+                                command = new CreateDocChildrenCommand(toDrop, (OutputTreeNodeEditPart) targetEditPart, rq,
+                                        manager);
                             }
                             break;
                         case DROP_INSERT_OUTPUT:
                         case DROP_INSERT_VAR:
                         case DROP_INSERT_INPUT:
-                            command = new InsertNewColumnCommand(toDrop, targetEditPart, rq.getNewObject(), manager, dropType);
+                            command = new InsertNewColumnCommand(toDrop, targetEditPart, rq, manager, dropType);
                         default:
                             break;
                         }
