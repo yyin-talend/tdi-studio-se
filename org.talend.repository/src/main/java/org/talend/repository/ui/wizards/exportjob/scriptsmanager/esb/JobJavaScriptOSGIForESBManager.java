@@ -515,12 +515,20 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         String jaxrsServiceProviders = "";
         String additionalBeansConfig = "";
+        String additionalJobBeanParams = "";
         boolean useHttpBasicAuth = computeCheckElementValue("HTTP_BASIC_AUTH", elParams);
         if (useHttpBasicAuth) {
             jaxrsServiceProviders = "<ref bean=\"authenticationFilter\"/>";
             additionalBeansConfig = "\t<bean id=\"authenticationFilter\" class=\"org.apache.cxf.jaxrs.security.JAASAuthenticationFilter\">"
                     + "\n\t\t<property name=\"contextName\" value=\"karaf\"/>\n\t</bean>";
         }
+        // OSGi DataSource
+        AdditionalDataSourceConfig additionalDataSourceConfig = new AdditionalDataSourceConfig();
+        additionalDataSourceConfig.additionalJobBeanParams = additionalJobBeanParams;
+        additionalDataSourceConfig.additionalJobBundleConfig = additionalBeansConfig;
+        updateAdditionalDataSourceConfig(processItem, additionalDataSourceConfig);
+        additionalJobBeanParams = additionalDataSourceConfig.additionalJobBeanParams;
+        additionalBeansConfig = additionalDataSourceConfig.additionalJobBundleConfig;
 
         FileReader fr = null;
         FileWriter fw = null;
@@ -537,7 +545,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         .replace("@JOBNAME@", jobName) //$NON-NLS-1$
                         .replace("@JOBCLASSNAME@", jobClassName) //$NON-NLS-1$
                         .replace("@JAXRS_SERVICE_PROVIDERS@", jaxrsServiceProviders) //$NON-NLS-1$
-                        .replace("@ADDITIONAL_BEANS_CONFIG@", additionalBeansConfig); //$NON-NLS-1$
+                        .replace("@ADDITIONAL_BEANS_CONFIG@", additionalBeansConfig) //$NON-NLS-1$
+                        .replace("@ADDITIONAL_JOB_BEAN_PARAMS@", additionalJobBeanParams); //$NON-NLS-1$
 
                 bw.write(line + "\n"); //$NON-NLS-1$
                 line = br.readLine();
@@ -619,39 +628,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 //            }
         }
         // OSGi DataSource
-        List<NodeType> dbComponents = getDBConnectionComponents(processItem);
-        if (!dbComponents.isEmpty()) {
-        	additionalJobBeanParams +=
-        		  "\n\t\t<property name=\"dataSources\">" 
-        		+ "\n\t\t\t<map>";
-        	
-        	for (NodeType dbComponent : dbComponents) {
-        		EList<?> elementParameterTypes = dbComponent.getElementParameter();
-        		String id = computeTextElementValue("UNIQUE_NAME", elementParameterTypes);
-        		String beanPool = id + "Pool";
-
-        		additionalJobBeanParams +=
-            		"\n\t\t\t\t<entry key=\"" + id + "\" value-ref=\"" + beanPool + "\" />";
-
-        		String beanDataSource = id + "DataSource";
-        		String url = computeTextElementValue("URL", elementParameterTypes);
-				URI jdbcURI = URI.create(url.substring(6, url.length() - 1)); // remove jdbc: and quotes
-            	additionalJobBundleConfig +=
-              		  "\n\t<bean id=\"" + beanDataSource + "\" class=\"org.apache.derby.jdbc.ClientConnectionPoolDataSource\">"
-                      + "\n\t\t<property name=\"serverName\" value=\"" + jdbcURI.getHost() + "\"/>"
-                      + "\n\t\t<property name=\"portNumber\" value=\"" + jdbcURI.getPort() + "\"/>"
-                      + "\n\t\t<property name=\"databaseName\" value=\"" + jdbcURI.getPath() + "\"/>"
-                      + "\n\t\t<property name=\"user\" value=" + computeTextElementValue("USER", elementParameterTypes) + "/>"
-                      + "\n\t\t<property name=\"password\" value=" + computeTextElementValue("PASS", elementParameterTypes) + "/>"
-                      + "\n\t</bean>"
-                      + "\n\t<bean id=\"" + beanPool + "\" class=\"org.apache.commons.dbcp.datasources.SharedPoolDataSource\" destroy-method=\"close\">"
-                      + "\n\t\t<property name=\"connectionPoolDataSource\" ref=\"" + beanDataSource + "\"/>"
-                      + "\n\t</bean>";
-			}
-        	additionalJobBeanParams +=
-        		  "\n\t\t\t</map>"
-        		+ "\n\t\t</property>";
-        }
+        AdditionalDataSourceConfig additionalDataSourceConfig = new AdditionalDataSourceConfig();
+        additionalDataSourceConfig.additionalJobBeanParams = additionalJobBeanParams;
+        additionalDataSourceConfig.additionalJobBundleConfig = additionalJobBundleConfig;
+        updateAdditionalDataSourceConfig(processItem, additionalDataSourceConfig);
+        additionalJobBeanParams = additionalDataSourceConfig.additionalJobBeanParams;
+        additionalJobBundleConfig = additionalDataSourceConfig.additionalJobBundleConfig;
 
         FileReader fr = null;
         FileWriter fw = null;
@@ -700,6 +682,48 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
             }
         }
+    }
+
+    private static class AdditionalDataSourceConfig {
+    	public String additionalJobBeanParams;
+    	public String additionalJobBundleConfig;
+    }
+    private String updateAdditionalDataSourceConfig(ProcessItem processItem, AdditionalDataSourceConfig additionalDataSourceConfig) {
+        // OSGi DataSource
+        List<NodeType> dbComponents = getDBConnectionComponents(processItem);
+        if (!dbComponents.isEmpty()) {
+        	additionalDataSourceConfig.additionalJobBeanParams +=
+        		  "\n\t\t<property name=\"dataSources\">" 
+        		+ "\n\t\t\t<map>";
+        	
+        	for (NodeType dbComponent : dbComponents) {
+        		EList<?> elementParameterTypes = dbComponent.getElementParameter();
+        		String id = computeTextElementValue("UNIQUE_NAME", elementParameterTypes);
+        		String beanPool = id + "Pool";
+
+        		additionalDataSourceConfig.additionalJobBeanParams +=
+            		"\n\t\t\t\t<entry key=\"" + id + "\" value-ref=\"" + beanPool + "\" />";
+
+        		String beanDataSource = id + "DataSource";
+        		String url = computeTextElementValue("URL", elementParameterTypes);
+				URI jdbcURI = URI.create(url.substring(6, url.length() - 1)); // remove jdbc: and quotes
+				additionalDataSourceConfig.additionalJobBundleConfig +=
+              		  "\n\t<bean id=\"" + beanDataSource + "\" class=\"org.apache.derby.jdbc.ClientConnectionPoolDataSource\">"
+                      + "\n\t\t<property name=\"serverName\" value=\"" + jdbcURI.getHost() + "\"/>"
+                      + "\n\t\t<property name=\"portNumber\" value=\"" + jdbcURI.getPort() + "\"/>"
+                      + "\n\t\t<property name=\"databaseName\" value=\"" + jdbcURI.getPath() + "\"/>"
+                      + "\n\t\t<property name=\"user\" value=" + computeTextElementValue("USER", elementParameterTypes) + "/>"
+                      + "\n\t\t<property name=\"password\" value=" + computeTextElementValue("PASS", elementParameterTypes) + "/>"
+                      + "\n\t</bean>"
+                      + "\n\t<bean id=\"" + beanPool + "\" class=\"org.apache.commons.dbcp.datasources.SharedPoolDataSource\" destroy-method=\"close\">"
+                      + "\n\t\t<property name=\"connectionPoolDataSource\" ref=\"" + beanDataSource + "\"/>"
+                      + "\n\t</bean>";
+			}
+        	additionalDataSourceConfig.additionalJobBeanParams +=
+        		  "\n\t\t\t</map>"
+        		+ "\n\t\t</property>";
+        }
+    	return "";
     }
 
     private String getOSGIInfFolder() {
