@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test
+Bundle-SymbolicName: org.talend.repository.test
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.talend.repository;bundle-version="2.2.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit4;bundle-version="4.8.1",
+ org.mockito;bundle-version="1.0.0",
+ org.talend.designer.core;bundle-version="2.2.0"
