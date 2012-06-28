@@ -40,6 +40,7 @@
 
 	<bean id="job" class="@JOBCLASSNAME@">
 		<property name="runInTalendEsbRuntimeContainer" value="true" />
+		@ADDITIONAL_JOB_BEAN_PARAMS@
 	</bean>
 
 	<osgi:service ref="job">
