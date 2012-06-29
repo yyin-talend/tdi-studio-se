@@ -268,15 +268,15 @@ public class LoginComposite extends Composite {
     // only for test
     // private static final String ARCHIVA_URL = "http://192.168.0.58:8080";
 
-    private static final String ARCHIVA_SERVICES_SEGMENT = "/restServices/archivaServices/"; //$NON-NLS-N$ //$NON-NLS-1$ //$NON-NLS-1$
+    private static final String ARCHIVA_SERVICES_SEGMENT = "/restServices/archivaServices/"; //$NON-NLS-1$ 
 
-    private static final String ARCHIVA_SERVICES_URL_KEY = "archivaUrl"; //$NON-NLS-N$ //$NON-NLS-1$ //$NON-NLS-1$
+    private static final String ARCHIVA_SERVICES_URL_KEY = "archivaUrl"; //$NON-NLS-1$ 
 
-    private static final String ARCHIVA_REPOSITORY_KEY = "repository"; //$NON-NLS-N$ //$NON-NLS-1$ //$NON-NLS-1$
+    private static final String ARCHIVA_REPOSITORY_KEY = "repository"; //$NON-NLS-1$ 
 
-    private static final String ARCHIVA_USER = "username"; //$NON-NLS-N$ //$NON-NLS-1$ //$NON-NLS-1$
+    private static final String ARCHIVA_USER = "username"; //$NON-NLS-1$ 
 
-    private static final String ARCHIVA_USER_PWD = "password"; //$NON-NLS-N$ //$NON-NLS-1$ //$NON-NLS-1$
+    private static final String ARCHIVA_USER_PWD = "password"; //$NON-NLS-1$ 
 
     private boolean afterUpdate = false;
 
@@ -362,7 +362,7 @@ public class LoginComposite extends Composite {
         }
         try {
             setStatusArea();
-            log.info("validate updatesite..."); //$NON-NLS-N$ //$NON-NLS-1$ //$NON-NLS-1$
+            log.info("validate updatesite..."); //$NON-NLS-1$ 
             validateUpdate();
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
@@ -752,13 +752,14 @@ public class LoginComposite extends Composite {
         importCombo.setContentProvider(new ArrayContentProvider());
         List<DemoProjectBean> demoProjectList = ImportProjectsUtilities.getAllDemoProjects();
         for (int i = 0; i < demoProjectList.size(); i++) {
-            DemoProjectBean bean = (DemoProjectBean) demoProjectList.get(i);
+            DemoProjectBean bean = demoProjectList.get(i);
             importCombo.add(bean.getProjectName());
         }
         importCombo.setSelection(new StructuredSelection(new Object[] { importCombo.getElementAt(0) }));
 
         manageProjectsButtonTemp.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 // ImportDemoProjectAction.getInstance().setShell(getShell());
                 // ImportDemoProjectAction.getInstance().run();
@@ -807,8 +808,8 @@ public class LoginComposite extends Composite {
                                 } else if (techName.equals("TDQEEDEMOJAVA")) { //$NON-NLS-1$
                                     pluginID = "org.talend.datacleansing.core.ui"; //$NON-NLS-1$
                                 }
-                                if(demoProjectBean.getPluginId()!=null){
-                                    pluginID=demoProjectBean.getPluginId();
+                                if (demoProjectBean.getPluginId() != null) {
+                                    pluginID = demoProjectBean.getPluginId();
                                 }
                                 Bundle bundle = Platform.getBundle(pluginID);
 
@@ -965,6 +966,7 @@ public class LoginComposite extends Composite {
         projectText.setBackground(GREY_COLOR);
         projectText.addFocusListener(new FocusAdapter() {
 
+            @Override
             public void focusGained(FocusEvent e) {
                 if (projectText.getText().equals(DEFAULT_PROJECT_NAME)) {
                     projectText.setBackground(null);
@@ -972,6 +974,7 @@ public class LoginComposite extends Composite {
                 }
             }
 
+            @Override
             public void focusLost(FocusEvent e) {
                 if (projectText.getText() == "") { //$NON-NLS-1$
                     projectText.setText(DEFAULT_PROJECT_NAME);
@@ -992,6 +995,7 @@ public class LoginComposite extends Composite {
 
         createProjectBtn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 Project project = null;
                 NewProjectWizard newPrjWiz = new NewProjectWizard(new Project[] {});
@@ -1009,6 +1013,7 @@ public class LoginComposite extends Composite {
 
         advanced.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 dialog.advanced();
             }
@@ -1964,6 +1969,8 @@ public class LoginComposite extends Composite {
 
     private void updateVisible() {
         List<ILoginConnectionService> loginConnectionServices = LoginConnectionManager.getRemoteConnectionService();
+        final boolean localConn = getConnection().getRepositoryId() == null
+                || getConnection().getRepositoryId().equals(RepositoryConstants.REPOSITORY_LOCAL_ID);
         String errorMsg = null;
         if (loginConnectionServices.size() > 0 && getConnection() != null && getConnection().isComplete()) {
             for (ILoginConnectionService loginConncetion : loginConnectionServices) {
@@ -2026,6 +2033,7 @@ public class LoginComposite extends Composite {
             restartBut.setVisible(false);
         } else if (!isWorkSpaceSame()) {
             manageViewer.getControl().setEnabled(false);
+            connectionsViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
             openProjectBtn.setEnabled(false);
             if (projectViewer != null) {
@@ -2070,7 +2078,7 @@ public class LoginComposite extends Composite {
             }
             restartBut.setVisible(false);
         }
-        if (PluginChecker.isSVNProviderPluginLoaded()) {
+        if (PluginChecker.isSVNProviderPluginLoaded() && !localConn) {
             manageViewer.getControl().setEnabled(true);
             manageProjectsButton.setEnabled(true);
         }
