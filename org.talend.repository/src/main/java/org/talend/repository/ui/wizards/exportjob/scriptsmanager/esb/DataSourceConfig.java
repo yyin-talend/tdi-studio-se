@@ -62,15 +62,15 @@ public class DataSourceConfig {
 	private static String getDataSourceConfig(NodeType dbComponent, String beanDataSource) {
 		String componentName = dbComponent.getComponentName();
 		if(DB_JDBC.equals(componentName)) {
-    		String url = unquote(EmfModelUtils.computeTextElementValue("URL", dbComponent));
+    		String url = EmfModelUtils.computeTextElementValue("URL", dbComponent);
 			URI jdbcURI = URI.create(url.substring("jdbc:".length()));
 			if ("derby".equals(jdbcURI.getScheme())) {
 	    		return "\n\t<bean id=\"" + beanDataSource + "\" class=\"org.apache.derby.jdbc.ClientConnectionPoolDataSource\">"
 	    	              + "\n\t\t<property name=\"serverName\" value=\"" + jdbcURI.getHost() + "\"/>"
 	    	              + "\n\t\t<property name=\"portNumber\" value=\"" + jdbcURI.getPort() + "\"/>"
 	    	              + "\n\t\t<property name=\"databaseName\" value=\"" + jdbcURI.getPath() + "\"/>"
-	    	              + "\n\t\t<property name=\"user\" value=" + EmfModelUtils.computeTextElementValue("USER", dbComponent) + "/>"
-	    	              + "\n\t\t<property name=\"password\" value=" + EmfModelUtils.computeTextElementValue("PASS", dbComponent) + "/>"
+	    	              + "\n\t\t<property name=\"user\" value=\"" + EmfModelUtils.computeTextElementValue("USER", dbComponent) + "\"/>"
+	    	              + "\n\t\t<property name=\"password\" value=\"" + EmfModelUtils.computeTextElementValue("PASS", dbComponent) + "\"/>"
 	    	              + "\n\t</bean>";
 			} else if ("mysql".equals(jdbcURI.getScheme())) {
 				return getMysqlDataSourceConfig(dbComponent, beanDataSource, url);
@@ -86,18 +86,15 @@ public class DataSourceConfig {
 
 	private static String getMysqlDataSourceConfig(NodeType dbComponent, String beanDataSource, String url) {
 		if (null == url) {
-			url = "jdbc:mysql://" + unquote(EmfModelUtils.computeTextElementValue("HOST", dbComponent))
-					+ ':' + unquote(EmfModelUtils.computeTextElementValue("PORT", dbComponent))
-					+ '/' + unquote(EmfModelUtils.computeTextElementValue("DBNAME", dbComponent));
+			url = "jdbc:mysql://" + EmfModelUtils.computeTextElementValue("HOST", dbComponent)
+					+ ':' + EmfModelUtils.computeTextElementValue("PORT", dbComponent)
+					+ '/' + EmfModelUtils.computeTextElementValue("DBNAME", dbComponent);
 		}
 		return "\n\t<bean id=\"" + beanDataSource + "\" class=\"com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource\">"
 	        + "\n\t\t<property name=\"url\" value=\"" + url + "\"/>"
-	        + "\n\t\t<property name=\"user\" value=" + EmfModelUtils.computeTextElementValue("USER", dbComponent) + "/>"
-	        + "\n\t\t<property name=\"password\" value=" + EmfModelUtils.computeTextElementValue("PASS", dbComponent) + "/>"
+	        + "\n\t\t<property name=\"user\" value=\"" + EmfModelUtils.computeTextElementValue("USER", dbComponent) + "\"/>"
+	        + "\n\t\t<property name=\"password\" value=\"" + EmfModelUtils.computeTextElementValue("PASS", dbComponent) + "\"/>"
 	        + "\n\t</bean>";
 	}
 
-	private static final String unquote(String string) {
-        return string.substring(1, string.length() - 1);
-    }
 }

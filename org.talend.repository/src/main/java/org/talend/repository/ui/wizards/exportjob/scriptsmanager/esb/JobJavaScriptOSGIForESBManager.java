@@ -65,7 +65,6 @@ import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
-import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.LastGenerationInfo;
@@ -273,24 +272,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         return urlList;
     }
-    /**
-     *
-     * Ensure that the string is not surrounded by quotes.
-     *
-     * @param string
-     * @return
-     */
-    protected String unquotes(String string) {
-        String result = string;
-        if (result.startsWith("\"")) {
-            result = result.substring(1);
-        }
-
-        if (result.endsWith("\"")) {
-            result = result.substring(0, result.length() - 1);
-        }
-        return result;
-    }
 
     /**
      * This method will return <code>true</code> if given job contains tESBProviderRequest or tESBConsumer component
@@ -375,9 +356,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         NodeType restRequestComponent = getRESTRequestComponent(processItem);
 
         String endpointUri = EmfModelUtils.computeTextElementValue("REST_ENDPOINT", restRequestComponent);
-        if (endpointUri.startsWith("\"") && endpointUri.endsWith("\"")) {
-            endpointUri = endpointUri.substring(1, endpointUri.length() - 1); // remove Studio wrapping
-        }
         if (!endpointUri.isEmpty() && !endpointUri.contains("://") && !endpointUri.startsWith("/")) {
             endpointUri = "/" + endpointUri;
         }
@@ -467,22 +445,16 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         boolean hasSAM = false;
 
         if (ROUTE.equals(itemType)) {
-            ProcessType process = processItem.getProcess();
-            if (process != null) {
-                for (Object obj : process.getNode()) {
-                    NodeType node = (NodeType) obj;
-                    if ("cCXF".equals(node.getComponentName())) { //$NON-NLS-1$
-                        // http://jira.talendforge.org/browse/TESB-3850
-                        String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
-                        if (!"MESSAGE".equals(format)) { //$NON-NLS-1$
-                            hasSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node); //$NON-NLS-1$
-                        }
-                    }
+        	for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "cCXF")) {
+                // http://jira.talendforge.org/browse/TESB-3850
+                String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
+                if (!"MESSAGE".equals(format)) { //$NON-NLS-1$
+                    hasSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node); //$NON-NLS-1$
                     if (hasSAM) {
-                        break;
+                    	break;
                     }
                 }
-            }
+			}
         }
 
         String additionalJobInterfaces = "";

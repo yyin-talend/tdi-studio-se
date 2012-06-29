@@ -56,7 +56,7 @@ public class EmfModelUtils {
         if (cpType == null) {
             return "";
         }
-        return cpType.getValue();
+        return unquote(cpType.getValue());
     }
 
     /**
@@ -84,5 +84,21 @@ public class EmfModelUtils {
         return null;
     }
 
+    /**
+    *
+    * Ensure that the string is not surrounded by quotes.
+    *
+    * @param string
+    * @return
+    */
+	private static final String unquote(String string) {
+       if (string.startsWith("\"")) {
+    	   string = string.substring(1);
+       }
+       if (string.endsWith("\"")) {
+    	   string = string.substring(0, string.length() - 1);
+       }
+       return string;
+    }
 
 }
