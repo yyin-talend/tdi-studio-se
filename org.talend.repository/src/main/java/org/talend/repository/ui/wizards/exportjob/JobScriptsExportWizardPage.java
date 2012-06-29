@@ -19,14 +19,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
@@ -38,7 +36,6 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IContentProvider;
@@ -65,7 +62,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -73,21 +69,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.progress.ProgressMonitorJobsDialog;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
-import org.eclipse.ui.progress.IProgressService;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
-import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.process.ProcessUtils;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
@@ -100,13 +89,10 @@ import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.documentation.FileSystemExporterFullPath;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
-import org.talend.repository.model.ProjectRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.action.JobExportAction;
@@ -180,8 +166,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     private String originalRootFolderName;
 
     protected Button exportDependencies;
-
-    boolean ok;
 
     protected IStructuredSelection selection;
 
@@ -692,137 +676,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             }
         }
         return null;
-    }
-
-    /**
-     * 
-     * DOC yhch Comment method "exportDependenciesSelected".
-     */
-    private void exportDependenciesSelected() { // TODO: unused method???
-        final Collection<Item> selectedItems = getSelectedItems();
-
-        IRunnableWithProgress runnable = new IRunnableWithProgress() {
-
-            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                monitor.beginTask("Dependencies", 100);//$NON-NLS-1$
-                monitor.setCanceled(false);
-                //
-                final List<IRepositoryViewObject> repositoryObjects = new ArrayList<IRepositoryViewObject>();
-
-                ProcessUtils.clearFakeProcesses();
-
-                // dependencies All
-                Display.getDefault().syncExec(new Runnable() {
-
-                    public void run() {
-                        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-                        RelationshipItemBuilder builder = RelationshipItemBuilder.getInstance();
-                        for (Item item : selectedItems) {
-                            if (item == null) {
-                                continue;
-                            }
-                            List<RelationshipItemBuilder.Relation> relations = builder.getItemsRelatedTo(item.getProperty()
-                                    .getId(), item.getProperty().getVersion(), RelationshipItemBuilder.JOB_RELATION);
-                            for (RelationshipItemBuilder.Relation relation : relations) {
-                                try {
-                                    IRepositoryViewObject obj = factory.getLastVersion(relation.getId());
-                                    if (obj != null) {
-                                        RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(obj, false);
-                                        if (repositoryNode != null) {
-                                            if (!repositoryObjects.contains(obj)) {
-                                                repositoryObjects.add(obj);
-                                            }
-                                        }
-                                    }
-                                } catch (PersistenceException et) {
-                                    ExceptionHandler.process(et);
-                                }
-                            }
-
-                        }
-
-                    }
-                });
-                monitor.worked(60);
-                Display.getDefault().syncExec(new Runnable() {
-
-                    public void run() {
-                        if (exportDependencies.getSelection()) {
-                            for (IRepositoryViewObject repositoryObject : repositoryObjects) {
-                                RepositoryNode repositoryNode = RepositoryNodeUtilities
-                                        .getRepositoryNode(repositoryObject, false);
-                                if (repositoryNode != null && !repositoryNodes.contains(repositoryNode)) {
-                                    repositoryNodes.add(repositoryNode);
-                                    checkedNodes.add(repositoryNode);
-                                }
-
-                            }
-                        } else {
-                            for (IRepositoryViewObject repositoryObject : repositoryObjects) {
-                                RepositoryNode repositoryNode = RepositoryNodeUtilities
-                                        .getRepositoryNode(repositoryObject, false);
-                                if (repositoryNode != null && repositoryNodes.contains(repositoryNode)) {
-                                    repositoryNodes.remove(repositoryNode);
-                                    checkedNodes.remove(repositoryNode);
-                                }
-                            }
-                        }
-                    }
-                });
-                monitor.worked(90);
-                // selection
-                Display.getDefault().syncExec(new Runnable() {
-
-                    public void run() {
-                        CheckboxTreeViewer viewer = treeViewer.getFilteredCheckboxTree().getViewer();
-                        Set<RepositoryNode> nodes = new HashSet<RepositoryNode>();
-                        nodes.addAll(repositoryNodes);
-                        nodes.addAll(checkedNodes);
-                        viewer.setCheckedElements(nodes.toArray());
-
-                    }
-                });
-                ProcessUtils.clearFakeProcesses();
-                monitor.done();
-            }
-
-        };
-        final ProgressMonitorJobsDialog dialog = new ProgressMonitorJobsDialog(getShell());
-        try {
-            dialog.run(true, false, runnable);
-        } catch (InvocationTargetException e) {
-            //
-        } catch (InterruptedException e) {
-            //
-        }
-
-    }
-
-    /**
-     * Get all selected items to export.
-     * 
-     * @return
-     */
-    private Collection<Item> getSelectedItems() {
-        // add this if user use filter
-        Set<Object> checkedElements = new HashSet<Object>();
-        for (Object obj : treeViewer.getFilteredCheckboxTree().getCheckedLeafNodes()) {
-            checkedElements.add(obj);
-        }
-
-        // add this if user does not use filter
-        for (Object obj : treeViewer.getFilteredCheckboxTree().getViewer().getCheckedElements()) {
-            RepositoryNode repositoryNode = (RepositoryNode) obj;
-            if (!isRepositoryFolder(repositoryNode) && !(repositoryNode instanceof ProjectRepositoryNode)) {
-                checkedElements.add(obj);
-            }
-        }
-
-        Object[] elements = checkedElements.toArray();
-
-        Map<String, Item> items = new HashMap<String, Item>();
-        collectNodes(items, elements);
-        return items.values();
     }
 
     private void collectNodes(Map<String, Item> items, Object[] objects) {
@@ -1358,13 +1211,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         IRunnableWithProgress worker = new JobExportAction(Arrays.asList(getCheckNodes()), getSelectedJobVersion(), manager,
                 originalRootFolderName, getProcessType());
 
-        IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
         try {
-            progressService.run(false, true, worker);
+            getContainer().run(false, true, worker);
         } catch (InvocationTargetException e) {
-            ExceptionHandler.process(e);
+            MessageBoxExceptionHandler.process(e.getCause(), getShell());
+            return false;
         } catch (InterruptedException e) {
-            ExceptionHandler.process(e);
+            return false;
         }
 
         // see bug 7181
@@ -1377,7 +1230,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 if (file.exists())
                     ZipToFile.unZipFile(zipFile, file.getParentFile().getAbsolutePath());
             } catch (Exception e) {
-                MessageBoxExceptionHandler.process(e);
+                MessageBoxExceptionHandler.process(e, getShell());
                 return false;
             }
         }
@@ -1387,8 +1240,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         }
 
         // end
-        ok = true;
-        return ok;
+        return true;
     }
 
     /**
