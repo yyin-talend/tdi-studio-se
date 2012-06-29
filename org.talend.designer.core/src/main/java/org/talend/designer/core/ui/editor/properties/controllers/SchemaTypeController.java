@@ -253,7 +253,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
 
             }
 
-            if (top == 0 && node.getComponent().getName().equals(TUNISERVBTGENERIC)) { //$NON-NLS-1$
+            if (top == 0 && node.getComponent().getName().equals(TUNISERVBTGENERIC)) {
                 Button newButton = null;
                 if (resetBtn != null) {
                     newButton = resetBtn;
@@ -261,7 +261,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     newButton = btn;
                 }
                 Button retrieveSchemaButton = createAdditionalButton(subComposite, newButton, btnSize, param, RETRIEVE_SCHEMA,
-                        RETRIEVE_SCHEMA, top); //$NON-NLS-1$ //$NON-NLS-2$
+                        RETRIEVE_SCHEMA, top);
                 retrieveSchemaButton.setData(NAME, RETRIEVE_SCHEMA);
 
                 lastControlUsed = retrieveSchemaButton;
@@ -518,7 +518,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
      */
     private RepositoryNode findRepositoryNode(String label, String id, RepositoryNode root) {
         String name = (String) root.getProperties(EProperties.LABEL);
-        String rootID = (String) root.getId();
+        String rootID = root.getId();
         RepositoryNode toReturn = null;
         if (label.equals(name) && !id.equals(rootID)) {
             toReturn = root;
@@ -766,12 +766,11 @@ public class SchemaTypeController extends AbstractRepositoryController {
                                     Map<IMetadataTable, Boolean> oneInput = inputInfos.get(inputNode);
                                     inputMetaCopy = (IMetadataTable) oneInput.keySet().toArray()[0];
                                     if (count == 0) {
-                                        changeMetadataCommand = new ChangeMetadataCommand(node, param, (Node) inputNode,
-                                                inputNode.getMetadataList().get(0), inputMetaCopy, originaleOutputTable,
-                                                outputMetaCopy);
+                                        changeMetadataCommand = new ChangeMetadataCommand(node, param, inputNode, inputNode
+                                                .getMetadataList().get(0), inputMetaCopy, originaleOutputTable, outputMetaCopy);
                                     } else {
                                         changeMetadataCommand = changeMetadataCommand.chain(new ChangeMetadataCommand(node,
-                                                param, (Node) inputNode, inputNode.getMetadataList().get(0), inputMetaCopy,
+                                                param, inputNode, inputNode.getMetadataList().get(0), inputMetaCopy,
                                                 originaleOutputTable, outputMetaCopy));
                                     }
                                     count++;
@@ -914,8 +913,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     if (currentValRuleObj != null) {
                         List<IRepositoryViewObject> valRuleObjs = ValidationRulesUtil.getRelatedValidationRuleObjs(value);
                         if (!ValidationRulesUtil.isCurrentValRuleObjInList(valRuleObjs, currentValRuleObj)) {
-                            if (!MessageDialog.openConfirm(button.getShell(), Messages.getString("SchemaTypeController.0"), //$NON-NLS-1$
-                                    Messages.getString("SchemaTypeController.3"))) { //$NON-NLS-1$
+                            if (!MessageDialog.openConfirm(button.getShell(),
+                                    Messages.getString("SchemaTypeController.validationrule.title.confirm"), //$NON-NLS-1$
+                                    Messages.getString("SchemaTypeController.validationrule.selectMetadataMsg"))) { //$NON-NLS-1$
                                 return null;
                             } else {
                                 isValRulesLost = true;
@@ -937,8 +937,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     cc.add(changeMetadataCommand);
 
                     if (isValRulesLost) {
-                        cc.add(new PropertyChangeCommand(elem, EParameterName.VALIDATION_RULES.getName(), false));
-                        cc.add(new PropertyChangeCommand(elem, EParameterName.REPOSITORY_VALIDATION_RULE_TYPE.getName(), "")); //$NON-NLS-1$
+                        ValidationRulesUtil.appendRemoveValidationRuleCommands(cc, elem);
                     }
 
                     return cc;
@@ -1011,20 +1010,28 @@ public class SchemaTypeController extends AbstractRepositoryController {
             }
         }
 
+        // if change to build-in, unuse the validation rule if the component has.
+        boolean isValRulesLost = false;
+        IRepositoryViewObject currentValRuleObj = ValidationRulesUtil.getCurrentValidationRuleObjs(elem);
+        if (value.equals(EmfComponent.BUILTIN) && currentValRuleObj != null) {
+            if (!MessageDialog.openConfirm(combo.getShell(),
+                    Messages.getString("SchemaTypeController.validationrule.title.confirm"), //$NON-NLS-1$
+                    Messages.getString("SchemaTypeController.validationrule.selectBuildInMsg"))) { //$NON-NLS-1$
+                return null;
+            } else {
+                isValRulesLost = true;
+            }
+        }
+
         org.talend.core.model.metadata.builder.connection.Connection connection = null;
 
         if (elem instanceof Node) {
             Node node = (Node) elem;
             Command baseCommand = null;
             boolean isReadOnly = false;
-            boolean unuseValRule = false;
             String newRepositoryIdValue = null;
             if (node.getMetadataFromConnector(param.getContext()) != null) {
                 isReadOnly = node.getMetadataFromConnector(param.getContext()).isReadOnly();
-            }
-            // if change to build-in, unuse the validation rule if the component has.
-            if (value.equals(EmfComponent.BUILTIN)) {
-                unuseValRule = true;
             }
             if (value.equals(EmfComponent.BUILTIN) && isReadOnly && !"tLogCatcher".equals(node.getComponent().getName()) //$NON-NLS-1$
                     && !"tStatCatcher".equals(node.getComponent().getName())) { //$NON-NLS-1$
@@ -1080,10 +1087,10 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 String schemaSelected = (String) repositorySchemaType.getValue();
 
                 /* value can be devided means the value like "connectionid - label" */
-                String[] keySplitValues = schemaSelected.toString().split(" - "); //$NON-NLS-N$ //$NON-NLS-1$
+                String[] keySplitValues = schemaSelected.toString().split(" - "); //$NON-NLS-1$
                 if (keySplitValues.length > 1) {
-                    String connectionId = keySplitValues[0]; //$NON-NLS-N$
-                    String tableLabel = keySplitValues[1]; //$NON-NLS-N$
+                    String connectionId = keySplitValues[0];
+                    String tableLabel = keySplitValues[1];
                     IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                     Item item = null;
                     try {
@@ -1156,9 +1163,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 changeMetadataCommand.setConnection(connection);
                 cc.add(changeMetadataCommand);
             }
-            if (unuseValRule) {
-                cc.add(new PropertyChangeCommand(elem, EParameterName.VALIDATION_RULES.getName(), false));
-                cc.add(new PropertyChangeCommand(elem, EParameterName.REPOSITORY_VALIDATION_RULE_TYPE.getName(), "")); //$NON-NLS-1$
+            // unuse the validation rules of the component.
+            if (isValRulesLost) {
+                ValidationRulesUtil.appendRemoveValidationRuleCommands(cc, elem);
             }
 
             return cc;
