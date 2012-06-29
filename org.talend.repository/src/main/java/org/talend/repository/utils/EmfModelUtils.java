@@ -16,9 +16,10 @@ public class EmfModelUtils {
 	public static final NodeType getComponentByName(ProcessItem processItem, String... names) {
         for (Object o : processItem.getProcess().getNode()) {
             if (o instanceof NodeType) {
+            	NodeType node = (NodeType) o;
             	for (String name : names) {
-                    if (((NodeType) o).getComponentName().equals(name)) {
-                        return (NodeType) o;
+                    if (node.getComponentName().equals(name) && isComponentActive(node)) {
+                        return node;
                     }
             	}
             }
@@ -31,13 +32,10 @@ public class EmfModelUtils {
         for (Object o : processItem.getProcess().getNode()) {
             if (o instanceof NodeType) {
             	NodeType node = (NodeType) o;
-            	// skip deactivated components
-            	if (null == findElementParameterByName("ACTIVATE", node)) {
-                	for (String name : names) {
-                        if (node.getComponentName().equals(name)) {
-                            result.add(node);
-                        }
-                	}
+            	for (String name : names) {
+                    if (node.getComponentName().equals(name) && isComponentActive(node)) {
+                        result.add(node);
+                    }
             	}
             }
         }
@@ -74,7 +72,7 @@ public class EmfModelUtils {
         return Boolean.parseBoolean(cpType.getValue());
     }
 
-	private static final  ElementParameterType findElementParameterByName(String paramName, NodeType node) {
+	private static final ElementParameterType findElementParameterByName(String paramName, NodeType node) {
         for (Object obj : node.getElementParameter()) {
             ElementParameterType cpType = (ElementParameterType) obj;
             if (paramName.equals(cpType.getName())) {
@@ -83,6 +81,10 @@ public class EmfModelUtils {
         }
         return null;
     }
+
+	private static final boolean isComponentActive(NodeType node) {
+		return (null == findElementParameterByName("ACTIVATE", node));
+	}
 
     /**
     *
