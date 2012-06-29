@@ -807,8 +807,8 @@ public class LoginComposite extends Composite {
                                 } else if (techName.equals("TDQEEDEMOJAVA")) { //$NON-NLS-1$
                                     pluginID = "org.talend.datacleansing.core.ui"; //$NON-NLS-1$
                                 }
-                                if(demoProjectBean.getPluginId()!=null){
-                                    pluginID=demoProjectBean.getPluginId();
+                                if (demoProjectBean.getPluginId() != null) {
+                                    pluginID = demoProjectBean.getPluginId();
                                 }
                                 Bundle bundle = Platform.getBundle(pluginID);
 
@@ -1964,6 +1964,8 @@ public class LoginComposite extends Composite {
 
     private void updateVisible() {
         List<ILoginConnectionService> loginConnectionServices = LoginConnectionManager.getRemoteConnectionService();
+        final boolean localConn = getConnection().getRepositoryId() == null
+                || getConnection().getRepositoryId().equals(RepositoryConstants.REPOSITORY_LOCAL_ID);
         String errorMsg = null;
         if (loginConnectionServices.size() > 0 && getConnection() != null && getConnection().isComplete()) {
             for (ILoginConnectionService loginConncetion : loginConnectionServices) {
@@ -2026,6 +2028,7 @@ public class LoginComposite extends Composite {
             restartBut.setVisible(false);
         } else if (!isWorkSpaceSame()) {
             manageViewer.getControl().setEnabled(false);
+            connectionsViewer.getControl().setEnabled(false);
             manageProjectsButton.setEnabled(false);
             openProjectBtn.setEnabled(false);
             if (projectViewer != null) {
@@ -2070,7 +2073,7 @@ public class LoginComposite extends Composite {
             }
             restartBut.setVisible(false);
         }
-        if (PluginChecker.isSVNProviderPluginLoaded()) {
+        if (PluginChecker.isSVNProviderPluginLoaded() && !localConn) {
             manageViewer.getControl().setEnabled(true);
             manageProjectsButton.setEnabled(true);
         }
