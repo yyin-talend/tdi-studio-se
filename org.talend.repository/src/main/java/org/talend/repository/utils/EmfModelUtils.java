@@ -30,10 +30,14 @@ public class EmfModelUtils {
         List<NodeType> result = new ArrayList<NodeType>();
         for (Object o : processItem.getProcess().getNode()) {
             if (o instanceof NodeType) {
-            	for (String name : names) {
-                    if (((NodeType) o).getComponentName().equals(name)) {
-                        result.add((NodeType) o);
-                    }
+            	NodeType node = (NodeType) o;
+            	// skip deactivated components
+            	if (null == findElementParameterByName("ACTIVATE", node)) {
+                	for (String name : names) {
+                        if (node.getComponentName().equals(name)) {
+                            result.add(node);
+                        }
+                	}
             	}
             }
         }
