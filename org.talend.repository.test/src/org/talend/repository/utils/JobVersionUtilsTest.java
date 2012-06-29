@@ -38,11 +38,11 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
@@ -131,7 +131,7 @@ public class JobVersionUtilsTest {
         ProcessItem processItem = PropertiesFactory.eINSTANCE.createProcessItem();
         processItem.setProperty(property);
 
-        repositoryFactory = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
+        repositoryFactory = RepositoryPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
 
         property.setId(repositoryFactory.getNextId());
         property.setLabel(lable);
