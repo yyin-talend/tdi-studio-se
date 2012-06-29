@@ -10,15 +10,18 @@ import org.talend.repository.utils.EmfModelUtils;
 // OSGi DataSource
 public class DataSourceConfig {
 
-	private String additionalJobBeanParams = "";
-	private String additionalJobBundleConfig = "";
+	private static final String DB_JDBC = "tJDBCConnection"; //$NON-NLS-1$
+	private static final String DB_MYSQL = "tMysqlConnection"; //$NON-NLS-1$
+
+	private String additionalJobBeanParams = ""; //$NON-NLS-1$
+	private String additionalJobBundleConfig = ""; //$NON-NLS-1$
 
     public static boolean isDBConnectionJob(ProcessItem processItem) {
         return !getDBConnectionComponents(processItem).isEmpty();
     }
 
     private static Collection<NodeType> getDBConnectionComponents(ProcessItem processItem) {
-    	return EmfModelUtils.getComponentsByName(processItem, "tJDBCConnection", "tMysqlConnection");
+    	return EmfModelUtils.getComponentsByName(processItem, DB_JDBC, DB_MYSQL);
     }
 
 	public DataSourceConfig(ProcessItem processItem) {
@@ -36,30 +39,16 @@ public class DataSourceConfig {
             		"\n\t\t\t\t<entry key=\"" + id + "\" value-ref=\"" + beanPool + "\" />";
 
         		String beanDataSource = id + "DataSource";
-        		String url = EmfModelUtils.computeTextElementValue("URL", dbComponent);
-				URI jdbcURI = URI.create(url.substring(6, url.length() - 1)); // remove jdbc: and quotes
+				additionalJobBundleConfig += getDataSourceConfig(dbComponent, beanDataSource);
 				additionalJobBundleConfig +=
-              		  "\n\t<bean id=\"" + beanDataSource + "\" class=\"org.apache.derby.jdbc.ClientConnectionPoolDataSource\">"
-                      + "\n\t\t<property name=\"serverName\" value=\"" + jdbcURI.getHost() + "\"/>"
-                      + "\n\t\t<property name=\"portNumber\" value=\"" + jdbcURI.getPort() + "\"/>"
-                      + "\n\t\t<property name=\"databaseName\" value=\"" + jdbcURI.getPath() + "\"/>"
-                      + "\n\t\t<property name=\"user\" value=" + EmfModelUtils.computeTextElementValue("USER", dbComponent) + "/>"
-                      + "\n\t\t<property name=\"password\" value=" + EmfModelUtils.computeTextElementValue("PASS", dbComponent) + "/>"
-                      + "\n\t</bean>"
-                      + "\n\t<bean id=\"" + beanPool + "\" class=\"org.apache.commons.dbcp.datasources.SharedPoolDataSource\" destroy-method=\"close\">"
-                      + "\n\t\t<property name=\"connectionPoolDataSource\" ref=\"" + beanDataSource + "\"/>"
-                      + "\n\t</bean>";
+			                "\n\t<bean id=\"" + beanPool + "\" class=\"org.apache.commons.dbcp.datasources.SharedPoolDataSource\" destroy-method=\"close\">"
+	                      + "\n\t\t<property name=\"connectionPoolDataSource\" ref=\"" + beanDataSource + "\"/>"
+	                      + "\n\t</bean>";
 			}
         	additionalJobBeanParams +=
         		  "\n\t\t\t</map>"
         		+ "\n\t\t</property>";
         }
-//        <bean id="mysqlDataSource" class="com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource">
-//        <property name="url" value="${datasource.url}"/>
-//        <property name="user" value="${datasource.username}"/>
-//        <property name="password" value="${datasource.password}"/>
-//	</bean>
-
 	}
 
 	public String getAdditionalJobBeanParams() {
@@ -69,4 +58,46 @@ public class DataSourceConfig {
 	public String getAdditionalJobBundleConfig() {
 		return additionalJobBundleConfig;
 	}
+
+	private static String getDataSourceConfig(NodeType dbComponent, String beanDataSource) {
+		String componentName = dbComponent.getComponentName();
+		if(DB_JDBC.equals(componentName)) {
+    		String url = unquote(EmfModelUtils.computeTextElementValue("URL", dbComponent));
+			URI jdbcURI = URI.create(url.substring("jdbc:".length()));
+			if ("derby".equals(jdbcURI.getScheme())) {
+	    		return "\n\t<bean id=\"" + beanDataSource + "\" class=\"org.apache.derby.jdbc.ClientConnectionPoolDataSource\">"
+	    	              + "\n\t\t<property name=\"serverName\" value=\"" + jdbcURI.getHost() + "\"/>"
+	    	              + "\n\t\t<property name=\"portNumber\" value=\"" + jdbcURI.getPort() + "\"/>"
+	    	              + "\n\t\t<property name=\"databaseName\" value=\"" + jdbcURI.getPath() + "\"/>"
+	    	              + "\n\t\t<property name=\"user\" value=" + EmfModelUtils.computeTextElementValue("USER", dbComponent) + "/>"
+	    	              + "\n\t\t<property name=\"password\" value=" + EmfModelUtils.computeTextElementValue("PASS", dbComponent) + "/>"
+	    	              + "\n\t</bean>";
+			} else if ("mysql".equals(jdbcURI.getScheme())) {
+				return getMysqlDataSourceConfig(dbComponent, beanDataSource, url);
+			} else {
+				throw new IllegalArgumentException("Unsupported database for tJDBCConnection component: " + jdbcURI.getScheme());
+			}
+		} else if(DB_MYSQL.equals(componentName)) {
+			return getMysqlDataSourceConfig(dbComponent, beanDataSource, null);
+		} else {
+			throw new IllegalArgumentException("Unsupported database component: " + componentName);
+		}
+	}
+
+	private static String getMysqlDataSourceConfig(NodeType dbComponent, String beanDataSource, String url) {
+		if (null == url) {
+			url = "jdbc:mysql://" + unquote(EmfModelUtils.computeTextElementValue("HOST", dbComponent))
+					+ ':' + unquote(EmfModelUtils.computeTextElementValue("PORT", dbComponent))
+					+ '/' + unquote(EmfModelUtils.computeTextElementValue("DBNAME", dbComponent));
+		}
+		return "\n\t<bean id=\"" + beanDataSource + "\" class=\"com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource\">"
+	        + "\n\t\t<property name=\"url\" value=\"" + url + "\"/>"
+	        + "\n\t\t<property name=\"user\" value=" + EmfModelUtils.computeTextElementValue("USER", dbComponent) + "/>"
+	        + "\n\t\t<property name=\"password\" value=" + EmfModelUtils.computeTextElementValue("PASS", dbComponent) + "/>"
+	        + "\n\t</bean>";
+	}
+
+	private static final String unquote(String string) {
+        return string.substring(1, string.length() - 1);
+    }
 }
