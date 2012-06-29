@@ -2598,7 +2598,22 @@ public class DataProcess {
         INode afterMergeStart = hashNode.getSubProcessStartNode(false);
         INode mergeSubNodeStart = mergeDataNode.getSubProcessStartNode(false);
 
+        boolean changeStartNode = false;
         if (mergeDataNode.getLinkedMergeInfo() == null || mergeDataNode.getLinkedMergeInfo().isEmpty()) {
+            changeStartNode = true;
+        } else {
+            // if the next merge node don't have output connection, such as tFileOutputMSXML, means the next merge node
+            // will not be changed to tHash component. So, this node should be the start node
+            Map<INode, Integer> nextMergeNodes = mergeDataNode.getLinkedMergeInfo();
+            if (nextMergeNodes.size() == 1) {
+                INode followMergeNode = nextMergeNodes.keySet().iterator().next();
+                List nextMergeOutputConnections = NodeUtil.getOutgoingConnections(followMergeNode, IConnectionCategory.DATA);
+                if (nextMergeOutputConnections == null || nextMergeOutputConnections.isEmpty()) {
+                    changeStartNode = true;
+                }
+            }
+        }
+        if (changeStartNode) {
             INode oldStartNode = null;
             if (mergeDataNode.isThereLinkWithHash()) {
                 oldStartNode = ((AbstractNode) mergeDataNode.getSubProcessStartNode(false));
