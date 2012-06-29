@@ -93,11 +93,11 @@ public class PromptDefaultValueDialog extends Dialog {
         table.setHeaderVisible(true);
 
         TableColumn nameColumn = new TableColumn(table, SWT.NONE);
-        nameColumn.setWidth(120);
+        nameColumn.setWidth(89);
         nameColumn.setText(Messages.getString("PromptDefaultValueDialog.column")); //$NON-NLS-1$
 
         TableColumn defaultColumn = new TableColumn(table, SWT.NONE);
-        defaultColumn.setWidth(108);
+        defaultColumn.setWidth(139);
         defaultColumn.setText(Messages.getString("PromptDefaultValueDialog.defaultValue")); //$NON-NLS-1$
         editors = new ArrayList<TableEditor>();
     }
