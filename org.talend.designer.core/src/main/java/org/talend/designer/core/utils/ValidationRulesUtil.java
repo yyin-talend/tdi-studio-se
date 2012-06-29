@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -51,7 +53,9 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.NodeConnector;
+import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
+import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.process.EDatabaseComponentName;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -499,5 +503,22 @@ public class ValidationRulesUtil {
                 }
             }
         }
+    }
+
+    public static void appendRemoveValidationRuleCommands(CompoundCommand cc, IElement elem) {
+        List<Command> commands = getRemoveValidationRuleCommands(elem);
+        for (Command command : commands) {
+            cc.add(command);
+        }
+    }
+
+    public static List<Command> getRemoveValidationRuleCommands(IElement elem) {
+        List<Command> commands = new ArrayList<Command>();
+        commands.add(new PropertyChangeCommand(elem, EParameterName.VALIDATION_RULES.getName(), false));
+        commands.add(new ChangeValuesFromRepository(elem, null, "VALIDATION_RULE_TYPE:VALIDATION_RULE_TYPE", //$NON-NLS-1$
+                EmfComponent.BUILTIN));
+        commands.add(new PropertyChangeCommand(elem, EParameterName.REPOSITORY_VALIDATION_RULE_TYPE.getName(), "")); //$NON-NLS-1$
+
+        return commands;
     }
 }

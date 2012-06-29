@@ -114,6 +114,7 @@ import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
+import org.talend.core.model.properties.ValidationRulesConnectionItem;
 import org.talend.core.model.repository.DragAndDropManager;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -163,6 +164,7 @@ import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.DesignerUtilities;
+import org.talend.designer.core.utils.ValidationRulesUtil;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
@@ -483,6 +485,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     createQuery(getSelection().getFirstElement(), getTargetEditPart());
                     createProperty(getSelection().getFirstElement(), getTargetEditPart());
                     createChildJob(getSelection().getFirstElement(), getTargetEditPart());
+                    createValidationRule(getSelection().getFirstElement(), getTargetEditPart());
                 }
             }
         }
@@ -640,6 +643,40 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     }
 
     /**
+     * DOC ycbai Comment method "createValidationRule".
+     * 
+     * @param dragModel
+     * @param targetEditPart
+     */
+    private void createValidationRule(Object dragModel, EditPart targetEditPart) {
+        if (!(dragModel instanceof RepositoryNode && targetEditPart instanceof NodeContainerPart)) {
+            return;
+        }
+        RepositoryNode dragNode = (RepositoryNode) dragModel;
+        NodeContainerPart nodePart = (NodeContainerPart) targetEditPart;
+        if (dragNode.getObject().getProperty().getItem() instanceof ValidationRulesConnectionItem) {
+            Node node = (Node) nodePart.getNodePart().getModel();
+            List<IRepositoryViewObject> valRuleObjs = ValidationRulesUtil.getRelatedValidationRuleObjs(node);
+            IRepositoryViewObject valRuleObj = dragNode.getObject();
+            String schemaType = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
+            if (EmfComponent.BUILTIN.equals(schemaType)
+                    || !ValidationRulesUtil.isCurrentValRuleObjInList(valRuleObjs, valRuleObj)) {
+                MessageDialog.openWarning(editor.getSite().getShell(),
+                        Messages.getString("SchemaTypeController.validationrule.title.warn"), //$NON-NLS-1$
+                        Messages.getString("SchemaTypeController.validationrule.cannotApplyValMsg")); //$NON-NLS-1$
+                return;
+            }
+            CompoundCommand cc = new CompoundCommand();
+            cc.add(new PropertyChangeCommand(node, EParameterName.VALIDATION_RULES.getName(), true));
+            cc.add(new ChangeValuesFromRepository(node, null, "VALIDATION_RULE_TYPE:VALIDATION_RULE_TYPE", //$NON-NLS-1$
+                    EmfComponent.REPOSITORY));
+            cc.add(new PropertyChangeCommand(node, EParameterName.REPOSITORY_VALIDATION_RULE_TYPE.getName(), valRuleObj
+                    .getProperty().getId()));
+            execCommandStack(cc);
+        }
+    }
+
+    /**
      * DOC qwei Comment method "createChildJob".
      */
     private void createChildJob(Object dragModel, EditPart targetEditPart) {
@@ -670,12 +707,39 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         }
         RepositoryNode dragNode = (RepositoryNode) dragModel;
         NodeContainerPart nodePart = (NodeContainerPart) targetEditPart;
+        Node node = (Node) nodePart.getNodePart().getModel();
+        IRepositoryViewObject object = dragNode.getObject();
 
         if (dragNode.getObject().getProperty().getItem() instanceof ConnectionItem) {
+            CompoundCommand cc = new CompoundCommand();
+            boolean isValRulesLost = false;
+            if (dragNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE) {
+                IRepositoryViewObject currentValRuleObj = ValidationRulesUtil.getCurrentValidationRuleObjs(node);
+                if (currentValRuleObj != null) {
+                    String schema = object.getProperty().getId() + " - " + object.getLabel(); //$NON-NLS-1$
+                    List<IRepositoryViewObject> valRuleObjs = ValidationRulesUtil.getRelatedValidationRuleObjs(schema);
+                    if (!ValidationRulesUtil.isCurrentValRuleObjInList(valRuleObjs, currentValRuleObj)) {
+                        if (!MessageDialog.openConfirm(editor.getSite().getShell(),
+                                Messages.getString("SchemaTypeController.validationrule.title.confirm"), //$NON-NLS-1$
+                                Messages.getString("SchemaTypeController.validationrule.selectMetadataMsg"))) { //$NON-NLS-1$
+                            isValRulesLost = false;
+                            return;
+                        } else {
+                            isValRulesLost = true;
+                        }
+                    }
+                }
+            }
             ConnectionItem connectionItem = (ConnectionItem) dragNode.getObject().getProperty().getItem();
-            Command command = getChangeMetadataCommand(dragNode, (Node) nodePart.getNodePart().getModel(), connectionItem);
+            Command command = getChangeMetadataCommand(dragNode, node, connectionItem);
             if (command != null) {
-                execCommandStack(command);
+                cc.add(command);
+            }
+            if (isValRulesLost) {
+                ValidationRulesUtil.appendRemoveValidationRuleCommands(cc, node);
+            }
+            if (cc.getCommands().size() > 0) {
+                execCommandStack(cc);
             }
         }
     }
