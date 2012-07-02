@@ -10,12 +10,15 @@
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
 		java.util.List
+		java.util.Map
 	"
 %>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+
+List<Map<String, String>> relationshipMappings = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__UPSERT_RELATION__");
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -48,9 +51,30 @@ com.csvreader.CsvWriter csvWriter_<%=cid%> = new com.csvreader.CsvWriter(new jav
 	                    
 	            			for (int i = 0; i < sizeColumns; i++) {
 	                			IMetadataColumn column = columns.get(i);
-							%>
+	                			
+	                			boolean reference = false;
+	                			String lookupFieldName = null;
+	                			String externalIdFromLookupField = null;
+	                			
+	                			for(Map<String,String> row : relationshipMappings) {
+	                				String columnName = row.get("COLUMN_NAME");
+	                				if(columnName.equals(column.getLabel())) {
+	                					lookupFieldName = row.get("LOOKUP_FIELD_NAME");
+										externalIdFromLookupField = row.get("LOOKUP_FIELD_EXTERNAL_ID_NAME");
+	                					reference = true;
+										break;
+									}
+								}
+								
+								if(!reference) {
+%>
 								header_<%=cid%>[<%=i%>] = "<%=column.getLabel() %>";
-							<%
+<%
+								} else {
+%>
+								header_<%=cid%>[<%=i%>] = <%=lookupFieldName %> + "." + <%=externalIdFromLookupField %>;
+<%
+								}
 							}
 						}
 					}
