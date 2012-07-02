@@ -1964,16 +1964,19 @@ public class LoginComposite extends Composite {
 
     private void updateVisible() {
         List<ILoginConnectionService> loginConnectionServices = LoginConnectionManager.getRemoteConnectionService();
-        final boolean localConn = getConnection().getRepositoryId() == null
-                || getConnection().getRepositoryId().equals(RepositoryConstants.REPOSITORY_LOCAL_ID);
+        boolean localConn = false;
         String errorMsg = null;
-        if (loginConnectionServices.size() > 0 && getConnection() != null && getConnection().isComplete()) {
-            for (ILoginConnectionService loginConncetion : loginConnectionServices) {
-                errorMsg = loginConncetion.checkConnectionValidation(getConnection().getName(), getConnection().getDescription(),
-                        getConnection().getUser(), getConnection().getPassword(), getConnection().getWorkSpace(), getConnection()
-                                .getDynamicFields().get(RepositoryConstants.REPOSITORY_URL));
-                if (StringUtils.isEmpty(errorMsg)) {
-                    break;
+        if (getConnection() != null) {
+            localConn = getConnection().getRepositoryId() == null
+                    || getConnection().getRepositoryId().equals(RepositoryConstants.REPOSITORY_LOCAL_ID);
+            if (loginConnectionServices.size() > 0 && getConnection().isComplete()) {
+                for (ILoginConnectionService loginConncetion : loginConnectionServices) {
+                    errorMsg = loginConncetion.checkConnectionValidation(getConnection().getName(), getConnection()
+                            .getDescription(), getConnection().getUser(), getConnection().getPassword(), getConnection()
+                            .getWorkSpace(), getConnection().getDynamicFields().get(RepositoryConstants.REPOSITORY_URL));
+                    if (StringUtils.isEmpty(errorMsg)) {
+                        break;
+                    }
                 }
             }
         }
