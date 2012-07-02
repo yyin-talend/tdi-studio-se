@@ -289,7 +289,7 @@ public class ExportTreeViewer {
         return false;
     }
 
-    private void checkSelection() {
+    protected void checkSelection() {
         if (jobScriptExportWizardPage == null) {
             return;
         }
