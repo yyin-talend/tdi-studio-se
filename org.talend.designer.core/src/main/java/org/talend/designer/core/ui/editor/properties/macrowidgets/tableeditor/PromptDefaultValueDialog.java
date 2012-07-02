@@ -69,7 +69,7 @@ public class PromptDefaultValueDialog extends Dialog {
         GridData data = new GridData(GridData.FILL_BOTH);
         // size of dialog
         data.heightHint = 240;
-        data.widthHint = 260;
+        data.widthHint = 290;
         composite.setLayoutData(data);
         createTable(composite);
 
@@ -95,11 +95,11 @@ public class PromptDefaultValueDialog extends Dialog {
         table.setHeaderVisible(true);
 
         TableColumn nameColumn = new TableColumn(table, SWT.NONE);
-        nameColumn.setWidth(120);
+        nameColumn.setWidth(119);
         nameColumn.setText(Messages.getString("PromptDefaultValueDialog.column")); //$NON-NLS-1$
 
         TableColumn defaultColumn = new TableColumn(table, SWT.NONE);
-        defaultColumn.setWidth(108);
+        defaultColumn.setWidth(139);
         defaultColumn.setText(Messages.getString("PromptDefaultValueDialog.defaultValue")); //$NON-NLS-1$
         editors = new ArrayList<TableEditor>();
     }
