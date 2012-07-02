@@ -233,6 +233,22 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     }
 
     @Override
+    protected ExportTreeViewer getExportTree() {
+        return new ExportTreeViewer(selection, this) {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.talend.repository.ui.wizards.exportjob.ExportTreeViewer#checkSelection()
+             */
+            @Override
+            protected void checkSelection() {
+                checkExport();
+            }
+        };
+    }
+
+    @Override
     public void createControl(Composite parent) {
 
         initializeDialogUnits(parent);
