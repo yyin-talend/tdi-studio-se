@@ -914,8 +914,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     if (currentValRuleObj != null) {
                         List<IRepositoryViewObject> valRuleObjs = ValidationRulesUtil.getRelatedValidationRuleObjs(value);
                         if (!ValidationRulesUtil.isCurrentValRuleObjInList(valRuleObjs, currentValRuleObj)) {
-                            if (!MessageDialog.openConfirm(button.getShell(), Messages.getString("SchemaTypeController.0"), //$NON-NLS-1$
-                                    Messages.getString("SchemaTypeController.3"))) { //$NON-NLS-1$
+                            if (!MessageDialog.openConfirm(button.getShell(),
+                                    Messages.getString("SchemaTypeController.validationrule.title.confirm"), //$NON-NLS-1$
+                                    Messages.getString("SchemaTypeController.validationrule.selectMetadataMsg"))) { //$NON-NLS-1$
                                 return null;
                             } else {
                                 isValRulesLost = true;
@@ -937,8 +938,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     cc.add(changeMetadataCommand);
 
                     if (isValRulesLost) {
-                        cc.add(new PropertyChangeCommand(elem, EParameterName.VALIDATION_RULES.getName(), false));
-                        cc.add(new PropertyChangeCommand(elem, EParameterName.REPOSITORY_VALIDATION_RULE_TYPE.getName(), "")); //$NON-NLS-1$
+                        ValidationRulesUtil.appendRemoveValidationRuleCommands(cc, elem);
                     }
 
                     return cc;
@@ -1011,20 +1011,28 @@ public class SchemaTypeController extends AbstractRepositoryController {
             }
         }
 
+        // if change to build-in, unuse the validation rule if the component has.
+        boolean isValRulesLost = false;
+        IRepositoryViewObject currentValRuleObj = ValidationRulesUtil.getCurrentValidationRuleObjs(elem);
+        if (value.equals(EmfComponent.BUILTIN) && currentValRuleObj != null) {
+            if (!MessageDialog.openConfirm(combo.getShell(),
+                    Messages.getString("SchemaTypeController.validationrule.title.confirm"), //$NON-NLS-1$
+                    Messages.getString("SchemaTypeController.validationrule.selectBuildInMsg"))) { //$NON-NLS-1$
+                return null;
+            } else {
+                isValRulesLost = true;
+            }
+        }
+
         org.talend.core.model.metadata.builder.connection.Connection connection = null;
 
         if (elem instanceof Node) {
             Node node = (Node) elem;
             Command baseCommand = null;
             boolean isReadOnly = false;
-            boolean unuseValRule = false;
             String newRepositoryIdValue = null;
             if (node.getMetadataFromConnector(param.getContext()) != null) {
                 isReadOnly = node.getMetadataFromConnector(param.getContext()).isReadOnly();
-            }
-            // if change to build-in, unuse the validation rule if the component has.
-            if (value.equals(EmfComponent.BUILTIN)) {
-                unuseValRule = true;
             }
             if (value.equals(EmfComponent.BUILTIN) && isReadOnly && !"tLogCatcher".equals(node.getComponent().getName()) //$NON-NLS-1$
                     && !"tStatCatcher".equals(node.getComponent().getName())) { //$NON-NLS-1$
@@ -1156,9 +1164,9 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 changeMetadataCommand.setConnection(connection);
                 cc.add(changeMetadataCommand);
             }
-            if (unuseValRule) {
-                cc.add(new PropertyChangeCommand(elem, EParameterName.VALIDATION_RULES.getName(), false));
-                cc.add(new PropertyChangeCommand(elem, EParameterName.REPOSITORY_VALIDATION_RULE_TYPE.getName(), "")); //$NON-NLS-1$
+            // unuse the validation rules of the component.
+            if (isValRulesLost) {
+                ValidationRulesUtil.appendRemoveValidationRuleCommands(cc, elem);
             }
 
             return cc;
