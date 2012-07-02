@@ -49,3 +49,7 @@ imports="
 				throw new RuntimeException("Login failed! Please check the username,password and endpoint");
 			}
         <%}%>
+        
+        <%if("upsert".equals(action)){%>
+ 			org.apache.axiom.om.OMFactory fac_<%=cid%> = org.apache.axiom.om.OMAbstractFactory.getOMFactory();       
+        <%}%>
