@@ -1684,6 +1684,7 @@ public class CLASS {
     }
     
     public class IngresManager extends Manager {
+    	boolean isTrimSpace = true;
         public IngresManager(String cid) {
             super(cid);
         }
@@ -1696,6 +1697,13 @@ public class CLASS {
         protected String getRProtectedChar() {
             return "\\\"";
         }  
+        protected boolean getTrimSpace() {
+            return isTrimSpace;
+        }
+        protected boolean setTrimSpace(boolean isTrimSpace) {
+        	this.isTrimSpace = isTrimSpace;
+            return isTrimSpace;
+        }
         
     	public String getCopyFromCSVSQL(List<IMetadataColumn> columnList, String fieldDelimiter, 
 				String recordDelimiter, String nullIndicator) {		
@@ -1710,7 +1718,7 @@ public class CLASS {
 				"\n\"\\n" +
 				  column.getOriginalDbColumnName() 
 				+ "="
-				+ "char(0)");
+				+ (!getTrimSpace() && ("VARCHAR".equalsIgnoreCase(column.getType()) || "NVARCHAR".equalsIgnoreCase(column.getType()) || "TEXT".equalsIgnoreCase(column.getType())) ? "text(0)" : "char(0)"));
 			
 				// add these only if not last entry
 				if (counter < columnList.size()){

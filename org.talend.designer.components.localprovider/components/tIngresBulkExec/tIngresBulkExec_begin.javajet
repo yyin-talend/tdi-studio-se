@@ -52,6 +52,7 @@
 	String rejectFile = ElementParameterParser.getValue(node,"__REJECT_ROW_FILE__");
 	String rollBack = ElementParameterParser.getValue(node,"__ROLLBACK_ACTION__");
 	String nullIndicator = ElementParameterParser.getValue(node,"__NULL_INDICATOR__");
+	boolean trimSpace = ("true").equals(ElementParameterParser.getValue(node,"__TRIM_SPACE__"));
 	String allocation = ElementParameterParser.getValue(node,"__ALLOCATION__");
 	String extendOpt = ElementParameterParser.getValue(node,"__EXTEND__");
 	String fillFactor = ElementParameterParser.getValue(node,"__FILLFACTOR__");
@@ -219,7 +220,7 @@
 		sqlBuffer_<%=cid %>.append("\n\n");
 
 		// Call Ingres DB manager object to retrieve SQL for COPY
-
+		<%((IngresManager)manager).setTrimSpace(trimSpace);%>
 		String sqlString_<%=cid %>  = "<%=manager.getCopyFromCSVSQL(columnList, fieldDelimiter, recordDelimiter, nullIndicator)%>";
 		sqlBuffer_<%=cid %>.append(sqlString_<%=cid %>);
 		sqlBuffer_<%=cid %>.append("\nFROM ");
