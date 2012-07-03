@@ -1963,10 +1963,18 @@ public class CLASS {
                 	setStmt.append("if(" + incomingConnName + "." + column.getName() +"!=null && "+ incomingConnName + "." + column.getName() + ".getTime() < year2_"+cid+"){");
                 	setStmt.append(prefix + cid + ".setString(" + index + dynamic + ",TalendDate.formatDate("+pattern+", "+incomingConnName+"."+column.getName()+"));\r\n");
                 	setStmt.append("}else{\r\n");
-					setStmt.append(prefix + cid + ".setTimestamp(" + index + dynamic + ", new java.sql.Timestamp(" + incomingConnName + "." + column.getName() + ".getTime()));\r\n");
+					setStmt.append(prefix + cid + ".setTimestamp(" + index + dynamic + ", new java.sql.Timestamp(" + incomingConnName + "." + column.getName() + ".getTime())");
+					if("DATETIMEOFFSET".equals(dbType)) {
+						setStmt.append(",calendar_datetimeoffset_").append(cid);
+					}
+					setStmt.append(");\r\n");
                 	setStmt.append("}\r\n");
                 }else{
-                	setStmt.append(prefix + cid + ".setTimestamp(" + index + dynamic + ", new java.sql.Timestamp(" + incomingConnName + "." + column.getName() + ".getTime()));\r\n");
+                	setStmt.append(prefix + cid + ".setTimestamp(" + index + dynamic + ", new java.sql.Timestamp(" + incomingConnName + "." + column.getName() + ".getTime())");
+                	if("DATETIMEOFFSET".equals(dbType)) {
+						setStmt.append(",calendar_datetimeoffset_").append(cid);
+					}
+                	setStmt.append(");\r\n");
                 }
                 setStmt.append("} else {\r\n");
                 setStmt.append(prefix + cid + ".setNull(" + index + dynamic + ", java.sql.Types.DATE);\r\n");
