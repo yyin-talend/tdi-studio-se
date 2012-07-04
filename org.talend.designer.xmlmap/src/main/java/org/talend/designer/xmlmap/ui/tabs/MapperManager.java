@@ -191,7 +191,7 @@ public class MapperManager implements ISelectionChangedListener {
                         }
                     }
                     if (!isInputMain) {
-                        refreshStyledTextEditor(model);
+                        refreshStyledTextEditor((AbstractNodePart) firstElement);
                     } else {
                         refreshStyledTextEditor(null);
                     }
@@ -256,13 +256,14 @@ public class MapperManager implements ISelectionChangedListener {
 
     }
 
-    public void refreshStyledTextEditor(AbstractNode node) {
-        if (node == null) {
+    public void refreshStyledTextEditor(AbstractNodePart nodePart) {
+        if (nodePart == null) {
             mapperUI.getTabFolderEditors().getStyledTextHandler().setTextWithoutNotifyListeners("");
             mapperUI.getTabFolderEditors().getStyledTextHandler().getStyledText().setEnabled(false);
             mapperUI.getTabFolderEditors().getStyledTextHandler().getStyledText().setEditable(false);
             return;
         }
+        AbstractNode node = (AbstractNode) nodePart.getModel();
         if (node instanceof TreeNode) {
             if (!((TreeNode) node).getChildren().isEmpty()) {
                 mapperUI.getTabFolderEditors().getStyledTextHandler().setTextWithoutNotifyListeners("");
@@ -279,7 +280,7 @@ public class MapperManager implements ISelectionChangedListener {
         mapperUI.getTabFolderEditors().getStyledTextHandler().setTextWithoutNotifyListeners(expression);
         mapperUI.getTabFolderEditors().getStyledTextHandler().getStyledText().setEnabled(true);
         mapperUI.getTabFolderEditors().getStyledTextHandler().getStyledText().setEditable(true);
-        mapperUI.getTabFolderEditors().getStyledTextHandler().setSelectedNode(node);
+        mapperUI.getTabFolderEditors().getStyledTextHandler().setSelectedNodePart(nodePart);
     }
 
     public void refreshInputTreeSchemaEditor(InputXmlTree tree) {
