@@ -2605,13 +2605,16 @@ public class DataProcess {
             changeStartNode = true;
         } else {
             // if the next merge node don't have output connection, such as tFileOutputMSXML, means the next merge node
-            // will not be changed to tHash component. So, this node should be the start node
+            // will not be changed to tHash component. And the connection between this node and the next merge node is
+            // the first merge link, this node should be the start node
             Map<INode, Integer> nextMergeNodes = mergeDataNode.getLinkedMergeInfo();
             if (nextMergeNodes.size() == 1) {
                 INode followMergeNode = nextMergeNodes.keySet().iterator().next();
                 List nextMergeOutputConnections = NodeUtil.getOutgoingConnections(followMergeNode, IConnectionCategory.DATA);
-                if (nextMergeOutputConnections == null || nextMergeOutputConnections.isEmpty()) {
-                    changeStartNode = true;
+                if (nextMergeNodes.get(followMergeNode) == 1) {
+                    if (nextMergeOutputConnections == null || nextMergeOutputConnections.isEmpty()) {
+                        changeStartNode = true;
+                    }
                 }
             }
         }
