@@ -39,7 +39,11 @@ import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.ProposalUtils;
 import org.talend.core.ui.proposal.TalendProposalProvider;
+import org.talend.designer.xmlmap.commands.DirectEditCommand;
+import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
+import org.talend.designer.xmlmap.parts.AbstractNodePart;
+import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 import org.talend.designer.xmlmap.parts.directedit.proposal.ExpressionProposalProvider;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
@@ -57,6 +61,8 @@ public class StyledTextHandler {
     private MapperManager mapperManager;
 
     private AbstractNode selectedNode;
+
+    private AbstractNodePart selectedNodePart;
 
     private ContentProposalAdapterExtended contentProposalAdapter;
 
@@ -184,7 +190,9 @@ public class StyledTextHandler {
 
     private void updateCellExpression() {
         if (selectedNode != null && styledText != null && !styledText.getText().equals(selectedNode.getExpression())) {
-            selectedNode.setExpression(styledText.getText());
+            DirectEditCommand command = new DirectEditCommand(selectedNodePart, selectedNode, DirectEditType.EXPRESSION,
+                    styledText.getText());
+            ((XmlMapGraphicViewer) selectedNodePart.getViewer()).getEditDomain().getCommandStack().execute(command);
         }
     }
 
@@ -238,8 +246,9 @@ public class StyledTextHandler {
         return selectedNode;
     }
 
-    public void setSelectedNode(AbstractNode selectedNode) {
-        this.selectedNode = selectedNode;
+    public void setSelectedNodePart(AbstractNodePart selectedNode) {
+        this.selectedNodePart = selectedNode;
+        this.selectedNode = (AbstractNode) selectedNodePart.getModel();
         IContentProposalProvider[] contentProposalProviders = new IContentProposalProvider[0];
         contentProposalProviders = new IContentProposalProvider[] { new TalendProposalProvider(mapperManager.getMapperComponent()
                 .getProcess()) };

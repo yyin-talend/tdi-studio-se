@@ -177,6 +177,7 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 break;
             }
         case Notification.REMOVE:
+        case Notification.REMOVE_MANY:
             switch (featureId) {
             case XmlmapPackage.VAR_NODE__INCOMING_CONNECTIONS:
                 refreshTargetConnections();
