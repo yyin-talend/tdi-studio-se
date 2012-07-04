@@ -24,7 +24,6 @@ import org.eclipse.gef.tools.DirectEditManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -120,14 +119,13 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
             if (directEditType != null) {
                 switch (directEditType) {
                 case EXPRESSION_FILTER:
-                    if (getCellEditor() instanceof TextCellEditor) {
-                        Text text = (Text) getCellEditor().getControl();
-                        String expressionFilter = inputxmlTree.getExpressionFilter();
-                        if (expressionFilter == null) {
-                            expressionFilter = "";
-                        }
-                        text.setText(expressionFilter);
+                    String expressionFilter = inputxmlTree.getExpressionFilter();
+                    if (expressionFilter == null) {
+                        expressionFilter = "";
                     }
+                    getCellEditor().setValue(expressionFilter);
+                    Text textarea = ((ExtendedTextCellEditor) getCellEditor()).getTextControl();
+                    textarea.selectAll();
                     break;
                 case LOOKUP_MODEL:
                     if (getCellEditor() instanceof ComboBoxCellEditor) {
@@ -168,14 +166,13 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
             if (directEditType != null) {
                 switch (directEditType) {
                 case EXPRESSION_FILTER:
-                    if (getCellEditor() instanceof TextCellEditor) {
-                        Text text = (Text) getCellEditor().getControl();
-                        String expressionFilter = outputTree.getExpressionFilter();
-                        if (expressionFilter == null) {
-                            expressionFilter = "";
-                        }
-                        text.setText(expressionFilter);
+                    String expressionFilter = outputTree.getExpressionFilter();
+                    if (expressionFilter == null) {
+                        expressionFilter = "";
                     }
+                    getCellEditor().setValue(expressionFilter);
+                    Text textarea = ((ExtendedTextCellEditor) getCellEditor()).getTextControl();
+                    textarea.selectAll();
                     break;
                 case OUTPUT_REJECT:
                     if (getCellEditor() instanceof ComboBoxCellEditor) {
@@ -307,20 +304,22 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
                 return null;
             }
         } else if (figure instanceof ITextCell) {
+            // this one is created for direct doc child name , no use anymore...
             cellEditor = new TextCellEditor(composite);
             cellAndType.put(cellEditor, ((ITextCell) figure).getDirectEditType());
         } else if (figure instanceof IExpressionBuilderCell && model instanceof AbstractNode) {
             IService expressionBuilderDialogService = GlobalServiceRegister.getDefault().getService(
                     IExpressionBuilderDialogService.class);
             CellEditorDialogBehavior behavior = new CellEditorDialogBehavior();
-            cellEditor = new ExpressionCellEditor(composite, behavior, source);
+            cellEditor = new ExpressionCellEditor(composite, behavior, source, DirectEditType.EXPRESSION);
             ((ExpressionCellEditor) cellEditor).setOwnerId(((AbstractNode) model).getExpression());
             IExpressionBuilderDialogController dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService)
                     .getExpressionBuilderInstance(parent, (ExpressionCellEditor) cellEditor, null);
             cellAndType.put(cellEditor, DirectEditType.EXPRESSION);
             behavior.setCellEditorDialog(dialog);
         } else if (figure instanceof ITextAreaCell) {
-            cellEditor = new TextCellEditor(composite, SWT.MULTI);
+            TextAreaBehavior behavior = new TextAreaBehavior();
+            cellEditor = new ExpressionCellEditor(composite, behavior, source, DirectEditType.EXPRESSION_FILTER);
             cellAndType.put(cellEditor, DirectEditType.EXPRESSION_FILTER);
         }
 

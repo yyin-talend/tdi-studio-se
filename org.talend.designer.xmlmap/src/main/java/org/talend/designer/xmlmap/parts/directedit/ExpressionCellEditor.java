@@ -13,6 +13,7 @@
 package org.talend.designer.xmlmap.parts.directedit;
 
 import org.eclipse.gef.GraphicalEditPart;
+import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusEvent;
@@ -32,12 +33,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
+import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
+import org.talend.commons.ui.swt.proposal.ProposalUtils;
 import org.talend.commons.ui.swt.tableviewer.celleditor.CellEditorDialogBehavior;
 import org.talend.commons.ui.swt.tableviewer.celleditor.ExtendedTextCellEditor;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.threading.AsynchronousThreading;
+import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
+import org.talend.designer.xmlmap.parts.directedit.proposal.ExpressionProposalProvider;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.ui.tabs.StyledTextHandler;
 
@@ -52,7 +58,8 @@ public class ExpressionCellEditor extends ExtendedTextCellEditor {
 
     private Composite parent;
 
-    public ExpressionCellEditor(final Composite parent, CellEditorDialogBehavior cellEditorBehavior, GraphicalEditPart source) {
+    public ExpressionCellEditor(final Composite parent, CellEditorDialogBehavior cellEditorBehavior, GraphicalEditPart source,
+            DirectEditType type) {
         super(parent, cellEditorBehavior);
 
         parent.addFocusListener(new FocusListener() {
@@ -72,6 +79,8 @@ public class ExpressionCellEditor extends ExtendedTextCellEditor {
             this.mapperManager = ((XmlMapGraphicViewer) source.getViewer()).getMapperManager();
         }
         if (mapperManager != null) {
+            ContentProposalAdapterExtended proposalAdaptor = ProposalUtils.getCommonProposal(getTextControl(),
+                    createExpressionProposalProvider());
             final StyledTextHandler styledTextHandler = mapperManager.getMapperUI().getTabFolderEditors().getStyledTextHandler();
 
             getTextControl().addModifyListener(new ModifyListener() {
@@ -170,7 +179,12 @@ public class ExpressionCellEditor extends ExtendedTextCellEditor {
                 UnnotifiableColorStyledText mapperColorStyledText = (UnnotifiableColorStyledText) textTarget.getStyledText();
                 if (e.character == '\r' || e.character == '\u001b') {
                     // e.doit = false;
-                    String expression = ((AbstractNode) source.getModel()).getExpression();
+                    String expression = "";
+                    if (source.getModel() instanceof AbstractNode) {
+                        expression = ((AbstractNode) source.getModel()).getExpression();
+                    } else if (source.getModel() instanceof AbstractInOutTree) {
+                        expression = ((AbstractInOutTree) source.getModel()).getExpressionFilter();
+                    }
                     String text = expression == null ? "" : expression;
                     if (!textWidget.isDisposed()) {
                         text = ControlUtils.getText(textWidget);
@@ -292,4 +306,12 @@ public class ExpressionCellEditor extends ExtendedTextCellEditor {
         super.fireApplyEditorValue();
     }
 
+    private ExpressionProposalProvider createExpressionProposalProvider() {
+        IContentProposalProvider[] contentProposalProviders = new IContentProposalProvider[0];
+        contentProposalProviders = new IContentProposalProvider[] { new TalendProposalProvider(mapperManager.getMapperComponent()
+                .getProcess()) };
+        ExpressionProposalProvider provider = new ExpressionProposalProvider(mapperManager, contentProposalProviders);
+        provider.init(source);
+        return provider;
+    }
 }

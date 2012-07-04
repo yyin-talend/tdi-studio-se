@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.xmlmap.ui.tabs;
 
+import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ExtendedModifyEvent;
 import org.eclipse.swt.custom.ExtendedModifyListener;
@@ -37,7 +38,9 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.ProposalUtils;
+import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
+import org.talend.designer.xmlmap.parts.directedit.proposal.ExpressionProposalProvider;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
 import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 
@@ -237,6 +240,12 @@ public class StyledTextHandler {
 
     public void setSelectedNode(AbstractNode selectedNode) {
         this.selectedNode = selectedNode;
+        IContentProposalProvider[] contentProposalProviders = new IContentProposalProvider[0];
+        contentProposalProviders = new IContentProposalProvider[] { new TalendProposalProvider(mapperManager.getMapperComponent()
+                .getProcess()) };
+        ExpressionProposalProvider provider = new ExpressionProposalProvider(mapperManager, contentProposalProviders);
+        provider.init(selectedNode);
+        getContentProposalAdapter().setContentProposalProvider(provider);
     }
 
 }
