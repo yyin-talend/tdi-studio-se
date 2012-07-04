@@ -34,6 +34,8 @@ public class ChangeOutputConnectionOrderCommand extends Command {
 
     private List<IConnection> connectionInOldOrder;
 
+    private List<IConnection> connectionInOldOrderClone = new ArrayList();
+
     /**
      * yzhang ChangeOutputConnectionOrderCommand constructor comment.
      */
@@ -41,7 +43,9 @@ public class ChangeOutputConnectionOrderCommand extends Command {
 
         this.multipleOutputNode = multipleOutputNode;
         this.connectionInNewOrder = outputConnections;
-        this.connectionInOldOrder = (List<IConnection>) multipleOutputNode.getOutgoingConnections();
+        // TDI-8394:should not directly use node's outputs here,need to use its clone to deal with "undo"
+        connectionInOldOrderClone.addAll(multipleOutputNode.getOutgoingConnections());
+        this.connectionInOldOrder = connectionInOldOrderClone;
 
         if (connectionInNewOrder.size() != connectionInOldOrder.size()) {
             throw new IllegalArgumentException("new connection list should have the same size as the old one"); //$NON-NLS-1$
