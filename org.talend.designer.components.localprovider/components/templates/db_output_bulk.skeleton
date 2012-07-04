@@ -17,6 +17,7 @@ public class CLASS {
     public static final String AS400 = "as400_id";
     public static final String DB2 = "ibmdb2_id";
     public static final String FIREBIRD = "firebird_id";
+    public static final String GREENPLUM = "greenplum_id";
     public static final String HSQLDB = "hsqldb_id";
 	public static final String HIVE = "hive_id";
     public static final String INFORMIX = "informix_id";
@@ -29,6 +30,7 @@ public class CLASS {
     public static final String MYSQL = "mysql_id";
     public static final String NETEZZA = "netezza_id";
     public static final String ORACLE = "oracle_id";
+    public static final String PARACCEL = "paraccel_id";
     public static final String POSTGRESQL = "postgres_id";
     public static final String POSTGREPLUS = "postgresplus_id";
     public static final String SQLITE = "sqlite_id";

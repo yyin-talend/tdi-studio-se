@@ -1734,7 +1734,11 @@ if(columnList != null && columnList.size() > 0) {
     Manager manager = factory.createManager(dbType,node);
     manager.setNode(node);
     String tableAction = ElementParameterParser.getValue(node,"__TABLEACTION__");
-    String cid = node.getUniqueName();    
+    String cid = node.getUniqueName();
+    boolean tableNameIgnoreCase=false;
+    if("DB2".equalsIgnoreCase(dbType)||"POSTGRE".equalsIgnoreCase(dbType)||"POSTGREPLUS".equalsIgnoreCase(dbType)){
+    	tableNameIgnoreCase=true;
+    }
     %>
     try{
         <%=manager.getConnection()%>
@@ -1763,7 +1767,7 @@ if(columnList != null && columnList.size() > 0) {
 	            boolean whetherExist_<%=cid%> = false;
 	            while(rsTable_<%=cid%>.next()) {
 	                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-	                if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>)) {
+	                if(table_<%=cid%>.equals<%if(!tableNameIgnoreCase){%>IgnoreCase<%}%>(<%=tableName%>)) {
 	                    whetherExist_<%=cid%> = true;
 	                    break;
 	                }
