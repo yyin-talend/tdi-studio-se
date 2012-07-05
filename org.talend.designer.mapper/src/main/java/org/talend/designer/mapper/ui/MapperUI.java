@@ -241,6 +241,20 @@ public class MapperUI {
             }
 
             public void shellClosed(ShellEvent e) {
+                UIManager uiManager = mapperManager.getUiManager();
+                if (uiManager.getMapperResponse() == SWT.NONE) {
+                    for (DataMapTableView dataMapTableView : uiManager.getInputsTablesView()) {
+                        dataMapTableView.notifyFocusLost();
+                    }
+                    for (DataMapTableView dataMapTableView : uiManager.getOutputsTablesView()) {
+                        dataMapTableView.notifyFocusLost();
+                    }
+                    for (DataMapTableView dataMapTableView : uiManager.getVarsTablesView()) {
+                        dataMapTableView.notifyFocusLost();
+                    }
+                    uiManager.setMapperResponse(SWT.CANCEL);
+                    uiManager.prepareClosing(uiManager.getMapperResponse());
+                }
                 if (mapperManager.isDataChanged() && !mapperManager.getUiManager().isCloseWithoutPrompt()) {
                     boolean closeWindow = MessageDialog.openConfirm(mapperShellFinal,
                             Messages.getString("MapperUI.CancelWithoutSaveModifications.Title"), //$NON-NLS-1$
