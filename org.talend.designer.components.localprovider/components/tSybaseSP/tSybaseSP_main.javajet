@@ -144,7 +144,7 @@ if (canGenerate) {
 			if(i>0 && isFunction &&!("IN").equals(argType)){
 			%>
 				if(true){
-					throw new RuntimeException("Select on the list the schema column, the value to be returned is based on!  You should select \"IN\" as input parameter type only when \"is function\" is checked!");
+					throw new RuntimeException("Please specify the \"return\" column in the drop-down list of "Return result in"! You should select \"IN\" as input parameter type only when \"is function\" is checked!");
 				}
 			<%
 				break;
