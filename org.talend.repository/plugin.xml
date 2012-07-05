@@ -1413,6 +1413,13 @@
               id="org.talend.repository.model.migration.CheckAndUpdateStatusMigrationTask"
               name="CheckAndUpdateStatus">
         </projecttask>
+		<projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.SetFilterTiemFromTotoFromPOPComponentsMigrationTask"
+             description="Set the value from 'To' to 'From' for FILTER_TIEM in ADVANCED_FILTER of the component tPOP in Bug TDI-21568"
+             id="org.talend.repository.model.migration.SetFilterTiemFromTotoFromPOPComponentsMigrationTask"
+             name="SetFilterTiemFromTotoFromPOPComponentsMigrationTask">
+		</projecttask>
    </extension>
    
    <extension

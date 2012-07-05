@@ -130,8 +130,17 @@ for (int counter_<%=cid %> = 0; counter_<%=cid %> < msgs_<%=cid %>.length; count
       } else if ("To".equals(filterItem)) {
       %>
         java.util.regex.Pattern pattern_<%=i%>_<%=cid %> = java.util.regex.Pattern.compile(<%=filterptn%>);
-        java.util.regex.Matcher matcher_<%=i%>_<%=cid %> = pattern_<%=i%>_<%=cid %>.matcher(message_<%=cid %>.getReplyTo()[0]==null?"":message_<%=cid %>.getReplyTo()[0].toString());
-        isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> matcher_<%=i%>_<%=cid %>.find();
+        java.util.regex.Matcher matcher_<%=i%>_<%=cid %> = null;
+		javax.mail.Address[] addr_<%=i%>_<%=cid%> = message_<%=cid %>.getAllRecipients();
+		boolean matcherFind_<%=i%>_<%=cid%> = false;
+		for(int matcher_<%=cid%> = 0;matcher_<%=cid%> < addr_<%=i%>_<%=cid%>.length;matcher_<%=cid%>++){
+			matcher_<%=i%>_<%=cid %> = pattern_<%=i%>_<%=cid %>.matcher(addr_<%=i%>_<%=cid%>[matcher_<%=cid%>]==null?"":addr_<%=i%>_<%=cid%>[matcher_<%=cid%>].toString());
+			matcherFind_<%=i%>_<%=cid%> = matcher_<%=i%>_<%=cid %>.find()||matcherFind_<%=i%>_<%=cid%>;
+			if(matcherFind_<%=i%>_<%=cid%>){
+				break;
+			}
+		}
+        isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> matcherFind_<%=i%>_<%=cid%>;
       <%
       } else {
       %>
