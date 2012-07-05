@@ -436,6 +436,8 @@ class OptimizeCodeGenerator {
 	boolean isBeginPart = false;
 	boolean isOptimizeCode = false;
 	
+	String incomingName = "";
+	
 	public OptimizeCodeGenerator (String cid,boolean isOptimizeCode) {
 		this.cid = cid;
 		this.isOptimizeCode = isOptimizeCode;
@@ -541,6 +543,9 @@ java.util.Map<String,String> prefixToUriForNamespace_<%=sourceName %>_<%=cid%> =
     	String sourceName=null;
     	for (IConnection conn : incomingConns) {
     		if ( conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
+    			if (!this.isBeginPart && !conn.getName().equals(incomingName)) {
+    				continue;
+    			}
 				incomingConn = conn;
 				preNode = incomingConn.getSource();
 				preMetadatas = preNode.getMetadataList();
@@ -770,9 +775,10 @@ if(!this.isBeginPart && this.isOptimizeCode) {
 %>
 <%generateLeftBlock();%>
 <%
-					if(!this.isBeginPart()) {
-						break;
-					}
+
+//					if(!this.isBeginPart()) {
+//						break;
+//					}
 				}
 	    	}
 	    }
