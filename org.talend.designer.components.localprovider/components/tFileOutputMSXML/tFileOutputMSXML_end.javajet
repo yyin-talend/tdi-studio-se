@@ -27,8 +27,6 @@ String allowEmpty = ElementParameterParser.getValue(node, "__CREATE_EMPTY_ELEMEN
 
 String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 String cid = node.getUniqueName();
-String cid_original = cid;
-cid = cid_original.replace("tFileOutputXMLMultiSchema","tOXMLMS");
 
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));
@@ -39,7 +37,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	java.io.FileOutputStream stream_<%=cid%> = new java.io.FileOutputStream(fileName_<%=cid%>);
  	
 	org.dom4j.io.XMLWriter output_<%=cid%> = null;
+<%if (("true").equals(ElementParameterParser.getValue(node,"__OPTIMIZE_CODE__"))) {%>
+	if(talendWrapTool_<%=cid %>.isXML10Char_<%=cid%>) {
+<%} else {%>
 	if(isXML10Char_<%=cid%>) {
+<%}%>
 		output_<%=cid%> = new org.dom4j.io.XMLWriter(stream_<%=cid%>, format_<%=cid%>);
 	} else {
 		output_<%=cid%> = new org.dom4j.io.XMLWriter(
