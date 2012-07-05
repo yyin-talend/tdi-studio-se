@@ -42,6 +42,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     
     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     
+    boolean ignoreDateOutofRange = ("true").equals(ElementParameterParser.getValue(node,"__IGNORE_DATE_OUTOF_RANGE__")); 
     boolean useFieldOptions = ("true").equals(ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__"));
     List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");	
     
@@ -137,7 +138,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	            return typeToGenerate;
 	        }
 	        
-	        public void generateSetStmt(String typeToGenerate,Column column,String cid){
+	        public void generateSetStmt(String typeToGenerate,Column column,String cid,String incomingConnName,boolean ignoreDateOutofRange,String dbmsId){
 	            boolean isObject = false;                               
 	            String prefix = "pstmt_";    
     %>
@@ -243,11 +244,27 @@ skeleton="../templates/db_output_bulk.skeleton"
 		            if (date_<%=cid %> < year1_<%=cid %> || date_<%=cid %> >= year10000_<%=cid %>) {
 		                <%=prefix+cid%>.setString(count<%=cid%>, "0000-00-00 00:00:00");
 		            } else {
+				<%if(ignoreDateOutofRange){
+                	if(("DATE".equals(dbType) || "DATETIME2".equals(dbType) || "DATETIMEOFFSET".equals(dbType))){
+                		String pattern = column.getColumn().getPattern();
+                %>
+                    	<%=prefix+cid%>.setString(count<%=cid%>,TalendDate.formatDate(<%=pattern%>, <%=incomingConnName%>.<%=column.getName()%>));
+				<%
+					}else{
+				%>
+		                <%=prefix+cid%>.setTimestamp(count<%=cid%>, new java.sql.Timestamp(date_<%=cid %>));
+				<%
+					}
+				}else{
+				%>
 		         <%if("DATETIMEOFFSET".equals(dbType)){%>
 		                <%=prefix+cid%>.setTimestamp(count<%=cid%>, new java.sql.Timestamp(date_<%=cid %>),calendar_datetimeoffset_<%=cid%>);
 		         <%} else {%>
 		         		<%=prefix+cid%>.setTimestamp(count<%=cid%>, new java.sql.Timestamp(date_<%=cid %>));
 		         <%}%>
+				<%
+				}
+				%>
 		            }
 		        }else{
 		            <%=prefix+cid%>.setNull(count<%=cid%>,java.sql.Types.DATE);
@@ -302,7 +319,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		    for(Column column : stmtStructure) {
 		        if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
 		            String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());                     
-		            siOperation.generateSetStmt(typeToGenerate, column, cid);
+		            siOperation.generateSetStmt(typeToGenerate, column, cid,incomingConnName,ignoreDateOutofRange,dbmsId);
 		            %>
 		            count<%=cid%>++;
 		            <%
