@@ -268,6 +268,7 @@ public class Node extends Element implements IGraphicalNode {
         this.index = index;
     }
 
+    @Override
     public boolean isGeneratedByJobscriptBool() {
         return this.generatedByJobscriptBool;
     }
@@ -276,6 +277,7 @@ public class Node extends Element implements IGraphicalNode {
         this.generatedByJobscriptBool = generatedByJobscriptBool;
     }
 
+    @Override
     public boolean isTemplate() {
         return this.template;
     }
@@ -284,10 +286,12 @@ public class Node extends Element implements IGraphicalNode {
         this.template = template;
     }
 
+    @Override
     public boolean isCheckProperty() {
         return this.checkProperty;
     }
 
+    @Override
     public void setCheckProperty(boolean checkProperty) {
         this.checkProperty = checkProperty;
     }
@@ -296,6 +300,7 @@ public class Node extends Element implements IGraphicalNode {
         return this.errorFlag;
     }
 
+    @Override
     public void setErrorFlag(boolean errorFlag) {
         this.errorFlag = errorFlag;
     }
@@ -304,6 +309,7 @@ public class Node extends Element implements IGraphicalNode {
         return this.compareFlag;
     }
 
+    @Override
     public void setCompareFlag(boolean compareFlag) {
         this.compareFlag = compareFlag;
     }
@@ -312,6 +318,7 @@ public class Node extends Element implements IGraphicalNode {
         return this.errorInfo;
     }
 
+    @Override
     public void setErrorInfo(String errorInfo) {
         this.errorInfo = errorInfo;
     }
@@ -547,6 +554,7 @@ public class Node extends Element implements IGraphicalNode {
         }
     }
 
+    @Override
     public IProcess getProcess() {
         return process;
     }
@@ -558,6 +566,7 @@ public class Node extends Element implements IGraphicalNode {
      * @param connType
      * @return
      */
+    @Override
     public INodeConnector getConnectorFromType(final EConnectionType connType) {
         INodeConnector nodeConnector = null;
         List<INodeConnector> listConnectors = new ArrayList<INodeConnector>();
@@ -588,6 +597,7 @@ public class Node extends Element implements IGraphicalNode {
      * @param connName
      * @return
      */
+    @Override
     public INodeConnector getConnectorFromName(final String connName) {
         INodeConnector nodeConnector = null;
         int nbConn = 0;
@@ -665,6 +675,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @return unique name
      */
+    @Override
     public String getUniqueName() {
         String uniqueName = null;
         IElementParameter param = getElementParameter(EParameterName.UNIQUE_NAME.getName());
@@ -680,6 +691,7 @@ public class Node extends Element implements IGraphicalNode {
         ((Process) getProcess()).addUniqueNodeName(uniqueName);
     }
 
+    @Override
     public List<? extends INodeReturn> getReturns() {
         List<INodeReturn> allReturns = new ArrayList<INodeReturn>();
 
@@ -839,6 +851,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @param start boolean that will give the status
      */
+    @Override
     public void setStart(final boolean start) {
         IElementParameter param = getElementParameter(EParameterName.START.getName());
         if (param == null) {
@@ -855,6 +868,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @return
      */
+    @Override
     public boolean isStart() {
         return start;
     }
@@ -864,6 +878,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @param location Point
      */
+    @Override
     public void setLocation(final Point location) {
         if (this.location.equals(location)) {
             return;
@@ -880,6 +895,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @return Point
      */
+    @Override
     public Point getLocation() {
         return location;
     }
@@ -890,6 +906,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @param titleName
      */
+    @Override
     public void setLabel(final String label) {
         this.label = label;
         if (nodeLabel.getLabelText() != label) {
@@ -1021,6 +1038,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @return
      */
+    @Override
     public String getLabel() {
         return label;
     }
@@ -1047,6 +1065,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @param connection
      */
+    @Override
     public void addInput(final IConnection conn) {
         this.inputs.add(conn);
         fireStructureChange(INPUTS, conn);
@@ -1141,6 +1160,17 @@ public class Node extends Element implements IGraphicalNode {
                                 cmc.execute();
 
                                 ColumnListController.updateColumnList(this, null, true);
+                            } else if (connection.getTarget().getComponent().getName().equals("tFilterRow")) {
+                                String dbmsId = targetTable.getDbms();
+                                MetadataTool.copyTable(dbmsId, inputTable, targetTable);
+                                ChangeMetadataCommand cmc = new ChangeMetadataCommand(this, null, null, targetTable,
+                                        inputSchemaParam);
+                                CommandStack cmdStack = getCommandStack();
+                                if (cmdStack != null) {
+                                    cmdStack.execute(cmc);
+                                }
+
+                                ColumnListController.updateColumnList(this, null, true);
                             }
                         }
                     }
@@ -1155,16 +1185,6 @@ public class Node extends Element implements IGraphicalNode {
                         return;
                     }
                     IConnection outputConnection = null;
-                    // bug 22089:if the component's schemaType is readOnly(like tFilterRow),it should not propagated
-                    // from outputConection's target
-                    boolean isSchemaReadOnly = false;
-                    for (IElementParameter curParam : connection.getSource().getElementParameters()) {
-                        if (curParam.getFieldType() == EParameterFieldType.SCHEMA_TYPE) {
-                            if (curParam.isReadOnly()) {
-                                isSchemaReadOnly = true;
-                            }
-                        }
-                    }
                     // schema not auto-propagated or in repository mode or job generated by jobscript file
                     if ((connection.getSource().getSchemaParameterFromConnector(mainConnector.getName()) != null)) {
 
@@ -1177,13 +1197,7 @@ public class Node extends Element implements IGraphicalNode {
                                 takeSchema = true;
                             }
                         } else {
-                            if (takeSchema == null) {
-                                if (isSchemaReadOnly) {
-                                    takeSchema = false;
-                                } else {
-                                    takeSchema = getTakeSchema();
-                                }
-                            }
+                            takeSchema = getTakeSchema();
                         }
 
                         if (takeSchema) {
@@ -1214,7 +1228,7 @@ public class Node extends Element implements IGraphicalNode {
                             IMetadataTable sourceTable = connection.getMetadataTable();
                             if (sourceTable != null) {
                                 MetadataDialog dialog = new MetadataDialog(new Shell(), sourceTable.clone(),
-                                        (Node) connection.getSource(), null);
+                                        connection.getSource(), null);
                                 dialog.setInputReadOnly(false);
                                 dialog.setOutputReadOnly(false);
                                 if (dialog.open() == MetadataDialog.OK) {
@@ -1249,6 +1263,7 @@ public class Node extends Element implements IGraphicalNode {
         return MessageDialog.openQuestion(new Shell(), "", Messages.getString("Node.getSchemaOrNot")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Override
     public IElementParameter getSchemaParameterFromConnector(String connector) {
         for (IElementParameter param : getElementParameters()) {
             if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE) && param.getContext().equals(connector)) {
@@ -1320,6 +1335,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @param connection
      */
+    @Override
     public void addOutput(final IConnection conn) {
         // add the connection on the position of the order before delete the connection
         if (conn instanceof Connection) {
@@ -1386,6 +1402,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @return List of Connection
      */
+    @Override
     public List<? extends IConnection> getIncomingConnections() {
         List<IConnection> jobletInputs = new ArrayList<IConnection>();
         if (this.isJoblet() && this.getNodeContainer() != null && !this.getNodeContainer().isCollapsed()) {
@@ -1404,11 +1421,13 @@ public class Node extends Element implements IGraphicalNode {
         return this.outputs;
     }
 
+    @Override
     public void setIncomingConnections(List<? extends IConnection> connections) {
         this.inputs.clear();
         this.inputs.addAll(connections);
     }
 
+    @Override
     public void setOutgoingConnections(List<? extends IConnection> connections) {
         this.outputs.clear();
         this.outputs.addAll(connections);
@@ -1419,6 +1438,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @return List of Connection
      */
+    @Override
     public List<? extends IConnection> getOutgoingConnections() {
 
         if (this.isJoblet() && this.getNodeContainer() != null && !this.getNodeContainer().isCollapsed()) {
@@ -1435,6 +1455,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @param connection
      */
+    @Override
     public void removeInput(final IConnection connection) {
         this.inputs.remove(connection);
         INodeConnector mainConnector;
@@ -1492,8 +1513,9 @@ public class Node extends Element implements IGraphicalNode {
                 if (metadataTable != null) {
                     target.metadataList.remove(metadataTable);
                     int pos = getIndex(vlist, label);
-                    if (pos != -1)
+                    if (pos != -1) {
                         vlist.remove(pos);
+                    }
                 }
             }
         }
@@ -1511,6 +1533,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @param connection
      */
+    @Override
     public void removeOutput(final IConnection connection) {
         // remember the order of the connection in outputs before delete
         if (connection instanceof Connection) {
@@ -1671,6 +1694,7 @@ public class Node extends Element implements IGraphicalNode {
 
     }
 
+    @Override
     public void setErrorInfoChange(final String id, Object value) {
         if (id.equals("ERRORINFO")) { //$NON-NLS-1$
             firePropertyChange(UPDATE_STATUS, null, null);
@@ -1679,10 +1703,12 @@ public class Node extends Element implements IGraphicalNode {
         }
     }
 
+    @Override
     public List<IMetadataTable> getMetadataList() {
         return this.metadataList;
     }
 
+    @Override
     public void setMetadataList(final List<IMetadataTable> metaDataList) {
         this.metadataList = metaDataList;
     }
@@ -1697,6 +1723,7 @@ public class Node extends Element implements IGraphicalNode {
         return getUniqueName();
     }
 
+    @Override
     public boolean isExternalNode() {
         if (externalNode != null) {
             return true;
@@ -1704,6 +1731,7 @@ public class Node extends Element implements IGraphicalNode {
         return false;
     }
 
+    @Override
     public IExternalNode getExternalNode() {
         if (externalNode != null) {
             externalNode.setActivate(isActivate());
@@ -1728,6 +1756,7 @@ public class Node extends Element implements IGraphicalNode {
         this.externalNode = externalNode;
     }
 
+    @Override
     public IExternalData getExternalData() {
         if (externalNode != null) {
             return externalNode.getExternalData();
@@ -1757,6 +1786,7 @@ public class Node extends Element implements IGraphicalNode {
     /**
      * @see org.talend.core.model.process.INode#setPerformanceData(java.lang.String)
      */
+    @Override
     public void setPerformanceData(String perfData) {
         String oldData = this.performanceData;
         if (!ObjectUtils.equals(oldData, perfData)) {
@@ -1775,6 +1805,7 @@ public class Node extends Element implements IGraphicalNode {
         return this.performanceData;
     }
 
+    @Override
     public boolean isActivate() {
         return this.activate;
     }
@@ -1831,6 +1862,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @return
      */
+    @Override
     public boolean isDummy() {
         return dummy;
     }
@@ -1844,6 +1876,7 @@ public class Node extends Element implements IGraphicalNode {
         dummy = value;
     }
 
+    @Override
     public boolean hasRunIfLink() {
         boolean runIf = false;
         Connection connec;
@@ -1865,6 +1898,7 @@ public class Node extends Element implements IGraphicalNode {
         return runIf;
     }
 
+    @Override
     public boolean isSubProcessStart() {
         IConnection connec;
         if (isActivate()) {
@@ -1889,6 +1923,7 @@ public class Node extends Element implements IGraphicalNode {
         return true;
     }
 
+    @Override
     public IMetadataTable getMetadataTable(String metaName) {
         for (int i = 0; i < metadataList.size(); i++) {
             String tableName = metadataList.get(i).getTableName();
@@ -1899,6 +1934,7 @@ public class Node extends Element implements IGraphicalNode {
         return null;
     }
 
+    @Override
     public IMetadataTable getMetadataFromConnector(String connector) {
         for (IMetadataTable table : metadataList) {
             if (table != null && table.getAttachedConnector() != null) {
@@ -1915,14 +1951,17 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @see org.talend.core.model.process.INode#hasConditionnalOutputs()
      */
+    @Override
     public boolean hasConditionalOutputs() {
         return component.hasConditionalOutputs();
     }
 
+    @Override
     public boolean isMultiplyingOutputs() {
         return component.isMultiplyingOutputs();
     }
 
+    @Override
     public List<BlockCode> getBlocksCodeToClose() {
         return null;
     }
@@ -1937,6 +1976,7 @@ public class Node extends Element implements IGraphicalNode {
      * @param withCondition
      * @return Start Node found.
      */
+    @Override
     public INode getSubProcessStartNode(boolean withConditions) {
         if (!withConditions) {
             // if there is the dummy state, we know we're still in the same subjob as the previous node.
@@ -2056,6 +2096,7 @@ public class Node extends Element implements IGraphicalNode {
         return getMainBranch(new ArrayList<INode>());
     }
 
+    @Override
     public Node getProcessStartNode(boolean withConditions) {
         // System.out.println(" --- Checking :" + this + " ---");
 
@@ -2089,6 +2130,7 @@ public class Node extends Element implements IGraphicalNode {
         return mainSubBranchNode;
     }
 
+    @Override
     public boolean sameProcessAs(INode node, boolean withConditions) {
         // System.out.println("from:" + this + " -- to:" + node);
 
@@ -2105,10 +2147,12 @@ public class Node extends Element implements IGraphicalNode {
         return currentNode.equals(otherNode);
     }
 
+    @Override
     public boolean isReadOnly() {
         return this.readOnly;
     }
 
+    @Override
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
     }
@@ -2118,6 +2162,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @see org.talend.core.model.process.INode#setProcess(org.talend.core.model.process.IProcess)
      */
+    @Override
     public void setProcess(IProcess process) {
         if (process instanceof Process) {
             this.process = (Process) process;
@@ -3154,6 +3199,7 @@ public class Node extends Element implements IGraphicalNode {
         }
     }
 
+    @Override
     public void checkAndRefreshNode() {
         Problems.clearAll(this);
         checkNode();
@@ -3161,6 +3207,7 @@ public class Node extends Element implements IGraphicalNode {
         Problems.refreshProblemTreeView();
     }
 
+    @Override
     public void checkNode() {
         if (isActivate()) {
             checkParameters();
@@ -3209,10 +3256,12 @@ public class Node extends Element implements IGraphicalNode {
         }
     }
 
+    @Override
     public IComponent getComponent() {
         return this.component;
     }
 
+    @Override
     public void setComponent(IComponent component) {
         this.component = component;
     }
@@ -3261,6 +3310,7 @@ public class Node extends Element implements IGraphicalNode {
      * @see org.talend.core.model.process.INode#renameMetadataColumnName(java.lang.String, java.lang.String,
      * java.lang.String)
      */
+    @Override
     public void metadataInputChanged(IODataComponent dataComponent, String connectionToApply) {
         log.trace("InputChanged : Node=" + this + ", IOData=[" + dataComponent + "] on " + connectionToApply); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         if (externalNode != null) {
@@ -3268,6 +3318,7 @@ public class Node extends Element implements IGraphicalNode {
         }
     }
 
+    @Override
     public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {
         log.trace("OutputChanged : Node=" + this + ", IOData=[" + dataComponent + "] on " + connectionToApply); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         if (externalNode != null) {
@@ -3275,6 +3326,7 @@ public class Node extends Element implements IGraphicalNode {
         }
     }
 
+    @Override
     public boolean isELTComponent() {
         return getComponent().getOriginalFamilyName().startsWith("ELT"); //$NON-NLS-1$
     }
@@ -3286,6 +3338,7 @@ public class Node extends Element implements IGraphicalNode {
         return false;
     }
 
+    @Override
     public boolean isFileScaleComponent() {
         return getComponent().getOriginalFamilyName().equals("FileScale"); //$NON-NLS-1$
     }
@@ -3299,26 +3352,32 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @see org.talend.core.model.process.INode#isThereLinkWithHash()
      */
+    @Override
     public boolean isThereLinkWithHash() {
         return process.isThereLinkWithHash(this);
     }
 
+    @Override
     public List<? extends IConnection> getOutgoingSortedConnections() {
         return org.talend.core.model.utils.NodeUtil.getOutgoingSortedConnections(this);
     }
 
+    @Override
     public List<? extends IConnection> getMainOutgoingConnections() {
         return org.talend.core.model.utils.NodeUtil.getMainOutgoingConnections(this);
     }
 
+    @Override
     public List<? extends IConnection> getOutgoingConnections(EConnectionType connectionType) {
         return org.talend.core.model.utils.NodeUtil.getOutgoingConnections(this, connectionType);
     }
 
+    @Override
     public List<? extends IConnection> getOutgoingConnections(String connectorName) {
         return org.talend.core.model.utils.NodeUtil.getOutgoingConnections(this, connectorName);
     }
 
+    @Override
     public void renameData(String oldName, String newName) {
         if (oldName.equals(newName)) {
             return;
@@ -3331,6 +3390,7 @@ public class Node extends Element implements IGraphicalNode {
         UpgradeElementHelper.renameData(this, oldName, newName);
     }
 
+    @Override
     public boolean useData(String name) {
         if (isExternalNode()) {
             return getExternalNode().useData(name);
@@ -3338,14 +3398,17 @@ public class Node extends Element implements IGraphicalNode {
         return UpgradeElementHelper.isUseData(this, name);
     }
 
+    @Override
     public boolean isThereLinkWithMerge() {
         return !getLinkedMergeInfo().isEmpty();
     }
 
+    @Override
     public Map<INode, Integer> getLinkedMergeInfo() {
         return NodeUtil.getLinkedMergeInfo(this);
     }
 
+    @Override
     public List<? extends IConnection> getIncomingConnections(EConnectionType connectionType) {
         return org.talend.core.model.utils.NodeUtil.getIncomingConnections(this, connectionType);
     }
@@ -3359,6 +3422,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @return the size
      */
+    @Override
     public Dimension getSize() {
         return size;
     }
@@ -3368,6 +3432,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @param size the size to set
      */
+    @Override
     public void setSize(Dimension size) {
         this.size = size;
         firePropertyChange(SIZE, null, null);
@@ -3378,6 +3443,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @return the listConnector
      */
+    @Override
     public List<? extends INodeConnector> getListConnector() {
         return listConnector;
     }
@@ -3391,6 +3457,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @return
      */
+    @Override
     public boolean checkIfCanBeStart() {
         if (isELTComponent()) {
             // is there condition link, then can't set the start.
@@ -3463,6 +3530,7 @@ public class Node extends Element implements IGraphicalNode {
      * @see org.talend.core.model.process.INode#reloadComponent(org.talend.core.model.components.IComponent,
      * java.util.Map)
      */
+    @Override
     public void reloadComponent(IComponent component, Map<String, Object> parameters) {
         reloadingComponent = true;
         currentStatus = 0;
@@ -3549,6 +3617,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @see org.talend.core.model.process.INode#getDesignSubjobStartNode()
      */
+    @Override
     public INode getDesignSubjobStartNode() {
         return getProcessStartNode(false);
     }
@@ -3558,6 +3627,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @see org.talend.core.model.process.INode#isDesignSubjobStartNode()
      */
+    @Override
     public boolean isDesignSubjobStartNode() {
         return this.equals(getDesignSubjobStartNode());
     }
@@ -3567,6 +3637,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @see org.talend.core.model.process.INode#isVirtualGenerateNode()
      */
+    @Override
     public boolean isVirtualGenerateNode() {
         return false;
     }
@@ -3598,6 +3669,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @see org.talend.core.model.process.INode#isGeneratedAsVirtualComponent()
      */
+    @Override
     public boolean isGeneratedAsVirtualComponent() {
         List<IMultipleComponentManager> multipleComponentManagers = getComponent().getMultipleComponentManagers();
         return multipleComponentManagers.size() > 0;
@@ -3643,6 +3715,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @see org.talend.core.model.process.INode#isUseLoopOnConditionalOutput(java.lang.String)
      */
+    @Override
     public boolean isUseLoopOnConditionalOutput(String outputName) {
         return false;
     }
@@ -3652,6 +3725,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @see org.talend.core.model.process.INode#getUniqueShortName()
      */
+    @Override
     public String getUniqueShortName() {
         // should't be call from here, should be called from something extends AbstractNode (DataNode, ExternalNode...).
         return null;
@@ -3689,6 +3763,7 @@ public class Node extends Element implements IGraphicalNode {
      * 
      * @see org.talend.core.model.process.INode#isSubProcessContainTraceBreakpoint()
      */
+    @Override
     public boolean isSubProcessContainTraceBreakpoint() {
         boolean flag = false;
 
@@ -3709,14 +3784,17 @@ public class Node extends Element implements IGraphicalNode {
         return flag;
     }
 
+    @Override
     public Set<INode> fsComponentsInProgressBar() {
         return this.getNodeProgressBar().getIncludedNodesInProgress();
     }
 
+    @Override
     public int getPosX() {
         return location.x;
     }
 
+    @Override
     public int getPosY() {
         return location.y;
     }
@@ -3742,6 +3820,7 @@ public class Node extends Element implements IGraphicalNode {
         return isJoblet;
     }
 
+    @Override
     public INode getJobletNode() {
         return jobletNode;
     }
@@ -3758,19 +3837,23 @@ public class Node extends Element implements IGraphicalNode {
         this.joblet_unique_name = joblet_unique_name;
     }
 
+    @Override
     public List<? extends IConnection> getOutgoingCamelSortedConnections() {
         return org.talend.core.model.utils.NodeUtil.getOutgoingCamelSortedConnections(this);
     }
 
+    @Override
     public List<ModuleNeeded> getModulesNeeded() {
         // same as the component, but an override is possible in the AbstractNode when generate the code
         return component.getModulesNeeded();
     }
 
+    @Override
     public EConnectionType getVirtualLinkTo() {
         return this.virtualLinkTo;
     }
 
+    @Override
     public void setVirtualLinkTo(EConnectionType virtualLinkTo) {
         this.virtualLinkTo = virtualLinkTo;
     }
