@@ -166,7 +166,7 @@ public class ActiveProcessTracker implements IPartListener {
     private void setContextsView(IProcess2 process) {
 
         IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-        service.setActiveProcess(process, false);
+        service.setActiveProcess(process, true);
 
         // Contexts.setTitle("Job " + process.getProperty().getLabel()); //$NON-NLS-1$
         Contexts.switchToCurContextsView();
