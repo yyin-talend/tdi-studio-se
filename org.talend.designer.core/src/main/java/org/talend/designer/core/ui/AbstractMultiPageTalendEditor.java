@@ -597,7 +597,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
                         @Override
                         public void propertyChanged(Object source, int propId) {
-                            if (getEditor(2).isDirty()) {
+                            if (source instanceof IEditorPart && ((IEditorPart) source).isDirty()) {
                                 getProcess().setProcessModified(true);
                                 getProcess().setNeedRegenerateCode(true);
                             }
