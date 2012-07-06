@@ -184,7 +184,7 @@ if(columnList != null && columnList.size() > 0) {
 	    	java.sql.Statement pstmtInsert_<%=cid %> = conn_<%=cid%>.createStatement();
 	    	java.sql.Statement pstmtUpdate_<%=cid %> = conn_<%=cid%>.createStatement();
 	    <%}else{%>
-		    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(query_<%=cid%>);
+		    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(checkExist_<%=cid%>);
 		    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement(insert_<%=cid%>);
 		    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement(update_<%=cid%>);	
 	    <%
