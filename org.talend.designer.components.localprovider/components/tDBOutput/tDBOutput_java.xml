@@ -198,6 +198,14 @@
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER
+      NAME="USE_STATEMENT"
+      FIELD="CHECK"
+      NUM_ROW="12"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="FIELD_OPTIONS"
       FIELD="TABLE"
