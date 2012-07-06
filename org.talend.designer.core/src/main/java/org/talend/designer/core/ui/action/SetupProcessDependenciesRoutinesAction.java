@@ -24,12 +24,14 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
@@ -148,6 +150,11 @@ public class SetupProcessDependenciesRoutinesAction extends AContextualAction {
                 createRoutinesDependencies(process, dialog.getUserRoutines());
                 try {
                     CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().save(jobProcessItem);
+                    IJobletProviderService jobletService = (IJobletProviderService) GlobalServiceRegister.getDefault()
+                            .getService(IJobletProviderService.class);
+                    if (jobletService != null) {
+                        jobletService.loadComponentsFromProviders();
+                    }
                     RelationshipItemBuilder.getInstance().addOrUpdateItem(jobProcessItem);
                 } catch (PersistenceException e) {
                     ExceptionHandler.process(e);
