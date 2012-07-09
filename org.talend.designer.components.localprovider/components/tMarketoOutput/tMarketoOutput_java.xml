@@ -73,6 +73,10 @@
       SHOW="true">
       <TABLE READONLY="true">
         <COLUMN NAME="ERROR_MSG" TYPE="id_String" READONLY="false" CUSTOM="true"/>
+        <COLUMN NAME="Id" TYPE="id_Integer" READONLY="true" />
+		<COLUMN NAME="Email" TYPE="id_String" />
+		<COLUMN NAME="ForeignSysPersonId" TYPE="id_String" />
+		<COLUMN NAME="ForeignSysType" TYPE="id_String" />
       </TABLE>
     </PARAMETER>
 
