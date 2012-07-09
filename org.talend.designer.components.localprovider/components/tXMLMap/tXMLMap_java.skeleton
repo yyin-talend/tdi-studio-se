@@ -498,6 +498,22 @@ public class CLASS {
 			}
 		}
 		
+		TreeNode getUniqueLoopNode(TreeNode node) {
+			if(node == null) {
+				return null;
+			}
+			if(node.isLoop()){
+				return node;
+			}
+			for(TreeNode child : node.getChildren()){
+				TreeNode loopNode = getUniqueLoopNode(child);
+				if(loopNode!=null) {
+					return loopNode;
+				}
+			}
+			return null;
+		}
+		
 		boolean isRootLoop(TreeNode root) {
 			if(root == null) return false;
 			List<TreeNode> children = root.getChildren();
