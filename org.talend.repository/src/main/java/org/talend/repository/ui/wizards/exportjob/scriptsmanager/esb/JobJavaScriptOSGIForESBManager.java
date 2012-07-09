@@ -43,6 +43,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.osgi.framework.Bundle;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
@@ -52,11 +53,13 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
@@ -111,12 +114,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private String itemType = null;
 
+    @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, String... codeOptions)
             throws ProcessorException {
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
 
         boolean needJob = true;
-        ExportFileResource libResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME); //$NON-NLS-1$
+        ExportFileResource libResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
         ExportFileResource osgiResource = getOsgiResource();
         ExportFileResource jobScriptResource = new ExportFileResource(null, ""); //$NON-NLS-1$
 
@@ -137,8 +141,17 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         Set<String> neededLibraries = null;
         Set<ModuleNeeded> neededModules = null;
-        for (int i = 0; i < process.length; i++) {
-            ProcessItem processItem = (ProcessItem) process[i].getItem();
+        for (ExportFileResource proces : process) {
+            ProcessItem processItem = (ProcessItem) proces.getItem();
+            if (processItem.eIsProxy() || processItem.getProcess().eIsProxy()) {
+                Property property;
+                try {
+                    property = ProxyRepositoryFactory.getInstance().getUptodateProperty(processItem.getProperty());
+                    processItem = (ProcessItem) property.getItem();
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
             itemToBeExport.add(processItem);
             jobName = processItem.getProperty().getLabel();
             jobClassName = getPackageName(processItem) + PACKAGE_SEPARATOR + jobName;
@@ -157,19 +170,19 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             boolean restJob = JOB.equals(itemType) && isRESTProviderJob(processItem);
 
             // generate the source files
-            String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
+            String libPath = calculateLibraryPathFromDirectory(proces.getDirectoryName());
             // use character @ as temporary classpath separator, this one will
             // be replaced during the export.
             String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
                     + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
-                    + PACKAGE_SEPARATOR; //$NON-NLS-1$
+                    + PACKAGE_SEPARATOR;
 
             // Add additional route dependencies jars LiXiaopeng 2011-9-22
             if (itemType.equals(ROUTE)) {
                 String addtionalLibPath = computeAddtionalLibPath(processItem);
                 standardJars += addtionalLibPath;
             }
-            ProcessorUtilities.setExportConfig(JAVA, standardJars, libPath); //$NON-NLS-1$
+            ProcessorUtilities.setExportConfig(JAVA, standardJars, libPath);
 
             if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
                 if (neededLibraries == null) {
@@ -198,13 +211,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             getJobScriptsUncompressed(jobScriptResource, processItem);
 
             // dynamic db xml mapping
-            addXmlMapping(process[i], isOptionChoosed(ExportChoice.needSourceCode));
+            addXmlMapping(proces, isOptionChoosed(ExportChoice.needSourceCode));
 
             if (restJob) {
-                List<String> restSpringFiles = generateRestJobSpringFiles(process[i].getItem());
+                List<String> restSpringFiles = generateRestJobSpringFiles(proces.getItem());
                 osgiResource.addResources(getMetaInfSpringFolder(), buildUrlList(restSpringFiles));
             } else {
-                List<String> esbFiles = generateESBFiles(process[i].getItem(), esbJob);
+                List<String> esbFiles = generateESBFiles(proces.getItem(), esbJob);
                 osgiResource.addResources(getOSGIInfFolder(), buildUrlList(esbFiles));
             }
         }
@@ -241,9 +254,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     /**
-     *
+     * 
      * Add additional dependency libraries.
-     *
+     * 
      * @param processItem
      * @param libPath
      * @return
@@ -256,21 +269,21 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 NodeType currentNode = (NodeType) o;
                 String componentName = currentNode.getComponentName();
 
-				// http://jira.talendforge.org/browse/TESB-5755
-				// if ("cMessagingEndpoint".equals(componentName)) {
-				// for (Object e : currentNode.getElementParameter()) {
-				// ElementParameterType p = (ElementParameterType) e;
-				// if ("HOTLIBS".equals(p.getName())) {
-				// for (Object pv : p.getElementValue()) {
-				// ElementValueType evt = (ElementValueType) pv;
-				// String evtValue = evt.getValue();
-				// IPath path = libPath.append(evtValue);
-				// libFiles.add(path.toFile());
-				// }
-				// }
-				// }
-				// }
-				// End 5755
+                // http://jira.talendforge.org/browse/TESB-5755
+                // if ("cMessagingEndpoint".equals(componentName)) {
+                // for (Object e : currentNode.getElementParameter()) {
+                // ElementParameterType p = (ElementParameterType) e;
+                // if ("HOTLIBS".equals(p.getName())) {
+                // for (Object pv : p.getElementValue()) {
+                // ElementValueType evt = (ElementValueType) pv;
+                // String evtValue = evt.getValue();
+                // IPath path = libPath.append(evtValue);
+                // libFiles.add(path.toFile());
+                // }
+                // }
+                // }
+                // }
+                // End 5755
 
                 // http: // jira.talendforge.org/browse/TESB-3812
                 if ("cConfig".equals(componentName)) {
@@ -345,9 +358,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     /**
-     *
+     * 
      * Ensure that the string is not surrounded by quotes.
-     *
+     * 
      * @param string
      * @return
      */
@@ -365,7 +378,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * This method will return <code>true</code> if given job contains tESBProviderRequest or tESBConsumer component
-     *
+     * 
      * @param processItem
      * @author rzubairov
      * @return
@@ -422,7 +435,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Add user input dependency library path. DOC LiXP Comment method "computeAddtionalLibPath".
-     *
+     * 
      * @param processItem
      * @return
      */
@@ -434,21 +447,21 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 NodeType currentNode = (NodeType) o;
                 String componentName = currentNode.getComponentName();
 
-				// http://jira.talendforge.org/browse/TESB-5755
-				// if ("cMessagingEndpoint".equals(componentName)) {
-				// for (Object e : currentNode.getElementParameter()) {
-				// ElementParameterType p = (ElementParameterType) e;
-				// if ("HOTLIBS".equals(p.getName())) {
-				// for (Object pv : p.getElementValue()) {
-				// ElementValueType evt = (ElementValueType) pv;
-				// String evtValue = evt.getValue();
-				// sb.append(evtValue);
-				// sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
-				// }
-				// }
-				// }
-				// }
-				// End 5755
+                // http://jira.talendforge.org/browse/TESB-5755
+                // if ("cMessagingEndpoint".equals(componentName)) {
+                // for (Object e : currentNode.getElementParameter()) {
+                // ElementParameterType p = (ElementParameterType) e;
+                // if ("HOTLIBS".equals(p.getName())) {
+                // for (Object pv : p.getElementValue()) {
+                // ElementValueType evt = (ElementValueType) pv;
+                // String evtValue = evt.getValue();
+                // sb.append(evtValue);
+                // sb.append(ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR);
+                // }
+                // }
+                // }
+                // }
+                // End 5755
                 if ("cConfig".equals(componentName)) {
                     for (Object e : currentNode.getElementParameter()) {
                         ElementParameterType p = (ElementParameterType) e;
@@ -577,7 +590,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Compute check field parameter value with a given parameter name
-     *
+     * 
      * @param paramName
      * @param elementParameterTypes
      * @return
@@ -593,7 +606,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Compute Text field parameter value with a given parameter name
-     *
+     * 
      * @param paramName
      * @param elementParameterTypes
      * @return
@@ -606,12 +619,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return cpType.getValue();
     }
 
-    private void createRestJobBundleSpringConfig(Item processItem, String inputFile,
-            String targetFile, String jobName, String jobClassName) {
+    private void createRestJobBundleSpringConfig(Item processItem, String inputFile, String targetFile, String jobName,
+            String jobClassName) {
 
         NodeType restRequestComponent = getRESTRequestComponent((ProcessItem) processItem);
         EList elParams = restRequestComponent.getElementParameter();
-
 
         String endpointUri = computeTextElementValue("REST_ENDPOINT", elParams);
         if (endpointUri.startsWith("\"") && endpointUri.endsWith("\"")) {
@@ -633,7 +645,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             // remove forwarding "/services/" context as required by runtime
             endpointUri = endpointUri.substring("/services/".length() - 1); // leave forwarding slash
         }
-
 
         String jaxrsServiceProviders = "";
         String additionalBeansConfig = "";
@@ -686,7 +697,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Created OSGi Blueprint configuration for job bundle.
-     *
+     * 
      * @param processItem
      * @param inputFile
      * @param targetFile
@@ -733,12 +744,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 additionalServiceProps = "<entry key=\"multithreading\" value=\"true\" />"; //$NON-NLS-1$
             }
         } else {
-//            if (isRESTJob) {
-//                additionalJobBundleConfig = "<reference id=\"callbackHandler\"" + "\n\t\t\t"
-//                        + "interface=\"routines.system.api.ESBProviderCallback\"" + "\n\t\t\t" + "filter=\"(job=" + jobClassName
-//                        + ")\"" + "\n\t\t\t" + "timeout=\"30000\" availability=\"mandatory\" />";
-//                additionalJobBeanParams = "<property name=\"providerCallback\" ref=\"callbackHandler\" />";
-//            }
+            // if (isRESTJob) {
+            // additionalJobBundleConfig = "<reference id=\"callbackHandler\"" + "\n\t\t\t"
+            // + "interface=\"routines.system.api.ESBProviderCallback\"" + "\n\t\t\t" + "filter=\"(job=" + jobClassName
+            // + ")\"" + "\n\t\t\t" + "timeout=\"30000\" availability=\"mandatory\" />";
+            // additionalJobBeanParams = "<property name=\"providerCallback\" ref=\"callbackHandler\" />";
+            // }
         }
 
         FileReader fr = null;
@@ -915,8 +926,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             StringBuffer externalJMSImportSB = new StringBuffer();
             String externalCXFImport = "";
 
-			// http://jira.talendforge.org/browse/TESB-5670 LiXiaopeng
-			String httpImportPkgs = "";
+            // http://jira.talendforge.org/browse/TESB-5670 LiXiaopeng
+            String httpImportPkgs = "";
             Set<String> jmsImportPkgs = new HashSet<String>();
 
             for (ProcessItem pi : itemToBeExport) {
@@ -937,13 +948,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         continue;
                     }
 
-					if ("cHttp".equals(next.getComponentName())) {
-						httpImportPkgs = ",org.apache.camel.component.http,"
-								+ "org.apache.commons.httpclient.protocol,"
-								+ "org.apache.commons.httpclient.params";
+                    if ("cHttp".equals(next.getComponentName())) {
+                        httpImportPkgs = ",org.apache.camel.component.http," + "org.apache.commons.httpclient.protocol,"
+                                + "org.apache.commons.httpclient.params";
 
-						continue;
-					}
+                        continue;
+                    }
 
                     // http://jira.talendforge.org/browse/TESB-4072, compute
                     // additional import packages
@@ -1009,9 +1019,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     + ",org.osgi.framework;version=\"[1.5,2)\"" //$NON-NLS-1$
                     + ",org.osgi.service.blueprint;version=\"[1.0.0,2.0.0)\"" //$NON-NLS-1$
                     + ",routines.system.api" //$NON-NLS-1$
-					+ externalJMSImportSB.toString()
-					+ externalCXFImport
-					+ httpImportPkgs);
+                    + externalJMSImportSB.toString() + externalCXFImport + httpImportPkgs);
         } else {
             a.put(new Attributes.Name("Import-Package"), //$NON-NLS-1$
                     "routines.system.api;resolution:=optional" //$NON-NLS-1$
@@ -1041,7 +1049,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * DOC hywang Comment method "caculateDependenciesBundles".
-     *
+     * 
      * @return
      */
     private String caculateDependenciesBundles(ProcessItem processItem) {
@@ -1088,7 +1096,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private String getClassPath(ExportFileResource libResource) {
         StringBuffer libBuffer = new StringBuffer();
-        libBuffer.append(PACKAGE_SEPARATOR).append(","); //$NON-NLS-1$ //$NON-NLS-2$
+        libBuffer.append(PACKAGE_SEPARATOR).append(","); //$NON-NLS-1$ 
         Set<String> relativePathList = libResource.getRelativePathList();
         for (String path : relativePathList) {
             Set<URL> resources = libResource.getResourcesByRelativePath(path);
@@ -1141,8 +1149,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 // libraires can't be retrieved when
                 // build.
                 IDesignerCoreService designerService = RepositoryPlugin.getDefault().getDesignerCoreService();
-                for (int i = 0; i < process.length; i++) {
-                    ExportFileResource resource = process[i];
+                for (ExportFileResource resource : process) {
                     ProcessItem item = (ProcessItem) resource.getItem();
                     String version = item.getProperty().getVersion();
                     if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
@@ -1181,8 +1188,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             }
         }
 
-        for (int i = 0; i < files.length; i++) {
-            File tempFile = files[i];
+        for (File tempFile : files) {
             try {
                 if (listModulesReallyNeeded.contains(tempFile.getName())) {
                     list.add(tempFile.toURL());
