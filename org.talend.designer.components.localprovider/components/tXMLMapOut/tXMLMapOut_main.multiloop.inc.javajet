@@ -94,12 +94,19 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 				outputLoops.add(inputLoopNodesTable);
 			}
 			if(outputLoops.size()<1) {
-				outputLoops.add(new Object());
+				if(hasDocumentInMainInputTable && !mainInputTable.isMultiLoops()) {
+					outputLoops.add(treeUtil.getUniqueLoopNode(documentNodeInMainInputTable));
+				} else {
+					outputLoops.add(new Object());
+				}
 			}
 		} else {//only Document output
 			for(OutputTreeNode loop : loopNodes) {
-				if(loop.getInputLoopNodesTable()!=null) {
+				InputLoopNodesTable inputLoopTable = loop.getInputLoopNodesTable();
+				if(inputLoopTable!=null && inputLoopTable.getInputloopnodes()!=null && inputLoopTable.getInputloopnodes().size()>0) {
 					outputLoops.add(loop.getInputLoopNodesTable());
+				} else if(hasDocumentInMainInputTable && !mainInputTable.isMultiLoops()) {
+					outputLoops.add(treeUtil.getUniqueLoopNode(documentNodeInMainInputTable));
 				} else {
 					outputLoops.add(new Object());
 				}
@@ -115,6 +122,8 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 			if(outputLoop instanceof InputLoopNodesTable) {
 				InputLoopNodesTable inputLoopNodesTable = (InputLoopNodesTable)outputLoop;
 				currentInputLoopNodes = inputLoopNodesTable.getInputloopnodes();
+			} else if(outputLoop instanceof TreeNode){
+				currentInputLoopNodes.add((TreeNode)outputLoop);
 			}
 			loopKey = "loopKey"+(indexOfInputLoopNodesTable++);
 			String isCurrentLoopRef = null;

@@ -174,7 +174,8 @@
 							
 							if(docExist) {
 								for(OutputTreeNode loop : loopNodes) {
-									if(loop.getInputLoopNodesTable()!=null) {
+									InputLoopNodesTable inputLoopTable = loop.getInputLoopNodesTable();
+									if(inputLoopTable!=null && inputLoopTable.getInputloopnodes()!=null && inputLoopTable.getInputloopnodes().size()>0) {
 										allInputLoopNodesTables.add(loop.getInputLoopNodesTable());
 									}
 								}
