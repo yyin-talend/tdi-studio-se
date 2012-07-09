@@ -44,6 +44,7 @@ import org.eclipse.emf.common.util.EMap;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.osgi.framework.Bundle;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
@@ -54,6 +55,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -104,7 +106,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private static final String SPRING = "spring"; //$NON-NLS-1$
 
-	private static final String ROUTE_RESOURCES = "route_resources";
+    private static final String ROUTE_RESOURCES = "route_resources";
 
     private String jobName;
 
@@ -114,12 +116,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private String itemType = null;
 
+    @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, String... codeOptions)
             throws ProcessorException {
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
 
         boolean needJob = true;
-        ExportFileResource libResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME); //$NON-NLS-1$
+        ExportFileResource libResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
         ExportFileResource osgiResource = getOsgiResource();
         ExportFileResource jobScriptResource = new ExportFileResource(null, ""); //$NON-NLS-1$
 
@@ -140,8 +143,17 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         Set<String> neededLibraries = null;
         Set<ModuleNeeded> neededModules = null;
-        for (int i = 0; i < process.length; i++) {
-            ProcessItem processItem = (ProcessItem) process[i].getItem();
+        for (ExportFileResource proces : process) {
+            ProcessItem processItem = (ProcessItem) proces.getItem();
+            if (processItem.eIsProxy() || processItem.getProcess().eIsProxy()) {
+                Property property;
+                try {
+                    property = ProxyRepositoryFactory.getInstance().getUptodateProperty(processItem.getProperty());
+                    processItem = (ProcessItem) property.getItem();
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
             itemToBeExport.add(processItem);
             jobName = processItem.getProperty().getLabel();
             jobClassName = getPackageName(processItem) + PACKAGE_SEPARATOR + jobName;
@@ -160,14 +172,14 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             boolean restJob = JOB.equals(itemType) && isRESTProviderJob(processItem);
 
             // generate the source files
-            String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
+            String libPath = calculateLibraryPathFromDirectory(proces.getDirectoryName());
             // use character @ as temporary classpath separator, this one will
             // be replaced during the export.
             String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
                     + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
-                    + PACKAGE_SEPARATOR; //$NON-NLS-1$
+                    + PACKAGE_SEPARATOR;
 
-            ProcessorUtilities.setExportConfig(JAVA, standardJars, libPath); //$NON-NLS-1$
+            ProcessorUtilities.setExportConfig(JAVA, standardJars, libPath);
 
             if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
                 if (neededLibraries == null) {
@@ -196,7 +208,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             getJobScriptsUncompressed(jobScriptResource, processItem);
 
             // dynamic db xml mapping
-            addXmlMapping(process[i], isOptionChoosed(ExportChoice.needSourceCode));
+            addXmlMapping(proces, isOptionChoosed(ExportChoice.needSourceCode));
 
             if (restJob) {
                 List<String> restSpringFiles = generateRestJobSpringFiles(processItem);
@@ -206,10 +218,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 osgiResource.addResources(getOSGIInfFolder(), buildUrlList(esbFiles));
             }
 
-			// Add Route Resource http://jira.talendforge.org/browse/TESB-6227
-			if (ROUTE.equals(itemType)) {
-				addOSGIRouteResources(osgiResource, processItem);
-			}
+            // Add Route Resource http://jira.talendforge.org/browse/TESB-6227
+            if (ROUTE.equals(itemType)) {
+                addOSGIRouteResources(osgiResource, processItem);
+            }
 
         }
 
@@ -231,36 +243,35 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return list;
     }
 
-	/**
-	 * Get all route resource needed.
-	 * 
-	 * @param osgiResource
-	 * @param processItem
-	 */
-	private void addOSGIRouteResources(ExportFileResource osgiResource,
-			ProcessItem processItem) {
+    /**
+     * Get all route resource needed.
+     * 
+     * @param osgiResource
+     * @param processItem
+     */
+    private void addOSGIRouteResources(ExportFileResource osgiResource, ProcessItem processItem) {
 
-		ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister
-				.getDefault().getService(ICamelDesignerCoreService.class);
-		List<IPath> paths = camelService.synchronizeRouteResource(processItem);
+        ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                ICamelDesignerCoreService.class);
+        List<IPath> paths = camelService.synchronizeRouteResource(processItem);
 
-		for (IPath path : paths) {
-			IPath relativePath = path.removeLastSegments(1);
-			String pathStr = relativePath.toString();
-			int index = pathStr.indexOf(ROUTE_RESOURCES);
-			if (index > -1) {
-				pathStr = pathStr.substring(index, pathStr.length());
-				try {
-					URL url = path.toFile().toURI().toURL();
-					osgiResource.addResource(pathStr, url);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+        for (IPath path : paths) {
+            IPath relativePath = path.removeLastSegments(1);
+            String pathStr = relativePath.toString();
+            int index = pathStr.indexOf(ROUTE_RESOURCES);
+            if (index > -1) {
+                pathStr = pathStr.substring(index, pathStr.length());
+                try {
+                    URL url = path.toFile().toURI().toURL();
+                    osgiResource.addResource(pathStr, url);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
-	private List<URL> buildUrlList(List<String> files) {
+    private List<URL> buildUrlList(List<String> files) {
         List<URL> urlList = new ArrayList<URL>();
         try {
             for (String file : files) {
@@ -275,29 +286,29 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * This method will return <code>true</code> if given job contains tESBProviderRequest or tESBConsumer component
-     *
+     * 
      * @param processItem
      * @author rzubairov
      * @return
      */
     private boolean isESBJob(ProcessItem processItem) {
-    	return null != EmfModelUtils.getComponentByName(processItem, "tESBProviderRequest", "tESBConsumer");
+        return null != EmfModelUtils.getComponentByName(processItem, "tESBProviderRequest", "tESBConsumer");
     }
 
     private boolean isESBProviderJob(ProcessItem processItem) {
-    	return null != EmfModelUtils.getComponentByName(processItem, "tESBProviderRequest");
+        return null != EmfModelUtils.getComponentByName(processItem, "tESBProviderRequest");
     }
 
     private boolean isRESTProviderJob(ProcessItem processItem) {
         return null != getRESTRequestComponent(processItem);
     }
-    
+
     private boolean isRESTClientJob(ProcessItem processItem) {
         return null != EmfModelUtils.getComponentByName(processItem, "tRESTClient");
-    }    
-    
+    }
+
     private NodeType getRESTRequestComponent(ProcessItem processItem) {
-    	return EmfModelUtils.getComponentByName(processItem, "tRESTRequest");
+        return EmfModelUtils.getComponentByName(processItem, "tRESTRequest");
     }
 
     protected ExportFileResource getOsgiResource() {
@@ -350,8 +361,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return FileLocator.toFileURL(FileLocator.find(b, new Path(resourcePath), null)).getFile();
     }
 
-    private void createRestJobBundleSpringConfig(ProcessItem processItem, String inputFile,
-            String targetFile, String jobName, String jobClassName) {
+    private void createRestJobBundleSpringConfig(ProcessItem processItem, String inputFile, String targetFile, String jobName,
+            String jobClassName) {
 
         NodeType restRequestComponent = getRESTRequestComponent(processItem);
 
@@ -372,7 +383,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             // remove forwarding "/services/" context as required by runtime
             endpointUri = endpointUri.substring("/services/".length() - 1); // leave forwarding slash
         }
-
 
         String jaxrsServiceProviders = "";
         String additionalBeansConfig = "";
@@ -429,7 +439,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Created OSGi Blueprint configuration for job bundle.
-     *
+     * 
      * @param processItem
      * @param inputFile
      * @param targetFile
@@ -445,16 +455,16 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         boolean hasSAM = false;
 
         if (ROUTE.equals(itemType)) {
-        	for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "cCXF")) {
+            for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "cCXF")) {
                 // http://jira.talendforge.org/browse/TESB-3850
                 String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
                 if (!"MESSAGE".equals(format)) { //$NON-NLS-1$
                     hasSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node); //$NON-NLS-1$
                     if (hasSAM) {
-                    	break;
+                        break;
                     }
                 }
-			}
+            }
         }
 
         String additionalJobInterfaces = "";
@@ -638,155 +648,151 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         for (ProcessItem pi : itemToBeExport) {
             sb.append(delim).append(getPackageName(pi));
             delim = ",";
-			// Add Route Resource Export packages
-			// http://jira.talendforge.org/browse/TESB-6227
-			if (ROUTE.equals(itemType)) {
-				String routeResourcePackages = addRouteResourcePackages(pi);
-				if (!routeResourcePackages.isEmpty()) {
-					sb.append(delim).append(routeResourcePackages);
-				}
-			}
+            // Add Route Resource Export packages
+            // http://jira.talendforge.org/browse/TESB-6227
+            if (ROUTE.equals(itemType)) {
+                String routeResourcePackages = addRouteResourcePackages(pi);
+                if (!routeResourcePackages.isEmpty()) {
+                    sb.append(delim).append(routeResourcePackages);
+                }
+            }
         }
 
         a.put(new Attributes.Name("Export-Package"), sb.toString()); //$NON-NLS-1$
 
         if (ROUTE.equals(itemType)) {
-        	addRouterOsgiDependencies(libResource, itemToBeExport, a);
+            addRouterOsgiDependencies(libResource, itemToBeExport, a);
         } else {
-        	String additionalImports = ""; //$NON-NLS-1$
-        	for (ProcessItem processItem : itemToBeExport) {
-				if (DataSourceConfig.isDBConnectionJob(processItem)) {
-					additionalImports = ",org.apache.commons.dbcp.datasources";
-				}
-			}
+            String additionalImports = ""; //$NON-NLS-1$
+            for (ProcessItem processItem : itemToBeExport) {
+                if (DataSourceConfig.isDBConnectionJob(processItem)) {
+                    additionalImports = ",org.apache.commons.dbcp.datasources";
+                }
+            }
             a.put(new Attributes.Name("Import-Package"), //$NON-NLS-1$
                     "routines.system.api;resolution:=optional" //$NON-NLS-1$
                             + ",javax.xml.soap;resolution:=optional" //$NON-NLS-1$
                             + ",javax.xml.ws.soap;resolution:=optional" //$NON-NLS-1$
                             + ",org.apache.cxf.management.counters" //$NON-NLS-1$
-                            + additionalImports
-            );
+                            + additionalImports);
             if (itemToBeExport != null && !itemToBeExport.isEmpty()) {
-            	for (ProcessItem pi : itemToBeExport) {
-            		/*
-            		 * need to fill bundle depedence informations for every component,feature 0023460
-            		 */
-            		String requiredBundles = caculateDependenciesBundles(pi);
-            		requiredBundles = addAdditionalRequiredBundles(pi, requiredBundles);
-            		if (requiredBundles != null && !"".equals(requiredBundles)) {
-            			a.put(new Attributes.Name("Require-Bundle"), requiredBundles);
-            		}
-            	}
+                for (ProcessItem pi : itemToBeExport) {
+                    /*
+                     * need to fill bundle depedence informations for every component,feature 0023460
+                     */
+                    String requiredBundles = caculateDependenciesBundles(pi);
+                    requiredBundles = addAdditionalRequiredBundles(pi, requiredBundles);
+                    if (requiredBundles != null && !"".equals(requiredBundles)) {
+                        a.put(new Attributes.Name("Require-Bundle"), requiredBundles);
+                    }
+                }
             }
             if (!libResource.getAllResources().isEmpty()) {
-            	a.put(new Attributes.Name("Bundle-ClassPath"), getClassPath(libResource)); //$NON-NLS-1$
+                a.put(new Attributes.Name("Bundle-ClassPath"), getClassPath(libResource)); //$NON-NLS-1$
             }
         }
         a.put(new Attributes.Name("Export-Service"), "routines.system.api.TalendJob;name=" + bundleName + ";type=" + itemType); //$NON-NLS-1$
 
         return manifest;
     }
-    
-	/**
-	 * Add route resource packages.
-	 */
-	private String addRouteResourcePackages(ProcessItem item) {
-		Set<String> pkgs = new HashSet<String>();
-		EMap additionalProperties = item.getProperty()
-				.getAdditionalProperties();
-		if (additionalProperties == null) {
-			return "";
-		}
-		Object resourcesObj = additionalProperties.get("ROUTE_RESOURCES_PROP");
-		if (resourcesObj == null) {
-			return "";
-		}
 
-		String[] resourceIds = resourcesObj.toString().split(",");
-		String exportPkg = "";
-		for (String id : resourceIds) {
-			try {
-				IRepositoryViewObject rvo = ProxyRepositoryFactory
-						.getInstance().getLastVersion(id);
-				if (rvo != null) {
+    /**
+     * Add route resource packages.
+     */
+    private String addRouteResourcePackages(ProcessItem item) {
+        Set<String> pkgs = new HashSet<String>();
+        EMap additionalProperties = item.getProperty().getAdditionalProperties();
+        if (additionalProperties == null) {
+            return "";
+        }
+        Object resourcesObj = additionalProperties.get("ROUTE_RESOURCES_PROP");
+        if (resourcesObj == null) {
+            return "";
+        }
 
-					Item it = rvo.getProperty().getItem();
-					String path = it.getState().getPath();
-					if (path != null && !path.isEmpty()) {
-						exportPkg = "route_resources." + path.replace("/", ".");
-					} else {
-						exportPkg = "route_resources";
-					}
-					pkgs.add(exportPkg);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return StringUtils.join(pkgs.toArray(), ",");
-	}
+        String[] resourceIds = resourcesObj.toString().split(",");
+        String exportPkg = "";
+        for (String id : resourceIds) {
+            try {
+                IRepositoryViewObject rvo = ProxyRepositoryFactory.getInstance().getLastVersion(id);
+                if (rvo != null) {
 
-    private String addAdditionalRequiredBundles(ProcessItem pi, String requiredBundles) {
-    	if (isRESTClientJob(pi) || isRESTProviderJob(pi)) {
-    		String bundlesToAdd = "org.apache.cxf.cxf-rt-frontend-jaxrs" 
-    							+ ",org.apache.cxf.cxf-rt-rs-extension-providers";
-    		// check if we need add ',' after already existing bundles
-    		requiredBundles = (requiredBundles != null && !"".equals(requiredBundles)) ? requiredBundles + "," : "";
-   			requiredBundles = requiredBundles + bundlesToAdd;
-    	}
-    	
-    	return requiredBundles;
+                    Item it = rvo.getProperty().getItem();
+                    String path = it.getState().getPath();
+                    if (path != null && !path.isEmpty()) {
+                        exportPkg = "route_resources." + path.replace("/", ".");
+                    } else {
+                        exportPkg = "route_resources";
+                    }
+                    pkgs.add(exportPkg);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return StringUtils.join(pkgs.toArray(), ",");
     }
 
-    private void addRouterOsgiDependencies(ExportFileResource libResource,
-    		List<ProcessItem> itemToBeExport, Attributes a) {
-    	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-    	IProject project = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
-    	IPath libPath = project.getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
-    	for(ProcessItem pi: itemToBeExport){
-    		IOsgiDependenciesService dependenciesService = (IOsgiDependenciesService) GlobalServiceRegister.getDefault().getService(
-    				IOsgiDependenciesService.class);
-    		if(dependenciesService!=null){
-    			Map<String, String> bundleDependences = dependenciesService.getBundleDependences(pi, pi.getProperty().getAdditionalProperties());
-    			//process external libs
-    			String externalLibs = bundleDependences.get(IOsgiDependenciesService.BUNDLE_CLASSPATH);
-    			String[] libs = externalLibs.split(IOsgiDependenciesService.ITEM_SEPARATOR);
-    			Set<URL> list = new HashSet<URL>();
-    			for(String s: libs){
-    				try {
-    					if(s.isEmpty()){
-    						continue;
-    					}
-    					IPath path = libPath.append(s);
-						URL url = path.toFile().toURL();
-						list.add(url);
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
-						continue;
-					}
-    			}
-    			libResource.addResources(new ArrayList<URL>(list));
-    			
-    			// add manifest items
-    			String requireBundles = bundleDependences.get(IOsgiDependenciesService.REQUIRE_BUNDLE);
-    			if(requireBundles!=null && !"".equals(requireBundles)){
-    				a.put(new Attributes.Name("Require-Bundle"), requireBundles);
-    			}
-    			String importPackages = bundleDependences.get(IOsgiDependenciesService.IMPORT_PACKAGE);
-    			if(importPackages!=null && !"".equals(importPackages)){
-    				a.put(new Attributes.Name("Import-Package"), importPackages);
-    			}
-    			if (!libResource.getAllResources().isEmpty()) {
-    				a.put(new Attributes.Name("Bundle-ClassPath"), getClassPath(libResource)); //$NON-NLS-1$
-    			}
-    		}
+    private String addAdditionalRequiredBundles(ProcessItem pi, String requiredBundles) {
+        if (isRESTClientJob(pi) || isRESTProviderJob(pi)) {
+            String bundlesToAdd = "org.apache.cxf.cxf-rt-frontend-jaxrs" + ",org.apache.cxf.cxf-rt-rs-extension-providers";
+            // check if we need add ',' after already existing bundles
+            requiredBundles = (requiredBundles != null && !"".equals(requiredBundles)) ? requiredBundles + "," : "";
+            requiredBundles = requiredBundles + bundlesToAdd;
+        }
 
-    	}
+        return requiredBundles;
+    }
+
+    private void addRouterOsgiDependencies(ExportFileResource libResource, List<ProcessItem> itemToBeExport, Attributes a) {
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        IProject project = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
+        IPath libPath = project.getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
+        for (ProcessItem pi : itemToBeExport) {
+            IOsgiDependenciesService dependenciesService = (IOsgiDependenciesService) GlobalServiceRegister.getDefault()
+                    .getService(IOsgiDependenciesService.class);
+            if (dependenciesService != null) {
+                Map<String, String> bundleDependences = dependenciesService.getBundleDependences(pi, pi.getProperty()
+                        .getAdditionalProperties());
+                // process external libs
+                String externalLibs = bundleDependences.get(IOsgiDependenciesService.BUNDLE_CLASSPATH);
+                String[] libs = externalLibs.split(IOsgiDependenciesService.ITEM_SEPARATOR);
+                Set<URL> list = new HashSet<URL>();
+                for (String s : libs) {
+                    try {
+                        if (s.isEmpty()) {
+                            continue;
+                        }
+                        IPath path = libPath.append(s);
+                        URL url = path.toFile().toURL();
+                        list.add(url);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                        continue;
+                    }
+                }
+                libResource.addResources(new ArrayList<URL>(list));
+
+                // add manifest items
+                String requireBundles = bundleDependences.get(IOsgiDependenciesService.REQUIRE_BUNDLE);
+                if (requireBundles != null && !"".equals(requireBundles)) {
+                    a.put(new Attributes.Name("Require-Bundle"), requireBundles);
+                }
+                String importPackages = bundleDependences.get(IOsgiDependenciesService.IMPORT_PACKAGE);
+                if (importPackages != null && !"".equals(importPackages)) {
+                    a.put(new Attributes.Name("Import-Package"), importPackages);
+                }
+                if (!libResource.getAllResources().isEmpty()) {
+                    a.put(new Attributes.Name("Bundle-ClassPath"), getClassPath(libResource)); //$NON-NLS-1$
+                }
+            }
+
+        }
     }
 
     /**
      * DOC hywang Comment method "caculateDependenciesBundles".
-     *
+     * 
      * @return
      */
     private String caculateDependenciesBundles(ProcessItem processItem) {
@@ -833,7 +839,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private String getClassPath(ExportFileResource libResource) {
         StringBuffer libBuffer = new StringBuffer();
-        libBuffer.append(PACKAGE_SEPARATOR).append(","); //$NON-NLS-1$ //$NON-NLS-2$
+        libBuffer.append(PACKAGE_SEPARATOR).append(","); //$NON-NLS-1$ 
         Set<String> relativePathList = libResource.getRelativePathList();
         for (String path : relativePathList) {
             Set<URL> resources = libResource.getResourcesByRelativePath(path);
@@ -878,8 +884,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 // libraires can't be retrieved when
                 // build.
                 IDesignerCoreService designerService = RepositoryPlugin.getDefault().getDesignerCoreService();
-                for (int i = 0; i < process.length; i++) {
-                    ExportFileResource resource = process[i];
+                for (ExportFileResource resource : process) {
                     ProcessItem item = (ProcessItem) resource.getItem();
                     String version = item.getProperty().getVersion();
                     if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
@@ -918,8 +923,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             }
         }
 
-        for (int i = 0; i < files.length; i++) {
-            File tempFile = files[i];
+        for (File tempFile : files) {
             try {
                 if (listModulesReallyNeeded.contains(tempFile.getName())) {
                     list.add(tempFile.toURL());
