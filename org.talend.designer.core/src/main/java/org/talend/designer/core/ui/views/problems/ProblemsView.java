@@ -42,6 +42,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -86,22 +87,21 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
 
     private RoutineItemsCheck routineItemsCheck;
 
-    private ECodeLanguage language;
-
-    private String editorID;
-
     private Composite parent;
 
     public static ProblemsView show() {
-        IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        if (activePage != null) {
-            IViewPart part = activePage.findView(ID);
-            try {
-                part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ID);
-            } catch (Exception e) {
-
+        IWorkbenchWindow ww = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (ww != null) {
+            IWorkbenchPage activePage = ww.getActivePage();
+            if (activePage != null) {
+                IViewPart part = activePage.findView(ID);
+                try {
+                    part = activePage.showView(ID);
+                } catch (Exception e) {
+                    // do nothing
+                }
+                return (ProblemsView) part;
             }
-            return (ProblemsView) part;
         }
         return null;
     }
@@ -126,6 +126,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
 
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 Problem problem = (Problem) selection.getFirstElement();
@@ -193,7 +194,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
         menu.add(groupByMenu);
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void selectInDesigner(BasicJobInfo jobInfo, String nodeName) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 
@@ -272,6 +273,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
          * 
          * @see org.eclipse.jface.action.Action#run()
          */
+        @Override
         public void run() {
 
             if (isChecked()) {
@@ -301,6 +303,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
             this.problem = problem;
         }
 
+        @Override
         protected void doRun() {
             if (problem != null) {
                 try {
@@ -406,6 +409,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
          * @see org.talend.commons.ui.swt.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
          * org.eclipse.jface.viewers.IStructuredSelection)
          */
+        @Override
         public void init(TreeViewer viewer, IStructuredSelection selection) {
             // setEnabled(true);
         }
@@ -417,6 +421,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (!(evt.getNewValue() instanceof IRepositoryObject)) {
             return;
@@ -470,6 +475,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
             }
             Display.getDefault().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     Problems.refreshProblemTreeView();
                 }
