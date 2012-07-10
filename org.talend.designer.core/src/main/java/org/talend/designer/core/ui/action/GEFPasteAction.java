@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.action;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.ui.actions.Clipboard;
@@ -31,7 +32,10 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
@@ -143,7 +147,7 @@ public class GEFPasteAction extends SelectionAction {
     }
 
     @Override
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void run() {
         Object clipBoardContent;
         try {
@@ -198,6 +202,34 @@ public class GEFPasteAction extends SelectionAction {
             if (findProcessProviderFromPID != null) {
                 for (NodePart copiedNodePart : nodeParts) {
                     Node copiedNode = (Node) copiedNodePart.getModel();
+                    // add for bug TDI-20207.if copy joblet/job to itself,then return.
+                    EComponentType componentType = null;
+                    String copideNodeId = null;
+                    String editorProcessId = null;
+                    if (copiedNode.getComponent() != null) {
+                        componentType = copiedNode.getComponent().getComponentType();
+                        if (copiedNode.getComponent().getProcess() != null) {
+                            copideNodeId = copiedNode.getComponent().getProcess().getId();
+                        }
+                    }
+                    if (editor.getProcess() != null) {
+                        editorProcessId = editor.getProcess().getId();
+                    }
+                    for (IElementParameter element : copiedNode.getElementParametersFromField(EParameterFieldType.PROCESS_TYPE)) {
+                        for (Map.Entry<String, IElementParameter> entry : element.getChildParameters().entrySet()) {
+                            if (("PROCESS_TYPE_PROCESS").equals(entry.getKey())) {
+                                if (editorProcessId != null && editorProcessId.equals(entry.getValue().getValue())) {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    if ((EComponentType.JOBLET).equals(componentType)) {
+                        if (editorProcessId != null && editorProcessId.equals(copideNodeId)) {
+                            return;
+                        }
+                    }
+
                     if (findProcessProviderFromPID.isJobletInputOrOutputComponent(copiedNode)) {
                         if (!findProcessProviderFromPID.isExtensionProcess(editor.getProcess())) {
                             MessageBox messagebox = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
@@ -224,8 +256,7 @@ public class GEFPasteAction extends SelectionAction {
                 mpc.setSelectedSubjobs(subjobParts);
                 execute(mpc);
             } else if (nodeParts.size() != 0) {
-                NodesPasteCommand cmd = new NodesPasteCommand(nodeParts,
-                        (org.talend.designer.core.ui.editor.process.Process) editor.getProcess(), gefPoint);
+                NodesPasteCommand cmd = new NodesPasteCommand(nodeParts, editor.getProcess(), gefPoint);
                 cmd.setSelectedSubjobs(subjobParts);
                 execute(cmd);
             } else if (noteParts.size() != 0) {
