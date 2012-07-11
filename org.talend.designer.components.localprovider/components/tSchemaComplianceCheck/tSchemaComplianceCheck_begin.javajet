@@ -68,8 +68,9 @@
 
 	String anotherChecked = ElementParameterParser.getValue(node, "__CHECK_ANOTHER__");
 	String checkAll = ElementParameterParser.getValue(node, "__CHECK_ALL__");
-	final boolean customer = "true".equals(ElementParameterParser.getValue(node, "__CUSTOMER__"));
-	final boolean bIsTrim = customer && "true".equals(ElementParameterParser.getValue(node, "__SUB_STRING__"));
+	final boolean checkAllBoolean = "true".equals(checkAll);
+	final boolean checkAnother = "true".equals(ElementParameterParser.getValue(node, "__CHECK_ANOTHER__"));
+	final boolean bIsTrim = "true".equals(ElementParameterParser.getValue(node, "__SUB_STRING__"));
 	final boolean useFasteDateChecker = "true".equals(ElementParameterParser.getValue(node, "__FAST_DATE_CHECK__"));
 	final boolean emptyIsNull = "true".equals(ElementParameterParser.getValue(node, "__EMPTY_IS_NULL__"));
 	final boolean allEmptyAreNull = "true".equals(ElementParameterParser.getValue(node, "__ALL_EMPTY_ARE_NULL__"));
@@ -224,7 +225,7 @@
 %>
 	) {
 <%
-				if ( bIsTrim ){ //CONDITION_00142 START
+				if ( bIsTrim && !checkAllBoolean && !checkAnother ){ //CONDITION_00142 START
 					if (bIsStringType) { //CONDITION_001421 START
 %>
 		if( <%=_sInConnName%>.<%=colName%>.length() > <%=maxLength%> )
