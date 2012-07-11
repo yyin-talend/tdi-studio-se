@@ -106,8 +106,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private static final String SPRING = "spring"; //$NON-NLS-1$
 
-    private static final String ROUTE_RESOURCES = "route_resources";
-
     private String jobName;
 
     private String jobClassName;
@@ -258,9 +256,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         for (IPath path : paths) {
             IPath relativePath = path.removeLastSegments(1);
             String pathStr = relativePath.toString();
-            int index = pathStr.indexOf(ROUTE_RESOURCES);
+			// http://jira.talendforge.org/browse/TESB-6437
+			int index = pathStr.indexOf(JavaUtils.JAVA_SRC_DIRECTORY);
             if (index > -1) {
-                pathStr = pathStr.substring(index, pathStr.length());
+				pathStr = pathStr.substring(index
+						+ JavaUtils.JAVA_SRC_DIRECTORY.length() + 1);
                 try {
                     URL url = path.toFile().toURI().toURL();
                     osgiResource.addResource(pathStr, url);
