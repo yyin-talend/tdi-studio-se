@@ -110,11 +110,13 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      * 
      * @see org.talend.designer.core.ui.editor.ISyntaxCheckable#validateSyntax()
      */
+    @Override
     public void validateSyntax() {
         ISourceViewer sourceViewer = getSourceViewer();
         if (sourceViewer instanceof JavaSourceViewer) {
             this.getSourceViewer().getTextWidget().getDisplay().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     // selectAndReveal(0, 0);
                     // JavaSourceViewer javaSourceViewer = (JavaSourceViewer) getSourceViewer();
@@ -196,21 +198,24 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
             return;
         }
         IDocument doc = getDocumentProvider().getDocument(getEditorInput());
-        FindReplaceDocumentAdapter frda = new FindReplaceDocumentAdapter(doc);
-        try {
-            Region region = (Region) frda.find(0, mainPart, true, false, false, false);
-            if (region != null) {
-                Region region2 = (Region) frda.find(region.getOffset(), assignmentPart, true, false, false, false);
-                if (region2 != null) {
-                    selectAndReveal(region2.getOffset(), assignmentPart.length());
+        // TDI-21733:since the code page for joblet now will be null,must add the judgement.
+        if (doc != null) {
+            FindReplaceDocumentAdapter frda = new FindReplaceDocumentAdapter(doc);
+            try {
+                Region region = (Region) frda.find(0, mainPart, true, false, false, false);
+                if (region != null) {
+                    Region region2 = (Region) frda.find(region.getOffset(), assignmentPart, true, false, false, false);
+                    if (region2 != null) {
+                        selectAndReveal(region2.getOffset(), assignmentPart.length());
+                    } else {
+                        selectAndReveal(region.getOffset(), mainPart.length());
+                    }
                 } else {
-                    selectAndReveal(region.getOffset(), mainPart.length());
+                    selectAndReveal(0, 0);
                 }
-            } else {
+            } catch (BadLocationException e) {
                 selectAndReveal(0, 0);
             }
-        } catch (BadLocationException e) {
-            selectAndReveal(0, 0);
         }
     }
 
@@ -243,6 +248,7 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      * 
      * @return Whether this editor had been disposed.
      */
+    @Override
     public boolean isDisposed() {
         return this.disposed;
     }
@@ -278,11 +284,13 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
                 IJavaPartitions.JAVA_PARTITIONING);
     }
 
+    @Override
     protected void createActions() {
         super.createActions();
         getAction(IJavaEditorActionDefinitionIds.SHOW_IN_BREADCRUMB).setEnabled(false);
     }
 
+    @Override
     protected boolean isErrorStatus(IStatus status) {
         if (!(process.getProperty().getItem() instanceof ProcessItem)) {
             return false;
