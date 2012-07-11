@@ -196,21 +196,24 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
             return;
         }
         IDocument doc = getDocumentProvider().getDocument(getEditorInput());
-        FindReplaceDocumentAdapter frda = new FindReplaceDocumentAdapter(doc);
-        try {
-            Region region = (Region) frda.find(0, mainPart, true, false, false, false);
-            if (region != null) {
-                Region region2 = (Region) frda.find(region.getOffset(), assignmentPart, true, false, false, false);
-                if (region2 != null) {
-                    selectAndReveal(region2.getOffset(), assignmentPart.length());
+        // TDI-21733:since the code page for joblet now will be null,must add the judgement.
+        if (doc != null) {
+            FindReplaceDocumentAdapter frda = new FindReplaceDocumentAdapter(doc);
+            try {
+                Region region = (Region) frda.find(0, mainPart, true, false, false, false);
+                if (region != null) {
+                    Region region2 = (Region) frda.find(region.getOffset(), assignmentPart, true, false, false, false);
+                    if (region2 != null) {
+                        selectAndReveal(region2.getOffset(), assignmentPart.length());
+                    } else {
+                        selectAndReveal(region.getOffset(), mainPart.length());
+                    }
                 } else {
-                    selectAndReveal(region.getOffset(), mainPart.length());
+                    selectAndReveal(0, 0);
                 }
-            } else {
+            } catch (BadLocationException e) {
                 selectAndReveal(0, 0);
             }
-        } catch (BadLocationException e) {
-            selectAndReveal(0, 0);
         }
     }
 
