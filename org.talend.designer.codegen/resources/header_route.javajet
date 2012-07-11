@@ -339,10 +339,11 @@ for (INode node : graphicalNodes) {
 
 	} else if("cJMS".equals(componentName)) {
 		//http://jira.talendforge.org/browse/TESB-4861
-		String name = ElementParameterParser.getValue(node, "__CONNECTION_FACOTRY__");
+		String name = ElementParameterParser.getValue(node, "__ROUTE_COMPONENT_TYPE_ID__");
 		if (name == null || name.equals("")) {
 			name = "jms";
 		}
+		name = name.replace("_", "");
 		name = "\"" + name + "\"";
 		//String name = ElementParameterParser.getValue(node, "__NAME__").trim();
 		//Remove unnecessary subfix
