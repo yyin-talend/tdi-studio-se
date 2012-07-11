@@ -131,7 +131,7 @@
 				org.apache.activemq.pool.PooledConnectionFactory pooledConnectionFactory_<%=node.getUniqueName()%> 
 					= new org.apache.activemq.pool.PooledConnectionFactory();
 				pooledConnectionFactory_<%=node.getUniqueName()%>.setConnectionFactory(jmsConnectionFactory);
-				pooledConnectionFactory_<%=node.getUniqueName()%>.setExpiryTimeout(<%=amq_pool_expiry_timeout%>);
+				pooledConnectionFactory_<%=node.getUniqueName()%>.setExpiryTimeout(<%=amq_pool_expiry_timeout%>L);
 				pooledConnectionFactory_<%=node.getUniqueName()%>.setIdleTimeout(<%=amq_pool_idle_timeout%>);
 				pooledConnectionFactory_<%=node.getUniqueName()%>.setMaxConnections(<%=amq_pool_max_connections%>);
 				pooledConnectionFactory_<%=node.getUniqueName()%>.setMaximumActive(<%=amq_pool_max_active%>);
