@@ -182,6 +182,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
      * 
      * @see org.talend.core.model.process.IElement#isReadOnly()
      */
+    @Override
     public boolean isReadOnly() {
         return process.isReadOnly();
     }
@@ -191,6 +192,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
      * 
      * @see org.talend.core.model.process.IElement#setReadOnly(boolean)
      */
+    @Override
     public void setReadOnly(boolean readOnly) {
         // TODO Auto-generated method stub
 
@@ -230,7 +232,15 @@ public class SubjobContainer extends Element implements ISubjobContainer {
                 curRect = container.getNodeContainerRectangle();
             }
 
-            if (collapsed && totalRectangle == null) {// container.getNode().isDesignSubjobStartNode()) {
+            if (curRect.y == container.getNode().getPosY()) {
+                // means have totally no other status or such on the top of the node in the NodeContainerFigure, then we
+                // add one more space on the top of the subjob
+
+                // this could be done only once, but to simplify the calculation, just do for every node
+                curRect.setLocation(curRect.getLocation().x, curRect.getLocation().y - TalendEditor.GRID_SIZE);
+                curRect.setSize(curRect.getSize().width, curRect.getSize().height + TalendEditor.GRID_SIZE);
+            }
+            if (collapsed && totalRectangle == null) {
                 totalRectangle = curRect.getCopy();
             } else if (!collapsed) {
                 if (totalRectangle == null) {
@@ -366,6 +376,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         setPropertyValue(propertyName, ColorUtils.getRGBValue(rgbValue));
     }
 
+    @Override
     public void updateSubjobContainer() {
         fireStructureChange(UPDATE_SUBJOB_CONTENT, this);
     }
@@ -481,6 +492,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
      * 
      * @see org.talend.core.model.process.ISubjobContainer#isDisplayed()
      */
+    @Override
     public boolean isDisplayed() {
         if (!DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.DISPLAY_SUBJOBS)) {
             return false;
@@ -495,6 +507,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         setPropertyValue(EParameterName.SUBJOB_DISPLAYED.getName(), displayed);
     }
 
+    @Override
     public void updateSubjobDisplay() {
         if (!isDisplayed() && isCollapsed()) {
             // if the subjob hidden and collapsed, remove the collapse status first.
