@@ -782,6 +782,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 if (importPackages != null && !"".equals(importPackages)) {
                     a.put(new Attributes.Name("Import-Package"), importPackages);
                 }
+                String exportPackages = bundleDependences.get(IOsgiDependenciesService.EXPORT_PACKAGE);
+                if(exportPackages != null && !"".equals(exportPackages)){
+                	a.put(new Attributes.Name("Export-Package"), exportPackages);
+                }
                 if (!libResource.getAllResources().isEmpty()) {
                     a.put(new Attributes.Name("Bundle-ClassPath"), getClassPath(libResource)); //$NON-NLS-1$
                 }
