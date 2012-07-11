@@ -316,6 +316,10 @@ public class OpenedListController extends AbstractElementPropertySectionControll
                             if (!valueSet) {
                                 value = text;
                             }
+                            // TDI-21313
+                            if (value != null && value.equals(param.getValue())) {
+                                return null;
+                            }
                             param.setValue(value);
 
                         }
