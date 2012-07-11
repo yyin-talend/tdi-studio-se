@@ -35,8 +35,6 @@ import org.talend.designer.core.ui.editor.nodes.NodeErrorEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
-import org.talend.designer.core.ui.editor.nodes.NodePerformance;
-import org.talend.designer.core.ui.editor.nodes.NodePerformanceEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodeProgressBar;
 import org.talend.designer.core.ui.editor.nodes.NodeProgressBarPart;
 import org.talend.designer.core.ui.editor.notes.Note;
@@ -59,6 +57,7 @@ public class PartFactory implements EditPartFactory {
      * 
      * @see org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart, java.lang.Object)
      */
+    @Override
     public EditPart createEditPart(EditPart context, Object model) {
         EditPart part = null;
 
@@ -88,8 +87,6 @@ public class PartFactory implements EditPartFactory {
             } else {
                 part = new NodeContainerPart();
             }
-        } else if (model instanceof NodePerformance) {
-            part = new NodePerformanceEditPart();
         } else if (model instanceof Note) {
             part = new NoteEditPart();
         } else if (model instanceof NodeError) {

@@ -37,8 +37,8 @@ import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeError;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
-import org.talend.designer.core.ui.editor.nodes.NodePerformance;
 import org.talend.designer.core.ui.editor.nodes.NodeProgressBar;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 
 /**
@@ -58,8 +58,6 @@ public class NodeContainer extends Element {
     private NodeProgressBar nodeProgressBar;
 
     protected List<IElement> elements = new ArrayList<IElement>();
-
-    private NodePerformance nodePerformance;
 
     private SubjobContainer subjobContainer;
 
@@ -113,8 +111,6 @@ public class NodeContainer extends Element {
         if (node.isFileScaleComponent()) {
             elements.add(nodeProgressBar);
         }
-        nodePerformance = new NodePerformance(this);
-        elements.add(nodePerformance);
 
         if (!CommonsPlugin.isHeadless()) {
             Image image = ImageProvider.getImage(CorePlugin.getImageDescriptor(NodeContainerFigure.BREAKPOINT_IMAGE));
@@ -159,7 +155,7 @@ public class NodeContainer extends Element {
 
         param = new ElementParameter(this);
         param.setName(EParameterName.SUBJOB_TITLE.getName());
-        param.setValue(node.getLabel()); //$NON-NLS-1$
+        param.setValue(node.getLabel());
         param.setDisplayName(EParameterName.SUBJOB_TITLE.getDisplayName());
         param.setFieldType(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.BASIC);
@@ -171,92 +167,176 @@ public class NodeContainer extends Element {
     }
 
     private Rectangle prepareStatus(Point nodeLocation, Dimension nodeSize) {
-        Rectangle statusRectangle = new Rectangle();
-        Rectangle breakpointRectangle, warningRectangle, errorRectangle, infoRectangle, parallelLocationRectangle, errorMarkRectangle, validationRuleRectangle;
+        Rectangle statusRectangle = null;
+        Rectangle breakpointRectangle, warningRectangle, infoRectangle, parallelLocationRectangle, validationRuleRectangle;
 
-        breakpointLocation.x = nodeLocation.x - breakpointSize.width;
-        breakpointLocation.y = nodeLocation.y - breakpointSize.height;
-        breakpointRectangle = new Rectangle(breakpointLocation, breakpointSize);
-        statusRectangle = breakpointRectangle;
+        int status = node.getStatus();
 
-        errorLocation.x = nodeLocation.x + nodeSize.width;
-        errorLocation.y = nodeLocation.y - errorSize.height;
-        errorRectangle = new Rectangle(errorLocation, errorSize);
-        this.errorRectangle = errorRectangle;
-        statusRectangle.union(errorRectangle);
+        if ((status & Process.BREAKPOINT_STATUS) != 0) {
+            breakpointLocation.x = nodeLocation.x - breakpointSize.width;
+            breakpointLocation.y = nodeLocation.y - breakpointSize.height;
+            breakpointRectangle = new Rectangle(breakpointLocation, breakpointSize);
+            statusRectangle = breakpointRectangle;
+        }
 
-        warningLocation.x = nodeLocation.x + nodeSize.width;
-        warningLocation.y = nodeLocation.y - warningSize.height;
-        warningRectangle = new Rectangle(warningLocation, warningSize);
-        statusRectangle.union(warningRectangle);
+        if ((status & Process.ERROR_STATUS) != 0) {
+            errorLocation.x = nodeLocation.x + nodeSize.width;
+            errorLocation.y = nodeLocation.y - errorSize.height;
+            errorRectangle = new Rectangle(errorLocation, errorSize);
+            if (statusRectangle == null) {
+                statusRectangle = errorRectangle;
+            } else {
+                statusRectangle.union(errorRectangle);
+            }
+        }
 
-        infoLocation.x = nodeLocation.x + nodeSize.width;
-        infoLocation.y = nodeLocation.y - infoSize.height;
-        infoRectangle = new Rectangle(infoLocation, infoSize);
-        statusRectangle.union(infoRectangle);
+        if ((status & Process.WARNING_STATUS) != 0) {
+            warningLocation.x = nodeLocation.x + nodeSize.width;
+            warningLocation.y = nodeLocation.y - warningSize.height;
+            warningRectangle = new Rectangle(warningLocation, warningSize);
+            if (statusRectangle == null) {
+                statusRectangle = warningRectangle;
+            } else {
+                statusRectangle.union(warningRectangle);
+            }
+        }
 
-        validationRuleLocation.x = nodeLocation.x + nodeSize.width / 2 + nodeSize.width / 4;
-        validationRuleLocation.y = nodeLocation.y - validationRuleSize.height / 2;
-        validationRuleRectangle = new Rectangle(validationRuleLocation, validationRuleSize);
-        statusRectangle.union(validationRuleRectangle);
+        if ((status & Process.INFO_STATUS) != 0) {
+            infoLocation.x = nodeLocation.x + nodeSize.width;
+            infoLocation.y = nodeLocation.y - infoSize.height;
+            infoRectangle = new Rectangle(infoLocation, infoSize);
+            if (statusRectangle == null) {
+                statusRectangle = infoRectangle;
+            } else {
+                statusRectangle.union(infoRectangle);
+            }
+        }
 
-        markLocation.x = statusRectangle.x;
-        markLocation.y = statusRectangle.y;
+        if ((status & Process.VALIDATION_RULE_STATUS) != 0) {
+            validationRuleLocation.x = nodeLocation.x + nodeSize.width / 2 + nodeSize.width / 4;
+            validationRuleLocation.y = nodeLocation.y - validationRuleSize.height / 2;
+            validationRuleRectangle = new Rectangle(validationRuleLocation, validationRuleSize);
+            if (statusRectangle == null) {
+                statusRectangle = validationRuleRectangle;
+            } else {
+                statusRectangle.union(validationRuleRectangle);
+            }
+        }
 
-        errorMarkLocation.x = nodeLocation.x - (errorMarkSize.width - nodeSize.width) / 2;
-        errorMarkLocation.y = markLocation.y - errorMarkSize.height;
-        errorMarkRectangle = new Rectangle(errorMarkLocation, errorMarkSize);
-        this.errorMarkRectangle = errorMarkRectangle;
-        statusRectangle.union(errorMarkRectangle);
+        if (node.isErrorFlag()) {
+            if (statusRectangle != null) {
+                markLocation.x = statusRectangle.x;
+                markLocation.y = statusRectangle.y;
+            } else {
+                markLocation.x = nodeLocation.x;
+                markLocation.y = nodeLocation.y;
+            }
+            errorMarkLocation.x = nodeLocation.x - (errorMarkSize.width - nodeSize.width) / 2;
+            errorMarkLocation.y = markLocation.y - errorMarkSize.height;
+            errorMarkRectangle = new Rectangle(errorMarkLocation, errorMarkSize);
 
-        parallelLocation.x = nodeLocation.x - nodeSize.width / 2 - parallelSize.width;
-        parallelLocation.y = nodeLocation.y - parallelSize.height;
-        parallelLocationRectangle = new Rectangle(parallelLocation, parallelSize);
+            if (statusRectangle == null) {
+                statusRectangle = errorMarkRectangle;
+            } else {
+                statusRectangle.union(errorMarkRectangle);
+            }
+        }
 
-        statusRectangle.union(parallelLocationRectangle);
+        boolean parallelize = false;
+        IElementParameter enableParallelizeParameter = node.getElementParameter(EParameterName.PARALLELIZE.getName());
+        if (enableParallelizeParameter != null) {
+            parallelize = (Boolean) enableParallelizeParameter.getValue();
+        }
 
+        if (parallelize) {
+            parallelLocation.x = nodeLocation.x - nodeSize.width / 2 - parallelSize.width;
+            parallelLocation.y = nodeLocation.y - parallelSize.height;
+            parallelLocationRectangle = new Rectangle(parallelLocation, parallelSize);
+
+            if (statusRectangle == null) {
+                statusRectangle = parallelLocationRectangle;
+            } else {
+                statusRectangle.union(parallelLocationRectangle);
+            }
+        }
         return statusRectangle;
     }
 
     private Rectangle prepareCleanStatus(Point nodeLocation, Dimension nodeSize) {
-        Rectangle statusRectangle = new Rectangle();
-        Rectangle breakpointRectangle, warningRectangle, errorRectangle, infoRectangle, errorMarkRectangle, validationRuleRectangle;
+        Rectangle statusRectangle = null;
+        Rectangle breakpointRectangle, warningRectangle, infoRectangle, validationRuleRectangle;
 
-        breakpointLocation.x = nodeLocation.x - breakpointSize.width;
-        breakpointLocation.y = nodeLocation.y - breakpointSize.height;
-        breakpointRectangle = new Rectangle(breakpointLocation, breakpointSize);
-        statusRectangle = breakpointRectangle;
+        int status = node.getStatus();
 
-        errorLocation.x = nodeLocation.x + nodeSize.width;
-        errorLocation.y = nodeLocation.y - errorSize.height;
-        errorRectangle = new Rectangle(errorLocation, errorSize);
-        this.errorRectangle = errorRectangle;
-        statusRectangle.union(errorRectangle);
+        if ((status & Process.BREAKPOINT_STATUS) != 0) {
+            breakpointLocation.x = nodeLocation.x - breakpointSize.width;
+            breakpointLocation.y = nodeLocation.y - breakpointSize.height;
+            breakpointRectangle = new Rectangle(breakpointLocation, breakpointSize);
+            statusRectangle = breakpointRectangle;
+        }
 
-        warningLocation.x = nodeLocation.x + nodeSize.width;
-        warningLocation.y = nodeLocation.y - warningSize.height;
-        warningRectangle = new Rectangle(warningLocation, warningSize);
-        statusRectangle.union(warningRectangle);
+        if ((status & Process.ERROR_STATUS) != 0) {
+            errorLocation.x = nodeLocation.x + nodeSize.width;
+            errorLocation.y = nodeLocation.y - errorSize.height;
+            errorRectangle = new Rectangle(errorLocation, errorSize);
+            if (statusRectangle == null) {
+                statusRectangle = errorRectangle;
+            } else {
+                statusRectangle.union(errorRectangle);
+            }
+        }
 
-        infoLocation.x = nodeLocation.x + nodeSize.width;
-        infoLocation.y = nodeLocation.y - infoSize.height;
-        infoRectangle = new Rectangle(infoLocation, infoSize);
-        statusRectangle.union(infoRectangle);
+        if ((status & Process.WARNING_STATUS) != 0) {
+            warningLocation.x = nodeLocation.x + nodeSize.width;
+            warningLocation.y = nodeLocation.y - warningSize.height;
+            warningRectangle = new Rectangle(warningLocation, warningSize);
+            if (statusRectangle == null) {
+                statusRectangle = warningRectangle;
+            } else {
+                statusRectangle.union(warningRectangle);
+            }
+        }
 
-        validationRuleLocation.x = nodeLocation.x + nodeSize.width / 2 + nodeSize.width / 4;
-        validationRuleLocation.y = nodeLocation.y - validationRuleSize.height / 2;
-        validationRuleRectangle = new Rectangle(validationRuleLocation, validationRuleSize);
-        statusRectangle.union(validationRuleRectangle);
+        if ((status & Process.INFO_STATUS) != 0) {
+            infoLocation.x = nodeLocation.x + nodeSize.width;
+            infoLocation.y = nodeLocation.y - infoSize.height;
+            infoRectangle = new Rectangle(infoLocation, infoSize);
+            if (statusRectangle == null) {
+                statusRectangle = infoRectangle;
+            } else {
+                statusRectangle.union(infoRectangle);
+            }
+        }
 
-        markLocation.x = statusRectangle.x;
-        markLocation.y = statusRectangle.y;
+        if ((status & Process.VALIDATION_RULE_STATUS) != 0) {
+            validationRuleLocation.x = nodeLocation.x + nodeSize.width / 2 + nodeSize.width / 4;
+            validationRuleLocation.y = nodeLocation.y - validationRuleSize.height / 2;
+            validationRuleRectangle = new Rectangle(validationRuleLocation, validationRuleSize);
+            if (statusRectangle == null) {
+                statusRectangle = validationRuleRectangle;
+            } else {
+                statusRectangle.union(validationRuleRectangle);
+            }
+        }
 
-        errorMarkLocation.x = nodeLocation.x - (errorMarkSize.width - nodeSize.width) / 2;
-        errorMarkLocation.y = markLocation.y - errorMarkSize.height;
-        errorMarkRectangle = new Rectangle(errorMarkLocation, errorMarkSize);
-        this.errorMarkRectangle = errorMarkRectangle;
-        statusRectangle.union(errorMarkRectangle);
+        if (node.isErrorFlag()) {
+            if (statusRectangle != null) {
+                markLocation.x = statusRectangle.x;
+                markLocation.y = statusRectangle.y;
+            } else {
+                markLocation.x = nodeLocation.x - nodeSize.width / 2;
+                markLocation.y = nodeLocation.y;
+            }
+            errorMarkLocation.x = nodeLocation.x - (errorMarkSize.width - nodeSize.width) / 2;
+            errorMarkLocation.y = markLocation.y - errorMarkSize.height;
+            errorMarkRectangle = new Rectangle(errorMarkLocation, errorMarkSize);
 
+            if (statusRectangle == null) {
+                statusRectangle = errorMarkRectangle;
+            } else {
+                statusRectangle.union(errorMarkRectangle);
+            }
+        }
         return statusRectangle;
     }
 
@@ -267,7 +347,6 @@ public class NodeContainer extends Element {
         Dimension nodeSize;
         Dimension labelSize;
         Dimension errorNodeSize;
-        Dimension progressNodeSize;
         nodeSize = node.getSize();
         Rectangle nodeRectangle = new Rectangle(nodeLocation, nodeSize);
 
@@ -284,24 +363,18 @@ public class NodeContainer extends Element {
         labelLocation.translate(textOffset);
         Rectangle labelRectangle = new Rectangle(labelLocation, labelSize);
 
-        Point errorLocation = nodeError.getLocation().getCopy();
         errorNodeSize = nodeError.getErrorSize();
-        Rectangle errorNodeRectangle = new Rectangle(errorLocation, new Dimension(60, 60));
 
         Point progressLocation = nodeProgressBar.getLocation().getCopy();
-        progressNodeSize = nodeProgressBar.getProgressSize();
         Rectangle progressNodeRectangle = new Rectangle(progressLocation, new Dimension(80, 80));
 
-        Dimension perfSize = nodePerformance.getSize();
-        Point perfLocation = nodePerformance.getLocation();
-
-        Rectangle perfRectangle = new Rectangle(perfLocation, perfSize);
-
         Rectangle finalRect;
-        finalRect = nodeRectangle.getUnion(labelRectangle).getUnion(perfRectangle).getUnion(statusRectangle);
+        finalRect = nodeRectangle.getUnion(labelRectangle).getUnion(statusRectangle);
 
-        finalRect.height += errorNodeSize.height;// .getUnion(errorNodeRectangle)
-        finalRect.height += errorMarkSize.height;
+        if (node.isErrorFlag()) {
+            finalRect.height += errorNodeSize.height;
+            finalRect.height += errorMarkSize.height;
+        }
         if (node.isFileScaleComponent()) {
             finalRect = finalRect.getUnion(progressNodeRectangle);// finalRect.height += progressNodeSize.height;//
         }
@@ -327,16 +400,15 @@ public class NodeContainer extends Element {
 
         progressNodeSize = nodeProgressBar.getProgressSize();
 
-        Dimension perfSize = nodePerformance.getSize();
-        Point perfLocation = nodePerformance.getLocation();
-
-        Rectangle perfRectangle = new Rectangle(perfLocation, perfSize);
-
         Rectangle finalRect;
-        finalRect = nodeRectangle.getUnion(perfRectangle).getUnion(statusRectangle);
+        finalRect = nodeRectangle.getUnion(statusRectangle);
         finalRect.height += labelSize.height;
-        finalRect.height += errorNodeSize.height;
-        finalRect.height += progressNodeSize.height;
+        if (node.isErrorFlag()) {
+            finalRect.height += errorNodeSize.height;
+        }
+        if (node.isFileScaleComponent()) {
+            finalRect.height += progressNodeSize.height;
+        }
         return finalRect;
     }
 
@@ -390,10 +462,7 @@ public class NodeContainer extends Element {
         return elements;
     }
 
-    public NodePerformance getNodePerformance() {
-        return this.nodePerformance;
-    }
-
+    @Override
     public boolean isReadOnly() {
         if (node.getJobletNode() != null) {
             return node.isReadOnly();
@@ -401,6 +470,7 @@ public class NodeContainer extends Element {
         return node.getProcess().isReadOnly();
     }
 
+    @Override
     public void setReadOnly(boolean readOnly) {
     }
 

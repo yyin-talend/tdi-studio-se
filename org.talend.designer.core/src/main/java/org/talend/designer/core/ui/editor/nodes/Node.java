@@ -22,7 +22,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -1786,12 +1785,7 @@ public class Node extends Element implements IGraphicalNode {
      */
     @Override
     public void setPerformanceData(String perfData) {
-        String oldData = this.performanceData;
-        if (!ObjectUtils.equals(oldData, perfData)) {
-            this.performanceData = perfData;
-            this.nodeContainer.getNodePerformance().setPerfData(perfData);
-            firePropertyChange(PERFORMANCE_DATA, oldData, perfData);
-        }
+        // not used anymore
     }
 
     /**

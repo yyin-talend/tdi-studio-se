@@ -84,7 +84,9 @@ public class NodeContainerFigure extends Figure {
 
     public NodeContainerFigure(NodeContainer nodeContainer) {
         this.nodeContainer = nodeContainer;
-        this.setLayoutManager(new FreeformLayout());
+        FreeformLayout ffl = new FreeformLayout();
+        ffl.setObserveVisibility(true);
+        this.setLayoutManager(ffl);
         this.node = nodeContainer.getNode();
         // this.setOpaque(true);
         // this.setBackgroundColor(new Color(null, new RGB(200, 100, 200)));
@@ -291,17 +293,30 @@ public class NodeContainerFigure extends Figure {
         } else {
             graphics.setAlpha(255);
         }
-        breakpointFigure.setLocation(nodeContainer.getBreakpointLocation());
-        errorFigure.setLocation(nodeContainer.getErrorLocation());
-        infoFigure.setLocation(nodeContainer.getInfoLocation());
-        warningFigure.setLocation(nodeContainer.getWarningLocation());
-        if (parallelFigure != null) {
+        if (breakpointFigure.isVisible()) {
+            breakpointFigure.setLocation(nodeContainer.getBreakpointLocation());
+        }
+        if (errorFigure.isVisible()) {
+            errorFigure.setLocation(nodeContainer.getErrorLocation());
+        }
+        if (infoFigure.isVisible()) {
+            infoFigure.setLocation(nodeContainer.getInfoLocation());
+        }
+        if (warningFigure.isVisible()) {
+            warningFigure.setLocation(nodeContainer.getWarningLocation());
+        }
+        if (parallelFigure != null && parallelFigure.isVisible()) {
             parallelFigure.setLocation(nodeContainer.getParallelLocation());
         }
-        rectFig.setLocation(nodeContainer.getMarkLocation());
-        markFigure.setLocation(nodeContainer.getErrorMarkLocation());
-        validationRuleFigure.setLocation(nodeContainer.getValidationRuleLocation());
-
+        if (rectFig.isVisible()) {
+            rectFig.setLocation(nodeContainer.getMarkLocation());
+        }
+        if (markFigure.isVisible()) {
+            markFigure.setLocation(nodeContainer.getErrorMarkLocation());
+        }
+        if (validationRuleFigure.isVisible()) {
+            validationRuleFigure.setLocation(nodeContainer.getValidationRuleLocation());
+        }
         super.paint(graphics);
     }
 
