@@ -232,6 +232,12 @@ public class SubjobContainer extends Element implements ISubjobContainer {
                 curRect = container.getNodeContainerRectangle();
             }
 
+            if ((curRect.x + curRect.width) == (container.getNode().getPosX() + container.getNode().getSize().width)) {
+                curRect.setSize(curRect.getSize().width + TalendEditor.GRID_SIZE, curRect.getSize().height);
+            }
+            if ((curRect.y + curRect.height) == (container.getNode().getPosY() + container.getNode().getSize().height)) {
+                curRect.setSize(curRect.getSize().width, curRect.getSize().height + TalendEditor.GRID_SIZE);
+            }
             if (curRect.y == container.getNode().getPosY()) {
                 // means have totally no other status or such on the top of the node in the NodeContainerFigure, then we
                 // add one more space on the top of the subjob
@@ -239,6 +245,15 @@ public class SubjobContainer extends Element implements ISubjobContainer {
                 // this could be done only once, but to simplify the calculation, just do for every node
                 curRect.setLocation(curRect.getLocation().x, curRect.getLocation().y - TalendEditor.GRID_SIZE);
                 curRect.setSize(curRect.getSize().width, curRect.getSize().height + TalendEditor.GRID_SIZE);
+            }
+            if (curRect.x == container.getNode().getPosX()) {
+                // means if the node container figure is just at the border of the size of the component
+                // then we add one more space on the left of the component, just to avoid have one subjob background
+                // "too small" (too close to component)
+
+                // this could be done only once, but to simplify the calculation, just do for every node
+                curRect.setLocation(curRect.getLocation().x - TalendEditor.GRID_SIZE, curRect.getLocation().y);
+                curRect.setSize(curRect.getSize().width + TalendEditor.GRID_SIZE, curRect.getSize().height);
             }
             if (collapsed && totalRectangle == null) {
                 totalRectangle = curRect.getCopy();
