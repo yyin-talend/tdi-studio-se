@@ -175,7 +175,7 @@ the original size in the column:<%=column.getLabel()%> in the schema should be b
 							String isImpliedDecimalStr = column.getAdditionalField().get("ImpliedDecimal");
 							boolean isImpliedDecimal = (isImpliedDecimalStr!=null&&!("").equals(isImpliedDecimalStr))?("true").equals(isImpliedDecimalStr):true;
 %>
-							<%=conn.getName() %>.<%=column.getLabel()%> = cobolConversion.EBCDICReadType9.readType9Value(bb_<%=column.getLabel()%>_<%=cid%>,<%=precision %>,<%=isImpliedDecimal %>,<%=encoding %>);
+							<%=conn.getName() %>.<%=column.getLabel()%> = cobolConversion.EBCDICType9.readType9Value(bb_<%=column.getLabel()%>_<%=cid%>,<%=precision %>,<%=isImpliedDecimal %>,<%=encoding %>);
 <%
 						}else if(orgainType.equals("B")) {
 %>

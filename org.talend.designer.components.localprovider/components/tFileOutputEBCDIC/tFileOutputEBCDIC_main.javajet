@@ -89,7 +89,7 @@ the original size in the column:<%=column.getLabel()%> in the schema should be b
 							boolean isSigned = (isSignedStr!=null&&!("").equals(isSignedStr))?("true").equals(isSignedStr):true;
 %>
 							java.math.BigDecimal <%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>;
-							bb_<%=column.getLabel()%>_<%=cid%> = cobolConversion.EBCDICWriteType9.writeType9Value(<%=length %>,<%=precision %>,<%=column.getLabel()%>_<%=cid%>,<%=isSigned %>,<%=isImpliedDecimal %>,<%=encoding %>);
+							bb_<%=column.getLabel()%>_<%=cid%> = cobolConversion.EBCDICType9.writeType9Value(<%=length %>,<%=precision %>,<%=column.getLabel()%>_<%=cid%>,<%=isSigned %>,<%=isImpliedDecimal %>,<%=encoding %>);
 							fOut_<%=cid%>.write(bb_<%=column.getLabel()%>_<%=cid%>);
 <%
 						}else if(orgainType.equals("B")) {
