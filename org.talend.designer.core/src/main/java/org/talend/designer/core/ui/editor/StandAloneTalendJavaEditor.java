@@ -216,7 +216,9 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             IRepositoryView viewPart = RepositoryManagerHelper.findRepositoryView();
             if (viewPart != null) {
                 RepositoryNode repositoryNode = rEditorInput.getRepositoryNode();
-                return getTitleText(repositoryNode.getObject());
+                if (repositoryNode != null) {
+                    return getTitleText(repositoryNode.getObject());
+                }
             }
         }
         return super.getPartName();
