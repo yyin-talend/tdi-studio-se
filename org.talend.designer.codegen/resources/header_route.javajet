@@ -537,10 +537,10 @@ for (INode node : graphicalNodes) {
 		String resourceUri = ElementParameterParser.getValue(node, "__URI__");
 		sb.append(resourceUri);
 
-		boolean hasParam = false;
+		boolean hasParam = resourceUri==null?false:resourceUri.contains("?");
 
 		String method = ElementParameterParser.getValue(node, "__METHOD__");
-		if("GET".equals(method)||"HEAD".equals(method)){
+		if("GET".equals(method)||"HEAD".equals(method) || "DELETE".equals(method)){
 			List<Map<String, String>> parameters = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__PARAMETERS__");
 			String encodeCharset = ElementParameterParser.getValue(node, "__ENCODER_CHARSET__");
 
