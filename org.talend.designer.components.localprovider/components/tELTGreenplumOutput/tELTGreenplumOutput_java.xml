@@ -122,7 +122,7 @@
       SHOW="true"
       READONLY="true"
     >
-      <DEFAULT>postgres_id</DEFAULT>
+      <DEFAULT>greenplum_id</DEFAULT>
     </PARAMETER>
 
   </PARAMETERS>
