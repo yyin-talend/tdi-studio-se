@@ -1309,6 +1309,12 @@
              id="org.talend.repository.model.migration.SetFilterTiemFromTotoFromPOPComponentsMigrationTask"
              name="SetFilterTiemFromTotoFromPOPComponentsMigrationTask">
 		</projecttask>
+		<projecttask
+             beforeLogon="false"
+             class="org.talend.repository.model.migration.ChangeDefaultValueTDIBug21708"
+             id="org.talend.repository.model.migration.ChangeDefaultValueTDIBug21708"
+             name="ChangeDefaultValueTDIBug21708">
+		</projecttask>
 
    </extension>
    
