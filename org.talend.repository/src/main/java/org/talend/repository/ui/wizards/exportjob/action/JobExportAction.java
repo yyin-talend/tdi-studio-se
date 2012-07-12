@@ -76,7 +76,7 @@ public class JobExportAction implements IRunnableWithProgress {
 
     public JobExportAction(List<RepositoryNode> nodes, String jobVersion, String bundleVersion, JobScriptsManager manager,
             String directoryName, String type) {
-        this(nodes, jobVersion, jobVersion, manager, directoryName);
+        this(nodes, jobVersion, bundleVersion, manager, directoryName);
         this.type = type;
     }
 
