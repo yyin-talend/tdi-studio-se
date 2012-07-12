@@ -302,7 +302,8 @@ public class FOXUI {
         // } else {
         IConnection inConn = null;
         for (IConnection conn : externalNode.getIncomingConnections()) {
-            if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+            if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))
+                    || (conn.getLineStyle().equals(EConnectionType.FLOW_MERGE))) {
                 inConn = conn;
                 break;
             }
