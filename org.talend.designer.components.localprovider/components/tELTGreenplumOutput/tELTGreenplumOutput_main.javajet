@@ -287,8 +287,7 @@ for(Column colStmt:stmtStructure){
 		}else{
 			insertColName.append(colStmt.getName()+suffix);
 			insertValueStmt.append(colStmt.getValue()+suffix);
-			updateSetStmt.append(colStmt.getName()+"=(\"+select_query.replaceFirst(selectQueryColumnsName,selectQueryColumnsName.split(\",\")[ "+ counterOuter + "])+\")" +suffix);
-			//updateSetStmt.append(colStmt.getName()+"=(\"+selectQueryColumnsName.split(\",\")[ "+ counterOuter + "]+\")" +suffix);
+			updateSetStmt.append(colStmt.getName()+"=\"+selectQueryColumnsName.split(\",\")[ "+ counterOuter + "]+\"" +suffix);
 		}
 	}
 	counterOuter ++;
@@ -303,15 +302,19 @@ for(Column colStmt:stmtStructure){
 <%
 	}else if (("UPDATE").equals(dataAction)){
 %>
-	String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt.toString()%> "
+	String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt.toString()%> " +select_query.substring(select_query.indexOf("FROM"));
 <%
 		if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
 %>
-		+"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
+		if(select_query.indexOf("WHERE")==-1){
+		updateQuery +="  WHERE ";
+		}else{
+		updateQuery +="  AND ";
+		} 
+		updateQuery+= <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>;
 <%
 		}
 %>
-	;
 	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
 
 <%		
