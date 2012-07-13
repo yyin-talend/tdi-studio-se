@@ -32,8 +32,6 @@ import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.SAPConnection;
-import org.talend.core.model.metadata.builder.connection.SAPFunctionUnit;
-import org.talend.core.model.metadata.builder.connection.SAPIDocUnit;
 import org.talend.core.model.metadata.builder.connection.SalesforceModuleUnit;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
@@ -51,6 +49,7 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.i18n.Messages;
@@ -159,8 +158,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         this.propertyName = propertyName;
         oldValues = new HashMap<String, Object>();
         if (connection instanceof XmlFileConnection) {
-            if (XmlUtil.isXSDFile(TalendQuoteUtils.removeQuotes(((XmlFileConnection) connection).getXmlFilePath())))
+            if (XmlUtil.isXSDFile(TalendQuoteUtils.removeQuotes(((XmlFileConnection) connection).getXmlFilePath()))) {
                 dragAndDropAction = true;
+            }
         }
         setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
         propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
@@ -385,8 +385,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         } else if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
                                 && param.getRepositoryValue().equals("EDI_VERSION")) {
                             String[] list = param.getListItemsDisplayName();
-                            for (int i = 0; i < list.length; i++) {
-                                if (objectValue.toString().toUpperCase().equals(list[i])) {
+                            for (String element : list) {
+                                if (objectValue.toString().toUpperCase().equals(element)) {
                                     elem.setPropertyValue(param.getName(), objectValue);
                                 }
                             }
@@ -422,8 +422,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                             if (repositoryValue.equals("MODULENAME")) {//$NON-NLS-1$
                                 List list = new ArrayList();
                                 Object[] listItemsValue = elem.getElementParameter("MODULENAME").getListItemsValue();
-                                for (int i = 0; i < listItemsValue.length; i++) {
-                                    list.add(listItemsValue[i]);
+                                for (Object element : listItemsValue) {
+                                    list.add(element);
                                 }
                                 if (list != null && !list.contains(objectValue)) {
                                     objectValue = "CustomModule";//$NON-NLS-1$
@@ -447,12 +447,12 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
                                     filePath = TalendTextUtils.removeQuotes(objectValue.toString());
                                 }
-                                boolean versionCheckFor2007 = false; //$NON-NLS-N$
-                                if (filePath != null && filePath.endsWith(".xlsx")) { //$NON-NLS-N$
-                                    versionCheckFor2007 = true; //$NON-NLS-N$
+                                boolean versionCheckFor2007 = false;
+                                if (filePath != null && filePath.endsWith(".xlsx")) {
+                                    versionCheckFor2007 = true;
                                 }
-                                if (elem.getElementParameter("VERSION_2007") != null) { //$NON-NLS-N$
-                                    elem.setPropertyValue("VERSION_2007", versionCheckFor2007); //$NON-NLS-N$
+                                if (elem.getElementParameter("VERSION_2007") != null) {
+                                    elem.setPropertyValue("VERSION_2007", versionCheckFor2007);
                                 }
                             }
                             if (param.getFieldType().equals(EParameterFieldType.FILE)) {
@@ -629,7 +629,13 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                 if (propertyName.split(":")[1].equals(EParameterName.PROPERTY_TYPE.getName())) { //$NON-NLS-1$
                                     repositoryTable = (String) repositorySchemaTypeParameter.getValue();
                                 } else if (item != null) {
-                                    repositoryTable = item.getProperty().getId() + " - " + getFirstRepositoryTable(item); //$NON-NLS-1$
+                                    if (item instanceof SAPConnectionItem) {
+                                        if (getCurrentTableName() != null) {
+                                            repositoryTable = item.getProperty().getId() + " - " + getCurrentTableName();
+                                        }
+                                    } else {
+                                        repositoryTable = item.getProperty().getId() + " - " + getFirstRepositoryTable(item); //$NON-NLS-1$
+                                    }
                                     repositorySchemaTypeParameter.setValue(repositoryTable);
                                 }
                                 if (isNotSim) {
@@ -1003,7 +1009,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             }
             SAPConnection sapConn = (SAPConnection) connection;
             if (sapConn.getFuntions() != null && !sapConn.getFuntions().isEmpty()) {
-                return ((SAPFunctionUnit) sapConn.getFuntions().get(0)).getLabel();
+                return (sapConn.getFuntions().get(0)).getLabel();
             }
         }
         return this.sapFunctionLabel;
@@ -1031,7 +1037,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             }
             SAPConnection sapConn = (SAPConnection) connection;
             if (sapConn.getIDocs() != null && !sapConn.getIDocs().isEmpty()) {
-                return ((SAPIDocUnit) sapConn.getIDocs().get(0)).getName();
+                return (sapConn.getIDocs().get(0)).getName();
             }
         }
         return this.sapIDocLabel;

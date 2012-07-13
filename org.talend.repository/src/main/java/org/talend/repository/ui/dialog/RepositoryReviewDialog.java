@@ -586,8 +586,9 @@ abstract class MultiTypesProcessor implements ITypeProcessor {
     }
 
     protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         IRepositoryViewObject object = node.getObject();
         if (object != null) {
             // column
@@ -656,6 +657,7 @@ abstract class SingleTypeProcessor extends MultiTypesProcessor {
         return getRepositoryTypes()[0];
     }
 
+    @Override
     protected List<ERepositoryObjectType> getTypes() {
         List<ERepositoryObjectType> types = new ArrayList<ERepositoryObjectType>();
         ERepositoryObjectType type = getType();
@@ -667,6 +669,7 @@ abstract class SingleTypeProcessor extends MultiTypesProcessor {
 
     protected abstract ERepositoryObjectType getType();
 
+    @Override
     public boolean isSelectionValid(RepositoryNode node) {
         if (node.getObjectType() == getType()) {
             return true;
@@ -676,8 +679,9 @@ abstract class SingleTypeProcessor extends MultiTypesProcessor {
 
     @Override
     protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         if (node.getContentType() == getType()) {
             return false;
         }
@@ -719,6 +723,7 @@ class JobTypeProcessor extends SingleTypeProcessor {
         this.jobIDList = jobIDList;
     }
 
+    @Override
     public boolean isSelectionValid(RepositoryNode node) {
 
         ERepositoryObjectType t = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
@@ -759,6 +764,7 @@ class JobTypeProcessor extends SingleTypeProcessor {
      * 
      * @see org.talend.repository.ui.dialog.ITypeProcessor#getDialogTitle()
      */
+    @Override
     public String getDialogTitle() {
         return Messages.getString("OpenJobSelectionDialog.findJob"); //$NON-NLS-1$
     }
@@ -874,6 +880,7 @@ class RepositoryTypeProcessor extends SingleTypeProcessor {
 
     }
 
+    @Override
     public boolean isSelectionValid(RepositoryNode node) {
         // only for item
         IRepositoryViewObject object = node.getObject();
@@ -1028,6 +1035,7 @@ class SchemaTypeProcessor extends MultiTypesProcessor {
         return list;
     }
 
+    @Override
     public boolean isSelectionValid(RepositoryNode node) {
         if (node.getObject() instanceof MetadataTable || node.getObject() instanceof SAPFunctionRepositoryObject) {
             return true;
@@ -1094,8 +1102,12 @@ class SAPFunctionProcessor extends SingleTypeProcessor {
         return ERepositoryObjectType.METADATA_SAPCONNECTIONS;
     }
 
+    /**
+     * Modified by Marvin Wang on Jun. 19, 2012. Only table nodes can be selected.
+     */
+    @Override
     public boolean isSelectionValid(RepositoryNode node) {
-        if (node.getObject().getRepositoryObjectType() == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
+        if (node.getObject().getRepositoryObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
             return true;
         }
         return false;
@@ -1103,12 +1115,35 @@ class SAPFunctionProcessor extends SingleTypeProcessor {
 
     @Override
     protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
-        if (node.getObject() != null && (node.getObject() instanceof MetadataTable)) {
+        // if (node.getObject() != null && (node.getObject() instanceof MetadataTable)) {
+        // return false;
+        // }
+        return filterColumnFolderAndColumns(node);
+    }
+
+    /**
+     * Added by Marvin Wang on Jun 19, 2012 for filtering the columns, do not show columns in tree. Refer to the subtask
+     * TDI-21657.
+     * 
+     * @param node
+     * @return
+     */
+    private boolean filterColumnFolderAndColumns(RepositoryNode node) {
+        if (node.getObject() != null && node.getObject() instanceof MetadataColumnRepositoryObject) {
             return false;
+        }
+        if (node.getObject() == null) {
+            List<IRepositoryNode> nodes = node.getChildren();
+            if (nodes != null && nodes.size() > 0) {
+                for (IRepositoryNode child : nodes) {
+                    if (child.getObject() instanceof MetadataColumnRepositoryObject) {
+                        return false;
+                    }
+                }
+            }
         }
         return true;
     }
-
 }
 
 // //
@@ -1180,6 +1215,7 @@ class QueryTypeProcessor extends SingleTypeProcessor {
         return ERepositoryObjectType.METADATA_CONNECTIONS;
     }
 
+    @Override
     public boolean isSelectionValid(RepositoryNode node) {
         if (node.getObject() instanceof Query) {
             return true;
@@ -1273,10 +1309,10 @@ class MetadataMultiTypeProcessor extends MultiTypesProcessor {
 
         String[] repositoryTypes = getRepositoryTypes();
         if (repositoryTypes != null) {
-            for (int i = 0; i < repositoryTypes.length; i++) {
-                if (ERepositoryCategoryType.XML.getName().equals(repositoryTypes[i])) {
+            for (String repositoryType : repositoryTypes) {
+                if (ERepositoryCategoryType.XML.getName().equals(repositoryType)) {
                     types.add(ERepositoryObjectType.METADATA_FILE_XML);
-                } else if (ERepositoryCategoryType.MDM.getName().equals(repositoryTypes[i])) {
+                } else if (ERepositoryCategoryType.MDM.getName().equals(repositoryType)) {
                     types.add(ERepositoryObjectType.METADATA_MDMCONNECTION);
                 }
             }
@@ -1284,6 +1320,7 @@ class MetadataMultiTypeProcessor extends MultiTypesProcessor {
         return types;
     }
 
+    @Override
     protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
         if (super.selectRepositoryNode(viewer, parentNode, node)) {
             IRepositoryViewObject object = node.getObject();
@@ -1298,6 +1335,7 @@ class MetadataMultiTypeProcessor extends MultiTypesProcessor {
         return false;
     }
 
+    @Override
     public String getDialogTitle() {
         return Messages.getString("RepositoryReviewDialog.metadataTitle"); //$NON-NLS-1$
     }

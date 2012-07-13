@@ -373,7 +373,7 @@ public class ChangeMetadataCommand extends Command {
                                 // MetadataTool.copyTable(toCopy, copy);
                                 // wzhang modify to add feature 7611
                                 MetadataTool.copyTable(dbmsId, toCopy, copy);
-                                ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null, null, copy,
+                                ChangeMetadataCommand cmd = new ChangeMetadataCommand(targetNode, null, null, copy,
                                         inputSchemaParam);
                                 if (outputdataContainer.getOuputs().size() > 0) {
                                     List<ColumnNameChanged> columnNameChanged = outputdataContainer.getOuputs().get(0)
@@ -690,10 +690,10 @@ public class ChangeMetadataCommand extends Command {
             return;
         }
 
-        IElementParameter parameter = curNode.getElementParameter("SAP_FUNCTION"); //$NON-NLS-1$
-        if (parameter != null) {
-            parameter.setValue(TalendTextUtils.addQuotes(functionName));
-        }
+        //        IElementParameter parameter = curNode.getElementParameter("SAP_FUNCTION"); //$NON-NLS-1$
+        // if (parameter != null) {
+        // parameter.setValue(TalendTextUtils.addQuotes(functionName));
+        // }
     }
 
     /**

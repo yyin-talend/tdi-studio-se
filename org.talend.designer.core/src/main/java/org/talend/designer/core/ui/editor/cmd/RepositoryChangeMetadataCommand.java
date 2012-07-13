@@ -106,7 +106,8 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         node.getElementParameter(EParameterName.UPDATE_COMPONENTS.getName()).setValue(true);
         if (newOutputMetadata != null) {
             setDBTableFieldValue(node, newOutputMetadata.getTableName(), oldOutputMetadata.getTableName());
-            setSAPFunctionName(node, newOutputMetadata.getLabel());
+            IElementParameter parameter = node.getElementParameter("SAP_FUNCTION");
+            setSAPFunctionName(node, parameter.getValue() == null ? null : (String) parameter.getValue());
         }
         super.execute();
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
@@ -182,7 +183,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
     @Override
     protected void updateColumnList(IMetadataTable oldTable, IMetadataTable newTable) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        ComponentSettingsView viewer = (ComponentSettingsView) page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
+        ComponentSettingsView viewer = (ComponentSettingsView) page.findView(ComponentSettingsView.ID);
         if (viewer == null) {
             return;
         }
