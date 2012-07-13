@@ -43,7 +43,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  *
  * @generated
  */
-public class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
+public abstract class AbstractNodeImpl extends EObjectImpl implements AbstractNode {
     /**
      * The default value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->

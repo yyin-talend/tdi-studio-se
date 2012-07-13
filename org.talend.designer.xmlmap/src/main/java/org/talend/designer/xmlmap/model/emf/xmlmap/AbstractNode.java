@@ -27,7 +27,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  *
  * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getAbstractNode()
- * @model
+ * @model abstract="true"
  * @generated
  */
 public interface AbstractNode extends EObject {

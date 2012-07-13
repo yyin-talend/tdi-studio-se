@@ -775,8 +775,17 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getINodeConnection_Name() {
+        return (EAttribute)iNodeConnectionEClass.getEStructuralFeatures().get(0);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EReference getINodeConnection_Source() {
-        return (EReference)iNodeConnectionEClass.getEStructuralFeatures().get(0);
+        return (EReference)iNodeConnectionEClass.getEStructuralFeatures().get(1);
     }
 
                 /**
@@ -785,7 +794,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * @generated
      */
     public EReference getINodeConnection_Target() {
-        return (EReference)iNodeConnectionEClass.getEStructuralFeatures().get(1);
+        return (EReference)iNodeConnectionEClass.getEStructuralFeatures().get(2);
     }
 
                 /**
@@ -969,6 +978,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         iConnectionEClass = createEClass(ICONNECTION);
 
         iNodeConnectionEClass = createEClass(INODE_CONNECTION);
+        createEAttribute(iNodeConnectionEClass, INODE_CONNECTION__NAME);
         createEReference(iNodeConnectionEClass, INODE_CONNECTION__SOURCE);
         createEReference(iNodeConnectionEClass, INODE_CONNECTION__TARGET);
 
@@ -1068,7 +1078,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEReference(getVarTable_Nodes(), this.getVarNode(), null, "nodes", null, 0, -1, VarTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getVarTable_Minimized(), ecorePackage.getEBoolean(), "minimized", null, 0, 1, VarTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-        initEClass(abstractNodeEClass, AbstractNode.class, "AbstractNode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEClass(abstractNodeEClass, AbstractNode.class, "AbstractNode", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getAbstractNode_Name(), ecorePackage.getEString(), "name", null, 0, 1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getAbstractNode_Expression(), ecorePackage.getEString(), "expression", null, 0, 1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getAbstractNode_Type(), ecorePackage.getEString(), "type", null, 0, 1, AbstractNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1103,8 +1113,9 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEClass(iConnectionEClass, IConnection.class, "IConnection", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
         initEClass(iNodeConnectionEClass, INodeConnection.class, "INodeConnection", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getINodeConnection_Source(), this.getAbstractNode(), null, "source", null, 0, 1, INodeConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEReference(getINodeConnection_Target(), this.getAbstractNode(), null, "target", null, 0, 1, INodeConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getINodeConnection_Name(), ecorePackage.getEString(), "name", null, 0, 1, INodeConnection.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getINodeConnection_Source(), this.getAbstractNode(), null, "source", null, 0, 1, INodeConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getINodeConnection_Target(), this.getAbstractNode(), null, "target", null, 0, 1, INodeConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(connectionEClass, Connection.class, "Connection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
