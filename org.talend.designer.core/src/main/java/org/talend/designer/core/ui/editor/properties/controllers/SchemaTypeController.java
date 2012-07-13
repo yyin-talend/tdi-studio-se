@@ -888,7 +888,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 }
 
                 String id = dialog.getResult().getObject().getProperty().getId();
-                String name = dialog.getResult().getObject().getLabel();
+                String name = dialog.getResult().getObject().getLabel();// The name is Table Name.
                 String value = id + " - " + name; //$NON-NLS-1$
 
                 String fullParamName = paramName + ":" + getRepositoryChoiceParamName(); //$NON-NLS-1$
@@ -901,11 +901,18 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     // For SAP see bug 5423
                     if (((Node) elem).getUniqueName().startsWith("tSAP")) { //$NON-NLS-1$
                         Node sapNode = (Node) elem;
-                        String functionName = repositoryMetadata.getLabel();
+                        String functionId = node.getParent().getId();
+                        repositoryMetadata = getMetadataFromRepository(id, functionId, name);
+
+                        String tableName = repositoryMetadata.getLabel();
+                        String functionName = node.getParent().getObject().getLabel();
                         for (IElementParameter param : sapNode.getElementParameters()) {
                             SAPParametersUtils.retrieveSAPParams(elem, connection, param, functionName);
                         }
+                    } else {
+                        repositoryMetadata = MetadataToolHelper.getMetadataFromRepository(value);
                     }
+                    // connection = MetadataTool.getConnectionFromRepository(value);
 
                     // For validation rule.
                     boolean isValRulesLost = false;
@@ -1172,6 +1179,23 @@ public class SchemaTypeController extends AbstractRepositoryController {
             return cc;
         }
 
+        return null;
+    }
+
+    /**
+     * Created by Marvin Wang on Jun. 19, 2012 for getting metadatatable only for SAP.
+     * 
+     * @param connectionId
+     * @param functionId
+     * @param tableName
+     * @return
+     */
+    public static org.talend.core.model.metadata.IMetadataTable getMetadataFromRepository(String connectionId, String functionId,
+            String tableName) {
+        org.talend.core.model.metadata.builder.connection.MetadataTable table = MetadataToolHelper
+                .getMetadataTableFromSAPFunction(connectionId, functionId, tableName);
+        if (table != null)
+            return ConvertionHelper.convert(table);
         return null;
     }
 

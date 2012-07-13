@@ -690,10 +690,10 @@ public class ChangeMetadataCommand extends Command {
             return;
         }
 
-        IElementParameter parameter = curNode.getElementParameter("SAP_FUNCTION"); //$NON-NLS-1$
-        if (parameter != null) {
-            parameter.setValue(TalendTextUtils.addQuotes(functionName));
-        }
+        //        IElementParameter parameter = curNode.getElementParameter("SAP_FUNCTION"); //$NON-NLS-1$
+        // if (parameter != null) {
+        // parameter.setValue(TalendTextUtils.addQuotes(functionName));
+        // }
     }
 
     /**

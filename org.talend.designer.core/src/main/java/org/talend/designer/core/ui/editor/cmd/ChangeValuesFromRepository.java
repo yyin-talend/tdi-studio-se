@@ -49,6 +49,7 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.SAPConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.i18n.Messages;
@@ -628,7 +629,11 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                 if (propertyName.split(":")[1].equals(EParameterName.PROPERTY_TYPE.getName())) { //$NON-NLS-1$
                                     repositoryTable = (String) repositorySchemaTypeParameter.getValue();
                                 } else if (item != null) {
-                                    repositoryTable = item.getProperty().getId() + " - " + getFirstRepositoryTable(item); //$NON-NLS-1$
+                                    if (item instanceof SAPConnectionItem) {
+                                        if (getCurrentTableName() != null)
+                                            repositoryTable = item.getProperty().getId() + " - " + getCurrentTableName();
+                                    } else
+                                        repositoryTable = item.getProperty().getId() + " - " + getFirstRepositoryTable(item); //$NON-NLS-1$
                                     repositorySchemaTypeParameter.setValue(repositoryTable);
                                 }
                                 if (isNotSim) {

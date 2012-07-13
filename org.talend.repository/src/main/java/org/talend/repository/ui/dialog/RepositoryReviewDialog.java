@@ -1094,8 +1094,11 @@ class SAPFunctionProcessor extends SingleTypeProcessor {
         return ERepositoryObjectType.METADATA_SAPCONNECTIONS;
     }
 
+    /**
+     * Modified by Marvin Wang on Jun. 19, 2012. Only table nodes can be selected.
+     */
     public boolean isSelectionValid(RepositoryNode node) {
-        if (node.getObject().getRepositoryObjectType() == ERepositoryObjectType.METADATA_SAP_FUNCTION) {
+        if (node.getObject().getRepositoryObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
             return true;
         }
         return false;
@@ -1103,8 +1106,31 @@ class SAPFunctionProcessor extends SingleTypeProcessor {
 
     @Override
     protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
-        if (node.getObject() != null && (node.getObject() instanceof MetadataTable)) {
+        // if (node.getObject() != null && (node.getObject() instanceof MetadataTable)) {
+        // return false;
+        // }
+        return filterColumnFolderAndColumns(node);
+    }
+
+    /**
+     * Added by Marvin Wang on Jun 19, 2012 for filtering the columns, do not show columns in tree. Refer to the subtask
+     * TDI-21657.
+     * 
+     * @param node
+     * @return
+     */
+    private boolean filterColumnFolderAndColumns(RepositoryNode node) {
+        if (node.getObject() != null && node.getObject() instanceof MetadataColumnRepositoryObject)
             return false;
+        if (node.getObject() == null) {
+            List<IRepositoryNode> nodes = node.getChildren();
+            if (nodes != null && nodes.size() > 0) {
+                for (IRepositoryNode child : nodes) {
+                    if (child.getObject() instanceof MetadataColumnRepositoryObject) {
+                        return false;
+                    }
+                }
+            }
         }
         return true;
     }
