@@ -254,20 +254,24 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         List<IPath> paths = camelService.synchronizeRouteResource(processItem);
 
         for (IPath path : paths) {
-            IPath relativePath = path.removeLastSegments(1);
-            String pathStr = relativePath.toString();
+			IPath relativePath = path.removeLastSegments(1);
+			String pathStr = relativePath.toString();
+			if (relativePath.lastSegment().equals(JavaUtils.JAVA_SRC_DIRECTORY)) {
+				pathStr = "";
+			} else {
+				int index = pathStr.indexOf(JavaUtils.JAVA_SRC_DIRECTORY);
+				if (index > -1) {
+					pathStr = pathStr.substring(index
+							+ JavaUtils.JAVA_SRC_DIRECTORY.length() + 1);
+				}
+			}
 			// http://jira.talendforge.org/browse/TESB-6437
-			int index = pathStr.indexOf(JavaUtils.JAVA_SRC_DIRECTORY);
-            if (index > -1) {
-				pathStr = pathStr.substring(index
-						+ JavaUtils.JAVA_SRC_DIRECTORY.length() + 1);
-                try {
-                    URL url = path.toFile().toURI().toURL();
-                    osgiResource.addResource(pathStr, url);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-            }
+			try {
+				URL url = path.toFile().toURI().toURL();
+				osgiResource.addResource(pathStr, url);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
         }
     }
 
