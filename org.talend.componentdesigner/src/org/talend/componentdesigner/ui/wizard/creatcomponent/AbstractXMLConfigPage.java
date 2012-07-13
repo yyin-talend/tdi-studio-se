@@ -18,8 +18,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -71,6 +73,8 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
 
     protected Map<String, String> attrsToolTipsMap = null;
 
+    private ScrolledComposite scrolledComposite;
+
     /**
      * DOC rli WizardXMLConfigPage constructor comment.
      * 
@@ -92,9 +96,10 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
     @Override
     protected void createPageContent(Composite parent) {
         Composite topComposite = new Composite(parent, SWT.NONE);
-        topComposite.setLayout(new GridLayout(2, false));
-        GridData data = new GridData(GridData.FILL_BOTH);
-        topComposite.setLayoutData(data);
+        // topComposite.setLayout(new GridLayout(2, false));
+        // GridData data = new GridData(GridData.FILL_BOTH);
+        // topComposite.setLayoutData(data);
+        topComposite.setLayout(new FillLayout());
         availableXmlTree = new Tree(topComposite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         GridData treeGD = new GridData(GridData.FILL_BOTH);
         treeGD.widthHint = 110;
@@ -102,7 +107,9 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
         treeGD.grabExcessVerticalSpace = true;
         availableXmlTree.setLayoutData(treeGD);
 
-        rightComposite = new Composite(topComposite, SWT.NONE);
+        scrolledComposite = new ScrolledComposite(topComposite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        // rightComposite = new Composite(topComposite, SWT.NONE);
+        rightComposite = new Composite(scrolledComposite, SWT.NONE);
         GridData rightPanelGd = new GridData(GridData.FILL_BOTH);
         rightPanelGd.widthHint = 180;
         rightComposite.setLayoutData(rightPanelGd);
@@ -113,6 +120,10 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
         GridData labelGd = new GridData(GridData.FILL_HORIZONTAL);
         label.setLayoutData(labelGd);
 
+        scrolledComposite.setContent(rightComposite);
+        scrolledComposite.setExpandHorizontal(true);
+        scrolledComposite.setExpandVertical(true);
+
         this.setControl(topComposite);
     }
 
@@ -121,6 +132,7 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
      * 
      * @see org.talend.componentdesigner.ui.wizard.creatcomponent.AbstractComponentPage#initialize()
      */
+    @Override
     protected void initialize() {
         availableXmlTree.addSelectionListener(new SelectionAdapter() {
 
@@ -139,6 +151,7 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
                 itemDel.setText(Messages.getString("AbstractXMLConfigPage.Delete")); //$NON-NLS-1$
                 itemDel.addSelectionListener(new SelectionAdapter() {
 
+                    @Override
                     public void widgetSelected(SelectionEvent e) {
                         TreeNodeData currentNodeData = (TreeNodeData) treeItem[0].getParentItem().getData();
                         currentNodeData.getXMLNode().removeChild(((TreeNodeData) treeItem[0].getData()).getXMLNode());
@@ -158,6 +171,7 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
                         nodeMenuItem.setText(itemName);
                         nodeMenuItem.addSelectionListener(new SelectionAdapter() {
 
+                            @Override
                             public void widgetSelected(SelectionEvent e) {
                                 TreeItem newItem = new TreeItem(treeItem[0], 0);
                                 newItem.setText(itemName);
@@ -182,6 +196,7 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
                     nodeAttrCompsite.dispose();
                 }
                 rebuildAttrComposite(treeNodeData);
+                setComponentMinSize(treeNodeData.getTreeNode().getLabel());
                 rightComposite.layout();
             }
 
@@ -189,11 +204,27 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
 
     }
 
+    private void setComponentMinSize(String label) {
+        if (("HEADER").equals(label)) {
+            scrolledComposite.setMinSize(0, 0);
+            scrolledComposite.setMinSize(280, 750);
+        } else if (("CONNECTOR").equals(label)) {
+            scrolledComposite.setMinSize(0, 0);
+            scrolledComposite.setMinSize(280, 500);
+        } else if (("PARAMETER").equals(label)) {
+            scrolledComposite.setMinSize(0, 0);
+            scrolledComposite.setMinSize(280, 630);
+        } else {
+            scrolledComposite.setMinSize(0, 0);
+        }
+    }
+
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.componentdesigner.ui.wizard.creatcomponent.AbstractComponentPage#validatePage()
      */
+    @Override
     protected boolean validatePage() {
         return false;
     }
