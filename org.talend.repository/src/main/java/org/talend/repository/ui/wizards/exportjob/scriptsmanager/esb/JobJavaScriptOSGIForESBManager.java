@@ -32,6 +32,7 @@ import java.util.jar.Manifest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -253,18 +254,16 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 ICamelDesignerCoreService.class);
         List<IPath> paths = camelService.synchronizeRouteResource(processItem);
 
+		IProject project = ResourcesPlugin.getWorkspace().getRoot()
+				.getProject(JavaUtils.JAVA_PROJECT_NAME);
+		IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
+		IPath srcPath = srcFolder.getLocation();
+
         for (IPath path : paths) {
 			IPath relativePath = path.removeLastSegments(1);
+			relativePath = relativePath.removeFirstSegments(srcPath
+					.segmentCount());
 			String pathStr = relativePath.toString();
-			if (relativePath.lastSegment().equals(JavaUtils.JAVA_SRC_DIRECTORY)) {
-				pathStr = "";
-			} else {
-				int index = pathStr.indexOf(JavaUtils.JAVA_SRC_DIRECTORY);
-				if (index > -1) {
-					pathStr = pathStr.substring(index
-							+ JavaUtils.JAVA_SRC_DIRECTORY.length() + 1);
-				}
-			}
 			// http://jira.talendforge.org/browse/TESB-6437
 			try {
 				URL url = path.toFile().toURI().toURL();
