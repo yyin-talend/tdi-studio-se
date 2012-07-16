@@ -73,6 +73,7 @@
          version="0.0.0"
          fragment="true"
          unpack="false"/>
+
    <plugin
          id="org.talend.designer.component.preview.test"
          download-size="0"
@@ -80,6 +81,7 @@
          version="0.0.0"
          fragment="true"
          unpack="false"/>
+
    <plugin
          id="org.talend.utils.test"
          download-size="0"
@@ -199,6 +201,14 @@
 
    <plugin
          id="org.talend.repository.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.talend.designer.rowgenerator.test"
          download-size="0"
          install-size="0"
          version="0.0.0"
