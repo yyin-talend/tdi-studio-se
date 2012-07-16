@@ -261,9 +261,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         for (IPath path : paths) {
 			IPath relativePath = path.removeLastSegments(1);
-			relativePath = relativePath.removeFirstSegments(srcPath
-					.segmentCount());
-			String pathStr = relativePath.toString();
+//			relativePath = relativePath.toPortableString().substring(srcPath.toPortableString().length()-1);;
+			String pathStr = relativePath.toPortableString().substring(srcPath.toPortableString().length());;
 			// http://jira.talendforge.org/browse/TESB-6437
 			try {
 				URL url = path.toFile().toURI().toURL();
