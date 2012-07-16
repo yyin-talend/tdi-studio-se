@@ -1172,6 +1172,13 @@
             id="org.talend.repository.model.migration.SetStandaloneModeForHiveComponentsMigrationTask"
             name="Set the standalone value for the connection mode for old jobs.">
       </projecttask>
+	  <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.AddDistributionClosedListForHadoopComponentsMigrationTask"
+            description="Add a distribution closed list for a better visibility in the hadoop components"
+            id="org.talend.repository.model.migration.AddDistributionClosedListForHadoopComponentsMigrationTask"
+            name="Add a distribution closed list for a better visibility in the hadoop components.">
+      </projecttask>
       <projecttask
             beforeLogon="false"
             class="org.talend.repository.model.migration.SetTrimToTrueAppendModeAdvancedFileOutputXMLComponentsMigrationTask"
