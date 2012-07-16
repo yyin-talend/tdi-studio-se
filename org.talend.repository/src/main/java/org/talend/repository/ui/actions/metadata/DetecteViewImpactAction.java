@@ -95,6 +95,19 @@ public class DetecteViewImpactAction extends AContextualAction {
                 switch (nodeType) {
                 case REPOSITORY_ELEMENT:
                     ERepositoryObjectType objectType = node.getObjectType();
+                    
+                	/*
+                	 * TESB-6415
+                	 * if it's "CAMEL" product, then is disable
+                	 */
+                	if(objectType!=null){
+	            		String[] products = objectType.getProducts();
+	            		if(products!=null && products.length==1 &&  "CAMEL".equals(products[0])){
+	            			setEnabled(false);
+	            			return;
+	            		}
+	            	}// end of TESB-6415
+                	
                     if (objectType == ERepositoryObjectType.METADATA_CON_TABLE) {
                         IRepositoryViewObject repositoryObject = node.getObject();
                         if (repositoryObject != null) {
