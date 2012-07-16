@@ -112,7 +112,7 @@ public class FunctionManagerExt extends FunctionManager {
     public Function getFuntionFromArray(MetadataColumnExt bean, RowGeneratorComponent externalNode, int index) {
         String value = externalNode.getColumnValue(bean, index);
         List<Function> functions = getFunctionByName(bean.getTalendType());
-        Function currentFun = getAvailableFunFromValue(value, functions);
+        Function currentFun = getAvailableFunFromValue(bean, value, functions);
 
         if (currentFun == null) {
             currentFun = new Function();
@@ -148,12 +148,13 @@ public class FunctionManagerExt extends FunctionManager {
      * @param value
      * @return
      */
-    private Function getAvailableFunFromValue(String value, List<Function> funs) {
+    private Function getAvailableFunFromValue(MetadataColumnExt bean, String value, List<Function> funs) {
 
         Function currentFun = null;
         // for bug 0017094
 
-        if (value != null && value.split("\\.").length > 3 && value.split("\\(").length > 3) {
+        if (("id_Date").equals(bean.getTalendType()) && value != null && value.split("\\.").length > 3
+                && value.split("\\(").length > 3) {
             int index = -1;
             int k = 0;
             for (int i = 0; i < funs.size(); i++) { // && !isExsit
