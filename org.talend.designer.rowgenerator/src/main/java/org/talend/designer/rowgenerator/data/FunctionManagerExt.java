@@ -91,6 +91,7 @@ public class FunctionManagerExt extends FunctionManager {
             }
             Arrays.sort(arrayTalendFunctions2, new Comparator<String>() {
 
+                @Override
                 public int compare(String n1, String n2) {
                     return n1.compareTo(n2);
                 }
@@ -112,7 +113,7 @@ public class FunctionManagerExt extends FunctionManager {
     public Function getFuntionFromArray(MetadataColumnExt bean, RowGeneratorComponent externalNode, int index) {
         String value = externalNode.getColumnValue(bean, index);
         List<Function> functions = getFunctionByName(bean.getTalendType());
-        Function currentFun = getAvailableFunFromValue(value, functions);
+        Function currentFun = getAvailableFunFromValue(bean, value, functions);
 
         if (currentFun == null) {
             currentFun = new Function();
@@ -148,12 +149,13 @@ public class FunctionManagerExt extends FunctionManager {
      * @param value
      * @return
      */
-    private Function getAvailableFunFromValue(String value, List<Function> funs) {
+    private Function getAvailableFunFromValue(MetadataColumnExt bean, String value, List<Function> funs) {
 
         Function currentFun = null;
         // for bug 0017094
 
-        if (value != null && value.split("\\.").length > 3 && value.split("\\(").length > 3) {
+        if (("id_Date").equals(bean.getTalendType()) && value != null && value.split("\\.").length > 3
+                && value.split("\\(").length > 3) {
             int index = -1;
             int k = 0;
             for (int i = 0; i < funs.size(); i++) { // && !isExsit
@@ -247,7 +249,7 @@ public class FunctionManagerExt extends FunctionManager {
         return currentFun;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public static String getOneColData(MetadataColumnExt bean) {
         if (bean != null && bean.getFunction() != null) {
             String newValue = addPreSuffix ? PERL_FUN_PREFIX : ""; //$NON-NLS-1$
@@ -265,7 +267,7 @@ public class FunctionManagerExt extends FunctionManager {
                     //                    String fullName = JavaFunctionParser.getTypeMethods().get(bean.getTalendType() + "." + name); //$NON-NLS-1$
                     newValue = fullName + "("; //$NON-NLS-1$
                     for (Parameter pa : parameters) {
-                        newValue += pa.getValue() + FUN_PARAM_SEPARATED; //$NON-NLS-1$
+                        newValue += pa.getValue() + FUN_PARAM_SEPARATED;
                     }
                     if (!parameters.isEmpty()) {
                         newValue = newValue.substring(0, newValue.length() - 1);
@@ -275,7 +277,7 @@ public class FunctionManagerExt extends FunctionManager {
                 } else {
                     newValue += name + "("; //$NON-NLS-1$
                     for (Parameter pa : parameters) {
-                        newValue += pa.getValue() + FUN_PARAM_SEPARATED; //$NON-NLS-1$
+                        newValue += pa.getValue() + FUN_PARAM_SEPARATED;
                     }
                     newValue = newValue.substring(0, newValue.length() - 1);
 
