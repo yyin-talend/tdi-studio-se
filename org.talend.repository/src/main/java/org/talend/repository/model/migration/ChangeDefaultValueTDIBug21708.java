@@ -20,6 +20,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.Item;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
@@ -43,16 +44,23 @@ public class ChangeDefaultValueTDIBug21708 extends AbstractJobMigrationTask {
         }
 
         try {
+        	boolean modified=false;
             for (Object o : processType.getNode()) {
                 NodeType node = (NodeType) o;
                 if (ComponentUtilities.getNodeProperty(node, "PARALLELIZE") != null) {
                     if (ComponentUtilities.getNodeProperty(node, "PARALLELIZE_KEEP_EMPTY") == null) {
                         ComponentUtilities.addNodeProperty(node, "PARALLELIZE_KEEP_EMPTY", "CHECK");
                         ComponentUtilities.getNodeProperty(node, "PARALLELIZE_KEEP_EMPTY").setValue("true");
+                        modified=true;
                     }
                 }
             }
-            return ExecutionResult.SUCCESS_NO_ALERT;
+            if(modified){
+            	 ProxyRepositoryFactory.getInstance().save(item, true);
+            	 return ExecutionResult.SUCCESS_NO_ALERT;
+            }else{
+            	 return ExecutionResult.NOTHING_TO_DO;
+            }
         } catch (Exception e) {
             ExceptionHandler.process(e);
             return ExecutionResult.FAILURE;
