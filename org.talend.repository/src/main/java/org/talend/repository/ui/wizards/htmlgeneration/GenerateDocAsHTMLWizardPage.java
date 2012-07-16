@@ -15,6 +15,7 @@ package org.talend.repository.ui.wizards.htmlgeneration;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -367,9 +368,38 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
         runnable.setRegEx("*");//$NON-NLS-1$
 
         boolean ok = executeExportOperation(runnable);
+        // add for bug TDI-21815
+        saveLastDirectoryName(runnable);
         manager.deleteTempFiles();
 
         return ok;
+    }
+
+    /**
+     * Save the last directoryName path .
+     * 
+     * @param runnable
+     */
+    private void saveLastDirectoryName(ArchiveFileExportOperationFullPath runnable) {
+        IDialogSettings settings = getDialogSettings();
+        if (settings != null) {
+            String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
+            if (directoryNames != null) {
+                boolean isExist = false;
+                for (int i = 0; i < directoryNames.length; i++) {
+                    if (directoryNames[i].equals(runnable.getDestinationFilename())) {
+                        isExist = true;
+                    }
+                }
+                if (!isExist) {
+                    String[] newDirectoryNames = Arrays.copyOf(directoryNames, directoryNames.length + 1);
+                    newDirectoryNames[newDirectoryNames.length - 1] = runnable.getDestinationFilename();
+                    settings.put(STORE_DESTINATION_NAMES_ID, newDirectoryNames);
+                }
+            } else {
+                settings.put(STORE_DESTINATION_NAMES_ID, new String[] { runnable.getDestinationFilename() });
+            }
+        }
     }
 
     /**
@@ -538,9 +568,12 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
                 // destination
                 boolean isFirstValid = false;
                 String filterName = ".zip"; //$NON-NLS-1$
+                String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
+                IPath path = new Path(userDir).append(getDefaultFileName() + getOutputSuffix());
                 for (int i = 0; i < directoryNames.length; i++) {
-                    if (directoryNames[i].substring(directoryNames[i].indexOf('.')).equalsIgnoreCase(filterName)) {
-                        addDestinationItem(directoryNames[i]);
+                    addDestinationItem(directoryNames[i]);
+                    if (directoryNames[i].substring(directoryNames[i].lastIndexOf('.')).equalsIgnoreCase(filterName)
+                            && path.toOSString().equals(directoryNames[i])) {
                         if (!isFirstValid) {
                             setDestinationValue(directoryNames[i]);
                             isFirstValid = true;
@@ -573,12 +606,12 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
 
         String destinationFile = ""; //$NON-NLS-1$
         IPath path = null;
-        if (getDialogSettings() != null) {
-            IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);
-            if (section != null) {
-                destinationFile = section.get(DESTINATION_FILE);
-            }
-        }
+        // if (getDialogSettings() != null) {
+        // IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);
+        // if (section != null) {
+        // destinationFile = section.get(DESTINATION_FILE);
+        // }
+        // }
         if (destinationFile == null || "".equals(destinationFile)) { //$NON-NLS-1$
             if (nodes.length >= 1) {
                 String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
