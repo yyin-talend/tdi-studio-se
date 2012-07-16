@@ -458,7 +458,7 @@ java.sql.Connection conn_<%=cid%> = null;
 <%
 		if(!useExistingConn) {
 %>
-    if(conn_<%=cid%> != null && conn_<%=cid%>.isClosed()) {
+    if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
         conn_<%=cid%> .close();
     }
 <%

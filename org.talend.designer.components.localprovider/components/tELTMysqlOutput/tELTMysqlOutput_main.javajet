@@ -587,7 +587,7 @@ imports="
 <%
 		if(!useExistingConn) {
 %>
-    if(conn_<%=cid%> != null && conn_<%=cid%>.isClosed()) {
+    if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
         conn_<%=cid%> .close();
     }
 <%
