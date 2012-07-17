@@ -426,6 +426,17 @@ private class TalendException extends Exception {
 			}
 		}
 		%>
+		} else {
+		<%
+		if (isRunInMultiThread ) {
+		%>
+		((java.util.Map)threadLocal.get()).put("status", "failure");
+		<%
+		 } else {%>
+		 status = "failure";
+		 <%
+		 }
+		 %>
 		}
 	}
 }
@@ -466,9 +477,11 @@ private class TalendException extends Exception {
 						}
 					}
 				}
+				boolean isExistOnCompErrorLink = false;
 				List< ? extends IConnection> conns = node.getOutgoingConnections();
 				for (IConnection conn : conns) {
 					if (conn.getLineStyle().equals(EConnectionType.ON_COMPONENT_ERROR)) {
+						isExistOnCompErrorLink = true;
 						%>
 						try {
 							<%if (stats) {%>
@@ -480,14 +493,18 @@ private class TalendException extends Exception {
 							if (isRunInMultiThread ) {
 								%>
 								((java.util.Map)threadLocal.get()).put("errorCode", null);
-								((java.util.Map)threadLocal.get()).put("status", "failure");
 								<%=conn.getTarget().getUniqueName() %>Process(globalMap);
+								if ( !"failure".equals(((java.util.Map)threadLocal.get()).get("status")) ) {
+									((java.util.Map)threadLocal.get()).put("status", "end");
+								}
 								<%
 							} else {
 								%>
 								errorCode = null;
-								status = "failure";
 								<%=conn.getTarget().getUniqueName() %>Process(globalMap);
+								if (!"failure".equals(status)) {
+									status = "end";
+								}
 								<%
 							}
 							%>
@@ -496,6 +513,31 @@ private class TalendException extends Exception {
 							e.printStackTrace();
 						}
 						<%
+					}
+				}
+				boolean isSubjobHasOnSubJobError = false;
+				if (!isExistOnCompErrorLink) {
+					INode subJobStartNode =	node.getDesignSubjobStartNode();
+					if (subJobStartNode != null) {
+						List< ? extends IConnection> tempConns = subJobStartNode.getOutgoingConnections();
+						for (IConnection conn : tempConns) {
+							if (conn.getLineStyle().equals(EConnectionType.ON_SUBJOB_ERROR)) {
+								isSubjobHasOnSubJobError = true;
+								break;
+							}
+						}
+					}
+				}
+
+				if (!isSubjobHasOnSubJobError && !isExistOnCompErrorLink) { // when there is no subjoberror and no onComponentError
+					if (isRunInMultiThread ) {
+				%>
+				((java.util.Map)threadLocal.get()).put("status", "failure");
+				<%
+					} else {
+				%>
+				status = "failure";
+				<%
 					}
 				}
 				// when use parallelize will add virtual components(tAsyncIn and tAsyncOut) but in graphical these is visable=false
@@ -555,14 +597,18 @@ resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThrea
 					if(isRunInMultiThread ){
 %>
 					((java.util.Map)threadLocal.get()).put("errorCode", null);
-					((java.util.Map)threadLocal.get()).put("status", "failure");
 					<%=conn.getTarget().getUniqueName() %>Process(globalMap);
+					if ( !"failure".equals(((java.util.Map)threadLocal.get()).get("status")) ) {
+						((java.util.Map)threadLocal.get()).put("status", "end");
+					}
 <%
 					} else {
 %>
 					errorCode = null;
-					status = "failure";
 					<%=conn.getTarget().getUniqueName() %>Process(globalMap);
+					if (!"failure".equals(status)) {
+						status = "end";
+					}
 <%
 					}
 %>
