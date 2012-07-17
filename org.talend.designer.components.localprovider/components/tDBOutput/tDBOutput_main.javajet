@@ -488,7 +488,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             }
             if(updateFlag_<%=cid%> == 0) {
             	<%
-            	if(isEnableDebug) {
+            	if(useStatement || isEnableDebug) {
             	%>
 				query_<%=cid%> = new StringBuffer("");
         		<%
