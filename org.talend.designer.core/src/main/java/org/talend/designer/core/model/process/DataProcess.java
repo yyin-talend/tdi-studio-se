@@ -2733,6 +2733,11 @@ public class DataProcess {
         if (settingsParam != null && asyncParam != null) {
             asyncParam.setValue(componentParam.getValue());
         }
+        componentParam = graphicalNode.getElementParameter(EParameterName.PARALLELIZE_KEEP_EMPTY.getName());
+        asyncParam = asyncOutNode.getElementParameter(EParameterName.PARALLELIZE_KEEP_EMPTY.getName());
+        if (settingsParam != null && asyncParam != null) {
+            asyncParam.setValue(componentParam.getValue());
+        }
         asyncParam = asyncOutNode.getElementParameter("DESTINATION"); //$NON-NLS-1$
         if (settingsParam != null && asyncParam != null) {
             asyncParam.setValue("tAsyncIn_" + suffix); //$NON-NLS-1$
@@ -2775,6 +2780,12 @@ public class DataProcess {
         dataConnec.setName("pRow_" + connection.getName()); //$NON-NLS-1$
         dataConnec.setSource(asyncInNode);
         dataConnec.setTarget(refNode);
+
+        componentParam = graphicalNode.getElementParameter(EParameterName.PARALLELIZE_KEEP_EMPTY.getName());
+        asyncParam = asyncInNode.getElementParameter(EParameterName.PARALLELIZE_KEEP_EMPTY.getName());
+        if (settingsParam != null && asyncParam != null) {
+            asyncParam.setValue(componentParam.getValue());
+        }
 
         ((AbstractNode) refNode).setDesignSubjobStartNode(asyncInNode);
 

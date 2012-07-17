@@ -286,6 +286,7 @@ public enum EParameterName {
     PARALLELIZE(Messages.getString("EParameterName.parallelize")), //$NON-NLS-1$
     PARALLELIZE_NUMBER(Messages.getString("EParameterName.parallelizeNumber")), //$NON-NLS-1$
     PARALLELIZE_UNIT_SIZE(Messages.getString("EParameterName.parallelizeUnitSize")), //$NON-NLS-1$
+    PARALLELIZE_KEEP_EMPTY(""), //$NON-NLS-1$
 
     // for process
     IMPLICITCONTEXT_USE_PROJECT_SETTINGS(Messages.getString("Extra.UseProjectSettings")), //$NON-NLS-1$
