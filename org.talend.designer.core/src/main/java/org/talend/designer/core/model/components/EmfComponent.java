@@ -1362,14 +1362,26 @@ public class EmfComponent extends AbstractComponent {
             newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.ROUTE_RESOURCE_TYPE_RES_URI.getName());
-            if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
-                newParam.setDisplayName(EParameterName.ROUTE_RESOURCE_TYPE_RES_URI.getDisplayName());
-            } else {
-                newParam.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME)); //$NON-NLS-1$
-            }
+            newParam.setDisplayName(EParameterName.ROUTE_RESOURCE_TYPE_RES_URI.getName());
             newParam.setListItemsDisplayName(new String[] {});
             newParam.setListItemsValue(new String[] {});
             newParam.setValue(""); //$NON-NLS-1$
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setFieldType(EParameterFieldType.TECHNICAL);
+            if (xmlParam.isSetSHOW()) {
+                newParam.setShow(xmlParam.isSHOW());
+            }
+            newParam.setRequired(false);
+            newParam.setParentParameter(parentParam);
+
+            // http://jira.talendforge.org/browse/TESB-6481
+            newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.BASIC);
+            newParam.setName(EParameterName.ROUTE_RESOURCE_TYPE_VERSION.getName());
+            newParam.setDisplayName(EParameterName.ROUTE_RESOURCE_TYPE_VERSION.getDisplayName());
+            newParam.setListItemsDisplayName(new String[] { "Latest" });
+            newParam.setListItemsValue(new String[] { "Latest" });
+            newParam.setValue("Latest");
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setFieldType(EParameterFieldType.TECHNICAL);
             if (xmlParam.isSetSHOW()) {
