@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -366,7 +367,21 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
                 getDestinationValue());
         // output everything
         runnable.setRegEx("*");//$NON-NLS-1$
+        File file = new File(runnable.getDestinationFilename());
 
+        if (file.exists()) {
+            Boolean open = MessageDialog.openConfirm(getShell(), Messages.getString("GenerateDocAsHTMLWizardPage.Warning"), //$NON-NLS-1$
+                    Messages.getString("GenerateDocAsHTMLWizardPage.OverWrite")); //$NON-NLS-1$
+            if (open) {
+                file.delete();
+                boolean ok = executeExportOperation(runnable);
+                saveLastDirectoryName(runnable);
+                manager.deleteTempFiles();
+                return ok;
+            } else {
+                return false;
+            }
+        }
         boolean ok = executeExportOperation(runnable);
         // add for bug TDI-21815
         saveLastDirectoryName(runnable);
