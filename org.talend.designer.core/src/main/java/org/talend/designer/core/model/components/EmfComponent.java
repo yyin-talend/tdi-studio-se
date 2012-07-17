@@ -228,7 +228,7 @@ public class EmfComponent extends AbstractComponent {
             cache.getComponentEntryMap().put(getName(), info);
             isAlreadyLoad = true;
         } else {
-            info = (ComponentInfo) cache.getComponentEntryMap().get(getName());
+            info = cache.getComponentEntryMap().get(getName());
             isLoaded = true;
         }
     }
@@ -295,6 +295,7 @@ public class EmfComponent extends AbstractComponent {
         }
     }
 
+    @Override
     public List<ElementParameter> createElementParameters(INode node) {
         List<ElementParameter> listParam;
         listParam = new ArrayList<ElementParameter>();
@@ -390,6 +391,7 @@ public class EmfComponent extends AbstractComponent {
 
     }
 
+    @Override
     public List<NodeReturn> createReturns() {
         List<NodeReturn> listReturn;
         RETURNType retType;
@@ -503,7 +505,7 @@ public class EmfComponent extends AbstractComponent {
         parentParam.setNumRow(rowNb);
         parentParam.setReadOnly(false);
         parentParam.setShow(true);
-        parentParam.setShowIf(EParameterName.VALIDATION_RULES.getName() + " == 'true'"); //$NON-NLS-1$ //$NON-NLS-2$
+        parentParam.setShowIf(EParameterName.VALIDATION_RULES.getName() + " == 'true'"); //$NON-NLS-1$ 
         parentParam.setContext(context);
         parentParam.setRepositoryValue(ERepositoryCategoryType.VALIDATIONRULES.getName());
         parentParam.setValue("");
@@ -963,12 +965,13 @@ public class EmfComponent extends AbstractComponent {
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
             ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                     ICamelDesignerCoreService.class);
-            if (node.getProcess() != null && node.getProcess() instanceof IProcess2)
+            if (node.getProcess() != null && node.getProcess() instanceof IProcess2) {
                 isCamel = service.isInstanceofCamel(((IProcess2) node.getProcess()).getProperty().getItem());
+            }
         }
         if (!isCamel) {
             boolean isStatCatcherComponent = false;
-            if (this.name != null && this.name.equals(TSTATCATCHER_NAME)) { //$NON-NLS-N$
+            if (this.name != null && this.name.equals(TSTATCATCHER_NAME)) {
                 isStatCatcherComponent = true;
             }
             /* for bug 0021961,should not show parameter TSTATCATCHER_STATS in UI on component tStatCatcher */
@@ -1092,6 +1095,17 @@ public class EmfComponent extends AbstractComponent {
             param.setCategory(EComponentCategory.ADVANCED);
             param.setNumRow(100);
             param.setShowIf(EParameterName.PARALLELIZE.getName() + " == 'true'"); //$NON-NLS-1$
+            listParam.add(param);
+
+            param = new ElementParameter(node);
+            param.setReadOnly(!defaultParalelize);
+            param.setName(EParameterName.PARALLELIZE_KEEP_EMPTY.getName());
+            param.setValue(Boolean.FALSE);
+            param.setDisplayName(EParameterName.PARALLELIZE_KEEP_EMPTY.getDisplayName());
+            param.setFieldType(EParameterFieldType.CHECK);
+            param.setCategory(EComponentCategory.ADVANCED);
+            param.setNumRow(100);
+            param.setShow(false);
             listParam.add(param);
         }
 
@@ -1517,12 +1531,12 @@ public class EmfComponent extends AbstractComponent {
                 ITEMSType items = xmlParam.getITEMS();
                 if (items.isSetBASEDONINPUTSCHEMAS()) {
                     ElementParameter newParam = new ElementParameter(node);
-                    newParam.setName(EParameterName.BASED_ON_INPUT_SCHEMAS.getName()); //$NON-NLS-1$
-                    newParam.setDisplayName(EParameterName.BASED_ON_INPUT_SCHEMAS.getDisplayName()); //$NON-NLS-1$
+                    newParam.setName(EParameterName.BASED_ON_INPUT_SCHEMAS.getName());
+                    newParam.setDisplayName(EParameterName.BASED_ON_INPUT_SCHEMAS.getDisplayName());
                     newParam.setFieldType(EParameterFieldType.TEXT);
                     newParam.setCategory(EComponentCategory.BASIC);
                     newParam.setShow(false);
-                    newParam.setValue(String.valueOf(items.isBASEDONINPUTSCHEMAS())); //$NON-NLS-1$  
+                    newParam.setValue(String.valueOf(items.isBASEDONINPUTSCHEMAS()));
                     listParam.add(newParam);
                 }
             }
@@ -2106,6 +2120,7 @@ public class EmfComponent extends AbstractComponent {
         }
     }
 
+    @Override
     public String getOriginalFamilyName() {
         String originalFamilyName = ""; //$NON-NLS-1$
         if (!isAlreadyLoad) {
@@ -2124,8 +2139,9 @@ public class EmfComponent extends AbstractComponent {
             if (info != null) {
                 originalFamilyName = info.getOriginalFamilyName();
             } else {
-                if (ComponentManager.getInstance().getComponentEntryMap().get(getName()) != null)
+                if (ComponentManager.getInstance().getComponentEntryMap().get(getName()) != null) {
                     ComponentManager.getInstance().getComponentEntryMap().get(getName()).getOriginalFamilyName();
+                }
             }
         }
         return originalFamilyName;
@@ -2136,6 +2152,7 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getTranslatedFamilyName()
      */
+    @Override
     public String getTranslatedFamilyName() {
 
         if (!isAlreadyLoad) {
@@ -2206,6 +2223,7 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#hasConditionalOutputs()
      */
+    @Override
     public boolean hasConditionalOutputs() {
         if (compType == null) {
             isLoaded = false;
@@ -2219,11 +2237,13 @@ public class EmfComponent extends AbstractComponent {
         return compType.getHEADER().isHASCONDITIONALOUTPUTS();
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
     // if doesn't exist, return by default the name of the component.
+    @Override
     public String getShortName() {
         if (compType == null) {
             isLoaded = false;
@@ -2256,6 +2276,7 @@ public class EmfComponent extends AbstractComponent {
         }
     }
 
+    @Override
     public String getLongName() {
         return getTranslatedValue(PROP_LONG_NAME);
     }
@@ -2278,6 +2299,7 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @see org.talend.designer.core.model.components.IComponent#createConnectors()
      */
+    @Override
     public List<NodeConnector> createConnectors(INode parentNode) {
         if (compType == null) {
             isLoaded = false;
@@ -2460,6 +2482,7 @@ public class EmfComponent extends AbstractComponent {
         return listConnector;
     }
 
+    @Override
     public String getPluginExtension() {
         // String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
         // IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
@@ -2480,6 +2503,7 @@ public class EmfComponent extends AbstractComponent {
         return pluginFullName;
     }
 
+    @Override
     public boolean isSchemaAutoPropagated() {
         if (compType == null) {
             isLoaded = false;
@@ -2493,6 +2517,7 @@ public class EmfComponent extends AbstractComponent {
         return compType.getHEADER().isSCHEMAAUTOPROPAGATE();
     }
 
+    @Override
     public boolean isDataAutoPropagated() {
         if (compType == null) {
             isLoaded = false;
@@ -2511,10 +2536,12 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isVisible()
      */
+    @Override
     public boolean isVisible() {
         return isVisible(null);
     }
 
+    @Override
     public boolean isVisible(String family) {
         if (visible != null) {
             return visible;
@@ -2537,6 +2564,7 @@ public class EmfComponent extends AbstractComponent {
         return true;
     }
 
+    @Override
     public boolean isVisibleInComponentDefinition() {
         if (visible != null) {
             return visible;
@@ -2555,6 +2583,7 @@ public class EmfComponent extends AbstractComponent {
         }
     }
 
+    @Override
     public String getVersion() {
         String version = "";
         if (!isAlreadyLoad) {
@@ -2562,8 +2591,9 @@ public class EmfComponent extends AbstractComponent {
             info.setVersion(version);
         } else {
             if (info == null) {
-                if (ComponentManager.getInstance().getComponentEntryMap().get(getName()) != null)
+                if (ComponentManager.getInstance().getComponentEntryMap().get(getName()) != null) {
                     ComponentManager.getInstance().getComponentEntryMap().get(getName()).getVersion();
+                }
             } else {
                 version = info.getVersion();
             }
@@ -2572,6 +2602,7 @@ public class EmfComponent extends AbstractComponent {
         return version;
     }
 
+    @Override
     public List<ModuleNeeded> getModulesNeeded() {
         List<String> moduleNames = new ArrayList<String>();
         List<ModuleNeeded> componentImportNeedsList = new ArrayList<ModuleNeeded>();
@@ -2713,7 +2744,7 @@ public class EmfComponent extends AbstractComponent {
             String bundleName = null;
             String bundleVersion = null;
             if (bundleID.contains(":")) {
-                String[] nameAndVersion = bundleID.split(":"); //$NON-NLS-N$
+                String[] nameAndVersion = bundleID.split(":");
                 bundleName = nameAndVersion[0];
                 bundleVersion = nameAndVersion[1];
             } else {
@@ -2745,6 +2776,7 @@ public class EmfComponent extends AbstractComponent {
         return list;
     }
 
+    @Override
     public List<IMultipleComponentManager> getMultipleComponentManagers() {
         if (multipleComponentManagers == null) {
             multipleComponentManagers = createMultipleComponentManagerFromTemplates();
@@ -2853,10 +2885,12 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isLoaded()
      */
+    @Override
     public boolean isLoaded() {
         return isLoaded;
     }
 
+    @Override
     public void setImageRegistry(Map<String, ImageDescriptor> imageRegistry) {
         this.imageRegistry = imageRegistry;
     }
@@ -2866,6 +2900,7 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @return the icon16
      */
+    @Override
     public ImageDescriptor getIcon16() {
         return this.imageRegistry.get(getName() + "_16");
     }
@@ -2875,6 +2910,7 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @return the icon24
      */
+    @Override
     public ImageDescriptor getIcon24() {
         return this.imageRegistry.get(getName() + "_24");
     }
@@ -2884,10 +2920,12 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @return the icon32
      */
+    @Override
     public ImageDescriptor getIcon32() {
         return this.imageRegistry.get(getName() + "_32");
     }
 
+    @Override
     public String getPathSource() {
         return this.pathSource;
     }
@@ -2911,6 +2949,7 @@ public class EmfComponent extends AbstractComponent {
         final String extension = "." + LanguageManager.getCurrentLanguage().getName() + "jet"; //$NON-NLS-1$ //$NON-NLS-2$
         FilenameFilter fileNameFilter = new FilenameFilter() {
 
+            @Override
             public boolean accept(File dir, String name) {
                 return name.endsWith(extension);
             }
@@ -2918,9 +2957,9 @@ public class EmfComponent extends AbstractComponent {
 
         String[] jetFiles = dirFile.list(fileNameFilter);
 
-        for (int i = 0; i < jetFiles.length; i++) {
-            String name = jetFiles[i];
-            name = jetFiles[i].replace(getName() + "_", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        for (String jetFile : jetFiles) {
+            String name = jetFile;
+            name = jetFile.replace(getName() + "_", ""); //$NON-NLS-1$ //$NON-NLS-2$
             name = name.replace(extension, ""); //$NON-NLS-1$
             ECodePart part = ECodePart.getCodePartByName(name);
             if (part != null) {
@@ -2930,6 +2969,7 @@ public class EmfComponent extends AbstractComponent {
         return theCodePartList;
     }
 
+    @Override
     public List<ECodePart> getAvailableCodeParts() {
         if (codePartListX == null) {
             codePartListX = createCodePartList();
@@ -2937,6 +2977,7 @@ public class EmfComponent extends AbstractComponent {
         return codePartListX;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public List<String> getPluginDependencies() {
         List<String> pluginDependencyList = new ArrayList<String>();
@@ -2952,13 +2993,15 @@ public class EmfComponent extends AbstractComponent {
             if (info != null) {
                 pluginDependencyList = info.getPluginDependencies();
             } else {
-                if (ComponentManager.getInstance().getComponentEntryMap().get(getName()) != null)
+                if (ComponentManager.getInstance().getComponentEntryMap().get(getName()) != null) {
                     ComponentManager.getInstance().getComponentEntryMap().get(getName()).getPluginDependencies();
+                }
             }
         }
         return pluginDependencyList;
     }
 
+    @Override
     public boolean useMerge() {
         if (useMerge == null) {
             if (compType == null) {
@@ -3035,6 +3078,7 @@ public class EmfComponent extends AbstractComponent {
         return useSchema;
     }
 
+    @Override
     public boolean isMultiplyingOutputs() {
         if (compType == null) {
             isLoaded = false;
@@ -3053,6 +3097,7 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getComponentType()
      */
+    @Override
     public boolean isMultipleOutput() {
         if (compType == null) {
             isLoaded = false;
@@ -3130,6 +3175,7 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#useLookup()
      */
+    @Override
     public boolean useLookup() {
         if (useLookup == null) {
             if (compType == null) {
@@ -3162,6 +3208,7 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#useImport()
      */
+    @Override
     public boolean useImport() {
         if (useImport == null) {
             if (compType == null) {
@@ -3197,6 +3244,7 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getComponentType()
      */
+    @Override
     public EComponentType getComponentType() {
         return EComponentType.EMF;
     }
@@ -3206,6 +3254,7 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isHashComponent()
      */
+    @Override
     public boolean isHashComponent() {
         if (compType == null) {
             isLoaded = false;
@@ -3224,6 +3273,7 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isTechnical()
      */
+    @Override
     public boolean isTechnical() {
         boolean isTrchnical = false;
         if (!isAlreadyLoad) {
@@ -3234,8 +3284,9 @@ public class EmfComponent extends AbstractComponent {
             info.setIsTechnical(compType.getHEADER().isTECHNICAL());
             isTrchnical = compType.getHEADER().isTECHNICAL();
         } else {
-            if (info != null)
+            if (info != null) {
                 isTrchnical = info.isIsTechnical();
+            }
         }
 
         return isTrchnical;
@@ -3247,6 +3298,7 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isSingleton()
      */
+    @Override
     public boolean isSingleton() {
         if (compType == null) {
             isLoaded = false;
@@ -3265,6 +3317,7 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isMainCodeCalled()
      */
+    @Override
     public boolean isMainCodeCalled() {
         if (compType == null) {
             isLoaded = false;
@@ -3284,6 +3337,7 @@ public class EmfComponent extends AbstractComponent {
      * 
      * @return
      */
+    @Override
     public String getRepositoryType() {
         if (!isAlreadyLoad) {
             isLoaded = false;
@@ -3307,6 +3361,7 @@ public class EmfComponent extends AbstractComponent {
         return null;
     }
 
+    @Override
     public boolean canParallelize() {
         if (compType == null) {
             isLoaded = false;
@@ -3375,6 +3430,7 @@ public class EmfComponent extends AbstractComponent {
         this.technical = technical;
     }
 
+    @Override
     public String getCombine() {
         if (compType == null) {
             isLoaded = false;
@@ -3388,6 +3444,7 @@ public class EmfComponent extends AbstractComponent {
         return compType.getHEADER().getCOMBINE();
     }
 
+    @Override
     public IProcess getProcess() {
         // TODO Auto-generated method stub
         return null;
