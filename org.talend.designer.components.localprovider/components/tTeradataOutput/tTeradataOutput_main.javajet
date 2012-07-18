@@ -950,6 +950,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					<% } %>
                 	<%if(("true").equals(dieOnError)) {
                     %>
+                    java.sql.SQLException e3_<%=cid%> = e_<%=cid%>;
                 	boolean isFailure = false;
             	    while(e_<%=cid%> != null){
             	    	if(e_<%=cid%>.getErrorCode() == -2801){
@@ -970,7 +971,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 				            System.out.println(" Message: " + e_<%=cid%>.getMessage());
 				            e_<%=cid%>.printStackTrace();
             	    }
-            	    throw (e_<%=cid%>);
+            	    throw (e3_<%=cid%>);
             		<%
                 	}else {
                 	%>
@@ -1047,6 +1048,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 							<% } %>
 		                	<%if(("true").equals(dieOnError)) {
 		                    %>
+		                    java.sql.SQLException e3_<%=cid%> = e_<%=cid%>;
 		                	 boolean isFailure = false;
 		                	    while(e_<%=cid%> != null){
 		                	    	if(e_<%=cid%>.getErrorCode() == -2801){
@@ -1067,7 +1069,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		 				            System.out.println(" Message: " + e_<%=cid%>.getMessage());
 		                	    	e_<%=cid%>.printStackTrace();
 		                	    }
-            	    			throw (e_<%=cid%>);
+            	    			throw (e3_<%=cid%>);
 		                	    
 		                	<%
 		                	}else {
