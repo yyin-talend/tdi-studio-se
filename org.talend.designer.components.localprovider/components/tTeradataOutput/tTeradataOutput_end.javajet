@@ -136,7 +136,7 @@ imports="
             	    	}
             	    	e = e.getNextException();
             	    }
-            	    if(isFailure){
+            	    if(isFailure && e != null){
 				         System.out.println("[Message]: " + e.getMessage());
             	    	 e.printStackTrace();
             	    }
