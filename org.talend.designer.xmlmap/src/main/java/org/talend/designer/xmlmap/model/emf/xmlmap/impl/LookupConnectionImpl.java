@@ -41,9 +41,9 @@ public class LookupConnectionImpl extends EObjectImpl implements LookupConnectio
     protected static final String NAME_EDEFAULT = null;
 
     /**
-     * The cached value of the '{@link #getSource() <em>Source</em>}' reference. <!-- begin-user-doc --> <!--
+     * The cached value of the '{@link #getSource() <em>Source</em>}' reference.
+     * <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
      * @see #getSource()
      * @generated
      * @ordered
@@ -51,9 +51,9 @@ public class LookupConnectionImpl extends EObjectImpl implements LookupConnectio
     protected AbstractNode source;
 
     /**
-     * The cached value of the '{@link #getTarget() <em>Target</em>}' reference. <!-- begin-user-doc --> <!--
+     * The cached value of the '{@link #getTarget() <em>Target</em>}' reference.
+     * <!-- begin-user-doc --> <!--
      * end-user-doc -->
-     * 
      * @see #getTarget()
      * @generated
      * @ordered
@@ -62,7 +62,6 @@ public class LookupConnectionImpl extends EObjectImpl implements LookupConnectio
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     protected LookupConnectionImpl() {
@@ -71,7 +70,6 @@ public class LookupConnectionImpl extends EObjectImpl implements LookupConnectio
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
@@ -94,7 +92,6 @@ public class LookupConnectionImpl extends EObjectImpl implements LookupConnectio
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
@@ -104,21 +101,18 @@ public class LookupConnectionImpl extends EObjectImpl implements LookupConnectio
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
     public void setSource(AbstractNode newSource) {
         AbstractNode oldSource = source;
         source = newSource;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.LOOKUP_CONNECTION__SOURCE, oldSource, source));
-        }
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
@@ -128,87 +122,81 @@ public class LookupConnectionImpl extends EObjectImpl implements LookupConnectio
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
     public void setTarget(AbstractNode newTarget) {
         AbstractNode oldTarget = target;
         target = newTarget;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, XmlmapPackage.LOOKUP_CONNECTION__TARGET, oldTarget, target));
-        }
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-        case XmlmapPackage.LOOKUP_CONNECTION__NAME:
-            return getName();
-        case XmlmapPackage.LOOKUP_CONNECTION__SOURCE:
-            return getSource();
-        case XmlmapPackage.LOOKUP_CONNECTION__TARGET:
-            return getTarget();
+            case XmlmapPackage.LOOKUP_CONNECTION__NAME:
+                return getName();
+            case XmlmapPackage.LOOKUP_CONNECTION__SOURCE:
+                return getSource();
+            case XmlmapPackage.LOOKUP_CONNECTION__TARGET:
+                return getTarget();
         }
         return super.eGet(featureID, resolve, coreType);
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @SuppressWarnings("unchecked")
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-        case XmlmapPackage.LOOKUP_CONNECTION__SOURCE:
-            setSource((AbstractNode) newValue);
-            return;
-        case XmlmapPackage.LOOKUP_CONNECTION__TARGET:
-            setTarget((AbstractNode) newValue);
-            return;
+            case XmlmapPackage.LOOKUP_CONNECTION__SOURCE:
+                setSource((AbstractNode)newValue);
+                return;
+            case XmlmapPackage.LOOKUP_CONNECTION__TARGET:
+                setTarget((AbstractNode)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
     public void eUnset(int featureID) {
         switch (featureID) {
-        case XmlmapPackage.LOOKUP_CONNECTION__SOURCE:
-            setSource((AbstractNode) null);
-            return;
-        case XmlmapPackage.LOOKUP_CONNECTION__TARGET:
-            setTarget((AbstractNode) null);
-            return;
+            case XmlmapPackage.LOOKUP_CONNECTION__SOURCE:
+                setSource((AbstractNode)null);
+                return;
+            case XmlmapPackage.LOOKUP_CONNECTION__TARGET:
+                setTarget((AbstractNode)null);
+                return;
         }
         super.eUnset(featureID);
     }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
      * @generated
      */
     @Override
     public boolean eIsSet(int featureID) {
         switch (featureID) {
-        case XmlmapPackage.LOOKUP_CONNECTION__NAME:
-            return NAME_EDEFAULT == null ? getName() != null : !NAME_EDEFAULT.equals(getName());
-        case XmlmapPackage.LOOKUP_CONNECTION__SOURCE:
-            return source != null;
-        case XmlmapPackage.LOOKUP_CONNECTION__TARGET:
-            return target != null;
+            case XmlmapPackage.LOOKUP_CONNECTION__NAME:
+                return NAME_EDEFAULT == null ? getName() != null : !NAME_EDEFAULT.equals(getName());
+            case XmlmapPackage.LOOKUP_CONNECTION__SOURCE:
+                return source != null;
+            case XmlmapPackage.LOOKUP_CONNECTION__TARGET:
+                return target != null;
         }
         return super.eIsSet(featureID);
     }

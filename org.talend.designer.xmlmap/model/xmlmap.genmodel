@@ -83,12 +83,14 @@
     </genClasses>
     <genClasses image="false" ecoreClass="xmlmap.ecore#//IConnection"/>
     <genClasses image="false" ecoreClass="xmlmap.ecore#//INodeConnection">
+      <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//INodeConnection/name"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//INodeConnection/source"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//INodeConnection/target"/>
     </genClasses>
     <genClasses ecoreClass="xmlmap.ecore#//Connection"/>
     <genClasses ecoreClass="xmlmap.ecore#//LookupConnection"/>
     <genClasses ecoreClass="xmlmap.ecore#//FilterConnection">
+      <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute xmlmap.ecore#//FilterConnection/name"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//FilterConnection/source"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference xmlmap.ecore#//FilterConnection/target"/>
     </genClasses>

@@ -721,8 +721,17 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getFilterConnection_Name() {
+        return (EAttribute)filterConnectionEClass.getEStructuralFeatures().get(0);
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EReference getFilterConnection_Source() {
-        return (EReference)filterConnectionEClass.getEStructuralFeatures().get(0);
+        return (EReference)filterConnectionEClass.getEStructuralFeatures().get(1);
     }
 
                 /**
@@ -731,7 +740,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * @generated
      */
     public EReference getFilterConnection_Target() {
-        return (EReference)filterConnectionEClass.getEStructuralFeatures().get(1);
+        return (EReference)filterConnectionEClass.getEStructuralFeatures().get(2);
     }
 
                 /**
@@ -987,6 +996,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         lookupConnectionEClass = createEClass(LOOKUP_CONNECTION);
 
         filterConnectionEClass = createEClass(FILTER_CONNECTION);
+        createEAttribute(filterConnectionEClass, FILTER_CONNECTION__NAME);
         createEReference(filterConnectionEClass, FILTER_CONNECTION__SOURCE);
         createEReference(filterConnectionEClass, FILTER_CONNECTION__TARGET);
 
@@ -1122,6 +1132,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         initEClass(lookupConnectionEClass, LookupConnection.class, "LookupConnection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
         initEClass(filterConnectionEClass, FilterConnection.class, "FilterConnection", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getFilterConnection_Name(), ecorePackage.getEString(), "name", null, 0, 1, FilterConnection.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getFilterConnection_Source(), this.getAbstractNode(), null, "source", null, 0, 1, FilterConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getFilterConnection_Target(), this.getAbstractInOutTree(), null, "target", null, 0, 1, FilterConnection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

@@ -1283,13 +1283,22 @@ public interface XmlmapPackage extends EPackage {
     int FILTER_CONNECTION = 13;
 
                 /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int FILTER_CONNECTION__NAME = ICONNECTION_FEATURE_COUNT + 0;
+
+                /**
      * The feature id for the '<em><b>Source</b></em>' reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int FILTER_CONNECTION__SOURCE = ICONNECTION_FEATURE_COUNT + 0;
+    int FILTER_CONNECTION__SOURCE = ICONNECTION_FEATURE_COUNT + 1;
 
                 /**
      * The feature id for the '<em><b>Target</b></em>' reference.
@@ -1298,7 +1307,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int FILTER_CONNECTION__TARGET = ICONNECTION_FEATURE_COUNT + 1;
+    int FILTER_CONNECTION__TARGET = ICONNECTION_FEATURE_COUNT + 2;
 
                 /**
      * The number of structural features of the '<em>Filter Connection</em>' class.
@@ -1307,7 +1316,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int FILTER_CONNECTION_FEATURE_COUNT = ICONNECTION_FEATURE_COUNT + 2;
+    int FILTER_CONNECTION_FEATURE_COUNT = ICONNECTION_FEATURE_COUNT + 3;
 
                 /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputLoopNodesTableImpl <em>Input Loop Nodes Table</em>}' class.
@@ -1941,6 +1950,17 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      */
     EClass getFilterConnection();
+
+                /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getName <em>Name</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Name</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getName()
+     * @see #getFilterConnection()
+     * @generated
+     */
+    EAttribute getFilterConnection_Name();
 
                 /**
      * Returns the meta object for the reference '{@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getSource <em>Source</em>}'.
@@ -2618,6 +2638,14 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EClass FILTER_CONNECTION = eINSTANCE.getFilterConnection();
+
+                                /**
+         * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute FILTER_CONNECTION__NAME = eINSTANCE.getFilterConnection_Name();
 
                                 /**
          * The meta object literal for the '<em><b>Source</b></em>' reference feature.
