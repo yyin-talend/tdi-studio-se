@@ -966,7 +966,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    	}
             	    	e_<%=cid%> = e_<%=cid%>.getNextException();
             	    }
-            	    if(isFailure){
+            	    if(isFailure && e_<%=cid%> != null){
 				            System.out.println(" Message: " + e_<%=cid%>.getMessage());
 				            e_<%=cid%>.printStackTrace();
             	    }
@@ -1063,7 +1063,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		                	    	}
 		                	    	e_<%=cid%> = e_<%=cid%>.getNextException();
 		                	    }
-		                	    if(isFailure){
+		                	    if(isFailure && e_<%=cid%> != null){
 		 				            System.out.println(" Message: " + e_<%=cid%>.getMessage());
 		                	    	e_<%=cid%>.printStackTrace();
 		                	    }
