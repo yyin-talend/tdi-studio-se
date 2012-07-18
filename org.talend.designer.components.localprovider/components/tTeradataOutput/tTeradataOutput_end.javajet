@@ -114,38 +114,36 @@ imports="
 						e2 = e2.getNextException();
 					}
 					<% } %>
-                	<%if(("true").equals(dieOnError)) {
-                	%>
-                	java.sql.SQLException e3 = e;
+			java.sql.SQLException e3 = e;
                 	boolean isFailure = false;
                 	int errorCode = 0;
-					String sqlState = "";
-					String message = "";
-            	    while(e != null){
-            	    	if(e.getErrorCode() == -2801){
-				            System.out.println("[Message]: " + e.getMessage());
-            	    		e.printStackTrace();
-            	    		System.out.println();
-            	    	}
-            	    	else if(e.getErrorCode() == 1339){
-            	    		isFailure = true;
-            	    	}
-            	    	else{
-            	    		
- 				            System.out.println("[Message]: " + e.getMessage());
-            	    		e.printStackTrace();
-            	    	}
-            	    	e = e.getNextException();
-            	    }
-            	    if(isFailure && e != null){
-				         System.out.println("[Message]: " + e.getMessage());
-            	    	 e.printStackTrace();
-            	    }
-            	    throw(e3);
+			String sqlState = "";
+			String message = "";
+			while(e != null){
+				if(e.getErrorCode() == -2801){
+					System.out.println("[Message]: " + e.getMessage());
+					e.printStackTrace();
+					System.out.println();
+				}
+				else if(e.getErrorCode() == 1339){
+					isFailure = true;
+				} else{
+					System.out.println("[Message]: " + e.getMessage());
+					e.printStackTrace();
+				}
+				e = e.getNextException();
+			}
+			if(isFailure && e != null){
+				System.out.println("[Message]: " + e.getMessage());
+				e.printStackTrace();
+			}
+                	<%if(("true").equals(dieOnError)) {
+                	%>
+				throw(e3);
                 	<%
                 	}else {
                 	%>
-                	System.err.println(e.getMessage());
+				System.err.println(e3.getMessage());
                 	<%
                 	}%>                	
             	}                                  
