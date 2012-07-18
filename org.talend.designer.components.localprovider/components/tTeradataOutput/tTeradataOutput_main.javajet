@@ -1047,37 +1047,37 @@ skeleton="../templates/db_output_bulk.skeleton"
 								e2_<%=cid%> = e2_<%=cid%>.getNextException();
 							}
 							<% } %>
+					java.sql.SQLException e3_<%=cid%> = e_<%=cid%>;
+		                	boolean isFailure = false;
+					while(e_<%=cid%> != null){
+						if(e_<%=cid%>.getErrorCode() == -2801){
+							System.out.println(" Message: " + e_<%=cid%>.getMessage());
+							e_<%=cid%>.printStackTrace();
+							System.out.println();
+						}
+						else if(e_<%=cid%>.getErrorCode() == 1339){
+							isFailure = true;
+						}
+						else{
+							System.out.println(" Message: " + e_<%=cid%>.getMessage());
+							e_<%=cid%>.printStackTrace();
+						}
+						e_<%=cid%> = e_<%=cid%>.getNextException();
+					}
+					if(isFailure && e_<%=cid%> != null){
+						System.out.println(" Message: " + e_<%=cid%>.getMessage());
+						e_<%=cid%>.printStackTrace();
+					}
 		                	<%if(("true").equals(dieOnError)) {
-		                    %>
-		                    java.sql.SQLException e3_<%=cid%> = e_<%=cid%>;
-		                	 boolean isFailure = false;
-		                	    while(e_<%=cid%> != null){
-		                	    	if(e_<%=cid%>.getErrorCode() == -2801){
-		     				            System.out.println(" Message: " + e_<%=cid%>.getMessage());
-		                	    		e_<%=cid%>.printStackTrace();
-		                	    		System.out.println();
-		                	    	}
-		                	    	else if(e_<%=cid%>.getErrorCode() == 1339){
-		                	    		isFailure = true;
-		                	    	}
-		                	    	else{
-		     				            System.out.println(" Message: " + e_<%=cid%>.getMessage());
-		                	    		e_<%=cid%>.printStackTrace();
-		                	    	}
-		                	    	e_<%=cid%> = e_<%=cid%>.getNextException();
-		                	    }
-		                	    if(isFailure && e_<%=cid%> != null){
-		 				            System.out.println(" Message: " + e_<%=cid%>.getMessage());
-		                	    	e_<%=cid%>.printStackTrace();
-		                	    }
-            	    			throw (e3_<%=cid%>);
-		                	    
+					%>
+						throw (e3_<%=cid%>);
 		                	<%
 		                	}else {
 		                	%>
-		                        System.out.println(e_<%=cid%>.getMessage());
+						System.err.println(e3_<%=cid%>.getMessage());
 		                	<%
-		                	}%>   
+					}
+					%>   
 		                }
                 	<%
                 	}%>
