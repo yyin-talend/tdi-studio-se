@@ -116,7 +116,6 @@ imports="
 					<% } %>
                 	<%if(("true").equals(dieOnError)) {
                 	%>
-                		//throw(e);
                 	boolean isFailure = false;
                 	int errorCode = 0;
 					String sqlState = "";
@@ -141,6 +140,7 @@ imports="
 				         System.out.println("[Message]: " + e.getMessage());
             	    	 e.printStackTrace();
             	    }
+            	    throw(e);
                 	<%
                 	}else {
                 	%>
