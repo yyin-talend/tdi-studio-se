@@ -288,6 +288,8 @@ public class LoginComposite extends Composite {
 
     private String oldPath;
 
+    private static final int VISIBLE_PROJECT_COUNT = 20;
+
     private static Logger log = Logger.getLogger(LoginComposite.class);
 
     /**
@@ -1348,6 +1350,12 @@ public class LoginComposite extends Composite {
                 if (fillProjectsBtn != null) {
                     fillProjectsBtn.setEnabled(true);
                 }
+                // change the visibleItem's size when drop down the projectCombo.
+                int visibleItemCount = projectViewer.getCombo().getItemCount();
+                if (visibleItemCount > VISIBLE_PROJECT_COUNT) {
+                    visibleItemCount = VISIBLE_PROJECT_COUNT;
+                }
+                projectViewer.getCombo().setVisibleItemCount(visibleItemCount);
             } else {
                 iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                 onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
