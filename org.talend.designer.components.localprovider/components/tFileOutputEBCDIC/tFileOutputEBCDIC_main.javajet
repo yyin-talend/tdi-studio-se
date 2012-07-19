@@ -72,32 +72,46 @@ the original size in the column:<%=column.getLabel()%> in the schema should be b
 <%
 						if(orgainType.equals("X")){
 %>				
-							cobolConversion.EbcdicString <%=column.getLabel()%>_<%=cid%> = new cobolConversion.EbcdicString(new cobolConversion.EbcdicTable(), bb_<%=column.getLabel()%>_<%=cid%>, 0 , <%=length%>);
-							<%=column.getLabel()%>_<%=cid%>.toEbcdic(<%=conn.getName() %>.<%=column.getLabel()%>);
-							fOut_<%=cid%>.write(<%=column.getLabel()%>_<%=cid%>.getByteValueArray());
+							if (<%=length %> < <%=conn.getName() %>.<%=column.getLabel()%>.length()) {
+                 		   		throw new Exception("Value length must be less than the length in schema.");
+                			}
+							while(<%=length%> > <%=conn.getName() %>.<%=column.getLabel()%>.length()){
+								<%=conn.getName() %>.<%=column.getLabel()%> = <%=conn.getName() %>.<%=column.getLabel()%> + " ";							
+							}
+							bb_<%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>.getBytes(<%=encoding %>);
+							fOut_<%=cid%>.write(bb_<%=column.getLabel()%>_<%=cid %>);
 <%
-						}else if(orgainType.equals("3")) {
-%>
-							cobolConversion.PackedDecimal <%=column.getLabel()%>_<%=cid%> = new cobolConversion.PackedDecimal(bb_<%=column.getLabel()%>_<%=cid%>, 0, <%=length%> - <%=precision%>, <%=precision%>);
-							<%=column.getLabel()%>_<%=cid%>.toPackedDecimal(<%=conn.getName()%>.<%=column.getLabel()%>.toPlainString());
-							fOut_<%=cid%>.write(<%=column.getLabel()%>_<%=cid%>.getByteValueArray());
-<%
-						}else if(orgainType.equals("9")) {
+						}else if(orgainType.equals("3") || orgainType.equals("9")) {
 							String isImpliedDecimalStr = column.getAdditionalField().get("ImpliedDecimal");
 							boolean isImpliedDecimal = (isImpliedDecimalStr!=null&&!("").equals(isImpliedDecimalStr))?("true").equals(isImpliedDecimalStr):true;
 							String isSignedStr = column.getAdditionalField().get("Signed");
 							boolean isSigned = (isSignedStr!=null&&!("").equals(isSignedStr))?("true").equals(isSignedStr):true;
+							if(orgainType.equals("3")){
 %>
-							java.math.BigDecimal <%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>;
-							bb_<%=column.getLabel()%>_<%=cid%> = cobolConversion.EBCDICType9.writeType9Value(<%=length %>,<%=precision %>,<%=column.getLabel()%>_<%=cid%>,<%=isSigned %>,<%=isImpliedDecimal %>,<%=encoding %>);
-							fOut_<%=cid%>.write(bb_<%=column.getLabel()%>_<%=cid%>);
+								java.math.BigDecimal <%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>;
+								bb_<%=column.getLabel()%>_<%=cid%> = cobolConversion.EBCDICType3.writeType3Value(<%=orgainLength%>,<%=precision %>,<%=column.getLabel()%>_<%=cid%>,<%=isSigned %>);
+								fOut_<%=cid%>.write(bb_<%=column.getLabel()%>_<%=cid%>);
 <%
+							}else {
+%>
+								java.math.BigDecimal <%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>;
+								bb_<%=column.getLabel()%>_<%=cid%> = cobolConversion.EBCDICType9.writeType9Value(<%=length %>,<%=precision %>,<%=column.getLabel()%>_<%=cid%>,<%=isSigned %>,<%=isImpliedDecimal %>,<%=encoding %>);
+								fOut_<%=cid%>.write(bb_<%=column.getLabel()%>_<%=cid%>);
+<%
+							}
 						}else if(orgainType.equals("B")) {
+							String isSignedStr = column.getAdditionalField().get("Signed");
+							boolean isSigned = (isSignedStr!=null&&!("").equals(isSignedStr))?("true").equals(isSignedStr):true;
 %>
 							java.math.BigInteger <%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>.toBigInteger() ;
+							if(<%=column.getLabel()%>_<%=cid%>.compareTo(new java.math.BigInteger("0")) < 0 ){
+								for(int i=0;i< <%=orgainLength%>;i++){
+									bb_<%=column.getLabel()%>_<%=cid%>[i] = (byte)0xFF;
+								}
+							}
 							byte[] bArr_<%=column.getLabel()%>_<%=cid%> = <%=column.getLabel()%>_<%=cid%>.toByteArray();
 							for(int j=0;j<bArr_<%=column.getLabel()%>_<%=cid%>.length;j++){
-								bb_<%=column.getLabel()%>_<%=cid%>[j] = bArr_<%=column.getLabel()%>_<%=cid%>[j];
+								bb_<%=column.getLabel()%>_<%=cid%>[bb_<%=column.getLabel()%>_<%=cid%>.length-(j+1)] = bArr_<%=column.getLabel()%>_<%=cid%>[bArr_<%=column.getLabel()%>_<%=cid%>.length - (j+1)];
 							}
 							fOut_<%=cid%>.write(bb_<%=column.getLabel()%>_<%=cid%>);
 <%

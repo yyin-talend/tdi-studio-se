@@ -166,17 +166,18 @@ the original size in the column:<%=column.getLabel()%> in the schema should be b
 %>
 							<%=conn.getName() %>.<%=column.getLabel()%> = new java.lang.Double(java.nio.ByteBuffer.wrap(bb_<%=column.getLabel()%>_<%=cid%>).order(java.nio.ByteOrder.BIG_ENDIAN).getDouble());
 <%
-						}else if(orgainType.equals("3")) {
-%>
-							cobolConversion.PackedDecimal pd_<%=conn.getName() %>_<%=column.getLabel()%> = new cobolConversion.PackedDecimal(bb_<%=column.getLabel()%>_<%=cid%>, 0, <%=length%> - <%=precision%> , <%=precision%>);
-							<%=conn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(pd_<%=conn.getName() %>_<%=column.getLabel()%>.toString().trim());
-<%
-						}else if(orgainType.equals("9")) {
+						}else if(orgainType.equals("3") || orgainType.equals("9")) {
 							String isImpliedDecimalStr = column.getAdditionalField().get("ImpliedDecimal");
 							boolean isImpliedDecimal = (isImpliedDecimalStr!=null&&!("").equals(isImpliedDecimalStr))?("true").equals(isImpliedDecimalStr):true;
+							if(orgainType.equals("3")){
 %>
-							<%=conn.getName() %>.<%=column.getLabel()%> = cobolConversion.EBCDICType9.readType9Value(bb_<%=column.getLabel()%>_<%=cid%>,<%=precision %>,<%=isImpliedDecimal %>,<%=encoding %>);
+								<%=conn.getName() %>.<%=column.getLabel()%> = cobolConversion.EBCDICType3.readType3Value(bb_<%=column.getLabel()%>_<%=cid%>,<%=precision %>,<%=isImpliedDecimal %>);
 <%
+							}else{
+%>
+								<%=conn.getName() %>.<%=column.getLabel()%> = cobolConversion.EBCDICType9.readType9Value(bb_<%=column.getLabel()%>_<%=cid%>,<%=precision %>,<%=isImpliedDecimal %>,<%=encoding %>);
+<%
+							}
 						}else if(orgainType.equals("B")) {
 %>
 							<%=conn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(new java.math.BigInteger(bb_<%=column.getLabel()%>_<%=cid%>),0);
