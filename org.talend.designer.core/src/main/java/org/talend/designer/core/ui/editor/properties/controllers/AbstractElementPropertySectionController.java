@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.collections.BidiMap;
@@ -178,7 +179,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
     protected static final String COLUMN = "COLUMN"; //$NON-NLS-1$
 
     // PTODO qzhang use PARAMETER_NAME it for bug 853.
-    protected static final String PARAMETER_NAME = TypedTextCommandExecutor.PARAMETER_NAME; //$NON-NLS-1$
+    protected static final String PARAMETER_NAME = TypedTextCommandExecutor.PARAMETER_NAME;
 
     protected static final int MAX_PERCENT = 100;
 
@@ -550,6 +551,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 }
                 extendedProposal.addContentProposalListener(new IContentProposalListener() {
 
+                    @Override
                     public void proposalAccepted(IContentProposal proposal) {
                         if (control instanceof Text) {
                             ContextParameterExtractor.saveContext(parameterName, elem, ((Text) control).getText(), process);
@@ -602,10 +604,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         private final FocusListener focusListenerForCheckingError = new FocusListener() {
 
+            @Override
             public void focusGained(FocusEvent event) {
                 focusGainedExecute((Control) event.widget);
             }
 
+            @Override
             public void focusLost(FocusEvent event) {
                 if (!extendedProposal.isProposalOpened()) {
                     Control control = (Control) event.widget;
@@ -666,11 +670,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         private final KeyListener keyListenerForCheckingError = new KeyListener() {
 
+            @Override
             public void keyPressed(KeyEvent event) {
                 Control control = (Control) event.widget;
                 resetErrorState(control);
             }
 
+            @Override
             public void keyReleased(KeyEvent e) {
             }
 
@@ -853,8 +859,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 if (proForPerlErrorMark != null && proForPerlErrorMark.size() > 0) {
                     Set<Map.Entry<String, Problem>> set = proForPerlErrorMark.entrySet();
 
-                    for (Iterator<Map.Entry<String, Problem>> ite = set.iterator(); ite.hasNext();) {
-                        Map.Entry<String, Problem> tmp = ite.next();
+                    for (Entry<String, Problem> tmp : set) {
                         if (tmp == null) {
                             continue;
                         }
@@ -864,7 +869,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         }
                         String description = pro.getDescription();
                         if (!"".equals(description) && description != null) {//$NON-NLS-1$
-                            errorMessage.append(description.replaceFirst("\r\n", ""));//$NON-NLS-1$//$NON-NLS-1$
+                            errorMessage.append(description.replaceFirst("\r\n", ""));//$NON-NLS-1$
                             errorMessage.append("\n");//$NON-NLS-1$
                         }
 
@@ -1137,8 +1142,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
     }
 
     private void refreshDynamicProperty() {
-        if (this.dynamicProperty == null)
+        if (this.dynamicProperty == null) {
             return;
+        }
         dynamicProperty.refresh();
     }
 
@@ -1152,15 +1158,19 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
             String propertyName = null;
 
+            @Override
             public void dragEnter(final DropTargetEvent event) {
             }
 
+            @Override
             public void dragLeave(final DropTargetEvent event) {
             }
 
+            @Override
             public void dragOperationChanged(final DropTargetEvent event) {
             }
 
+            @Override
             public void dragOver(final DropTargetEvent event) {
                 if (TextTransfer.getInstance().isSupportedType(event.currentDataType)) {
                     propertyName = getParameterName(textControl);
@@ -1175,6 +1185,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 }
             }
 
+            @Override
             public void drop(final DropTargetEvent event) {
                 if (propertyName != null) {
                     String text;
@@ -1192,6 +1203,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 }
             }
 
+            @Override
             public void dropAccept(final DropTargetEvent event) {
             }
         };
@@ -1331,8 +1343,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
             IElementParameter ele = element.getElementParameter("CONNECTION_TYPE");
             if (ele != null) {
                 type = (String) ele.getValue();
-            } else
+            } else {
                 type = "ORACLE_SID"; //$NON-NLS-1$
+            }
         }
         // If the dbtype has been setted don't reset it again unless the dbtype of connParameters is null.
         if (StringUtils.trimToNull(type) == null && StringUtils.trimToNull(connParameters.getDbType()) == null) {
@@ -1406,12 +1419,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String driverClass = getValueFromRepositoryName(element, EConnectionParameterName.DRIVER_CLASS.getName());
         connParameters.setDriverClass(TalendTextUtils.removeQuotes(driverClass));
 
-        if (driverClass != null && !"".equals(driverClass)) {//$NON-NLS-N$
-            if (driverClass.startsWith("\"") && driverClass.endsWith("\"")) {//$NON-NLS-N$//$NON-NLS-N$
+        if (driverClass != null && !"".equals(driverClass)) {
+            if (driverClass.startsWith("\"") && driverClass.endsWith("\"")) {
                 driverClass = TalendTextUtils.removeQuotes(driverClass);
             }
-            String dbTypeByClassName = "";//$NON-NLS-N$
-            if (driverJar != null && !"".equals(driverJar)) {//$NON-NLS-N$
+            String dbTypeByClassName = "";
+            if (driverJar != null && !"".equals(driverJar)) {
                 dbTypeByClassName = ExtractMetaDataUtils.getDbTypeByClassNameAndDriverJar(driverClass, driverJar);
             } else {
                 dbTypeByClassName = ExtractMetaDataUtils.getDbTypeByClassName(driverClass);
@@ -1430,8 +1443,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
             final Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
             IMetadataTable metadataTable = null;
 
-            String connectionId = propertyValue.toString().split(" - ")[0]; //$NON-NLS-N$
-            String tableLabel = propertyValue.toString().split(" - ")[1]; //$NON-NLS-N$
+            String connectionId = propertyValue.toString().split(" - ")[0];
+            String tableLabel = propertyValue.toString().split(" - ")[1];
 
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             Item item = null;
@@ -1478,10 +1491,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
             if (connectionNode == null) {
                 Object compValue = compList.getValue();
                 if (compValue != null && !compValue.equals("")) { //$NON-NLS-1$
-                    List<? extends INode> nodes = part.getProcess().getGraphicalNodes();
+                    List<? extends INode> nodes = part.getProcess().getGeneratingNodes();
                     for (INode node : nodes) {
-                        if (node.getUniqueName().equals(compValue) && (node instanceof Node)) {
-                            connectionNode = (Node) node;
+                        if (node.getUniqueName().equals(compValue) && (node instanceof INode)) {
+                            connectionNode = node;
                             break;
                         }
                     }
@@ -1511,9 +1524,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
             // Changed by Marvin Wang on Feb. 14, 2012 for bug TDI-19597. Above is the original code, below is new code
             // to get the Oracle RAC url.
             String dbType = connParameters.getDbType();
-            if (EDatabaseTypeName.ORACLE_RAC.getDisplayName().equals(dbType))
+            if (EDatabaseTypeName.ORACLE_RAC.getDisplayName().equals(dbType)) {
                 url = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element, "RAC_"
                         + EConnectionParameterName.URL.getName(), context));
+            }
         }
         connParameters.setUrl(url);
         connParameters.setDriverClass(TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
@@ -1542,8 +1556,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
     }
 
     private String getParameterValueWithContext(IElement elem, String key, IContext context) {
-        if (elem == null || key == null)
+        if (elem == null || key == null) {
             return ""; //$NON-NLS-1$
+        }
 
         String actualKey = this.getParaNameFromRepositoryName(key); // connKeyMap.get(key);
         if (actualKey != null) {
@@ -1592,7 +1607,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         return "";
     }
 
-    Node connectionNode = null;
+    INode connectionNode = null;
 
     /**
      * DOC zli Comment method "getImplicitRepositoryId".
@@ -1603,12 +1618,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
         // TDI-17078:when db connection with jdbc work as the implicit context,the elem is Process intance ,it also need
         // get the ImplicitRepositoryId
         if (elem instanceof ImplicitContextLoadElement || elem instanceof Process) {
-            IElementParameter implicitContext = elem.getElementParameter("PROPERTY_TYPE_IMPLICIT_CONTEXT");//$NON-NLS-N$
+            IElementParameter implicitContext = elem.getElementParameter("PROPERTY_TYPE_IMPLICIT_CONTEXT");
             if (implicitContext != null) {
                 Map<String, IElementParameter> childParameters = implicitContext.getChildParameters();
                 if (childParameters != null) {
-                    if (childParameters.get("PROPERTY_TYPE").getValue().equals("REPOSITORY")) {//$NON-NLS-N$//$NON-NLS-N$
-                        IElementParameter iElementParameter = childParameters.get("REPOSITORY_PROPERTY_TYPE");//$NON-NLS-N$
+                    if (childParameters.get("PROPERTY_TYPE").getValue().equals("REPOSITORY")) {
+                        IElementParameter iElementParameter = childParameters.get("REPOSITORY_PROPERTY_TYPE");
                         if (iElementParameter != null) {
                             Object value = iElementParameter.getValue();
                             if (value != null) {
@@ -1629,12 +1644,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
      */
     protected String getStatsLogRepositoryId() {
         if (elem instanceof StatsAndLogsElement) {
-            IElementParameter statsLogContext = elem.getElementParameter("PROPERTY_TYPE");//$NON-NLS-N$
+            IElementParameter statsLogContext = elem.getElementParameter("PROPERTY_TYPE");
             if (statsLogContext != null) {
                 Map<String, IElementParameter> childParameters = statsLogContext.getChildParameters();
                 if (childParameters != null) {
-                    if (childParameters.get("PROPERTY_TYPE").getValue().equals("REPOSITORY")) {//$NON-NLS-N$//$NON-NLS-N$
-                        IElementParameter iElementParameter = childParameters.get("REPOSITORY_PROPERTY_TYPE");//$NON-NLS-N$
+                    if (childParameters.get("PROPERTY_TYPE").getValue().equals("REPOSITORY")) {
+                        IElementParameter iElementParameter = childParameters.get("REPOSITORY_PROPERTY_TYPE");
                         if (iElementParameter != null) {
                             Object value = iElementParameter.getValue();
                             if (value != null) {
@@ -1658,8 +1673,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
             IElementParameter ele = elem.getElementParameter("CONNECTION_TYPE");
             if (ele != null) {
                 type = (String) ele.getValue();
-            } else
+            } else {
                 type = "ORACLE_SID"; //$NON-NLS-1$
+            }
         }
         connParameters.setDbType(type);
 
@@ -1702,7 +1718,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 List<? extends INode> nodes = part.getProcess().getGraphicalNodes();
                 for (INode node : nodes) {
                     if (node.getUniqueName().equals(compValue) && (node instanceof Node)) {
-                        connectionNode = (Node) node;
+                        connectionNode = node;
                         break;
                     }
                 }
@@ -1941,6 +1957,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     MouseListener listenerSelection = new MouseAdapter() {
 
+        @Override
         public void mouseDown(MouseEvent e) {
 
             ModelSelectionDialog modelSelect = new ModelSelectionDialog(((Control) e.getSource()).getShell(),
@@ -2032,6 +2049,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         if (parent != null) {
             parent.addDisposeListener(new DisposeListener() {
 
+                @Override
                 public void widgetDisposed(DisposeEvent e) {
                     if (res != null && !res.isDisposed()) {
                         res.dispose();
