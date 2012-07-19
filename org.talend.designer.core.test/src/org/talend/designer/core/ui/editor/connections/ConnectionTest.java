@@ -121,13 +121,4 @@ public class ConnectionTest {
         assertNull(connection.getTraceData());
     }
 
-    @Test
-    public void testGetMetadataTable() {
-        assertEquals(inputTable, connection.getMetadataTable());
-    }
-
-    @Test
-    public void testGetOutputId() {
-        assertEquals(-1, connection.getOutputId());
-    }
 }
