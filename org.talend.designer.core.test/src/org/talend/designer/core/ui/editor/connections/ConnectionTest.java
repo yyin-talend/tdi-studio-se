@@ -97,6 +97,8 @@ public class ConnectionTest {
         connection.reconnect();
         assertTrue(source.getOutgoingConnections().contains(connection));
         assertTrue(target.getIncomingConnections().contains(connection));
+        assertEquals(connection.getSource(), source);
+        assertEquals(connection.getTarget(), target);
     }
 
     /**
