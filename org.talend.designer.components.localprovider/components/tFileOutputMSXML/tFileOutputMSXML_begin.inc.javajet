@@ -334,6 +334,21 @@ class GenerateExprCmpByDom4j{
 	//cache prefix and uris of namespace
 	List<String> prefixs = null;
 	List<String> uris = null;
+	String lastParam=null;
+	String[] lastArrNames =null;
+	List<String> lastPrefixs = null;
+	List<String> lastUris = null;
+	public boolean collectionCompare(java.util.Collection<String> c1,java.util.Collection<String> c2 ){
+		if(c1==null && c2==null){
+			return true;
+		}else if(c1!=null && c2!=null){
+			Object [] firstArr=c1.toArray();
+			Object [] secondArr=c2.toArray();
+			return java.util.Arrays.equals(firstArr,secondArr);
+		}else{
+			return false;
+		}
+	}
 	public void generateCode(XMLNode node, String parentName){
 		String tmpPath = node.path.replaceFirst(groupNode.path,"");
 		String[] arrNames = tmpPath.split("/");
@@ -342,6 +357,13 @@ class GenerateExprCmpByDom4j{
 
 		namespaceHelper.buildInfoForNamespace(node,arrNames,prefixs,uris);
 		
+		boolean printFlag=false;
+		if(!java.util.Arrays.equals(arrNames,lastArrNames)){
+			printFlag=true;
+		}
+		if(!printFlag){
+			printFlag=!(collectionCompare(uris,lastUris)&&collectionCompare(prefixs,lastPrefixs));
+		}
 		if(node==groupNode){
 %>true
 <%
@@ -352,17 +374,27 @@ class GenerateExprCmpByDom4j{
 			if(!needEmptyNode){
 %>(<%tool.getValue(node); %>==null && <%generateCmnExpr(arrNames, parentName); %> == null) || (true &&
 <%			}%>
+	<%if(printFlag){%>
  <%generateCmnExpr(arrNames, parentName); %>!=null
  && <%generateCmnExpr(arrNames, parentName); %>.getText()!=null
- && <%generateCmnExpr(arrNames, parentName); %>.getText().equals(<%tool.getValue(node); %>)
+ &&
+ <%
+ 	}
+ %>
+ <%generateCmnExpr(arrNames, parentName); %>.getText().equals(<%tool.getValue(node); %>)
 <%if(!needEmptyNode){%>)<%}%>
 )
 <%
 		}else if(node.defaultValue!=null && !"".equals(node.defaultValue)){
 %> && (
+<%if(!java.util.Arrays.equals(arrNames,lastArrNames)){%>
  <%generateCmnExpr(arrNames, parentName); %>!=null
  && <%generateCmnExpr(arrNames, parentName); %>.getText()!=null
- && <%generateCmnExpr(arrNames, parentName); %>.getText().equals("<%=node.defaultValue %>")
+ && 
+  <%
+ 	}
+ %>
+ <%generateCmnExpr(arrNames, parentName); %>.getText().equals("<%=node.defaultValue %>")
  )
 <%
 		}
@@ -385,23 +417,36 @@ class GenerateExprCmpByDom4j{
 					if(!needEmptyNode){
 %>(<%tool.getValue(attri); %>==null && <%generateCmnExpr(arrNames, parentName); %>.attribute(<%=param %>) == null) || (true && 
 <%					}%>
+<%if(printFlag || !param.equals(lastParam)){%>
  <%generateCmnExpr(arrNames, parentName); %>.attribute(<%=param %>)!=null
 && <%generateCmnExpr(arrNames, parentName); %>.attribute(<%=param %>).getText()!=null
-&& <%generateCmnExpr(arrNames, parentName); %>.attribute(<%=param %>).getText().equals(<%tool.getValue(attri); %>)
+&&
+ <%
+	}
+ %>
+<%generateCmnExpr(arrNames, parentName); %>.attribute(<%=param %>).getText().equals(<%tool.getValue(attri); %>)
 <%
 					if(!needEmptyNode){%>)<%}
 %>)<%
 				}else if(attri.defaultValue!=null && !"".equals(attri.defaultValue)){
 %> && (
+<%if(printFlag || !param.equals(lastParam)){%>
  <%generateCmnExpr(arrNames, parentName); %>.attribute(<%=param %>)!=null
 && <%generateCmnExpr(arrNames, parentName); %>.attribute(<%=param %>).getText()!=null
-&& <%generateCmnExpr(arrNames, parentName); %>.attribute(<%=param %>).getText().equals("<%=attri.defaultValue %>")
+&&
+ <%
+	}
+ %>
+<%generateCmnExpr(arrNames, parentName); %>.attribute(<%=param %>).getText().equals("<%=attri.defaultValue %>")
  )
 <%
 				}
+			lastParam=param;
 			}
 		}	
-		
+		lastArrNames=arrNames;
+		lastUris=uris;
+		lastPrefixs=prefixs;
 		if(node.elements!=null){
 			for(XMLNode child:node.elements){
 				if(!child.isMainNode()){
@@ -552,6 +597,45 @@ java.util.Map<String,String> prefixToUriForNamespace_<%=sourceName %>_<%=cid%> =
 				preMetadata = preMetadatas.get(0);
 				sourceName = incomingConn.getUniqueName();
     			if(preMetadata!=null){
+	    			String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+	        		boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
+	        		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
+	        		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
+	        		
+	        		// init tool
+	                XMLTool tool = new XMLTool();
+	                tool.connName = incomingConn.getName();
+	                tool.advancedSeparator=advancedSeparator;
+	                tool.thousandsSeparator=thousandsSeparator;
+	                tool.decimalSeparator=decimalSeparator;
+	                tool.cid=cid;
+	                if (this.isBeginPart && this.isOptimizeCode) {
+						int columnsCount=0;
+						for(IMetadataColumn column :preMetadata.getListColumns()){
+							if(columnsCount%100==0){
+%>
+	void putValue_<%=incomingConn.getUniqueName()%>_<%=columnsCount/100%>(final <%=incomingConn.getName()%>Struct <%=incomingConn.getName() %>){
+<%
+							}
+%>
+		valueMap_<%=cid%>.put("<%=column.getLabel()%>", <%tool.getValue(column); %>);
+		if(isXML10Char_<%=cid%>) {
+			isXML10Char_<%=cid%> = org.talend.util.xml.XMLText.isValid(<%tool.getValue(column); %>);
+		}
+<%
+							if((columnsCount+1)%100==0){
+%>
+	}
+<%
+							}
+							columnsCount++;
+						}
+						if(preMetadata.getListColumns().size()>0&&(preMetadata.getListColumns().size()%100)>0){
+%>
+	}
+<%
+                 		}
+                 	}
 %>
 <%
 generateWrapMethod(incomingConn);
@@ -570,18 +654,6 @@ if(!this.isBeginPart && this.isOptimizeCode) {
                 String allowEmpty = ElementParameterParser.getValue(node, "__CREATE_EMPTY_ELEMENT__");
  //               String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
                 
-                String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
-        		boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
-        		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
-        		String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER); 
-        		
-        		// init tool
-                XMLTool tool = new XMLTool();
-                tool.connName = incomingConn.getName();
-                tool.advancedSeparator=advancedSeparator;
-                tool.thousandsSeparator=thousandsSeparator;
-                tool.decimalSeparator=decimalSeparator;
-                tool.cid=cid;
                 
                 // change tables to a tree 
                 List<List<Map<String, String>>> tables = getTables(rootTable, groupTable, loopTable, sourceName);
@@ -615,14 +687,26 @@ if(!this.isBeginPart && this.isOptimizeCode) {
 	<%=namespaceHelper.buildUriToPrefixForDefaultNamespaceMapping("uriToPrefixForDefaultNamespace_" + sourceName + "_" + cid)%>
 	<%=namespaceHelper.buildPrefixToUriForNamespaceMapping("prefixToUriForNamespace_" + sourceName + "_" + cid)%>
 <%
-					for(IMetadataColumn column :preMetadata.getListColumns()){
+	if (this.isBeginPart && this.isOptimizeCode) {
+		int count=0;
+		for(IMetadataColumn column :preMetadata.getListColumns()){
+			if(count%100==0){
 %>
-	valueMap_<%=cid%>.put("<%=column.getLabel()%>", <%tool.getValue(column); %>);
-	if(isXML10Char_<%=cid%>) {
-		isXML10Char_<%=cid%> = org.talend.util.xml.XMLText.isValid(<%tool.getValue(column); %>);
-	}
+	putValue_<%=incomingConn.getUniqueName()%>_<%=count/100%>(<%=incomingConn.getName() %>);
 <%
-					}
+			}
+			count++;
+		}
+	}else{
+		for(IMetadataColumn column :preMetadata.getListColumns()){
+%>
+			valueMap_<%=cid%>.put("<%=column.getLabel()%>", <%tool.getValue(column); %>);
+			if(isXML10Char_<%=cid%>) {
+				isXML10Char_<%=cid%> = org.talend.util.xml.XMLText.isValid(<%tool.getValue(column); %>);
+			}
+<%
+		}
+	}
 // ------------------- *** Common code end *** ------------------- //
 
 // ------------------- *** Dom4j generation mode start *** ------------------- //
