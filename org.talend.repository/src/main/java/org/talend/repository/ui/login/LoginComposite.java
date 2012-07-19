@@ -1351,11 +1351,13 @@ public class LoginComposite extends Composite {
                     fillProjectsBtn.setEnabled(true);
                 }
                 // change the visibleItem's size when drop down the projectCombo.
-                int visibleItemCount = projectViewer.getCombo().getItemCount();
-                if (visibleItemCount > VISIBLE_PROJECT_COUNT) {
-                    visibleItemCount = VISIBLE_PROJECT_COUNT;
+                if (projectViewer != null) {
+                    int visibleItemCount = projectViewer.getCombo().getItemCount();
+                    if (visibleItemCount > VISIBLE_PROJECT_COUNT) {
+                        visibleItemCount = VISIBLE_PROJECT_COUNT;
+                    }
+                    projectViewer.getCombo().setVisibleItemCount(visibleItemCount);
                 }
-                projectViewer.getCombo().setVisibleItemCount(visibleItemCount);
             } else {
                 iconLabel.setImage(LOGIN_CRITICAL_IMAGE);
                 onIconLabel.setImage(LOGIN_CRITICAL_IMAGE);
