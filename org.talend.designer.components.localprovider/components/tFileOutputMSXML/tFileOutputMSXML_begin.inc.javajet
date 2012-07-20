@@ -614,7 +614,7 @@ java.util.Map<String,String> prefixToUriForNamespace_<%=sourceName %>_<%=cid%> =
 						for(IMetadataColumn column :preMetadata.getListColumns()){
 							if(columnsCount%100==0){
 %>
-	void putValue_<%=incomingConn.getUniqueName()%>_<%=columnsCount/100%>(final <%=incomingConn.getName()%>Struct <%=incomingConn.getName() %>){
+	void putValue_<%=incomingConn.getUniqueName()%>_<%=columnsCount/100%>(final <%=NodeUtil.getPrivateConnClassName(incomingConn)%>Struct <%=incomingConn.getName() %>){
 <%
 							}
 %>
