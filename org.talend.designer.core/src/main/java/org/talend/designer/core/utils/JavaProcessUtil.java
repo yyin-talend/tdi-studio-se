@@ -304,7 +304,8 @@ public class JavaProcessUtil {
             boolean flag) {
 
         Object value = curParam.getValue();
-        if (curParam.getName().equals("DRIVER_JAR")) {//$NON-NLS-N$
+        String name = curParam.getName();
+        if (name.equals("DRIVER_JAR")) {//$NON-NLS-N$
             // added for bug 13592. new parameter DRIVER_JAR was used for jdbc connection
             if (value != null && value instanceof List) {
                 List list = (List) value;
@@ -329,9 +330,7 @@ public class JavaProcessUtil {
                     }
                 }
             }
-        }
-
-        if (curParam.getName().equals("DB_VERSION")) { //$NON-NLS-1$
+        }else if (name.equals("DB_VERSION")) { //$NON-NLS-1$
             String jdbcName = (String) value;
             //
             if (jdbcName != null && !jdbcName.equals("Access_2003") && !jdbcName.equals("Access_2007")) {
@@ -358,28 +357,41 @@ public class JavaProcessUtil {
                     }
                 }
             }
-        }
-
-        String separator = ";"; //$NON-NLS-1$
-        if (curParam.getName().equals("MQ_DERVIERS")) { //$NON-NLS-1$
+        }else if (name.equals("MQ_DERVIERS")) { //$NON-NLS-1$
             String path = (String) value;
 
             if (path == null || path.equals("")) { //$NON-NLS-1$
                 return;
             }
 
+            String separator = ";"; //$NON-NLS-1$
             for (String jar : path.split(separator)) {
                 ModuleNeeded module = new ModuleNeeded(null, jar, null, true);
                 modulesNeeded.add(module);
             }
-        }
-        if (curParam.getName().equals("HOTLIBS")) { //$NON-NLS-1$
+        }else if (name.equals("HOTLIBS")) { //$NON-NLS-1$
             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
-
+            Object[] listItemsValue = curParam.getListItemsValue();
             for (Map<String, Object> line : tableValues) {
-                if (line.containsKey("LIBPATH") && !StringUtils.isEmpty((String) line.get("LIBPATH"))) {
-                    String path = (String) line.get("LIBPATH");
-                    ModuleNeeded module = new ModuleNeeded(null, TalendTextUtils.removeQuotes(path), null, true);
+                Object libPath = line.get("LIBPATH");
+                if(libPath == null){
+                    continue;
+                }
+                String text = null;
+                if(libPath instanceof String && !StringUtils.isEmpty((String) libPath)){
+                    text = (String) libPath;
+                }else if(libPath instanceof Integer && listItemsValue != null){
+                    int index = ((Integer) libPath).intValue();
+                    if (index > -1 && index < listItemsValue.length && listItemsValue[index] != null) {
+                        if(listItemsValue[index] instanceof IElementParameter){
+                            text = (String) ((IElementParameter)listItemsValue[index]).getValue();
+                        }else{
+                            text = listItemsValue[index].toString();
+                        }
+                    }
+                }
+                if(text != null){
+                    ModuleNeeded module = new ModuleNeeded(null, TalendTextUtils.removeQuotes(text), null, true);
                     modulesNeeded.add(module);
                 }
             }
