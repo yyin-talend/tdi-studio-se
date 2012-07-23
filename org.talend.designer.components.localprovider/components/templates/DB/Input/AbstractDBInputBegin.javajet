@@ -211,8 +211,12 @@ imports="
 					    				for(int i_<%=cid %> = <%=metadata.getListColumns().size()%>; i_<%=cid %>  <= rsmd_<%=cid%>.getColumnCount(); i_<%=cid %> ++){
 						 					if ("NTEXT".equals(rsmd_<%=cid%>.getColumnTypeName(i_<%=cid %> ).toUpperCase())) {
 												net.sourceforge.jtds.jdbc.ClobImpl clob_<%=cid %> = (net.sourceforge.jtds.jdbc.ClobImpl) rs_<%=cid%>.getClob(i_<%=cid %>);
-						 						net.sourceforge.jtds.jdbc.TalendNTextImpl tNTextImpl_<%=cid %> = new net.sourceforge.jtds.jdbc.TalendNTextImpl(clob_<%=cid %>);
-							  					list_<%=cid %>.add(tNTextImpl_<%=cid %>.getValue());
+												if(clob_<%=cid %>!=null){
+													net.sourceforge.jtds.jdbc.TalendNTextImpl tNTextImpl_<%=cid %> = new net.sourceforge.jtds.jdbc.TalendNTextImpl(clob_<%=cid %>);
+							  						list_<%=cid %>.add(tNTextImpl_<%=cid %>.getValue());
+												}else{
+													list_<%=cid %>.add(null);
+												}
 						   					}
    	 				    				}
                                  		 routines.system.DynamicUtils.readColumnsFromDatabase_Mssql(<%=firstConnName%>.<%=column.getLabel()%>, rs_<%=cid%>, fixedColumnCount_<%=cid%>,list_<%=cid %>);
