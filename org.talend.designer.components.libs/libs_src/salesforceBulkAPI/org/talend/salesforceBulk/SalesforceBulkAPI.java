@@ -1,10 +1,12 @@
 package org.talend.salesforceBulk;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -23,10 +25,12 @@ import com.sforce.async.BatchInfo;
 import com.sforce.async.BatchStateEnum;
 import com.sforce.async.BulkConnection;
 import com.sforce.async.CSVReader;
+import com.sforce.async.ConcurrencyMode;
 import com.sforce.async.ContentType;
 import com.sforce.async.JobInfo;
 import com.sforce.async.JobStateEnum;
 import com.sforce.async.OperationEnum;
+import com.sforce.async.QueryResultList;
 import com.sforce.soap.partner.PartnerConnection;
 import com.sforce.ws.ConnectionException;
 import com.sforce.ws.ConnectorConfig;
@@ -64,6 +68,8 @@ public class SalesforceBulkAPI {
             operation = OperationEnum.update;
         } else if ("upsert".equals(operationStr)) {
             operation = OperationEnum.upsert;
+        } else if ("delete".equals(operationStr)) {
+            operation = OperationEnum.delete;
         }
 
         this.externalIdFieldName = externalIdFieldName;
@@ -200,16 +206,35 @@ public class SalesforceBulkAPI {
         config.setRestEndpoint(restEndpoint);
         setProxyToConnection(config);
         // This should only be false when doing debugging.
-        config.setCompression(true);
+        config.setCompression(needCompression);
         // Set this to true to see HTTP requests and responses on stdout
-        config.setTraceMessage(false);
+        config.setTraceMessage(needTraceMessage);
         BulkConnection connection = new BulkConnection(config);
         return connection;
     }
 
+    private ConcurrencyMode concurrencyMode = null;
+
+    public void setConcurrencyMode(String mode) {
+        concurrencyMode = ConcurrencyMode.valueOf(mode);
+    }
+
+    private boolean needCompression = true;
+
+    public void setNeedCompression(boolean needCompression) {
+        this.needCompression = needCompression;
+    }
+
+    private boolean needTraceMessage = false;
+
+    public void setNeedTraceMessage(boolean needTraceMessage) {
+        this.needTraceMessage = needTraceMessage;
+    }
+
     private JobInfo createJob() throws AsyncApiException {
         JobInfo job = new JobInfo();
-
+        if (concurrencyMode != null)
+            job.setConcurrencyMode(concurrencyMode);
         job.setObject(sObjectType);
         job.setOperation(operation);
         if (OperationEnum.upsert.equals(operation)) {
@@ -220,21 +245,21 @@ public class SalesforceBulkAPI {
         // System.out.println(job);
         return job;
     }
-    
-    private int countQuotes(String value){
-		if (value == null || "".equals(value)) {
-			return 0;
-		} else {
-			char c = '\"';
-			int num = 0;
-			char[] chars = value.toCharArray();
-			for (int i = 0; i < chars.length; i++) {
-				if (c == chars[i]) {
-					num++;
-				}
-			}
-			return num;
-		}
+
+    private int countQuotes(String value) {
+        if (value == null || "".equals(value)) {
+            return 0;
+        } else {
+            char c = '\"';
+            int num = 0;
+            char[] chars = value.toCharArray();
+            for (int i = 0; i < chars.length; i++) {
+                if (c == chars[i]) {
+                    num++;
+                }
+            }
+            return num;
+        }
     }
 
     private List<BatchInfo> createBatchesFromCSVFile() throws IOException, AsyncApiException {
@@ -250,25 +275,25 @@ public class SalesforceBulkAPI {
             int currentBytes = 0;
             int currentLines = 0;
             String nextLine;
-            boolean needStart=true;
-            boolean needEnds=true;
+            boolean needStart = true;
+            boolean needEnds = true;
             while ((nextLine = rdr.readLine()) != null) {
-            	int num=countQuotes(nextLine);
-            	//nextLine is header or footer of the record
-				if (num % 2 == 1) {
-					if (!needStart) {
-						needEnds = false;
-					} else {
-						needStart = false;
-					}
-				} else {
-				//nextLine is a whole record or middle of the record
-					if (needEnds && needStart) {
-						needEnds = false;
-						needStart = false;
-					}
-				}
-            	
+                int num = countQuotes(nextLine);
+                // nextLine is header or footer of the record
+                if (num % 2 == 1) {
+                    if (!needStart) {
+                        needEnds = false;
+                    } else {
+                        needStart = false;
+                    }
+                } else {
+                    // nextLine is a whole record or middle of the record
+                    if (needEnds && needStart) {
+                        needEnds = false;
+                        needStart = false;
+                    }
+                }
+
                 byte[] bytes = (nextLine + "\n").getBytes("UTF-8");
 
                 // Create a new batch when our batch size limit is reached
@@ -285,10 +310,10 @@ public class SalesforceBulkAPI {
                 }
                 tmpOut.write(bytes);
                 currentBytes += bytes.length;
-                if(!needStart && !needEnds){
-                	currentLines++;
-                	needStart=true;
-                	needEnds=true;
+                if (!needStart && !needEnds) {
+                    currentLines++;
+                    needStart = true;
+                    needEnds = true;
                 }
             }
             // Finished processing all rows
@@ -390,5 +415,78 @@ public class SalesforceBulkAPI {
 
     public int getBatchCount() {
         return batchInfoList.size();
+    }
+
+    private String[] queryResultIDs = null;
+
+    public void doBulkQuery(String moduleName, String queryStatement, int secToWait) throws AsyncApiException,
+            InterruptedException {
+        job = new JobInfo();
+        job.setObject(moduleName);
+        job.setOperation(OperationEnum.query);
+        if (concurrencyMode != null)
+            job.setConcurrencyMode(concurrencyMode);
+        job.setContentType(ContentType.CSV);
+        job = connection.createJob(job);
+
+        job = connection.getJobStatus(job.getId());
+        batchInfoList = new ArrayList<BatchInfo>();
+        BatchInfo info = null;
+        ByteArrayInputStream bout = new ByteArrayInputStream(queryStatement.getBytes());
+        info = connection.createBatchFromStream(job, bout);
+
+        while (true) {
+            Thread.sleep(secToWait * 1000); // default is 30 sec
+            info = connection.getBatchInfo(job.getId(), info.getId());
+
+            if (info.getState() == BatchStateEnum.Completed) {
+                QueryResultList list = connection.getQueryResultList(job.getId(), info.getId());
+                queryResultIDs = list.getResult();
+                break;
+            } else if (info.getState() == BatchStateEnum.Failed) {
+                throw new RuntimeException("-------------- failed ----------" + info);
+            } else {
+                System.out.println("-------------- waiting ----------" + info);
+            }
+        }
+        batchInfoList.add(info);
+    }
+
+    public String[] getQueryResultIDs() {
+        return queryResultIDs;
+    }
+
+    public InputStream getQueryResultStream(String resultId) throws AsyncApiException, IOException {
+        return connection.getQueryResultStream(job.getId(), batchInfoList.get(0).getId(), resultId);
+    }
+
+    public List<Map<String, String>> getQueryResult(String resultId) throws AsyncApiException, IOException {
+        // batchInfoList was populated when batches were created and submitted
+        List<Map<String, String>> resultInfoList = new ArrayList<Map<String, String>>();
+        Map<String, String> resultInfo;
+        CSVReader rdr = new CSVReader(connection.getQueryResultStream(job.getId(), batchInfoList.get(0).getId(), resultId));
+
+        List<String> resultHeader = rdr.nextRecord();
+        int resultCols = resultHeader.size();
+        List<String> row;
+        while ((row = rdr.nextRecord()) != null) {
+            resultInfo = new HashMap<String, String>();
+            // resultInfo.putAll(getBaseFileRow());
+            for (int i = 0; i < resultCols; i++) {
+                resultInfo.put(resultHeader.get(i), row.get(i));
+            }
+            resultInfoList.add(resultInfo);
+            // boolean success = Boolean.valueOf(resultInfo.get("Success"));
+            // boolean created = Boolean.valueOf(resultInfo.get("Created"));
+            // String id = resultInfo.get("Id");
+            // String error = resultInfo.get("Error");
+            // if (success && created) {
+            // System.out.println("Created row with id " + id);
+            // } else if (!success) {
+            // System.out.println("Failed with error: " + error);
+            // }
+        }
+
+        return resultInfoList;
     }
 }
