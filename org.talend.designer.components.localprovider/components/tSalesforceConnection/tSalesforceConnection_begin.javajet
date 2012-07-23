@@ -24,6 +24,7 @@ String username = ElementParameterParser.getValue(node, "__USER__");
 String password = ElementParameterParser.getValue(node, "__PASS__");
 String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
 boolean needCompression = ("true").equals(ElementParameterParser.getValue(node,"__NEED_COMPRESSION__"));
+boolean httpTraceMessage = ("true").equals(ElementParameterParser.getValue(node,"__HTTP_TRACEMESSAGE__"));
 
 boolean useProxy = ("true").equals(ElementParameterParser.getValue(node,"__USE_PROXY__"));
 String proxyHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
@@ -40,6 +41,8 @@ if(bulkConnection){
 	<%if(useProxy){%>
 	sforceBulk_<%=cid%>.setProxy(true,<%=proxyHost%>,<%=TalendTextUtils.removeQuotes(proxyPort)%>,<%=proxyUsername%>,<%=proxyPassword%>);
 	<%}%>
+	sforceBulk_<%=cid%>.setNeedCompression(<%=needCompression%>);
+	sforceBulk_<%=cid%>.setNeedTraceMessage(<%=httpTraceMessage%>);
 	sforceBulk_<%=cid%>.login(<%=endpoint%>,<%=username%>,<%=password%>,<%=apiVersion%>);
 	globalMap.put("conn_<%=cid %>", sforceBulk_<%=cid%>.getConnection());
 <%

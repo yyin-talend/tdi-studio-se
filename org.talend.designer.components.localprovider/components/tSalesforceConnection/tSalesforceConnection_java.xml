@@ -39,7 +39,7 @@
 			<DEFAULT>"password"</DEFAULT>
 		</PARAMETER>
 		<PARAMETER 
-		NAME="TIMEOUT" 
+			NAME="TIMEOUT" 
 			FIELD="TEXT"
 			NUM_ROW="32"
 			SHOW_IF="BULK_CONNECTION == 'false'">
@@ -62,8 +62,17 @@
 	       NAME="NEED_COMPRESSION" 
 	       FIELD="CHECK" 
 	       REQUIRED="true"
+		   NUM_ROW="40">
+		   <DEFAULT IF="(BULK_CONNECTION == 'true')">true</DEFAULT>
+		   <DEFAULT IF="(BULK_CONNECTION == 'false')">false</DEFAULT>
+		</PARAMETER>
+		
+		<PARAMETER 
+	       NAME="HTTP_TRACEMESSAGE" 
+	       FIELD="CHECK" 
+	       REQUIRED="true"
 		   NUM_ROW="40"
-		   SHOW_IF="BULK_CONNECTION == 'false'">
+		   SHOW_IF="BULK_CONNECTION == 'true'">
 		   <DEFAULT>false</DEFAULT>
 		</PARAMETER>
 	

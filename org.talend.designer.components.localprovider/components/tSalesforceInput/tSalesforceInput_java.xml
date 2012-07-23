@@ -35,8 +35,8 @@
 	      NUM_ROW="10"
 	    >
 	      <DEFAULT>false</DEFAULT>
-	    </PARAMETER>    
-	
+	    </PARAMETER>
+	    
 	    <PARAMETER
 	      NAME="CONNECTION"
 	      FIELD="COMPONENT_LIST"
@@ -44,6 +44,15 @@
 	      NUM_ROW="10"
 	      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
 	    />
+	    
+	    <PARAMETER NAME="API" FIELD="CLOSED_LIST" NUM_ROW="15"
+			REQUIRED="true">
+			<ITEMS DEFAULT="soap">
+				<ITEM NAME="soap" VALUE="soap" />
+				<ITEM NAME="bulk" VALUE="bulk" />
+			</ITEMS>
+		</PARAMETER>   
+		
 		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="20"
 			REQUIRED="true" REPOSITORY_VALUE="ENDPOINT" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 			<DEFAULT>"https://www.salesforce.com/services/Soap/u/24.0"</DEFAULT>
@@ -64,8 +73,13 @@
 			FIELD="TEXT"
 			NUM_ROW="45"
 			REPOSITORY_VALUE="TIMEOUT"
-			SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+			SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (API == 'soap')">
 			<DEFAULT>60000</DEFAULT>
+		</PARAMETER>
+		
+		<PARAMETER NAME="API_VERSION" FIELD="TEXT" NUM_ROW="45"
+			REQUIRED="true"  SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (API == 'bulk')">
+			<DEFAULT>"24.0"</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="MODULENAME" FIELD="CLOSED_LIST" NUM_ROW="50"
@@ -2397,18 +2411,19 @@
 	    </PARAMETER>
 	    
 	    <PARAMETER NAME="QUERY_ALL" FIELD="CHECK" NUM_ROW="100" 
-			REQUIRED="true">
+			REQUIRED="true" SHOW_IF="API == 'soap'">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>	
 	</PARAMETERS>
 	
 	<ADVANCED_PARAMETERS>
-  
+	
 		<PARAMETER 
 			NAME="BATCH_SIZE" 
 			FIELD="TEXT"
 			NUM_ROW="1" 
-			REPOSITORY_VALUE="BATCH_SIZE">
+			REPOSITORY_VALUE="BATCH_SIZE" 
+			SHOW_IF="API == 'soap'">
 			<DEFAULT>250</DEFAULT>
 		</PARAMETER>
 		
@@ -2469,7 +2484,7 @@
 			NAME="NORMALIZE_DELIMITER" 
 			FIELD="TEXT"
 			NUM_ROW="70" 
-			SHOW="true">
+			SHOW_IF="API == 'soap'">
 			<DEFAULT>";"</DEFAULT>
 		</PARAMETER>
 		
@@ -2477,7 +2492,7 @@
 			NAME="COLUMNNAME_DELIMITER" 
 			FIELD="TEXT"
 			NUM_ROW="80" 
-			SHOW="true">
+			SHOW_IF="API == 'soap'">
 			<DEFAULT>"_"</DEFAULT>
 		</PARAMETER>				
 				
@@ -2485,7 +2500,18 @@
 	       NAME="NEED_COMPRESSION" 
 	       FIELD="CHECK" 
 	       REQUIRED="true"
-		   NUM_ROW="90" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+		   NUM_ROW="90" 
+		   SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+		   <DEFAULT IF="(API == 'soap')">false</DEFAULT>
+		   <DEFAULT IF="(API == 'bulk')">true</DEFAULT>
+		</PARAMETER>
+		
+		<PARAMETER 
+	       NAME="HTTP_TRACEMESSAGE" 
+	       FIELD="CHECK" 
+	       REQUIRED="true"
+		   NUM_ROW="90"
+		   SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (API == 'bulk')">
 		   <DEFAULT>false</DEFAULT>
 		</PARAMETER>
 		
@@ -2493,7 +2519,7 @@
 			NAME="CLIENT_ID" 
 			FIELD="TEXT"
 			NUM_ROW="100" 
-			SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+			SHOW_IF="(USE_EXISTING_CONNECTION == 'false') AND (API == 'soap')">
 			<DEFAULT>""</DEFAULT>
 		</PARAMETER>
 	</ADVANCED_PARAMETERS>
@@ -2501,39 +2527,45 @@
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT NAME="salesforceCRM-management"
-				MODULE="salesforceCRMManagement.jar" REQUIRED="true" />
-				
+				MODULE="salesforceCRMManagement.jar" REQUIRED="false" REQUIRED_IF="API=='soap'"/>
 			<IMPORT NAME="axiom-api"
-				MODULE="axiom-api-1.2.13.jar" REQUIRED="true" />
-			<IMPORT NAME="axiom-impl" MODULE="axiom-impl-1.2.13.jar" REQUIRED="true" />
+				MODULE="axiom-api-1.2.13.jar" REQUIRED="false" REQUIRED_IF="API=='soap'" />
+			<IMPORT NAME="axiom-impl" MODULE="axiom-impl-1.2.13.jar" REQUIRED="false" REQUIRED_IF="API=='soap'" />
 			<IMPORT NAME="axis2-kernel" MODULE="axis2-kernel-1.6.2.jar"
-				REQUIRED="true" />
-			<IMPORT NAME="axis2-transport-http" MODULE="axis2-transport-http-1.6.2.jar" REQUIRED="true" />
-			<IMPORT NAME="axis2-transport-local" MODULE="axis2-transport-local-1.6.2.jar" REQUIRED="true" />
+				REQUIRED="false" REQUIRED_IF="API=='soap'" />
+			<IMPORT NAME="axis2-transport-http" MODULE="axis2-transport-http-1.6.2.jar" REQUIRED="false" REQUIRED_IF="API=='soap'" />
+			<IMPORT NAME="axis2-transport-local" MODULE="axis2-transport-local-1.6.2.jar" REQUIRED="false" REQUIRED_IF="API=='soap'" />
 			<IMPORT NAME="commons-codec" MODULE="commons-codec-1.3.jar"
-				REQUIRED="true" />
+				REQUIRED="false" REQUIRED_IF="API=='soap'" />
 			<IMPORT NAME="commons-httpclient"
-				MODULE="commons-httpclient-3.1.jar" REQUIRED="true" />
+				MODULE="commons-httpclient-3.1.jar" REQUIRED="false" REQUIRED_IF="API=='soap'" />
 			<IMPORT NAME="commons-logging" MODULE="commons-logging-1.1.1.jar"
-				REQUIRED="true" />
+				REQUIRED="false" REQUIRED_IF="API=='soap'" />
 			<IMPORT NAME="httpcore" MODULE="httpcore-4.0.jar"
-				REQUIRED="true" />
+				REQUIRED="false" REQUIRED_IF="API=='soap'" />
 			<IMPORT NAME="mail" MODULE="mail-1.4.jar"
-				REQUIRED="true" />
+				REQUIRED="false" REQUIRED_IF="API=='soap'" />
 			<IMPORT NAME="neethi" MODULE="neethi-3.0.1.jar"
-				REQUIRED="true" />
+				REQUIRED="false" REQUIRED_IF="API=='soap'" />
 			<IMPORT NAME="wsdl4j" MODULE="wsdl4j-1.6.2.jar"
-				BundleID="org.apache.servicemix.bundles.wsdl4j" REQUIRED="true" />
+				BundleID="org.apache.servicemix.bundles.wsdl4j" REQUIRED="false" REQUIRED_IF="API=='soap'" />
 			<IMPORT NAME="XmlSchema" MODULE="xmlschema-core-2.0.1.jar"
-				REQUIRED="true" />
+				REQUIRED="false" REQUIRED_IF="API=='soap'" />
 			<IMPORT NAME="axis2-adb" MODULE="axis2-adb-1.6.2.jar"
-				REQUIRED="true" />
+				REQUIRED="false" REQUIRED_IF="API=='soap'" />
 			<IMPORT NAME="stax-api" MODULE="geronimo-stax-api_1.0_spec-1.0.1.jar"
-				REQUIRED="true" />
+				REQUIRED="false" REQUIRED_IF="API=='soap'" />
 			<IMPORT NAME="activation" MODULE="activation-1.1.jar"
-				REQUIRED="true" />
+				REQUIRED="false" REQUIRED_IF="API=='soap'" />
 			<IMPORT NAME="wstx-asl" MODULE="wstx-asl-3.2.9.jar"
-				REQUIRED="true" />
+				REQUIRED="false" REQUIRED_IF="API=='soap'" />
+				
+			<IMPORT NAME="salesforceBulkAPI"
+				MODULE="salesforceBulkAPI.jar" REQUIRED="false" REQUIRED_IF="API=='bulk'" />
+			<IMPORT NAME="partner" MODULE="partnerBulk.jar" REQUIRED="false" REQUIRED_IF="API=='bulk'"/>
+			<IMPORT NAME="wsc" MODULE="wsc.jar"
+				REQUIRED="false" REQUIRED_IF="API=='bulk'"/>
+			<IMPORT NAME="CsvWriter" MODULE="javacsv.jar" REQUIRED="false" REQUIRED_IF="API=='bulk'"/>
 		</IMPORTS>
 	</CODEGENERATION>
 
