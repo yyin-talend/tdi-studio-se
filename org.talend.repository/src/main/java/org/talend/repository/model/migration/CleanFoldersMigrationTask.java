@@ -33,8 +33,6 @@ import org.talend.migration.IProjectMigrationTask;
  */
 public class CleanFoldersMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
 
-    private ExecutionResult status;
-
     /*
      * (non-Javadoc)
      * 
@@ -59,6 +57,10 @@ public class CleanFoldersMigrationTask extends AbstractMigrationTask implements 
         return ExecutionResult.SUCCESS_NO_ALERT;
         // }
         // return ExecutionResult.NOTHING_TO_DO;
+    }
+
+    public ExecutionResult execute(Project project, boolean doSave) {
+        return execute(project);
     }
 
     /*
@@ -94,11 +96,4 @@ public class CleanFoldersMigrationTask extends AbstractMigrationTask implements 
         return false;
     }
 
-    public void setStatus(ExecutionResult status) {
-        this.status = status;
-    }
-
-    public ExecutionResult getStatus() {
-        return status;
-    }
 }

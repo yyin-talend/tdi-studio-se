@@ -71,7 +71,7 @@ public class ReplaceSpaceCharForItemNameMigrationTask extends AbstractItemMigrat
             Property property = item.getProperty();
 
             String name = property.getLabel();
-            if (name.contains(space)) {
+            if (name != null && name.contains(space)) {
                 name = name.replaceAll(space, "_"); //$NON-NLS-1$
                 property.setLabel(name);
 

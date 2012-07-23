@@ -79,6 +79,10 @@ public class RelationShipIndexMigrationTask extends AbstractMigrationTask implem
         return ExecutionResult.NOTHING_TO_DO;
     }
 
+    public ExecutionResult execute(Project project, boolean doSave) {
+        return execute(project);
+    }
+
     public ExecutionResult execute(Project project, Item item) {
         // if (!getTypes().contains(ERepositoryObjectType.getItemType(item))) {
         // return ExecutionResult.NOTHING_TO_DO;
@@ -145,4 +149,5 @@ public class RelationShipIndexMigrationTask extends AbstractMigrationTask implem
     public ExecutionResult getStatus() {
         return status;
     }
+
 }

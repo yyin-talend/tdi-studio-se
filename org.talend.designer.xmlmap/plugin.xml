@@ -46,10 +46,12 @@
             point="org.talend.core.migrationTask">
          <projecttask
                beforeLogon="false"
+               breaks="5.1.1"
                class="org.talend.designer.xmlmap.migration.TXMLMapChangeAllInOneValueMigrationTask"
                description="replace the value of the all in one option if needed"
                id="org.talend.designer.xmlmap.migration.TXMLMapChangeAllInOneValueMigrationTask"
-               name="TXMLMapChangeAllInOneValueMigrationTask">
+               name="TXMLMapChangeAllInOneValueMigrationTask"
+               version="5.1.2">
          </projecttask>
       </extension>
 

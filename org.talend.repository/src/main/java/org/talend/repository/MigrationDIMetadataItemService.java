@@ -14,7 +14,7 @@ package org.talend.repository;
 
 import org.talend.core.IMigrateDIMetadataItemService;
 import org.talend.core.model.properties.Item;
-import org.talend.migration.IProjectMigrationTask.ExecutionResult;
+import org.talend.migration.IMigrationTask.ExecutionResult;
 import org.talend.repository.model.migration.MergeTosMetadataMigrationTask;
 
 /**

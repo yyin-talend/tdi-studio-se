@@ -15,10 +15,12 @@
          point="org.talend.core.migrationTask">
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.designer.dbmap.migration.ELTMapSaveToEmfMigrationTask"
             description="Save elt map external data to emf"
             id="org.talend.designer.dbmap.migration.ELTMapSaveToEmfMigrationTask"
-            name="ELTMapSaveToEmfMigrationTask">
+            name="ELTMapSaveToEmfMigrationTask"
+            version="5.1.2">
       </projecttask>
    </extension>
    <extension

@@ -24,6 +24,7 @@ import org.talend.commons.ui.runtime.image.IImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.MigrationTask;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -47,7 +48,7 @@ public class ItemRecord {
 
     private List<String> errors = new ArrayList<String>();
 
-    private List<String> migrationTasksToApply = new ArrayList<String>();
+    private List<MigrationTask> migrationTasksToApply = new ArrayList<MigrationTask>();
 
     private boolean resolved = false;
 
@@ -128,7 +129,7 @@ public class ItemRecord {
      * 
      * @return the migrationTasksToApply
      */
-    public List<String> getMigrationTasksToApply() {
+    public List<MigrationTask> getMigrationTasksToApply() {
         return this.migrationTasksToApply;
     }
 
@@ -137,7 +138,7 @@ public class ItemRecord {
      * 
      * @param migrationTasksToApply the migrationTasksToApply to set
      */
-    public void setMigrationTasksToApply(List<String> migrationTasksToApply) {
+    public void setMigrationTasksToApply(List<MigrationTask> migrationTasksToApply) {
         this.migrationTasksToApply = migrationTasksToApply;
     }
 

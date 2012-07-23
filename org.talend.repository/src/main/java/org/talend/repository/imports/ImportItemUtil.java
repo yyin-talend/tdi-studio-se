@@ -80,6 +80,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.LinkDocumentationItem;
 import org.talend.core.model.properties.LinkType;
+import org.talend.core.model.properties.MigrationTask;
 import org.talend.core.model.properties.NotationHolder;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Project;
@@ -95,11 +96,10 @@ import org.talend.core.model.properties.helper.ByteArrayResource;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.model.repository.RepositoryViewObject;
+import org.talend.core.model.utils.MigrationUtil;
 import org.talend.core.repository.model.PropertiesProjectResourceImpl;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
-import org.talend.core.repository.utils.RoutineUtils;
 import org.talend.core.repository.utils.XmiResourceManager;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.business.model.business.BusinessPackage;
@@ -110,9 +110,6 @@ import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFilePackage;
-import org.talend.migration.IProjectMigrationTask;
-import org.talend.migration.IProjectMigrationTask.ExecutionResult;
-import org.talend.migrationtool.model.GetTasksHelper;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.constants.FileConstants;
@@ -144,9 +141,15 @@ public class ImportItemUtil {
 
     private final Set<String> deletedItems = new HashSet<String>();
 
+    private final Set<Project> updatedProjects = new HashSet<Project>();
+
     private final Map<IPath, Project> projects = new HashMap<IPath, Project>();
 
     private final Map<String, Set<String>> routineExtModulesMap = new HashMap<String, Set<String>>();
+
+    private Map<String, List<MigrationTask>> migrationTasksToApplyPerProject = new HashMap<String, List<MigrationTask>>();
+
+    private Map<String, Boolean> migrationTasksStatusPerProject = new HashMap<String, Boolean>();
 
     private boolean statAndLogsSettingsReloaded = false;
 
@@ -155,6 +158,8 @@ public class ImportItemUtil {
     private static boolean hasJoblets = false;
 
     private RestoreFolderUtil restoreFolder;
+
+    private static final String ADAPT_NEW_MIGRATION_TASK_SYSTEM_ID = "org.talend.repository.model.migration.UpdateExistentMigrationTasksToAdaptNewMigrationSystemMigrationTask"; //$NON-NLS-1$
 
     public void clear() {
         deletedItems.clear();
@@ -945,13 +950,17 @@ public class ImportItemUtil {
         return haveRef;
     }
 
+    /**
+     * DOC ycbai Comment method "applyMigrationTasks".
+     * 
+     * @param itemRecord
+     * @param monitor
+     */
     private void applyMigrationTasks(ItemRecord itemRecord, IProgressMonitor monitor) {
         Context ctx = CorePlugin.getContext();
         RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
-        ITalendSynchronizer routineSynchronizer = getRoutineSynchronizer();
-
+        org.talend.core.model.general.Project project = repositoryContext.getProject();
         ERepositoryObjectType repositoryType = itemRecord.getRepositoryType();
-
         Item item = null;
         try {
             List<IRepositoryViewObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
@@ -962,89 +971,118 @@ public class ImportItemUtil {
                     item = repositoryObject.getProperty().getItem();
                 }
             }
-        } catch (Exception e) {
-            logError(e);
-        }
-
-        if (item == null) {
-            return;
-        }
-
-        List<IProjectMigrationTask> toExecute = new ArrayList<IProjectMigrationTask>();
-        for (String taskId : itemRecord.getMigrationTasksToApply()) {
-            IProjectMigrationTask task = GetTasksHelper.getInstance().getProjectTask(taskId);
-            if (task == null) {
-                log.warn(Messages.getString("ImportItemUtil.taskLogWarn", taskId)); //$NON-NLS-1$
-            } else if (!task.isDeprecated()) {
-                toExecute.add(task);
+            if (item == null) {
+                return;
             }
-
-        }
-        Collections.sort(toExecute, new Comparator<IProjectMigrationTask>() {
-
-            public int compare(IProjectMigrationTask o1, IProjectMigrationTask o2) {
-                return o1.getOrder().compareTo(o2.getOrder());
-            }
-        });
-
-        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-
-        for (IProjectMigrationTask task : toExecute) {
-            monitor.subTask(Messages.getString("ImportItemUtil.taskMonitor", task.getName(), itemRecord.getItemName())); //$NON-NLS-1$
-            try {
-                // in case the resource has been modified (see MergeTosMetadataMigrationTask for example)
-                if ((item.getProperty().eResource() == null || item.eResource() == null)) {
-                    Property updatedProperty = factory.reload(item.getProperty());
-                    item = updatedProperty.getItem();
-                }
-
-                if (item != null) {
-                    ExecutionResult executionResult = task.execute(repositoryContext.getProject(), item);
-                    if (executionResult == ExecutionResult.FAILURE) {
-                        log.warn(Messages.getString("ImportItemUtil.itemLogWarn", itemRecord.getItemName(), task.getName())); //$NON-NLS-1$
-                        // TODO smallet add a warning/error to the job using
-                        // model
-                    }
-                }
-            } catch (Exception e) {
-                log.warn(Messages.getString("ImportItemUtil.itemLogException", itemRecord.getItemName(), task.getName()), e); //$NON-NLS-1$
-                try {
-                    factory.deleteObjectPhysical(new RepositoryObject(item.getProperty()));
-                    break;// stop migrating the object it has be deleted
-                } catch (PersistenceException e1) {
-                    log.error("Could not delete physical item(" + item.getProperty().getLabel() + "), Project may be corrupted.",
-                            e);
-                }
-            }
-        }
-
-        try {
-            if (item != null && item instanceof RoutineItem) {
-                RoutineUtils.changeRoutinesPackage(item);
-                RoutineItem routineItem = (RoutineItem) item;
-                routineSynchronizer.forceSyncRoutine(routineItem);
-                routineSynchronizer.syncRoutine(routineItem, true);
-                routineSynchronizer.getFile(routineItem);
-            }
-            // if (item.getProperty().eResource().isModified()) {
-            // ProxyRepositoryFactory.getInstance().save(item, true);
-            // item.getProperty().eResource().setModified(false);
-            // }
-            if (item.getProperty().eResource() != null) {
-                ProxyRepositoryFactory.getInstance().unloadResources(item.getProperty());
-                if (item.getParent() != null && item.getParent() instanceof FolderItem) {
-                    ((FolderItem) item.getParent()).getChildren().remove(item);
-                    item.setParent(null);
-                }
-            }
-
+            CorePlugin.getDefault().getMigrationToolService()
+                    .executeMigrationTasksForImport(project, item, itemRecord.getMigrationTasksToApply(), monitor);
             itemRecord.setExistingItemWithSameId(null);
             itemRecord.clear();
-
         } catch (Exception e) {
             logError(e);
         }
     }
+
+    // private void applyMigrationTasks(ItemRecord itemRecord, IProgressMonitor monitor) {
+    // Context ctx = CorePlugin.getContext();
+    // RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
+    // ITalendSynchronizer routineSynchronizer = getRoutineSynchronizer();
+    //
+    // ERepositoryObjectType repositoryType = itemRecord.getRepositoryType();
+    //
+    // Item item = null;
+    // try {
+    // List<IRepositoryViewObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
+    // ProjectManager.getInstance().getCurrentProject(), itemRecord.getItemId(), itemRecord.getImportPath(),
+    // repositoryType);
+    // for (IRepositoryViewObject repositoryObject : allVersion) {
+    // if (repositoryObject.getProperty().getVersion().equals(itemRecord.getItemVersion())) {
+    // item = repositoryObject.getProperty().getItem();
+    // }
+    // }
+    // } catch (Exception e) {
+    // logError(e);
+    // }
+    //
+    // if (item == null) {
+    // return;
+    // }
+    //
+    // List<IProjectMigrationTask> toExecute = new ArrayList<IProjectMigrationTask>();
+    // for (String taskId : itemRecord.getMigrationTasksToApply()) {
+    // IProjectMigrationTask task = GetTasksHelper.getInstance().getProjectTask(taskId);
+    // if (task == null) {
+    //                log.warn(Messages.getString("ImportItemUtil.taskLogWarn", taskId)); //$NON-NLS-1$
+    // } else if (!task.isDeprecated()) {
+    // toExecute.add(task);
+    // }
+    //
+    // }
+    // Collections.sort(toExecute, new Comparator<IProjectMigrationTask>() {
+    //
+    // public int compare(IProjectMigrationTask o1, IProjectMigrationTask o2) {
+    // return o1.getOrder().compareTo(o2.getOrder());
+    // }
+    // });
+    //
+    // IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+    //
+    // for (IProjectMigrationTask task : toExecute) {
+    //            monitor.subTask(Messages.getString("ImportItemUtil.taskMonitor", task.getName(), itemRecord.getItemName())); //$NON-NLS-1$
+    // try {
+    // // in case the resource has been modified (see MergeTosMetadataMigrationTask for example)
+    // if ((item.getProperty().eResource() == null || item.eResource() == null)) {
+    // Property updatedProperty = factory.reload(item.getProperty());
+    // item = updatedProperty.getItem();
+    // }
+    //
+    // if (item != null) {
+    // ExecutionResult executionResult = task.execute(repositoryContext.getProject(), item);
+    // if (executionResult == ExecutionResult.FAILURE) {
+    //                        log.warn(Messages.getString("ImportItemUtil.itemLogWarn", itemRecord.getItemName(), task.getName())); //$NON-NLS-1$
+    // // TODO smallet add a warning/error to the job using
+    // // model
+    // }
+    // }
+    // } catch (Exception e) {
+    //                log.warn(Messages.getString("ImportItemUtil.itemLogException", itemRecord.getItemName(), task.getName()), e); //$NON-NLS-1$
+    // try {
+    // factory.deleteObjectPhysical(new RepositoryObject(item.getProperty()));
+    // break;// stop migrating the object it has be deleted
+    // } catch (PersistenceException e1) {
+    // log.error("Could not delete physical item(" + item.getProperty().getLabel() + "), Project may be corrupted.",
+    // e);
+    // }
+    // }
+    // }
+    //
+    // try {
+    // if (item != null && item instanceof RoutineItem) {
+    // RoutineUtils.changeRoutinesPackage(item);
+    // RoutineItem routineItem = (RoutineItem) item;
+    // routineSynchronizer.forceSyncRoutine(routineItem);
+    // routineSynchronizer.syncRoutine(routineItem, true);
+    // routineSynchronizer.getFile(routineItem);
+    // }
+    // // if (item.getProperty().eResource().isModified()) {
+    // // ProxyRepositoryFactory.getInstance().save(item, true);
+    // // item.getProperty().eResource().setModified(false);
+    // // }
+    // if (item.getProperty().eResource() != null) {
+    // ProxyRepositoryFactory.getInstance().unloadResources(item.getProperty());
+    // if (item.getParent() != null && item.getParent() instanceof FolderItem) {
+    // ((FolderItem) item.getParent()).getChildren().remove(item);
+    // item.setParent(null);
+    // }
+    // }
+    //
+    // itemRecord.setExistingItemWithSameId(null);
+    // itemRecord.clear();
+    //
+    // } catch (Exception e) {
+    // logError(e);
+    // }
+    // }
 
     private ITalendSynchronizer getRoutineSynchronizer() {
 
@@ -1198,21 +1236,17 @@ public class ImportItemUtil {
     private boolean checkProject(Project project, ItemRecord itemRecord) {
         boolean checkProject = false;
 
-        // Context ctx = CorePlugin.getContext();
-        // RepositoryContext repositoryContext = (RepositoryContext)
-        // ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
-        // Project currentProject =
-        // repositoryContext.getProject().getEmfProject();
+        // update the old project which hasn't adapted to the new migration task system.
+        if (!updatedProjects.contains(project)) {
+            CorePlugin.getDefault().getMigrationToolService().updateMigrationSystem(project, false);
+            updatedProjects.add(project);
+        }
+
         Project currentProject = ProjectManager.getInstance().getCurrentProject().getEmfProject();
 
         if (project != null) {
-            if (project.getLanguage().equals(currentProject.getLanguage())) {
-                if (checkMigrationTasks(project, itemRecord, currentProject)) {
-                    checkProject = true;
-                }
-            } else {
-                itemRecord.addError(Messages.getString("RepositoryUtil.DifferentLanguage", project.getLanguage(), currentProject //$NON-NLS-1$
-                        .getLanguage()));
+            if (checkMigrationTasks(currentProject, project, itemRecord)) {
+                checkProject = true;
             }
         } else {
             itemRecord.addError(Messages.getString("RepositoryUtil.ProjectNotFound")); //$NON-NLS-1$
@@ -1232,59 +1266,104 @@ public class ImportItemUtil {
         return toReturn;
     }
 
-    @SuppressWarnings("unchecked")
-    private boolean checkMigrationTasks(Project project, ItemRecord itemRecord, Project currentProject) {
-        List<String> itemMigrationTasks = new ArrayList<String>(project.getMigrationTasks());
-        List<String> projectMigrationTasks = new ArrayList<String>(currentProject.getMigrationTasks());
-
-        itemMigrationTasks.removeAll(getOptionnalMigrationTasks());
-
-        // check version + revision
-        // String oldProjectVersion = project.getProductVersion();
-        // String currentProjectVersion = currentProject.getProductVersion();
-        // boolean currentVersionIsValid = isVersionValid(currentProjectVersion);
-        // boolean oldVersionIsValid = isVersionValid(oldProjectVersion);
-        // if (currentVersionIsValid && oldVersionIsValid) {
-        // boolean canImport = canContinueImport(oldProjectVersion, currentProjectVersion);
-        // if (!canImport) {
-        // String message = "The version of " + project.getLabel() + " should be lower than the current project.";
-        // itemRecord.addError(message);
-        // log.info(message);
-        //
-        // return false;
-        // }
-        // }
-
-        // Talend Platform Big Data edition-5.0.2.r78327 / Talend Open Studio for Data Integration-5.1.0NB.r80928
-
-        // the 2 are valid versions SO
-
-        // 1. Check if all the migration tasks of the items are done in the
-        // project:
-        // if not, the item use a more recent version of TOS: impossible to
-        // import (forward compatibility)
-        // if no correct version and revision found in the productVersion, do same as before
-        if (!projectMigrationTasks.containsAll(itemMigrationTasks)) {
-            itemMigrationTasks.removeAll(projectMigrationTasks);
-
-            String message = Messages.getString("ImportItemUtil.message", itemRecord.getItemName(), itemMigrationTasks); //$NON-NLS-1$
-            itemRecord.addError(message);
-            log.info(message);
-
-            return false;
+    /**
+     * DOC ycbai Comment method "checkMigrationTasks".
+     * 
+     * @param currentProject
+     * @param importedProject
+     * @param itemRecord
+     * @return
+     */
+    private boolean checkMigrationTasks(Project currentProject, Project importedProject, ItemRecord itemRecord) {
+        String importedProjectLabel = importedProject.getTechnicalLabel();
+        if (migrationTasksStatusPerProject.containsKey(importedProjectLabel)) {
+            if (migrationTasksStatusPerProject.get(importedProjectLabel)) {
+                itemRecord.setMigrationTasksToApply(migrationTasksToApplyPerProject.get(importedProjectLabel));
+                return true;
+            } else {
+                String message = Messages.getString("ImportItemUtil.cannotImportMessage", importedProjectLabel); //$NON-NLS-1$
+                itemRecord.addError(message);
+                log.info("'" + itemRecord.getItemName() + "' " + message);
+                return false;
+            }
         }
-        // force to redo this migration task, even if already did before.
-        itemMigrationTasks.remove("org.talend.repository.model.migration.AutoUpdateRelationsMigrationTask");
 
-        // 2. Get all the migration tasks to apply on this item on import
-        // (backwards compatibility)
-        // (those that are in the project but not in the item)
-        projectMigrationTasks.removeAll(itemMigrationTasks);
-        itemRecord.setMigrationTasksToApply(projectMigrationTasks);
+        boolean canApplyMigration = false;
+        List<MigrationTask> migrationTasks = new ArrayList<MigrationTask>();
+        if (CorePlugin.getDefault().getMigrationToolService().checkMigrationTasks(importedProject)) {
+            List<MigrationTask> currentProjectMigrationTasks = new ArrayList<MigrationTask>(currentProject.getMigrationTask());
+            List<MigrationTask> importedProjectMigrationTasks = new ArrayList<MigrationTask>(importedProject.getMigrationTask());
+            MigrationUtil.removeMigrationTaskByIds(importedProjectMigrationTasks, getOptionnalMigrationTasks());
+            MigrationUtil.removeMigrationTaskById(importedProjectMigrationTasks,
+                    "org.talend.repository.model.migration.AutoUpdateRelationsMigrationTask"); //$NON-NLS-1$
+            MigrationUtil.removeMigrationTaskByMigrationTasks(currentProjectMigrationTasks, importedProjectMigrationTasks);
+            itemRecord.setMigrationTasksToApply(currentProjectMigrationTasks);
+            migrationTasks = currentProjectMigrationTasks;
+            canApplyMigration = true;
+            migrationTasksStatusPerProject.put(importedProjectLabel, true);
+        } else {
+            String message = Messages.getString("ImportItemUtil.cannotImportMessage", importedProjectLabel); //$NON-NLS-1$
+            itemRecord.addError(message);
+            log.info("'" + itemRecord.getItemName() + "' " + message);
+            migrationTasksStatusPerProject.put(importedProjectLabel, false);
+        }
+        migrationTasksToApplyPerProject.put(importedProjectLabel, migrationTasks);
 
-        return true;
+        return canApplyMigration;
     }
 
+    @SuppressWarnings("unchecked")
+    // private boolean checkMigrationTasks(Project project, ItemRecord itemRecord, Project currentProject) {
+    // List<String> itemMigrationTasks = new ArrayList<String>(project.getMigrationTasks());
+    // List<String> projectMigrationTasks = new ArrayList<String>(currentProject.getMigrationTasks());
+    //
+    // itemMigrationTasks.removeAll(getOptionnalMigrationTasks());
+    //
+    // // check version + revision
+    // // String oldProjectVersion = project.getProductVersion();
+    // // String currentProjectVersion = currentProject.getProductVersion();
+    // // boolean currentVersionIsValid = isVersionValid(currentProjectVersion);
+    // // boolean oldVersionIsValid = isVersionValid(oldProjectVersion);
+    // // if (currentVersionIsValid && oldVersionIsValid) {
+    // // boolean canImport = canContinueImport(oldProjectVersion, currentProjectVersion);
+    // // if (!canImport) {
+    // // String message = "The version of " + project.getLabel() + " should be lower than the current project.";
+    // // itemRecord.addError(message);
+    // // log.info(message);
+    // //
+    // // return false;
+    // // }
+    // // }
+    //
+    // // Talend Platform Big Data edition-5.0.2.r78327 / Talend Open Studio for Data Integration-5.1.0NB.r80928
+    //
+    // // the 2 are valid versions SO
+    //
+    // // 1. Check if all the migration tasks of the items are done in the
+    // // project:
+    // // if not, the item use a more recent version of TOS: impossible to
+    // // import (forward compatibility)
+    // // if no correct version and revision found in the productVersion, do same as before
+    // if (!projectMigrationTasks.containsAll(itemMigrationTasks)) {
+    // itemMigrationTasks.removeAll(projectMigrationTasks);
+    //
+    //            String message = Messages.getString("ImportItemUtil.message", itemRecord.getItemName(), itemMigrationTasks); //$NON-NLS-1$
+    // itemRecord.addError(message);
+    // log.info(message);
+    //
+    // return false;
+    // }
+    // // force to redo this migration task, even if already did before.
+    // itemMigrationTasks.remove("org.talend.repository.model.migration.AutoUpdateRelationsMigrationTask");
+    //
+    // // 2. Get all the migration tasks to apply on this item on import
+    // // (backwards compatibility)
+    // // (those that are in the project but not in the item)
+    // projectMigrationTasks.removeAll(itemMigrationTasks);
+    // itemRecord.setMigrationTasksToApply(projectMigrationTasks);
+    //
+    // return true;
+    // }
     private IPath getValidProjectFilePath(ResourcesManager collector, IPath path, URI uri) {
         IPath projectFilePath = path.removeLastSegments(1);
 
