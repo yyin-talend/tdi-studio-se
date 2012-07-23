@@ -87,7 +87,7 @@ public class NewActionProvider extends CommonActionProvider {
             wizard.init(PlatformUI.getWorkbench(), null);
             final WizardDialog dialog = new WizardDialog(null, wizard);
             // dialog.setPageSize(520, 440); //Right size for windows XP
-            dialog.setPageSize(520, 490);
+            dialog.setPageSize(542, 490);
             dialog.open();
         }
     }
