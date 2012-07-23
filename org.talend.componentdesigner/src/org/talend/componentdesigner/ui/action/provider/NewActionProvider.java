@@ -39,6 +39,7 @@ public class NewActionProvider extends CommonActionProvider {
 
     private IAction newProjectAction;
 
+    @Override
     public void init(ICommonActionExtensionSite anExtensionSite) {
 
         if (anExtensionSite.getViewSite() instanceof ICommonViewerWorkbenchSite) {
@@ -49,6 +50,7 @@ public class NewActionProvider extends CommonActionProvider {
     /**
      * Adds a submenu to the given menu with the name "New Component".
      */
+    @Override
     public void fillContextMenu(IMenuManager menu) {
         for (IContributionItem item : menu.getItems()) {
             if (item == null || item.getId() == null) {
@@ -82,12 +84,13 @@ public class NewActionProvider extends CommonActionProvider {
         /*
          * (non-Javadoc) Method declared on IAction.
          */
+        @Override
         public void run() {
             CreateComponentWizard wizard = new CreateComponentWizard();
             wizard.init(PlatformUI.getWorkbench(), null);
             final WizardDialog dialog = new WizardDialog(null, wizard);
             // dialog.setPageSize(520, 440); //Right size for windows XP
-            dialog.setPageSize(520, 490);
+            dialog.setPageSize(542, 490);
             dialog.open();
         }
     }

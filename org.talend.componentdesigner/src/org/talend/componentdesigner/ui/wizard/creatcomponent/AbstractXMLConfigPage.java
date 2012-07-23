@@ -214,6 +214,9 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
         } else if (("PARAMETER").equals(label)) {
             scrolledComposite.setMinSize(0, 0);
             scrolledComposite.setMinSize(280, 630);
+        } else if (("RETURN").equals(label)) {
+            scrolledComposite.setMinSize(0, 0);
+            scrolledComposite.setMinSize(260, 150);
         } else {
             scrolledComposite.setMinSize(0, 0);
         }

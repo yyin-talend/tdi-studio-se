@@ -52,7 +52,7 @@ public class TreeNodeAttrCompsite extends Composite {
             gd = new GridData();
             gd.horizontalSpan = 2;
             label.setLayoutData(gd);
-            final Text nodeText = new Text(this, SWT.BORDER | SWT.MULTI | SWT.WRAP);
+            final Text nodeText = new Text(this, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
             gd = new GridData(GridData.FILL_BOTH);
             gd.horizontalSpan = 2;
             nodeText.setLayoutData(gd);
@@ -60,6 +60,7 @@ public class TreeNodeAttrCompsite extends Composite {
 
             nodeText.addModifyListener(new ModifyListener() {
 
+                @Override
                 public void modifyText(ModifyEvent e) {
                     nodeData.getXMLNode().setTextContent(nodeText.getText());
                     nodeData.setBodayText(nodeText.getText());
@@ -87,6 +88,7 @@ public class TreeNodeAttrCompsite extends Composite {
 
                     attrText.addModifyListener(new ModifyListener() {
 
+                        @Override
                         public void modifyText(ModifyEvent e) {
                             String attrName = attrLabel.getText().split(MARK)[0];
                             if (attrText.getText().equals(PluginConstant.EMPTY_STRING)) {
@@ -128,6 +130,7 @@ public class TreeNodeAttrCompsite extends Composite {
 
                     attrCombo.addModifyListener(new ModifyListener() {
 
+                        @Override
                         public void modifyText(ModifyEvent e) {
                             String attrName = attrLabel.getText().split(MARK)[0];
                             if (attrCombo.getText().equals(PluginConstant.EMPTY_STRING)) {
