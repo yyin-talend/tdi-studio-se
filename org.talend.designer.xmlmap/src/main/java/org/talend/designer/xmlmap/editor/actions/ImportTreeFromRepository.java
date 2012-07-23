@@ -86,9 +86,9 @@ public class ImportTreeFromRepository extends SelectionAction {
 
     private TreeNode schemaNode;
 
-    private Shell shell;
+    private final Shell shell;
 
-    private Map<String, Integer> xpathAndOrder = new HashMap<String, Integer>();
+    private final Map<String, Integer> xpathAndOrder = new HashMap<String, Integer>();
 
     private boolean input;
 
@@ -199,7 +199,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                 return;
             }
             File xmlFile = new File(file);
-            if (xmlFile.exists()) {
+            if (xmlFile.exists() && !file.endsWith(".zip")) {
                 list = TreeUtil.getFoxTreeNodesForXmlMap(xmlFile.getAbsolutePath(), rootXpath);
             } else if (connection.getFileContent() != null && connection.getFileContent().length > 0) {
                 String xsdFile = initFileContent(connection);
@@ -521,6 +521,8 @@ public class ImportTreeFromRepository extends SelectionAction {
             fileName = StringUtil.TMP_XML_FILE;
         } else if (pathStr != null && XmlUtil.isXSDFile(pathStr)) {
             fileName = StringUtil.TMP_XSD_FILE;
+        } else if (pathStr.contains(".zip")) {
+            fileName = new Path(pathStr).lastSegment();
         }
         File temfile = new File(temPath + File.separator + fileName);
         if (!temfile.exists()) {
