@@ -365,962 +365,1268 @@
    </extension>
    <extension
          point="org.talend.core.migrationTask">
+  <projecttask
+        beforeLogon="true"
+        breaks="5.1.1"
+        class="org.talend.repository.model.migration.UpdateExistentMigrationTasksToAdaptNewMigrationSystemMigrationTask"
+        description="Update the existent migration tasks of the project to adapt the new migration system."
+        id="org.talend.repository.model.migration.UpdateExistentMigrationTasksToAdaptNewMigrationSystemMigrationTask"
+        name="UpdateExistentMigrationTasksToAdaptNewMigrationSystemMigrationTask"
+        version="5.1.2">
+  </projecttask>
       <projecttask
             beforeLogon="true"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RemoveRoutineFolderTask"
             id="org.talend.repository.localprovider.RemoveRoutineFolderTask"
-            name="Remove routine folder"/>
+            name="Remove routine folder"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="true"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.ChangeXmiSerialization"
             id="org.talend.repository.localprovider.model.migration.ChangeXmiSerialization"
-            name="Change xmi serialization"/>
+            name="Change xmi serialization"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametRunProcessMigrationTask"
             id="org.talend.repository.migration.renametRunProcess"
-            name="Rename tRunProcess"/>
+            name="Rename tRunProcess"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametMysqlOutputBulkExecMigrationTask"
             id="org.talend.repository.migration.renametMysqlOutputBulkExec"
-            name="Rename tMysqlOutputBulkExec"/>
+            name="Rename tMysqlOutputBulkExec"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametCatcherMigrationTask"
             id="org.talend.repository.migration.renametCatcher"
-            name="Rename tCatcher"/>
+            name="Rename tCatcher"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.UpgradetUniqRowMigrationTask"
             id="org.talend.repository.migration.upgradetUniqRow"
-            name="Upgrade tUniqRow (Perl)"/>
+            name="Upgrade tUniqRow (Perl)"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametDBInputToOracleMigrationTask"
             description="%migrationtask.renametDbInputToOracle.description"
             id="org.talend.repository.migration.renametDbInputToOracle"
-            name="%migrationtask.renametDbInputToOracle.title"/>
+            name="%migrationtask.renametDbInputToOracle.title"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametDBInputToMySQLMigrationTask"
             description="%migrationtask.renametDbInputToMySQL.description"
             id="org.talend.repository.migration.renametDbInputToMySQL"
-            name="%migrationtask.renametDbInputToMySQL.title"/>
+            name="%migrationtask.renametDbInputToMySQL.title"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametDBInputToPostgresqlMigrationTask"
             description="%migrationtask.renametDbInputToPostgresql.description"
             id="org.talend.repository.migration.renametDbInputToPostgresql"
-            name="%migrationtask.renametDbInputToPostgresql.title"/>
+            name="%migrationtask.renametDbInputToPostgresql.title"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametDBInputToMssqlMigrationTask"
             description="%migrationtask.renametDbInputToMssql.description"
             id="org.talend.repository.migration.renametDbInputToMssql"
-            name="%migrationtask.renametDbInputToMssql.title"/>
+            name="%migrationtask.renametDbInputToMssql.title"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.MigratetRowGeneratorMigrationTask"
             description="%migrationtask.updatetRowGenerator.description"
             id="org.talend.repository.migration.updatetRowGenerator"
-            name="%migrationtask.updatetRowGenerator.title"/>
+            name="%migrationtask.updatetRowGenerator.title"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.UpgradetWarntDiePriorityMigrationTask"
             description="%migrationtask.upgradetWarntDiePriority.description"
             id="org.talend.repository.migration.upgradetWarntDiePriority"
-            name="%migrationtask.upgradetWarntDiePriority.title"/>
+            name="%migrationtask.upgradetWarntDiePriority.title"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametNormalizeMigrationTask"
             description="%migrationtask.renametFileZipUnzip.desciption"
             id="org.talend.repository.migration.renametFileZipUnzip"
-            name="%migrationtask.renametFileZipUnzip.title"/>
+            name="%migrationtask.renametFileZipUnzip.title"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.UpdateDbtypeOfCreateTableTask"
             description="Replace run before and after connection with then run connection."
             id="org.talend.repository.model.migration.changeRunBeforeAfterToThenRunMigrationTask"
-            name="Replace run before and after connection"/>
+            name="Replace run before and after connection"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RemoveSpaceInJobNameMigrationTask"
             description="Rename jobs if they contain any space character (for migration of version 1.0 or 1.1)"
             id="org.talend.repository.model.migration.RemoveSpaceInJobNameMigrationTask"
-            name="Rename jobs with spaces"/>
+            name="Rename jobs with spaces"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.AddProductAndMappingInDBConnectionEMFMigrationTask"
             description="Add two attributes (product and mapping) in DatabaseConnection of Repository"
             id="org.talend.repository.model.migration.AddProductAndMappingInDBConnectionEMFMigrationTask"
-            name="Add two attributes in DatabaseConnection"/>
+            name="Add two attributes in DatabaseConnection"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametFTPToFTPGetMigrationTask"
             description="%migrationtask.renametFTPtoFTP.description"
             id="org.talend.repository.migration.renametFTPToFTP"
-            name="Rename tFTP to tFTPGet-Put-Rename-Delete"/>
+            name="Rename tFTP to tFTPGet-Put-Rename-Delete"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametNormalizeMigrationTask"
             description="%migrationtask.renameNormalize.description"
             id="org.talend.repository.migration.renametNormalize"
-            name="%migrationtask.renameNormalize.title"/>
+            name="%migrationtask.renameNormalize.title"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametFlowMeterMigrationTask"
             description="%migrationtask.renameFlowMeter.description"
             id="org.talend.repository.migration.renametFlowMeter"
-            name="%migrationtask.renameFlowMeter.title"/>
+            name="%migrationtask.renameFlowMeter.title"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametFlowMeterCatcherMigrationTask"
             description="%migrationtask.renameFlowMeterCatcher.description"
             id="org.talend.repository.migration.renametFlowMeterCatcher"
-            name="%migrationtask.renameFlowMeterCatcher.title"/>
+            name="%migrationtask.renameFlowMeterCatcher.title"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.AddQuoteMarkMigrationTask"
             description="Add quote marks to separator after feature 1192 added to trunk."
             id="org.talend.repository.model.migration.addQuot"
-            name="Add quote marks to separator after feature 1192 added to trunk."/>
+            name="Add quote marks to separator after feature 1192 added to trunk."
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.UpgradetRunJobRemoveQuotesMigrationTask"
             id="org.talend.repository.model.migration.upgradetRunJobRemoveQuotesMigrationTask"
-            name="Remove quotes in the tRunJobProperties of the component"/>
+            name="Remove quotes in the tRunJobProperties of the component"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.ChangeUniqRowLinksMigrationTask"
             description="%migrationtask.changetUniqRowLinks.description"
             id="org.talend.repository.migration.changetUniqRowLinks"
-            name="%migrationtask.changetUniqRowLinks.title">
+            name="%migrationtask.changetUniqRowLinks.title"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.AddDdColumnMigrationTask"
             description="Add DdColumn name for all DB components"
             id="org.talend.repository.model.migration.AddDdColumn"
-            name="Add DdColumn name for all DB components">
+            name="Add DdColumn name for all DB components"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.ConvertOldPerlTypesMigrationTask"
             description="%migrationtask.convertOldPerlTypes.description"
             id="org.talend.repository.migration.convertOldPerlTypes"
-            name="%migrationtask.convertOldPerlTypes.title">
+            name="%migrationtask.convertOldPerlTypes.title"
+            version="5.1.2">
       </projecttask>
        <projecttask
-            beforeLogon="false"
-            class="org.talend.repository.model.migration.ConvertLabelForConnectionItemMigrationTask"
-            description="%migrationtask.convertLabelForConnectionItem.description"
-            id="org.talend.repository.migration.convertLabelForConnectionItem"
-            name="%migrationtask.convertLabelForConnectionItem.title">
+             beforeLogon="false"
+             breaks="5.1.1"
+             class="org.talend.repository.model.migration.ConvertLabelForConnectionItemMigrationTask"
+             description="%migrationtask.convertLabelForConnectionItem.description"
+             id="org.talend.repository.migration.convertLabelForConnectionItem"
+             name="%migrationtask.convertLabelForConnectionItem.title"
+             version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.AddConnectionVersionForJobsettingMigrationTask"
             id="org.talend.repository.migration.addConnectionVersionForJobsetting"
-            name="Add Connection Version for Jobsetting">
+            name="Add Connection Version for Jobsetting"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametXMLRPCMigrationTask"
+            description="%migrationtask.RenametXMLRPCMigrationTask.description"
             id="org.talend.repository.migration.renametXMLRPC"
             name="%migrationtask.RenametXMLRPCMigrationTask.title"
-            description="%migrationtask.RenametXMLRPCMigrationTask.description"/>
+            version="5.1.2"/>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametFileInputCSVMigrationTask"
             id="org.talend.repository.renametFileInputCSV"
-            name="Rename tFileInputCSV to tFileInputDelimited">
+            name="Rename tFileInputCSV to tFileInputDelimited"
+            version="5.1.2">
       </projecttask>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametFileOutputCSVMigrationTask"
             id="org.talend.repository.renametFileOutputCSV"
-            name="Rename tFileOutputCSV to tFileOutputDelimited">
+            name="Rename tFileOutputCSV to tFileOutputDelimited"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.UpgradetAdvancedFileOutputXMLMigrationTask"
+            description="%migrationtask.UpgradetAdvancedFileOutputXMLMigrationTask.description"
             id="org.talend.repository.migration.upgradetAdvancedXML"
             name="%migrationtask.UpgradetAdvancedFileOutputXMLMigrationTask.title"
-            description="%migrationtask.UpgradetAdvancedFileOutputXMLMigrationTask.description"/>
+            version="5.1.2"/>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.DieOnErrorDefaultValueMigrationTask"
             id="org.talend.repository.model.migration.DieOnErrorDefaultValueMigrationTask"
-            name="Set the Die On Error option default value as false">
+            name="Set the Die On Error option default value as false"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenameRoutinesClassName"
             description="%migrationtask.RenameTheClassnameofTheRoutinesFileMigrationTask.description"
             id="org.talend.repository.model.migration.renameRoutinesClassName"
-            name="%migrationtask.RenameTheClassnameofTheRoutinesFileMigrationTask.title">
+            name="%migrationtask.RenameTheClassnameofTheRoutinesFileMigrationTask.title"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.AddRenameOnFileCopyMigrationTask"
             description="Add rename checkbox on tFileCopy for java component"
             id="org.talend.repository.model.migration.AddRenameOnFileCopyMigrationTask"
-            name="Add rename checkbox on tFileCopy for java component">
+            name="Add rename checkbox on tFileCopy for java component"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.AddPerlRefArrayMigrationTask"
             description="%migrationtask.AddPerlRefArrayPointer.desc"
             id="org.talend.repository.model.migration.AddPerlRefArrayPointer"
-            name="%migrationtask.AddPerlRefArrayPointer.title">
+            name="%migrationtask.AddPerlRefArrayPointer.title"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.AddPerlRefArrayMigrationTask"
             description="%migrationtask.AddPerlRefArrayPointer2.desc"
             id="org.talend.repository.model.migration.AddPerlRefArrayPointer2"
-            name="%migrationtask.AddPerlRefArrayPointer2.title">
+            name="%migrationtask.AddPerlRefArrayPointer2.title"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.UpdateLookupColumnMigrationTask"
             id="org.talend.repository.migration.changeLookupColumnList"
-            name="Change Lookup Column Value"/>
+            name="Change Lookup Column Value"
+            version="5.1.2"/>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.AddConnectorNameInConnections"
             description="%migrationtask.AddConnectorNameInConnections.title"
             id="org.talend.repository.model.migration.AddConnectorNameInConnections"
-            name="%migrationtask.AddConnectorNameInConnections.title">
+            name="%migrationtask.AddConnectorNameInConnections.title"
+            version="5.1.2">
       </projecttask>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenameConnectionRunIfOkToOnComponentOkTask"
             description="Rename run if ok connection to on component ok."
             id="org.talend.repository.connection.rename.runifok.oncomponentok"
-            name="Rename run if ok connection.">
+            name="Rename run if ok connection."
+            version="5.1.2">
       </projecttask>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenameConnectionRunErrorToComponentErrorTask"
             description="Rename run if error connection to on component error."
             id="org.talend.repository.connection.rename.runerror.oncomponenterror"
-            name="Rename run if error connection.">
+            name="Rename run if error connection."
+            version="5.1.2">
       </projecttask>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenameConnectionThenRunToOnSubjobOkTask"
             description="Rename then run connection to on sub job ok connection."
             id="org.talend.repository.connection.rename.thenrun.onsubjobok"
-            name="Rename then run connection.">
+            name="Rename then run connection."
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.ReplaceMultiFlowBytReplicateMigrationTask"
             description="%migrationtask.ReplaceMultiFlowBytReplicate.desc"
             id="org.talend.repository.model.migration.ReplaceMultiFlowBytReplicateMigrationTask"
-            name="%migrationtask.ReplaceMultiFlowBytReplicate.title">
+            name="%migrationtask.ReplaceMultiFlowBytReplicate.title"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.UpgradeAttributestAdvancedXMLMigrationTask"
+            description="Add the main and branch type to attributes."
             id="org.talend.repository.migration.upgradeAttributestAdvancedXML"
             name="Update the Attributes of tAdvancedFileOutputXML"
-            description="Add the main and branch type to attributes."/>
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.UpgradeAttributestFilterRow"
             description="Upgrade the Attributes of tFilterRow"
             id="org.talend.repository.migration.upgradeAttributestFilterRow"
-            name="Upgrade the Attributes of tFilterRow">
+            name="Upgrade the Attributes of tFilterRow"
+            version="5.1.2">
       </projecttask>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.UpdateDbtypeOfCreateTableTask"
             description="Upper case the value of Db type for tCreateTable component."
             id="org.talend.repository.migration.upperCaseDbtypeOfCreateTable"
-            name="Upper case the Db type of tCreateTable.">
+            name="Upper case the Db type of tCreateTable."
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametBufferOutputMigrationTask"
             id="org.talend.repository.migration.renametBufferOutput"
-            name="Rename tBuffer"/>
+            name="Rename tBuffer"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametMapPersistentMigrationTask"
             id="org.talend.repository.migration.renametMapPersistent"
-            name="Rename tMapPersistent"/>
+            name="Rename tMapPersistent"
+            version="5.1.2"/>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.ReplaceOldContextScriptCodeMigrationTask"
             description="Replace old syntax of script code to new one for context variables"
             id="org.talend.repository.migration.ReplaceOldContextScriptCode"
-            name="Replace old syntax of script code for context variables">
+            name="Replace old syntax of script code for context variables"
+            version="5.1.2">
       </projecttask>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametFor"
             description="Rename tFor to tLoop"
             id="org.talend.repository.migration.RenametFor"
-            name="Rename tFor to tLoop">
+            name="Rename tFor to tLoop"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.ReplaceSpaceCharForItemNameMigrationTask"
             description="Replace space character for repository items name"
             id="org.talend.repository.migration.ReplaceSpaceCharForItemNameMigrationTask"
-            name="Replace space character for repository items name">
+            name="Replace space character for repository items name"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.ReplaceJavaKeywordsNameForContextMigrationTask"
             description="Replace the context variables name with java keywords.(only for JAVA)"
             id="org.talend.repository.migration.ReplaceJavaKeywordsNameForContext"
-            name="Replace the context variables name">
+            name="Replace the context variables name"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.MoveExcelSheetnameToSheetlist"
             id="org.talend.repository.model.migration.MoveExcelSheetnameToSheetlist"
-            name="Excel sheetname to sheetlist">
+            name="Excel sheetname to sheetlist"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.AddDoubleQuoteTotMomMigrationTask"
             description="Add the double quote enclosure to tMomInput and tMomOutput"
             id="org.talend.repository.model.migration.AddDoubleQuoteTotMomMigrationTask"
-            name="Add the double quote enclosure to tMomInput and tMomOutput">
+            name="Add the double quote enclosure to tMomInput and tMomOutput"
+            version="5.1.2">
       </projecttask>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.MoveExcelSheetnameToSheetlistForJava"
             description="Excel sheetname to sheetlist for java"
             id="org.talend.repository.model.migration.MoveExcelSheetnameToSheetlistForJava"
-            name="Excel sheetname to sheetlist for java">
+            name="Excel sheetname to sheetlist for java"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.HandleOracleSchemaMigrationTask"
             description="handle schema of tOracleConnection"
             id="org.talend.repository.model.migration.HandleOracleSchemaMigrationTask"
-            name="HandleOracleSchemaMigrationTask">
+            name="HandleOracleSchemaMigrationTask"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.ChangeValueOfTLogRowChecks"
             description="Change the default value of tLogRow checks."
             id="org.talend.repository.model.migration.ChangeValueOfTLogRowChecks"
-            name="Change values of tLogRow checks">
+            name="Change values of tLogRow checks"
+            version="5.1.2">
       </projecttask>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.AddQuotesToModuleListMigrationTask"
             description="%migrationtask.AddQuotesToModuleList.title"
             id="org.talend.repository.model.migration.AddQuotesToModuleListMigrationTask"
-            name="%migrationtask.AddQuotesToModuleList.title">
+            name="%migrationtask.AddQuotesToModuleList.title"
+            version="5.1.2">
       </projecttask>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.UpdateTheJobsActionsOnTable"
             id="org.talend.repository.model.migration.UpdateTheJobsActionsOnTable"
-            name="Update the action on table drop box">
+            name="Update the action on table drop box"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametFTPToFTPGetMigrationTaskForPerl"
             id="org.talend.repository.model.migration.RenametFTPToFTPGetMigrationTaskForPerl"
-            name="RenametFTPToFTPGetMigrationTaskForPerl">
+            name="RenametFTPToFTPGetMigrationTaskForPerl"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametForForPerl"
             id="org.talend.repository.model.migration.RenametForForPerl"
-            name="RenametForForPerl">
+            name="RenametForForPerl"
+            version="5.1.2">
       </projecttask>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenameDbProductIdMigrationTask"
             description="Rename DB product ID."
             id="org.talend.repository.model.migration.RenameDbProductIdMigrationTask"
-            name="Rename DB product ID">
+            name="Rename DB product ID"
+            version="5.1.2">
       </projecttask>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenameDbMacroMigrationTask"
             id="org.talend.repository.model.migration.RenameDbMacroMigrationTask"
-            name="Rename DB macro name DBTABLE to TABLE">
+            name="Rename DB macro name DBTABLE to TABLE"
+            version="5.1.2">
       </projecttask>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.ChangeSqlPatternValueMigrationTask"
             description="Change sql pattern value."
             id="org.talend.repository.model.migration.ChangeSqlPatternValueMigrationTask"
-            name="Change sql pattern value">
+            name="Change sql pattern value"
+            version="5.1.2">
       </projecttask>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametForCurrentIterationMigrationTask"
             id="org.talend.repository.model.migration.RenametForCurrentIterationMigrationTask"
-            name="rename tFor_ variable to tLoop_ variable">
+            name="rename tFor_ variable to tLoop_ variable"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametFileInputBasic"
             id="org.talend.repository.model.migration.RenametFileInputBasic"
-            name="rename tFileInputBasic into tFileIntoFullRow">
-      </projecttask>
-      <projecttask
-             beforeLogon="false"
-             class="org.talend.repository.model.migration.RenametFSFilterRows"
-             description="Rename tFSFilterRow to tFSFilterRows"
-             id="org.talend.repository.model.migration.RenametFSFilterRows"
-             name="Rename tFSFilterRow to tFSFilterRows">
+            name="rename tFileInputBasic into tFileIntoFullRow"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
+            class="org.talend.repository.model.migration.RenametFSFilterRows"
+            description="Rename tFSFilterRow to tFSFilterRows"
+            id="org.talend.repository.model.migration.RenametFSFilterRows"
+            name="Rename tFSFilterRow to tFSFilterRows"
+            version="5.1.2">
+      </projecttask>
+      <projecttask
+            beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.UpgradetDenormalizeMigrationTask"
             description="Replace DELIMITER, GROUPS, MERGE with DENORMALIZE_COLUMNS"
             id="org.talend.repository.model.migration.UpgradetDenormalizeMigrationTask"
-            name="Replace DELIMITER, GROUPS, MERGE with DENORMALIZE_COLUMNS">
+            name="Replace DELIMITER, GROUPS, MERGE with DENORMALIZE_COLUMNS"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.ReplaceRunJobLabelVariableMigrationTask"
             description="Replace from &quot;__PROCESS_TYPE_PROCESS__&quot; to &quot;__PROCESS__&quot;"
             id="org.talend.repository.model.migration.ReplaceRunJobLabelVariable"
-            name="Replace tRunJob label variable">
+            name="Replace tRunJob label variable"
+            version="5.1.2">
       </projecttask>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.AddFamilyFieldProjectMigrationTask"
             description="Add family field in component setting."
             id="org.talend.repository.model.migration.AddFamilyFieldProjectMigrationTask"
-            name="Add family field in component setting migration task.">
+            name="Add family field in component setting migration task."
+            version="5.1.2">
       </projecttask>
       <projecttask
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.QuoteWraptSSHcommandMigrationTask"
             description="wrap tSSH parameter with double quot to support context variable"
             id="org.talend.repository.model.migration.QuoteWraptSSHcommandMigrationTask"
-            name="wrap tSSH parameter with double quot to support context variable">
+            name="wrap tSSH parameter with double quot to support context variable"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.MigrationTaskForIssue4449"
             description="change the value of &quot;Action on table&quot; from &quot;CLEAR&quot; to &quot;TRUNCATE&quot;"
             id="org.talend.repository.model.migration.MigrationTaskForIssue4449"
-            name="MigrationTaskForIssue4449">
+            name="MigrationTaskForIssue4449"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.MoveFileListFilemaskToFilemaskListForJava"
             description="move filemask to filemask list"
             id="org.talend.repository.model.migration.MoveFileListFilemaskToFilemaskListForJava"
-            name="Move filemask to filemask list">
+            name="Move filemask to filemask list"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.AddOutputFileNameOntJasperOutputForJava"
             id="org.talend.repository.model.migration.AddOutputFileNameOntJasperOutputForJava"
-            name="add output file name on tJasperOutput">
+            name="add output file name on tJasperOutput"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametParseXMLRowTotExtractXMLFieldMigrationTask"
             id="org.talend.repository.model.migration.RenametParseXMLRowTotExtractXMLFieldMigrationTask"
-            name="Rename tParseXMLRow to tExtractXMLField">
+            name="Rename tParseXMLRow to tExtractXMLField"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.FileInputRegexContextVariableMigrationTaskForSave"
             id="org.talend.repository.model.migration.FileInputRegexContextVariableMigrationTaskForSave"
-            name="remove the quote char for tFileInputRegex on header/footer/limited parameters">
+            name="remove the quote char for tFileInputRegex on header/footer/limited parameters"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.FileInputRegexContextVariableMigrationTask"
             description="add quotes to FileInputRegex header/footer/limit variables."
             id="org.talend.repository.model.migration.FileInputRegexContextVariableMigrationTask"
-            name="add quotes to FileInputRegex header/footer/limit variables.">
+            name="add quotes to FileInputRegex header/footer/limit variables."
+            version="5.1.2">
       </projecttask>
       
          <projecttask
-            beforeLogon="false"
-            class="org.talend.repository.model.migration.EncryptDbPasswordMigrationTask"
-            id="org.talend.repository.model.migration.EncryptDbPasswordMigrationTask"
-            name="encrypt database connection password">
+               beforeLogon="false"
+               breaks="5.1.1"
+               class="org.talend.repository.model.migration.EncryptDbPasswordMigrationTask"
+               id="org.talend.repository.model.migration.EncryptDbPasswordMigrationTask"
+               name="encrypt database connection password"
+               version="5.1.2">
       </projecttask>
          <projecttask
                beforeLogon="false"
+               breaks="5.1.1"
                class="org.talend.repository.model.migration.RenametAggregateRowOptMigrationTask"
                description="A new optimized and fexible version of the tAggregateRow"
                id="org.talend.repository.migration.renametAggregateRowOpt"
-               name="Rename tAggregateRowOpt to tAggregateRow">
+               name="Rename tAggregateRowOpt to tAggregateRow"
+               version="5.1.2">
          </projecttask>
          <projecttask
                beforeLogon="false"
+               breaks="5.1.1"
                class="org.talend.repository.model.migration.SetContextModeForQueryMigrationTask"
                description="set the query context mode is true,if the query begin with queto"
                id="org.talend.repository.model.migration.SetContextMode"
-               name="set context mode for query">
+               name="set context mode for query"
+               version="5.1.2">
          </projecttask>
          <projecttask
                beforeLogon="false"
+               breaks="5.1.1"
                class="org.talend.repository.model.migration.AddDoubleQuoteToAllDBSPNameMigrationTask"
                description="add double quote to DB SP name"
                id="org.talend.repository.model.migration.AddDoubleQuoteToAllDBSPNameMigrationTask"
-               name="add double quote to DB SP name">
+               name="add double quote to DB SP name"
+               version="5.1.2">
          </projecttask>
          <projecttask
                beforeLogon="false"
+               breaks="5.1.1"
                class="org.talend.repository.model.migration.RenameMultiSchemaToMSMigrationTask"
                description="rename tFileInputXMLMultiSchema and tFileOutputXMLMultiSchema to tFileInputMSXML and tFileOutputMSXML"
                id="org.talend.repository.model.migration.renameMultiSchemaToMSMigrationTask"
-               name="Rename the XMLMultiSchema to MSXML">
+               name="Rename the XMLMultiSchema to MSXML"
+               version="5.1.2">
          </projecttask>
 	      <projecttask
-	            beforeLogon="false"
-	            class="org.talend.repository.model.migration.ChangeExtendInsertDefaultValueMigrationTask"
-	            description="change the tMysqlOutput'extend insert default value&quot;&quot; from &quot;false&quot; to &quot;true&quot;"
-	            id="org.talend.repository.model.migration.ChangeExtendInsertDefaultValueMigrationTask"
-	            name="ChangeExtendInsertDefaultValueMigrationTask">
+             beforeLogon="false"
+             breaks="5.1.1"
+             class="org.talend.repository.model.migration.ChangeExtendInsertDefaultValueMigrationTask"
+             id="org.talend.repository.model.migration.ChangeExtendInsertDefaultValueMigrationTask"
+             name="ChangeExtendInsertDefaultValueMigrationTask"
+             version="5.1.2">
 	      </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.RenametFSUniq"
              description="Rename tFSUniq to tFSUnique"
              id="org.talend.repository.model.migration.RenametFSUniq"
-             name="Rename tFSUniq to tFSUnique">
+             name="Rename tFSUniq to tFSUnique"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.RenametLaunchDQAnalyseTotLaunchDQReports"
              description="Rename tLaunchDQAnalyse to tLaunchDQReports "
              id="org.talend.repository.model.migration.RenametLaunchDQAnalyseTotLaunchDQReports"
-             name="Rename tLaunchDQAnalyse to tLaunchDQReports ">
+             name="Rename tLaunchDQAnalyse to tLaunchDQReports "
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.RenameAccessDbVersionInConnection"
              description="Rename the db version(Access 2003/2007) for access"
              id="org.talend.repository.model.migration.RenameAccessDbVersionInConnection"
-             name="Rename the db version for access">
+             name="Rename the db version for access"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.ChangeReturnTypeOfServerAliveResult"
              description="change the type of the return value Server_Alive_Result from String to Boolean"
              id="org.talend.repository.model.migration.changeReturnTypeOfServerAliveResult"
-             name="change the type of the return value Server_Alive_Result from String to Boolean">
+             name="change the type of the return value Server_Alive_Result from String to Boolean"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.MigrationTaskForIssue7547"
              description="Brackets Server field value of tAlfrescoOutput with double quotation marks for issue 7547"
              id="org.talend.repository.model.migration.MigrationTaskForIssue7547"
-             name="Modify tAlfrescoOutput Server field value">
+             name="Modify tAlfrescoOutput Server field value"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.RenametPivotOutputDelimitedTotPivotToColumnsDelimited"
              description="Rename tPivotOutputDelimited to tPivotToColumnsDelimited "
              id="org.talend.repository.model.migration.RenametPivotOutputDelimitedTotPivotToColumnsDelimited"
-             name="Rename tPivotOutputDelimited to tPivotToColumnsDelimited ">
+             name="Rename tPivotOutputDelimited to tPivotToColumnsDelimited "
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.RenametUnpivotRowTotPivotToRows"
              description="Rename tUnpivotRow to tPivotToRows "
              id="org.talend.repository.model.migration.RenametUnpivotRowTotPivotToRows"
-             name="Rename tUnpivotRow to tPivotToRows ">
+             name="Rename tUnpivotRow to tPivotToRows "
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.AddOneOptionAndReverseTheValueOnFSComponents"
              description="Add a option and reverse its value on FS components"
              id="org.talend.repository.model.migration.AddOneOptionAndReverseTheValueOnFSComponents"
-             name="Add a option and reverse its value on FS components">
+             name="Add a option and reverse its value on FS components"
+             version="5.1.2">
        </projecttask>              
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.ChangeDefaultValueMigrationTaskBug8562"
              description="Change tSalesforceOutput Extened Ouput Default Value to true"
              id="org.talend.repository.model.migration.ChangeDefaultValueMigrationTaskBug8562"
-             name="Change Default Value">
+             name="Change Default Value"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.MigrateOracleJobSettingsParameterMigrationTask"
              description="Migrate JobSettings Parameter for Oracle DB type"
              id="org.talend.repository.model.migration.MigrateOracleJobSettingsParameter"
-             name="Migrate JobSettings Parameter for Oracle DB type">
+             name="Migrate JobSettings Parameter for Oracle DB type"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.ChangeShareIdentityDefaultValueMigrationTaskIssue9519"
              description="Change Share Identity Setting from &quot;false&quot; to &quot;true&quot;"
              id="org.talend.repository.model.migration.ChangeShareIdentityDefaultValueMigrationTaskIssue9519"
-             name="Change Share Identity Setting">
+             name="Change Share Identity Setting"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.VisibleComponentSettingsMigrationTask"
              description="Migrate components to be visible in project settings"
              id="org.talend.repository.model.migration.VisibleComponentSettingsMigrationTask"
-             name="Migrate components to be visible in project settings">
+             name="Migrate components to be visible in project settings"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.ChangeDefaultValueBug10232"
              description="Change check box default value to false"
              id="org.talend.repository.model.migration.ChangeDefaultValueBug10232"
-             name="Change check box default value to false">
+             name="Change check box default value to false"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.ConnectionAddUniqueNameMigrationTask"
              description="Connection add unique name"
              id="org.talend.repository.model.migration.ConnectionAddUniqueNameMigrationTask"
-             name="Connection add unique name">
+             name="Connection add unique name"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.MigrationTaskForIssue10862"
              description="take custom pattern out of the pattern list, make it as a check box"
              id="org.talend.repository.model.migration.MigrationTaskForIssue10862"
-             name="MigrationTaskForIssue10862">
+             name="MigrationTaskForIssue10862"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.AddTransmitOriginalContextFortRunJobMigrationTask"
              description="Add a new checkbox &quot;transmit original context&quot; for tRunJob"
              id="org.talend.repository.model.migration.AddTransmitOriginalContextFortRunJobMigrationTask"
-             name="Add a new checkbox &quot;transmit original context&quot; for tRunJob">
+             name="Add a new checkbox &quot;transmit original context&quot; for tRunJob"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.MigrationTaskForIssue11632"
              description="Add a new checkbox to control attribute option"
              id="org.talend.repository.model.migration.MigrationTaskForIssue11632"
-             name="Add a new checkbox to control attribute option">
+             name="Add a new checkbox to control attribute option"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="true"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.CleanFoldersMigrationTask"
              id="org.talend.repository.model.migration.CleanFoldersMigrationTask"
-             name="Clean all folders from project">
+             name="Clean all folders from project"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="true"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.RemoveBinFolderMigrationTask"
              description="Move all items who were in bin folders in previous project to standard folder."
              id="org.talend.repository.model.migration.RemoveBinFolderMigrationTask"
-             name="Remove the use of bin folder.">
+             name="Remove the use of bin folder."
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.ThreeVersionstJavaFlexForBug11754"
              description="Support 3 versions tJavaFlex for bug11754"
              id="org.talend.repository.model.migration.ThreeVersionstJavaFlexForBug11754"
-             name="Support 3 versions tJavaFlex for bug11754">
+             name="Support 3 versions tJavaFlex for bug11754"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.SalesforceTimeoutMigrationTask"
              description="SalesforceTimeoutMigrationTask"
              id="org.talend.repository.model.migration.SalesforceTimeoutMigrationTask"
-             name="SalesforceTimeoutMigrationTask">
+             name="SalesforceTimeoutMigrationTask"
+             version="5.1.2">
        </projecttask>
          <projecttask
-             beforeLogon="false"
-             class="org.talend.repository.model.migration.SalesforceMultiSchemaMigrationTask"
-             description="SalesforceMultiSchemaMigrationTask"
-             id="org.talend.repository.model.migration.SalesforceMultiSchemaMigrationTask"
-             name="SalesforceMultiSchemaMigrationTask">
+               beforeLogon="false"
+               breaks="5.1.1"
+               class="org.talend.repository.model.migration.SalesforceMultiSchemaMigrationTask"
+               description="SalesforceMultiSchemaMigrationTask"
+               id="org.talend.repository.model.migration.SalesforceMultiSchemaMigrationTask"
+               name="SalesforceMultiSchemaMigrationTask"
+               version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.MysqlOutputDBVersionForBug13250"
              description="MysqlOutputDBVersionForBug13250"
              id="org.talend.repository.model.migration.MysqlOutputDBVersionForBug13250"
-             name="MysqlOutputDBVersionForBug13250">
+             name="MysqlOutputDBVersionForBug13250"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.ChangeJDBCDriverJarTypeForFeature12879"
              description="ChangeJDBCDriverJarTypeForFeature12879"
              id="org.talend.repository.model.migration.ChangeJDBCDriverJarTypeForFeature12879"
-             name="ChangeJDBCDriverJarTypeForFeature12879">
+             name="ChangeJDBCDriverJarTypeForFeature12879"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.AddBlockingFortRecordMatching"
              id="org.talend.repository.model.migration.AddBlockingFortRecordMatching"
-             name="add blocking for tRecordMatching 13701">
+             name="add blocking for tRecordMatching 13701"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.RenameConnectionNameofSalesforceOutput"
              description="RenameConnectionNameofSalesforceOutput"
              id="org.talend.repository.model.migration.RenameConnectionNameofSalesforceOutput"
-             name="RenameConnectionNameofSalesforceOutput">
+             name="RenameConnectionNameofSalesforceOutput"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.RelationShipIndexMigrationTask"
              id="org.talend.repository.model.migration.RelationShipIndexMigrationTask"
-             name="RelationShipIndexMigrationTask">
+             name="RelationShipIndexMigrationTask"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.AddRoutineDependenciesMigrationTask"
              description="Add Routine Dependencies for job"
              id="org.talend.repository.model.migration.AddRoutineDependenciesMigrationTask"
-             name="Add Routine Dependencies">
+             name="Add Routine Dependencies"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.MergeTosMetadataMigrationTask"
              description="merge metadata"
              id="org.talend.repository.MergeTosMetadataMigrationTask"
-             name="MergeTosMetadataMigrationTask">
+             name="MergeTosMetadataMigrationTask"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.AddWebServiceOutputTableMigrationTask"
              description="modify metadataTable"
              id="org.talend.repository.AddWebServiceOutputTableMigrationTask"
-             name="AddWebServiceOutputTableMigrationTask">
+             name="AddWebServiceOutputTableMigrationTask"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.RenametWindowKeyTotGenKey"
              description="feature 15392"
              id="org.talend.repository.model.migration.RenametWindowKeyTotGenKey"
-             name="Rename tWindowKey into tGenKey">
+             name="Rename tWindowKey into tGenKey"
+             version="5.1.2">
        </projecttask>
        <projecttask
              beforeLogon="false"
+             breaks="5.1.1"
              class="org.talend.repository.model.migration.RenametMergeFieldsTotSurviveFields"
              description="feature 15390"
              id="org.talend.repository.model.migration.RenametMergeFieldsTotSurviveFields"
-             name="Rename tMergeFields into tSurviveFields">
+             name="Rename tMergeFields into tSurviveFields"
+             version="5.1.2">
        </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametGroupTotMatchGroup"
             description="feature 15391"
             id="org.talend.repository.model.migration.RenametGroupTotMatchGroup"
-            name="Rename tGroup into tMatchGroup">
+            name="Rename tGroup into tMatchGroup"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenameCustomerColumnOftGenKey"
             description="feature 15392"
             id="org.talend.repository.model.migration.RenameCustomerColumnOftGenKey"
-            name="rename customer column">
+            name="rename customer column"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.MdmConceptMigrationTask"
             description="feature 15676"
             id="org.talend.repository.model.migration.MdmConceptMigrationTask"
-            name="MdmConceptMigrationTask">
+            name="MdmConceptMigrationTask"
+            version="5.1.2">
       </projecttask>
        <projecttask
-            beforeLogon="false"
-            class="org.talend.repository.model.migration.FillParametersForDatabaseConnectionMigrationTask"
-            description="SetDatabaseConnectionNameMigrationTask"
-            id="org.talend.repository.SetDatabaseConnectionNameMigrationTask"
-            name="Set name for database connection">
+             beforeLogon="false"
+             breaks="5.1.1"
+             class="org.talend.repository.model.migration.FillParametersForDatabaseConnectionMigrationTask"
+             description="SetDatabaseConnectionNameMigrationTask"
+             id="org.talend.repository.SetDatabaseConnectionNameMigrationTask"
+             name="Set name for database connection"
+             version="5.1.2">
       </projecttask>
       
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.EncryptDbPasswordforItemFileMigrationTask"
             description="EncryptDbPasswordforItemFileMigrationTask"
             id="org.talend.repository.model.migration.EncryptDbPasswordforItemFileMigrationTask"
-            name="Set password encrypt in item file">
+            name="Set password encrypt in item file"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.ChangeModelForRoutineParameterMigrationTask"
             description="ChangeModelForRoutineParameterMigrationTask"
             id="org.talend.repository.model.migration.ChangeModelForRoutineParameterMigrationTask"
-            name="Change Routines Parameter">
+            name="Change Routines Parameter"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.ChangeValueBug14780"
             description="ChangeValueBug14780"
             id="org.talend.repository.model.migration.ChangeValueBug14780"
-            name="Change value">
+            name="Change value"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.FixProjectResourceLink"
             id="org.talend.repository.model.migration.FixProjectResourceLink"
-            name="Fix a problem of project resources linked to items">
+            name="Fix a problem of project resources linked to items"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.ResetValuetInfiniteLoop"
             id="org.talend.repository.model.migration.ResetValuetInfiniteLoop"
-            name="Reset the field value of tInfiniteLoop">
+            name="Reset the field value of tInfiniteLoop"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.UpgrateDatabaseTypeForSybaseConnection"
             id="org.talend.repository.model.migration.UpgrateDatabaseTypeForSybaseConnection"
-            name="UpgrateDatabaseTypeForSybaseConnection">
+            name="UpgrateDatabaseTypeForSybaseConnection"
+            version="5.1.2">
       </projecttask>
 	  <projecttask
-            beforeLogon="false"
-            class="org.talend.repository.model.migration.RenameModeParaForPigMigrationTask"
-            description="Rename pig mode parameter for bug TDI-13406 "
-            id="org.talend.repository.model.migration.RenameModeParaForPigMigrationTask"
-            name="Rename pig mode parameter">
+         beforeLogon="false"
+         breaks="5.1.1"
+         class="org.talend.repository.model.migration.RenameModeParaForPigMigrationTask"
+         description="Rename pig mode parameter for bug TDI-13406 "
+         id="org.talend.repository.model.migration.RenameModeParaForPigMigrationTask"
+         name="Rename pig mode parameter"
+         version="5.1.2">
       </projecttask>
   	  <projecttask
-            beforeLogon="false"
-            class="org.talend.repository.model.migration.SetStandaloneModeForHiveComponentsMigrationTask"
-            description="Set the standalone value for the connection mode for old jobs for feature TDI-20301 "
-            id="org.talend.repository.model.migration.SetStandaloneModeForHiveComponentsMigrationTask"
-            name="Set the standalone value for the connection mode for old jobs.">
+           beforeLogon="false"
+           breaks="5.1.1"
+           class="org.talend.repository.model.migration.SetStandaloneModeForHiveComponentsMigrationTask"
+           description="Set the standalone value for the connection mode for old jobs for feature TDI-20301 "
+           id="org.talend.repository.model.migration.SetStandaloneModeForHiveComponentsMigrationTask"
+           name="Set the standalone value for the connection mode for old jobs."
+           version="5.1.2">
       </projecttask>
 	  <projecttask
-            beforeLogon="false"
-            class="org.talend.repository.model.migration.AddDistributionClosedListForHadoopComponentsMigrationTask"
-            description="Add a distribution closed list for a better visibility in the hadoop components"
-            id="org.talend.repository.model.migration.AddDistributionClosedListForHadoopComponentsMigrationTask"
-            name="Add a distribution closed list for a better visibility in the hadoop components.">
+         beforeLogon="false"
+         breaks="5.1.1"
+         class="org.talend.repository.model.migration.AddDistributionClosedListForHadoopComponentsMigrationTask"
+         description="Add a distribution closed list for a better visibility in the hadoop components"
+         id="org.talend.repository.model.migration.AddDistributionClosedListForHadoopComponentsMigrationTask"
+         name="Add a distribution closed list for a better visibility in the hadoop components."
+         version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.SetTrimToTrueAppendModeAdvancedFileOutputXMLComponentsMigrationTask"
             description="Set true for trim option for the bug TDI-20394"
             id="org.talend.repository.model.migration.SetTrimToTrueAppendModeAdvancedFileOutputXMLComponentsMigrationTask"
-            name="Set true for trim option for the bug TDI-20394">
+            name="Set true for trim option for the bug TDI-20394"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenameVersionParametersForPigMigrationTask"
             description="Rename pig mode parameter for bug TDI-20076 "
             id="org.talend.repository.model.migration.RenameVersionParametersForPigMigrationTask"
-            name="Rename pig parameters">
+            name="Rename pig parameters"
+            version="5.1.2">
       </projecttask>		  
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenamePasswordParaForLdapMigrationTask"
             description="Rename ldap password parameter for bug18289 "
             id="org.talend.repository.model.migration.RenamePasswordParaForLdapMigrationTask"
-            name="Rename ldap password parameter">
+            name="Rename ldap password parameter"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenameSchemaParameterForMSSqlConnectionMigrationTask"
             description="Rename mssqlconnection schema parameter for bug TDI-19375 "
             id="org.talend.repository.model.migration.RenameSchemaParameterForMSSqlConnectionMigrationTask"
-            name="Rename mssqlconnection schema parameter">
+            name="Rename mssqlconnection schema parameter"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.AutoUpdateRelationsMigrationTask"
             description="This migration task should be run each time, not only first time after login."
             id="org.talend.repository.model.migration.AutoUpdateRelationsMigrationTask"
-            name="AutoUpdateRelationsMigrationTask">
+            name="AutoUpdateRelationsMigrationTask"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.RenametELTMigrationTask"
             description="rename tELTXXX to tSQLTemplateXXX"
             id="org.talend.repository.model.migration.RenametELTMigrationTask"
-            name="Rename tELTXXX to tSQLTemplateXXX">
+            name="Rename tELTXXX to tSQLTemplateXXX"
+            version="5.1.2">
       </projecttask>     
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.ChangeModelForRoutineParameterMigrationTask2"
             id="org.talend.repository.model.migration.ChangeModelForRoutineParameterMigrationTask2"
-            name="Change Routines Parameter">
+            name="Change Routines Parameter"
+            version="5.1.2">
       </projecttask>
       <projecttask
             beforeLogon="false"
+            breaks="5.1.1"
             class="org.talend.repository.model.migration.ReplacetFileOutputXMLParameterMigrationTask"
             description="change the tFileOutputXML parameter value for the context,add quote to value"
             id="org.talend.repository.model.migration.ReplacetFileOutputXMLParameterMigrationTask"
-            name="Change the tFileOutputXML parameter value for the context,add quote to value">
+            name="Change the tFileOutputXML parameter value for the context,add quote to value"
+            version="5.1.2">
       </projecttask>
         <projecttask
-             beforeLogon="false"
-             class="org.talend.repository.model.migration.AddScreenshotFileMigrationTask"
-             description="AddScreenshotFileMigrationTask"
-             id="org.talend.repository.model.migration.AddScreenshotFileMigrationTask"
-             name="AddScreenshotFileMigrationTask">
+              beforeLogon="false"
+              breaks="5.1.1"
+              class="org.talend.repository.model.migration.AddScreenshotFileMigrationTask"
+              description="AddScreenshotFileMigrationTask"
+              id="org.talend.repository.model.migration.AddScreenshotFileMigrationTask"
+              name="AddScreenshotFileMigrationTask"
+              version="5.1.2">
        </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="5.1.1"
               class="org.talend.repository.model.migration.ChangeAS400DBVersionMigrationTask"
               id="org.talend.repository.model.migration.ChangeAS400DBVersionMigrationTask"
-              name="Change AS400 DBVersion">
+              name="Change AS400 DBVersion"
+              version="5.1.2">
         </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="5.1.1"
               class="org.talend.repository.model.migration.MigratetFileOutputDelimitedAndtFileInputDelimitedMigrationTask"
               description="for bug TDI13497"
               id="org.talend.repository.model.migration.MigratetFileOutputDelimitedAndtFileInputDelimitedMigrationTask"
-              name="MigratetFileOutputDelimitedAndtFileInputDelimitedMigrationTask">
+              name="MigratetFileOutputDelimitedAndtFileInputDelimitedMigrationTask"
+              version="5.1.2">
         </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="5.1.1"
               class="org.talend.repository.model.migration.MigrationTaskForIssue18419"
               description="if you chose a different name than TALENDDEMOSJAVA for your demo project,the &quot;beforeRunJobs&quot; job cannot work as the path is hardcoded in the properties"
               id="org.talend.repository.model.migration.MigrationTaskForIssue18419"
-              name="Modify tFileUnarchive ZIPFILE field value">
+              name="Modify tFileUnarchive ZIPFILE field value"
+              version="5.1.2">
         </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="5.1.1"
               class="org.talend.repository.model.migration.AddContextGroupNameMigrationTask"
               id="org.talend.repository.model.migration.AddContextGroupNameMigrationTask"
-              name="Rename ContextGroup Name">
+              name="Rename ContextGroup Name"
+              version="5.1.2">
         </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="5.1.1"
               class="org.talend.repository.model.migration.ChangeDefaultValueTDIBug16919"
               id="org.talend.repository.model.migration.ChangeDefaultValueTDIBug16919"
-              name="set default value of ESCAPE of tPigCode">
+              name="set default value of ESCAPE of tPigCode"
+              version="5.1.2">
         </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="5.1.1"
               class="org.talend.repository.model.migration.ChangeUseBatchSizeToFalseForDBOuput"
               id="org.talend.repository.model.migration.ChangeUseBatchSizeToFalseForDBOuput"
-              name="set default value from true to false of USE_BATCH_SIZE of tDBOutput in TDI-19299">
+              name="set default value from true to false of USE_BATCH_SIZE of tDBOutput in TDI-19299"
+              version="5.1.2">
         </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="5.1.1"
               class="org.talend.repository.model.migration.ChangeJobscriptContentValueMigrationTask"
               id="org.talend.repository.model.migration.ChangeJobscriptContentValueMigrationTask"
-              name="change jobscript content value">
+              name="change jobscript content value"
+              version="5.1.2">
         </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="5.1.1"
               class="org.talend.repository.model.migration.ChangeValueTDIBug19870"
               id="org.talend.repository.model.migration.ChangeValueTDIBug19870"
-              name="ChangeValueTDIBug19870">
+              name="ChangeValueTDIBug19870"
+              version="5.1.2">
         </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="5.1.1"
               class="org.talend.repository.model.migration.CheckAndUpdateStatusMigrationTask"
               id="org.talend.repository.model.migration.CheckAndUpdateStatusMigrationTask"
-              name="CheckAndUpdateStatus">
+              name="CheckAndUpdateStatus"
+              version="5.1.2">
         </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="5.1.1"
               class="org.talend.repository.model.migration.AddCopyBookXc2jFileMigrationTask"
               id="org.talend.repository.model.migration.AddCopyBookXc2jFileMigrationTask"
-              name="AddCopyBookXc2jFileMigrationTask">
+              name="AddCopyBookXc2jFileMigrationTask"
+              version="5.1.2">
         </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="5.1.1"
               class="org.talend.repository.model.migration.AddAdditionalFieldMigrationTask"
               id="org.talend.repository.model.migration.AddAdditionalFieldMigrationTask"
-              name="Add additionalField to the job model">
+              name="Add additionalField to the job model"
+              version="5.1.2">
         </projecttask>
 		<projecttask
-             beforeLogon="false"
-             class="org.talend.repository.model.migration.SetFilterTiemFromTotoFromPOPComponentsMigrationTask"
-             description="Set the value from 'To' to 'From' for FILTER_TIEM in ADVANCED_FILTER of the component tPOP in Bug TDI-21568"
-             id="org.talend.repository.model.migration.SetFilterTiemFromTotoFromPOPComponentsMigrationTask"
-             name="SetFilterTiemFromTotoFromPOPComponentsMigrationTask">
+        beforeLogon="false"
+        breaks="5.1.1"
+        class="org.talend.repository.model.migration.SetFilterTiemFromTotoFromPOPComponentsMigrationTask"
+        description="Set the value from &apos;To&apos; to &apos;From&apos; for FILTER_TIEM in ADVANCED_FILTER of the component tPOP in Bug TDI-21568"
+        id="org.talend.repository.model.migration.SetFilterTiemFromTotoFromPOPComponentsMigrationTask"
+        name="SetFilterTiemFromTotoFromPOPComponentsMigrationTask"
+        version="5.1.2">
 		</projecttask>
 		<projecttask
-             beforeLogon="false"
-             class="org.talend.repository.model.migration.ChangeDefaultValueTDIBug21708"
-             id="org.talend.repository.model.migration.ChangeDefaultValueTDIBug21708"
-             name="ChangeDefaultValueTDIBug21708">
+        beforeLogon="false"
+        breaks="5.1.1"
+        class="org.talend.repository.model.migration.ChangeDefaultValueTDIBug21708"
+        id="org.talend.repository.model.migration.ChangeDefaultValueTDIBug21708"
+        name="ChangeDefaultValueTDIBug21708"
+        version="5.1.2">
 		</projecttask>
 
    </extension>
