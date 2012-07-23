@@ -421,8 +421,8 @@ public class JobletUtil {
                 IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                         IJobletProviderService.class);
                 if (service != null) {
-                    service.unlockJoblet(node, false);
                     service.reloadJobletProcess(node);
+                    service.unlockJoblet(node, false);
                 }
                 // }
             }
