@@ -84,8 +84,12 @@ imports="
 			if("NTEXT".equalsIgnoreCase(column.getType())){
 %>
 				net.sourceforge.jtds.jdbc.ClobImpl clob_<%=cid %> = (net.sourceforge.jtds.jdbc.ClobImpl) rs_<%=cid %>.getClob(<%=currentColNo %>);
-				net.sourceforge.jtds.jdbc.TalendNTextImpl tNTextImpl_<%=cid %> = new net.sourceforge.jtds.jdbc.TalendNTextImpl(clob_<%=cid %>);
-				tmpContent_<%=cid%> = tNTextImpl_<%=cid %>.getValue();
+				if(clob_<%=cid %>!=null){
+					net.sourceforge.jtds.jdbc.TalendNTextImpl tNTextImpl_<%=cid %> = new net.sourceforge.jtds.jdbc.TalendNTextImpl(clob_<%=cid %>);
+					tmpContent_<%=cid%> = tNTextImpl_<%=cid %>.getValue();
+				}else{
+					tmpContent_<%=cid%> = null;				
+				}
 <%
 			}else{
 %>
