@@ -199,7 +199,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                 return;
             }
             File xmlFile = new File(file);
-            if (xmlFile.exists()) {
+            if (xmlFile.exists() && !file.endsWith(".zip")) {
                 list = TreeUtil.getFoxTreeNodesForXmlMap(xmlFile.getAbsolutePath(), rootXpath);
             } else if (connection.getFileContent() != null && connection.getFileContent().length > 0) {
                 String xsdFile = initFileContent(connection);
@@ -445,7 +445,7 @@ public class ImportTreeFromRepository extends SelectionAction {
         if (targetAbsolutePath == null) {
             targetAbsolutePath = new ArrayList<String>();
             targetAbsolutePath.add(absoluteXPathQuery);
-            Pattern regex = Pattern.compile(RELATIVE_PATH_PATTERN, Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE //$NON-NLS-1$
+            Pattern regex = Pattern.compile(RELATIVE_PATH_PATTERN, Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE
                     | Pattern.MULTILINE);
             for (Object obj : schemaTargets) {
                 String relativeXPathQuery = "";
@@ -521,6 +521,8 @@ public class ImportTreeFromRepository extends SelectionAction {
             fileName = StringUtil.TMP_XML_FILE;
         } else if (pathStr != null && XmlUtil.isXSDFile(pathStr)) {
             fileName = StringUtil.TMP_XSD_FILE;
+        } else if (pathStr.contains(".zip")) {
+            fileName = new Path(pathStr).lastSegment();
         }
         File temfile = new File(temPath + File.separator + fileName);
         if (!temfile.exists()) {
@@ -547,7 +549,7 @@ public class ImportTreeFromRepository extends SelectionAction {
     }
 
     private File getTempTemplateXSDFile() {
-        IPath tempPath = new Path(System.getProperty("user.dir")).append("temp"); //$NON-NLS-1$ //$NON-NLS-1$ //$NON-NLS-2$
+        IPath tempPath = new Path(System.getProperty("user.dir")).append("temp"); //$NON-NLS-1$ //$NON-NLS-2$
         File tempFile = tempPath.toFile();
         if (!tempFile.exists()) {
             tempFile.mkdirs();
