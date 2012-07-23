@@ -198,10 +198,19 @@
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
-	<PARAMETER
+    <PARAMETER
+    	NAME="NOTE"
+    	FIELD="LABEL"
+    	NUM_ROW="19"
+	GROUP="STATEMENT"
+    >
+    	<DEFAULT>Some databases don't support the prepared statements, in which case this option should be used.</DEFAULT>
+    </PARAMETER>
+    <PARAMETER
       NAME="USE_STATEMENT"
       FIELD="CHECK"
-      NUM_ROW="12"
+      NUM_ROW="20"
+      GROUP="STATEMENT"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
