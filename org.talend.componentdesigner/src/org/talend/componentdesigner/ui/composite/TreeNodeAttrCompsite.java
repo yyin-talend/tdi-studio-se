@@ -52,7 +52,7 @@ public class TreeNodeAttrCompsite extends Composite {
             gd = new GridData();
             gd.horizontalSpan = 2;
             label.setLayoutData(gd);
-            final Text nodeText = new Text(this, SWT.BORDER | SWT.MULTI | SWT.WRAP);
+            final Text nodeText = new Text(this, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
             gd = new GridData(GridData.FILL_BOTH);
             gd.horizontalSpan = 2;
             nodeText.setLayoutData(gd);
