@@ -83,6 +83,7 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.general.IExchangeService;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.i18n.Messages;
@@ -899,6 +900,13 @@ class ImportItemWizardPage extends WizardPage {
                     ExceptionHandler.process(e);
                 } catch (LoginException e) {
                     ExceptionHandler.process(e);
+                }
+            }
+            if (item instanceof ProcessItem || item instanceof JobletProcessItem) {
+                try {
+                    factory.save(item);
+                } catch (PersistenceException e) {
+                    e.printStackTrace();
                 }
             }
         }
