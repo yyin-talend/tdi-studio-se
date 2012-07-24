@@ -1628,6 +1628,14 @@
         name="ChangeDefaultValueTDIBug21708"
         version="5.1.2">
 		</projecttask>
+		<projecttask
+        beforeLogon="false"
+        breaks="5.1.1"
+        class="org.talend.repository.model.migration.ChangetMongoDBInputSortTextToTable"
+        id="org.talend.repository.model.migration.ChangetMongoDBInputSortTextToTable"
+        name="ChangetMongoDBInputSortTextToTable"
+        version="5.1.2">
+		</projecttask>
 
    </extension>
    
