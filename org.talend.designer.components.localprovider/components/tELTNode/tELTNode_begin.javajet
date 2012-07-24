@@ -571,11 +571,10 @@
 			if (hasGroupBys) {
 				for (Map<String,Object> groupby : groupbys) {
 					String inputColumn = groupby.get("INPUT_COLUMN").toString();
-					String outputColumn = groupby.get("OUTPUT_COLUMN").toString();
 					if (firstGroupByFlag)
-						ret += outputColumn;
+						ret += inputColumn;
 					else
-						ret += "," + outputColumn;
+						ret += "," + inputColumn;
 					firstGroupByFlag = false;
 				}
 				return ret;
@@ -583,6 +582,21 @@
 			return null;
 		}
 		
+		/**
+		 * this function is to set SQL physical-name value from groupBy columns.
+		 * @param sql all the group by configred in this component will be added to this object in the column list section.
+		 */
+		protected void setGroupBy(SQL sql) {
+			List<Map<String,Object>> groupbys = (List<Map<String,Object>>)getParameterByName("GROUPBYS").getValue();
+			for (Map<String,Object> groupby : groupbys) {
+				String inputColumn = groupby.get("INPUT_COLUMN").toString();
+				String outputColumn = groupby.get("OUTPUT_COLUMN").toString();
+				HashMap<String,String> property = sql.getNeedsProperty("column", outputColumn);
+				if (property != null) {
+					sql.setPropertyValue(sql.needs, "column", outputColumn, "physical-name", inputColumn);
+				}
+			}
+		}		
 		/**
 		 * this function adds all the operations configured inside this component
 		 * such as MAX, SUM, ... to the {@link SQL} object that is passed.
@@ -626,6 +640,7 @@
 				return "";
 			else {
 				setOperations(sql);
+				setGroupBy(sql);
 				return previous().run(sql) + " GROUP BY " + getGroupBy();
 			}
 		}
