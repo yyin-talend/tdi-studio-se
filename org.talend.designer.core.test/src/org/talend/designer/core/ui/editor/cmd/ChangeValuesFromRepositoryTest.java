@@ -105,7 +105,7 @@ public class ChangeValuesFromRepositoryTest {
 
     private static void init() throws PersistenceException {
         connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
-        connection.setName("mysql_1");
+        connection.setName("ChangeValues");
         ((DatabaseConnection) connection).setDatabaseType("MySQL");
         ((DatabaseConnection) connection).setUsername("root");
         ((DatabaseConnection) connection).setPassword("root");
@@ -118,7 +118,7 @@ public class ChangeValuesFromRepositoryTest {
         databaseConnItem = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
         Property myProperty = PropertiesFactory.eINSTANCE.createProperty();
         myProperty.setId(factory.getNextId());
-        myProperty.setLabel("mysql_1");
+        myProperty.setLabel("ChangeValues");
         myProperty.setVersion("0.1");
 
         ItemState itemState = PropertiesFactory.eINSTANCE.createItemState();
