@@ -96,18 +96,20 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
     @Override
     protected void createPageContent(Composite parent) {
         Composite topComposite = new Composite(parent, SWT.NONE);
-        // topComposite.setLayout(new GridLayout(2, false));
-        // GridData data = new GridData(GridData.FILL_BOTH);
-        // topComposite.setLayoutData(data);
-        topComposite.setLayout(new FillLayout());
+        topComposite.setLayout(new GridLayout(2, false));
+        GridData data = new GridData(GridData.FILL_BOTH);
+        topComposite.setLayoutData(data);
+        // topComposite.setLayout(new FillLayout());
         availableXmlTree = new Tree(topComposite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         GridData treeGD = new GridData(GridData.FILL_BOTH);
-        treeGD.widthHint = 110;
+        treeGD.widthHint = 196;
         treeGD.grabExcessHorizontalSpace = true;
         treeGD.grabExcessVerticalSpace = true;
         availableXmlTree.setLayoutData(treeGD);
 
-        scrolledComposite = new ScrolledComposite(topComposite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        scrolledComposite = new ScrolledComposite(topComposite, SWT.V_SCROLL);
+        scrolledComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        scrolledComposite.setLayout(new FillLayout());
         // rightComposite = new Composite(topComposite, SWT.NONE);
         rightComposite = new Composite(scrolledComposite, SWT.NONE);
         GridData rightPanelGd = new GridData(GridData.FILL_BOTH);
@@ -207,16 +209,16 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
     private void setComponentMinSize(String label) {
         if (("HEADER").equals(label)) {
             scrolledComposite.setMinSize(0, 0);
-            scrolledComposite.setMinSize(280, 750);
+            scrolledComposite.setMinSize(0, 750);
         } else if (("CONNECTOR").equals(label)) {
             scrolledComposite.setMinSize(0, 0);
-            scrolledComposite.setMinSize(280, 500);
+            scrolledComposite.setMinSize(0, 500);
         } else if (("PARAMETER").equals(label)) {
             scrolledComposite.setMinSize(0, 0);
-            scrolledComposite.setMinSize(280, 630);
+            scrolledComposite.setMinSize(0, 630);
         } else if (("RETURN").equals(label)) {
             scrolledComposite.setMinSize(0, 0);
-            scrolledComposite.setMinSize(260, 150);
+            scrolledComposite.setMinSize(0, 150);
         } else {
             scrolledComposite.setMinSize(0, 0);
         }
