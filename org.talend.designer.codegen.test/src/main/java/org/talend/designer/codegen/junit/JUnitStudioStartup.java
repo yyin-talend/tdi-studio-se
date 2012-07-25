@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.designer.codegen.junit;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.junit.Test;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 
@@ -27,15 +30,24 @@ public class JUnitStudioStartup {
 
     private static final long INIT_PAUSE = 100;
 
+    private final SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd-HH:mm:ss");
+
     @Test
     public void test() throws InterruptedException {
+        System.out.println("|" + format.format(new Date()) + "| Wait for full generation of jet emitters");
         long startTimer = System.currentTimeMillis();
         long endTimer = startTimer;
         while ((!CodeGeneratorEmittersPoolFactory.isInitialized()) && ((endTimer - startTimer) < INIT_TIMEOUT)) {
             Thread.sleep(INIT_PAUSE);
             endTimer = System.currentTimeMillis();
         }
-        System.out.println("Jet emitters initialized successfully, will proceed to standards junits");
+        if ((endTimer - startTimer) < INIT_TIMEOUT) {
+            System.out.println("|" + format.format(new Date())
+                    + "| Timeout when generate jet emitters (10 minutes), will just continue with standards junits");
+        } else {
+            System.out.println("|" + format.format(new Date())
+                    + "| Jet emitters initialized successfully, will proceed to standards junits");
+        }
     }
 
 }
