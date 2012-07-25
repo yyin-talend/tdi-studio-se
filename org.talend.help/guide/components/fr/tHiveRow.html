@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>tHiveRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch01.html" title="Chapitre&nbsp;1.&nbsp;Composants Big Data"><link rel="prev" href="tHiveConnection.html" title="tHiveConnection"><link rel="next" href="ch02.html" title="Chapitre&nbsp;2.&nbsp;Composants Business"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tHiveRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHiveRow"></a>tHiveRow</h2></div></div></div><div class="mediaobject"><img src="../images/tHiveRow_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tHiveRow"><div class="titlepage"><div><div><h3 class="title"><a name="d0e849"></a>Propri&eacute;t&eacute;s du tHiveRow</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+   <title>tHiveRow</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Open Studio"><link rel="up" href="ch01.html" title="Chapitre&nbsp;1.&nbsp;Composants Big Data"><link rel="prev" href="tHiveConnection.html" title="tHiveConnection"><link rel="next" href="ch02.html" title="Chapitre&nbsp;2.&nbsp;Composants Business"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tHiveRow"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHiveRow"></a>tHiveRow</h2></div></div></div><div class="mediaobject"><img src="../images/tHiveRow_icon32_white.png"></div><div class="section" title="Propri&eacute;t&eacute;s du tHiveRow"><div class="titlepage"><div><div><h3 class="title"><a name="d0e858"></a>Propri&eacute;t&eacute;s du tHiveRow</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
 							<p>
 								<span class="bold"><strong>Famille de composant</strong></span>
 							</p>
@@ -34,7 +34,7 @@
 								<span class="emphasis"><em>Property type</em></span>
 							</p>
 						</td><td valign="top">
-							<p>Peut &ecirc;tre <span class="bold"><strong>Built-in</strong></span> ou <span class="bold"><strong>Repository</strong></span>.</p>
+							<p><span>Peut &ecirc;tre <span class="bold"><strong>Built-in</strong></span> ou <span class="bold"><strong>Repository</strong></span></span>.</p>
 						</td></tr><tr><td>
 							<p>&nbsp;</p>
 						</td><td>
@@ -81,25 +81,11 @@
 									settings</strong></span>), consultez le <span class="italic">Guide
 									utilisateur</span> de votre Studio. </p>
 						</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">Hive version</span></td><td valign="top">
-							<p>S&eacute;lectionnez une version de Hive dans la liste :</p>
-							<p><span class="bold"><strong>Hortonworks Data Platform 1.0</strong></span> :
-								Vous devez sp&eacute;cifier l'acc&egrave;s &agrave; Hortonworks Data Platform 1.0
-								supportant les projets Apache Hadoop, notamment HDFS, MapR, Hive,
-								HBase, Pig et ZooKeeper.</p>
-							<p><span class="bold"><strong>Apache 0.20.203</strong></span> : Vous devez
-								sp&eacute;cifier l'acc&egrave;s &agrave; Apache 0.20.203 &agrave; utiliser.</p>
-							<p><span class="bold"><strong>Apache 1.0.0 </strong></span>: Vous devez
-								sp&eacute;cifier l'acc&egrave;s &agrave; Apache Hadoop 1.0.0 &agrave; utiliser.</p>
-						</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">Connection
+							<p>S&eacute;lectionnez dans la liste d&eacute;roulante la version de la distribution d'Hadoop que vous utilisez.</p>
+							</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">Connection
 							mode</span></td><td valign="top">
-							<p>S&eacute;lectionnez un mode de connexion dans la liste :</p>
-							<p><span class="bold"><strong>Standalone</strong></span> : Ce mode de connexion
-								est disponible lorsque la version de Hive est Apache 0.20.203 ou
-								Apache 1.0.0.</p>
-							<p><span class="bold"><strong>Embedded</strong></span> : Ce mode de connexion
-								est disponible lorsque la version de Hive est Apache 1.0.0 ou
-								Hortonworks Data Platform 1.0.</p>
-						</td></tr><tr><td>
+							<p>S&eacute;lectionnez un mode de connexion dans la liste. Les options varient selon la distribution que vous utilisez.</p>
+							</td></tr><tr><td>
 							<p>&nbsp;</p>
 						</td><td valign="top">
 							<p>
@@ -140,8 +126,10 @@
 								Schema</em></span></p>
 						</td><td valign="top">
 							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
-								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
-								sch&eacute;ma est soit local (Built-in) soit distant dans le <span class="bold"><strong>Repository</strong></span>.</p>
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant.
+									<span>Le sch&eacute;ma est soit local
+										(<span class="bold"><strong>Built-in</strong></span>) , soit distant
+									dans le <span class="bold"><strong>Repository</strong></span></span>.</p>
 						</td></tr><tr><td>
 							<p>&nbsp;</p>
 						</td><td>
@@ -156,10 +144,9 @@
 						</td><td>
 							<p>&nbsp;</p>
 						</td><td valign="top">
-							<p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe d&eacute;j&agrave; et est stock&eacute; dans
-								le <span class="bold"><strong>Repository</strong></span>. Ainsi, il peut &ecirc;tre
-								r&eacute;utilis&eacute;. Voir &eacute;galement&nbsp;le <span class="italic">Guide
-									utilisateur de</span>
+							<p><span class="bold"><strong>Repository&nbsp;</strong></span>: Le sch&eacute;ma existe
+								d&eacute;j&agrave; et est stock&eacute; dans le <span class="bold"><strong>Repository</strong></span>. Ainsi, il peut &ecirc;tre r&eacute;utilis&eacute;. Voir
+								&eacute;galement&nbsp;le <span class="italic">Guide utilisateur de</span>
 								<span class="bluebold">Talend Open Studio</span>. </p>
 						</td></tr><tr><td>
 							<p>&nbsp;</p>
@@ -176,7 +163,7 @@
 								<span class="emphasis"><em>Query type</em></span>
 							</p>
 						</td><td valign="top">
-							<p>Peut &ecirc;tre Built-in ou Repository. </p>
+							<p><span>Peut &ecirc;tre <span class="bold"><strong>Built-in</strong></span> ou <span class="bold"><strong>Repository</strong></span></span>.</p>
 						</td></tr><tr><td>
 							<p>&nbsp;</p>
 						</td><td>
@@ -252,6 +239,6 @@
 							<p>Ce composant offre la flexibilit&eacute; des requ&ecirc;tes sur les bases de
 								donn&eacute;es et couvre toutes les possibilit&eacute;s de requ&ecirc;tes Hive
 								QL.</p>
-						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;narios associ&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1434"></a>Sc&eacute;narios associ&eacute;s</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tDBSQLRow.html#Raa17909" title="Sc&eacute;nario&nbsp;: R&eacute;initialiser l&#8217;auto-incr&eacute;mentation d&#8217;une base de donn&eacute;es">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: R&eacute;initialiser l&#8217;auto-incr&eacute;mentation
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;narios associ&eacute;s"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1456"></a>Sc&eacute;narios associ&eacute;s</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute;, consultez&nbsp;:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tDBSQLRow.html#Raa17909" title="Sc&eacute;nario&nbsp;: R&eacute;initialiser l&#8217;auto-incr&eacute;mentation d&#8217;une base de donn&eacute;es">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: R&eacute;initialiser l&#8217;auto-incr&eacute;mentation
 				d&#8217;une base de donn&eacute;es&nbsp;&raquo;</a> du composant <span class="bold"><strong>tDBSQLRow</strong></span>. </p></li><li class="listitem"><p><a class="xref" href="tMysqlRow.html#Raa11099" title="Sc&eacute;nario&nbsp;1&nbsp;: Supprimer et re-g&eacute;n&eacute;rer un index de table MySQL">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;1&nbsp;: Supprimer et re-g&eacute;n&eacute;rer un index de
 				table MySQL&nbsp;&raquo;</a> du composant <span class="bold"><strong>tMysqlRow</strong></span>.</p></li></ul></div></div></div></body></html>

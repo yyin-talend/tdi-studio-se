@@ -2,7 +2,7 @@
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
    <title>tHBaseOutput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch01.html" title="Chapitre&nbsp;1.&nbsp;Composants Big Data"><link rel="prev" href="tHBaseInput.html" title="tHBaseInput"><link rel="next" href="tHCatalogInput.html" title="tHCatalogInput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tHBaseOutput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHBaseOutput"></a>tHBaseOutput</h2></div></div></div><div class="mediaobject"><img src="../images/tHBaseOutput_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Ce composant est disponible dans la </em></span><span class="bold"><strong>Palette</strong></span><span class="emphasis"><em> de votre studio si vous avez souscrit &agrave; l'&eacute;dition
 				correspondante de </em></span><span class="bluebold">Talend Enterprise Data Integration Big Data edition</span><span class="emphasis"><em>.</em></span>
-		</p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tHBaseOutput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1774"></a>Propri&eacute;t&eacute;s du tHBaseOutput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+		</p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tHBaseOutput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1766"></a>Propri&eacute;t&eacute;s du tHBaseOutput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
 							<p>
 								<span class="bold"><strong>Famille de composant</strong></span>
 							</p>
@@ -33,13 +33,12 @@
 								<span class="emphasis"><em>Property type</em></span>
 							</p>
 						</td><td valign="top">
-							<p>Peut &ecirc;tre <span class="bold"><strong>Built-in</strong></span> ou <span class="bold"><strong>Repository</strong></span>.</p>
+							<p><span>Peut &ecirc;tre <span class="bold"><strong>Built-in</strong></span> ou <span class="bold"><strong>Repository</strong></span></span>.</p>
 							<p>- <span class="bold"><strong>Built-in</strong></span> : Propri&eacute;t&eacute;s utilis&eacute;es
 								ponctuellement.</p>
-							<p>- <span class="bold"><strong>Repository</strong></span> : S&eacute;lectionnez le
-								fichier dans lequel sont stock&eacute;es les propri&eacute;t&eacute;s du composant. Les
-								champs suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es
-								collect&eacute;es.</p>
+							<p>- <span class="bold"><strong>Repository</strong></span> : S&eacute;lectionnez le fichier dans lequel
+								sont stock&eacute;es les propri&eacute;t&eacute;s du composant. Les champs suivants sont
+								alors pr&eacute;-remplis &agrave; l&#8217;aide des donn&eacute;es collect&eacute;es.</p>
 						</td></tr><tr><td>
 							<p>&nbsp;</p>
 						</td><td valign="top">
@@ -65,16 +64,8 @@
 							<p>Cochez cette case et s&eacute;lectionnez le composant appropri&eacute; <span class="bold"><strong>tHBaseConnection</strong></span> dans la liste <span class="bold"><strong>Component list</strong></span> si vous souhaitez
 								r&eacute;utiliser les param&egrave;tres d'une connexion d&eacute;j&agrave; d&eacute;finie.</p>
 						</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">HBase version</span></td><td valign="top">
-							<p>S&eacute;lectionnez une version de HBase dans la liste :</p>
-							<p><span class="bold"><strong>Hortonworks Data Platform 1.0</strong></span> :
-								Vous devez sp&eacute;cifier l'acc&egrave;s &agrave; Hortonworks Data Platform 1.0
-								supportant les projets Apache Hadoop, notamment HDFS, MapR, Hive,
-								HBase, Pig et ZooKeeper.</p>
-							<p><span class="bold"><strong>Apache 0.20.203</strong></span> : Vous devez
-								sp&eacute;cifier l'acc&egrave;s &agrave; Apache 0.20.203 &agrave; utiliser.</p>
-							<p><span class="bold"><strong>Apache 1.0.0 </strong></span>: Vous devez
-								sp&eacute;cifier l'acc&egrave;s &agrave; Apache Hadoop 1.0.0 &agrave; utiliser.</p>
-						</td></tr><tr><td>
+							<p>S&eacute;lectionnez dans la liste d&eacute;roulante la version de la distribution d'Hadoop que vous utilisez.</p>
+							</td></tr><tr><td>
 							<p>&nbsp;</p>
 						</td><td valign="top">
 							<p>
@@ -97,11 +88,11 @@
 							<p><span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
 								schema</em></span></p>
 						</td><td valign="top">
-							<p>Un sch&eacute;ma est une
-								description de lignes, i.e., il d&eacute;finit le nombre de champs qui sont
-								trait&eacute;s et pass&eacute;s au composant suivant. Le sch&eacute;ma est soit local
-									(<span class="bold"><strong>Built-in</strong></span>), soit distant
-									(<span class="bold"><strong>Repository</strong></span>). </p>
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant.
+									<span>Le sch&eacute;ma est soit local
+										(<span class="bold"><strong>Built-in</strong></span>) , soit distant
+									dans le <span class="bold"><strong>Repository</strong></span></span>.</p>
 							<p> </p>
 							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Ce composant offre la fonction de sch&eacute;ma dynamique. Cela vous
 									permet de r&eacute;cup&eacute;rer des colonnes inconnues de fichiers source ou
@@ -193,5 +184,5 @@
 						</td><td colspan="2" valign="top">
 							<p>Ce composant est un composant de fin et n&eacute;cessite un composant
 								d'entr&eacute;e.</p>
-						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e2227"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute; au composant <span class="bold"><strong>tHBaseOutput</strong></span>,
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e2222"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p>Pour un sc&eacute;nario associ&eacute; au composant <span class="bold"><strong>tHBaseOutput</strong></span>,
 			consultez <a class="xref" href="tHBaseInput.html#ychen-20110922-databases-thbaseinput_scenario" title="Sc&eacute;nario : Echanger des donn&eacute;es clients avec HBase">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario : Echanger des donn&eacute;es clients avec HBase&nbsp;&raquo;</a>.</p></div></div></body></html>

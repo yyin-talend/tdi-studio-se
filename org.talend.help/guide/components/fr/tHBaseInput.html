@@ -2,7 +2,7 @@
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
    <title>tHBaseInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch01.html" title="Chapitre&nbsp;1.&nbsp;Composants Big Data"><link rel="prev" href="tHBaseConnection.html" title="tHBaseConnection"><link rel="next" href="tHBaseOutput.html" title="tHBaseOutput"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tHBaseInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHBaseInput"></a>tHBaseInput</h2></div></div></div><div class="mediaobject"><img src="../images/tHBaseInput_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Ce composant est disponible dans la </em></span><span class="bold"><strong>Palette</strong></span><span class="emphasis"><em> de votre studio si vous avez souscrit &agrave; l'&eacute;dition
 				correspondante de </em></span><span class="bluebold">Talend Enterprise Data Integration Big Data edition</span><span class="emphasis"><em>.</em></span>
-		</p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tHBaseInput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e782"></a>Propri&eacute;t&eacute;s du tHBaseInput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+		</p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tHBaseInput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e771"></a>Propri&eacute;t&eacute;s du tHBaseInput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
 							<p>
 								<span class="bold"><strong>Famille de composant</strong></span>
 							</p>
@@ -35,7 +35,7 @@
 								<span class="emphasis"><em>Property type</em></span>
 							</p>
 						</td><td valign="top">
-							<p>Peut &ecirc;tre <span class="bold"><strong>Built-in</strong></span> ou <span class="bold"><strong>Repository</strong></span>.</p>
+							<p><span>Peut &ecirc;tre <span class="bold"><strong>Built-in</strong></span> ou <span class="bold"><strong>Repository</strong></span></span>.</p>
 							<p>- <span class="bold"><strong>Built-in</strong></span> : Propri&eacute;t&eacute;s utilis&eacute;es
 								ponctuellement.</p>
 							<p>- <span class="bold"><strong>Repository</strong></span> : S&eacute;lectionnez le
@@ -67,16 +67,8 @@
 							<p>Cochez cette case et s&eacute;lectionnez le composant appropri&eacute; <span class="bold"><strong>tHBaseConnection</strong></span> dans la liste <span class="bold"><strong>Component list</strong></span> si vous souhaitez
 								r&eacute;utiliser les param&egrave;tres d'une connexion d&eacute;j&agrave; d&eacute;finie.</p>
 						</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">HBase version</span></td><td valign="top">
-							<p>S&eacute;lectionnez une version de HBase dans la liste :</p>
-							<p><span class="bold"><strong>Hortonworks Data Platform 1.0</strong></span> :
-								Vous devez sp&eacute;cifier l'acc&egrave;s &agrave; Hortonworks Data Platform 1.0
-								supportant les projets Apache Hadoop, notamment HDFS, MapR, Hive,
-								HBase, Pig et ZooKeeper.</p>
-							<p><span class="bold"><strong>Apache 0.20.203</strong></span> : Vous devez
-								sp&eacute;cifier l'acc&egrave;s &agrave; Apache 0.20.203 &agrave; utiliser.</p>
-							<p><span class="bold"><strong>Apache 1.0.0 </strong></span>: Vous devez
-								sp&eacute;cifier l'acc&egrave;s &agrave; Apache Hadoop 1.0.0 &agrave; utiliser.</p>
-						</td></tr><tr><td>
+							<p>S&eacute;lectionnez dans la liste d&eacute;roulante la version de la distribution d'Hadoop que vous utilisez.</p>
+							</td></tr><tr><td>
 							<p>&nbsp;</p>
 						</td><td valign="top">
 							<p>
@@ -100,8 +92,10 @@
 								schema</em></span></p>
 						</td><td valign="top">
 							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
-								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
-								sch&eacute;ma est soit local (<span class="bold"><strong>Built-in</strong></span>), soit distant (<span class="bold"><strong>Repository</strong></span>). </p>
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant.
+									<span>Le sch&eacute;ma est soit local
+										(<span class="bold"><strong>Built-in</strong></span>) , soit distant
+									dans le <span class="bold"><strong>Repository</strong></span></span>.</p>
 							<p> </p>
 							<div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Ce composant offre la fonction de sch&eacute;ma dynamique. Cela vous
 									permet de r&eacute;cup&eacute;rer des colonnes inconnues de fichiers source ou
@@ -173,20 +167,20 @@
 						connexion.</p></li></ul></div><p>Pour reproduire ce sc&eacute;nario, proc&eacute;dez comme dans les sections suivantes.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Avant de commencer &agrave; reproduire le sc&eacute;nario, v&eacute;rifiez que votre base de donn&eacute;es
 				Hbase et votre service Zookeeper ont &eacute;t&eacute; install&eacute;s et configur&eacute;s correctement. Ce
 				sc&eacute;nario explique uniquement comment utiliser <span class="bold"><strong>Talend</strong></span> pour
-				effectuer une transaction avec une base de donn&eacute;es HBase.</p></td></tr></table></div><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1231"></a>D&eacute;poser et relier les composants</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>D&eacute;posez un <span class="bold"><strong>tHBaseConnection</strong></span>, un <span class="bold"><strong>tFixedFlowInput</strong></span>, un <span class="bold"><strong>tHBaseOutput</strong></span>, un <span class="bold"><strong>tHBaseInput</strong></span>, un<span class="bold"><strong> tLogRow</strong></span> et
+				effectuer une transaction avec une base de donn&eacute;es HBase.</p></td></tr></table></div><div class="section" title="D&eacute;poser et relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1223"></a>D&eacute;poser et relier les composants</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>D&eacute;posez un <span class="bold"><strong>tHBaseConnection</strong></span>, un <span class="bold"><strong>tFixedFlowInput</strong></span>, un <span class="bold"><strong>tHBaseOutput</strong></span>, un <span class="bold"><strong>tHBaseInput</strong></span>, un<span class="bold"><strong> tLogRow</strong></span> et
 						un <span class="bold"><strong>tHBaseClose</strong></span> de la <span class="bold"><strong>Palette</strong></span> dans l'espace de mod&eacute;lisation graphique.</p></li><li class="listitem"><p>Cliquez-droit sur le composant <span class="bold"><strong>tHBaseConnection</strong></span> afin d'ouvrir son menu contextuel et
 						s&eacute;lectionnez <span class="bold"><strong>Trigger</strong></span> &gt; <span class="bold"><strong>On Subjob Ok</strong></span> pour connecter ce composant au
 							<span class="bold"><strong>tFixedFlowInput</strong></span>.</p></li><li class="listitem"><p>R&eacute;p&eacute;tez l'op&eacute;ration afin de cr&eacute;er le lien <span class="bold"><strong>OnSubjobOk</strong></span> du <span class="bold"><strong>tFixedFlowInput</strong></span> au <span class="bold"><strong>tHBaseInput</strong></span> puis au <span class="bold"><strong>tHBaseClose</strong></span>.</p></li><li class="listitem"><p>Cliquez-droit sur le <span class="bold"><strong>tFixedFlowInput</strong></span> et
 						s&eacute;lectionnez <span class="bold"><strong>Row</strong></span> &gt; <span class="bold"><strong>Main</strong></span> afin de connecter ce composant au <span class="bold"><strong>tHBaseOutput</strong></span>.</p></li><li class="listitem"><p>R&eacute;p&eacute;tez l'op&eacute;ration pour cr&eacute;er le lien <span class="bold"><strong>Main</strong></span> du <span class="bold"><strong>tHBaseInput</strong></span> au
 							<span class="bold"><strong>tLogRow</strong></span>.</p></li></ol></div><p>Les composants de ce sc&eacute;nario sont plac&eacute;s et connect&eacute;s entre eux. Vous devez les
-				configurer. </p></div><div class="section" title="Configurer la connexion"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1320"></a>Configurer la connexion</h4></div></div></div><p>Pour configurer la connexion &agrave; votre service Zookeeper puis &agrave; la base HBase
+				configurer. </p></div><div class="section" title="Configurer la connexion"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1312"></a>Configurer la connexion</h4></div></div></div><p>Pour configurer la connexion &agrave; votre service Zookeeper puis &agrave; la base HBase
 				souhait&eacute;e, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Dans l'espace de mod&eacute;lisation de votre Studio, double-cliquez sur le
 						composant <span class="bold"><strong>tHBaseConnection</strong></span> pour ouvrir sa
 						vue <span class="bold"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-thbaseinput_connection.png"></div></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Zookeeper quorum</strong></span>, saisissez
 						le nom ou l'URL du service Zookeeper que vous utilisez. Dans cet exemple, le
 						nom du service est <span class="italic">hbase</span>.</p></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Zookeeper client port</strong></span>,
 						saisissez le num&eacute;ro du port client d'&eacute;coute. Dans cet exemple, saisissez
-							<span class="italic">2181</span>.</p></li></ol></div></div><div class="section" title="Configurer l'&eacute;criture de donn&eacute;es dans la base HBase"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1356"></a>Configurer l'&eacute;criture de donn&eacute;es dans la base HBase</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Dans l'espace de mod&eacute;lisation graphique, double-cliquez sur le composant
+							<span class="italic">2181</span>.</p></li></ol></div></div><div class="section" title="Configurer l'&eacute;criture de donn&eacute;es dans la base HBase"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1348"></a>Configurer l'&eacute;criture de donn&eacute;es dans la base HBase</h4></div></div></div><p>Pour ce faire, proc&eacute;dez comme suit :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Dans l'espace de mod&eacute;lisation graphique, double-cliquez sur le composant
 							<span class="bold"><strong>tFixedFlowInput</strong></span> pour ouvrir sa vue
 							<span class="bold"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-thbaseinput_inflow.png"></div></li><li class="listitem"><p>Dans cette vue, cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du champ <span class="bold"><strong>Edit
 							schema</strong></span> afin d'ouvrir l'&eacute;diteur de sch&eacute;ma.</p><div class="mediaobject"><img src="../images/use_case-thbaseinput_inflow_schema.png"></div></li><li class="listitem"><p>Cliquez trois fois sur le bouton <span class="bold"><strong>[+]</strong></span> pour
@@ -243,7 +237,7 @@
 						exemple, les colonnes <span class="italic">id</span> et <span class="italic">age</span> appartiennent &agrave; la famille <span class="italic">family1</span> et la colonne <span class="italic">name</span> &agrave; la famille <span class="italic">family2</span>.</p><div class="note" title="Note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Note]" src="../images/note.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p>Ces familles de colonnes doivent d&eacute;j&agrave; exister dans la base de donn&eacute;es
 							HBase &agrave; laquelle vous vous connectez ou elles doivent &ecirc;tre d&eacute;finies dans
 							la table <span class="bold"><strong>Family parameters</strong></span> de la vue
-								<span class="bold"><strong>Advanced settings</strong></span>.</p></td></tr></table></div></li></ol></div></div><div class="section" title="Configurer l'extraction des donn&eacute;es de la base HBase"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1609"></a>Configurer l'extraction des donn&eacute;es de la base HBase</h4></div></div></div><p> Pour ce faire, effectuez les op&eacute;ration suivantes :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tHBaseInput</strong></span> afin
+								<span class="bold"><strong>Advanced settings</strong></span>.</p></td></tr></table></div></li></ol></div></div><div class="section" title="Configurer l'extraction des donn&eacute;es de la base HBase"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1601"></a>Configurer l'extraction des donn&eacute;es de la base HBase</h4></div></div></div><p> Pour ce faire, effectuez les op&eacute;ration suivantes :</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Double-cliquez sur le <span class="bold"><strong>tHBaseInput</strong></span> afin
 						d'ouvrir sa vue <span class="bold"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-thbaseinput_config.png"></div></li><li class="listitem"><p>Cochez la case <span class="bold"><strong>Use an existing connection</strong></span>
 						puis s&eacute;lectionnez la connexion configur&eacute;e pr&eacute;c&eacute;demment. Dans cet exemple, la
 						connexion est <span class="italic">tHBaseConnection_1</span>. </p></li><li class="listitem"><p> Cliquez sur le bouton <span class="bold"><strong>[...]</strong></span> &agrave; c&ocirc;t&eacute; du
@@ -263,7 +257,7 @@
 							family</strong></span>, chaque nom correspondant &agrave; la colonne que la famille
 						contient. </p></li><li class="listitem"><p>Double-cliquez sur le composant <span class="bold"><strong>tHBaseClose</strong></span> pour ouvrir sa vue <span class="bold"><strong>Component</strong></span>.</p><div class="mediaobject"><img src="../images/use_case-thbaseclose.png"></div></li><li class="listitem"><p>Dans le champ <span class="bold"><strong>Component List</strong></span>,
 						s&eacute;lectionnez la connexion que vous souhaitez fermer. Dans cet exemple,
-						s&eacute;lectionnez <span class="italic">tHBaseConnection_1</span>.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1732"></a>Ex&eacute;cuter le Job</h4></div></div></div><p>Pour ex&eacute;cuter ce Job, appuyez sur <span class="bold"><strong>F6</strong></span>. </p><p>La vue <span class="bold"><strong>Run</strong></span> s'ouvre automatiquement et vous pouvez
+						s&eacute;lectionnez <span class="italic">tHBaseConnection_1</span>.</p></li></ol></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1724"></a>Ex&eacute;cuter le Job</h4></div></div></div><p>Pour ex&eacute;cuter ce Job, appuyez sur <span class="bold"><strong>F6</strong></span>. </p><p>La vue <span class="bold"><strong>Run</strong></span> s'ouvre automatiquement et vous pouvez
 				voir les r&eacute;sultats d'ex&eacute;cution.</p><div class="mediaobject"><img src="../images/use_case-result-processed_data.png"></div><p>Les colonnes souhait&eacute;es sont extraites. Vous pouvez donc les traiter selon vos
 				besoins. </p><p>En vous connectant &agrave; votre base de donn&eacute;es HBase, vous pouvez constater que la
 				table <span class="italic">customer</span> a bien &eacute;t&eacute; cr&eacute;&eacute;e.</p></div></div></div></body></html>

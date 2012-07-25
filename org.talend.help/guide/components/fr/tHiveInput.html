@@ -3,7 +3,7 @@
    <title>tHiveInput</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><link rel="home" href="index.html" title="Talend Enterprise"><link rel="up" href="ch01.html" title="Chapitre&nbsp;1.&nbsp;Composants Big Data"><link rel="prev" href="tHiveConnection.html" title="tHiveConnection"><link rel="next" href="tHiveRow.html" title="tHiveRow"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div lang="FR" class="section" title="tHiveInput"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tHiveInput"></a><span>tHiveInput</span>
 	</h2></div></div></div><div class="mediaobject"><img src="../images/tHiveInput_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Warning"><tr><td rowspan="2" align="center" valign="top" width="16pt"><img alt="[Avertissement]" src="../images/warning.png"></td><th align="left"></th></tr><tr><td align="left" valign="top"><p><span class="emphasis"><em>Ce composant est disponible dans la </em></span><span class="bold"><strong>Palette</strong></span><span class="emphasis"><em> de votre studio si vous avez souscrit &agrave; l'&eacute;dition
 				correspondante de </em></span><span class="bluebold">Talend Enterprise Data Integration Big Data edition</span><span class="emphasis"><em>.</em></span>
-		</p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tHiveInput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e8424"></a>Propri&eacute;t&eacute;s du tHiveInput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
+		</p></td></tr></table></div><div class="section" title="Propri&eacute;t&eacute;s du tHiveInput"><div class="titlepage"><div><div><h3 class="title"><a name="d0e8446"></a>Propri&eacute;t&eacute;s du tHiveInput</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup><tbody><tr><td valign="top">
 							<p>
 								<span class="bold"><strong>Famille de composant</strong></span>
 							</p>
@@ -37,7 +37,7 @@
 								<span class="emphasis"><em>Property type</em></span>
 							</p>
 						</td><td valign="top">
-							<p>Peut-&ecirc;tre <span class="bold"><strong>Built-in</strong></span> ou <span class="bold"><strong>Repository</strong></span>. </p>
+							<p><span>Peut &ecirc;tre <span class="bold"><strong>Built-in</strong></span> ou <span class="bold"><strong>Repository</strong></span></span>.</p>
 						</td></tr><tr><td>
 							<p>&nbsp;</p>
 						</td><td>
@@ -49,7 +49,7 @@
 							S&eacute;lectionnez le fichier dans lequel sont stock&eacute;es les propri&eacute;t&eacute;s du
 							composant. Les champs suivants sont alors pr&eacute;-remplis &agrave; l&#8217;aide des
 							donn&eacute;es collect&eacute;es.</td></tr><tr><td>
-							
+							<p><span class="bold"><strong>Basic settings</strong></span></p>
 						</td><td valign="top">
 							<p>
 								<span class="emphasis"><em>Use an existing connection</em></span>
@@ -78,25 +78,11 @@
 									settings</strong></span>), consultez le <span class="italic">Guide
 									utilisateur de</span> votre Studio. </p>
 						</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">Hive version</span></td><td valign="top">
-							<p>S&eacute;lectionnez une version de Hive dans la liste :</p>
-							<p><span class="bold"><strong>Hortonworks Data Platform 1.0</strong></span> :
-								Vous devez sp&eacute;cifier l'acc&egrave;s &agrave; Hortonworks Data Platform 1.0
-								supportant les projets Apache Hadoop, notamment HDFS, MapR, Hive,
-								HBase, Pig et ZooKeeper.</p>
-							<p><span class="bold"><strong>Apache 0.20.203</strong></span> : Vous devez
-								sp&eacute;cifier l'acc&egrave;s &agrave; Apache 0.20.203 &agrave; utiliser.</p>
-							<p><span class="bold"><strong>Apache 1.0.0 </strong></span>: Vous devez
-								sp&eacute;cifier l'acc&egrave;s &agrave; Apache Hadoop 1.0.0 &agrave; utiliser.</p>
-						</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">Connection
+							<p>S&eacute;lectionnez dans la liste d&eacute;roulante la version de la distribution d'Hadoop que vous utilisez.</p>
+							</td></tr><tr><td>&nbsp;</td><td valign="top"><span class="italic">Connection
 							mode</span></td><td valign="top">
-							<p>S&eacute;lectionnez un mode de connexion dans la liste :</p>
-							<p><span class="bold"><strong>Standalone</strong></span> : Ce mode de connexion
-								est disponible lorsque la version de Hive est Apache 0.20.203 ou
-								Apache 1.0.0.</p>
-							<p><span class="bold"><strong>Embedded</strong></span> : Ce mode de connexion
-								est disponible lorsque la version de Hive est Apache 1.0.0 ou
-								Hortonworks Data Platform 1.0.</p>
-						</td></tr><tr><td>
+							<p>S&eacute;lectionnez un mode de connexion dans la liste. Les options varient selon la distribution que vous utilisez.</p>
+							</td></tr><tr><td>
 							<p>&nbsp;</p>
 						</td><td valign="top">
 							<p>
@@ -137,8 +123,10 @@
 								Schema</em></span></p>
 						</td><td valign="top">
 							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le
-								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant. Le
-								sch&eacute;ma est soit local (Built-in) soit distant dans le <span class="bold"><strong>Repository</strong></span>. </p>
+								nombre de champs qui sont trait&eacute;s et pass&eacute;s au composant suivant.
+									<span>Le sch&eacute;ma est soit local
+										(<span class="bold"><strong>Built-in</strong></span>) , soit distant
+									dans le <span class="bold"><strong>Repository</strong></span></span>.</p>
 						</td></tr><tr><td>
 							<p>&nbsp;</p>
 						</td><td>
@@ -171,7 +159,7 @@
 								<span class="emphasis"><em>Query type</em></span>
 							</p>
 						</td><td valign="top">
-							<p>Peut-&ecirc;tre <span class="bold"><strong>Built-in </strong></span>ou <span class="bold"><strong>Repository</strong></span>. </p>
+							<p><span>Peut &ecirc;tre <span class="bold"><strong>Built-in</strong></span> ou <span class="bold"><strong>Repository</strong></span></span>.</p>
 						</td></tr><tr><td>
 							<p>&nbsp;</p>
 						</td><td>
@@ -248,6 +236,6 @@
 							<p>Ce composant offre la flexibilit&eacute; des requ&ecirc;tes sur les bases de
 								donn&eacute;es et couvre toutes les possibilit&eacute;s de requ&ecirc;tes Hive
 								QL.</p>
-						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e9008"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p> Pour un sc&eacute;nario associ&eacute;, consultez </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tMysqlInput.html#sc%C3%A9nario-mysqlinput-columns_in_output_file" title="Sc&eacute;nario&nbsp;: Ecrire des colonnes d&#8217;une base de donn&eacute;es MySQL dans un fichier de sortie">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Ecrire des colonnes d&#8217;une base de donn&eacute;es MySQL dans un fichier de
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario associ&eacute;"><div class="titlepage"><div><div><h3 class="title"><a name="d0e9041"></a>Sc&eacute;nario associ&eacute;</h3></div></div></div><p> Pour un sc&eacute;nario associ&eacute;, consultez </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="tMysqlInput.html#sc%C3%A9nario-mysqlinput-columns_in_output_file" title="Sc&eacute;nario&nbsp;: Ecrire des colonnes d&#8217;une base de donn&eacute;es MySQL dans un fichier de sortie">la section intitul&eacute;e &laquo;&nbsp;Sc&eacute;nario&nbsp;: Ecrire des colonnes d&#8217;une base de donn&eacute;es MySQL dans un fichier de
 			sortie&nbsp;&raquo;</a> du composant
 						<span class="bold"><strong>tMysqlInput</strong></span>.</p></li></ul></div></div></div></body></html>
