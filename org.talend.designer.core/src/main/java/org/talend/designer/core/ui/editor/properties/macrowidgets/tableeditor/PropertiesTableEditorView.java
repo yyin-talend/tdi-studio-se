@@ -328,7 +328,9 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             && (!currentParam.isReadOnly()));
                     CheckColumnSelectionListener tableColumnSelectionListener = new CheckColumnSelectionListener(column,
                             tableViewerCreator, currentParam);
-                    column.setTableColumnSelectionListener(tableColumnSelectionListener);
+                    if (!currentParam.isReadOnly()) {
+                        column.setTableColumnSelectionListener(tableColumnSelectionListener);
+                    }
                     column.setTableEditorContent(new CheckboxTableEditorContent());
                     Boolean curValue = (Boolean) currentParam.getValue();
                     tableColumnSelectionListener.setChecked(curValue.booleanValue());
