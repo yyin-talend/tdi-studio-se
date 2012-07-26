@@ -41,7 +41,7 @@ public class JUnitStudioStartup {
             Thread.sleep(INIT_PAUSE);
             endTimer = System.currentTimeMillis();
         }
-        if ((endTimer - startTimer) < INIT_TIMEOUT) {
+        if ((endTimer - startTimer) > INIT_TIMEOUT) {
             System.out.println("|" + format.format(new Date())
                     + "| Timeout when generate jet emitters (10 minutes), will just continue with standards junits");
         } else {
