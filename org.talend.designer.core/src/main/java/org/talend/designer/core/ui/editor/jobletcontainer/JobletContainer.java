@@ -62,6 +62,8 @@ public class JobletContainer extends NodeContainer {
 
     protected List<IElement> jobletElements = new ArrayList<IElement>();
 
+    public static final int EXPEND_SIZE = 10;
+
     public JobletContainer(Node node) {
         super(node);
         this.node = node;
@@ -99,6 +101,10 @@ public class JobletContainer extends NodeContainer {
     public Rectangle getJobletContainerRectangle() {
         Rectangle totalRectangle = null;
         boolean collapsed = isCollapsed();
+
+        IProcess jobletProcess = this.getNode().getComponent().getProcess();
+        List<? extends INode> jobletNodes = jobletProcess.getGraphicalNodes();
+
         if (!collapsed && nodeContainers.size() > 0) {
             Rectangle jobletNodeRec = this.node.getNodeContainer().getNodeContainerRectangle();
             for (NodeContainer container : nodeContainers) {
@@ -114,11 +120,16 @@ public class JobletContainer extends NodeContainer {
                 // }
             }
             // totalRectangle.setLocation(jobletNodeRec.getLocation());
+            totalRectangle.x = totalRectangle.x - EXPEND_SIZE * 2;
+            totalRectangle.y = totalRectangle.y - EXPEND_SIZE * 2;
+            totalRectangle.height = totalRectangle.height + EXPEND_SIZE * 4;
+
         } else if (node != null) {
             NodeContainer container = node.getNodeContainer();
             Rectangle curRect = container.getNodeContainerRectangle();
             if (collapsed) {
                 totalRectangle = curRect.getCopy();
+
             } else {
                 if (totalRectangle == null) {
                     totalRectangle = curRect.getCopy();
@@ -131,6 +142,12 @@ public class JobletContainer extends NodeContainer {
         if (totalRectangle == null) {
             return null;
         }
+        if ((collapsed && jobletNodes.size() <= 1) || (!collapsed && jobletNodes.size() == 0 && nodeContainers.size() == 0)) {
+            totalRectangle.x = totalRectangle.x - EXPEND_SIZE;
+            totalRectangle.y = totalRectangle.y - EXPEND_SIZE * 2;
+            totalRectangle.height = totalRectangle.height + EXPEND_SIZE * 2;
+        }
+
         if (jobletRectangle != null) {
             if ((Math.abs(jobletRectangle.width - totalRectangle.width) != 0) || this.nodeContainers.size() == 1) {
                 changeWidth = Math.abs(jobletRectangle.width - totalRectangle.width);
@@ -140,6 +157,7 @@ public class JobletContainer extends NodeContainer {
             }
 
         }
+
         jobletRectangle = totalRectangle.getCopy();
         return totalRectangle;
     }

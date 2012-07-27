@@ -224,10 +224,12 @@ public class SubjobContainer extends Element implements ISubjobContainer {
     public Rectangle getSubjobContainerRectangle() {
         Rectangle totalRectangle = null;
         boolean collapsed = isCollapsed();
+        boolean hasJoblet = false;
         for (NodeContainer container : nodeContainers) {
             Rectangle curRect = null;
             if (container instanceof JobletContainer) {
                 curRect = ((JobletContainer) container).getJobletContainerRectangle();
+                hasJoblet = true;
             } else {
                 curRect = container.getNodeContainerRectangle();
             }
@@ -255,6 +257,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
                 curRect.setLocation(curRect.getLocation().x - TalendEditor.GRID_SIZE, curRect.getLocation().y);
                 curRect.setSize(curRect.getSize().width + TalendEditor.GRID_SIZE, curRect.getSize().height);
             }
+
             if (collapsed && totalRectangle == null) {
                 totalRectangle = curRect.getCopy();
             } else if (!collapsed) {
@@ -294,7 +297,9 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         } else {
             size.width = ((size.width / TalendEditor.GRID_SIZE) + 1) * TalendEditor.GRID_SIZE;
         }
-
+        if (hasJoblet) {
+            size.width = size.width + TalendEditor.GRID_SIZE;
+        }
         totalRectangle.setSize(size);
         return totalRectangle;
     }
