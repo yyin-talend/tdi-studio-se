@@ -12,11 +12,22 @@
 // ============================================================================
 package org.talend.designer.core.ui.wizards;
 
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.part.EditorPart;
+import org.osgi.framework.FrameworkUtil;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.CorePlugin;
@@ -66,8 +77,8 @@ public class SaveAsProcessWizard extends Wizard {
         RepositoryNode repositoryNode = jobEditorInput.getRepositoryNode();
         // see: RepositoryEditorInput.setRepositoryNode(IRepositoryNode repositoryNode)
         if (repositoryNode == null) {
-            repositoryNode = (RepositoryNode) CorePlugin.getDefault().getRepositoryService().getRepositoryNode(
-                    jobEditorInput.getItem().getProperty().getId(), false);
+            repositoryNode = (RepositoryNode) CorePlugin.getDefault().getRepositoryService()
+                    .getRepositoryNode(jobEditorInput.getItem().getProperty().getId(), false);
         }
 
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
@@ -112,14 +123,16 @@ public class SaveAsProcessWizard extends Wizard {
             isUpdate = isUpdate();
 
             if (isUpdate) {
-                oldProcessItem.setProcess(processType);
+                // oldProcessItem.setProcess(processType);
+                //
+                // assginVlaues(oldProperty, property);
+                //
+                // repositoryFactory.save(oldProcessItem);
+                //
+                // // assign value
+                // processItem = oldProcessItem;
 
-                assginVlaues(oldProperty, property);
-
-                repositoryFactory.save(oldProcessItem);
-
-                // assign value
-                processItem = oldProcessItem;
+                update(processType);
             } else {
                 processItem.setProcess(processType);
 
@@ -136,6 +149,39 @@ public class SaveAsProcessWizard extends Wizard {
         }
 
         return ok;
+    }
+
+    private void update(final ProcessType processType) {
+
+        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+
+            @Override
+            public void run(final IProgressMonitor monitor) throws CoreException {
+                try {
+
+                    oldProcessItem.setProcess(processType);
+
+                    assginVlaues(oldProperty, property);
+
+                    repositoryFactory.save(oldProcessItem);
+
+                    // assign value
+                    processItem = oldProcessItem;
+                } catch (PersistenceException pe) {
+                    throw new CoreException(new Status(IStatus.ERROR, FrameworkUtil.getBundle(this.getClass()).getSymbolicName(),
+                            "persistance error", pe)); //$NON-NLS-1$
+                }
+            }
+        };
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        try {
+            ISchedulingRule schedulingRule = workspace.getRoot();
+            // the update the project files need to be done in the workspace runnable to avoid all notification
+            // of changes before the end of the modifications.
+            workspace.run(runnable, schedulingRule, IWorkspace.AVOID_UPDATE, null);
+        } catch (CoreException e) {
+            MessageBoxExceptionHandler.process(e.getCause());
+        }
     }
 
     public ProcessItem getProcess() {
