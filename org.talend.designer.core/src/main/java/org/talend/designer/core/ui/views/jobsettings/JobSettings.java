@@ -13,7 +13,9 @@
 package org.talend.designer.core.ui.views.jobsettings;
 
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 
@@ -44,7 +46,18 @@ public class JobSettings {
      * ggu Comment method "refreshView".
      */
     private static JobSettingsView getView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IWorkbench workbench = PlatformUI.getWorkbench();
+        if (workbench == null) {
+            return null;
+        }
+        IWorkbenchWindow benchWindow = workbench.getActiveWorkbenchWindow();
+        if (benchWindow == null) {
+            return null;
+        }
+        IWorkbenchPage page = benchWindow.getActivePage();
+        if (page == null) {
+            return null;
+        }
         IViewPart view = page.findView(JobSettingsView.ID);
         if (view == null) {
             try {
