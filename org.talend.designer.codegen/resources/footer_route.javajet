@@ -285,3 +285,63 @@
     	}	
 	}
 }
+
+class TalendRouteRegistry implements Registry {
+
+	private Map<String, Object> map = new HashMap<String, Object>();
+
+	private Registry wrapped = null;
+
+	public TalendRouteRegistry() {
+		this(null);
+	}
+
+	public TalendRouteRegistry(Registry wrapped) {
+		this.wrapped = wrapped;
+	}
+
+	public Object lookup(String name) {
+		Object obj = null;
+		if (wrapped != null) {
+			obj = wrapped.lookup(name);
+		}
+		if (obj == null) {
+			obj = map.get(name);
+		}
+		return obj;
+	}
+
+	public <T> T lookup(String name, Class<T> type) {
+		T t = null;
+		if (wrapped != null) {
+			t = wrapped.lookup(name, type);
+		}
+		if (t == null) {
+			t = (T) map.get(name);
+		}
+		return t;
+	}
+
+	public <T> Map<String, T> lookupByType(Class<T> type) {
+		Map<String, T> result = null;
+		if (wrapped != null) {
+			result = wrapped.lookupByType(type);
+		}
+		if (result == null) {
+			result = new HashMap<String, T>();
+		}
+		if (result.isEmpty()) {
+			for (Map.Entry<String, Object> entry : map.entrySet()) {
+				if (type.isInstance(entry.getValue())) {
+					result.put(entry.getKey(), type.cast(entry.getValue()));
+				}
+			}
+		}
+		return result;
+	}
+
+	public void register(String name, Object instance) {
+		map.put(name, instance);
+	}
+
+}

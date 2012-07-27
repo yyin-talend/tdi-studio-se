@@ -8,6 +8,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.Vector
 		java.util.List
+		java.util.Map
 	"
 %>
 <%
@@ -64,8 +65,47 @@
 <%
 			}
 %>
+			TalendRouteRegistry contextRegister = new TalendRouteRegistry(camelContext.getRegistry());
+			camelContext.setRegistry(contextRegister);
 			typeConverterRegistry = camelContext.getTypeConverterRegistry();
 <%
+
+			List<? extends INode> beanRegisterNodes = process.getNodesOfType("cBeanRegister");
+			if(beanRegisterNodes != null && beanRegisterNodes.size()>0){
+%>
+				Object beanInstance = null;
+<%			}
+			for(INode node: beanRegisterNodes){
+				String id = ElementParameterParser.getValue(node, "__ID__");
+				String isSimple = ElementParameterParser.getValue(node, "__SIMPLE_CONFIG__");
+				String classQualifiedName = ElementParameterParser.getValue(node, "__CLASS_QUALIFIED_NAME__");
+				String hasArguments = ElementParameterParser.getValue(node, "__SPECIFY_ARGUMENTS__");
+				List<Map<String, String>> arguments = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__ARGUMENTS__");
+				
+				String code = ElementParameterParser.getValue(node, "__CODE__");
+				
+				if("true".equals(isSimple)){
+					StringBuilder sb = new StringBuilder();
+					for(Map<String, String> s: arguments){
+						if(sb.length() == 0){
+							sb.append(s.get("VALUE"));
+						}else{
+							sb.append(",");
+							sb.append(s.get("VALUE"));
+						}
+					}
+%>
+					contextRegister.register(<%=id%>, new <%=classQualifiedName%>(<%=sb.toString()%>));
+<%
+				}else{
+%>
+					<%=code%>
+					if(beanInstance != null){
+						contextRegister.register(<%=id%>, beanInstance);
+					}
+<%
+				}
+			}
             //cJMSConnectionFactory http://jira.talendforge.org/browse/TESB-4860
 			List<? extends INode> jmsCFNodes = process.getNodesOfType("cJMSConnectionFactory");
 			if(jmsCFNodes.size()>0){
