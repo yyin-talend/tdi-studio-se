@@ -1436,8 +1436,17 @@
          beforeLogon="false"
          breaks="5.1.1"
          class="org.talend.repository.model.migration.AddDistributionClosedListForHadoopComponentsMigrationTask"
-         description="Add a distribution closed list for a better visibility in the hadoop components"
+         description="Replace host and port by namenode uri for hadoop components"
          id="org.talend.repository.model.migration.AddDistributionClosedListForHadoopComponentsMigrationTask"
+         name="Replace host and port by namenode uri for hadoop components"
+         version="5.1.2">
+      </projecttask>
+  	  <projecttask
+         beforeLogon="false"
+         breaks="5.1.1"
+         class="org.talend.repository.model.migration.ReplaceHostAndPortByNamenodeURIMigrationTask"
+         description="Add a distribution closed list for a better visibility in the hadoop components"
+         id="org.talend.repository.model.migration.ReplaceHostAndPortByNamenodeURIMigrationTask"
          name="Add a distribution closed list for a better visibility in the hadoop components."
          version="5.1.2">
       </projecttask>
