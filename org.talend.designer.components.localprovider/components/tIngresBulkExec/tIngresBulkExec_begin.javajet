@@ -330,9 +330,9 @@
 			  *the value does not contain trailing name-separator.
 	          */
 	          if(System.getProperty("java.io.tmpdir").endsWith(System.getProperty("file.separator"))){
-	         	 fileNameAndPath_<%=cid %> = tempDirectoryPath_<%=cid %> + "ingres_sql_" + timestamp_<%=cid %>;
+	         	 fileNameAndPath_<%=cid %> = tempDirectoryPath_<%=cid %> + jobName+"_<%=cid%>_ingres_sql_" + timestamp_<%=cid %>;
 	          }else{
-	          	 fileNameAndPath_<%=cid %> = tempDirectoryPath_<%=cid %> + System.getProperty("file.separator") + "ingres_sql_" + timestamp_<%=cid %>;
+	          	 fileNameAndPath_<%=cid %> = tempDirectoryPath_<%=cid %> + System.getProperty("file.separator") + jobName+"_<%=cid%>_ingres_sql_" + timestamp_<%=cid %>;
 	          }
 
 			sqlFileAndPath_<%=cid %>     = fileNameAndPath_<%=cid %> + ".sql";
