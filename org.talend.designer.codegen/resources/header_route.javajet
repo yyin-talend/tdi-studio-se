@@ -178,12 +178,15 @@ String cid = "";
 String componentName = "";
 String uri = "";
 for (INode node : graphicalNodes) {
-	IElementParameter param = node.getElementParameter("LABEL");
-	if (param != null && !"__UNIQUE_NAME__".equals(param.getValue())) {
-		cid = (String) param.getValue();
-	} else {
-		cid = node.getUniqueName();
-	}
+   	cid = node.getUniqueName();
+//  http://jira.talendforge.org/browse/TESB-5241
+//	IElementParameter param = node.getElementParameter("LABEL");
+//	if(param != null && !"__UNIQUE_NAME__".equals(param.getValue())){
+//		cid = (String)param.getValue();	
+//	}else{
+//		cid = node.getUniqueName();
+//	}
+   	
 	componentName = node.getComponent().getName();
 	uri = "";
 	if ("cMessagingEndpoint".equals(componentName)) {
