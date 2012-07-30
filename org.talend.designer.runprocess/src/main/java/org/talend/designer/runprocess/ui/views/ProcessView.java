@@ -44,8 +44,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ActionHandler;
@@ -146,13 +148,22 @@ public class ProcessView extends ViewPart {
     private static TargetExecComposite targetComposite;
 
     public static ProcessView findProcessView() {
-        try {
-            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-
-            return (ProcessView) page.findView(ID);
-        } catch (Exception e) {
-            return null;
+        IWorkbenchWindow ww = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (ww != null) {
+            IWorkbenchPage activePage = ww.getActivePage();
+            if (activePage != null) {
+                IViewPart part = activePage.findView(ID);
+                try {
+                    if (part == null) {
+                        part = activePage.showView(ID);
+                    }
+                } catch (Exception e) {
+                    // do nothing
+                }
+                return (ProcessView) part;
+            }
         }
+        return null;
     }
 
     /**
@@ -245,6 +256,7 @@ public class ProcessView extends ViewPart {
         tabFactory.getTabbedPropertyComposite().pack();
         tabFactory.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 TalendPropertyTabDescriptor descriptor = (TalendPropertyTabDescriptor) selection.getFirstElement();
@@ -284,18 +296,20 @@ public class ProcessView extends ViewPart {
 
         FocusListener fl = new FocusListener() {
 
+            @Override
             public void focusGained(FocusEvent e) {
                 log.trace(Messages.getString("ProcessView.gainFocusLog")); //$NON-NLS-1$
-                IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
-                        IContextService.class);
+                IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench()
+                        .getAdapter(IContextService.class);
                 ca = contextService.activateContext("talend.runProcess"); //$NON-NLS-1$
             }
 
+            @Override
             public void focusLost(FocusEvent e) {
                 log.trace(Messages.getString("ProcessView.lostFocusLog")); //$NON-NLS-1$
                 if (ca != null) {
-                    IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
-                            IContextService.class);
+                    IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench()
+                            .getAdapter(IContextService.class);
                     contextService.deactivateContext(ca);
                 }
             }
@@ -306,6 +320,7 @@ public class ProcessView extends ViewPart {
 
         contextManagerListener = new PropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (RunProcessContextManager.PROP_ACTIVE.equals(evt.getPropertyName())) {
                     // rubjobManager.setBooleanTrace(false);
@@ -324,6 +339,7 @@ public class ProcessView extends ViewPart {
         // TODO Auto-generated method stub
         moveButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 if (moveButton.getText().equals(">>")) { //$NON-NLS-1$
                     sash.setWeights(new int[] { 23, 1 });
@@ -395,22 +411,27 @@ public class ProcessView extends ViewPart {
         tabFactory.setInput(descriptors);
         tabFactory.setSelection(new IStructuredSelection() {
 
+            @Override
             public Object getFirstElement() {
                 return null;
             }
 
+            @Override
             public Iterator iterator() {
                 return null;
             }
 
+            @Override
             public int size() {
                 return 0;
             }
 
+            @Override
             public Object[] toArray() {
                 return null;
             }
 
+            @Override
             public List toList() {
                 List<TalendPropertyTabDescriptor> d = new ArrayList<TalendPropertyTabDescriptor>();
 
@@ -428,6 +449,7 @@ public class ProcessView extends ViewPart {
                 return d;
             }
 
+            @Override
             public boolean isEmpty() {
                 return false;
             }
@@ -525,8 +547,9 @@ public class ProcessView extends ViewPart {
         if (dc == advanceComposite) {
             advanceComposite.setProcessContext(activeContext);
         }
-        if (dc == targetComposite)
+        if (dc == targetComposite) {
             targetComposite.setProcessContext(activeContext);
+        }
         if (activeContext != null) {
             String jobName = Messages.getString("ProcessView.jobName"); //$NON-NLS-1$
             if (activeContext.getProcess().disableRunJobView()) { // ?? joblet
@@ -687,6 +710,7 @@ public class ProcessView extends ViewPart {
         }
         tabFactory.setSelection(new StructuredSelection() {
 
+            @Override
             public List toList() {
                 return selection;
             }

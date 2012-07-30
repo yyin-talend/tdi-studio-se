@@ -123,6 +123,8 @@ public class ActiveProcessTracker implements IPartListener {
             // setStatsAndLogsView(process);
             JobSettings.switchToCurJobSettingsView();
 
+            refreshProcessView();
+
             for (IJobTrackerListener listener : jobTrackerListeners) {
                 listener.focusOnJob(process);
             }
@@ -135,6 +137,10 @@ public class ActiveProcessTracker implements IPartListener {
             // }
         }
 
+    }
+
+    private void refreshProcessView() {
+        DesignerPlugin.getDefault().getRunProcessService().refreshView();
     }
 
     /**
