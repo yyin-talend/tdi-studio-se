@@ -83,8 +83,10 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.general.IExchangeService;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.documentation.IDocumentationService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.imports.TreeBuilder.IContainerNode;
 import org.talend.repository.model.ERepositoryStatus;
@@ -880,7 +882,15 @@ class ImportItemWizardPage extends WizardPage {
             if (item instanceof JobletProcessItem) {
                 needToRefreshPalette = true;
             }
-
+            if (item instanceof ProcessItem || item instanceof JobletProcessItem) {
+                IDocumentationService service = (IDocumentationService) GlobalServiceRegister.getDefault().getService(
+                        IDocumentationService.class);
+                try {
+                    service.createNodeDocumentationItemFromItem(item);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             if (item.getState().isLocked()) {
                 try {
@@ -901,13 +911,7 @@ class ImportItemWizardPage extends WizardPage {
                     ExceptionHandler.process(e);
                 }
             }
-            // if (item instanceof ProcessItem || item instanceof JobletProcessItem) {
-            // try {
-            // factory.save(item);
-            // } catch (PersistenceException e) {
-            // e.printStackTrace();
-            // }
-            // }
+
         }
 
         try {
