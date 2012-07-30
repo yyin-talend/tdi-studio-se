@@ -108,10 +108,10 @@ public class ReplaceHostAndPortByNamenodeURIMigrationTask extends
 					if (para.getValue()
 							.startsWith("hadoop-0.20.2-dev-core.jar")) {
 						ComponentUtilities.setNodeValue(node, name, "\"maprfs://\"+"
-								+ host + "+\":" + port + "/\"");
+								+ host + "+\":\" + " + port + " + \"/\"");
 					} else {
 						ComponentUtilities.setNodeValue(node, name, "\"hdfs://\"+"
-								+ host + "+\":" + port + "\"");
+								+ host + "+\":\" + " + port);
 					}
 					break;
 				}
