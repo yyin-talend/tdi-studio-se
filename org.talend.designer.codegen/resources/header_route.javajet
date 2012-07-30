@@ -55,46 +55,69 @@ if (service instanceof AbstractBrandingService) {
 package <%= packageName %>;
 
 <%
-for (String routine : CodeGeneratorRoutine.getRequiredRoutineName(process)) {
-	if (!routine.equals(ITalendSynchronizer.TEMPLATE)) {
-%>
-import routines.<%=routine%>;
-<%
+	java.util.Set<String> importsSet = new java.util.TreeSet<String>();
+	for (String routine : CodeGeneratorRoutine.getRequiredRoutineName(process)) {
+		if (!routine.equals(ITalendSynchronizer.TEMPLATE)) {
+			importsSet.add("import routines."+routine);
+		}
 	}
-}
-%>
-import routines.system.*;
-import routines.system.api.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.math.BigDecimal;
-import java.io.ByteArrayOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.io.IOException;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.HashMap;
-import org.apache.camel.spi.Registry;
+	importsSet.add("import routines.system.*");
+	importsSet.add("import routines.system.api.*");
+	importsSet.add("import java.text.ParseException");
+	importsSet.add("import java.text.SimpleDateFormat");
+	importsSet.add("import java.util.Date");
+	importsSet.add("import java.util.List");
+	importsSet.add("import java.math.BigDecimal");
+	importsSet.add("import java.io.ByteArrayOutputStream");
+	importsSet.add("import java.io.ByteArrayInputStream");
+	importsSet.add("import java.io.DataInputStream");
+	importsSet.add("import java.io.DataOutputStream");
+	importsSet.add("import java.io.ObjectOutputStream");
+	importsSet.add("import java.io.ObjectInputStream");
+	importsSet.add("import java.io.IOException");
+	importsSet.add("import java.util.Comparator");
+	importsSet.add("import java.util.Map");
+	importsSet.add("import java.util.HashMap");
+	importsSet.add("import org.apache.camel.spi.Registry");
+	
+	String headerImports = ElementParameterParser.getValue(process, "__HEADER_IMPORT__");
+	if(headerImports!=null && !"".equals(headerImports.trim())){
+		String[] imports = headerImports.split(";");
+		for(String s: imports){
+			if(s!=null && !"".equals(s.trim())){
+				importsSet.add(s.trim());
+			}
+		}
+	}
+	String footerImports = ElementParameterParser.getValue(process, "__FOOTER_IMPORT__");
+	if(footerImports!=null && !"".equals(footerImports.trim())){
+		String[] imports = footerImports.split(";");
+		for(String s: imports){
+			if(s!=null && !"".equals(s.trim())){
+				importsSet.add(s.trim());
+			}
+		}
+	}
 
-<%=ElementParameterParser.getValue(process, "__HEADER_IMPORT__") %>
-<%=ElementParameterParser.getValue(process, "__FOOTER_IMPORT__") %>
-
-
-<%
 	List<INode> nodesWithImport = process.getNodesWithImport();
 	if (nodesWithImport != null) {
 		for (INode node:nodesWithImport) {
+			String tmp = ElementParameterParser.getValue(node, "__IMPORT__");
+			if(tmp == null || "".equals(tmp.trim())){
+				continue;
+			}
+			String[] imports = tmp.trim().split(";");
+			for(String s: imports){
+				if(s!=null && !"".equals(s.trim())){
+					importsSet.add(s.trim());
+				}
+			}
+		}
+	}
+	for(String s: importsSet){
 %>
-	//the import part of <%=node.getUniqueName() %>
-	<%=ElementParameterParser.getValue(node, "__IMPORT__") %>
-
-<%		}
+		<%=s%> ;
+<%
 	}
 %>
 
