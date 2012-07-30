@@ -44,8 +44,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ActionHandler;
@@ -146,13 +148,22 @@ public class ProcessView extends ViewPart {
     private static TargetExecComposite targetComposite;
 
     public static ProcessView findProcessView() {
-        try {
-            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-
-            return (ProcessView) page.findView(ID);
-        } catch (Exception e) {
-            return null;
+        IWorkbenchWindow ww = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (ww != null) {
+            IWorkbenchPage activePage = ww.getActivePage();
+            if (activePage != null) {
+                IViewPart part = activePage.findView(ID);
+                try {
+                    if (part == null) {
+                        part = activePage.showView(ID);
+                    }
+                } catch (Exception e) {
+                    // do nothing
+                }
+                return (ProcessView) part;
+            }
         }
+        return null;
     }
 
     /**
@@ -286,16 +297,16 @@ public class ProcessView extends ViewPart {
 
             public void focusGained(FocusEvent e) {
                 log.trace(Messages.getString("ProcessView.gainFocusLog")); //$NON-NLS-1$
-                IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
-                        IContextService.class);
+                IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench()
+                        .getAdapter(IContextService.class);
                 ca = contextService.activateContext("talend.runProcess"); //$NON-NLS-1$
             }
 
             public void focusLost(FocusEvent e) {
                 log.trace(Messages.getString("ProcessView.lostFocusLog")); //$NON-NLS-1$
                 if (ca != null) {
-                    IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
-                            IContextService.class);
+                    IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench()
+                            .getAdapter(IContextService.class);
                     contextService.deactivateContext(ca);
                 }
             }
