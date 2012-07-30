@@ -27,6 +27,7 @@
 	List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
 	String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
 	boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
+	boolean isOptimizeCode=("true").equals(ElementParameterParser.getValue(node,"__OPTIMIZE_CODE__"));
 if(!customSetOriginalLength){//------11111
 %>
 	// open file
@@ -39,11 +40,75 @@ if(!customSetOriginalLength){//------11111
 	
 	// read every record, for each record split into column definition
 	List inrecord_<%=cid %>;
+<%
+		List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+		List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
+	if(isOptimizeCode){
+%>
+	class EBCDICUtil_<%=cid%>{
+<%
+	
+	for(Map<String, String> schemaMap : schemas) {//------AAA0
+		String schemaName = schemaMap.get("SCHEMA");
+		String code = schemaMap.get("CODE");
+	
+		IConnection justConn = null; //------->get the right output connection--->to get the columns info
+		if(conns != null && conns.size() > 0){
+			for(IConnection conn : conns){
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+					if(schemaName.equals(conn.getMetadataTable().getLabel())){
+						justConn = conn;
+						break;
+					}
+				}
+			}
+		}
+
+		if(justConn != null){//------BBB0
+			IMetadataTable justMetadata = justConn.getMetadataTable();
+			List<IMetadataColumn> justColumnList = justMetadata.getListColumns();
+			int sizeListColumns = justColumnList.size();
+				for (int valueN=0; valueN<sizeListColumns; valueN++) {
+					IMetadataColumn column = justColumnList.get(valueN);
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					if(valueN%100==0){
+%>
+				public void getValue_<%=schemaName%>_<%=valueN/100%>(final <%=justConn.getName() %>Struct <%=justConn.getName() %>,List inrecord_<%=cid %>){
+<%
+					}
+					if(javaType == JavaTypesManager.STRING){
+%>
+						<%=justConn.getName() %>.<%=column.getLabel()%> = (String)inrecord_<%=cid %>.get(<%=valueN%>);
+<%
+					}else{
+%>
+						<%=justConn.getName() %>.<%=column.getLabel()%> = (<%=javaType.getLabel() %>)inrecord_<%=cid %>.get(<%=valueN%>);
+<%
+					}
+				    if((valueN+1)%100==0){
+%>
+					}
+<%
+					}
+				}
+				if(sizeListColumns>0&&(sizeListColumns%100)>0){
+%>
+				}
+<%
+				}
+		}
+	}
+%>
+	}
+	EBCDICUtil_<%=cid%> ebcdicUtil_<%=cid%>=new EBCDICUtil_<%=cid%>();
+<%
+	}
+%>
 	while (rset_<%=cid %>.hasNext()){
 		inrecord_<%=cid %> = rset_<%=cid %>.next();
 		{
 			
-<%			List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+<%
 
     		if (conns!=null && conns.size()>0) {
 				for (int i=0;i<conns.size();i++) {
@@ -56,7 +121,6 @@ if(!customSetOriginalLength){//------11111
 				}
     		}
     		
-	List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
 	for(Map<String, String> schemaMap : schemas) {//------AAA0
 		String schemaName = schemaMap.get("SCHEMA");
 		String code = schemaMap.get("CODE");
@@ -85,14 +149,22 @@ if(!customSetOriginalLength){//------11111
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
 					IMetadataColumn column = justColumnList.get(valueN);
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-					if(javaType == JavaTypesManager.STRING){
+					if(!isOptimizeCode){
+						if(javaType == JavaTypesManager.STRING){
 %>				
 						<%=justConn.getName() %>.<%=column.getLabel()%> = (String)inrecord_<%=cid %>.get(<%=valueN%>);
 <%
-					}else {
+						}else {
 %>
 						<%=justConn.getName() %>.<%=column.getLabel()%> = (<%=javaType.getLabel() %>)inrecord_<%=cid %>.get(<%=valueN%>);
 <%
+						}
+					}else{
+						if(valueN%100==0){
+%>
+						ebcdicUtil_<%=cid%>.getValue_<%=schemaName%>_<%=valueN/100%>(<%=justConn.getName() %>,inrecord_<%=cid %>);
+<%
+						}
 					}
 				}
 %>	
@@ -128,6 +200,98 @@ the original size in the column:<%=column.getLabel()%> should be bigger than 0
 			byte[] bb_row_<%=cid %> = new byte[<%=totalRealSize %>];
 			java.nio.ByteBuffer bbRecord_<%=cid %> = null;
 			int iReadOffset_<%=cid %> = 0;
+<%
+			if(isOptimizeCode){//------B01
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//------B02
+					IMetadataTable justMetadata = conn.getMetadataTable();
+					List<IMetadataColumn> justColumnList = justMetadata.getListColumns();
+					int sizeListColumns = justColumnList.size();
+					if(sizeListColumns>0){
+%>
+					class EBCDICUtil_<%=cid%>{
+<%
+						for (int valueN=0; valueN<sizeListColumns; valueN++) {//------B02
+							IMetadataColumn column = justColumnList.get(valueN);
+							Integer orgainLength = column.getOriginalLength();
+							Integer length = column.getLength();
+							String orgainType = column.getType();
+							Integer precision = column.getPrecision();
+							if(valueN%100==0){
+%>
+							public void getValue_<%=valueN/100%>(final <%=conn.getName()%>Struct <%=conn.getName() %>,java.nio.ByteBuffer bbRecord_<%=cid %>) throws Exception{
+<%
+							}
+							if(precision==null) precision = 0;
+							if(orgainLength==null || orgainLength.intValue()==0 || orgainType==null || "".endsWith(orgainType.trim())) {
+%>
+//////////////////////////////////////////////////
+the original size in the column:<%=column.getLabel()%> in the schema should be bigger than 0 and DB Type shouldn't be null or Empty
+//////////////////////////////////////////////////
+<%
+								continue;
+							}
+%>
+							byte[] bb_<%=column.getLabel()%>_<%=cid%> = new byte[<%=orgainLength %>];
+							bbRecord_<%=cid %>.get(bb_<%=column.getLabel()%>_<%=cid%>);
+<%
+							if(orgainType.equals("X")){
+%>				
+								<%=conn.getName() %>.<%=column.getLabel()%> = new String(bb_<%=column.getLabel()%>_<%=cid%>,<%=encoding%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
+<%
+							}else if(orgainType.equals("1")) {
+%>
+								<%=conn.getName() %>.<%=column.getLabel()%> = new java.lang.Float(java.nio.ByteBuffer.wrap(bb_<%=column.getLabel()%>_<%=cid%>).order(java.nio.ByteOrder.BIG_ENDIAN).getFloat());
+<%
+							}else if(orgainType.equals("2")) {
+%>
+								<%=conn.getName() %>.<%=column.getLabel()%> = new java.lang.Double(java.nio.ByteBuffer.wrap(bb_<%=column.getLabel()%>_<%=cid%>).order(java.nio.ByteOrder.BIG_ENDIAN).getDouble());
+<%
+							}else if(orgainType.equals("3") || orgainType.equals("9")) {
+								String isImpliedDecimalStr = column.getAdditionalField().get("ImpliedDecimal");
+								boolean isImpliedDecimal = (isImpliedDecimalStr!=null&&!("").equals(isImpliedDecimalStr))?("true").equals(isImpliedDecimalStr):true;
+								if(orgainType.equals("3")){
+%>
+									<%=conn.getName() %>.<%=column.getLabel()%> = cobolConversion.EBCDICType3.readType3Value(bb_<%=column.getLabel()%>_<%=cid%>,<%=precision %>,<%=isImpliedDecimal %>);
+<%
+								}else{
+%>
+									<%=conn.getName() %>.<%=column.getLabel()%> = cobolConversion.EBCDICType9.readType9Value(bb_<%=column.getLabel()%>_<%=cid%>,<%=precision %>,<%=isImpliedDecimal %>,<%=encoding %>);
+<%
+								}
+							}else if(orgainType.equals("B")) {
+%>
+								<%=conn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(new java.math.BigInteger(bb_<%=column.getLabel()%>_<%=cid%>),0);
+<%
+							}else if (orgainType.equals("T")) {
+%>
+								<%=conn.getName() %>.<%=column.getLabel()%> = bb_<%=column.getLabel()%>_<%=cid%>;
+<%
+							}else {
+%>
+//////////////////////////////////////////////////
+DB Type of the column:<%=column.getLabel()%> should be X, 1, 2, 3, 9, B, T
+//////////////////////////////////////////////////
+<%
+							}
+				    		if((valueN+1)%100==0){
+%>
+							}
+<%
+							}
+						}//------B02
+						if(sizeListColumns>0&&(sizeListColumns%100)>0){
+%>
+							}
+<%
+						}
+%>
+						}
+						EBCDICUtil_<%=cid%> ebcdicUtil_<%=cid%>=new EBCDICUtil_<%=cid%>();
+<%
+					}
+				}//------B02
+			}//------B01
+%>
 			while((iReadOffset_<%=cid %> = fs_<%=cid %>.read(bb_row_<%=cid %>))!= -1){
 				bbRecord_<%=cid %> = java.nio.ByteBuffer.wrap(bb_row_<%=cid %>);
 <%
@@ -141,60 +305,68 @@ the original size in the column:<%=column.getLabel()%> should be bigger than 0
 						Integer length = column.getLength();
 						String orgainType = column.getType();
 						Integer precision = column.getPrecision();
-						if(precision==null) precision = 0;
-						if(orgainLength==null || orgainLength.intValue()==0 || orgainType==null || "".endsWith(orgainType.trim())) {
+						if(!isOptimizeCode){
+							if(precision==null) precision = 0;
+							if(orgainLength==null || orgainLength.intValue()==0 || orgainType==null || "".endsWith(orgainType.trim())) {
 %>
 //////////////////////////////////////////////////
 the original size in the column:<%=column.getLabel()%> in the schema should be bigger than 0 and DB Type shouldn't be null or Empty
 //////////////////////////////////////////////////
 <%
-							continue;
-						}
-%>
-						byte[] bb_<%=column.getLabel()%>_<%=cid%> = new byte[<%=orgainLength %>];
-						bbRecord_<%=cid %>.get(bb_<%=column.getLabel()%>_<%=cid%>);
-<%
-						if(orgainType.equals("X")){
-%>				
-							<%=conn.getName() %>.<%=column.getLabel()%> = new String(bb_<%=column.getLabel()%>_<%=cid%>,<%=encoding%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
-<%
-						}else if(orgainType.equals("1")) {
-%>
-							<%=conn.getName() %>.<%=column.getLabel()%> = new java.lang.Float(java.nio.ByteBuffer.wrap(bb_<%=column.getLabel()%>_<%=cid%>).order(java.nio.ByteOrder.BIG_ENDIAN).getFloat());
-<%
-						}else if(orgainType.equals("2")) {
-%>
-							<%=conn.getName() %>.<%=column.getLabel()%> = new java.lang.Double(java.nio.ByteBuffer.wrap(bb_<%=column.getLabel()%>_<%=cid%>).order(java.nio.ByteOrder.BIG_ENDIAN).getDouble());
-<%
-						}else if(orgainType.equals("3") || orgainType.equals("9")) {
-							String isImpliedDecimalStr = column.getAdditionalField().get("ImpliedDecimal");
-							boolean isImpliedDecimal = (isImpliedDecimalStr!=null&&!("").equals(isImpliedDecimalStr))?("true").equals(isImpliedDecimalStr):true;
-							if(orgainType.equals("3")){
-%>
-								<%=conn.getName() %>.<%=column.getLabel()%> = cobolConversion.EBCDICType3.readType3Value(bb_<%=column.getLabel()%>_<%=cid%>,<%=precision %>,<%=isImpliedDecimal %>);
-<%
-							}else{
-%>
-								<%=conn.getName() %>.<%=column.getLabel()%> = cobolConversion.EBCDICType9.readType9Value(bb_<%=column.getLabel()%>_<%=cid%>,<%=precision %>,<%=isImpliedDecimal %>,<%=encoding %>);
-<%
+								continue;
 							}
-						}else if(orgainType.equals("B")) {
 %>
-							<%=conn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(new java.math.BigInteger(bb_<%=column.getLabel()%>_<%=cid%>),0);
+							byte[] bb_<%=column.getLabel()%>_<%=cid%> = new byte[<%=orgainLength %>];
+							bbRecord_<%=cid %>.get(bb_<%=column.getLabel()%>_<%=cid%>);
 <%
-						}else if (orgainType.equals("T")) {
+							if(orgainType.equals("X")){
+%>				
+								<%=conn.getName() %>.<%=column.getLabel()%> = new String(bb_<%=column.getLabel()%>_<%=cid%>,<%=encoding%>)<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(valueN).get("TRIM"))))?".trim()":"" %>;
+<%
+							}else if(orgainType.equals("1")) {
 %>
-							<%=conn.getName() %>.<%=column.getLabel()%> = bb_<%=column.getLabel()%>_<%=cid%>;
+								<%=conn.getName() %>.<%=column.getLabel()%> = new java.lang.Float(java.nio.ByteBuffer.wrap(bb_<%=column.getLabel()%>_<%=cid%>).order(java.nio.ByteOrder.BIG_ENDIAN).getFloat());
 <%
-						}else {
+							}else if(orgainType.equals("2")) {
+%>
+								<%=conn.getName() %>.<%=column.getLabel()%> = new java.lang.Double(java.nio.ByteBuffer.wrap(bb_<%=column.getLabel()%>_<%=cid%>).order(java.nio.ByteOrder.BIG_ENDIAN).getDouble());
+<%
+							}else if(orgainType.equals("3") || orgainType.equals("9")) {
+								String isImpliedDecimalStr = column.getAdditionalField().get("ImpliedDecimal");
+								boolean isImpliedDecimal = (isImpliedDecimalStr!=null&&!("").equals(isImpliedDecimalStr))?("true").equals(isImpliedDecimalStr):true;
+								if(orgainType.equals("3")){
+%>
+									<%=conn.getName() %>.<%=column.getLabel()%> = cobolConversion.EBCDICType3.readType3Value(bb_<%=column.getLabel()%>_<%=cid%>,<%=precision %>,<%=isImpliedDecimal %>);
+<%
+								}else{
+%>
+									<%=conn.getName() %>.<%=column.getLabel()%> = cobolConversion.EBCDICType9.readType9Value(bb_<%=column.getLabel()%>_<%=cid%>,<%=precision %>,<%=isImpliedDecimal %>,<%=encoding %>);
+<%
+								}
+							}else if(orgainType.equals("B")) {
+%>
+								<%=conn.getName() %>.<%=column.getLabel()%> = new java.math.BigDecimal(new java.math.BigInteger(bb_<%=column.getLabel()%>_<%=cid%>),0);
+<%
+							}else if (orgainType.equals("T")) {
+%>
+								<%=conn.getName() %>.<%=column.getLabel()%> = bb_<%=column.getLabel()%>_<%=cid%>;
+<%
+							}else {
 %>
 //////////////////////////////////////////////////
 DB Type of the column:<%=column.getLabel()%> should be X, 1, 2, 3, 9, B, T
 //////////////////////////////////////////////////
 <%
+							}
+						}else{
+							if(valueN%100==0){
+%>
+							ebcdicUtil_<%=cid%>.getValue_<%=valueN/100%>(<%=conn.getName() %>,bbRecord_<%=cid %>);
+<%
+							}
 						}
 					}//------BBB12
-				}//------BBB1
+			}//------BBB1
 %>
 				bbRecord_<%=cid %>.clear();
 <%
