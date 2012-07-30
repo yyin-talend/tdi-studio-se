@@ -70,9 +70,10 @@ public class GEFCopyAction extends SelectionAction {
                 if (o instanceof NodeLabelEditPart) {
                     return true;
                 }
-                if (o instanceof ConnLabelEditPart) {
-                    return true;
-                }
+                // fix for bug TDI-8325
+                // if (o instanceof ConnLabelEditPart) {
+                // return true;
+                // }
                 if (o instanceof SubjobContainerPart) {
                     return true;
                 }
