@@ -33,6 +33,7 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
+import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 
 /**
@@ -50,7 +51,7 @@ public class GEFDeleteAction extends DeleteAction {
     @Override
     protected boolean calculateEnabled() {
         List objects = getSelectedObjects();
-        if (objects.isEmpty()) {
+        if (objects.isEmpty() || (objects.size() == 1 && objects.get(0) instanceof ProcessPart)) {
             return false;
         }
 
