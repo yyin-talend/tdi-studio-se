@@ -1,8 +1,11 @@
 package org.talend.msmq;
 
+import java.io.UnsupportedEncodingException;
+
 import ionic.Msmq.Message;
 import ionic.Msmq.MessageQueueException;
 import ionic.Msmq.Queue;
+import ionic.Msmq.TransactionType;
 
 public class MsmqUtil {
 
@@ -35,7 +38,7 @@ public class MsmqUtil {
         msgu.setQueue("ytao4");
         msgu.createIfNotExists(true);
         msgu.open();
-        String str = "ÊÇµÄabc";
+        String str = "ï¿½Çµï¿½abc";
         // str = CharacterSetToolkit.toUnicode(str, true);
         // System.out.println(str);
         msgu.setMsg(str);
@@ -54,11 +57,13 @@ public class MsmqUtil {
             checkOpen();
             System.out.println("peek");
             Message msg = msmqHandle.peek(2000); // timeout= 2000 ms
-            System.out.println(" ==> message: " + msg.getMessage());
+            System.out.println(" ==> message: " + msg.getBodyAsString());
             System.out.println("     label:   " + msg.getLabel());
         } catch (MessageQueueException ex1) {
             System.out.println("Peek failure: " + ex1);
-        }
+        } catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
     }
 
     // close an open queue
@@ -109,11 +114,13 @@ public class MsmqUtil {
             int transactionFlag = 0; // 0 = NO TRANSACTION, 1= MTS, 2= XA, 3= SINGLE_MESSAGE
             String mLabel = "inserted by " + this.getClass().getName() + ".java";
             String correlationID = "L:none";
-            Message msg = new Message(msgContent, mLabel, correlationID, transactionFlag);
+            Message msg = new Message(msgContent, mLabel, correlationID);
             msmqHandle.send(msg);
         } catch (MessageQueueException ex1) {
             System.out.println("Send failure: " + ex1);
-        }
+        } catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
     }
 
     public String receive() {
@@ -123,10 +130,12 @@ public class MsmqUtil {
             Message msg = msmqHandle.receive(2000); // timeout= 2000 ms
             // System.out.println(" ==> message: " + msg.getMessage());
             // System.out.println("     label:   " + msg.getLabel());
-            return CharacterSetToolkit.fromUnicode(msg.getMessage());
+            return msg.getBodyAsString();
         } catch (MessageQueueException ex1) {
             System.out.println("Receive failure: " + ex1);
-        }
+        } catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
         return null;
     }
 
@@ -175,7 +184,7 @@ public class MsmqUtil {
     }
 
     public void setMsg(String msg) {
-        this.msgContent = CharacterSetToolkit.toUnicode(msg, true);
+        this.msgContent = msg;
     }
 
     public void createIfNotExists(boolean bool) {
