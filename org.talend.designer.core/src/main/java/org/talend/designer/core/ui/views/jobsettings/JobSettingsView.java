@@ -703,4 +703,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         this.selectedModel = selection;
     }
 
+    public TalendPropertyTabDescriptor getCurrentSelectedTab() {
+        return this.currentSelectedTab;
+    }
+
 }
