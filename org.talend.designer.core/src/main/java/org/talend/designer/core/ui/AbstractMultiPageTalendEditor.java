@@ -110,6 +110,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.IRepositoryWorkUnitListener;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.routines.RoutinesUtil;
+import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.service.IDesignerPerlService;
@@ -142,6 +143,7 @@ import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.contexts.ContextsView;
+import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
@@ -154,6 +156,7 @@ import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.ui.views.IJobSettingsView;
 
 /**
  * DOC qzhang class global comment. Detailled comment
@@ -585,7 +588,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
                             @Override
                             public void propertyChanged(Object source, int propId) {
-                                if (source instanceof IEditorPart&& ((IEditorPart)source).isDirty()) {
+                                if (source instanceof IEditorPart && ((IEditorPart) source).isDirty()) {
                                     getProcess().setProcessModified(true);
                                     getProcess().setNeedRegenerateCode(true);
                                 }
@@ -958,6 +961,21 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
         if (designerEditor != null && dirtyListener != null) {
             designerEditor.getProcess().getProperty().eAdapters().add(dirtyListener);
+        }
+        refreshJobSettingsView();
+    }
+
+    /**
+     * Added by Marvin Wang on July 30, 2012 for refreshing the tab of Job view.
+     */
+    protected void refreshJobSettingsView() {
+        IViewPart viewPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(IJobSettingsView.ID);
+        if (viewPart != null && viewPart instanceof JobSettingsView) {
+            JobSettingsView jobView = (JobSettingsView) viewPart;
+            IDynamicProperty dc = jobView.getCurrentSelectedTab().getPropertyComposite();
+            if (dc != null) {
+                dc.refresh();
+            }
         }
     }
 

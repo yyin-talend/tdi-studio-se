@@ -120,6 +120,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         tabFactory.initComposite(parent, false);
         tabFactory.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 TalendPropertyTabDescriptor descriptor = (TalendPropertyTabDescriptor) selection.getFirstElement();
@@ -314,22 +315,27 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         cleaned = false;
         tabFactory.setSelection(new IStructuredSelection() {
 
+            @Override
             public Object getFirstElement() {
                 return null;
             }
 
+            @Override
             public Iterator iterator() {
                 return null;
             }
 
+            @Override
             public int size() {
                 return 0;
             }
 
+            @Override
             public Object[] toArray() {
                 return null;
             }
 
+            @Override
             public List toList() {
                 List<TalendPropertyTabDescriptor> d = new ArrayList<TalendPropertyTabDescriptor>();
 
@@ -347,6 +353,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                 return d;
             }
 
+            @Override
             public boolean isEmpty() {
                 return false;
             }
@@ -473,8 +480,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
             if (service != null
                     && service.isProjectInSvnMode()
                     && (((IRepositoryViewObject) obj).getRepositoryObjectType() == ERepositoryObjectType.PROCESS || ((IRepositoryViewObject) obj)
-                            .getRepositoryObjectType() == ERepositoryObjectType.JOBLET))
+                            .getRepositoryObjectType() == ERepositoryObjectType.JOBLET)) {
                 category.add(EComponentCategory.SVNHISTORY);
+            }
         } else if (obj instanceof IEditorPart) {
             if (CorePlugin.getDefault().getDiagramModelService().isBusinessDiagramEditor((IEditorPart) obj)) {
                 category.add(EComponentCategory.MAIN);
@@ -501,10 +509,12 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         return (Process) element;
     }
 
+    @Override
     public boolean isCleaned() {
         return this.cleaned;
     }
 
+    @Override
     public void cleanDisplay() {
         setPartName(null);
         tabFactory.setInput(null);
@@ -521,6 +531,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
         process = null;
     }
 
+    @Override
     public void refresh() {
         refresh(false, null);
     }
@@ -608,6 +619,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
      * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent
      * )
      */
+    @Override
     public void selectionChanged(SelectionChangedEvent event) {
         ISelection selection = event.getSelection();
         if (selection instanceof StructuredSelection) {
@@ -646,7 +658,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
                     repositoryObject = new EmptyRepositoryObject();
                     return;
                 }
-                String title = repositoryObject.getLabel(); //$NON-NLS-1$
+                String title = repositoryObject.getLabel();
                 if (allowVerchange) {
                     title = repositoryObject.getLabel() + " " + repositoryObject.getVersion(); //$NON-NLS-1$
                 }
@@ -662,6 +674,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
      * 
      * @see org.talend.designer.core.ui.views.properties.IJobSettingsView#getSelection()
      */
+    @Override
     public ISelection getSelection() {
         ISVNProviderService service = null;
         if (PluginChecker.isSVNProviderPluginLoaded()) {
@@ -689,6 +702,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
      * 
      * @see org.talend.designer.core.ui.views.properties.IJobSettingsView#refreshCurrentViewTab()
      */
+    @Override
     public void refreshCurrentViewTab() {
         if (currentSelectedTab == null) {
             return;
@@ -701,6 +715,10 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView, ISele
 
     public void setISelection(ISelection selection) {
         this.selectedModel = selection;
+    }
+
+    public TalendPropertyTabDescriptor getCurrentSelectedTab() {
+        return this.currentSelectedTab;
     }
 
 }
