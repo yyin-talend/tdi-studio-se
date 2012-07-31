@@ -16,6 +16,7 @@ import java.io.File;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.TreeSelection;
@@ -37,7 +38,7 @@ import org.talend.designer.core.i18n.Messages;
  */
 public class TnsEditorDialog extends Dialog {
 
-    private File tnsFile;
+    private final File tnsFile;
 
     private TnsInfo tnsInfo;
 
@@ -89,6 +90,10 @@ public class TnsEditorDialog extends Dialog {
             }
 
         });
+
+        if (tnsparser.getTree().getChildren().size() == 0) {
+            MessageDialog.openInformation(getParentShell(), "WARNING", "this file is invalid,please recheck!");
+        }
 
         return tree;
     }
