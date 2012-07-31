@@ -126,8 +126,8 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
         try {
 
             List<IRepositoryViewObject> allRoutineItemObjects = CorePlugin.getDefault().getRepositoryService()
-                    .getProxyRepositoryFactory().getAll(project, ERepositoryObjectType.ROUTINES,
-                            RoutinesUtil.allowDeletedRoutine());
+                    .getProxyRepositoryFactory()
+                    .getAll(project, ERepositoryObjectType.ROUTINES, RoutinesUtil.allowDeletedRoutine());
             for (IRepositoryViewObject obj : allRoutineItemObjects) {
                 Property property = obj.getProperty();
                 if (project.equals(ProjectManager.getInstance().getCurrentProject())) {
@@ -162,9 +162,9 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
                     String objIdOrName = property.getId();
                     String objName = property.getLabel();
                     // objIdOrName = property.getLabel();
-                    if (objIdOrName.equals(idOrName) && property.getItem() instanceof RoutineItem) {
+                    if (objIdOrName != null && objIdOrName.equals(idOrName) && property.getItem() instanceof RoutineItem) {
                         return property;
-                    } else if (name.equals(objName) && property.getItem() instanceof RoutineItem) {
+                    } else if (objName != null && objName.equals(name) && property.getItem() instanceof RoutineItem) {
                         return property;
                     }
                 }
