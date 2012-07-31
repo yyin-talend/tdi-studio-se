@@ -67,7 +67,11 @@ class IgnoreDTDEntityResolver_<%=cid%> implements org.xml.sax.EntityResolver {
 <%
 	}
 %>
-
+	String os_<%=cid %> = System.getProperty("os.name").toLowerCase();
+	boolean isWindows_<%=cid%>=false;
+	if(os_<%=cid %>.indexOf("windows") > -1 || os_<%=cid %>.indexOf("nt") > -1){
+		isWindows_<%=cid%>=true;
+	}
 <%
 // *** Xerces *** //
 if(("Xerces").equals(mode)){
@@ -342,7 +346,9 @@ try {
 boolean isValidFile_<%=cid %> = true;
 try{
     if(filename_<%=cid %> != null && filename_<%=cid %> instanceof String && filename_<%=cid %>.toString().startsWith("//")){
-    	filename_<%=cid %> = filename_<%=cid %>.toString().replaceFirst("//","/");
+		if (!isWindows_<%=cid%>){
+			filename_<%=cid %> = filename_<%=cid %>.toString().replaceFirst("//","/");
+		}
     }
     if(filename_<%=cid %> instanceof java.io.InputStream){
     	parser_<%=cid%>.parse(new org.xml.sax.InputSource((java.io.InputStream)filename_<%=cid %>));
@@ -572,7 +578,9 @@ try {
 	<%}%>
 }
 if(filename_<%=cid %> != null && filename_<%=cid %> instanceof String && filename_<%=cid %>.toString().startsWith("//")){
-	filename_<%=cid %> = filename_<%=cid %>.toString().replaceFirst("//","/");
+	if (!isWindows_<%=cid%>){
+		filename_<%=cid %> = filename_<%=cid %>.toString().replaceFirst("//","/");
+	}
 }
 
 <%
@@ -743,7 +751,9 @@ try {
 	<%}%>
 }
 if(filename_<%=cid %> != null && filename_<%=cid %> instanceof String && filename_<%=cid %>.toString().startsWith("//")){
-	filename_<%=cid %> = filename_<%=cid %>.toString().replaceFirst("//","/");
+	if (!isWindows_<%=cid%>){
+		filename_<%=cid %> = filename_<%=cid %>.toString().replaceFirst("//","/");
+	}
 }
 if(filename_<%=cid %> instanceof java.io.InputStream){
 	looper_<%=cid%>.parse((java.io.InputStream)filename_<%=cid %>);
