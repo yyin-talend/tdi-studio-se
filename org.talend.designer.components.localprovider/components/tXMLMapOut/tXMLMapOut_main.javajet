@@ -34,8 +34,6 @@
 			java.util.Comparator
 			java.util.Collections
             java.util.ArrayList
-            java.util.Set
-            java.util.HashSet
         	org.talend.core.model.metadata.types.JavaType
 "
 skeleton="../tXMLMap/tXMLMap_java.skeleton"

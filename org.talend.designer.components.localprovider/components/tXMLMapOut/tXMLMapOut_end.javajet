@@ -5,27 +5,21 @@
 			org.talend.designer.xmlmap.XmlMapComponent
 			org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData
 			org.eclipse.emf.common.util.EList
-			org.talend.designer.xmlmap.model.emf.xmlmap.VarTable
 			org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree
 			org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree
 			org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode
 			org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode
-			org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable
-			org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection
 "
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	XmlMapComponent node = (XmlMapComponent) codeGenArgument.getArgument();
-//	String cid = node.getUniqueName();
 	
 	XmlMapData xmlMapData =(XmlMapData)ElementParameterParser.getObjectValueXMLTree(node);
 
-//	boolean isXpath = false;	
 	boolean isPlainNode = true;
 	boolean outputHasDocument = false;
 	EList<OutputXmlTree> outputTables = xmlMapData.getOutputTrees();
-//	EList<VarTable> varTables = xmlMapData.getVarTables();
 	EList<InputXmlTree> inputTables = xmlMapData.getInputTrees();
 	if(inputTables.size()>0) {
 		InputXmlTree mainInputTable = inputTables.get(0);

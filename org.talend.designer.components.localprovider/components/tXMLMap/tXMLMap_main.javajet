@@ -4,12 +4,10 @@
 			org.talend.core.model.process.ElementParameterParser 
 			org.talend.designer.codegen.config.CodeGeneratorArgument
 			org.talend.core.model.metadata.types.JavaTypesManager
-			org.talend.core.model.process.AbstractExternalNode
 			org.talend.designer.xmlmap.XmlMapComponent
 			org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData
 			org.eclipse.emf.common.util.EList
 			
-			org.talend.designer.xmlmap.generation.GenerationManagerFactory
 			org.talend.designer.xmlmap.generation.GenerationManager
 			org.talend.core.model.process.BlockCode
 			org.talend.designer.xmlmap.generation.HashedMetadataTable
@@ -33,12 +31,9 @@
             java.util.Map
             java.util.HashMap
             java.util.List
-			java.util.HashSet
-			java.util.Set
 			java.util.Comparator
 			java.util.Collections
             java.util.ArrayList
-            org.talend.core.model.metadata.types.JavaTypesManager
         	org.talend.core.model.metadata.types.JavaType
 "
 skeleton="tXMLMap_java.skeleton"

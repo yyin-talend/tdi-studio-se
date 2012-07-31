@@ -7,10 +7,8 @@
 	org.talend.designer.mapper.external.data.ExternalMapperTableEntry
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	org.talend.designer.mapper.MapperComponent
-	org.talend.core.model.process.IElementParameter
 	org.talend.core.model.process.INode
 	java.util.HashMap
-	java.util.Map
 	org.talend.core.model.process.IConnection
 	org.talend.core.model.process.EConnectionType
     org.talend.core.model.process.ElementParameterParser
