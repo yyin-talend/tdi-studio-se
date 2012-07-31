@@ -90,8 +90,7 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
 
         initModels(currentProject);
         initRefProjects(currentProject);
-        List<RoutinesParameterType> routinesDependencies = (List<RoutinesParameterType>) process.getParameters()
-                .getRoutinesParameter();
+        List<RoutinesParameterType> routinesDependencies = process.getParameters().getRoutinesParameter();
         for (RoutinesParameterType type : routinesDependencies) {
             RoutineItemRecord record = new RoutineItemRecord();
 
@@ -126,8 +125,8 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
         try {
 
             List<IRepositoryViewObject> allRoutineItemObjects = CorePlugin.getDefault().getRepositoryService()
-                    .getProxyRepositoryFactory().getAll(project, ERepositoryObjectType.ROUTINES,
-                            RoutinesUtil.allowDeletedRoutine());
+                    .getProxyRepositoryFactory()
+                    .getAll(project, ERepositoryObjectType.ROUTINES, RoutinesUtil.allowDeletedRoutine());
             for (IRepositoryViewObject obj : allRoutineItemObjects) {
                 Property property = obj.getProperty();
                 if (project.equals(ProjectManager.getInstance().getCurrentProject())) {
@@ -162,9 +161,9 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
                     String objIdOrName = property.getId();
                     String objName = property.getLabel();
                     // objIdOrName = property.getLabel();
-                    if (objIdOrName.equals(idOrName) && property.getItem() instanceof RoutineItem) {
+                    if (objIdOrName != null && objIdOrName.equals(idOrName) && property.getItem() instanceof RoutineItem) {
                         return property;
-                    } else if (name.equals(objName) && property.getItem() instanceof RoutineItem) {
+                    } else if (objName != null && objName.equals(name) && property.getItem() instanceof RoutineItem) {
                         return property;
                     }
                 }
@@ -179,6 +178,7 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
         shell.setText(Messages.getString("SetupProcessDependenciesRoutinesAction.title")); //$NON-NLS-1$
     }
 
+    @Override
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
         updateButtons();
@@ -208,6 +208,7 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
         folder.setLayoutData(new GridData(GridData.FILL_BOTH));
         folder.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 updateButtons();
             }
@@ -224,6 +225,7 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
 
         ISelectionChangedListener listListener = new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 updateButtons();
             }
@@ -268,6 +270,7 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
         addBtn.setImage(ImageProvider.getImage(EImage.ADD_ICON));
         addBtn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 ListViewer currentViewer = getCurrentViewer();
                 if (currentViewer == null) {
@@ -315,6 +318,7 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
         delBtn.setImage(ImageProvider.getImage(EImage.DELETE_ICON));
         delBtn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 ListViewer currentViewer = getCurrentViewer();
                 List<RoutineItemRecord> currentRecords = getCurrentRecords();
@@ -347,6 +351,7 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
         upBtn.setImage(ImageProvider.getImage(EImage.UP_ICON));
         upBtn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 moveDatas(true);
             }
@@ -356,6 +361,7 @@ public class SetupProcessDependenciesRoutinesDialog extends Dialog {
         downBtn.setImage(ImageProvider.getImage(EImage.DOWN_ICON));
         downBtn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 moveDatas(false);
             }
