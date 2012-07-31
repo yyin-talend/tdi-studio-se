@@ -15,6 +15,7 @@ package org.talend.designer.xmlmap.model.emf.xmlmap;
  * <p>
  * The following features are supported:
  * <ul>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection#getName <em>Name</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection#getSource <em>Source</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection#getTarget <em>Target</em>}</li>
  * </ul>
@@ -26,6 +27,21 @@ package org.talend.designer.xmlmap.model.emf.xmlmap;
  */
 public interface INodeConnection extends IConnection {
     /**
+     * Returns the value of the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Name</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Name</em>' attribute.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getINodeConnection_Name()
+     * @model transient="true" changeable="false" volatile="true"
+     * @generated
+     */
+    String getName();
+
+    /**
      * Returns the value of the '<em><b>Source</b></em>' reference.
      * <!-- begin-user-doc -->
      * <p>
@@ -36,7 +52,7 @@ public interface INodeConnection extends IConnection {
      * @return the value of the '<em>Source</em>' reference.
      * @see #setSource(AbstractNode)
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getINodeConnection_Source()
-     * @model
+     * @model resolveProxies="false"
      * @generated
      */
     AbstractNode getSource();
@@ -62,7 +78,7 @@ public interface INodeConnection extends IConnection {
      * @return the value of the '<em>Target</em>' reference.
      * @see #setTarget(AbstractNode)
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getINodeConnection_Target()
-     * @model
+     * @model resolveProxies="false"
      * @generated
      */
     AbstractNode getTarget();

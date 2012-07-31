@@ -62,15 +62,6 @@ public interface XmlmapFactory extends EFactory {
     VarTable createVarTable();
 
     /**
-     * Returns a new object of class '<em>Abstract Node</em>'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return a new object of class '<em>Abstract Node</em>'.
-     * @generated
-     */
-    AbstractNode createAbstractNode();
-
-    /**
      * Returns a new object of class '<em>Tree Node</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

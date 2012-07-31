@@ -15,6 +15,7 @@ package org.talend.designer.xmlmap.model.emf.xmlmap;
  * <p>
  * The following features are supported:
  * <ul>
+ *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getName <em>Name</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getSource <em>Source</em>}</li>
  *   <li>{@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getTarget <em>Target</em>}</li>
  * </ul>
@@ -25,6 +26,21 @@ package org.talend.designer.xmlmap.model.emf.xmlmap;
  * @generated
  */
 public interface FilterConnection extends IConnection {
+    /**
+     * Returns the value of the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Name</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Name</em>' attribute.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage#getFilterConnection_Name()
+     * @model transient="true" changeable="false" volatile="true"
+     * @generated
+     */
+    String getName();
+
     /**
      * Returns the value of the '<em><b>Source</b></em>' reference.
      * <!-- begin-user-doc -->

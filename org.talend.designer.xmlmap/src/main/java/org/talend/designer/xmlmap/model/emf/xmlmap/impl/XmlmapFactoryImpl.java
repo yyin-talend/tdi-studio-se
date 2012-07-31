@@ -65,7 +65,6 @@ public class XmlmapFactoryImpl extends EFactoryImpl implements XmlmapFactory {
             case XmlmapPackage.INPUT_XML_TREE: return createInputXmlTree();
             case XmlmapPackage.OUTPUT_XML_TREE: return createOutputXmlTree();
             case XmlmapPackage.VAR_TABLE: return createVarTable();
-            case XmlmapPackage.ABSTRACT_NODE: return createAbstractNode();
             case XmlmapPackage.TREE_NODE: return createTreeNode();
             case XmlmapPackage.OUTPUT_TREE_NODE: return createOutputTreeNode();
             case XmlmapPackage.VAR_NODE: return createVarNode();
@@ -146,16 +145,6 @@ public class XmlmapFactoryImpl extends EFactoryImpl implements XmlmapFactory {
     public VarTable createVarTable() {
         VarTableImpl varTable = new VarTableImpl();
         return varTable;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public AbstractNode createAbstractNode() {
-        AbstractNodeImpl abstractNode = new AbstractNodeImpl();
-        return abstractNode;
     }
 
     /**
