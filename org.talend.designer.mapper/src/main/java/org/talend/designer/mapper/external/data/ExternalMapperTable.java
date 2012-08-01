@@ -445,6 +445,13 @@ public class ExternalMapperTable implements IExternalMapTable, Serializable, Clo
         } else if (!this.id.equals(other.id)) {
             return false;
         }
+        if (this.globalMapKeysValues == null) {
+            if (other.globalMapKeysValues != null) {
+                return false;
+            }
+        } else if (!this.globalMapKeysValues.equals(other.globalMapKeysValues)) {
+            return false;
+        }
         return true;
     }
 
