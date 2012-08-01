@@ -96,6 +96,18 @@ public class DetecteViewImpactAction extends AContextualAction {
                 switch (nodeType) {
                 case REPOSITORY_ELEMENT:
                     ERepositoryObjectType objectType = node.getObjectType();
+
+                    /*
+                     * TESB-6415 if it's "CAMEL" product, then is disable
+                     */
+                    if (objectType != null) {
+                        String[] products = objectType.getProducts();
+                        if (products != null && products.length == 1 && "CAMEL".equals(products[0])) {
+                            setEnabled(false);
+                            return;
+                        }
+                    }// end of TESB-6415
+
                     if (objectType == ERepositoryObjectType.METADATA_CON_TABLE) {
                         IRepositoryViewObject repositoryObject = node.getObject();
                         if (repositoryObject != null) {
@@ -132,6 +144,12 @@ public class DetecteViewImpactAction extends AContextualAction {
                             || objectType == ERepositoryObjectType.METADATA_MDMCONNECTION
                             || objectType == ERepositoryObjectType.CONTEXT || objectType == ERepositoryObjectType.JOBLET) {
                         canWork = true;
+                    } else if (objectType == ERepositoryObjectType.BUSINESS_PROCESS
+                            || objectType == ERepositoryObjectType.PROCESS || objectType == ERepositoryObjectType.ROUTINES
+                            || objectType == ERepositoryObjectType.JOB_SCRIPT || objectType == ERepositoryObjectType.SQLPATTERNS
+                            || objectType == ERepositoryObjectType.JOB_DOC || objectType == ERepositoryObjectType.JOBLET_DOC
+                            || objectType == ERepositoryObjectType.DOCUMENTATION) {
+                        canWork = false;
                     } else {
                         Object obj = selection.getFirstElement();
                         RepositoryNode nodeObj = (RepositoryNode) obj;
