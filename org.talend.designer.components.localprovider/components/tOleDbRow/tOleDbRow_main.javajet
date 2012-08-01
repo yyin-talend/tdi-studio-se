@@ -59,7 +59,9 @@ whetherReject_<%=cid%> = false;
 				columnList = metadata.getListColumns();
 				if(conns != null && conns.size()>0){
         			IConnection conn = conns.get(0);
-        			incomingConnName = conn.getName();
+        			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+						incomingConnName = conn.getName();
+					}
 				}//end of connection size.
 			}//end of metadatas
 	}
@@ -142,9 +144,11 @@ whetherReject_<%=cid%> = false;
 <%=outgoingConn.getName()%>.<%=column.getLabel()%> = rs_<%=cid %>;
 <%
                         	}else{
+                        		if(incomingConnName!=null){
                             %>
 <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
 <%
+								}
 							}
                         }
                     }
