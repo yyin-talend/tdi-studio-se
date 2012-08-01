@@ -42,6 +42,8 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -320,7 +322,7 @@ public class JavaProcessorUtilities {
                     }
                 }
             }
-            classpathEntryArray = (IClasspathEntry[]) classpathEntryList.toArray(new IClasspathEntry[classpathEntryList.size()]);
+            classpathEntryArray = classpathEntryList.toArray(new IClasspathEntry[classpathEntryList.size()]);
             if (modified) {
                 javaProject.setRawClasspath(classpathEntryArray, null);
             }
@@ -344,15 +346,15 @@ public class JavaProcessorUtilities {
         for (ModuleNeeded module : neededModules) {
             neededLibraries.add(module.getModuleName());
         }
-        
+
         if (process == null || !(process instanceof IProcess2)) {
             if (neededLibraries.isEmpty() && process != null) {
                 neededLibraries = process.getNeededLibraries(true);
                 if (neededLibraries == null) {
                     neededLibraries = new HashSet<String>();
-//                    for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
-//                        neededLibraries.add(moduleNeeded.getModuleName());
-//                    }
+                    // for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeeded()) {
+                    // neededLibraries.add(moduleNeeded.getModuleName());
+                    // }
                 }
             } else {
                 for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
@@ -599,6 +601,15 @@ public class JavaProcessorUtilities {
             javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
         }
         if (missingJars != null) {
+            final String message = missingJars;
+            Display.getCurrent().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error!", message);
+                }
+
+            });
             throw new BusinessException(missingJars);
         }
     }
