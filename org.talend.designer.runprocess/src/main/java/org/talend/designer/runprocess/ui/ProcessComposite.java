@@ -377,7 +377,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         run = new Button(execHeader, SWT.PUSH);
 
         // itemDropDown = new ToolItem(toolBar, SWT.ARROW);
-        run.setText(" " + Messages.getString("ProcessComposite.exec"));//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+        run.setText(" " + Messages.getString("ProcessComposite.exec"));//$NON-NLS-1$//$NON-NLS-2$
         run.setData(ProcessView.EXEC_ID);
         run.setToolTipText(Messages.getString("ProcessComposite.execHint"));//$NON-NLS-1$
         run.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
@@ -605,11 +605,13 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         // feature 6875, add searching capability, nma
         consoleText.addKeyListener(new KeyListener() {
 
+            @Override
             public void keyPressed(KeyEvent evt) {
                 // select all
                 if ((evt.stateMask == SWT.CTRL) && (evt.keyCode == 'a')) {
-                    if (consoleText.getText().length() > 0)
+                    if (consoleText.getText().length() > 0) {
                         consoleText.setSelection(0, (consoleText.getText().length() - 1));
+                    }
                 }
                 // search special string value
                 else if ((evt.stateMask == SWT.CTRL) && (evt.keyCode == 'f')) {
@@ -621,6 +623,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                 }
             }
 
+            @Override
             public void keyReleased(KeyEvent arg0) {
 
             }
@@ -631,6 +634,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
         preferenceStore.addPropertyChangeListener(new IPropertyChangeListener() {
 
+            @Override
             public void propertyChange(org.eclipse.jface.util.PropertyChangeEvent event) {
                 if (TalendDesignerPrefConstants.CONSOLT_TEXT_FONT.endsWith(event.getProperty())) {
                     setConsoleFont();
@@ -645,6 +649,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
 
         pcl = new PropertyChangeListener() {
 
+            @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 runProcessContextChanged(evt);
             }
@@ -652,6 +657,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
 
         streamListener = new IStreamListener() {
 
+            @Override
             public void streamAppended(String text, IStreamMonitor monitor) {
                 IProcessMessage message = new ProcessMessage(ProcessMessage.MsgType.STD_OUT, text);
                 processContext.addDebugResultToConsole(message);
@@ -703,6 +709,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         lineLimitText.addListener(SWT.Verify, new Listener() {
 
             // this text only receive number here.
+            @Override
             public void handleEvent(Event e) {
                 String s = e.text;
                 if (!s.equals("")) { //$NON-NLS-1$
@@ -718,6 +725,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         });
         lineLimitText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(ModifyEvent e) {
                 RunProcessPlugin.getDefault().getPluginPreferences()
                         .setValue(RunprocessConstants.CONSOLE_LINE_LIMIT_COUNT, lineLimitText.getText());
@@ -854,6 +862,8 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                 ClearTraceAction clearTraceAction = new ClearTraceAction();
                 clearTraceAction.setProcess(processContext.getProcess());
                 clearTraceAction.run();
+                consoleText.setText("");
+                processContext.clearMessages();
             }
         });
 
@@ -1043,8 +1053,9 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
     protected void setRunnable(boolean runnable) {
         // perfBtn.setEnabled(runnable);
         // traceBtn.setEnabled(runnable);
-        if (clearTracePerfBtn != null && !clearTracePerfBtn.isDisposed())
+        if (clearTracePerfBtn != null && !clearTracePerfBtn.isDisposed()) {
             clearTracePerfBtn.setEnabled(runnable);
+        }
 
         setExecBtn(runnable);
         // contextComposite.setEnabled(runnable);
@@ -1054,10 +1065,12 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         // clearBeforeExec.setEnabled(runnable);
         // saveJobBeforeRunButton.setEnabled(runnable);
         // watchBtn.setEnabled(runnable);
-        if (enableLineLimitButton != null && !enableLineLimitButton.isDisposed())
+        if (enableLineLimitButton != null && !enableLineLimitButton.isDisposed()) {
             enableLineLimitButton.setEnabled(runnable);
-        if (lineLimitText != null && !lineLimitText.isDisposed())
+        }
+        if (lineLimitText != null && !lineLimitText.isDisposed()) {
             lineLimitText.setEnabled(runnable);
+        }
         if (wrapButton != null && !wrapButton.isDisposed()) {
             wrapButton.setEnabled(runnable);
         }
@@ -1092,7 +1105,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
             // debugMenuItem.setData(ProcessView.DEBUG_ID);
             // debugMenuItem.setImage(ImageProvider.getImage(ERunprocessImages.DEBUG_PROCESS_ACTION));
             // } else {
-            run.setText(" " + Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+            run.setText(" " + Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$//$NON-NLS-2$
             run.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
             run.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
             run.setData(ProcessView.EXEC_ID);
@@ -1105,6 +1118,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
     protected void appendToConsole(final IProcessMessage message) {
         getDisplay().asyncExec(new Runnable() {
 
+            @Override
             public void run() {
 
                 if (message.getType() == MsgType.CORE_OUT || message.getType() == MsgType.CORE_ERR) {
@@ -1165,12 +1179,12 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         style.start = consoleText.getText().length();
 
         String[] contents = content.split("\n");
-        for (int i = 0; i < contents.length; i++) {
-            if (isPattern(contents[i]) || isPatternFor(contents[i])) {
+        for (String content2 : contents) {
+            if (isPattern(content2) || isPatternFor(content2)) {
                 consoleText.append(""); //$NON-NLS-1$
                 content = ""; //$NON-NLS-1$
             } else {
-                consoleText.append(contents[i]);
+                consoleText.append(content2);
                 consoleText.append("\n");
             }
         }
@@ -1350,6 +1364,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
 
             IRunnableWithProgress worker = new IRunnableWithProgress() {
 
+                @Override
                 public void run(IProgressMonitor monitor) {
                     IProcessor processor = ProcessorUtilities.getProcessor(processContext.getProcess(), processContext
                             .getProcess().getProperty(), context);
@@ -1412,6 +1427,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                         if (process != null && process.isTerminated()) {
                             getDisplay().asyncExec(new Runnable() {
 
+                                @Override
                                 public void run() {
                                     setRunnable(true);
                                     killBtn.setEnabled(false);
@@ -1448,6 +1464,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                                 // still running
                                 getDisplay().asyncExec(new Runnable() {
 
+                                    @Override
                                     public void run() {
                                         setRunnable(false);
                                         killBtn.setEnabled(true);
@@ -1483,6 +1500,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                             } else { // no process running
                                 getDisplay().asyncExec(new Runnable() {
 
+                                    @Override
                                     public void run() {
                                         setRunnable(true);
                                         killBtn.setEnabled(false);
@@ -1536,6 +1554,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         } else if (ProcessMessageManager.PROP_MESSAGE_CLEAR.equals(propName)) {
             getDisplay().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     if (!consoleText.isDisposed()) {
                         consoleText.setText(""); //$NON-NLS-1$
@@ -1549,6 +1568,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         } else if (RunProcessContext.PROP_RUNNING.equals(propName)) {
             getDisplay().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     if (isDisposed()) {
                         return;
@@ -1622,7 +1642,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
             String currenctJobName = processContext.getProcess().getName();
             for (int i = 0; i < linesMess.length; i++) {
                 String tRunJobName = currenctJobName;
-                String linemess = linesMess[i].trim(); //$NON-NLS-1$
+                String linemess = linesMess[i].trim();
                 Pattern pattern = Pattern.compile("^Exception\\s*in\\s*component\\s*(\\w)+_(\\d)+$");//$NON-NLS-1$
                 Matcher m = pattern.matcher(linemess);
                 if (m.find()) {
@@ -1644,11 +1664,12 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
                                     break;
                                 }
                             }
-                            if (haveFind && tRunJobName.lastIndexOf("(") != -1 && tRunJobName.lastIndexOf(".java") != -1)
+                            if (haveFind && tRunJobName.lastIndexOf("(") != -1 && tRunJobName.lastIndexOf(".java") != -1) {
                                 tRunJobName = tRunJobName.substring(tRunJobName.lastIndexOf("(") + 1,
                                         tRunJobName.lastIndexOf(".java"));
-                            else
+                            } else {
                                 tRunJobName = currenctJobName;
+                            }
                         }
                     }
 
@@ -1674,6 +1695,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
     public void refreshNode(final IProcessMessage psMess) {
         Display.getDefault().asyncExec(new Runnable() {
 
+            @Override
             public void run() {
                 if (processContext == null) {
                     return;
@@ -1750,13 +1772,13 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
         String uniqueName = ""; //$NON-NLS-1$
         String[] message = psMess.getContent().split("\n");
 
-        for (int i = 0; i < message.length; i++) {
-            if (isPattern(message[i])) {
+        for (String element : message) {
+            if (isPattern(element)) {
 
-                int firIndex = message[i].indexOf("$"); //$NON-NLS-1$
-                int secIndex = message[i].indexOf("%"); //$NON-NLS-1$
-                uniqueName = message[i].substring(0, firIndex);
-                mess = message[i].substring(firIndex + 1, secIndex);
+                int firIndex = element.indexOf("$"); //$NON-NLS-1$
+                int secIndex = element.indexOf("%"); //$NON-NLS-1$
+                uniqueName = element.substring(0, firIndex);
+                mess = element.substring(firIndex + 1, secIndex);
             }
 
             Double extentPro = new Double(0);
@@ -1848,6 +1870,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getComposite()
      */
+    @Override
     public Composite getComposite() {
         // TODO Auto-generated method stub
         return composite;
@@ -1858,6 +1881,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getCurRowSize()
      */
+    @Override
     public int getCurRowSize() {
         // TODO Auto-generated method stub
         return 0;
@@ -1868,6 +1892,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getElement()
      */
+    @Override
     public Element getElement() {
         // TODO Auto-generated method stub
         return null;
@@ -1878,6 +1903,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getHashCurControls()
      */
+    @Override
     public BidiMap getHashCurControls() {
         // TODO Auto-generated method stub
         return null;
@@ -1888,6 +1914,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getPart()
      */
+    @Override
     public IMultiPageTalendEditor getPart() {
         // TODO Auto-generated method stub
         return null;
@@ -1899,6 +1926,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
      * @seeorg.talend.core.properties.tab.IDynamicProperty#getRepositoryAliasName(org.talend.core.model.properties.
      * ConnectionItem)
      */
+    @Override
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
         // TODO Auto-generated method stub
         return null;
@@ -1940,6 +1968,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getSection()
      */
+    @Override
     public EComponentCategory getSection() {
         // TODO Auto-generated method stub
         return EComponentCategory.BASICRUN;
@@ -1950,6 +1979,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getTableIdAndDbSchemaMap()
      */
+    @Override
     public Map<String, String> getTableIdAndDbSchemaMap() {
         // TODO Auto-generated method stub
         return null;
@@ -1960,6 +1990,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#getTableIdAndDbTypeMap()
      */
+    @Override
     public Map<String, String> getTableIdAndDbTypeMap() {
         // TODO Auto-generated method stub
         return null;
@@ -1970,6 +2001,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#refresh()
      */
+    @Override
     public void refresh() {
         // TODO Auto-generated method stub
         if (!isDisposed()) {
@@ -1983,6 +2015,7 @@ public class ProcessComposite extends ScrolledComposite implements IDynamicPrope
      * 
      * @see org.talend.core.properties.tab.IDynamicProperty#setCurRowSize(int)
      */
+    @Override
     public void setCurRowSize(int i) {
         // TODO Auto-generated method stub
 
