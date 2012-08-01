@@ -6,10 +6,8 @@
 	java.util.HashMap
 	org.talend.core.model.metadata.IMetadataTable
 	org.talend.core.model.metadata.IMetadataColumn
-	org.talend.core.model.metadata.MetadataTalendType
 	org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
-	org.talend.designer.mapper.MapperMain
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	org.talend.designer.mapper.MapperComponent
 	org.talend.designer.mapper.external.data.ExternalMapperData 
