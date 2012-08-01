@@ -888,7 +888,7 @@ class ImportItemWizardPage extends WizardPage {
                 try {
                     service.createNodeDocumentationItemFromItem(item);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    ExceptionHandler.process(e);
                 }
             }
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
