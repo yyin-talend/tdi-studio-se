@@ -113,8 +113,8 @@
 %>
 
 public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.system.<%= isLookup ? "IPersistableComparableLookupRow<"+conn.getName()+"Struct>" : "IPersistableRow<"+conn.getName()+"Struct"+ templateOrigin + ">" %> {
-    final static byte[] commonByteArrayLock = new byte[0];
-    static byte[] commonByteArray = new byte[0];
+    final static byte[] commonByteArrayLock_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %> = new byte[0];
+    static byte[] commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %> = new byte[0];
 <%
 	if(hasAtLeastOneKey) {
 %>
@@ -305,15 +305,15 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 		if (length == -1) {
 			strReturn = null;
 		} else {
-			if(length > commonByteArray.length) {
-				if(length < 1024 && commonByteArray.length == 0) {
-   					commonByteArray = new byte[1024];
+			if(length > commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %>.length) {
+				if(length < 1024 && commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %>.length == 0) {
+   					commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %> = new byte[1024];
 				} else {
-   					commonByteArray = new byte[2 * length];
+   					commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %> = new byte[2 * length];
    				}
 			}
-			dis.readFully(commonByteArray, 0, length);
-			strReturn = new String(commonByteArray, 0, length, utf8Charset);
+			dis.readFully(commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %>, 0, length);
+			strReturn = new String(commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %>, 0, length, utf8Charset);
 		}
 		return strReturn;
 	}
@@ -524,7 +524,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 	   
     public void <%= isLookup ? "readKeys" : "read" %>Data(ObjectInputStream dis) {
 
-		synchronized(commonByteArrayLock) {
+		synchronized(commonByteArrayLock_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %>) {
 
         	try {
         	

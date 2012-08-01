@@ -1374,7 +1374,7 @@ generateToolByDom4j.generateGroupCode(index);
 			        }
 			
 					public void readData(ObjectInputStream dis) {
-						synchronized(<%= currentTableName %>Struct.commonByteArrayLock) {
+						synchronized(<%= currentTableName %>Struct.commonByteArrayLock_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %>) {
 						    try {
 								int length = 0;
 								this.is__rejectedInnerJoin = dis.readBoolean();
@@ -1401,15 +1401,15 @@ generateToolByDom4j.generateGroupCode(index);
 			   				if (length == -1) {
 			   	    			this.<%= connection.getName() %>__<%= column.getLabel() %> = null;
 			   				} else {
-			   					if(length > <%= currentTableName %>Struct.commonByteArray.length) {
-			   						if(length < 1024 && <%= currentTableName %>Struct.commonByteArray.length == 0) {
-			           					<%= currentTableName %>Struct.commonByteArray = new byte[1024];
+			   					if(length > <%= currentTableName %>Struct.commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %>.length) {
+			   						if(length < 1024 && <%= currentTableName %>Struct.commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %>.length == 0) {
+			           					<%= currentTableName %>Struct.commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %> = new byte[1024];
 			   						} else {
-			           					<%= currentTableName %>Struct.commonByteArray = new byte[2 * length];
+			           					<%= currentTableName %>Struct.commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %> = new byte[2 * length];
 			           				}
 			   					}
-			       				dis.readFully(<%= currentTableName %>Struct.commonByteArray, 0, length);
-			       				this.<%= connection.getName() %>__<%= column.getLabel() %> = new String(<%= currentTableName %>Struct.commonByteArray, 0, length);
+			       				dis.readFully(<%= currentTableName %>Struct.commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %>, 0, length);
+			       				this.<%= connection.getName() %>__<%= column.getLabel() %> = new String(<%= currentTableName %>Struct.commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %>, 0, length);
 			   				}
 						<%
 						} else if(("java.util.Date").equals(typeToGenerate)) {
@@ -1482,15 +1482,15 @@ generateToolByDom4j.generateGroupCode(index);
 				   				if (length == -1) {
 				   	    			this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = null;
 				   				} else {
-				   					if(length > <%= currentTableName %>Struct.commonByteArray.length) {
-				   						if(length < 1024 && <%= currentTableName %>Struct.commonByteArray.length == 0) {
-				           					<%= currentTableName %>Struct.commonByteArray = new byte[1024];
+				   					if(length > <%= currentTableName %>Struct.commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %>.length) {
+				   						if(length < 1024 && <%= currentTableName %>Struct.commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %>.length == 0) {
+				           					<%= currentTableName %>Struct.commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %> = new byte[1024];
 				   						} else {
-				           					<%= currentTableName %>Struct.commonByteArray = new byte[2 * length];
+				           					<%= currentTableName %>Struct.commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %> = new byte[2 * length];
 				           				}
 				   					}
-				       				dis.readFully(<%= currentTableName %>Struct.commonByteArray, 0, length);
-				       				this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = new String(<%= currentTableName %>Struct.commonByteArray, 0, length);
+				       				dis.readFully(<%= currentTableName %>Struct.commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %>, 0, length);
+				       				this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = new String(<%= currentTableName %>Struct.commonByteArray_<%=codeGenArgument.getCurrentProjectName() %>_<%=codeGenArgument.getJobName() %>, 0, length);
 				   				}
 						<%
 						 	} else if(("byte[]").equals(typeToGenerate)) {
