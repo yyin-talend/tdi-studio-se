@@ -162,7 +162,7 @@ public class MainComposite extends AbstractTabComposite {
         data.top = new FormAttachment(purposeText, 0, SWT.CENTER);
         purposeLabel.setLayoutData(data);
 
-        CCombo statusText = widgetFactory.createCCombo(composite, SWT.READ_ONLY | SWT.BORDER); //$NON-NLS-1$
+        CCombo statusText = widgetFactory.createCCombo(composite, SWT.READ_ONLY | SWT.BORDER);
         data = new FormData();
         data.left = new FormAttachment(purposeText, AbstractPropertySection.STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(100, 0);
@@ -218,7 +218,7 @@ public class MainComposite extends AbstractTabComposite {
 
         Text modificationDate = widgetFactory.createText(composite, ""); //$NON-NLS-1$
         data = new FormData();
-        data.left = new FormAttachment(creationDate, AbstractPropertySection.STANDARD_LABEL_WIDTH + 15);
+        data.left = new FormAttachment(creationDate, AbstractPropertySection.STANDARD_LABEL_WIDTH + 20);
         data.right = new FormAttachment(66, 0);
         data.top = new FormAttachment(descriptionText, ITabbedPropertyConstants.VSPACE);
         modificationDate.setLayoutData(data);
