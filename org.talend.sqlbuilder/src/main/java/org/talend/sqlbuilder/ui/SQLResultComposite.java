@@ -146,7 +146,7 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
     private void createTabItem() throws Exception {
         lastTabNumber = lastTabNumber + 1;
         final CTabItem tabItem = new CTabItem(tabFolder, SWT.NULL);
-        String labelText = "Result: " + lastTabNumber; //$NON-NLS-1$
+        String labelText = Messages.getString("SQLResultComposite.Result") + ": " + lastTabNumber;
         tabItem.setText(labelText);
         tabItem.setData("tabLabel", labelText); //$NON-NLS-1$
         tabItem.setToolTipText(TextUtil.getWrappedText(sqlExecution.getSqlStatement()));
