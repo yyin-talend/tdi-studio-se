@@ -82,6 +82,7 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
      * @param sqlExe sql execution object
      * @throws Exception throw all exception
      */
+    @Override
     public void addSQLExecution(AbstractSQLExecution sqlExe) throws Exception {
         this.sqlExecution = sqlExe;
         createTabFolder();
@@ -129,8 +130,8 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
 
         Control[] children = this.getChildren();
         if (children != null) {
-            for (int i = 0; i < children.length; i++) {
-                children[i].dispose();
+            for (Control element : children) {
+                element.dispose();
             }
         }
 
@@ -146,7 +147,7 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
     private void createTabItem() throws Exception {
         lastTabNumber = lastTabNumber + 1;
         final CTabItem tabItem = new CTabItem(tabFolder, SWT.NULL);
-        String labelText = "Result: " + lastTabNumber; //$NON-NLS-1$
+        String labelText = Messages.getString("SQLResultComposite.Result") + ": " + lastTabNumber; //$NON-NLS-1$
         tabItem.setText(labelText);
         tabItem.setData("tabLabel", labelText); //$NON-NLS-1$
         tabItem.setToolTipText(TextUtil.getWrappedText(sqlExecution.getSqlStatement()));
@@ -171,9 +172,11 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
 
         tabItem.addDisposeListener(new DisposeListener() {
 
+            @Override
             public void widgetDisposed(final DisposeEvent e) {
                 BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
 
+                    @Override
                     public void run() {
                         CTabItem tabItem = (CTabItem) e.getSource();
                         AbstractSQLExecution sqlExe = (AbstractSQLExecution) tabItem.getData();
