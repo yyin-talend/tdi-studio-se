@@ -31,6 +31,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
@@ -41,6 +42,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.repository.ftp.i18n.Messages;
 import org.talend.repository.ftp.ui.wizards.pags.FTPPage;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -56,7 +58,7 @@ import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
  */
 public class FTPWizard extends RepositoryWizard implements INewWizard {
 
-    private RepositoryNode node;
+    private final RepositoryNode node;
 
     private FTPConnection connection;
 
@@ -211,6 +213,7 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
      * @see org.eclipse.jface.wizard.IWizard#addPages()
      */
 
+    @Override
     public void addPages() {
         setWindowTitle("");//$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.UNKNOWN));
@@ -234,6 +237,7 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
      * @see org.eclipse.jface.wizard.IWizard#canFinish()
      */
 
+    @Override
     public boolean canFinish() {
         if (ftpPage != null && ftpPage.isPageComplete()) {
             return true;
@@ -247,6 +251,7 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
      * @see org.eclipse.jface.wizard.IWizard#getNextPage(org.eclipse.jface.wizard.IWizardPage)
      */
 
+    @Override
     public IWizardPage getNextPage(IWizardPage page) {
         // TODO Auto-generated method stub
         return super.getNextPage(page);
@@ -276,6 +281,7 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
      * @see org.eclipse.jface.wizard.IWizard#performFinish()
      */
 
+    @Override
     public boolean performFinish() {
         final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
@@ -285,6 +291,16 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
                 factory.create(connectionItem, propertiesWizardPage.getDestinationPath());
             } else {
                 RepositoryUpdateManager.updateFileConnection(connectionItem);
+                boolean isModified = propertiesWizardPage.isNameModifiedByUser();
+                if (isModified) {
+                    if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerCoreService.class)) {
+                        IDesignerCoreService service = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                                IDesignerCoreService.class);
+                        if (service != null) {
+                            service.refreshComponentView(connectionItem);
+                        }
+                    }
+                }
                 IWorkspace workspace = ResourcesPlugin.getWorkspace();
                 IWorkspaceRunnable operation = new IWorkspaceRunnable() {
 
