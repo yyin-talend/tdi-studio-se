@@ -81,6 +81,7 @@ import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.advanced.composite.FilteredCheckboxTree;
+import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.general.IExchangeService;
@@ -88,6 +89,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.RepositoryViewObject;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.documentation.IDocumentationService;
 import org.talend.repository.i18n.Messages;
@@ -881,15 +883,7 @@ class ImportItemWizardPage extends WizardPage {
             if (item instanceof JobletProcessItem) {
                 needToRefreshPalette = true;
             }
-            if (item instanceof ProcessItem || item instanceof JobletProcessItem) {
-                IDocumentationService service = (IDocumentationService) GlobalServiceRegister.getDefault().getService(
-                        IDocumentationService.class);
-                try {
-                    service.createNodeDocumentationItemFromItem(item);
-                } catch (Exception e) {
-                    ExceptionHandler.process(e);
-                }
-            }
+            saveDocumentation(item);
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             if (item.getState().isLocked()) {
                 try {
@@ -958,6 +952,27 @@ class ImportItemWizardPage extends WizardPage {
         selectedItems = null;
         itemRecords.clear();
         return true;
+    }
+
+    /**
+     * DOC Administrator Comment method "saveDocumentation".
+     * 
+     * @param item
+     */
+    protected void saveDocumentation(Item item) {
+        if (item instanceof ProcessItem || item instanceof JobletProcessItem) {
+            boolean isAutoSaveDocumentation = CorePlugin.getDefault().getPreferenceStore()
+                    .getBoolean(ITalendCorePrefConstants.DOC_GENERATION);
+            if (isAutoSaveDocumentation) {
+                IDocumentationService service = (IDocumentationService) GlobalServiceRegister.getDefault().getService(
+                        IDocumentationService.class);
+                try {
+                    service.createNodeDocumentationItemFromItem(item);
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+        }
     }
 
     public boolean performCancel() {
