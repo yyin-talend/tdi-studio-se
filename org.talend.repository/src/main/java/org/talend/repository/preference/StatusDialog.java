@@ -178,8 +178,8 @@ public class StatusDialog extends Dialog {
 
     protected void validateInput() {
         String errorMessage = null;
-        if (creation && codeText.getText().length() != 3) {
-            errorMessage = Messages.getString("StatusDialog.errorMessage.codeLetters"); //$NON-NLS-1$
+        if (creation && (codeText.getText().length() < 1 || codeText.getText().length() > 5)) {
+            errorMessage = Messages.getString("StatusDialog.errorMessage.codeLetters1"); //$NON-NLS-1$
         } else if (creation && existingCodes.contains(codeText.getText())) {
             errorMessage = Messages.getString("StatusDialog.errorMessage.codeUsed"); //$NON-NLS-1$
         } else if (labelText.getText().equals("")) { //$NON-NLS-1$
