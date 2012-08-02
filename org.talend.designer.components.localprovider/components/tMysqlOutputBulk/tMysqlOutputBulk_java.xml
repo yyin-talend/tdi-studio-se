@@ -105,9 +105,6 @@
 	<CODEGENERATION>
 
 	  <IMPORTS>
-
-	    <IMPORT NAME="CsvWriter" MODULE="javacsv.jar" REQUIRED="true" />
-
 	  </IMPORTS>
 
 	</CODEGENERATION>

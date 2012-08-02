@@ -35,7 +35,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             			List<IMetadataColumn> columns = metadata.getListColumns();
                 		int sizeColumns = columns.size();
             			%>  	
-                    	String[] row_<%=cid%>=new String[]{<%for(int j=0;j<sizeColumns;j++){%>"\\N",<%}%>};		//empty value must be NULL('\N' in bulk file)
+                    	String[] row_<%=cid%>=new String[]{<%for(int j=0;j<sizeColumns;j++){if(j != 0) {%>, <%}%>"\\N"<%}%>};		//empty value must be NULL('\N' in bulk file)
                     	<%
             			for (int i = 0; i < sizeColumns; i++) {
                 			IMetadataColumn column = columns.get(i);
@@ -95,7 +95,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 									throw new java.io.IOException("The disk space is not enough,please check it!");
 								}
 	            			<%}%>
-            			    csvWriter_<%=cid%>.writeRecord(row_<%=cid%>);	
+							for (int i_<%=cid %> = 0; i_<%=cid %> < row_<%=cid %>.length; i_<%=cid %>++) {
+								String temp_<%=cid %> = row_<%=cid %>[i_<%=cid %>];
+								if(!"\\N".equals(temp_<%=cid %>)) {
+									if (escape_mode_<%=cid %> == 0 ) { // double quotes
+										temp_<%=cid %> = temp_<%=cid %>.replace("" + textEnclosure_<%=cid %>, "" + textEnclosure_<%=cid %> + textEnclosure_<%=cid %>);
+									} else {
+										temp_<%=cid %> = temp_<%=cid %>.replace("\\", "\\\\");
+										temp_<%=cid %> = temp_<%=cid %>.replace("" + textEnclosure_<%=cid %>, "\\" + textEnclosure_<%=cid %>);
+									}
+								}
+								if(i_<%=cid %> != 0) {
+									csvWriter_<%=cid%>.write(fieldSeparator_<%=cid %>);
+								}
+								csvWriter_<%=cid%>.write(temp_<%=cid %>);
+							}
+							csvWriter_<%=cid%>.write(rowSeparator_<%=cid %>);
 	            			<%if(checkDiskSpace){%>
         			    		csvWriter_<%=cid%>.flush();
 	            			<%}%>
