@@ -49,11 +49,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 		}
 %>
-		int escape_mode_<%=cid %> = com.csvreader.CsvWriter2.ESCAPE_MODE_DOUBLED;
+		int escape_mode_<%=cid %> = 0;  // 0: double quotes; 1: backslash
 		if(escapeChar_<%=cid %>=='\\'){
-			escape_mode_<%=cid %> = com.csvreader.CsvWriter2.ESCAPE_MODE_BACKSLASH;
+			escape_mode_<%=cid %> = 1;
 		}else if(escapeChar_<%=cid %> == textEnclosure_<%=cid %>){
-			escape_mode_<%=cid %> = com.csvreader.CsvWriter2.ESCAPE_MODE_DOUBLED;
+			escape_mode_<%=cid %> = 0;
 		}else {
 			throw new RuntimeException("The escape mode only support the '\\' or double text enclosure.");
 		}
@@ -63,13 +63,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		file_<%=cid %>.getParentFile().mkdirs();
 		<%}%>
 				
-		com.csvreader.CsvWriter2 csvWriter_<%=cid%> = new com.csvreader.CsvWriter2(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-        new java.io.FileOutputStream(file_<%=cid %>, <%=isAppend %>), <%=encoding %>)), fieldSeparator_<%=cid %>);
-        
-        csvWriter_<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>);              	
-        csvWriter_<%=cid %>.setEscapeMode(escape_mode_<%=cid %>);      		
-      	csvWriter_<%=cid %>.setTextQualifier(textEnclosure_<%=cid %>); 
-      	csvWriter_<%=cid %>.setForceQualifier(true);        
+		java.io.BufferedWriter csvWriter_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+        new java.io.FileOutputStream(file_<%=cid %>, <%=isAppend %>), <%=encoding %>));
 <%
 		if(checkDiskSpace){
 %>
