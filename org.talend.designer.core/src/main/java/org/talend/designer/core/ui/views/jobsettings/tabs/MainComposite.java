@@ -210,7 +210,7 @@ public class MainComposite extends AbstractTabComposite {
 
         Text modificationDate = widgetFactory.createText(composite, ""); //$NON-NLS-1$
         data = new FormData();
-        data.left = new FormAttachment(creationDate, AbstractPropertySection.STANDARD_LABEL_WIDTH + 20);
+        data.left = new FormAttachment(creationDate, AbstractPropertySection.STANDARD_LABEL_WIDTH + 25);
         data.right = new FormAttachment(66, 0);
         data.top = new FormAttachment(descriptionText, ITabbedPropertyConstants.VSPACE);
         modificationDate.setLayoutData(data);
