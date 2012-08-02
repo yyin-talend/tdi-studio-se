@@ -956,6 +956,7 @@ class ImportItemWizardPage extends WizardPage {
 
     /**
      * DOC Administrator Comment method "saveDocumention".
+     * 
      * @param item
      */
     private void saveDocumention(Item item) {
@@ -963,12 +964,15 @@ class ImportItemWizardPage extends WizardPage {
             boolean isAutoSaveDocumentation = CorePlugin.getDefault().getPreferenceStore()
                     .getBoolean(ITalendCorePrefConstants.DOC_GENERATION);
             if (isAutoSaveDocumentation) {
-                IDocumentationService service = (IDocumentationService) GlobalServiceRegister.getDefault().getService(
-                        IDocumentationService.class);
-                try {
-                    service.createNodeDocumentationItemFromItem(item);
-                } catch (Exception e) {
-                    ExceptionHandler.process(e);
+                if (GlobalServiceRegister.getDefault() != null
+                        && GlobalServiceRegister.getDefault().isServiceRegistered(IDocumentationService.class)) {
+                    IDocumentationService service = (IDocumentationService) GlobalServiceRegister.getDefault().getService(
+                            IDocumentationService.class);
+                    try {
+                        service.createNodeDocumentationItemFromItem(item);
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
                 }
             }
         }
