@@ -126,7 +126,7 @@ public class NewProjectWizardPage extends WizardPage {
         descriptionLab.setText(Messages.getString("NewProjectWizardPage.comment")); //$NON-NLS-1$
         descriptionLab.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 
-        descriptionText = new Text(container, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+        descriptionText = new Text(container, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.WRAP);
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         data.heightHint = 60;
         descriptionText.setLayoutData(data);
