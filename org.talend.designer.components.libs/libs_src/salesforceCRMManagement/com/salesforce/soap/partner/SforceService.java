@@ -941,7 +941,8 @@ public interface SforceService {
 
     com.salesforce.soap.partner.DescribeDataCategoryGroupStructures describeDataCategoryGroupStructures238,
             com.salesforce.soap.partner.SessionHeader sessionHeader239, com.salesforce.soap.partner.CallOptions callOptions240,
-            com.salesforce.soap.partner.PackageVersionHeader packageVersionHeader241) throws java.rmi.RemoteException
+            com.salesforce.soap.partner.PackageVersionHeader packageVersionHeader241,
+            com.salesforce.soap.partner.LocaleOptions localeOptions) throws java.rmi.RemoteException
 
     , com.salesforce.soap.partner.InvalidSObjectFault, com.salesforce.soap.partner.UnexpectedErrorFault;
 
@@ -962,7 +963,7 @@ public interface SforceService {
     com.salesforce.soap.partner.DescribeDataCategoryGroupStructures describeDataCategoryGroupStructures238,
             com.salesforce.soap.partner.SessionHeader sessionHeader239, com.salesforce.soap.partner.CallOptions callOptions240,
             com.salesforce.soap.partner.PackageVersionHeader packageVersionHeader241,
-
+            com.salesforce.soap.partner.LocaleOptions localeOptions,
             final com.salesforce.soap.partner.SforceServiceCallbackHandler callback)
 
     throws java.rmi.RemoteException;
@@ -1161,7 +1162,8 @@ public interface SforceService {
 
     com.salesforce.soap.partner.DescribeDataCategoryGroups describeDataCategoryGroups263,
             com.salesforce.soap.partner.SessionHeader sessionHeader264, com.salesforce.soap.partner.CallOptions callOptions265,
-            com.salesforce.soap.partner.PackageVersionHeader packageVersionHeader266) throws java.rmi.RemoteException
+            com.salesforce.soap.partner.PackageVersionHeader packageVersionHeader266,
+            com.salesforce.soap.partner.LocaleOptions localeOptions) throws java.rmi.RemoteException
 
     , com.salesforce.soap.partner.InvalidSObjectFault, com.salesforce.soap.partner.UnexpectedErrorFault;
 
@@ -1182,7 +1184,7 @@ public interface SforceService {
     com.salesforce.soap.partner.DescribeDataCategoryGroups describeDataCategoryGroups263,
             com.salesforce.soap.partner.SessionHeader sessionHeader264, com.salesforce.soap.partner.CallOptions callOptions265,
             com.salesforce.soap.partner.PackageVersionHeader packageVersionHeader266,
-
+            com.salesforce.soap.partner.LocaleOptions localeOptions,
             final com.salesforce.soap.partner.SforceServiceCallbackHandler callback)
 
     throws java.rmi.RemoteException;
@@ -1367,6 +1369,7 @@ public interface SforceService {
      * @throws com.salesforce.soap.partner.InvalidFieldFault :
      * @throws com.salesforce.soap.partner.UnexpectedErrorFault :
      * @throws com.salesforce.soap.partner.InvalidQueryLocatorFault :
+     * @throws MalformedQueryFault 
      */
 
     public com.salesforce.soap.partner.QueryMoreResponse queryMore(
@@ -1376,7 +1379,7 @@ public interface SforceService {
             throws java.rmi.RemoteException
 
             , com.salesforce.soap.partner.InvalidFieldFault, com.salesforce.soap.partner.UnexpectedErrorFault,
-            com.salesforce.soap.partner.InvalidQueryLocatorFault;
+            com.salesforce.soap.partner.InvalidQueryLocatorFault, MalformedQueryFault;
 
     /**
      * Auto generated method signature for Asynchronous Invocations Gets the next batch of sObjects from a query

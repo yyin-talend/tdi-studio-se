@@ -68,7 +68,7 @@
 	    
 		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" NUM_ROW="10"
 			REQUIRED="true" REPOSITORY_VALUE="ENDPOINT" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-			<DEFAULT>"https://www.salesforce.com/services/Soap/u/24.0"</DEFAULT>
+			<DEFAULT>"https://www.salesforce.com/services/Soap/u/25.0"</DEFAULT>
 		</PARAMETER>
 
 		<PARAMETER NAME="USER" FIELD="TEXT" NUM_ROW="20"
