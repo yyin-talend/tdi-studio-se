@@ -34,6 +34,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeError;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
@@ -64,6 +65,8 @@ public class NodeContainer extends Element {
     private Point breakpointLocation = new Point();
 
     private Point warningLocation = new Point();
+
+    private Point collapseLocation = new Point();
 
     private Point infoLocation = new Point();
 
@@ -168,7 +171,7 @@ public class NodeContainer extends Element {
 
     private Rectangle prepareStatus(Point nodeLocation, Dimension nodeSize) {
         Rectangle statusRectangle = null;
-        Rectangle breakpointRectangle, warningRectangle, infoRectangle, parallelLocationRectangle, validationRuleRectangle;
+        Rectangle breakpointRectangle, warningRectangle, infoRectangle, parallelLocationRectangle, validationRuleRectangle, collapseRectangle;
 
         int status = node.getStatus();
 
@@ -198,6 +201,18 @@ public class NodeContainer extends Element {
                 statusRectangle = warningRectangle;
             } else {
                 statusRectangle.union(warningRectangle);
+            }
+        }
+
+        if (this instanceof JobletContainer) {
+            Dimension collapseSize = new Dimension(20, 20);
+            collapseLocation.x = nodeLocation.x;
+            collapseLocation.y = nodeLocation.y - collapseSize.height;
+            collapseRectangle = new Rectangle(collapseLocation, collapseSize);
+            if (statusRectangle == null) {
+                statusRectangle = collapseRectangle;
+            } else {
+                statusRectangle.union(collapseRectangle);
             }
         }
 
@@ -264,7 +279,7 @@ public class NodeContainer extends Element {
 
     private Rectangle prepareCleanStatus(Point nodeLocation, Dimension nodeSize) {
         Rectangle statusRectangle = null;
-        Rectangle breakpointRectangle, warningRectangle, infoRectangle, validationRuleRectangle;
+        Rectangle breakpointRectangle, warningRectangle, infoRectangle, validationRuleRectangle, collapseRectangle;
 
         int status = node.getStatus();
 
@@ -294,6 +309,18 @@ public class NodeContainer extends Element {
                 statusRectangle = warningRectangle;
             } else {
                 statusRectangle.union(warningRectangle);
+            }
+        }
+
+        if (this instanceof JobletContainer) {
+            Dimension collapseSize = new Dimension(20, 20);
+            collapseLocation.x = nodeLocation.x;
+            collapseLocation.y = nodeLocation.y - collapseSize.height;
+            collapseRectangle = new Rectangle(collapseLocation, collapseSize);
+            if (statusRectangle == null) {
+                statusRectangle = collapseRectangle;
+            } else {
+                statusRectangle.union(collapseRectangle);
             }
         }
 
@@ -499,6 +526,15 @@ public class NodeContainer extends Element {
      */
     public Point getInfoLocation() {
         return this.infoLocation;
+    }
+
+    /**
+     * Getter for collapseLocation.
+     * 
+     * @return the collapseLocation
+     */
+    public Point getCollapseLocation() {
+        return this.collapseLocation;
     }
 
     /**
