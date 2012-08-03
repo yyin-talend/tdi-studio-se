@@ -55,4 +55,4 @@ Export-Package: org.talend.designer.dbmap,
  org.talend.designer.dbmap.utils,
  org.talend.designer.dbmap.utils.problems
 Bundle-Vendor: .Talend SA.
-Eclipse-RegisterBuddy: org.mockito
+Eclipse-RegisterBuddy: org.talend.testutils

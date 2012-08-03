@@ -5,4 +5,4 @@ Bundle-SymbolicName: org.talend.repository.test
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.talend.repository
 Require-Bundle: org.junit4,
- org.mockito
+ org.talend.testutils
