@@ -73,7 +73,8 @@
             </instanceof>
          </possibleChildren>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider"
+               id="org.talend.repository.viewer.root.jobDesigns.ActionProvider">
             <enablement>
                <and>
                   <instanceof
