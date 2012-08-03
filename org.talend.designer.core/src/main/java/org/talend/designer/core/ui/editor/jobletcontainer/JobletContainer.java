@@ -142,11 +142,6 @@ public class JobletContainer extends NodeContainer {
         if (totalRectangle == null) {
             return null;
         }
-        if ((collapsed && jobletNodes.size() <= 1) || (!collapsed && jobletNodes.size() == 0 && nodeContainers.size() == 0)) {
-            totalRectangle.x = totalRectangle.x - EXPEND_SIZE;
-            totalRectangle.y = totalRectangle.y - EXPEND_SIZE * 2;
-            totalRectangle.height = totalRectangle.height + EXPEND_SIZE * 2;
-        }
 
         if (jobletRectangle != null) {
             if ((Math.abs(jobletRectangle.width - totalRectangle.width) != 0) || this.nodeContainers.size() == 1) {
