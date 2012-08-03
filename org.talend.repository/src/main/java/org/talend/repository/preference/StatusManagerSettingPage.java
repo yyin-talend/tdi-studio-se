@@ -855,7 +855,7 @@ public class StatusManagerSettingPage extends ProjectSettingPage {
         boolean modified = false;
         String newStatus = null;
         if (getModifiedVersionItems().size() > 0)
-            newStatus = statusHelper.getStatusLabel(statusCombo.getText());
+            newStatus = statusHelper.getStatusCode(statusCombo.getText());
         for (RepositoryObject object : getModifiedVersionItems()) {
             if (!isFixedstatus()) {
                 newStatus = object.getStatusCode();
