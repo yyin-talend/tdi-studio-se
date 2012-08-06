@@ -120,9 +120,12 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         if (elem instanceof Node) {
             combo.setToolTipText(VARIABLE_TOOLTIP + propertyTypeParameter.getVariableName());
         }
-        if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE || param.getFieldType() == EParameterFieldType.SCHEMA_TYPE
-                || param.getFieldType() == EParameterFieldType.QUERYSTORE_TYPE) {
-            combo.setEnabled(ExtractMetaDataUtils.haveLoadMetadataNode());
+        if (!propertyTypeParameter.isReadOnly()) {
+            if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE
+                    || param.getFieldType() == EParameterFieldType.SCHEMA_TYPE
+                    || param.getFieldType() == EParameterFieldType.QUERYSTORE_TYPE) {
+                combo.setEnabled(ExtractMetaDataUtils.haveLoadMetadataNode());
+            }
         }
 
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, propertyTypeParameter.getDisplayName());
