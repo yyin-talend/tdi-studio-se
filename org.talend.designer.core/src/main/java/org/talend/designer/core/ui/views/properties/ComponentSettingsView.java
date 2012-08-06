@@ -581,6 +581,14 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 }
             }
             EComponentCategory[] categories = EElementType.ADVANCED_NODE.getCategories();
+            // add for bug TDI-8476
+            if (((Node) elem).getComponent() != null) {
+                String paletteType = ((Node) elem).getComponent().getPaletteType();
+                if ("CAMEL".equals(paletteType)) {
+                    categories = EElementType.NODE.getCategories();
+                }
+            }
+
             if (PluginChecker.isValidationrulesPluginLoaded() && isSupportValidationRuleNode((Node) elem)) { // show
                 EComponentCategory[] newCategories = new EComponentCategory[categories.length + 1];
                 System.arraycopy(categories, 0, newCategories, 0, categories.length);
