@@ -215,7 +215,7 @@ public class ImportProjectsUtilities {
     private static void importProject(Shell shell, IImportStructureProvider provider, Object source, IPath path,
             boolean overwriteResources, boolean createContainerStructure, IProgressMonitor monitor)
             throws InvocationTargetException, InterruptedException {
-        monitor.beginTask(Messages.getString("ImportProjectsUtilities.task.importingProject"), 1); //$NON-NLS-1$
+        monitor.beginTask(Messages.getString("ImportProjectsUtilities.task.importingProject"), 100); //$NON-NLS-1$
 
         ArrayList fileSystemObjects = new ArrayList();
         ImportProjectsUtilities.getFilesForProject(fileSystemObjects, provider, source);
@@ -224,7 +224,8 @@ public class ImportProjectsUtilities {
         operation.setContext(shell);
         operation.setOverwriteResources(overwriteResources);
         operation.setCreateContainerStructure(createContainerStructure);
-        operation.run(new SubProgressMonitor(monitor, 1));
+        operation.run(new SubProgressMonitor(monitor, 95));
+        monitor.worked(5);
         monitor.done();
     }
 
