@@ -23,7 +23,7 @@ imports="
     String VERSION_SAP3 = "sapjco3.jar";
     
     String version = VERSION_SAP2;
-    List<? extends INode> nodes = node.getProcess().getGraphicalNodes();
+    List<? extends INode> nodes = node.getProcess().getGeneratingNodes();
     for(INode targetNode : nodes){
     	if (targetNode.getUniqueName().equals(connection)) {
 	      version = ElementParameterParser.getValue(targetNode, "__DB_VERSION__");
