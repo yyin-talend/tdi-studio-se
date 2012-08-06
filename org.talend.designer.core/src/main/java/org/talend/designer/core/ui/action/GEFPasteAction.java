@@ -48,6 +48,7 @@ import org.talend.designer.core.ui.editor.cmd.NodesPasteCommand;
 import org.talend.designer.core.ui.editor.cmd.NotesPasteCommand;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainerPart;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -181,6 +182,14 @@ public class GEFPasteAction extends SelectionAction {
 
                     for (Iterator iterator = subjob.getChildren().iterator(); iterator.hasNext();) {
                         NodeContainerPart nodeContainerPart = (NodeContainerPart) iterator.next();
+                        // add for bug TDI-20206
+                        if (nodeContainerPart instanceof JobletContainerPart) {
+                            for (Object obj : nodeContainerPart.getChildren()) {
+                                if (obj instanceof NodePart && !nodeParts.contains(obj)) {
+                                    nodeParts.add((NodePart) obj);
+                                }
+                            }
+                        }
                         NodePart nodePart = nodeContainerPart.getNodePart();
                         if (nodePart != null) {
                             if (!nodeParts.contains(nodePart)) {
