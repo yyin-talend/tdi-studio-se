@@ -92,9 +92,9 @@ public class ImportProjectsUtilities {
 
         importProject(shell, provider, new File(sourcePath), new Path(technicalName), true, false, monitor);
 
-        Project project=afterImportAs(newName, technicalName);
-        
-        //do additional actions after importing projects
+        Project project = afterImportAs(newName, technicalName);
+
+        // do additional actions after importing projects
         AfterImportProjectUtil.runAfterImportProjectActions(new org.talend.core.model.general.Project(project));
     }
 
@@ -168,9 +168,9 @@ public class ImportProjectsUtilities {
             IProgressMonitor monitor) throws InvocationTargetException, InterruptedException, TarException, IOException {
         importArchiveProject(shell, technicalName, sourcePath, monitor);
 
-        Project project=afterImportAs(newName, technicalName);
-        
-        //do additional actions after importing projects
+        Project project = afterImportAs(newName, technicalName);
+
+        // do additional actions after importing projects
         AfterImportProjectUtil.runAfterImportProjectActions(new org.talend.core.model.general.Project(project));
     }
 
@@ -224,7 +224,7 @@ public class ImportProjectsUtilities {
     private static void importProject(Shell shell, IImportStructureProvider provider, Object source, IPath path,
             boolean overwriteResources, boolean createContainerStructure, IProgressMonitor monitor)
             throws InvocationTargetException, InterruptedException {
-        monitor.beginTask(Messages.getString("ImportProjectsUtilities.task.importingProject"), 1); //$NON-NLS-1$
+        monitor.beginTask(Messages.getString("ImportProjectsUtilities.task.importingProject"), 100); //$NON-NLS-1$
 
         ArrayList fileSystemObjects = new ArrayList();
         ImportProjectsUtilities.getFilesForProject(fileSystemObjects, provider, source);
@@ -233,7 +233,8 @@ public class ImportProjectsUtilities {
         operation.setContext(shell);
         operation.setOverwriteResources(overwriteResources);
         operation.setCreateContainerStructure(createContainerStructure);
-        operation.run(new SubProgressMonitor(monitor, 1));
+        operation.run(new SubProgressMonitor(monitor, 95));
+        monitor.worked(5);
         monitor.done();
     }
 
@@ -292,8 +293,7 @@ public class ImportProjectsUtilities {
         }
         File[] contents = directory.listFiles();
         // first look for project description files
-        for (int i = 0; i < contents.length; i++) {
-            File file = contents[i];
+        for (File file : contents) {
             if (file.isFile() && file.getName().equals(searchFileName)) {
                 files.add(file);
                 // don't search sub-directories since we can't have nested
@@ -410,7 +410,7 @@ public class ImportProjectsUtilities {
                 demoProject.setDemoProjectFileType(EDemoProjectFileType.getDemoProjectFileTypeName(demoProjectFileType));
                 demoProject.setDemoProjectFilePath(demoProjectElement.attributeValue("demoFilePath")); //$NON-NLS-1$
                 demoProject.setDescriptionFilePath(demoProjectElement.attributeValue("descriptionFilePath")); //$NON-NLS-1$
-                //get the demo plugin Id                
+                // get the demo plugin Id
                 demoProject.setPluginId(demoProjectElement.attributeValue("pluginId")); //$NON-NLS-1$                
                 if (demoProject.getProjectName().equals("ESBDEMOS")) {
                     if (!PluginChecker.isPluginLoaded("org.talend.repository.services")) {
@@ -423,13 +423,14 @@ public class ImportProjectsUtilities {
         return demoProjectList;
     }
 
-    private static String getMDMDemoPluginId(){
+    private static String getMDMDemoPluginId() {
         if (!PluginChecker.isPluginLoaded("org.talend.mdm.workbench.enterprise")) {//CE //$NON-NLS-1$ 
             return "org.talend.mdm.repository"; //$NON-NLS-1$
-        }else{//EE
+        } else {// EE
             return "org.talend.mdm.repository.enterprise"; //$NON-NLS-1$
         }
     }
+
     /**
      * Gets the path of demo projects xml file.
      * 
@@ -438,27 +439,28 @@ public class ImportProjectsUtilities {
     private static List<File> getXMLFilePath() {
         List<File> xmlListFile = new ArrayList<File>();
         String[] pluginIDs = new String[] { ResourcesPlugin.PLUGIN_ID, "org.talend.resources.perl", //$NON-NLS-1$
-                ResourcesPlugin.TDQ_PLUGIN_ID , getMDMDemoPluginId()}; //$NON-NLS-1$
+                ResourcesPlugin.TDQ_PLUGIN_ID, getMDMDemoPluginId() };
 
-        for (int i = 0; i < pluginIDs.length; i++) {
-            Bundle bundle = Platform.getBundle(pluginIDs[i]);
+        for (String pluginID : pluginIDs) {
+            Bundle bundle = Platform.getBundle(pluginID);
             if (bundle != null) {
                 URL url = null;
 
                 String fullPath = XML_FILE_PATH;
-                if (ResourcesPlugin.TDQ_PLUGIN_ID.equals(pluginIDs[i])) {
+                if (ResourcesPlugin.TDQ_PLUGIN_ID.equals(pluginID)) {
                     fullPath = PluginConstant.EMPTY_STRING;
                 }
-                URL fileUrl=FileLocator.find(bundle, new Path(fullPath), null);
+                URL fileUrl = FileLocator.find(bundle, new Path(fullPath), null);
                 try {
-                    if(fileUrl!=null){
+                    if (fileUrl != null) {
                         url = FileLocator.toFileURL(fileUrl);
                     }
                 } catch (IOException e) {
                     ExceptionHandler.process(e);
                 }
-                if(url==null)
+                if (url == null) {
                     continue;
+                }
                 File xmlFilePath = new File(url.getPath());
                 if (xmlFilePath.exists()) {
                     String files[] = xmlFilePath.list(new FilenameFilter() {
