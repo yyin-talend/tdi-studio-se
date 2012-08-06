@@ -3,6 +3,7 @@ imports="
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	org.talend.core.model.process.INode
 	org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.utils.NodeUtil
 " 
 %>
 
@@ -70,11 +71,30 @@ imports="
 					String rejectString = !"".equals(rejectsPath) ? rejectsPath + rejectsNode : "";
 					String noComm = !noCommit ? "" : " NO COMMIT ";
 					String abort = abortOnError ? " ABORT ON ERROR " : "";
+					String db_version = ElementParameterParser.getValue(node,"__DB_VERSION__");
+				    if(useExistingConnection){
+						String connName = ElementParameterParser.getValue(node,"__CONNECTION__");
+						INode con_node = NodeUtil.getNodeByUniqueName(node,connName);
+						if(con_node!=null){
+							db_version = ElementParameterParser.getValue(con_node,"__DB_VERSION__");
+						}
+				    }
 				%>    
 					if (stmtBuilder_<%=cid%> != null && stmtBuilder_<%=cid%>.length() != 0 ) {
 					    java.io.ByteArrayInputStream bais_<%=cid%> = new ByteArrayInputStream(stmtBuilder_<%=cid%>.toString().getBytes());
+					<%
+				    if("VERTICA_6.0".equals(db_version)){
+				    %>
+						com.vertica.jdbc.VerticaCopyStream vcs_<%=cid%> = new com.vertica.jdbc.VerticaCopyStream((com.vertica.jdbc.VerticaConnection)conn_<%=cid%>,template_<%=cid%>);
+						vcs_<%=cid%>.start();
+						vcs_<%=cid%>.addStream(bais_<%=cid%>);
+						vcs_<%=cid%>.execute();
+						vcs_<%=cid%>.finish();
+						copiedCount_<%=cid%> +=vcs_<%=cid%>.getRowCount();
+				    <%}else{%>
 					    ((com.vertica.PGStatement)stmt_<%=cid%>).executeCopyIn(template_<%=cid%>, bais_<%=cid%>);
 						copiedCount_<%=cid%> +=stmt_<%=cid %>.getUpdateCount(); 
+				    <%}%>
 						stmtBuilder_<%=cid%> = null;
 						bais_<%=cid%> = null;
 					}

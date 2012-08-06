@@ -34,8 +34,17 @@ imports="
 		        conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 		   <%
 		    } else {
+		    	String db_version = ElementParameterParser.getValue(node, "__DB_VERSION__");
+				if("VERTICA_6.0".equals(db_version)){
+				%>
+					java.lang.Class.forName("com.vertica.jdbc.Driver");
+				<%
+				}else{
+				%>
+					java.lang.Class.forName("com.vertica.Driver");
+				<%
+				}
 		   %>
-			java.lang.Class.forName("com.vertica.Driver");
 			String url_<%=cid %> = "jdbc:vertica://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
 			String dbUser_<%=cid %> = <%=dbuser%>;
 			String dbPwd_<%=cid %> = <%=dbpwd%>;

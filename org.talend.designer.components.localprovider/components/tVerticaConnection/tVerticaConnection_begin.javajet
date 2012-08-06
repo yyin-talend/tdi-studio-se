@@ -17,7 +17,12 @@ imports="
 		}
 	
 		public String getDirverClassName(INode node){
-			return "com.vertica.Driver";
+			String db_version = ElementParameterParser.getValue(node, "__DB_VERSION__");
+			if("VERTICA_6.0".equals(db_version)){
+				return "com.vertica.jdbc.Driver";
+			}else{
+				return "com.vertica.Driver";
+			}
 		}
 		
 	}//end class

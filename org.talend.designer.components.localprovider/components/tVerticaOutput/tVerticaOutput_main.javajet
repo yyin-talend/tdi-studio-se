@@ -11,6 +11,7 @@ imports="
     org.talend.core.model.metadata.MappingTypeRetriever
     org.talend.core.model.metadata.MetadataTalendType	
 	org.talend.core.model.process.IConnectionCategory	
+    org.talend.core.model.utils.NodeUtil
 	java.util.List
 	java.util.ArrayList
 	java.util.Map
@@ -41,6 +42,14 @@ skeleton="../templates/db_output_bulk.skeleton"
     String batchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
     boolean useExistingConnection = "true".equalsIgnoreCase(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
     
+   	String db_version = ElementParameterParser.getValue(node, "__DB_VERSION__");
+    if(useExistingConnection){
+		String connName = ElementParameterParser.getValue(node,"__CONNECTION__");
+		INode con_node = NodeUtil.getNodeByUniqueName(node,connName);
+		if(con_node!=null){
+			db_version = ElementParameterParser.getValue(con_node,"__DB_VERSION__");
+		}
+    }
     //feature:2880
     getManager(dbmsId, cid, node);
     boolean whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
@@ -823,7 +832,17 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    	<%} else {
 						%>
 						java.io.ByteArrayInputStream bais_<%=cid%> = new ByteArrayInputStream(stmtBuilder_<%=cid%>.toString().getBytes());
-					    ((com.vertica.PGStatement)stmt_<%=cid%>).executeCopyIn(template_<%=cid%>, bais_<%=cid%>);
+					    <%
+					    if("VERTICA_6.0".equals(db_version)){
+					    %>
+					    com.vertica.jdbc.VerticaCopyStream vcs_<%=cid%> = new com.vertica.jdbc.VerticaCopyStream((com.vertica.jdbc.VerticaConnection)conn_<%=cid%>,template_<%=cid%>);
+						vcs_<%=cid%>.start();
+						vcs_<%=cid%>.addStream(bais_<%=cid%>);
+						vcs_<%=cid%>.execute();
+						vcs_<%=cid%>.finish();
+					    <%}else{%>
+						((com.vertica.PGStatement)stmt_<%=cid%>).executeCopyIn(template_<%=cid%>, bais_<%=cid%>);
+					    <%}%>
 						stmtBuilder_<%=cid%> = null;
 						bais_<%=cid%> = null;
 						stmtBuilder_<%=cid%> = new StringBuilder();
@@ -844,9 +863,15 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
             	    	<%
             	    	}else if (("COPY").equals(dataAction)) {
-            	    	%>
-            	    		copiedCount_<%=cid%> += stmt_<%=cid %>. getUpdateCount();
+					    	if("VERTICA_6.0".equals(db_version)){
+					    %>
+            	    			copiedCount_<%=cid%> += vcs_<%=cid%>.getRowCount();
             	    	<%
+            	    		}else{
+            	    	%>
+            	    			copiedCount_<%=cid%> += stmt_<%=cid %>. getUpdateCount();
+            	    	<%
+            	    		}
             	    	}%>                         	    	
             	    	batchSizeCounter_<%=cid%> = 0;             	                	                	
                 }catch (java.sql.BatchUpdateException e){

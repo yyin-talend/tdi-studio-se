@@ -76,10 +76,18 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         java.sql.Connection connection_<%=cid%> = (java.sql.Connection) globalMap.get("<%=connectionName%>");
         <%        
     } else {
-        %>
-        java.lang.Class.forName("com.vertica.Driver");
+    	String db_version = ElementParameterParser.getValue(node, "__DB_VERSION__");
+		if("VERTICA_6.0".equals(db_version)){
+		%>
+			java.lang.Class.forName("com.vertica.jdbc.Driver");
+		<%
+		}else{
+		%>
+        	java.lang.Class.forName("com.vertica.Driver");
+		<%
+		}
+		%>
         dbschema_<%=cid%> = <%=dbschema%>;	
-		java.lang.Class.forName("com.vertica.Driver");
 		String url_<%=cid %> = "jdbc:vertica://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
 		String dbUser_<%=cid %> = <%=dbuser%>;
 		String dbPwd_<%=cid %> = <%=dbpwd%>;

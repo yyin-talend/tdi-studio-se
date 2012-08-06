@@ -9,6 +9,7 @@ imports="
 		org.talend.core.model.metadata.types.JavaType 
 		org.talend.core.model.metadata.MappingTypeRetriever
         org.talend.core.model.metadata.MetadataTalendType		
+    	org.talend.core.model.utils.NodeUtil
 		java.util.List
 		java.util.ArrayList
 		java.util.Map
@@ -63,6 +64,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String batchSize = ElementParameterParser.getValue(node, "__BATCH_SIZE__");
 	
 	String dbschema = ElementParameterParser.getValue(node,"__SCHEMA_DB__");
+
+   	String db_version = ElementParameterParser.getValue(node, "__DB_VERSION__");
 %>
 
 int nb_line_<%=cid%> = 0;
@@ -138,7 +141,17 @@ if(("UPDATE").equals(dataAction) || ("INSERT_OR_UPDATE").equals(dataAction) || (
 		    } else {
 		   %>
 		   		 dbschema_<%=cid%> = <%=dbschema%>;	
-				java.lang.Class.forName("com.vertica.Driver");
+			<%
+				if("VERTICA_6.0".equals(db_version)){
+			%>
+	 				java.lang.Class.forName("com.vertica.jdbc.Driver");
+			<%
+				}else{
+			%>
+					java.lang.Class.forName("com.vertica.Driver");
+			<%
+				}
+			%>
 				String url_<%=cid %> = "jdbc:vertica://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
 				String dbUser_<%=cid %> = <%=dbuser%>;
 				String dbPwd_<%=cid %> = <%=dbpwd%>;
