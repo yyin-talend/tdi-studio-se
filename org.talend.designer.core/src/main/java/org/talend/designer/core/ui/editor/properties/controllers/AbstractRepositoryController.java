@@ -111,8 +111,8 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         FormData data;
         String[] originalList = propertyTypeParameter.getListItemsDisplayName();
         List<String> stringToDisplay = new ArrayList<String>();
-        for (int i = 0; i < originalList.length; i++) {
-            stringToDisplay.add(originalList[i]);
+        for (String element : originalList) {
+            stringToDisplay.add(element);
         }
         combo.setItems(stringToDisplay.toArray(new String[0]));
         combo.setEditable(false);
@@ -120,9 +120,12 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         if (elem instanceof Node) {
             combo.setToolTipText(VARIABLE_TOOLTIP + propertyTypeParameter.getVariableName());
         }
-        if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE || param.getFieldType() == EParameterFieldType.SCHEMA_TYPE
-                || param.getFieldType() == EParameterFieldType.QUERYSTORE_TYPE) {
-            combo.setEnabled(ExtractMetaDataUtils.haveLoadMetadataNode());
+        if (!propertyTypeParameter.isReadOnly()) {
+            if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE
+                    || param.getFieldType() == EParameterFieldType.SCHEMA_TYPE
+                    || param.getFieldType() == EParameterFieldType.QUERYSTORE_TYPE) {
+                combo.setEnabled(ExtractMetaDataUtils.haveLoadMetadataNode());
+            }
         }
 
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, propertyTypeParameter.getDisplayName());
@@ -243,10 +246,12 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
 
     SelectionListener listenerSelection = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             // do nothing.
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand(e);
             if (cmd instanceof ChangeMetadataCommand) {
@@ -583,6 +588,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // TODO Auto-generated method stub
 
