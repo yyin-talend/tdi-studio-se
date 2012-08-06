@@ -1711,7 +1711,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         Object value = elem.getPropertyValue("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
 
         IElementParameter compList = elem.getElementParameterFromField(EParameterFieldType.COMPONENT_LIST);
-        if (value != null && (value instanceof Boolean) && ((Boolean) value) && compList != null) {
+        if (value != null && (value instanceof Boolean) && ((Boolean) value) && compList != null && !isConnectionExist()) {
             Object compValue = compList.getValue();
 
             if (compValue != null && !compValue.equals("")) { //$NON-NLS-1$
@@ -1735,6 +1735,20 @@ public abstract class AbstractElementPropertySectionController implements Proper
         } else {
             setConnectionParameterNames(elem, connParameters);
         }
+    }
+
+    protected boolean isConnectionExist() {
+        Object username = elem.getPropertyValue("USER");//$NON-NLS-1$
+        Object password = elem.getPropertyValue("PASS");//$NON-NLS-1$
+        Object host = elem.getPropertyValue("HOST");//$NON-NLS-1$
+        Object port = elem.getPropertyValue("PORT");//$NON-NLS-1$
+        if (username != null && password != null && host != null && port != null) {
+            if (username.toString().length() > 2 && password.toString().length() > 2 && host.toString().length() > 2
+                    && port.toString().length() > 2) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void setConnectionParameterNames(IElement element, ConnectionParameters connParameters) {

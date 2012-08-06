@@ -105,10 +105,12 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
     SelectionListener openTablesListener = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
 
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             if (part == null) {
                 createListTablesCommand((Button) e.getSource(), new EmptyContextManager());
@@ -120,10 +122,12 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
     SelectionListener openSQLListener = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
 
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             if (part == null) {
                 createOpenSQLCommand((Button) e.getSource(), new EmptyContextManager());
@@ -289,7 +293,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
             if (connection != null) {
                 String contextId = connection.getContextId();
-                if (contextId == null || "".equals(contextId)) {//$NON-NLS-N$
+                if (contextId == null || "".equals(contextId)) {
                     IMetadataConnection metadataConnection = null;
                     metadataConnection = ConvertionHelper.convert(connection);
                     isStatus = checkConnection(metadataConnection);
@@ -304,6 +308,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
         } else {
             Display.getDefault().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     String pid = "org.talend.sqlbuilder"; //$NON-NLS-1$
                     String mainMsg = "Database connection is failed. "; //$NON-NLS-1$
@@ -392,6 +397,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
     private Control addOpenSqlBulderButton(Composite subComposite, IElementParameter param, int top, int numInRow, int nbInRow) {
         final DecoratedField dField1 = new DecoratedField(subComposite, SWT.PUSH, new IControlCreator() {
 
+            @Override
             public Control createControl(Composite parent, int style) {
                 return new Button(parent, style);
             }
@@ -441,7 +447,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
     protected void createListTablesCommand(Button button, IContextManager manager) {
         initConnectionParameters();
         if (this.connParameters != null) {
-            if (isUseExistingConnection()) {
+            if (isUseExistingConnection() && !isConnectionExist()) {
                 initConnectionParametersWithContext(connectionNode, manager.getDefaultContext());
             } else {
                 initConnectionParametersWithContext(elem, manager.getDefaultContext());
@@ -481,6 +487,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
                 if (existConnection != null) {
                     Display.getDefault().syncExec(new Runnable() {
 
+                        @Override
                         public void run() {
                             IMetadataConnection convert = ConvertionHelper.convert(con);
                             iMetadata[0] = convert;
@@ -497,6 +504,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
                                     .returnTablesFormConnection(iMetadataConnection);
                             Display.getDefault().asyncExec(new Runnable() {
 
+                                @Override
                                 public void run() {
                                     final DbTableSelectorObject object = new DbTableSelectorObject();
                                     DbTableSelectorObject connO = new DbTableSelectorObject();
@@ -550,6 +558,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
                         } else {
                             Display.getDefault().asyncExec(new Runnable() {
 
+                                @Override
                                 public void run() {
                                     String pid = "org.talend.sqlbuilder"; //$NON-NLS-1$
                                     String mainMsg = "Database connection is failed. "; //$NON-NLS-1$
@@ -695,6 +704,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // TODO Auto-generated method stub
 
