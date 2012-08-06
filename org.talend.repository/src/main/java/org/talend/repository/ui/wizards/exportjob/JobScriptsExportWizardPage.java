@@ -83,6 +83,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.ProcessUtils;
+import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
@@ -246,6 +247,23 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             }
             if (repositoryObject != null && repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                 processItem = (ProcessItem) repositoryObject.getProperty().getItem();
+            } else if (repositoryObject != null && repositoryObject.getProperty().getItem() instanceof FolderItem) {
+                processItem = getProcessItemIfSelectFolder(repositoryObject);
+            }
+        }
+        return processItem;
+    }
+
+    protected ProcessItem getProcessItemIfSelectFolder(IRepositoryViewObject repositoryObject) {
+        List<IRepositoryNode> children = repositoryObject.getRepositoryNode().getChildren();
+        for (IRepositoryNode object : children) {
+            if (object.getObject().getProperty().getItem() instanceof FolderItem) {
+                processItem = getProcessItemIfSelectFolder(object.getObject());
+                if (processItem != null) {
+                    return processItem;
+                }
+            } else if (object.getObject().getProperty().getItem() instanceof ProcessItem) {
+                return (ProcessItem) object.getObject().getProperty().getItem();
             }
         }
         return processItem;
