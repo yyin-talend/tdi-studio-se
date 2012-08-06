@@ -150,6 +150,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         tabFactory.initComposite(parent, true);
         tabFactory.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 TalendPropertyTabDescriptor descriptor = (TalendPropertyTabDescriptor) selection.getFirstElement();
@@ -315,11 +316,13 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
 
         tabFactory.getTabbedPropertyComposite().getCompactButton().addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 // TODO Auto-generated method stub
 
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 // TODO Auto-generated method stub
                 tabFactory.getTabbedPropertyComposite().setCompactView(true);
@@ -343,10 +346,12 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
 
         tabFactory.getTabbedPropertyComposite().getTableButton().addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
 
             }
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 // TODO Auto-generated method stub
                 tabFactory.getTabbedPropertyComposite().setCompactView(false);
@@ -384,6 +389,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         return this.cleaned;
     }
 
+    @Override
     public void cleanDisplay() {
         tabFactory.setInput(null);
         tabFactory.setTitle(null, null);
@@ -401,6 +407,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         selectedPrimary = true;
     }
 
+    @Override
     public void setElement(Element elem) {
         if (currentSelectedTab != null && currentSelectedTab.getData().equals(elem) && !cleaned) {
             return;
@@ -426,22 +433,27 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         cleaned = false;
         tabFactory.setSelection(new IStructuredSelection() {
 
+            @Override
             public Object getFirstElement() {
                 return null;
             }
 
+            @Override
             public Iterator iterator() {
                 return null;
             }
 
+            @Override
             public int size() {
                 return 0;
             }
 
+            @Override
             public Object[] toArray() {
                 return null;
             }
 
+            @Override
             public List toList() {
                 List<TalendPropertyTabDescriptor> d = new ArrayList<TalendPropertyTabDescriptor>();
 
@@ -459,6 +471,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 return d;
             }
 
+            @Override
             public boolean isEmpty() {
                 return false;
             }
@@ -480,6 +493,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         }
         tabFactory.setSelection(new StructuredSelection() {
 
+            @Override
             public List toList() {
                 return selection;
             }
@@ -581,6 +595,14 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 }
             }
             EComponentCategory[] categories = EElementType.ADVANCED_NODE.getCategories();
+            // add for bug TDI-8476
+            if (((Node) elem).getComponent() != null) {
+                String paletteType = ((Node) elem).getComponent().getPaletteType();
+                if ("CAMEL".equals(paletteType)) {
+                    categories = EElementType.NODE.getCategories();
+                }
+            }
+
             if (PluginChecker.isValidationrulesPluginLoaded() && isSupportValidationRuleNode((Node) elem)) { // show
                 EComponentCategory[] newCategories = new EComponentCategory[categories.length + 1];
                 System.arraycopy(categories, 0, newCategories, 0, categories.length);
