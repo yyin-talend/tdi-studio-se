@@ -59,7 +59,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
         String sPartFunction = sFunction.substring(sFunction.indexOf(":") < 0 ? 0 : sFunction.indexOf(":") + 1); 
         %>    
         ope_<%=cid%>.matches((<%=keyColumn.get("FUNCTION").replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR"))%>)
-                       , "<%=sPartFunction.replace("$source", keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE").replace("\"", "\\\"")).replace("$operator", keyColumn.get("OPERATOR"))%> faild");
+                       , "<%=sPartFunction.replace("$source", keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE").replace("\\", "\\\\").replace("\"", "\\\"")).replace("$operator", keyColumn.get("OPERATOR"))%> failed");
       <%
       } else {
         IMetadataColumn rightColumn = metadata.getColumn(keyColumn.get("INPUT_COLUMN"));
@@ -71,16 +71,16 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
           if (keyColumn.get("RVALUE") != null && keyColumn.get("RVALUE").equals("null")){
 	      %>
 	        ope_<%=cid%>.matches((<%="$source $operator $target".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR"))%>)
-	                       , "<%=keyColumn.get("INPUT_COLUMN")%><%=keyColumn.get("OPERATOR")%><%=keyColumn.get("RVALUE").replace("\"", "\\\"")%> failed");
+	                       , "<%=keyColumn.get("INPUT_COLUMN")%><%=keyColumn.get("OPERATOR")%><%=keyColumn.get("RVALUE").replace("\\", "\\\\").replace("\"", "\\\"")%> failed");
           <%} else {%>
             ope_<%=cid%>.matches((<%="$source == null? false : $source.compareTo($target) $operator 0".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR"))%>)
-                           , "<%="$source.compareTo($target) $operator 0".replace("$source", keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE").replace("\"", "\\\"")).replace("$operator", keyColumn.get("OPERATOR"))%> faild");
+                           , "<%="$source.compareTo($target) $operator 0".replace("$source", keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE").replace("\\", "\\\\").replace("\"", "\\\"")).replace("$operator", keyColumn.get("OPERATOR"))%> failed");
           <%
 	      }
         } else {
         %>  
           ope_<%=cid%>.matches((<%="$source $operator $target".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>)
-                         , "<%=keyColumn.get("INPUT_COLUMN")%><%=keyColumn.get("OPERATOR")%><%=keyColumn.get("RVALUE").replace("\"", "\\\"")%> failed");
+                         , "<%=keyColumn.get("INPUT_COLUMN")%><%=keyColumn.get("OPERATOR")%><%=keyColumn.get("RVALUE").replace("\\", "\\\\").replace("\"", "\\\"")%> failed");
         <%
 	    }
       }
