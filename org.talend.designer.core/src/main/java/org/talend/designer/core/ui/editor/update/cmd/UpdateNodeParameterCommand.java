@@ -678,6 +678,8 @@ public class UpdateNodeParameterCommand extends Command {
                                     Map<String, Object> lineValue = (Map<String, Object>) parameter;
                                     lineValue.remove(IEbcdicConstant.FIELD_SCHEMA + IEbcdicConstant.REF_TYPE);
                                 }
+                                // since it is a build-in ebcdic,should change its property before return
+                                node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                                 return;
                             }
                         }
