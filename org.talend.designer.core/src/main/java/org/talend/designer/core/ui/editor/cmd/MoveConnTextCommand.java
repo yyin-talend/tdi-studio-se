@@ -49,10 +49,10 @@ public class MoveConnTextCommand extends Command {
         this.parent = parent;
         this.location = delta;
         this.resuming = resuming;
+        oldOffset = label.getOffset().getCopy();
     }
 
     public void execute() {
-        oldOffset = label.getOffset();
         Point newOffset = label.getOffset().getCopy();
         parent.translateToAbsolute(newOffset);
         newOffset.translate(location);
