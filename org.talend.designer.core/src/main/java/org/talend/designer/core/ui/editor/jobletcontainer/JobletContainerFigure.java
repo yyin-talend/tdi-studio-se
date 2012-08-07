@@ -15,6 +15,8 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.utils.image.ColorUtils;
@@ -23,12 +25,15 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.repository.editor.RepositoryEditorInput;
+import org.talend.repository.model.ERepositoryStatus;
 
 public class JobletContainerFigure extends Figure {
 
@@ -54,6 +59,10 @@ public class JobletContainerFigure extends Figure {
 
     private RGB subjobTitleColor;
 
+    private RGB red = new RGB(250, 72, 80);
+
+    private RGB green = new RGB(130, 240, 100);
+
     /**
      * DOC hwang JobletContainerFigure constructor comment.
      * 
@@ -71,6 +80,7 @@ public class JobletContainerFigure extends Figure {
 
         collapseFigure.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent event) {
                 doCollapse();
             }
@@ -145,6 +155,11 @@ public class JobletContainerFigure extends Figure {
         graphics.setAlpha(100);
         errorFigure.setLocation(jobletContainer.getErrorLocation());
         super.paint(graphics);
+        if (isRed() && rectFig != null) {
+            rectFig.setBackgroundColor(new Color(Display.getDefault(), red));
+        } else {
+            rectFig.setBackgroundColor(new Color(Display.getDefault(), green));
+        }
     }
 
     public void initializejobletContainer(Rectangle rectangle) {
@@ -173,7 +188,11 @@ public class JobletContainerFigure extends Figure {
 
         rectFig.setLocation(new Point(location.x, /* preferedSize.height + */location.y));
         rectFig.setSize(new Dimension(rectangle.width, rectangle.height /*- preferedSize.height*/));
-        rectFig.setBackgroundColor(new Color(Display.getDefault(), new RGB(130, 240, 100)));
+        if (isRed() && rectFig != null) {
+            rectFig.setBackgroundColor(new Color(Display.getDefault(), red));
+        } else {
+            rectFig.setBackgroundColor(new Color(Display.getDefault(), green));
+        }
         rectFig.setForegroundColor(new Color(Display.getDefault(), new RGB(220, 120, 120)));
     }
 
@@ -260,5 +279,27 @@ public class JobletContainerFigure extends Figure {
             errorFigure.setVisible(false);
             errorFigure.setToolTip(null);
         }
+    }
+
+    private boolean isRed() {
+        IProcess2 jobletProcess = (IProcess2) this.jobletContainer.getNode().getComponent().getProcess();
+        ERepositoryStatus status = ProxyRepositoryFactory.getInstance().getStatus(jobletProcess.getProperty().getItem());
+        if (status == ERepositoryStatus.LOCK_BY_OTHER) {
+            return true;
+        }
+        IEditorPart[] editors = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getDirtyEditors();
+        if (editors.length <= 0) {
+            return false;
+        }
+        for (int i = 0; i < editors.length; i++) {
+            IEditorPart editor = editors[i];
+            RepositoryEditorInput editorInput = (RepositoryEditorInput) editor.getEditorInput();
+            String jobletId = editorInput.getId();
+            if (jobletId.equals(jobletProcess.getId())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
