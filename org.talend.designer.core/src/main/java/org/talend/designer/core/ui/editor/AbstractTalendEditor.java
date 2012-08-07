@@ -61,7 +61,6 @@ import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
-import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
@@ -222,6 +221,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
     }
 
     // @Override
+    @Override
     public void createPartControl(Composite parent) {
         /**
          * FIXME ggu
@@ -482,10 +482,11 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 }
             }
 
-            if (isneedReload)
+            if (isneedReload) {
                 // / See bug 4821
                 ((ILibrariesService) GlobalServiceRegister.getDefault().getService(ILibrariesService.class))
                         .updateModulesNeededForCurrentJob(getProcess());
+            }
 
             monitor.worked(10);
 
@@ -627,6 +628,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         /*
          * @see VerifyKeyListener#verifyKey(org.eclipse.swt.events.VerifyEvent)
          */
+        @Override
         public void verifyKey(VerifyEvent event) {
 
             // ActionActivationCode code = null;
@@ -1015,6 +1017,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * 
      * @return contributorId String
      */
+    @Override
     public String getContributorId() {
         return IRepositoryView.VIEW_ID;
     }
@@ -1171,6 +1174,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         return dirtyState || getCommandStack().isDirty();
     }
 
+    @Override
     public void setDirty(boolean dirty) {
         dirtyState = dirty;
         if (dirtyState) {
@@ -1242,6 +1246,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * 
      * @see org.talend.repository.job.deletion.IResourceProtection#getProtectedIds()
      */
+    @Override
     public String[] calculateProtectedIds() {
         IProcess2 process = getProcess();
         if (!(process.getProperty().getItem() instanceof ProcessItem)) {
@@ -1269,6 +1274,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * 
      * @see org.talend.repository.job.deletion.IResourceProtection#getProjectedIds()
      */
+    @Override
     public String[] getProtectedIds() {
         Set<String> set = protectedJobs.keySet();
         return set.toArray(new String[set.size()]);
@@ -1279,6 +1285,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * 
      * @see org.talend.repository.job.deletion.IResourceProtection#getJobResource()
      */
+    @Override
     public JobResource getJobResource(String id) {
         return protectedJobs.get(id);
     }
@@ -1489,6 +1496,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                 // System.out.println("-----" + nodeCmd.getConnection().getUniqueName() + "(new)----->"
                                 // + originalTarget.getUniqueName());
 
+                                if (!ConnectionCreateCommand.isCreatingConnection()) {
+                                    return;
+                                }
+
                                 if (node.getComponent().getName().equals("tMap")) {
                                     CreateComponentOnLinkHelper.setupTMap(node);
                                 }
@@ -1610,8 +1621,9 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         private void moveShape(int keyCode, Node node, int offset) {
 
             Point location = node.getLocation().getCopy();
-            if (location == null)
+            if (location == null) {
                 return;
+            }
             switch (keyCode) {
             case SWT.ARROW_UP:
                 location.y = location.y - offset;
@@ -1716,10 +1728,12 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
             TalendConnectionCreationTool myConnectTool = new TalendConnectionCreationTool(new CreationFactory() {
 
+                @Override
                 public Object getNewObject() {
                     return listArgs;
                 }
 
+                @Override
                 public Object getObjectType() {
                     return mainConnector.getName();
                 }
@@ -2029,6 +2043,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             // }
         }
 
+        @Override
         public Object getAdapter(final Class type) {
             if (type == ZoomManager.class) {
                 return getGraphicalViewer().getProperty(ZoomManager.class.toString());
@@ -2060,6 +2075,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 lws.setContents(thumbnail);
                 disposeListener = new DisposeListener() {
 
+                    @Override
                     public void widgetDisposed(final DisposeEvent e) {
                         if (thumbnail != null) {
                             thumbnail.deactivate();
