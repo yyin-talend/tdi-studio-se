@@ -124,6 +124,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IMultiPageTalendEditor;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
@@ -649,6 +650,19 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 }
                 oldProcess.getUpdateManager().updateAll();
                 designerEditor.setDirty(isDirty);
+                List<Node> nodes = (List<Node>) oldProcess.getGraphicalNodes();
+                for (Node node : nodes) {
+                    node.getProcess().checkStartNodes();
+                    node.checkAndRefreshNode();
+                    IElementParameter ep = node.getElementParameter("ACTIVATE");
+                    if (ep != null && ep.getValue().equals(Boolean.FALSE)) {
+                        node.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
+                        node.setPropertyValue(EParameterName.ACTIVATE.getName(), false);
+                    } else if (ep != null && ep.getValue().equals(Boolean.TRUE)) {
+                        node.setPropertyValue(EParameterName.ACTIVATE.getName(), false);
+                        node.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
+                    }
+                }
             } catch (PersistenceException e) {
             }
         }
