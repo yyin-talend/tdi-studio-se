@@ -14,41 +14,23 @@ package org.talend.repository.ui.wizards.newproject;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.TarException;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage;
-import org.osgi.framework.Bundle;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
-import org.talend.core.CorePlugin;
-import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.ui.actions.importproject.DemoProjectBean;
-import org.talend.repository.ui.actions.importproject.EDemoProjectFileType;
 import org.talend.repository.ui.actions.importproject.ImportProjectsUtilities;
 import org.talend.repository.ui.wizards.newproject.copyfromeclipse.TalendWizardProjectsImportPage;
-import org.talend.resources.ResourcesPlugin;
 
 /**
  * Wizard for the creation of a new project. <br/>
@@ -121,7 +103,7 @@ public class ImportProjectAsWizard extends Wizard {
             // see bug 4600, update the external lib path, make it possible to
             // copy external jar files into tos
             updateExternalLibPath();
-            final Shell shell=getShell();
+            final Shell shell = getShell();
             ProgressDialog progressDialog = new ProgressDialog(shell) {
 
                 private IProgressMonitor monitorWrap;
@@ -139,16 +121,14 @@ public class ImportProjectAsWizard extends Wizard {
 
                         }
 
-
                     } catch (IOException e) {
                         throw new InvocationTargetException(e);
                     } catch (TarException e) {
                         throw new InvocationTargetException(e);
                     }
                     monitorWrap.done();
-                    MessageDialog.openInformation(shell,
-                            Messages.getString("ImportDemoProjectAction.messageDialogTitle.demoProject"), //$NON-NLS-1$
-                            Messages.getString("ImportDemoProjectAction.messageDialogContent.demoProjectImportedSuccessfully")); //$NON-NLS-1$
+                    MessageDialog.openInformation(shell, Messages.getString("ImportProjectAction.messageDialogTitle.project"), //$NON-NLS-1$
+                            Messages.getString("ImportProjectAction.messageDialogContent.projectImportedSuccessfully")); //$NON-NLS-1$
                 }
             };
 
@@ -161,7 +141,7 @@ public class ImportProjectAsWizard extends Wizard {
                 // Nothing to do
                 return false;
             }
-            
+
             return true;
         }
     }
