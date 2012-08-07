@@ -214,7 +214,7 @@ public class UpdateNodeParameterCommand extends Command {
 
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void updateProperty() {
         Object updateObject = result.getUpdateObject();
         if (updateObject == null) {
@@ -398,7 +398,7 @@ public class UpdateNodeParameterCommand extends Command {
                                     List<String> objectValueList = (List<String>) objectValue;
                                     for (int i = 0; i < objectValueList.size(); i++) {
                                         Map<String, Object> map = new HashedMap();
-                                        map.put("VALUE", TalendTextUtils.addQuotes((String) objectValueList.get(i)));
+                                        map.put("VALUE", TalendTextUtils.addQuotes(objectValueList.get(i)));
                                         paramMaps.add(map);
                                     }
                                 }
@@ -430,7 +430,7 @@ public class UpdateNodeParameterCommand extends Command {
         }
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void updateSchema() {
         Object updateObject = result.getUpdateObject();
         if (updateObject == null) {
@@ -470,8 +470,9 @@ public class UpdateNodeParameterCommand extends Command {
                         if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
                             IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault()
                                     .getService(IDesignerMapperService.class);
-                            if (service == null || externalNode == null || externalNode.getExternalData() == null)
+                            if (service == null || externalNode == null || externalNode.getExternalData() == null) {
                                 return;
+                            }
                             List<Object> parameter = (List<Object>) result.getParameter();
                             if (parameter.size() == 2) {
                                 if (node.getComponent() != null && "tMap".equals(node.getComponent().getName())) { //$NON-NLS-1$
@@ -606,8 +607,9 @@ public class UpdateNodeParameterCommand extends Command {
                     if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
                         IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault().getService(
                                 IDesignerMapperService.class);
-                        if (service == null || externalNode == null || externalNode.getExternalData() == null)
+                        if (service == null || externalNode == null || externalNode.getExternalData() == null) {
                             return;
+                        }
                         IExternalData externalData = externalNode.getExternalData();
                         parameter = (List<Object>) result.getParameter();
                         if (parameter.size() == 3) {
@@ -671,6 +673,8 @@ public class UpdateNodeParameterCommand extends Command {
                                     Map<String, Object> lineValue = (Map<String, Object>) parameter;
                                     lineValue.remove(IEbcdicConstant.FIELD_SCHEMA + IEbcdicConstant.REF_TYPE);
                                 }
+                                // since it is a build-in ebcdic,should change its property before return
+                                node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                                 return;
                             }
                         }
@@ -699,7 +703,7 @@ public class UpdateNodeParameterCommand extends Command {
                 IRepositoryViewObject toReload = null;
                 IMetadataTable tableToReload = null;
                 if (parameter instanceof List) {
-                    List listParameter = (List) parameter;
+                    List listParameter = parameter;
                     connectionId = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
                     tableLabel = ((String) listParameter.get(0)).split(UpdatesConstants.SEGMENT_LINE)[0];
                 }
