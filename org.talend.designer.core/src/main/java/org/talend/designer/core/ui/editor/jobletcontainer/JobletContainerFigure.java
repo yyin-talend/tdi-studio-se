@@ -154,10 +154,21 @@ public class JobletContainerFigure extends Figure {
         graphics.setAlpha(100);
         errorFigure.setLocation(jobletContainer.getErrorLocation());
         super.paint(graphics);
+        refreshNodes();
+    }
+
+    private void refreshNodes() {
         if (isRed() && rectFig != null) {
             rectFig.setBackgroundColor(new Color(Display.getDefault(), red));
         } else {
             rectFig.setBackgroundColor(new Color(Display.getDefault(), green));
+        }
+        if (!jobletContainer.isCollapsed()) {
+            for (Object ele : jobletContainer.getElements()) {
+                if (ele instanceof Node) {
+                    ((Node) ele).setReadOnly(isRed());
+                }
+            }
         }
     }
 
