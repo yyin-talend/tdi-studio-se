@@ -669,8 +669,14 @@ public class CodeGenerator implements ICodeGenerator {
 							label = (String) parameter.getValue();
 						}
 
+						/*
+						 * Fix https://jira.talendforge.org/browse/TESB-6685
+						 * label + uniqueName to make it unique
+						 */
 						if (label == null) {
 							label = node.getUniqueName();
+						}else{
+							label += "_"+node.getUniqueName();
 						}
 						List<? extends IConnection> inConnections = node
 								.getIncomingConnections();

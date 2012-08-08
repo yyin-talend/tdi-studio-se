@@ -132,12 +132,12 @@ for (INode node : processNodes) {
 			IElementParameter param = node.getElementParameter("LABEL");
 		   	String cid = node.getUniqueName();
 		//  http://jira.talendforge.org/browse/TESB-5241
-//			IElementParameter param = node.getElementParameter("LABEL");
-//			if(param != null && !"__UNIQUE_NAME__".equals(param.getValue())){
-//				cid = (String)param.getValue();	
-//			}else{
-//				cid = node.getUniqueName();
-//			}
+			/*
+		   	 * change to use label + unique to make it unique but readable
+		   	 */
+			if(param != null && !"__UNIQUE_NAME__".equals(param.getValue())){
+				cid = (String)param.getValue()+"_"+cid;	
+			}
 			String endpointVar = "endpoint" + cid;
 			String uriRef = "uriMap.get(\"" + cid + "\")";
 %>
