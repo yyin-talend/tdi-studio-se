@@ -8,6 +8,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
     java.util.Map
+    org.talend.core.model.process.EConnectionType
 "
 %>
 
@@ -126,9 +127,10 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
     if(outgoingConns != null && outgoingConns.size() > 0) {
         for(IConnection outgoingConn : outgoingConns) {
             for(IMetadataColumn metadataColumn : columnList) {
+				if(outgoingConn.getLineStyle() == EConnectionType.FLOW_MAIN){
                 %>
                 <%=outgoingConn.getName()%>.<%=metadataColumn.getLabel()%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>;
-                <%
+                <%}
             }
         }
     }
