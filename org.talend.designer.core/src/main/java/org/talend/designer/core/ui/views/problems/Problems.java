@@ -211,10 +211,7 @@ public class Problems {
         List<String> statusList = new ArrayList<String>();
 
         for (Problem problem : problemList.getProblemList()) {
-            String elementUniqueName = element.getLabel();
-            if (element.isJoblet()) {
-                elementUniqueName = element.getUniqueName();
-            }
+            String elementUniqueName = element.getUniqueName();
             if (problem.getNodeName() != null && problem.getNodeName().equals(elementUniqueName)
                     && problem.getStatus().equals(status)) {
                 statusList.add(problem.getDescription());
