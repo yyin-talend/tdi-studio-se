@@ -486,9 +486,11 @@ public class JobletUtil {
                                 continue;
                             } else {
                                 if (((Node) node).isJoblet() && jobletItem.getProperty() != null) {
-                                    boolean haveOpened = !((Node) node).getNodeContainer().isCollapsed();
-                                    if (haveOpened) {
-                                        return true;
+                                    if (jobletItem.getProperty().getId().equals(node.getComponent().getProcess().getId())) {
+                                        boolean haveOpened = !((Node) node).getNodeContainer().isCollapsed();
+                                        if (haveOpened) {
+                                            return true;
+                                        }
                                     }
                                 }
                             }
