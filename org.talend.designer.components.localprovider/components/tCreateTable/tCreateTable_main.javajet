@@ -124,7 +124,7 @@ abstract class  Manager {
                 createTableSQL.append(suffix);
             } else {
                 if(!lengthIgnored) {                
-                	if (("postgres_id".equalsIgnoreCase(getDBMSId()) || "postgresplus_id".equalsIgnoreCase(getDBMSId()) ) && metadataColumn.getLength() == null) {
+                	if (("postgres_id".equalsIgnoreCase(getDBMSId()) || "postgresplus_id".equalsIgnoreCase(getDBMSId()) || "greenplum_id".equalsIgnoreCase(getDBMSId()) ) && metadataColumn.getLength() == null) {
                 	}else {
 	                    prefix = "(";
 	                    suffix = ") ";
@@ -143,7 +143,7 @@ abstract class  Manager {
                     createTableSQL.append(comma + precision);
                 }
                 
-                if (("postgres_id".equalsIgnoreCase(getDBMSId()) || "postgresplus_id".equalsIgnoreCase(getDBMSId()) ) && metadataColumn.getLength() == null) {                	
+                if (("postgres_id".equalsIgnoreCase(getDBMSId()) || "postgresplus_id".equalsIgnoreCase(getDBMSId()) || "greenplum_id".equalsIgnoreCase(getDBMSId()) ) && metadataColumn.getLength() == null) {                	
                 } else {
                 	createTableSQL.append(suffix);
                 }
@@ -1458,7 +1458,7 @@ class TeradataManager extends Manager {
                 createTableSQL.append(suffix);
             } else {
                 if(!lengthIgnored) {                
-                	if (("postgres_id".equalsIgnoreCase(getDBMSId()) || "postgresplus_id".equalsIgnoreCase(getDBMSId()) ) && metadataColumn.getLength() == null) {
+                	if (("postgres_id".equalsIgnoreCase(getDBMSId()) || "postgresplus_id".equalsIgnoreCase(getDBMSId()) || "greenplum_id".equalsIgnoreCase(getDBMSId()) ) && metadataColumn.getLength() == null) {
                 	}else {
 	                    prefix = "(";
 	                    suffix = ") ";
@@ -1477,7 +1477,7 @@ class TeradataManager extends Manager {
                     createTableSQL.append(comma + precision);
                 }
                 
-                if (("postgres_id".equalsIgnoreCase(getDBMSId()) || "postgresplus_id".equalsIgnoreCase(getDBMSId()) ) && metadataColumn.getLength() == null) {                	
+                if (("postgres_id".equalsIgnoreCase(getDBMSId()) || "postgresplus_id".equalsIgnoreCase(getDBMSId()) ||"greenplum_id".equalsIgnoreCase(getDBMSId()) ) && metadataColumn.getLength() == null) {                	
                 } else {
                 	createTableSQL.append(suffix);
                 }
@@ -1508,6 +1508,68 @@ class TeradataManager extends Manager {
         }
         createTableSQL.append(")");
         return createTableSQL.toString();
+    }
+}
+class GreenplumManager extends Manager {
+    private String host;
+    private String port;
+    private String dbSchema;
+    private boolean useExistingConnection;
+    private String connection;        
+    public GreenplumManager(String host, String port, String dbName, String tableName, String dbSchema, String userName, String password, boolean useExistingConnection, String connection, String cid) {
+        super(dbName, tableName, userName ,password, cid);
+        this.host = host;
+        this.port = port;
+        this.dbSchema = dbSchema;
+        this.useExistingConnection = useExistingConnection;
+        this.connection = connection;
+    }
+    protected String getDriver() {
+        return "org.postgresql.Driver";
+    }
+    public String getConnectionURL() {
+        return "\"jdbc:postgresql://\" + " + host + " + \":\" + " + port + " + \"/\" + " + dbName;
+    }
+    public String getConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append(retrieveTable());
+            javaCode.append("java.sql.Connection conn_" + cid + " = (java.sql.Connection)globalMap.get(\"conn_" + connection + "\");");
+        } else {
+            javaCode.append(super.getConnection());
+        }
+        return javaCode.toString();
+    }        
+    protected String getDBMSId() {
+        return "greenplum_id";
+    }
+    protected String getLProtectedChar() {
+        return "\\\"";
+    }
+    protected String getRProtectedChar() {
+        return "\\\"";
+    }
+    public String closeConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append("");
+        } else {
+            javaCode.append(super.closeConnection());            
+        }
+        return javaCode.toString();
+    }
+    protected String retrieveTable() {
+        StringBuilder javaCode = new StringBuilder();
+        javaCode.append(super.retrieveTable());
+        if(useExistingConnection) {
+            javaCode.append("String dbSchema_" + cid + " = (String)globalMap.get(\"schema_" + connection + "\");\r\n"); 
+        } else {
+            javaCode.append("String dbSchema_" + cid + " = " + dbSchema + ";\r\n");            
+        }
+        javaCode.append("if(dbSchema_" + cid + " != null && dbSchema_" + cid + ".trim().length() != 0) {");
+        javaCode.append("tableName_" + cid + " = dbSchema_" + cid + " + \"" + getLProtectedChar() + "." + getRProtectedChar() + "\" + tableName_" + cid + ";\r\n");
+        javaCode.append("}");
+        return javaCode.toString();        
     }
 }
 class StringUtil {
@@ -1715,6 +1777,16 @@ class ManagerFactory {
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new ODBCManager(odbcName, tableName, userName, password, cid);
+        }else if(("GREENPLUM").equals(dbType)) {
+            String host = ElementParameterParser.getValue(node, "__HOST__");
+            String port = ElementParameterParser.getValue(node, "__PORT__");
+            String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
+            String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
+            String userName = ElementParameterParser.getValue(node, "__USER__");
+            String password = ElementParameterParser.getValue(node, "__PASS__");            
+            boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
+            String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_"+dbType+"__"));
+            manager = new GreenplumManager(host, port, dbName, tableName, dbSchema, userName, password, useExistingConnection, connection, cid);
         }
         return manager;
     }
