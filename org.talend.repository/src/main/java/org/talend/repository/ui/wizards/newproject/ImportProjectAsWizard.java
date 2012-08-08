@@ -15,6 +15,8 @@ package org.talend.repository.ui.wizards.newproject;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
@@ -23,6 +25,7 @@ import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.TarException;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -138,7 +141,16 @@ public class ImportProjectAsWizard extends Wizard {
                 MessageBoxExceptionHandler.process(e.getTargetException(), shell);
                 return false;
             } catch (InterruptedException e) {
-                // Nothing to do
+                IProject[] projects = org.eclipse.core.resources.ResourcesPlugin.getWorkspace().getRoot().getProjects();
+                for (IProject project : projects) {
+                    if (project.getName().equalsIgnoreCase(name)) {
+                        try {
+                            project.delete(true, true, null);
+                        } catch (CoreException ee) {
+                            ExceptionHandler.process(ee);
+                        }
+                    }
+                }
                 return false;
             }
 
