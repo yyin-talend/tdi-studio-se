@@ -28,8 +28,6 @@
     List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
     List<IConnection> outConnections = (List<IConnection>) node.getOutgoingConnections();
     
-    List<INode> graphicalNodes = (List<INode>) node.getProcess().getGraphicalNodes();
-    
 	if (connections != null && connections.size() > 0) { // T_AH_100
         for (IConnection connection : connections) { // T_AH_101
         	String connectionName = connection.getName();
