@@ -242,9 +242,12 @@ public class JobletContainerPart extends NodeContainerPart {
                     NodeContainer nc = (NodeContainer) getModel();
                     // Rectangle rec = new Rectangle(node.getLocation(), node.getSize());
                     boolean isCollapse = ((JobletContainer) this.getModel()).isCollapsed();
-                    int changewidth = ((JobletContainer) this.getModel()).getChangeWidth();
-                    int changeheight = ((JobletContainer) this.getModel()).getChangeHeight();
-                    ((SubjobContainer) editPart.getModel()).refreshNodesLocation(isCollapse, nc, changewidth, changeheight);
+                    int rightChangewidth = ((JobletContainer) this.getModel()).getRightChangeWidth();
+                    int downChangeheight = ((JobletContainer) this.getModel()).getDownChangeHeight();
+                    int leftChangewidth = ((JobletContainer) this.getModel()).getLeftChangeWidth();
+                    int upChangeheight = ((JobletContainer) this.getModel()).getUpChangeHeight();
+                    ((SubjobContainer) editPart.getModel()).refreshNodesLocation(isCollapse, nc, rightChangewidth,
+                            downChangeheight, leftChangewidth, upChangeheight);
                     editPart.refresh();
                 }
             }

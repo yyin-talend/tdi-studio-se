@@ -52,9 +52,13 @@ public class JobletContainer extends NodeContainer {
 
     private Rectangle jobletRectangle;
 
-    private int changeWidth;
+    private int rightChangeWidth;
 
-    private int changeHeight;
+    private int downChangeHeight;
+
+    private int leftChangeWidth;
+
+    private int upChangeHeight;
 
     private boolean hasChange;
 
@@ -129,7 +133,6 @@ public class JobletContainer extends NodeContainer {
             Rectangle curRect = container.getNodeContainerRectangle();
             if (collapsed) {
                 totalRectangle = curRect.getCopy();
-
             } else {
                 if (totalRectangle == null) {
                     totalRectangle = curRect.getCopy();
@@ -142,13 +145,25 @@ public class JobletContainer extends NodeContainer {
         if (totalRectangle == null) {
             return null;
         }
-
         if (jobletRectangle != null) {
             if ((Math.abs(jobletRectangle.width - totalRectangle.width) != 0) || this.nodeContainers.size() == 1) {
-                changeWidth = Math.abs(jobletRectangle.width - totalRectangle.width);
+                if (jobletRectangle.x > totalRectangle.x) {
+                    leftChangeWidth = jobletRectangle.x - totalRectangle.x;
+                }
+                rightChangeWidth = Math.abs(jobletRectangle.width - totalRectangle.width);
+                if (rightChangeWidth > leftChangeWidth) {
+                    rightChangeWidth = rightChangeWidth - leftChangeWidth;
+                }
+
             }
             if ((Math.abs(jobletRectangle.height - totalRectangle.height) != 0) || this.nodeContainers.size() == 1) {
-                changeHeight = Math.abs(jobletRectangle.height - totalRectangle.height);
+                if (jobletRectangle.y > totalRectangle.y) {
+                    upChangeHeight = jobletRectangle.y - totalRectangle.y;
+                }
+                downChangeHeight = Math.abs(jobletRectangle.height - totalRectangle.height);
+                if (downChangeHeight > upChangeHeight) {
+                    downChangeHeight = downChangeHeight - upChangeHeight;
+                }
             }
 
         }
@@ -157,13 +172,22 @@ public class JobletContainer extends NodeContainer {
         return totalRectangle;
     }
 
-    public int getChangeWidth() {
-        return this.changeWidth;
+    public int getRightChangeWidth() {
+        return this.rightChangeWidth;
 
     }
 
-    public int getChangeHeight() {
-        return this.changeHeight;
+    public int getDownChangeHeight() {
+        return this.downChangeHeight;
+    }
+
+    public int getLeftChangeWidth() {
+        return this.leftChangeWidth;
+
+    }
+
+    public int getUpChangeHeight() {
+        return this.upChangeHeight;
     }
 
     public boolean isReadonly() {
