@@ -13,7 +13,9 @@
 package org.talend.designer.core.ui.editor.subjobcontainer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -57,6 +59,8 @@ public class SubjobContainer extends Element implements ISubjobContainer {
     protected List<NodeContainer> nodeContainers = new ArrayList<NodeContainer>();
 
     private IProcess2 process;
+
+    private Map<String, Point> pointMap = new HashMap<String, Point>();
 
     private List<Connection> outputs = new ArrayList<Connection>();
 
@@ -303,7 +307,8 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         return totalRectangle;
     }
 
-    public void refreshNodesLocation(boolean jobletCollapsed, NodeContainer nc, int changewidth, int changeheight) {
+    public void refreshNodesLocation(boolean jobletCollapsed, NodeContainer nc, int rightChangewidth, int downChangeheight,
+            int leftChangewidth, int upChangeheight) {
         JobletUtil util = new JobletUtil();
         Node node = nc.getNode();
         Rectangle nodeRec = new Rectangle(node.getLocation(), node.getSize());
@@ -313,32 +318,47 @@ public class SubjobContainer extends Element implements ISubjobContainer {
                 continue;
             }
             Point nodePoint = container.getNode().getLocation().getCopy();
+
             Rectangle jRec = util.getExpandRectangle(nodeRec);
             // Rectangle jNodeConRec = util.getExpandRectangle(nodeConRec);
             // Rectangle pointrec = util.getExpandRectangle(container.getNodeContainerRectangle());
-            jRec.width = jRec.width + changewidth;
-            jRec.height = jRec.height + changeheight;
+            jRec.width = jRec.width + rightChangewidth + leftChangewidth;
+            jRec.height = jRec.height + downChangeheight + upChangeheight;
             // jNodeConRec.width = jNodeConRec.width + changewidth;
             // jNodeConRec.height = jNodeConRec.height + changeheight;
             if (!jobletCollapsed) {
+                Point origPoint = new Point(nodePoint.x, nodePoint.y);
+                pointMap.put(container.getNode().getUniqueName(), origPoint);
                 if (nodePoint.x > nodeRec.x) {
-                    nodePoint.x = nodePoint.x + changewidth;
+                    nodePoint.x = nodePoint.x + rightChangewidth;
                 }
                 if (nodePoint.y > nodeRec.y) {
-                    nodePoint.y = nodePoint.y + changeheight;
+                    nodePoint.y = nodePoint.y + downChangeheight;
+                }
+
+                if (nodePoint.x < nodeRec.x && nodePoint.x > leftChangewidth) {
+                    nodePoint.x = nodePoint.x - leftChangewidth;
+                }
+                if (nodePoint.y < nodeRec.y && nodePoint.y > upChangeheight) {
+                    nodePoint.y = nodePoint.y - upChangeheight;
                 }
             } else {
-                if (nodePoint.x > nodeRec.x && nodePoint.x > changewidth) {
-                    nodePoint.x = nodePoint.x - changewidth;
-                }
-                if (nodePoint.y > nodeRec.y && nodePoint.y > changeheight) {
-                    if ((nodePoint.y - changeheight) > (nodeRec.y + 64)) {
-                        nodePoint.y = nodePoint.y - changeheight;
-                    } else {
-                        nodePoint.y = nodeRec.y + 64;
-                    }
+                nodePoint = pointMap.get(container.getNode().getUniqueName());
+                // if (nodePoint.x > nodeRec.x && nodePoint.x > rightChangewidth) {
+                // nodePoint.x = nodePoint.x - rightChangewidth;
+                // }
+                // if (nodePoint.x < nodeRec.x) {
+                // nodePoint.x = nodePoint.x + leftChangewidth;
+                // }
+                // if (nodePoint.y > nodeRec.y && nodePoint.y > downChangeheight) {
+                // if ((nodePoint.y - downChangeheight) > (nodeRec.y + 64)) {
+                // nodePoint.y = nodePoint.y - downChangeheight;
+                // } else {
+                // nodePoint.y = nodeRec.y + 64;
+                // }
+                //
+                // }
 
-                }
             }
             container.getNode().setLocation(nodePoint);
         }
