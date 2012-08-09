@@ -770,7 +770,10 @@ public class UIManager extends AbstractUIManager {
      * @param response
      */
     public void prepareClosing(int response) {
-        setMapperResponse(response);
+        // TDI-22179
+        if (response == SWT.OK || response == SWT.APPLICATION_MODAL) {
+            setMapperResponse(SWT.OK);
+        }
 
         if (response == SWT.CANCEL) {
             removeUnsavedOutputsFromProcess();
