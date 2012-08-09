@@ -313,7 +313,9 @@ public class RepositoryReviewDialog extends Dialog {
             addFilter(additionalFilters);
         }
         ViewerFilter filter = typeProcessor.makeFilter();
-        addFilter(filter);
+        if (!(ERepositoryObjectType.CONTEXT).equals(type)) {
+            addFilter(filter);
+        }
         TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "finshed add Filters"); //$NON-NLS-1$
 
         repositoryTreeViewer.setInput(getInput());
