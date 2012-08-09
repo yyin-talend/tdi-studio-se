@@ -44,6 +44,7 @@ import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
 import org.talend.designer.xmlmap.i18n.Messages;
+import org.talend.designer.xmlmap.ui.tabs.table.OutputXmlTreeSchemaTableView;
 import org.talend.designer.xmlmap.ui.tabs.table.XmlTreeSchemaTableView;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
@@ -130,7 +131,7 @@ public class TabFolderEditors extends CTabFolder {
                 xmlTreeEditorContainer);
         inputTreeSchemaEditor.initGraphicComponents();
 
-        outputTreeSchemaEditor = new XmlTreeSchemaTableView(mapperManage.getSelectedOutputTreeSchemaModel(null),
+        outputTreeSchemaEditor = new OutputXmlTreeSchemaTableView(mapperManage.getSelectedOutputTreeSchemaModel(null),
                 xmlTreeEditorContainer);
         outputTreeSchemaEditor.initGraphicComponents();
 
@@ -143,6 +144,7 @@ public class TabFolderEditors extends CTabFolder {
 
         tabFolderEditors.addListener(SWT.Selection, new Listener() {
 
+            @Override
             public void handleEvent(Event event) {
                 mapperManage.fireCurrentDirectEditApply();
                 // TDI-18185
@@ -168,6 +170,7 @@ public class TabFolderEditors extends CTabFolder {
         inputToolBarButtons = toolBar.getButtons();
         beforeCommandListenerForInputButtons = new IExtendedButtonListener() {
 
+            @Override
             public void handleEvent(ExtendedButtonEvent event) {
                 // TableViewerCreator tableViewerCreator =
                 // mapperManager.getUiManager().getCurrentSelectedInputTableView()
@@ -190,6 +193,7 @@ public class TabFolderEditors extends CTabFolder {
              * 
              * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
              */
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 for (ExtendedPushButton extendedPushButton : inputToolBarButtons) {
                     extendedPushButton.removeListener(beforeCommandListenerForInputButtons, true);
@@ -208,6 +212,7 @@ public class TabFolderEditors extends CTabFolder {
         outputToolBarButtons = toolBar.getButtons();
         beforeCommandListenerForOutputButtons = new IExtendedButtonListener() {
 
+            @Override
             public void handleEvent(ExtendedButtonEvent event) {
                 // TableViewerCreator tableViewerCreator =
                 // mapperManager.getUiManager().getCurrentSelectedOutputTableView()
@@ -230,6 +235,7 @@ public class TabFolderEditors extends CTabFolder {
             final TableViewerCreator tableViewerCreator = removeButton.getExtendedTableViewer().getTableViewerCreator();
             tableViewerCreator.getSelectionHelper().addAfterSelectionListener(new ILineSelectionListener() {
 
+                @Override
                 public void handle(LineSelectionEvent e) {
 
                     for (TableItem item : tableViewerCreator.getTable().getSelection()) {
@@ -252,6 +258,7 @@ public class TabFolderEditors extends CTabFolder {
              * 
              * @see org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt.events.DisposeEvent)
              */
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 for (ExtendedPushButton extendedPushButton : outputToolBarButtons) {
                     extendedPushButton.removeListener(beforeCommandListenerForOutputButtons, true);

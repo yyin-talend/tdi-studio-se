@@ -20,7 +20,9 @@ import org.eclipse.swt.widgets.Label;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedControlModel;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 
 /**
  * WCHEN talend class global comment. Detailled comment
@@ -90,26 +92,45 @@ public abstract class AbstractXmlTreeSchemaTableView extends AbstractExtendedTab
             isValidName = false;
             return "Name can't be null";
         }
-
-        final String validateNameSpace = validateNameSpace(newValue);
-        if (validateNameSpace != null) {
-            return validateNameSpace;
-        }
-
         TreeSchemaTableEntry bean = getExtendedTableModel().getBeansList().get(beanPosition);
 
+        if (NodeType.NAME_SPACE == bean.getTreeNode().getNodeType()) {
+            final String validateNameSpace = validateNameSpace(newValue, beanPosition);
+            if (validateNameSpace != null) {
+                return validateNameSpace;
+            }
+        }
+
+        if (!StringUtil.validateLabelForXML(newValue)) {
+            if (NodeType.ELEMENT == bean.getTreeNode().getNodeType()) {
+                isValidName = false;
+                return "Element name is invalid";
+            } else if (NodeType.ATTRIBUT == bean.getTreeNode().getNodeType()) {
+                isValidName = false;
+                return "Attribute name is invalid";
+            }
+        }
+
+        return validateEntry(newValue, bean, beanPosition);
+    }
+
+    protected String validateEntry(String newValue, TreeSchemaTableEntry bean, int beanPosition) {
+        String newXPath = bean.getXPath();
+        newXPath = newXPath.substring(0, newXPath.lastIndexOf(bean.getName()));
+        newXPath = newXPath + newValue;
         if (getExtendedTableModel() != null) {
             for (int i = 0; i < getExtendedTableModel().getBeansList().size(); i++) {
                 if (i == beanPosition) {
                     continue;
                 }
                 TreeSchemaTableEntry entry = getExtendedTableModel().getBeansList().get(i);
-                if (bean.getXPath().equals(entry.getXPath())) {
+                if (newXPath.equals(entry.getXPath())) {
                     isValidName = false;
                     return "Name alrady existed";
                 }
             }
         }
+
         return null;
     }
 
@@ -127,12 +148,27 @@ public abstract class AbstractXmlTreeSchemaTableView extends AbstractExtendedTab
         return mainComposite;
     }
 
-    protected String validateNameSpace(String newValue) {
+    protected String validateNameSpace(String newValue, int beanPosition) {
         if ((newValue.indexOf("(") != -1 || newValue.indexOf(")") != -1)
                 && !newValue.equals(XmlMapUtil.DEFAULT_NAME_SPACE_PREFIX)) {
             isValidName = false;
             return "Namespace Prefix is invalid";
         }
+
+        if (getExtendedTableModel() != null) {
+            for (int i = 0; i < getExtendedTableModel().getBeansList().size(); i++) {
+                if (i == beanPosition) {
+                    continue;
+                }
+                TreeSchemaTableEntry entry = getExtendedTableModel().getBeansList().get(i);
+                if (NodeType.NAME_SPACE == entry.getTreeNode().getNodeType() && newValue.equals(entry.getName())) {
+                    isValidName = false;
+                    return "Namespace Prefix already exist";
+                }
+
+            }
+        }
+
         return null;
 
     }

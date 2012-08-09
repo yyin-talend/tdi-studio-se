@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.ui.actions.SelectionAction;
-import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -79,30 +78,29 @@ public class CreateElementAction extends SelectionAction {
 
         if (canContinue) {
 
-            IInputValidator validataor = new IInputValidator() {
+            // IInputValidator validataor = new IInputValidator() {
+            //
+            // public String isValid(String newText) {
+            // String xpath = XmlMapUtil.getXPath(parent.getXpath(), newText, NodeType.ELEMENT);
+            // EList<TreeNode> children = parent.getChildren();
+            // boolean exist = false;
+            // for (TreeNode child : children) {
+            // if (child.getXpath() != null && child.getXpath().equals(xpath)) {
+            // exist = true;
+            // break;
+            // }
+            // }
+            //
+            // if (exist) {
+            // return "Element '" + newText + "' already exist !";
+            // } else {
+            // return null;
+            // }
+            // }
+            //
+            // };
 
-                public String isValid(String newText) {
-                    String xpath = XmlMapUtil.getXPath(parent.getXpath(), newText, NodeType.ELEMENT);
-                    EList<TreeNode> children = parent.getChildren();
-                    boolean exist = false;
-                    for (TreeNode child : children) {
-                        if (child.getXpath() != null && child.getXpath().equals(xpath)) {
-                            exist = true;
-                            break;
-                        }
-                    }
-
-                    if (exist) {
-                        return "Element '" + newText + "' already exist !";
-                    } else {
-                        return null;
-                    }
-                }
-
-            };
-
-            InputDialog dialog = new InputDialog(null, "Create New Element", "Input the new element's valid label", "",
-                    validataor);
+            InputDialog dialog = new InputDialog(null, "Create New Element", "Input the new element's valid label", "", null);
             int open = -1;
             String label = "";
             while (!StringUtil.validateLabelForXML(label)) {
