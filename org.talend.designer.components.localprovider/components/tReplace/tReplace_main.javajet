@@ -9,6 +9,7 @@ imports="
     java.util.List
     java.util.Map
     org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.IConnectionCategory
 "
 %>
 
@@ -125,14 +126,13 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
     
     
     if(outgoingConns != null && outgoingConns.size() > 0) {
-        for(IConnection outgoingConn : outgoingConns) {
-			if(outgoingConn.getLineStyle() == EConnectionType.FLOW_MAIN){
-            	for(IMetadataColumn metadataColumn : columnList) {
-                %>
-                <%=outgoingConn.getName()%>.<%=metadataColumn.getLabel()%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>;
-                <%}
-            }
-        }
+    	IConnection conn = outgoingConns.get(0);
+    	if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+	        for(IMetadataColumn metadataColumn : columnList) {
+	        %>
+	        <%=conn.getName()%>.<%=metadataColumn.getLabel()%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>;
+	        <%}
+	    }
     }
     
     
