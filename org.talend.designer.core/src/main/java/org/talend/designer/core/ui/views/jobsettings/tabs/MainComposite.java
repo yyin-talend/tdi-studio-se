@@ -179,7 +179,7 @@ public class MainComposite extends AbstractTabComposite {
         data.top = new FormAttachment(statusText, 0, SWT.CENTER);
         statusLabel.setLayoutData(data);
 
-        Text descriptionText = widgetFactory.createText(composite, "", SWT.MULTI); //$NON-NLS-1$
+        Text descriptionText = widgetFactory.createText(composite, "", SWT.MULTI | SWT.V_SCROLL | SWT.WRAP); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, AbstractPropertySection.STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(100, 0);
@@ -189,7 +189,8 @@ public class MainComposite extends AbstractTabComposite {
 
         String description = repositoryObject.getDescription();
         descriptionText.setText(description != null ? description : ""); //$NON-NLS-1$
-        descriptionText.setEnabled(enableControl);
+        descriptionText.setEnabled(true);
+        descriptionText.setEditable(enableControl);
 
         CLabel descriptionLabel = widgetFactory.createCLabel(composite, Messages.getString("DescriptionSection.Label")); //$NON-NLS-1$
         data = new FormData();
