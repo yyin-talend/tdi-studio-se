@@ -318,7 +318,7 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
             Point location = ((SelectionRequest) req).getLocation();
             List<NodeContainer> list = this.getModelChildren();
             for (NodeContainer nodeCon : list) {
-                if (nodeCon.getErrorMarkRectangle().contains(location)) {
+                if (nodeCon.getErrorMarkRectangle() != null && nodeCon.getErrorMarkRectangle().contains(location)) {
                     Node node = nodeCon.getNode();
                     if (node.isErrorFlag()) {
                         Shell shell = Display.getCurrent().getActiveShell();// getViewer().getControl().getShell();
