@@ -250,8 +250,9 @@ class ExportItemWizardPage extends WizardPage {
     }
 
     protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode node) {
-        if (node == null)
+        if (node == null) {
             return false;
+        }
         IRepositoryViewObject object = node.getObject();
         if (object != null) {
             // column
@@ -274,9 +275,9 @@ class ExportItemWizardPage extends WizardPage {
         checkedNodes.clear();
         CheckboxTreeViewer exportItemsTreeViewer = getItemsTreeViewer();
         Object[] checkedObj = exportItemsTreeViewer.getCheckedElements();
-        for (int i = 0; i < checkedObj.length; i++) {
-            if (checkedObj[i] instanceof RepositoryNode) {
-                RepositoryNode checkedNode = (RepositoryNode) checkedObj[i];
+        for (Object element : checkedObj) {
+            if (element instanceof RepositoryNode) {
+                RepositoryNode checkedNode = (RepositoryNode) element;
                 if (checkedNode != null && !RepositoryNode.NO_ID.equals(checkedNode.getId())) {
                     if (ENodeType.REPOSITORY_ELEMENT.equals(checkedNode.getType())) {
                         checkedNodes.add(checkedNode);
@@ -891,8 +892,8 @@ class ExportItemWizardPage extends WizardPage {
                 file.delete();
             } else if (file.isDirectory()) {
                 File files[] = file.listFiles();
-                for (int i = 0; i < files.length; i++) {
-                    this.deleteFile(files[i]);
+                for (File file2 : files) {
+                    this.deleteFile(file2);
                 }
             }
             file.delete();
@@ -955,14 +956,18 @@ class ExportItemWizardPage extends WizardPage {
         // add this if user use filter
         Set checkedElements = new HashSet();
         for (Object obj : filteredCheckboxTree.getCheckedLeafNodes()) {
-            checkedElements.add(obj);
+            if (obj instanceof RepositoryNode) {
+                checkedElements.add(obj);
+            }
         }
 
         // add this if user does not use filter
         for (Object obj : filteredCheckboxTree.getViewer().getCheckedElements()) {
-            RepositoryNode repositoryNode = (RepositoryNode) obj;
-            if (!isRepositoryFolder(repositoryNode) && !(repositoryNode instanceof ProjectRepositoryNode)) {
-                checkedElements.add(obj);
+            if (obj instanceof RepositoryNode) {
+                RepositoryNode repositoryNode = (RepositoryNode) obj;
+                if (!isRepositoryFolder(repositoryNode) && !(repositoryNode instanceof ProjectRepositoryNode)) {
+                    checkedElements.add(obj);
+                }
             }
         }
 
@@ -974,9 +979,11 @@ class ExportItemWizardPage extends WizardPage {
     }
 
     private void collectNodes(Map<String, Item> items, Object[] objects) {
-        for (int i = 0; i < objects.length; i++) {
-            RepositoryNode repositoryNode = (RepositoryNode) objects[i];
-            collectNodes(items, repositoryNode);
+        for (Object object : objects) {
+            if (object instanceof RepositoryNode) {
+                RepositoryNode repositoryNode = (RepositoryNode) object;
+                collectNodes(items, repositoryNode);
+            }
         }
     }
 
