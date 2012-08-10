@@ -170,6 +170,7 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String prop = evt.getPropertyName();
         if (SubjobContainer.UPDATE_SUBJOB_CONTENT.equals(prop)) {
@@ -271,6 +272,7 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
      * 
      * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
         return new ChopboxAnchor(getFigure());
     }
@@ -280,6 +282,7 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
      * 
      * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.Request)
      */
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(Request request) {
         return new ChopboxAnchor(getFigure());
     }
@@ -289,6 +292,7 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
      * 
      * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
         return new ChopboxAnchor(getFigure());
     }
@@ -298,6 +302,7 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
      * 
      * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.Request)
      */
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(Request request) {
         return new ChopboxAnchor(getFigure());
     }
@@ -318,7 +323,7 @@ public class SubjobContainerPart extends AbstractGraphicalEditPart implements Pr
             Point location = ((SelectionRequest) req).getLocation();
             List<NodeContainer> list = this.getModelChildren();
             for (NodeContainer nodeCon : list) {
-                if (nodeCon.getErrorMarkRectangle().contains(location)) {
+                if (nodeCon.getErrorMarkRectangle() != null && nodeCon.getErrorMarkRectangle().contains(location)) {
                     Node node = nodeCon.getNode();
                     if (node.isErrorFlag()) {
                         Shell shell = Display.getCurrent().getActiveShell();// getViewer().getControl().getShell();
