@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.xmlmap.parts;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.ChopboxAnchor;
@@ -91,51 +92,38 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
 
     @Override
     protected List getModelSourceConnections() {
-        // return ((VarNode) getModel()).getIncomingConnections();
-        return ((VarNode) getModel()).getOutgoingConnections();
+        List modelSourceConnection = new ArrayList();
+        modelSourceConnection.addAll(((VarNode) getModel()).getOutgoingConnections());
+        modelSourceConnection.addAll(((VarNode) getModel()).getFilterOutGoingConnections());
+        return modelSourceConnection;
     }
 
     @Override
     protected List getModelTargetConnections() {
         return ((VarNode) getModel()).getIncomingConnections();
-        // return ((VarNode) getModel()).getOutgoingConnections();
     }
 
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
-        IFigure figure = null;
-        // if (getRootAnchor() != null) {
-        // figure = getRootAnchor();
-        // } else {
-        figure = getFigure();
-        // }
-        return new ColumnAnchor(this, figure, true);
+        return new ColumnAnchor(this, getFigure(), true);
     }
 
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
-        IFigure figure = null;
-        // if (getRootAnchor() != null) {
-        // figure = getRootAnchor();
-        // } else {
-        figure = getFigure();
-        // }
-        return new ColumnAnchor(this, figure, false);
+        return new ColumnAnchor(this, getFigure(), false);
     }
 
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(Request request) {
-        IFigure figure = null;
-        figure = getFigure();
-        // }
-        return new ColumnAnchor(this, figure, true);
-        // return new ChopboxAnchor(getFigure());
+        return new ColumnAnchor(this, getFigure(), true);
     }
 
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(Request request) {
-        IFigure figure = null;
-        figure = getFigure();
-        return new ColumnAnchor(this, figure, false);
-        // return new ChopboxAnchor(getFigure());
+        return new ColumnAnchor(this, getFigure(), false);
     }
 
+    @Override
     public void notifyChanged(Notification notification) {
         int type = notification.getEventType();
         int featureId = notification.getFeatureID(XmlmapPackage.class);
@@ -203,10 +191,12 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
             this.varNodePart = varNodePart;
         }
 
+        @Override
         public IFigure getOwner() {
             return super.getOwner();
         }
 
+        @Override
         public Point getReferencePoint() {
             Point ref = null;
 

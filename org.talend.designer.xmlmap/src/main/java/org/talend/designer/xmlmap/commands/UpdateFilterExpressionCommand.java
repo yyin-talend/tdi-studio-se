@@ -63,14 +63,16 @@ public class UpdateFilterExpressionCommand extends Command {
                     }
 
                 }
-                targetTree.setExpressionFilter(expression);
-                FilterConnection connection = XmlmapFactory.eINSTANCE.createFilterConnection();
-                connection.setSource(sourceNode);
-                connection.setTarget(targetTree);
-                targetTree.getFilterIncomingConnections().add(connection);
-                sourceNode.getFilterOutGoingConnections().add(connection);
+                if (sourceNode != null) {
+                    targetTree.setExpressionFilter(expression);
+                    FilterConnection connection = XmlmapFactory.eINSTANCE.createFilterConnection();
+                    connection.setSource(sourceNode);
+                    connection.setTarget(targetTree);
+                    targetTree.getFilterIncomingConnections().add(connection);
+                    sourceNode.getFilterOutGoingConnections().add(connection);
+                    xmlMapData.getConnections().add(connection);
+                }
 
-                xmlMapData.getConnections().add(connection);
                 // check if need update outputTree InputLoopNodesTable
             }
         }
