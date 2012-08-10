@@ -1572,6 +1572,98 @@ class GreenplumManager extends Manager {
         return javaCode.toString();        
     }
 }
+class VerticaManager extends Manager {
+    private String host;
+    private String port;
+    private String dbSchema;
+    private String db_version;
+    private boolean useExistingConnection;
+    private String connection;        
+    public VerticaManager(String host, String port, String dbName, String tableName, String dbSchema, String userName, String password, boolean useExistingConnection, String connection, String cid, String db_version) {
+        super(dbName, tableName, userName ,password, cid);
+        this.host = host;
+        this.port = port;
+        this.dbSchema = dbSchema;
+        this.db_version = db_version;
+        this.useExistingConnection = useExistingConnection;
+        this.connection = connection;
+    }
+    protected String getDriver() {
+		if("VERTICA_6.0".equals(db_version)){
+			return "com.vertica.jdbc.Driver";
+		}else{
+			return "com.vertica.Driver";
+		}
+    }
+    public String getConnectionURL() {
+        return "\"jdbc:vertica://\" + " + host + " + \":\" + " + port + " + \"/\" + " + dbName;
+    }
+    public String getConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append(retrieveTable());
+            javaCode.append("java.sql.Connection conn_" + cid + " = (java.sql.Connection)globalMap.get(\"conn_" + connection + "\");");
+        } else {
+            javaCode.append(super.getConnection());
+        }
+        return javaCode.toString();
+    }        
+    protected String getDBMSId() {
+        return "vertica_id";
+    }
+    protected String getLProtectedChar() {
+        return "";
+    }
+    protected String getRProtectedChar() {
+        return "";
+    }
+    public String closeConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append("");
+        } else {
+            javaCode.append(super.closeConnection());            
+        }
+        return javaCode.toString();
+    }
+    protected String retrieveTable() {
+        StringBuilder javaCode = new StringBuilder();
+        javaCode.append(super.retrieveTable());
+        if(useExistingConnection) {
+            javaCode.append("String dbSchema_" + cid + " = (String)globalMap.get(\"dbschema_" + connection + "\");\r\n"); 
+        } else {
+            javaCode.append("String dbSchema_" + cid + " = " + dbSchema + ";\r\n");            
+        }
+        javaCode.append("if(dbSchema_" + cid + " != null && dbSchema_" + cid + ".trim().length() != 0) {");
+        javaCode.append("tableName_" + cid + " = dbSchema_" + cid + " + \"" + getLProtectedChar() + "." + getRProtectedChar() + "\" + tableName_" + cid + ";\r\n");
+        javaCode.append("}");
+        return javaCode.toString();        
+    }
+    public String getDropTableSQL() {
+        StringBuilder dropTableSQL = new StringBuilder();
+        dropTableSQL.append("DROP TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
+		boolean useCascade = "true".equals(ElementParameterParser.getValue(node,"__VERTICA_USE_CASCADE__"));
+    	if(useCascade){
+    		dropTableSQL.append(" cascade ");
+    	}
+        return dropTableSQL.toString();
+    }
+    
+    public String generateCode(List<IMetadataColumn> columnList){
+    	StringBuilder columnListStr = new StringBuilder();
+    	for(IMetadataColumn column:columnList){
+    		columnListStr.append(column.getOriginalDbColumnName());
+			columnListStr.append(",");
+    	}
+    	int lastCommaIndex = columnListStr.length()-1;
+   		if(lastCommaIndex>-1){
+   			columnListStr.deleteCharAt(lastCommaIndex);
+   		}
+		StringBuilder javaCode = new StringBuilder();
+		javaCode.append("stmt_" + cid + ".execute(\"CREATE PROJECTION \" + tableName_" + cid + "+\"_proj ("+columnListStr.toString()+") AS SELECT "+columnListStr.toString()+" FROM \" + tableName_" + cid+");");
+		return javaCode.toString();
+	}
+}
 class StringUtil {
     public String getString(String source) {
         String tmp = null;
@@ -1787,6 +1879,17 @@ class ManagerFactory {
             boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
             String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_"+dbType+"__"));
             manager = new GreenplumManager(host, port, dbName, tableName, dbSchema, userName, password, useExistingConnection, connection, cid);
+        } else if(("VERTICA").equals(dbType)) {
+            String host = ElementParameterParser.getValue(node, "__HOST__");
+            String port = ElementParameterParser.getValue(node, "__PORT__");
+            String db_version = ElementParameterParser.getValue(node, "__DB_VERTICA_VERSION__");
+            String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
+            String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
+            String userName = ElementParameterParser.getValue(node, "__USER__");
+            String password = ElementParameterParser.getValue(node, "__PASS__");            
+            boolean useExistingConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__"));
+            String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_"+dbType+"__"));
+            manager = new VerticaManager(host, port, dbName, tableName, dbSchema, userName, password, useExistingConnection, connection, cid,db_version);
         }
         return manager;
     }
@@ -1811,6 +1914,13 @@ if(columnList != null && columnList.size() > 0) {
     if("DB2".equalsIgnoreCase(dbType)||"POSTGRE".equalsIgnoreCase(dbType)||"POSTGREPLUS".equalsIgnoreCase(dbType)){
     	tableNameIgnoreCase=true;
     }
+    String createProjectionStr = "";
+    if("VERTICA".equals(dbType)){
+	    boolean createProjection = "true".equals(ElementParameterParser.getValue(node,"__VERTICA_CREATE_PROJECTION__"));
+	    if(createProjection){
+	    	createProjectionStr = ((VerticaManager)manager).generateCode(columnList);
+	    }
+    }
     %>
     try{
         <%=manager.getConnection()%>
@@ -1819,6 +1929,7 @@ if(columnList != null && columnList.size() > 0) {
             %>
             java.sql.Statement stmt_<%=cid%> = conn_<%=cid%>.createStatement();
             stmt_<%=cid%>.execute("<%=manager.getCreateTableSQL(columnList)%>");
+            <%=createProjectionStr%>
             <%
         } else {
             String tableName = ElementParameterParser.getValue(node,"__TABLE__");
@@ -1852,6 +1963,7 @@ if(columnList != null && columnList.size() > 0) {
                 if(!whetherExist_<%=cid%>) {
                     java.sql.Statement stmt_<%=cid%> = conn_<%=cid%>.createStatement();
                     stmt_<%=cid%>.execute("<%=manager.getCreateTableSQL(columnList)%>");                
+		            <%=createProjectionStr%>
                 }
                 <%
             } else if(("DROP_IF_EXIST_CREATE").equals(tableAction)) {
@@ -1862,6 +1974,7 @@ if(columnList != null && columnList.size() > 0) {
                 }
                 java.sql.Statement stmt_<%=cid%> = conn_<%=cid%>.createStatement();
                 stmt_<%=cid%>.execute("<%=manager.getCreateTableSQL(columnList)%>");            
+	            <%=createProjectionStr%>
                 <%
             }
         }
