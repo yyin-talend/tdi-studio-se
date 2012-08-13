@@ -1432,7 +1432,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     }
                 }
 
-                IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(propertyValue);
+                IRepositoryViewObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(propertyValue, true);
                 UpdateCheckResult result = null;
 
                 Connection repositoryConnection = null;
