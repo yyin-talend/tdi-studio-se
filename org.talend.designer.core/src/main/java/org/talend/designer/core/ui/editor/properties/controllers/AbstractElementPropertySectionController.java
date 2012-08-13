@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -75,10 +76,12 @@ import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.language.CodeProblemsChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
+import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
@@ -1719,15 +1722,47 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
     }
 
+    protected boolean checkExistConnections(IMetadataConnection metadataConnection) {
+        java.sql.Connection connection = null;
+        try {
+            List list = new ArrayList();
+            list = ExtractMetaDataUtils.connect(metadataConnection.getDbType(), metadataConnection.getUrl(),
+                    metadataConnection.getUsername(), metadataConnection.getPassword(), metadataConnection.getDriverClass(),
+                    metadataConnection.getDriverJarPath(), metadataConnection.getDbVersionString(),
+                    metadataConnection.getAdditionalParams());
+            if (list != null && list.size() > 0) {
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i) instanceof Connection) {
+                        connection = (java.sql.Connection) list.get(i);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            return false;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            try {
+                if (connection != null && !connection.isClosed()) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                //
+            }
+        }
+        return true;
+    }
+
     protected boolean isConnectionExist() {
-        Object username = elem.getPropertyValue("USER");//$NON-NLS-1$
-        Object password = elem.getPropertyValue("PASS");//$NON-NLS-1$
-        Object host = elem.getPropertyValue("HOST");//$NON-NLS-1$
-        Object port = elem.getPropertyValue("PORT");//$NON-NLS-1$
-        if (username != null && password != null && host != null && port != null) {
-            if (username.toString().length() > 2 && password.toString().length() > 2 && host.toString().length() > 2
-                    && port.toString().length() > 2) {
-                return true;
+        setAllConnectionParameters(null, elem);
+        ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(ISQLBuilderService.class);
+        DatabaseConnection connection = service.createConnection(connParameters);
+        if (connection != null) {
+            String contextId = connection.getContextId();
+            if (contextId == null || "".equals(contextId)) {//$NON-NLS-N$
+                IMetadataConnection metadataConnection = null;
+                metadataConnection = ConvertionHelper.convert(connection);
+                return checkExistConnections(metadataConnection);
             }
         }
         return false;
