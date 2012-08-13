@@ -32,11 +32,11 @@
 %>     
 		String pre_srcFileFolderPath_<%=cid %> = <%=ElementParameterParser.getValue(node, "__SOURCE_DERECTORY__")%>;
 		
-		String srcFileFolderPath_<%=cid %> = pre_srcFileFolderPath_<%=cid %>.replaceAll("\\n","\\\\n");
+		String srcFileFolderPath_<%=cid %> = (pre_srcFileFolderPath_<%=cid %>).replaceAll("\\n","\\\\n");
 
 		String pre_desFileFolderPath_<%=cid %> = <%=ElementParameterParser.getValue(node, "__DESTINATION__")%>;
 		
-		String desFileFolderPath_<%=cid %> = pre_desFileFolderPath_<%=cid %>.replaceAll("\\n","\\\\n");
+		String desFileFolderPath_<%=cid %> = (pre_desFileFolderPath_<%=cid %>).replaceAll("\\n","\\\\n");
 
 		java.io.File srcFileFolder_<%=cid %> = new java.io.File(srcFileFolderPath_<%=cid %>);
 
@@ -107,7 +107,7 @@
 	} else { //copy a file
 %>
 
-		String srcFileName_<%=cid %> = <%=fileName %>.replaceAll("\\n","\\\\n");
+		String srcFileName_<%=cid %> = (<%=fileName %>).replaceAll("\\n","\\\\n");
 
 		java.io.File srcFile_<%=cid %> = new java.io.File(srcFileName_<%=cid %>);
 
@@ -116,7 +116,7 @@
 			throw new RuntimeException("The source File \"" + srcFileName_<%=cid %> + "\" does not exist or is not a file.");
 		}
 
-		String desDirName_<%=cid %> = <%=destination %>.replaceAll("\\n","\\\\n");
+		String desDirName_<%=cid %> = (<%=destination %>).replaceAll("\\n","\\\\n");
 
 		String desFileName_<%=cid %> = <%if(rename){%> <%=destination_filename %> <%}else{%> srcFile_<%=cid %>.getName() <%}%>;
 
