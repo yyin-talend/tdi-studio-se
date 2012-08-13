@@ -106,7 +106,6 @@ import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
-import org.talend.core.repository.ConnectionStatus;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.core.sqlbuilder.util.EConnectionParameterName;
@@ -1728,8 +1727,6 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected boolean checkExistConnections(IMetadataConnection metadataConnection) {
         java.sql.Connection connection = null;
-        ConnectionStatus connectionStatus = new ConnectionStatus();
-        connectionStatus.setResult(false);
         try {
             List list = new ArrayList();
             list = ExtractMetaDataUtils.connect(metadataConnection.getDbType(), metadataConnection.getUrl(),
