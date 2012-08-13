@@ -313,9 +313,7 @@ public class RepositoryReviewDialog extends Dialog {
             addFilter(additionalFilters);
         }
         ViewerFilter filter = typeProcessor.makeFilter();
-        if (!(ERepositoryObjectType.CONTEXT).equals(type)) {
-            addFilter(filter);
-        }
+        addFilter(filter);
         TimeMeasure.step(RepositoryReviewDialog.class.getSimpleName(), "finshed add Filters"); //$NON-NLS-1$
 
         repositoryTreeViewer.setInput(getInput());
@@ -1165,6 +1163,11 @@ class ContextTypeProcessor extends SingleTypeProcessor {
     @Override
     protected ERepositoryObjectType getType() {
         return ERepositoryObjectType.CONTEXT;
+    }
+
+    @Override
+    protected boolean selectRepositoryNode(Viewer viewer, RepositoryNode parentNode, RepositoryNode node) {
+        return true;
     }
 
 }
