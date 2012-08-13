@@ -226,7 +226,7 @@ for (INode node : graphicalNodes) {
 
 		StringBuffer arguments = new StringBuffer();
 
-		uri = "\"file:///\"+" + filePath;
+		uri = "\"file://\"+" + filePath;
 
 		if ("true".equals(noop)) {
 			arguments.append("\"noop=true\"+");
