@@ -4,7 +4,6 @@ imports="
 	org.talend.core.model.process.INode
 	org.talend.core.model.process.ElementParameterParser
 	org.talend.core.model.process.IConnection
-	org.talend.core.model.metadata.IMetadataColumn
 	org.talend.core.model.metadata.IMetadataTable
 	org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
@@ -16,7 +15,6 @@ imports="
 	java.util.ArrayList
 	java.util.Map
 	java.util.HashMap
-	java.util.LinkedList
 "
 skeleton="../templates/db_output_bulk.skeleton"
 %>
@@ -45,7 +43,7 @@ skeleton="../templates/db_output_bulk.skeleton"
    	String db_version = ElementParameterParser.getValue(node, "__DB_VERSION__");
     if(useExistingConnection){
 		String connName = ElementParameterParser.getValue(node,"__CONNECTION__");
-		INode con_node = NodeUtil.getNodeByUniqueName(node,connName);
+		INode con_node = NodeUtil.getNodeByUniqueName(node.getProcess(),connName);
 		if(con_node!=null){
 			db_version = ElementParameterParser.getValue(con_node,"__DB_VERSION__");
 		}
@@ -821,34 +819,10 @@ skeleton="../templates/db_output_bulk.skeleton"
     		if(!("").equals(batchSize) && !("0").equals(batchSize)) {
     		%>
     			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
-                <%if ( (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ||("COPY".equals(dataAction)) ) {
+                <%if ( (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
                 %>                                                
                 try {
-						 <%
-						if (!"COPY".equals(dataAction)) {
-						%>
 						pstmt_<%=cid %>.executeBatch();                	
-						
-            	    	<%} else {
-						%>
-						java.io.ByteArrayInputStream bais_<%=cid%> = new ByteArrayInputStream(stmtBuilder_<%=cid%>.toString().getBytes());
-					    <%
-					    if("VERTICA_6.0".equals(db_version)){
-					    %>
-					    com.vertica.jdbc.VerticaCopyStream vcs_<%=cid%> = new com.vertica.jdbc.VerticaCopyStream((com.vertica.jdbc.VerticaConnection)conn_<%=cid%>,template_<%=cid%>);
-						vcs_<%=cid%>.start();
-						vcs_<%=cid%>.addStream(bais_<%=cid%>);
-						vcs_<%=cid%>.execute();
-						vcs_<%=cid%>.finish();
-					    <%}else{%>
-						((com.vertica.PGStatement)stmt_<%=cid%>).executeCopyIn(template_<%=cid%>, bais_<%=cid%>);
-					    <%}%>
-						stmtBuilder_<%=cid%> = null;
-						bais_<%=cid%> = null;
-						stmtBuilder_<%=cid%> = new StringBuilder();
-						<%
-						}
-						%>
 						<%
 						if (("INSERT").equals(dataAction)) {
             	    	%>
@@ -862,17 +836,8 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    	%>
             	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
             	    	<%
-            	    	}else if (("COPY").equals(dataAction)) {
-					    	if("VERTICA_6.0".equals(db_version)){
-					    %>
-            	    			copiedCount_<%=cid%> += vcs_<%=cid%>.getRowCount();
-            	    	<%
-            	    		}else{
-            	    	%>
-            	    			copiedCount_<%=cid%> += stmt_<%=cid %>. getUpdateCount();
-            	    	<%
-            	    		}
-            	    	}%>                         	    	
+            	    	}
+            	    	%>                         	    	
             	    	batchSizeCounter_<%=cid%> = 0;             	                	                	
                 }catch (java.sql.BatchUpdateException e){
                 	<%if(("true").equals(dieOnError)) {
@@ -930,10 +895,33 @@ skeleton="../templates/db_output_bulk.skeleton"
     		    commitCounter_<%=cid%>++;            
                 if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
                 
-                <%if ((rejectConnName==null && !useExistingConnection) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
+                <%if ((rejectConnName==null && !useExistingConnection) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ||("COPY".equals(dataAction)) ) {
                 %>
                 try {
-                		pstmt_<%=cid %>.executeBatch();
+						<%
+						if (!"COPY".equals(dataAction)) {
+						%>
+						pstmt_<%=cid %>.executeBatch();                	
+            	    	<%
+            	    	} else {
+						%>
+						java.io.ByteArrayInputStream bais_<%=cid%> = new ByteArrayInputStream(stmtBuilder_<%=cid%>.toString().getBytes());
+					    	<%if("VERTICA_6_0".equals(db_version)){%>
+					    com.vertica.jdbc.VerticaCopyStream vcs_<%=cid%> = new com.vertica.jdbc.VerticaCopyStream((com.vertica.jdbc.VerticaConnection)conn_<%=cid%>,template_<%=cid%>);
+						vcs_<%=cid%>.start();
+						vcs_<%=cid%>.addStream(bais_<%=cid%>);
+						vcs_<%=cid%>.execute();
+						vcs_<%=cid%>.finish();
+					    	<%}else{%>
+						((com.vertica.PGStatement)stmt_<%=cid%>).executeCopyIn(template_<%=cid%>, bais_<%=cid%>);
+					    	<%}%>
+						stmtBuilder_<%=cid%> = null;
+						bais_<%=cid%> = null;
+						stmtBuilder_<%=cid%> = new StringBuilder();
+						<%
+						}
+					    %>
+
             	    	<%if (("INSERT").equals(dataAction)) {
             	    	%>
             	    		insertedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
@@ -946,8 +934,18 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    	%>
             	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
             	    	<%
-            	    	}%>            	    
-                }catch (java.sql.BatchUpdateException e){
+            	    	}else if (("COPY").equals(dataAction)) {
+					    	if("VERTICA_6_0".equals(db_version)){
+					    %>
+            	    			copiedCount_<%=cid%> += vcs_<%=cid%>.getRowCount();
+            	    	<%
+            	    		}else{
+            	    	%>
+            	    			copiedCount_<%=cid%> += stmt_<%=cid %>.getUpdateCount();
+            	    	<%
+            	    		}
+            	    	}%>             	    
+                }catch (java.sql.SQLException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
 						throw(e);

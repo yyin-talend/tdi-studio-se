@@ -4,7 +4,6 @@ imports="
     org.talend.core.model.process.ElementParameterParser 
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.IMetadataTable 
-    org.talend.core.model.metadata.IMetadataColumn
     org.talend.core.model.metadata.MetadataTalendType    
     org.talend.core.model.metadata.MappingTypeRetriever     
     org.talend.core.model.utils.NodeUtil
@@ -47,7 +46,7 @@ java.sql.Connection conn_<%=cid%> = null;
     		String connName = ElementParameterParser.getValue(node,"__CONNECTION__");
     		String conn = "conn_" + connName;
     		String existDbSchema = "dbschema_" + conn;
-			INode con_node = NodeUtil.getNodeByUniqueName(node,connName);
+			INode con_node = NodeUtil.getNodeByUniqueName(node.getProcess(),connName);
 			if(con_node!=null){
 				db_version = ElementParameterParser.getValue(con_node,"__DB_VERSION__");
 			}
@@ -56,7 +55,7 @@ java.sql.Connection conn_<%=cid%> = null;
 	 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 	 <%
 	 }else{
-		if("VERTICA_6.0".equals(db_version)){
+		if("VERTICA_6_0".equals(db_version)){
 		%>
 	 		java.lang.Class.forName("com.vertica.jdbc.Driver").newInstance();
 		<%
@@ -139,7 +138,9 @@ if(("UPDATE").equals(dataAction)) {
 	<%}%>
 	<%if(ros){%> + " DIRECT"<%}%>;
     fis_<%=cid %> = new java.io.FileInputStream(new java.io.File(<%=file%>));
-<%if("VERTICA_6.0".equals(db_version)){%>
+<%
+	if("VERTICA_6_0".equals(db_version)){
+%>
 	com.vertica.jdbc.VerticaCopyStream vcs_<%=cid%> = new com.vertica.jdbc.VerticaCopyStream((com.vertica.jdbc.VerticaConnection)conn_<%=cid%>,sql_<%=cid %>);
 	vcs_<%=cid%>.start();
 	vcs_<%=cid%>.addStream(fis_<%=cid %>);
@@ -147,16 +148,14 @@ if(("UPDATE").equals(dataAction)) {
 	vcs_<%=cid%>.finish();
 	long copyNumber_<%=cid%> = vcs_<%=cid%>.getRowCount();
 	if(copyNumber_<%=cid%> <= 0){
-<%
-	if(exitOnNoRows){
-%>
-	throw new RuntimeException("No record was loaded in component <%=cid %>");
-<%
+		<%if(exitOnNoRows){%>
+	throw new RuntimeException("No record was loaded into component <%=cid %>");
+		<%}%>
 	}
+	System.out.println("Number of records loaded into table " + tableName_<%=cid %> + " by <%=cid %>: " + (copyNumber_<%=cid%>));
+<%
+	}else{
 %>
-	}
-	System.out.println("Number of records loaded to table " + tableName_<%=cid %> + " by <%=cid %>: " + (copyNumber_<%=cid%>));
-<%}else{%>
     java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
     java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery("select count(*) from " + tableName_<%=cid%>);
     int nbLineBeforeLoad_<%=cid %> = 0;
@@ -172,17 +171,14 @@ if(("UPDATE").equals(dataAction)) {
     	nbLineAfterLoad_<%=cid %> = rs_<%=cid %>.getInt(1);
 	}
 	if(nbLineBeforeLoad_<%=cid %> >= nbLineAfterLoad_<%=cid %>){
-<%
-	if(exitOnNoRows){
-%>stmt_<%=cid %>.close();
+		<%if(exitOnNoRows){%>
+	stmt_<%=cid %>.close();
 	throw new RuntimeException("No record was loaded in component <%=cid %>");
-<%
-	}
-%>
+		<%}%>
 	}
 	System.out.println("Number of records loaded to table " + tableName_<%=cid %> + " by <%=cid %>: " + (nbLineAfterLoad_<%=cid %> - nbLineBeforeLoad_<%=cid %>));
     stmt_<%=cid %>.close();
-    <%
+<%
     }
 }
 %>
