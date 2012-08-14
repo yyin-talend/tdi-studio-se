@@ -120,20 +120,17 @@ imports="
 		}
     }   
 
-    if(!useExistingConnection)
-    {
-	    if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
-	    
-			if ("COPY".equals(dataAction)) { // COPY
-				String db_version = ElementParameterParser.getValue(node,"__DB_VERSION__");
-			    if(useExistingConnection){
-					String connName = ElementParameterParser.getValue(node,"__CONNECTION__");
-					INode con_node = NodeUtil.getNodeByUniqueName(node.getProcess(),connName);
-					if(con_node!=null){
-						db_version = ElementParameterParser.getValue(con_node,"__DB_VERSION__");
-					}
-			    }
-%>    
+	//////////////// Copy Action //////////////////////
+	if ("COPY".equals(dataAction)) { // COPY
+		String db_version = ElementParameterParser.getValue(node,"__DB_VERSION__");
+	    if(useExistingConnection){
+			String connName = ElementParameterParser.getValue(node,"__CONNECTION__");
+			INode con_node = NodeUtil.getNodeByUniqueName(node.getProcess(),connName);
+			if(con_node!=null){
+				db_version = ElementParameterParser.getValue(con_node,"__DB_VERSION__");
+			}
+	    }
+%>
 	if (stmtBuilder_<%=cid%> != null && stmtBuilder_<%=cid%>.length() != 0 ) {
 		try {
 		    java.io.ByteArrayInputStream bais_<%=cid%> = new ByteArrayInputStream(stmtBuilder_<%=cid%>.toString().getBytes());
@@ -144,12 +141,20 @@ imports="
 			vcs_<%=cid%>.execute();
 			vcs_<%=cid%>.finish();
 			copiedCount_<%=cid%> +=vcs_<%=cid%>.getRowCount();
+			vcs_<%=cid%> = null;
 	    		<%}else{%>
 		    ((com.vertica.PGStatement)stmt_<%=cid%>).executeCopyIn(template_<%=cid%>, bais_<%=cid%>);
 			copiedCount_<%=cid%> +=stmt_<%=cid %>.getUpdateCount(); 
+			if (stmt_<%=cid%> != null) {
+				stmt_<%=cid%>.close();
+				stmt_<%=cid%> = null;
+			}
 	    		<%}%>
+			if (bais_<%=cid%> != null ) {
+				bais_<%=cid%>.close();
+				bais_<%=cid%> = null;
+			}
 			stmtBuilder_<%=cid%> = null;
-			bais_<%=cid%> = null;
         }catch (java.sql.SQLException e){
         	<%if(("true").equals(dieOnError)) {
         	%>
@@ -162,15 +167,21 @@ imports="
         	}%>
         }  
 	}
-				
+			
 <%
-			}  //COPY END
+		if (!useExistingConnection) {
+%>
+	conn_<%=cid%>.close();
+<%
+		}
+	}  else	if(!useExistingConnection) { // commit end
+	    if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
 	        %>
 	        conn_<%=cid%>.commit();
 	        <%
 	    }
 	   %>
-	     conn_<%=cid%> .close();
+	     conn_<%=cid%>.close();
 	<%
     }
    %>

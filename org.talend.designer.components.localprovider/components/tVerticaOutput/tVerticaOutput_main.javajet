@@ -704,7 +704,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             <%}%>
             nb_line_<%=cid%>++;
         <%
-        }else if (!useExistingConnection && "COPY".equals(dataAction)) { 
+        }else if ("COPY".equals(dataAction)) { 
 		    int counter = 1;
 			for(int i = 0; i < columnList.size(); i++) {
 			IMetadataColumn column = columnList.get(i); 
@@ -916,7 +916,10 @@ skeleton="../templates/db_output_bulk.skeleton"
 						((com.vertica.PGStatement)stmt_<%=cid%>).executeCopyIn(template_<%=cid%>, bais_<%=cid%>);
 					    	<%}%>
 						stmtBuilder_<%=cid%> = null;
-						bais_<%=cid%> = null;
+						if (bais_<%=cid%> != null) {
+							bais_<%=cid%>.close();
+							bais_<%=cid%> = null;
+						}
 						stmtBuilder_<%=cid%> = new StringBuilder();
 						<%
 						}
@@ -938,6 +941,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					    	if("VERTICA_6_0".equals(db_version)){
 					    %>
             	    			copiedCount_<%=cid%> += vcs_<%=cid%>.getRowCount();
+            	    			vcs_<%=cid%> = null;
             	    	<%
             	    		}else{
             	    	%>
@@ -958,8 +962,13 @@ skeleton="../templates/db_output_bulk.skeleton"
                 
                 }            	                              
                 <%
-                }%>
-                	conn_<%=cid%>.commit();                
+                }
+                if (!"COPY".equals(dataAction)) {
+                %>
+       				conn_<%=cid%>.commit();
+       			<%
+       			}
+                %>
                 	commitCounter_<%=cid%>=0;
                 }	
                 <%
