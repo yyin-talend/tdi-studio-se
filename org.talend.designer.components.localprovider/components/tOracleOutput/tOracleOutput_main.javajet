@@ -46,9 +46,17 @@ skeleton="../templates/db_output_bulk.skeleton"
     String useBatchSize = ElementParameterParser.getValue(node, "__USE_BATCH_SIZE__");
     String batchSize =ElementParameterParser.getValue(node, "__BATCH_SIZE__");
     String dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__");    
-    boolean isUseBatchByDBVersion = !"ojdbc12-8i.jar".equalsIgnoreCase(dbVersion);    
-    
+    boolean isUseBatchByDBVersion = !"ojdbc12-8i.jar".equalsIgnoreCase(dbVersion);
     boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
+    if(useExistingConnection) {
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	    List<? extends INode> nodes = node.getProcess().getGeneratingNodes();
+	    for(INode targetNode : nodes){
+	    	if (targetNode.getUniqueName().equals(connection)) {
+		      dbVersion = ElementParameterParser.getValue(targetNode, "__DB_VERSION__");
+		    }
+	    }
+	}
     
     boolean isEnableDebug = ("true").equals(ElementParameterParser.getValue(node,"__ENABLE_DEBUG_MODE__"));
     
@@ -57,7 +65,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     boolean createGeometryColumns = ("true").equals(ElementParameterParser.getValue(node,"__GEOMETRY_COLUMNS__"));
 	
 	//feature:2880
-    getManager(dbmsId, cid, node);
+    ((OracleManager)getManager(dbmsId, cid, node)).setDbVersion(dbVersion);
     boolean whereSupportNull = ElementParameterParser.getValue(node, "__SUPPORT_NULL_WHERE__").equals("true");
 	
 	String incomingConnName = null;
