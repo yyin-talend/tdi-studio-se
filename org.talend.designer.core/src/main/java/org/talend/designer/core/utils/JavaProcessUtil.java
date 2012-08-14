@@ -68,32 +68,37 @@ public class JavaProcessUtil {
         getNeededModules(process, withChildrens, searchItems, modulesNeeded);
 
         // remove duplicates, and keep by priority the one got bundle dependency setup
-        Collections.sort(modulesNeeded, new Comparator<ModuleNeeded>(){
+        Collections.sort(modulesNeeded, new Comparator<ModuleNeeded>() {
 
             @Override
             public int compare(ModuleNeeded arg0, ModuleNeeded arg1) {
                 if (arg0.getBundleName() == null && arg1.getBundleName() != null) {
                     return 1;
                 }
-                if (arg0.getBundleName() != null && arg1.getBundleName() != null
-                        && "".equals(arg0.getBundleName()) && !"".equals(arg1.getBundleName())) {
+                if (arg0.getBundleName() != null && arg1.getBundleName() != null && "".equals(arg0.getBundleName())
+                        && !"".equals(arg1.getBundleName())) {
                     return 1;
                 }
                 return 0;
             }
-            
+
         });
         Set<String> dedupModulesList = new HashSet<String>();
         Iterator<ModuleNeeded> it = modulesNeeded.iterator();
         while (it.hasNext()) {
             ModuleNeeded module = it.next();
+            // try to keep only real files (with extension, no matter be jar or other)
+            // in some case it's not a real library, but just a text.
+            if (!module.getModuleName().contains(".")) { //$NON-NLS-1$
+                it.remove();
+            }
             if (dedupModulesList.contains(module.getModuleName())) {
                 it.remove();
             } else {
                 dedupModulesList.add(module.getModuleName());
             }
         }
-        
+
         return new HashSet<ModuleNeeded>(modulesNeeded);
     }
 
@@ -246,8 +251,8 @@ public class JavaProcessUtil {
                                                 if (curParam.getName().equals(EParameterName.DRIVER_JAR.getName())
                                                         && value.contains(";")) {
                                                     String[] jars = value.split(";");
-                                                    for (int i = 0; i < jars.length; i++) {
-                                                        String jar = jars[i];
+                                                    for (String jar2 : jars) {
+                                                        String jar = jar2;
                                                         jar = jar.substring(jar.lastIndexOf("\\") + 1);
                                                         ModuleNeeded module = new ModuleNeeded(null, jar, null, true);
                                                         modulesNeeded.add(module);
@@ -305,14 +310,14 @@ public class JavaProcessUtil {
 
         Object value = curParam.getValue();
         String name = curParam.getName();
-        if (name.equals("DRIVER_JAR")) {//$NON-NLS-N$
+        if (name.equals("DRIVER_JAR")) {
             // added for bug 13592. new parameter DRIVER_JAR was used for jdbc connection
             if (value != null && value instanceof List) {
                 List list = (List) value;
                 for (int i = 0; i < list.size(); i++) {
                     if (list.get(i) instanceof HashMap) {
                         HashMap map = (HashMap) list.get(i);// JAR_NAME
-                        Object object = map.get("JAR_NAME");//$NON-NLS-N$
+                        Object object = map.get("JAR_NAME");
                         if (object != null && object instanceof String) {
                             String driverName = (String) object;
                             if (driverName != null && !"".equals(driverName)) {
@@ -330,7 +335,7 @@ public class JavaProcessUtil {
                     }
                 }
             }
-        }else if (name.equals("DB_VERSION")) { //$NON-NLS-1$
+        } else if (name.equals("DB_VERSION")) { //$NON-NLS-1$
             String jdbcName = (String) value;
             //
             if (jdbcName != null && !jdbcName.equals("Access_2003") && !jdbcName.equals("Access_2007")) {
@@ -357,7 +362,7 @@ public class JavaProcessUtil {
                     }
                 }
             }
-        }else if (name.equals("MQ_DERVIERS")) { //$NON-NLS-1$
+        } else if (name.equals("MQ_DERVIERS")) { //$NON-NLS-1$
             String path = (String) value;
 
             if (path == null || path.equals("")) { //$NON-NLS-1$
@@ -369,28 +374,28 @@ public class JavaProcessUtil {
                 ModuleNeeded module = new ModuleNeeded(null, jar, null, true);
                 modulesNeeded.add(module);
             }
-        }else if (name.equals("HOTLIBS")) { //$NON-NLS-1$
+        } else if (name.equals("HOTLIBS")) { //$NON-NLS-1$
             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
             Object[] listItemsValue = curParam.getListItemsValue();
             for (Map<String, Object> line : tableValues) {
                 Object libPath = line.get("LIBPATH");
-                if(libPath == null){
+                if (libPath == null) {
                     continue;
                 }
                 String text = null;
-                if(libPath instanceof String && !StringUtils.isEmpty((String) libPath)){
+                if (libPath instanceof String && !StringUtils.isEmpty((String) libPath)) {
                     text = (String) libPath;
-                }else if(libPath instanceof Integer && listItemsValue != null){
+                } else if (libPath instanceof Integer && listItemsValue != null) {
                     int index = ((Integer) libPath).intValue();
                     if (index > -1 && index < listItemsValue.length && listItemsValue[index] != null) {
-                        if(listItemsValue[index] instanceof IElementParameter){
-                            text = (String) ((IElementParameter)listItemsValue[index]).getValue();
-                        }else{
+                        if (listItemsValue[index] instanceof IElementParameter) {
+                            text = (String) ((IElementParameter) listItemsValue[index]).getValue();
+                        } else {
                             text = listItemsValue[index].toString();
                         }
                     }
                 }
-                if(text != null){
+                if (text != null) {
                     ModuleNeeded module = new ModuleNeeded(null, TalendTextUtils.removeQuotes(text), null, true);
                     modulesNeeded.add(module);
                 }
