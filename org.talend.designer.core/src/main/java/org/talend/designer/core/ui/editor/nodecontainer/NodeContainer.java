@@ -239,13 +239,9 @@ public class NodeContainer extends Element {
         }
 
         if (node.isErrorFlag()) {
-            if (statusRectangle != null) {
-                markLocation.x = statusRectangle.x;
-                markLocation.y = statusRectangle.y;
-            } else {
-                markLocation.x = nodeLocation.x;
-                markLocation.y = nodeLocation.y;
-            }
+            markLocation.x = nodeLocation.x - nodeSize.width / 2;
+            markLocation.y = nodeLocation.y;
+
             errorMarkLocation.x = nodeLocation.x - (errorMarkSize.width - nodeSize.width) / 2;
             errorMarkLocation.y = markLocation.y - errorMarkSize.height;
             errorMarkRectangle = new Rectangle(errorMarkLocation, errorMarkSize);
@@ -347,13 +343,8 @@ public class NodeContainer extends Element {
         }
 
         if (node.isErrorFlag()) {
-            if (statusRectangle != null) {
-                markLocation.x = statusRectangle.x;
-                markLocation.y = statusRectangle.y;
-            } else {
-                markLocation.x = nodeLocation.x - nodeSize.width / 2;
-                markLocation.y = nodeLocation.y;
-            }
+            markLocation.x = nodeLocation.x - nodeSize.width / 2;
+            markLocation.y = nodeLocation.y;
             errorMarkLocation.x = nodeLocation.x - (errorMarkSize.width - nodeSize.width) / 2;
             errorMarkLocation.y = markLocation.y - errorMarkSize.height;
             errorMarkRectangle = new Rectangle(errorMarkLocation, errorMarkSize);
@@ -429,7 +420,7 @@ public class NodeContainer extends Element {
 
         Rectangle finalRect;
         finalRect = nodeRectangle.getUnion(statusRectangle);
-        finalRect.height += labelSize.height;
+        finalRect.height += labelSize.height / 2;
         if (node.isErrorFlag()) {
             finalRect.height += errorNodeSize.height;
         }
