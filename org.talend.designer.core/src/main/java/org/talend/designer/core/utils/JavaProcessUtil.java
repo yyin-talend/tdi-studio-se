@@ -91,8 +91,7 @@ public class JavaProcessUtil {
             // in some case it's not a real library, but just a text.
             if (!module.getModuleName().contains(".")) { //$NON-NLS-1$
                 it.remove();
-            }
-            if (dedupModulesList.contains(module.getModuleName())) {
+            } else if (dedupModulesList.contains(module.getModuleName())) {
                 it.remove();
             } else {
                 dedupModulesList.add(module.getModuleName());
