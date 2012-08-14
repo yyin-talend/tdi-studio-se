@@ -14,7 +14,7 @@
    </HEADER>
 
   <FAMILIES>
-    <FAMILY>Data_Quality</FAMILY>
+    <FAMILY>Data_Quality/Matching</FAMILY>
   </FAMILIES>
    <DOCUMENTATION>
       <URL/>
