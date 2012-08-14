@@ -87,13 +87,17 @@ public class TreeToolBarContainer extends Figure {
             }
         }
 
-        condensedButton = new CondensedButton(ImageProviderMapper.getImage(ImageInfo.CONDENSED_TOOL_ICON));
-        condensedButton.setSelected(abstractTree.isActivateCondensedTool());
-        this.add(condensedButton);
+        // TDI-22087
+        if (abstractTree instanceof OutputXmlTree
+                || (abstractTree instanceof InputXmlTree && ((InputXmlTree) abstractTree).isLookup())) {
+            condensedButton = new CondensedButton(ImageProviderMapper.getImage(ImageInfo.CONDENSED_TOOL_ICON));
+            condensedButton.setSelected(abstractTree.isActivateCondensedTool());
+            this.add(condensedButton);
 
-        expressionFilterButton = new ExpressionFilterButton(ImageProviderMapper.getImage(ImageInfo.ACTIVATE_FILTER_ICON));
-        expressionFilterButton.setSelected(abstractTree.isActivateExpressionFilter());
-        this.add(expressionFilterButton);
+            expressionFilterButton = new ExpressionFilterButton(ImageProviderMapper.getImage(ImageInfo.ACTIVATE_FILTER_ICON));
+            expressionFilterButton.setSelected(abstractTree.isActivateExpressionFilter());
+            this.add(expressionFilterButton);
+        }
 
         boolean isErrorReject = false;
         if (abstractTree instanceof OutputXmlTree) {
