@@ -704,7 +704,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             <%}%>
             nb_line_<%=cid%>++;
         <%
-        }else if ("COPY".equals(dataAction)) { 
+        }else if (!useExistingConnection && "COPY".equals(dataAction)) { 
 		    int counter = 1;
 			for(int i = 0; i < columnList.size(); i++) {
 			IMetadataColumn column = columnList.get(i); 

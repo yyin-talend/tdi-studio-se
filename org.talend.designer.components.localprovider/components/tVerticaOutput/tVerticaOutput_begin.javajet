@@ -321,7 +321,7 @@ if(columnList != null && columnList.size() > 0) {
         <%      
     } else if (("COPY").equals(dataAction)) {
 		boolean isUseExistingConn = ("true").equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
-	    if(isUseExistingConn) {
+	    if(!isUseExistingConn) {
 			boolean abortOnError = "true".equals(ElementParameterParser.getValue(node,"__ABORT_ON_ERROR__"));
 			String rejectMax = ElementParameterParser.getValue(node,"__REJECT_MAX__");
 			String exceptionsPath = ElementParameterParser.getValue(node,"__EXCEPTIONS_PATH__");
