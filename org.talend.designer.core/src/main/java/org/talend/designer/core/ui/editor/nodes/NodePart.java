@@ -56,6 +56,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.IGraphicalNode;
@@ -477,7 +478,11 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         if (req.getType().equals("open")) { //$NON-NLS-1$
             IExternalNode externalNode = null;
             if (node.isExternalNode()) {
-                if (node.getElementParameterFromField(EParameterFieldType.EXTERNAL) != null) {
+                IElementParameter elementParameterFromField = node.getElementParameterFromField(EParameterFieldType.EXTERNAL);
+                if (!elementParameterFromField.isShow(node.getElementParameters())) {
+                    return;
+                }
+                if (elementParameterFromField != null) {
                     externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
                 }
             }
