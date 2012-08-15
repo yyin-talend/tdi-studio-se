@@ -2,21 +2,13 @@
 	package="org.talend.designer.codegen.translators" 
 	imports="
 		org.talend.core.model.process.IProcess
-		org.talend.core.model.process.INode 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		org.talend.core.CorePlugin
-        org.talend.core.model.process.EConnectionType
-        org.talend.core.model.process.IConnection	
-		org.talend.core.model.metadata.IMetadataTable
-		org.talend.core.model.metadata.IMetadataColumn
 		java.util.Vector
 		java.util.List
 		java.util.ArrayList
 		org.talend.core.model.process.IContextParameter
 		org.talend.core.model.metadata.types.JavaTypesManager
-		org.talend.core.model.metadata.types.JavaType
 		org.talend.core.model.utils.JavaResourcesHelper
-		org.talend.core.model.process.ElementParameterParser
 	" 
 	class="Footer" 
 	skeleton="footer_java.skeleton"	
@@ -142,15 +134,14 @@
 			    context.putAll(context_param);		
 			}
 <% 
-			for (IContextParameter ctxParam :params)
-			{
+			//for bug TDI-22398
+			for (IContextParameter ctxParam :params){ //start for
 			    String typeToGenerate ="String";
 			    if( !(ctxParam.getType().equals("id_File") || ctxParam.getType().equals("id_Directory") ||ctxParam.getType().equals("id_List Of Value")))
 			    {
 			       typeToGenerate=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true);
 			    }
-			    if(typeToGenerate.equals("java.util.Date"))
-			    {
+			    if(typeToGenerate.equals("java.util.Date")){ // start if
 			        
 %>
 			try{
@@ -171,47 +162,25 @@
 			{
 			    context.<%=ctxParam.getName()%>=null;
 			}
+<%
+		    	}else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String")||typeToGenerate.equals("java.lang.String") ){
 %>
-			}else if(typeToGenerate.equals("Integer"))
-			    {
+			    	context.<%=ctxParam.getName()%>=(<%=typeToGenerate%>) context.getProperty("<%=ctxParam.getName()%>");
+<%
+				}else if(typeToGenerate.equals("Character")&&ctxParam.getName()!=null){
+%>
+			 	context.<%=ctxParam.getName()%>= new java.text.StringCharacterIterator(context.getProperty("<%=ctxParam.getName()%>")).first();			 
+<%
+            	}else{
 %> 
-			  try{
-			      context.<%=ctxParam.getName()%>=Integer.parseInt(context.getProperty("<%=ctxParam.getName()%>"));
-			  }catch(NumberFormatException e){
-			      context.<%=ctxParam.getName()%>=null;
-			  }
+			 		try{
+			     		context.<%=ctxParam.getName()%>=routines.system.ParserUtils.parseTo_<%=typeToGenerate%> (context.getProperty("<%=ctxParam.getName()%>"));
+			 		}catch(NumberFormatException e){
+			     		context.<%=ctxParam.getName()%>=null;
+			 		}
 <%
-			    }else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String")||typeToGenerate.equals("java.lang.String") )
-			    {
-%>
-			    context.<%=ctxParam.getName()%>=(<%=typeToGenerate%>) context.getProperty("<%=ctxParam.getName()%>");
-<%
-			    }else if(typeToGenerate.equals("Character")&&ctxParam.getName()!=null)
-			    {
-%>
-			 context.<%=ctxParam.getName()%>= new java.text.StringCharacterIterator(context.getProperty("<%=ctxParam.getName()%>")).first();			 
-<%
-			    } else if(typeToGenerate.equals("BigDecimal"))
-            {
-%>
-         try{
-         	context.<%=ctxParam.getName()%>= new <%=typeToGenerate%>(context.getProperty("<%=ctxParam.getName()%>"));
-		 }catch(NumberFormatException e){
-		    context.<%=ctxParam.getName()%>=null;
-		 }
-<%
-            }
-			     else
-			    {
-%> 
-			 try{
-			     context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%> (context.getProperty("<%=ctxParam.getName()%>"));
-			 }catch(NumberFormatException e){
-			     context.<%=ctxParam.getName()%>=null;
-			  }
-<%
-			    }
-			}
+			    } //end if
+			} //end for
 %>
     	} catch (java.io.IOException ie) {
     		System.err.println("Could not load context "+contextStr);
