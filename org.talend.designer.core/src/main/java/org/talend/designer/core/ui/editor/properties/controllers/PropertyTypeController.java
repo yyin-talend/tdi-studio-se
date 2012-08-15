@@ -167,8 +167,11 @@ public class PropertyTypeController extends AbstractRepositoryController {
         button.setImage(ImageProvider.getImage(EImage.SAVE_ICON));
         button.setToolTipText(Messages.getString("PropertyTypeController.saveToMetadata")); //$NON-NLS-1$
         button.setData(PARAMETER_NAME, param.getName());
-        if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE) {
-            button.setEnabled(ExtractMetaDataUtils.haveLoadMetadataNode());
+        button.setEnabled(!param.isReadOnly());
+        if (!param.isReadOnly()) {
+            if (param.getFieldType() == EParameterFieldType.PROPERTY_TYPE) {
+                button.setEnabled(ExtractMetaDataUtils.haveLoadMetadataNode());
+            }
         }
 
         lastControlUsed = button;
