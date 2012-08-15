@@ -167,14 +167,10 @@ imports="
         	}%>
         }  
 	}
-			
 <%
-		if (!useExistingConnection) {
-%>
-	conn_<%=cid%>.close();
-<%
-		}
-	}  else	if(!useExistingConnection) { // commit end
+	}
+	/////// commit end/////////////
+	if(!useExistingConnection) {
 	    if(!("").equals(commitEvery)&&!("0").equals(commitEvery)){
 	        %>
 	        conn_<%=cid%>.commit();

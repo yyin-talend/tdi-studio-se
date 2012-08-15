@@ -819,10 +819,35 @@ skeleton="../templates/db_output_bulk.skeleton"
     		if(!("").equals(batchSize) && !("0").equals(batchSize)) {
     		%>
     			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
-                <%if ( (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
+                <%if ( (rejectConnName==null) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ||("COPY".equals(dataAction)) ) {
                 %>                                                
                 try {
+						<%
+						if (!"COPY".equals(dataAction)) {
+					    %>
 						pstmt_<%=cid %>.executeBatch();                	
+            	    	<%
+            	    	} else {
+						%>
+						java.io.ByteArrayInputStream bais_<%=cid%> = new ByteArrayInputStream(stmtBuilder_<%=cid%>.toString().getBytes());
+					    	<%if("VERTICA_6_0".equals(db_version)){%>
+					    com.vertica.jdbc.VerticaCopyStream vcs_<%=cid%> = new com.vertica.jdbc.VerticaCopyStream((com.vertica.jdbc.VerticaConnection)conn_<%=cid%>,template_<%=cid%>);
+						vcs_<%=cid%>.start();
+						vcs_<%=cid%>.addStream(bais_<%=cid%>);
+						vcs_<%=cid%>.execute();
+						vcs_<%=cid%>.finish();
+					    	<%}else{%>
+						((com.vertica.PGStatement)stmt_<%=cid%>).executeCopyIn(template_<%=cid%>, bais_<%=cid%>);
+					    	<%}%>
+						stmtBuilder_<%=cid%> = null;
+						if (bais_<%=cid%> != null) {
+							bais_<%=cid%>.close();
+							bais_<%=cid%> = null;
+						}
+						stmtBuilder_<%=cid%> = new StringBuilder();
+						<%
+						}
+					    %>
 						<%
 						if (("INSERT").equals(dataAction)) {
             	    	%>
@@ -905,22 +930,23 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    	<%
             	    	} else {
 						%>
-						java.io.ByteArrayInputStream bais_<%=cid%> = new ByteArrayInputStream(stmtBuilder_<%=cid%>.toString().getBytes());
-					    	<%if("VERTICA_6_0".equals(db_version)){%>
-					    com.vertica.jdbc.VerticaCopyStream vcs_<%=cid%> = new com.vertica.jdbc.VerticaCopyStream((com.vertica.jdbc.VerticaConnection)conn_<%=cid%>,template_<%=cid%>);
-						vcs_<%=cid%>.start();
-						vcs_<%=cid%>.addStream(bais_<%=cid%>);
-						vcs_<%=cid%>.execute();
-						vcs_<%=cid%>.finish();
+						if (stmtBuilder_<%=cid%> != null && stmtBuilder_<%=cid%>.length() != 0 ) { // stmtBuilder_<%=cid%> start
+							java.io.ByteArrayInputStream bais_<%=cid%> = new ByteArrayInputStream(stmtBuilder_<%=cid%>.toString().getBytes());
+						    <%if("VERTICA_6_0".equals(db_version)){%>
+						    com.vertica.jdbc.VerticaCopyStream vcs_<%=cid%> = new com.vertica.jdbc.VerticaCopyStream((com.vertica.jdbc.VerticaConnection)conn_<%=cid%>,template_<%=cid%>);
+							vcs_<%=cid%>.start();
+							vcs_<%=cid%>.addStream(bais_<%=cid%>);
+							vcs_<%=cid%>.execute();
+							vcs_<%=cid%>.finish();
 					    	<%}else{%>
-						((com.vertica.PGStatement)stmt_<%=cid%>).executeCopyIn(template_<%=cid%>, bais_<%=cid%>);
-					    	<%}%>
-						stmtBuilder_<%=cid%> = null;
-						if (bais_<%=cid%> != null) {
-							bais_<%=cid%>.close();
-							bais_<%=cid%> = null;
-						}
-						stmtBuilder_<%=cid%> = new StringBuilder();
+							((com.vertica.PGStatement)stmt_<%=cid%>).executeCopyIn(template_<%=cid%>, bais_<%=cid%>);
+						    	<%}%>
+							stmtBuilder_<%=cid%> = null;
+							if (bais_<%=cid%> != null) {
+								bais_<%=cid%>.close();
+								bais_<%=cid%> = null;
+							}
+							stmtBuilder_<%=cid%> = new StringBuilder();
 						<%
 						}
 					    %>
@@ -948,6 +974,9 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    			copiedCount_<%=cid%> += stmt_<%=cid %>.getUpdateCount();
             	    	<%
             	    		}
+            	    	%>
+            	    	} // stmtBuilder_<%=cid %> end
+            	    	<%
             	    	}%>             	    
                 }catch (java.sql.SQLException e){
                 	<%if(("true").equals(dieOnError)) {
@@ -963,12 +992,8 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }            	                              
                 <%
                 }
-                if (!"COPY".equals(dataAction)) {
                 %>
        				conn_<%=cid%>.commit();
-       			<%
-       			}
-                %>
                 	commitCounter_<%=cid%>=0;
                 }	
                 <%
