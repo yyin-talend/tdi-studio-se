@@ -130,7 +130,6 @@ imports="
 				stmt_<%=cid%>.close();
 				stmt_<%=cid%> = null;
 			}
-	    		<%}%>
 			if (bais_<%=cid%> != null ) {
 				bais_<%=cid%>.close();
 				bais_<%=cid%> = null;
