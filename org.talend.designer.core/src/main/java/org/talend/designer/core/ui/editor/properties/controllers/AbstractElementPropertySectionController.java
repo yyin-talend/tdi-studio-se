@@ -87,6 +87,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IGraphicalNode;
@@ -199,6 +200,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     // for job settings extra.(feature 2710)
     protected IElementParameter curParameter;
+
+    protected IContextManager contextManager;
 
     public static Map<String, String> connKeyMap = new HashMap<String, String>(10);
 
@@ -1756,14 +1759,14 @@ public abstract class AbstractElementPropertySectionController implements Proper
     protected boolean isConnectionExist() {
         setAllConnectionParameters(null, elem);
         ISQLBuilderService service = (ISQLBuilderService) GlobalServiceRegister.getDefault().getService(ISQLBuilderService.class);
+        if (contextManager != null && contextManager.getDefaultContext().getContextParameterList().size() != 0) {
+            initConnectionParametersWithContext(elem, contextManager.getDefaultContext());
+        }
         DatabaseConnection connection = service.createConnection(connParameters);
         if (connection != null) {
-            String contextId = connection.getContextId();
-            if (contextId == null || "".equals(contextId)) {//$NON-NLS-N$
-                IMetadataConnection metadataConnection = null;
-                metadataConnection = ConvertionHelper.convert(connection);
-                return checkExistConnections(metadataConnection);
-            }
+            IMetadataConnection metadataConnection = null;
+            metadataConnection = ConvertionHelper.convert(connection);
+            return checkExistConnections(metadataConnection);
         }
         return false;
     }

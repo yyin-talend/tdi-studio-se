@@ -435,6 +435,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
      * @return
      */
     protected void createListTablesCommand(Button button, IContextManager manager) {
+        contextManager = manager;
         initConnectionParameters();
         if (this.connParameters != null) {
             if (isUseExistingConnection() && !isConnectionExist()) {
