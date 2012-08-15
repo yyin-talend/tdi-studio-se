@@ -539,6 +539,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 }
                 section.put(DESTINATION_FILE, destination);
             }
+            if (destination != null) {
+                if (!destination.endsWith(getOutputSuffix())) {
+                    destination += getOutputSuffix();
+                }
+                saDestinationFilePath = destination;
+            }
         }
     }
 
