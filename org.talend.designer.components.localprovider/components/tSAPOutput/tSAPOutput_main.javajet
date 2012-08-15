@@ -194,7 +194,7 @@ boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(node,"
 String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 String version = "sapjco.jar";
 if(useExistingConn){
-    List<? extends INode> nodes = node.getProcess().getGraphicalNodes();
+    List<? extends INode> nodes = node.getProcess().getGeneratingNodes();
     for(INode targetNode : nodes){
     	if (targetNode.getUniqueName().equals(connection)) {
 	      version = ElementParameterParser.getValue(targetNode, "__DB_VERSION__");

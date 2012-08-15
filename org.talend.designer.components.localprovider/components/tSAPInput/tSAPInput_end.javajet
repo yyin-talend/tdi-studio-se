@@ -23,7 +23,7 @@
 	
 	String version = "SAP2";
     if(useExistingConn){
-	    List<? extends INode> nodes = node.getProcess().getGraphicalNodes();
+	    List<? extends INode> nodes = node.getProcess().getGeneratingNodes();
 	    for(INode targetNode : nodes){
 	    	if (targetNode.getUniqueName().equals(connection)) {
 		      version = ElementParameterParser.getValue(targetNode, "__SAP_VERSION__");
