@@ -217,6 +217,14 @@ public class VersionManagementPage extends ProjectSettingPage {
                         checkedObjects.removeAll(objects);
                         removeItemElements(objects);
                     }
+                    // add fro bug TDI-22379
+                    if (node != null && (ERepositoryObjectType.PROCESS).equals(node.getContentType())) {
+                        boolean isEnable = false;
+                        if (event.getChecked()) {
+                            isEnable = true;
+                        }
+                        checkButtonsState(isEnable);
+                    }
                     researchMaxVersion();
                     refreshTableItems();
                 }
@@ -355,6 +363,7 @@ public class VersionManagementPage extends ProjectSettingPage {
                 itemTable.setRedraw(true);
                 refreshCheckedTreeView();
                 refreshTableItems();
+                checkButtonsState(false);
             }
         });
 
@@ -472,9 +481,11 @@ public class VersionManagementPage extends ProjectSettingPage {
 
         alldependcies = new Button(versionComposit, SWT.NONE);
         alldependcies.setText(Messages.getString("VersionManagementDialog.AllDependencies"));
+        alldependcies.setEnabled(false);
 
         subjobs = new Button(versionComposit, SWT.NONE);
         subjobs.setText(Messages.getString("VersionManagementDialog.Subjob"));
+        subjobs.setEnabled(false);
 
         eachVersionBtn = new Button(option, SWT.RADIO);
         eachVersionBtn.setText(Messages.getString("VersionManagementDialog.EachVersion")); //$NON-NLS-1$
@@ -742,6 +753,22 @@ public class VersionManagementPage extends ProjectSettingPage {
         }
     }
 
+    private void checkButtonsState(boolean isEnable) {
+        boolean flag = isEnable;
+        TableItem[] items = itemTable.getItems();
+        for (TableItem item : items) {
+            if (item.getData() instanceof ItemVersionObject) {
+                ItemVersionObject itemVersionObj = (ItemVersionObject) item.getData();
+                RepositoryNode repositoryNode = itemVersionObj.getRepositoryNode();
+                if (repositoryNode != null && (ERepositoryObjectType.PROCESS).equals(repositoryNode.getContentType())) {
+                    flag = true;
+                }
+            }
+        }
+        alldependcies.setEnabled(flag);
+        subjobs.setEnabled(flag);
+    }
+
     private boolean isFixedVersion() {
         return fixedVersionBtn.getSelection();
     }
@@ -905,6 +932,7 @@ public class VersionManagementPage extends ProjectSettingPage {
                     removeTableItem(tableItem);
                     refreshCheckedTreeView();
                     checkButtonsState();
+                    checkButtonsState(false);
                 }
 
             });
