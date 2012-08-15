@@ -2433,7 +2433,7 @@ public class Node extends Element implements IGraphicalNode {
                     }
                     break;
                 default:
-                    if (!(param.getValue() instanceof String)) {
+                    if (param.getValue() != null && !(param.getValue() instanceof String)) {
                         break;
                     }
                     value = (String) param.getValue();
