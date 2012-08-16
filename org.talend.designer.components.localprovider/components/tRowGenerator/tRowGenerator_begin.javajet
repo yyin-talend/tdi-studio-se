@@ -30,13 +30,6 @@ int nb_max_row_<%=cid%> = <%=(("").equals(ElementParameterParser.getValue(node, 
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
-		if(metadata.getListColumns().size() <= 0) {
-%>
-		if(true) {
-			throw new Exception("The <%=cid%> schema shouldn't be empty.");
-		}
-<%
-		}
 %>
 
 class <%=cid %>Randomizer {
