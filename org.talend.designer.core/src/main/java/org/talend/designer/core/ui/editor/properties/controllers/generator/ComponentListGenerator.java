@@ -15,6 +15,8 @@ package org.talend.designer.core.ui.editor.properties.controllers.generator;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.ComponentListController;
+import org.talend.designer.core.ui.editor.properties.controllers.tdq.ControllerUtils;
+import org.talend.designer.core.ui.editor.properties.controllers.tdq.TGKComponentListController;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -29,15 +31,24 @@ public class ComponentListGenerator implements IControllerGenerator {
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#generate()
      */
+    @Override
     public AbstractElementPropertySectionController generate() {
-        return new ComponentListController(dp);
+        if (ControllerUtils.isFromTGenKey(dp.getElement())) {
+            return new TGKComponentListController(dp);
+        } else {
+            return new ComponentListController(dp);
+        }
+
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#setDynamicProperty(org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#setDynamicProperty(org
+     * .talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty)
      */
+    @Override
     public void setDynamicProperty(IDynamicProperty dp) {
         this.dp = dp;
     }

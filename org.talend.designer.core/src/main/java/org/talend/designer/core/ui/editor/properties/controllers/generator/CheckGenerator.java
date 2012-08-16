@@ -15,6 +15,8 @@ package org.talend.designer.core.ui.editor.properties.controllers.generator;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.CheckController;
+import org.talend.designer.core.ui.editor.properties.controllers.tdq.ControllerUtils;
+import org.talend.designer.core.ui.editor.properties.controllers.tdq.TGenKeyCheckController;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -31,15 +33,23 @@ public class CheckGenerator implements IControllerGenerator {
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#generate()
      */
+    @Override
     public AbstractElementPropertySectionController generate() {
-        return new CheckController(dp);
+        if (ControllerUtils.isFromTGenKey(dp.getElement())) {
+            return new TGenKeyCheckController(dp);
+        } else {
+            return new CheckController(dp);
+        }
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#setDynamicProperty(org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty)
+     * @see
+     * org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#setDynamicProperty(org
+     * .talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty)
      */
+    @Override
     public void setDynamicProperty(IDynamicProperty dp) {
         this.dp = dp;
     }
