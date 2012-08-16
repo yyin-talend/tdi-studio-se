@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.talend.designer.dbmap.language.AbstractDbLanguage;
 import org.talend.designer.dbmap.language.IJoinType;
-import org.talend.designer.dbmap.language.operator.GenericDbOperatorsManager;
 
 /**
  * created by wchen on 2012-8-14 Detailled comment
@@ -33,7 +32,7 @@ public class HiveLanguage extends AbstractDbLanguage {
      * @param operatorsManager
      */
     public HiveLanguage() {
-        super(new GenericDbOperatorsManager());
+        super(new HiveOperatorsManager());
     }
 
     @Override
