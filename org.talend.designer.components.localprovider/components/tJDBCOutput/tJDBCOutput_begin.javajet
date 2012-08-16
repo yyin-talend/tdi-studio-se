@@ -97,10 +97,10 @@ if(("true").equals(useExistingConn)){
 	String conn = "conn_" + connection;
 	%>
 	java.sql.Connection connection_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
-    if (null == conn_<%=cid%>) {
+    if (null == connection_<%=cid%>) {
         java.util.Map<String, javax.sql.DataSource> dataSources= (java.util.Map<String, javax.sql.DataSource>) globalMap.get(KEY_DB_DATASOURCES);
-        conn_<%=cid%> = dataSources.get("<%=connection%>").getConnection();
-        globalMap.put("<%=conn%>", conn_<%=cid%>);
+        connection_<%=cid%> = dataSources.get("<%=connection%>").getConnection();
+        globalMap.put("<%=conn%>", connection_<%=cid%>);
     }
 	<%
 } else {
