@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -191,8 +192,11 @@ public class TalendJetEmitter extends JETEmitter {
                 } else {
                     project.open(new SubProgressMonitor(progressMonitor, 5));
                     IProjectDescription description = project.getDescription();
-                    description.setNatureIds(new String[] { JavaCore.NATURE_ID });
-                    project.setDescription(description, new SubProgressMonitor(progressMonitor, 1));
+                    // only in case it's one old workspace and got no nature defined.
+                    if (!ArrayUtils.contains(description.getNatureIds(), JavaCore.NATURE_ID)) {
+                        description.setNatureIds(new String[] { JavaCore.NATURE_ID });
+                        project.setDescription(description, new SubProgressMonitor(progressMonitor, 1));
+                    }
                 }
 
                 javaProject = JavaCore.create(project);
@@ -218,18 +222,14 @@ public class TalendJetEmitter extends JETEmitter {
                     runtimeFolder.create(false, true, new SubProgressMonitor(progressMonitor, 1));
                 }
 
-                if (classpathEntryMissing(javaProject, classpath)) {
+                if (isClasspathDifferent(javaProject, classpath)) {
                     IClasspathEntry[] classpathEntryArray = classpath.toArray(new IClasspathEntry[classpath.size()]);
                     javaProject.setRawClasspath(classpathEntryArray, new SubProgressMonitor(progressMonitor, 1));
-                }
-                javaProject.setOutputLocation(new Path("/" + project.getName() + "/runtime"), new SubProgressMonitor( //$NON-NLS-1$ //$NON-NLS-2$
-                        progressMonitor, 1));
-
-                if (rebuild) {
+                    javaProject.setOutputLocation(new Path("/" + project.getName() + "/runtime"), new SubProgressMonitor( //$NON-NLS-1$ //$NON-NLS-2$
+                            progressMonitor, 1));
                     javaProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
                 }
 
-                javaProject.close();
                 progressMonitor.done();
             } catch (CoreException exception) {
                 throw new JETException(exception);
@@ -240,7 +240,7 @@ public class TalendJetEmitter extends JETEmitter {
             }
         }
 
-        private boolean classpathEntryMissing(IJavaProject javaProject, Set<IClasspathEntry> newClasspath) {
+        private boolean isClasspathDifferent(IJavaProject javaProject, Set<IClasspathEntry> newClasspath) {
             IClasspathEntry[] rawClasspath;
             try {
                 rawClasspath = javaProject.getRawClasspath();
@@ -253,8 +253,15 @@ public class TalendJetEmitter extends JETEmitter {
                 settedClasspath.add(classpathEntry);
             }
 
+            // source and target classpath must be the same
             for (IClasspathEntry classpathEntry : newClasspath) {
                 if (!settedClasspath.contains(classpathEntry)) {
+                    return true;
+                }
+            }
+
+            for (IClasspathEntry classpathEntry : settedClasspath) {
+                if (!newClasspath.contains(classpathEntry)) {
                     return true;
                 }
             }
@@ -293,7 +300,7 @@ public class TalendJetEmitter extends JETEmitter {
 
                 progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETOpeningJavaProject_message", //$NON-NLS-1$
                         new Object[] { project.getName() }));
-                javaProject.open(new SubProgressMonitor(progressMonitor, 1));
+                // javaProject.open(new SubProgressMonitor(progressMonitor, 1));
 
                 IPackageFragmentRoot[] packageFragmentRoots = javaProject.getPackageFragmentRoots();
                 IPackageFragmentRoot sourcePackageFragmentRoot = null;
