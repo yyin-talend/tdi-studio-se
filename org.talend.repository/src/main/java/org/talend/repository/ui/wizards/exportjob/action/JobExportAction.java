@@ -88,56 +88,61 @@ public class JobExportAction implements IRunnableWithProgress {
     }
 
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-        final EventLoopProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
+        try {
+            final EventLoopProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
 
-        progressMonitor.beginTask(Messages.getString("JobScriptsExportWizardPage.exportJobScript"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-        if (nodes != null && nodes.size() > 0) {
-            int size = nodes.size();
-            if (size == 1) {
-                if (jobVersion != null && jobVersion.equals(JobScriptsExportWizardPage.ALL_VERSIONS)) {
-                    String[] allVersions = JobVersionUtils.getAllVersions(nodes.get(0));
-                    for (String version : allVersions) {
-                        monitor.subTask(Messages.getString(
-                                "JobScriptsExportWizardPage.exportJob2", nodes.get(0).getLabel(), version)); //$NON-NLS-1$
-                        // Commentted by Marvin Wang on Jun.1, 2012.
-                        // FIXME Here will export all nodes for each loop. Maybe only the lastest version can be saved,
-                        // caz the privious versions are deleted.
-                        if (!exportJobScript(nodes, version, bundleVersion, progressMonitor)) {
+            progressMonitor.beginTask(Messages.getString("JobScriptsExportWizardPage.exportJobScript"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+            if (nodes != null && nodes.size() > 0) {
+                int size = nodes.size();
+                if (size == 1) {
+                    if (jobVersion != null && jobVersion.equals(JobScriptsExportWizardPage.ALL_VERSIONS)) {
+                        String[] allVersions = JobVersionUtils.getAllVersions(nodes.get(0));
+                        for (String version : allVersions) {
+                            monitor.subTask(Messages.getString(
+                                    "JobScriptsExportWizardPage.exportJob2", nodes.get(0).getLabel(), version)); //$NON-NLS-1$
+                            // Commentted by Marvin Wang on Jun.1, 2012.
+                            // FIXME Here will export all nodes for each loop. Maybe only the lastest version can be
+                            // saved,
+                            // caz the privious versions are deleted.
+                            if (!exportJobScript(nodes, version, bundleVersion, progressMonitor)) {
+                                return;
+                            }
+                        }
+                    } else {
+                        if (!exportJobScript(nodes, jobVersion, bundleVersion, progressMonitor)) {
                             return;
                         }
+                        monitor.subTask(Messages.getString("JobScriptsExportWizardPage.exportJob2", nodes.get(0).getLabel(),
+                                jobVersion));
                     }
-                } else {
+                } else if (size > 1) {
                     if (!exportJobScript(nodes, jobVersion, bundleVersion, progressMonitor)) {
                         return;
                     }
-                    monitor.subTask(Messages.getString("JobScriptsExportWizardPage.exportJob2", nodes.get(0).getLabel(),
-                            jobVersion));
+                    monitor.subTask(Messages.getString("JobScriptsExportWizardPage.exportSuccess"));
                 }
-            } else if (size > 1) {
-                if (!exportJobScript(nodes, jobVersion, bundleVersion, progressMonitor)) {
-                    return;
-                }
-                monitor.subTask(Messages.getString("JobScriptsExportWizardPage.exportSuccess"));
             }
+            // for (RepositoryNode node : nodes) {
+            // if (jobVersion != null && jobVersion.equals(JobScriptsExportWizardPage.ALL_VERSIONS)) {
+            // String[] allVersions = JobVersionUtils.getAllVersions(node);
+            // for (String version : allVersions) {
+            //                    monitor.subTask(Messages.getString("JobScriptksExportWizardPage.exportJob0", node.getLabel(), version)); //$NON-NLS-1$
+            // if (!exportJobScript(nodes, version, bundleVersion, progressMonitor)) {
+            // return;
+            // }
+            // }
+            // } else {
+            //                monitor.subTask(Messages.getString("JobScriptsExportWizardPage.exportJob1", node.getLabel(), jobVersion)); //$NON-NLS-1$
+            // if (!exportJobScript(nodes, jobVersion, bundleVersion, progressMonitor)) {
+            // return;
+            // }
+            // }
+            //            monitor.subTask(Messages.getString("JobScriptsExportWizardPage.exportJobSucessful", node.getLabel(), jobVersion)); //$NON-NLS-1$
+            // }
+            progressMonitor.done();
+        } finally {
+            ProcessorUtilities.resetExportConfig();
         }
-        // for (RepositoryNode node : nodes) {
-        // if (jobVersion != null && jobVersion.equals(JobScriptsExportWizardPage.ALL_VERSIONS)) {
-        // String[] allVersions = JobVersionUtils.getAllVersions(node);
-        // for (String version : allVersions) {
-        //                    monitor.subTask(Messages.getString("JobScriptksExportWizardPage.exportJob0", node.getLabel(), version)); //$NON-NLS-1$
-        // if (!exportJobScript(nodes, version, bundleVersion, progressMonitor)) {
-        // return;
-        // }
-        // }
-        // } else {
-        //                monitor.subTask(Messages.getString("JobScriptsExportWizardPage.exportJob1", node.getLabel(), jobVersion)); //$NON-NLS-1$
-        // if (!exportJobScript(nodes, jobVersion, bundleVersion, progressMonitor)) {
-        // return;
-        // }
-        // }
-        //            monitor.subTask(Messages.getString("JobScriptsExportWizardPage.exportJobSucessful", node.getLabel(), jobVersion)); //$NON-NLS-1$
-        // }
-        progressMonitor.done();
     }
 
     private List<ExportFileResource> getProcesses(List<RepositoryNode> nodes, String path) {
