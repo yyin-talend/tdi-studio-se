@@ -160,9 +160,15 @@ public class JobletContainerFigure extends Figure {
     private void refreshNodes() {
         if (isRed() && rectFig != null) {
             rectFig.setBackgroundColor(new Color(Display.getDefault(), red));
-        } else {
+        } else if (rectFig != null) {
             rectFig.setBackgroundColor(new Color(Display.getDefault(), green));
         }
+        if (isRed() && outlineFigure != null) {
+            outlineFigure.setBackgroundColor(new Color(Display.getDefault(), red));
+        } else if (outlineFigure != null) {
+            outlineFigure.setBackgroundColor(new Color(Display.getDefault(), green));
+        }
+
         if (!jobletContainer.isCollapsed()) {
             for (Object ele : jobletContainer.getElements()) {
                 if (ele instanceof Node) {
@@ -190,7 +196,6 @@ public class JobletContainerFigure extends Figure {
 
         outlineFigure.setLocation(new Point(location.x, location.y));
         outlineFigure.setVisible(showTitle);
-        outlineFigure.setBackgroundColor(new Color(Display.getDefault(), new RGB(130, 240, 100)));
         outlineFigure.setForegroundColor(new Color(Display.getDefault(), new RGB(220, 120, 120)));
         outlineFigure.setSize(rectangle.width, preferedSize.height);
 
@@ -200,8 +205,10 @@ public class JobletContainerFigure extends Figure {
         rectFig.setSize(new Dimension(rectangle.width, rectangle.height /*- preferedSize.height*/));
         if (isRed()) {
             rectFig.setBackgroundColor(new Color(Display.getDefault(), red));
+            outlineFigure.setBackgroundColor(new Color(Display.getDefault(), red));
         } else {
             rectFig.setBackgroundColor(new Color(Display.getDefault(), green));
+            outlineFigure.setBackgroundColor(new Color(Display.getDefault(), green));
         }
 
         rectFig.setForegroundColor(new Color(Display.getDefault(), new RGB(220, 120, 120)));
