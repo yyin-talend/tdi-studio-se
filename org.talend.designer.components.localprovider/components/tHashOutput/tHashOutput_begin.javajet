@@ -176,7 +176,7 @@ if(!isLinked){//111
 <%
 		if(isAppend) {
 %>
-			if((tHashFile_<%=cid %> = mf_<%=cid %>.getResourceMap().get("tHashFile_<%=jobName+"_"+cid %>"))==null){
+			if((tHashFile_<%=cid %> = mf_<%=cid %>.getResourceMap().get("tHashFile_<%=jobName %>_" +pid + "_<%=cid %>"))==null){
 				tHashFile_<%=cid %> = new org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=connectionName%>Struct>(org.talend.designer.components.hashfile.common.MATCHING_MODE.<%=matchingMode %>);                
 	        }
 <%
@@ -187,7 +187,7 @@ if(!isLinked){//111
 		}
 %>			
         //use this ResourceMap instead of globalMap,so that globalMap will not be too large
-        mf_<%=cid %>.getResourceMap().put("tHashFile_<%=jobName+"_"+cid %>", tHashFile_<%=cid %>);
+        mf_<%=cid %>.getResourceMap().put("tHashFile_<%=jobName %>_" +pid + "_<%=cid %>", tHashFile_<%=cid %>);
 <%	
 	}//222
 }else{//111
@@ -196,7 +196,7 @@ if(!isLinked){//111
 %>
 		org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=tHashOutput_incommingDataConnName %>Struct> tHashFile_<%=cid %> = null; 
 		//use this map to keep the present key and the previous key of AdvancedMemoryHashFile
-		mf_<%=cid %>.getKeyMap().put("tHashFile_<%=jobName+"_"+cid %>", "tHashFile_<%=jobName+"_"+tHashOutputName %>");
+		mf_<%=cid %>.getKeyMap().put("tHashFile_<%=jobName %>_" +pid + "_<%=cid %>", "tHashFile_<%=jobName %>_" + pid + "_<%=tHashOutputName %>");
 <%
 }//111
 %>

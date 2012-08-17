@@ -149,7 +149,7 @@ int nb_line_<%=cid%> = 0;
 //fix bug 21630,use method getAdvancedMemoryHashFile to get a exist AdvancedMemoryHashFile
 %>	
 org.talend.designer.components.hashfile.common.MapHashFile mf_<%=cid %>=org.talend.designer.components.hashfile.common.MapHashFile.getMapHashFile();
-org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=tHashOutput_incommingDataConnName %>Struct> tHashFile_<%=cid %> = mf_<%=cid %>.getAdvancedMemoryHashFile("tHashFile_<%=jobName+"_"+tHashOutputName %>");
+org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile<<%=tHashOutput_incommingDataConnName %>Struct> tHashFile_<%=cid %> = mf_<%=cid %>.getAdvancedMemoryHashFile("tHashFile_<%=jobName %>_" + pid +"_<%=tHashOutputName %>");
 java.util.Iterator<<%=tHashOutput_incommingDataConnName %>Struct> iterator_<%=cid %> = tHashFile_<%=cid %>.iterator();
 while (iterator_<%=cid %>.hasNext()) {
     <%=tHashOutput_incommingDataConnName %>Struct next_<%=cid %> = iterator_<%=cid %>.next();
