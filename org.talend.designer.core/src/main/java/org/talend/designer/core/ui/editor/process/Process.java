@@ -2619,19 +2619,19 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     }
 
     @SuppressWarnings("unchecked")
-    private void setActivateSubjob(INode node, boolean active, INode activateNode, boolean oneComponent) {
+    private void setActivateSubjob(INode node, boolean active, INode activateNode, boolean oneComponent, List chekedNodes) {
         INode mainSubProcess = node.getSubProcessStartNode(false);
-
+        chekedNodes.add(node);
         // if the selected node is the start node, then everything will be
         // desacticated
         if (activateNode.isStart()) {
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
-                if (connec.getSource().isActivate() != active) {
+                if (connec.getSource().isActivate() != active || !chekedNodes.contains(connec.getSource())) {
                     if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
                             || connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_ITERATE)) {
                         if (connec.getSource().getSubProcessStartNode(false).isActivate() != active) {
                             setActivateSubjob(connec.getSource().getSubProcessStartNode(false), active, activateNode,
-                                    oneComponent);
+                                    oneComponent, chekedNodes);
                         }
                     }
                 }
@@ -2639,14 +2639,14 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             ((Element) node).setPropertyValue(EParameterName.ACTIVATE.getName(), new Boolean(active));
             for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
                 if (!oneComponent) {
-                    if (connec.getTarget().isActivate() != active) {
-                        setActivateSubjob(connec.getTarget(), active, activateNode, oneComponent);
+                    if (connec.getTarget().isActivate() != active || !chekedNodes.contains(connec.getTarget())) {
+                        setActivateSubjob(connec.getTarget(), active, activateNode, oneComponent, chekedNodes);
                     }
                 } else {
                     if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
                             || connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_ITERATE)) {
-                        if (connec.getTarget().isActivate() != active) {
-                            setActivateSubjob(connec.getTarget(), active, activateNode, oneComponent);
+                        if (connec.getTarget().isActivate() != active || !chekedNodes.contains(connec.getTarget())) {
+                            setActivateSubjob(connec.getTarget(), active, activateNode, oneComponent, chekedNodes);
                         }
                     }
                 }
@@ -2659,16 +2659,16 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                 for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                     if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
                             || connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_ITERATE)) {
-                        if (connec.getSource().isActivate() != active) {
-                            setActivateSubjob(connec.getSource(), active, activateNode, oneComponent);
+                        if (connec.getSource().isActivate() != active || !chekedNodes.contains(connec.getSource())) {
+                            setActivateSubjob(connec.getSource(), active, activateNode, oneComponent, chekedNodes);
                         }
                     }
                 }
                 for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
                     if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
                             || connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_ITERATE)) {
-                        if (connec.getTarget().isActivate() != active) {
-                            setActivateSubjob(connec.getTarget(), active, activateNode, oneComponent);
+                        if (connec.getTarget().isActivate() != active || !chekedNodes.contains(connec.getTarget())) {
+                            setActivateSubjob(connec.getTarget(), active, activateNode, oneComponent, chekedNodes);
                         }
                     }
                 }
@@ -2681,7 +2681,8 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         // desactive first the process to avoid to check the process during the
         // activation / desactivation
         setActivate(false);
-        setActivateSubjob(node, active, node, oneComponent);
+        List chekedNodes = new ArrayList();
+        setActivateSubjob(node, active, node, oneComponent, chekedNodes);
         // now that everything is set, reactivate the process
         setActivate(true);
     }
