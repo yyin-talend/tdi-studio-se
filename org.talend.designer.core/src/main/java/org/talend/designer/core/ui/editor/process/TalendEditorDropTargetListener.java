@@ -203,6 +203,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         setTransfer(LocalSelectionTransfer.getTransfer());
     }
 
+    @Override
     public boolean isEnabled(DropTargetEvent e) {
         if (PluginChecker.isCDCPluginLoaded()) {
             ICDCProviderService service = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(
@@ -219,14 +220,17 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         return !this.editor.getProcess().isReadOnly();
     }
 
+    @Override
     public void dragEnter(DropTargetEvent event) {
 
     }
 
+    @Override
     public void dragLeave(DropTargetEvent event) {
 
     }
 
+    @Override
     public void dragOperationChanged(DropTargetEvent event) {
 
     }
@@ -255,6 +259,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
     }
 
+    @Override
     public void dragOver(DropTargetEvent event) {
         // multi-drag for job,context, sqlPattern.
         IStructuredSelection selection = getSelection();
@@ -868,9 +873,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             translateAbsolateToRelative(targetFigure, draw2dPosition);
             String lastUniqname = "";
             // creates every node
-            for (Iterator<TempStore> iter = list.iterator(); iter.hasNext();) {
-                TempStore store = iter.next();
-
+            for (TempStore store : list) {
                 RepositoryNode selectedNode = store.seletetedNode;
                 IComponent element = store.component;
                 Node node = new Node(element);
@@ -896,8 +899,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     } else if (repositoryNode.getObjectType() == ERepositoryObjectType.PROCESS) { // dnd a job
                         LabelValue = DesignerUtilities.getParameterVar(EParameterName.PROCESS);
                     } else if (CorePlugin.getDefault().getDesignerCoreService()
-                            .getPreferenceStore(TalendDesignerPrefConstants.DEFAULT_LABEL).equals( //$NON-NLS-1$
-                                    node.getPropertyValue(EParameterName.LABEL.getName()))) {// dnd a default
+                            .getPreferenceStore(TalendDesignerPrefConstants.DEFAULT_LABEL)
+                            .equals(node.getPropertyValue(EParameterName.LABEL.getName()))) {// dnd a default
                         LabelValue = selectedNode.getObject().getLabel();
                     }
                     if (LabelValue != null) {
@@ -1050,7 +1053,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     && PluginChecker.isSAPWizardPluginLoaded()) {
                 SAPFunctionUnit functionUnit = (SAPFunctionUnit) ((SAPFunctionRepositoryObject) selectedNode.getObject())
                         .getAbstractMetadataObject();
-                for (MetadataTable table : (List<MetadataTable>) functionUnit.getTables()) {
+                for (MetadataTable table : functionUnit.getTables()) {
                     Command sapCmd = new RepositoryChangeMetadataForSAPCommand(node, ISAPConstant.TABLE_SCHEMAS,
                             table.getLabel(), ConvertionHelper.convert(table), functionUnit);
                     list.add(sapCmd);
@@ -1062,7 +1065,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 // TDI-20505:integration the drag/drop for EBCDIC connection and EBCDIC metadataTable
                 IRepositoryViewObject object = selectedNode.getObject();
                 if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_EBCDIC) {
-                    for (MetadataTable table : (Set<MetadataTable>) ConnectionHelper.getTables(originalConnection)) {
+                    for (MetadataTable table : ConnectionHelper.getTables(originalConnection)) {
                         Command ebcdicCmd = new RepositoryChangeMetadataForEBCDICCommand(node, IEbcdicConstant.TABLE_SCHEMAS,
                                 table.getLabel(), ConvertionHelper.convert(table));
                         list.add(ebcdicCmd);
@@ -1083,7 +1086,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if ((selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker.isHL7PluginLoaded())
                     || (selectedNode.getParent() != null
                             && selectedNode.getParent().getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker
-                            .isHL7PluginLoaded())) {
+                                .isHL7PluginLoaded())) {
                 if (originalConnection instanceof HL7ConnectionImpl) {
                     if (((HL7ConnectionImpl) originalConnection).getRoot() != null) {
                         List<Map<String, String>> mapList = new ArrayList<Map<String, String>>();
@@ -1115,7 +1118,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
 
                 // fore HL7, by gcui
                 if (selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker.isHL7PluginLoaded()) {
-                    for (MetadataTable table : (Set<MetadataTable>) ConnectionHelper.getTables(originalConnection)) {
+                    for (MetadataTable table : ConnectionHelper.getTables(originalConnection)) {
                         Command hl7Cmd = new RepositoryChangeMetadataForHL7Command(node, IHL7Constant.TABLE_SCHEMAS,
                                 table.getLabel(), ConvertionHelper.convert(table));
                         list.add(hl7Cmd);
@@ -1127,7 +1130,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if ((selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_BRMS && PluginChecker.isBRMSPluginLoaded())
                     || (selectedNode.getParent() != null
                             && selectedNode.getParent().getObjectType() == ERepositoryObjectType.METADATA_FILE_BRMS && PluginChecker
-                            .isBRMSPluginLoaded())) {
+                                .isBRMSPluginLoaded())) {
                 if (originalConnection instanceof BRMSConnectionImpl) {
                     if (((BRMSConnectionImpl) originalConnection).getRoot() != null) {
                         List<Map<String, String>> rootList = new ArrayList<Map<String, String>>();
@@ -1453,8 +1456,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 }
                 // for SAP
                 Command command = getSAPCommand(object, connectionItem, table, node);
-                if (command != null)
+                if (command != null) {
                     return command;
+                }
 
                 // for EBCDIC (bug 5860)
                 // if (PluginChecker.isEBCDICPluginLoaded() && connectionItem instanceof EbcdicConnectionItem) {
@@ -1534,8 +1538,9 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                             // .setValue(EmfComponent.REPOSITORY);
                             // // For subtask TDI-21703.
                             value = connectionItem.getProperty().getId() + " - " + children.get(0).getLabel();
-                        } else
+                        } else {
                             value = connectionItem.getProperty().getId() + " - ";
+                        }
                         IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
                         schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(EmfComponent.BUILTIN);
                         return new RepositoryChangeMetadataCommand(node, schemaParam.getName() + ":" //$NON-NLS-1$
@@ -1640,6 +1645,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         return null;
     }
 
+    @Override
     public void dropAccept(DropTargetEvent event) {
     }
 
@@ -1797,6 +1803,11 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 ConnectionCreateCommand nodeCmd = new ConnectionCreateCommand(node, targetConnector.getName(), nodeArgs, false);
                 nodeCmd.setTarget(originalTarget);
                 execCommandStack(nodeCmd);
+
+                if (!ConnectionCreateCommand.isCreatingConnection()) {
+                    return true;
+                }
+
                 if (node.getComponent().getName().equals("tMap")) {
                     CreateComponentOnLinkHelper.setupTMap(node);
                 }
@@ -1973,6 +1984,7 @@ class ComponentChooseDialog extends ListDialog {
 
     }
 
+    @Override
     protected Control createContents(Composite parent) {
         Control control = super.createContents(parent);
         //
