@@ -51,13 +51,32 @@ public class FunctionManagerExt extends FunctionManager {
             bean.setArrayFunctions(arrayTalendFunctions2);
         } else {
             for (int i = 0; i < functions.size(); i++) {
-                String category = functions.get(i).getCategory() != null ? functions.get(i).getCategory() + "." : "";
-                arrayTalendFunctions2[i] = category + functions.get(i).getName();
+                String name = functions.get(i).getName();
+                // if (list.contains(name)) {
+                // int indexOf = list.indexOf(name);
+                // arrayTalendFunctions2[indexOf] = functions.get(indexOf).getClassName() + "." + name;//$NON-NLS-1$
+
+                String className = functions.get(i).getClassName();
+                if (className == null) {
+                    arrayTalendFunctions2[i] = name;
+                } else {
+                    arrayTalendFunctions2[i] = className + "." + name;//$NON-NLS-1$
+                }
+                // } else {
+                // arrayTalendFunctions2[i] = name;
+                // list.add(name);
+                // }
                 if (funName.equals(functions.get(i).getName())) {
                     currentFun = functions.get(i);
                 }
             }
-            Arrays.sort(arrayTalendFunctions2);
+            Arrays.sort(arrayTalendFunctions2, new Comparator<String>() {
+
+                public int compare(String n1, String n2) {
+                    return n1.compareTo(n2);
+                }
+
+            });
             bean.setArrayFunctions(arrayTalendFunctions2);
         }
         return currentFun;
