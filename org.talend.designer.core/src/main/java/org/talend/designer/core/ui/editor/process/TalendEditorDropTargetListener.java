@@ -1211,12 +1211,12 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if (propertyParam != null) {
                 // command used to set property type
                 IMetadataTable metadataTable = null;
-                if (selectedNode.getContentType() == ERepositoryObjectType.METADATA_MDMCONNECTION
-                        && selectedNode.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
-                    if (selectedNode.getObject() instanceof IMetadataTable) {
-                        metadataTable = (IMetadataTable) selectedNode.getObject();
-                    }
+                // if (selectedNode.getContentType() == ERepositoryObjectType.METADATA_MDMCONNECTION
+                // && selectedNode.getObjectType() == ERepositoryObjectType.METADATA_CON_TABLE) {
+                if (selectedNode.getObject() instanceof IMetadataTable) {
+                    metadataTable = (IMetadataTable) selectedNode.getObject();
                 }
+                // }
                 ChangeValuesFromRepository command1 = new ChangeValuesFromRepository(node, connection, metadataTable,
                         propertyParam.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), propertyId, true); //$NON-NLS-1$
                 command1.setMaps(repositoryTableMap);
