@@ -36,7 +36,7 @@ public class FileOutputDelimitedNode extends ShadowNode {
         TextElementParameter param5 = new TextElementParameter("LIMIT", ""); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param6 = new TextElementParameter("HEADER", ""); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param7 = new TextElementParameter("FOOTER", ""); //$NON-NLS-1$ //$NON-NLS-2$
-        TextElementParameter param8 = new TextElementParameter("ESCAPE_CHAR", TalendTextUtils.addQuotes("\"")); //$NON-NLS-1$ //$NON-NLS-2$
+        TextElementParameter param8 = new TextElementParameter("ESCAPE_CHAR", TalendTextUtils.addQuotes("\\\\")); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param9 = new TextElementParameter("TEXT_ENCLOSURE", TalendTextUtils.addQuotes("\"")); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param10 = new TextElementParameter("REMOVE_EMPTY_ROW", "true"); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param11 = new TextElementParameter("SPLIT", "false"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -65,6 +65,7 @@ public class FileOutputDelimitedNode extends ShadowNode {
      * 
      * @see org.talend.core.model.process.INode#isStart()
      */
+    @Override
     public boolean isStart() {
         return false;
     }
@@ -74,6 +75,7 @@ public class FileOutputDelimitedNode extends ShadowNode {
      * 
      * @see org.talend.core.model.process.INode#isThereLinkWithHash()
      */
+    @Override
     public boolean isThereLinkWithHash() {
         // TODO Auto-generated method stub
         return false;

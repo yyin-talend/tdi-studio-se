@@ -98,33 +98,11 @@ public class FileInputDelimitedNode extends FileInputNode {
             } else {
                 CSVReader cr = null;
                 try {
-                    // cr = new CsvReader(new BufferedReader(new InputStreamReader(new
-                    // FileInputStream(trimParameter(filename)),
-                    // trimParameter(encoding))), trimParameter(StringUtils.loadConvert(fieldSep,
-                    // languageName)).charAt(0));
                     cr = new SimpleReader();
                     cr.setSeperator(trimParameter(StringUtils.loadConvert(fieldSep, languageName)).charAt(0));
-                    //                    if (!rowSep.equals("\"\\n\"") && !rowSep.equals("\"\\r\"")) { //$NON-NLS-1$ //$NON-NLS-2$
-                    // cr.setRecordDelimiter(trimParameter(StringUtils.loadConvert(rowSep, languageName)).charAt(0));
-                    // }
-                    // cr.setSkipEmptyRecords(true);
-                    // String en = trimParameter(textEnclosure);
-                    // if (en.length() > 0) {
-                    // cr.setTextQualifier(en.charAt(0));
-                    // } else {
-                    // cr.setUseTextQualifier(false);
-                    // }
-                    //                    if (escapeChar.equals("\"\\\\\"") || escapeChar.equals("\"\"")) { //$NON-NLS-1$ //$NON-NLS-2$
-                    // cr.setEscapeMode(CsvReader.ESCAPE_MODE_BACKSLASH);
-                    // } else {
-                    // cr.setEscapeMode(CsvReader.ESCAPE_MODE_DOUBLED);
-                    // }
                     List items = cr.parse(new File(TalendTextUtils.removeQuotes(filename)));
-                    for (int i = 0; i < headerRows && items.size() > 0; i++) {
-                        // do nothing, just ignore the header part
-                    }
                     int columnCount = 0;
-                    for (int i = 0; i < limitRows && items.size() > 0; i++) {
+                    for (int i = 0; i < limitRows && i < items.size(); i++) {
                         String[] item = (String[]) items.get(i);
                         int temp = item.length;
                         if (temp > columnCount) {
@@ -136,18 +114,11 @@ public class FileInputDelimitedNode extends FileInputNode {
                         this.setColumnNumber(columnCount);
                     }
                 } catch (UnsupportedEncodingException e) {
-                    // e.printStackTrace();
                     ExceptionHandler.process(e);
                 } catch (FileNotFoundException e) {
-                    // e.printStackTrace();
                     ExceptionHandler.process(e);
                 } catch (IOException e) {
-                    // e.printStackTrace();
                     ExceptionHandler.process(e);
-                } finally {
-                    if (cr != null) {
-                        // cr.close();
-                    }
                 }
             }
             break;
