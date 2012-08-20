@@ -215,7 +215,7 @@
 
    <CODEGENERATION>
      <IMPORTS>
-		<IMPORT NAME="Driver-EXASolution" MODULE="jdbc14.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-EXASolution" MODULE="exajdbc.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
 

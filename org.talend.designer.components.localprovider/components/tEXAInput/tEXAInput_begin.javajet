@@ -50,11 +50,11 @@ imports="
 		        <%
 		        if(dbproperties == null || dbproperties.equals("\"\"") || dbproperties.equals("")) {        
 		            %>    
-		            String url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%>+ ":schema=" + <%=dbschema%>; 
+		            String url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%>+ ";schema=" + <%=dbschema%>; 
 		            <% 
 		        } else {
 		            %>  
-		            String url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%> + ":schema=" + <%=dbschema%> + ":" + <%=dbproperties%>;
+		            String url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%> + ";schema=" + <%=dbschema%> + ":" + <%=dbproperties%>;
 		            <%
 		        }
 		        %>

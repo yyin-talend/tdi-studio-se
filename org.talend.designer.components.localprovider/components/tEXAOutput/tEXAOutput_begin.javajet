@@ -122,9 +122,9 @@ if(useExistingConn.equals("true")) {
     String dbProperties_<%=cid%> = <%=dbproperties%>;
     String url_<%=cid%> = null;
     if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
-        url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%>+ ":schema=" + <%=dbschema%>; 
+        url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%>+ ";schema=" + <%=dbschema%>; 
     } else {
-       url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%> + ":schema=" + <%=dbschema%> + ":" + <%=dbproperties%>;
+       url_<%=cid %> = "jdbc:exa:" + <%=dbhost%> + ":" + <%=dbport%> + ";schema=" + <%=dbschema%> + ":" + <%=dbproperties%>;
     }
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;    
