@@ -2284,7 +2284,7 @@ public class Node extends Element implements IGraphicalNode {
                 }
             }
             // if the parameter is required but empty, an error will be added
-            if (param.isRequired() && !param.isShow(getElementParameters()) && this.externalNode != null) {
+            if (param.isRequired(getElementParameters()) && !param.isShow(getElementParameters()) && this.externalNode != null) {
                 if (param.getFieldType().equals(EParameterFieldType.TABLE)) {
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     // add by wzhang. all schemas need loop element.

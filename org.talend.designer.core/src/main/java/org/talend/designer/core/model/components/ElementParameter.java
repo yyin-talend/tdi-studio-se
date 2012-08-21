@@ -94,6 +94,8 @@ public class ElementParameter implements IElementParameter {
 
     private String showIf = null;
 
+    private String requiredIF = null;
+
     private String notShowIf = null;
 
     // hshen 6930
@@ -410,6 +412,17 @@ public class ElementParameter implements IElementParameter {
             showParameter = show;
         }
         return showParameter;
+    }
+
+    // added by dlin for feature TDI-22421
+    public boolean isRequired(List<? extends IElementParameter> listParam) {
+        boolean requiredParameter = false;
+        if (this.requiredIF != null && !required) {
+            requiredParameter = Expression.evaluate(requiredIF, listParam, this);
+        } else {
+            requiredParameter = required;
+        }
+        return requiredParameter;
     }
 
     public boolean isShow(String conditionShowIf, String conditionNotShowIf, List<? extends IElementParameter> listParam) {
@@ -914,11 +927,11 @@ public class ElementParameter implements IElementParameter {
         clone.setNotReadOnlyIf(getNotReadOnlyIf());
         clone.setNotShowIf(getNotShowIf());
         clone.setNumRow(getNumRow());
-       //changed by hqzhang for TDI 19754 start
-//        final IElementParameter pParameter = getParentParameter();
-//        if (pParameter != null) {
-//            clone.setParentParameter(pParameter.getClone());
-//        }
+        // changed by hqzhang for TDI 19754 start
+        // final IElementParameter pParameter = getParentParameter();
+        // if (pParameter != null) {
+        // clone.setParentParameter(pParameter.getClone());
+        // }
         clone.setReadOnly(isReadOnly());
         clone.setReadOnlyIf(getReadOnlyIf());
         clone.setRepositoryValue(getRepositoryValue());
@@ -929,13 +942,13 @@ public class ElementParameter implements IElementParameter {
         clone.setValue(getValue()); // ?
         // clone.setValueToDefault(null)
         clone.setNoContextAssist(isNoContextAssist());
-        if(this.getChildParameters().size()>0){
-            for(String name : this.getChildParameters().keySet()){
+        if (this.getChildParameters().size() > 0) {
+            for (String name : this.getChildParameters().keySet()) {
                 IElementParameter childParamClone = this.getChildParameters().get(name).getClone();
                 clone.getChildParameters().put(name, childParamClone);
                 childParamClone.setParentParameter(clone);
             }
-        }//TDI 19754 end
+        }// TDI 19754 end
         return clone;
     }
 
@@ -1027,5 +1040,15 @@ public class ElementParameter implements IElementParameter {
      */
     public int getMaxlength() {
         return this.maxlength;
+    }
+
+    // added by dlin for feature TDI-22421
+    public String getRequiredIF() {
+        return this.requiredIF;
+    }
+
+    // added by dlin for feature TDI-22421
+    public void setRequiredIF(String requiredIF) {
+        this.requiredIF = requiredIF;
     }
 }

@@ -1488,6 +1488,7 @@ public class EmfComponent extends AbstractComponent {
 
             param.setFilter(xmlParam.getFILTER());
             param.setShowIf(xmlParam.getSHOWIF());
+            param.setRequiredIF(xmlParam.getREQUIREDIF());
             param.setNotShowIf(xmlParam.getNOTSHOWIF());
             param.setReadOnlyIf(xmlParam.getREADONLYIF());
             param.setNotReadOnlyIf(xmlParam.getNOTREADONLYIF());
