@@ -116,12 +116,13 @@ public class OpenExistVersionProcessAction extends EditPropertiesAction {
 
     }
 
+    @Override
     protected IEditorPart getCorrespondingEditor(RepositoryNode node) {
         IEditorReference[] eidtors = getActivePage().getEditorReferences();
 
-        for (int i = 0; i < eidtors.length; i++) {
+        for (IEditorReference eidtor : eidtors) {
             try {
-                IEditorInput input = eidtors[i].getEditorInput();
+                IEditorInput input = eidtor.getEditorInput();
                 if (!(input instanceof JobEditorInput)) {
                     continue;
                 }
@@ -132,7 +133,7 @@ public class OpenExistVersionProcessAction extends EditPropertiesAction {
 
                     IPath path = repositoryInput.getFile().getLocation();
 
-                    return eidtors[i].getEditor(false);
+                    return eidtor.getEditor(false);
                 }
             } catch (PartInitException e) {
                 continue;
@@ -163,6 +164,7 @@ public class OpenExistVersionProcessAction extends EditPropertiesAction {
                     final String tmpMess = message;
                     display.syncExec(new Runnable() {
 
+                        @Override
                         public void run() {
                             Shell shell = null;
                             final IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();

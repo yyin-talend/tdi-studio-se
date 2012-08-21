@@ -79,7 +79,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
 
     protected OpenExistVersionProcessPage mainPage = null;
 
-    protected final IRepositoryViewObject processObject;
+    protected IRepositoryViewObject processObject;
 
     protected boolean alreadyEditedByUser = false;
 
@@ -211,6 +211,17 @@ public class OpenExistVersionProcessWizard extends Wizard {
     protected boolean refreshNewJob() {
         if (alreadyEditedByUser) {
             return false;
+        }
+        StructuredSelection selection = (StructuredSelection) mainPage.getSelection();
+        if (!selection.isEmpty()) {
+            RepositoryNode node = (RepositoryNode) selection.getFirstElement();
+            boolean lastVersion = node.getObject().getVersion().equals(originalVersion);
+            if (!lastVersion) {
+                originalVersion = node.getObject().getVersion();
+                String newVersion = processObject.getVersion();
+                processObject = node.getObject();
+                processObject.getProperty().setVersion(newVersion);
+            }
         }
         IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
         try {
