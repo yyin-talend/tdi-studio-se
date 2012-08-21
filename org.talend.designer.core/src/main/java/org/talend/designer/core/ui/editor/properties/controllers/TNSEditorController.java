@@ -5,6 +5,7 @@ import java.io.File;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -17,6 +18,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.runtime.image.ImageProvider;
@@ -27,6 +29,7 @@ import org.talend.core.utils.PathExtractor;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.uidialog.tns.TnsEditorDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.uidialog.tns.TnsInfo;
+import org.talend.designer.core.ui.editor.properties.controllers.uidialog.tns.TnsParser;
 import org.talend.designer.core.ui.editor.properties.controllers.uidialog.tns.TnsPropertyCommand;
 
 public class TNSEditorController extends AbstractElementPropertySectionController {
@@ -41,10 +44,30 @@ public class TNSEditorController extends AbstractElementPropertySectionControlle
         if (elementParameter != null) {
             String filePath = new Path(PathExtractor.extractPath(elementParameter.getValue().toString())).toOSString();
             if (filePath != null && new File(filePath).exists()) {
-                TnsEditorDialog tnsDialog = new TnsEditorDialog(composite.getShell(), new File(filePath));
-                if (tnsDialog.open() == Window.OK) {
-                    TnsInfo tnsInfo = tnsDialog.getTnsInfo();
-                    command = new TnsPropertyCommand(tnsInfo, this.elem);
+                boolean flag = false;
+                try {
+                    TnsParser tnsparser = new TnsParser(new File(filePath));
+                    if (tnsparser.getTree().getChildren().size() == 0) {
+                        flag = true;
+                    }
+                } catch (Exception e) {
+                    flag = true;
+                }
+                if (flag) {
+                    Display.getDefault().syncExec(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            MessageDialog.openInformation(composite.getShell(), "WARNING", "this file is invalid,please recheck!");
+                        }
+
+                    });
+                } else {
+                    TnsEditorDialog tnsDialog = new TnsEditorDialog(composite.getShell(), new File(filePath));
+                    if (tnsDialog.open() == Window.OK) {
+                        TnsInfo tnsInfo = tnsDialog.getTnsInfo();
+                        command = new TnsPropertyCommand(tnsInfo, this.elem);
+                    }
                 }
             } else {
                 MessageBox mBox = new MessageBox(composite.getShell(), SWT.ICON_ERROR);
@@ -78,7 +101,7 @@ public class TNSEditorController extends AbstractElementPropertySectionControlle
             btnEdit.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName()); //$NON-NLS-1$
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
         data = new FormData();
         if (lastControl != null) {
             data.left = new FormAttachment(lastControl, 0);
@@ -138,16 +161,19 @@ public class TNSEditorController extends AbstractElementPropertySectionControlle
 
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
 
     }
 
     SelectionListener listenerSelection = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
 
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand((Button) e.getSource());
             executeCommand(cmd);
