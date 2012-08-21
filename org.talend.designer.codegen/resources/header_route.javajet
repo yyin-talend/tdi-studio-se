@@ -24,6 +24,7 @@
 		org.talend.designer.codegen.ITalendSynchronizer
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.designer.runprocess.CodeGeneratorRoutine
+		org.talend.core.model.process.EParameterFieldType
 	"
 	class="Header"
 %>
@@ -99,21 +100,44 @@ package <%= packageName %>;
 		}
 	}
 
-	List<INode> nodesWithImport = process.getNodesWithImport();
-	if (nodesWithImport != null) {
-		for (INode node:nodesWithImport) {
-			String tmp = ElementParameterParser.getValue(node, "__IMPORT__");
-			if(tmp == null || "".equals(tmp.trim())){
+//	List<INode> nodesWithImport = process.getNodesWithImport();
+//	if (nodesWithImport != null) {
+//		for (INode node:nodesWithImport) {
+//			String tmp = ElementParameterParser.getValue(node, "__IMPORT__");
+//			if(tmp == null || "".equals(tmp.trim())){
+//				continue;
+//			}
+//			String[] imports = tmp.trim().split(";");
+//			for(String s: imports){
+//				if(s!=null && !"".equals(s.trim())){
+//					importsSet.add(s.trim());
+//				}
+//			}
+//		}
+//	}
+	List<? extends INode> generatingNodes = process.getGeneratingNodes();
+	for(INode n: generatingNodes){
+		List<? extends IElementParameter> elementParameters = n.getElementParameters();
+		for(IElementParameter p: elementParameters){
+			if(p.getShowIf() != null && !p.isShow(elementParameters)){
 				continue;
 			}
-			String[] imports = tmp.trim().split(";");
-			for(String s: imports){
-				if(s!=null && !"".equals(s.trim())){
-					importsSet.add(s.trim());
+			if(EParameterFieldType.MEMO_IMPORT == p.getFieldType()){
+				Object value = p.getValue();
+				if(value == null || !(value instanceof String) || "".equals(((String)value).trim())){
+					continue;
+				}
+				String[] imports = ((String)value).trim().split(";");
+				for(String s: imports){
+					if(s!=null && !"".equals(s.trim())){
+						importsSet.add(s.trim());
+					}
 				}
 			}
 		}
+		
 	}
+	
 	for(String s: importsSet){
 %>
 		<%=s%> ;
