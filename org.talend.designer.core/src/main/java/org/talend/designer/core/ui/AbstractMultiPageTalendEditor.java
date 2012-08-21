@@ -132,7 +132,9 @@ import org.talend.designer.core.model.utils.emf.talendfile.RoutinesParameterType
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletUtil;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
@@ -908,6 +910,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         if (!isDirty()) {
             return;
         }
+        changeCollapsedState(true);
         updateRunJobContext();
         designerEditor.getProcess().getProperty().eAdapters().remove(dirtyListener);
         display = getSite().getShell().getDisplay();
@@ -977,6 +980,23 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             designerEditor.getProcess().getProperty().eAdapters().add(dirtyListener);
         }
         refreshJobSettingsView();
+        changeCollapsedState(false);
+    }
+
+    private void changeCollapsedState(boolean state) {
+        List<? extends INode> nodeList = getProcess().getGraphicalNodes();
+        for (INode node : nodeList) {
+            if (node instanceof Node) {
+                NodeContainer nc = ((Node) node).getNodeContainer();
+                if (nc instanceof JobletContainer) {
+                    if (((JobletContainer) nc).isCollapsed() && !state) {
+                        ((JobletContainer) nc).setCollapsed(state);
+                    } else if (!((JobletContainer) nc).isCollapsed() && state) {
+                        ((JobletContainer) nc).setCollapsed(state);
+                    }
+                }
+            }
+        }
     }
 
     /**
