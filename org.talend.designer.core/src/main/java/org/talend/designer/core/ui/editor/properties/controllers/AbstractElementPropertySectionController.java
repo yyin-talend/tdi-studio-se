@@ -502,7 +502,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * smallet $
      * 
      */
-    class EditionControlHelper {
+    public class EditionControlHelper {
 
         private final CheckErrorsHelper checkErrorsHelper;
 
