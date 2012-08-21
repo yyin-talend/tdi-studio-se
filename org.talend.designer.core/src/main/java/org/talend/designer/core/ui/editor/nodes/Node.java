@@ -2961,7 +2961,7 @@ public class Node extends Element implements IGraphicalNode {
                     int indexOfDynamicField = 0;
                     int lastNotCustom = 0;
                     for (IMetadataColumn col : meta.getListColumns()) {
-                        if (col.getTalendType().equals("id_Dynamic")) { //$NON-NLS-1$
+                        if (col.getTalendType() != null && col.getTalendType().equals("id_Dynamic")) { //$NON-NLS-1$
                             nbDynamic++;
                             indexOfDynamicField = meta.getListColumns().indexOf(col);
                         }
