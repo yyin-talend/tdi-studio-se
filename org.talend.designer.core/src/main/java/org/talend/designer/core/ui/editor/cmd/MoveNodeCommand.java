@@ -27,6 +27,7 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 
 /**
  * Move a given node to another location. <br/>
@@ -58,7 +59,7 @@ public class MoveNodeCommand extends Command {
         initializeCurrentSelection();
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     @Override
     public boolean canExecute() {
         Rectangle movingRect = new Rectangle(newPos, node.getSize());
@@ -83,17 +84,21 @@ public class MoveNodeCommand extends Command {
         }
     }
 
+    @Override
     public void execute() {
         oldPos = this.node.getLocation();
         this.node.setLocation(newPos);
         moveJobletNodes(node, oldPos);
+        saveSubPoint(this.node, newPos);
     }
 
+    @Override
     public void undo() {
         this.node.setLocation(oldPos);
         moveJobletNodes(node, newPos);
     }
 
+    @Override
     public void redo() {
         this.node.setLocation(newPos);
         moveJobletNodes(node, oldPos);
@@ -106,5 +111,10 @@ public class MoveNodeCommand extends Command {
                 ((JobletContainer) nodeContainer).transferLocation(oldPos);
             }
         }
+    }
+
+    private void saveSubPoint(Node node, Point newPos) {
+        SubjobContainer sc = node.getNodeContainer().getSubjobContainer();
+        sc.savePoint(node, newPos);
     }
 }
