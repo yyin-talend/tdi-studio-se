@@ -253,8 +253,9 @@ public class JobletContainer extends NodeContainer {
                 return;
             }
             super.setPropertyValue(id, value);
-            updateSubjobContainer();
             transferLocation(false);
+            updateSubjobContainer();
+
             refreshJobletConnections();
             fireStructureChange(EParameterName.COLLAPSED.getName(), this);
         } else {

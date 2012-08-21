@@ -330,18 +330,26 @@ public class SubjobContainer extends Element implements ISubjobContainer {
             if (!jobletCollapsed) {
                 Point origPoint = new Point(nodePoint.x, nodePoint.y);
                 pointMap.put(container.getNode().getUniqueName(), origPoint);
-                if (nodePoint.x > nodeRec.x) {
-                    nodePoint.x = nodePoint.x + rightChangewidth;
+                if (nodePoint.x > nodeRec.x && (nodePoint.x - nodeRec.x) <= rightChangewidth + node.getSize().width * 2) {
+                    nodePoint.x = rightChangewidth + nodeRec.x + container.getNodeContainerRectangle().width
+                            + node.getSize().width;
                 }
-                if (nodePoint.y > nodeRec.y) {
-                    nodePoint.y = nodePoint.y + downChangeheight;
+                if (nodePoint.y > nodeRec.y && (nodePoint.y - nodeRec.y) <= downChangeheight + node.getSize().width) {
+                    nodePoint.y = downChangeheight + nodeRec.y + container.getNodeContainerRectangle().width
+                            + node.getSize().width;
                 }
 
-                if (nodePoint.x < nodeRec.x && nodePoint.x > leftChangewidth) {
-                    nodePoint.x = nodePoint.x - leftChangewidth;
+                if (nodePoint.x < nodeRec.x
+                        && nodeRec.x + node.getSize().height >= leftChangewidth + container.getNodeContainerRectangle().width
+                        && (nodeRec.x - nodePoint.x) <= leftChangewidth + node.getSize().height) {
+                    nodePoint.x = nodeRec.x - leftChangewidth - container.getNodeContainerRectangle().width
+                            + node.getSize().height;
                 }
-                if (nodePoint.y < nodeRec.y && nodePoint.y > upChangeheight) {
-                    nodePoint.y = nodePoint.y - upChangeheight;
+                if (nodePoint.y < nodeRec.y
+                        && nodeRec.y + node.getSize().height >= upChangeheight + container.getNodeContainerRectangle().width
+                        && (nodeRec.y - nodePoint.y) <= upChangeheight + node.getSize().height) {
+                    nodePoint.y = nodeRec.y - upChangeheight - container.getNodeContainerRectangle().width
+                            + node.getSize().height;
                 }
             } else {
                 nodePoint = pointMap.get(container.getNode().getUniqueName());
@@ -554,5 +562,9 @@ public class SubjobContainer extends Element implements ISubjobContainer {
             setCollapsed(false);
         }
         fireStructureChange(UPDATE_SUBJOB_DISPLAY, this);
+    }
+
+    public void savePoint(Node node, Point point) {
+        pointMap.put(node.getUniqueName(), point);
     }
 }

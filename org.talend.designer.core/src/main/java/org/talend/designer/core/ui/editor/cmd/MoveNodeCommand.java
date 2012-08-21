@@ -27,6 +27,7 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 
 /**
  * Move a given node to another location. <br/>
@@ -87,6 +88,7 @@ public class MoveNodeCommand extends Command {
         oldPos = this.node.getLocation();
         this.node.setLocation(newPos);
         moveJobletNodes(node, oldPos);
+        saveSubPoint(this.node, newPos);
     }
 
     public void undo() {
@@ -106,5 +108,10 @@ public class MoveNodeCommand extends Command {
                 ((JobletContainer) nodeContainer).transferLocation(oldPos);
             }
         }
+    }
+
+    private void saveSubPoint(Node node, Point newPos) {
+        SubjobContainer sc = node.getNodeContainer().getSubjobContainer();
+        sc.savePoint(node, newPos);
     }
 }
