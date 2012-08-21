@@ -45,7 +45,7 @@ java.sql.Connection conn_<%=cid%> = null;
 	if(useExistingConnection) {
     		String connName = ElementParameterParser.getValue(node,"__CONNECTION__");
     		String conn = "conn_" + connName;
-    		String existDbSchema = "dbschema_" + conn;
+    		String existDbSchema = "dbschema_" + connName;
 			INode con_node = NodeUtil.getNodeByUniqueName(node.getProcess(),connName);
 			if(con_node!=null){
 				db_version = ElementParameterParser.getValue(con_node,"__DB_VERSION__");
@@ -185,7 +185,13 @@ if(("UPDATE").equals(dataAction)) {
 }finally{
 	if(fis_<%=cid %>!=null)
 		fis_<%=cid%>.close();
-	conn_<%=cid%>.close();
+<%
+	if(!useExistingConnection) {
+%>
+	     conn_<%=cid%>.close();
+<%
+    }
+%>
 }
 
 
