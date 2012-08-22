@@ -12,10 +12,6 @@
 // ============================================================================
 package org.talend.designer.rowgenerator.ui.editor;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.swt.SWT;
@@ -101,6 +97,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         this.functionManager = functionManager;
     }
 
+    @Override
     public void initGraphicComponents() {
         mainComposite = new Composite(parentComposite, SWT.NONE);
         if (parentComposite.getBackground() != null && !parentComposite.getBackground().equals(mainComposite.getBackground())) {
@@ -139,6 +136,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
     }
 
+    @Override
     protected void createColumns(TableViewerCreator<IMetadataColumn> tableViewerCreator, Table table) {
         super.createColumns(tableViewerCreator, table);
         // ////////////////////////////////////////////
@@ -173,6 +171,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
     private IBeanPropertyAccessors<MetadataColumnExt, String> getPreviewAccessor() {
         return new IBeanPropertyAccessors<MetadataColumnExt, String>() {
 
+            @Override
             public String get(MetadataColumnExt bean) {
                 if (bean.getFunction() == null) {
                     return ""; //$NON-NLS-1$
@@ -180,6 +179,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
                 return bean.getFunction().getPreview();
             }
 
+            @Override
             public void set(MetadataColumnExt bean, String value) {
                 bean.getFunction().setPreview(value);
                 bean.setPreview(value);
@@ -211,6 +211,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
     private IBeanPropertyAccessors<MetadataColumnExt, String> getParameterAccessor() {
         return new IBeanPropertyAccessors<MetadataColumnExt, String>() {
 
+            @Override
             public String get(MetadataColumnExt bean) {
                 if (bean.getFunction() != null && bean.getFunction().getName().equals(FunctionManagerExt.PURE_PERL_NAME)) {
                     return ((StringParameter) bean.getFunction().getParameters().get(0)).getValue();
@@ -218,6 +219,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
                 return bean.getParameter();
             }
 
+            @Override
             public void set(MetadataColumnExt bean, String value) {
                 if (bean.getFunction() != null && bean.getFunction().getName().equals(FunctionManagerExt.PURE_PERL_NAME)) {
                     ((StringParameter) bean.getFunction().getParameters().get(0)).setValue(value);
@@ -269,6 +271,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
     protected IBeanPropertyAccessors<MetadataColumnExt, String> getFunctionAccessor(final ComboBoxCellEditor functComboBox) {
         return new IBeanPropertyAccessors<MetadataColumnExt, String>() {
 
+            @Override
             public String get(MetadataColumnExt bean) {
                 if (bean.getFunction() != null) {
                     if (getTable() != null) {
@@ -276,18 +279,16 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
                     }
                     String[] arrayFunctions = bean.getArrayFunctions();
                     functComboBox.setItems(arrayFunctions);
-                    String name = bean.getFunction().getName();
-                    List<String> asList = Arrays.asList(arrayFunctions);
-                    if (asList != null && !asList.contains(name)) {
-                        return bean.getFunction().getClassName() + "." + name;//$NON-NLS-1$
-                    }
-                    return name;
+                    return FunctionManagerExt.getFunctionLable(bean.getFunction());
+
                 }
                 return ""; //$NON-NLS-1$
             }
 
+            @Override
             public void set(MetadataColumnExt bean, String value) {
-                bean.setFunction(MetadataTableEditorViewExt.this.getFunnctionByName(bean.getTalendType(), value));
+
+                bean.setFunction(functionManager.getCurrentFunction(value, bean));
                 bean.setChanged(true);
             }
 
@@ -303,10 +304,12 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
     protected IBeanPropertyAccessors<IMetadataColumn, String> getTalendTypeAccessor() {
         return new IBeanPropertyAccessors<IMetadataColumn, String>() {
 
+            @Override
             public String get(IMetadataColumn bean) {
                 return bean.getTalendType();
             }
 
+            @Override
             public void set(IMetadataColumn bean, String value) {
                 if (bean instanceof MetadataColumnExt) {
                     MetadataColumnExt ext = (MetadataColumnExt) bean;
@@ -321,20 +324,24 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         };
     }
 
+    @Override
     public MetadataTableEditorExt getMetadataTableEditor() {
         return (MetadataTableEditorExt) getExtendedTableModel();
     }
 
+    @Override
     protected ExtendedToolbarView initToolBar() {
         extendedToolbar = new MetadataToolbarEditorViewExt(getMainComposite(), SWT.NONE, getExtendedTableViewer(), this);
         return extendedToolbar;
     }
 
+    @Override
     protected void setTableViewerCreatorOptions(TableViewerCreator<IMetadataColumn> newTableViewerCreator) {
         super.setTableViewerCreatorOptions(newTableViewerCreator);
         newTableViewerCreator.setLayoutMode(LAYOUT_MODE.DEFAULT);
     }
 
+    @Override
     public MetadataToolbarEditorViewExt getExtendedToolbar() {
         return this.extendedToolbar;
     }
@@ -414,6 +421,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
              * 
              * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 // if (e.detail == SWT.DRAG) {
                 int shift = horizontalBar.getSelection();
@@ -438,17 +446,19 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
     private void addTableColumnsListener() {
         ControlListener controlListener = new ControlListener() {
 
+            @Override
             public void controlMoved(ControlEvent e) {
                 MetadataTableEditorViewExt.this.attachLabelPosition(getTable().getHorizontalBar().getSelection());
             }
 
+            @Override
             public void controlResized(ControlEvent e) {
                 MetadataTableEditorViewExt.this.attachLabelPosition(getTable().getHorizontalBar().getSelection());
             }
 
         };
-        for (Iterator iter = getTableViewerCreator().getColumns().iterator(); iter.hasNext();) {
-            TableViewerCreatorColumnNotModifiable element = (TableViewerCreatorColumnNotModifiable) iter.next();
+        for (Object element2 : getTableViewerCreator().getColumns()) {
+            TableViewerCreatorColumnNotModifiable element = (TableViewerCreatorColumnNotModifiable) element2;
             element.getTableColumn().addControlListener(controlListener);
         }
     }
@@ -621,8 +631,8 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         int funwidth = 0;
         int prewidth = 0;
         int w = 0;
-        for (Iterator iter = getTableViewerCreator().getColumns().iterator(); iter.hasNext();) {
-            TableViewerCreatorColumnNotModifiable element = (TableViewerCreatorColumnNotModifiable) iter.next();
+        for (Object element2 : getTableViewerCreator().getColumns()) {
+            TableViewerCreatorColumnNotModifiable element = (TableViewerCreatorColumnNotModifiable) element2;
             w += element.getTableColumn().getWidth();
         }
         prewidth = w - getTableViewerCreator().getColumn(ID_COLUMN_PREVIEW).getTableColumn().getWidth();
@@ -646,8 +656,8 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
         int funwidth = 0;
         int prewidth = 0;
         int w = 0;
-        for (Iterator iter = getTableViewerCreator().getColumns().iterator(); iter.hasNext();) {
-            TableViewerCreatorColumnNotModifiable element = (TableViewerCreatorColumnNotModifiable) iter.next();
+        for (Object element2 : getTableViewerCreator().getColumns()) {
+            TableViewerCreatorColumnNotModifiable element = (TableViewerCreatorColumnNotModifiable) element2;
             w += element.getTableColumn().getWidth();
         }
         prewidth = w - getTableViewerCreator().getColumn(ID_COLUMN_PREVIEW).getTableColumn().getWidth();
@@ -714,7 +724,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
     private Function getFunnctionByName(String talendType, String value) {
         Function func = null;
-        for (Function fun : functionManager.getFunctionByName(talendType)) {
+        for (Function fun : functionManager.getFunctionsByType(talendType)) {
             // see bug 8055,remove the getLastName() method in TDQ,it has the same name as in TIS.
             String name = fun.getName();
             if (value.contains(name)) {
