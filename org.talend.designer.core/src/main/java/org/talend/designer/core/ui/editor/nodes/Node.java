@@ -831,7 +831,7 @@ public class Node extends Element implements IGraphicalNode {
                     }
 
                     flowToIterateReturn.setName(keyName);
-                    flowToIterateReturn.setDisplayName(keyName);
+                    flowToIterateReturn.setDisplayName(cueeName);
                     flowToIterateReturn.setVarName(keyName);
                     flowToIterateReturn.setAvailability("AFTER"); //$NON-NLS-1$
 
@@ -1679,6 +1679,11 @@ public class Node extends Element implements IGraphicalNode {
         }
 
         if (id.equals(EParameterName.FORLOOP.getName())) {
+            firePropertyChange(RETURNS_CHANGED, null, null);
+        }
+
+        if (id.equals(EParameterName.VARIABLES.getName()) /* tSetGlovarVar */
+                || id.equals("MAP"))/* tFlowToIterate */{ //$NON-NLS-1$  
             firePropertyChange(RETURNS_CHANGED, null, null);
         }
 

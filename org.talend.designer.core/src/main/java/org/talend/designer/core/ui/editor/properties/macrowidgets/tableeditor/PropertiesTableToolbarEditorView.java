@@ -29,12 +29,16 @@ import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.ExportPushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.ImportPushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.MoveDownPushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.MoveUpPushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.PastePushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.PastePushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButtonForExtendedTable;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
+import org.talend.commons.ui.swt.extended.table.ExtendedButtonEvent;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.commons.ui.swt.extended.table.IExtendedButtonListener;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
@@ -53,6 +57,8 @@ import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.Pr
 public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
 
     private PropertiesTableEditorModel model;
+
+    private IExtendedButtonListener afterPropertyChangeListener;
 
     /**
      * DOC amaumont MetadataToolbarEditorView constructor comment.
@@ -85,7 +91,7 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
      */
     @Override
     protected AddPushButton createAddPushButton() {
-        return new AddPushButtonForExtendedTable(this.toolbar, getExtendedTableViewer()) {
+        final AddPushButton addPushButton = new AddPushButtonForExtendedTable(this.toolbar, getExtendedTableViewer()) {
 
             @Override
             public boolean getEnabledState() {
@@ -160,6 +166,32 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
             }
 
         };
+        // TDI-6568, after added, fire change
+        addPushButton.addListener(getPropertyChangeListener(), false);
+        return addPushButton;
+    }
+
+    private IExtendedButtonListener getPropertyChangeListener() {
+        if (afterPropertyChangeListener == null) {
+            afterPropertyChangeListener = new IExtendedButtonListener() {
+
+                @Override
+                public void handleEvent(ExtendedButtonEvent event) {
+                    PropertiesTableEditorModel tableEditorModel = (PropertiesTableEditorModel) getExtendedTableViewer()
+                            .getExtendedControlModel();
+                    IElement node = tableEditorModel.getElement();
+                    IElementParameter param = tableEditorModel.getElemParameter();
+                    /*
+                     * TDI-6568, in fact, no need reset the value. just want to enable
+                     * "firePropertyChange(RETURNS_CHANGED, null, null)" in Node.
+                     */
+                    if (param.getFieldType().equals(EParameterFieldType.TABLE)) {
+                        node.setPropertyValue(param.getName(), param.getValue());
+                    }
+                }
+            };
+        }
+        return afterPropertyChangeListener;
     }
 
     /*
@@ -299,7 +331,7 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
      */
     @Override
     public PastePushButton createPastePushButton() {
-        return new PastePushButtonForExtendedTable(toolbar, extendedTableViewer) {
+        PastePushButton pastePushButton = new PastePushButtonForExtendedTable(toolbar, extendedTableViewer) {
 
             @Override
             public boolean getEnabledState() {
@@ -312,6 +344,10 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
             }
 
         };
+        // TDI-6568, after paste, fire change
+        pastePushButton.addListener(getPropertyChangeListener(), false);
+        return pastePushButton;
+
     }
 
     /*
@@ -336,13 +372,17 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
 
     @Override
     protected RemovePushButton createRemovePushButton() {
-        return new RemovePushButtonForExtendedTable(this.toolbar, getExtendedTableViewer()) {
+        RemovePushButtonForExtendedTable removePushButton = new RemovePushButtonForExtendedTable(this.toolbar,
+                getExtendedTableViewer()) {
 
             @Override
             public boolean getEnabledState() {
                 return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts());
             }
         };
+        // TDI-6568, after remove, fire change
+        removePushButton.addListener(getPropertyChangeListener(), false);
+        return removePushButton;
     }
 
     private Object findDefaultName(String outputName, ColumnInfo col) {
@@ -357,5 +397,31 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
             }
         }
         return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView#createMoveUpPushButton()
+     */
+    @Override
+    protected MoveUpPushButton createMoveUpPushButton() {
+        MoveUpPushButton moveUpPushButton = super.createMoveUpPushButton();
+        // TDI-6568, after move, fire change
+        moveUpPushButton.addListener(getPropertyChangeListener(), false);
+        return moveUpPushButton;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView#createMoveDownPushButton()
+     */
+    @Override
+    protected MoveDownPushButton createMoveDownPushButton() {
+        MoveDownPushButton moveDownPushButton = super.createMoveDownPushButton();
+        // TDI-6568, after move, fire change
+        moveDownPushButton.addListener(getPropertyChangeListener(), false);
+        return moveDownPushButton;
     }
 }
