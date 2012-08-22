@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -910,7 +911,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         if (!isDirty()) {
             return;
         }
-        changeCollapsedState(true);
+        Map<String, Boolean> jobletMap = new HashMap<String, Boolean>();
+        changeCollapsedState(true, jobletMap);
         updateRunJobContext();
         designerEditor.getProcess().getProperty().eAdapters().remove(dirtyListener);
         display = getSite().getShell().getDisplay();
@@ -980,18 +982,22 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             designerEditor.getProcess().getProperty().eAdapters().add(dirtyListener);
         }
         refreshJobSettingsView();
-        changeCollapsedState(false);
+        changeCollapsedState(false, jobletMap);
     }
 
-    private void changeCollapsedState(boolean state) {
+    private void changeCollapsedState(boolean state, Map<String, Boolean> map) {
         List<? extends INode> nodeList = getProcess().getGraphicalNodes();
         for (INode node : nodeList) {
             if (node instanceof Node) {
                 NodeContainer nc = ((Node) node).getNodeContainer();
                 if (nc instanceof JobletContainer) {
                     if (((JobletContainer) nc).isCollapsed() && !state) {
-                        ((JobletContainer) nc).setCollapsed(state);
+                        if (map.get(nc.getNode().getUniqueName()) != null && !map.get(nc.getNode().getUniqueName())) {
+                            ((JobletContainer) nc).setCollapsed(state);
+                        }
+
                     } else if (!((JobletContainer) nc).isCollapsed() && state) {
+                        map.put(nc.getNode().getUniqueName(), false);
                         ((JobletContainer) nc).setCollapsed(state);
                     }
                 }
