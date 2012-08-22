@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.core.utils.PluginUtil;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
@@ -46,6 +47,9 @@ public class SearchComponentAction extends SelectionAction {
     protected boolean calculateEnabled() {
         List parts = getSelectedObjects();
         if (parts.size() != 1) {
+            return false;
+        }
+        if (PluginUtil.isMediation()) {
             return false;
         }
         Object o = parts.get(0);
