@@ -34,6 +34,8 @@ import org.w3c.dom.Node;
  */
 public class MetadataSchemaExt extends MetadataSchema {
 
+    private FunctionManagerExt funManager = new FunctionManagerExt();
+
     /**
      * qzhang MetadataSchemaExt constructor comment.
      */
@@ -41,6 +43,7 @@ public class MetadataSchemaExt extends MetadataSchema {
         super();
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected IMetadataColumn initializeOneColumn(final IMetadataColumn metadataColumn, final NamedNodeMap nodeMap) {
         IMetadataColumn column = super.initializeOneColumn(metadataColumn, nodeMap);
@@ -71,12 +74,13 @@ public class MetadataSchemaExt extends MetadataSchema {
         return columnExt;
     }
 
+    @Override
     protected void saveOneColumn(Document document, IMetadataColumn metadataColumn, Element column) {
         super.saveOneColumn(document, metadataColumn, column);
         if (metadataColumn instanceof MetadataColumnExt) {
             MetadataColumnExt columnExt = (MetadataColumnExt) metadataColumn;
             Attr function = document.createAttribute("function"); //$NON-NLS-1$
-            function.setNodeValue(columnExt.getFunction().getName());
+            function.setNodeValue(funManager.getFunctionLable(columnExt.getFunction()));
             column.setAttributeNode(function);
 
             Attr parameter = document.createAttribute("parameter"); //$NON-NLS-1$

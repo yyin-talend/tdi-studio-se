@@ -40,123 +40,79 @@ public class FunctionManagerExt extends FunctionManager {
         super();
     }
 
-    public Function getCurrentFunction(String funName, MetadataColumnExt bean) {
-        Function currentFun = new Function();
-        List<Function> functions = getFunctionByName(bean.getTalendType());
+    public Function getCurrentFunction(String funLabel, MetadataColumnExt bean) {
+        Function currentFun = null;
+        List<Function> functions = getFunctionsByType(bean.getTalendType());
         String[] arrayTalendFunctions2 = new String[functions.size()];
         if (functions.isEmpty()) {
+            currentFun = new Function();
             currentFun.setDescription(""); //$NON-NLS-1$
             currentFun.setPreview(""); //$NON-NLS-1$
             currentFun.setParameters(new ArrayList<Parameter>());
             bean.setArrayFunctions(arrayTalendFunctions2);
         } else {
-            for (int i = 0; i < functions.size(); i++) {
-                String name = functions.get(i).getName();
-                // if (list.contains(name)) {
-                // int indexOf = list.indexOf(name);
-                // arrayTalendFunctions2[indexOf] = functions.get(indexOf).getClassName() + "." + name;//$NON-NLS-1$
-
-                String className = functions.get(i).getClassName();
-                if (className == null) {
-                    arrayTalendFunctions2[i] = name;
-                } else {
-                    arrayTalendFunctions2[i] = className + "." + name;//$NON-NLS-1$
-                }
-                // } else {
-                // arrayTalendFunctions2[i] = name;
-                // list.add(name);
-                // }
-                if (funName.equals(functions.get(i).getName())) {
-                    currentFun = functions.get(i);
-                }
-            }
-            Arrays.sort(arrayTalendFunctions2, new Comparator<String>() {
-
-                public int compare(String n1, String n2) {
-                    return n1.compareTo(n2);
-                }
-
-            });
-            bean.setArrayFunctions(arrayTalendFunctions2);
+            currentFun = getFunnctionByLabel(functions, funLabel);
+            bean.setArrayFunctions(getFunctionArrays(functions));
         }
         return currentFun;
     }
 
     public Function getDefaultFunction(MetadataColumnExt bean, String talendType) {
-        Function currentFun = new Function();
-        List<Function> functions = getFunctionByName(talendType);
+        Function currentFun = null;
+        List<Function> functions = getFunctionsByType(talendType);
         String[] arrayTalendFunctions2 = new String[functions.size()];
         List<String> list = new ArrayList<String>();
         if (functions.isEmpty()) {
+            currentFun = new Function();
             currentFun.setDescription(""); //$NON-NLS-1$
             currentFun.setPreview(""); //$NON-NLS-1$
             currentFun.setParameters(new ArrayList<Parameter>());
             bean.setArrayFunctions(arrayTalendFunctions2);
         } else {
-            for (int i = 0; i < functions.size(); i++) {
-                String name = functions.get(i).getName();
-                // if (list.contains(name)) {
-                // int indexOf = list.indexOf(name);
-                //                    arrayTalendFunctions2[indexOf] = functions.get(indexOf).getClassName() + "." + name;//$NON-NLS-1$
-
-                String className = functions.get(i).getClassName();
-                if (className == null) {
-                    arrayTalendFunctions2[i] = name;
-                } else {
-                    arrayTalendFunctions2[i] = className + "." + name;//$NON-NLS-1$
-                }
-                // } else {
-                // arrayTalendFunctions2[i] = name;
-                // list.add(name);
-                // }
-            }
-            Arrays.sort(arrayTalendFunctions2, new Comparator<String>() {
-
-                public int compare(String n1, String n2) {
-                    return n1.compareTo(n2);
-                }
-
-            });
-            currentFun = (Function) functions.get(0).clone();
+            arrayTalendFunctions2 = getFunctionArrays(functions);
             bean.setArrayFunctions(arrayTalendFunctions2);
         }
+
+        return getDefaultFunction(functions);
+    }
+
+    private Function getDefaultFunction(List<Function> functions) {
+        Function currentFun = null;
         for (Function fun : functions) {
             if (fun.getName().equals(DEFAULT_SELECTED_METHOD)) {
-                currentFun = fun;
+                currentFun = (Function) fun.clone();
                 break;
             }
         }
-
+        if (currentFun == null && !functions.isEmpty()) {
+            currentFun = (Function) functions.get(0).clone();
+        }
         return currentFun;
+    }
+
+    public String[] getFunctionArrays(List<Function> functions) {
+        String[] arrayTalendFunctions2 = new String[functions.size()];
+        for (int i = 0; i < functions.size(); i++) {
+            arrayTalendFunctions2[i] = getFunctionLable(functions.get(i));
+        }
+        Arrays.sort(arrayTalendFunctions2, new Comparator<String>() {
+
+            @Override
+            public int compare(String n1, String n2) {
+                return n1.compareTo(n2);
+            }
+
+        });
+        return arrayTalendFunctions2;
     }
 
     public Function getFuntionFromArray(MetadataColumnExt bean, RowGeneratorComponent externalNode, int index) {
         String value = externalNode.getColumnValue(bean, index);
-        List<Function> functions = getFunctionByName(bean.getTalendType());
+        List<Function> functions = getFunctionsByType(bean.getTalendType());
         Function currentFun = getAvailableFunFromValue(bean, value, functions);
 
         if (currentFun == null) {
-            currentFun = new Function();
-            String[] arrayTalendFunctions2 = new String[functions.size()];
-            if (functions.isEmpty()) {
-                currentFun.setDescription(""); //$NON-NLS-1$
-                currentFun.setPreview(""); //$NON-NLS-1$
-                currentFun.setParameters(new ArrayList<Parameter>());
-                bean.setArrayFunctions(arrayTalendFunctions2);
-            } else {
-                int flag = 0;
-                for (int i = 0; i < functions.size(); i++) {
-
-                    String funName = functions.get(i).getName();
-                    arrayTalendFunctions2[i] = funName;
-                    if (DEFAULT_SELECTED_METHOD.equals(funName)) {
-                        flag = i;
-                    }
-
-                }
-                currentFun = (Function) functions.get(flag).clone();
-                bean.setArrayFunctions(arrayTalendFunctions2);
-            }
+            currentFun = getDefaultFunction(functions);
         }
 
         return currentFun;
@@ -269,7 +225,7 @@ public class FunctionManagerExt extends FunctionManager {
         return currentFun;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public static String getOneColData(MetadataColumnExt bean) {
         if (bean != null && bean.getFunction() != null) {
             String newValue = addPreSuffix ? PERL_FUN_PREFIX : ""; //$NON-NLS-1$
@@ -287,7 +243,7 @@ public class FunctionManagerExt extends FunctionManager {
                     //                    String fullName = JavaFunctionParser.getTypeMethods().get(bean.getTalendType() + "." + name); //$NON-NLS-1$
                     newValue = fullName + "("; //$NON-NLS-1$
                     for (Parameter pa : parameters) {
-                        newValue += pa.getValue() + FUN_PARAM_SEPARATED; //$NON-NLS-1$
+                        newValue += pa.getValue() + FUN_PARAM_SEPARATED;
                     }
                     if (!parameters.isEmpty()) {
                         newValue = newValue.substring(0, newValue.length() - 1);
@@ -297,7 +253,7 @@ public class FunctionManagerExt extends FunctionManager {
                 } else {
                     newValue += name + "("; //$NON-NLS-1$
                     for (Parameter pa : parameters) {
-                        newValue += pa.getValue() + FUN_PARAM_SEPARATED; //$NON-NLS-1$
+                        newValue += pa.getValue() + FUN_PARAM_SEPARATED;
                     }
                     newValue = newValue.substring(0, newValue.length() - 1);
 
@@ -322,6 +278,33 @@ public class FunctionManagerExt extends FunctionManager {
         String str = getOneColData(bean);
         addPreSuffix = true;
         return str;
+    }
+
+    public static String getFunctionLable(Function function) {
+        return function.getClassName() == null ? function.getName()
+                : (function.getClassName() + FunctionManager.JAVA_METHOD_SEPARATED) + function.getName();
+    }
+
+    private Function getFunnctionByLabel(List<Function> functions, String value) {
+        Function func = null;
+        for (Function fun : functions) {
+            // see bug 8055,remove the getLastName() method in TDQ,it has the same name as in TIS.
+            if (value.equals(getFunctionLable(fun))) {
+                func = (Function) fun.clone();
+                break;
+            }
+        }
+        // adapt to some old versions in case className is not saved
+        if (func == null) {
+            for (Function fun : functions) {
+                if (value.equals(fun.getName())) {
+                    func = (Function) fun.clone();
+                    break;
+                }
+            }
+        }
+
+        return func;
     }
 
 }
