@@ -23,6 +23,7 @@ import org.talend.core.context.Context;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.branding.IBrandingService;
+import org.talend.core.utils.PluginUtil;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -80,6 +81,9 @@ public class NodeBreakpointAction extends SelectionAction {
         if (getSelectedObjects().isEmpty()) {
             return false;
         }
+        if (PluginUtil.isMediation()) {
+            return false;
+        }
         List parts = getSelectedObjects();
         if (parts.size() == 1) {
             Object o = parts.get(0);
@@ -110,6 +114,7 @@ public class NodeBreakpointAction extends SelectionAction {
             }
             return true;
         }
+
         return false;
     }
 
