@@ -12,9 +12,7 @@
 // ============================================================================
 package org.talend.designer.rowgenerator.ui.editor;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -269,6 +267,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
     protected IBeanPropertyAccessors<MetadataColumnExt, String> getFunctionAccessor(final ComboBoxCellEditor functComboBox) {
         return new IBeanPropertyAccessors<MetadataColumnExt, String>() {
 
+            @Override
             public String get(MetadataColumnExt bean) {
                 if (bean.getFunction() != null) {
                     if (getTable() != null) {
@@ -276,18 +275,16 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
                     }
                     String[] arrayFunctions = bean.getArrayFunctions();
                     functComboBox.setItems(arrayFunctions);
-                    String name = bean.getFunction().getName();
-                    List<String> asList = Arrays.asList(arrayFunctions);
-                    if (asList != null && !asList.contains(name)) {
-                        return bean.getFunction().getClassName() + "." + name;//$NON-NLS-1$
-                    }
-                    return name;
+                    return FunctionManagerExt.getFunctionLable(bean.getFunction());
+
                 }
                 return ""; //$NON-NLS-1$
             }
 
+            @Override
             public void set(MetadataColumnExt bean, String value) {
-                bean.setFunction(MetadataTableEditorViewExt.this.getFunnctionByName(bean.getTalendType(), value));
+
+                bean.setFunction(functionManager.getCurrentFunction(value, bean));
                 bean.setChanged(true);
             }
 
@@ -714,7 +711,7 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
 
     private Function getFunnctionByName(String talendType, String value) {
         Function func = null;
-        for (Function fun : functionManager.getFunctionByName(talendType)) {
+        for (Function fun : functionManager.getFunctionsByType(talendType)) {
             // see bug 8055,remove the getLastName() method in TDQ,it has the same name as in TIS.
             String name = fun.getName();
             if (value.contains(name)) {
