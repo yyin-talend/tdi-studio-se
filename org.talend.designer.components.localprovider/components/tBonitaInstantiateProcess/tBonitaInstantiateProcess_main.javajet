@@ -22,18 +22,46 @@ imports="
 %>	
 	try {
 <%
+		List< ? extends IConnection> conns = node.getIncomingConnections();
+		if(conns != null && conns.size() > 0 && conns.get(0) != null) {
+	    	IConnection conn = conns.get(0);
+	    	if(conn!=null && conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+		    	INode previousNode = conn.getSource();
+		    	if(previousNode != null) {
+					List<IMetadataTable> metadatas = previousNode.getMetadataList();
+					if ((metadatas!=null)&&(metadatas.size()>0)) {
+						IMetadataTable metadata = metadatas.get(0);
+						if (metadata!=null) {
+							List<IMetadataColumn> columns = metadata.getListColumns();
+							int sizeColumns = columns.size();
+							for (int i = 0; i < sizeColumns; i++) {
+%>
+								parameters_<%=cid%>.put("<%=(columns.get(i)).getLabel()%>", <%=conn.getName()%>.<%=(columns.get(i)).getLabel()%>);
+<%
+							}
+						}
+					}
+		    	}
+		    }
+	    }
+%>
+
+		org.ow2.bonita.facade.uuid.ProcessInstanceUUID instanceUUID_<%=cid%> = runtimeAPI_<%=cid%>.instantiateProcess(processID_<%=cid%>, parameters_<%=cid%>);
+		processInstanceUUID_<%=cid%> = instanceUUID_<%=cid%>.getValue();
+<%
 		List<IMetadataTable> metadatas = node.getMetadataList();
 		if ((metadatas!=null)&&(metadatas.size()>0)) {
 			IMetadataTable metadata = metadatas.get(0);
 			if (metadata!=null) {
-				List< ? extends IConnection> conns = node.getIncomingConnections();
-				for (IConnection conn : conns) {
+				List< ? extends IConnection> conns_out = node.getOutgoingConnections();
+				for (IConnection conn : conns_out) {
+					String connName = conn.getName();
 					if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 						List<IMetadataColumn> columns = metadata.getListColumns();
 						int sizeColumns = columns.size();
 						for (int i = 0; i < sizeColumns; i++) {
 %>
-							parameters_<%=cid%>.put("<%=(columns.get(i)).getLabel()%>", <%=conn.getName()%>.<%=(columns.get(i)).getLabel()%>);
+							<%=connName%>.<%=(columns.get(i)).getLabel()%> = processInstanceUUID_<%=cid%>;
 <%
 						}
 					}
@@ -42,8 +70,6 @@ imports="
 		}
 %>
 
-		org.ow2.bonita.facade.uuid.ProcessInstanceUUID instanceUUID_<%=cid%> = runtimeAPI_<%=cid%>.instantiateProcess(processID_<%=cid%>, parameters_<%=cid%>);
-		processInstanceUUID_<%=cid%> = instanceUUID_<%=cid%>.getValue();
 		 
 		System.out.println("**** Instance "+ processInstanceUUID_<%=cid%> + " created ****");
 	} catch (Exception e_<%=cid%>) {
