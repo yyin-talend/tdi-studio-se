@@ -51,6 +51,7 @@ import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.IRuleConstant;
 import org.talend.core.model.metadata.MetadataToolHelper;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -617,6 +618,13 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                         }
                         ((Map<String, Object>) bean).put(items[curCol], finalValue);
                         resetValuesIfNeeded(element, param, (Map<String, Object>) bean);
+                        /*
+                         * TDI-6568, in fact, no need reset the value. just want to enable
+                         * "firePropertyChange(RETURNS_CHANGED, null, null)" in Node.
+                         */
+                        if (param.getFieldType().equals(EParameterFieldType.TABLE)) {
+                            element.setPropertyValue(param.getName(), param.getValue());
+                        }
                     }
                 });
             }
