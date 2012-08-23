@@ -754,8 +754,19 @@
 				int totalLine<%=cid %> = 0;
 				int limit<%=cid %> = <%= limit %>;
 				int lastLine<%=cid %> = -1;	
+				//the parameters of reader constructor
+				char fieldSeparatorChar_<%=cid %> = ',';
+				String rowSeparatorChars_<%=cid %> = "\n";
+				char textQuote_<%=cid%> = '\0';
+				char escape_<%=cid%> = '\\';
+				boolean useDoubleTextQuoteEscape_<%=cid%> = false;
+				boolean skipEmptyRow_<%=cid%> = <%=removeEmptyRow %>;
+				int header_<%=cid%> = <%= header %><%=hasDynamic?"-1":""%>;
+				if(header_<%=cid%> < 0) {
+					header_<%=cid%> = 0;
+				}
 				
-				char fieldSeparator_<%=cid %>[] = null;
+				char[] fieldSeparator_<%=cid %> = null;
 				
 				//support passing value (property: Field Separator) by 'context.fs' or 'globalMap.get("fs")'. 
 				if ( ((String)<%=delim1%>).length() > 0 ){
@@ -763,8 +774,10 @@
 				}else {			
 					throw new IllegalArgumentException("Field Separator must be assigned a char."); 
 				}
+				
+				fieldSeparatorChar_<%=cid %> = fieldSeparator_<%=cid %>[0];
 			
-				char rowSeparator_<%=cid %>[] = null;
+				char[] rowSeparator_<%=cid %> = null;
 			
 				//support passing value (property: Row Separator) by 'context.rs' or 'globalMap.get("rs")'. 
 				if ( ((String)<%=rowSeparator1%>).length() > 0 ){
@@ -772,9 +785,65 @@
 				}else {
 					throw new IllegalArgumentException("Row Separator must be assigned a char."); 
 				}
+				
+				if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') ) {
+					rowSeparatorChars_<%=cid %> = "" + rowSeparator_<%=cid %>[0];
+				}
+			
+				<%
+				if(("").equals(textEnclosure1) || textEnclosure1.startsWith("\"")){//normal situation
+				%>
+    				textQuote_<%=cid%> = '<%=textEnclosure %>';
+				<%
+				}else{ //context and global variables
+				%>
+					String textEnclosure1_<%=cid %> = <%=textEnclosure1 %>; 
+					char textEnclosure_<%=cid %>[] = null;
+	        
+				    if(((String)textEnclosure1_<%=cid %>).length() > 0 ){ 
+						textEnclosure_<%=cid %> = ((String)textEnclosure1_<%=cid %>).toCharArray(); 
+					}else { 
+        				throw new IllegalArgumentException("Text Enclosure must be assigned a char."); 
+    				}
+					textQuote_<%=cid%> = textEnclosure_<%=cid %>[0];
+				<%
+				}
+			
+				if(("").equals(escapeChar1) || escapeChar1.startsWith("\"")){//normal situation
+    				if(("\\\\").equals(escapeChar)){
+    				%>
+        				//use the default escape char \
+					<%
+    				}else if(escapeChar.equals(textEnclosure)){
+    				%>
+        				useDoubleTextQuoteEscape_<%=cid%> = true;
+					<%
+    				}else{
+    				%>
+        				//now we can support,but too many choice is not a good idea.
+					<%
+    				}
+    			}else{//context and global variables
+				%> 
+        			String escapeChar1_<%=cid %> = <%=escapeChar1 %>;          
+        			char escapeChar_<%=cid %>[] = null;
+	        
+			        if(((String)escapeChar1_<%=cid %>).length() > 0 ){ 
+			        	escapeChar_<%=cid %> = ((String)escapeChar1_<%=cid %>).toCharArray(); 
+			  		}else { 
+        			    throw new IllegalArgumentException("Escape Char must be assigned a char."); 
+        			}
+       				if(escapeChar_<%=cid %>[0] == '\\'){
+       					//use the default escape char \
+       				}else if(escapeChar_<%=cid %>[0] ==<%if(("").equals(textEnclosure1) || textEnclosure1.startsWith("\"")){%>'<%=textEnclosure %>'<%}else{%>textEnclosure_<%=cid %>[0]<%}%>){
+       					useDoubleTextQuoteEscape_<%=cid%> = true;
+       				}
+				<%
+				}
+				%> 
 			
 				Object filename_<%=cid %> = <%=filename %>;		
-				com.csvreader.CsvReader csvReader<%=cid %> = null;
+				com.talend.csv.CSVReader csvReader<%=cid %> = null;
 	
 				try{
 					<%
@@ -817,7 +886,10 @@
 	        				int currentLine<%=cid %> = 0;
 	        				int outputLine<%=cid %> = 0;
 	        				try {//TD110 begin
-	        					csvReader<%=cid %>=new com.csvreader.CsvReader(zis_<%=cid %>, fieldSeparator_<%=cid %>[0], java.nio.charset.Charset.forName(<%=encoding %>));
+	        					csvReader<%=cid %> = new com.talend.csv.CSVReader(zis_<%=cid %>, 
+            						<%=encoding %>, rowSeparatorChars_<%=cid %>, fieldSeparatorChar_<%=cid %>, 
+            						textQuote_<%=cid%>, escape_<%=cid%>,
+            						skipEmptyRow_<%=cid%>, header_<%=cid%>);
 					<%
 					}else{
 					%>
@@ -829,81 +901,29 @@
 							<%
 								generateCode.checkFooter(footer);
 							%>
-								csvReader<%=cid %>=new com.csvreader.CsvReader((java.io.InputStream)filename_<%=cid %>, fieldSeparator_<%=cid %>[0], java.nio.charset.Charset.forName(<%=encoding %>));
+    							csvReader<%=cid %> = new com.talend.csv.CSVReader((java.io.InputStream)filename_<%=cid %>, 
+	        						<%=encoding %>, rowSeparatorChars_<%=cid %>, fieldSeparatorChar_<%=cid %>, 
+	        						textQuote_<%=cid%>, escape_<%=cid%>,
+            						skipEmptyRow_<%=cid%>, header_<%=cid%>);
 							}else{
-								csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-		                		new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
+    							csvReader<%=cid %> = new com.talend.csv.CSVReader(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)), 
+            						<%=encoding %>, rowSeparatorChars_<%=cid %>, fieldSeparatorChar_<%=cid %>, 
+            						textQuote_<%=cid%>, escape_<%=cid%>,
+            						skipEmptyRow_<%=cid%>, header_<%=cid%>);
 		        			}
 					<%
 					}
 					%>
 					
-					csvReader<%=cid %>.setTrimWhitespace(false);
-					if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )
-	        			csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
-						<%
-						if(("").equals(textEnclosure1) || textEnclosure1.startsWith("\"")){//normal situation
-						%>
-	        				csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
-						<%
-						}else{ //context and global variables
-						%>
-							String textEnclosure1_<%=cid %> = <%=textEnclosure1 %>; 
-							char textEnclosure_<%=cid %>[] = null;
-			        
-	    				    if(((String)textEnclosure1_<%=cid %>).length() > 0 ){ 
-	  							textEnclosure_<%=cid %> = ((String)textEnclosure1_<%=cid %>).toCharArray(); 
-							}else { 
-	            				throw new IllegalArgumentException("Text Enclosure must be assigned a char."); 
-	        				}
-							csvReader<%=cid %>.setTextQualifier(textEnclosure_<%=cid %>[0]); 
-						<%
-						}
+					csvReader<%=cid %>.doubleQuoteCharEscape(useDoubleTextQuoteEscape_<%=cid%>);
 					
-						if(("").equals(escapeChar1) || escapeChar1.startsWith("\"")){//normal situation
-	        				if(("\\\\").equals(escapeChar)){
-	        				%>
-	            				csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_BACKSLASH);
-							<%
-	        				}else if(escapeChar.equals(textEnclosure)){
-	        				%>
-	            				csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
-							<%
-	        				}else{
-	        				%>
-	            				//?????doesn't work for other escapeChar
-							<%
-	        				}
-	        			}else{//context and global variables
-	 					%> 
-		        			String escapeChar1_<%=cid %> = <%=escapeChar1 %>;          
-		        			char escapeChar_<%=cid %>[] = null;
-			        
-					        if(((String)escapeChar1_<%=cid %>).length() > 0 ){ 
-					        	escapeChar_<%=cid %> = ((String)escapeChar1_<%=cid %>).toCharArray(); 
-					  		}else { 
-		        			    throw new IllegalArgumentException("Escape Char must be assigned a char."); 
-		        			}
-		       				if(escapeChar_<%=cid %>[0] == '\\'){
-		       					csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_BACKSLASH);
-		       				}else if(escapeChar_<%=cid %>[0] ==<%if(("").equals(textEnclosure1) || textEnclosure1.startsWith("\"")){%>'<%=textEnclosure %>'<%}else{%>textEnclosure_<%=cid %>[0]<%}%>){
-		       					csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
-		       				}
-						<%
-						}
-						%>      
-		
-			
-						if(footer_<%=cid %> > 0){
-						for(totalLine<%=cid %>=0;totalLine<%=cid %> < <%= header %>; totalLine<%=cid %>++){
-							csvReader<%=cid %>.readRecord();
-						}
-						csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
-			            while (csvReader<%=cid %>.readRecord()) {
+					if(footer_<%=cid %> > 0){
+						totalLine<%=cid %> = header_<%=cid%>;
+						
+			            while ((row<%=cid %> = csvReader<%=cid %>.readNext())!=null) {
 							<%
 						   	if(("true").equals(removeEmptyRow)){
 						   	%>
-								row<%=cid %>=csvReader<%=cid %>.getValues();
 								if(!(row<%=cid %>.length == 1 && ("\015").equals(row<%=cid %>[0]))){//empty line when row separator is '\n'
 							<%
 							}
@@ -929,56 +949,23 @@
 	         
 			          	csvReader<%=cid %>.close();
 				        if(filename_<%=cid %> instanceof java.io.InputStream){
-				 			csvReader<%=cid %>=new com.csvreader.CsvReader((java.io.InputStream)filename_<%=cid %>, fieldSeparator_<%=cid %>[0], java.nio.charset.Charset.forName(<%=encoding %>));
+    				        csvReader<%=cid %> = new com.talend.csv.CSVReader((java.io.InputStream)filename_<%=cid %>, 
+        						<%=encoding %>, rowSeparatorChars_<%=cid %>, fieldSeparatorChar_<%=cid %>, 
+        						textQuote_<%=cid%>, escape_<%=cid%>,
+        						skipEmptyRow_<%=cid%>, header_<%=cid%>);
 		        		}else{
-				 			csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-				          	new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)),<%=encoding %>)), fieldSeparator_<%=cid %>[0]);
+		        			csvReader<%=cid %> = new com.talend.csv.CSVReader(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>)), 
+        						<%=encoding %>, rowSeparatorChars_<%=cid %>, fieldSeparatorChar_<%=cid %>, 
+        						textQuote_<%=cid%>, escape_<%=cid%>,
+        						skipEmptyRow_<%=cid%>, header_<%=cid%>);
 						}
-						csvReader<%=cid %>.setTrimWhitespace(false);
-						if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )	
-	        				csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
-						<%
-						if(("").equals(textEnclosure1) || textEnclosure1.startsWith("\"")){//normal situation
-						%>
-							csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
-						<%
-						}else{
-						%>
-							csvReader<%=cid %>.setTextQualifier(textEnclosure_<%=cid %>[0]);
-						<%
-						}
-						if(("").equals(escapeChar1) || escapeChar1.startsWith("\"")){//normal situation
-	        				if(("\\\\").equals(escapeChar)){
-	        				%>
-	        				csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_BACKSLASH);
-							<%
-	        				}else if(escapeChar.equals(textEnclosure)){
-	        				%>
-	        				csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
-							<%
-	        				}else{
-	        				%>
-	        				//?????doesn't work for other escapeChar
-							<%
-	        				}
-	        			}else{//context and global variables
-						%> 
-	       					if(escapeChar_<%=cid %>[0] == '\\'){
-	       						csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_BACKSLASH);
-	       					}else if(escapeChar_<%=cid %>[0] == <%if(("").equals(textEnclosure1) || textEnclosure1.startsWith("\"")){%>'<%=textEnclosure %>'<%}else{%>textEnclosure_<%=cid %>[0]<%}%>){
-	       						csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
-	       					}
-						<%
-	        			}
-	        			%>  
+						
+						csvReader<%=cid %>.doubleQuoteCharEscape(useDoubleTextQuoteEscape_<%=cid%>);
 	        		}
 	        
 			        if(limit<%=cid%> != 0){
-			        	for(currentLine<%=cid %>=0;currentLine<%=cid %> < <%= header %><%=hasDynamic?"-1":""%>;currentLine<%=cid %>++){
-			        		csvReader<%=cid %>.readRecord();
-			        	}
+			        	currentLine<%=cid %> = header_<%=cid%>;
 			        }
-			        csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
 	        
 	    		} catch(Exception e) {
 					<% if(dieOnError) {%>
@@ -988,10 +975,8 @@
 					<% } %>
 	    		}//TD110 end
 	        
-	        	while ( limit<%=cid%> != 0 && csvReader<%=cid %>!=null && csvReader<%=cid %>.readRecord() ) { 
+	        	while ( limit<%=cid%> != 0 && csvReader<%=cid %>!=null && (row<%=cid %> = csvReader<%=cid %>.readNext())!=null ) { 
 	        
-		        	row<%=cid %>=csvReader<%=cid %>.getValues();
-	        	
 					<%
 	   				if(("true").equals(removeEmptyRow)){
 	   				%>

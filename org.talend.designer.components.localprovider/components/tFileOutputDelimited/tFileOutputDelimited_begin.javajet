@@ -350,14 +350,14 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             class CSVBasicSet_<%=cid %>{          	
             	private char field_Delim;            	
             	private char row_Delim;            	
-            	private char escape;            	
+            	private char escape;
             	private char textEnclosure;
             	private boolean useCRLFRecordDelimiter;
             	
             	public boolean isUseCRLFRecordDelimiter() {
             		return useCRLFRecordDelimiter;
             	}
-            	          	
+            	
             	public void setFieldSeparator(String fieldSep) throws IllegalArgumentException{
                     char field_Delim_<%=cid %>[] = null;
                     
@@ -414,13 +414,15 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
         	            throw new IllegalArgumentException("Text Enclosure must be assigned a char."); 
         	        }
 
+					this.textEnclosure = textEnclosure_<%=cid %>[0];
+					
         			if(("\\").equals(strEscape)){
-        				this.escape = com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH;
+        				this.escape = '\\';
         			}else if(strEscape.equals(strTextEnclosure)){
-        				this.escape = com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED;
+        				this.escape = textEnclosure_<%=cid %>[0];
         			}
         			
-        			this.textEnclosure = textEnclosure_<%=cid %>[0];
+        			
             	}
             	
             	public char getEscapeChar(){
@@ -437,12 +439,31 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             int splitedFileNo_<%=cid%> =0;
             int currentRow_<%=cid%> = 0;
             
-            
+            String lineSeparator_<%=cid%> = (String) java.security.AccessController.doPrivileged(
+               new sun.security.action.GetPropertyAction("line.separator"));
+               
             CSVBasicSet_<%=cid %> csvSettings_<%=cid %> = new CSVBasicSet_<%=cid %>();
             csvSettings_<%=cid %>.setFieldSeparator(<%=delim%>);
             csvSettings_<%=cid %>.setRowSeparator(<%=rowSeparator%>);
 			csvSettings_<%=cid %>.setEscapeAndTextEnclosure(<%=escapeChar1 %>,<%=textEnclosure1 %>);
             <%
+            
+            if(!useOSLineSeparator) {
+            %>
+        	if(csvSettings_<%=cid %>.isUseCRLFRecordDelimiter()) {
+    			lineSeparator_<%=cid%> = "\r\n";
+	    	} else {
+	    		lineSeparator_<%=cid%> = "" + csvSettings_<%=cid %>.getRowDelim();
+	    	}
+            <%
+            } else {
+            %>
+            if(!csvSettings_<%=cid %>.isUseCRLFRecordDelimiter() && csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n') {
+				lineSeparator_<%=cid%> = "" + csvSettings_<%=cid %>.getRowDelim();
+    		}
+            <%
+            }
+            
 			if(!useStream){
 			//**************************** the following is the part of file Path***************************************
             	if(("true").equals(ElementParameterParser.getValue(node,"__CREATE__"))){
@@ -467,24 +488,28 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		    //routines.system.Row
     		    java.util.zip.ZipOutputStream zipOut_<%=cid %> = null;
                 java.io.Writer out<%=cid %> = null;
-                com.csvreader.CsvWriter CsvWriter<%=cid%> = null; 
+                com.talend.csv.CSVWriter CsvWriter<%=cid%> = null; 
                 try {
                 	zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
     		    			new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipName_<%=cid%>)));
 	    		    zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(file<%=cid%>.getName()));
 	    		    out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(zipOut_<%=cid %>, <%=encoding%>));
 	    		    java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
-	    		    CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, csvSettings_<%=cid %>.getFieldDelim());
+	    		    CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(strWriter<%=cid%>, 
+	    		    	csvSettings_<%=cid %>.getFieldDelim(), '\0',
+	    		    	'\0',lineSeparator_<%=cid%>);
 <%
     					}else{
 %>		
                 java.io.Writer out<%=cid %> = null;
-                com.csvreader.CsvWriter CsvWriter<%=cid%> = null;
+                com.talend.csv.CSVWriter CsvWriter<%=cid%> = null;
                 try {
                 	out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(
                     new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>), <%=encoding%>));
 					java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
-					CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, csvSettings_<%=cid %>.getFieldDelim());
+					CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(strWriter<%=cid%>, 
+	    		    	csvSettings_<%=cid %>.getFieldDelim(), '\0',
+	    		    	'\0',lineSeparator_<%=cid%>);
                 <%
                 		}
                 	}else{
@@ -495,20 +520,22 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 				java.io.File file_<%=cid%> = new java.io.File(zipName_<%=cid %>);
     		    //routines.system.Row
     		    java.util.zip.ZipOutputStream zipOut_<%=cid %> = null;
-				com.csvreader.CsvWriter CsvWriter<%=cid%> = null;
+			 	com.talend.csv.CSVWriter CsvWriter<%=cid%> = null;
                 try {
                 	zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
     		    			new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipName_<%=cid%>)));
     		    	zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry(file<%=cid%>.getName()));
-    		    	CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-                    zipOut_<%=cid %>, <%=encoding%>)), csvSettings_<%=cid %>.getFieldDelim());
+    		    	CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(zipOut_<%=cid %>, <%=encoding%>)), 
+	    		    	csvSettings_<%=cid %>.getFieldDelim(), '\0',
+	    		    	'\0',lineSeparator_<%=cid%>);
 				<%
 						}else{
 				%>
-				com.csvreader.CsvWriter CsvWriter<%=cid%> = null;
+				com.talend.csv.CSVWriter CsvWriter<%=cid%> = null;
                 try {
-                	CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-                    new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>), <%=encoding%>)), csvSettings_<%=cid %>.getFieldDelim());
+                	CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+                    	new java.io.FileOutputStream(fileName_<%=cid%>, <%=isAppend%>), <%=encoding%>)), csvSettings_<%=cid %>.getFieldDelim(),
+                    	'\0','\0',lineSeparator_<%=cid%>);
 				<%
 						}
                 	}
@@ -517,40 +544,28 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 %>
                 file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
                 java.io.Writer out<%=cid %> = null;
-                com.csvreader.CsvWriter CsvWriter<%=cid%> = null;
+                com.talend.csv.CSVWriter CsvWriter<%=cid%> = null;
                 try {
                 	out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(
                         new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>));
                 	java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
-                	CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, csvSettings_<%=cid %>.getFieldDelim());
+                	CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(strWriter<%=cid%>, 
+	    		    	csvSettings_<%=cid %>.getFieldDelim(), '\0',
+	    		    	'\0',lineSeparator_<%=cid%>);
                 <%
                 	}else{
                 %>
                 file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
-                com.csvreader.CsvWriter CsvWriter<%=cid%> = null; 
+                com.talend.csv.CSVWriter CsvWriter<%=cid%> = null; 
                 try {
-                	CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-                        new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)), csvSettings_<%=cid %>.getFieldDelim());
+                	CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+                        new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)), 
+                        csvSettings_<%=cid %>.getFieldDelim(),'\0',
+                        '\0',lineSeparator_<%=cid%>);
                 <%
                 	}
 	            }
 	            
-	            if(!useOSLineSeparator) {
-	    		%>
-    	    	if(csvSettings_<%=cid %>.isUseCRLFRecordDelimiter()) {
-    	    		CsvWriter<%=cid%>.useCRLFRecordDelimiter(true);
-    	    	} else {
-    	    		CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());
-    	    	}
-	    		<%
-	    		} else {
-	    		%>
-	    		if(!csvSettings_<%=cid %>.isUseCRLFRecordDelimiter() && csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n') {
-	    			CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());
-	    		}
-	    		<%
-	    		}
-	    		
 	    	    if(isIncludeHeader && !hasDynamic)
 	    	    {
     	        %>		   
@@ -590,7 +605,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
         				<%
          				}
     	            %>	 
-    	            CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);
+    	            CsvWriter<%=cid%>.writeNext(headColu<%=cid%>);
     	            CsvWriter<%=cid%>.flush();
     	            	<%if(isInRowMode){%>
     	            out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
@@ -625,7 +640,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		    java.util.zip.ZipOutputStream zipOut_<%=cid %> = null;
 				java.io.OutputStreamWriter outWriter_<%=cid %> = null;
                 java.io.Writer out<%=cid %> = null;				
-                com.csvreader.CsvWriter CsvWriter<%=cid%> = null;
+                com.talend.csv.CSVWriter CsvWriter<%=cid%> = null;
                 try {
                 	zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
     		    			new java.io.BufferedOutputStream(<%=outStream %>));
@@ -633,18 +648,22 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		    	outWriter_<%=cid %> = new java.io.OutputStreamWriter(zipOut_<%=cid %>, <%=encoding%>);
     		    	out<%=cid %> = new routines.system.BufferedOutput(outWriter_<%=cid %>);
     		    	java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
-    		    	CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, csvSettings_<%=cid %>.getFieldDelim());
+    		    	CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(strWriter<%=cid%>, 
+	    		    	csvSettings_<%=cid %>.getFieldDelim(), '\0',
+	    		    	'\0',lineSeparator_<%=cid%>);
 <%
 	            	}else{
 %>
 				java.io.OutputStreamWriter outWriter_<%=cid %> = null;
                 java.io.Writer out<%=cid %> = null;				
-                com.csvreader.CsvWriter CsvWriter<%=cid%> = null;  
+                com.talend.csv.CSVWriter CsvWriter<%=cid%> = null;  
                 try {
                 	outWriter_<%=cid %> = new java.io.OutputStreamWriter(<%=outStream %>, <%=encoding%>);
                 	out<%=cid %> = new routines.system.BufferedOutput(outWriter_<%=cid %>);
                 	java.io.StringWriter strWriter<%=cid%> = new java.io.StringWriter();
-                	CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, csvSettings_<%=cid %>.getFieldDelim());
+                	CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(strWriter<%=cid%>, 
+	    		    	csvSettings_<%=cid %>.getFieldDelim(), '\0',
+	    		    	'\0',lineSeparator_<%=cid%>);
 <%
 					}
                 }else{
@@ -653,44 +672,32 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		    java.util.zip.ZipOutputStream zipOut_<%=cid %> = null;
 				java.io.OutputStreamWriter outWriter_<%=cid %> = null;
 				java.io.BufferedWriter bufferWriter_<%=cid %> = null;
-				com.csvreader.CsvWriter CsvWriter<%=cid%> = null;
+				com.talend.csv.CSVWriter CsvWriter<%=cid%> = null;
 				try {
 					zipOut_<%=cid %>=new java.util.zip.ZipOutputStream(
     		    			new java.io.BufferedOutputStream(<%=outStream %>));
     		   		zipOut_<%=cid %>.putNextEntry(new java.util.zip.ZipEntry("TalendOutputDelimited"));
     		   		outWriter_<%=cid %> = new java.io.OutputStreamWriter(zipOut_<%=cid %>, <%=encoding%>);
     		   		bufferWriter_<%=cid %> = new java.io.BufferedWriter(outWriter_<%=cid %>);
-    		   		CsvWriter<%=cid%> = new com.csvreader.CsvWriter(bufferWriter_<%=cid %>, csvSettings_<%=cid %>.getFieldDelim());
+    		   		CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(bufferWriter_<%=cid %>, 
+	    		    	csvSettings_<%=cid %>.getFieldDelim(), '\0',
+	    		    	'\0',lineSeparator_<%=cid%>);
 <%
                 	}else{
 %>
 				java.io.OutputStreamWriter outWriter_<%=cid %> = null;
 				java.io.BufferedWriter bufferWriter_<%=cid %> = null;
-				com.csvreader.CsvWriter CsvWriter<%=cid%> = null;
+				com.talend.csv.CSVWriter CsvWriter<%=cid%> = null;
 				try {
 					outWriter_<%=cid %> = new java.io.OutputStreamWriter(<%=outStream %>, <%=encoding%>);
 					bufferWriter_<%=cid %> = new java.io.BufferedWriter(outWriter_<%=cid %>);
-					CsvWriter<%=cid%> = new com.csvreader.CsvWriter(bufferWriter_<%=cid %>, csvSettings_<%=cid %>.getFieldDelim());
+					CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(bufferWriter_<%=cid %>, 
+	    		    	csvSettings_<%=cid %>.getFieldDelim(), '\0',
+	    		    	'\0',lineSeparator_<%=cid%>);
 <%
 					}
                 }
                 
-                if(!useOSLineSeparator) {
-%>
-       	    	if(csvSettings_<%=cid %>.isUseCRLFRecordDelimiter()) {
-    	    		CsvWriter<%=cid%>.useCRLFRecordDelimiter(true);
-    	    	} else {
-    	    		CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());   	    	
-    	    	}
-    	    	<%
-    	    	} else {
-    	    	%>
-    	    	if(!csvSettings_<%=cid %>.isUseCRLFRecordDelimiter() && csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n') {
-	    			CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());
-	    		}
-    	    	<%
-    	    	}
-    	    	
 	    	    if(isIncludeHeader && !hasDynamic)
 	    	    {
 	    	        for(int i = 0; i < sizeColumns; i++)
@@ -701,7 +708,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
        				<%
 	        		}
     	        %>
-        		CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);	
+        		CsvWriter<%=cid%>.writeNext(headColu<%=cid%>);	
         			<%if(isInRowMode){%>
         		out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
                 strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length());
@@ -711,9 +718,8 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 	    	
 	    	if(!(isIncludeHeader && hasDynamic)){//when there is dynamic schema, it won't be enclosed with "\""
 %>
-				CsvWriter<%=cid %>.setEscapeMode(csvSettings_<%=cid %>.getEscapeChar());
-				CsvWriter<%=cid %>.setTextQualifier(csvSettings_<%=cid %>.getTextEnclosure());
-				CsvWriter<%=cid %>.setForceQualifier(true);
+				CsvWriter<%=cid %>.setEscapeChar(csvSettings_<%=cid %>.getEscapeChar());
+				CsvWriter<%=cid %>.setQuoteChar(csvSettings_<%=cid %>.getTextEnclosure());
 <%
 			}
 	    }

@@ -193,7 +193,7 @@
 		<IMPORTS>
 			<IMPORT NAME="Talen File Enhanced"
 				MODULE="talend_file_enhanced_20070724.jar" REQUIRED="true" />
-			<IMPORT NAME="CSV_Reader" MODULE="javacsv.jar"
+			<IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar"
 				REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>

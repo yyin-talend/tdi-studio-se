@@ -428,7 +428,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             		            }
                             }
                             %>
-                            CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);
+                            CsvWriter<%=cid%>.writeNext(headColu<%=cid%>);
         	            	CsvWriter<%=cid%>.flush();
         	            	<%if(isInRowMode){%>
         	            	out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
@@ -454,9 +454,8 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             				}
             	        %>
         	            if(isFirstCheckDyn_<%=cid %>){
-                    		CsvWriter<%=cid %>.setEscapeMode(csvSettings_<%=cid %>.getEscapeChar());
-            				CsvWriter<%=cid %>.setTextQualifier(csvSettings_<%=cid %>.getTextEnclosure());
-            				CsvWriter<%=cid %>.setForceQualifier(true);
+                    		CsvWriter<%=cid %>.setEscapeChar(csvSettings_<%=cid %>.getEscapeChar());
+            				CsvWriter<%=cid %>.setQuoteChar(csvSettings_<%=cid %>.getTextEnclosure());
                     		isFirstCheckDyn_<%=cid %> = false;
                     	}
                         <%
@@ -531,18 +530,18 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             			        out<%=cid %> = new routines.system.BufferedOutput(new java.io.OutputStreamWriter(
 									new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>));
 								strWriter<%=cid%> = new java.io.StringWriter();
-            	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(strWriter<%=cid%>, csvSettings_<%=cid %>.getFieldDelim());
+            	                CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(strWriter<%=cid%>, 
+		    						csvSettings_<%=cid %>.getFieldDelim(),'\0','\0',lineSeparator_<%=cid%>);
             	                <%}else{%>
-            	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-									new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)), csvSettings_<%=cid %>.getFieldDelim());
+            	                CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+									new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>),<%=encoding%>)), 
+									csvSettings_<%=cid %>.getFieldDelim(),'\0','\0',lineSeparator_<%=cid%>);
             	                <%}%>
-    			            	if(csvSettings_<%=cid %>.getRowDelim()!='\r' && csvSettings_<%=cid %>.getRowDelim()!='\n')
-    								CsvWriter<%=cid%>.setRecordDelimiter(csvSettings_<%=cid %>.getRowDelim());
             			        //set header.
             			        <%
             			        if(isIncludeHeader && !isAppend){
             			            %>
-            			            CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);
+            			            CsvWriter<%=cid%>.writeNext(headColu<%=cid%>);
             			            <%if(isInRowMode){%>	
             			            out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
                						strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length());
@@ -552,7 +551,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             			            %>
                                     file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
                         		    if(file<%=cid%>.length() == 0) {
-                        		        CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>); 
+                        		        CsvWriter<%=cid%>.writeNext(headColu<%=cid%>); 
                         		        <%if(isInRowMode){%>
                         		        out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
                 						strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length());
@@ -562,11 +561,10 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             			        }
                         		%>
                         		//initialize new CsvWriter information
-								CsvWriter<%=cid %>.setEscapeMode(csvSettings_<%=cid %>.getEscapeChar());					      		
-					      		CsvWriter<%=cid %>.setTextQualifier(csvSettings_<%=cid %>.getTextEnclosure()); 
-					      		CsvWriter<%=cid %>.setForceQualifier(true); 
+								CsvWriter<%=cid %>.setEscapeChar(csvSettings_<%=cid %>.getEscapeChar());					      		
+					      		CsvWriter<%=cid %>.setQuoteChar(csvSettings_<%=cid %>.getTextEnclosure()); 
 					      		        		
-                        		CsvWriter<%=cid%>.writeRecord(row<%=cid%>);
+                        		CsvWriter<%=cid%>.writeNext(row<%=cid%>);
                         		<%if(isInRowMode){%>
                         		out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
                 				strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length());
@@ -585,7 +583,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                         		%> 
          				
          					}else{
-         					    CsvWriter<%=cid%>.writeRecord(row<%=cid%>);	
+         					    CsvWriter<%=cid%>.writeNext(row<%=cid%>);	
          					    <%if(isInRowMode){%>
          					    out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
                 				strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length());
@@ -608,7 +606,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             			    <%
             			}else{
             			    %>
-            			    CsvWriter<%=cid%>.writeRecord(row<%=cid%>);	
+            			    CsvWriter<%=cid%>.writeNext(row<%=cid%>);	
             			    <%if(isInRowMode){%>
             			    out<%=cid%>.write(strWriter<%=cid%>.getBuffer().toString());
                 			strWriter<%=cid%>.getBuffer().delete(0, strWriter<%=cid%>.getBuffer().length());
