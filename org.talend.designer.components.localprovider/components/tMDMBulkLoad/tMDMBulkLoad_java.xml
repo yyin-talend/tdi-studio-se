@@ -30,7 +30,7 @@
  		    	 
 	    <PARAMETER
 	      NAME="XMLFIELD"
-	      FIELD="COLUMN_LIST"
+	      FIELD="PREV_COLUMN_LIST"
 	      REQUIRED="true"
 	      NUM_ROW="15"
 	    >
