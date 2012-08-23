@@ -64,7 +64,8 @@ public class ModifyConnectionOrderAction extends ModifyOutputOrderAction {
     }
 
     private static boolean enable(EConnectionType connType) {
-        if (connType != null && !connType.hasConnectionCategory(IConnectionCategory.DATA)) {
+        if (connType != null && !connType.hasConnectionCategory(IConnectionCategory.DATA)
+                && !connType.getName().equals("PARALLELIZE")) {
             return true;
         }
         return false;
