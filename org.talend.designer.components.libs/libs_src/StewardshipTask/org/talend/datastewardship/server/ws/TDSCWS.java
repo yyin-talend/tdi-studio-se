@@ -68,4 +68,27 @@ public interface TDSCWS {
         @WebParam(name = "taskID", targetNamespace = "")
         java.lang.String taskID
     );
+
+    @WebResult(name = "return", targetNamespace = "")
+    @RequestWrapper(localName = "deleteTasks", targetNamespace = "http://ws.server.datastewardship.talend.org/", className = "org.talend.datastewardship.server.ws.DeleteTasks")
+    @WebMethod
+    @ResponseWrapper(localName = "deleteTasksResponse", targetNamespace = "http://ws.server.datastewardship.talend.org/", className = "org.talend.datastewardship.server.ws.DeleteTasksResponse")
+    public int deleteTasks(
+        @WebParam(name = "typeId", targetNamespace = "")
+        java.lang.Integer typeId,
+        @WebParam(name = "owner", targetNamespace = "")
+        java.lang.String owner, 
+        @WebParam(name = "tagLabel", targetNamespace = "")
+        java.lang.String tagLabel, 
+        @WebParam(name = "createTimeLowerBound", targetNamespace = "")
+        javax.xml.datatype.XMLGregorianCalendar createTimeLowerBound,
+        @WebParam(name = "createTimeUpperBound", targetNamespace = "")
+        javax.xml.datatype.XMLGregorianCalendar createTimeUpperBound, 
+        @WebParam(name = "starNum", targetNamespace = "")
+        java.lang.Integer starNum, 
+        @WebParam(name = "limit", targetNamespace = "")
+        int limit, 
+        @WebParam(name = "status", targetNamespace = "")
+        java.lang.String status
+    );
 }

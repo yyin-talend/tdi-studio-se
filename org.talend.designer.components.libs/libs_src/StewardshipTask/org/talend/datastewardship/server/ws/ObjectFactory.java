@@ -27,8 +27,10 @@ public class ObjectFactory {
     private final static QName _GetTgtRecord_QNAME = new QName("http://ws.server.datastewardship.talend.org/", "getTgtRecord");
     private final static QName _Echo_QNAME = new QName("http://ws.server.datastewardship.talend.org/", "echo");
     private final static QName _EchoResponse_QNAME = new QName("http://ws.server.datastewardship.talend.org/", "echoResponse");
+    private final static QName _DeleteTasksResponse_QNAME = new QName("http://ws.server.datastewardship.talend.org/","deleteTasksResponse");
     private final static QName _GetSrcRecord_QNAME = new QName("http://ws.server.datastewardship.talend.org/", "getSrcRecord");
     private final static QName _GetTgtRecordResponse_QNAME = new QName("http://ws.server.datastewardship.talend.org/", "getTgtRecordResponse");
+    private final static QName _DeleteTasks_QNAME = new QName("http://ws.server.datastewardship.talend.org/", "deleteTasks");
     private final static QName _SearchTasks_QNAME = new QName("http://ws.server.datastewardship.talend.org/", "searchTasks");
     private final static QName _GetSrcRecordResponse_QNAME = new QName("http://ws.server.datastewardship.talend.org/", "getSrcRecordResponse");
     private final static QName _SearchTasksResponse_QNAME = new QName("http://ws.server.datastewardship.talend.org/", "searchTasksResponse");
@@ -148,6 +150,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link DeleteTasksResponse }{@code >}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.server.datastewardship.talend.org/", name = "deleteTasksResponse")
+    public JAXBElement<DeleteTasksResponse> createDeleteTasksResponse(DeleteTasksResponse value) {
+        return new JAXBElement<DeleteTasksResponse>(_DeleteTasksResponse_QNAME, DeleteTasksResponse.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link GetSrcRecord }{@code >}}
      * 
      */
@@ -172,6 +183,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://ws.server.datastewardship.talend.org/", name = "searchTasks")
     public JAXBElement<SearchTasks> createSearchTasks(SearchTasks value) {
         return new JAXBElement<SearchTasks>(_SearchTasks_QNAME, SearchTasks.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link DeleteTasks }{@code >}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ws.server.datastewardship.talend.org/", name = "deleteTasks")
+    public JAXBElement<DeleteTasks> createDeleteTasks(DeleteTasks value) {
+        return new JAXBElement<DeleteTasks>(_DeleteTasks_QNAME, DeleteTasks.class, null, value);
     }
 
     /**
