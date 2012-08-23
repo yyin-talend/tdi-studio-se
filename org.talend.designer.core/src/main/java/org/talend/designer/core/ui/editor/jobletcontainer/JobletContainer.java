@@ -123,8 +123,8 @@ public class JobletContainer extends NodeContainer {
                 }
                 // }
             }
-            // totalRectangle.setLocation(jobletNodeRec.getLocation());
-            totalRectangle.x = totalRectangle.x - EXPEND_SIZE * 2;
+            //totalRectangle.setLocation(jobletNodeRec.getLocation());
+            // totalRectangle.x = totalRectangle.x - EXPEND_SIZE * 2;
             totalRectangle.y = totalRectangle.y - EXPEND_SIZE * 2;
             totalRectangle.height = totalRectangle.height + EXPEND_SIZE * 4;
         } else if (node != null) {

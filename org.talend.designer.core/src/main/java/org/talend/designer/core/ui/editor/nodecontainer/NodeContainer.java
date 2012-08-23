@@ -206,14 +206,17 @@ public class NodeContainer extends Element {
 
         if (this instanceof JobletContainer) {
             Dimension collapseSize = new Dimension(20, 20);
-            collapseLocation.x = nodeLocation.x;
+            collapseLocation.x = nodeLocation.x - 20;
             collapseLocation.y = nodeLocation.y - collapseSize.height;
             collapseRectangle = new Rectangle(collapseLocation, collapseSize);
             if (statusRectangle == null) {
-                statusRectangle = collapseRectangle;
-            } else {
-                statusRectangle.union(collapseRectangle);
+                Point extendPoint = new Point();
+                extendPoint.x = nodeLocation.x + nodeSize.width;
+                extendPoint.y = nodeLocation.y - warningSize.height;
+                Rectangle extendRectangle = new Rectangle(extendPoint, warningSize);
+                statusRectangle = extendRectangle;
             }
+            statusRectangle.union(collapseRectangle);
         }
 
         if ((status & Process.INFO_STATUS) != 0) {
@@ -310,14 +313,17 @@ public class NodeContainer extends Element {
 
         if (this instanceof JobletContainer) {
             Dimension collapseSize = new Dimension(20, 20);
-            collapseLocation.x = nodeLocation.x;
+            collapseLocation.x = nodeLocation.x - 20;
             collapseLocation.y = nodeLocation.y - collapseSize.height;
             collapseRectangle = new Rectangle(collapseLocation, collapseSize);
             if (statusRectangle == null) {
-                statusRectangle = collapseRectangle;
-            } else {
-                statusRectangle.union(collapseRectangle);
+                Point extendPoint = new Point();
+                extendPoint.x = nodeLocation.x + nodeSize.width;
+                extendPoint.y = nodeLocation.y - warningSize.height;
+                Rectangle extendRectangle = new Rectangle(extendPoint, warningSize);
+                statusRectangle = extendRectangle;
             }
+            statusRectangle.union(collapseRectangle);
         }
 
         if ((status & Process.INFO_STATUS) != 0) {
