@@ -103,13 +103,20 @@ public final class ImportItemAction extends AContextualAction implements IWorkbe
         }
 
         ISelection selection = this.getSelection();
+        RepositoryNode rNode = null;
         if (toolbarAction) {
             if (repositoryView != null) {
-                selection = (IStructuredSelection) repositoryView.getViewer().getSelection();
+                selection = repositoryView.getViewer().getSelection();
+            }
+        } else if ((selection instanceof IStructuredSelection)
+                && (((IStructuredSelection) selection).getFirstElement() instanceof RepositoryNode)) {
+            Object o = ((IStructuredSelection) selection).getFirstElement();
+            if (o instanceof RepositoryNode) {
+                rNode = (RepositoryNode) o;
             }
         }
 
-        ImportItemWizard wizard = new ImportItemWizard(null);
+        ImportItemWizard wizard = new ImportItemWizard(rNode);
         wizard.setWindowTitle(IMPORT_ITEM);
         wizard.init(PlatformUI.getWorkbench(), (IStructuredSelection) selection);
 
