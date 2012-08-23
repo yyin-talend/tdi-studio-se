@@ -3,7 +3,6 @@ imports="
     	org.talend.core.model.process.INode 
     	org.talend.core.model.process.ElementParameterParser 
 		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.process.IConnectionCategory
@@ -32,10 +31,12 @@ if (count_<%=cid%> % <%=arraySize%> == 0) {
 	inputStreamMerger_<%=cid%> = bulkloadClient_<%=cid %>.load();
 }
 
-inputStreamMerger_<%=cid%>.push(new java.io.ByteArrayInputStream(<%=conn.getName()%>.<%=xmlField %>.toString().getBytes("UTF-8")));
-
-count_<%=cid%>++;
-
+if(<%=conn.getName()%>.<%=xmlField %>!=null){
+	inputStreamMerger_<%=cid%>.push(new java.io.ByteArrayInputStream(<%=conn.getName()%>.<%=xmlField %>.toString().getBytes("UTF-8")));
+}else{
+	inputStreamMerger_<%=cid%>.push(null);
+}
+	count_<%=cid%>++;
 <%
 			}//4
 		}//3
