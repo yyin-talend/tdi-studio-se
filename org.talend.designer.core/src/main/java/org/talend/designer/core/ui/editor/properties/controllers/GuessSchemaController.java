@@ -60,6 +60,7 @@ import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
@@ -340,7 +341,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             List<Integer> indexsForSameNamedColumn = new ArrayList<Integer>();
             CsvArray array = gsp.run();
             List<String[]> schemaContent = array.getRows();
-
+            List<String> columnLabels = new ArrayList<String>();
             if (columns != null) {
                 columns.clear();
             }
@@ -353,6 +354,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     IMetadataColumn oneColum = new MetadataColumn();
                     // get the column name from the temp file genenrated by GuessSchemaProcess.java
                     String labelName = (schemaContent.get(0))[i - 1];
+                    String name = labelName;
                     String sub = "";
                     String sub2 = "";
                     if (labelName != null && labelName.length() > 0 && labelName.startsWith("_")) { //$NON-NLS-1$
@@ -366,17 +368,21 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                         labelName = "_" + labelName;
                         b = true;
                     }
-                    findSameNamedColumnAndReplaceTheIndex(indexsForSameNamedColumn, i, oneColum, labelName);
-                    String label = labelName;
-                    if (b && label != null && label.length() > 0 && label.startsWith("_")) { //$NON-NLS-1$
-                        String substring = label.substring(1);
-                        if (label.startsWith("_")
-                                && (KeywordsValidator.isKeyword(substring) || KeywordsValidator.isKeyword(sub) || KeywordsValidator
-                                        .isKeyword(sub2))) {
-                            label = substring;
-                        }
-                    }
-                    oneColum.setOriginalDbColumnName(label);
+
+                    oneColum.setLabel(MetadataToolHelper.validateColumnName(labelName, i, columnLabels));
+
+                    // findSameNamedColumnAndReplaceTheIndex(indexsForSameNamedColumn, i, oneColum, labelName);
+                    // String label = labelName;
+                    //                    if (b && label != null && label.length() > 0 && label.startsWith("_")) { //$NON-NLS-1$
+                    // String substring = label.substring(1);
+                    // if (label.startsWith("_")
+                    // && (KeywordsValidator.isKeyword(substring) || KeywordsValidator.isKeyword(sub) ||
+                    // KeywordsValidator
+                    // .isKeyword(sub2))) {
+                    // label = substring;
+                    // }
+                    // }
+                    oneColum.setOriginalDbColumnName(name);
                     if (schemaContent.size() > 5) {
                         oneColum.setPrecision(Integer.parseInt(schemaContent.get(2)[i - 1]));
                         oneColum.setLength(Integer.parseInt(schemaContent.get(3)[i - 1]));
@@ -410,6 +416,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     // get if a column is nullable from the temp file genenrated by GuessSchemaProcess.java
                     oneColum.setNullable((schemaContent.get(1))[i - 1].equals(Boolean.TRUE.toString()) ? true : false);
                     columns.add(oneColum);
+                    columnLabels.add(oneColum.getLabel());
                 }
 
                 if (columns.size() > 0) {
@@ -475,6 +482,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             final String strExcepton = e.getMessage();
             Display.getDefault().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     MessageDialog.openWarning(composite.getShell(),
                             Messages.getString("GuessSchemaController.connectionError"), strExcepton); //$NON-NLS-1$
@@ -744,7 +752,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                             iMetadataConnection.getUrl(), iMetadataConnection.getDriverJarPath());
                 }
 
-                final Property property = (Property) GuessSchemaProcess.getNewmockProperty();
+                final Property property = GuessSchemaProcess.getNewmockProperty();
                 List<IContext> allcontexts = inputNode.getProcess().getContextManager().getListContext();
 
                 OpenContextChooseComboDialog dialog = new OpenContextChooseComboDialog(parentShell, allcontexts);
@@ -764,9 +772,11 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
 
                     pmd.run(true, true, new IRunnableWithProgress() {
 
+                        @Override
                         public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                             Display.getDefault().asyncExec(new Runnable() {
 
+                                @Override
                                 public void run() {
                                     runShadowProcess(property, inputNode, context, switchParam);
                                 }
@@ -778,6 +788,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             } else {
                 Display.getDefault().asyncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         String pid = "org.talend.sqlbuilder"; //$NON-NLS-1$
                         String mainMsg = Messages.getString("GuessSchemaController.connectionFailed"); //$NON-NLS-1$
@@ -884,6 +895,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // TODO Auto-generated method stub
 
@@ -895,6 +907,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
         try {
             pmd.run(true, true, new IRunnableWithProgress() {
 
+                @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 
                     if (columns != null) {
@@ -950,6 +963,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                             } else {
                                 Display.getDefault().asyncExec(new Runnable() {
 
+                                    @Override
                                     public void run() {
                                         String pid = "org.talend.sqlbuilder"; //$NON-NLS-1$
                                         String mainMsg = "Database connection is failed. "; //$NON-NLS-1$
@@ -968,6 +982,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                                     + System.getProperty("line.separator");
                             Display.getDefault().asyncExec(new Runnable() {
 
+                                @Override
                                 public void run() {
                                     MessageDialog.openWarning(composite.getShell(),
                                             Messages.getString("GuessSchemaController.connError"), strExcepton); //$NON-NLS-1$
@@ -985,10 +1000,11 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
     }
 
     public static boolean isNumeric(String s) {
-        if ((s != null) && (s != ""))
+        if ((s != null) && (s != "")) {
             return s.matches("^[0-9]*$");
-        else
+        } else {
             return false;
+        }
     }
 
 }
