@@ -59,6 +59,7 @@ import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
@@ -340,7 +341,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             List<Integer> indexsForSameNamedColumn = new ArrayList<Integer>();
             CsvArray array = gsp.run();
             List<String[]> schemaContent = array.getRows();
-
+            List<String> columnLabels = new ArrayList<String>();
             if (columns != null) {
                 columns.clear();
             }
@@ -353,6 +354,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     IMetadataColumn oneColum = new MetadataColumn();
                     // get the column name from the temp file genenrated by GuessSchemaProcess.java
                     String labelName = (schemaContent.get(0))[i - 1];
+                    String name = labelName;
                     String sub = "";
                     String sub2 = "";
                     if (labelName != null && labelName.length() > 0 && labelName.startsWith("_")) { //$NON-NLS-1$
@@ -366,17 +368,19 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                         labelName = "_" + labelName;
                         b = true;
                     }
-                    findSameNamedColumnAndReplaceTheIndex(indexsForSameNamedColumn, i, oneColum, labelName);
-                    String label = labelName;
-                    if (b && label != null && label.length() > 0 && label.startsWith("_")) { //$NON-NLS-1$
-                        String substring = label.substring(1);
-                        if (label.startsWith("_")
-                                && (KeywordsValidator.isKeyword(substring) || KeywordsValidator.isKeyword(sub) || KeywordsValidator
-                                        .isKeyword(sub2))) {
-                            label = substring;
-                        }
-                    }
-                    oneColum.setOriginalDbColumnName(label);
+                    oneColum.setLabel(MetadataToolHelper.validateColumnName(labelName, i, columnLabels));
+                    // findSameNamedColumnAndReplaceTheIndex(indexsForSameNamedColumn, i, oneColum, labelName);
+                    // String label = labelName;
+                    //                    if (b && label != null && label.length() > 0 && label.startsWith("_")) { //$NON-NLS-1$
+                    // String substring = label.substring(1);
+                    // if (label.startsWith("_")
+                    // && (KeywordsValidator.isKeyword(substring) || KeywordsValidator.isKeyword(sub) ||
+                    // KeywordsValidator
+                    // .isKeyword(sub2))) {
+                    // label = substring;
+                    // }
+                    // }
+                    oneColum.setOriginalDbColumnName(name);
                     if (schemaContent.size() > 5) {
                         oneColum.setPrecision(Integer.parseInt(schemaContent.get(2)[i - 1]));
                         oneColum.setLength(Integer.parseInt(schemaContent.get(3)[i - 1]));
@@ -410,6 +414,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                     // get if a column is nullable from the temp file genenrated by GuessSchemaProcess.java
                     oneColum.setNullable((schemaContent.get(1))[i - 1].equals(Boolean.TRUE.toString()) ? true : false);
                     columns.add(oneColum);
+                    columnLabels.add(oneColum.getLabel());
                 }
                 IMetadataTable tempMetatable = new MetadataTable();
                 /* for bug 20973 */
