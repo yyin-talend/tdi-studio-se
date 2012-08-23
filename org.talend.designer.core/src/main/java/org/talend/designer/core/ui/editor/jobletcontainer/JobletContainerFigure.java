@@ -185,13 +185,13 @@ public class JobletContainerFigure extends Figure {
         titleFigure.setText("<b> " + title + "</b>"); //$NON-NLS-1$ //$NON-NLS-2$
         Dimension preferedSize = titleFigure.getPreferredSize();
         preferedSize = preferedSize.getExpanded(0, 3);
-        rectangle.width += 32;
+        // rectangle.width += 32;
 
         collapseFigure.setLocation(new Point(location.x, location.y));
         collapseFigure.setSize(preferedSize.height, preferedSize.height);
 
         titleFigure.setSize(preferedSize.width, preferedSize.height - 2);
-        titleFigure.setLocation(new Point((rectangle.width - preferedSize.height) / 2 + location.x, location.y + 1));
+        titleFigure.setLocation(new Point((rectangle.width - preferedSize.height) / 2 + location.x, location.y));
         titleFigure.setVisible(showTitle);
 
         outlineFigure.setLocation(new Point(location.x, location.y));
