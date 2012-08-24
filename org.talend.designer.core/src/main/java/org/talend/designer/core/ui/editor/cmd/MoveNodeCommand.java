@@ -112,6 +112,8 @@ public class MoveNodeCommand extends Command {
 
     private void saveSubPoint(Node node, Point newPos) {
         SubjobContainer sc = node.getNodeContainer().getSubjobContainer();
-        sc.savePoint(node, newPos);
+        if (sc != null) {
+            sc.savePoint(node, newPos);
+        }
     }
 }

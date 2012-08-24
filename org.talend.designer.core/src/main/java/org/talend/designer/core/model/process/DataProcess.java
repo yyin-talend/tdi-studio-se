@@ -224,6 +224,9 @@ public class DataProcess {
     // should only be called by a starting node
     @SuppressWarnings("unchecked")
     public INode buildDataNodeFromNode(final INode graphicalNode, String prefix) {
+        if (buildCheckMap == null) {
+            initialize();
+        }
         if (buildCheckMap.containsKey(graphicalNode)) {
             return buildCheckMap.get(graphicalNode);
         }
