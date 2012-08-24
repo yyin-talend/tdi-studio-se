@@ -15,11 +15,14 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**
@@ -45,6 +48,10 @@ public class ConnectionDeleteCommand extends Command {
     public void execute() {
         Process process = (Process) connectionList.get(0).getSource().getProcess();
         for (Connection connection : connectionList) {
+            boolean re = deleteExpendNode(connection);
+            if (re) {
+                return;
+            }
             final INode target = connection.getTarget();
             if (target.getExternalNode() instanceof AbstractNode) {
                 ((AbstractNode) target.getExternalNode()).removeInput(connection);
@@ -80,5 +87,29 @@ public class ConnectionDeleteCommand extends Command {
         }
         process.checkStartNodes();
         process.checkProcess();
+    }
+
+    private boolean deleteExpendNode(Connection connection) {
+        final INode target = connection.getTarget();
+        if (target instanceof Node && ((Node) target).getNodeContainer() != null) {
+            if (((Node) target).getJobletNode() != null) {
+                MessageDialog.openWarning(Display.getCurrent().getActiveShell(),
+                        Messages.getString("ConnectionDeleteCommand.COLLAPSE"), //$NON-NLS-1$
+                        Messages.getString("ConnectionDeleteCommand.COLLAPSEJOBLET")); //$NON-NLS-1$
+                return true;
+            }
+            ((Node) target).getNodeContainer().getInputs().remove(connection);
+        }
+        final INode source = connection.getSource();
+        if (source instanceof Node && ((Node) source).getNodeContainer() != null) {
+            if (((Node) source).getJobletNode() != null) {
+                MessageDialog.openWarning(Display.getCurrent().getActiveShell(),
+                        Messages.getString("ConnectionDeleteCommand.COLLAPSE"), //$NON-NLS-1$
+                        Messages.getString("ConnectionDeleteCommand.COLLAPSEJOBLET")); //$NON-NLS-1$
+                return true;
+            }
+            ((Node) source).getNodeContainer().getOutputs().remove(connection);
+        }
+        return false;
     }
 }
