@@ -113,7 +113,7 @@ public class ElementHelper {
                                 } else {
                                     img = CoreImageProvider.getImage(type);
                                 }
-                                label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$ //$NON-NLS-2$
+                                label = new Label(obj.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$ //$NON-NLS-2$
                                 labels.add(label);
                             } else {
 
