@@ -13,9 +13,12 @@
 package org.talend.designer.business.diagram.custom.edit.parts;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.ShapeNodeEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editpolicies.EditPolicyRoles;
 import org.eclipse.gmf.runtime.gef.ui.figures.NodeFigure;
@@ -42,6 +45,8 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
 
     private ElementHelper elementHelper;
 
+    private EditPart editPart;
+
     /**
      * DOC mhelleboid BusinessItemShapeEditPart constructor comment.
      * 
@@ -51,6 +56,7 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
         super(view);
         tooltipFigure = new BusinessTooltipFigure();
         elementHelper = new ElementHelper();
+        editPart = this;
     }
 
     @Override
@@ -103,6 +109,33 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
                 for (Object figure : shapFigure.getChildren()) {
                     if (figure instanceof BusinessItemNameFigure) {
                         BusinessItemNameFigure nameFigure = (BusinessItemNameFigure) figure;
+                        nameFigure.addMouseMotionListener(new MouseMotionListener() {
+
+                            @Override
+                            public void mouseMoved(MouseEvent me) {
+                                // TODO Auto-generated method stub
+                            }
+
+                            @Override
+                            public void mouseHover(MouseEvent me) {
+                                // TODO Auto-generated method stub
+                            }
+
+                            @Override
+                            public void mouseExited(MouseEvent me) {
+                                // TODO Auto-generated method stub
+                            }
+
+                            @Override
+                            public void mouseEntered(MouseEvent me) {
+                                elementHelper.updateTooltipFigure(getNodeFigure(), tooltipFigure, editPart);
+                            }
+
+                            @Override
+                            public void mouseDragged(MouseEvent me) {
+                                // TODO Auto-generated method stub
+                            }
+                        });
                         EObject object = ((Node) getModel()).getElement();
                         if (object instanceof BusinessItem) {
                             BusinessItem item = (BusinessItem) object;
@@ -180,9 +213,9 @@ public abstract class BusinessItemShapeEditPart extends ShapeNodeEditPart {
     private BusinessAlignment getAlignment(String alignment) {
         BusinessAlignment[] alignments = BusinessAlignment.values();
         BusinessAlignment position = null;
-        for (int i = 0; i < alignments.length; i++) {
-            if (alignments[i].toString().equalsIgnoreCase(alignment)) {
-                position = alignments[i];
+        for (BusinessAlignment alignment2 : alignments) {
+            if (alignment2.toString().equalsIgnoreCase(alignment)) {
+                position = alignment2;
                 return position;
             }
 
