@@ -1827,7 +1827,8 @@ public class Node extends Element implements IGraphicalNode {
 
         if (!isDummy()) {
             for (Connection connection : connectionsOutputs) {
-                if (connection.getTarget().isActivate() || connection.getSource().isDummy()) {
+                if (connection.getTarget().isActivate() || connection.getTarget().isActivate() == activate
+                        || connection.getSource().isDummy()) {
                     connection.setPropertyValue(EParameterName.ACTIVATE.getName(), activate);
                 }
             }
