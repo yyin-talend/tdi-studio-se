@@ -27,8 +27,8 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.image.ImageUtils;
-import org.talend.commons.ui.runtime.image.OverlayImage;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
+import org.talend.commons.ui.runtime.image.OverlayImage;
 import org.talend.commons.ui.runtime.image.OverlayImage.EPosition;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.MetadataTool;
@@ -97,8 +97,8 @@ public class ElementHelper {
                     if (assignment instanceof BusinessAssignment) {
                         TalendItem talendItem = ((BusinessAssignment) assignment).getTalendItem();
                         if (talendItem != null) {
-                            IRepositoryViewObject obj = CorePlugin.getDefault().getProxyRepositoryFactory().getLastVersion(
-                                    talendItem.getId());
+                            IRepositoryViewObject obj = CorePlugin.getDefault().getProxyRepositoryFactory()
+                                    .getLastVersion(talendItem.getId());
                             if (obj != null) {
                                 ERepositoryObjectType type = obj.getRepositoryObjectType();
                                 Item item = obj.getProperty().getItem();
@@ -113,7 +113,7 @@ public class ElementHelper {
                                 } else {
                                     img = CoreImageProvider.getImage(type);
                                 }
-                                label = new Label(talendItem.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$ //$NON-NLS-2$
+                                label = new Label(obj.getLabel() + " (" + provider.getColumnText(assignment, 0) + ")", img); //$NON-NLS-1$ //$NON-NLS-2$
                                 labels.add(label);
                             } else {
 
