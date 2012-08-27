@@ -844,9 +844,13 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    	%>
             	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>. getUpdateCount();
             	    	<%
+            	    	}else if (("COPY").equals(dataAction)) {
+            	    	%>
+            	    	    copiedCount_<%=cid%> += stmt_<%=cid %>. getUpdateCount();
+            	    	<%
             	    	}%>                         	    	
             	    	batchSizeCounter_<%=cid%> = 0;             	                	                	
-                }catch (java.sql.BatchUpdateException e){
+                }catch (java.sql.SQLException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
                 		throw(e);
@@ -938,6 +942,11 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    	}else if (("DELETE").equals(dataAction)) {
             	    	%>
             	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
+            	    	<%
+            	    	}else if (("COPY").equals(dataAction)) {
+            	    	%>
+            	    			copiedCount_<%=cid%> += stmt_<%=cid %>.getUpdateCount();
+            	    	} // stmtBuilder_<%=cid %> end
             	    	<%
             	    	}%>            	    
                 }catch (java.sql.SQLException e){
