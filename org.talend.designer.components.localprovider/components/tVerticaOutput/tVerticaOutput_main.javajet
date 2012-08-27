@@ -846,7 +846,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    	<%
             	    	}%>                         	    	
             	    	batchSizeCounter_<%=cid%> = 0;             	                	                	
-                }catch (java.sql.BatchUpdateException e){
+                }catch (java.sql.SQLException e){
                 	<%if(("true").equals(dieOnError)) {
                 	%>
                 		throw(e);

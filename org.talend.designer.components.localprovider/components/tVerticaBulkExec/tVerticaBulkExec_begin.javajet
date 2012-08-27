@@ -42,8 +42,9 @@ java.io.FileInputStream fis_<%=cid %> = null;
 java.sql.Connection conn_<%=cid%> = null;
 	<%
 	if(useExistingConnection) {
-    		String conn = "conn_" + ElementParameterParser.getValue(node,"__CONNECTION__");
-    		String existDbSchema = "dbschema_" + conn;
+    		String connName = ElementParameterParser.getValue(node,"__CONNECTION__");
+    		String conn = "conn_" + connName;
+    		String existDbSchema = "dbschema_" + connName;
 	%>
 		dbschema_<%=cid%> = (String)globalMap.get("<%=existDbSchema%>");
 	 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
@@ -155,10 +156,14 @@ if(("UPDATE").equals(dataAction)) {
 }finally{
 	if(fis_<%=cid %>!=null)
 		fis_<%=cid%>.close();
-	conn_<%=cid%>.close();
+<%
+	if(!useExistingConnection) {
+%>
+	     conn_<%=cid%>.close();
+<%
+    }
+%>
 }
-
-
 
 
 
