@@ -318,7 +318,7 @@ public class ExportItemUtil {
                     toExport.put(projectFile, projectPath);
                 }
                 if (ERepositoryObjectType.getItemType(item).isResourceItem()) {
-                    Collection<EObject> copiedObjects = copyObjects(item);
+                    Collection<EObject> copiedObjects = getObjects(item);
 
                     Item copiedItem = (Item) EcoreUtil.getObjectByType(copiedObjects, PropertiesPackage.eINSTANCE.getItem());
                     fixItem(copiedItem);
@@ -599,7 +599,7 @@ public class ExportItemUtil {
     }
 
     @SuppressWarnings("unchecked")
-    private Collection<EObject> copyObjects(Item item) {
+    private Collection<EObject> getObjects(Item item) {
         List<EObject> objects = new ArrayList<EObject>();
 
         objects.add(item);
@@ -636,7 +636,8 @@ public class ExportItemUtil {
 
         MetadataManager.addPackges(item, objects); // hywang 13221
 
-        return EcoreUtil.copyAll(objects);
+        // return EcoreUtil.copyAll(objects);
+        return objects;
     }
 
     private void moveObjectsToResource(Resource resource, Collection<EObject> objects, EClass type) {
