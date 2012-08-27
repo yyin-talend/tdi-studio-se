@@ -400,13 +400,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     jobName + "_" + jobVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
             IPath propertiesFilePath = emfFileRootPath.append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
+            IPath screenshotFilePath = emfFileRootPath.append(processPath).append(
+                    jobName + "_" + jobVersion + "." + FileConstants.SCREENSHOT_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
             // project file
-            checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName, FileLocator
-                    .toFileURL(projectFilePath.toFile().toURL()));
+            checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName,
+                    FileLocator.toFileURL(projectFilePath.toFile().toURL()));
 
             List<URL> emfFileUrls = new ArrayList<URL>();
             emfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
             emfFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
+            emfFileUrls.add(FileLocator.toFileURL(screenshotFilePath.toFile().toURL()));
             String relativePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
                     + typeFolderPath.toOSString();
             if (processPath != null && !"".equals(processPath)) { //$NON-NLS-1$
@@ -660,6 +663,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * 
      * @deprecated
      */
+    @Deprecated
     protected List<URL> getExternalLibraries(boolean needLibraries, ExportFileResource[] process) {
         return getExternalLibraries(needLibraries, process, null);
     }
@@ -1035,7 +1039,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             Iterator<File> iterator = userRoutines.iterator();
             while (iterator.hasNext()) {
-                File file = (File) iterator.next();
+                File file = iterator.next();
                 boolean found = false;
                 for (IRepositoryViewObject object : collectRoutines) {
                     Item item = object.getProperty().getItem();
@@ -1147,6 +1151,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return toReturn;
     }
 
+    @Override
     public List<String> getJobContextsComboValue(ProcessItem processItem) {
         List<String> contextNameList = new ArrayList<String>();
         for (Object o : ((ProcessTypeImpl) processItem.getProcess()).getContext()) {
@@ -1267,7 +1272,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 if (!urlList.isEmpty()) {
                     urlList = new ArrayList<URL>();
                 }
-                item = ((ExportFileResource) process[i]).getItem();
+                item = (process[i]).getItem();
 
                 if (item instanceof ProcessItem) {
                     pi = (ProcessItem) item;
