@@ -259,14 +259,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         if (PluginChecker.isRulesPluginLoaded()) {
             // hywang add for 6484,add final drl files or xls files to exported job script
-            ExportFileResource ruleFileResource = new ExportFileResource(null, "Rules/rules/final"); //$NON-NLS-N$ //$NON-NLS-1$
+            ExportFileResource ruleFileResource = new ExportFileResource(null, "Rules/rules/final"); //$NON-NLS-1$
             list.add(ruleFileResource);
             try {
                 Map<String, List<URL>> map = initUrlForRulesFiles(process);
                 Object[] keys = map.keySet().toArray();
-                for (int i = 0; i < keys.length; i++) {
-                    List<URL> talendDrlFiles = map.get(keys[i].toString());
-                    ruleFileResource.addResources(keys[i].toString(), talendDrlFiles);
+                for (Object key : keys) {
+                    List<URL> talendDrlFiles = map.get(key.toString());
+                    ruleFileResource.addResources(key.toString(), talendDrlFiles);
                 }
             } catch (CoreException e) {
                 ExceptionHandler.process(e);
@@ -400,13 +400,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     jobName + "_" + jobVersion + "." + FileConstants.ITEM_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
             IPath propertiesFilePath = emfFileRootPath.append(processPath).append(
                     jobName + "_" + jobVersion + "." + FileConstants.PROPERTIES_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
+            IPath screenshotFilePath = emfFileRootPath.append(processPath).append(
+                    jobName + "_" + jobVersion + "." + FileConstants.SCREENSHOT_EXTENSION); //$NON-NLS-1$ //$NON-NLS-2$
             // project file
-            checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName, FileLocator
-                    .toFileURL(projectFilePath.toFile().toURL()));
+            checkAndAddProjectResource(allResources, resource, JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName,
+                    FileLocator.toFileURL(projectFilePath.toFile().toURL()));
 
             List<URL> emfFileUrls = new ArrayList<URL>();
             emfFileUrls.add(FileLocator.toFileURL(itemFilePath.toFile().toURL()));
             emfFileUrls.add(FileLocator.toFileURL(propertiesFilePath.toFile().toURL()));
+            emfFileUrls.add(FileLocator.toFileURL(screenshotFilePath.toFile().toURL()));
             String relativePath = JOB_ITEMS_FOLDER_NAME + PATH_SEPARATOR + projectName + PATH_SEPARATOR
                     + typeFolderPath.toOSString();
             if (processPath != null && !"".equals(processPath)) { //$NON-NLS-1$
@@ -437,7 +440,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
 
             IPath path = getSrcRootLocation();
-            path = path.append(projectName).append(jobFolderName); //$NON-NLS-1$
+            path = path.append(projectName).append(jobFolderName);
 
             FilenameFilter filter = new FilenameFilter() {
 
@@ -611,8 +614,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         List<URL> allJobScripts = new ArrayList<URL>();
         if (needChildren) {
             ProjectManager projectManager = ProjectManager.getInstance();
-            for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
-                JobInfo jobInfo = iter.next();
+            for (JobInfo jobInfo : list) {
                 Project project = projectManager.getProject(jobInfo.getProcessItem());
                 String childProjectName = projectName;
                 if (project != null) {
@@ -660,6 +662,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * 
      * @deprecated
      */
+    @Deprecated
     protected List<URL> getExternalLibraries(boolean needLibraries, ExportFileResource[] process) {
         return getExternalLibraries(needLibraries, process, null);
     }
@@ -691,8 +694,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         if (neededLibraries == null) {
             // in case export as been done with option "not recompile", then libraires can't be retrieved when build.
             IDesignerCoreService designerService = RepositoryPlugin.getDefault().getDesignerCoreService();
-            for (int i = 0; i < process.length; i++) {
-                ExportFileResource resource = process[i];
+            for (ExportFileResource resource : process) {
                 ProcessItem item = (ProcessItem) resource.getItem();
                 String version = item.getProperty().getVersion();
                 if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
@@ -741,8 +743,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             }
         }
 
-        for (int i = 0; i < files.length; i++) {
-            File tempFile = files[i];
+        for (File tempFile : files) {
             try {
                 if (listModulesReallyNeeded.contains(tempFile.getName())) {
                     list.add(tempFile.toURL());
@@ -1035,7 +1036,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
             Iterator<File> iterator = userRoutines.iterator();
             while (iterator.hasNext()) {
-                File file = (File) iterator.next();
+                File file = iterator.next();
                 boolean found = false;
                 for (IRepositoryViewObject object : collectRoutines) {
                     Item item = object.getProperty().getItem();
@@ -1147,6 +1148,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return toReturn;
     }
 
+    @Override
     public List<String> getJobContextsComboValue(ProcessItem processItem) {
         List<String> contextNameList = new ArrayList<String>();
         for (Object o : ((ProcessTypeImpl) processItem.getProcess()).getContext()) {
@@ -1223,8 +1225,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 }
             });
 
-            for (int i = 0; i < files.length; i++) {
-                File tempFile = files[i];
+            for (File tempFile : files) {
                 try {
                     if (libs.contains(tempFile.getName())) {
                         list.add(tempFile.toURL());
@@ -1263,11 +1264,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             IRulesProviderService rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(
                     IRulesProviderService.class);
 
-            for (int i = 0; i < process.length; i++) { // loop every exported job
+            for (ExportFileResource proces : process) { // loop every exported job
                 if (!urlList.isEmpty()) {
                     urlList = new ArrayList<URL>();
                 }
-                item = ((ExportFileResource) process[i]).getItem();
+                item = (proces).getItem();
 
                 if (item instanceof ProcessItem) {
                     pi = (ProcessItem) item;
@@ -1281,7 +1282,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                             for (Object obj : node.getElementParameter()) {
                                 if (obj instanceof ElementParameterType) {
                                     ElementParameterType elementParameter = (ElementParameterType) obj;
-                                    if (elementParameter.getName().equals("PROPERTY:REPOSITORY_PROPERTY_TYPE")) { //$NON-NLS-N$ //$NON-NLS-1$
+                                    if (elementParameter.getName().equals("PROPERTY:REPOSITORY_PROPERTY_TYPE")) { //$NON-NLS-1$
                                         String id = elementParameter.getValue();
                                         if (factory.getLastVersion(id).getProperty().getItem() != null) {
                                             if (factory.getLastVersion(id).getProperty().getItem() instanceof RulesItem) {
