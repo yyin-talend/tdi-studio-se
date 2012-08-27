@@ -361,7 +361,7 @@ public class FOXManager {
                     if (child.getOrder() < treeNode.getOrder()) {
                         tmpOrder++;
                     }
-                    if (child.isAttribute() || child.isNameSpace()) {
+                    if (child instanceof Attribute || child instanceof NameSpaceNode) {
                         attrNsCount++;
                     }
                 }
