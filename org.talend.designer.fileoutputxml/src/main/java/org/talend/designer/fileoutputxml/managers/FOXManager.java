@@ -91,9 +91,10 @@ public class FOXManager {
     }
 
     public boolean isNoLoopInComponent() {
-        List<Map<String, String>> loopTable = (List<Map<String, String>>) foxComponent.getTableList(FileOutputXMLComponent.LOOP);
-        if (currentSchema == null)
+        List<Map<String, String>> loopTable = foxComponent.getTableList(FileOutputXMLComponent.LOOP);
+        if (currentSchema == null) {
             return loopTable.size() <= 0;
+        }
         // modified by wzhang,for multiple schema
         List<Map<String, String>> newList = new ArrayList<Map<String, String>>();
         for (Map<String, String> loopMap : loopTable) {
@@ -164,7 +165,7 @@ public class FOXManager {
         boolean haveOrder = true;
 
         // build root tree
-        List<Map<String, String>> rootTable = (List<Map<String, String>>) foxComponent.getTableList(FileOutputXMLComponent.ROOT);
+        List<Map<String, String>> rootTable = foxComponent.getTableList(FileOutputXMLComponent.ROOT);
         for (Map<String, String> rootMap : rootTable) {
             String newPath = rootMap.get(FileOutputXMLComponent.PATH);
             defaultValue = rootMap.get(FileOutputXMLComponent.VALUE);
@@ -211,8 +212,7 @@ public class FOXManager {
         current = mainNode;
         currentPath = mainPath;
         boolean isFirst = true;
-        List<Map<String, String>> groupTable = (List<Map<String, String>>) foxComponent
-                .getTableList(FileOutputXMLComponent.GROUP);
+        List<Map<String, String>> groupTable = foxComponent.getTableList(FileOutputXMLComponent.GROUP);
         for (Map<String, String> groupMap : groupTable) {
             String newPath = groupMap.get(FileOutputXMLComponent.PATH);
             defaultValue = groupMap.get(FileOutputXMLComponent.VALUE);
@@ -260,7 +260,7 @@ public class FOXManager {
         current = mainNode;
         currentPath = mainPath;
         isFirst = true;
-        List<Map<String, String>> loopTable = (List<Map<String, String>>) foxComponent.getTableList(FileOutputXMLComponent.LOOP);
+        List<Map<String, String>> loopTable = foxComponent.getTableList(FileOutputXMLComponent.LOOP);
         for (Map<String, String> loopMap : loopTable) {
             String newPath = loopMap.get(FileOutputXMLComponent.PATH);
             defaultValue = loopMap.get(FileOutputXMLComponent.VALUE);
@@ -361,7 +361,7 @@ public class FOXManager {
                     if (child.getOrder() < treeNode.getOrder()) {
                         tmpOrder++;
                     }
-                    if (child.isAttribute() || child.isNameSpace()) {
+                    if (child instanceof Attribute || child instanceof NameSpaceNode) {
                         attrNsCount++;
                     }
                 }
@@ -426,7 +426,7 @@ public class FOXManager {
         newMap.put(FileOutputXMLComponent.PATH, currentPath);
         newMap.put(FileOutputXMLComponent.COLUMN, element.getColumnLabel());
         newMap.put(FileOutputXMLComponent.ATTRIBUTE, element.isMain() ? "main" : "branch"); //$NON-NLS-1$ //$NON-NLS-2$
-        newMap.put(FileOutputXMLComponent.VALUE, defaultValue); //$NON-NLS-1$
+        newMap.put(FileOutputXMLComponent.VALUE, defaultValue);
         newMap.put(FileOutputXMLComponent.ORDER, String.valueOf(getNodeOrder(element)));
         table.add(newMap);
         for (FOXTreeNode att : element.getAttributeChildren()) {
@@ -434,7 +434,7 @@ public class FOXManager {
             newMap.put(FileOutputXMLComponent.PATH, att.getLabel());
             newMap.put(FileOutputXMLComponent.COLUMN, att.getColumnLabel());
             newMap.put(FileOutputXMLComponent.ATTRIBUTE, "attri"); //$NON-NLS-1$
-            newMap.put(FileOutputXMLComponent.VALUE, att.getDefaultValue()); //$NON-NLS-1$
+            newMap.put(FileOutputXMLComponent.VALUE, att.getDefaultValue());
             newMap.put(FileOutputXMLComponent.ORDER, String.valueOf(getNodeOrder(att)));
             table.add(newMap);
         }
@@ -444,7 +444,7 @@ public class FOXManager {
             newMap.put(FileOutputXMLComponent.PATH, att.getLabel());
             newMap.put(FileOutputXMLComponent.COLUMN, att.getColumnLabel());
             newMap.put(FileOutputXMLComponent.ATTRIBUTE, "ns"); //$NON-NLS-1$
-            newMap.put(FileOutputXMLComponent.VALUE, att.getDefaultValue()); //$NON-NLS-1$
+            newMap.put(FileOutputXMLComponent.VALUE, att.getDefaultValue());
             newMap.put(FileOutputXMLComponent.ORDER, String.valueOf(getNodeOrder(att)));
             table.add(newMap);
         }
@@ -592,8 +592,9 @@ public class FOXManager {
                 parent = tmpParent;
             }
 
-            if (parent != null)
+            if (parent != null) {
                 parent.addChild(temp);
+            }
         }
 
         return temp;
