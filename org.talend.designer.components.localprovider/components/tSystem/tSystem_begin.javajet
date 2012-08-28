@@ -187,7 +187,10 @@ Thread error_<%=cid %> = new Thread() {
 	}
 };
 error_<%=cid %>.start();
-
+<%//for bug TDI-22281%>
+if(ps_<%=cid %>.getOutputStream()!=null){
+    ps_<%=cid %>.getOutputStream().close();
+}
 ps_<%=cid %>.waitFor();
 normal_<%=cid %>.join(10000);
 error_<%=cid %>.join(10000);
