@@ -36,7 +36,11 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.markers.internal.MarkerMessages;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -46,15 +50,19 @@ import org.talend.core.model.process.Problem.ProblemType;
 import org.talend.core.model.process.TalendProblem;
 import org.talend.core.model.properties.Information;
 import org.talend.core.model.properties.InformationLevel;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.utils.RepositoryManagerHelper;
+import org.talend.core.ui.ISVNProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.ui.views.IRepositoryView;
 
 import com.ibm.icu.text.MessageFormat;
@@ -570,11 +578,42 @@ public class Problems {
                 maxLevel = information.getLevel();
             }
         }
+        // TDI-22098
+        // after run the job , if the modified the property ,should be save .
+        InformationLevel propertyMaxLevel = property.getMaxInformationLevel();
+        boolean isModified = false;
         if (maxLevel != null) {
-            property.setMaxInformationLevel(maxLevel);
-        } else {
+            if (!maxLevel.equals(propertyMaxLevel)) {
+                property.setMaxInformationLevel(maxLevel);
+                isModified = true;
+            }
+        } else if (!InformationLevel.DEBUG_LITERAL.equals(propertyMaxLevel)) {
             property.setMaxInformationLevel(InformationLevel.DEBUG_LITERAL);
+            isModified = true;
         }
+        // save the property
+        if (isModified && isSVN()) {
+            IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
+            IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
+            Item item = property.getItem();
+            try {
+                factory.save(item, false);
+            } catch (PersistenceException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static boolean isSVN() {
+        boolean isSvn = false;
+        ISVNProviderService service = null;
+        if (PluginChecker.isSVNProviderPluginLoaded()) {
+            service = (ISVNProviderService) GlobalServiceRegister.getDefault().getService(ISVNProviderService.class);
+        }
+        if (service != null && service.isProjectInSvnMode()) {
+            isSvn = service.isProjectInSvnMode();
+        }
+        return isSvn;
     }
 
     private static String getFileName(IFile file) {
