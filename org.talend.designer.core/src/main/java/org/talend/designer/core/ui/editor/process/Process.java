@@ -3894,4 +3894,14 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         return "org.talend.help.";
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.repository.IRepositoryViewObject#isModified()
+     */
+    @Override
+    public boolean isModified() {
+        return this.isProcessModified();
+    }
+
 }

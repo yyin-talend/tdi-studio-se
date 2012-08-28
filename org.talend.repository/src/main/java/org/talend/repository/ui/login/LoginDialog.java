@@ -14,6 +14,7 @@ package org.talend.repository.ui.login;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -54,7 +55,9 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ExchangeUser;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.PreferenceManipulator;
+import org.talend.core.repository.model.IRepositoryFactory;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.repository.model.RepositoryFactoryProvider;
 import org.talend.core.service.ICorePerlService;
 import org.talend.core.tis.ICoreTisService;
 import org.talend.core.ui.branding.IBrandingService;
@@ -105,6 +108,7 @@ public class LoginDialog extends TrayDialog {
         setHelpAvailable(false);
     }
 
+    @Override
     protected void initializeBounds() {
         super.initializeBounds();
         Point location = getInitialLocation(getShell().getSize());
@@ -156,7 +160,7 @@ public class LoginDialog extends TrayDialog {
         container.setBackground(new Color(null, 255, 255, 255));
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
-        new ImageCanvas(container, brandingService.getLoginVImage()); //$NON-NLS-1$
+        new ImageCanvas(container, brandingService.getLoginVImage());
 
         if (!perReader.isHaveUserPer()) {
             perReader.createPropertyFile();
@@ -207,10 +211,10 @@ public class LoginDialog extends TrayDialog {
 
         Map<String, String> convertorMapper = tosLoginComposite.getConvertorMapper();
 
-        for (int i = 0; i < projectCollection.length; i++) {
+        for (Project element : projectCollection) {
 
-            tosLoginComposite.getProjectMap().put(projectCollection[i].getLabel().toUpperCase(), projectCollection[i]);
-            convertorMapper.put(projectCollection[i].getLabel().toUpperCase(), projectCollection[i].getLabel());
+            tosLoginComposite.getProjectMap().put(element.getLabel().toUpperCase(), element);
+            convertorMapper.put(element.getLabel().toUpperCase(), element.getLabel());
 
         }
 
@@ -276,7 +280,24 @@ public class LoginDialog extends TrayDialog {
         if (connBean == null || project == null || project.getLabel() == null) {
             return false;
         }
-
+        try {
+            if (!project.getEmfProject().isLocal() && factory.isLocalConnectionProvider()) {
+                List<IRepositoryFactory> rfList = RepositoryFactoryProvider.getAvailableRepositories();
+                IRepositoryFactory remoteFactory = null;
+                for (IRepositoryFactory rf : rfList) {
+                    if (!rf.isLocalConnectionProvider()) {
+                        remoteFactory = rf;
+                        break;
+                    }
+                }
+                if (remoteFactory != null) {
+                    factory.setRepositoryFactoryFromProvider(remoteFactory);
+                    factory.getRepositoryContext().setOffline(true);
+                }
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
         // Save last used parameters
         PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
         prefManipulator.setLastConnection(connBean.getName());

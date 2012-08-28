@@ -118,6 +118,7 @@ public final class TalendEditorPaletteFactory {
 
         Collections.sort(componentList, new Comparator<IComponent>() {
 
+            @Override
             public int compare(IComponent component1, IComponent component2) {
                 return component1.getName().compareTo(component2.getName());
             }
@@ -141,7 +142,7 @@ public final class TalendEditorPaletteFactory {
                 String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 String[] oraStrings = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
-                    if (!needHiddenComponent && !xmlComponent.isVisible(oraStrings[j])) {
+                    if (!needHiddenComponent && !xmlComponent.isVisible(oraStrings[j]) && !xmlComponent.isVisible(strings[j])) {
                         continue;
                     }
                     families.add(strings[j]);
@@ -152,8 +153,8 @@ public final class TalendEditorPaletteFactory {
 
         Collections.sort(families);
         if (a == 0) {
-            for (Iterator iter = families.iterator(); iter.hasNext();) {
-                family = (String) iter.next();
+            for (Object element : families) {
+                family = (String) element;
                 String oraFam = familyMap.get(family);
                 componentsDrawer = ht.get(family);
                 if (componentsDrawer == null) {
@@ -188,21 +189,22 @@ public final class TalendEditorPaletteFactory {
                         new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON),
                         ImageProvider.getImageDesc(ECoreImage.CODE_ICON));
                 if (a == 0) {
-                    PaletteDrawer drawer = ht.get(family); //$NON-NLS-1$
+                    PaletteDrawer drawer = ht.get(family);
                     if (drawer != null) {
                         noteCreationToolEntry.setParent(drawer);
                         drawer.add(noteCreationToolEntry);
                     }
                 } else if (a == 1) {
                     for (String s : families) {
-                        if (s.equals(family)) {//$NON-NLS-1$
+                        if (s.equals(family)) {
                             needToAdd = true;
                         }
                     }
-                    if (needToAdd == true)
+                    if (needToAdd == true) {
                         nodeList.add(0, noteCreationToolEntry);
-                    // noteCreationToolEntry.setParent(paGroup);
-                    // paGroup.add(noteCreationToolEntry);
+                        // noteCreationToolEntry.setParent(paGroup);
+                        // paGroup.add(noteCreationToolEntry);
+                    }
                 }
 
                 noteAeeded = true;
@@ -326,6 +328,7 @@ public final class TalendEditorPaletteFactory {
 
         Collections.sort(componentList, new Comparator<IComponent>() {
 
+            @Override
             public int compare(IComponent component1, IComponent component2) {
                 return component1.getName().compareTo(component2.getName());
             }
@@ -373,8 +376,8 @@ public final class TalendEditorPaletteFactory {
 
         Collections.sort(families);
         if (a == 0) {
-            for (Iterator iter = families.iterator(); iter.hasNext();) {
-                family = (String) iter.next();
+            for (Object element : families) {
+                family = (String) element;
                 String oraFam = familyMap.get(family);
                 componentsDrawer = ht.get(family);
                 if (componentsDrawer == null) {
@@ -413,19 +416,20 @@ public final class TalendEditorPaletteFactory {
                         new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON),
                         ImageProvider.getImageDesc(ECoreImage.CODE_ICON));
                 if (a == 0) {
-                    PaletteDrawer drawer = ht.get(family);//$NON-NLS-1$
+                    PaletteDrawer drawer = ht.get(family);
                     if (drawer != null) {
                         noteCreationToolEntry.setParent(drawer);
                         drawer.add(noteCreationToolEntry);
                     }
                 } else if ((a == 1)) {
                     for (String s : families) {
-                        if (s.equals(family)) {//$NON-NLS-1$
+                        if (s.equals(family)) {
                             needToAdd = true;
                         }
                     }
-                    if (needToAdd == true)
+                    if (needToAdd == true) {
                         nodeList.add(0, noteCreationToolEntry);
+                    }
                 }
                 noteAeeded = true;
             }
@@ -680,26 +684,32 @@ public final class TalendEditorPaletteFactory {
                 return DesignerPlugin.getDefault().getPreferenceStore();
             }
 
+            @Override
             public int getDockLocation() {
                 return getPreferenceStore().getInt(PALETTE_DOCK_LOCATION);
             }
 
+            @Override
             public int getPaletteState() {
                 return getPreferenceStore().getInt(PALETTE_STATE);
             }
 
+            @Override
             public int getPaletteWidth() {
                 return getPreferenceStore().getInt(PALETTE_SIZE);
             }
 
+            @Override
             public void setDockLocation(final int location) {
                 getPreferenceStore().setValue(PALETTE_DOCK_LOCATION, location);
             }
 
+            @Override
             public void setPaletteState(final int state) {
                 getPreferenceStore().setValue(PALETTE_STATE, state);
             }
 
+            @Override
             public void setPaletteWidth(final int width) {
                 getPreferenceStore().setValue(PALETTE_SIZE, width);
             }

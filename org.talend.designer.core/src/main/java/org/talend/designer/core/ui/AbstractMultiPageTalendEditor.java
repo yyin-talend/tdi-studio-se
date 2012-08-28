@@ -815,8 +815,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             IExtension[] extensions = ep.getExtensions();
             IExtension ex;
             IConfigurationElement confElem = null;
-            for (int i = 0; i < extensions.length; i++) {
-                ex = extensions[i];
+            for (IExtension extension : extensions) {
+                ex = extension;
                 if (ex.getContributor().getName().equals("org.talend.metalanguage.jobscript.ui")) {
                     for (IConfigurationElement c : ex.getConfigurationElements()) {
 
@@ -902,7 +902,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             ExceptionHandler.process(e1);
         }
         ERepositoryStatus status = repFactory.getStatus(curItem);
-        if (!status.equals(ERepositoryStatus.LOCK_BY_USER)) {
+        if (!status.equals(ERepositoryStatus.LOCK_BY_USER) && !repFactory.getRepositoryContext().isEditableAsReadOnly()) {
             MessageDialog.openWarning(getEditor(0).getEditorSite().getShell(),
                     Messages.getString("AbstractMultiPageTalendEditor.canNotSaveTitle"),
                     Messages.getString("AbstractMultiPageTalendEditor.canNotSaveMessage"));
