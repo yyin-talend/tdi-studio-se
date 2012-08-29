@@ -213,7 +213,7 @@ public class OpenExistVersionProcessWizard extends Wizard {
             return false;
         }
         StructuredSelection selection = (StructuredSelection) mainPage.getSelection();
-        if (!selection.isEmpty()) {
+        if (selection != null && selection.isEmpty()) {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             boolean lastVersion = node.getObject().getVersion().equals(originalVersion);
             if (!lastVersion) {
