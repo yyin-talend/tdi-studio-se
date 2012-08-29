@@ -63,10 +63,11 @@ final class TalendDndHelper {
      * @param string
      * @return
      */
-    private static boolean isOracleAmazonStringContained(Node node, String dbType, String emfName) {
+    private static boolean isOracleAmazonStringContained(IComponent component, String dbType, String emfName) {
         if (emfName != null && Pattern.compile("^.*oracle.*$", Pattern.CASE_INSENSITIVE).matcher(dbType).matches()) {
             for (String amazonString : ORACLE_AMAZON_STRING) {
                 if (emfName.equals(amazonString)) {
+                    Node node = new Node(component);
                     IElementParameter param = node.getElementParameter("CONNECTION_TYPE");
                     if (param != null) {
                         Object[] valuesList = param.getListItemsValue();
@@ -144,7 +145,7 @@ final class TalendDndHelper {
                 if (((componentProductname != null && productNameWanted.endsWith(componentProductname)) && value) || flag) {
                     // TDI-21082:in case the component has no dbType,such as copybook,should judge its NPE
                     if (name.getDBType() != null
-                            && isOracleAmazonStringContained(new Node(component), name.getDBType(), emfComponent.getName())) {
+                            && isOracleAmazonStringContained(component, name.getDBType(), emfComponent.getName())) {
 
                         continue;
 
