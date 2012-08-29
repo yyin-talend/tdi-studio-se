@@ -44,27 +44,27 @@ public class ErrorDetailTreeBuilder {
      * @param jobNames
      * @return
      */
-    public List<JobErrorEntry> createTreeInput(List<Problem> errors, Set<String> jobNames) {
+    public List<JobErrorEntry> createTreeInput(List<Problem> errors, Set<String> jobIds) {
         for (Problem error : errors) {
             if (error instanceof TalendProblem) {
                 TalendProblem talendProblem = (TalendProblem) error;
-                String job = talendProblem.getJavaUnitName();
+                String jobId = talendProblem.getJobInfo().getJobId();
 
-                if (!jobNames.contains(job)) {
+                if (!jobIds.contains(jobId)) {
                     continue;
                 }
                 String componentName = GENERAL_ERROR;
                 // System.out.println("tp----" + talendProblem.getElement().getClass());
-                JobErrorEntry jobEntry = getJobEntry(job);
+                JobErrorEntry jobEntry = getJobEntry(talendProblem.getJavaUnitName());
                 jobEntry.addItem(componentName, talendProblem);
 
             } else {
-                String job = error.getJobInfo().getJobName();
-                if (!jobNames.contains(job)) {
+                String jobId = error.getJobInfo().getJobId();
+                if (!jobIds.contains(jobId)) {
                     continue;
                 }
                 String componentName = error.getNodeName();
-                JobErrorEntry jobEntry = getJobEntry(job);
+                JobErrorEntry jobEntry = getJobEntry(error.getJobInfo().getJobName());
                 jobEntry.addItem(componentName, error);
             }
         }

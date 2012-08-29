@@ -59,7 +59,7 @@ public class JobErrorsChecker {
 
             ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
 
-            Set<String> jobNames = new HashSet<String>();
+            Set<String> jobIds = new HashSet<String>();
             for (JobInfo jobInfo : LastGenerationInfo.getInstance().getLastGeneratedjobs()) {
                 // get source file
                 IFile sourceFile = synchronizer.getProcessFile(jobInfo);
@@ -69,7 +69,7 @@ public class JobErrorsChecker {
                     validatePerlScript(sourceFile);
                 }
 
-                jobNames.add(jobInfo.getJobName());
+                jobIds.add(jobInfo.getJobId());
 
                 // Property property = process.getProperty();
                 Problems.addRoutineFile(sourceFile, ProblemType.JOB, jobInfo.getJobName(), jobInfo.getJobVersion(), true);
@@ -79,7 +79,7 @@ public class JobErrorsChecker {
             // collect error
             List<Problem> errors = Problems.getProblemList().getProblemsBySeverity(ProblemStatus.ERROR);
             ErrorDetailTreeBuilder builder = new ErrorDetailTreeBuilder();
-            List<JobErrorEntry> input = builder.createTreeInput(errors, jobNames);
+            List<JobErrorEntry> input = builder.createTreeInput(errors, jobIds);
             if (input.size() > 0) {
                 ErrorDetailDialog dialog = new ErrorDetailDialog(shell, input);
                 if (dialog.open() != IDialogConstants.OK_ID) {
@@ -116,7 +116,7 @@ public class JobErrorsChecker {
             }
 
             ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
-            Set<String> jobNames = new HashSet<String>();
+            Set<String> jobIds = new HashSet<String>();
 
             List<RepositoryNode> nodes = (List<RepositoryNode>) selection.toList();
             for (RepositoryNode node : nodes) {
@@ -135,7 +135,7 @@ public class JobErrorsChecker {
                         // check syntax error in perl. java use auto build to check syntax
                         validatePerlScript(sourceFile);
                     }
-                    jobNames.add(item.getProperty().getLabel());
+                    jobIds.add(item.getProperty().getId());
 
                     // Property property = process.getProperty();
                     Problems.addRoutineFile(sourceFile, ProblemType.JOB, item.getProperty().getLabel(), item.getProperty()
@@ -150,7 +150,7 @@ public class JobErrorsChecker {
 
             List<Problem> errors = Problems.getProblemList().getProblemsBySeverity(ProblemStatus.ERROR);
             ErrorDetailTreeBuilder builder = new ErrorDetailTreeBuilder();
-            List<JobErrorEntry> input = builder.createTreeInput(errors, jobNames);
+            List<JobErrorEntry> input = builder.createTreeInput(errors, jobIds);
             if (input.size() > 0) {
                 String label = ((JobErrorEntry) input.get(0)).getLabel();
                 if (isJob) {
