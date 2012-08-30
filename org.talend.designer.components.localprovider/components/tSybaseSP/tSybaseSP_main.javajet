@@ -218,17 +218,17 @@ if (canGenerate) {
 		
 		%>
 	<%
-	if (!returnRS) {
+	if (containsMultiSelecct) {
+	%>
+		statement_<%=cid%>.executeQuery();
+	<%
+	} else if(!returnRS){
 	%>
 		statement_<%=cid%>.executeUpdate();
 	<%
-	} else if(!containsMultiSelecct){
-	%>
-		statement_<%=cid%>.execute();
-	<%
 	}else{
 	%>
-		statement_<%=cid%>.executeQuery();
+		statement_<%=cid%>.execute();
 	<%
 	}
 	%>
