@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.rowgenerator.ui.editor;
 
+import java.util.Arrays;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.swt.SWT;
@@ -278,7 +280,13 @@ public class MetadataTableEditorViewExt extends MetadataTableEditorView {
                     }
                     String[] arrayFunctions = bean.getArrayFunctions();
                     functComboBox.setItems(arrayFunctions);
-                    return FunctionManagerExt.getFunctionLable(bean.getFunction());
+                    String selectedFunction = FunctionManagerExt.getFunctionLable(bean.getFunction());
+
+                    // need set back the selection of combo after use LazyContentProvider in tableviewer because refresh
+                    // will execute after mouseDown event
+                    int index = Arrays.asList(arrayFunctions).indexOf(selectedFunction);
+                    functComboBox.setValue(index);
+                    return selectedFunction;
 
                 }
                 return ""; //$NON-NLS-1$

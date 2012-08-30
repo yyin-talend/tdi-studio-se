@@ -21,8 +21,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.event;
 
+import java.util.List;
+
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
@@ -31,6 +32,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiab
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable;
 import org.talend.commons.ui.swt.tableviewer.selection.ITableColumnSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.sort.IColumnSortedListener;
+import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.process.IElementParameter;
 
 /**
@@ -63,6 +65,7 @@ public class CheckColumnSelectionListener implements ITableColumnSelectionListen
      * org.talend.commons.ui.swt.tableviewer.selection.ITableColumnSelectionListener#addColumnSortedListener(org.talend
      * .commons.ui.swt.tableviewer.sort.IColumnSortedListener)
      */
+    @Override
     public void addColumnSortedListener(IColumnSortedListener columnSortedListener) {
         // TODO Auto-generated method stub
 
@@ -73,6 +76,7 @@ public class CheckColumnSelectionListener implements ITableColumnSelectionListen
      * 
      * @see org.talend.commons.ui.swt.tableviewer.selection.ITableColumnSelectionListener#getTableViewerCreator()
      */
+    @Override
     public TableViewerCreator getTableViewerCreator() {
         // TODO Auto-generated method stub
         return null;
@@ -83,6 +87,7 @@ public class CheckColumnSelectionListener implements ITableColumnSelectionListen
      * 
      * @see org.talend.commons.ui.swt.tableviewer.selection.ITableColumnSelectionListener#getTableViewerCreatorColumn()
      */
+    @Override
     public TableViewerCreatorColumn getTableViewerCreatorColumn() {
         // TODO Auto-generated method stub
         return null;
@@ -95,6 +100,7 @@ public class CheckColumnSelectionListener implements ITableColumnSelectionListen
      * org.talend.commons.ui.swt.tableviewer.selection.ITableColumnSelectionListener#removeColumnSortedListener(org.
      * talend.commons.ui.swt.tableviewer.sort.IColumnSortedListener)
      */
+    @Override
     public void removeColumnSortedListener(IColumnSortedListener columnSortedListener) {
         // TODO Auto-generated method stub
 
@@ -127,6 +133,7 @@ public class CheckColumnSelectionListener implements ITableColumnSelectionListen
      * 
      * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
      */
+    @Override
     public void widgetDefaultSelected(SelectionEvent e) {
         // TODO Auto-generated method stub
 
@@ -137,30 +144,47 @@ public class CheckColumnSelectionListener implements ITableColumnSelectionListen
      * 
      * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
      */
+    @Override
     public void widgetSelected(SelectionEvent e) {
         if (tableViewerCreator != null && tableViewerCreator.isReadOnly()) {
             return;
         }
-        TableItem items[] = tableViewerCreator.getTable().getItems();
+        // TableItem items[] = tableViewerCreator.getTable().getItems();
+        // String columnId = tableViewerCreatorColumn.getId();
+        // boolean modified = false;
+        // for (TableItem tableItem : items) {
+        // tableViewerCreator.getCellModifier().modify(tableItem, columnId, checked ? false : true);
+        // if (!modified) {
+        // modified = true;
+        // }
+        // }
+        // if (modified) {
+        // this.param.getValue();
+        // if (checked) {
+        // checked = false;
+        // } else {
+        // checked = true;
+        // }
+        // tableViewerCreatorColumn.getTableColumn().setImage(
+        // checked ? ImageProvider.getImage(EImage.CHECKED_ICON) : ImageProvider.getImage(EImage.UNCHECKED_ICON));
+        // this.param.setValue(new Boolean(checked));
+        // }
         String columnId = tableViewerCreatorColumn.getId();
-        boolean modified = false;
-        for (TableItem tableItem : items) {
-            tableViewerCreator.getCellModifier().modify(tableItem, columnId, checked ? false : true);
-            if (!modified) {
-                modified = true;
-            }
+        IBeanPropertyAccessors accessor = tableViewerCreator.getColumn(columnId).getBeanPropertyAccessors();
+
+        List inputList = tableViewerCreator.getInputList();
+        for (int i = 0; i < inputList.size(); i++) {
+            accessor.set(inputList.get(i), checked ? false : true);
         }
-        if (modified) {
-            this.param.getValue();
-            if (checked) {
-                checked = false;
-            } else {
-                checked = true;
-            }
-            tableViewerCreatorColumn.getTableColumn().setImage(
-                    checked ? ImageProvider.getImage(EImage.CHECKED_ICON) : ImageProvider.getImage(EImage.UNCHECKED_ICON));
-            this.param.setValue(new Boolean(checked));
+
+        if (checked) {
+            checked = false;
+        } else {
+            checked = true;
         }
+        tableViewerCreatorColumn.getTableColumn().setImage(
+                checked ? ImageProvider.getImage(EImage.CHECKED_ICON) : ImageProvider.getImage(EImage.UNCHECKED_ICON));
+        tableViewerCreator.refreshTableEditorControls();
 
     }
 
@@ -179,6 +203,7 @@ public class CheckColumnSelectionListener implements ITableColumnSelectionListen
      * org.talend.commons.ui.swt.tableviewer.selection.ITableColumnSelectionListener#setTableViewerCreatorColumn(org
      * .talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiable)
      */
+    @Override
     public void setTableViewerCreatorColumn(TableViewerCreatorColumnNotModifiable tableViewerCreatorColumn) {
         this.tableViewerCreatorColumn = tableViewerCreatorColumn;
     }
@@ -190,6 +215,7 @@ public class CheckColumnSelectionListener implements ITableColumnSelectionListen
      * org.talend.commons.ui.swt.tableviewer.selection.ITableColumnSelectionListener#setTableViewerCreator(org.talend
      * .commons.ui.swt.tableviewer.TableViewerCreatorNotModifiable)
      */
+    @Override
     public void setTableViewerCreator(TableViewerCreatorNotModifiable tableViewerCreator) {
         this.tableViewerCreator = tableViewerCreator;
     }

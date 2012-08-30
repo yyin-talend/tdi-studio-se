@@ -174,11 +174,12 @@ public class TableController extends AbstractElementPropertySectionController {
             Point size = tableEditorView.getExtendedToolbar().getToolbar().computeSize(SWT.DEFAULT, SWT.DEFAULT);
             toolbarSize = size.y + 5;
         }
-        int currentHeightEditor = table.getHeaderHeight() + ((List) param.getValue()).size() * table.getItemHeight()
-                + table.getItemHeight() + toolbarSize;
+        // fix to use SWT.VIRTUAL + ILazyContentProvider
+        // int currentHeightEditor = table.getHeaderHeight() + ((List) param.getValue()).size() * table.getItemHeight()
+        // + table.getItemHeight() + toolbarSize;
         int minHeightEditor = table.getHeaderHeight() + getNumberLines(param) * table.getItemHeight() + table.getItemHeight()
                 + toolbarSize;
-        int ySize2 = Math.max(currentHeightEditor, minHeightEditor);
+        int ySize2 = minHeightEditor;
 
         formData.bottom = new FormAttachment(0, top + ySize2);
         mainComposite.setLayoutData(formData);
