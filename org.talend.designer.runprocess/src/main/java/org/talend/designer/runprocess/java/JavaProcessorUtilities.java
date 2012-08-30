@@ -606,11 +606,11 @@ public class JavaProcessorUtilities {
         }
         if (missingJars != null) {
             final String Message = missingJars;
-            Display.getCurrent().syncExec(new Runnable() {
+            Display.getDefault().syncExec(new Runnable() {
 
                 @Override
                 public void run() {
-                    MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error!", Message);
+                    MessageDialog.openError(Display.getDefault().getActiveShell(), "Error!", Message);
                 }
 
             });

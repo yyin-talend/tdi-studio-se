@@ -62,7 +62,9 @@ import org.talend.core.model.properties.HeaderFooterConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.DragAndDropManager;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryContentHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryContentManager;
 import org.talend.core.model.utils.IDragAndDropServiceHandler;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.repositoryObject.MetadataTableRepositoryObject;
@@ -1024,6 +1026,12 @@ class SchemaTypeProcessor extends MultiTypesProcessor {
             list.add(ERepositoryObjectType.METADATA_MDMCONNECTION);
             list.add(ERepositoryObjectType.METADATA_EDIFACT);
 
+            // Add the type of extended node which has schemas.
+            for (IRepositoryContentHandler handler : RepositoryContentManager.getHandlers()) {
+                if (handler.hasSchemas() && handler.getHandleType() != null) {
+                    list.add(handler.getHandleType());
+                }
+            }
         }
         return list;
     }
