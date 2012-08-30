@@ -70,21 +70,21 @@ if(("false").equals(useExistingConn)){
 	if(("LDAPS").equals(protocol)){
 %>
 	env_<%=cid%>.put(javax.naming.Context.SECURITY_PROTOCOL, "ssl");
-	env_<%=cid%>.put("java.naming.ldap.factory.socket", "org.courtine.talend.AdvancedSocketFactoryExt");
+	env_<%=cid%>.put("java.naming.ldap.factory.socket", "talend.ssl.AdvancedSocketFactory");
 <%
 	}
 	if(("LDAPS").equals(protocol) || ("TLS").equals(protocol)){
 		if(("true").equals(advanced)){
 			if(alwaysTrust) {
 %>
-	org.courtine.talend.AdvancedSocketFactoryExt.alwaysTrust();
+	talend.ssl.AdvancedSocketFactory.alwaysTrust();
 <%
 			} else {
 %>
-	org.courtine.talend.AdvancedSocketFactoryExt.setCertStorePath(<%=storepath%>);
+	talend.ssl.AdvancedSocketFactory.setCertStorePath(<%=storepath%>);
 <%
 				if(storepwd !=null && storepwd.length() !=0 ){%>
-	org.courtine.talend.AdvancedSocketFactoryExt.setCertStorePassword(<%=storepwd %>);
+	talend.ssl.AdvancedSocketFactory.setCertStorePassword(<%=storepwd %>);
 <%
 				}
 			}
@@ -97,7 +97,7 @@ if(("false").equals(useExistingConn)){
 %>
 	javax.naming.ldap.StartTlsRequest tldsReq_<%=cid%> = new javax.naming.ldap.StartTlsRequest();
 	javax.naming.ldap.StartTlsResponse tls_<%=cid%> =(javax.naming.ldap.StartTlsResponse)ctx_<%=cid%>.extendedOperation(tldsReq_<%=cid%>);
-	javax.net.ssl.SSLSession session_<%=cid%> = tls_<%=cid%>.negotiate((javax.net.ssl.SSLSocketFactory)org.courtine.talend.AdvancedSocketFactoryExt.getDefault());
+	javax.net.ssl.SSLSession session_<%=cid%> = tls_<%=cid%>.negotiate((javax.net.ssl.SSLSocketFactory)talend.ssl.AdvancedSocketFactory.getDefault());
 <%
 	}
 }else{
