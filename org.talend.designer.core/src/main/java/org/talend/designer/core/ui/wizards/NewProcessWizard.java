@@ -29,7 +29,6 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -154,7 +153,6 @@ public class NewProcessWizard extends Wizard {
                 @Override
                 protected void run() throws LoginException, PersistenceException {
                     repositoryFactory.create(processItem, mainPage.getDestinationPath());
-                    RelationshipItemBuilder.getInstance().addOrUpdateItem(processItem);
                 }
             };
             workUnit.setAvoidUnloadResources(true);
