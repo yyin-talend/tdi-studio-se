@@ -121,6 +121,7 @@ if (inConnection == null) {
 		}
 	}
 }
+boolean returnRS = false;
 if (canGenerate) {
 	// Search outgoing schema
 	IMetadataTable metadata = null;
@@ -210,21 +211,24 @@ if (canGenerate) {
 	  			<%
 			}
 			
+			if ("RECORDSET".equals(argType)){
+				returnRS = true;
+			}
 		}
 		
 		%>
 	<%
-	if(!containsMultiSelecct){
+	if (containsMultiSelecct) {
 	%>
-		try{
-			statement_<%=cid%>.execute();
-		}catch(java.sql.SQLException e){
-			statement_<%=cid%>.executeUpdate();
-		}
+		statement_<%=cid%>.executeQuery();
+	<%
+	} else if(!returnRS){
+	%>
+		statement_<%=cid%>.executeUpdate();
 	<%
 	}else{
 	%>
-		statement_<%=cid%>.executeQuery();
+		statement_<%=cid%>.execute();
 	<%
 	}
 	%>
