@@ -14,6 +14,8 @@ import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.rulers.RulerProvider;
+import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.ISubjobContainer;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerLayoutEditPolicy;
@@ -237,6 +239,11 @@ public class JobletContainerPart extends NodeContainerPart {
                 while ((!(editPart instanceof ProcessPart)) && (!(editPart instanceof SubjobContainerPart))) {
                     editPart = editPart.getParent();
                 }
+                Node node = ((NodeContainer) getModel()).getNode();
+
+                List<ISubjobContainer> proSubList = new ArrayList<ISubjobContainer>(
+                        ((IProcess2) node.getProcess()).getSubjobContainers());
+
                 if (editPart instanceof SubjobContainerPart) {
                     // Node node = ((NodeContainer) getModel()).getNode();
                     NodeContainer nc = (NodeContainer) getModel();
@@ -246,10 +253,15 @@ public class JobletContainerPart extends NodeContainerPart {
                     int downChangeheight = ((JobletContainer) this.getModel()).getDownChangeHeight();
                     int leftChangewidth = ((JobletContainer) this.getModel()).getLeftChangeWidth();
                     int upChangeheight = ((JobletContainer) this.getModel()).getUpChangeHeight();
-                    ((SubjobContainer) editPart.getModel()).refreshNodesLocation(isCollapse, nc, rightChangewidth,
-                            downChangeheight, leftChangewidth, upChangeheight);
+
+                    for (SubjobContainer sb : new JobletUtil().getConnSubjob(((SubjobContainer) editPart.getModel()), proSubList)) {
+                        sb.refreshNodesLocation(isCollapse, nc, rightChangewidth, downChangeheight, leftChangewidth,
+                                upChangeheight);
+                    }
+
                     editPart.refresh();
                 }
+
             }
         }
         if (changeEvent.getPropertyName().equals(Node.UPDATE_STATUS)) {

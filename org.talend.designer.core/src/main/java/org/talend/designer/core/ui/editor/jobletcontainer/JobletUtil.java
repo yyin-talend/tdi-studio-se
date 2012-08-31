@@ -34,6 +34,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.ui.IJobletProviderService;
@@ -697,6 +698,55 @@ public class JobletUtil {
             return true;
         }
         return false;
+    }
+
+    public List<SubjobContainer> getConnSubjob(SubjobContainer sub, List<ISubjobContainer> proSubList) {
+        List<SubjobContainer> subList = new ArrayList<SubjobContainer>();
+        if (!proSubList.contains(sub)) {
+            return subList;
+        }
+        for (NodeContainer container : sub.getNodeContainers()) {
+            List<IConnection> inList = new ArrayList<IConnection>();
+            List<IConnection> outList = new ArrayList<IConnection>();
+            if ((container instanceof JobletContainer)) {// && ((JobletContainer) container).isCollapsed()
+                inList.addAll(((JobletContainer) container).getInputs());
+                outList.addAll(((JobletContainer) container).getOutputs());
+            } else {
+                inList.addAll(container.getNode().getIncomingConnections());
+                outList.addAll(container.getNode().getOutgoingConnections());
+            }
+
+            for (IConnection conn : inList) {
+                INode source = conn.getSource();
+                if (source instanceof Node) {
+                    SubjobContainer tem = ((Node) conn.getSource()).getNodeContainer().getSubjobContainer();
+                    if (tem != null && sub != tem) {
+                        if (subList.contains(tem) || !proSubList.contains(tem)) {
+                            continue;
+                        }
+                        subList.add(tem);
+                        proSubList.remove(tem);
+                        subList.addAll(getConnSubjob(tem, proSubList));
+                    }
+                }
+            }
+            for (IConnection conn : outList) {
+                INode target = conn.getTarget();
+                if (target instanceof Node) {
+                    SubjobContainer tem = ((Node) conn.getTarget()).getNodeContainer().getSubjobContainer();
+                    if (tem != null && sub != tem) {
+                        if (subList.contains(tem) || !proSubList.contains(tem)) {
+                            continue;
+                        }
+                        subList.add(tem);
+                        proSubList.remove(tem);
+                        subList.addAll(getConnSubjob(tem, proSubList));
+                    }
+                }
+            }
+        }
+        return subList;
+
     }
 
 }
