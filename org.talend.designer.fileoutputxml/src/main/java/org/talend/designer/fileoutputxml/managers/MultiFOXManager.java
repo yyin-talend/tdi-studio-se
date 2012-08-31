@@ -99,10 +99,12 @@ public class MultiFOXManager extends FOXManager {
                     if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
                         temp = new Attribute(newPath);
                         temp.setDefaultValue(defaultValue);
+                        temp.setAttribute(true);
                         current.addChild(temp);
                     } else if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
                         temp = new NameSpaceNode(newPath);
                         temp.setDefaultValue(defaultValue);
+                        temp.setNameSpace(true);
                         current.addChild(temp);
                     } else {
                         temp = addElement(current, currentPath, newPath, defaultValue);
@@ -154,10 +156,12 @@ public class MultiFOXManager extends FOXManager {
                     if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
                         temp = new Attribute(newPath);
                         temp.setDefaultValue(defaultValue);
+                        temp.setAttribute(true);
                         current.addChild(temp);
                     } else if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
                         temp = new NameSpaceNode(newPath);
                         temp.setDefaultValue(defaultValue);
+                        temp.setNameSpace(true);
                         current.addChild(temp);
                     } else {
                         temp = this.addElement(current, currentPath, newPath, defaultValue);
@@ -210,10 +214,12 @@ public class MultiFOXManager extends FOXManager {
                     if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("attri")) { //$NON-NLS-1$
                         temp = new Attribute(newPath);
                         temp.setDefaultValue(defaultValue);
+                        temp.setAttribute(true);
                         current.addChild(temp);
                     } else if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) { //$NON-NLS-1$
                         temp = new NameSpaceNode(newPath);
                         temp.setDefaultValue(defaultValue);
+                        temp.setNameSpace(true);
                         current.addChild(temp);
                     } else {
                         temp = this.addElement(current, currentPath, newPath, defaultValue);
