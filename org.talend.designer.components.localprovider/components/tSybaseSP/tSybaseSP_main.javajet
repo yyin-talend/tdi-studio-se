@@ -121,7 +121,6 @@ if (inConnection == null) {
 		}
 	}
 }
-boolean returnRS = false;
 if (canGenerate) {
 	// Search outgoing schema
 	IMetadataTable metadata = null;
@@ -222,9 +221,6 @@ if (canGenerate) {
 	  			<%
 			}
 			
-			if ("RECORDSET".equals(argType)){
-				returnRS = true;
-			}
 		}
 		
 		%>
@@ -233,17 +229,17 @@ if (canGenerate) {
 	%>
 		java.sql.ResultSet rs_<%=cid%> = statement_<%=cid%>.executeQuery();
 	<%
-	} else if(containsMultiSelecct){
+	} else if(!containsMultiSelecct){
 	%>
-		statement_<%=cid%>.executeQuery();
-	<%
-	} else if(!returnRS){
-	%>
-		statement_<%=cid%>.executeUpdate();
+		try{
+			statement_<%=cid%>.execute();
+		}catch(java.sql.SQLException e){
+			statement_<%=cid%>.executeUpdate();
+		}
 	<%
 	}else{
 	%>
-		statement_<%=cid%>.execute();
+		statement_<%=cid%>.executeQuery();
 	<%
 	}
 	%>
