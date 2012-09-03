@@ -25,7 +25,7 @@
 	boolean targetRecordOnly = ("true").equals(ElementParameterParser.getValue(node,"__TARGET_RECORD_ONLY__"));
 			
 %>
-		int nb_line_<%=cid%> = 0;	
+	int deleted_task_<%=cid%> = 0;	
         java.net.Authenticator.setDefault(new java.net.Authenticator() {
             protected java.net.PasswordAuthentication getPasswordAuthentication() {
             	return new java.net.PasswordAuthentication(<%=username%>, <%=password%>.toCharArray());
@@ -54,6 +54,6 @@
 			endXMLGregorianCalendar_<%=cid%> = new com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl(endDate_<%=cid%>);
 		}
 		
-		nb_line_<%=cid%> = TDSCWS_<%=cid%>.deleteTasks(<%=taskType%>,<%=owner.equals("")?null:owner%>,<%=tag.equals("")?null:tag%>,startXMLGregorianCalendar_<%=cid%>,endXMLGregorianCalendar_<%=cid%>,<%=starRanking%>,<%=limit%>,<%=status.equals("null")?null:"\""+status+"\""%>);
+		deleted_task_<%=cid%> = TDSCWS_<%=cid%>.deleteTasks(<%=taskType%>,<%=owner.equals("")?null:owner%>,<%=tag.equals("")?null:tag%>,startXMLGregorianCalendar_<%=cid%>,endXMLGregorianCalendar_<%=cid%>,<%=starRanking%>,<%=limit%>,<%=status.equals("null")?null:"\""+status+"\""%>);
 		
-		globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);
+		globalMap.put("<%=cid %>_DELETED_TASK_NUMBER",deleted_task_<%=cid%>);
