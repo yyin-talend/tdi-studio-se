@@ -418,6 +418,36 @@ public class Problems {
         refreshProblemTreeView();
     }
 
+    /**
+     * 
+     * DOC hcyi Comment method "removeProblemsByProcess".
+     * 
+     * @param process
+     * @param isDeleted
+     */
+    public static void removeProblemsByProcess(IProcess process, boolean isDeleted) {
+        for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
+            Problem problem = iter.next();
+            if (problem == null)
+                continue;
+            if (problem.getJobInfo() != null
+                    && (problem.getJobInfo().getJobId().equals(process.getId()) && problem.getJobInfo().getJobVersion()
+                            .equals(process.getVersion()))) {
+                iter.remove();
+            }
+            // if not open editor then run job , will not fill the JobInfo .
+            if (problem.getJobInfo() == null && problem instanceof TalendProblem) {
+                TalendProblem talendProblem = (TalendProblem) problem;
+                String jobName = talendProblem.getJavaUnitName();
+                if (jobName != null && jobName.equals(process.getName())
+                        && talendProblem.getVersion().equals(process.getVersion())) {
+                    iter.remove();
+                }
+            }
+        }
+        refreshProblemTreeView();
+    }
+
     public static void removeJob(IProcess process) {
         openJobs.remove(process);
     }
