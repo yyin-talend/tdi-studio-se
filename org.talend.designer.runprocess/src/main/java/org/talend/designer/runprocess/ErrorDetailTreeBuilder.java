@@ -48,24 +48,27 @@ public class ErrorDetailTreeBuilder {
         for (Problem error : errors) {
             if (error instanceof TalendProblem) {
                 TalendProblem talendProblem = (TalendProblem) error;
-                String jobId = talendProblem.getJobInfo().getJobId();
-
-                if (!jobIds.contains(jobId)) {
-                    continue;
+                if (talendProblem != null && talendProblem.getJobInfo() != null) {
+                    String jobId = talendProblem.getJobInfo().getJobId();
+                    if (!jobIds.contains(jobId)) {
+                        continue;
+                    }
+                    String componentName = GENERAL_ERROR;
+                    // System.out.println("tp----" + talendProblem.getElement().getClass());
+                    JobErrorEntry jobEntry = getJobEntry(talendProblem.getJavaUnitName());
+                    jobEntry.addItem(componentName, talendProblem);
                 }
-                String componentName = GENERAL_ERROR;
-                // System.out.println("tp----" + talendProblem.getElement().getClass());
-                JobErrorEntry jobEntry = getJobEntry(talendProblem.getJavaUnitName());
-                jobEntry.addItem(componentName, talendProblem);
 
             } else {
-                String jobId = error.getJobInfo().getJobId();
-                if (!jobIds.contains(jobId)) {
-                    continue;
+                if (error != null && error.getJobInfo() != null) {
+                    String jobId = error.getJobInfo().getJobId();
+                    if (!jobIds.contains(jobId)) {
+                        continue;
+                    }
+                    String componentName = error.getNodeName();
+                    JobErrorEntry jobEntry = getJobEntry(error.getJobInfo().getJobName());
+                    jobEntry.addItem(componentName, error);
                 }
-                String componentName = error.getNodeName();
-                JobErrorEntry jobEntry = getJobEntry(error.getJobInfo().getJobName());
-                jobEntry.addItem(componentName, error);
             }
         }
 
