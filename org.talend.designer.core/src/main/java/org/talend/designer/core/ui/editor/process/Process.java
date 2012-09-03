@@ -2832,6 +2832,16 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
     }
 
+    /**
+     * if delete a process item , should remove the problems of this .
+     */
+    public void removeProblems4ProcessDeleted() {
+        if (isActivate()) {
+            Problems.removeProblemsByProcess(this, true);
+            Problems.refreshProblemTreeView();
+        }
+    }
+
     @Override
     public String toString() {
         return "Process:" + getLabel(); //$NON-NLS-1$
