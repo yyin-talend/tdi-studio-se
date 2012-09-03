@@ -222,7 +222,8 @@ public class Problems {
         for (Problem problem : problemList.getProblemList()) {
             String elementUniqueName = element.getUniqueName();
             if (problem.getNodeName() != null && problem.getNodeName().equals(elementUniqueName)
-                    && problem.getStatus().equals(status)) {
+                    && problem.getStatus().equals(status)
+                    && problem.getJobInfo().getJobName().equals(element.getProcess().getName())) {
                 statusList.add(problem.getDescription());
             }
         }
@@ -282,8 +283,9 @@ public class Problems {
      * DOC xhuang refresh the structure of problems view
      */
     public static void refreshProblemTreeView() {
-        if (!isWorkbenchStarted())
+        if (!isWorkbenchStarted()) {
             return;
+        }
 
         if (getProblemView() != null) {
             Display.getDefault().syncExec(new Runnable() {
@@ -293,6 +295,7 @@ public class Problems {
                  * 
                  * @see java.lang.Runnable#run()
                  */
+                @Override
                 public void run() {
                     getProblemView().refresh();
                 }
@@ -304,8 +307,9 @@ public class Problems {
      * workaround for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=49316
      */
     private static boolean isWorkbenchStarted() {
-        if (!PlatformUI.isWorkbenchRunning())
+        if (!PlatformUI.isWorkbenchRunning()) {
             return false;
+        }
         try {
             PlatformUI.getWorkbench();
             PlatformUI.getWorkbench().getWorkbenchWindows();
@@ -322,8 +326,9 @@ public class Problems {
      * DOC xtan Comment method "refreshRepositoryView".
      */
     public static void refreshRepositoryView() {
-        if (!isWorkbenchStarted())
+        if (!isWorkbenchStarted()) {
             return;
+        }
 
         Display.getDefault().syncExec(new Runnable() {
 
@@ -332,6 +337,7 @@ public class Problems {
              * 
              * @see java.lang.Runnable#run()
              */
+            @Override
             public void run() {
                 IRepositoryView viewPart = RepositoryManagerHelper.findRepositoryView();
                 if (viewPart != null) {
@@ -405,8 +411,9 @@ public class Problems {
 
         for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
             Problem problem = iter.next();
-            if (problem == null || problem instanceof TalendProblem)
+            if (problem == null || problem instanceof TalendProblem) {
                 continue;
+            }
             if (problem.getJobInfo() != null
                     && (problem.getJobInfo().getJobId().equals(process.getId()) && problem.getJobInfo().getJobVersion()
                             .equals(process.getVersion()))) {
