@@ -879,7 +879,8 @@ public class Node extends Element implements IGraphicalNode {
      */
     @Override
     public void setLocation(final Point location) {
-        if (this.location.equals(location)) {
+        // TDI-22649
+        if (location == null || this.location.equals(location)) {
             return;
         }
         this.location = location;
