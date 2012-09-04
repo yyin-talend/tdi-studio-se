@@ -103,6 +103,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
     /**
      * @deprecated should be no used after bug 15815.
      */
+    @Deprecated
     private final ConnectionBean currentConnBean;
 
     public CreateSandboxProjectDialog(Shell parentShell, ConnectionBean currentConnBean) {
@@ -199,7 +200,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         projectLabelText.getTextControl().setEditable(false);
 
         languageCombo = new LabelledCombo(projectGroup, Messages.getString("NewProjectWizardPage.language"), null, new String[] { //$NON-NLS-1$
-                ECodeLanguage.JAVA.getName(), ECodeLanguage.PERL.getName() });
+                ECodeLanguage.JAVA.getName() });
         layoutData = new GridData();
         layoutData.widthHint = 100;
         layoutData.minimumWidth = 100;
@@ -226,6 +227,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         projectLabelText.addModifyListener(listener);
         checkBtn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 if (urlText.getText().trim().length() > 0) {
                     Context ctx = CorePlugin.getContext();
@@ -342,6 +344,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         checkProjectLabel(enableProjectLabel);
     }
 
+    @Override
     public void setErrorMessage(String newErrorMessage) {
         super.setErrorMessage(newErrorMessage);
         Button button = getButton(IDialogConstants.OK_ID);
@@ -484,8 +487,8 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
                             messages += "\n\n" //$NON-NLS-1$ 
                                     + Messages.getString("CreateSandboxProjectDialog.creatingConnectionMessages", bean.getName()); //$NON-NLS-1$
                             // }
-                            MessageDialog.openInformation(getShell(), Messages
-                                    .getString("CreateSandboxProjectDialog.successTitile"), messages); //$NON-NLS-1$
+                            MessageDialog.openInformation(getShell(),
+                                    Messages.getString("CreateSandboxProjectDialog.successTitile"), messages); //$NON-NLS-1$
 
                             // if (needCreateNewConn) {
                             // save connection
