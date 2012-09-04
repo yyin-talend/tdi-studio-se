@@ -132,6 +132,7 @@ public class ConnectionCreateCommand extends Command {
             InputDialog id = new InputDialog(null, nodeLabel + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
                     Messages.getString("ConnectionCreateAction.dialogMessage"), oldName, new IInputValidator() { //$NON-NLS-1$ 
 
+                        @Override
                         public String isValid(String newText) {
                             if (newText != null) {
                                 if (!source.getProcess().checkValidConnectionName(newText, creatingConnection)
@@ -152,6 +153,7 @@ public class ConnectionCreateCommand extends Command {
             InputDialog id = new InputDialog(null, nodeLabel + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
                     Messages.getString("ConnectionCreateAction.dialogMessage"), oldName, new IInputValidator() { //$NON-NLS-1$ 
 
+                        @Override
                         public String isValid(String newText) {
                             if (newText != null) {
                                 if (!source.getProcess().checkValidConnectionName(newText, creatingConnection)
@@ -235,6 +237,7 @@ public class ConnectionCreateCommand extends Command {
         return outName;
     }
 
+    @Override
     public boolean canExecute() {
 
         if (target != null) {
@@ -265,6 +268,7 @@ public class ConnectionCreateCommand extends Command {
         return true;
     }
 
+    @Override
     public void execute() {
         canExecute();
         if (connectionName == null) {
@@ -393,7 +397,11 @@ public class ConnectionCreateCommand extends Command {
 
     }
 
+    @Override
     public void undo() {
+        if (connection == null) {
+            return;
+        }
         connection.disconnect();
         INodeConnector nodeConnectorSource, nodeConnectorTarget;
         nodeConnectorSource = connection.getSourceNodeConnector();
@@ -413,6 +421,7 @@ public class ConnectionCreateCommand extends Command {
         // ((Process) source.getProcess()).checkProcess();
     }
 
+    @Override
     public void redo() {
         execute();
     }
