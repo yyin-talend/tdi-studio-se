@@ -12,8 +12,10 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +93,7 @@ public class ConnectionCreateCommandTest {
         Property property = PropertiesFactory.eINSTANCE.createProperty();
         property.setId("junitId"); //$NON-NLS-1$
         property.setVersion("0.1"); //$NON-NLS-1$
+        property.setLabel("test");//$NON-NLS-1$
 
         return new Process(property);
     }
