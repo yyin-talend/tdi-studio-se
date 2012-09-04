@@ -106,12 +106,12 @@ class Gen{//HSS_____inner class
 			if(isUseMultiSeparator){
 				sb.append("String field_" + connection + " = " + schema.get("FIELD_SEPARATOR") + ";\n");
 				sb.append("if(field_" + connection + ".length() > 0){\n");
-				sb.append("out" + cid + ".setDelimiter(field_" + connection + ".charAt(0));\n");
+				sb.append("out" + cid + ".setSeparator(field_" + connection + ".charAt(0));\n");
 				sb.append("}else{throw new IllegalArgumentException(\"Field delimited must be assigned a char.\");};\n");
 				
 //				sb.append("String row_" + connection + " = " + separator + ";\n");
 //				sb.append("if(row_" + connection + ".length() > 0){\n");
-//				sb.append("out" + cid + ".setRecordDelimiter(row_" + connection + ".charAt(0));\n");
+//				sb.append("out" + cid + ".setLineEnd(\"\"+row_" + connection + ".charAt(0));\n");
 //				sb.append("}else{throw new IllegalArgumentException(\"Row delimited must be assigned a char.\");};\n");
 				
 				sb.append("String escapeChar_" + connection + " = " + escapeChar + ";\n");
@@ -120,16 +120,15 @@ class Gen{//HSS_____inner class
 				
 				sb.append("String textEnclosure_" + connection + " = " + textEnclosure + ";\n");
 				sb.append("if(textEnclosure_" + connection + ".length() > 0){\n");
-				sb.append("out" + cid + ".setTextQualifier(textEnclosure_" + connection + ".charAt(0));\n");
+				sb.append("out" + cid + ".setQuoteChar(textEnclosure_" + connection + ".charAt(0));\n");
 				sb.append("}else{throw new IllegalArgumentException(\"Text Enclosure must be assigned a char.\");};\n");
 				
 				sb.append("if ((\"\\\\\\\\\").equals(escapeChar_"+connection+")) {");
-				sb.append("out" + cid + ".setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH);\n");
+				sb.append("out" + cid + ".setEscapeChar('\\\\');\n");
 				sb.append("} else if (escapeChar_"+connection+".equals(textEnclosure_"+connection+")) {\n");
-				sb.append("out"+cid+".setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED);\n");
+				sb.append("out"+cid+".setEscapeChar(textEnclosure_" + connection + ".charAt(0));\n");
 				sb.append("}\n");
 				
-				sb.append("out"+cid+".setForceQualifier(true);\n");
 			}
 			
 			sb.append("String[] rowField_" + connection + " = new String[" + sizeColumns + "];");
@@ -183,7 +182,7 @@ class Gen{//HSS_____inner class
 			}
 		}
 		if("true".equals(csvOption)){ //csv
-			sb.append("out"+cid+".writeRecord(rowField_"+connection+");\n");
+			sb.append("out"+cid+".writeNext(rowField_"+connection+");\n");
 		}else{
 			sb.append("sb_").append(cid).append(".append(").append(separator).append(");\n");
 			sb.append("out").append(cid).append(".write(sb_").append(cid).append(".toString());\n");
@@ -266,7 +265,9 @@ StringBuilder sb_<%=cid %> = new StringBuilder();
 	gen.generateCode();
 %>
 <%=gen.getCode() %>
-out<%=cid %>.close();
+if(out<%=cid %>!=null) {
+	out<%=cid %>.close();
+}
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%if(isDeleteEmptyFile){%>
 if(nb_line_<%=cid %> == 0){

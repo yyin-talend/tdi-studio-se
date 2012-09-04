@@ -158,7 +158,7 @@
       <IMPORT NAME="httpmime-4.0.1" MODULE="httpmime-4.0.1.jar" REQUIRED="true" />
       <IMPORT NAME="httpcore-4.0" MODULE="httpcore-4.0.jar" REQUIRED="true" />
       <IMPORT NAME="commons-logging-1.1.1" MODULE="commons-logging-1.1.1.jar" REQUIRED="true" />
-      <IMPORT NAME="javacsv" MODULE="javacsv.jar" REQUIRED="true" />
+      <IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
   

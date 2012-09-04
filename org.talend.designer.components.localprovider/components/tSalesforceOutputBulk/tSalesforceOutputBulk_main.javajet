@@ -63,7 +63,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             			} 
 
             			%>
-            			    csvWriter_<%=cid%>.writeRecord(row_<%=cid%>);	
+            			    csvWriter_<%=cid%>.writeNext(row_<%=cid%>);	
             			    
             				nb_line_<%=cid %>++;
             			<%   		

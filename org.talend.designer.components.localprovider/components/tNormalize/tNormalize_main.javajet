@@ -64,13 +64,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                 metadataColumns != null && !metadataColumns.isEmpty()) {//3
             %>
             if(<%=incomingConnName %>.<%=normalizeColumn%> != null && <%=incomingConnName %>.<%=normalizeColumn%>.trim().length() > 0) {
-                    <%if(useCSV){%> 				
-                        com.csvreader.CsvReader reader_<%=cid%> = new com.csvreader.CsvReader(new java.io.StringReader(<%=incomingConnName %>.<%=normalizeColumn%>), '<%=delim %>');
-                        reader_<%=cid%>.setEscapeMode(com.csvreader.CsvReader.<%=escapeMode %>);
-                        reader_<%=cid%>.setTextQualifier('<%=textEnclosure %>');
-                        if (reader_<%=cid%>.readRecord()) {
-                            normalizeRecord_<%=cid%> = reader_<%=cid%>.getValues();
-                        } else {
+                    <%if(useCSV){%>
+                        char quotechar_<%=cid%> = '<%=textEnclosure %>';
+                        char escape_<%=cid%> = '\\';
+                        <%if("ESCAPE_MODE_DOUBLED".equals(escapeMode)) {%>
+                        escape_<%=cid%> = quotechar_<%=cid%>;
+                        <%}%>
+                        com.talend.csv.CSVReader reader_<%=cid%> = new com.talend.csv.CSVReader(new java.io.StringReader(<%=incomingConnName %>.<%=normalizeColumn%>),
+                        	"\n",'<%=delim %>',quotechar_<%=cid%>,escape_<%=cid%>,false,0);
+                        
+                        if ((normalizeRecord_<%=cid%> = reader_<%=cid%>.readNext())==null) {
                             normalizeRecord_<%=cid%> = new String[1];
                         }
                     <% } else { %>

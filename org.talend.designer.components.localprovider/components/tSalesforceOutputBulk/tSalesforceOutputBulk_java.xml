@@ -53,7 +53,7 @@
    <ADVANCED_PARAMETERS/>
    <CODEGENERATION>
 	  <IMPORTS>
-	    <IMPORT NAME="CsvWriter" MODULE="javacsv.jar" REQUIRED="true" />
+	    <IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar" REQUIRED="true" />
 	  </IMPORTS>
 	</CODEGENERATION>
 	<RETURNS>

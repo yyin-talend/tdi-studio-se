@@ -30,12 +30,16 @@ if(hasDataLink){
 	if(useMulSeprators==false && ("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 %>
 }
-fid_<%=cid %>.close();
+if(fid_<%=cid %>!=null) {
+	fid_<%=cid %>.close();
+}
 <%
 	}else{//the following is the tFileInputCSV component
 %>
 }
-<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.close();
+if(<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>!=null) {
+	<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.close();
+}
 <%
 	}
 }

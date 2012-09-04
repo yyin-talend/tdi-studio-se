@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.csvreader.CsvReader;
 import com.sforce.async.AsyncApiException;
 import com.sforce.async.BatchInfo;
 import com.sforce.async.BatchStateEnum;
@@ -104,7 +103,7 @@ public class SalesforceBulkAPI {
 
     private JobInfo job;
 
-    private CsvReader baseFileReader;
+    private com.talend.csv.CSVReader baseFileReader;
 
     private List<String> baseFileHeader;
 
@@ -121,10 +120,13 @@ public class SalesforceBulkAPI {
     }
 
     private void prepareLog() throws IOException {
-        baseFileReader = new CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(
-                bulkFileName), FILE_ENCODING)), ',');
-        if (baseFileReader.readRecord())
-            baseFileHeader = Arrays.asList(baseFileReader.getValues());
+        baseFileReader = new com.talend.csv.CSVReader(new java.io.BufferedReader(new java.io.InputStreamReader(
+                new java.io.FileInputStream(bulkFileName), FILE_ENCODING)), "\n", ',', '"', '\\', false, 0);
+        baseFileReader.doubleQuoteCharEscape(true);
+        String[] result = null;
+        if ((result = baseFileReader.readNext()) != null) {
+            baseFileHeader = Arrays.asList(result);
+        }
         baseFileHeaderSize = baseFileHeader.size();
     }
 
@@ -373,8 +375,9 @@ public class SalesforceBulkAPI {
 
     private Map<String, String> getBaseFileRow() throws IOException {
         Map<String, String> dataInfo = new HashMap<String, String>();
-        if (baseFileReader.readRecord()) {
-            List<String> row = Arrays.asList(baseFileReader.getValues());
+        String[] result = null;
+        if ((result = baseFileReader.readNext()) != null) {
+            List<String> row = Arrays.asList(result);
             for (int i = 0; i < row.size(); i++) {
                 dataInfo.put(baseFileHeader.get(i), row.get(i));
             }

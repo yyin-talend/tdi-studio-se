@@ -107,32 +107,24 @@ if((fileName_<%=cid%>.indexOf("/") != -1)) {
             new java.io.FileOutputStream(fileName_<%=cid%>, false),<%=encoding%>));
 
 <%}else{%>
-    
-    com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-            new java.io.FileOutputStream(fileName_<%=cid%>, false), <%=encoding%>)), '<%=delim%>');  
-    
-<%              if(!("\\n").equals(rowSeparator) && !("\\r").equals(rowSeparator)){%>
-    CsvWriter<%=cid %>.setRecordDelimiter('<%=rowSeparator.substring(1,rowSeparator.length()-1)  %>');
-<%              }
-%>
-    CsvWriter<%=cid %>.setTextQualifier('<%=textEnclosure %>');                
 
-<%
-if(("\\\\").equals(escapeChar)){
-%>
-    CsvWriter<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH);
-<%
-}else if(escapeChar.equals(textEnclosure)){
-%>
-    CsvWriter<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED);
-<%
-}else{
+	String lineSeparator_<%=cid%> = (String) java.security.AccessController.doPrivileged(
+		new sun.security.action.GetPropertyAction("line.separator"));
+    char quotechar_<%=cid%> = '<%=textEnclosure %>';
+    char escape_<%=cid%> = '\\';
     
-}
-%>    
-	CsvWriter<%=cid %>.setForceQualifier(true);   
+<%if(!("\\n").equals(rowSeparator) && !("\\r").equals(rowSeparator)){%>
+    lineSeparator_<%=cid%> = "<%=rowSeparator.substring(1,rowSeparator.length()-1) %>";
+<%}%>
 
+<%if(("\\\\").equals(escapeChar)){%>
 
+<%}else if(escapeChar.equals(textEnclosure)){%>
+    escape_<%=cid%> = quotechar_<%=cid%>;
+<%}%>
+    
+	com.talend.csv.CSVWriter CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+            new java.io.FileOutputStream(fileName_<%=cid%>, false), <%=encoding%>)), '<%=delim%>',quotechar_<%=cid%>,escape_<%=cid%>,lineSeparator_<%=cid%>);
 <%}%>
 
 

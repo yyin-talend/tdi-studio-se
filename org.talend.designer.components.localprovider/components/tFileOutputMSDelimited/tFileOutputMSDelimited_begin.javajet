@@ -130,15 +130,15 @@ if(field_<%=cid %>.length() <= 0){
 	throw new IllegalArgumentException("Field delimited must be assigned a char.");
 }
 <%		}%>
-com.csvreader.CsvWriter out<%=cid %> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-    new java.io.FileOutputStream(fileName_<%=cid%>, false), <%=encoding%>)),<%=isUseMultiSeparator==false?"field_"+cid+".charAt(0)":"\';\'" %>);
- 
+com.talend.csv.CSVWriter out<%=cid %> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+    new java.io.FileOutputStream(fileName_<%=cid%>, false), <%=encoding%>)),<%=isUseMultiSeparator==false?"field_"+cid+".charAt(0)":"\';\'" %>,'\0','\0',"\n");
+    
 <%
         if(isUseMultiSeparator==false){
 %>
 String row_<%=cid %> = <%=separator %>;
 if(row_<%=cid %>.length() > 0){
-	out<%=cid %>.setRecordDelimiter(row_<%=cid %>.charAt(0));
+	out<%=cid %>.setLineEnd("" + row_<%=cid %>.charAt(0));
 }else{
 	throw new IllegalArgumentException("Row delimited must be assigned a char.");
 }
@@ -150,18 +150,16 @@ if(escapeChar_<%=cid %>.length() <= 0){
 
 String textEnclosure_<%=cid %> = <%=textEnclosure %>;
 if(textEnclosure_<%=cid %>.length() > 0){
-	out<%=cid %>.setTextQualifier(textEnclosure_<%=cid %>.charAt(0));
+	out<%=cid %>.setQuoteChar(textEnclosure_<%=cid %>.charAt(0));
 }else{
 	throw new IllegalArgumentException("Text Enclosure must be assigned a char.");
 }
 
 if (("\\\\").equals(escapeChar_<%=cid %>)) {
-	out<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH);
+	out<%=cid %>.setEscapeChar('\\');
 } else if (escapeChar_<%=cid %>.equals(textEnclosure_<%=cid %>)) {
-	out<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED);
+	out<%=cid %>.setEscapeChar(textEnclosure_<%=cid %>.charAt(0));
 }
-out<%=cid %>.setForceQualifier(true);
-
 <%
 		}
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

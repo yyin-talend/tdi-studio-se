@@ -121,7 +121,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
    }  
     
     
-    CsvWriter<%=cid%>.writeRecord(finalStr<%=cid%>);
+    CsvWriter<%=cid%>.writeNext(finalStr<%=cid%>);
     
     CsvWriter<%=cid%>.flush();
 
@@ -148,7 +148,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
   } 
         
-        CsvWriter<%=cid%>.writeRecord(finalStr<%=cid%>);
+        CsvWriter<%=cid%>.writeNext(finalStr<%=cid%>);
         
         CsvWriter<%=cid%>.flush();
 

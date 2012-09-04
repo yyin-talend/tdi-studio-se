@@ -20,9 +20,13 @@
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
 %>
+    if(socket<%=cid%>!=null){
+    	socket<%=cid%>.close();
+    }
     
-    socket<%=cid%>.close();
-    CsvWriter<%=cid%>.close();
+    if(CsvWriter<%=cid%>!=null){
+    	CsvWriter<%=cid%>.close();
+    }
     
     globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid %>);
 

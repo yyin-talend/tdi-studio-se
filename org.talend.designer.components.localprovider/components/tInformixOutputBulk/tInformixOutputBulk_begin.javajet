@@ -36,16 +36,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		<%if(isCreateDir) {%>
 		file_<%=cid %>.getParentFile().mkdirs();
 		<%}%>
-				
-		com.csvreader.CsvWriter csvWriter_<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-        new java.io.FileOutputStream(file_<%=cid %>, <%=isAppend %>), <%=encoding %>)), fieldSeparator_<%=cid %>);
+		
+		com.talend.csv.CSVWriter csvWriter_<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+        	new java.io.FileOutputStream(file_<%=cid %>, <%=isAppend %>), <%=encoding %>)), fieldSeparator_<%=cid %>,'\0','\\',""+rowSeparator_<%=cid %>);
         
-        csvWriter_<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>);              	
-        csvWriter_<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH);      		
-      	//csvWriter_<%=cid %>.setTextQualifier(textEnclosure_<%=cid %>); 
-      	//csvWriter_<%=cid %>.setForceQualifier(true);
-      	csvWriter_<%=cid %>.setForceQualifier(false);  
-      	csvWriter_<%=cid %>.setUseTextQualifier(false);      
 <%
     }
 }

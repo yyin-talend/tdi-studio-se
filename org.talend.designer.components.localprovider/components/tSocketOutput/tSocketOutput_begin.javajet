@@ -29,6 +29,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
         boolean compress = ("true").equals(ElementParameterParser.getValue(node,"__COMPRESS__"));
         boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node,"__DIE_ON_ERROR__"));
+        
+        String rowSeparator1 = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
+        String rowSeparator = rowSeparator1.substring(1,rowSeparator1.length()-1);
+        
+        String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
+        String escapeChar = escapeChar1.substring(1,escapeChar1.length()-1);
+        String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
+        String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
+        if ("".equals(textEnclosure)) textEnclosure = "\0";
+        
+        
 %>    
 <% if(compress){%>
 class Compress{
@@ -62,9 +73,24 @@ for(int i=0;i<<%=retry%>-1;i++){
     }
 }
     
-com.csvreader.CsvWriter CsvWriter<%=cid%> = 
-   new com.csvreader.CsvWriter(
-      new java.io.BufferedWriter(new java.io.OutputStreamWriter(socket<%=cid%>.getOutputStream(),<%=encoding%>)), '<%=delim%>');  
+String lineSeparator_<%=cid%> = (String) java.security.AccessController.doPrivileged(
+	new sun.security.action.GetPropertyAction("line.separator"));
+char quotechar_<%=cid%> = '<%=textEnclosure %>';
+char escape_<%=cid%> = '\\';
+	
+<%if(!("\\n").equals(rowSeparator) && !("\\r").equals(rowSeparator)){%>
+	lineSeparator_<%=cid%> = "<%=rowSeparator%>";
+<%}%>
+
+<%if(("\\\\").equals(escapeChar)){
+
+}else if(escapeChar.equals(textEnclosure)){%>
+	escape_<%=cid%> = quotechar_<%=cid%>;
+<%}%>
+
+com.talend.csv.CSVWriter CsvWriter<%=cid%> = 
+   new com.talend.csv.CSVWriter(
+      new java.io.BufferedWriter(new java.io.OutputStreamWriter(socket<%=cid%>.getOutputStream(),<%=encoding%>)), '<%=delim%>',quotechar_<%=cid%>,escape_<%=cid%>,lineSeparator_<%=cid%>);  
 <%    	
 	}
 }

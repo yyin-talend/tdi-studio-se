@@ -2565,7 +2565,7 @@
 			<IMPORT NAME="partner" MODULE="partnerBulk.jar" REQUIRED="false" REQUIRED_IF="API=='bulk'"/>
 			<IMPORT NAME="wsc" MODULE="wsc.jar"
 				REQUIRED="false" REQUIRED_IF="API=='bulk'"/>
-			<IMPORT NAME="CsvWriter" MODULE="javacsv.jar" REQUIRED="false" REQUIRED_IF="API=='bulk'"/>
+			<IMPORT NAME="CsvWriter" MODULE="talendcsv.jar" REQUIRED="false" REQUIRED_IF="API=='bulk'"/>
 		</IMPORTS>
 	</CODEGENERATION>
 

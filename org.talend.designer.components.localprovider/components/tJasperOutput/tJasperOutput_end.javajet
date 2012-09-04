@@ -28,7 +28,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
        	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
        	
 %>	
-	CsvWriter_<%=cid%>.close();
+	if(CsvWriter_<%=cid%>!=null) {
+		CsvWriter_<%=cid%>.close();
+	}
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 	
 	String jasperFile_<%=cid%> = <%=tempDirectory%>+jrxmlName_<%=cid%>+ ".jasper";

@@ -425,28 +425,31 @@ if ( ((String)<%=rowSeparator1%>).length() > 0 ){
 }else {
 	throw new IllegalArgumentException("Row Separator must be assigned a char."); 
 }
-		
-com.csvreader.CsvReader <%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>=new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader( new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), <%=useMulSeprators?"';'" : "fieldSeparator_"+cid+"[0]" %>);
-<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.setTrimWhitespace(false);
+
+String lineEnd_<%=cid%> = "\n";
+char escape_<%=cid%> = '\\';
+boolean useDoubleTextQuoteEscape_<%=cid%> = false;
+
 if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )
-	<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
-
-<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
-
+	lineEnd_<%=cid%> = "" + rowSeparator_<%=cid %>[0];
+	
 <%
 	if(("\\\\").equals(escapeChar)){
         %>
-<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_BACKSLASH);
+escape_<%=cid%> = '\\';
 <%
 	}else if(escapeChar.equals(textEnclosure)){
         %>
-<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
-<%
-	}else{
-        %>
-//?????doesn't work for other escapeChar
+useDoubleTextQuoteEscape_<%=cid%> = true;
 <%
 	}
+%>
+	
+com.talend.csv.CSVReader <%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>=new com.talend.csv.CSVReader(new java.io.FileInputStream(<%=filename %>),<%=encoding %>
+	, lineEnd_<%=cid%>,<%=useMulSeprators?"';'" : "fieldSeparator_"+cid+"[0]" %>,'<%=textEnclosure %>',escape_<%=cid%>,false,0);
+
+<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.doubleQuoteCharEscape(useDoubleTextQuoteEscape_<%=cid%>);
+<%	
 if(useMulSeprators==true){%>	
 String[] delim_<%=cid %> = new String[]{
 <%
@@ -470,11 +473,12 @@ String[] row<%=cid %>=null;
   
 String temp_<%=cid %> = null;
 
-while ( <%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.readRecord() ) {
+String[] result_<%=cid%> = null;
+while ((result_<%=cid%>=<%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.readNext())!=null) {
 <%
 if(useMulSeprators==false){
 %>
-	row<%=cid %>=csvReader<%=cid %>.getValues();
+	row<%=cid %>=result_<%=cid%>;
 	<%if(trimAll){%>
 	for(int ii_<%=cid %>=0;ii_<%=cid %> < row<%=cid%>.length;ii_<%=cid %>++){
 		row<%=cid %>[ii_<%=cid %>] = row<%=cid %>[ii_<%=cid %>].trim(); 
@@ -485,28 +489,11 @@ if(useMulSeprators==false){
 %>
 	tmp<%=cid %> = <%=useMulSeprators? "tmp":"" %>csvReader<%=cid %>.getRawRecord();
 	for(int i_<%=cid %>=0; i_<%=cid %><delim_<%=cid %>.length; i_<%=cid %>++){ //NS000
-		com.csvreader.CsvReader csvReader<%=cid %> = new com.csvreader.CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-			new java.io.ByteArrayInputStream(tmp<%=cid %>.getBytes()), <%=encoding %>)), delim_<%=cid %>[i_<%=cid %>].charAt(0));
-		csvReader<%=cid %>.setTrimWhitespace(false);
-		if ( (rowSeparator_<%=cid %>[0] != '\n') && (rowSeparator_<%=cid %>[0] != '\r') )
-			csvReader<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>[0]);
+		com.talend.csv.CSVReader csvReader<%=cid %> = new com.talend.csv.CSVReader(new java.io.BufferedReader(new java.io.InputStreamReader(
+			new java.io.ByteArrayInputStream(tmp<%=cid %>.getBytes()), <%=encoding %>)),lineEnd_<%=cid%>, delim_<%=cid %>[i_<%=cid %>].charAt(0),'<%=textEnclosure %>',escape_<%=cid%>,false,0);
 		
-		csvReader<%=cid %>.setTextQualifier('<%=textEnclosure %>');
-<%
-	if(("\\\\").equals(escapeChar)){
-        %>
-		csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_BACKSLASH);
-<%
-	}else if(escapeChar.equals(textEnclosure)){
-        %>
-		csvReader<%=cid %>.setEscapeMode(com.csvreader.CsvReader.ESCAPE_MODE_DOUBLED);
-<%
-	}else{
-        %>
-		//?????doesn't work for other escapeChar
-<%
-	}
-}%>
+		csvReader<%=cid %>.doubleQuoteCharEscape(useDoubleTextQuoteEscape_<%=cid%>);
+<%}%>
 
 <% 
 	for(String conName : connections){
@@ -517,12 +504,13 @@ if(useMulSeprators==false){
 %>		
 <%if(useMulSeprators==true){%>
 
-		if(csvReader<%=cid %>.readRecord()==false) {
-			csvReader<%=cid %>.close();
+		if((row<%=cid %>=csvReader<%=cid %>.readNext())==null) {
+			if(csvReader<%=cid %>!=null) {
+				csvReader<%=cid %>.close();
+			}
 			break;
 		}
 		
-		row<%=cid %> = csvReader<%=cid %>.getValues();
     	<%if(trimAll){%>
     	for(int ii_<%=cid %>=0;ii_<%=cid %> < row<%=cid%>.length;ii_<%=cid %>++){
     		row<%=cid %>[ii_<%=cid %>] = row<%=cid %>[ii_<%=cid %>].trim(); 
@@ -673,7 +661,9 @@ if(useMulSeprators==false){
 			}//FIM_005
 			if(useMulSeprators==true){
 %>
-		csvReader<%=cid %>.close();
+		if(csvReader<%=cid %>!=null) {
+			csvReader<%=cid %>.close();
+		}
 		break;
 <%
 			}

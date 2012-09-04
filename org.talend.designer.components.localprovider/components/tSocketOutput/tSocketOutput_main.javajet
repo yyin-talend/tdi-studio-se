@@ -26,41 +26,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {                                    
         String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
-        String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
         boolean compress = ("true").equals(ElementParameterParser.getValue(node,"__COMPRESS__"));
-        String delim = delim1.substring(1,delim1.length()-1);
-        String rowSeparator1 = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
-        String rowSeparator = rowSeparator1.substring(1,rowSeparator1.length()-1);
-        String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
-        String escapeChar = escapeChar1.substring(1,escapeChar1.length()-1);
-        String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
-        String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
-        if ("".equals(textEnclosure)) textEnclosure = "\0";
         
         List< ? extends IConnection> conns = node.getIncomingConnections();
-        if(!("\\n").equals(rowSeparator) && !("\\r").equals(rowSeparator)){
-%>
-            CsvWriter<%=cid %>.setRecordDelimiter('<%=rowSeparator%>');
-<%              
-        }
-        if(("\\\\").equals(escapeChar)){
-%>
-            CsvWriter<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH);
-<%
-        }else if(escapeChar.equals(textEnclosure)){
-%>
-            CsvWriter<%=cid %>.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED);
-<%
-        }else{
-%>
-            //doesn't work for other escapeChar
-<%
-        }
-%>
-        
-        CsvWriter<%=cid %>.setTextQualifier('<%=textEnclosure %>'); 
-        CsvWriter<%=cid %>.setForceQualifier(true);
-<%      
         if(conns!=null){
             if (conns.size()>0){
                 IConnection conn =conns.get(0);
@@ -114,7 +82,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                             row<%=cid%>[i]=new sun.misc.BASE64Encoder().encode(com<%=cid%>.zip(row<%=cid%>[i].getBytes(<%=encoding%>)));//encodeing!!!!!!!!!!!!!!!!!!!
                         }
                     <% } %>    
-                        CsvWriter<%=cid%>.writeRecord(row<%=cid%>); 
+                        CsvWriter<%=cid%>.writeNext(row<%=cid%>); 
                         CsvWriter<%=cid%>.flush();                
 
                     nb_line_<%=cid %>++;

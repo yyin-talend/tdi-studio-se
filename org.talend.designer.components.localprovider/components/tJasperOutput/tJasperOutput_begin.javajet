@@ -30,8 +30,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (!file_<%=cid%>.exists()) {
         file_<%=cid%>.createNewFile();
     }
-    com.csvreader.CsvWriter CsvWriter_<%=cid%>=new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-                new java.io.FileOutputStream(tempFile_<%=cid%>,false),<%=encoding%>)), ',');  
+    
+    String lineSeparator_<%=cid%> = (String) java.security.AccessController.doPrivileged(
+		new sun.security.action.GetPropertyAction("line.separator"));
+    
+    com.talend.csv.CSVWriter CsvWriter_<%=cid%>=new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+                new java.io.FileOutputStream(tempFile_<%=cid%>,false),<%=encoding%>)), ',','\0','\0',lineSeparator_<%=cid%>);  
 	
 <%
         List<IMetadataColumn> columns = metadata.getListColumns();
@@ -46,7 +50,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 		}
 %>
-    CsvWriter_<%=cid%>.writeRecord(headColu_<%=cid%>);	
+    CsvWriter_<%=cid%>.writeNext(headColu_<%=cid%>);
+    CsvWriter_<%=cid%>.setQuoteChar('"');
+    CsvWriter_<%=cid%>.setEscapeChar('"');
 <%
 	}
 }
