@@ -187,15 +187,18 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
 
         tableViewer.setCellModifier(new ICellModifier() {
 
+            @Override
             public boolean canModify(Object element, String property) {
                 return property.equals(columnProperties[2]);
             }
 
+            @Override
             public Object getValue(Object element, String property) {
                 return EmfPropertyHelper.getValue(itemPropertyDescriptor, element);
 
             }
 
+            @Override
             public void modify(Object element, String property, Object value) {
                 if (element instanceof TableItem) {
                     TableItem tableItem = (TableItem) element;
@@ -221,6 +224,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
     private void createDoubleClickListener() {
         tableViewer.addDoubleClickListener(new IDoubleClickListener() {
 
+            @Override
             public void doubleClick(DoubleClickEvent event) {
 
                 BusinessAssignment businessAssignment = getBusinessAssignment(event.getSelection());
@@ -254,6 +258,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
     private void createSelectionListener() {
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 BusinessAssignment businessAssignment = getBusinessAssignment(event.getSelection());
                 if (businessAssignment != null) {
@@ -390,6 +395,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
 
+            @Override
             public void menuAboutToShow(IMenuManager mgr) {
                 BusinessAssignment businessAssignment = getBusinessAssignment(tableViewer.getSelection());
                 if (businessAssignment != null) {
@@ -518,6 +524,7 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
     private void createKeyListener(Table table) {
         table.addKeyListener(new KeyAdapter() {
 
+            @Override
             public void keyPressed(KeyEvent event) {
                 ISelection selection = tableViewer.getSelection();
                 if (selection instanceof IStructuredSelection) {
@@ -556,6 +563,14 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
             return new StructuredSelection();
         }
         return new StructuredSelection(repositoryNode);
+    }
+
+    @Override
+    public void refresh() {
+        super.refresh();
+        if (tableViewer != null) {
+            tableViewer.refresh();
+        }
     }
 
 }
