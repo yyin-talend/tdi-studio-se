@@ -119,8 +119,9 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
             return;
         }
         super.setName();
-        String label = getEditorInput().getName();
+
         IProcess2 process2 = this.getProcess();
+        String label = process2.getProperty().getDisplayName();
         String jobVersion = "0.1";
         if (process2 != null)
             jobVersion = process2.getVersion();
