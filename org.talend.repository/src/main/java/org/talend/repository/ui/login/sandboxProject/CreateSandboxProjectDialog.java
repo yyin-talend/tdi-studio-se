@@ -199,7 +199,7 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
         projectLabelText.getTextControl().setEditable(false);
 
         languageCombo = new LabelledCombo(projectGroup, Messages.getString("NewProjectWizardPage.language"), null, new String[] { //$NON-NLS-1$
-                ECodeLanguage.JAVA.getName(), ECodeLanguage.PERL.getName() });
+                ECodeLanguage.JAVA.getName() });
         layoutData = new GridData();
         layoutData.widthHint = 100;
         layoutData.minimumWidth = 100;
@@ -484,8 +484,8 @@ public class CreateSandboxProjectDialog extends TitleAreaDialog {
                             messages += "\n\n" //$NON-NLS-1$ 
                                     + Messages.getString("CreateSandboxProjectDialog.creatingConnectionMessages", bean.getName()); //$NON-NLS-1$
                             // }
-                            MessageDialog.openInformation(getShell(), Messages
-                                    .getString("CreateSandboxProjectDialog.successTitile"), messages); //$NON-NLS-1$
+                            MessageDialog.openInformation(getShell(),
+                                    Messages.getString("CreateSandboxProjectDialog.successTitile"), messages); //$NON-NLS-1$
 
                             // if (needCreateNewConn) {
                             // save connection
