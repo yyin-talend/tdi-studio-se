@@ -399,6 +399,9 @@ public class ConnectionCreateCommand extends Command {
 
     @Override
     public void undo() {
+        if (connection == null) {
+            return;
+        }
         connection.disconnect();
         INodeConnector nodeConnectorSource, nodeConnectorTarget;
         nodeConnectorSource = connection.getSourceNodeConnector();
