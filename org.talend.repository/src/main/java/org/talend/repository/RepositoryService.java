@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -76,6 +77,7 @@ import org.talend.core.repository.model.RepositoryFactoryProvider;
 import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.core.repository.utils.RepositoryPathProvider;
+import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.ui.DisableLanguageActions;
 import org.talend.core.ui.IRulesProviderService;
 import org.talend.core.ui.branding.IBrandingService;
@@ -244,7 +246,6 @@ public class RepositoryService implements IRepositoryService {
             CorePlugin.getDefault().getCodeGeneratorService().initializeTemplates();
             CorePlugin.getDefault().getDesignerCoreService()
                     .synchronizeDesignerUI(new PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
-
         }
 
     }
@@ -638,6 +639,18 @@ public class RepositoryService implements IRepositoryService {
             }
         }
         return "";
+    }
+
+    public boolean openReadOnlyDialog(Shell shell) {
+        Context ctx = CoreRuntimePlugin.getInstance().getContext();
+        RepositoryContext rc = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
+        String branchKey = IProxyRepositoryFactory.BRANCH_SELECTION + "_"
+                + ProjectManager.getInstance().getCurrentProject().getTechnicalLabel();
+        String branchSelection = rc.getFields().get(branchKey);
+        if (branchSelection.startsWith("tags")) {
+            MessageDialog.openInformation(shell, "Information", "the current login project is readonly");
+        }
+        return true;
     }
 
 }
