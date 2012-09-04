@@ -566,4 +566,12 @@ public class BusinessAssignmentComposite extends AbstractTabComposite {
         return new StructuredSelection(repositoryNode);
     }
 
+    @Override
+    public void refresh() {
+        super.refresh();
+        if (tableViewer != null) {
+            tableViewer.refresh();
+        }
+    }
+
 }
