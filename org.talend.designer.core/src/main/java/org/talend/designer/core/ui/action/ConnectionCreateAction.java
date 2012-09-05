@@ -607,9 +607,11 @@ public class ConnectionCreateAction extends SelectionAction {
                 if (getText().equals(getDefaultTableName())) {
                     int end = getText().lastIndexOf("(") - 1;//$NON-NLS-1$
                     int start = 0; //$NON-NLS-1$
-                    connectionName = getText().substring(start, end);
-                    meta = node.getMetadataList().get(0);
-                    meta.setAttachedConnector(curNodeConnector.getName());
+                    if (end >= start) {
+                        connectionName = getText().substring(start, end);
+                        meta = node.getMetadataList().get(0);
+                        meta.setAttachedConnector(curNodeConnector.getName());
+                    }
                 } else if (getText().equals(getNewOutputMenuName()) && getDefaultTableName() != null) {
                     if (node.getComponent().getName().equals("tELTOracleInput")) { //$NON-NLS-1$
                         connectionName = askForConnectionNameAndSchema(node.getLabel(), null);
