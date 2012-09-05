@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -288,8 +289,9 @@ public class ConnectionCreateCommand extends Command {
                 boolean connectionOk = false;
                 while (!connectionOk) {
                     connectionName = askForConnectionName(source.getLabel(), connectionName);
-                    if (connectionName.equals("")) { //$NON-NLS-1$
+                    if (StringUtils.isEmpty(connectionName)) {
                         creatingConnection = false;
+                        connectionName = null;
                         dispose();
                         return;
                     }
@@ -419,6 +421,7 @@ public class ConnectionCreateCommand extends Command {
         source.checkAndRefreshNode();
         target.checkAndRefreshNode();
         // ((Process) source.getProcess()).checkProcess();
+        connection = null;
     }
 
     @Override
