@@ -28,7 +28,8 @@
             </instanceof>
          </possibleChildren>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider"
+               id="org.talend.repository.business.model.action.provider.id">
             <enablement>
                <and>
                   <instanceof
@@ -119,7 +120,8 @@
             </instanceof>
          </possibleChildren>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider"
+               id="org.talend.repository.routines.action.provider.id">
             <enablement>
                <and>
                   <instanceof
@@ -209,7 +211,8 @@
             </instanceof>
          </possibleChildren>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider"
+               id="org.talend.repository.sql.templates.action.provider.id">
             <enablement>
                <and>
                   <instanceof
@@ -256,7 +259,8 @@
             </or>
          </triggerPoints>
          <actionProvider
-               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider">
+               class="org.talend.repository.view.di.viewer.action.DIRepositoryNodeActionProvider"
+               id="org.talend.repository.documentation.action.provider.id">
             <enablement>
                <and>
                   <instanceof

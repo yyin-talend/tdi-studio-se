@@ -56,7 +56,8 @@
             </instanceof>
          </possibleChildren>
          <actionProvider
-               class="org.talend.repository.metadata.action.MetedataNodeActionProvier">
+               class="org.talend.repository.metadata.action.MetedataNodeActionProvier"
+               id="org.talend.repository.ftp.action.provider.id">
             <enablement>
                <and>
                   <instanceof
