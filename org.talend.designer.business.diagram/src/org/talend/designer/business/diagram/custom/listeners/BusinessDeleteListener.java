@@ -18,6 +18,7 @@ import java.beans.PropertyChangeListener;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
@@ -28,12 +29,6 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * DOC Administrator class global comment. Detailled comment
  */
 public class BusinessDeleteListener implements PropertyChangeListener {
-
-    private IRepositoryObject businessObjectToDelete;
-
-    private boolean isDeleteBusinessLogical;
-
-    private boolean isDeleteBusinessPhysical;
 
     private IProxyRepositoryFactory factory = null;
 
@@ -46,10 +41,11 @@ public class BusinessDeleteListener implements PropertyChangeListener {
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent event) {
 
-        isDeleteBusinessLogical = event.getPropertyName().equals(ERepositoryActionName.BUSINESS_DELETE_TO_RECYCLE_BIN.getName());
-        isDeleteBusinessPhysical = event.getPropertyName().equals(ERepositoryActionName.BUSINESS_DELETE_FOREVER.getName());
+        boolean isDeleteBusinessLogical = event.getPropertyName().equals(ERepositoryActionName.DELETE_TO_RECYCLE_BIN.getName());
+        boolean isDeleteBusinessPhysical = event.getPropertyName().equals(ERepositoryActionName.DELETE_FOREVER.getName());
 
         if (!isDeleteBusinessLogical && !isDeleteBusinessPhysical) {
             return;
@@ -58,13 +54,18 @@ public class BusinessDeleteListener implements PropertyChangeListener {
         if (!(event.getNewValue() instanceof IRepositoryObject)) {
             return;
         }
-        businessObjectToDelete = (IRepositoryObject) event.getNewValue();
+        IRepositoryObject object = (IRepositoryObject) event.getNewValue();
+        if (object.getRepositoryObjectType() != ERepositoryObjectType.BUSINESS_PROCESS) {
+            return;
+        }
 
-        if (businessObjectToDelete != null) {
+        object = (IRepositoryObject) event.getNewValue();
+
+        if (object != null) {
 
             try {
 
-                deleteSVGObjectLogicalOrPhysical(businessObjectToDelete, isDeleteBusinessLogical);
+                deleteSVGObjectLogicalOrPhysical(object, isDeleteBusinessLogical);
 
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
