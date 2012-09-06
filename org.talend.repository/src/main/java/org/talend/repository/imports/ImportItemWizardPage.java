@@ -89,6 +89,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.RepositoryViewObject;
+import org.talend.core.model.utils.TalendPropertiesUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.documentation.IDocumentationService;
@@ -454,7 +455,7 @@ class ImportItemWizardPage extends WizardPage {
         browseArchivesButton = new Button(projectGroup, SWT.PUSH);
         browseArchivesButton.setText(DataTransferMessages.DataTransfer_browse);
         setButtonLayoutData(browseArchivesButton);
-        if (PluginChecker.isExchangeSystemLoaded()) {
+        if (PluginChecker.isExchangeSystemLoaded() && !TalendPropertiesUtil.isHideExchange()) {
             selectExchangeButton = new Button(projectGroup, SWT.PUSH);
             selectExchangeButton.setText(Messages.getString("ImportItemWizardPage.browseTalend")); //$NON-NLS-1$
             setButtonLayoutData(selectExchangeButton);

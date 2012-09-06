@@ -729,4 +729,12 @@
              name="tMDMXXX">
        </DragAndDropFilter>
     </extension>
+    <extension
+          point="org.talend.core.runtime.hidePreferencePages_provider">
+       <preference_provider
+             name="Hide exchange preference"
+             prefPageId="org.talend.repository.prefs.exchange"
+             validator="org.talend.designer.core.ui.preferences.ExchangeHidePreferencePageValidator">
+       </preference_provider>
+    </extension>
 </plugin>

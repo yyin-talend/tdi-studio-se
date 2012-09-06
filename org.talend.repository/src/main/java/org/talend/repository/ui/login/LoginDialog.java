@@ -52,6 +52,7 @@ import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.IExchangeService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ExchangeUser;
+import org.talend.core.model.utils.TalendPropertiesUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
@@ -105,6 +106,7 @@ public class LoginDialog extends TrayDialog {
         setHelpAvailable(false);
     }
 
+    @Override
     protected void initializeBounds() {
         super.initializeBounds();
         Point location = getInitialLocation(getShell().getSize());
@@ -156,7 +158,7 @@ public class LoginDialog extends TrayDialog {
         container.setBackground(new Color(null, 255, 255, 255));
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
-        new ImageCanvas(container, brandingService.getLoginVImage()); //$NON-NLS-1$
+        new ImageCanvas(container, brandingService.getLoginVImage());
 
         if (!perReader.isHaveUserPer()) {
             perReader.createPropertyFile();
@@ -207,10 +209,10 @@ public class LoginDialog extends TrayDialog {
 
         Map<String, String> convertorMapper = tosLoginComposite.getConvertorMapper();
 
-        for (int i = 0; i < projectCollection.length; i++) {
+        for (Project element : projectCollection) {
 
-            tosLoginComposite.getProjectMap().put(projectCollection[i].getLabel().toUpperCase(), projectCollection[i]);
-            convertorMapper.put(projectCollection[i].getLabel().toUpperCase(), projectCollection[i].getLabel());
+            tosLoginComposite.getProjectMap().put(element.getLabel().toUpperCase(), element);
+            convertorMapper.put(element.getLabel().toUpperCase(), element.getLabel());
 
         }
 
@@ -317,33 +319,34 @@ public class LoginDialog extends TrayDialog {
         // tfDialog.open();
         // }
         // } else {// tis
-        IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-        boolean checkTisVersion = prefStore.getBoolean(ITalendCorePrefConstants.EXCHANGE_CHECK_TIS_VERSION);
-        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
-        if (!checkTisVersion && brandingService.isPoweredbyTalend()) {
-            int count = prefStore.getInt(TalendForgeDialog.LOGINCOUNT);
-            ExchangeUser exchangeUser = project.getExchangeUser();
-            boolean isExchangeLogon = exchangeUser.getLogin() != null && !exchangeUser.getLogin().equals("");
-            boolean isUserPassRight = true;
-            if (isExchangeLogon) {
-                if (PluginChecker.isExchangeSystemLoaded()) {
-                    IExchangeService service = (IExchangeService) GlobalServiceRegister.getDefault().getService(
-                            IExchangeService.class);
-                    if (service.checkUserAndPass(exchangeUser.getUsername(), exchangeUser.getPassword()) != null) {
-                        isUserPassRight = false;
+        if (PluginChecker.isExchangeSystemLoaded() && !TalendPropertiesUtil.isHideExchange()) {
+            IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
+            boolean checkTisVersion = prefStore.getBoolean(ITalendCorePrefConstants.EXCHANGE_CHECK_TIS_VERSION);
+            IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                    IBrandingService.class);
+            if (!checkTisVersion && brandingService.isPoweredbyTalend()) {
+                int count = prefStore.getInt(TalendForgeDialog.LOGINCOUNT);
+                ExchangeUser exchangeUser = project.getExchangeUser();
+                boolean isExchangeLogon = exchangeUser.getLogin() != null && !exchangeUser.getLogin().equals("");
+                boolean isUserPassRight = true;
+                if (isExchangeLogon) {
+                    if (PluginChecker.isExchangeSystemLoaded()) {
+                        IExchangeService service = (IExchangeService) GlobalServiceRegister.getDefault().getService(
+                                IExchangeService.class);
+                        if (service.checkUserAndPass(exchangeUser.getUsername(), exchangeUser.getPassword()) != null) {
+                            isUserPassRight = false;
+                        }
+                    }
+                }
+
+                if (!isExchangeLogon || !isUserPassRight) {
+                    if (count < 10) {
+                        TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
+                        tfDialog.open();
                     }
                 }
             }
-
-            if (!isExchangeLogon || !isUserPassRight) {
-                if (count < 10) {
-                    TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
-                    tfDialog.open();
-                }
-            }
         }
-        // }
 
         final Shell shell = this.getShell();
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
