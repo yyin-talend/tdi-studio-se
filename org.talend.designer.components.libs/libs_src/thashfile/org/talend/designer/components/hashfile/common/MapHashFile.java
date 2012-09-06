@@ -24,7 +24,8 @@ public class MapHashFile {
 		AdvancedMemoryHashFile amhf = resourceMap.get(key);
 		String prekey = keyMap.get(key);
 		//if present AdvancedMemoryHashFile is null get the AdvancedMemoryHashFile before present.
-		while(amhf==null){
+		int size = keyMap.size();
+		while(amhf==null && (size--)>0){
 			amhf = resourceMap.get(prekey);
 			prekey = keyMap.get(prekey);
 		}
