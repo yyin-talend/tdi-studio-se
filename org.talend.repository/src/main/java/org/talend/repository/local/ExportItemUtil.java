@@ -57,6 +57,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.PropertiesPackage;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.ReferenceFileItem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.User;
@@ -318,7 +319,7 @@ public class ExportItemUtil {
                     toExport.put(projectFile, projectPath);
                 }
                 if (ERepositoryObjectType.getItemType(item).isResourceItem()) {
-                    Collection<EObject> copiedObjects = copyObjects(item);
+                    Collection<EObject> copiedObjects = getObjects(item);
 
                     Item copiedItem = (Item) EcoreUtil.getObjectByType(copiedObjects, PropertiesPackage.eINSTANCE.getItem());
                     fixItem(copiedItem);
@@ -599,8 +600,16 @@ public class ExportItemUtil {
     }
 
     @SuppressWarnings("unchecked")
-    private Collection<EObject> copyObjects(Item item) {
+    private Collection<EObject> getObjects(Item oraItem) {
         List<EObject> objects = new ArrayList<EObject>();
+
+        URI propertyUri = oraItem.getProperty().eResource().getURI();
+        ResourceSet resourceSet = new ResourceSetImpl();
+        Resource propertyResource = resourceSet.getResource(propertyUri, true);
+
+        Property property = (Property) EcoreUtil.getObjectByType(propertyResource.getContents(),
+                PropertiesPackage.eINSTANCE.getProperty());
+        Item item = property.getItem();
 
         objects.add(item);
         EList references = item.eClass().getEAllReferences();
@@ -636,7 +645,8 @@ public class ExportItemUtil {
 
         MetadataManager.addPackges(item, objects); // hywang 13221
 
-        return EcoreUtil.copyAll(objects);
+        // return EcoreUtil.copyAll(objects);
+        return objects;
     }
 
     private void moveObjectsToResource(Resource resource, Collection<EObject> objects, EClass type) {
