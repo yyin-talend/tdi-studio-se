@@ -3,16 +3,13 @@ imports="
     org.talend.core.model.process.INode
     org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.metadata.IMetadataTable
-    org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.IConnection
     org.talend.core.model.process.IConnectionCategory
-    org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.metadata.types.JavaType
     org.talend.core.model.metadata.MetadataTalendType
     org.talend.core.model.metadata.MappingTypeRetriever    
-    java.util.List
     java.util.ArrayList
     java.util.Map
     java.util.HashMap
@@ -79,7 +76,6 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         %>
         java.lang.Class.forName("com.vertica.Driver");
         dbschema_<%=cid%> = <%=dbschema%>;	
-		java.lang.Class.forName("com.vertica.Driver");
 		String url_<%=cid %> = "jdbc:vertica://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
 		String dbUser_<%=cid %> = <%=dbuser%>;
 		String dbPwd_<%=cid %> = <%=dbpwd%>;
