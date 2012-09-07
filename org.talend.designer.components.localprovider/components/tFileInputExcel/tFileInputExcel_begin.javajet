@@ -490,7 +490,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			}
 		RegexUtil_<%=cid %> regexUtil_<%=cid %> = new RegexUtil_<%=cid %>();
 		
-		class DateUtil {
+		class DateUtil_<%=cid%> {
 			
 			private final java.util.regex.Pattern date_ptrn1 = java.util.regex.Pattern.compile("^\\[\\$\\-.*?\\]");
 			
@@ -600,7 +600,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             } 
 		}
 		
-		DateUtil dateUtil = new DateUtil();
+		DateUtil_<%=cid%> dateUtil_<%=cid%> = new DateUtil_<%=cid%>();
 		
 		Object source_<%=cid %> = <%=fileName%>;
 		org.apache.poi.xssf.usermodel.XSSFWorkbook workbook_<%=cid%> = null;
@@ -778,7 +778,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                             temp_row_<%= cid %>[i] = cell_<%=cid%>.getRichStringCellValue().getString();
                             break;
                         case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC:
-                            if (dateUtil.isCellDateFormatted(cell_<%=cid%>)) {
+                            if (dateUtil_<%=cid%>.isCellDateFormatted(cell_<%=cid%>)) {
 <%
 								if(converDatetoString){
 %>
@@ -807,7 +807,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                     temp_row_<%= cid %>[i] = cell_<%=cid%>.getRichStringCellValue().getString();
                                     break;
                                 case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC:
-                                    if (dateUtil.isCellDateFormatted(cell_<%=cid%>)) {
+                                    if (dateUtil_<%=cid%>.isCellDateFormatted(cell_<%=cid%>)) {
 <%
 										if(converDatetoString){
 %>
@@ -871,7 +871,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>		
 				if(<%= i%><actual_end_column_<%= cid %>){
 					try{
-						if(row_<%= cid %>.getCell(<%=i%>+ start_column_<%= cid %>).getCellType() == org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC && dateUtil.isCellDateFormatted(row_<%= cid %>.getCell(<%=i%>+ start_column_<%= cid %>))){
+						if(row_<%= cid %>.getCell(<%=i%>+ start_column_<%= cid %>).getCellType() == org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC && dateUtil_<%=cid%>.isCellDateFormatted(row_<%= cid %>.getCell(<%=i%>+ start_column_<%= cid %>))){
 							<%=firstConnName %>.<%=column.getLabel() %> = row_<%= cid %>.getCell(<%=i%>+ start_column_<%= cid %>).getDateCellValue();
 						}
 						else{
