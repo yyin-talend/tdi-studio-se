@@ -125,7 +125,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     <%
     if(isEnableSaveMemMode) {
         %>
-        String searching_<%=cid%> = "<%=scdManager.createSearchingSQL(scdConfiger)%>";
+        String searching_<%=cid%> = "<%=scdManager.createSearchingSQL(scdConfiger,false)%>";
         java.sql.PreparedStatement searchingStmt_<%=cid%> = connection_<%=cid%>.prepareStatement(searching_<%=cid%>);
         java.sql.ResultSet searchingResult_<%=cid%> = null;
         <%
@@ -280,13 +280,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     }
     if(scdConfiger.isEnableType1()) {
         %>
-        String updateSQLForType1_<%=cid%> = "<%=scdManager.createUpdateSQLForType1(scdConfiger)%>";
+        String updateSQLForType1_<%=cid%> = "<%=scdManager.createUpdateSQLForType1(scdConfiger,false)%>";
         java.sql.PreparedStatement updateForType1_<%=cid%> = connection_<%=cid%>.prepareStatement(updateSQLForType1_<%=cid%>);        
         <%
     }
     if(scdConfiger.isEnableType2()) {
         %>
-        String updateSQLForType2_<%=cid%> = "<%=scdManager.createUpdateSQLForType2(scdConfiger)%>";
+        String updateSQLForType2_<%=cid%> = "<%=scdManager.createUpdateSQLForType2(scdConfiger,false)%>";
         java.sql.PreparedStatement updateForType2_<%=cid%> = connection_<%=cid%>.prepareStatement(updateSQLForType2_<%=cid%>);
         <%
         if(("JOB_START_TIME").equals(scdConfiger.getDimensionType2Configer().getStartDateValueType())) {
@@ -297,7 +297,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     }
     if(scdConfiger.isEnableType3()) {
         %>
-        String updateSQLForType3_<%=cid%> = "<%=scdManager.createUpdateSQLForType3(scdConfiger)%>";
+        String updateSQLForType3_<%=cid%> = "<%=scdManager.createUpdateSQLForType3(scdConfiger,false)%>";
         java.sql.PreparedStatement updateForType3_<%=cid%> = connection_<%=cid%>.prepareStatement(updateSQLForType3_<%=cid%>);
         <%
     }
