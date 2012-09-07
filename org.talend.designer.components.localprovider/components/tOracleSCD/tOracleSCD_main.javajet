@@ -70,9 +70,9 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         int paramIndex = 1;
         for(Column sourceKey : sourceKeys) {
             %>
-            <%=scdManager.genSetStatement("searchingStmt_" + cid, inConnectionName + "." + sourceKey.getLabelName(), paramIndex, sourceKey.getJavaType())%>
+            <%=scdManager.genSetStatement("searchingStmt_" + cid, inConnectionName + "." + sourceKey.getLabelName(), paramIndex, sourceKey.getJavaType(),true)%>
             <%
-            paramIndex++;
+            paramIndex=paramIndex+2;
         }
         List<Column> searchingColumns = getSearchingColumnList(scdConfiger);
         %>
@@ -257,9 +257,9 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 }
                 for(Column sourceKey : sourceKeys) {
                     %>
-                    <%=scdManager.genSetStatement("updateForType1_" + cid, inConnectionName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType())%>
+                    <%=scdManager.genSetStatement("updateForType1_" + cid, inConnectionName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),true)%>
                     <%
-                    index++;
+                    index=index+2;
                 }
                 %>
                 nb_line_update_<%=cid%> += updateForType1_<%=cid%>.executeUpdate();
@@ -316,9 +316,9 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 }
                 for(Column sourceKey : sourceKeys) {
                     %>
-                    <%=scdManager.genSetStatement("updateForType2_" + cid, inConnectionName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType())%>
+                    <%=scdManager.genSetStatement("updateForType2_" + cid, inConnectionName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),true)%>
                     <%
-                    index++;
+                    index=index+2;
                 }
                 %>
                 nb_line_update_<%=cid%> += updateForType2_<%=cid%>.executeUpdate();
@@ -442,9 +442,9 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 }
                 for(Column sourceKey : sourceKeys) {
                     %>
-                    <%=scdManager.genSetStatement("updateForType3_" + cid,  inConnectionName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType())%>
+                    <%=scdManager.genSetStatement("updateForType3_" + cid,  inConnectionName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),true)%>
                     <%
-                    index++;
+                    index=index+2;
                 }
                 %>
                 nb_line_update_<%=cid%> += updateForType3_<%=cid%>.executeUpdate();

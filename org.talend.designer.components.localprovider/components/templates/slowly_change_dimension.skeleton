@@ -815,6 +815,9 @@ public class CLASS {
         protected abstract String getActiveFieldTrueValue(JavaType activeFieldType);
         protected abstract String getActiveFieldFalseValue(JavaType activeFieldType);        
         public String createSearchingSQL(SCDConfiger scdConfiger) {
+         	return createSearchingSQL(scdConfiger ,true);
+        }
+        public String createSearchingSQL(SCDConfiger scdConfiger ,boolean isSourceKeyEnableNull) {
             StringBuilder searchingSQL = new StringBuilder();
             boolean firstColumn = true;
             boolean firstKeyColumn = true;
@@ -867,7 +870,11 @@ public class CLASS {
                 } else {
                     searchingSQL.append(keySeparator);
                 }
-                searchingSQL.append(getLProtectedChar() + sourceKey.getColumnName() + getRProtectedChar() + " = ?");
+                if(isSourceKeyEnableNull){
+                	searchingSQL.append(" ("+getLProtectedChar() + sourceKey.getColumnName() + getRProtectedChar() + " = ? OR ((? IS NULL) AND ("+getLProtectedChar() + sourceKey.getColumnName() + getRProtectedChar() + "IS NULL ))) ");
+                }else{
+                	searchingSQL.append(getLProtectedChar() + sourceKey.getColumnName() + getRProtectedChar() + " = ?");
+                }
             }
             if(scdConfiger.isEnableType2()) {
                 searchingSQL.append(keySeparator);
@@ -1033,6 +1040,9 @@ public class CLASS {
             return insertionSQL.toString();
         }
         public String createUpdateSQLForType1(SCDConfiger scdConfiger) {
+         	return createUpdateSQLForType1(scdConfiger ,true);
+        }
+        public String createUpdateSQLForType1(SCDConfiger scdConfiger ,boolean isSourceKeyEnableNull) {
             StringBuilder updateSQL = new StringBuilder();
             if(scdConfiger.isEnableType1()) {
                 updateSQL.append("UPDATE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
@@ -1049,7 +1059,11 @@ public class CLASS {
                     } else {
                         updateWhereStmt += keySeparator;
                     }
-                    updateWhereStmt += getLProtectedChar() + keyColumn.getColumnName() + getRProtectedChar() + " = ?";
+                    if(isSourceKeyEnableNull){
+                    	updateWhereStmt += " ("+getLProtectedChar() + keyColumn.getColumnName() + getRProtectedChar() + " = ? OR ((? IS NULL) AND ("+getLProtectedChar() + keyColumn.getColumnName() + getRProtectedChar() + " IS NULL ))) ";
+                    }else{
+                    	updateWhereStmt += getLProtectedChar() + keyColumn.getColumnName() + getRProtectedChar() + " = ?";
+                    }
                 }
                 if(scdConfiger.isEnableType2() && scdConfiger.getDimensionType1Configer().isOnlyUpdateActive()) {
                     String endDateField = scdConfiger.getDimensionType2Configer().getEndDateField();
@@ -1074,6 +1088,9 @@ public class CLASS {
             return updateSQL.toString();
         }
         public String createUpdateSQLForType2(SCDConfiger scdConfiger) {
+         	return createUpdateSQLForType2(scdConfiger ,true);
+        }
+        public String createUpdateSQLForType2(SCDConfiger scdConfiger ,boolean isSourceKeyEnableNull) {
             StringBuilder updateSQL = new StringBuilder();
             if(scdConfiger.isEnableType2()) {
                 updateSQL.append("UPDATE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
@@ -1090,7 +1107,11 @@ public class CLASS {
                     } else {
                         updateWhereStmt += keySeparator;
                     }
-                    updateWhereStmt += getLProtectedChar() + keyColumn.getColumnName() + getRProtectedChar() + " = ?";
+                    if(isSourceKeyEnableNull){
+                    	updateWhereStmt += "("+getLProtectedChar() + keyColumn.getColumnName() + getRProtectedChar() + " = ? OR ((? IS NULL) AND ("+getLProtectedChar() + keyColumn.getColumnName() + getRProtectedChar() + " IS NULL ))) ";
+                    }else{
+                        updateWhereStmt += getLProtectedChar() + keyColumn.getColumnName() + getRProtectedChar() + " = ?";
+                    }
                 }                
                 String endDateField = scdConfiger.getDimensionType2Configer().getEndDateField();
                 if(scdConfiger.getDimensionType2Configer().getEndDateValueType().equals("NULL_VALUE")) {
@@ -1110,6 +1131,9 @@ public class CLASS {
             return updateSQL.toString();
         }
         public String createUpdateSQLForType3(SCDConfiger scdConfiger) {
+         	return createUpdateSQLForType3(scdConfiger ,true);
+        }
+        public String createUpdateSQLForType3(SCDConfiger scdConfiger ,boolean isSourceKeyEnableNull) {
             StringBuilder updateSQL = new StringBuilder();
             if(scdConfiger.isEnableType3()) {
                 updateSQL.append("UPDATE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
@@ -1126,7 +1150,11 @@ public class CLASS {
                     } else {
                         updateWhereStmt += keySeparator;
                     }
-                    updateWhereStmt += getLProtectedChar() + keyColumn.getColumnName() + getRProtectedChar() + " = ?";
+                    if(isSourceKeyEnableNull){
+                    	updateWhereStmt += "("+getLProtectedChar() + keyColumn.getColumnName() + getRProtectedChar() + " = ? OR ((? IS NULL) AND ("+getLProtectedChar() + keyColumn.getColumnName() + getRProtectedChar() + " IS NULL ))) ";
+                    }else{
+                    	updateWhereStmt += getLProtectedChar() + keyColumn.getColumnName() + getRProtectedChar() + " = ?";
+                    }
                 }
                 if(scdConfiger.isEnableType2()) {
                     String endDateField = scdConfiger.getDimensionType2Configer().getEndDateField();
@@ -1284,6 +1312,10 @@ public class CLASS {
             }            
         }        
         public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType) {
+            return genSetStatement(pstmt, variable, paramIndex, generatedType , false);
+        }
+        
+        public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType ,boolean isSourceKeyEnableNull) {
             StringBuilder setStatement = new StringBuilder();
             boolean isObject = false;
             if(generatedType.equals("Character")) {
@@ -1292,54 +1324,81 @@ public class CLASS {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.CHAR);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.CHAR);\r\n");
+                }
             } else if(generatedType.equals("java.util.Date")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.DATE);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.DATE);\r\n");
+                }
             } else if(generatedType.equals("byte[]")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.ARRAY);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.ARRAY);\r\n");
+                }
             } else if(generatedType.equals("Long") || generatedType.equals("Byte") || generatedType.equals("Integer") || generatedType.equals("Short")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.INTEGER);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.INTEGER);\r\n");
+                }
             } else if(generatedType.equals("String")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.VARCHAR);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.VARCHAR);\r\n");
+                }
             } else if(generatedType.equals("Object")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.OTHER);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.OTHER);\r\n");
+                }
             } else if(generatedType.equals("Boolean")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.BOOLEAN);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.BOOLEAN);\r\n");
+                }
             } else if(generatedType.equals("Double")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.DOUBLE);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.DOUBLE);\r\n");
+                }
             } else if(generatedType.equals("Float")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.FLOAT);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.FLOAT);\r\n");
+                }
             }
             if(!variable.equals("null")) {
                 if(isObject) {
@@ -1363,19 +1422,37 @@ public class CLASS {
                         setStatement.append("if(String.valueOf(" + variable + ").toLowerCase().equals(\"null\")) {\r\n");
                     }
                     setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.CHAR);\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.CHAR);\r\n");
+                    }
                     setStatement.append("} else if(" + variable + " == '\\0') {\r\n");
                     setStatement.append(pstmt + ".setString(" + paramIndex + ", \"\");\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".setString(" + (paramIndex+1) + ", \"\");\r\n");
+                    }
                     setStatement.append("} else {\r\n");
                     setStatement.append(pstmt + ".setString(" + paramIndex + ", String.valueOf(" + variable + "));\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".setString(" + (paramIndex+1) + ", String.valueOf(" + variable + "));\r\n");
+                    }
                     setStatement.append("}\r\n");
                 } else if(generatedType.equals("Date")) {
                     setStatement.append("if(" + variable + " != null) {\r\n");
                     setStatement.append(pstmt + ".setTimestamp(" + paramIndex + ", new java.sql.Timestamp(" + variable + ".getTime()));\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".setTimestamp(" + (paramIndex+1) + ", new java.sql.Timestamp(" + variable + ".getTime()));\r\n");
+                    }
                     setStatement.append("} else {\r\n");
                     setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.DATE);\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.DATE);\r\n");
+                    }
                     setStatement.append("}\r\n");
                 } else {
                     setStatement.append(pstmt + ".set" + generatedType + "(" + paramIndex + ", " + variable + ");\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".set" + generatedType + "(" + (paramIndex+1) + ", " + variable + ");\r\n");
+                    }
                 }
                 if(isObject) {
                     setStatement.append("}\r\n");
@@ -1383,6 +1460,7 @@ public class CLASS {
             }
             return setStatement.toString();
         }
+
     }
     public class DB2SCDManager extends SCDManager {
         public DB2SCDManager(String cid) {
@@ -1562,7 +1640,9 @@ public class CLASS {
                 return "0";
             }            
         }        
-        public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType) {
+       
+        public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType ,boolean isSourceKeyEnableNull) {
+
             StringBuilder setStatement = new StringBuilder();
             boolean isObject = false;
             if(generatedType.equals("Character")) {
@@ -1571,54 +1651,81 @@ public class CLASS {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.CHAR);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.CHAR);\r\n");
+                }
             } else if(generatedType.equals("java.util.Date")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.DATE);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.DATE);\r\n");
+                }
             } else if(generatedType.equals("byte[]")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.ARRAY);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.ARRAY);\r\n");
+                }
             } else if(generatedType.equals("Long") || generatedType.equals("Byte") || generatedType.equals("Integer") || generatedType.equals("Short")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.INTEGER);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.INTEGER);\r\n");
+                }
             } else if(generatedType.equals("String")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.VARCHAR);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.VARCHAR);\r\n");
+                }
             } else if(generatedType.equals("Object")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.OTHER);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.OTHER);\r\n");
+                }
             } else if(generatedType.equals("Boolean")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.BOOLEAN);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.BOOLEAN);\r\n");
+                }
             } else if(generatedType.equals("Double")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.DOUBLE);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.DOUBLE);\r\n");
+                }
             } else if(generatedType.equals("Float")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.FLOAT);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.FLOAT);\r\n");
+                }
             }
             if(!variable.equals("null")) {
                 if(isObject) {
@@ -1644,22 +1751,40 @@ public class CLASS {
                     setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.CHAR);\r\n");
                     setStatement.append("} else if(" + variable + " == '\\0') {\r\n");
                     setStatement.append(pstmt + ".setString(" + paramIndex + ", \"\");\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".setString(" + paramIndex + ", \"\");\r\n");
+                    }
                     setStatement.append("} else {\r\n");
                     setStatement.append(pstmt + ".setString(" + paramIndex + ", String.valueOf(" + variable + "));\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".setString(" + paramIndex + ", String.valueOf(" + variable + "));\r\n");
+                    }
                     setStatement.append("}\r\n");
                 } else if(generatedType.equals("Date")) {
                     setStatement.append("if(" + variable + " != null) {\r\n");
                     setStatement.append("date_" + cid + " = " + variable + ".getTime();\r\n");
                     setStatement.append("if(date_" + cid + " < year1_" + cid + " || date_" + cid + " >= year10000_" + cid + ") {\r\n");
                     setStatement.append(pstmt + ".setString(" + paramIndex + ", \"0000-00-00 00:00:00\");\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".setString(" + (paramIndex+1) + ", \"0000-00-00 00:00:00\");\r\n");
+                    }
                     setStatement.append("} else {\r\n");
-                    setStatement.append(pstmt + ".setTimestamp(" + paramIndex + ", new java.sql.Timestamp(date_" + cid + "));\r\n");                    
+                    setStatement.append(pstmt + ".setTimestamp(" + paramIndex + ", new java.sql.Timestamp(date_" + cid + "));\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".setTimestamp(" + (paramIndex+1) + ", new java.sql.Timestamp(date_" + cid + "));\r\n");
+                    }
                     setStatement.append("}\r\n");
                     setStatement.append("} else {\r\n");
                     setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.DATE);\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.DATE);\r\n");
+                    }
                     setStatement.append("}\r\n");
                 } else {
                     setStatement.append(pstmt + ".set" + generatedType + "(" + paramIndex + ", " + variable + ");\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".set" + generatedType + "(" + (paramIndex+1) + ", " + variable + ");\r\n");
+                    }
                 }
                 if(isObject) {
                     setStatement.append("}\r\n");
@@ -1801,7 +1926,7 @@ public class CLASS {
                 return "0";
             }            
         }        
-        public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType) {
+        public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType ,boolean isSourceKeyEnableNull) {
             StringBuilder setStatement = new StringBuilder();
             boolean isObject = false;
             if(generatedType.equals("Character")) {
@@ -1810,54 +1935,81 @@ public class CLASS {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.CHAR);\r\n");
+                if(isSourceKeyEnableNull){
+                	setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.CHAR);\r\n");
+                }
             } else if(generatedType.equals("java.util.Date")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.TIMESTAMP);\r\n");
+                if(isSourceKeyEnableNull){
+                	setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.TIMESTAMP);\r\n");
+                }
             } else if(generatedType.equals("byte[]")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.ARRAY);\r\n");
+                if(isSourceKeyEnableNull){
+                	setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.ARRAY);\r\n");
+                }
             } else if(generatedType.equals("Long") || generatedType.equals("Byte") || generatedType.equals("Integer") || generatedType.equals("Short")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.INTEGER);\r\n");
+                if(isSourceKeyEnableNull){
+                	setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.INTEGER);\r\n");
+                }
             } else if(generatedType.equals("String")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.VARCHAR);\r\n");
+                if(isSourceKeyEnableNull){
+                	setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.VARCHAR);\r\n");
+                }
             } else if(generatedType.equals("Object")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.OTHER);\r\n");
+                if(isSourceKeyEnableNull){
+                	setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.OTHER);\r\n");
+                }
             } else if(generatedType.equals("Boolean")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.BOOLEAN);\r\n");
+                if(isSourceKeyEnableNull){
+                	setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.BOOLEAN);\r\n");
+                }
             } else if(generatedType.equals("Double")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.DOUBLE);\r\n");
+                if(isSourceKeyEnableNull){
+                	setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.DOUBLE);\r\n");
+                }
             } else if(generatedType.equals("Float")) {
                 isObject = true;
                 if(!variable.equals("null")) {
                     setStatement.append("if(" + variable + " == null) {\r\n");
                 }
                 setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.FLOAT);\r\n");
+                if(isSourceKeyEnableNull){
+                	setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.FLOAT);\r\n");
+                }
             }
             if(!variable.equals("null")) {
                 if(isObject) {
@@ -1881,19 +2033,37 @@ public class CLASS {
                         setStatement.append("if(String.valueOf(" + variable + ").toLowerCase().equals(\"null\")) {\r\n");
                     }
                     setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.CHAR);\r\n");
+                    if(isSourceKeyEnableNull){
+                    	setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.CHAR);\r\n");
+                    }
                     setStatement.append("} else if(" + variable + " == '\\0') {\r\n");
                     setStatement.append(pstmt + ".setString(" + paramIndex + ", \"\");\r\n");
+                    if(isSourceKeyEnableNull){
+                    	setStatement.append(pstmt + ".setString(" + (paramIndex+1) + ", \"\");\r\n");
+                    }
                     setStatement.append("} else {\r\n");
                     setStatement.append(pstmt + ".setString(" + paramIndex + ", String.valueOf(" + variable + "));\r\n");
+                    if(isSourceKeyEnableNull){
+                    	setStatement.append(pstmt + ".setString(" + (paramIndex+1) + ", String.valueOf(" + variable + "));\r\n");
+                    }
                     setStatement.append("}\r\n");
                 } else if(generatedType.equals("Date")) {
                     setStatement.append("if(" + variable + " != null) {\r\n");
                     setStatement.append(pstmt + ".setTimestamp(" + paramIndex + ", new java.sql.Timestamp(" + variable + ".getTime()));\r\n");
+                    if(isSourceKeyEnableNull){
+                    	setStatement.append(pstmt + ".setTimestamp(" + (paramIndex+1) + ", new java.sql.Timestamp(" + variable + ".getTime()));\r\n");
+                    }
                     setStatement.append("} else {\r\n");
                     setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.TIMESTAMP);\r\n");
+                    if(isSourceKeyEnableNull){
+                    	setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.TIMESTAMP);\r\n");
+                    }
                     setStatement.append("}\r\n");
                 } else {
                     setStatement.append(pstmt + ".set" + generatedType + "(" + paramIndex + ", " + variable + ");\r\n");
+                    if(isSourceKeyEnableNull){
+                    	setStatement.append(pstmt + ".set" + generatedType + "(" + (paramIndex+1) + ", " + variable + ");\r\n");
+                    }
                 }
                 if(isObject) {
                     setStatement.append("}\r\n");
