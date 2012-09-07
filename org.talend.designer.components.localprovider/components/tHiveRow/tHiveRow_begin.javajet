@@ -24,9 +24,16 @@ imports="
     
 	boolean usePrepareStatement = "true".equals(ElementParameterParser.getValue(node,"__USE_PREPAREDSTATEMENT__"));
 %>
-
 java.sql.Connection conn_<%=cid%> = null;
 <%
+	boolean setTempPath = "true".equals(ElementParameterParser.getValue(node, "__SET_TEMP_PATH__"));
+	if(setTempPath) {
+		String tempPath = ElementParameterParser.getValue(node, "__TEMP_PATH__");
+%>
+		System.setProperty("java.io.tmpdir", <%=tempPath%>);
+<%
+	}
+
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 	if(("true").equals(useExistingConn)) {
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
