@@ -268,6 +268,10 @@ class ExportItemWizardPage extends WizardPage {
                 && node.getParent().getObjectType() == ERepositoryObjectType.METADATA_CONNECTIONS) {
             return false;
         }
+        // hide the generated documentation node, avoid to export .
+        if (object == null && ERepositoryObjectType.GENERATED.equals(node.getContentType())) {
+            return false;
+        }
         return true;
     }
 
