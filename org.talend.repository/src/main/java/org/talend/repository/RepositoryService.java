@@ -647,8 +647,10 @@ public class RepositoryService implements IRepositoryService {
         String branchKey = IProxyRepositoryFactory.BRANCH_SELECTION + "_"
                 + ProjectManager.getInstance().getCurrentProject().getTechnicalLabel();
         String branchSelection = rc.getFields().get(branchKey);
-        if (branchSelection.startsWith("tags")) {
-            MessageDialog.openInformation(shell, "Information", "the current login project is readonly");
+        if (rc.getFields().containsKey(branchKey) && branchSelection != null) {
+            if (branchSelection.startsWith("tags")) {
+                MessageDialog.openInformation(shell, "Information", "the current login project is readonly");
+            }
         }
         return true;
     }
