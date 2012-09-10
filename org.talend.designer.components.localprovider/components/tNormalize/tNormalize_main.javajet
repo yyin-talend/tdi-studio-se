@@ -30,6 +30,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         String escapeMode = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
         
         String delim = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
+        
+        boolean isDiscardTrailingEmptyStr=("true").equals(ElementParameterParser.getValue(node, "__DISCARD_TRAILING_EMPTY_STR__"));
         if(useCSV){
         	delim = delim.substring(1,delim.length()-1);
         	if(("'").equals(delim)){
@@ -79,9 +81,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                         if ((normalizeRecord_<%=cid%> = reader_<%=cid%>.readNext())==null) {
                             normalizeRecord_<%=cid%> = new String[1];
                         }
-                    <% } else { %>
+                    <% 
+                    	} else { 
+                    		if(isDiscardTrailingEmptyStr){
+                    %>
+                    
                         	normalizeRecord_<%=cid%> = <%=incomingConnName %>.<%=normalizeColumn%>.split(<%=delim %>);
                     <%
+                    		}else{
+                    %>
+                    		normalizeRecord_<%=cid%> = <%=incomingConnName %>.<%=normalizeColumn%>.split(<%=delim %>,-1);
+                    <%
+                    		}
                     }
                     %>               
             } else {
