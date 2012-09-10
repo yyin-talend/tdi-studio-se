@@ -1426,6 +1426,12 @@
              id="org.talend.repository.model.migration.ChangeDefaultValueTDIBug21708"
              name="ChangeDefaultValueTDIBug21708">
 		</projecttask>
+	  	<projecttask
+	        beforeLogon="false"
+	        class="org.talend.repository.model.migration.ChangeOptionDefaultValueFortNormalize"
+	        id="org.talend.repository.model.migration.ChangeOptionDefaultValueFortNormalize"
+	        name="ChangeOptionDefaultValueFortNormalize">
+	  	</projecttask>
    </extension>
    
    <extension
