@@ -900,9 +900,10 @@
                     		  	 
 							<%
 							if(isMultipleResultMode) { // T 60
+							// the condition "tHash_Lookup_tableName != null" is for "reload at each row" mode, in this mode tHash_Lookup_tableName can't be initialized
 							%>
 
-								while (tHash_Lookup_<%= tableName %>.hasNext() || forceLoop<%= tableName %>) { // G_TM_M_043
+								while ((tHash_Lookup_<%= tableName %> != null && tHash_Lookup_<%= tableName %>.hasNext()) || forceLoop<%= tableName %>) { // G_TM_M_043
 
 								<%
 								if(!hasPersistentLookup || isLastPersistentSortedTable || lastPersistentSortedTableIsAlreadyProcessed || (isVirtualOut && hasPersistentLookup && !isPersistentSortedTable)) {
