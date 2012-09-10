@@ -9,6 +9,8 @@
 		org.talend.core.model.process.IContextParameter
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.utils.JavaResourcesHelper
+		java.util.Map
+		org.talend.core.model.process.ElementParameterParser
 	" 
 	class="Footer" 
 	skeleton="footer_java.skeleton"	
@@ -17,7 +19,8 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     Vector v = (Vector) codeGenArgument.getArgument();
     IProcess process = (IProcess)v.get(0);
-	
+
+	List<? extends INode> processNodes = (List<? extends INode>) process.getGeneratingNodes();
 	List<IContextParameter> params = new ArrayList<IContextParameter>();
     params=process.getContextManager().getDefaultContext().getContextParameterList();
     String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion());
@@ -25,6 +28,195 @@
 	boolean stats = codeGenArgument.isStatistics();
 	
 %>
+
+protected void doStart() throws Exception {
+		// init uriMap first
+		initUriMap();
+		
+		//add route
+		addRouteBuilder(route());
+
+		//prepare camel contexts
+		super.doStart();
+		postProcessContext();
+
+		//add jmx notification
+		JmxNotificationEventNotifier notifier = new JmxNotificationEventNotifier();
+		notifier.setSource("MyCamel");
+		notifier.setIgnoreCamelContextEvents(true);
+		notifier.setIgnoreRouteEvents(true);
+		notifier.setIgnoreServiceEvents(true);
+
+		getCamelContexts().get(0).getManagementStrategy().addEventNotifier(notifier);
+
+<%
+StringBuilder librariesSb = new StringBuilder();
+for (INode node : processNodes) {
+	if (node.isActivate()) {
+		if (node.getComponent().getName().equals("cMessagingEndpoint")) {
+			List<Map<String, String>> dependencies = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__HOTLIBS__");
+			for(Map<String, String> dependencie : dependencies){
+				String librarieJar = dependencie.get("LIBPATH");
+				librariesSb.append("\"");
+				librariesSb.append(librarieJar);
+				librariesSb.append("\",");
+			}
+		}
+	}
+}
+if(librariesSb.length()>0){
+%>
+		// add external libraries
+		java.net.URLClassLoader sysloader = (java.net.URLClassLoader) ClassLoader.getSystemClassLoader();
+		java.lang.reflect.Method method = java.net.URLClassLoader.class.getDeclaredMethod("addURL", new Class[] { java.net.URL.class });
+		method.setAccessible(true);
+		String[] libPaths = new String[] {<%=librariesSb.toString()%>};
+		for (String lib : libPaths) {
+			String separator = System.getProperty("path.separator");
+			String[] jarFiles = lib.split(separator);
+			for (String jarFile : jarFiles) {
+				method.invoke(sysloader, new Object[] { new java.io.File(jarFile).toURL() });
+			}
+		}
+<%
+}
+%>
+		//start camel context	
+		getCamelContexts().get(0).start();
+
+
+<% if(stats) { %>
+
+		// add statistics which shows on the connection
+		routines.system.CamelStat runStat = new routines.system.CamelStat(getCamelContexts().get(0));
+
+		runStat.setParams();
+
+		runStat.openSocket(true);
+		runStat.setAllPID(rootPid, fatherPid, pid, jobName);
+		runStat.startThreadStat(clientHost, portStats);
+		runStat.updateStatOnJob(routines.system.RunStat.JOBSTART, "");
+
+		new Thread(new MyStatThread(runStat)).start();
+<% } //if stats %>
+
+	}
+
+	protected void doStop() throws Exception {
+		super.doStop();
+		getCamelContexts().get(0).stop();
+	}
+
+	protected ProducerTemplate findOrCreateCamelTemplate() {
+		return getCamelContexts().get(0).createProducerTemplate();
+	}
+		
+	public void stop() throws Exception {
+		super.stop();
+	}
+
+	public void shutdown() throws Exception {
+		super.shutdown();
+	}
+	
+	protected ModelFileGenerator createModelFileGenerator()
+		throws JAXBException {
+		return null;
+	}
+<% if(stats) { %>
+
+	class MyStatThread implements Runnable {
+
+		routines.system.CamelStat stats;
+		boolean isFinished;
+
+		public MyStatThread(routines.system.CamelStat stats) {
+			this.stats = stats;
+		}
+
+		public void run() {
+			while (true) {
+				try {
+<%
+		for (INode node : processNodes) {
+			if (node.isActivate()) {
+				for(int i=0; i<node.getIncomingConnections().size(); i++) {
+%>
+					stats.updateStatOnConnection("<%=node.getIncomingConnections().get(i).getUniqueName()%>", 1, "<%=node.getUniqueName()%>");
+<%
+				}
+			}
+		}
+%>
+					Thread.sleep(1000);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+<% } //if stats %>
+
+
+	private Properties defaultProps = new Properties();
+
+	public class ContextProperties extends Properties {
+
+		public ContextProperties(Properties properties) {
+			super(properties);
+		}
+		public ContextProperties() {
+			super();
+		}
+
+		public void synchronizeContext() {
+		<% for (IContextParameter ctxParam : params){
+			String cParaName = ctxParam.getName(); %>
+			if(<%=cParaName %> != null){
+			<% if(ctxParam.getType().equals("id_Date")){ %>
+				String pattern_<%=cParaName %> = "yyyy-MM-dd HH:mm:ss";
+				String value_<%=cParaName %> = "<%=ctxParam.getValue() %>";
+				String[] parts_<%=cParaName %> = value_<%=cParaName %>.split(";");
+				if (parts_<%=cParaName %>.length > 1) {
+					pattern_<%=cParaName %> = parts_<%=cParaName %>[0];
+					this.setProperty("<%=cParaName %>", pattern_<%=cParaName %> + ";" + FormatterUtils.format_Date(<%=cParaName %>, pattern_<%=cParaName %>));
+				} else {
+					this.setProperty("<%=cParaName %>", FormatterUtils.format_Date(<%=cParaName %>, pattern_<%=cParaName %>));
+				}
+			<% } else { %>
+				this.setProperty("<%=cParaName %>", <%=cParaName %>.toString());
+			<% } %>
+			}
+		<% } %>
+		}
+
+<%
+for (IContextParameter ctxParam : params) {
+	if(ctxParam.getType().equals("id_List Of Value") || ctxParam.getType().equals("id_File") || ctxParam.getType().equals("id_Directory")) { %>
+		public String <%=ctxParam.getName()%>;
+		public String get<%=Character.toUpperCase(ctxParam.getName().charAt(0)) + ctxParam.getName().substring(1)%>() {
+			return this.<%=ctxParam.getName()%>;
+		}
+<%	} else { %>
+		public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> <%=ctxParam.getName()%>;
+		public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Character.toUpperCase(ctxParam.getName().charAt(0)) + ctxParam.getName().substring(1)%>() {
+			return this.<%=ctxParam.getName()%>;
+		}
+<%	}
+}
+%>
+	}
+
+	private ContextProperties context = new ContextProperties();
+	public ContextProperties getContext() {
+		return this.context;
+	}
+	
+	private final String jobVersion = "<%=process.getVersion() %>";
+	private final String jobName = "<%=codeGenArgument.getJobName() %>";
+	private final String projectName = "<%=codeGenArgument.getCurrentProjectName() %>";
+	
+	public Integer errorCode = null;
 	public String resuming_logs_dir_path = null;
 	public String resuming_checkpoint_path = null;
 	public String parent_part_launcher = null;
@@ -48,8 +240,8 @@
 	
 	private boolean execStat = true;
 	
-	private java.util.Properties context_param = new java.util.Properties();
-    public java.util.Map<String, Object> parentContextMap = new java.util.HashMap<String, Object>();
+	private Properties context_param = new Properties();
+    public Map<String, Object> parentContextMap = new HashMap<String, Object>();
     
     public static void main(String[] args){
     	final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>();
@@ -115,10 +307,27 @@
 <%
 		}
 %> 
-		
+		//read context values
+		readContextValues(contextStr);
 		
 		try {
-			java.io.InputStream inContext = <%=process.getName()%>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=jobFolderName %>/contexts/"+contextStr+".properties");
+			run();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+			return 1;
+		}
+		return 0;
+	}
+	
+	/**
+	* read context values from specified context
+	* @parameter contextName : the name of context while will be used
+	*/
+	public void readContextValues(String contextName){
+			
+		try {
+			java.io.InputStream inContext = <%=process.getName()%>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=jobFolderName %>/contexts/"+contextName+".properties");
 			
 			if (inContext!=null) {
 	    		//defaultProps is in order to keep the original context value
@@ -127,7 +336,7 @@
 	    		context = new ContextProperties(defaultProps);
 	    	}else{
 	    		//print info and job continue to run, for case: context_param is not empty.
-	    		System.err.println("Could not find the context " + contextStr);
+	    		System.err.println("Could not find the context " + contextName);
 			}
 			
 			if(!context_param.isEmpty()) {						
@@ -183,7 +392,7 @@
 			} //end for
 %>
     	} catch (java.io.IOException ie) {
-    		System.err.println("Could not load context "+contextStr);
+    		System.err.println("Could not load context "+contextName);
     		ie.printStackTrace();
     	}
     	
@@ -206,15 +415,6 @@
 		}
 %>
 		}    
-		try {
-			initUriMap();
-			Route(true);
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
-			return 1;
-		}
-		return 0;
 	}
 
 	private void evalParam(String arg) {

@@ -57,29 +57,28 @@ package <%= packageName %>;
 
 <%
 	java.util.Set<String> importsSet = new java.util.TreeSet<String>();
-	for (String routine : CodeGeneratorRoutine.getRequiredRoutineName(process)) {
+/*	for (String routine : CodeGeneratorRoutine.getRequiredRoutineName(process)) {
 		if (!routine.equals(ITalendSynchronizer.TEMPLATE)) {
 			importsSet.add("import routines."+routine);
 		}
 	}
-	importsSet.add("import routines.system.*");
-	importsSet.add("import routines.system.api.*");
-	importsSet.add("import java.text.ParseException");
-	importsSet.add("import java.text.SimpleDateFormat");
-	importsSet.add("import java.util.Date");
-	importsSet.add("import java.util.List");
-	importsSet.add("import java.math.BigDecimal");
-	importsSet.add("import java.io.ByteArrayOutputStream");
-	importsSet.add("import java.io.ByteArrayInputStream");
-	importsSet.add("import java.io.DataInputStream");
-	importsSet.add("import java.io.DataOutputStream");
-	importsSet.add("import java.io.ObjectOutputStream");
-	importsSet.add("import java.io.ObjectInputStream");
-	importsSet.add("import java.io.IOException");
-	importsSet.add("import java.util.Comparator");
-	importsSet.add("import java.util.Map");
+*/
 	importsSet.add("import java.util.HashMap");
+	importsSet.add("import java.util.Map");
+	importsSet.add("import javax.xml.bind.JAXBException");
+	importsSet.add("import org.apache.camel.ProducerTemplate");
+	importsSet.add("import org.apache.camel.builder.RouteBuilder");
+	importsSet.add("import org.apache.camel.impl.DefaultCamelContext");
+	importsSet.add("import org.apache.camel.main.MainSupport");
+	importsSet.add("import routines.TalendString");
+	importsSet.add("import routines.system.api.TalendESBRoute");
+	importsSet.add("import org.apache.camel.view.ModelFileGenerator");
 	importsSet.add("import org.apache.camel.spi.Registry");
+	importsSet.add("import org.apache.camel.impl.DefaultCamelContext");
+	importsSet.add("import org.apache.camel.osgi.CamelContextFactory");
+	importsSet.add("import  org.apache.camel.CamelContext");
+	importsSet.add("import  java.util.Properties");
+	importsSet.add("import  org.apache.camel.management.JmxNotificationEventNotifier");
 	
 	String headerImports = ElementParameterParser.getValue(process, "__HEADER_IMPORT__");
 	if(headerImports!=null && !"".equals(headerImports.trim())){
@@ -100,21 +99,6 @@ package <%= packageName %>;
 		}
 	}
 
-//	List<INode> nodesWithImport = process.getNodesWithImport();
-//	if (nodesWithImport != null) {
-//		for (INode node:nodesWithImport) {
-//			String tmp = ElementParameterParser.getValue(node, "__IMPORT__");
-//			if(tmp == null || "".equals(tmp.trim())){
-//				continue;
-//			}
-//			String[] imports = tmp.trim().split(";");
-//			for(String s: imports){
-//				if(s!=null && !"".equals(s.trim())){
-//					importsSet.add(s.trim());
-//				}
-//			}
-//		}
-//	}
 	List<? extends INode> generatingNodes = process.getGeneratingNodes();
 	for(INode n: generatingNodes){
 		List<? extends IElementParameter> elementParameters = n.getElementParameters();
@@ -152,25 +136,9 @@ package <%= packageName %>;
  * @version <%=version %>
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %>
  */
- public class <%=process.getName()%> implements TalendESBRoute {
-
-	private final String jobVersion = "<%=process.getVersion() %>";
-	private final String jobName = "<%=codeGenArgument.getJobName() %>";
-	private final String projectName = "<%=codeGenArgument.getCurrentProjectName() %>";
-	public Integer errorCode = null;
-	private String currentComponent = "";
-	public TalendESBRoute stopDelegate = null;
+ public class <%=process.getName()%> extends MainSupport implements TalendESBRoute {
 
 	public <%=process.getName()%>(){
-		initUriMap();
-	}
-
-	public void stop() throws Exception {
-		if (stopDelegate != null) stopDelegate.stop();
-	}
-
-	public void shutdown() throws Exception {
-		if (stopDelegate != null) stopDelegate.shutdown();
 	}
 
 <%
@@ -201,25 +169,26 @@ package <%= packageName %>;
 	}
 %>
 
-	private org.apache.camel.builder.RouteBuilder routeBuilder;
+	private Map<String, String> uriMap;
 
-	private java.util.Map<String, String> uriMap;
-
-	public java.util.Map<String,String> getUriMap() {
+	public Map<String,String> getUriMap() {
 		return this.uriMap;
 	}
 
-	public void loadCustomUriMap(java.util.Map<String,String> newMap) {
+	public void loadCustomUriMap(Map<String,String> newMap) {
 		if(newMap == null) {
 			return;
 		}
-		for(java.util.Map.Entry<String, String> entry: newMap.entrySet()) {
+		for(Map.Entry<String, String> entry: newMap.entrySet()) {
 			uriMap.put(entry.getKey(), entry.getValue());
 		}
 	}
 
-	protected void initUriMap() {
-		uriMap = new java.util.HashMap<String, String>();
+	/*
+	* the readContextValues(contextName) may have to invoked first before this
+	*/
+	public void initUriMap() {
+		uriMap = new HashMap<String, String>();
 <%
 String cid = "";
 String componentName = "";
@@ -636,93 +605,3 @@ for (INode node : graphicalNodes) {
 }
 %>
 	}
-
-	private java.util.Properties defaultProps = new java.util.Properties();
-
-	public class ContextProperties extends java.util.Properties {
-
-		public ContextProperties(java.util.Properties properties) {
-			super(properties);
-		}
-		public ContextProperties() {
-			super();
-		}
-
-		public void synchronizeContext() {
-		<% for (IContextParameter ctxParam : params){
-			String cParaName = ctxParam.getName(); %>
-			if(<%=cParaName %> != null){
-			<% if(ctxParam.getType().equals("id_Date")){ %>
-				String pattern_<%=cParaName %> = "yyyy-MM-dd HH:mm:ss";
-				String value_<%=cParaName %> = "<%=ctxParam.getValue() %>";
-				String[] parts_<%=cParaName %> = value_<%=cParaName %>.split(";");
-				if (parts_<%=cParaName %>.length > 1) {
-					pattern_<%=cParaName %> = parts_<%=cParaName %>[0];
-					this.setProperty("<%=cParaName %>", pattern_<%=cParaName %> + ";" + FormatterUtils.format_Date(<%=cParaName %>, pattern_<%=cParaName %>));
-				} else {
-					this.setProperty("<%=cParaName %>", FormatterUtils.format_Date(<%=cParaName %>, pattern_<%=cParaName %>));
-				}
-			<% } else { %>
-				this.setProperty("<%=cParaName %>", <%=cParaName %>.toString());
-			<% } %>
-			}
-		<% } %>
-		}
-
-<%
-for (IContextParameter ctxParam : params) {
-	if(ctxParam.getType().equals("id_List Of Value") || ctxParam.getType().equals("id_File") || ctxParam.getType().equals("id_Directory")) { %>
-		public String <%=ctxParam.getName()%>;
-		public String get<%=Character.toUpperCase(ctxParam.getName().charAt(0)) + ctxParam.getName().substring(1)%>() {
-			return this.<%=ctxParam.getName()%>;
-		}
-<%	} else { %>
-		public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> <%=ctxParam.getName()%>;
-		public <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> get<%=Character.toUpperCase(ctxParam.getName().charAt(0)) + ctxParam.getName().substring(1)%>() {
-			return this.<%=ctxParam.getName()%>;
-		}
-<%	}
-}
-%>
-	}
-
-	private ContextProperties context = new ContextProperties();
-	public ContextProperties getContext() {
-		return this.context;
-	}
-
-
-
-<% if(stats) { %>
-
-	class MyStatThread implements Runnable {
-
-		CamelStat stats;
-		boolean isFinished;
-
-		public MyStatThread(CamelStat stats) {
-			this.stats = stats;
-		}
-
-		public void run() {
-			while (true) {
-				try {
-<%
-		for (INode node : processNodes) {
-			if (node.isActivate()) {
-				for(int i=0; i<node.getIncomingConnections().size(); i++) {
-%>
-					stats.updateStatOnConnection("<%=node.getIncomingConnections().get(i).getUniqueName()%>", 1, "<%=node.getUniqueName()%>");
-<%
-				}
-			}
-		}
-%>
-					Thread.sleep(1000);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-<% } //if stats %>
