@@ -5,16 +5,11 @@ imports="
 		org.talend.core.model.process.ElementParameterParser  
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.core.model.metadata.IMetadataColumn
-		org.talend.core.model.metadata.MetadataTalendType
-		org.talend.core.model.metadata.types.JavaTypesManager
-		org.talend.core.model.metadata.types.JavaType 
 		org.talend.core.model.process.IConnection
 	 org.talend.commons.utils.generation.CodeGenerationUtils
 		
 		java.util.List
 		java.util.ArrayList
-		java.util.Map
-		java.util.HashMap
 		java.util.LinkedList
 "
 %>
@@ -33,9 +28,9 @@ imports="
 	String differenttable = ElementParameterParser.getValue(node, "__DIFFERENT_TABLE_NAME__");
 	boolean useDifferentTable = "true".equals(ElementParameterParser.getValue(node, "__USE_DIFFERENT_TABLE__"));
 	%>
-	String select_query = null;	
+	String select_query_<%=cid %> = null;	
 	String tableName_<%=cid%> = null;
-	String selectQueryColumnsName = null;
+	String selectQueryColumnsName_<%=cid %> = null;
 	<%
 	List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
 	if(connections != null && connections.size() > 0 && connections.get(0) != null) {
@@ -46,8 +41,8 @@ imports="
 		uniqueNameConnection = connection.getUniqueName();
 		
 		%>
-		select_query = (String) globalMap.get("<%=previousComponentName%>"+"QUERY"+"<%=uniqueNameConnection%>");
-		selectQueryColumnsName = (String) globalMap.get("<%=previousComponentName%>"+"QUERY_COLUMNS_NAME"+"<%=uniqueNameConnection%>");
+		select_query_<%=cid %> = (String) globalMap.get("<%=previousComponentName%>"+"QUERY"+"<%=uniqueNameConnection%>");
+		selectQueryColumnsName_<%=cid %> = (String) globalMap.get("<%=previousComponentName%>"+"QUERY_COLUMNS_NAME"+"<%=uniqueNameConnection%>");
 		
 		<%
 	}
@@ -310,7 +305,7 @@ for(Column colStmt:stmtStructure){
 		}else{
 			insertColName.append(colStmt.getName()+suffix);
 			insertValueStmt.append(colStmt.getValue()+suffix);
-			updateSetStmt.append(colStmt.getName()+"=(\"+select_query.replaceFirst(selectQueryColumnsName,selectQueryColumnsName.split(\",\")[ "+ counterOuter + "])+\")" +suffix);
+			updateSetStmt.append(colStmt.getName()+"=(\"+select_query_"+ cid +".replaceFirst(selectQueryColumnsName_"+ cid +",selectQueryColumnsName_"+ cid +".split(\",\")[ "+ counterOuter + "])+\")" +suffix);
 		}
 	}
 	counterOuter ++;
@@ -319,13 +314,13 @@ for(Column colStmt:stmtStructure){
 
 	if(("INSERT").equals(dataAction)){
 %>	
-	String insertQuery = "INSERT INTO "+tableName_<%=cid%>+"(<%=insertColName.toString()%>)  ("+select_query+")";
-	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
+	String insertQuery_<%=cid %> = "INSERT INTO "+tableName_<%=cid%>+"(<%=insertColName.toString()%>)  ("+select_query_<%=cid %>+")";
+	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery_<%=cid %>);
 
 <%
 	}else if (("UPDATE").equals(dataAction)){
 %>
-	String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt.toString()%> "
+	String updateQuery_<%=cid %> = "UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt.toString()%> "
 <%
 		if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
 %>
@@ -334,42 +329,42 @@ for(Column colStmt:stmtStructure){
 		}
 %>
 	;
-	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
+	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery_<%=cid %>);
 
 <%		
 	}else if (("INSERT_OR_UPDATE").equals(dataAction)){
 	%>
 
-	String insertQuery = "INSERT INTO "+tableName_<%=cid%>+"(<%=insertColName.toString()%>)  ("+select_query+")";
-	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
+	String insertQuery_<%=cid %> = "INSERT INTO "+tableName_<%=cid%>+"(<%=insertColName.toString()%>)  ("+select_query_<%=cid %>+")";
+	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery_<%=cid %>);
 	
-	String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
+	String updateQuery_<%=cid %> = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query_<%=cid %>+") "
 	<%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
 	+"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 	<%}%>
 	;
-	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
+	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery_<%=cid %>);
 		
 	<%
 	}else if (("UPDATE_OR_INSERT").equals(dataAction)){
 	%>
 
-	String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
+	String updateQuery_<%=cid %> = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query_<%=cid %>+") "
 	<%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
 	+"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
 	<%}%>
 	;
-	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
+	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery_<%=cid %>);
 					
-	String insertQuery = "INSERT INTO "+tableName_<%=cid%>+"(<%=insertColName.toString()%>) ("+select_query+")";
-	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
+	String insertQuery_<%=cid %> = "INSERT INTO "+tableName_<%=cid%>+"(<%=insertColName.toString()%>) ("+select_query_<%=cid %>+")";
+	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery_<%=cid %>);
 
 	<%
 			
 	}else if (("DELETE").equals(dataAction)){
 	%>
 	
-	String deleteQuery = "DELETE  FROM "+ tableName_<%=cid%>+" WHERE EXISTS ("+select_query+") " 
+	String deleteQuery_<%=cid %> = "DELETE  FROM "+ tableName_<%=cid%>+" WHERE EXISTS ("+select_query_<%=cid %>+") " 
 	<%
 	if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {
 	%>
@@ -378,7 +373,7 @@ for(Column colStmt:stmtStructure){
 	}
 	%>
 	;
-	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
+	pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery_<%=cid %>);
 
 	<%		
 	}
@@ -539,7 +534,7 @@ if(incomingConnName != null && columnList != null){
 	if(("INSERT").equals(dataAction)){
 	%>
 
-System.out.println("Inserting with : \n" + insertQuery + "\n");
+System.out.println("Inserting with : \n" + insertQuery_<%=cid %> + "\n");
 nb_line_inserted_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 System.out.println("--> " + nb_line_inserted_<%=cid%> + " rows inserted. \n");
 
@@ -547,18 +542,18 @@ System.out.println("--> " + nb_line_inserted_<%=cid%> + " rows inserted. \n");
 	}else if(("UPDATE").equals(dataAction)){
 
 	%>
-System.out.println("Updating with : \n" + updateQuery +"\n");
+System.out.println("Updating with : \n" + updateQuery_<%=cid %> +"\n");
 nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 	System.out.println("--> " + nb_line_update_<%=cid%> + " rows updated. \n");
 	<%
 	}else if (("INSERT_OR_UPDATE").equals(dataAction)){
 %>
 	try{
-		System.out.println("Inserting with : \n" + insertQuery + "\n");
+		System.out.println("Inserting with : \n" + insertQuery_<%=cid %> + "\n");
 		nb_line_inserted_<%=cid%> = pstmtInsert_<%=cid %>.executeUpdate();
 		System.out.println("--> " + nb_line_inserted_<%=cid%> + " rows inserted. \n");
 	}catch(Exception e){
-		System.out.println("Updating with : \n" + updateQuery +"\n");
+		System.out.println("Updating with : \n" + updateQuery_<%=cid %> +"\n");
 		nb_line_update_<%=cid%> = pstmtUpdate_<%=cid %>.executeUpdate();
 		System.out.println("--> " + nb_line_update_<%=cid%> + " rows updated. \n");	
 	}
@@ -566,11 +561,11 @@ nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 	}else if (("UPDATE_OR_INSERT").equals(dataAction)){
 %>
 	try{
-		System.out.println("Updating with : \n" + updateQuery +"\n");
+		System.out.println("Updating with : \n" + updateQuery_<%=cid %> +"\n");
 		nb_line_update_<%=cid%> = pstmtUpdate_<%=cid %>.executeUpdate();
 		System.out.println("--> " + nb_line_update_<%=cid%> + " rows updated. \n");		
 	}catch(Exception e){
-		System.out.println("Inserting with : \n" + insertQuery + "\n");
+		System.out.println("Inserting with : \n" + insertQuery_<%=cid %> + "\n");
 		nb_line_inserted_<%=cid%> = pstmtInsert_<%=cid %>.executeUpdate();
 		System.out.println("--> " + nb_line_inserted_<%=cid%> + " rows inserted. \n");
 	}
@@ -578,7 +573,7 @@ nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 	
 	}else if (("DELETE").equals(dataAction)){
 		%>
-	System.out.println("Deleting with : \n" + deleteQuery +"\n");
+	System.out.println("Deleting with : \n" + deleteQuery_<%=cid %> +"\n");
 		nb_line_deleted_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 	System.out.println("--> " + nb_line_deleted_<%=cid%> + " rows deleted. \n");
 		<%

@@ -5,7 +5,6 @@
 	org.talend.core.model.process.IConnection
 	org.talend.designer.dbmap.external.data.ExternalDbMapData
 	org.talend.designer.dbmap.external.data.ExternalDbMapTable
-	org.talend.designer.dbmap.language.IDbLanguage
 	org.talend.designer.dbmap.DbMapComponent
 	java.util.HashMap
 	java.util.Map
@@ -55,11 +54,6 @@
 					<%= gm.getQueryColumnsName() %>
 				);
 				<%
-				if(!tablesProcessed.contains(outputTable.getTableName())) {
-				%>
-					Object <%= outputTable.getTableName() %> = new Object();
-				<%
-				}
 				tablesProcessed.add(outputTable.getTableName());
         }
 %>

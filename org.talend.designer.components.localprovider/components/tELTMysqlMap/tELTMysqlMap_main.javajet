@@ -4,10 +4,7 @@
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	
     java.util.List
-	org.talend.core.model.process.AbstractExternalNode
 	org.talend.core.model.process.IConnection
-	org.talend.core.model.process.IExternalNode
-	org.talend.designer.dbmap.MapperMain
 	org.talend.designer.dbmap.external.data.ExternalDbMapData
 	org.talend.designer.dbmap.external.data.ExternalDbMapTable
 	org.talend.designer.dbmap.language.IDbLanguage
@@ -71,11 +68,6 @@
 					<%= gm.getQueryColumnsName() %>
 				);
 				<%
-				if(!tablesProcessed.contains(outputTable.getTableName())) {
-				%>
-					Object <%= outputTable.getTableName() %> = new Object();
-				<%
-				}
 				tablesProcessed.add(outputTable.getTableName());
         }
 
