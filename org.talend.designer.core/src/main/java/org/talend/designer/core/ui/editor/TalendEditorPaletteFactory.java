@@ -142,7 +142,7 @@ public final class TalendEditorPaletteFactory {
                 String[] strings = family.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 String[] oraStrings = oraFamily.split(ComponentsFactoryProvider.FAMILY_SEPARATOR_REGEX);
                 for (int j = 0; j < strings.length; j++) {
-                    if (!needHiddenComponent && !xmlComponent.isVisible(oraStrings[j]) && !xmlComponent.isVisible(strings[j])) {
+                    if (!needHiddenComponent && !xmlComponent.isVisible(oraStrings[j])) {
                         continue;
                     }
                     families.add(strings[j]);
