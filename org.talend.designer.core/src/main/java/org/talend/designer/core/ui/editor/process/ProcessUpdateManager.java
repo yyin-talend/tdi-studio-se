@@ -1508,7 +1508,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             if ((param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath)
                                     || (repositoryConnection instanceof SalesforceSchemaConnection
                                             && "MODULENAME".equals(repositoryValue) && !((SalesforceSchemaConnection) repositoryConnection)
-                                                .isUseCustomModuleName())) {
+                                            .isUseCustomModuleName())) {
                                 continue;
                             }
                             IMetadataTable table = null;
@@ -1832,7 +1832,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 && !("tMDMReceive".equals(node.getComponent().getName()) && "XPATH_PREFIX".equals(param //$NON-NLS-1$ //$NON-NLS-2$
                                         .getRepositoryValue()))
                                 && !("tSAPOutput".equals(node.getComponent().getName()) && param.getName().equals(
-                                        UpdatesConstants.MAPPING))) {
+                                        UpdatesConstants.MAPPING))
+                                && !("tFileInputEBCDIC".equals(node.getComponent().getName()) && "DATA_FILE"
+                                        .equals(repositoryValue))) {
                             param.setRepositoryValueUsed(true);
                             param.setReadOnly(true);
                         }
