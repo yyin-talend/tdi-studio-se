@@ -53,6 +53,7 @@ import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.IExchangeService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ExchangeUser;
+import org.talend.core.model.utils.TalendPropertiesUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.model.IRepositoryFactory;
@@ -332,39 +333,33 @@ public class LoginDialog extends TrayDialog {
             return false;
         }
 
-        // if (!PluginChecker.isSVNProviderPluginLoaded()) {// tos
-        // if (project.getExchangeUser().getLogin() == null || project.getExchangeUser().getLogin().equals("")) {
-        // TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
-        // tfDialog.open();
-        // }
-        // } else {// tis
-        IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-        boolean checkTisVersion = prefStore.getBoolean(ITalendCorePrefConstants.EXCHANGE_CHECK_TIS_VERSION);
-        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
-        if (!checkTisVersion && brandingService.isPoweredbyTalend()) {
-            int count = prefStore.getInt(TalendForgeDialog.LOGINCOUNT);
-            ExchangeUser exchangeUser = project.getExchangeUser();
-            boolean isExchangeLogon = exchangeUser.getLogin() != null && !exchangeUser.getLogin().equals("");
-            boolean isUserPassRight = true;
-            if (isExchangeLogon) {
-                if (PluginChecker.isExchangeSystemLoaded()) {
+        // check for Talendforge
+        if (PluginChecker.isExchangeSystemLoaded() && !TalendPropertiesUtil.isHideExchange()) {
+            IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
+            boolean checkTisVersion = prefStore.getBoolean(ITalendCorePrefConstants.EXCHANGE_CHECK_TIS_VERSION);
+            IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                    IBrandingService.class);
+            if (!checkTisVersion && brandingService.isPoweredbyTalend()) {
+                int count = prefStore.getInt(TalendForgeDialog.LOGINCOUNT);
+                ExchangeUser exchangeUser = project.getExchangeUser();
+                boolean isExchangeLogon = exchangeUser.getLogin() != null && !exchangeUser.getLogin().equals("");
+                boolean isUserPassRight = true;
+                if (isExchangeLogon) {
                     IExchangeService service = (IExchangeService) GlobalServiceRegister.getDefault().getService(
                             IExchangeService.class);
                     if (service.checkUserAndPass(exchangeUser.getUsername(), exchangeUser.getPassword()) != null) {
                         isUserPassRight = false;
                     }
                 }
-            }
 
-            if (!isExchangeLogon || !isUserPassRight) {
-                if (count < 10) {
-                    TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
-                    tfDialog.open();
+                if (!isExchangeLogon || !isUserPassRight) {
+                    if (count < 10) {
+                        TalendForgeDialog tfDialog = new TalendForgeDialog(this.getShell(), project);
+                        tfDialog.open();
+                    }
                 }
             }
         }
-        // }
 
         final Shell shell = this.getShell();
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
