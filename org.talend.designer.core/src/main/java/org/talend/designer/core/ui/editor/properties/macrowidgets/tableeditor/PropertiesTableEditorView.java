@@ -142,6 +142,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
     protected void setTableViewerCreatorOptions(TableViewerCreator<B> newTableViewerCreator) {
         super.setTableViewerCreatorOptions(newTableViewerCreator);
         newTableViewerCreator.setLayoutMode(LAYOUT_MODE.DEFAULT);
+        newTableViewerCreator.setLazyLoad(true);
     }
 
     /*
