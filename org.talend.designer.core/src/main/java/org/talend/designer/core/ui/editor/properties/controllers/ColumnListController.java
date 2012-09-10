@@ -680,9 +680,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                         break;
                     }
 
-                    if (!needSynchronizeSize(param)) {
-                        break;
-                    }
+                    // if (!needSynchronizeSize(param)) {
+                    // break;
+                    // }
                     if (length != null && length.intValue() > 0) {
 
                         // codes[1] is "SIZE"
