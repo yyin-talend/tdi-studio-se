@@ -19,13 +19,12 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.CorePlugin;
 import org.talend.core.i18n.Messages;
-import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * @deprecated moved to AppearancePreferencePage
  */
+@Deprecated
 public class ContextPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
     public ContextPreferencePage() {
@@ -49,12 +48,14 @@ public class ContextPreferencePage extends FieldEditorPreferencePage implements 
     @Override
     public void dispose() {
         super.dispose();
-        IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
-        if (view != null) {
-            view.refresh();
-        }
+        // TDI-21143 : Studio repository view : remove all refresh call to repo view
+        // IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
+        // if (view != null) {
+        // view.refresh();
+        // }
     }
 
+    @Override
     public boolean performOk() {
         boolean ok = super.performOk();
         if (ok) {

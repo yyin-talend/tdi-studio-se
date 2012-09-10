@@ -22,12 +22,10 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.repository.ui.views.IRepositoryView;
 
 public class PerformancePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
@@ -70,6 +68,7 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
                     Messages.getString("PerformancePreferencePage.ActivedTimeoutSetting"), getFieldEditorParent()); //$NON-NLS-1$
             dbConnTimeoutActive.getButton().addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     checkDBTimeout();
                 }
@@ -105,6 +104,7 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
                     Messages.getString("PerformancePreferencePage.ActivedTimeoutSetting"), getFieldEditorParent()); //$NON-NLS-1$
             dbConnTimeoutActive.getButton().addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     checkDBTimeout();
                 }
@@ -142,10 +142,11 @@ public class PerformancePreferencePage extends FieldEditorPreferencePage impleme
     @Override
     public void dispose() {
         super.dispose();
-        IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
-        if (view != null) {
-            view.refresh();
-        }
+        // TDI-21143 : Studio repository view : remove all refresh call to repo view
+        // IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
+        // if (view != null) {
+        // view.refresh();
+        // }
     }
 
     private void checkDBTimeout() {

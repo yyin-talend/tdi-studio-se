@@ -19,9 +19,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.RepositoryManager;
-import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC achen class global comment. Detailled comment
@@ -58,10 +56,11 @@ public class RepositoryPreferencePage extends FieldEditorPreferencePage implemen
     @Override
     public void dispose() {
         super.dispose();
-        IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
-        if (view != null) {
-            view.refresh();
-        }
+        // TDI-21143 : Studio repository view : remove all refresh call to repo view
+        // IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
+        // if (view != null) {
+        // view.refresh();
+        // }
     }
 
 }

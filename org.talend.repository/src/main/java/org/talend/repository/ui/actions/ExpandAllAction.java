@@ -44,6 +44,7 @@ public class ExpandAllAction extends AContextualAction {
         setToolTipText(MOVE_TOOLTIP);
     }
 
+    @Override
     protected void doRun() {
         IRepositoryView view = getViewPart();
         ISelection selection = getSelection();
@@ -67,9 +68,10 @@ public class ExpandAllAction extends AContextualAction {
                 expand(view, (RepositoryNode) obj, !view.getExpandedState(obj));
                 types.add(((RepositoryNode) obj).getContentType());
             }
-            for (ERepositoryObjectType type : types) {
-                view.refresh(type);
-            }
+            // TDI-21143 : Studio repository view : remove all refresh call to repo view
+            // for (ERepositoryObjectType type : types) {
+            // view.refresh(type);
+            // }
         }
     }
 
@@ -91,7 +93,7 @@ public class ExpandAllAction extends AContextualAction {
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty();
 
-        for (Object o : ((IStructuredSelection) selection).toArray()) {
+        for (Object o : (selection).toArray()) {
             if (canWork) {
                 RepositoryNode node = (RepositoryNode) o;
                 switch (node.getType()) {

@@ -69,6 +69,7 @@ public class OpenDiagramAction extends AContextualAction implements IIntroAction
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
+    @Override
     protected void doRun() {
         ISelection selection = getSelectedObject();
         if (selection == null) {
@@ -96,10 +97,11 @@ public class OpenDiagramAction extends AContextualAction implements IIntroAction
                 if (part instanceof BusinessDiagramEditor) {
                     ((BusinessDiagramEditor) part).setLastVersion(true);
                 }
-                IRepositoryView view = getViewPart();
-                if (view != null) {
-                    view.refresh(repositoryNode);
-                }
+                // TDI-21143 : Studio repository view : remove all refresh call to repo view
+                // IRepositoryView view = getViewPart();
+                // if (view != null) {
+                // view.refresh(repositoryNode);
+                // }
             }
         }
     }

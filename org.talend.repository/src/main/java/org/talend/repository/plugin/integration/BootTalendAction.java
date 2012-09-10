@@ -26,10 +26,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
-import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.actions.AContextualAction;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC yzhang class global comment. Detailled comment
@@ -40,7 +38,7 @@ public class BootTalendAction extends AContextualAction implements IWorkbenchWin
 
     public static final String LOGIN_COUNTER = "loginCounter"; //$NON-NLS-1$
 
-    private IPreferenceStore store;
+    private final IPreferenceStore store;
 
     /**
      * yzhang BootTalendAction constructor comment.
@@ -90,10 +88,11 @@ public class BootTalendAction extends AContextualAction implements IWorkbenchWin
 
         SwitchProjectAction switchAction = new SwitchProjectAction();
         switchAction.run();
-        IRepositoryView view = RepositoryManagerHelper.getRepositoryView();
-        if (view != null) {
-            view.refresh();
-        }
+        // TDI-21143 : Studio repository view : remove all refresh call to repo view
+        // IRepositoryView view = RepositoryManagerHelper.getRepositoryView();
+        // if (view != null) {
+        // view.refresh();
+        // }
 
         return;
     }

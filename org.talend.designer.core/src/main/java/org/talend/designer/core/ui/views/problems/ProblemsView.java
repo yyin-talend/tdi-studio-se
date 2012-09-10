@@ -71,7 +71,6 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.views.problems.Problems.Group;
 import org.talend.repository.documentation.ERepositoryActionName;
 import org.talend.repository.ui.actions.routines.AbstractRoutineAction;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -310,10 +309,11 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
                     RoutineItem routine = getRoutineItem();
                     IEditorPart editor = openRoutineEditor(routine, false);
                     focusMarkerForRoutineEditor(editor);
-                    IRepositoryView view = getViewPart();
-                    if (view != null) {
-                        view.refresh(ERepositoryObjectType.ROUTINES);
-                    }
+                    // TDI-21143 : Studio repository view : remove all refresh call to repo view
+                    // IRepositoryView view = getViewPart();
+                    // if (view != null) {
+                    // view.refresh(ERepositoryObjectType.ROUTINES);
+                    // }
                 } catch (SystemException e) {
                     MessageBoxExceptionHandler.process(e);
                 } catch (PartInitException e) {

@@ -55,7 +55,6 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -63,7 +62,6 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
-import org.talend.repository.ui.views.IRepositoryView;
 
 import com.ibm.icu.text.MessageFormat;
 
@@ -334,10 +332,11 @@ public class Problems {
              * @see java.lang.Runnable#run()
              */
             public void run() {
-                IRepositoryView viewPart = RepositoryManagerHelper.findRepositoryView();
-                if (viewPart != null) {
-                    viewPart.refresh();
-                }
+                // TDI-21143 : Studio repository view : remove all refresh call to repo view
+                // IRepositoryView viewPart = RepositoryManagerHelper.findRepositoryView();
+                // if (viewPart != null) {
+                // viewPart.refresh();
+                // }
             }
         });
     }

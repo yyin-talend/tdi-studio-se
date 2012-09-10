@@ -48,7 +48,6 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
@@ -60,7 +59,6 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC xye class global comment. Detailled comment <br/>
@@ -71,7 +69,7 @@ import org.talend.repository.ui.views.IRepositoryView;
 public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
 
     // added by hyWang
-    private IContextManager contextManager;
+    private final IContextManager contextManager;
 
     private final List<IContextParameter> params;
 
@@ -79,11 +77,11 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
 
     private Button createNewButton;
 
-    private String msg = org.talend.core.i18n.Messages.getString("PropertiesWizardPage.NameFormatError"); //$NON-NLS-1$
+    private final String msg = org.talend.core.i18n.Messages.getString("PropertiesWizardPage.NameFormatError"); //$NON-NLS-1$
 
-    private String title = Messages.getString("ContextRepositoryReviewDialog.conflictError"); //$NON-NLS-1$
+    private final String title = Messages.getString("ContextRepositoryReviewDialog.conflictError"); //$NON-NLS-1$
 
-    private String errorMsg = Messages.getString("ContextRepositoryReviewDialog.contextSameNameError"); //$NON-NLS-1$
+    private final String errorMsg = Messages.getString("ContextRepositoryReviewDialog.contextSameNameError"); //$NON-NLS-1$
 
     /**
      * DOC xye ContextRepositoryReviewDialog constructor comment.
@@ -358,11 +356,11 @@ public class ContextRepositoryReviewDialog extends RepositoryReviewDialog {
         designerCoreService.switchToCurContextsView();
         designerCoreService.switchToCurComponentSettingsView();
         designerCoreService.switchToCurJobSettingsView();
-        // refresh repository view
-        IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
-        if (view != null) {
-            view.refresh(ERepositoryObjectType.CONTEXT);
-        }
+        // TDI-21143 : Studio repository view : remove all refresh call to repo view
+        // IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
+        // if (view != null) {
+        // view.refresh(ERepositoryObjectType.CONTEXT);
+        // }
         // refresh fake repository view
         if (getRepositoryTreeViewer() != null) {
             getRepositoryTreeViewer().refresh();

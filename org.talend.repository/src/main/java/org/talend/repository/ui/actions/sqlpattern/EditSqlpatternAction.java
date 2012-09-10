@@ -31,7 +31,6 @@ import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * Action that will edit routines.
@@ -84,9 +83,10 @@ public class EditSqlpatternAction extends AbstractSqlpatternAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
+    @Override
     protected void doRun() {
         RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
-        Property property = (Property) node.getObject().getProperty();
+        Property property = node.getObject().getProperty();
         Property updatedProperty = null;
         try {
             updatedProperty = ProxyRepositoryFactory.getInstance()
@@ -102,10 +102,11 @@ public class EditSqlpatternAction extends AbstractSqlpatternAction {
         boolean readonly = factory.getStatus(sqlPatternItem) == ERepositoryStatus.LOCK_BY_OTHER;
         try {
             openSQLPatternEditor(sqlPatternItem, readonly);
-            IRepositoryView view = getViewPart();
-            if (view != null) {
-                view.refresh(node);
-            }
+            // TDI-21143 : Studio repository view : remove all refresh call to repo view
+            // IRepositoryView view = getViewPart();
+            // if (view != null) {
+            // view.refresh(node);
+            // }
         } catch (PartInitException e) {
             MessageBoxExceptionHandler.process(e);
         } catch (SystemException e) {

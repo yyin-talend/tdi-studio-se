@@ -24,10 +24,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.CorePlugin;
-import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.repository.ui.views.IRepositoryView;
 
 public class AppearancePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
@@ -114,12 +112,14 @@ public class AppearancePreferencePage extends FieldEditorPreferencePage implemen
     @Override
     public void dispose() {
         super.dispose();
-        IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
-        if (view != null) {
-            view.refresh();
-        }
+        // TDI-21143 : Studio repository view : remove all refresh call to repo view
+        // IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
+        // if (view != null) {
+        // view.refresh();
+        // }
     }
 
+    @Override
     public boolean performOk() {
         boolean ok = super.performOk();
         if (ok) {

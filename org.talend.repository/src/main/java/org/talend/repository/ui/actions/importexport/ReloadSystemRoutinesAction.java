@@ -16,13 +16,10 @@ import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.repository.model.ILocalRepositoryFactory;
 import org.talend.core.repository.model.IRepositoryFactory;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -45,10 +42,11 @@ public class ReloadSystemRoutinesAction extends Action {
             IRepositoryFactory factory = ProxyRepositoryFactory.getInstance().getRepositoryFactoryFromProvider();
             if (factory instanceof ILocalRepositoryFactory) {
                 ((ILocalRepositoryFactory) factory).synchronizeRoutines(null);
-                IRepositoryView viewPart = RepositoryManagerHelper.findRepositoryView();
-                if (viewPart != null) {
-                    viewPart.refresh(ERepositoryObjectType.ROUTINES);
-                }
+                // TDI-21143 : Studio repository view : remove all refresh call to repo view
+                // IRepositoryView viewPart = RepositoryManagerHelper.findRepositoryView();
+                // if (viewPart != null) {
+                // viewPart.refresh(ERepositoryObjectType.ROUTINES);
+                // }
                 log.info(Messages.getString("ReloadSystemRoutinesAction.logInfo.sysRoutinesSuccessfullyReloaded")); //$NON-NLS-1$
             }
         } catch (PersistenceException e) {

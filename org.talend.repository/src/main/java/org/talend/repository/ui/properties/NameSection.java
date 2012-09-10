@@ -32,12 +32,10 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -153,12 +151,13 @@ public class NameSection extends AbstractSection {
                 if (getType() == ERepositoryObjectType.FOLDER) {
                     IPath path = RepositoryNodeUtilities.getPath(getNode());
                     try {
-                        ERepositoryObjectType type = (ERepositoryObjectType) getNode().getContentType();
+                        ERepositoryObjectType type = getNode().getContentType();
                         getRepositoryFactory().renameFolder(type, path, text);
-                        IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
-                        if (view != null) {
-                            view.refresh();
-                        }
+                        // TDI-21143 : Studio repository view : remove all refresh call to repo view
+                        // IRepositoryView view = RepositoryManagerHelper.findRepositoryView();
+                        // if (view != null) {
+                        // view.refresh();
+                        // }
                     } catch (PersistenceException e) {
                         // e.printStackTrace();
                         ExceptionHandler.process(e);
