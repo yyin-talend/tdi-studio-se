@@ -612,7 +612,10 @@ public class ConnectionCreateAction extends SelectionAction {
                         meta = node.getMetadataList().get(0);
                         meta.setAttachedConnector(curNodeConnector.getName());
                     } else if (getText().endsWith(".")) {
-                        connectionName = getText() + askForConnectionName(node.getLabel(), null);
+                        connectionName = askForConnectionName(node.getLabel(), null);
+                        if (connectionName != null && !"".equals(connectionName)) {
+                            connectionName = getText() + connectionName;
+                        }
                         meta = node.getMetadataList().get(0);
                         meta.setAttachedConnector(curNodeConnector.getName());
                     }
