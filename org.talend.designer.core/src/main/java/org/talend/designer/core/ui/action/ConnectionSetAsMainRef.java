@@ -15,6 +15,8 @@ package org.talend.designer.core.ui.action;
 import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
@@ -109,6 +111,12 @@ public class ConnectionSetAsMainRef extends SelectionAction {
     }
 
     public void run() {
+        if (connection.getSource().getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0
+                || connection.getSource().getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_ERROR)
+                        .size() != 0) {
+            MessageDialog.openError(new Shell(), Messages.getString("ConnectionSetAsMainRef.ERROR"), Messages.getString("ConnectionSetAsMainRef.ConnectionModifyError")); //$NON-NLS-1$ //$NON-NLS-2$
+            return;
+        }
         ChangeConnectionStatusCommand cmd = new ChangeConnectionStatusCommand(connection);
         execute(cmd);
     }
