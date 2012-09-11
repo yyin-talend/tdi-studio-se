@@ -68,6 +68,7 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent arg0) {
 
     }
@@ -136,6 +137,9 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
 
         cLayout.setBackground(subComposite.getBackground());
         if (!elem.isReadOnly()) {
+            if (param.isRepositoryValueUsed()) {
+                addRepositoryPropertyListener(labelText);
+            }
             labelText.setEditable(!param.isReadOnly() && !param.isRepositoryValueUsed());
         } else {
             labelText.setEditable(false);
@@ -149,7 +153,7 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
             labelText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName()); //$NON-NLS-1$
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
         data = new FormData();
         if (lastControl != null) {
             data.left = new FormAttachment(lastControl, 0);
@@ -212,10 +216,12 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
 
     private SelectionListener listenerSelection = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
 
         }
 
+        @Override
         public void widgetSelected(SelectionEvent event) {
             Command command = createCommand(event);
             executeCommand(command);
