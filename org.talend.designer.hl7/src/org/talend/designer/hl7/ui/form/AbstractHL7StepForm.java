@@ -64,6 +64,14 @@ public abstract class AbstractHL7StepForm extends AbstractForm {
         addContextParams(EParamName.XPathQuery, true);
     }
 
+    /**
+     * Subclass can implement this method to set the current text selected. Added by Marvin Wang on Sep 11, 2012.
+     * 
+     * @param label
+     */
+    public void setSelectedText(String label) {
+    }
+
     public List<HL7TreeNode> getTreeData() {
         return new ArrayList<HL7TreeNode>();
     }
