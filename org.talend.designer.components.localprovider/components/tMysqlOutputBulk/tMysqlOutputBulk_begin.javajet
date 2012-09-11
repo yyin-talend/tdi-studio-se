@@ -45,7 +45,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 		if (containNULL) {//bug 7978 if input have a empty value,tMysqloutputbulk output "\N" instance of "" 
 %>
-			escapeChar_<%=cid %> = textEnclosure_<%=cid %>;
+			escapeChar_<%=cid %> = '\\';
 <%
 		}
 %>
