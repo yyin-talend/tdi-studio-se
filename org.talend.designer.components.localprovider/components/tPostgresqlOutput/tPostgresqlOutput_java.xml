@@ -247,6 +247,15 @@
       <DEFAULT>postgres_id</DEFAULT>
     </PARAMETER>    
     
+    <PARAMETER
+      NAME="SAVE_POINT"
+      FIELD="CHECK"
+      NUM_ROW="11"
+      SHOW_IF="USE_BATCH_SIZE == 'false'" 
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
   </PARAMETERS>
   
   <ADVANCED_PARAMETERS>

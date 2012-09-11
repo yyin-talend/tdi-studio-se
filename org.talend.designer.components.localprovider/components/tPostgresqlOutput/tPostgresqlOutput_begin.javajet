@@ -67,6 +67,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	
 	boolean useBatchSize = ("true").equals(ElementParameterParser.getValue(node,"__USE_BATCH_SIZE__"));
 	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
+	
+	boolean savePoint = ("true").equals(ElementParameterParser.getValue(node,"__SAVE_POINT__"));
 %>
 
 <%
@@ -153,6 +155,9 @@ int rejectedCount_<%=cid%>=0;
 boolean whetherReject_<%=cid%> = false;
 
 java.sql.Connection conn_<%=cid%> = null;
+<%if(savePoint && !useBatchSize){%>
+		java.sql.Savepoint  sp_<%=cid %> = null;
+<%}%>
 <%
 if(("true").equals(useExistingConn)) {
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
