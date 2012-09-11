@@ -85,8 +85,9 @@ if(out<%=cid %>!=null) {
 <%
 			if(!useStream){
 %>
-
-    CsvWriter<%=cid%>.close();
+	if(CsvWriter<%=cid%>!=null) {
+    	CsvWriter<%=cid%>.close();
+    }
 <%
 				if(isInRowMode){
 %>
@@ -99,16 +100,27 @@ if(out<%=cid %>!=null) {
 			}else{
 				if(isInRowMode){
 %>
-
-	CsvWriter<%=cid%>.close();
-	out<%=cid %>.flush();
-	outWriter_<%=cid %>.flush();
+	if(CsvWriter<%=cid%>!=null) {
+		CsvWriter<%=cid%>.close();
+	}
+	if(out<%=cid %>!=null) {
+		out<%=cid %>.flush();
+	}
+	if(outWriter_<%=cid %>!=null) {
+		outWriter_<%=cid %>.flush();
+	}
 <%
 				}else{
 %>
-	CsvWriter<%=cid%>.flush();
-	bufferWriter_<%=cid %>.flush();
-	outWriter_<%=cid %>.flush();
+	if(CsvWriter<%=cid%>!=null) {
+		CsvWriter<%=cid%>.flush();
+	}
+	if(bufferWriter_<%=cid %>!=null) {
+		bufferWriter_<%=cid %>.flush();
+	}
+	if(outWriter_<%=cid %>!=null) {
+		outWriter_<%=cid %>.flush();
+	}
 	CsvWriter<%=cid%> = null;
 <%
 				}
