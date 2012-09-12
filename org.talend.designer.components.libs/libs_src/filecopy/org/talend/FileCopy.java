@@ -98,6 +98,7 @@ public class FileCopy {
 
             in.close();
             out.close();
+            srcInputStream.close();
 
             if (delSrc) {
                 source.delete();
@@ -108,6 +109,9 @@ public class FileCopy {
             }
             if (out != null) {
                 out.close();
+            }
+            if (srcInputStream != null) {
+                srcInputStream.close();
             }
         }
     }
@@ -148,6 +152,7 @@ public class FileCopy {
 
             in.close();
             out.close();
+            srcInputStream.close();
 
             if (delSrc) {
                 source.delete();
@@ -159,6 +164,9 @@ public class FileCopy {
             }
             if (out != null) {
                 out.close();
+            }
+            if (srcInputStream != null) {
+                srcInputStream.close();
             }
         }
     }
