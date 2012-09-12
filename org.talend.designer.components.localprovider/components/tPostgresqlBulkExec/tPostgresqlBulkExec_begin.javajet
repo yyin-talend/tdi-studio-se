@@ -94,7 +94,7 @@ if(("BINARYFILE").equals(fileType)) {
     String nullString = ElementParameterParser.getValue(node, "__NULLSTRING__");        
     %>
     bulkSQL_<%=cid%> += "<%=oids%> " + "DELIMITER AS '" + <%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__")%> + "' ";
-	<%if(standardConformingString) {%>
+	<%if(("TXTFILE").equals(fileType) || (("CSVFILE").equals(fileType) && standardConformingString)) {%>
 		bulkSQL_<%=cid%> += "NULL AS '" + <%=nullString%> + "' ";
 	<%}else{%>
 		bulkSQL_<%=cid%> += "NULL AS '" + <%=nullString%>.replaceAll("\\\\","\\\\\\\\") + "' ";
@@ -104,13 +104,30 @@ if(("BINARYFILE").equals(fileType)) {
         String escapeChar = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");        
         String textEnclosure = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");        
         %>
-        bulkSQL_<%=cid%> += "CSV <%=header%> QUOTE AS '" + <%=textEnclosure %>.replaceAll("\\\\", "\\\\\\\\") + "' ";
         <%if(standardConformingString) {
         %>
-        bulkSQL_<%=cid%> += "ESCAPE AS '" + <%=escapeChar %> + "' "; 
+       		if("\\".equals(<%=textEnclosure %>)){
+            	bulkSQL_<%=cid%> += "CSV <%=header%> QUOTE AS '" + <%=textEnclosure %>+ "' ";
+	        }else{
+		        bulkSQL_<%=cid%> += "CSV <%=header%> QUOTE AS " + ("'".equals(<%=textEnclosure %>)?"E":"") + "'" +("'".equals(<%=textEnclosure %>)?"\\":"") + <%=textEnclosure %>+ "' ";
+			}
+			if("\\".equals(<%=escapeChar %>)){
+				bulkSQL_<%=cid%> += "ESCAPE AS '" + <%=escapeChar %> + "' ";
+			}else{
+	        	bulkSQL_<%=cid%> += "ESCAPE AS " + ("'".equals(<%=escapeChar %>)?"E":"")  + "'" +("'".equals(<%=escapeChar %>)?"\\":"") + <%=escapeChar %> + "' "; 
+		    }
         <%
         }else {%>
-        bulkSQL_<%=cid%> += "ESCAPE AS '" + <%=escapeChar %>.replaceAll("\\\\", "\\\\\\\\") + "' ";
+       		if("\\".equals(<%=textEnclosure %>)){
+       			bulkSQL_<%=cid%> += "CSV <%=header%> QUOTE AS '" +  <%=textEnclosure %>.replace("\\", "\\\\") + "' ";
+       		}else{
+		        bulkSQL_<%=cid%> += "CSV <%=header%> QUOTE AS '" + ("'".equals(<%=textEnclosure %>)?"\\":"") + <%=textEnclosure %>.replaceAll("\\\\", "\\\\\\\\") + "' ";
+       		}
+			if("\\".equals(<%=escapeChar %>)){
+		        bulkSQL_<%=cid%> += "ESCAPE AS '"+ <%=escapeChar %>.replace("\\", "\\\\") + "' ";
+			}else{
+		        bulkSQL_<%=cid%> += "ESCAPE AS '"+ ("'".equals(<%=escapeChar %>)?"\\":"") + <%=escapeChar %>.replaceAll("\\\\", "\\\\\\\\") + "' ";
+			}
         <%}%>        
         bulkSQL_<%=cid%> += "<%=notNullColumns.toString().substring(0, notNullColumns.toString().length() - 1)%>";
         <%
