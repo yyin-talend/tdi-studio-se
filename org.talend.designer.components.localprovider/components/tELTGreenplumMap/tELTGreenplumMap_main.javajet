@@ -15,7 +15,6 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	DbMapComponent node = (DbMapComponent) codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics(); 
     org.talend.designer.dbmap.language.postgres.PostgresGenerationManager gm =  new org.talend.designer.dbmap.language.postgres.PostgresGenerationManager();
     String uniqueNameComponent = null;
     List<IConnection> outputConnections = (List<IConnection>) node.getOutgoingConnections();
@@ -26,7 +25,7 @@
     for (IConnection connection : outputConnections) {
         nameToOutputConnection.put(connection.getUniqueName(), connection);
     }
-	Set tablesProcessed = new HashSet<String>();
+	Set<String> tablesProcessed = new HashSet<String>();
     int lstOutputTablesSize = outputTables.size();
     for (int i = 0; i < lstOutputTablesSize; i++) {
         ExternalDbMapTable outputTable = outputTables.get(i);
