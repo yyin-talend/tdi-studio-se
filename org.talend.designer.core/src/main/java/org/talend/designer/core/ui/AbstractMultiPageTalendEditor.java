@@ -112,6 +112,7 @@ import org.talend.core.model.repository.IRepositoryWorkUnitListener;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.properties.tab.IDynamicProperty;
+import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.service.IDesignerPerlService;
@@ -1012,9 +1013,12 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         IViewPart viewPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(IJobSettingsView.ID);
         if (viewPart != null && viewPart instanceof JobSettingsView) {
             JobSettingsView jobView = (JobSettingsView) viewPart;
-            IDynamicProperty dc = jobView.getCurrentSelectedTab().getPropertyComposite();
-            if (dc != null) {
-                dc.refresh();
+            TalendPropertyTabDescriptor currentSelectedTab = jobView.getCurrentSelectedTab();
+            if (currentSelectedTab != null) {
+                IDynamicProperty dc = currentSelectedTab.getPropertyComposite();
+                if (dc != null) {
+                    dc.refresh();
+                }
             }
         }
     }
