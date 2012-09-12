@@ -19,6 +19,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.INode;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -136,12 +137,16 @@ public class ChangeActivateStatusElementCommand extends Command {
         for (Connection connection : connectionList) {
             connection.setPropertyValue(EParameterName.ACTIVATE.getName(), value);
         }
+
         for (Node node : nodeList) {
             if (isSameSchemaInputOutput(node)) {
                 node.setPropertyValue(EParameterName.DUMMY.getName(), !value);
             }
             node.setPropertyValue(EParameterName.ACTIVATE.getName(), value);
         }
+
+        dummyMiddleElement();
+
         process.setActivate(true);
         process.checkStartNodes();
         process.checkProcess();
@@ -220,5 +225,48 @@ public class ChangeActivateStatusElementCommand extends Command {
     @Override
     public void redo() {
         this.execute();
+    }
+
+    private void dummyMiddleElement() {
+        if (value == false) {
+            return;
+        }
+        Process process;
+        if (nodeList.size() > 0) {
+            process = (Process) nodeList.get(0).getProcess();
+        } else {
+            process = (Process) connectionList.get(0).getSource().getProcess();
+        }
+        List<? extends INode> nodes = process.getGraphicalNodes();
+        if (nodes != null && nodes.size() > 0) {
+            for (INode node : nodes) {
+                if (!node.isActivate()) {
+                    continue;
+                }
+                List<Connection> connIn = (List<Connection>) node.getIncomingConnections();
+                for (Connection in : connIn) {
+                    Node source = (Node) in.getSource();
+                    for (INode cNode : nodes) {
+                        if (cNode.getUniqueName().equals(node.getUniqueName())) {
+                            continue;
+                        }
+                        List<Connection> cConnOut = (List<Connection>) cNode.getOutgoingConnections();
+                        for (Connection cOut : cConnOut) {
+                            INode cTarget = cOut.getTarget();
+                            if (source.getUniqueName().equals(cTarget.getUniqueName())) {
+                                if (isSameSchemaInputOutput(source)) {
+                                    cOut.setPropertyValue(EParameterName.ACTIVATE.getName(), value);
+                                    in.setPropertyValue(EParameterName.ACTIVATE.getName(), value);
+                                    source.setPropertyValue(EParameterName.DUMMY.getName(), value);
+                                    source.setPropertyValue(EParameterName.ACTIVATE.getName(), source.isActivate());
+                                }
+
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
     }
 }
