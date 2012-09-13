@@ -16,10 +16,12 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -555,7 +557,8 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
             FilesUtils.copyFile(originalXmlFile, pdfXmlFile);
 
             SAXReader saxReader = new SAXReader();
-            Document document = saxReader.read(pdfXmlFile);
+            Reader reader = new InputStreamReader(new FileInputStream(pdfXmlFile), "GBK");
+            Document document = saxReader.read(reader);
             Attribute attri = (Attribute) document.selectNodes("/project/job/preview/@picture").get(0); //$NON-NLS-1$
             attri.setValue(IHTMLDocConstants.PICTUREFOLDERPATH + "pdf_" + jobName + IHTMLDocConstants.JOB_PREVIEW_PIC_SUFFIX); //$NON-NLS-1$
 
