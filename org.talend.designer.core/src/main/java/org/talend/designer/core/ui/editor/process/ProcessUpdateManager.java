@@ -1072,6 +1072,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             if (resultForEBCDIC != null) {
                 schemaResults.addAll(resultForEBCDIC);
             }
+            // return schemaResults;
         }
 
         // check tMap schema...
@@ -1110,7 +1111,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             Map<String, EUpdateResult> deletedOrReselect = getDeletedOrReselectTablesMap();
                             List<Object> parameter = null;
                             // renamed
-                            if (newSourceId != null && !newSourceId.equals(propertyValue)) {
+                            if (newSourceId != null && !newSourceId.equals(propertyValue)
+                                    && !PluginChecker.isEBCDICPluginLoaded()) {
                                 String[] newSourceIdAndName = UpdateManagerUtils.getSourceIdAndChildName(newSourceId);
                                 if (newSourceIdAndName != null) {
                                     IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem,
