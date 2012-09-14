@@ -1,0 +1,30 @@
+This jar is POI 3.7 with a fix regarding management of dates with T format (like 2012-12-13T10:23:45).
+
+Modified class: org/apache/poi/ss/usermodel/DateUtil.java
+
+(line 238)
+for (int i = 0; i < fs.length(); i++) {
+	char c = fs.charAt(i);
+    if (i < fs.length() - 1) {
+        char nc = fs.charAt(i + 1);
+        if (c == '\\') {
+            switch (nc) {
+                case '-':
+                case ',':
+                case '.':
+                case ' ':
+                case '\\':
+                    // skip current '\' and continue to the next char
+                    continue;
++				case 'T':
++                    i++;
++                    continue;
+            }
+        } else if (c == ';' && nc == '@') {
+            i++;
+            // skip ";@" duplets
+            continue;
+        }
+    }
+	sb.append(c);
+}
