@@ -77,7 +77,7 @@
 			<ITEM NAME="MAPR2" VALUE="MAPR2" SHOW_IF="DISTRIBUTION=='MAPR'" />
 		</ITEMS>
 	</PARAMETER>
-	<PARAMETER NAME="CONNECTION_MODE" FIELD="CLOSED_LIST" NUM_ROW="26" REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION=='false'" REPOSITORY_VALUE="CONNECTION_MODE" GROUP="CONN">
+	<PARAMETER NAME="CONNECTION_MODE" FIELD="CLOSED_LIST" NUM_ROW="26" REQUIRED="true" SHOW_IF="USE_EXISTING_CONNECTION=='false'" REPOSITORY_VALUE="CONNECTION_MODE">
 		<ITEMS DEFAULT="EMBEDDED">
 			<ITEM NAME="EMBEDDED" VALUE="EMBEDDED" NOT_SHOW_IF="HIVE_VERSION=='APACHE_0_20_203'"/>
 			<ITEM NAME="STANDALONE" VALUE="STANDALONE" NOT_SHOW_IF="HIVE_VERSION=='HDP_1_0'"/>
@@ -91,7 +91,6 @@
       REPOSITORY_VALUE="SERVER_NAME"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-	  GROUP="CONN"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -103,7 +102,6 @@
       REPOSITORY_VALUE="PORT"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-	  GROUP="CONN"
     >
       <DEFAULT>"10000"</DEFAULT>
     </PARAMETER>
@@ -115,7 +113,6 @@
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false' AND CONNECTION_MODE=='STANDALONE')"
-	  GROUP="CONN"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -126,7 +123,6 @@
       NUM_ROW="40"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
-	  GROUP="CONN"
     >
       <DEFAULT>Hive</DEFAULT>
     </PARAMETER>
@@ -138,7 +134,6 @@
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-	  GROUP="CONN"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -150,50 +145,8 @@
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-	  GROUP="CONN"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-	
-	<PARAMETER
-      NAME="SET_MAPRED_JT"
-      FIELD="CHECK"
-      NUM_ROW="52"
-      REQUIRED="true"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-      GROUP="HADOOP_PROPS"
-    >
-	<DEFAULT>false</DEFAULT>
-    </PARAMETER>
-    <PARAMETER
-      NAME="MAPRED_JT"
-      FIELD="TEXT"
-      NUM_ROW="52"
-      REQUIRED="true"
-      SHOW_IF="(USE_EXISTING_CONNECTION == 'false' AND SET_MAPRED_JT=='true')"
-      GROUP="HADOOP_PROPS"
-    >
-      <DEFAULT>"localhost:50300"</DEFAULT>
-    </PARAMETER>
-    <PARAMETER
-      NAME="SET_FS_DEFAULT_NAME"
-      FIELD="CHECK"
-      NUM_ROW="53"
-      REQUIRED="true"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-      GROUP="HADOOP_PROPS"
-    >
-	<DEFAULT>false</DEFAULT>
-    </PARAMETER>
-    <PARAMETER
-      NAME="FS_DEFAULT_NAME"
-      FIELD="TEXT"
-      NUM_ROW="53"
-      REQUIRED="true"
-      SHOW_IF="(USE_EXISTING_CONNECTION == 'false' AND SET_FS_DEFAULT_NAME=='true')"
-      GROUP="HADOOP_PROPS"
-    >
-      <DEFAULT>"hdfs://localhost:8020"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -313,12 +266,6 @@
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
-	<PARAMETER NAME="HADOOP_ADVANCED_PROPERTIES" FIELD="TABLE" REQUIRED="false" NUM_ROW="40" NB_LINES="3" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-		<ITEMS>
-			<ITEM NAME="PROPERTY" />
-			<ITEM NAME="VALUE" />
-		</ITEMS>
-	</PARAMETER>		
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
@@ -411,8 +358,6 @@
 			<IMPORT NAME="jdo2-api-2.3-ec.jar" MODULE="jdo2-api-2.3-ec.jar" REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0') and (USE_EXISTING_CONNECTION == 'false')"/>
 			<IMPORT NAME="commons-lang-2.4.jar" MODULE="commons-lang-2.4.jar"  REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0') and (USE_EXISTING_CONNECTION == 'false')"/>
 			<IMPORT NAME="slf4j-log4j12-1.6.1.jar" MODULE="slf4j-log4j12-1.6.1.jar"  REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0') and (USE_EXISTING_CONNECTION == 'false')" />
-			<IMPORT NAME="jackson-core-asl-1.8.8.jar" MODULE="jackson-core-asl-1.8.8.jar" REQUIRED="false" REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0') and (USE_EXISTING_CONNECTION == 'false')"/>
-			<IMPORT NAME="jackson-mapper-asl-1.8.8.jar" MODULE="jackson-mapper-asl-1.8.8.jar" REQUIRED="false" REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0') and (USE_EXISTING_CONNECTION == 'false')"/>
 			<!-- ############## -->
 			
 			<!-- CDH 4 -->
@@ -433,18 +378,18 @@
 			<IMPORT NAME="guava-11.0.2.jar" MODULE="guava-11.0.2.jar"  REQUIRED_IF="(HIVE_VERSION=='Cloudera_CDH4') and (USE_EXISTING_CONNECTION == 'false')" />
 			<IMPORT NAME="commons-logging-1.1.1.jar" MODULE="commons-logging-1.1.1.jar"  REQUIRED_IF="(HIVE_VERSION=='Cloudera_CDH4') and (USE_EXISTING_CONNECTION == 'false')" />
 			
-			<IMPORT NAME="antlr-runtime-3.0.1.jar" MODULE="antlr-runtime-3.0.1.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'"/>
-			<IMPORT NAME="commons-dbcp-1.4.jar" MODULE="commons-dbcp-1.4.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'"/>
-			<IMPORT NAME="commons-pool-1.5.4.jar" MODULE="commons-pool-1.5.4.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'"/>
-			<IMPORT NAME="datanucleus-connectionpool-2.0.3.jar" MODULE="datanucleus-connectionpool-2.0.3.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'"/>
-			<IMPORT NAME="datanucleus-enhancer-2.0.3.jar" MODULE="datanucleus-enhancer-2.0.3.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'"/>
-			<IMPORT NAME="derby-10.4.2.0.jar" MODULE="derby-10.4.2.0.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'"/>
-			<IMPORT NAME="hive-builtins-0.8.1-cdh4.0.1.jar" MODULE="hive-builtins-0.8.1-cdh4.0.1.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'"/>
-			<IMPORT NAME="commons-configuration-1.6.jar" MODULE="commons-configuration-1.6.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'"/>
-			<IMPORT NAME="datanucleus-core-2.0.3.jar" MODULE="datanucleus-core-2.0.3.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'"/>
-			<IMPORT NAME="datanucleus-rdbms-2.0.3.jar" MODULE="datanucleus-rdbms-2.0.3.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'"/>
-			<IMPORT NAME="jdo2-api-2.3-ec.jar" MODULE="jdo2-api-2.3-ec.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'"/>
-			<IMPORT NAME="commons-lang-2.4.jar" MODULE="commons-lang-2.4.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'"/>
+			<IMPORT NAME="antlr-runtime-3.0.1.jar" MODULE="antlr-runtime-3.0.1.jar"  REQUIRED_IF="(HIVE_VERSION=='Cloudera_CDH4') and (USE_EXISTING_CONNECTION == 'false')"/>
+			<IMPORT NAME="commons-dbcp-1.4.jar" MODULE="commons-dbcp-1.4.jar"  REQUIRED_IF="(HIVE_VERSION=='Cloudera_CDH4') and (USE_EXISTING_CONNECTION == 'false')"/>
+			<IMPORT NAME="commons-pool-1.5.4.jar" MODULE="commons-pool-1.5.4.jar"  REQUIRED_IF="(HIVE_VERSION=='Cloudera_CDH4') and (USE_EXISTING_CONNECTION == 'false')"/>
+			<IMPORT NAME="datanucleus-connectionpool-2.0.3.jar" MODULE="datanucleus-connectionpool-2.0.3.jar"  REQUIRED_IF="(HIVE_VERSION=='Cloudera_CDH4') and (USE_EXISTING_CONNECTION == 'false')"/>
+			<IMPORT NAME="datanucleus-enhancer-2.0.3.jar" MODULE="datanucleus-enhancer-2.0.3.jar"  REQUIRED_IF="(HIVE_VERSION=='Cloudera_CDH4') and (USE_EXISTING_CONNECTION == 'false')"/>
+			<IMPORT NAME="derby-10.4.2.0.jar" MODULE="derby-10.4.2.0.jar"  REQUIRED_IF="(HIVE_VERSION=='Cloudera_CDH4') and (USE_EXISTING_CONNECTION == 'false')"/>
+			<IMPORT NAME="hive-builtins-0.8.1-cdh4.0.1.jar" MODULE="hive-builtins-0.8.1-cdh4.0.1.jar"  REQUIRED_IF="(HIVE_VERSION=='Cloudera_CDH4') and (USE_EXISTING_CONNECTION == 'false')"/>
+			<IMPORT NAME="commons-configuration-1.6.jar" MODULE="commons-configuration-1.6.jar"  REQUIRED_IF="(HIVE_VERSION=='Cloudera_CDH4') and (USE_EXISTING_CONNECTION == 'false')"/>
+			<IMPORT NAME="datanucleus-core-2.0.3.jar" MODULE="datanucleus-core-2.0.3.jar"  REQUIRED_IF="(HIVE_VERSION=='Cloudera_CDH4') and (USE_EXISTING_CONNECTION == 'false')"/>
+			<IMPORT NAME="datanucleus-rdbms-2.0.3.jar" MODULE="datanucleus-rdbms-2.0.3.jar"  REQUIRED_IF="(HIVE_VERSION=='Cloudera_CDH4') and (USE_EXISTING_CONNECTION == 'false')"/>
+			<IMPORT NAME="jdo2-api-2.3-ec.jar" MODULE="jdo2-api-2.3-ec.jar"  REQUIRED_IF="(HIVE_VERSION=='Cloudera_CDH4') and (USE_EXISTING_CONNECTION == 'false')"/>
+			<IMPORT NAME="commons-lang-2.4.jar" MODULE="commons-lang-2.4.jar"  REQUIRED_IF="(HIVE_VERSION=='Cloudera_CDH4') and (USE_EXISTING_CONNECTION == 'false')"/>
 			<!-- ############## -->
      	</IMPORTS>
   </CODEGENERATION>
