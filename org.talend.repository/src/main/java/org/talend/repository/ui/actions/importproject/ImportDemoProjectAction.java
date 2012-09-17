@@ -34,9 +34,9 @@ import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.Project;
 import org.talend.core.prefs.PreferenceManipulator;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
-import org.talend.resources.ResourcesPlugin;
 
 /**
  * Action used to refresh a repository view.<br/>
@@ -95,9 +95,9 @@ public final class ImportDemoProjectAction extends Action {
 
                     try {
                         DemoProjectBean demoProjectBean = demoProjectList.get(selectedDemoProjectIndex);
-                        String techName = demoProjectBean.getProjectName();
+                        String projectName = demoProjectBean.getProjectName();
 
-                        if (checkProjectIsExisting(techName)) {
+                        if (checkProjectIsExisting(projectName)) {
                             boolean reImportFlag = MessageDialog.openQuestion(shell,
                                     Messages.getString("ImportDemoProjectAction.alertDialog.messageTitle"), Messages //$NON-NLS-1$
                                             .getString("ImportDemoProjectAction.alertDialog.message")); //$NON-NLS-1$
@@ -108,28 +108,22 @@ public final class ImportDemoProjectAction extends Action {
 
                         String demoFilePath = demoProjectBean.getDemoProjectFilePath();
                         EDemoProjectFileType demoProjectFileType = demoProjectBean.getDemoProjectFileType();
-                        String pluginID = ResourcesPlugin.PLUGIN_ID;                        
-                        if (techName.equals("TALENDDEMOSPERL")) { //$NON-NLS-1$
-                            pluginID = "org.talend.resources.perl"; //$NON-NLS-1$
-                        } else if (techName.equals("TDQEEDEMOJAVA")) { //$NON-NLS-1$
-                            pluginID = ResourcesPlugin.TDQ_PLUGIN_ID;
-                        }
-                        if(demoProjectBean.getPluginId()!=null){
-                            pluginID=demoProjectBean.getPluginId();
-                        }
+                        String pluginID = demoProjectBean.getPluginId();
                         Bundle bundle = Platform.getBundle(pluginID);
 
                         URL url = FileLocator.resolve(bundle.getEntry(demoFilePath));
 
                         String filePath = new Path(url.getFile()).toOSString();
-
-                        if (demoProjectFileType.getName().equalsIgnoreCase("folder")) { //$NON-NLS-1$
-                            ImportProjectsUtilities.importProjectAs(shell, techName, techName, filePath, monitorWrap);
+                        // FIXME TDI-22786
+                        String technicalName = ProjectManager.getInstance().getLocalTechnicalProjectName(projectName);
+                        if (demoProjectFileType.equals(EDemoProjectFileType.FOLDER)) {
+                            ImportProjectsUtilities.importProjectAs(shell, projectName, technicalName, filePath, monitorWrap);
                         } else {// type.equalsIgnoreCase("archive")
-                            ImportProjectsUtilities.importArchiveProjectAs(shell, techName, techName, filePath, monitorWrap);
+                            ImportProjectsUtilities.importArchiveProjectAs(shell, projectName, technicalName, filePath,
+                                    monitorWrap);
 
                         }
-                        lastImportedName = techName;
+                        lastImportedName = projectName;
 
                     } catch (IOException e) {
                         throw new InvocationTargetException(e);

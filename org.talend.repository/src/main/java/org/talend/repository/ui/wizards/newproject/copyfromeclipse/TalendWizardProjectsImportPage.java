@@ -49,17 +49,15 @@ import org.eclipse.ui.statushandlers.StatusManager;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.properties.Project;
+import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.utils.XmiResourceManager;
+import org.talend.repository.ProjectManager;
+import org.talend.repository.model.migration.ChangeProjectTechinicalNameMigrationTask;
 
 /**
  * DOC zhangchao.wang class global comment. Detailled comment
  */
 public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
-
-    /**
-     * 
-     */
-    private static final String TALEND_PROJECT = "talend.project";
 
     public TalendWizardProjectsImportPage() {
 
@@ -166,8 +164,9 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
         private boolean isDefaultLocation(IPath path) {
             // The project description file must at least be within the project,
             // which is within the workspace location
-            if (path.segmentCount() < 2)
+            if (path.segmentCount() < 2) {
                 return false;
+            }
             return path.removeLastSegments(2).toFile().equals(Platform.getLocation().toFile());
         }
 
@@ -187,8 +186,9 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
          * @since 3.4
          */
         public String getProjectLabel() {
-            if (description == null)
+            if (description == null) {
                 return projectName;
+            }
 
             String path = projectSystemFile == null ? structureProvider.getLabel(parent) : projectSystemFile.getParent();
 
@@ -243,8 +243,8 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
         Collection files = new ArrayList();
         List projects = new ArrayList();
         ProjectRecord[] selected = null;
-        for (int i = 0; i < selectedProjects.length; i++) {
-            projects.add(selectedProjects[i]);
+        for (ProjectRecord selectedProject : selectedProjects) {
+            projects.add(selectedProject);
         }
         final File directory = new File(sourcePath);
         if (ArchiveFileManipulations.isTarFile(sourcePath)) {
@@ -328,7 +328,7 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
             Object child = children.get(i);
             if (!structureProvider.isFolder(child)) {
                 String elementLabel = structureProvider.getLabel(child);
-                if (elementLabel.equals(TALEND_PROJECT)) {
+                if (elementLabel.equals(FileConstants.LOCAL_PROJECT_FILENAME)) {
                     isContainsFile = true;
                 }
             }
@@ -349,8 +349,9 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
     private boolean collectProjectFilesFromDirectory(Collection files, File directory, Set directoriesVisited) {
 
         File[] contents = directory.listFiles();
-        if (contents == null)
+        if (contents == null) {
             return false;
+        }
 
         // Initialize recursion guard for recursive symbolic links
         if (directoriesVisited == null) {
@@ -364,10 +365,8 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
         }
 
         // first look for project description files
-        final String dotProject = TALEND_PROJECT;
-        for (int i = 0; i < contents.length; i++) {
-            File file = contents[i];
-            if (file.isFile() && file.getName().equals(dotProject)) {
+        for (File file : contents) {
+            if (file.isFile() && file.getName().equals(FileConstants.LOCAL_PROJECT_FILENAME)) {
                 files.add(file);
                 // don't search sub-directories since we can't have nested
                 // projects
@@ -407,23 +406,34 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
         //
         final Object[] selected = getProjectsList().getCheckedElements();
         XmiResourceManager xmiManager = new XmiResourceManager();
-        for (int i = 0; i < selected.length; i++) {
-            final ProjectRecord record = (ProjectRecord) selected[i];
-            String projectName = record.getProjectName();
-            final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-            final IProject project = workspace.getRoot().getProject(projectName);
-            try {
-                final Project loadProject = xmiManager.loadProject(project);
-                loadProject.setLocal(true);
-                loadProject.setId(0);
-                loadProject.setUrl(null);
-                loadProject.setCreationDate(null);
-                loadProject.setDescription("");
-                loadProject.setType(null);
-                xmiManager.saveResource(loadProject.eResource());
-            } catch (PersistenceException e) {
-                //
+        try {
+            for (Object element : selected) {
+                final ProjectRecord record = (ProjectRecord) element;
+                String projectName = record.getProjectName();
+                final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                final IProject project = workspace.getRoot().getProject(projectName);
+
+                try {
+                    final Project loadProject = xmiManager.loadProject(project);
+                    loadProject.setLocal(true);
+                    loadProject.setId(0);
+                    loadProject.setUrl(null);
+                    loadProject.setCreationDate(null);
+                    //loadProject.setDescription(""); //$NON-NLS-1$
+                    loadProject.setType(null);
+                    xmiManager.saveResource(loadProject.eResource());
+
+                    // FIXME TDI-22786, migrate the project name.
+                    if (ProjectManager.getInstance().enableSpecialTechnicalProjectName()) {
+                        ChangeProjectTechinicalNameMigrationTask migrationTask = new ChangeProjectTechinicalNameMigrationTask();
+                        migrationTask.migrateTalendProject(project, loadProject, xmiManager);
+                    }
+                } catch (PersistenceException e) {
+                    //
+                }
             }
+        } finally {
+            xmiManager.unloadResources();
         }
         return created;
         //

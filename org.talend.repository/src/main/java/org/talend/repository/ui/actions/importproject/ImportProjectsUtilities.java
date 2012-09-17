@@ -25,8 +25,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -79,10 +81,6 @@ import org.talend.resources.ResourcesPlugin;
  * 
  */
 public class ImportProjectsUtilities {
-
-    public static final String TALEND_PROJECT_FILE_NAME = "talend.project"; //$NON-NLS-1$
-
-    public static final String OLD_TALEND_PROJECT_FILE_NAME = "talendProject"; //$NON-NLS-1$
 
     private static final String XML_FILE_PATH = "resources/demoprojects/"; //$NON-NLS-1$
 
@@ -293,8 +291,7 @@ public class ImportProjectsUtilities {
         }
         File[] contents = directory.listFiles();
         // first look for project description files
-        for (int i = 0; i < contents.length; i++) {
-            File file = contents[i];
+        for (File file : contents) {
             if (file.isFile() && file.getName().equals(searchFileName)) {
                 files.add(file);
                 // don't search sub-directories since we can't have nested
@@ -380,10 +377,13 @@ public class ImportProjectsUtilities {
         Document doc = null;
         List<DemoProjectBean> demoProjectList = new ArrayList<DemoProjectBean>();
         DemoProjectBean demoProject = null;
-        List<File> xmlFilePath = getXMLFilePath();
-        for (int t = 0; t < xmlFilePath.size(); t++) {
+        Map<String, File> xmlListFilesMap = getXMLFilePath();
+        Iterator<String> iterator = xmlListFilesMap.keySet().iterator();
+        while (iterator.hasNext()) {
+            String pluginId = iterator.next();
+            File xmlFile = xmlListFilesMap.get(pluginId);
             try {
-                doc = reader.read(xmlFilePath.get(t));
+                doc = reader.read(xmlFile);
             } catch (DocumentException e) {
                 ExceptionHandler.process(e);
                 return null;
@@ -412,7 +412,10 @@ public class ImportProjectsUtilities {
                 demoProject.setDemoProjectFilePath(demoProjectElement.attributeValue("demoFilePath")); //$NON-NLS-1$
                 demoProject.setDescriptionFilePath(demoProjectElement.attributeValue("descriptionFilePath")); //$NON-NLS-1$
                 // get the demo plugin Id
-                demoProject.setPluginId(demoProjectElement.attributeValue("pluginId")); //$NON-NLS-1$                
+                demoProject.setPluginId(demoProjectElement.attributeValue("pluginId")); //$NON-NLS-1$   
+                if (demoProject.getPluginId() == null) {
+                    demoProject.setPluginId(pluginId);
+                }
                 if (demoProject.getProjectName().equals("ESBDEMOS")) {
                     if (!PluginChecker.isPluginLoaded("org.talend.repository.services")) {
                         continue;
@@ -435,20 +438,19 @@ public class ImportProjectsUtilities {
     /**
      * Gets the path of demo projects xml file.
      * 
-     * @return String
+     * @return Map<String,File>, plugin and config xml file
      */
-    private static List<File> getXMLFilePath() {
-        List<File> xmlListFile = new ArrayList<File>();
-        String[] pluginIDs = new String[] { ResourcesPlugin.PLUGIN_ID, "org.talend.resources.perl", //$NON-NLS-1$
-                ResourcesPlugin.TDQ_PLUGIN_ID, getMDMDemoPluginId() }; //$NON-NLS-1$
+    private static Map<String, File> getXMLFilePath() {
+        Map<String, File> xmlListFilesMap = new HashMap<String, File>();
+        String[] pluginIDs = new String[] { ResourcesPlugin.PLUGIN_ID, ResourcesPlugin.TDQ_PLUGIN_ID, getMDMDemoPluginId() };
 
-        for (int i = 0; i < pluginIDs.length; i++) {
-            Bundle bundle = Platform.getBundle(pluginIDs[i]);
+        for (String pluginID : pluginIDs) {
+            Bundle bundle = Platform.getBundle(pluginID);
             if (bundle != null) {
                 URL url = null;
 
                 String fullPath = XML_FILE_PATH;
-                if (ResourcesPlugin.TDQ_PLUGIN_ID.equals(pluginIDs[i])) {
+                if (ResourcesPlugin.TDQ_PLUGIN_ID.equals(pluginID)) {
                     fullPath = PluginConstant.EMPTY_STRING;
                 }
                 URL fileUrl = FileLocator.find(bundle, new Path(fullPath), null);
@@ -459,8 +461,9 @@ public class ImportProjectsUtilities {
                 } catch (IOException e) {
                     ExceptionHandler.process(e);
                 }
-                if (url == null)
+                if (url == null) {
                     continue;
+                }
                 File xmlFilePath = new File(url.getPath());
                 if (xmlFilePath.exists()) {
                     String files[] = xmlFilePath.list(new FilenameFilter() {
@@ -471,11 +474,11 @@ public class ImportProjectsUtilities {
                     });
                     for (String file : files) {
                         File xml = new File(url.getPath() + "/" + file); //$NON-NLS-1$
-                        xmlListFile.add(xml);
+                        xmlListFilesMap.put(pluginID, xml);
                     }
                 }
             }
         }
-        return xmlListFile;
+        return xmlListFilesMap;
     }
 }

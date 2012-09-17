@@ -53,6 +53,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.prefs.GeneralParametersProvider;
 import org.talend.core.prefs.GeneralParametersProvider.GeneralParameters;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
 
@@ -151,6 +152,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         chkButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         chkButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 chkButton.setSelection(chkButton.getSelection());
             }
@@ -172,6 +174,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         // treeViewer.setLabelProvider(WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider());
         treeViewer.setLabelProvider(new LabelProvider() {
 
+            @Override
             public final String getText(Object element) {
                 // query the element for its label
 
@@ -192,12 +195,13 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
                     Project p = proItem.get(i);
                     String proName = p.getTechnicalLabel()/* .toUpperCase() */;
                     if (proName.equals(name)) {
-                        return p.getLabel();
+                        return ProjectManager.getInstance().getProjectDisplayLabel(p.getEmfProject());
                     }
                 }
                 return name;
             }
 
+            @Override
             public final Image getImage(Object element) {
                 // obtain the base image by querying the element
 
@@ -252,6 +256,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         setButtonLayoutData(bSelectAll);
         bSelectAll.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 treeViewer.setAllChecked(true);
                 delItemList = projectItemList;
@@ -264,6 +269,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         setButtonLayoutData(bDeselectAll);
         bDeselectAll.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 treeViewer.setAllChecked(false);
                 if (!delItemList.isEmpty()) {
@@ -276,6 +282,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
     private ITreeContentProvider getResourceProvider(final int resourceType) {
         return new WorkbenchContentProvider() {
 
+            @Override
             public Object[] getChildren(Object o) {
                 if (o instanceof IContainer) {
                     IResource[] members = null;
@@ -288,10 +295,10 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
 
                     // filter out the desired resource types
                     ArrayList results = new ArrayList();
-                    for (int i = 0; i < members.length; i++) {
+                    for (IResource member : members) {
                         // And the test bits with the resource types to see if they are what we want
-                        if ((members[i].getType() & resourceType) > 0) {
-                            results.add(members[i]);
+                        if ((member.getType() & resourceType) > 0) {
+                            results.add(member);
                         }
                     }
                     return results.toArray();

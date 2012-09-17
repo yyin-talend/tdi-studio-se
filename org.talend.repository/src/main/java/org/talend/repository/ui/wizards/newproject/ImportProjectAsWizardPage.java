@@ -47,6 +47,7 @@ import org.eclipse.ui.internal.wizards.datatransfer.TarLeveledStructureProvider;
 import org.eclipse.ui.internal.wizards.datatransfer.ZipLeveledStructureProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.Project;
+import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.RepositoryPlugin;
@@ -253,6 +254,7 @@ public class ImportProjectAsWizardPage extends WizardPage {
              * 
              * @see org.eclipse.swt.events.SelectionAdapter#widgetS elected(org.eclipse.swt.events.SelectionEvent)
              */
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 handleLocationDirectoryButtonPressed();
             }
@@ -266,6 +268,7 @@ public class ImportProjectAsWizardPage extends WizardPage {
              * 
              * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse .swt.events.SelectionEvent)
              */
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 handleLocationArchiveButtonPressed();
             }
@@ -279,6 +282,7 @@ public class ImportProjectAsWizardPage extends WizardPage {
              * 
              * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse .swt.events.SelectionEvent)
              */
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 directoryRadioSelected();
             }
@@ -291,6 +295,7 @@ public class ImportProjectAsWizardPage extends WizardPage {
              * 
              * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse .swt.events.SelectionEvent)
              */
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 archiveRadioSelected();
             }
@@ -405,11 +410,11 @@ public class ImportProjectAsWizardPage extends WizardPage {
                 return;
             }
             if (!ImportProjectsUtilities.collectProjectFilesFromProvider(talendProjectFiles, provider, child, 0, null,
-                    ImportProjectsUtilities.TALEND_PROJECT_FILE_NAME)) {
+                    FileConstants.LOCAL_PROJECT_FILENAME)) {
                 return;
             }
             if (!ImportProjectsUtilities.collectProjectFilesFromProvider(talendProjectFiles, provider, child, 0, null,
-                    ImportProjectsUtilities.OLD_TALEND_PROJECT_FILE_NAME)) {
+                    FileConstants.OLD_TALEND_PROJECT_FILENAME)) {
                 return;
             }
         } else if (!dirSelected && ArchiveFileManipulations.isZipFile(path)) {
@@ -425,11 +430,11 @@ public class ImportProjectAsWizardPage extends WizardPage {
                 return;
             }
             if (!ImportProjectsUtilities.collectProjectFilesFromProvider(talendProjectFiles, provider, child, 0, null,
-                    ImportProjectsUtilities.TALEND_PROJECT_FILE_NAME)) {
+                    FileConstants.LOCAL_PROJECT_FILENAME)) {
                 return;
             }
             if (!ImportProjectsUtilities.collectProjectFilesFromProvider(talendProjectFiles, provider, child, 0, null,
-                    ImportProjectsUtilities.OLD_TALEND_PROJECT_FILE_NAME)) {
+                    FileConstants.OLD_TALEND_PROJECT_FILENAME)) {
                 return;
             }
         } else if (dirSelected && directory.isDirectory()) {
@@ -438,11 +443,11 @@ public class ImportProjectAsWizardPage extends WizardPage {
                 return;
             }
             if (!ImportProjectsUtilities.collectProjectFilesFromDirectory(talendProjectFiles, directory, null,
-                    ImportProjectsUtilities.TALEND_PROJECT_FILE_NAME)) {
+                    FileConstants.LOCAL_PROJECT_FILENAME)) {
                 return;
             }
             if (!ImportProjectsUtilities.collectProjectFilesFromDirectory(talendProjectFiles, directory, null,
-                    ImportProjectsUtilities.OLD_TALEND_PROJECT_FILE_NAME)) {
+                    FileConstants.OLD_TALEND_PROJECT_FILENAME)) {
                 return;
             }
         }
@@ -551,17 +556,17 @@ public class ImportProjectAsWizardPage extends WizardPage {
     protected void checkFieldsValue() {
         // Field Name
         if (nameText.getText().length() == 0) {
-            nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
-                    .getString("NewProjectWizardPage.nameEmpty"), null); //$NON-NLS-1$
+            nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
+                    Messages.getString("NewProjectWizardPage.nameEmpty"), null); //$NON-NLS-1$
         } else {
             technicalNameText.setText(Project.createTechnicalName(nameText.getText()));
             if (!Pattern.matches(RepositoryConstants.PROJECT_PATTERN, nameText.getText())) {
-                nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
-                        .getString("NewProjectWizardPage.illegalCharacter"), null); //$NON-NLS-1$
+                nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
+                        Messages.getString("NewProjectWizardPage.illegalCharacter"), null); //$NON-NLS-1$
             } else {
                 if (isProjectNameAlreadyUsed(nameText.getText())) {
-                    nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
-                            .getString("NewProjectWizardPage.projectNameAlredyExists"), null); //$NON-NLS-1$
+                    nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
+                            Messages.getString("NewProjectWizardPage.projectNameAlredyExists"), null); //$NON-NLS-1$
                 } else {
                     nameStatus = createOkStatus();
                 }
@@ -569,8 +574,8 @@ public class ImportProjectAsWizardPage extends WizardPage {
         }
 
         if (lastPath == null || lastPath.length() == 0) {
-            fileNameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
-                    .getString("ImportProjectAsWizardPage.error.pathRequired"), null); //$NON-NLS-1$
+            fileNameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
+                    Messages.getString("ImportProjectAsWizardPage.error.pathRequired"), null); //$NON-NLS-1$
         } else {
             fileNameStatus = createOkStatus();
         }
@@ -606,6 +611,7 @@ public class ImportProjectAsWizardPage extends WizardPage {
         }
     }
 
+    @Override
     public String getName() {
         return nameText.getText();
     }

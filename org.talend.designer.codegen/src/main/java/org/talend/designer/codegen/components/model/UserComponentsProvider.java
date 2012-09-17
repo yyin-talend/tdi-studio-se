@@ -48,6 +48,7 @@ public class UserComponentsProvider extends AbstractComponentsProvider {
     public UserComponentsProvider() {
     }
 
+    @Override
     protected File getExternalComponentsLocation() {
         IPreferenceStore prefStore = CodeGeneratorActivator.getDefault().getPreferenceStore();
         String path = prefStore.getString(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER);
@@ -75,6 +76,7 @@ public class UserComponentsProvider extends AbstractComponentsProvider {
         return path.toString();
     }
 
+    @Override
     public void preComponentsLoad() throws IOException {
         File installationFolder = getInstallationFolder();
         if (installationFolder.exists()) {
@@ -83,8 +85,9 @@ public class UserComponentsProvider extends AbstractComponentsProvider {
         FilesUtils.createFoldersIfNotExists(installationFolder.getAbsolutePath(), false);
         FileFilter ff = new FileFilter() {
 
+            @Override
             public boolean accept(File pathname) {
-                if (pathname.getName().equals(".svn")) {
+                if (FilesUtils.isSVNFolder(pathname)) {
                     return false;
                 }
                 return true;

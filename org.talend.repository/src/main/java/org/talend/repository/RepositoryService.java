@@ -14,7 +14,6 @@ package org.talend.repository;
 
 import java.beans.PropertyChangeEvent;
 import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,7 +67,6 @@ import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.impl.PropertiesFactoryImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.SVNConstant;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.CoreRepositoryPlugin;
@@ -77,7 +75,6 @@ import org.talend.core.repository.model.RepositoryFactoryProvider;
 import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.core.repository.utils.RepositoryPathProvider;
-import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.ui.DisableLanguageActions;
 import org.talend.core.ui.IRulesProviderService;
 import org.talend.core.ui.branding.IBrandingService;
@@ -195,8 +192,7 @@ public class RepositoryService implements IRepositoryService {
     public void notifySQLBuilder(List<IRepositoryViewObject> list) {
         IRepositoryChangedListener listener = (IRepositoryChangedListener) RepositoryManagerHelper.getRepositoryView();
         removeRepositoryChangedListener(listener);
-        for (Iterator<IRepositoryViewObject> iter = list.iterator(); iter.hasNext();) {
-            IRepositoryViewObject element = iter.next();
+        for (IRepositoryViewObject element : list) {
             repositoryChanged(new RepositoryElementDelta(element));
         }
         registerRepositoryChangedListenerAsFirst(listener);
@@ -356,17 +352,12 @@ public class RepositoryService implements IRepositoryService {
                 }
                 Context ctx = CorePlugin.getContext();
                 RepositoryContext repositoryContext = new RepositoryContext();
+                ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
+
                 repositoryContext.setUser(userInfo);
                 repositoryContext.setClearPassword(password);
                 repositoryContext.setFields(bean.getDynamicFields());
-                String branchKey = IProxyRepositoryFactory.BRANCH_SELECTION + SVNConstant.UNDER_LINE_CHAR + projectName;
-                if (branch != null) {
-                    repositoryContext.getFields().put(branchKey, branch);
-                } else {
-                    repositoryContext.getFields().put(branchKey, SVNConstant.EMPTY);
-                }
-
-                ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
+                ProjectManager.getInstance().setMainProjectBranch(projectName, branch);
 
                 repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(bean
                         .getRepositoryId()));
@@ -633,7 +624,7 @@ public class RepositoryService implements IRepositoryService {
             rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(IRulesProviderService.class);
             try {
                 rulesService.syncRule(currentRepositoryItem);
-                String path = rulesService.getRuleFile(currentRepositoryItem, ".xls").getLocation().toOSString(); //$NON-NLS-N$ //$NON-NLS-1$
+                String path = rulesService.getRuleFile(currentRepositoryItem, ".xls").getLocation().toOSString(); //$NON-NLS-1$
                 return path;
             } catch (SystemException e) {
             }
@@ -642,12 +633,9 @@ public class RepositoryService implements IRepositoryService {
     }
 
     public boolean openReadOnlyDialog(Shell shell) {
-        Context ctx = CoreRuntimePlugin.getInstance().getContext();
-        RepositoryContext rc = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
-        String branchKey = IProxyRepositoryFactory.BRANCH_SELECTION + "_"
-                + ProjectManager.getInstance().getCurrentProject().getTechnicalLabel();
-        String branchSelection = rc.getFields().get(branchKey);
-        if (rc.getFields().containsKey(branchKey) && branchSelection != null) {
+        String branchSelection = ProjectManager.getInstance().getMainProjectBranch(
+                ProjectManager.getInstance().getCurrentProject());
+        if (branchSelection != null) {
             if (branchSelection.startsWith("tags")) {
                 MessageDialog.openInformation(shell, "Information", "the current login project is readonly");
             }

@@ -91,13 +91,17 @@ import org.talend.core.model.properties.JobDocumentationItem;
 import org.talend.core.model.properties.JobletDocumentationItem;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Project;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryViewObject;
+import org.talend.core.model.utils.TalendPropertiesUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.documentation.IDocumentationService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.imports.TreeBuilder.IContainerNode;
+import org.talend.repository.imports.TreeBuilder.ProjectNode;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -326,9 +330,16 @@ class ImportItemWizardPage extends WizardPage {
             @Override
             public String getText(Object element) {
                 if (element instanceof IContainerNode) {
+                    if (element instanceof ProjectNode) {
+                        Project project = ((ProjectNode) element).getProject();
+                        return ProjectManager.getInstance().getProjectDisplayLabel(project);
+                    }
                     return ((IContainerNode) element).getLabel();
+                } else if (element instanceof ItemRecord) {
+                    return ((ItemRecord) element).getLabel();
                 }
-                return ((ItemRecord) element).getLabel();
+                return super.getText(element);
+
             }
 
             @Override
@@ -491,7 +502,7 @@ class ImportItemWizardPage extends WizardPage {
         browseArchivesButton = new Button(projectGroup, SWT.PUSH);
         browseArchivesButton.setText(DataTransferMessages.DataTransfer_browse);
         setButtonLayoutData(browseArchivesButton);
-        if (PluginChecker.isExchangeSystemLoaded()) {
+        if (PluginChecker.isExchangeSystemLoaded() && !TalendPropertiesUtil.isHideExchange()) {
             selectExchangeButton = new Button(projectGroup, SWT.PUSH);
             selectExchangeButton.setText(Messages.getString("ImportItemWizardPage.browseTalend")); //$NON-NLS-1$
             setButtonLayoutData(selectExchangeButton);

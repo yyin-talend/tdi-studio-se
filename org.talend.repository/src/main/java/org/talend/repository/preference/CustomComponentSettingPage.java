@@ -203,6 +203,7 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
         shareButton.setLayoutData(gridData);
         shareButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 // share components
                 ISelection selection = componentViewer.getSelection();
@@ -247,6 +248,7 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
         backButton.setLayoutData(gridData);
         backButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 ISelection selection = shareViewer.getSelection();
                 if (selection instanceof IStructuredSelection) {
@@ -286,6 +288,7 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
     private ViewerFilter getFilter(final boolean shared) {
         ViewerFilter filter = new ViewerFilter() {
 
+            @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
                 IComponent component = (IComponent) element;
 
@@ -312,7 +315,7 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
     }
 
     private List<CustomComponentSetting> getCustomComponentSettings() {
-        return (List<CustomComponentSetting>) pro.getEmfProject().getCustomComponentSettings();
+        return pro.getEmfProject().getCustomComponentSettings();
     }
 
     private void refreshViewer() {
@@ -407,7 +410,7 @@ public class CustomComponentSettingPage extends ProjectSettingPage {
                 FileFilter ff = new FileFilter() {
 
                     public boolean accept(File pathname) {
-                        if (pathname.getName().equals(".svn")) {
+                        if (FilesUtils.isSVNFolder(pathname)) {
                             return false;
                         }
                         return true;

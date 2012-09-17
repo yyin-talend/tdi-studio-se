@@ -70,7 +70,6 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
@@ -217,10 +216,12 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
 
         tableViewer.setCellModifier(new ICellModifier() {
 
+            @Override
             public boolean canModify(Object element, String property) {
                 return comboContent.size() > 0;
             }
 
+            @Override
             public Object getValue(Object element, String property) {
 
                 if (property.equals(NAME_PROPERTY)) {
@@ -249,6 +250,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 return ""; //$NON-NLS-1$
             }
 
+            @Override
             public void modify(Object elem, String property, Object value) {
                 TableItem item = null;
                 if (elem instanceof Table) {
@@ -289,6 +291,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
 
         buttonAdd.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 if (comboContent.size() > 0) {
                     List<Map> tableInput = (List<Map>) tableViewer.getInput();
@@ -313,6 +316,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
 
         buttonRemove.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 ISelection selection = tableViewer.getSelection();
                 List<Map> tableViewerInput = ((List<Map>) tableViewer.getInput());
@@ -342,6 +346,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
 
         upButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
                 if (selection.size() != 1) {
@@ -365,6 +370,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
 
         downButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
                 if (selection.size() != 1) {
@@ -444,6 +450,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
             this.viewer = viewer;
             this.column.addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     if (ColumnViewerSorter.this.viewer.getComparator() != null) {
                         if (ColumnViewerSorter.this.viewer.getComparator() == ColumnViewerSorter.this) {
@@ -486,6 +493,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
             }
         }
 
+        @Override
         public int compare(Viewer viewer, Object e1, Object e2) {
             return direction * super.compare(viewer, e1, e2);
         }
@@ -510,6 +518,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
 
         codeText.addMouseListener(new MouseListener() {
 
+            @Override
             public void mouseUp(MouseEvent e) {
                 if (tableViewer.getTable().getSelection().length == 0) {
                     return;
@@ -554,11 +563,13 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 }
             }
 
+            @Override
             public void mouseDown(MouseEvent e) {
                 // do nothing
 
             }
 
+            @Override
             public void mouseDoubleClick(MouseEvent e) {
                 mouseUp(e);
 
@@ -576,6 +587,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
     private void addSelectionChangeListener(final TableViewer tableViewer) {
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 updateCodeText();
             }
@@ -685,6 +697,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
              * 
              * @see java.lang.Runnable#run()
              */
+            @Override
             public void run() {
                 if (comboContent == null) {
                     comboContent = new ArrayList<SQLPatternInfor>();
@@ -780,11 +793,9 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
             if (ctx == null) {
                 return;
             }
-            RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
-            String parentBranch = repositoryContext.getFields().get(
-                    IProxyRepositoryFactory.BRANCH_SELECTION + "_" + project.getTechnicalLabel());
+            String parentBranch = ProjectManager.getInstance().getMainProjectBranch(project);
 
-            List<ProjectReference> referencedProjects = (List<ProjectReference>) project.getEmfProject().getReferencedProjects();
+            List<ProjectReference> referencedProjects = project.getEmfProject().getReferencedProjects();
             for (ProjectReference referenced : referencedProjects) {
                 if (referenced.getBranch() != null && !parentBranch.equals(referenced.getBranch())) {
                     continue;
@@ -816,26 +827,32 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
 
     private ILabelProvider comboboxCellEditorLabelProvider = new ILabelProvider() {
 
+        @Override
         public Image getImage(Object element) {
             return null;
         }
 
+        @Override
         public String getText(Object element) {
             return ((SQLPatternInfor) element).getLabel();
         }
 
+        @Override
         public void addListener(ILabelProviderListener listener) {
 
         }
 
+        @Override
         public void dispose() {
 
         }
 
+        @Override
         public boolean isLabelProperty(Object element, String property) {
             return false;
         }
 
+        @Override
         public void removeListener(ILabelProviderListener listener) {
 
         }
@@ -854,6 +871,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
          * 
          * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
          */
+        @Override
         public Object[] getElements(Object inputElement) {
             if (inputElement instanceof List) {
                 return ((List) inputElement).toArray();
@@ -867,6 +885,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
          * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
          * java.lang.Object, java.lang.Object)
          */
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
         }
@@ -915,6 +934,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getComposite()
      */
+    @Override
     public Composite getComposite() {
         return null;
     }
@@ -924,6 +944,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getCurRowSize()
      */
+    @Override
     public int getCurRowSize() {
         return 0;
     }
@@ -933,6 +954,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getElement()
      */
+    @Override
     public Element getElement() {
         return null;
     }
@@ -942,6 +964,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getHashCurControls()
      */
+    @Override
     public BidiMap getHashCurControls() {
         return null;
     }
@@ -951,6 +974,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getPart()
      */
+    @Override
     public AbstractMultiPageTalendEditor getPart() {
         return null;
     }
@@ -971,6 +995,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryAliasName(org
      * .talend.core.model.properties.ConnectionItem)
      */
+    @Override
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
         return null;
     }
@@ -1014,6 +1039,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getSection()
      */
+    @Override
     public EComponentCategory getSection() {
         return null;
     }
@@ -1024,6 +1050,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      * @see
      * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTableIdAndDbSchemaMap()
      */
+    @Override
     public Map<String, String> getTableIdAndDbSchemaMap() {
         return null;
     }
@@ -1034,6 +1061,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      * @see
      * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTableIdAndDbTypeMap()
      */
+    @Override
     public Map<String, String> getTableIdAndDbTypeMap() {
         return null;
     }
@@ -1053,6 +1081,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#refresh()
      */
+    @Override
     public void refresh() {
         refreshCode(element);
         updateCodeText();
@@ -1064,6 +1093,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
              * 
              * @see java.lang.Runnable#run()
              */
+            @Override
             public void run() {
                 getParent().layout();
             }
@@ -1075,6 +1105,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#setCurRowSize(int)
      */
+    @Override
     public void setCurRowSize(int i) {
 
     }
@@ -1091,6 +1122,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
              * 
              * @see java.lang.Runnable#run()
              */
+            @Override
             public void run() {
 
                 Object o = ((IStructuredSelection) tableViewer.getSelection()).getFirstElement();
@@ -1122,6 +1154,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      * org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent
      * )
      */
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
             refreshComboContent(this.tableViewer, true);

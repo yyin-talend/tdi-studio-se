@@ -75,14 +75,16 @@ public class ExchangeComponentsProvider extends AbstractComponentsProvider {
     private void copyFolder(File externalComponentsLocation, File installFolder) throws IOException {
         FileFilter folderFilter = new FileFilter() {
 
+            @Override
             public boolean accept(File file) {
                 return file.isDirectory();
             }
         };
         FileFilter ff = new FileFilter() {
 
+            @Override
             public boolean accept(File pathname) {
-                if (pathname.getName().equals(".svn")) {
+                if (FilesUtils.isSVNFolder(pathname)) {
                     return false;
                 }
                 return true;

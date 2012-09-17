@@ -101,6 +101,7 @@ import org.talend.core.repository.LoginConnectionManager;
 import org.talend.core.repository.model.IRepositoryFactory;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
+import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.core.tis.ICoreTisService;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.TalendBrowserLaunchHelper;
@@ -108,8 +109,8 @@ import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.updatesite.IUpdateSiteBean;
 import org.talend.json.JSONException;
 import org.talend.json.JSONObject;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.ERepositoryImages;
 import org.talend.repository.ui.actions.importproject.DeleteProjectsAsAction;
@@ -268,15 +269,15 @@ public class LoginComposite extends Composite {
     // only for test
     // private static final String ARCHIVA_URL = "http://192.168.0.58:8080";
 
-    private static final String ARCHIVA_SERVICES_SEGMENT = "/restServices/archivaServices/"; //$NON-NLS-N$ //$NON-NLS-1$ //$NON-NLS-1$
+    private static final String ARCHIVA_SERVICES_SEGMENT = "/restServices/archivaServices/"; //$NON-NLS-1$ 
 
-    private static final String ARCHIVA_SERVICES_URL_KEY = "archivaUrl"; //$NON-NLS-N$ //$NON-NLS-1$ //$NON-NLS-1$
+    private static final String ARCHIVA_SERVICES_URL_KEY = "archivaUrl"; //$NON-NLS-1$ 
 
-    private static final String ARCHIVA_REPOSITORY_KEY = "repository"; //$NON-NLS-N$ //$NON-NLS-1$ //$NON-NLS-1$
+    private static final String ARCHIVA_REPOSITORY_KEY = "repository"; //$NON-NLS-1$ 
 
-    private static final String ARCHIVA_USER = "username"; //$NON-NLS-N$ //$NON-NLS-1$ //$NON-NLS-1$
+    private static final String ARCHIVA_USER = "username"; //$NON-NLS-1$ 
 
-    private static final String ARCHIVA_USER_PWD = "password"; //$NON-NLS-N$ //$NON-NLS-1$ //$NON-NLS-1$
+    private static final String ARCHIVA_USER_PWD = "password"; //$NON-NLS-1$ 
 
     private boolean afterUpdate = false;
 
@@ -364,7 +365,7 @@ public class LoginComposite extends Composite {
         }
         try {
             setStatusArea();
-            log.info("validate updatesite..."); //$NON-NLS-N$ //$NON-NLS-1$ //$NON-NLS-1$
+            log.info("validate updatesite..."); //$NON-NLS-1$ 
             validateUpdate();
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
@@ -754,13 +755,14 @@ public class LoginComposite extends Composite {
         importCombo.setContentProvider(new ArrayContentProvider());
         List<DemoProjectBean> demoProjectList = ImportProjectsUtilities.getAllDemoProjects();
         for (int i = 0; i < demoProjectList.size(); i++) {
-            DemoProjectBean bean = (DemoProjectBean) demoProjectList.get(i);
+            DemoProjectBean bean = demoProjectList.get(i);
             importCombo.add(bean.getProjectName());
         }
         importCombo.setSelection(new StructuredSelection(new Object[] { importCombo.getElementAt(0) }));
 
         manageProjectsButtonTemp.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 // ImportDemoProjectAction.getInstance().setShell(getShell());
                 // ImportDemoProjectAction.getInstance().run();
@@ -803,22 +805,14 @@ public class LoginComposite extends Composite {
 
                                 String demoFilePath = demoProjectBean.getDemoProjectFilePath();
                                 EDemoProjectFileType demoProjectFileType = demoProjectBean.getDemoProjectFileType();
-                                String pluginID = org.talend.resources.ResourcesPlugin.PLUGIN_ID;
-                                if (techName.equals("TALENDDEMOSPERL")) { //$NON-NLS-1$
-                                    pluginID = "org.talend.resources.perl"; //$NON-NLS-1$
-                                } else if (techName.equals("TDQEEDEMOJAVA")) { //$NON-NLS-1$
-                                    pluginID = "org.talend.datacleansing.core.ui"; //$NON-NLS-1$
-                                }
-                                if (demoProjectBean.getPluginId() != null) {
-                                    pluginID = demoProjectBean.getPluginId();
-                                }
+                                String pluginID = demoProjectBean.getPluginId();
                                 Bundle bundle = Platform.getBundle(pluginID);
 
                                 URL url = FileLocator.resolve(bundle.getEntry(demoFilePath));
 
                                 String filePath = new Path(url.getFile()).toOSString();
 
-                                if (demoProjectFileType.getName().equalsIgnoreCase("folder")) { //$NON-NLS-1$
+                                if (demoProjectFileType.equals(EDemoProjectFileType.FOLDER)) {
                                     ImportProjectsUtilities.importProjectAs(getShell(), newName, technicalName, filePath,
                                             monitorWrap);
                                 } else {// type.equalsIgnoreCase("archive")
@@ -967,6 +961,7 @@ public class LoginComposite extends Composite {
         projectText.setBackground(GREY_COLOR);
         projectText.addFocusListener(new FocusAdapter() {
 
+            @Override
             public void focusGained(FocusEvent e) {
                 if (projectText.getText().equals(DEFAULT_PROJECT_NAME)) {
                     projectText.setBackground(null);
@@ -974,6 +969,7 @@ public class LoginComposite extends Composite {
                 }
             }
 
+            @Override
             public void focusLost(FocusEvent e) {
                 if (projectText.getText() == "") { //$NON-NLS-1$
                     projectText.setText(DEFAULT_PROJECT_NAME);
@@ -994,6 +990,7 @@ public class LoginComposite extends Composite {
 
         createProjectBtn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 Project project = null;
                 NewProjectWizard newPrjWiz = new NewProjectWizard(new Project[] {});
@@ -1011,6 +1008,7 @@ public class LoginComposite extends Composite {
 
         advanced.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 dialog.advanced();
             }
@@ -2102,8 +2100,11 @@ public class LoginComposite extends Composite {
         }
     }
 
-    public RepositoryContext getRepositoryContext() {
+    public void setRepositoryContextInContext() {
+        Context ctx = CoreRuntimePlugin.getInstance().getContext();
         RepositoryContext repositoryContext = new RepositoryContext();
+        ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
+
         repositoryContext.setUser(getUser());
         Project project = getProject();
         repositoryContext.setProject(project);
@@ -2113,20 +2114,8 @@ public class LoginComposite extends Composite {
         repositoryContext.setClearPassword(passwordText.getText());
         String branch = getBranch();
         if (project != null) {
-            String branchKey = IProxyRepositoryFactory.BRANCH_SELECTION + SVNConstant.UNDER_LINE_CHAR
-                    + project.getTechnicalLabel();
-            if (branch != null) {
-                repositoryContext.getFields().put(branchKey, branch);
-            } else {
-                repositoryContext.getFields().put(branchKey, SVNConstant.EMPTY);
-            }
+            ProjectManager.getInstance().setMainProjectBranch(project, branch);
         }
-        return repositoryContext;
-    }
-
-    private void setRepositoryContextInContext() {
-        Context ctx = CorePlugin.getContext();
-        ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, getRepositoryContext());
     }
 
     protected void populateProjectList() {

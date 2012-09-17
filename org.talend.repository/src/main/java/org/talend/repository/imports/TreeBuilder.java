@@ -185,6 +185,10 @@ public class TreeBuilder {
             return project.getLabel();
         }
 
+        public Project getProject() {
+            return this.project;
+        }
+
         public Image getImage() {
             return ImageProvider.getImage(ECoreImage.PROJECT_ICON);
         }

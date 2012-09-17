@@ -21,15 +21,18 @@ import java.io.InputStream;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
+import org.talend.utils.io.FilesUtils;
 
 /**
  */
 public class FilesManager extends ResourcesManager {
 
+    @Override
     public InputStream getStream(IPath path) throws IOException {
         return new BufferedInputStream(new FileInputStream((File) path2Object.get(path)));
     }
 
+    @Override
     public boolean collectPath2Object(Object root) {
         return doCollectItemFiles((File) root);
     }
@@ -38,15 +41,15 @@ public class FilesManager extends ResourcesManager {
         File[] contents = directory.listFiles();
 
         if (contents != null) {
-            for (int i = 0; i < contents.length; i++) {
-                File file = contents[i];
+            for (File content : contents) {
+                File file = content;
 
                 if (file.isFile()) {
                     add(file.getAbsolutePath(), file);
                 }
                 if (file.isDirectory()) {
-                    if (!file.getName().equals(WizardProjectsImportPage.METADATA_FOLDER) && (!file.getName().equals(".svn"))) {
-                        collectPath2Object(contents[i]);
+                    if (!file.getName().equals(WizardProjectsImportPage.METADATA_FOLDER) && (!FilesUtils.isSVNFolder(file))) {
+                        collectPath2Object(content);
                     }
                 }
             }
