@@ -2489,11 +2489,7 @@ public class CLASS {
                     setStmt.append("if("+ incomingConnName + "." + column.getName() + " instanceof org.talend.oracle.TimestampWithTZ){\r\n");
                     setStmt.append("((oracle.jdbc.OraclePreparedStatement)" + prefix + cid + ").setTIMESTAMPTZ(" + index + ", new oracle.sql.TIMESTAMPTZ(conn_" + cid + ", ((org.talend.oracle.TimestampWithTZ)"+ incomingConnName + "." + column.getName() +").getTimestamp(),((org.talend.oracle.TimestampWithTZ)"+ incomingConnName + "." + column.getName() +").getCalendar()));\r\n");
                     setStmt.append("}else{");
-                    if ("Date".equalsIgnoreCase(dbType) && !ElementParameterParser.getValue(node, "__USE_TIMESTAMP_FOR_DATE_TYPE__").equals("true")) {
-                        setStmt.append(prefix + cid + ".setDate(" + index + ", new java.sql.Date(" + incomingConnName + "." + column.getName() + ".getTime()));\r\n");
-                    } else {
-                        setStmt.append(prefix + cid + ".setObject(" + index + ", new java.sql.Timestamp(" + incomingConnName + "." + column.getName() + ".getTime()),java.sql.Types.DATE);\r\n");
-                    }
+                    setStmt.append(prefix + cid + ".setObject(" + index + ", new java.sql.Timestamp(" + incomingConnName + "." + column.getName() + ".getTime()),java.sql.Types.DATE);\r\n");
                     setStmt.append("}");
                 }else{
                     if ("Date".equalsIgnoreCase(dbType) && !ElementParameterParser.getValue(node, "__USE_TIMESTAMP_FOR_DATE_TYPE__").equals("true")) {
