@@ -28,6 +28,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.OverlayImageProvider;
@@ -60,6 +61,7 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
      * 
      * @return the designerEditor
      */
+    @Override
     public AbstractTalendEditor getDesignerEditor() {
         return this.designerEditor;
     }
@@ -77,9 +79,11 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
      * 
      * @see org.talend.designer.core.ui.AbstractMultiPageTalendEditor#updateTitleImage()
      */
+    @Override
     public void updateTitleImage() {
         Display.getDefault().syncExec(new Runnable() {
 
+            @Override
             public void run() {
                 Image image = null;
                 if (getProcess() == null) {
@@ -114,6 +118,7 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
      * 
      * @param label
      */
+    @Override
     public void setName() {
         if (getEditorInput() == null) {
             return;
@@ -121,10 +126,18 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
         super.setName();
 
         IProcess2 process2 = this.getProcess();
-        String label = process2.getProperty().getDisplayName();
-        String jobVersion = "0.1";
-        if (process2 != null)
+        if (process2 == null) {
+            return;
+        }
+        Property property = process2.getProperty();
+        if (property == null) {
+            return;
+        }
+        String label = property.getDisplayName();
+        String jobVersion = "0.1"; //$NON-NLS-1$
+        if (process2 != null) {
             jobVersion = process2.getVersion();
+        }
         // if (getActivePage() == 1) {
         ISVNProviderService service = null;
         if (PluginChecker.isSVNProviderPluginLoaded()) {
@@ -133,7 +146,7 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
                 revisionNumStr = service.getCurrentSVNRevision(process2);
                 revisionChanged = false;
                 if (revisionNumStr != null) {
-                    revisionNumStr = ".r" + revisionNumStr;
+                    revisionNumStr = ".r" + revisionNumStr; //$NON-NLS-1$
                 }
             }
         }
@@ -151,7 +164,7 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
             if (revisionNumStr != null) {
                 setPartName(Messages.getString(title, label, jobVersion) + revisionNumStr);
             } else {
-                setPartName(Messages.getString(title, label, jobVersion)); //$NON-NLS-1$
+                setPartName(Messages.getString(title, label, jobVersion));
             }
         } else {
             if (revisionNumStr != null) {
