@@ -29,6 +29,7 @@ import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
+import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
@@ -119,8 +120,13 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         for (IDataMapTable table : this.tables) {
             List<IColumnEntry> dataMapTableEntries = table.getColumnEntries();
             for (IColumnEntry entrySource : dataMapTableEntries) {
-                String variable = LanguageProvider.getCurrentLanguage().getLocation(entrySource.getParentName(),
-                        entrySource.getName());
+                String variable = null;
+                if (table instanceof VarsTable) {
+                    variable = entrySource.getExpression();
+                } else {
+                    variable = LanguageProvider.getCurrentLanguage().getLocation(entrySource.getParentName(),
+                            entrySource.getName());
+                }
                 String talendType = null;
                 boolean nullable = true;
                 if (entrySource instanceof AbstractInOutTableEntry) {
@@ -132,8 +138,18 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                 }
                 if (talendType != null) {
                     if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                        variables.add(new Variable(variable, JavaTypesManager.getDefaultValueFromJavaIdType(talendType, nullable)
-                                .toString(), talendType, nullable));
+                        boolean exist = false;
+                        for (Variable v : variables) {
+                            if (v.getName().trim().equals(variable.trim())) {
+                                exist = true;
+                                break;
+                            }
+                        }
+                        if (!exist) {
+                            variables.add(new Variable(variable, JavaTypesManager.getDefaultValueFromJavaIdType(talendType,
+                                    nullable).toString(), talendType, nullable));
+                        }
+
                     } else {
                         variables.add(new Variable(variable, "", talendType, nullable)); //$NON-NLS-1$
                     }
