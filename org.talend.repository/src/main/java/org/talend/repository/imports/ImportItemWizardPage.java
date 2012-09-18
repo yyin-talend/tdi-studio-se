@@ -46,6 +46,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -86,8 +87,11 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.general.IExchangeService;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobDocumentationItem;
+import org.talend.core.model.properties.JobletDocumentationItem;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryViewObject;
 import org.talend.core.model.utils.TalendPropertiesUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
@@ -349,7 +353,40 @@ class ImportItemWizardPage extends WizardPage {
                 updateFinishStatus();
             }
         });
+
+        filteredCheckboxTree.getViewer().addFilter(new ViewerFilter() {
+
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                return selectRepositoryNode(viewer, element);
+            }
+        });
+
         return viewer;
+    }
+
+    protected boolean selectRepositoryNode(Viewer viewer, Object element) {
+        if (element == null) {
+            return false;
+        }
+        // hide the generated documentation node , avoid to import .
+        if (element instanceof IContainerNode) {
+            List importElement = ((IContainerNode) element).getChildren();
+            for (Object node : importElement) {
+                if (node != null && node instanceof ItemRecord) {
+                    ERepositoryObjectType type = ((ItemRecord) node).getType();
+                    if (ERepositoryObjectType.JOB_DOC.equals(type) || ERepositoryObjectType.JOBLET_DOC.equals(type)) {
+                        return false;
+                    }
+                }
+            }
+        } else if (element instanceof ItemRecord) {
+            ERepositoryObjectType type = ((ItemRecord) element).getType();
+            if (ERepositoryObjectType.JOB_DOC.equals(type) || ERepositoryObjectType.JOBLET_DOC.equals(type)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void createSelectionButtons(Composite listComposite) {
@@ -763,6 +800,10 @@ class ImportItemWizardPage extends WizardPage {
                 }
             } else {
                 if (itemRecord.getProperty() != null) {
+                    Item item = itemRecord.getProperty().getItem();
+                    if (item != null && (item instanceof JobDocumentationItem || item instanceof JobletDocumentationItem)) {
+                        continue;
+                    }
                     for (String error : itemRecord.getErrors()) {
                         errors.add("'" + itemRecord.getItemName() + "' " + error); //$NON-NLS-1$ //$NON-NLS-2$
                     }
