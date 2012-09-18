@@ -32,7 +32,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 /**
  * DOC Administrator class global comment. Detailled comment
  */
-public class ChangeOptionDefaultValueFortNormalize extends AbstractJobMigrationTask {
+public class ChangeDefaultValueFortNormalizeCSVOption extends AbstractJobMigrationTask {
 
     @Override
     public ExecutionResult execute(Item item) {
@@ -43,16 +43,10 @@ public class ChangeOptionDefaultValueFortNormalize extends AbstractJobMigrationT
                     Arrays.<IComponentConversion> asList(new IComponentConversion() {
 
                         public void transform(NodeType node) {
-                            if (ComponentUtilities.getNodeProperty(node, "DISCARD_TRAILING_EMPTY_STR") == null) {
-                                ComponentUtilities.addNodeProperty(node, "DISCARD_TRAILING_EMPTY_STR", "CHECK");
-                                ElementParameterType useCSVOption = ComponentUtilities.getNodeProperty(node, "CSV_OPTION");
-                                if (useCSVOption != null && "false".equals(useCSVOption.getValue())) {
-                                    ComponentUtilities.getNodeProperty(node, "DISCARD_TRAILING_EMPTY_STR").setValue("true");
-                                }
-                            } else {
+                            if (ComponentUtilities.getNodeProperty(node, "DISCARD_TRAILING_EMPTY_STR") != null) {
                                 ElementParameterType useCSVOption = ComponentUtilities.getNodeProperty(node, "CSV_OPTION");
                                 if (useCSVOption != null && "true".equals(useCSVOption.getValue())) {
-                                    ComponentUtilities.getNodeProperty(node, "DISCARD_TRAILING_EMPTY_STR").setValue("f");
+                                    ComponentUtilities.getNodeProperty(node, "DISCARD_TRAILING_EMPTY_STR").setValue("false");
                                 }
                             }
                         }
@@ -67,7 +61,7 @@ public class ChangeOptionDefaultValueFortNormalize extends AbstractJobMigrationT
     }
 
     public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2012, 9, 7, 12, 0, 0);
+        GregorianCalendar gc = new GregorianCalendar(2012, 9, 14, 12, 0, 0);
         return gc.getTime();
     }
 }

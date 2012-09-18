@@ -1321,7 +1321,13 @@
 	        id="org.talend.repository.model.migration.ChangeOptionDefaultValueFortNormalize"
 	        name="ChangeOptionDefaultValueFortNormalize">
 	  	</projecttask>
-        
+        <projecttask
+          	beforeLogon="false"
+          	class="org.talend.repository.model.migration.ChangeDefaultValueFortNormalizeCSVOption"
+          	id="org.talend.repository.model.migration.ChangeDefaultValueFortNormalizeCSVOption"
+          	name="ChangeDefaultValueFortNormalizeCSVOption">
+   	 	</projecttask>
+   	 	
    </extension>
    
    <extension

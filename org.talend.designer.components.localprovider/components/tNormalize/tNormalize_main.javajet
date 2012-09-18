@@ -95,7 +95,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
             <%
             if(!outIterate.isEmpty()||outgoingConnName != null){
             %>
-            for(int i_<%=cid%> = 0 ; i_<%=cid%> < normalizeRecord_<%=cid%>.length ; i_<%=cid%>++) {
+            <%
+  				if(useCSV && isDiscardTrailingEmptyStr){
+  			%>
+  			int lastNoEmptyIndex_<%=cid%>=0;
+            for(int i_<%=cid%>=normalizeRecord_<%=cid%>.length;i_<%=cid%> > 0;i_<%=cid%>--){
+            	if(!"".equals(normalizeRecord_<%=cid%>[i_<%=cid%> - 1])){
+            		lastNoEmptyIndex_<%=cid%>=i_<%=cid%>;
+            		break;
+            	}
+            }
+            <%
+            	}else{
+            %>
+             int lastNoEmptyIndex_<%=cid%>=normalizeRecord_<%=cid%>.length;
+            <%
+       			}
+            %>
+            for(int i_<%=cid%> = 0 ; i_<%=cid%> < lastNoEmptyIndex_<%=cid%> ; i_<%=cid%>++) {
                 currentRecord_<%=cid%> = new StringBuilder();
                 nb_line_<%=cid%>++;               
                 <%
