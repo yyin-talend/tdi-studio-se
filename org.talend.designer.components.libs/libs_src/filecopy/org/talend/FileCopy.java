@@ -35,7 +35,9 @@ public class FileCopy {
 
     public static void copyFile(String srcFileName, String desFileName, boolean delSrc) throws Exception {
 
-        FileInputStream srcInputStream = new FileInputStream(srcFileName);
+        FileInputStream srcInputStream = null;
+        try{
+        srcInputStream = new FileInputStream(srcFileName);
         long lastModified = new File(srcFileName).lastModified();
         int available = srcInputStream.available();
         if (available > L_SIZE) {// X > 100M
@@ -47,6 +49,11 @@ public class FileCopy {
         }
         // keep modification_time
         new File(desFileName).setLastModified(lastModified);
+        }finally{
+            if(srcInputStream!=null){
+                srcInputStream.close();
+            }
+        }
     }
 
     private static void copyFileS(String srcFileName, FileInputStream srcInputStream, String desFileName, boolean delSrc)
@@ -98,7 +105,6 @@ public class FileCopy {
 
             in.close();
             out.close();
-            srcInputStream.close();
 
             if (delSrc) {
                 source.delete();
@@ -109,9 +115,6 @@ public class FileCopy {
             }
             if (out != null) {
                 out.close();
-            }
-            if (srcInputStream != null) {
-                srcInputStream.close();
             }
         }
     }
@@ -152,7 +155,6 @@ public class FileCopy {
 
             in.close();
             out.close();
-            srcInputStream.close();
 
             if (delSrc) {
                 source.delete();
@@ -164,9 +166,6 @@ public class FileCopy {
             }
             if (out != null) {
                 out.close();
-            }
-            if (srcInputStream != null) {
-                srcInputStream.close();
             }
         }
     }
