@@ -424,7 +424,7 @@ public class TalendWizardProjectsImportPage extends WizardProjectsImportPage {
                     xmiManager.saveResource(loadProject.eResource());
 
                     // FIXME TDI-22786, migrate the project name.
-                    if (ProjectManager.getInstance().enableSpecialTechnicalProjectName()) {
+                    if (ProjectManager.enableSpecialTechnicalProjectName()) {
                         ChangeProjectTechinicalNameMigrationTask migrationTask = new ChangeProjectTechinicalNameMigrationTask();
                         migrationTask.migrateTalendProject(project, loadProject, xmiManager);
                     }

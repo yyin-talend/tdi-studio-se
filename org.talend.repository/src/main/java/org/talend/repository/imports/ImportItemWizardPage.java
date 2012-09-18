@@ -332,7 +332,7 @@ class ImportItemWizardPage extends WizardPage {
                 if (element instanceof IContainerNode) {
                     if (element instanceof ProjectNode) {
                         Project project = ((ProjectNode) element).getProject();
-                        return ProjectManager.getInstance().getProjectDisplayLabel(project);
+                        return ProjectManager.getProjectDisplayLabel(project);
                     }
                     return ((IContainerNode) element).getLabel();
                 } else if (element instanceof ItemRecord) {

@@ -115,7 +115,7 @@ public final class ImportDemoProjectAction extends Action {
 
                         String filePath = new Path(url.getFile()).toOSString();
                         // FIXME TDI-22786
-                        String technicalName = ProjectManager.getInstance().getLocalTechnicalProjectName(projectName);
+                        String technicalName = ProjectManager.getLocalTechnicalProjectName(projectName);
                         if (demoProjectFileType.equals(EDemoProjectFileType.FOLDER)) {
                             ImportProjectsUtilities.importProjectAs(shell, projectName, technicalName, filePath, monitorWrap);
                         } else {// type.equalsIgnoreCase("archive")

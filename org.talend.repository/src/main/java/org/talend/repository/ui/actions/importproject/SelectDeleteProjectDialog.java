@@ -195,7 +195,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
                     Project p = proItem.get(i);
                     String proName = p.getTechnicalLabel()/* .toUpperCase() */;
                     if (proName.equals(name)) {
-                        return ProjectManager.getInstance().getProjectDisplayLabel(p.getEmfProject());
+                        return ProjectManager.getProjectDisplayLabel(p.getEmfProject());
                     }
                 }
                 return name;

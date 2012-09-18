@@ -2459,8 +2459,8 @@ public class LoginComposite extends Composite {
         public String getText(Object element) {
             Project prj = (Project) element;
             String projectDisplayLabel = prj.getLabel();
-            if (ProjectManager.getInstance().enableSpecialTechnicalProjectName()) {
-                projectDisplayLabel = ProjectManager.getInstance().getProjectDisplayLabel(prj.getEmfProject());
+            if (ProjectManager.enableSpecialTechnicalProjectName()) {
+                projectDisplayLabel = ProjectManager.getProjectDisplayLabel(prj.getEmfProject());
             }
             String toReturn = projectDisplayLabel + " - " + prj.getLanguage().getName(); //$NON-NLS-1$
             if (!prj.isLocal() && !isAuthenticationNeeded()) {

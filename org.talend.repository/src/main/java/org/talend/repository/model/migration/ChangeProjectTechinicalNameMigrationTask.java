@@ -49,15 +49,12 @@ public class ChangeProjectTechinicalNameMigrationTask extends AbstractMigrationT
 
     protected final XmiResourceManager xmiResManager;
 
-    protected final ProjectManager projectManager;
-
     /**
      * DOC ggu ChangeProjectTechinicalNameMigrationTask constructor comment.
      */
     public ChangeProjectTechinicalNameMigrationTask() {
         super();
         this.xmiResManager = new XmiResourceManager();
-        this.projectManager = ProjectManager.getInstance();
     }
 
     /*
@@ -76,7 +73,7 @@ public class ChangeProjectTechinicalNameMigrationTask extends AbstractMigrationT
      * @see org.talend.migration.IWorkspaceMigrationTask#execute()
      */
     public boolean execute() {
-        if (!ProjectManager.getInstance().enableSpecialTechnicalProjectName()) {
+        if (!ProjectManager.enableSpecialTechnicalProjectName()) {
             return false; // no need to do migration.
         }
         try {
@@ -126,7 +123,7 @@ public class ChangeProjectTechinicalNameMigrationTask extends AbstractMigrationT
         try {
             String localProjectName = localProject.getName();
             String technicalLabel = talendProject.getTechnicalLabel();
-            String technicalProjectName = projectManager.getLocalTechnicalProjectName(talendProject.getLabel());
+            String technicalProjectName = ProjectManager.getLocalTechnicalProjectName(talendProject.getLabel());
 
             // need update the technical label or not. NOTE, must update it before rename project.
             if (!technicalLabel.equals(technicalProjectName)) {
