@@ -165,7 +165,7 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
             }
             // build root tree
             for (int i = 0; i < root.size(); i++) {
-                HL7FileNode node = (HL7FileNode) root.get(i);
+                HL7FileNode node = root.get(i);
                 String newPath = node.getFilePath();
                 defaultValue = node.getDefaultValue();
                 String columnName = node.getRelatedColumn();
@@ -346,8 +346,9 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
                 parent = tmpParent;
             }
 
-            if (parent != null)
+            if (parent != null) {
                 parent.addChild(temp);
+            }
         }
 
         return temp;
@@ -421,6 +422,8 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
         HL7TreeNode node = (HL7TreeNode) this.getStructuredSelection().getFirstElement();
         if (node != null) {
             // hl7ui.setSelectedText(node.getLabel());
+            // Added by Marvin Wang on Sep. 11, 2012 for bug TDI-20702.
+            form.setSelectedText(node.getLabel());
         }
     }
 
