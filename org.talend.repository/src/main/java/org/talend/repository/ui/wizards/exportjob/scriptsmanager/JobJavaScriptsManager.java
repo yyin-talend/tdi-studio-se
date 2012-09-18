@@ -41,6 +41,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
@@ -256,6 +257,17 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(ExportChoice.needTalendLibraries), process,
                 neededLibraries);
         rootResource.addResources(talendLibraries);
+
+        // Gets jobInfo.properties
+        for (ExportFileResource pro : process) {
+            ExportFileResource jobInfoResource = new ExportFileResource(null, PATH_SEPARATOR);
+            if (CommonsPlugin.isHeadless()) {
+                jobInfoResource = new ExportFileResource();
+            }
+            list.add(jobInfoResource);
+            List<URL> jobInfoList = getJobInfoFile(pro);
+            jobInfoResource.addResources(jobInfoList);
+        }
 
         if (PluginChecker.isRulesPluginLoaded()) {
             // hywang add for 6484,add final drl files or xls files to exported job script
@@ -781,6 +793,33 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         String projectName = getCorrespondingProjectName(process);
         return this.getJobScripts(projectName, escapeFileNameSpace(process), process.getProperty().getVersion(), needJob);
+    }
+
+    /**
+     * Gets JobInfo properties.
+     * 
+     * @param process
+     * @return
+     */
+    protected List<URL> getJobInfoFile(ExportFileResource process) {
+        List<URL> list = new ArrayList<URL>();
+        try {
+            String tmpFoler = getTmpFolder();
+            String jobInfoPath = tmpFoler + File.separator + JOBINFO_FILE;
+            JobInfoBuilder jobInfoBuilder = null;
+            if (CommonsPlugin.isHeadless()) {
+                jobInfoBuilder = new JobInfoBuilder(process, exportChoice, tmpFoler, jobInfoPath);
+            } else {
+                jobInfoBuilder = new JobInfoBuilder(process, tmpFoler, jobInfoPath);
+            }
+            jobInfoBuilder.buildProperty();
+            File jobInfoFile = new File(jobInfoPath);
+            URL url = jobInfoFile.toURL();
+            list.add(url);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return list;
     }
 
     /**
