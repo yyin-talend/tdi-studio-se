@@ -252,17 +252,17 @@ public class JobletContainerPart extends NodeContainerPart {
 
                 if (editPart instanceof SubjobContainerPart) {
                     // Node node = ((NodeContainer) getModel()).getNode();
-                    NodeContainer nc = (NodeContainer) getModel();
+                    JobletContainer nc = (JobletContainer) this.getModel();
                     // Rectangle rec = new Rectangle(node.getLocation(), node.getSize());
-                    boolean isCollapse = ((JobletContainer) this.getModel()).isCollapsed();
-                    int rightChangewidth = ((JobletContainer) this.getModel()).getRightChangeWidth();
-                    int downChangeheight = ((JobletContainer) this.getModel()).getDownChangeHeight();
-                    int leftChangewidth = ((JobletContainer) this.getModel()).getLeftChangeWidth();
-                    int upChangeheight = ((JobletContainer) this.getModel()).getUpChangeHeight();
+                    boolean isCollapse = nc.isCollapsed();
+                    int rightChangewidth = nc.getRightChangeWidth();
+                    int downChangeheight = nc.getDownChangeHeight();
+                    int leftChangewidth = nc.getLeftChangeWidth();
+                    int upChangeheight = nc.getUpChangeHeight();
 
-                    for (SubjobContainer sb : new JobletUtil().getConnSubjob(((SubjobContainer) editPart.getModel()), proSubList)) {
-                        sb.refreshNodesLocation(isCollapse, nc, rightChangewidth, downChangeheight, leftChangewidth,
-                                upChangeheight);
+                    for (ISubjobContainer sb : proSubList) {
+                        ((SubjobContainer) sb).refreshNodesLocation(isCollapse, nc, rightChangewidth, downChangeheight,
+                                leftChangewidth, upChangeheight);
                     }
 
                     editPart.refresh();

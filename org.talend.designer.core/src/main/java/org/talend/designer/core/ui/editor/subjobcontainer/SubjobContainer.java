@@ -307,19 +307,20 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         return totalRectangle;
     }
 
-    public void refreshNodesLocation(boolean jobletCollapsed, NodeContainer nc, int rightChangewidth, int downChangeheight,
+    public void refreshNodesLocation(boolean jobletCollapsed, JobletContainer nc, int rightChangewidth, int downChangeheight,
             int leftChangewidth, int upChangeheight) {
         JobletUtil util = new JobletUtil();
         Node node = nc.getNode();
-        Rectangle nodeRec = new Rectangle(node.getLocation(), node.getSize());
-        // Rectangle nodeConRec = nc.getNodeContainerRectangle();
+        Rectangle jobletRec = new Rectangle(node.getLocation(), node.getSize());
+        boolean isJobletSubjob = nc.getSubjobContainer() == this;
         for (NodeContainer container : nodeContainers) {
             if (container.getNode().getUniqueName().equals(nc.getNode().getUniqueName())) {
                 continue;
             }
+
             Point nodePoint = container.getNode().getLocation().getCopy();
 
-            Rectangle jRec = util.getExpandRectangle(nodeRec);
+            Rectangle jRec = util.getExpandRectangle(jobletRec);
             // Rectangle jNodeConRec = util.getExpandRectangle(nodeConRec);
             // Rectangle pointrec = util.getExpandRectangle(container.getNodeContainerRectangle());
             jRec.width = jRec.width + rightChangewidth + leftChangewidth;
@@ -329,27 +330,63 @@ public class SubjobContainer extends Element implements ISubjobContainer {
             if (!jobletCollapsed) {
                 Point origPoint = new Point(nodePoint.x, nodePoint.y);
                 pointMap.put(container.getNode().getUniqueName(), origPoint);
-                if (nodePoint.x > nodeRec.x && (nodePoint.x - nodeRec.x) <= rightChangewidth + node.getSize().width * 2) {
-                    nodePoint.x = rightChangewidth + nodeRec.x + container.getNodeContainerRectangle().width
-                            + node.getSize().width;
-                }
-                if (nodePoint.y > nodeRec.y && (nodePoint.y - nodeRec.y) <= downChangeheight + node.getSize().width) {
-                    nodePoint.y = downChangeheight + nodeRec.y + container.getNodeContainerRectangle().width
-                            + node.getSize().width;
+
+                if (isJobletSubjob) {
+                    if (nodePoint.x > jobletRec.x) {
+                        nodePoint.x = nodePoint.x + rightChangewidth;
+                    }
+
+                    if (nodePoint.y > jobletRec.y) {
+                        nodePoint.y = nodePoint.y + downChangeheight;
+                    }
+
+                    if (nodePoint.x < jobletRec.x) {
+                        nodePoint.x = nodePoint.x - leftChangewidth;
+                    }
+
+                    if (nodePoint.y < jobletRec.y) {
+                        nodePoint.y = nodePoint.y - upChangeheight;
+                    }
+                } else {
+                    Rectangle jobletSubRec = nc.getSubjobContainer().getSubjobContainerRectangle();
+                    Rectangle currentRec = this.getSubjobContainerRectangle();
+
+                    if (nodePoint.x > jobletRec.x
+                            && !(currentRec.y < jobletSubRec.y
+                                    && currentRec.y + currentRec.height <= jobletSubRec.y + upChangeheight
+                                            + node.getSize().height || jobletSubRec.y + jobletSubRec.height <= currentRec.y
+                                    + downChangeheight + node.getSize().height
+                                    && currentRec.y > jobletSubRec.y)) {
+                        nodePoint.x = nodePoint.x + rightChangewidth;
+                    }
+
+                    if (nodePoint.y > jobletRec.y
+                            && !(currentRec.x < jobletSubRec.x
+                                    && currentRec.x + currentRec.width <= jobletSubRec.x + leftChangewidth + node.getSize().width || jobletSubRec.x
+                                    + jobletSubRec.width <= currentRec.x + rightChangewidth + node.getSize().width
+                                    && currentRec.x > jobletSubRec.x)) {
+                        nodePoint.y = nodePoint.y + downChangeheight;
+                    }
+
+                    if (nodePoint.x < jobletRec.x
+                            && !(currentRec.y < jobletSubRec.y
+                                    && currentRec.y + currentRec.height <= jobletSubRec.y + upChangeheight
+                                            + node.getSize().height || jobletSubRec.y + jobletSubRec.height <= currentRec.y
+                                    + downChangeheight + node.getSize().height
+                                    && currentRec.y > jobletSubRec.y)) {
+                        nodePoint.x = nodePoint.x - leftChangewidth;
+                    }
+
+                    if (nodePoint.y < jobletRec.y
+                            && !(currentRec.x < jobletSubRec.x
+                                    && currentRec.x + currentRec.width <= jobletSubRec.x + leftChangewidth + node.getSize().width || jobletSubRec.x
+                                    + jobletSubRec.width <= currentRec.x + rightChangewidth + node.getSize().width
+                                    && currentRec.x > jobletSubRec.x)) {
+                        nodePoint.y = nodePoint.y - upChangeheight;
+                    }
+
                 }
 
-                if (nodePoint.x < nodeRec.x
-                        && nodeRec.x + node.getSize().height >= leftChangewidth + container.getNodeContainerRectangle().width
-                        && (nodeRec.x - nodePoint.x) <= leftChangewidth + node.getSize().height) {
-                    nodePoint.x = nodeRec.x - leftChangewidth - container.getNodeContainerRectangle().width
-                            + node.getSize().height;
-                }
-                if (nodePoint.y < nodeRec.y
-                        && nodeRec.y + node.getSize().height >= upChangeheight + container.getNodeContainerRectangle().width
-                        && (nodeRec.y - nodePoint.y) <= upChangeheight + node.getSize().height) {
-                    nodePoint.y = nodeRec.y - upChangeheight - container.getNodeContainerRectangle().width
-                            + node.getSize().height;
-                }
             } else {
                 nodePoint = pointMap.get(container.getNode().getUniqueName());
                 // if (nodePoint.x > nodeRec.x && nodePoint.x > rightChangewidth) {
