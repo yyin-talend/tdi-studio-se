@@ -96,6 +96,7 @@ public class JobletConnectionReconnectCommand extends Command {
         newTarget = nodeTarget;
     }
 
+    @Override
     public boolean canExecute() {
         boolean canExecute = false;
         if (!connection.isActivate()) {
@@ -173,6 +174,7 @@ public class JobletConnectionReconnectCommand extends Command {
      * 
      * @see org.eclipse.gef.commands.Command#execute()
      */
+    @Override
     public void execute() {
         metadataChanges.clear();
         if (newSource != null) {
@@ -267,7 +269,7 @@ public class JobletConnectionReconnectCommand extends Command {
                         boolean sameFlag = oldMetadataTable.sameMetadataAs(targetOldMetadataTable, IMetadataColumn.OPTIONS_NONE);
                         // For the auto propagate.
                         if (!sameFlag && newTarget.getComponent().isSchemaAutoPropagated()
-                                && (targetOldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
+                                && (targetOldMetadataTable.getListColumns().isEmpty())) {
                             ChangeMetadataCommand changeMetadataCmd = new ChangeMetadataCommand(newTarget, null, null,
                                     oldMetadataTable);
                             changeMetadataCmd.execute(true);
@@ -285,6 +287,7 @@ public class JobletConnectionReconnectCommand extends Command {
         }
     }
 
+    @Override
     public void undo() {
         if (newSource != null) {
             INodeConnector connector = oldSource.getConnectorFromName(connectorName);
