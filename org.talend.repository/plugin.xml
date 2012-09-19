@@ -1668,6 +1668,15 @@
         name="Change Project Techinical Name"
         version="5.2.0">
  	 </workspacetask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.1.1"
+              class="org.talend.repository.model.migration.ChangeSpecifyKeysAndColumnsFortCassandraInput"
+              description="Change &quot;Specify keys&quot; checked and if &quot;columns&quot; not equals &quot;&quot; check &quot;Sepify columns&quot;"
+              id="org.talend.repository.model.migration.ChangeSpecifyKeysAndColumnsFortCassandraInput"
+              name="ChangeSpecifyKeysAndColumnsFortCassandraInput"
+              version="5.1.2">
+        </projecttask>
 
    </extension>
    
