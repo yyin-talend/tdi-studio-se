@@ -229,8 +229,8 @@
 			<IMPORT NAME="jdo2-api-2.3-ec.jar" MODULE="jdo2-api-2.3-ec.jar" REQUIRED="false" REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0')"/>
 			<IMPORT NAME="jackson-core-asl-1.8.8.jar" MODULE="jackson-core-asl-1.8.8.jar" REQUIRED="false" REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0')"/>
 			<IMPORT NAME="jackson-mapper-asl-1.8.8.jar" MODULE="jackson-mapper-asl-1.8.8.jar" REQUIRED="false" REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0')"/>
+			<IMPORT NAME="commons-lang-2.4.jar" MODULE="commons-lang-2.4.jar" REQUIRED="false"  REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0')" />
 			
-			<IMPORT NAME="commons-lang-2.4.jar" MODULE="commons-lang-2.4.jar" REQUIRED="false" REQUIRED_IF="HIVE_VERSION=='HDP_1_0'" />
 			<IMPORT NAME="commons-logging-1.0.4.jar" MODULE="commons-logging-1.0.4.jar" REQUIRED="false" REQUIRED_IF="HIVE_VERSION=='HDP_1_0'" />
 			<IMPORT NAME="datanucleus-api-jdo-3.0.7.jar" MODULE="datanucleus-api-jdo-3.0.7.jar" REQUIRED="false" REQUIRED_IF="HIVE_VERSION=='HDP_1_0'" />
 			<IMPORT NAME="datanucleus-core-3.0.9.jar" MODULE="datanucleus-core-3.0.9.jar" REQUIRED="false" REQUIRED_IF="HIVE_VERSION=='HDP_1_0'" />
