@@ -64,11 +64,6 @@
 			</ITEMS>
 		</PARAMETER> 		
 		
-		<PARAMETER NAME="SUB_STRING" FIELD="CHECK" NUM_ROW="24" REQUIRED="true"
-			NOT_SHOW_IF="(CHECK_ALL == 'true' or CHECK_ANOTHER == 'true')" GROUP="MODE">
-			<DEFAULT>false</DEFAULT>
-		</PARAMETER>
-		
 		<PARAMETER NAME="NOTE_CUSTOMER" FIELD="LABEL" REQUIRED="true" NUM_ROW="25" COLOR="255;0;0" GROUP="MODE" SHOW_IF="CUSTOMER == 'true'">
           <DEFAULT>Please note: 
 (1) Nullable setting in this table is more preferential than the default schema.
@@ -87,6 +82,10 @@
 		<PARAMETER NAME="NOTE_CHECK_ANOTHER" FIELD="LABEL" REQUIRED="true" NUM_ROW="35" COLOR="255;0;0" GROUP="MODE" SHOW_IF="CHECK_ANOTHER == 'true'">
           <DEFAULT>Please note: only index matching, for example, the second column of checking schema is correspond to the second of input schema</DEFAULT>
         </PARAMETER>
+        
+        <PARAMETER NAME="SUB_STRING" FIELD="CHECK" NUM_ROW="40" REQUIRED="true" GROUP="MODE">
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
 		
 		<PARAMETER NAME="INFO" FIELD="LABEL" REQUIRED="true" NUM_ROW="51" COLOR="0;0;0">
           <DEFAULT>The errCode value is a summation of all error code:
