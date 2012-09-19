@@ -617,7 +617,9 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
             };
         };
         cellEditor.create(table);
-        valueColumn.setCellEditor(cellEditor);
+        if (!mapperManager.componentIsReadOnly()) {
+            valueColumn.setCellEditor(cellEditor);
+        }
         valueColumn.setBeanPropertyAccessors(getMapSettingValueAccess(cellEditor));
         valueColumn.setModifiable(true);
         valueColumn.setColorProvider(new IColumnColorProvider<GlobalMapEntry>() {
@@ -1298,7 +1300,11 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
      */
     public void enableDiaplayViewer(boolean isRepository) {
         MetadataTableEditorView metadataEditorView = mapperManager.getUiManager().getMetadataEditorView(getZone());
-        metadataEditorView.setReadOnly(isRepository);
+        if (mapperManager.componentIsReadOnly()) {
+            metadataEditorView.setReadOnly(true);
+        } else {
+            metadataEditorView.setReadOnly(isRepository);
+        }
     }
 
     /**
@@ -1335,8 +1341,9 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
      * @return
      */
     private GlobalMapEntry getGlobalMapEntryByNameFromList(List<GlobalMapEntry> list, String name) {
-        if (list == null || name == null)
+        if (list == null || name == null) {
             return null;
+        }
         for (GlobalMapEntry mapEntry : list) {
             if (name.equals(mapEntry.getName())) {
                 return mapEntry;
@@ -1523,7 +1530,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         isErrorReject = ((OutputTable) getDataMapTable()).isErrorRejectTable();
 
         condensedItem = new ToolItem(toolBarActions, SWT.CHECK);
-        condensedItem.setEnabled(!mapperManager.componentIsReadOnly() && !isErrorReject);
+        condensedItem.setEnabled(!isErrorReject);
         condensedItem.setSelection(((OutputTable) abstractDataMapTable).isActivateCondensedTool());
         condensedItem.setToolTipText("tMap settings");
         initCondensedItemImage();
@@ -2398,6 +2405,10 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                 }
 
             });
+            if (mapperManager.componentIsReadOnly()) {
+                expressionFilterText.setEditable(false);
+                openExpressionBuilder.setEnabled(false);
+            }
             GridData gridData1 = new GridData();
             gridData1.exclude = !table.isActivateExpressionFilter();
             openExpressionBuilder.setLayoutData(gridData1);
@@ -3173,7 +3184,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
     public void propertyChange(PropertyChangeEvent evt) {
         notifyFocusLost();
         String request = evt.getPropertyName();
-        if (request.equals("positionChange") || request.equals(ConnectionTrace.TRACE_PROP)) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (request.equals("positionChange") || request.equals(ConnectionTrace.TRACE_PROP)) { //$NON-NLS-1$ 
             if (!tableViewerCreatorForColumns.getTable().isDisposed()) {
                 tableViewerCreatorForColumns.refresh();
                 InputsZone inputsZone = mapperManager.getUiManager().getInputsZone();
@@ -3191,8 +3202,9 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
      * @return
      */
     protected String getSchemaDisplayName(String id) {
-        if (id == null)
+        if (id == null) {
             return null;
+        }
         String[] values = id.split(" - ");
         String itemId = values[0];
         String name = values[1];

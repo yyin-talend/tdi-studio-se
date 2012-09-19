@@ -137,6 +137,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
     }
 
+    @Override
     protected void createMapSettingTable() {
 
         ExtendedTableModel<GlobalMapEntry> tableMapSettingEntriesModel = ((InputTable) abstractDataMapTable)
@@ -210,6 +211,7 @@ public class InputDataMapTableView extends DataMapTableView {
         });
     }
 
+    @Override
     protected IBeanPropertyAccessors<GlobalMapEntry, Object> getMapSettingValueAccess(final CellEditor cellEditor) {
         return new IBeanPropertyAccessors<GlobalMapEntry, Object>() {
 
@@ -222,8 +224,8 @@ public class InputDataMapTableView extends DataMapTableView {
                         IUILookupMode[] availableJoins = { TMAP_LOOKUP_MODE.LOAD_ONCE, TMAP_LOOKUP_MODE.RELOAD,
                                 TMAP_LOOKUP_MODE.CACHE_OR_RELOAD };
                         List<String> names = new ArrayList<String>();
-                        for (int i = 0; i < availableJoins.length; i++) {
-                            names.add(availableJoins[i].getLabel());
+                        for (IUILookupMode availableJoin : availableJoins) {
+                            names.add(availableJoin.getLabel());
                         }
                         functComboBox.setItems(names.toArray(new String[names.size()]));
                         final IUILookupMode lookupMode = ((InputTable) parent).getLookupMode();
@@ -233,8 +235,8 @@ public class InputDataMapTableView extends DataMapTableView {
                     } else if (MATCH_MODEL_SETTING.equals(bean.getName())) {
                         IUIMatchingMode[] matchModel = getMatchModel();
                         List<String> names = new ArrayList<String>();
-                        for (int i = 0; i < matchModel.length; i++) {
-                            names.add(matchModel[i].getLabel());
+                        for (IUIMatchingMode element : matchModel) {
+                            names.add(element.getLabel());
                         }
                         functComboBox.setItems(names.toArray(new String[names.size()]));
                         IUIMatchingMode matchingMode = ((InputTable) parent).getMatchingMode();
@@ -357,15 +359,18 @@ public class InputDataMapTableView extends DataMapTableView {
         };
     }
 
+    @Override
     protected void refreshCondensedImage(AbstractInOutTable absTable, String option, Object previousValue) {
         InputTable table = (InputTable) absTable;
         if (LOOKUP_MODEL_SETTING.equals(option)) {
             if (table.getLookupMode().equals(mapperManager.getDefaultSetting().get(LOOKUP_MODEL_SETTING))) {
-                if (changedOptions > 0)
+                if (changedOptions > 0) {
                     changedOptions--;
+                }
             } else if (mapperManager.getDefaultSetting().get(LOOKUP_MODEL_SETTING).equals(previousValue)) {
-                if (changedOptions < 6)
+                if (changedOptions < 6) {
                     changedOptions++;
+                }
             }
         } else if (MATCH_MODEL_SETTING.equals(option)) {
             IUIMatchingMode matchingMode = table.getMatchingMode();
@@ -374,52 +379,63 @@ public class InputDataMapTableView extends DataMapTableView {
                 IUIMatchingMode[] modes = (IUIMatchingMode[]) object;
                 if (modes.length == 2) {
                     if (modes[0].equals(matchingMode) || modes[1].equals(matchingMode)) {
-                        if (changedOptions > 0)
+                        if (changedOptions > 0) {
                             changedOptions--;
+                        }
                     } else if (modes[0].equals(previousValue) || modes[1].equals(previousValue)) {
-                        if (changedOptions < 6)
+                        if (changedOptions < 6) {
                             changedOptions++;
+                        }
                     }
 
                 }
             }
         } else if (JOIN_MODEL_SETTING.equals(option)) {
             if (Boolean.valueOf(table.isInnerJoin()).equals(mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING))) {
-                if (changedOptions > 0)
+                if (changedOptions > 0) {
                     changedOptions--;
+                }
             } else if (mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING).equals(previousValue)) {
-                if (changedOptions < 6)
+                if (changedOptions < 6) {
                     changedOptions++;
+                }
             }
 
         } else if (PERSISTENCE_MODEL_SETTING.equals(option)) {
             if (Boolean.valueOf(table.isPersistent()).equals(mapperManager.getDefaultSetting().get(PERSISTENCE_MODEL_SETTING))) {
-                if (changedOptions > 0)
+                if (changedOptions > 0) {
                     changedOptions--;
+                }
             } else if (mapperManager.getDefaultSetting().get(PERSISTENCE_MODEL_SETTING).equals(previousValue)) {
-                if (changedOptions < 6)
+                if (changedOptions < 6) {
                     changedOptions++;
+                }
             }
         } else if (SCHEMA_TYPE.equals(option)) {
             if (mapperManager.getDefaultSetting().get(SCHEMA_TYPE).equals(table.isRepository())) {
-                if (changedOptions > 0)
+                if (changedOptions > 0) {
                     changedOptions--;
+                }
             } else if (mapperManager.getDefaultSetting().get(SCHEMA_TYPE).equals(previousValue)) {
-                if (changedOptions < 6)
+                if (changedOptions < 6) {
                     changedOptions++;
+                }
             }
         } else if (SCHEMA_ID.equals(option)) {
             if (mapperManager.getDefaultSetting().get(SCHEMA_ID) == table.getId()) {
-                if (changedOptions > 0)
+                if (changedOptions > 0) {
                     changedOptions--;
+                }
             } else if (mapperManager.getDefaultSetting().get(SCHEMA_ID) == previousValue) {
-                if (changedOptions < 6)
+                if (changedOptions < 6) {
                     changedOptions++;
+                }
             }
         }
         condensedItem.setImage(ImageProviderMapper.getImage(getCondencedItemImage(changedOptions)));
     }
 
+    @Override
     protected boolean needColumnBgColor(GlobalMapEntry bean) {
         InputTable inputTable = (InputTable) bean.getParent();
 
@@ -460,37 +476,44 @@ public class InputDataMapTableView extends DataMapTableView {
         return false;
     }
 
+    @Override
     protected void initCondensedItemImage() {
         if (!mapperManager.getDefaultSetting().get(LOOKUP_MODEL_SETTING).equals(getInputTable().getLookupMode())) {
-            if (changedOptions < 6)
+            if (changedOptions < 6) {
                 changedOptions++;
+            }
         }
         Object object = mapperManager.getDefaultSetting().get(MATCH_MODEL_SETTING);
         if (object instanceof IUIMatchingMode[]) {
             IUIMatchingMode[] modes = (IUIMatchingMode[]) object;
             if (modes.length == 2) {
                 if (!modes[0].equals(getInputTable().getMatchingMode()) && !modes[1].equals(getInputTable().getMatchingMode())) {
-                    if (changedOptions < 6)
+                    if (changedOptions < 6) {
                         changedOptions++;
+                    }
                 }
 
             }
         }
         if (!mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING).equals(getInputTable().isInnerJoin())) {
-            if (changedOptions < 6)
+            if (changedOptions < 6) {
                 changedOptions++;
+            }
         }
         if (!mapperManager.getDefaultSetting().get(PERSISTENCE_MODEL_SETTING).equals(getInputTable().isPersistent())) {
-            if (changedOptions < 6)
+            if (changedOptions < 6) {
                 changedOptions++;
+            }
         }
         if (!mapperManager.getDefaultSetting().get(SCHEMA_TYPE).equals(getInputTable().isRepository())) {
-            if (changedOptions < 6)
+            if (changedOptions < 6) {
                 changedOptions++;
+            }
         }
         if (mapperManager.getDefaultSetting().get(SCHEMA_ID) != getInputTable().getId()) {
-            if (changedOptions < 6)
+            if (changedOptions < 6) {
                 changedOptions++;
+            }
         }
 
         condensedItem.setImage(ImageProviderMapper.getImage(getCondencedItemImage(changedOptions)));
@@ -614,9 +637,9 @@ public class InputDataMapTableView extends DataMapTableView {
                         String preview = bean.getPreviewValue();
                         if (preview != null) {
                             String[] split = preview.split("\\|");
-                            for (int i = 0; i < split.length; i++) {
-                                if (split[i] != null) {
-                                    String[] columnValue = split[i].split("=");
+                            for (String element : split) {
+                                if (element != null) {
+                                    String[] columnValue = element.split("=");
                                     if (columnValue.length == 2 && columnValue[0] != null && columnValue[0].trim().equals(label)) {
                                         return columnValue[1];
                                     }
@@ -676,7 +699,7 @@ public class InputDataMapTableView extends DataMapTableView {
             final InputTable table = getInputTable();
             // condensed Item
             condensedItem = new ToolItem(toolBarActions, SWT.CHECK);
-            condensedItem.setEnabled(!mapperManager.componentIsReadOnly());
+            // condensedItem.setEnabled(!mapperManager.componentIsReadOnly());
             condensedItem.setSelection(table.isActivateCondensedTool());
             condensedItem.setToolTipText("tMap settings");
             initCondensedItemImage();
@@ -809,8 +832,9 @@ public class InputDataMapTableView extends DataMapTableView {
                             if ((modes[0].equals(previous) || modes[1].equals(previous))
                                     && !modes[0].equals(previousMatchingModeSelected)
                                     && !modes[1].equals(previousMatchingModeSelected)) {
-                                if (changedOptions < 4)
+                                if (changedOptions < 4) {
                                     changedOptions++;
+                                }
                             }
                         }
                     }
@@ -818,8 +842,9 @@ public class InputDataMapTableView extends DataMapTableView {
                     getInputTable().setInnerJoin(previousInnerJoinSelection);
                     if (mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING).equals(previous)
                             && !mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING).equals(previousInnerJoinSelection)) {
-                        if (changedOptions < 4)
+                        if (changedOptions < 4) {
                             changedOptions++;
+                        }
                     }
                     innerJoinCheckItemEditable = true;
                     updateViewAfterChangeInnerJoinCheck();
@@ -842,8 +867,9 @@ public class InputDataMapTableView extends DataMapTableView {
                         IUIMatchingMode[] modes = (IUIMatchingMode[]) object;
                         if (modes.length == 2) {
                             if (!modes[0].equals(previous) && !modes[1].equals(previous)) {
-                                if (changedOptions > 0)
+                                if (changedOptions > 0) {
                                     changedOptions--;
+                                }
 
                             }
                         }
@@ -851,8 +877,9 @@ public class InputDataMapTableView extends DataMapTableView {
                     previous = getInputTable().isInnerJoin();
                     getInputTable().setInnerJoin(false);
                     if (!mapperManager.getDefaultSetting().get(JOIN_MODEL_SETTING).equals(previous)) {
-                        if (changedOptions > 0)
+                        if (changedOptions > 0) {
                             changedOptions--;
+                        }
 
                     }
 
@@ -953,6 +980,9 @@ public class InputDataMapTableView extends DataMapTableView {
 
         };
         tableViewerCreatorForGlobalMap = this.extendedTableViewerForGlobalMap.getTableViewerCreator();
+        if (mapperManager.componentIsReadOnly()) {
+            tableViewerCreatorForGlobalMap.setReadOnly(true);
+        }
         this.extendedTableViewerForGlobalMap.setCommandStack(mapperManager.getCommandStack());
 
         tableForGlobalMap = tableViewerCreatorForGlobalMap.getTable();
@@ -1080,13 +1110,14 @@ public class InputDataMapTableView extends DataMapTableView {
              * 
              * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
+            @Override
             public void widgetSelected(SelectionEvent arg0) {
+                if (!mapperManager.componentIsReadOnly()) {
+                    getInputTable().addGlobalMapEntry(new GlobalMapEntry(getInputTable(), "\"myKey\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
 
-                getInputTable().addGlobalMapEntry(new GlobalMapEntry(getInputTable(), "\"myKey\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
-
-                updateGridDataHeightForTableGlobalMap();
-                resizeAtExpandedSize();
-
+                    updateGridDataHeightForTableGlobalMap();
+                    resizeAtExpandedSize();
+                }
             }
 
         });
@@ -1103,21 +1134,21 @@ public class InputDataMapTableView extends DataMapTableView {
             protected void selectionEvent(TableViewerCreatorColumnNotModifiable column, Object bean) {
 
                 ITableEntry tableEntry = (ITableEntry) bean;
-
-                boolean removeEntry = MessageDialog.openConfirm(getShell(),
-                        Messages.getString("InputDataMapTableView.removeGlobalMapVar.Title"), //$NON-NLS-1$
-                        Messages.getString("InputDataMapTableView.removeGlobalMapVar.Message", tableEntry.getName())); //$NON-NLS-1$
-                if (removeEntry) {
-                    ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean,
-                            extendedTableViewerForGlobalMap.getExtendedTableModel());
-                    mapperManager.removeTableEntry((ITableEntry) bean);
-                    mapperManager.executeCommand(removeCommand);
-                    tableViewerCreatorForGlobalMap.getTableViewer().refresh();
-                    List list = tableViewerCreatorForGlobalMap.getInputList();
-                    updateGridDataHeightForTableGlobalMap();
-                    resizeAtExpandedSize();
+                if (!mapperManager.componentIsReadOnly()) {
+                    boolean removeEntry = MessageDialog.openConfirm(getShell(),
+                            Messages.getString("InputDataMapTableView.removeGlobalMapVar.Title"), //$NON-NLS-1$
+                            Messages.getString("InputDataMapTableView.removeGlobalMapVar.Message", tableEntry.getName())); //$NON-NLS-1$
+                    if (removeEntry) {
+                        ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean,
+                                extendedTableViewerForGlobalMap.getExtendedTableModel());
+                        mapperManager.removeTableEntry((ITableEntry) bean);
+                        mapperManager.executeCommand(removeCommand);
+                        tableViewerCreatorForGlobalMap.getTableViewer().refresh();
+                        List list = tableViewerCreatorForGlobalMap.getInputList();
+                        updateGridDataHeightForTableGlobalMap();
+                        resizeAtExpandedSize();
+                    }
                 }
-
             }
 
         };
@@ -1176,8 +1207,9 @@ public class InputDataMapTableView extends DataMapTableView {
 
                 getInputTable().setPersistent(false);
                 if (!mapperManager.getDefaultSetting().get(PERSISTENCE_MODEL_SETTING).equals(previous)) {
-                    if (changedOptions > 0)
+                    if (changedOptions > 0) {
                         changedOptions--;
+                    }
                 }
 
                 break;
@@ -1187,13 +1219,14 @@ public class InputDataMapTableView extends DataMapTableView {
         }
     }
 
+    @Override
     protected Object openCustomCellDialog(Shell shell, CellValueType type) {
         if (type == CellValueType.LOOKUP_MODEL) {
             IUILookupMode[] availableJoins = { TMAP_LOOKUP_MODE.LOAD_ONCE, TMAP_LOOKUP_MODE.RELOAD,
                     TMAP_LOOKUP_MODE.CACHE_OR_RELOAD };
             List<String> names = new ArrayList<String>();
-            for (int i = 0; i < availableJoins.length; i++) {
-                names.add(availableJoins[i].getLabel());
+            for (IUILookupMode availableJoin : availableJoins) {
+                names.add(availableJoin.getLabel());
             }
             ListStringValueDialog<String> dialog = new ListStringValueDialog<String>(shell, names);
             if (dialog.open() == IDialogConstants.OK_ID) {
@@ -1202,8 +1235,8 @@ public class InputDataMapTableView extends DataMapTableView {
         } else if (type == CellValueType.MATCH_MODEL) {
             IUIMatchingMode[] matchModel = getMatchModel();
             List<String> names = new ArrayList<String>();
-            for (int i = 0; i < matchModel.length; i++) {
-                names.add(matchModel[i].getLabel());
+            for (IUIMatchingMode element : matchModel) {
+                names.add(element.getLabel());
             }
             ListStringValueDialog<String> dialog = new ListStringValueDialog<String>(shell, names);
             if (dialog.open() == IDialogConstants.OK_ID) {

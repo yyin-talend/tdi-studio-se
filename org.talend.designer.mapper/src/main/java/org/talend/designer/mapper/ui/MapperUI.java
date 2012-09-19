@@ -255,7 +255,8 @@ public class MapperUI {
                     uiManager.setMapperResponse(SWT.CANCEL);
                     uiManager.prepareClosing(uiManager.getMapperResponse());
                 }
-                if (mapperManager.isDataChanged() && !mapperManager.getUiManager().isCloseWithoutPrompt()) {
+                if (!mapperManager.componentIsReadOnly() && mapperManager.isDataChanged()
+                        && !mapperManager.getUiManager().isCloseWithoutPrompt()) {
                     boolean closeWindow = MessageDialog.openConfirm(mapperShellFinal,
                             Messages.getString("MapperUI.CancelWithoutSaveModifications.Title"), //$NON-NLS-1$
                             Messages.getString("MapperUI.CancelWithoutSaveModifications.Message")); //$NON-NLS-1$

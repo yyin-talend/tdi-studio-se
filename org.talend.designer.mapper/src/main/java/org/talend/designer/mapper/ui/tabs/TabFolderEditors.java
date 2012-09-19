@@ -194,7 +194,7 @@ public class TabFolderEditors extends CTabFolder {
 
         for (ExtendedPushButton extendedPushButton : outputToolBarButtons) {
             extendedPushButton.addListener(beforeCommandListenerForOutputButtons, true);
-            if (extendedPushButton instanceof RemovePushButton) {
+            if (extendedPushButton instanceof RemovePushButton && !mapperManager.componentIsReadOnly()) {
                 removeButton = (RemovePushButtonForExtendedTable) extendedPushButton;
             }
         }
