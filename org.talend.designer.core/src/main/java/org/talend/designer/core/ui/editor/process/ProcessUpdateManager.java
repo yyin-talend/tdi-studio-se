@@ -1110,7 +1110,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             Map<String, EUpdateResult> deletedOrReselect = getDeletedOrReselectTablesMap();
                             List<Object> parameter = null;
                             // renamed
-                            if (newSourceId != null && !newSourceId.equals(propertyValue)) {
+                            if (newSourceId != null && !newSourceId.equals(propertyValue)
+                                    && !PluginChecker.isEBCDICPluginLoaded()) {
                                 String[] newSourceIdAndName = UpdateManagerUtils.getSourceIdAndChildName(newSourceId);
                                 if (newSourceIdAndName != null) {
                                     IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem,
