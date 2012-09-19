@@ -263,7 +263,6 @@
 			<!-- ############## -->
 			
 			<!-- HDP 1.0 -->			
-			<IMPORT NAME="commons-lang-2.4.jar" MODULE="commons-lang-2.4.jar" REQUIRED="false" REQUIRED_IF="HIVE_VERSION=='HDP_1_0'" /> 
 			<IMPORT NAME="commons-logging-1.0.4.jar" MODULE="commons-logging-1.0.4.jar" REQUIRED="false" REQUIRED_IF="HIVE_VERSION=='HDP_1_0'" /> 
 			<IMPORT NAME="datanucleus-api-jdo-3.0.7.jar" MODULE="datanucleus-api-jdo-3.0.7.jar" REQUIRED="false" REQUIRED_IF="HIVE_VERSION=='HDP_1_0'" /> 
 			<IMPORT NAME="datanucleus-core-3.0.9.jar" MODULE="datanucleus-core-3.0.9.jar" REQUIRED="false" REQUIRED_IF="HIVE_VERSION=='HDP_1_0'" /> 
@@ -279,6 +278,7 @@
 			<!-- ############## -->
 			
 			<!-- APACHE 1.0 && HDP 1.0 -->
+			<IMPORT NAME="commons-lang-2.4.jar" MODULE="commons-lang-2.4.jar" REQUIRED="false"  REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0')" /> 
 			<IMPORT NAME="antlr-runtime-3.0.1.jar" MODULE="antlr-runtime-3.0.1.jar"  REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0')"/>
 			<IMPORT NAME="commons-dbcp-1.4.jar" MODULE="commons-dbcp-1.4.jar"  REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0')"/>
 			<IMPORT NAME="commons-pool-1.5.4.jar" MODULE="commons-pool-1.5.4.jar"  REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0')"/>
