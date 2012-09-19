@@ -15,7 +15,10 @@ package org.talend.designer.core.ui.action;
 import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.i18n.Messages;
@@ -92,8 +95,16 @@ public class ModifyMergeOrderAction extends SelectionAction {
         super.run();
 
         MergeOrderDialog dialog = new MergeOrderDialog(this.getWorkbenchPart().getSite().getShell(), mergeComponent);
-
         if (dialog.open() == MergeOrderDialog.OK) {
+            for (IConnection connection : mergeComponent.getIncomingConnections()) {
+                if (connection.getSource().isStart()
+                        && (connection.getSource().getOutgoingConnections(EConnectionType.ON_SUBJOB_ERROR).size() != 0 || connection
+                                .getSource().getOutgoingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0)) {
+                    MessageDialog.openError(new Shell(), Messages.getString("ModifyMergeOrderAction.ERROE"), //$NON-NLS-1$
+                            Messages.getString("ModifyMergeOrderAction.ConnectionModifyError")); //$NON-NLS-1$
+                    return;
+                }
+            }
             ChangeMergeOrderCommand cmd = new ChangeMergeOrderCommand(mergeComponent, dialog.getConnectionList());
             execute(cmd);
         }
