@@ -1557,20 +1557,20 @@ public class HTMLDocGenerator implements IDocumentationGenerator {
                 return;
             }
         }
-        if (result == null) {
-            result = new ByteArrayOutputStream(3072);
-            IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                    IBrandingService.class);
-            ImageData imageData = brandingService.getLoginHImage().getImageData();
-            new ByteArrayOutputStream();
+        // if (result == null) {
+        result = new ByteArrayOutputStream(3072);
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        ImageData imageData = brandingService.getLoginHImage().getImageData();
+        new ByteArrayOutputStream();
 
-            ImageLoader imageLoader = new ImageLoader();
-            imageLoader.data = new ImageData[] { imageData };
+        ImageLoader imageLoader = new ImageLoader();
+        imageLoader.data = new ImageData[] { imageData };
 
-            imageLoader.save(result, type);
-            // put image to cache, no need to generate next time
-            logoImageCache.put(type, result);
-        }
+        imageLoader.save(result, type);
+        // put image to cache, no need to generate next time
+        logoImageCache.put(type, result);
+        // }
 
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(result.toByteArray());
