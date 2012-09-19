@@ -617,7 +617,9 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
             };
         };
         cellEditor.create(table);
-        valueColumn.setCellEditor(cellEditor);
+        if (!mapperManager.componentIsReadOnly()) {
+            valueColumn.setCellEditor(cellEditor);
+        }
         valueColumn.setBeanPropertyAccessors(getMapSettingValueAccess(cellEditor));
         valueColumn.setModifiable(true);
         valueColumn.setColorProvider(new IColumnColorProvider<GlobalMapEntry>() {
@@ -1298,7 +1300,11 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
      */
     public void enableDiaplayViewer(boolean isRepository) {
         MetadataTableEditorView metadataEditorView = mapperManager.getUiManager().getMetadataEditorView(getZone());
-        metadataEditorView.setReadOnly(isRepository);
+        if (mapperManager.componentIsReadOnly()) {
+            metadataEditorView.setReadOnly(true);
+        } else {
+            metadataEditorView.setReadOnly(isRepository);
+        }
     }
 
     /**
@@ -1524,7 +1530,7 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
         isErrorReject = ((OutputTable) getDataMapTable()).isErrorRejectTable();
 
         condensedItem = new ToolItem(toolBarActions, SWT.CHECK);
-        condensedItem.setEnabled(!mapperManager.componentIsReadOnly() && !isErrorReject);
+        condensedItem.setEnabled(!isErrorReject);
         condensedItem.setSelection(((OutputTable) abstractDataMapTable).isActivateCondensedTool());
         condensedItem.setToolTipText("tMap settings");
         initCondensedItemImage();
@@ -2399,6 +2405,10 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                 }
 
             });
+            if (mapperManager.componentIsReadOnly()) {
+                expressionFilterText.setEditable(false);
+                openExpressionBuilder.setEnabled(false);
+            }
             GridData gridData1 = new GridData();
             gridData1.exclude = !table.isActivateExpressionFilter();
             openExpressionBuilder.setLayoutData(gridData1);

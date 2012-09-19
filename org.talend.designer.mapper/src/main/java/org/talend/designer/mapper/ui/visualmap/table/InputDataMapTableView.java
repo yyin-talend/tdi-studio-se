@@ -676,7 +676,7 @@ public class InputDataMapTableView extends DataMapTableView {
             final InputTable table = getInputTable();
             // condensed Item
             condensedItem = new ToolItem(toolBarActions, SWT.CHECK);
-            condensedItem.setEnabled(!mapperManager.componentIsReadOnly());
+            // condensedItem.setEnabled(!mapperManager.componentIsReadOnly());
             condensedItem.setSelection(table.isActivateCondensedTool());
             condensedItem.setToolTipText("tMap settings");
             initCondensedItemImage();
@@ -953,6 +953,9 @@ public class InputDataMapTableView extends DataMapTableView {
 
         };
         tableViewerCreatorForGlobalMap = this.extendedTableViewerForGlobalMap.getTableViewerCreator();
+        if (mapperManager.componentIsReadOnly()) {
+            tableViewerCreatorForGlobalMap.setReadOnly(true);
+        }
         this.extendedTableViewerForGlobalMap.setCommandStack(mapperManager.getCommandStack());
 
         tableForGlobalMap = tableViewerCreatorForGlobalMap.getTable();
@@ -1081,12 +1084,12 @@ public class InputDataMapTableView extends DataMapTableView {
              * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
             public void widgetSelected(SelectionEvent arg0) {
+                if (!mapperManager.componentIsReadOnly()) {
+                    getInputTable().addGlobalMapEntry(new GlobalMapEntry(getInputTable(), "\"myKey\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
 
-                getInputTable().addGlobalMapEntry(new GlobalMapEntry(getInputTable(), "\"myKey\"", "")); //$NON-NLS-1$ //$NON-NLS-2$
-
-                updateGridDataHeightForTableGlobalMap();
-                resizeAtExpandedSize();
-
+                    updateGridDataHeightForTableGlobalMap();
+                    resizeAtExpandedSize();
+                }
             }
 
         });
@@ -1103,21 +1106,21 @@ public class InputDataMapTableView extends DataMapTableView {
             protected void selectionEvent(TableViewerCreatorColumnNotModifiable column, Object bean) {
 
                 ITableEntry tableEntry = (ITableEntry) bean;
-
-                boolean removeEntry = MessageDialog.openConfirm(getShell(),
-                        Messages.getString("InputDataMapTableView.removeGlobalMapVar.Title"), //$NON-NLS-1$
-                        Messages.getString("InputDataMapTableView.removeGlobalMapVar.Message", tableEntry.getName())); //$NON-NLS-1$
-                if (removeEntry) {
-                    ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean,
-                            extendedTableViewerForGlobalMap.getExtendedTableModel());
-                    mapperManager.removeTableEntry((ITableEntry) bean);
-                    mapperManager.executeCommand(removeCommand);
-                    tableViewerCreatorForGlobalMap.getTableViewer().refresh();
-                    List list = tableViewerCreatorForGlobalMap.getInputList();
-                    updateGridDataHeightForTableGlobalMap();
-                    resizeAtExpandedSize();
+                if (!mapperManager.componentIsReadOnly()) {
+                    boolean removeEntry = MessageDialog.openConfirm(getShell(),
+                            Messages.getString("InputDataMapTableView.removeGlobalMapVar.Title"), //$NON-NLS-1$
+                            Messages.getString("InputDataMapTableView.removeGlobalMapVar.Message", tableEntry.getName())); //$NON-NLS-1$
+                    if (removeEntry) {
+                        ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean,
+                                extendedTableViewerForGlobalMap.getExtendedTableModel());
+                        mapperManager.removeTableEntry((ITableEntry) bean);
+                        mapperManager.executeCommand(removeCommand);
+                        tableViewerCreatorForGlobalMap.getTableViewer().refresh();
+                        List list = tableViewerCreatorForGlobalMap.getInputList();
+                        updateGridDataHeightForTableGlobalMap();
+                        resizeAtExpandedSize();
+                    }
                 }
-
             }
 
         };
