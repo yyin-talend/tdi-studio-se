@@ -128,6 +128,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
     }
 
+    @Override
     public void retrieveRefInformation() {
         jobletReferenceMap.clear();
 
@@ -1684,7 +1685,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                                         }
                                     } else if (value instanceof Boolean && objectValue instanceof Boolean) {
-                                        sameValues = ((Boolean) value).equals((Boolean) objectValue);
+                                        sameValues = ((Boolean) value).equals(objectValue);
                                     }
                                 }
                             } else if (param.getFieldType().equals(EParameterFieldType.TABLE)
@@ -1831,7 +1832,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 && !("tMDMReceive".equals(node.getComponent().getName()) && "XPATH_PREFIX".equals(param //$NON-NLS-1$ //$NON-NLS-2$
                                         .getRepositoryValue()))
                                 && !("tSAPOutput".equals(node.getComponent().getName()) && param.getName().equals(
-                                        UpdatesConstants.MAPPING))) {
+                                        UpdatesConstants.MAPPING))
+                                && !("tFileInputEBCDIC".equals(node.getComponent().getName()) && "DATA_FILE"
+                                        .equals(repositoryValue))) {
                             param.setRepositoryValueUsed(true);
                             param.setReadOnly(true);
                         }
@@ -2096,6 +2099,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
      * 
      * @deprecated seems have unused it.
      */
+    @Deprecated
     private List<UpdateResult> checkJobletNodesPropertyChanger() {
         if (getProcess() == null || getNodePropertyChanger() == null) {
             return Collections.emptyList();
@@ -2196,10 +2200,12 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         return null;
     }
 
+    @Override
     public List<UpdateResult> getUpdatesNeeded(EUpdateItemType type) {
         return getUpdatesNeeded(type, false);
     }
 
+    @Override
     public List<UpdateResult> getUpdatesNeeded(EUpdateItemType type, boolean onlySimpleShow) {
 
         if (type == null) {
@@ -2244,6 +2250,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         return tmpResults;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public boolean executeUpdates(List<UpdateResult> results) {
         return UpdateManagerUtils.executeUpdates(results);
