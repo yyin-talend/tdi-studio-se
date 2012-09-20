@@ -881,35 +881,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return list;
     }
 
-    /**
-     * DOC ycbai Comment method "getJobScriptsUncompressed".
-     * 
-     * @param resource
-     * @param process
-     */
-    protected void getJobScriptsUncompressed(ExportFileResource resource, ProcessItem process) {
-        String projectName = getCorrespondingProjectName(process);
-        List<String> jobFolderNames = getRelatedJobFolderNames(process);
-        try {
-            for (String jobFolderName : jobFolderNames) {
-                String classRoot = getClassRootLocation() + projectName + File.separator + jobFolderName;
-                String targetPath = getTmpFolder() + File.separator + projectName + File.separator + jobFolderName;
-                File sourceFile = new File(classRoot);
-                File targetFile = new File(targetPath);
-                FilesUtils.copyFolder(sourceFile, targetFile, true, null, null, true, false);
-                List<URL> fileURLs = FilesUtils.getFileURLs(targetFile);
-                for (URL url : fileURLs) {
-                    String path = url.getPath();
-                    String relPath = path.replace(getTmpFolder().replace("\\", "/"), ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    relPath = relPath.substring(0, relPath.lastIndexOf("/")); //$NON-NLS-1$
-                    resource.addResource(relPath, url);
-                }
-            }
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
-    }
-
     protected List<String> getRelatedJobFolderNames(ProcessItem process) {
         return this.getRelatedJobFolderNames(process, true);
     }

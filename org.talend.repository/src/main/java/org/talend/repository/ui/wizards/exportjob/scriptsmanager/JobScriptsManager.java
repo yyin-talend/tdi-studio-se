@@ -228,13 +228,12 @@ public abstract class JobScriptsManager {
 
     private String getTmpFolderPath() {
         Project project = ProjectManager.getInstance().getCurrentProject();
-        IProject physProject;
-        String tmpFolder = System.getProperty("user.dir"); //$NON-NLS-1$
+        String tmpFolder;
         try {
-            physProject = ResourceModelUtils.getProject(project);
+            IProject physProject = ResourceModelUtils.getProject(project);
             tmpFolder = physProject.getFolder("temp").getLocation().toPortableString(); //$NON-NLS-1$
         } catch (Exception e) {
-            ExceptionHandler.process(e);
+            tmpFolder = System.getProperty("user.dir"); //$NON-NLS-1$
         }
         tmpFolder = tmpFolder + "/talendExporter"; //$NON-NLS-1$
         return tmpFolder;
