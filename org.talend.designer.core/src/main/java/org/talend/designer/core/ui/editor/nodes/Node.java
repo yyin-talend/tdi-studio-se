@@ -3558,7 +3558,12 @@ public class Node extends Element implements IGraphicalNode {
             for (IElementParameter sourceParam : oldElementParameters) {
                 IElementParameter targetParam = getElementParameter(sourceParam.getName());
                 if (targetParam != null) {
-                    setPropertyValue(sourceParam.getName(), sourceParam.getValue());
+                    if (sourceParam.getName().equals(EParameterName.LABEL.getName())
+                            && (sourceParam.getValue() == null || "".equals(sourceParam.getValue()))) {
+                        setPropertyValue(sourceParam.getName(), component.getProcess().getName());
+                    } else {
+                        setPropertyValue(sourceParam.getName(), sourceParam.getValue());
+                    }
                     if (targetParam.getFieldType() == EParameterFieldType.TABLE) {
                         targetParam.setListItemsValue(sourceParam.getListItemsValue());
                     }
