@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb;
 
-import java.net.URI;
 import java.util.Collection;
 
 import org.talend.core.model.properties.ProcessItem;
@@ -47,17 +46,19 @@ public class DataSourceConfig {
         	
         	for (NodeType dbComponent : dbComponents) {
         		String id = EmfModelUtils.computeTextElementValue("UNIQUE_NAME", dbComponent);
-        		String beanPool = id + "Pool";
+//        		String beanPool = id + "Pool";
 
         		additionalJobBeanParams +=
-            		"\n\t\t\t\t<entry key=\"" + id + "\" value-ref=\"" + beanPool + "\" />";
+            		"\n\t\t\t\t<entry key=\"" + id + "\" value-ref=\"" + id + "\" />";
 
-        		String beanDataSource = id + "DataSource";
-				additionalJobBundleConfig += getDataSourceConfig(dbComponent, beanDataSource);
-				additionalJobBundleConfig +=
-			                "\n\t<bean id=\"" + beanPool + "\" class=\"org.apache.commons.dbcp.datasources.SharedPoolDataSource\" destroy-method=\"close\">"
-	                      + "\n\t\t<property name=\"connectionPoolDataSource\" ref=\"" + beanDataSource + "\"/>"
-	                      + "\n\t</bean>";
+//        		String beanDataSource = id + "DataSource";
+//				additionalJobBundleConfig += getDataSourceConfig(dbComponent, beanDataSource);
+//				additionalJobBundleConfig +=
+//			                "\n\t<bean id=\"" + beanPool + "\" class=\"org.apache.commons.dbcp.datasources.SharedPoolDataSource\" destroy-method=\"close\">"
+//	                      + "\n\t\t<property name=\"connectionPoolDataSource\" ref=\"" + beanDataSource + "\"/>"
+//	                      + "\n\t</bean>";
+        		// TODO: jdbc/sam is hardcoded
+        		additionalJobBundleConfig += "\n\t<reference id=\"" + id + "\" interface=\"javax.sql.DataSource\" filter=\"(osgi.jndi.service.name=jdbc/sam)\">";
 			}
         	additionalJobBeanParams +=
         		  "\n\t\t\t</map>"
@@ -72,7 +73,7 @@ public class DataSourceConfig {
 	public String getAdditionalJobBundleConfig() {
 		return additionalJobBundleConfig;
 	}
-
+/*
 	private static String getDataSourceConfig(NodeType dbComponent, String beanDataSource) {
 		String componentName = dbComponent.getComponentName();
 		if(DB_JDBC.equals(componentName)) {
@@ -110,5 +111,5 @@ public class DataSourceConfig {
 	        + "\n\t\t<property name=\"password\" value=\"" + EmfModelUtils.computeTextElementValue("PASS", dbComponent) + "\"/>"
 	        + "\n\t</bean>";
 	}
-
+*/
 }
