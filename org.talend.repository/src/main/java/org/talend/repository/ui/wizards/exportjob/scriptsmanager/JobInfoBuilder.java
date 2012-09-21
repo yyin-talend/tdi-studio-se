@@ -152,7 +152,7 @@ public class JobInfoBuilder {
         propertyFile.setProperty(JOB_VERSION, jobInfo.getJobVersion());
         propertyFile.setProperty(CONTEXT_NAME, jobInfo.getContextName());
 
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HHmmssS");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HHmmssSSS");
         Date currentDate = new Date();
         propertyFile.setProperty(DATE, df.format(currentDate));
 
