@@ -190,13 +190,15 @@ public class GuessSchemaProcess {
                 + "java.sql.ResultSetMetaData rsmd = rs.getMetaData();\r\n" + "int numbOfColumn = rsmd.getColumnCount();\r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "\r\n" + "String fileName = (new java.io.File(\r\n" + "                    \"" + temppath //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "\")).getAbsolutePath().replace(\r\n" + "                    \"\\\\\", \"/\");\r\n" //$NON-NLS-1$ //$NON-NLS-2$
-                + "com.csvreader.CsvWriter csvWriter = new com.csvreader.CsvWriter(\r\n" //$NON-NLS-1$
+                + "com.talend.csv.CSVWriter csvWriter = new com.talend.csv.CSVWriter(\r\n" //$NON-NLS-1$
                 + "                    new java.io.BufferedWriter(new java.io.OutputStreamWriter(\r\n" //$NON-NLS-1$
                 + "                            new java.io.FileOutputStream(\r\n" //$NON-NLS-1$
                 + "                                    fileName, false),\r\n" //$NON-NLS-1$
                 + "                            \"GBK\")), ';');\r\n" + "                            \r\n" //$NON-NLS-1$ //$NON-NLS-2$
-                + "csvWriter.setEscapeMode(com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED);\r\n" //$NON-NLS-1$
-                + "csvWriter.setTextQualifier('\"');\r\n" + "csvWriter.setForceQualifier(true);\r\n" + "int nbRows = 0;\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                /*
+                 * + "csvWriter.setEscapeMode(com.talend.csv.CSVWritercsvWriter.ESCAPE_MODE_DOUBLED);\r\n" //$NON-NLS-1$
+                 * + "csvWriter.setTextQualifier('\"');\r\n" + "csvWriter.setForceQualifier(true);\r\n"
+                 */+ "int nbRows = 0;\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "String[] columnNames = new String[numbOfColumn];\r\n" + "String[] nullables = new String[numbOfColumn];\r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "String[] lengths = new String[numbOfColumn];\r\n" + "String[] precisions = new String[numbOfColumn];\r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "String[] dbtypes = new String[numbOfColumn];\r\n" //$NON-NLS-1$
@@ -206,13 +208,13 @@ public class GuessSchemaProcess {
                 + "precisions[i-1] = Integer.toString(rsmd.getPrecision(i));" //$NON-NLS-1$
                 + "dbtypes[i-1] = rsmd.getColumnTypeName(i);\r\n" + "}\r\n" //$NON-NLS-1$ //$NON-NLS-2$
 
-                + "csvWriter.writeRecord(columnNames);\r\n" + "csvWriter.writeRecord(nullables);\r\n" //$NON-NLS-1$ //$NON-NLS-2$
-                + "csvWriter.writeRecord(lengths);\r\n" + "csvWriter.writeRecord(precisions);\r\n" //$NON-NLS-1$ //$NON-NLS-2$
-                + "csvWriter.writeRecord(dbtypes);\r\n" + "while (rs.next()) {"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "csvWriter.writeNext(columnNames);\r\n" + "csvWriter.writeNext(nullables);\r\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + "csvWriter.writeNext(lengths);\r\n" + "csvWriter.writeNext(precisions);\r\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + "csvWriter.writeNext(dbtypes);\r\n" + "while (rs.next()) {"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         codeMain = "String[] dataOneRow = new String[numbOfColumn];\r\n" + "for (int i = 1; i <= numbOfColumn; i++) {\r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "    \r\n" + "    String tempStr = rs.getString(i);\r\n" + "    dataOneRow[i-1] = tempStr;\r\n" + "}\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + "csvWriter.writeRecord(dataOneRow);"; //$NON-NLS-1$
+                + "csvWriter.writeNext(dataOneRow);"; //$NON-NLS-1$
 
         codeEnd = "nbRows++;\r\n" + "    if (nbRows > " + maximumRowsToPreview + ") break;\r\n" + "}\r\n" + "stm.close();\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
                 + "conn.close();\r\n" + "csvWriter.close();\r\n"; //$NON-NLS-1$ //$NON-NLS-2$
