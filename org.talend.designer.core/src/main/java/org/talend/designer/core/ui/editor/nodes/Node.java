@@ -3695,7 +3695,7 @@ public class Node extends Element implements IGraphicalNode {
 
     public boolean isSingleSchemaForEBCDIC(IMetadataTable meta) {
         if (!getComponent().getName().contains("EBCDIC") || meta == null) {
-            return false;
+            return true;
         }
         String connector = meta.getAttachedConnector();
         IElementParameter param = getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
