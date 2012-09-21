@@ -13,6 +13,7 @@
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb;
 
 import aQute.bnd.osgi.Analyzer;
+import aQute.bnd.osgi.FileResource;
 import aQute.bnd.osgi.Jar;
 
 import java.io.BufferedReader;
@@ -545,18 +546,22 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         for (String path : relativePathList) {
             Set<URL> resources = libResource.getResourcesByRelativePath(path);
             for (URL url : resources) {
+                File dependencyFile = new File(url.getPath());
                 bundleClasspath
                     .append(',')
                     .append(libResource.getDirectoryName())
                     .append(PATH_SEPARATOR)
-                    .append(new File(url.getPath()).getName());
-//                bin.putResource(libResource.getDirectoryName() + PATH_SEPARATOR + new File(url.getPath()).getName(),
-//                		new FileResource(new File(url.getPath())));
+                    .append(dependencyFile.getName());
+                // add systemRoutines.jar as emded resource to allow proper Import-Package calculation
+                if ("systemRoutines.jar".equals(dependencyFile.getName())) {
+                    bin.putResource(libResource.getDirectoryName() + PATH_SEPARATOR + dependencyFile.getName(),
+                    	new FileResource(dependencyFile));
+                }
 //                analyzer.addClasspath(new File(url.getPath()));
             }
         }
         analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH, bundleClasspath.toString());
-        analyzer.setProperty(Analyzer.IMPORT_PACKAGE, "!routines,!routines.system,*;resolution:=optional,org.apache.cxf.management.counters");
+        analyzer.setProperty(Analyzer.IMPORT_PACKAGE, "routines.system.api,*;resolution:=optional,org.apache.cxf.management.counters");
 
         // http://jira.talendforge.org/browse/TESB-5382 LiXiaopeng
         String symbolicName = bundleName;
