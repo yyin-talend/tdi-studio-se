@@ -78,14 +78,14 @@ public class palodimensions {
 
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/database/dimensions");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
-                paloDimensions.add(new palodimension(this.plConn, this.plDB.getDatabaseId(), result[1], Integer
-                        .valueOf(result[0]), palohelpers.StringToInt(result[7]), palohelpers.StringToInt(result[8]), palohelpers
-                        .StringToInt(result[9]), palohelpers.StringToInt(result[2]), palohelpers.StringToInt(result[3]),
-                        palohelpers.StringToInt(result[4]), palohelpers.StringToInt(result[5]), palohelpers
-                                .StringToInt(result[10])));
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
+                paloDimensions.add(new palodimension(this.plConn, this.plDB.getDatabaseId(), csv.get(1), Integer.valueOf(csv
+                        .get(0)), palohelpers.StringToInt(csv.get(7)), palohelpers.StringToInt(csv.get(8)), palohelpers
+                        .StringToInt(csv.get(9)), palohelpers.StringToInt(csv.get(2)), palohelpers.StringToInt(csv.get(3)),
+                        palohelpers.StringToInt(csv.get(4)), palohelpers.StringToInt(csv.get(5)), palohelpers.StringToInt(csv
+                                .get(10))));
             }
             csv.close();
             entity.consumeContent();
@@ -143,14 +143,14 @@ public class palodimensions {
             ArrayList<palodimension> paloDimensionsCube = new ArrayList<palodimension>();
 
             HttpEntity entity = this.plConn.sendToServer(qparams, "/database/dimensions");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
-                paloDimensionsCube.add(new palodimension(this.plConn, lDatabaseId, result[1], Integer.valueOf(result[0]),
-                        palohelpers.StringToInt(result[7]), palohelpers.StringToInt(result[8]), palohelpers
-                                .StringToInt(result[9]), palohelpers.StringToInt(result[2]), palohelpers.StringToInt(result[3]),
-                        palohelpers.StringToInt(result[4]), palohelpers.StringToInt(result[5]), palohelpers
-                                .StringToInt(result[10])));
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
+                paloDimensionsCube.add(new palodimension(this.plConn, lDatabaseId, csv.get(1), Integer.valueOf(csv.get(0)),
+                        palohelpers.StringToInt(csv.get(7)), palohelpers.StringToInt(csv.get(8)), palohelpers.StringToInt(csv
+                                .get(9)), palohelpers.StringToInt(csv.get(2)), palohelpers.StringToInt(csv.get(3)), palohelpers
+                                .StringToInt(csv.get(4)), palohelpers.StringToInt(csv.get(5)), palohelpers.StringToInt(csv
+                                .get(10))));
             }
             csv.close();
             entity.consumeContent();
@@ -178,14 +178,15 @@ public class palodimensions {
 
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/dimension/create");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            // CsvReader csv = new CsvReader(this.plConn.sendToServer(qparams, "/dimension/create").getContent(),
-            // Charset.defaultCharset());
-            String[] result = csv.readNext();
-            palodimension plDim = new palodimension(this.plConn, this.plDB.getDatabaseId(), result[1],
-                    palohelpers.StringToInt(result[0]), palohelpers.StringToInt(result[7]), palohelpers.StringToInt(result[8]),
-                    palohelpers.StringToInt(result[9]), palohelpers.StringToInt(result[2]), palohelpers.StringToInt(result[3]),
-                    palohelpers.StringToInt(result[4]), palohelpers.StringToInt(result[5]), palohelpers.StringToInt(result[10]));
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            csv.readNext();
+            palodimension plDim = new palodimension(this.plConn, this.plDB.getDatabaseId(), csv.get(1),
+                    palohelpers.StringToInt(csv.get(0)), palohelpers.StringToInt(csv.get(7)),
+                    palohelpers.StringToInt(csv.get(8)), palohelpers.StringToInt(csv.get(9)),
+                    palohelpers.StringToInt(csv.get(2)), palohelpers.StringToInt(csv.get(3)),
+                    palohelpers.StringToInt(csv.get(4)), palohelpers.StringToInt(csv.get(5)),
+                    palohelpers.StringToInt(csv.get(10)));
             paloDimensions.add(plDim);
             csv.close();
             entity.consumeContent();

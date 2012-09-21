@@ -151,11 +151,10 @@ public class palodimension {
 
             try {
                 HttpEntity entity = this.plConn.sendToServer(qparams, "/dimension/rename");
-                CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-                // CsvReader csv = new CsvReader(this.plConn.sendToServer(qparams, "/dimension/rename").getContent(),
-                // Charset.defaultCharset());
-                String[] result = csv.readNext();
-                this.strDimensionName = result[1];
+                CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+                csv.setQuoteChar('"');
+                csv.readNext();
+                this.strDimensionName = csv.get(1);
                 csv.close();
                 entity.consumeContent();
             } catch (Exception e) {
@@ -180,21 +179,19 @@ public class palodimension {
 
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/dimension/clear");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-
-            // CsvReader csv = new CsvReader(this.plConn.sendToServer(qparams, "/dimension/clear").getContent(),
-            // Charset.defaultCharset());
-            String[] result = csv.readNext();
-            this.strDimensionName = result[1];
-            this.iDimensionId = Integer.valueOf(result[0]);
-            this.iAssocDimension = palohelpers.StringToInt(result[7]);
-            this.iAttributCube = palohelpers.StringToInt(result[8]);
-            this.iRightsCube = palohelpers.StringToInt(result[9]);
-            this.iNumberOfElements = palohelpers.StringToInt(result[2]);
-            this.iMaximumLevel = palohelpers.StringToInt(result[3]);
-            this.iMaximumIndent = palohelpers.StringToInt(result[4]);
-            this.iMaximumDepth = palohelpers.StringToInt(result[5]);
-            this.iDimensionToken = palohelpers.StringToInt(result[10]);
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            csv.readNext();
+            this.strDimensionName = csv.get(1);
+            this.iDimensionId = Integer.valueOf(csv.get(0));
+            this.iAssocDimension = palohelpers.StringToInt(csv.get(7));
+            this.iAttributCube = palohelpers.StringToInt(csv.get(8));
+            this.iRightsCube = palohelpers.StringToInt(csv.get(9));
+            this.iNumberOfElements = palohelpers.StringToInt(csv.get(2));
+            this.iMaximumLevel = palohelpers.StringToInt(csv.get(3));
+            this.iMaximumIndent = palohelpers.StringToInt(csv.get(4));
+            this.iMaximumDepth = palohelpers.StringToInt(csv.get(5));
+            this.iDimensionToken = palohelpers.StringToInt(csv.get(10));
             csv.close();
             entity.consumeContent();
         } catch (Exception e) {
@@ -210,21 +207,19 @@ public class palodimension {
 
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/dimension/info");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-
-            // CsvReader csv = new CsvReader(this.plConn.sendToServer(qparams, "/dimension/info").getContent(),
-            // Charset.defaultCharset());
-            String[] result = csv.readNext();
-            this.strDimensionName = result[1];
-            this.iDimensionId = Integer.valueOf(result[0]);
-            this.iAssocDimension = palohelpers.StringToInt(result[7]);
-            this.iAttributCube = palohelpers.StringToInt(result[8]);
-            this.iRightsCube = palohelpers.StringToInt(result[9]);
-            this.iNumberOfElements = palohelpers.StringToInt(result[2]);
-            this.iMaximumLevel = palohelpers.StringToInt(result[3]);
-            this.iMaximumIndent = palohelpers.StringToInt(result[4]);
-            this.iMaximumDepth = palohelpers.StringToInt(result[5]);
-            this.iDimensionToken = palohelpers.StringToInt(result[10]);
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            csv.readNext();
+            this.strDimensionName = csv.get(1);
+            this.iDimensionId = Integer.valueOf(csv.get(0));
+            this.iAssocDimension = palohelpers.StringToInt(csv.get(7));
+            this.iAttributCube = palohelpers.StringToInt(csv.get(8));
+            this.iRightsCube = palohelpers.StringToInt(csv.get(9));
+            this.iNumberOfElements = palohelpers.StringToInt(csv.get(2));
+            this.iMaximumLevel = palohelpers.StringToInt(csv.get(3));
+            this.iMaximumIndent = palohelpers.StringToInt(csv.get(4));
+            this.iMaximumDepth = palohelpers.StringToInt(csv.get(5));
+            this.iDimensionToken = palohelpers.StringToInt(csv.get(10));
             csv.close();
             entity.consumeContent();
         } catch (Exception e) {

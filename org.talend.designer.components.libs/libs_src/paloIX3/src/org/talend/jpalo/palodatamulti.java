@@ -109,7 +109,8 @@ public class palodatamulti {
 
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/cell/replace_bulk");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
             csv.readNext();
             csv.close();
             entity.consumeContent();

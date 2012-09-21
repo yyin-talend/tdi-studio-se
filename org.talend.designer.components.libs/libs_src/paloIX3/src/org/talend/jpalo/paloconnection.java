@@ -60,10 +60,11 @@ public class paloconnection {
 
         try {
             HttpEntity entity = sendToServer(qparams, "/server/login");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = csv.readNext();
-            this.strToken = result[0];
-            this.iSessionTimeOut = Integer.valueOf(result[1]);
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            csv.readNext();
+            this.strToken = csv.get(0);
+            this.iSessionTimeOut = Integer.valueOf(csv.get(1));
             csv.close();
             entity.consumeContent();
         } catch (Exception e) {
@@ -111,10 +112,11 @@ public class paloconnection {
 
         try {
             HttpEntity entity = sendToServer(qparams, "/server/logout");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
 
             // CsvReader csv = new CsvReader(sendToServer(qparams, "/server/logout").getContent(),
             // Charset.defaultCharset());
+            csv.setQuoteChar('"');
             csv.readNext();
             csv.close();
             entity.consumeContent();
@@ -157,10 +159,11 @@ public class paloconnection {
     public boolean sendToServerSingleRC(List<NameValuePair> qparams, String strAPIUrl) throws paloexception {
         try {
             HttpEntity entity = sendToServer(qparams, strAPIUrl);
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
             // CsvReader csv = new CsvReader(sendToServer(qparams, strAPIUrl).getContent(), Charset.defaultCharset());
-            String[] result = csv.readNext();
-            boolean bStatus = Boolean.getBoolean(result[0]);
+            csv.setQuoteChar('"');
+            csv.readNext();
+            boolean bStatus = Boolean.getBoolean(csv.get(0));
             csv.close();
             entity.consumeContent();
             return bStatus;
@@ -187,9 +190,10 @@ public class paloconnection {
             if (rsp.getStatusLine().getStatusCode() != 200) {
                 // Error had been occured
                 // Close Connection and thend raise paloexception error
-                CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-                String[] result = csv.readNext();
-                paloexception plX = new paloexception(result[0], result[1], result[2]);
+                CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+                csv.setQuoteChar('"');
+                csv.readNext();
+                paloexception plX = new paloexception(csv.get(0), csv.get(1), csv.get(2));
                 csv.close();
                 entity.consumeContent();
                 // req.abort();
@@ -211,10 +215,10 @@ public class paloconnection {
         try {
             StringBuilder sb = new StringBuilder();
             HttpEntity entity = sendToServer(qparams, "/rule/functions");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
-                sb.append(result[0]);
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
+                sb.append(csv.get(0));
             }
             csv.close();
             entity.consumeContent();
@@ -230,16 +234,16 @@ public class paloconnection {
         try {
             StringBuilder sb = new StringBuilder();
             HttpEntity entity = sendToServer(qparams, "/server/info");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
-                sb.append(result[0]);
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
+                sb.append(csv.get(0));
                 sb.append(".");
-                sb.append(result[1]);
+                sb.append(csv.get(1));
                 sb.append(".");
-                sb.append(result[2]);
+                sb.append(csv.get(2));
                 sb.append(".");
-                sb.append(result[3]);
+                sb.append(csv.get(3));
             }
             csv.close();
             entity.consumeContent();

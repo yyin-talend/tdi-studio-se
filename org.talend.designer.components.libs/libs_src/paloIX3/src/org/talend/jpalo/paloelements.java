@@ -73,22 +73,22 @@ public class paloelements {
         try {
 
             HttpEntity entity = this.plConn.sendToServer(qparams, "/dimension/elements");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
 
-                if (hsFilteredElements.contains(result[1])) {
+                if (hsFilteredElements.contains(csv.get(1))) {
                     paloelement plElm = new paloelement(this.plConn, this.lDatabaseId, this.iDimensionId, this,
-                            palohelpers.StringToLong(result[0]), result[1], palohelpers.StringToInt(result[2]),
-                            palohelpers.StringToInt(result[3]), palohelpers.StringToInt(result[4]),
-                            palohelpers.StringToInt(result[5]), palohelpers.StringToInt(result[6]),
-                            palohelpers.StringToInt(result[7]), palohelpers.StringToIntArray(result[8],
-                                    palohelpers.StringToInt(result[7])), palohelpers.StringToInt(result[9]),
-                            palohelpers.StringToIntArray(result[10], palohelpers.StringToInt(result[9])),
-                            palohelpers.StringToDoubleArray(result[11], palohelpers.StringToInt(result[9])));
+                            palohelpers.StringToLong(csv.get(0)), csv.get(1), palohelpers.StringToInt(csv.get(2)),
+                            palohelpers.StringToInt(csv.get(3)), palohelpers.StringToInt(csv.get(4)), palohelpers.StringToInt(csv
+                                    .get(5)), palohelpers.StringToInt(csv.get(6)), palohelpers.StringToInt(csv.get(7)),
+                            palohelpers.StringToIntArray(csv.get(8), palohelpers.StringToInt(csv.get(7))),
+                            palohelpers.StringToInt(csv.get(9)), palohelpers.StringToIntArray(csv.get(10),
+                                    palohelpers.StringToInt(csv.get(9))), palohelpers.StringToDoubleArray(csv.get(11),
+                                    palohelpers.StringToInt(csv.get(9))));
 
                     paloElementsList.put(plElm.getName(), plElm);
-                    paloElementsIdentifier.put(palohelpers.StringToLong(result[0]), result[1]);
+                    paloElementsIdentifier.put(palohelpers.StringToLong(csv.get(0)), csv.get(1));
                     // plElm.setPaloElements(this);
                     /*
                      * long lElementIdentifier, //0 element identifier Identifier of the element String strElementName,
@@ -126,9 +126,9 @@ public class paloelements {
         try {
 
             HttpEntity entity = this.plConn.sendToServer(qparams, "/dimension/elements");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
                 /*
                  * 
                  * paloElementsList.put(csv.get(1), new paloelement( this.plConn, this.lDatabaseId, this.iDimensionId,
@@ -142,16 +142,16 @@ public class paloelements {
                  */
 
                 paloelement plElm = new paloelement(this.plConn, this.lDatabaseId, this.iDimensionId, this,
-                        palohelpers.StringToLong(result[0]), result[1], palohelpers.StringToInt(result[2]),
-                        palohelpers.StringToInt(result[3]), palohelpers.StringToInt(result[4]),
-                        palohelpers.StringToInt(result[5]), palohelpers.StringToInt(result[6]),
-                        palohelpers.StringToInt(result[7]), palohelpers.StringToIntArray(result[8],
-                                palohelpers.StringToInt(result[7])), palohelpers.StringToInt(result[9]),
-                        palohelpers.StringToIntArray(result[10], palohelpers.StringToInt(result[9])),
-                        palohelpers.StringToDoubleArray(result[11], palohelpers.StringToInt(result[9])));
+                        palohelpers.StringToLong(csv.get(0)), csv.get(1), palohelpers.StringToInt(csv.get(2)),
+                        palohelpers.StringToInt(csv.get(3)), palohelpers.StringToInt(csv.get(4)), palohelpers.StringToInt(csv
+                                .get(5)), palohelpers.StringToInt(csv.get(6)), palohelpers.StringToInt(csv.get(7)),
+                        palohelpers.StringToIntArray(csv.get(8), palohelpers.StringToInt(csv.get(7))),
+                        palohelpers.StringToInt(csv.get(9)), palohelpers.StringToIntArray(csv.get(10),
+                                palohelpers.StringToInt(csv.get(9))), palohelpers.StringToDoubleArray(csv.get(11),
+                                palohelpers.StringToInt(csv.get(9))));
 
                 paloElementsList.put(plElm.getName(), plElm);
-                paloElementsIdentifier.put(palohelpers.StringToLong(result[0]), result[1]);
+                paloElementsIdentifier.put(palohelpers.StringToLong(csv.get(0)), csv.get(1));
                 // plElm.setPaloElements(this);
                 /*
                  * long lElementIdentifier, //0 element identifier Identifier of the element String strElementName, //1
@@ -231,16 +231,16 @@ public class paloelements {
                     break;
 
                 }
-                CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-                String[] result = csv.readNext();
-                plElem = new paloelement(this.plConn, this.lDatabaseId, this.iDimensionId, this,
-                        palohelpers.StringToLong(result[0]), result[1], palohelpers.StringToInt(result[2]),
-                        palohelpers.StringToInt(result[3]), palohelpers.StringToInt(result[4]),
-                        palohelpers.StringToInt(result[5]), palohelpers.StringToInt(result[6]),
-                        palohelpers.StringToInt(result[7]), palohelpers.StringToIntArray(result[8],
-                                palohelpers.StringToInt(result[7])), palohelpers.StringToInt(result[9]),
-                        palohelpers.StringToIntArray(result[10], palohelpers.StringToInt(result[9])),
-                        palohelpers.StringToDoubleArray(result[11], palohelpers.StringToInt(result[9])));
+                CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+                csv.setQuoteChar('"');
+                csv.readNext();
+                plElem = new paloelement(this.plConn, this.lDatabaseId, this.iDimensionId, this, palohelpers.StringToLong(csv
+                        .get(0)), csv.get(1), palohelpers.StringToInt(csv.get(2)), palohelpers.StringToInt(csv.get(3)),
+                        palohelpers.StringToInt(csv.get(4)), palohelpers.StringToInt(csv.get(5)), palohelpers.StringToInt(csv
+                                .get(6)), palohelpers.StringToInt(csv.get(7)), palohelpers.StringToIntArray(csv.get(8),
+                                palohelpers.StringToInt(csv.get(7))), palohelpers.StringToInt(csv.get(9)),
+                        palohelpers.StringToIntArray(csv.get(10), palohelpers.StringToInt(csv.get(9))),
+                        palohelpers.StringToDoubleArray(csv.get(11), palohelpers.StringToInt(csv.get(9))));
                 csv.close();
                 entity.consumeContent();
                 paloElementsList.put(plElem.getName(), plElem);

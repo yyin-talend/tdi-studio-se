@@ -16,7 +16,7 @@
         <pathelement location="lib/httpclient-4.0.1.jar"/>
         <pathelement location="lib/httpcore-4.0.1.jar"/>
         <pathelement location="lib/httpmime-4.0.1.jar"/>
-        <pathelement location="lib/javacsv-2.0.jar"/>
+        <pathelement location="lib/talendcsv.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>

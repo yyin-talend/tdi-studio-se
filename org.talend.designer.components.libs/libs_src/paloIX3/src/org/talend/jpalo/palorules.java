@@ -38,12 +38,12 @@ public class palorules {
         qparams.add(new BasicNameValuePair("use_identifier", "0"));
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/cube/rules");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
                 // System.out.println(csv.getRawRecord());
-                paloRules.add(new palorule(plConn, lDatabaseId, iCubeId, palohelpers.StringToInt(result[0]), result[1],
-                        result[2], result[3], palohelpers.StringToLong(result[4]), palohelpers.StringToBoolean(result[5])));
+                paloRules.add(new palorule(plConn, lDatabaseId, iCubeId, palohelpers.StringToInt(csv.get(0)), csv.get(1), csv
+                        .get(2), csv.get(3), palohelpers.StringToLong(csv.get(4)), palohelpers.StringToBoolean(csv.get(5))));
             }
             csv.close();
             entity.consumeContent();
@@ -137,10 +137,10 @@ public class palorules {
         try {
             StringBuilder sb = new StringBuilder();
             HttpEntity entity = this.plConn.sendToServer(qparams, "/rule/parse");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
-                sb.append(result[0]);
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
+                sb.append(csv.get(0));
             }
             csv.close();
             entity.consumeContent();
@@ -180,12 +180,12 @@ public class palorules {
 
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/rule/create");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
                 // System.out.println(csv.getRawRecord());
-                plRule = new palorule(plConn, lDatabaseId, iCubeId, palohelpers.StringToInt(result[0]), result[1], result[2],
-                        result[3], palohelpers.StringToLong(result[4]), palohelpers.StringToBoolean(result[5]));
+                plRule = new palorule(plConn, lDatabaseId, iCubeId, palohelpers.StringToInt(csv.get(0)), csv.get(1), csv.get(2),
+                        csv.get(3), palohelpers.StringToLong(csv.get(4)), palohelpers.StringToBoolean(csv.get(5)));
                 paloRules.add(plRule);
             }
             csv.close();

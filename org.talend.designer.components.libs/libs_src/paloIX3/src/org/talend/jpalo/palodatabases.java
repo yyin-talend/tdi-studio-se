@@ -43,14 +43,12 @@ public class palodatabases {
 
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/server/databases");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-
-            // CsvReader csv = new CsvReader(this.plConn.sendToServer(qparams, "/server/databases").getContent(),
-            // Charset.defaultCharset());
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
-                paloDatabases.add(new palodatabase(this.plConn, result[1], Long.parseLong(result[0]), Integer.valueOf(result[2]),
-                        Integer.valueOf(result[3]), Integer.valueOf(result[4]), Integer.valueOf(result[5]), result[6]));
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
+                paloDatabases.add(new palodatabase(this.plConn, csv.get(1), Long.parseLong(csv.get(0)), Integer.valueOf(csv
+                        .get(2)), Integer.valueOf(csv.get(3)), Integer.valueOf(csv.get(4)), Integer.valueOf(csv.get(5)), csv
+                        .get(6)));
                 // System.out.println(csv.getRawRecord());
             }
             csv.close();
@@ -67,12 +65,12 @@ public class palodatabases {
 
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/database/create");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            // CsvReader csv = new CsvReader(this.plConn.sendToServer(qparams, "/database/create").getContent(),
-            // Charset.defaultCharset());
-            String[] result = csv.readNext();
-            palodatabase plDB = new palodatabase(this.plConn, result[1], Long.parseLong(result[0]), Integer.valueOf(result[2]),
-                    Integer.valueOf(result[3]), Integer.valueOf(result[4]), Integer.valueOf(result[5]), "");
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            csv.readNext();
+            palodatabase plDB = new palodatabase(this.plConn, csv.get(1), Long.parseLong(csv.get(0)),
+                    Integer.valueOf(csv.get(2)), Integer.valueOf(csv.get(3)), Integer.valueOf(csv.get(4)), Integer.valueOf(csv
+                            .get(5)), "");
             csv.close();
             entity.consumeContent();
             plDB.refreshDatabaseInfo();

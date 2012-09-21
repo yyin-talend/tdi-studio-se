@@ -34,11 +34,8 @@ int nb_line_<%=cid%> = 0;
 java.io.File file_<%=cid %> = new java.io.File(<%=filename %>);		
 file_<%=cid %>.getParentFile().mkdirs();
 
-String lineSeparator_<%=cid%> = (String) java.security.AccessController.doPrivileged(
-	new sun.security.action.GetPropertyAction("line.separator"));
-
 com.talend.csv.CSVWriter csvWriter_<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-        new java.io.FileOutputStream(file_<%=cid %>, <%=isAppend %>), "UTF-8")), ',','\0','\0',lineSeparator_<%=cid%>);
+        new java.io.FileOutputStream(file_<%=cid %>, <%=isAppend %>), "UTF-8")));
 
 <%		if(!isAppend){
 			List< ? extends IConnection> conns = node.getIncomingConnections();
@@ -84,8 +81,6 @@ com.talend.csv.CSVWriter csvWriter_<%=cid%> = new com.talend.csv.CSVWriter(new j
 				}
 %>
 	csvWriter_<%=cid%>.writeNext(header_<%=cid%>);
-	csvWriter_<%=cid%>.setQuoteChar('"');
-	csvWriter_<%=cid%>.setEscapeChar('"');
 <%
 		}
 	}

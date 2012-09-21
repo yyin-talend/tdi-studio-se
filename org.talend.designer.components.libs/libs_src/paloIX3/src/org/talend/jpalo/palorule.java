@@ -105,15 +105,15 @@ public class palorule {
 
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/rule/info");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
-                lIdentifier = palohelpers.StringToInt(result[0]);
-                strDefinition = result[1];
-                strExtern_Id = result[2];
-                strComment = result[3];
-                lTimeStamp = palohelpers.StringToLong(result[4]);
-                bActivated = palohelpers.StringToBoolean(result[5]);
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
+                lIdentifier = palohelpers.StringToInt(csv.get(0));
+                strDefinition = csv.get(1);
+                strExtern_Id = csv.get(2);
+                strComment = csv.get(3);
+                lTimeStamp = palohelpers.StringToLong(csv.get(4));
+                bActivated = palohelpers.StringToBoolean(csv.get(5));
             }
             csv.close();
             entity.consumeContent();
@@ -137,15 +137,15 @@ public class palorule {
 
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/rule/modify");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
-                lIdentifier = palohelpers.StringToInt(result[0]);
-                strDefinition = result[1];
-                strExtern_Id = result[2];
-                strComment = result[3];
-                lTimeStamp = palohelpers.StringToLong(result[4]);
-                bActivated = palohelpers.StringToBoolean(result[5]);
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
+                lIdentifier = palohelpers.StringToInt(csv.get(0));
+                strDefinition = csv.get(1);
+                strExtern_Id = csv.get(2);
+                strComment = csv.get(3);
+                lTimeStamp = palohelpers.StringToLong(csv.get(4));
+                bActivated = palohelpers.StringToBoolean(csv.get(5));
             }
             csv.close();
             entity.consumeContent();

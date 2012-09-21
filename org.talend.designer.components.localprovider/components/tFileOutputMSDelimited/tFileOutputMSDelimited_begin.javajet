@@ -131,14 +131,15 @@ if(field_<%=cid %>.length() <= 0){
 }
 <%		}%>
 com.talend.csv.CSVWriter out<%=cid %> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-    new java.io.FileOutputStream(fileName_<%=cid%>, false), <%=encoding%>)),<%=isUseMultiSeparator==false?"field_"+cid+".charAt(0)":"\';\'" %>,'\0','\0',"\n");
-    
+    new java.io.FileOutputStream(fileName_<%=cid%>, false), <%=encoding%>)));
+out<%=cid %>.setSeparator(<%=isUseMultiSeparator==false?"field_"+cid+".charAt(0)":"\';\'" %>);
+ 
 <%
         if(isUseMultiSeparator==false){
 %>
 String row_<%=cid %> = <%=separator %>;
 if(row_<%=cid %>.length() > 0){
-	out<%=cid %>.setLineEnd("" + row_<%=cid %>.charAt(0));
+	out<%=cid %>.setLineEnd(""+row_<%=cid %>.charAt(0));
 }else{
 	throw new IllegalArgumentException("Row delimited must be assigned a char.");
 }
@@ -159,7 +160,11 @@ if (("\\\\").equals(escapeChar_<%=cid %>)) {
 	out<%=cid %>.setEscapeChar('\\');
 } else if (escapeChar_<%=cid %>.equals(textEnclosure_<%=cid %>)) {
 	out<%=cid %>.setEscapeChar(textEnclosure_<%=cid %>.charAt(0));
+} else {
+	out<%=cid %>.setEscapeChar(textEnclosure_<%=cid %>.charAt(0));
 }
+out<%=cid %>.setQuoteStatus(com.talend.csv.CSVWriter.QuoteStatus.FORCE);
+
 <%
 		}
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

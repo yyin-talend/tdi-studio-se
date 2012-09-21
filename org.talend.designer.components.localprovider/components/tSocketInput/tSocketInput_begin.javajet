@@ -94,28 +94,28 @@ while (done<%=cid%>) {
    	  socket<%=cid%> = ss<%=cid%>.accept();
 
       System.out.println("socket connected");
-      
-      String rowSeparator_<%=cid%> = "\n";
-      char quotechar_<%=cid%> = '<%=textEnclosure %>';
-      char escape_<%=cid%> = '\\';
-      
-    <%      if(!("\\n").equals(rowSeparator) && !("\\r").equals(rowSeparator)){%>
-      rowSeparator_<%=cid%> = "<%=rowSeparator  %>";
-    <%       }%>
-    
+      //READ DATA
+      com.talend.csv.CSVReader csvReader<%=cid%> =
+          new com.talend.csv.CSVReader(new java.io.BufferedReader(new java.io.InputStreamReader(socket<%=cid%>.getInputStream(),<%=encoding%>)), '<%=fieldSeparator%>');
+                
+    <%              if(!("\\n").equals(rowSeparator) && !("\\r").equals(rowSeparator)){%>
+      csvReader<%=cid %>.setLineEnd("" + '<%=rowSeparator  %>');
+    <%              }%>
+      csvReader<%=cid %>.setSkipEmptyRecords(true);
+      csvReader<%=cid %>.setQuoteChar('<%=textEnclosure %>');                
     <%      if(("\\\\").equals(escapeChar)){%>
-    
+      csvReader<%=cid %>.setEscapeChar('\\');
     <%      }else if(escapeChar.equals(textEnclosure)){%>
-      escape_<%=cid%> = quotechar_<%=cid%>;
-    <%      }%>
+      csvReader<%=cid %>.setEscapeChar('<%=textEnclosure %>');
+    <%      }else{%>
+                //?????doesn't work for other escapeChar
+      csvReader<%=cid %>.setEscapeChar('<%=textEnclosure %>');
+    <%      }%> 
     
-    //READ DATA
-    com.talend.csv.CSVReader csvReader<%=cid%> =
-          new com.talend.csv.CSVReader(socket<%=cid%>.getInputStream(),<%=encoding%>,rowSeparator_<%=cid%>,'<%=fieldSeparator%>'
-          ,quotechar_<%=cid%>,escape_<%=cid%>,true,0);
     
     String[] row<%=cid %>=null;   
-    while ((row<%=cid %> = csvReader<%=cid %>.readNext())!=null) {         
+    while (csvReader<%=cid %>.readNext()) {         
+        row<%=cid %>=csvReader<%=cid %>.getValues();
     <% if(uncompress){%>
         //decoding
         for(int i =0;i<row<%=cid%>.length;i++){

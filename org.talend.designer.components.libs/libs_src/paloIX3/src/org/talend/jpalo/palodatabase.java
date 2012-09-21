@@ -88,17 +88,15 @@ public class palodatabase {
 
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/database/rename");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            csv.readNext();
 
-            // CsvReader csv = new CsvReader(this.plConn.sendToServer(qparams, "/database/rename").getContent(),
-            // Charset.defaultCharset());
-            String[] result = csv.readNext();
-
-            this.strDatabaseName = result[1];
-            this.iNumberOfDimensions = Integer.valueOf(result[2]);
-            this.iNumberOfCubes = Integer.valueOf(result[3]);
-            this.iStatus = Integer.valueOf(result[4]);
-            this.iType = Integer.valueOf(result[5]);
+            this.strDatabaseName = csv.get(1);
+            this.iNumberOfDimensions = Integer.valueOf(csv.get(2));
+            this.iNumberOfCubes = Integer.valueOf(csv.get(3));
+            this.iStatus = Integer.valueOf(csv.get(4));
+            this.iType = Integer.valueOf(csv.get(5));
             csv.close();
             entity.consumeContent();
         } catch (Exception e) {
@@ -137,17 +135,16 @@ public class palodatabase {
 
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/database/info");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            // CsvReader csv = new CsvReader(this.plConn.sendToServer(qparams, "/database/info").getContent(),
-            // Charset.defaultCharset());
-            String[] result = csv.readNext();
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            csv.readNext();
 
-            this.strDatabaseName = result[1];
-            this.iNumberOfDimensions = Integer.valueOf(result[2]);
-            this.iNumberOfCubes = Integer.valueOf(result[3]);
-            this.iStatus = Integer.valueOf(result[4]);
-            this.iType = Integer.valueOf(result[5]);
-            this.strDatabaseToken = result[6];
+            this.strDatabaseName = csv.get(1);
+            this.iNumberOfDimensions = Integer.valueOf(csv.get(2));
+            this.iNumberOfCubes = Integer.valueOf(csv.get(3));
+            this.iStatus = Integer.valueOf(csv.get(4));
+            this.iType = Integer.valueOf(csv.get(5));
+            this.strDatabaseToken = csv.get(6);
             csv.close();
             entity.consumeContent();
         } catch (Exception e) {

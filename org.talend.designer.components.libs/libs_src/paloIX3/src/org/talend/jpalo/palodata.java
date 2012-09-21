@@ -98,24 +98,24 @@ public class palodata {
             qparams.add(new BasicNameValuePair("paths", sbCoordinates.toString()));
             try {
                 HttpEntity entity = plConn.sendToServer(qparams, "/cell/values");
-                CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
+                CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+                csv.setQuoteChar('"');
                 int iCoordElem = 0;
-                String[] result = null;
-                while ((result = csv.readNext()) != null) {
+                while (csv.readNext()) {
                     String strArrCoord[] = new String[iDimensionElementLength];
                     for (int i = 0; i < iDimensionElementLength; i++) {
                         strArrCoord[i] = (String) lstDimensionElementArray.get(iCoordElem++);
                     }
 
-                    if (palohelpers.StringToInt(result[0]) == 1) {
-                        if (palohelpers.StringToInt(result[1]) > 0) {
+                    if (palohelpers.StringToInt(csv.get(0)) == 1) {
+                        if (palohelpers.StringToInt(csv.get(1)) > 0) {
                             htPaloResultData.put(strArrCoord,
-                                    new palodatavalue(strArrCoord, palohelpers.StringToDouble(result[2])));
+                                    new palodatavalue(strArrCoord, palohelpers.StringToDouble(csv.get(2))));
                         } else {
                             htPaloResultData.put(strArrCoord, new palodatavalue(strArrCoord, 0.0D));
                         }
-                    } else if (palohelpers.StringToInt(result[0]) == 0) {
-                        htPaloResultData.put(strArrCoord, new palodatavalue(strArrCoord, result[2]));
+                    } else if (palohelpers.StringToInt(csv.get(0)) == 0) {
+                        htPaloResultData.put(strArrCoord, new palodatavalue(strArrCoord, csv.get(2)));
                     }
                 }
                 csv.close();
@@ -170,17 +170,17 @@ public class palodata {
         palodatavalue rcDataValue = null;
         try {
             HttpEntity entity = plConn.sendToServer(qparams, "/cell/value");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
-                if (palohelpers.StringToInt(result[0]) == 1) {
-                    if (palohelpers.StringToInt(result[1]) > 0) {
-                        rcDataValue = new palodatavalue(palohelpers.StringToDouble(result[2]));
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
+                if (palohelpers.StringToInt(csv.get(0)) == 1) {
+                    if (palohelpers.StringToInt(csv.get(1)) > 0) {
+                        rcDataValue = new palodatavalue(palohelpers.StringToDouble(csv.get(2)));
                     } else {
                         rcDataValue = new palodatavalue(0.0D);
                     }
-                } else if (palohelpers.StringToInt(result[0]) == 0) {
-                    rcDataValue = new palodatavalue(result[2]);
+                } else if (palohelpers.StringToInt(csv.get(0)) == 0) {
+                    rcDataValue = new palodatavalue(csv.get(2));
                 }
             }
             csv.close();

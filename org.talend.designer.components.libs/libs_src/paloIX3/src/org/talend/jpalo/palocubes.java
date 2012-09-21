@@ -81,14 +81,14 @@ public class palocubes {
 
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/database/cubes");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
-                palocube plCube = new palocube(plConn, plDB.getDatabaseId(), palohelpers.StringToInt(result[0]), result[1],
-                        palohelpers.StringToInt(result[2]), palohelpers.StringToIntArray(result[3],
-                                palohelpers.StringToInt(result[2])), palohelpers.StringToLong(result[4]),
-                        palohelpers.StringToLong(result[5]), palohelpers.StringToInt(result[6]),
-                        palohelpers.StringToInt(result[7]), palohelpers.StringToInt(result[8]));
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
+                palocube plCube = new palocube(plConn, plDB.getDatabaseId(), palohelpers.StringToInt(csv.get(0)), csv.get(1),
+                        palohelpers.StringToInt(csv.get(2)), palohelpers.StringToIntArray(csv.get(3),
+                                palohelpers.StringToInt(csv.get(2))), palohelpers.StringToLong(csv.get(4)),
+                        palohelpers.StringToLong(csv.get(5)), palohelpers.StringToInt(csv.get(6)), palohelpers.StringToInt(csv
+                                .get(7)), palohelpers.StringToInt(csv.get(8)));
 
                 paloCubes.add(plCube);
             }
@@ -145,14 +145,14 @@ public class palocubes {
 
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/dimension/cubes");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
-                palocube plCube = new palocube(plConn, lDatabaseId, palohelpers.StringToInt(result[0]), result[1],
-                        palohelpers.StringToInt(result[2]), palohelpers.StringToIntArray(result[3],
-                                palohelpers.StringToInt(result[2])), palohelpers.StringToLong(result[4]),
-                        palohelpers.StringToLong(result[5]), palohelpers.StringToInt(result[6]),
-                        palohelpers.StringToInt(result[7]), palohelpers.StringToInt(result[8]));
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
+                palocube plCube = new palocube(plConn, lDatabaseId, palohelpers.StringToInt(csv.get(0)), csv.get(1),
+                        palohelpers.StringToInt(csv.get(2)), palohelpers.StringToIntArray(csv.get(3),
+                                palohelpers.StringToInt(csv.get(2))), palohelpers.StringToLong(csv.get(4)),
+                        palohelpers.StringToLong(csv.get(5)), palohelpers.StringToInt(csv.get(6)), palohelpers.StringToInt(csv
+                                .get(7)), palohelpers.StringToInt(csv.get(8)));
 
                 paloCubes.add(plCube);
             }
@@ -232,15 +232,15 @@ public class palocubes {
         try {
             palocube plCube = null;
             HttpEntity entity = this.plConn.sendToServer(qparams, "/cube/create");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
                 // System.out.println(csv.getRawRecord());
-                plCube = new palocube(plConn, plDB.getDatabaseId(), palohelpers.StringToInt(result[0]), result[1],
-                        palohelpers.StringToInt(result[2]), palohelpers.StringToIntArray(result[3],
-                                palohelpers.StringToInt(result[2])), palohelpers.StringToLong(result[4]),
-                        palohelpers.StringToLong(result[5]), palohelpers.StringToInt(result[6]),
-                        palohelpers.StringToInt(result[7]), palohelpers.StringToInt(result[8]));
+                plCube = new palocube(plConn, plDB.getDatabaseId(), palohelpers.StringToInt(csv.get(0)), csv.get(1),
+                        palohelpers.StringToInt(csv.get(2)), palohelpers.StringToIntArray(csv.get(3),
+                                palohelpers.StringToInt(csv.get(2))), palohelpers.StringToLong(csv.get(4)),
+                        palohelpers.StringToLong(csv.get(5)), palohelpers.StringToInt(csv.get(6)), palohelpers.StringToInt(csv
+                                .get(7)), palohelpers.StringToInt(csv.get(8)));
 
                 paloCubes.add(plCube);
             }

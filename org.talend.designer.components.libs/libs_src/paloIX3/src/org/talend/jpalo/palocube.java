@@ -84,11 +84,10 @@ public class palocube {
 
             try {
                 HttpEntity entity = this.plConn.sendToServer(qparams, "/cube/rename");
-                CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-                // CsvReader csv = new CsvReader(this.plConn.sendToServer(qparams, "/cube/rename").getContent(),
-                // Charset.defaultCharset());
-                String[] result = csv.readNext();
-                this.strCubeName = result[1];
+                CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+                csv.setQuoteChar('"');
+                csv.readNext();
+                this.strCubeName = csv.get(1);
                 csv.close();
                 entity.consumeContent();
             } catch (Exception e) {
@@ -153,18 +152,19 @@ public class palocube {
         qparams.add(new BasicNameValuePair("cube", String.valueOf(iCubeId)));
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/cube/info");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = csv.readNext();
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            csv.readNext();
 
-            this.iCubeId = palohelpers.StringToInt(result[0]);
-            this.strCubeName = result[1];
-            this.iNumberOfDimensions = palohelpers.StringToInt(result[2]);
-            this.iArrDimensionsIdentifier = palohelpers.StringToIntArray(result[3], palohelpers.StringToInt(result[2]));
-            this.iNumberOfCells = palohelpers.StringToLong(result[4]);
-            this.lNumberOfFilledCells = palohelpers.StringToLong(result[5]);
-            this.iCubeStatus = palohelpers.StringToInt(result[6]);
-            this.iCubeType = palohelpers.StringToInt(result[7]);
-            this.iCubeToken = palohelpers.StringToInt(result[8]);
+            this.iCubeId = palohelpers.StringToInt(csv.get(0));
+            this.strCubeName = csv.get(1);
+            this.iNumberOfDimensions = palohelpers.StringToInt(csv.get(2));
+            this.iArrDimensionsIdentifier = palohelpers.StringToIntArray(csv.get(3), palohelpers.StringToInt(csv.get(2)));
+            this.iNumberOfCells = palohelpers.StringToLong(csv.get(4));
+            this.lNumberOfFilledCells = palohelpers.StringToLong(csv.get(5));
+            this.iCubeStatus = palohelpers.StringToInt(csv.get(6));
+            this.iCubeType = palohelpers.StringToInt(csv.get(7));
+            this.iCubeToken = palohelpers.StringToInt(csv.get(8));
 
             csv.close();
             entity.consumeContent();
@@ -193,18 +193,19 @@ public class palocube {
 
         try {
             HttpEntity entity = this.plConn.sendToServer(qparams, "/cube/clear");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = csv.readNext();
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            csv.readNext();
 
-            this.iCubeId = palohelpers.StringToInt(result[0]);
-            this.strCubeName = result[1];
-            this.iNumberOfDimensions = palohelpers.StringToInt(result[2]);
-            this.iArrDimensionsIdentifier = palohelpers.StringToIntArray(result[3], palohelpers.StringToInt(result[2]));
-            this.iNumberOfCells = palohelpers.StringToLong(result[4]);
-            this.lNumberOfFilledCells = palohelpers.StringToLong(result[5]);
-            this.iCubeStatus = palohelpers.StringToInt(result[6]);
-            this.iCubeType = palohelpers.StringToInt(result[7]);
-            this.iCubeToken = palohelpers.StringToInt(result[8]);
+            this.iCubeId = palohelpers.StringToInt(csv.get(0));
+            this.strCubeName = csv.get(1);
+            this.iNumberOfDimensions = palohelpers.StringToInt(csv.get(2));
+            this.iArrDimensionsIdentifier = palohelpers.StringToIntArray(csv.get(3), palohelpers.StringToInt(csv.get(2)));
+            this.iNumberOfCells = palohelpers.StringToLong(csv.get(4));
+            this.lNumberOfFilledCells = palohelpers.StringToLong(csv.get(5));
+            this.iCubeStatus = palohelpers.StringToInt(csv.get(6));
+            this.iCubeType = palohelpers.StringToInt(csv.get(7));
+            this.iCubeToken = palohelpers.StringToInt(csv.get(8));
 
             csv.close();
             entity.consumeContent();

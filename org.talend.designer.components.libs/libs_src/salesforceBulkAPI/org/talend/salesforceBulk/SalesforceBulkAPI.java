@@ -121,11 +121,9 @@ public class SalesforceBulkAPI {
 
     private void prepareLog() throws IOException {
         baseFileReader = new com.talend.csv.CSVReader(new java.io.BufferedReader(new java.io.InputStreamReader(
-                new java.io.FileInputStream(bulkFileName), FILE_ENCODING)), "\n", ',', '"', '\\', false, 0);
-        baseFileReader.doubleQuoteCharEscape(true);
-        String[] result = null;
-        if ((result = baseFileReader.readNext()) != null) {
-            baseFileHeader = Arrays.asList(result);
+                new java.io.FileInputStream(bulkFileName), FILE_ENCODING)), ',');
+        if (baseFileReader.readNext()) {
+            baseFileHeader = Arrays.asList(baseFileReader.getValues());
         }
         baseFileHeaderSize = baseFileHeader.size();
     }
@@ -375,9 +373,8 @@ public class SalesforceBulkAPI {
 
     private Map<String, String> getBaseFileRow() throws IOException {
         Map<String, String> dataInfo = new HashMap<String, String>();
-        String[] result = null;
-        if ((result = baseFileReader.readNext()) != null) {
-            List<String> row = Arrays.asList(result);
+        if (baseFileReader.readNext()) {
+            List<String> row = Arrays.asList(baseFileReader.getValues());
             for (int i = 0; i < row.size(); i++) {
                 dataInfo.put(baseFileHeader.get(i), row.get(i));
             }

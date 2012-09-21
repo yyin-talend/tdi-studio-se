@@ -197,9 +197,10 @@ public class paloelement implements Comparable {
 
             try {
                 HttpEntity entity = this.plConn.sendToServer(qparams, "/element/rename");
-                CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-                String[] result = csv.readNext();
-                this.strElementName = result[1];
+                CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+                csv.setQuoteChar('"');
+                csv.readNext();
+                this.strElementName = csv.get(1);
                 csv.close();
                 entity.consumeContent();
             } catch (Exception e) {
@@ -233,22 +234,22 @@ public class paloelement implements Comparable {
             try {
 
                 HttpEntity entity = this.plConn.sendToServer(qparams, "/element/move");
-                CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-                String result[] = null;
-                while ((result = csv.readNext()) != null) {
-                    this.lElementIdentifier = palohelpers.StringToLong(result[0]);
-                    this.strElementName = result[1];
-                    this.iElementPosition = palohelpers.StringToInt(result[2]);
-                    this.iElementLevel = palohelpers.StringToInt(result[3]);
-                    this.iElementIndent = palohelpers.StringToInt(result[4]);
-                    this.iElementDepth = palohelpers.StringToInt(result[5]);
-                    this.iElementType = palohelpers.StringToInt(result[6]);
-                    this.iElementNumOfParents = palohelpers.StringToInt(result[7]);
-                    this.iArrElementParents = palohelpers.StringToIntArray(result[8], palohelpers.StringToInt(result[7]));
-                    this.iElementNumOfChildren = palohelpers.StringToInt(result[9]);
-                    this.iArrElementChildren = palohelpers.StringToIntArray(result[10], palohelpers.StringToInt(result[9]));
-                    this.dArrElementChildrenWeights = palohelpers.StringToDoubleArray(result[11],
-                            palohelpers.StringToInt(result[9]));
+                CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+                csv.setQuoteChar('"');
+                while (csv.readNext()) {
+                    this.lElementIdentifier = palohelpers.StringToLong(csv.get(0));
+                    this.strElementName = csv.get(1);
+                    this.iElementPosition = palohelpers.StringToInt(csv.get(2));
+                    this.iElementLevel = palohelpers.StringToInt(csv.get(3));
+                    this.iElementIndent = palohelpers.StringToInt(csv.get(4));
+                    this.iElementDepth = palohelpers.StringToInt(csv.get(5));
+                    this.iElementType = palohelpers.StringToInt(csv.get(6));
+                    this.iElementNumOfParents = palohelpers.StringToInt(csv.get(7));
+                    this.iArrElementParents = palohelpers.StringToIntArray(csv.get(8), palohelpers.StringToInt(csv.get(7)));
+                    this.iElementNumOfChildren = palohelpers.StringToInt(csv.get(9));
+                    this.iArrElementChildren = palohelpers.StringToIntArray(csv.get(10), palohelpers.StringToInt(csv.get(9)));
+                    this.dArrElementChildrenWeights = palohelpers.StringToDoubleArray(csv.get(11),
+                            palohelpers.StringToInt(csv.get(9)));
                 }
                 csv.close();
                 entity.consumeContent();
@@ -271,18 +272,18 @@ public class paloelement implements Comparable {
         try {
 
             HttpEntity entity = this.plConn.sendToServer(qparams, "/element/info");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
-                if (palohelpers.StringToLong(result[0]) == identifier) {
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
+                if (palohelpers.StringToLong(csv.get(0)) == identifier) {
                     plElm = new paloelement(this.plConn, this.lDatabaseId, this.iDimensionId, paloElements,
-                            palohelpers.StringToLong(result[0]), result[1], palohelpers.StringToInt(result[2]),
-                            palohelpers.StringToInt(result[3]), palohelpers.StringToInt(result[4]),
-                            palohelpers.StringToInt(result[5]), palohelpers.StringToInt(result[6]),
-                            palohelpers.StringToInt(result[7]), palohelpers.StringToIntArray(result[8],
-                                    palohelpers.StringToInt(result[7])), palohelpers.StringToInt(result[9]),
-                            palohelpers.StringToIntArray(result[10], palohelpers.StringToInt(result[9])),
-                            palohelpers.StringToDoubleArray(result[11], palohelpers.StringToInt(result[9])));
+                            palohelpers.StringToLong(csv.get(0)), csv.get(1), palohelpers.StringToInt(csv.get(2)),
+                            palohelpers.StringToInt(csv.get(3)), palohelpers.StringToInt(csv.get(4)), palohelpers.StringToInt(csv
+                                    .get(5)), palohelpers.StringToInt(csv.get(6)), palohelpers.StringToInt(csv.get(7)),
+                            palohelpers.StringToIntArray(csv.get(8), palohelpers.StringToInt(csv.get(7))),
+                            palohelpers.StringToInt(csv.get(9)), palohelpers.StringToIntArray(csv.get(10),
+                                    palohelpers.StringToInt(csv.get(9))), palohelpers.StringToDoubleArray(csv.get(11),
+                                    palohelpers.StringToInt(csv.get(9))));
                 }
             }
             csv.close();
@@ -304,21 +305,22 @@ public class paloelement implements Comparable {
         try {
 
             HttpEntity entity = this.plConn.sendToServer(qparams, "/element/info");
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = null;
-            while ((result = csv.readNext()) != null) {
-                this.lElementIdentifier = palohelpers.StringToLong(result[0]);
-                this.strElementName = result[1];
-                this.iElementPosition = palohelpers.StringToInt(result[2]);
-                this.iElementLevel = palohelpers.StringToInt(result[3]);
-                this.iElementIndent = palohelpers.StringToInt(result[4]);
-                this.iElementDepth = palohelpers.StringToInt(result[5]);
-                this.iElementType = palohelpers.StringToInt(result[6]);
-                this.iElementNumOfParents = palohelpers.StringToInt(result[7]);
-                this.iArrElementParents = palohelpers.StringToIntArray(result[8], palohelpers.StringToInt(result[7]));
-                this.iElementNumOfChildren = palohelpers.StringToInt(result[9]);
-                this.iArrElementChildren = palohelpers.StringToIntArray(result[10], palohelpers.StringToInt(result[9]));
-                this.dArrElementChildrenWeights = palohelpers.StringToDoubleArray(result[11], palohelpers.StringToInt(result[9]));
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            while (csv.readNext()) {
+                this.lElementIdentifier = palohelpers.StringToLong(csv.get(0));
+                this.strElementName = csv.get(1);
+                this.iElementPosition = palohelpers.StringToInt(csv.get(2));
+                this.iElementLevel = palohelpers.StringToInt(csv.get(3));
+                this.iElementIndent = palohelpers.StringToInt(csv.get(4));
+                this.iElementDepth = palohelpers.StringToInt(csv.get(5));
+                this.iElementType = palohelpers.StringToInt(csv.get(6));
+                this.iElementNumOfParents = palohelpers.StringToInt(csv.get(7));
+                this.iArrElementParents = palohelpers.StringToIntArray(csv.get(8), palohelpers.StringToInt(csv.get(7)));
+                this.iElementNumOfChildren = palohelpers.StringToInt(csv.get(9));
+                this.iArrElementChildren = palohelpers.StringToIntArray(csv.get(10), palohelpers.StringToInt(csv.get(9)));
+                this.dArrElementChildrenWeights = palohelpers.StringToDoubleArray(csv.get(11),
+                        palohelpers.StringToInt(csv.get(9)));
             }
             csv.close();
             entity.consumeContent();
@@ -360,22 +362,23 @@ public class paloelement implements Comparable {
         try {
 
             HttpEntity entity = this.plConn.sendToServer(qparams, strURLApiCall);
-            CSVReader csv = new CSVReader(entity.getContent(), "UTF-8", "\n", ';', '"', '\\', false, 0);
-            String[] result = csv.readNext();
+            CSVReader csv = new CSVReader(entity.getContent(), ';', "UTF-8");
+            csv.setQuoteChar('"');
+            csv.readNext();
             // System.out.println(csv.getRawRecord());
 
-            this.lElementIdentifier = palohelpers.StringToLong(result[0]);
-            this.strElementName = result[1];
-            this.iElementPosition = palohelpers.StringToInt(result[2]);
-            this.iElementLevel = palohelpers.StringToInt(result[3]);
-            this.iElementIndent = palohelpers.StringToInt(result[4]);
-            this.iElementDepth = palohelpers.StringToInt(result[5]);
-            this.iElementType = palohelpers.StringToInt(result[6]);
-            this.iElementNumOfParents = palohelpers.StringToInt(result[7]);
-            this.iArrElementParents = palohelpers.StringToIntArray(result[8], palohelpers.StringToInt(result[7]));
-            this.iElementNumOfChildren = palohelpers.StringToInt(result[9]);
-            this.iArrElementChildren = palohelpers.StringToIntArray(result[10], palohelpers.StringToInt(result[9]));
-            this.dArrElementChildrenWeights = palohelpers.StringToDoubleArray(result[11], palohelpers.StringToInt(result[9]));
+            this.lElementIdentifier = palohelpers.StringToLong(csv.get(0));
+            this.strElementName = csv.get(1);
+            this.iElementPosition = palohelpers.StringToInt(csv.get(2));
+            this.iElementLevel = palohelpers.StringToInt(csv.get(3));
+            this.iElementIndent = palohelpers.StringToInt(csv.get(4));
+            this.iElementDepth = palohelpers.StringToInt(csv.get(5));
+            this.iElementType = palohelpers.StringToInt(csv.get(6));
+            this.iElementNumOfParents = palohelpers.StringToInt(csv.get(7));
+            this.iArrElementParents = palohelpers.StringToIntArray(csv.get(8), palohelpers.StringToInt(csv.get(7)));
+            this.iElementNumOfChildren = palohelpers.StringToInt(csv.get(9));
+            this.iArrElementChildren = palohelpers.StringToIntArray(csv.get(10), palohelpers.StringToInt(csv.get(9)));
+            this.dArrElementChildrenWeights = palohelpers.StringToDoubleArray(csv.get(11), palohelpers.StringToInt(csv.get(9)));
 
             csv.close();
             entity.consumeContent();

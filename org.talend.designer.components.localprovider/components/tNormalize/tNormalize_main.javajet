@@ -67,18 +67,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
             %>
             if(<%=incomingConnName %>.<%=normalizeColumn%> != null && <%=incomingConnName %>.<%=normalizeColumn%>.trim().length() > 0) {
                     <%if(useCSV){%>
-                        char quotechar_<%=cid%> = '<%=textEnclosure %>';
-                        char escape_<%=cid%> = '\\';
-                        boolean useDoubleTextQuoteEscape_<%=cid%> = false;
-                        <%if("ESCAPE_MODE_DOUBLED".equals(escapeMode)) {%>
-                        useDoubleTextQuoteEscape_<%=cid%> = true;
-                        <%}%>
-                        com.talend.csv.CSVReader reader_<%=cid%> = new com.talend.csv.CSVReader(new java.io.StringReader(<%=incomingConnName %>.<%=normalizeColumn%>),
-                        	"\n",'<%=delim %>',quotechar_<%=cid%>,escape_<%=cid%>,false,0);
-                        	
-                        reader_<%=cid%>.doubleQuoteCharEscape(useDoubleTextQuoteEscape_<%=cid%>);
-                        
-                        if ((normalizeRecord_<%=cid%> = reader_<%=cid%>.readNext())==null) {
+                        com.talend.csv.CSVReader reader_<%=cid%> = new com.talend.csv.CSVReader(new java.io.StringReader(<%=incomingConnName %>.<%=normalizeColumn%>), '<%=delim %>');
+                        <%if("ESCAPE_MODE_BACKSLASH".equals(escapeMode)) {%>
+                        reader_<%=cid%>.setEscapeChar('\\');
+                        <% } else {%>
+                     	reader_<%=cid%>.setEscapeChar('<%=textEnclosure %>');
+                        <% } %>
+                        reader_<%=cid%>.setQuoteChar('<%=textEnclosure %>');
+                        if (reader_<%=cid%>.readNext()) {
+                            normalizeRecord_<%=cid%> = reader_<%=cid%>.getValues();
+                        } else {
                             normalizeRecord_<%=cid%> = new String[1];
                         }
                     <% 

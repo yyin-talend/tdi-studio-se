@@ -107,24 +107,35 @@ if((fileName_<%=cid%>.indexOf("/") != -1)) {
             new java.io.FileOutputStream(fileName_<%=cid%>, false),<%=encoding%>));
 
 <%}else{%>
-
-	String lineSeparator_<%=cid%> = (String) java.security.AccessController.doPrivileged(
-		new sun.security.action.GetPropertyAction("line.separator"));
-    char quotechar_<%=cid%> = '<%=textEnclosure %>';
-    char escape_<%=cid%> = '\\';
     
-<%if(!("\\n").equals(rowSeparator) && !("\\r").equals(rowSeparator)){%>
-    lineSeparator_<%=cid%> = "<%=rowSeparator.substring(1,rowSeparator.length()-1) %>";
-<%}%>
-
-<%if(("\\\\").equals(escapeChar)){%>
-
-<%}else if(escapeChar.equals(textEnclosure)){%>
-    escape_<%=cid%> = quotechar_<%=cid%>;
-<%}%>
+    com.talend.csv.CSVWriter CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+            new java.io.FileOutputStream(fileName_<%=cid%>, false), <%=encoding%>)));
+    CsvWriter<%=cid%>.setSeparator('<%=delim%>');  
     
-	com.talend.csv.CSVWriter CsvWriter<%=cid%> = new com.talend.csv.CSVWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-            new java.io.FileOutputStream(fileName_<%=cid%>, false), <%=encoding%>)), '<%=delim%>',quotechar_<%=cid%>,escape_<%=cid%>,lineSeparator_<%=cid%>);
+<%              if(!("\\n").equals(rowSeparator) && !("\\r").equals(rowSeparator)){%>
+    CsvWriter<%=cid %>.setLineEnd("<%=rowSeparator.substring(1,rowSeparator.length()-1)  %>");
+<%              }
+%>
+    CsvWriter<%=cid %>.setQuoteChar('<%=textEnclosure %>');                
+
+<%
+if(("\\\\").equals(escapeChar)){
+%>
+    CsvWriter<%=cid %>.setEscapeChar('\\');
+<%
+}else if(escapeChar.equals(textEnclosure)){
+%>
+    CsvWriter<%=cid %>.setEscapeChar('<%=textEnclosure %>');
+<%
+}else{
+%>
+	CsvWriter<%=cid %>.setEscapeChar('<%=textEnclosure %>');
+<%
+}
+%>    
+	CsvWriter<%=cid %>.setQuoteStatus(com.talend.csv.CSVWriter.QuoteStatus.FORCE);   
+
+
 <%}%>
 
 
