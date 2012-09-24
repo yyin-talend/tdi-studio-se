@@ -46,6 +46,7 @@ public class DataSourceConfig {
         	
         	for (NodeType dbComponent : dbComponents) {
         		String id = EmfModelUtils.computeTextElementValue("UNIQUE_NAME", dbComponent);
+        		String alias = EmfModelUtils.computeTextElementValue("DATASOURCE_ALIAS", dbComponent);
 //        		String beanPool = id + "Pool";
 
         		additionalJobBeanParams +=
@@ -57,8 +58,7 @@ public class DataSourceConfig {
 //			                "\n\t<bean id=\"" + beanPool + "\" class=\"org.apache.commons.dbcp.datasources.SharedPoolDataSource\" destroy-method=\"close\">"
 //	                      + "\n\t\t<property name=\"connectionPoolDataSource\" ref=\"" + beanDataSource + "\"/>"
 //	                      + "\n\t</bean>";
-        		// TODO: jdbc/sam is hardcoded
-        		additionalJobBundleConfig += "\n\t<reference id=\"" + id + "\" interface=\"javax.sql.DataSource\" filter=\"(osgi.jndi.service.name=jdbc/sam)\"/>";
+        		additionalJobBundleConfig += "\n\t<reference id=\"" + id + "\" interface=\"javax.sql.DataSource\" filter=\"(osgi.jndi.service.name=" + alias + ")\"/>";
 			}
         	additionalJobBeanParams +=
         		  "\n\t\t\t</map>"
