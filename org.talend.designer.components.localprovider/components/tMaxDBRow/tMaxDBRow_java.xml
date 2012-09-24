@@ -9,6 +9,7 @@
     RELEASE_DATE="20080211A"
     STARTABLE="true"
     DATA_AUTO_PROPAGATE="false"
+    SCHEMA_AUTO_PROPAGATE="false"
   >
     <SIGNATURE/>
   </HEADER>

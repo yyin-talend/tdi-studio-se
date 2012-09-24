@@ -9,6 +9,8 @@ imports="
         org.talend.core.model.process.IConnectionCategory		
 		java.util.List	
 		java.util.Map
+		java.util.Set
+		java.util.HashSet
 "
 %>
 
@@ -30,6 +32,8 @@ List<Map<String, String>> prepareStatementParameters = (List<Map<String,String>>
 String use_NB_Line = ElementParameterParser.getValue(node, "__USE_NB_LINE__");
 
 String incomingConnName = null;
+
+Set<String> inputCols = new HashSet<String>();
 
 List<IMetadataColumn> columnList = null;
 
@@ -73,6 +77,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			IConnection conn = conns.get(0);
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 				incomingConnName = conn.getName();
+				IMetadataTable inputMetadataTable = conn.getMetadataTable();
+				for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
+					inputCols.add(inputCol.getLabel());
+				}
 			}
 		}//end of connection size.
 	}//end of metadatas
@@ -181,9 +189,11 @@ try {
                 <%
                 if(incomingConnName!=null){
 	                for(IMetadataColumn column : columnList) {
+	                	if (inputCols.contains(column.getLabel())) {
 	                    %>
 	                    <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
 	                    <%
+	                    }
 	                }
                 }
                 %>
@@ -215,9 +225,11 @@ if(outgoingConns != null && outgoingConns.size() > 0) {
                     	    <%
                     	} else {
                     		if(incomingConnName!=null){
+                    			if (inputCols.contains(column.getLabel())) {
                         %>
                         <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
                         <%
+                        		}
                         	}
 						}
                     }

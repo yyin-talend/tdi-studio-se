@@ -9,6 +9,8 @@
         org.talend.core.model.process.IConnectionCategory		
 		java.util.List	
 		java.util.Map
+		java.util.Set
+		java.util.HashSet
 	"
 	
 %>
@@ -27,6 +29,8 @@ String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 		dbquery = dbquery.replaceAll("\r"," ");
 List<Map<String, String>> prepareStatementParameters = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SET_PREPAREDSTATEMENT_PARAMETERS__");
 String incomingConnName = null;
+
+Set<String> inputCols = new HashSet<String>();
 
 List<IMetadataColumn> columnList = null;
 
@@ -74,6 +78,10 @@ whetherReject_<%=cid%> = false;
         			IConnection conn = conns.get(0);
         			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 						incomingConnName = conn.getName();
+						IMetadataTable inputMetadataTable = conn.getMetadataTable();
+        				for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
+        					inputCols.add(inputCol.getLabel());
+        				}
 					}
 				}//end of connection size.
 			}//end of metadatas
@@ -139,9 +147,11 @@ whetherReject_<%=cid%> = false;
             <%
             	if(incomingConnName!=null){
 	                for(IMetadataColumn column : columnList) {
+	                	if (inputCols.contains(column.getLabel())) {
 	                    %>
 	                    <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
 	                    <%
+	                    }
 	                }
 	           	}
                 %>
@@ -174,9 +184,11 @@ whetherReject_<%=cid%> = false;
 <%
                         	}else{
                         		if(incomingConnName!=null){
+                        			if (inputCols.contains(column.getLabel())) {
                             %>
 <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
 <%
+									}
 								}
 							}
                         }

@@ -7,7 +7,9 @@ imports="
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
         org.talend.core.model.process.IConnectionCategory		
-		java.util.List	
+		java.util.List
+		java.util.Set
+		java.util.HashSet
 "
 %>
 
@@ -22,6 +24,8 @@ String recordsetColumn = ElementParameterParser.getValue(node,"__RECORD_SET_COLU
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 
 String incomingConnName = null;
+
+Set<String> inputCols = new HashSet<String>();
 
 List<IMetadataColumn> columnList = null;
 
@@ -68,6 +72,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			IConnection conn = conns.get(0);
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 				incomingConnName = conn.getName();
+				IMetadataTable inputMetadataTable = conn.getMetadataTable();
+				for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
+					inputCols.add(inputCol.getLabel());
+				}
 			}
 		}//end of connection size.
 	}//end of metadatas
@@ -111,9 +119,11 @@ try {
                 <%
                 if(incomingConnName!=null){
 	                for(IMetadataColumn column : columnList) {
+	                	if (inputCols.contains(column.getLabel())) {
 	                    %>
 	                    <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
 	                    <%
+	                    }
 	                }
                 }
                 %>
@@ -146,9 +156,11 @@ if(outgoingConns != null && outgoingConns.size() > 0) {
                     	    <%
                     	} else {
                     		if(incomingConnName!=null){
+                    			if (inputCols.contains(column.getLabel())) {
                             %>
                             <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
                             <%
+                            	}
                             }                  
 						}
                     }
