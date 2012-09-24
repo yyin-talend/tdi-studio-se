@@ -67,7 +67,7 @@
 		<PARAMETER NAME="NOTE_CUSTOMER" FIELD="LABEL" REQUIRED="true" NUM_ROW="25" COLOR="255;0;0" GROUP="MODE" SHOW_IF="CUSTOMER == 'true'">
           <DEFAULT>Please note: 
 (1) Nullable setting in this table is more preferential than the default schema.
-(2) Length checking is base on the value of the default schema, if exceed, either trim the field when above option checked or reject the row.</DEFAULT>
+(2) Length checking is base on the value of the default schema。</DEFAULT>
         </PARAMETER>
 		
 		<PARAMETER NAME="CHECK_ANOTHER" FIELD="RADIO" NUM_ROW="31" GROUP="MODE">
@@ -86,7 +86,9 @@
         <PARAMETER NAME="SUB_STRING" FIELD="CHECK" NUM_ROW="40" REQUIRED="true" GROUP="MODE">
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
-		
+		<PARAMETER NAME="NOTE_SUB_STRING" FIELD="LABEL" REQUIRED="true" NUM_ROW="41" GROUP="MODE" >
+          <DEFAULT>     If exceed, either trim the field when above option checked or reject the row.</DEFAULT>
+        </PARAMETER>
 		<PARAMETER NAME="INFO" FIELD="LABEL" REQUIRED="true" NUM_ROW="51" COLOR="0;0;0">
           <DEFAULT>The errCode value is a summation of all error code:
 (1) Type discrepancy (include wrong date pattern): 2
