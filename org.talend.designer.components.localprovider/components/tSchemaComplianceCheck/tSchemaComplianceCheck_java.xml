@@ -67,7 +67,7 @@
 		<PARAMETER NAME="NOTE_CUSTOMER" FIELD="LABEL" REQUIRED="true" NUM_ROW="25" COLOR="255;0;0" GROUP="MODE" SHOW_IF="CUSTOMER == 'true'">
           <DEFAULT>Please note: 
 (1) Nullable setting in this table is more preferential than the default schema.
-(2) Length checking is base on the value of the default schema。</DEFAULT>
+(2) Length checking is base on the value of the default schema.</DEFAULT>
         </PARAMETER>
 		
 		<PARAMETER NAME="CHECK_ANOTHER" FIELD="RADIO" NUM_ROW="31" GROUP="MODE">
