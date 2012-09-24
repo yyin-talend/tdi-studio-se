@@ -421,6 +421,10 @@ public class ConnectionManager {
             String connectorName, String connectionName) {
 
         newlineStyle = lineStyle;
+        if ((newlineStyle == EConnectionType.ON_SUBJOB_OK || newlineStyle == EConnectionType.ON_SUBJOB_ERROR)
+                && !newTarget.isStart()) {
+            return false;
+        }
         if (source.equals(newTarget)) {
             return false;
         }

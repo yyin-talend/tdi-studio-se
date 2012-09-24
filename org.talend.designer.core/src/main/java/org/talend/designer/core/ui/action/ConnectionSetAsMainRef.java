@@ -114,7 +114,19 @@ public class ConnectionSetAsMainRef extends SelectionAction {
         if (connection.getSource().getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0
                 || connection.getSource().getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_ERROR)
                         .size() != 0) {
-            MessageDialog.openError(new Shell(), Messages.getString("ConnectionSetAsMainRef.ERROR"), Messages.getString("ConnectionSetAsMainRef.ConnectionModifyError")); //$NON-NLS-1$ //$NON-NLS-2$
+            MessageDialog
+                    .openError(
+                            new Shell(),
+                            Messages.getString("ConnectionSetAsMainRef.ERROR"), Messages.getString("ConnectionSetAsMainRef.ConnectionModifyError")); //$NON-NLS-1$ //$NON-NLS-2$
+            return;
+        }
+        if (connection.getTarget().getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0
+                || connection.getTarget().getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_SUBJOB_ERROR)
+                        .size() != 0) {
+            MessageDialog
+                    .openError(
+                            new Shell(),
+                            Messages.getString("ConnectionSetAsMainRef.ERROR"), Messages.getString("ConnectionSetAsMainRef.ConnectionModifyError")); //$NON-NLS-1$ //$NON-NLS-2$
             return;
         }
         ChangeConnectionStatusCommand cmd = new ChangeConnectionStatusCommand(connection);
