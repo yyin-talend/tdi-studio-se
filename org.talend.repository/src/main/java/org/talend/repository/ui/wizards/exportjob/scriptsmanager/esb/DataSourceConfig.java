@@ -58,7 +58,7 @@ public class DataSourceConfig {
 //	                      + "\n\t\t<property name=\"connectionPoolDataSource\" ref=\"" + beanDataSource + "\"/>"
 //	                      + "\n\t</bean>";
         		// TODO: jdbc/sam is hardcoded
-        		additionalJobBundleConfig += "\n\t<reference id=\"" + id + "\" interface=\"javax.sql.DataSource\" filter=\"(osgi.jndi.service.name=jdbc/sam)\">";
+        		additionalJobBundleConfig += "\n\t<reference id=\"" + id + "\" interface=\"javax.sql.DataSource\" filter=\"(osgi.jndi.service.name=jdbc/sam)\"/>";
 			}
         	additionalJobBeanParams +=
         		  "\n\t\t\t</map>"
