@@ -45,7 +45,14 @@
       REPOSITORY_VALUE="DATABASE:ORACLE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
-	
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="10"
+      SHOW="false"
+    >       
+      <DEFAULT>oracle_id</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"

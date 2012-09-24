@@ -1310,12 +1310,21 @@ public class CLASS {
             } else {
                 return " default " + defaultValue + " ";
             }            
-        }        
+        }     
+        
         public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType) {
-            return genSetStatement(pstmt, variable, paramIndex, generatedType , false);
+            return genSetStatement(pstmt, variable, paramIndex, generatedType , false, null);
         }
         
-        public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType ,boolean isSourceKeyEnableNull) {
+        public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType, boolean isSourceKeyEnableNull) {
+            return genSetStatement(pstmt, variable, paramIndex, generatedType , isSourceKeyEnableNull, null);
+        }
+        
+        public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType, String dbType) {
+            return genSetStatement(pstmt, variable, paramIndex, generatedType, false, dbType);
+        }
+        
+        public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType ,boolean isSourceKeyEnableNull, String dbType) {
             StringBuilder setStatement = new StringBuilder();
             boolean isObject = false;
             if(generatedType.equals("Character")) {
@@ -1881,7 +1890,175 @@ public class CLASS {
             } else {
                 return "0";
             }            
-        }        
+        } 
+        private String dbVersion = "";
+        public void setDbVersion(String dbVersion){
+            this.dbVersion = dbVersion;  
+        }
+        public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType ,boolean isSourceKeyEnableNull, String dbType) {
+            StringBuilder setStatement = new StringBuilder();
+            boolean isObject = false;
+            if(generatedType.equals("Character")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.CHAR);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.CHAR);\r\n");
+                }
+            } else if(generatedType.equals("java.util.Date")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.DATE);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.DATE);\r\n");
+                }
+            } else if(generatedType.equals("byte[]")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.ARRAY);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.ARRAY);\r\n");
+                }
+            } else if(generatedType.equals("Long") || generatedType.equals("Byte") || generatedType.equals("Integer") || generatedType.equals("Short")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.INTEGER);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.INTEGER);\r\n");
+                }
+            } else if(generatedType.equals("String")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.VARCHAR);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.VARCHAR);\r\n");
+                }
+            } else if(generatedType.equals("Object")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.OTHER);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.OTHER);\r\n");
+                }
+            } else if(generatedType.equals("Boolean")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.BOOLEAN);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.BOOLEAN);\r\n");
+                }
+            } else if(generatedType.equals("Double")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.DOUBLE);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.DOUBLE);\r\n");
+                }
+            } else if(generatedType.equals("Float")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.FLOAT);\r\n");
+                if(isSourceKeyEnableNull){
+                    setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.FLOAT);\r\n");
+                }
+            }
+            if(!variable.equals("null")) {
+                if(isObject) {
+                    setStatement.append("} else {\r\n");
+                }
+                if(generatedType.equals("byte[]")) {
+                    generatedType = "Bytes";
+                } else if(generatedType.equals("java.util.Date")) {
+                    generatedType = "Date";
+                } else if(generatedType.equals("Integer")) {
+                    generatedType = "Int";
+                } else {
+                    if(generatedType.length() >= 1) {
+                        generatedType = generatedType.substring(0, 1).toUpperCase() + generatedType.substring(1);
+                    }
+                }
+                if(generatedType.equals("Char") || generatedType.equals("Character")) {
+                    if(isObject) {
+                        setStatement.append("if(" + variable + " == null) {\r\n");
+                    } else {
+                        setStatement.append("if(String.valueOf(" + variable + ").toLowerCase().equals(\"null\")) {\r\n");
+                    }
+                    setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.CHAR);\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.CHAR);\r\n");
+                    }
+                    setStatement.append("} else if(" + variable + " == '\\0') {\r\n");
+                    setStatement.append(pstmt + ".setString(" + paramIndex + ", \"\");\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".setString(" + (paramIndex+1) + ", \"\");\r\n");
+                    }
+                    setStatement.append("} else {\r\n");
+                    setStatement.append(pstmt + ".setString(" + paramIndex + ", String.valueOf(" + variable + "));\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".setString(" + (paramIndex+1) + ", String.valueOf(" + variable + "));\r\n");
+                    }
+                    setStatement.append("}\r\n");
+                } else if(generatedType.equals("Date")) {
+                    setStatement.append("if(" + variable + " != null) {\r\n");
+                    boolean isTSWithTZ = false; 
+                    if(dbType!=null)
+                        isTSWithTZ = dbType.matches("TIMESTAMP\\(\\d\\) WITH TIME ZONE");
+                    if(isTSWithTZ && ("ojdbc5-11g.jar".equals(dbVersion) || "ojdbc6-11g.jar".equals(dbVersion) || "ojdbc14-10g.jar".equals(dbVersion))){
+                        setStatement.append("if("+ variable + " instanceof TalendTimestampWithTZ){\r\n");
+                        setStatement.append("((oracle.jdbc.OraclePreparedStatement)" + pstmt + ").setTIMESTAMPTZ(" + paramIndex + ", new oracle.sql.TIMESTAMPTZ(connection_" + cid + ", " +
+                                "((TalendTimestampWithTZ)"+ variable +").getTimestamp(),((TalendTimestampWithTZ)"+ variable +").getCalendar()));\r\n");
+                        if(isSourceKeyEnableNull){
+                            setStatement.append("((oracle.jdbc.OraclePreparedStatement)" + pstmt + ").setTIMESTAMPTZ(" + (paramIndex+1) + ", new oracle.sql.TIMESTAMPTZ(connection_" + cid + ", " +
+                                    "((TalendTimestampWithTZ)"+ variable +").getTimestamp(),((TalendTimestampWithTZ)"+ variable +").getCalendar()));\r\n");
+                        }
+                        setStatement.append("}else{");
+                        setStatement.append(pstmt + ".setTimestamp(" + paramIndex + ", new java.sql.Timestamp(" + variable + ".getTime()));\r\n");
+                        if(isSourceKeyEnableNull){
+                            setStatement.append(pstmt + ".setTimestamp(" + (paramIndex+1) + ", new java.sql.Timestamp(" + variable + ".getTime()));\r\n");
+                        }
+                        setStatement.append("}");
+                    }else{
+                        setStatement.append(pstmt + ".setTimestamp(" + paramIndex + ", new java.sql.Timestamp(" + variable + ".getTime()));\r\n");
+                        if(isSourceKeyEnableNull){
+                            setStatement.append(pstmt + ".setTimestamp(" + (paramIndex+1) + ", new java.sql.Timestamp(" + variable + ".getTime()));\r\n");
+                        }
+                    }
+                    setStatement.append("} else {\r\n");
+                    setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.DATE);\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".setNull(" + (paramIndex+1) + ", java.sql.Types.DATE);\r\n");
+                    }
+                    setStatement.append("}\r\n");
+                } else {
+                    setStatement.append(pstmt + ".set" + generatedType + "(" + paramIndex + ", " + variable + ");\r\n");
+                    if(isSourceKeyEnableNull){
+                        setStatement.append(pstmt + ".set" + generatedType + "(" + (paramIndex+1) + ", " + variable + ");\r\n");
+                    }
+                }
+                if(isObject) {
+                    setStatement.append("}\r\n");
+                }
+            }
+            return setStatement.toString();
+        }
     }
     public class PostgresqlSCDManager extends SCDManager {
         public PostgresqlSCDManager(String cid) {

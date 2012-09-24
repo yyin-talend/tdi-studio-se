@@ -53,7 +53,19 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     String dbType = ORACLE;
     SCDConfiger scdConfiger = getSCDConfiger(node);
     SCDManager scdManager = getSCDManager(cid, dbType);
-    String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__");
+    String dbVersion = "";
+    if(("true").equals(useExistingConnection)) {
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	    List<? extends INode> nodes = node.getProcess().getGeneratingNodes();
+	    for(INode targetNode : nodes){
+	    	if (targetNode.getUniqueName().equals(connection)) {
+		      dbVersion = ElementParameterParser.getValue(targetNode, "__DB_VERSION__");
+		    }
+	    }
+	}else{
+		dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__");
+	}
+	((OracleSCDManager)scdManager).setDbVersion(dbVersion);
     %>
     <%
     if(!isEnableSaveMemMode) {    
@@ -201,14 +213,31 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                     }
                     <%
                 } else if(("Timestamp").equals(generatedType)) {
+                	boolean isTSWithTZ = searchColumn.getDbType().matches("TIMESTAMP\\(\\d\\) WITH TIME ZONE");
+			    	boolean supportTSTZ = false;
+			    	if("ojdbc5-11g.jar".equals(dbVersion) || "ojdbc6-11g.jar".equals(dbVersion) || "ojdbc14-10g.jar".equals(dbVersion)){
+			    		supportTSTZ = true;
+			    	}
+			    	if(isTSWithTZ && supportTSTZ){
                     %>
-                    timestamp_<%=cid%> = resultSet_<%=cid%>.getTimestamp(<%=index%>);
-                    if(timestamp_<%=cid%> != null) {
-                        <%=struct%>.<%=searchColumn.getColumnName()%> = new java.util.Date(timestamp_<%=cid%>.getTime());
-                    } else {
-                        <%=struct%>.<%=searchColumn.getColumnName()%> = null;
-                    }
+	                    TalendTimestampWithTZ talendTimestampWithTZ = OracleTIMESTAMPTZUtils.toTalendTSTZ(connection_<%=cid%>,
+		                    ((oracle.jdbc.OracleResultSet) resultSet_<%=cid%>).getTIMESTAMPTZ(<%=index%>).toBytes());
+		                if(talendTimestampWithTZ != null){
+		                	<%=struct%>.<%=searchColumn.getColumnName()%> = talendTimestampWithTZ;
+		                }else{
+		                	<%=struct%>.<%=searchColumn.getColumnName()%> = null;
+		                }
+	                <%
+	                }else{
+	               	%>
+	                    timestamp_<%=cid%> = resultSet_<%=cid%>.getTimestamp(<%=index%>);
+	                    if(timestamp_<%=cid%> != null) {
+	                        <%=struct%>.<%=searchColumn.getColumnName()%> = new java.util.Date(timestamp_<%=cid%>.getTime());
+	                    } else {
+	                        <%=struct%>.<%=searchColumn.getColumnName()%> = null;
+	                    }
                     <%
+                    }
                 } else {
                     %>
                     if(resultSet_<%=cid %>.getObject(<%=index%>) != null) {
