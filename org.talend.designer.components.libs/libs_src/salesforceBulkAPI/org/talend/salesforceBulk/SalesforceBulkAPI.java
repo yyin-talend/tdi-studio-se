@@ -8,7 +8,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.Authenticator;
 import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.SocketAddress;
 import java.util.ArrayList;
@@ -149,22 +151,30 @@ public class SalesforceBulkAPI {
     private void setProxyToConnection(ConnectorConfig conn) {
         Proxy socketProxy = null;
         if (!useProxy) {
-            proxyHost = System.getProperty("http.proxyHost");
-            if (proxyHost != null && System.getProperty("http.proxyPort") != null) {
-                proxyPort = Integer.parseInt(System.getProperty("http.proxyPort"));
-                proxyUsername = System.getProperty("http.proxyUser");
-                proxyPassword = System.getProperty("http.proxyPassword");
+            proxyHost = System.getProperty("https.proxyHost");
+            if (proxyHost != null && System.getProperty("https.proxyPort") != null) {
+                proxyPort = Integer.parseInt(System.getProperty("https.proxyPort"));
+                proxyUsername = System.getProperty("https.proxyUser");
+                proxyPassword = System.getProperty("https.proxyPassword");
                 useProxy = true;
             } else {
-                proxyHost = System.getProperty("socksProxyHost");
-                if (proxyHost != null && System.getProperty("socksProxyPort") != null) {
-                    proxyPort = Integer.parseInt(System.getProperty("socksProxyPort"));
-                    proxyUsername = System.getProperty("java.net.socks.username");
-                    proxyPassword = System.getProperty("java.net.socks.password");
+                proxyHost = System.getProperty("http.proxyHost");
+                if (proxyHost != null && System.getProperty("http.proxyPort") != null) {
+                    proxyPort = Integer.parseInt(System.getProperty("http.proxyPort"));
+                    proxyUsername = System.getProperty("http.proxyUser");
+                    proxyPassword = System.getProperty("http.proxyPassword");
                     useProxy = true;
+                } else {
+                    proxyHost = System.getProperty("socksProxyHost");
+                    if (proxyHost != null && System.getProperty("socksProxyPort") != null) {
+                        proxyPort = Integer.parseInt(System.getProperty("socksProxyPort"));
+                        proxyUsername = System.getProperty("java.net.socks.username");
+                        proxyPassword = System.getProperty("java.net.socks.password");
+                        useProxy = true;
 
-                    SocketAddress addr = new InetSocketAddress(proxyHost, proxyPort);
-                    socketProxy = new Proxy(Proxy.Type.SOCKS, addr);
+                        SocketAddress addr = new InetSocketAddress(proxyHost, proxyPort);
+                        socketProxy = new Proxy(Proxy.Type.SOCKS, addr);
+                    }
                 }
             }
         }
@@ -176,9 +186,22 @@ public class SalesforceBulkAPI {
             }
             if (proxyUsername != null && !"".equals(proxyUsername)) {
                 conn.setProxyUsername(proxyUsername);
-            }
-            if (proxyPassword != null && !"".equals(proxyPassword)) {
-                conn.setProxyPassword(proxyPassword);
+                if (proxyPassword != null && !"".equals(proxyPassword)) {
+                    conn.setProxyPassword(proxyPassword);
+
+                    Authenticator.setDefault(new Authenticator() {
+
+                        @Override
+                        public PasswordAuthentication getPasswordAuthentication() {
+                            if (getRequestorType() == Authenticator.RequestorType.PROXY) {
+                                return new PasswordAuthentication(proxyUsername, proxyPassword.toCharArray());
+                            } else {
+                                return super.getPasswordAuthentication();
+                            }
+                        }
+                    });
+
+                }
             }
         }
     }
