@@ -76,5 +76,4 @@ imports="
 	
 	dbInputBeginUtil = new DBInputBeginUtil();
 %>
-    
 	<%@ include file="../templates/DB/Input/AbstractDBInputBegin.javajet"%>
