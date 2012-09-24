@@ -42,6 +42,8 @@ import org.eclipse.ui.intro.config.IIntroAction;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.download.DownloadHelper;
+import org.talend.core.download.DownloadListener;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.ComponentUtilities;
@@ -51,9 +53,7 @@ import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.components.exchange.ExchangeComponentsProvider;
 import org.talend.designer.components.exchange.ExchangeConstants;
 import org.talend.designer.components.exchange.i18n.Messages;
-import org.talend.designer.components.exchange.jobs.ComponentDownloader;
 import org.talend.designer.components.exchange.jobs.ComponentInstaller;
-import org.talend.designer.components.exchange.jobs.DownloadListener;
 import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.ui.htmlcontent.ContentConstants;
 import org.talend.designer.components.exchange.ui.views.ExchangeManager;
@@ -288,7 +288,7 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
                             URL url = new URL(downloadUrl);
 
                             monitor.setTaskName(ExchangeConstants.getDownloadTaskNameLable() + url.toString());
-                            ComponentDownloader downloader = new ComponentDownloader();
+                            DownloadHelper downloader = new DownloadHelper();
                             downloader.addDownloadListener(this);
                             // block until download complete
                             downloader.download(url, localZipFile);
@@ -339,7 +339,7 @@ public class DownloadComponenentsAction extends Action implements IIntroAction {
         public void downloadComplete() {
         }
 
-        public void downloadProgress(ComponentDownloader downloader, int bytesRead) {
+        public void downloadProgress(DownloadHelper downloader, int bytesRead) {
             if (fMonitor.isCanceled()) {
                 // cancel download
                 downloader.setCancel(true);

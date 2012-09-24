@@ -185,6 +185,7 @@ import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.ui.views.properties.IComponentSettingsView;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.librariesmanager.utils.ModulesInstaller;
 import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.job.deletion.IJobResourceProtection;
@@ -1511,6 +1512,14 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                         .getName());
                             }
                         }
+                    }
+                }
+
+                if (request instanceof CreateRequest) {
+                    CreateRequest cRequest = (CreateRequest) request;
+                    if (cRequest.getNewObject() instanceof Node) {
+                        IComponent component = ((Node) cRequest.getNewObject()).getComponent();
+                        ModulesInstaller.installModules(getSite().getShell(), component);
                     }
                 }
 

@@ -166,6 +166,7 @@ import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.core.utils.ValidationRulesUtil;
+import org.talend.librariesmanager.utils.ModulesInstaller;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.model.ERepositoryStatus;
@@ -380,6 +381,15 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         return factory;
     }
 
+    private void checkRequiredModules() {
+        Object newObject = ((CreateRequest) getTargetRequest()).getNewObject();
+        if (newObject instanceof Node) {
+            IComponent component = ((Node) newObject).getComponent();
+            Shell shell = Display.getCurrent().getActiveShell();
+            ModulesInstaller.installModules(new Shell(shell), component);
+        }
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -399,7 +409,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         // IEditorInput iei = iep.getEditorInput();
         // iei
         // EditPart ep = getTargetEditPart();
-
+        // checkRequiredModules();
         if (fromPalette && getTargetRequest() instanceof CreateRequest) {
             if (getTargetEditPart() instanceof ProcessPart) {
                 // for palette dnd, feature 6457
@@ -410,6 +420,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         execCommandStack(command);
                     }
                 }
+                checkRequiredModules();
                 return;
             } else if (getTargetEditPart() instanceof SubjobContainerPart) {
                 CreateRequest req = ((CreateRequest) getTargetRequest());
@@ -418,6 +429,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 if (o instanceof Node) {
                     createComponentOnLink((Node) o, location);
                 }
+                checkRequiredModules();
                 return;
             } else if (getTargetEditPart() instanceof JobletContainerPart) {
                 JobletContainerPart jobletPart = (JobletContainerPart) getTargetEditPart();
@@ -444,6 +456,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                                     }
                                 }
                             }
+                            checkRequiredModules();
                             return;
                         } else {
                             part = getParentPart(part);
@@ -455,6 +468,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                                     execCommandStack(command);
                                 }
                             }
+                            checkRequiredModules();
                             return;
                         }
 
@@ -817,6 +831,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         boolean quickCreateOutput = event1.detail == DND.DROP_COPY;
         Iterator iterator = getSelection().iterator();
         List<TempStore> list = new ArrayList<TempStore>();
+        List<IComponent> components = new ArrayList<IComponent>();
         while (iterator.hasNext()) {
             Object obj = iterator.next();
             if (obj instanceof RepositoryNode) {
@@ -872,10 +887,14 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             IFigure targetFigure = part.getFigure();
             translateAbsolateToRelative(targetFigure, draw2dPosition);
             String lastUniqname = "";
+
             // creates every node
             for (TempStore store : list) {
                 RepositoryNode selectedNode = store.seletetedNode;
                 IComponent element = store.component;
+                if (!components.contains(element)) {
+                    components.add(element);
+                }
                 Node node = new Node(element);
                 // for bug4564(metadata label format)
                 // IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
@@ -940,6 +959,8 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             }
             // setselecte(part, lastUniqname);
         }
+        Shell shell = Display.getCurrent().getActiveShell();
+        ModulesInstaller.installModules(new Shell(shell), components);
 
     }
 
@@ -1086,7 +1107,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if ((selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker.isHL7PluginLoaded())
                     || (selectedNode.getParent() != null
                             && selectedNode.getParent().getObjectType() == ERepositoryObjectType.METADATA_FILE_HL7 && PluginChecker
-                                .isHL7PluginLoaded())) {
+                            .isHL7PluginLoaded())) {
                 if (originalConnection instanceof HL7ConnectionImpl) {
                     if (((HL7ConnectionImpl) originalConnection).getRoot() != null) {
                         List<Map<String, String>> mapList = new ArrayList<Map<String, String>>();
@@ -1130,7 +1151,7 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
             if ((selectedNode.getObjectType() == ERepositoryObjectType.METADATA_FILE_BRMS && PluginChecker.isBRMSPluginLoaded())
                     || (selectedNode.getParent() != null
                             && selectedNode.getParent().getObjectType() == ERepositoryObjectType.METADATA_FILE_BRMS && PluginChecker
-                                .isBRMSPluginLoaded())) {
+                            .isBRMSPluginLoaded())) {
                 if (originalConnection instanceof BRMSConnectionImpl) {
                     if (((BRMSConnectionImpl) originalConnection).getRoot() != null) {
                         List<Map<String, String>> rootList = new ArrayList<Map<String, String>>();

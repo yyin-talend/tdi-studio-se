@@ -50,9 +50,9 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.download.DownloadHelper;
 import org.talend.designer.components.exchange.ExchangePlugin;
 import org.talend.designer.components.exchange.i18n.Messages;
-import org.talend.designer.components.exchange.jobs.ComponentDownloader;
 import org.talend.designer.components.exchange.jobs.ComponentSearcher;
 import org.talend.designer.components.exchange.model.ComponentExtension;
 import org.talend.designer.components.exchange.model.VersionRevision;
@@ -182,7 +182,7 @@ public class ImportExchangeDialog extends Dialog {
 
                     public void run() {
                         try {
-                            new ComponentDownloader().download(url, tempFile);
+                            new DownloadHelper().download(url, tempFile);
                         } catch (Exception e) {
                             ExceptionHandler.process(e);
                         }
