@@ -428,12 +428,14 @@ public class ConnectionManager {
                 && !newTarget.isStart()) {
             return false;
         }
-        if (source.getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0
-                || source.getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_ERROR).size() != 0) {
+        if ((source.getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0 || source
+                .getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_ERROR).size() != 0)
+                && newTarget.getDesignSubjobStartNode() != newTarget) {
             return false;
         }
-        if (source.getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0
-                || source.getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_SUBJOB_ERROR).size() != 0) {
+        if ((source.getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0 || source
+                .getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_SUBJOB_ERROR).size() != 0)
+                && newTarget.getDesignSubjobStartNode() != newTarget) {
             return false;
         }
         if (PluginChecker.isJobLetPluginLoaded()) {
