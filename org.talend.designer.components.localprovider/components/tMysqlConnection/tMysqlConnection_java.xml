@@ -147,9 +147,34 @@
     >      
 	<DEFAULT></DEFAULT>
     </PARAMETER>
+	<PARAMETER
+	  NAME="NOTE"
+      FIELD="LABEL"
+      NUM_ROW="63"
+	  GROUP="DATASOURCE"
+    >
+    	<DEFAULT>This option only applies when deploying and running in the Talend Runtime</DEFAULT>
+    </PARAMETER>
+	<PARAMETER
+      NAME="SPECIFY_DATASOURCE_ALIAS"
+	  FIELD="CHECK"
+      NUM_ROW="64"
+      REQUIRED="true"
+	  GROUP="DATASOURCE"
+    >      
+    </PARAMETER>
+	<PARAMETER
+      NAME="DATASOURCE_ALIAS"
+	  FIELD="TEXT"
+      NUM_ROW="65"
+      REQUIRED="true"
+	  GROUP="DATASOURCE"
+	  SHOW_IF="SPECIFY_DATASOURCE_ALIAS=='true'"
+    >      
+	<DEFAULT>""</DEFAULT>
+    </PARAMETER>
 
    </PARAMETERS>
-
 	<ADVANCED_PARAMETERS>
 		<PARAMETER 
 			NAME="AUTO_COMMIT" 
