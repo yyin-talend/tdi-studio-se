@@ -421,11 +421,19 @@ public class ConnectionManager {
             String connectorName, String connectionName) {
 
         newlineStyle = lineStyle;
+        if (source.equals(newTarget)) {
+            return false;
+        }
         if ((newlineStyle == EConnectionType.ON_SUBJOB_OK || newlineStyle == EConnectionType.ON_SUBJOB_ERROR)
                 && !newTarget.isStart()) {
             return false;
         }
-        if (source.equals(newTarget)) {
+        if (source.getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0
+                || source.getDesignSubjobStartNode().getOutgoingConnections(EConnectionType.ON_SUBJOB_ERROR).size() != 0) {
+            return false;
+        }
+        if (source.getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0
+                || source.getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_SUBJOB_ERROR).size() != 0) {
             return false;
         }
         if (PluginChecker.isJobLetPluginLoaded()) {
