@@ -1313,7 +1313,7 @@ public class CLASS {
         }     
         
         public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType) {
-            return genSetStatement(pstmt, variable, paramIndex, generatedType , false, null);
+            return genSetStatement(pstmt, variable, paramIndex, generatedType, false);
         }
         
         public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType, boolean isSourceKeyEnableNull) {
