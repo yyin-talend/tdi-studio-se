@@ -46,15 +46,19 @@ public class MetadataExtPasteCommand extends MetadataPasteCommand {
     public List createPastableBeansList(ExtendedTableModel extendedTable, List copiedObjectsList) {
         ArrayList list = new ArrayList();
         ArrayList countList = new ArrayList();
-        ArrayList removeList = new ArrayList();
+        ArrayList<String> labelsExisted = getLabelsExisted(extendedTable);
         for (Object current : copiedObjectsList) {
             if (current instanceof IMetadataColumn) {
                 IMetadataColumn copy = ((IMetadataColumn) current).clone();
-                copy.setLabel(((MetadataTableEditor) extendedTable).getNextGeneratedColumnName(copy.getLabel()));
+                String nextGeneratedColumnName = ((MetadataTableEditor) extendedTable)
+                        .getNextGeneratedColumnName(copy.getLabel());
+                if (labelsExisted.contains(nextGeneratedColumnName)) {
+                    nextGeneratedColumnName = validateColumnName(nextGeneratedColumnName, labelsExisted);
+                }
+                labelsExisted.add(nextGeneratedColumnName);
+                copy.setLabel(nextGeneratedColumnName);
                 if (copy instanceof MetadataColumnExt) {
                     list.add(copy);
-                    removeList.add(copy);
-                    extendedTable.getBeansList().add(copy);
                 } else {
                     MetadataColumnExt metadataColumnExt = new MetadataColumnExt((MetadataColumn) copy);
                     metadataColumnExt.setFunction((new FunctionManagerExt()).getDefaultFunction(metadataColumnExt,
@@ -94,10 +98,6 @@ public class MetadataExtPasteCommand extends MetadataPasteCommand {
                 list.add(metadataColumnExt);
                 countList.add(nextGeneratedColumnName);
             }
-        }
-
-        for (int i = 0; i < removeList.size(); i++) {
-            extendedTable.getBeansList().remove(removeList.get(i));
         }
 
         return list;
