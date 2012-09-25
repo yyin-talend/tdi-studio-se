@@ -45,12 +45,12 @@ public class DataSourceConfig {
         		+ "\n\t\t\t<map>";
         	
         	for (NodeType dbComponent : dbComponents) {
-        		String id = EmfModelUtils.computeTextElementValue("UNIQUE_NAME", dbComponent);
+//        		String id = EmfModelUtils.computeTextElementValue("UNIQUE_NAME", dbComponent);
         		String alias = EmfModelUtils.computeTextElementValue("DATASOURCE_ALIAS", dbComponent);
 //        		String beanPool = id + "Pool";
 
         		additionalJobBeanParams +=
-            		"\n\t\t\t\t<entry key=\"" + id + "\" value-ref=\"" + id + "\" />";
+            		"\n\t\t\t\t<entry key=\"" + alias + "\" value-ref=\"" + alias + "\" />";
 
 //        		String beanDataSource = id + "DataSource";
 //				additionalJobBundleConfig += getDataSourceConfig(dbComponent, beanDataSource);
@@ -58,7 +58,7 @@ public class DataSourceConfig {
 //			                "\n\t<bean id=\"" + beanPool + "\" class=\"org.apache.commons.dbcp.datasources.SharedPoolDataSource\" destroy-method=\"close\">"
 //	                      + "\n\t\t<property name=\"connectionPoolDataSource\" ref=\"" + beanDataSource + "\"/>"
 //	                      + "\n\t</bean>";
-        		additionalJobBundleConfig += "\n\t<reference id=\"" + id + "\" interface=\"javax.sql.DataSource\" filter=\"(osgi.jndi.service.name=" + alias + ")\"/>";
+        		additionalJobBundleConfig += "\n\t<reference id=\"" + alias + "\" interface=\"javax.sql.DataSource\" filter=\"(osgi.jndi.service.name=" + alias + ")\"/>";
 			}
         	additionalJobBeanParams +=
         		  "\n\t\t\t</map>"

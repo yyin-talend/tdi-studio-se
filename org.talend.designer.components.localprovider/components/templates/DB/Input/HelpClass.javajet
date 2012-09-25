@@ -40,11 +40,19 @@ imports="
 	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
 	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
 %>
+            java.util.Map<String, routines.system.TalendDataSource> dataSources = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+            if (null != dataSources) {
+<%
+                String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
+%>
+                conn_<%=cid%> = dataSources.get(<%=alias%>).getConnection();
+            } else {
 			    java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
 				<%this.setURL(node);%>
 		        String dbUser_<%=cid %> = <%=dbuser%>;
 		        String dbPwd_<%=cid %> = <%=dbpwd%>;
 		        conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+		    }
 <%
 		}
 		

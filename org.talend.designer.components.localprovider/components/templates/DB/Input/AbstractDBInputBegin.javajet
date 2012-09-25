@@ -50,9 +50,19 @@ imports="
 %>
 		        conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 		        if (null == conn_<%=cid%>) {
-					java.util.Map<String, routines.system.TalendDataSource> dataSources= (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
-					conn_<%=cid%> = dataSources.get("<%=connection%>").getConnection();
-					globalMap.put("<%=conn%>", conn_<%=cid%>);
+<%
+                    INode connectionNode = null;
+                    for (INode processNode : node.getProcess().getGeneratingNodes()) {
+                        if(connection.equals(processNode.getUniqueName())) {
+                            connectionNode = processNode;
+                            break;
+                        }
+                    }
+                    String alias = ElementParameterParser.getValue(connectionNode, "__DATASOURCE_ALIAS__");
+%>
+					java.util.Map<String, routines.system.TalendDataSource> dataSources = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+					conn_<%=cid%> = dataSources.get(<%=alias%>).getConnection();
+					//globalMap.put("<%=conn%>", conn_<%=cid%>);
 		        }
 <%
 				dbInputBeginUtil.afterUseExistConnection(node);
