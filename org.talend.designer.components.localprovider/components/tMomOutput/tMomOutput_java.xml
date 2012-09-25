@@ -35,6 +35,22 @@
 
   <PARAMETERS>
 
+  <PARAMETER
+      NAME="FAILOVER"
+      FIELD="CHECK"
+      SHOW_IF="(SERVER == 'ACTIVEMQ')"
+      NUM_ROW="15"
+    >
+    <DEFAULT >false</DEFAULT>
+    </PARAMETER>
+
+	<PARAMETER NAME="SERVERS" FIELD="TABLE" NUM_ROW="23" NB_LINES="5" SHOW_IF="(SERVER == 'ACTIVEMQ' and FAILOVER == 'true')">
+		<ITEMS> 
+			<ITEM NAME="SERVERS_HOST" FIELD="String" />
+			<ITEM NAME="SERVERS_PORT" FIELD="String" /> 
+		</ITEMS>
+	</PARAMETER>
+
     <PARAMETER
       NAME="SERVER"
       FIELD="CLOSED_LIST"
@@ -51,6 +67,7 @@
       NAME="SERVERADDRESS"
       FIELD="TEXT"
       NUM_ROW="20"
+      SHOW_IF="(SERVER == 'ACTIVEMQ' and FAILOVER == 'false') or (SERVER == 'JBOSS') or (SERVER == 'WEBSPHERE')"
     >
 	<DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>
@@ -59,6 +76,7 @@
       NAME="SERVERPORT"
       FIELD="TEXT"
       NUM_ROW="20"
+      SHOW_IF="(SERVER == 'ACTIVEMQ' and FAILOVER == 'false') or (SERVER == 'JBOSS') or (SERVER == 'WEBSPHERE')"
     >
 	<DEFAULT IF="(SERVER == 'JBOSS')">"1099"</DEFAULT>
 	<DEFAULT IF="(SERVER == 'WEBSPHERE')">"1414"</DEFAULT>
