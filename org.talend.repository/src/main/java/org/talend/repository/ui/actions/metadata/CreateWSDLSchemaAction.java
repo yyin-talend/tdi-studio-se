@@ -145,6 +145,7 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
             init(repositoryNode);
             WSDLSchemaWizard wsdlSchemaWizard = new WSDLSchemaWizard(PlatformUI.getWorkbench(), creation, repositoryNode,
                     getExistingNames(), false);
+            wsdlSchemaWizard.setToolbar(true);
             wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), wsdlSchemaWizard);
         } else {
             // selection = getSelection();
