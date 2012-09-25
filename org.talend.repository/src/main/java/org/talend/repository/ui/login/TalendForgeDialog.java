@@ -797,7 +797,12 @@ public class TalendForgeDialog extends TrayDialog {
                             countryCombo.getText(), isProxyEnable, proxyHost, proxyPort, proxyUser, proxyPassword);
                     if (success) {
                         IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-                        String connectionEmail = project.getAuthor().getLogin();
+                        String connectionEmail = null;
+                        if (project.getAuthor() != null) {
+                            connectionEmail = project.getAuthor().getLogin();
+                        } else {
+                            connectionEmail = "test@talend.com";
+                        }
                         prefStore.setValue(connectionEmail, email + ":" + pseudonym + ":" + password);
                     }
                 } catch (BusinessException e1) {
@@ -1052,7 +1057,12 @@ public class TalendForgeDialog extends TrayDialog {
                     }
                     if (isUserPassRight) {
                         IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-                        String connectionEmail = project.getAuthor().getLogin();
+                        String connectionEmail = null;
+                        if (project.getAuthor() != null) {
+                            connectionEmail = project.getAuthor().getLogin();
+                        } else {
+                            connectionEmail = "test@talend.com";
+                        }
                         prefStore.setValue(connectionEmail, "notused" + ":" + username + ":" + password);
                         // bug TDI-19619,when connect correct,no need openInformation.
                         // MessageDialog.openInformation(getShell(),
