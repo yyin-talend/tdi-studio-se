@@ -168,6 +168,14 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     protected Button exportDependencies;
 
+    protected Button addBSButton;
+
+    protected Button addAntBSButton;
+
+    protected Button addMavenBSButton;
+
+    private Composite buildScriptsGroup;
+
     protected IStructuredSelection selection;
 
     private ExportTreeViewer treeViewer;
@@ -624,6 +632,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         applyToChildrenButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         applyToChildrenButton.setText(Messages.getString("JobScriptsExportWizardPage.ApplyToChildren")); //$NON-NLS-1$
 
+        createBuildScriptGroup(optionsGroup);
+
         // genCodeButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         // genCodeButton.setText(Messages.getString("JobScriptsExportWizardPage.generatePerlFiles")); //$NON-NLS-1$
         // genCodeButton.setSelection(true);
@@ -660,6 +670,52 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 }
             }
         });
+    }
+
+    /**
+     * DOC ycbai Comment method "createBuildScriptGroup".
+     * 
+     * @param optionsGroup
+     */
+    private void createBuildScriptGroup(Composite optionsGroup) {
+        Font font = optionsGroup.getFont();
+
+        addBSButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
+        addBSButton.setText(Messages.getString("JobScriptsExportWizardPage.addBuildScripts")); //$NON-NLS-1$
+        addBSButton.setFont(font);
+
+        addBSButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                boolean addBS = addBSButton.getSelection();
+                if (addBS) {
+                    addAntBSButton.setSelection(addBS);
+                } else {
+                    addAntBSButton.setSelection(addBS);
+                    addMavenBSButton.setSelection(addBS);
+                }
+                buildScriptsGroup.setVisible(addBS);
+            }
+        });
+
+        buildScriptsGroup = new Composite(optionsGroup, SWT.NONE);
+        GridLayout groupLayout = new GridLayout(2, true);
+        groupLayout.marginWidth = 0;
+        groupLayout.marginHeight = 0;
+        buildScriptsGroup.setLayout(groupLayout);
+        GridData groupData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
+        groupData.horizontalSpan = 2;
+        buildScriptsGroup.setLayoutData(groupData);
+        buildScriptsGroup.setFont(font);
+        buildScriptsGroup.setVisible(false);
+
+        addAntBSButton = new Button(buildScriptsGroup, SWT.RADIO | SWT.LEFT);
+        addAntBSButton.setText(Messages.getString("JobScriptsExportWizardPage.addBuildScripts.ant")); //$NON-NLS-1$
+        addAntBSButton.setFont(font);
+
+        addMavenBSButton = new Button(buildScriptsGroup, SWT.RADIO | SWT.LEFT);
+        addMavenBSButton.setText(Messages.getString("JobScriptsExportWizardPage.addBuildScripts.maven")); //$NON-NLS-1$
+        addMavenBSButton.setFont(font);
     }
 
     /**
@@ -1319,6 +1375,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         // exportChoice.put(ExportChoice.needDependencies, exportDependencies.getSelection());
         exportChoiceMap.put(ExportChoice.setParameterValues, setParametersValueButton2.getSelection());
         // exportChoice.put(ExportChoice.needGenerateCode, genCodeButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needAntScript, addAntBSButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needMavenScript, addMavenBSButton.getSelection());
         return exportChoiceMap;
     }
 

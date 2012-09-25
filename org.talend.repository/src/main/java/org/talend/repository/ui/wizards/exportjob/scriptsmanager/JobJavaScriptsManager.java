@@ -13,20 +13,33 @@
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
+import org.dom4j.Comment;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.Node;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -37,13 +50,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
+import org.osgi.framework.Bundle;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.xml.XmlUtil;
@@ -62,12 +78,15 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.ui.IRulesProviderService;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
@@ -83,10 +102,12 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.constants.ExportJobConstants;
 import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.resource.IResourceService;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -154,11 +175,192 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         addContextScripts(process[i], selectedJobVersion, isOptionChoosed(ExportChoice.needContext));
 
+        addBuildScripts(process[i], processItem, selectedJobVersion);
+
         // add children jobs
         boolean needChildren = true;
         List<URL> childrenList = addChildrenResources(process, processItem, needChildren, process[i], exportChoice,
                 selectedJobVersion);
         return childrenList;
+    }
+
+    private void addBuildScripts(ExportFileResource resource, ProcessItem processItem, String selectedJobVersion) {
+        if (!isOptionChoosed(ExportChoice.needAntScript) && !isOptionChoosed(ExportChoice.needMavenScript)) {
+            return;
+        }
+        List<URL> scriptsUrls = new ArrayList<URL>();
+        if (isOptionChoosed(ExportChoice.needAntScript)) {
+            addAntBuildScripts(scriptsUrls);
+        } else if (isOptionChoosed(ExportChoice.needMavenScript)) {
+            addMavenBuildScripts(scriptsUrls, processItem, selectedJobVersion);
+        }
+        resource.addResources(scriptsUrls);
+    }
+
+    private void addAntBuildScripts(List<URL> scriptsUrls) {
+        try {
+            String antScript = RepositoryManager.getPreferenceStore().getString(IRepositoryPrefConstants.ANT_SCRIPT_TEMPLATE);
+            if (antScript == null) {
+                return;
+            }
+            File antBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.ANT_BUILD_FILE_NAME);
+            File antPropertiesFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.ANT_BUILD_PROPERTIES_FILE_NAME);
+            FileOutputStream antBuildFileOutputStream = null;
+            FileOutputStream antPropertiesOutputStream = null;
+            try {
+                antBuildFileOutputStream = new FileOutputStream(antBuildFile);
+                antBuildFileOutputStream.write(antScript.getBytes());
+                Properties props = new Properties();
+                IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                        IBrandingService.class);
+                if (brandingService != null) {
+                    props.put(ExportJobConstants.PRODUCT_VENDOR, brandingService.getCorporationName());
+                    props.put(ExportJobConstants.PRODUCT_NAME, brandingService.getFullProductName());
+                }
+                props.put(ExportJobConstants.PRODUCT_VERSION, VersionUtils.getVersion());
+                antPropertiesOutputStream = new FileOutputStream(antPropertiesFile);
+                props.store(new FileOutputStream(antPropertiesFile), "");
+            } finally {
+                antBuildFileOutputStream.close();
+                antPropertiesOutputStream.close();
+            }
+            scriptsUrls.add(antBuildFile.toURL());
+            scriptsUrls.add(antPropertiesFile.toURL());
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    private void addMavenBuildScripts(List<URL> scriptsUrls, ProcessItem processItem, String selectedJobVersion) {
+        String mavenScript = RepositoryManager.getPreferenceStore().getString(IRepositoryPrefConstants.MAVEN_SCRIPT_TEMPLATE);
+        if (mavenScript == null) {
+            return;
+        }
+        IResourceService resourceService = (IResourceService) GlobalServiceRegister.getDefault().getService(
+                IResourceService.class);
+        if (resourceService == null) {
+            return;
+        }
+        File inputMavenAssemblyFile = new File(resourceService.getMavenAssemblyFilePath());
+        if (!inputMavenAssemblyFile.exists()) {
+            return;
+        }
+
+        String projectName = getCorrespondingProjectName(processItem);
+        String jobName = processItem.getProperty().getLabel();
+        String jobVersion = processItem.getProperty().getVersion();
+
+        Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
+                processItem.getProperty().getId(), selectedJobVersion);
+
+        File mavenBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_BUILD_FILE_NAME);
+        File mavenAssemblyFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_ASSEMBLY_FILE_NAME);
+        SAXReader saxReader = new SAXReader();
+        try {
+            FileOutputStream mavenBuildFileOutputStream = null;
+            try {
+                mavenBuildFileOutputStream = new FileOutputStream(mavenBuildFile);
+                mavenBuildFileOutputStream.write(mavenScript.getBytes());
+            } finally {
+                mavenBuildFileOutputStream.close();
+            }
+            Document pomDocument = saxReader.read(mavenBuildFile);
+            Iterator rootNodeIter = pomDocument.nodeIterator();
+            while (rootNodeIter.hasNext()) {
+                Element rootEle = (Element) rootNodeIter.next();
+                Iterator nodeIterator = rootEle.nodeIterator();
+                while (nodeIterator.hasNext()) {
+                    Object obj = nodeIterator.next();
+                    if (obj instanceof Element) {
+                        Element ele = (Element) obj;
+                        // remove comments.
+                        Iterator commentIterator = ele.nodeIterator();
+                        while (commentIterator.hasNext()) {
+                            Object commentObj = commentIterator.next();
+                            if (commentObj instanceof Comment) {
+                                Comment comment = (Comment) commentObj;
+                                if (comment.getNodeType() == Node.COMMENT_NODE) {
+                                    ele.remove(comment);
+                                }
+                            }
+                        }
+                        if ("groupId".equals(ele.getName())) {
+                            ele.setText(projectName);
+                        } else if ("artifactId".equals(ele.getName())) {
+                            ele.setText(jobName);
+                        } else if ("version".equals(ele.getName())) {
+                            ele.setText(jobVersion);
+                        } else if ("dependencies".equals(ele.getName())) {
+                            for (ModuleNeeded module : neededModules) {
+                                addMavenDependencyElement(ele, module.getModuleName());
+                            }
+                        }
+                    }
+                }
+            }
+            // List sourceDirectorylist = pomDocument.selectNodes("//build/sourceDirectory"); //$NON-NLS-1$
+            // Iterator sourceDirectoryIter = sourceDirectorylist.iterator();
+            // while (sourceDirectoryIter.hasNext()) {
+            // Element sourceDirectoryElement = (Element) sourceDirectoryIter.next();
+            // String value = sourceDirectoryElement.getText();
+            //                sourceDirectoryElement.setText(value.replace("@jobName@", jobName)); //$NON-NLS-1$
+            // }
+            saveXmlDocoment(pomDocument, mavenBuildFile);
+            scriptsUrls.add(mavenBuildFile.toURL());
+            FilesUtils.copyFile(inputMavenAssemblyFile, mavenAssemblyFile);
+            // Document assemblyDocument = saxReader.read(mavenAssemblyFile);
+            //            List directoryEleslist = assemblyDocument.selectNodes("//fileSets/fileSet/directory"); //$NON-NLS-1$
+            // Iterator directoryElesIter = directoryEleslist.iterator();
+            // while (directoryElesIter.hasNext()) {
+            // Element directoryElement = (Element) directoryElesIter.next();
+            // directoryElement.setText(jobName);
+            // }
+            // saveXmlDocoment(assemblyDocument, mavenAssemblyFile);
+            scriptsUrls.add(mavenAssemblyFile.toURL());
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    private void addMavenDependencyElement(Element parentElement, String jarName) {
+        String jarNameWithoutExt = jarName;
+        if (jarNameWithoutExt.indexOf(".") != -1) {
+            jarNameWithoutExt = jarNameWithoutExt.substring(0, jarNameWithoutExt.lastIndexOf("."));
+        }
+        Element dependencyElement = parentElement.addElement("dependency"); //$NON-NLS-1$
+        Element groupIdElement = dependencyElement.addElement("groupId"); //$NON-NLS-1$
+        groupIdElement.setText(jarNameWithoutExt);
+        Element artifactIdElement = dependencyElement.addElement("artifactId"); //$NON-NLS-1$
+        artifactIdElement.setText(jarNameWithoutExt);
+        Element versionElement = dependencyElement.addElement("version"); //$NON-NLS-1$
+        versionElement.setText("1.0"); //$NON-NLS-1$
+        Element scopeElement = dependencyElement.addElement("scope"); //$NON-NLS-1$
+        scopeElement.setText("system"); //$NON-NLS-1$
+        Element systemPathElement = dependencyElement.addElement("systemPath"); //$NON-NLS-1$
+        systemPathElement.setText("${basedir}/../lib/" + jarName); //$NON-NLS-1$
+    }
+
+    private void saveXmlDocoment(Document document, File outputFile) throws IOException {
+        XMLWriter output = null;
+        try {
+            output = new XMLWriter(new FileWriter(outputFile), OutputFormat.createPrettyPrint());
+            output.write(document);
+        } finally {
+            output.close();
+        }
+    }
+
+    public static String formatXML(Document document) {
+        OutputFormat format = OutputFormat.createPrettyPrint();
+        StringWriter sw = new StringWriter();
+        XMLWriter xw = new XMLWriter(sw, format);
+        try {
+            xw.write(document);
+            xw.flush();
+            xw.close();
+        } catch (IOException e) {
+        }
+        return sw.toString();
     }
 
     /**
@@ -258,6 +460,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 neededLibraries);
         rootResource.addResources(talendLibraries);
 
+        // Add libraries which are needed by build scripts.
+        List<URL> buildScriptLibraries = getBuildScriptLibraries();
+        rootResource.addResources(buildScriptLibraries);
+
         // Gets jobInfo.properties
         if (!(process.length > 1)) {
             for (ExportFileResource pro : process) {
@@ -292,6 +498,38 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         }
         return list;
 
+    }
+
+    protected List<URL> getBuildScriptLibraries() {
+        List<URL> list = new ArrayList<URL>();
+        if (isOptionChoosed(ExportChoice.needAntScript)) {
+            Bundle bundle = Platform.getBundle(org.talend.resources.ResourcesPlugin.PLUGIN_ID);
+            Enumeration entryPaths = bundle.getEntryPaths(ExportJobConstants.ANT_BUILD_SCRIPT_LIB_DIR);
+            if (entryPaths == null) {
+                return list;
+            }
+            while (entryPaths.hasMoreElements()) {
+                Object entryPath = entryPaths.nextElement();
+                if (entryPath != null && entryPath instanceof String) {
+                    String path = (String) entryPath;
+                    if (path.endsWith(".jar")) { //$NON-NLS-1$
+                        URL entry = bundle.getEntry(path);
+                        if (entry != null) {
+                            try {
+                                URL fileUrl = FileLocator.toFileURL(entry);
+                                list.add(fileUrl);
+                            } catch (Exception e) {
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (isOptionChoosed(ExportChoice.needMavenScript)) {
+            // TODO:
+        }
+
+        return list;
     }
 
     /**
@@ -769,7 +1007,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 ExceptionHandler.process(e);
             }
         }
-
         return list;
         // List<URL> libraries = new ArrayList<URL>();
         // if (needLibraries) {

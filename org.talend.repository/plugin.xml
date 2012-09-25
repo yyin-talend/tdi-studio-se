@@ -1916,5 +1916,20 @@
             name="TOS">
       </provider>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.talend.designer.core.ui.preferences.ImportExportPreferencePage"
+            class="org.talend.repository.preference.AntScriptPreferencePage"
+            id="org.talend.repository.preference.AntScriptPreferencePage"
+            name="%preferencePage.Ant">
+      </page>
+      <page
+            category="org.talend.designer.core.ui.preferences.ImportExportPreferencePage"
+            class="org.talend.repository.preference.MavenScriptPreferencePage"
+            id="org.talend.repository.preference.MavenScriptPreferencePage"
+            name="%preferencePage.Maven">
+      </page>
+   </extension>
 
 </plugin>

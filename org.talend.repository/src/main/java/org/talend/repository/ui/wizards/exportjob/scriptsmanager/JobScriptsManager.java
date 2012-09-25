@@ -192,6 +192,8 @@ public abstract class JobScriptsManager {
         doNotCompileCode,
         needDependencies,
         setParameterValues,
+        needAntScript,
+        needMavenScript,
         esbQueueMessageName,
         esbServiceName,
         esbCategory,
