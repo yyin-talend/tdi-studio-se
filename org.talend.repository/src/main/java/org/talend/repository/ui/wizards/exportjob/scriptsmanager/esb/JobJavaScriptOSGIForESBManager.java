@@ -386,7 +386,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // OSGi DataSource
         DataSourceConfig dataSourceConfig = new DataSourceConfig(processItem);
         additionalJobBeanParams += dataSourceConfig.getAdditionalJobBeanParams();
-        additionalBeansConfig += dataSourceConfig.getAdditionalJobBundleConfig();
+//        additionalBeansConfig += dataSourceConfig.getAdditionalJobBundleConfig();
 
         BufferedReader br = null;
         BufferedWriter bw = null;
@@ -463,7 +463,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // OSGi DataSource
         DataSourceConfig dataSourceConfig = new DataSourceConfig(processItem);
         additionalJobBeanParams += dataSourceConfig.getAdditionalJobBeanParams();
-        additionalJobBundleConfig += dataSourceConfig.getAdditionalJobBundleConfig();
+//        additionalJobBundleConfig += dataSourceConfig.getAdditionalJobBundleConfig();
 
         BufferedReader br = null;
         BufferedWriter bw = null;
