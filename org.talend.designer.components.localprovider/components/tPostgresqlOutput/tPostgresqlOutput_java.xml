@@ -247,18 +247,19 @@
       <DEFAULT>postgres_id</DEFAULT>
     </PARAMETER>    
     
+  </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  
     <PARAMETER
       NAME="SAVE_POINT"
       FIELD="CHECK"
       NUM_ROW="11"
-      SHOW_IF="USE_BATCH_SIZE == 'false'" 
+      SHOW_IF="(USE_BATCH_SIZE == 'false') AND (DIE_ON_ERROR == 'false')" 
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
     
-  </PARAMETERS>
-  
-  <ADVANCED_PARAMETERS>
   	    <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"

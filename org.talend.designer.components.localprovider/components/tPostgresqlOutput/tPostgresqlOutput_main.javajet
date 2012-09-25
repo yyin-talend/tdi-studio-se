@@ -52,6 +52,13 @@ skeleton="../templates/db_output_bulk.skeleton"
 
 	//feature:22704
 	boolean savePoint = ("true").equals(ElementParameterParser.getValue(node,"__SAVE_POINT__"));
+	boolean showSavePoint = false;
+	 
+    if(("true").equals(useExistingConn)) {
+        showSavePoint =  savePoint && !useBatchSize && !("true").equals(dieOnError);
+    }else{
+        showSavePoint =  savePoint && !useBatchSize && !("true").equals(dieOnError) && (!("").equals(commitEvery) && !("0").equals(commitEvery));
+    }
 	
     //feature:2880
     getManager(dbmsId, cid, node);
@@ -347,16 +354,16 @@ skeleton="../templates/db_output_bulk.skeleton"
     		}else {    		
     		%>
             try {
-				<%if(savePoint && !useBatchSize){%>
+				<%if(showSavePoint){%>
                 	sp_<%=cid %> = conn_<%=cid%>.setSavepoint();
 				<%}%>
                 insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
-				<%if(savePoint && !useBatchSize){%>
+				<%if(showSavePoint){%>
 	                conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
 				<%}%>
                 nb_line_<%=cid%>++;
             } catch(Exception e) {
-				<%if(savePoint && !useBatchSize){%>
+				<%if(showSavePoint){%>
 	                conn_<%=cid%>.rollback(sp_<%=cid %>);
 	            <%}%>
                 whetherReject_<%=cid%> = true;
@@ -475,16 +482,16 @@ skeleton="../templates/db_output_bulk.skeleton"
     		}else {    		
     		%>
             try {
-				<%if(savePoint && !useBatchSize){%>
+				<%if(showSavePoint){%>
 	                sp_<%=cid %> = conn_<%=cid%>.setSavepoint();
 	            <%}%>
                 updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
-				<%if(savePoint && !useBatchSize){%>
+				<%if(showSavePoint){%>
                 	conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
                 <%}%>	
                 nb_line_<%=cid%>++;
             } catch(Exception e) {
-				<%if(savePoint && !useBatchSize){%>
+				<%if(showSavePoint){%>
 	                conn_<%=cid%>.rollback(sp_<%=cid %>);
 	            <%}%>
                 whetherReject_<%=cid%> = true;
@@ -614,15 +621,15 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }                
                 %>
                 try {
-					<%if(savePoint && !useBatchSize){%>
+					<%if(showSavePoint){%>
 	                    sp_<%=cid %> = conn_<%=cid%>.setSavepoint();
 	                <%}%>
                     updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmtUpdate_<%=cid %>.executeUpdate();
-					<%if(savePoint && !useBatchSize){%>
+					<%if(showSavePoint){%>
     	                conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
     	            <%}%>
                 } catch(Exception e) {
-					<%if(savePoint && !useBatchSize){%>
+					<%if(showSavePoint){%>
     	                conn_<%=cid%>.rollback(sp_<%=cid %>);
     	            <%}%>
                     whetherReject_<%=cid%> = true;
@@ -688,15 +695,15 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }                
                 %>
                 try {
-					<%if(savePoint && !useBatchSize){%>
+					<%if(showSavePoint){%>
 	                    sp_<%=cid %> = conn_<%=cid%>.setSavepoint();
 	                <%}%>
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
-					<%if(savePoint && !useBatchSize){%>
+					<%if(showSavePoint){%>
     	                conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
     	            <%}%>
                 } catch(Exception e) {
-					<%if(savePoint && !useBatchSize){%>
+					<%if(showSavePoint){%>
     	                conn_<%=cid%>.rollback(sp_<%=cid %>);
     	            <%}%>
                     whetherReject_<%=cid%> = true;
@@ -804,16 +811,16 @@ skeleton="../templates/db_output_bulk.skeleton"
             %>
         
             try {
-				<%if(savePoint && !useBatchSize){%>
+				<%if(showSavePoint){%>
 	                sp_<%=cid %> = conn_<%=cid%>.setSavepoint();
 	            <%}%>
                 updateFlag_<%=cid%>=pstmtUpdate_<%=cid %>.executeUpdate();
                 updatedCount_<%=cid%> = updatedCount_<%=cid%>+updateFlag_<%=cid%>;
-				<%if(savePoint && !useBatchSize){%>
+				<%if(showSavePoint){%>
 	                conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
 	            <%}%>
             } catch(Exception e) {
-				<%if(savePoint && !useBatchSize){%>
+				<%if(showSavePoint){%>
 	                conn_<%=cid%>.rollback(sp_<%=cid %>);
 	            <%}%> 
                 whetherReject_<%=cid%> = true;
@@ -884,15 +891,15 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }                
                 %>
                 try {
-					<%if(savePoint && !useBatchSize){%>
+					<%if(showSavePoint){%>
 	                    sp_<%=cid %> = conn_<%=cid%>.setSavepoint();
 	                <%}%>
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
-					<%if(savePoint && !useBatchSize){%>
+					<%if(showSavePoint){%>
     	                conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
     	            <%}%>
                 } catch(Exception e) {
-					<%if(savePoint && !useBatchSize){%>
+					<%if(showSavePoint){%>
     	                conn_<%=cid%>.rollback(sp_<%=cid %>);
     	            <%}%>
                     whetherReject_<%=cid%> = true;
@@ -982,15 +989,15 @@ skeleton="../templates/db_output_bulk.skeleton"
     		}else {    		
     		%>
             try {
-				<%if(savePoint && !useBatchSize){%>
+				<%if(showSavePoint){%>
 	                sp_<%=cid %> = conn_<%=cid%>.setSavepoint();
 				<%}%>
                 deletedCount_<%=cid%> = deletedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
-				<%if(savePoint && !useBatchSize){%>
+				<%if(showSavePoint){%>
 	                conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
 	            <%}%>
             } catch(Exception e) {
-				<%if(savePoint && !useBatchSize){%>
+				<%if(showSavePoint){%>
 	                conn_<%=cid%>.rollback(sp_<%=cid %>);
 	            <%}%>
                 whetherReject_<%=cid%> = true;

@@ -69,6 +69,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String batchSize=ElementParameterParser.getValue(node,"__BATCH_SIZE__");
 	
 	boolean savePoint = ("true").equals(ElementParameterParser.getValue(node,"__SAVE_POINT__"));
+	
+	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 %>
 
 <%
@@ -155,16 +157,16 @@ int rejectedCount_<%=cid%>=0;
 boolean whetherReject_<%=cid%> = false;
 
 java.sql.Connection conn_<%=cid%> = null;
-<%if(savePoint && !useBatchSize){%>
-		java.sql.Savepoint  sp_<%=cid %> = null;
-<%}%>
+
 <%
 if(("true").equals(useExistingConn)) {
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;
 	%>
 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-	<%
+	<%if(savePoint && !useBatchSize && !("true").equals(dieOnError)){%>
+		java.sql.Savepoint  sp_<%=cid %> = null;
+	<%}
 } else {
 	%>	
     java.lang.Class.forName("org.postgresql.Driver");    
@@ -172,7 +174,9 @@ if(("true").equals(useExistingConn)) {
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;    
     conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-	<%
+    <%if(savePoint && !useBatchSize && !("true").equals(dieOnError) && (!("").equals(commitEvery) && !("0").equals(commitEvery))){%>
+    	java.sql.Savepoint  sp_<%=cid %> = null;
+	<%}
 }
 if(!("true").equals(useExistingConn)) {
     if(!("").equals(commitEvery) && !("0").equals(commitEvery)) {
@@ -184,6 +188,12 @@ if(!("true").equals(useExistingConn)) {
     }
 }
 %>
+
+<%if(("true").equals(useExistingConn) && savePoint){%>
+    if(conn_<%=cid%>.getAutoCommit()){
+    	throw new RuntimeException("Connection autocommit must be off to use savePoint"); 
+    }
+<%}%>
 
 <%
 if (useBatchSize) {
