@@ -540,8 +540,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         Jar bin = new Jar(classesLocation);
         analyzer.setJar( bin );
 
-        analyzer.setProperty(Analyzer.IMPORT_PACKAGE, "routines.system.api,*;resolution:=optional,org.apache.cxf.management.counters");
-
         // http://jira.talendforge.org/browse/TESB-5382 LiXiaopeng
         String symbolicName = bundleName;
         Project project = ProjectManager.getInstance().getCurrentProject();
@@ -575,9 +573,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         analyzer.setProperty(Analyzer.EXPORT_PACKAGE, sb.toString());
 
+        String importPackages;
         if (ROUTE.equals(itemType)) {
-            addRouteOsgiDependencies(libResource, itemToBeExport);
+            importPackages = addRouteOsgiDependencies(libResource, itemToBeExport);
+        } else {
+            importPackages = "routines.system.api,org.apache.cxf.management.counters";
         }
+        importPackages += ",*;resolution:=optional";
+        analyzer.setProperty(Analyzer.IMPORT_PACKAGE, importPackages);
+
         StringBuilder bundleClasspath = new StringBuilder(".");
         Set<String> relativePathList = libResource.getRelativePathList();
         for (String path : relativePathList) {
@@ -696,10 +700,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return requiredBundles;
     }
 
-    private static void addRouteOsgiDependencies(ExportFileResource libResource, List<ProcessItem> itemToBeExport) throws IOException {
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IProject project = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
-        IPath libPath = project.getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
+    private static String addRouteOsgiDependencies(ExportFileResource libResource, List<ProcessItem> itemToBeExport) throws IOException {
+        IPath libPath = ResourcesPlugin.getWorkspace().getRoot()
+            .getProject(JavaUtils.JAVA_PROJECT_NAME).getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
+        String importPackages = null;
         for (ProcessItem pi : itemToBeExport) {
             IOsgiDependenciesService dependenciesService = (IOsgiDependenciesService) GlobalServiceRegister.getDefault()
                     .getService(IOsgiDependenciesService.class);
@@ -726,11 +730,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 ////                    a.put(new Attributes.Name("Require-Bundle"), requireBundles);
 //                	System.out.println("requireBundles="+requireBundles);
 //                }
-//                String importPackages = bundleDependences.get(IOsgiDependenciesService.IMPORT_PACKAGE);
-//                if (importPackages != null && !"".equals(importPackages)) {
-////                    a.put(new Attributes.Name("Import-Package"), importPackages);
-//                	System.out.println("importPackages="+importPackages);
-//                }
+                importPackages = bundleDependences.get(IOsgiDependenciesService.IMPORT_PACKAGE);
 //                String exportPackages = bundleDependences.get(IOsgiDependenciesService.EXPORT_PACKAGE);
 //                if(exportPackages != null && !"".equals(exportPackages)){
 ////                	a.put(new Attributes.Name("Export-Package"), exportPackages);
@@ -741,8 +741,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 //                	System.out.println("getClassPath(libResource)="+getClassPath(libResource));
 //                }
             }
-
         }
+        return importPackages;
     }
 
     /**
@@ -792,7 +792,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
     }
 
-    private String getClassPath(ExportFileResource libResource) {
+    private static String getClassPath(ExportFileResource libResource) {
         StringBuffer libBuffer = new StringBuffer();
         libBuffer.append(PACKAGE_SEPARATOR).append(","); //$NON-NLS-1$ 
         Set<String> relativePathList = libResource.getRelativePathList();
