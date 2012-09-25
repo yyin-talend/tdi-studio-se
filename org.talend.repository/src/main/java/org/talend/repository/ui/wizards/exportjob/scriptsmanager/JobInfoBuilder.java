@@ -141,9 +141,7 @@ public class JobInfoBuilder {
         RepositoryContext rc = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         if (rc.getFields().containsKey(branchKey) && rc.getFields().get(branchKey) != null) {
             String branchSelection = rc.getFields().get(branchKey);
-            if (!branchSelection.equals("")) {
-                propertyFile.setProperty(BRANCH, branchSelection);
-            }
+            propertyFile.setProperty(BRANCH, branchSelection);
         }
 
         propertyFile.setProperty(JOB_ID, jobInfo.getJobId());
