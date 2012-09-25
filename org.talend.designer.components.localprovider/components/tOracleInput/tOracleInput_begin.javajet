@@ -215,7 +215,7 @@ imports="
 	    	}
 	    	if(isTSWithTZ && supportTSTZ){
 	    	%>
-    			org.talend.oracle.TimestampWithTZ talendTimestampWithTZ = org.talend.oracle.TIMESTAMPTZ.toTalendTSTZ(conn_<%=cid%>,
+    			TalendTimestampWithTZ talendTimestampWithTZ = OracleTIMESTAMPTZUtils.toTalendTSTZ(conn_<%=cid%>,
                     ((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(<%=currentColNo%>).toBytes());
                 if(talendTimestampWithTZ != null){
                 	<%=firstConnName%>.<%=column.getLabel()%> = talendTimestampWithTZ;

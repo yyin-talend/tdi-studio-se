@@ -11,8 +11,9 @@
     STARTABLE="false"
     SCHEMA_AUTO_PROPAGATE="true"
     DATA_AUTO_PROPAGATE="false"
+    HAS_CONDITIONAL_OUTPUTS="true"
     EXTENSION="org.talend.designer.scd"
- HAS_CONDITIONAL_OUTPUTS="true" >
+  >
     <SIGNATURE/>
   </HEADER>
 
@@ -44,7 +45,14 @@
       REPOSITORY_VALUE="DATABASE:ORACLE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
-	
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="10"
+      SHOW="false"
+    >       
+      <DEFAULT>oracle_id</DEFAULT>
+    </PARAMETER>
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
@@ -105,7 +113,7 @@
       REPOSITORY_VALUE="SERVER_NAME"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and CONNECTION_TYPE != 'ORACLE_OCI') and (CONNECTION_TYPE != 'ORACLE_RAC')"
     >
-      <DEFAULT>"localhost"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 	
     <PARAMETER
