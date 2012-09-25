@@ -159,6 +159,7 @@ public class TalendForgeDialog extends TrayDialog {
         }
     }
 
+    @Override
     protected void initializeBounds() {
         super.initializeBounds();
         Point location = getInitialLocation(getShell().getSize());
@@ -548,6 +549,7 @@ public class TalendForgeDialog extends TrayDialog {
         }
         improveButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 preferenceStore.setValue(ITalendCorePrefConstants.DATA_COLLECTOR_ENABLED, improveButton.getSelection());
             }
@@ -787,6 +789,7 @@ public class TalendForgeDialog extends TrayDialog {
     private void addListener() {
         createAccountButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 boolean success = false;
                 String email = emailText.getText().trim();
@@ -797,7 +800,12 @@ public class TalendForgeDialog extends TrayDialog {
                             countryCombo.getText(), isProxyEnable, proxyHost, proxyPort, proxyUser, proxyPassword);
                     if (success) {
                         IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-                        String connectionEmail = project.getAuthor().getLogin();
+                        String connectionEmail = null;
+                        if (project.getAuthor() != null) {
+                            connectionEmail = project.getAuthor().getLogin();
+                        } else {
+                            connectionEmail = "test@talend.com";
+                        }
                         prefStore.setValue(connectionEmail, email + ":" + pseudonym + ":" + password);
                     }
                 } catch (BusinessException e1) {
@@ -814,6 +822,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         proxySettingButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 NetworkSettingDialog netSettingDialog = new NetworkSettingDialog(getParentShell());
                 if (netSettingDialog.open() == Dialog.OK) {
@@ -822,7 +831,7 @@ public class TalendForgeDialog extends TrayDialog {
                     proxyPort = proxyString[1];
                     proxyUser = proxyString[2];
                     proxyPassword = proxyString[3];
-                    if (proxyHost != null && !"".equals(proxyHost)) {//$NON-NLS-N$
+                    if (proxyHost != null && !"".equals(proxyHost)) {
                         isProxyEnable = true;
                     }
                 } else {
@@ -837,6 +846,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         proxySettingButtonForConnect.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 NetworkSettingDialog netSettingDialog = new NetworkSettingDialog(getParentShell());
                 if (netSettingDialog.open() == Dialog.OK) {
@@ -845,7 +855,7 @@ public class TalendForgeDialog extends TrayDialog {
                     proxyPort = proxyString[1];
                     proxyUser = proxyString[2];
                     proxyPassword = proxyString[3];
-                    if (proxyHost != null && !"".equals(proxyHost)) {//$NON-NLS-N$
+                    if (proxyHost != null && !"".equals(proxyHost)) {
                         isProxyEnable = true;
                     }
                 } else {
@@ -860,6 +870,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         skipButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
                 int count = prefStore.getInt(LOGINCOUNT);
@@ -871,6 +882,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         skipButtonForConnect.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
                 int count = prefStore.getInt(LOGINCOUNT);
@@ -963,6 +975,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         agreeButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 if (agreeButton.getSelection()) {
                     String password = passwordText.getText();
@@ -982,6 +995,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         link.addHyperlinkListener(new HyperlinkAdapter() {
 
+            @Override
             public void linkActivated(HyperlinkEvent e) {
                 stackLayout.topControl = connectAccount;
                 downComposite.layout();
@@ -990,6 +1004,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         linkToCreate.addHyperlinkListener(new HyperlinkAdapter() {
 
+            @Override
             public void linkActivated(HyperlinkEvent e) {
                 stackLayout.topControl = createAccount;
                 downComposite.layout();
@@ -1025,6 +1040,7 @@ public class TalendForgeDialog extends TrayDialog {
 
         connectButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 String username = usernameTextForConnect.getText().trim();
                 String password = passwordTextForconnect.getText().trim();
@@ -1052,7 +1068,12 @@ public class TalendForgeDialog extends TrayDialog {
                     }
                     if (isUserPassRight) {
                         IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-                        String connectionEmail = project.getAuthor().getLogin();
+                        String connectionEmail = null;
+                        if (project.getAuthor() != null) {
+                            connectionEmail = project.getAuthor().getLogin();
+                        } else {
+                            connectionEmail = "test@talend.com";
+                        }
                         prefStore.setValue(connectionEmail, "notused" + ":" + username + ":" + password);
                         // bug TDI-19619,when connect correct,no need openInformation.
                         // MessageDialog.openInformation(getShell(),
