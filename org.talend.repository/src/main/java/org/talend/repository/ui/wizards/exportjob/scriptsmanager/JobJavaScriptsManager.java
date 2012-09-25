@@ -259,14 +259,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         rootResource.addResources(talendLibraries);
 
         // Gets jobInfo.properties
-        for (ExportFileResource pro : process) {
-            ExportFileResource jobInfoResource = new ExportFileResource(null, PATH_SEPARATOR);
-            if (CommonsPlugin.isHeadless()) {
-                jobInfoResource = new ExportFileResource();
+        if (!(process.length > 1)) {
+            for (ExportFileResource pro : process) {
+                ExportFileResource jobInfoResource = new ExportFileResource(null, PATH_SEPARATOR);
+                if (CommonsPlugin.isHeadless()) {
+                    jobInfoResource = new ExportFileResource();
+                }
+                list.add(jobInfoResource);
+                List<URL> jobInfoList = getJobInfoFile(pro, contextName);
+                jobInfoResource.addResources(jobInfoList);
             }
-            list.add(jobInfoResource);
-            List<URL> jobInfoList = getJobInfoFile(pro);
-            jobInfoResource.addResources(jobInfoList);
         }
 
         if (PluginChecker.isRulesPluginLoaded()) {
@@ -801,16 +803,17 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param process
      * @return
      */
-    protected List<URL> getJobInfoFile(ExportFileResource process) {
+    protected List<URL> getJobInfoFile(ExportFileResource process, String contextName) {
         List<URL> list = new ArrayList<URL>();
         try {
             String tmpFoler = getTmpFolder();
             String jobInfoPath = tmpFoler + File.separator + JOBINFO_FILE;
             JobInfoBuilder jobInfoBuilder = null;
             if (CommonsPlugin.isHeadless()) {
-                jobInfoBuilder = new JobInfoBuilder(process, exportChoice, tmpFoler, jobInfoPath);
+                jobInfoBuilder = new JobInfoBuilder(process, contextName, exportChoice, jobInfoPath);
             } else {
-                jobInfoBuilder = new JobInfoBuilder(process, tmpFoler, jobInfoPath);
+                jobInfoBuilder = new JobInfoBuilder(process, contextName, isOptionChoosed(ExportChoice.applyToChildren),
+                        jobInfoPath);
             }
             jobInfoBuilder.buildProperty();
             File jobInfoFile = new File(jobInfoPath);

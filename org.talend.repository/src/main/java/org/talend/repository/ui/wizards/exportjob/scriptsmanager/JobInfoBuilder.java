@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -38,13 +39,13 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
 
 public class JobInfoBuilder {
 
-    private String dir = null;
-
     private String jobPropertyFile = null;
 
-    private String filename = null;
+    private boolean applyContextToChild = false;
 
     private ExportFileResource process = null;
+
+    private String contextName = null;
 
     private static final String UNDER_LINE_CHAR = "_"; //$NON-NLS-1$
 
@@ -80,20 +81,17 @@ public class JobInfoBuilder {
      * @param jarName
      * @param includeDirs
      */
-    JobInfoBuilder(ExportFileResource process, String root, String jobInfoFile) {
+    JobInfoBuilder(ExportFileResource process, String contextName, boolean applyContextToChild, String jobInfoFile) {
         this.process = process;
-        this.dir = root;
+        this.contextName = contextName;
         this.jobPropertyFile = jobInfoFile;
-        File file = new File(jobInfoFile);
-        this.filename = file.getName();
+        this.applyContextToChild = applyContextToChild;
     }
 
-    JobInfoBuilder(ExportFileResource process, Map<ExportChoice, Object> exportChoice, String root, String jobInfoFile) {
+    JobInfoBuilder(ExportFileResource process, String contextName, Map<ExportChoice, Object> exportChoice, String jobInfoFile) {
         this.process = process;
-        this.dir = root;
+        this.contextName = contextName;
         this.jobPropertyFile = jobInfoFile;
-        File file = new File(jobInfoFile);
-        this.filename = file.getName();
         this.exportChoice = exportChoice;
     }
 
@@ -143,22 +141,25 @@ public class JobInfoBuilder {
         RepositoryContext rc = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         if (rc.getFields().containsKey(branchKey) && rc.getFields().get(branchKey) != null) {
             String branchSelection = rc.getFields().get(branchKey);
-            propertyFile.setProperty(BRANCH, branchSelection);
-
+            if (!branchSelection.equals("")) {
+                propertyFile.setProperty(BRANCH, branchSelection);
+            }
         }
 
         propertyFile.setProperty(JOB_ID, jobInfo.getJobId());
         propertyFile.setProperty(JOB_NAME, jobInfo.getJobName());
         propertyFile.setProperty(JOB_VERSION, jobInfo.getJobVersion());
-        propertyFile.setProperty(CONTEXT_NAME, jobInfo.getContextName());
+        propertyFile.setProperty(CONTEXT_NAME, this.contextName);
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HHmmssSSS");
         Date currentDate = new Date();
         propertyFile.setProperty(DATE, df.format(currentDate));
 
-        if (exportChoice != null) {
+        if (CommonsPlugin.isHeadless() && exportChoice != null) {
             propertyFile.setProperty(APPLY_CONTEXY_CHILDREN, String.valueOf(exportChoice.get(ExportChoice.applyToChildren)));
             propertyFile.setProperty(ADD_STATIC_CODE, String.valueOf(exportChoice.get(ExportChoice.addStatistics)));
+        } else {
+            propertyFile.setProperty(APPLY_CONTEXY_CHILDREN, String.valueOf(applyContextToChild));
         }
         propertyFile.setProperty(COMMANDLINE_VERSION, VersionUtils.getVersion());
 
