@@ -30,13 +30,26 @@ if(("true").equals(useExistingConn)){
 	String conn = "conn_" + connection;
 	%>
 	java.sql.Connection connection_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+	if (null == connection_<%=cid%>) {
+        java.util.Map<String, javax.sql.DataSource> dataSources_<%=cid%>= (java.util.Map<String, javax.sql.DataSource>) globalMap.get(KEY_DB_DATASOURCES);
+        connection_<%=cid%> = dataSources_<%=cid%>.get("<%=connection%>").getConnection();
+    }
 	<%
 } else {       
-    %>
-    java.lang.Class.forName(<%=driverClass %>);
-    String connectionString_<%=cid %> = <%=jdbcUrl %>;
-    java.sql.Connection connection_<%=cid %> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser %>, <%=dbpwd %>);
-    <%
+%>
+	java.sql.Connection connection_<%=cid %> = null;
+	java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+	if (null != dataSources_<%=cid%>) {
+<%
+		String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
+%>
+		connection_<%=cid %> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+	} else {
+		java.lang.Class.forName(<%=driverClass %>);
+		String connectionString_<%=cid %> = <%=jdbcUrl %>;
+		connection_<%=cid %> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser %>, <%=dbpwd %>);
+	}
+<%
 }
 %>
 

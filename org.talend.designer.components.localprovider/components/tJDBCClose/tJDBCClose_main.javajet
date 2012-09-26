@@ -17,6 +17,11 @@ imports="
     String conn = "conn_" + connection;
 %>
 	java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+	if (null == conn_<%=cid%>) {
+        java.util.Map<String, javax.sql.DataSource> dataSources= (java.util.Map<String, javax.sql.DataSource>) globalMap.get(KEY_DB_DATASOURCES);
+        conn_<%=cid%> = dataSources.get("<%=connection%>").getConnection();
+    }
+	
 	if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed())
 	{
 		conn_<%=cid%>.close();

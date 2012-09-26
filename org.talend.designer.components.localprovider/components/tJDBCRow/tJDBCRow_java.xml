@@ -47,7 +47,7 @@
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
-      NUM_ROW="20"
+      NUM_ROW="15"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>    
@@ -56,7 +56,7 @@
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
       FILTER="tJDBCConnection"
-      NUM_ROW="20"
+      NUM_ROW="15"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
     />
@@ -64,7 +64,7 @@
     <PARAMETER
       NAME="URL"
       FIELD="TEXT"
-      NUM_ROW="30"
+      NUM_ROW="20"
       REPOSITORY_VALUE="URL"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -75,7 +75,7 @@
     <PARAMETER
       NAME="DRIVER_JAR"
       FIELD="TABLE"
-      NUM_ROW="40"
+      NUM_ROW="25"
       NB_LINES="2" 
       REPOSITORY_VALUE="DRIVER_JAR"
       REQUIRED="true"
@@ -89,7 +89,7 @@
     <PARAMETER
       NAME="DRIVER_CLASS"
       FIELD="TEXT"
-      NUM_ROW="50"
+      NUM_ROW="30"
       REPOSITORY_VALUE="DRIVER_CLASS"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -100,7 +100,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="60"
+      NUM_ROW="35"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -111,7 +111,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="60"
+      NUM_ROW="35"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -122,7 +122,7 @@
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="70"
+      NUM_ROW="40"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -131,7 +131,7 @@
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="70"
+      NUM_ROW="40"
       CONTEXT="REJECT"
       SHOW="true">
       <TABLE READONLY="true">
@@ -143,7 +143,7 @@
 	<PARAMETER  
 		NAME="TABLE"  
 		FIELD="DBTABLE"  
-		NUM_ROW="70"  
+		NUM_ROW="40"  
 		>  
 		<DEFAULT>""</DEFAULT>  
 	</PARAMETER>  
@@ -151,7 +151,7 @@
  	<PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
-      NUM_ROW="80"
+      NUM_ROW="45"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -159,7 +159,7 @@
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
-      NUM_ROW="90"
+      NUM_ROW="50"
       REQUIRED="true"
     >
       <DEFAULT>"select id, name from employee"</DEFAULT>
@@ -168,9 +168,38 @@
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="100"
+      NUM_ROW="90"
     >
       <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+		
+	<PARAMETER
+	  NAME="NOTE"
+      FIELD="LABEL"
+      NUM_ROW="63"
+	  GROUP="DATASOURCE"
+	  SHOW_IF="USE_EXISTING_CONNECTION=='false'"
+    >
+    	<DEFAULT>This option only applies when deploying and running in the Talend Runtime</DEFAULT>
+    </PARAMETER>
+	<PARAMETER
+      NAME="SPECIFY_DATASOURCE_ALIAS"
+	  FIELD="CHECK"
+      NUM_ROW="64"
+      REQUIRED="true"
+	  GROUP="DATASOURCE"
+	  SHOW_IF="USE_EXISTING_CONNECTION=='false'"
+    >      
+    </PARAMETER>
+	<PARAMETER
+      NAME="DATASOURCE_ALIAS"
+	  FIELD="TEXT"
+      NUM_ROW="65"
+      REQUIRED="true"
+	  GROUP="DATASOURCE"
+	  SHOW_IF="(SPECIFY_DATASOURCE_ALIAS=='true' AND USE_EXISTING_CONNECTION=='false')"
+    >      
+	<DEFAULT>""</DEFAULT>
     </PARAMETER>
   </PARAMETERS>
   

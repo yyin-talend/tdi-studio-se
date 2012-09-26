@@ -60,8 +60,8 @@ imports="
                     }
                     String alias = ElementParameterParser.getValue(connectionNode, "__DATASOURCE_ALIAS__");
 %>
-					java.util.Map<String, routines.system.TalendDataSource> dataSources = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
-					conn_<%=cid%> = dataSources.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+					java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+					conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
 					//globalMap.put("<%=conn%>", conn_<%=cid%>);
 		        }
 <%
