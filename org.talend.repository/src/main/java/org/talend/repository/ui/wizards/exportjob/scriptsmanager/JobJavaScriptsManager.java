@@ -17,7 +17,6 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -241,7 +240,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         if (resourceService == null) {
             return;
         }
-        File inputMavenAssemblyFile = new File(resourceService.getMavenScriptFilePath("assemby.xml")); //$NON-NLS-1$
+        File inputMavenAssemblyFile = new File(resourceService.getMavenScriptFilePath("assembly.xml")); //$NON-NLS-1$
         if (!inputMavenAssemblyFile.exists()) {
             return;
         }
@@ -284,15 +283,15 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                                 }
                             }
                         }
-                        if ("groupId".equals(ele.getName())) {
+                        if ("groupId".equals(ele.getName())) { //$NON-NLS-1$
                             ele.setText(projectName);
-                        } else if ("artifactId".equals(ele.getName())) {
+                        } else if ("artifactId".equals(ele.getName())) { //$NON-NLS-1$
                             ele.setText(jobName);
-                        } else if ("version".equals(ele.getName())) {
+                        } else if ("version".equals(ele.getName())) { //$NON-NLS-1$
                             ele.setText(jobVersion);
-                        } else if ("dependencies".equals(ele.getName())) {
+                        } else if ("dependencies".equals(ele.getName())) { //$NON-NLS-1$
                             for (ModuleNeeded module : neededModules) {
-                                addMavenDependencyElement(ele, module.getModuleName(), "${basedir}/../lib/");
+                                addMavenDependencyElement(ele, module.getModuleName(), "${basedir}/../lib/"); //$NON-NLS-1$
                             }
                         }
                     }
@@ -324,8 +323,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     protected void addMavenDependencyElement(Element parentElement, String jarName, String libFolder) {
         String jarNameWithoutExt = jarName;
-        if (jarNameWithoutExt.indexOf(".") != -1) {
-            jarNameWithoutExt = jarNameWithoutExt.substring(0, jarNameWithoutExt.lastIndexOf("."));
+        if (jarNameWithoutExt.indexOf(".") != -1) { //$NON-NLS-1$
+            jarNameWithoutExt = jarNameWithoutExt.substring(0, jarNameWithoutExt.lastIndexOf(".")); //$NON-NLS-1$
         }
         Element dependencyElement = parentElement.addElement("dependency"); //$NON-NLS-1$
         Element groupIdElement = dependencyElement.addElement("groupId"); //$NON-NLS-1$
@@ -348,19 +347,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         } finally {
             output.close();
         }
-    }
-
-    public static String formatXML(Document document) {
-        OutputFormat format = OutputFormat.createPrettyPrint();
-        StringWriter sw = new StringWriter();
-        XMLWriter xw = new XMLWriter(sw, format);
-        try {
-            xw.write(document);
-            xw.flush();
-            xw.close();
-        } catch (IOException e) {
-        }
-        return sw.toString();
     }
 
     /**

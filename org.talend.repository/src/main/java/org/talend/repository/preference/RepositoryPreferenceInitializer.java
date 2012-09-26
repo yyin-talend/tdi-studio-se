@@ -57,11 +57,10 @@ public class RepositoryPreferenceInitializer extends AbstractPreferenceInitializ
         }
         File templateScriptFile = null;
         if (type == IRepositoryPrefConstants.MAVEN_SCRIPT_TEMPLATE) {
-            templateScriptFile = new File(resourceService.getMavenScriptFilePath("pom.xml"));
+            templateScriptFile = new File(resourceService.getMavenScriptFilePath("pom.xml")); //$NON-NLS-1$
         } else if (type == IRepositoryPrefConstants.MAVEN_OSGI_SCRIPT_TEMPLATE) {
-            templateScriptFile = new File(resourceService.getMavenScriptFilePath("pom_osgi.xml"));
+            templateScriptFile = new File(resourceService.getMavenScriptFilePath("pom_osgi.xml")); //$NON-NLS-1$
         } else {
-
             templateScriptFile = new File(resourceService.getAntScriptFilePath());
         }
         if (!templateScriptFile.exists()) {

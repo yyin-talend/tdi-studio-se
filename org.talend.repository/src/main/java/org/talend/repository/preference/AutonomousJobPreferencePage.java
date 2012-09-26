@@ -14,26 +14,20 @@ package org.talend.repository.preference;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.talend.core.model.repository.IRepositoryPrefConstants;
-import org.talend.core.model.repository.RepositoryManager;
 
 /**
  * DOC ycbai class global comment. Detailled comment
  */
-public class MavenScriptPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public class AutonomousJobPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    public MavenScriptPreferencePage() {
+    public AutonomousJobPreferencePage() {
         super(FLAT);
-        setPreferenceStore(RepositoryManager.getPreferenceStore());
     }
 
     /*
@@ -47,25 +41,10 @@ public class MavenScriptPreferencePage extends FieldEditorPreferencePage impleme
 
         Label scriptLabel = new Label(parent, SWT.NONE);
 
-        scriptLabel.setText("Script");
-        scriptLabel.setLayoutData(new GridData());
-
-        final StyledText scriptTxt = new StyledText(parent, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-        scriptTxt.setLayoutData(new GridData(GridData.FILL_BOTH));
-        scriptTxt.setText(getPreferenceStore().getString(getPreferenceKey()));
-
-        scriptTxt.addModifyListener(new ModifyListener() {
-
-            public void modifyText(ModifyEvent e) {
-                getPreferenceStore().setValue(getPreferenceKey(), ((StyledText) e.getSource()).getText().trim());
-            }
-        });
+        scriptLabel.setText("Expand the tree to edit the preferences of Autonomous job.");
+        scriptLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         return parent;
-    }
-
-    protected String getPreferenceKey() {
-        return IRepositoryPrefConstants.MAVEN_SCRIPT_TEMPLATE;
     }
 
     /*
