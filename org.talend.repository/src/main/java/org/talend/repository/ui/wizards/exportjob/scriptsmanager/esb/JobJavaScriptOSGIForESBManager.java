@@ -728,7 +728,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
                 String importPackages = bundleDependences.get(IOsgiDependenciesService.IMPORT_PACKAGE);
                 if (importPackages != null && !"".equals(importPackages)) {
-                    analyzer.setProperty(Analyzer.IMPORT_PACKAGE, importPackages);
+                    analyzer.setProperty(Analyzer.IMPORT_PACKAGE, importPackages + ",*;resolution:=optional"); //$NON-NLS-1$
                 }
                 String exportPackages = bundleDependences.get(IOsgiDependenciesService.EXPORT_PACKAGE);
                 if (exportPackages != null && !"".equals(exportPackages)) {
