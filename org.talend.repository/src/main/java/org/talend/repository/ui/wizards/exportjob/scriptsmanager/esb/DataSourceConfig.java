@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,44 +24,39 @@ import org.talend.repository.utils.EmfModelUtils;
  */
 public class DataSourceConfig {
 
-	private String additionalJobBeanParams = ""; //$NON-NLS-1$
+    private String additionalJobBeanParams = ""; //$NON-NLS-1$
 
-    public static boolean isDBConnectionJob(ProcessItem processItem) {
-        return !getDBConnectionComponents(processItem).isEmpty();
-    }
-
-    private static Collection<NodeType> getDBConnectionComponents(ProcessItem processItem) {
-    	return EmfModelUtils.getComponentsByName(processItem,
-    			"tJDBCConnection",
-    			"tJDBCInput",
-    			"tMysqlConnection",
-    			"tMysqlInput");
-    }
-
-	public DataSourceConfig(ProcessItem processItem) {
-        Collection<NodeType> dbComponents = getDBConnectionComponents(processItem);
-        if (!dbComponents.isEmpty()) {
-        	Set<String> aliases = new HashSet<String>();
-        	for (NodeType dbComponent : dbComponents) {
-        		aliases.add(EmfModelUtils.computeTextElementValue("DATASOURCE_ALIAS", dbComponent));
-			}
-        	additionalJobBeanParams +=
-        		  "\n\t\t<property name=\"dataSources\">" 
-        		+ "\n\t\t\t<map>";
-        	for (String alias : aliases) {
-        		additionalJobBeanParams +=
-                		  "\n\t\t\t\t<entry key=\"" + alias + "\">"
-                		+ "\n\t\t\t\t\t<reference interface=\"javax.sql.DataSource\" filter=\"(osgi.jndi.service.name=" + alias + ")\"/>"
-		      			+ "\n\t\t\t\t</entry>";
-        	}
-        	additionalJobBeanParams +=
-        		  "\n\t\t\t</map>"
-        		+ "\n\t\t</property>";
+    public DataSourceConfig(ProcessItem processItem) {
+        Set<String> aliases = new HashSet<String>();
+        for (Object o : processItem.getProcess().getNode()) {
+            if (o instanceof NodeType) {
+                NodeType node = (NodeType) o;
+                if (EmfModelUtils.isComponentActive(node)) {
+                    String alias = EmfModelUtils.computeTextElementValue("DATASOURCE_ALIAS", node);
+                    if (!"".equals(alias)) {
+                        aliases.add(alias);
+                    }
+                }
+            }
         }
-	}
+        if (!aliases.isEmpty()) {
+            additionalJobBeanParams +=
+                  "\n\t\t<property name=\"dataSources\">"
+                + "\n\t\t\t<map>";
+            for (String alias : aliases) {
+                additionalJobBeanParams +=
+                          "\n\t\t\t\t<entry key=\"" + alias + "\">"
+                        + "\n\t\t\t\t\t<reference interface=\"javax.sql.DataSource\" filter=\"(osgi.jndi.service.name=" + alias + ")\"/>"
+                        + "\n\t\t\t\t</entry>";
+            }
+            additionalJobBeanParams +=
+                  "\n\t\t\t</map>"
+                + "\n\t\t</property>";
+        }
+    }
 
-	public String getAdditionalJobBeanParams() {
-		return additionalJobBeanParams;
-	}
+    public String getAdditionalJobBeanParams() {
+        return additionalJobBeanParams;
+    }
 
 }

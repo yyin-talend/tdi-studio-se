@@ -98,9 +98,9 @@ public class EmfModelUtils {
         return null;
     }
 
-	private static final boolean isComponentActive(NodeType node) {
-		return (null == findElementParameterByName("ACTIVATE", node));
-	}
+    public static final boolean isComponentActive(NodeType node) {
+        return (null == findElementParameterByName("ACTIVATE", node));
+    }
 
     /**
     *
