@@ -64,10 +64,12 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
         super("JavaSapgicDeployWizardPage1", selection); //$NON-NLS-1$
     }
 
+    @Override
     protected List<ExportFileResource> getExportResources() throws ProcessorException {
         return manager.getExportResources(process);
     }
 
+    @Override
     protected Map<ExportChoice, Object> getExportChoiceMap() {
         Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
         exportChoiceMap.put(ExportChoice.needLauncher, shellLauncherButton.getSelection());
@@ -75,7 +77,7 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
         exportChoiceMap.put(ExportChoice.needUserRoutine, userRoutineButton.getSelection());
         exportChoiceMap.put(ExportChoice.needTalendLibraries, modelButton.getSelection());
         exportChoiceMap.put(ExportChoice.needJobItem, jobItemButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needJobScript, jobScriptButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needJobScript, Boolean.TRUE);
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
         exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
         return exportChoiceMap;
@@ -84,6 +86,7 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
     /**
      * Hook method for saving widget values for restoration by the next instance of this class.
      */
+    @Override
     protected void internalSaveWidgetValues() {
         // update directory names history
         IDialogSettings settings = getDialogSettings();
@@ -111,6 +114,7 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
      * Hook method for restoring widget values to the values that they held last time this wizard was used to
      * completion.
      */
+    @Override
     protected void restoreWidgetValues() {
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
@@ -118,8 +122,8 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
             if (directoryNames != null) {
                 // destination
                 setDestinationValue(directoryNames[0]);
-                for (int i = 0; i < directoryNames.length; i++) {
-                    addDestinationItem(directoryNames[i]);
+                for (String directoryName : directoryNames) {
+                    addDestinationItem(directoryName);
                 }
             }
             shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
