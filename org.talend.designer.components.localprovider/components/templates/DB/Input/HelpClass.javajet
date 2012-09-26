@@ -45,7 +45,7 @@ imports="
 <%
                 String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
 %>
-                conn_<%=cid%> = dataSources.get(<%=alias%>).getConnection();
+                conn_<%=cid%> = dataSources.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
             } else {
 			    java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
 				<%this.setURL(node);%>
