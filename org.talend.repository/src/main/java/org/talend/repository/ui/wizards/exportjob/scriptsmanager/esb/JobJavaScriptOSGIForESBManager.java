@@ -206,7 +206,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                             Collections.singletonList(generateRestJobSpringFiles(processItem)));
                 } else {
                     osgiResource.addResources(getOSGIInfFolder(),
-                            Collections.singletonList(generateESBFiles(processItem)));
+                            Collections.singletonList(generateBlueprintConfig(processItem)));
                 }
 
                 // Add Route Resource http://jira.talendforge.org/browse/TESB-6227
@@ -323,7 +323,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         .getVersion());
     }
 
-    private URL generateESBFiles(ProcessItem processItem) throws IOException {
+    private URL generateBlueprintConfig(ProcessItem processItem) throws IOException {
         if (itemType == null) {
             itemType = JOB;
         }
@@ -444,7 +444,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     hasSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node); //$NON-NLS-1$
                     if (hasSAM) {
                         // SAM
-                        additionalJobBeanParams =  "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
+                        additionalJobBeanParams = "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
                         additionalJobBundleConfig ="<reference id=\"eventFeature\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>";
                     }
                 }
@@ -548,6 +548,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         analyzer.setProperty(Analyzer.BUNDLE_VENDOR, brandingService.getFullProductName() + " (" + brandingService.getAcronym()
                 + "_" + RepositoryPlugin.getDefault().getBundle().getVersion().toString() + ")");
 
+        String importPackages = "";
         StringBuilder sb = new StringBuilder();
         String delim = "";
         for (ProcessItem pi : itemToBeExport) {
@@ -560,16 +561,21 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 if (!routeResourcePackages.isEmpty()) {
                     sb.append(delim).append(routeResourcePackages);
                 }
+            } else { // JOB
+                NodeType restRequestComponent = getRESTRequestComponent(pi);
+                if (null != restRequestComponent
+                    && "".equals(importPackages)
+                    && EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent)) {
+                    importPackages = "org.apache.cxf.jaxrs.security,";
+                }
             }
         }
         analyzer.setProperty(Analyzer.EXPORT_PACKAGE, sb.toString());
 
-        String importPackages;
         if (ROUTE.equals(itemType)) {
             addRouteOsgiDependencies(analyzer, libResource, itemToBeExport);
         } else {
-            importPackages = "routines.system.api,org.apache.cxf.management.counters";
-            importPackages += ",*;resolution:=optional";
+            importPackages += "routines.system.api,org.apache.cxf.management.counters,*;resolution:=optional";
             analyzer.setProperty(Analyzer.IMPORT_PACKAGE, importPackages);
 
             StringBuilder bundleClasspath = new StringBuilder(".");
