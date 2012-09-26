@@ -43,10 +43,14 @@ public class ChangeDefaultValueFortNormalizeCSVOption extends AbstractJobMigrati
                     Arrays.<IComponentConversion> asList(new IComponentConversion() {
 
                         public void transform(NodeType node) {
-                            if (ComponentUtilities.getNodeProperty(node, "DISCARD_TRAILING_EMPTY_STR") != null) {
-                                ElementParameterType useCSVOption = ComponentUtilities.getNodeProperty(node, "CSV_OPTION");
-                                if (useCSVOption != null && "true".equals(useCSVOption.getValue())) {
+                            ElementParameterType useCSVOption = ComponentUtilities.getNodeProperty(node, "CSV_OPTION");
+                            if (useCSVOption != null && "true".equals(useCSVOption.getValue())) {
+                                if (ComponentUtilities.getNodeProperty(node, "DISCARD_TRAILING_EMPTY_STR") != null) {
                                     ComponentUtilities.getNodeProperty(node, "DISCARD_TRAILING_EMPTY_STR").setValue("false");
+                                }
+                                if (ComponentUtilities.getNodeProperty(node, "TRIM") == null) {
+                                    ComponentUtilities.addNodeProperty(node, "TRIM", "CHECK");
+                                    ComponentUtilities.getNodeProperty(node, "TRIM").setValue("true");
                                 }
                             }
                         }
@@ -61,7 +65,7 @@ public class ChangeDefaultValueFortNormalizeCSVOption extends AbstractJobMigrati
     }
 
     public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2012, 9, 14, 12, 0, 0);
+        GregorianCalendar gc = new GregorianCalendar(2012, 9, 26, 12, 0, 0);
         return gc.getTime();
     }
 }
