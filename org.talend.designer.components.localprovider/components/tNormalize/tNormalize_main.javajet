@@ -32,6 +32,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         String delim = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
         
         boolean isDiscardTrailingEmptyStr=("true").equals(ElementParameterParser.getValue(node, "__DISCARD_TRAILING_EMPTY_STR__"));
+        boolean isTrim=("true").equals(ElementParameterParser.getValue(node, "__TRIM__"));
         if(useCSV){
         	delim = delim.substring(1,delim.length()-1);
         	if(("'").equals(delim)){
@@ -68,7 +69,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
             if(<%=incomingConnName %>.<%=normalizeColumn%> != null && <%=incomingConnName %>.<%=normalizeColumn%>.trim().length() > 0) {
                     <%if(useCSV){%>
                         com.talend.csv.CSVReader reader_<%=cid%> = new com.talend.csv.CSVReader(new java.io.StringReader(<%=incomingConnName %>.<%=normalizeColumn%>), '<%=delim %>');
-                        <%if("ESCAPE_MODE_BACKSLASH".equals(escapeMode)) {%>
+                        <%if(isTrim){%>
+                        reader_<%=cid%>.setTrimWhitespace(true);
+                        <%
+                        }else{
+                        %>
+                        reader_<%=cid%>.setTrimWhitespace(false);
+                        <%
+                        }
+                        if("ESCAPE_MODE_BACKSLASH".equals(escapeMode)) {
+                        %>
                         reader_<%=cid%>.setEscapeChar('\\');
                         <% } else {%>
                      	reader_<%=cid%>.setEscapeChar('<%=textEnclosure %>');
@@ -84,11 +94,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                     		if(isDiscardTrailingEmptyStr){
                     %>
                     
-                        	normalizeRecord_<%=cid%> = <%=incomingConnName %>.<%=normalizeColumn%>.split(<%=delim %>);
+                        	normalizeRecord_<%=cid%> = <%=incomingConnName %>.<%=normalizeColumn%><%if(isTrim){%>.trim()<%}%>.split(<%=delim %>);
                     <%
                     		}else{
                     %>
-                    		normalizeRecord_<%=cid%> = <%=incomingConnName %>.<%=normalizeColumn%>.split(<%=delim %>,-1);
+                    		normalizeRecord_<%=cid%> = <%=incomingConnName %>.<%=normalizeColumn%><%if(isTrim){%>.trim()<%}%>.split(<%=delim %>,-1);
                     <%
                     		}
                     }
