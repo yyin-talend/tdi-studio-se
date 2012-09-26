@@ -94,6 +94,14 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
+    <PARAMETER
+      NAME="TRIM"
+      FIELD="CHECK"
+      NUM_ROW="30"
+      SHOW="true"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
