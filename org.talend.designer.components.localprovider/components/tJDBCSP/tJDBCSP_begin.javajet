@@ -29,11 +29,21 @@ List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterPa
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 		String conn = "conn_" + connection;
 %>
-java.sql.Connection connection_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
-if (null == connection_<%=cid%>) {
-	java.util.Map<String, javax.sql.DataSource> dataSources_<%=cid%>= (java.util.Map<String, javax.sql.DataSource>) globalMap.get(KEY_DB_DATASOURCES);
-	connection_<%=cid%> = dataSources_<%=cid%>.get("<%=connection%>").getConnection();
-}
+	java.sql.Connection connection_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+	if (null == connection_<%=cid %>) {
+<%	
+		INode connectionNode = null; 
+		for (INode processNode : node.getProcess().getGeneratingNodes()) { 
+			if(connection.equals(processNode.getUniqueName())) { 
+				connectionNode = processNode; 
+				break; 
+			} 
+		} 
+		String alias = ElementParameterParser.getValue(connectionNode, "__DATASOURCE_ALIAS__"); 
+%> 
+		java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES); 
+		connection_<%=cid %> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+	
 <%
 	}else{       
 %>
