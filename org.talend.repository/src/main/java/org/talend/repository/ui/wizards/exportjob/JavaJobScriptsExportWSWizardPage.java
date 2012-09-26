@@ -906,6 +906,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             exportChoiceMap.put(ExportChoice.needContext, true);
             exportChoiceMap.put(ExportChoice.needJobItem, false);
             exportChoiceMap.put(ExportChoice.needSourceCode, false);
+            exportChoiceMap.put(ExportChoice.needMavenScript, addBSButton.getSelection());
             return exportChoiceMap;
         }
 
@@ -1308,11 +1309,31 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     }
 
     private void createOptionsForOSGIESB(Composite optionsComposite, Font font) {
-        // contextButton = new Button(optionsComposite, SWT.CHECK | SWT.LEFT);
-        //        contextButton.setText(Messages.getString("JobScriptsExportWizardPage.contextPerlScripts")); //$NON-NLS-1$
-        // contextButton.setSelection(true);
-        // contextButton.setFont(font);
-        // contextCombo = new Combo(optionsComposite, SWT.PUSH);
+        addBSButton = new Button(optionsComposite, SWT.CHECK | SWT.LEFT);
+        addBSButton.setText("Add maven script"); //$NON-NLS-1$
+        addBSButton.setFont(font);
+
+        addBSButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                boolean show = addBSButton.getSelection();
+                String destinationValue = getDestinationValue();
+                if (destinationValue.endsWith(getOutputSuffix())) {
+                    if (show) {
+                        destinationValue = destinationValue.substring(0, destinationValue.indexOf(getOutputSuffix()))
+                                + OUTPUT_FILE_SUFFIX;
+                    }
+                } else if (destinationValue.endsWith(OUTPUT_FILE_SUFFIX)) {
+                    if (!show) {
+                        destinationValue = destinationValue.substring(0, destinationValue.indexOf(OUTPUT_FILE_SUFFIX))
+                                + getOutputSuffix();
+                    }
+                }
+                setDestinationValue(destinationValue);
+            }
+        });
+
     }
 
     protected void createOptionsForWS(Composite optionsGroup, Font font) {

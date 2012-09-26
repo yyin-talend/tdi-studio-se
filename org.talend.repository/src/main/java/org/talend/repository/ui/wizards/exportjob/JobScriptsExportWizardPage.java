@@ -123,7 +123,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     public static final String ALL_VERSIONS = "Latest"; //$NON-NLS-1$
 
-    private static final String OUTPUT_FILE_SUFFIX = ".zip"; //$NON-NLS-1$
+    protected static final String OUTPUT_FILE_SUFFIX = ".zip"; //$NON-NLS-1$
 
     // widgets
     protected Button shellLauncherButton;
@@ -295,10 +295,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         if (destinationFile == null || "".equals(destinationFile)) { //$NON-NLS-1$
             if (length == 1) {
                 // TODOthis is changed by shenhaize first open ,it show contains in the combo
-                path = path.append(getDefaultFileNameWithType()); //$NON-NLS-1$
+                path = path.append(getDefaultFileNameWithType());
             } else if (length > 1) {
                 // i changed here ..
-                path = path.append(getDefaultFileNameWithType()); //$NON-NLS-1$
+                path = path.append(getDefaultFileNameWithType());
             }
         } else {
             // path = new Path(destinationFile);
@@ -306,7 +306,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             if (store.getBoolean(IRepositoryPrefConstants.USE_EXPORT_SAVE)) {
                 path = new Path(destinationFile);
             } else {
-                path = path.append(getDefaultFileNameWithType()); //$NON-NLS-1$
+                path = path.append(getDefaultFileNameWithType());
             }
         }
         setDestinationValue(path.toOSString());
@@ -686,6 +686,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         addBSButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 boolean addBS = addBSButton.getSelection();
                 if (addBS) {
@@ -753,8 +754,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     }
 
     private void collectNodes(Map<String, Item> items, Object[] objects) {
-        for (int i = 0; i < objects.length; i++) {
-            RepositoryNode repositoryNode = (RepositoryNode) objects[i];
+        for (Object object : objects) {
+            RepositoryNode repositoryNode = (RepositoryNode) object;
             collectNodes(items, repositoryNode);
         }
     }
@@ -939,10 +940,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
                 public Object getValue(Object element, String property) {
                     ContextParameterType node = (ContextParameterType) element;
-                    if (property.equals(contextParameterName)) { //$NON-NLS-1$
+                    if (property.equals(contextParameterName)) {
                         return node.getName();
                     }
-                    if (property.equals(contextParameterValue)) { //$NON-NLS-1$
+                    if (property.equals(contextParameterValue)) {
                         return node.getValue();
                     }
 
@@ -971,7 +972,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             GridData gD = new GridData();
             gD.horizontalSpan = 2;
             setContextButton.setLayoutData(gD);
-            setContextButton.setText("Values from selected context");//$NON-NLS-N$
+            setContextButton.setText("Values from selected context");
             setContextButton.addSelectionListener(new SelectionAdapter() {
 
                 @Override
@@ -989,7 +990,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
             addButton = new Button(buttonsComposite, SWT.PUSH);
             addButton.setLayoutData(new GridData());
-            addButton.setText("Add");//$NON-NLS-N$
+            addButton.setText("Add");
             addButton.addSelectionListener(new SelectionAdapter() {
 
                 @Override
@@ -1011,8 +1012,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                         }
                     } while (!paramNameFound);
                     addContextParameterType.setName(paramName);
-                    addContextParameterType.setType("id_String");//$NON-NLS-N$
-                    addContextParameterType.setValue("");//$NON-NLS-N$
+                    addContextParameterType.setType("id_String");
+                    addContextParameterType.setValue("");
                     contextEditableValuesList.add(addContextParameterType);
                     tableViewer.refresh(true);
                 }
@@ -1021,7 +1022,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
             removeButton = new Button(buttonsComposite, SWT.PUSH);
             removeButton.setLayoutData(new GridData());
-            removeButton.setText("Remove");//$NON-NLS-N$
+            removeButton.setText("Remove");
             removeButton.addSelectionListener(new SelectionAdapter() {
 
                 @Override
@@ -1301,8 +1302,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 String zipFile = manager.getDestinationPath();
                 // Added by Marvin Wang on Feb.1, 2012 for bug TDI-18824
                 File file = new File(zipFile);
-                if (file.exists())
+                if (file.exists()) {
                     ZipToFile.unZipFile(zipFile, file.getParentFile().getAbsolutePath());
+                }
             } catch (Exception e) {
                 MessageBoxExceptionHandler.process(e, getShell());
                 return false;
@@ -1324,8 +1326,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @return
      */
     public FileSystemExporterFullPath getUnzipExporterOperation(List<ExportFileResource> resourcesToExport) {
-        String currentUnzipFile = getDestinationValue().replace("/", File.separator); //$NON-NLS-1$ //$NON-NLS-2$
-        currentUnzipFile = currentUnzipFile.substring(0, currentUnzipFile.lastIndexOf(File.separator)); //$NON-NLS-1$
+        String currentUnzipFile = getDestinationValue().replace("/", File.separator); //$NON-NLS-1$ 
+        currentUnzipFile = currentUnzipFile.substring(0, currentUnzipFile.lastIndexOf(File.separator));
         FileSystemExporterFullPath exporterOperation = null;
         try {
             exporterOperation = new FileSystemExporterFullPath(resourcesToExport, currentUnzipFile);
@@ -1422,7 +1424,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * 
      */
     protected String getOutputSuffix() {
-        return OUTPUT_FILE_SUFFIX; //$NON-NLS-1$
+        return OUTPUT_FILE_SUFFIX;
     }
 
     /**
@@ -1440,8 +1442,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             dialog.setFilterPath(currentSourceString.substring(0, lastSeparatorIndex));
         }
         String selectedFileName = dialog.open();
-        if (selectedFileName != null && !selectedFileName.endsWith(this.getOutputSuffix()))
+        if (selectedFileName != null && !selectedFileName.endsWith(this.getOutputSuffix())) {
             selectedFileName += this.getOutputSuffix();
+        }
 
         // when user change the name of job,will add the version auto
         if (selectedFileName != null && !selectedFileName.endsWith(this.getSelectedJobVersion() + this.getOutputSuffix())) {
