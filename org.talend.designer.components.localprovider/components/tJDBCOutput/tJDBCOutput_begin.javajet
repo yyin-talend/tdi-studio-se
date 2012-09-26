@@ -98,8 +98,19 @@ if(("true").equals(useExistingConn)){
 	%>
 	java.sql.Connection connection_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
     if (null == connection_<%=cid%>) {
-        java.util.Map<String, javax.sql.DataSource> dataSources_<%=cid%>= (java.util.Map<String, javax.sql.DataSource>) globalMap.get(KEY_DB_DATASOURCES);
-        connection_<%=cid%> = dataSources_<%=cid%>.get("<%=connection%>").getConnection();
+<%
+// copy-paste from AbstractDBInputBegin.javajet
+                    INode connectionNode = null;
+                    for (INode processNode : node.getProcess().getGeneratingNodes()) {
+                        if(connection.equals(processNode.getUniqueName())) {
+                            connectionNode = processNode;
+                            break;
+                        }
+                    }
+                    String alias = ElementParameterParser.getValue(connectionNode, "__DATASOURCE_ALIAS__");
+%>
+                    java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+                    connection_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
     }
 	<%
 } else {
