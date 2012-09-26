@@ -165,8 +165,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 } else {
                     itemType = ROUTE;
                 }
-                boolean esbJob = JOB.equals(itemType) && isESBJob(processItem);
-                boolean restJob = JOB.equals(itemType) && isRESTProviderJob(processItem);
 
                 // generate the source files
                 String libPath = calculateLibraryPathFromDirectory(process.getDirectoryName());
@@ -202,12 +200,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 // dynamic db xml mapping
                 addXmlMapping(process, isOptionChoosed(ExportChoice.needSourceCode));
 
-                if (restJob) {
+                // restJob
+                if (JOB.equals(itemType) && (null != getRESTRequestComponent(processItem))) {
                     osgiResource.addResources(getMetaInfSpringFolder(),
                             Collections.singletonList(generateRestJobSpringFiles(processItem)));
                 } else {
                     osgiResource.addResources(getOSGIInfFolder(),
-                            Collections.singletonList(generateESBFiles(processItem, esbJob)));
+                            Collections.singletonList(generateESBFiles(processItem)));
                 }
 
                 // Add Route Resource http://jira.talendforge.org/browse/TESB-6227
@@ -301,34 +300,30 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      * @author rzubairov
      * @return
      */
-    private boolean isESBJob(ProcessItem processItem) {
+    private static boolean isESBJob(ProcessItem processItem) {
         return null != EmfModelUtils.getComponentByName(processItem, "tESBProviderRequest", "tESBConsumer");
     }
 
-    private boolean isESBProviderJob(ProcessItem processItem) {
+    private static boolean isESBProviderJob(ProcessItem processItem) {
         return null != EmfModelUtils.getComponentByName(processItem, "tESBProviderRequest");
     }
 
-    private boolean isRESTProviderJob(ProcessItem processItem) {
-        return null != getRESTRequestComponent(processItem);
-    }
-
-    private boolean isRESTClientJob(ProcessItem processItem) {
+    private static boolean isRESTClientJob(ProcessItem processItem) {
         return null != EmfModelUtils.getComponentByName(processItem, "tRESTClient");
     }
 
-    private NodeType getRESTRequestComponent(ProcessItem processItem) {
+    private static NodeType getRESTRequestComponent(ProcessItem processItem) {
         return EmfModelUtils.getComponentByName(processItem, "tRESTRequest");
     }
 
-    private String getPackageName(ProcessItem processItem) {
+    private static String getPackageName(ProcessItem processItem) {
         return JavaResourcesHelper.getProjectFolderName(processItem)
                 + PACKAGE_SEPARATOR
                 + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
                         .getVersion());
     }
 
-    private URL generateESBFiles(ProcessItem processItem, boolean isESBJob) throws IOException {
+    private URL generateESBFiles(ProcessItem processItem) throws IOException {
         if (itemType == null) {
             itemType = JOB;
         }
@@ -336,7 +331,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         String inputFile = getPluginResourceUri("resources/" + itemType + "-template.xml"); //$NON-NLS-1$ //$NON-NLS-2$
         File targetFile = new File(getTmpFolder() + PATH_SEPARATOR + "job.xml"); //$NON-NLS-1$
 
-        createJobBundleBlueprintConfig(processItem, inputFile, targetFile, jobName, jobClassName, itemType, isESBJob);
+        createJobBundleBlueprintConfig(processItem, inputFile, targetFile, jobName, jobClassName, itemType);
 
         return targetFile.toURI().toURL();
     }
@@ -431,7 +426,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      * @throws IOException
      */
     private void createJobBundleBlueprintConfig(ProcessItem processItem, String inputFile, File targetFile, String jobName,
-            String jobClassName, String itemType, boolean isESBJob) throws IOException {
+            String jobClassName, String itemType) throws IOException {
+
+        String additionalJobInterfaces = "";
+        String additionalServiceProps = "";
+        String additionalJobBundleConfig = "";
+        String additionalJobBeanParams = "";
 
         // http://jira.talendforge.org/browse/TESB-3677
         boolean hasSAM = false;
@@ -443,27 +443,25 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 if (!"MESSAGE".equals(format)) { //$NON-NLS-1$
                     hasSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node); //$NON-NLS-1$
                     if (hasSAM) {
-                        break;
+                        // SAM
+                        additionalJobBeanParams =  "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
+                        additionalJobBundleConfig ="<reference id=\"eventFeature\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>";
                     }
+                }
+            }
+        } else { // JOB
+            if(isESBJob(processItem)) {
+                additionalJobInterfaces = "<value>routines.system.api.TalendESBJob</value>"; //$NON-NLS-1$
+                if (isESBProviderJob(processItem)) {
+                    additionalJobInterfaces += "\n\t\t\t<value>routines.system.api.TalendESBJobFactory</value>"; //$NON-NLS-1$
+                    additionalServiceProps = "<entry key=\"multithreading\" value=\"true\" />"; //$NON-NLS-1$
                 }
             }
         }
 
-        String additionalJobInterfaces = "";
-        String additionalServiceProps = "";
-        String additionalJobBundleConfig = "";
-        String additionalJobBeanParams = "";
-        if (isESBJob) {
-            additionalJobInterfaces = "<value>routines.system.api.TalendESBJob</value>"; //$NON-NLS-1$
-            if (isESBProviderJob(processItem)) {
-                additionalJobInterfaces += "\n\t\t\t<value>routines.system.api.TalendESBJobFactory</value>"; //$NON-NLS-1$
-                additionalServiceProps = "<entry key=\"multithreading\" value=\"true\" />"; //$NON-NLS-1$
-            }
-        }
         // OSGi DataSource
         DataSourceConfig dataSourceConfig = new DataSourceConfig(processItem);
         additionalJobBeanParams += dataSourceConfig.getAdditionalJobBeanParams();
-        // additionalJobBundleConfig += dataSourceConfig.getAdditionalJobBundleConfig();
 
         BufferedReader br = null;
         BufferedWriter bw = null;
@@ -480,13 +478,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         .replace("@ADDITIONAL_JOB_BEAN_PARAMS@", additionalJobBeanParams) //$NON-NLS-1$
                         .replace("@ADDITIONAL_JOB_BUNDLE_CONFIG@", additionalJobBundleConfig) //$NON-NLS-1$
                         .replace("@ADDITIONAL_SERVICE_PROPERTIES@", additionalServiceProps); //$NON-NLS-1$
-
-                // SAM
-                line = line.replace("@ESBSAMFeatureProperty@", //$NON-NLS-1$
-                        (hasSAM) ? "<property name=\"eventFeature\" ref=\"eventFeature\"/>" : "");
-                line = line.replace("@ESBSAMFeaturePropertyRef@", //$NON-NLS-1$
-                        (hasSAM) ? "<reference id=\"eventFeature\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>"
-                                : "");
 
                 bw.write(line);
                 bw.newLine();
@@ -686,16 +677,16 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return StringUtils.join(pkgs.toArray(), ",");
     }
 
-    private String addAdditionalRequiredBundles(ProcessItem pi, String requiredBundles) {
-        if (isRESTClientJob(pi) || isRESTProviderJob(pi)) {
-            String bundlesToAdd = "org.apache.cxf.cxf-rt-frontend-jaxrs" + ",org.apache.cxf.cxf-rt-rs-extension-providers";
-            // check if we need add ',' after already existing bundles
-            requiredBundles = (requiredBundles != null && !"".equals(requiredBundles)) ? requiredBundles + "," : "";
-            requiredBundles = requiredBundles + bundlesToAdd;
-        }
-
-        return requiredBundles;
-    }
+//    private String addAdditionalRequiredBundles(ProcessItem pi, String requiredBundles) {
+//        if (isRESTClientJob(pi) || isRESTProviderJob(pi)) {
+//            String bundlesToAdd = "org.apache.cxf.cxf-rt-frontend-jaxrs" + ",org.apache.cxf.cxf-rt-rs-extension-providers";
+//            // check if we need add ',' after already existing bundles
+//            requiredBundles = (requiredBundles != null && !"".equals(requiredBundles)) ? requiredBundles + "," : "";
+//            requiredBundles = requiredBundles + bundlesToAdd;
+//        }
+//
+//        return requiredBundles;
+//    }
 
     private static void addRouteOsgiDependencies(Analyzer analyzer, ExportFileResource libResource,
             List<ProcessItem> itemToBeExport) throws IOException {
