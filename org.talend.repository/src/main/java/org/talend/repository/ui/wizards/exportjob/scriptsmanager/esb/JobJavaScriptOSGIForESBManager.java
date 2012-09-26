@@ -575,33 +575,33 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         String importPackages;
         if (ROUTE.equals(itemType)) {
-            importPackages = addRouteOsgiDependencies(libResource, itemToBeExport);
+            addRouteOsgiDependencies(analyzer, libResource, itemToBeExport);
         } else {
             importPackages = "routines.system.api,org.apache.cxf.management.counters";
-        }
-        importPackages += ",*;resolution:=optional";
-        analyzer.setProperty(Analyzer.IMPORT_PACKAGE, importPackages);
-
-        StringBuilder bundleClasspath = new StringBuilder(".");
-        Set<String> relativePathList = libResource.getRelativePathList();
-        for (String path : relativePathList) {
-            Set<URL> resources = libResource.getResourcesByRelativePath(path);
-            for (URL url : resources) {
-                File dependencyFile = new File(url.getPath());
-                bundleClasspath
-                    .append(',')
-                    .append(libResource.getDirectoryName())
-                    .append(PATH_SEPARATOR)
-                    .append(dependencyFile.getName());
-                // add systemRoutines.jar as emded resource to allow proper Import-Package calculation
-                if ("systemRoutines.jar".equals(dependencyFile.getName())) {
-                    bin.putResource(libResource.getDirectoryName() + PATH_SEPARATOR + dependencyFile.getName(),
-                    	new FileResource(dependencyFile));
-                }
+            importPackages += ",*;resolution:=optional";
+            analyzer.setProperty(Analyzer.IMPORT_PACKAGE, importPackages);
+            
+            StringBuilder bundleClasspath = new StringBuilder(".");
+            Set<String> relativePathList = libResource.getRelativePathList();
+            for (String path : relativePathList) {
+            	Set<URL> resources = libResource.getResourcesByRelativePath(path);
+            	for (URL url : resources) {
+            		File dependencyFile = new File(url.getPath());
+            		bundleClasspath
+            		.append(',')
+            		.append(libResource.getDirectoryName())
+            		.append(PATH_SEPARATOR)
+            		.append(dependencyFile.getName());
+            		// add systemRoutines.jar as emded resource to allow proper Import-Package calculation
+            		if ("systemRoutines.jar".equals(dependencyFile.getName())) {
+            			bin.putResource(libResource.getDirectoryName() + PATH_SEPARATOR + dependencyFile.getName(),
+            					new FileResource(dependencyFile));
+            		}
 //                analyzer.addClasspath(new File(url.getPath()));
+            	}
             }
+            analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH, bundleClasspath.toString());
         }
-        analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH, bundleClasspath.toString());
 //        } else {
 //            String additionalImports = ""; //$NON-NLS-1$
 //            for (ProcessItem processItem : itemToBeExport) {
@@ -700,10 +700,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return requiredBundles;
     }
 
-    private static String addRouteOsgiDependencies(ExportFileResource libResource, List<ProcessItem> itemToBeExport) throws IOException {
+    private static void addRouteOsgiDependencies(Analyzer analyzer, ExportFileResource libResource, List<ProcessItem> itemToBeExport) throws IOException {
         IPath libPath = ResourcesPlugin.getWorkspace().getRoot()
             .getProject(JavaUtils.JAVA_PROJECT_NAME).getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
-        String importPackages = null;
         for (ProcessItem pi : itemToBeExport) {
             IOsgiDependenciesService dependenciesService = (IOsgiDependenciesService) GlobalServiceRegister.getDefault()
                     .getService(IOsgiDependenciesService.class);
@@ -724,25 +723,24 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
                 libResource.addResources(new ArrayList<URL>(list));
 
-//                // add manifest items
-//                String requireBundles = bundleDependences.get(IOsgiDependenciesService.REQUIRE_BUNDLE);
-//                if (requireBundles != null && !"".equals(requireBundles)) {
-////                    a.put(new Attributes.Name("Require-Bundle"), requireBundles);
-//                	System.out.println("requireBundles="+requireBundles);
-//                }
-                importPackages = bundleDependences.get(IOsgiDependenciesService.IMPORT_PACKAGE);
-//                String exportPackages = bundleDependences.get(IOsgiDependenciesService.EXPORT_PACKAGE);
-//                if(exportPackages != null && !"".equals(exportPackages)){
-////                	a.put(new Attributes.Name("Export-Package"), exportPackages);
-//                	System.out.println("exportPackages="+exportPackages);
-//                }
-//                if (!libResource.getAllResources().isEmpty()) {
-////                    a.put(new Attributes.Name("Bundle-ClassPath"), getClassPath(libResource)); //$NON-NLS-1$
-//                	System.out.println("getClassPath(libResource)="+getClassPath(libResource));
-//                }
+                // add manifest items
+                String requireBundles = bundleDependences.get(IOsgiDependenciesService.REQUIRE_BUNDLE);
+                if (requireBundles != null && !"".equals(requireBundles)) {
+                    analyzer.setProperty(Analyzer.REQUIRE_BUNDLE, requireBundles);
+                }
+                String importPackages = bundleDependences.get(IOsgiDependenciesService.IMPORT_PACKAGE);
+                if (importPackages != null && !"".equals(importPackages)) {
+                    analyzer.setProperty(Analyzer.IMPORT_PACKAGE, importPackages);
+                }
+                String exportPackages = bundleDependences.get(IOsgiDependenciesService.EXPORT_PACKAGE);
+                if(exportPackages != null && !"".equals(exportPackages)){
+                	analyzer.setProperty(Analyzer.EXPORT_PACKAGE, exportPackages);
+                }
+                if (!libResource.getAllResources().isEmpty()) {
+                    analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH,  getClassPath(libResource));
+                }
             }
         }
-        return importPackages;
     }
 
     /**
