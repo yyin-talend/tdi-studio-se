@@ -10,7 +10,8 @@
     STARTABLE="true"
      EXTENSION="org.talend.designer.dbmap" 
      SCHEMA_AUTO_PROPAGATE="false" 
-     DATA_AUTO_PROPAGATE="false" 
+     DATA_AUTO_PROPAGATE="false"
+     HAS_CONDITIONAL_OUTPUTS="true"
   >
     <SIGNATURE/>
   </HEADER>
