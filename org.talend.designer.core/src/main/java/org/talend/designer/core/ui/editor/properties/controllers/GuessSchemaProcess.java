@@ -194,11 +194,8 @@ public class GuessSchemaProcess {
                 + "                    new java.io.BufferedWriter(new java.io.OutputStreamWriter(\r\n" //$NON-NLS-1$
                 + "                            new java.io.FileOutputStream(\r\n" //$NON-NLS-1$
                 + "                                    fileName, false),\r\n" //$NON-NLS-1$
-                + "                            \"GBK\")), ';');\r\n" + "                            \r\n" //$NON-NLS-1$ //$NON-NLS-2$
-                /*
-                 * + "csvWriter.setEscapeMode(com.talend.csv.CSVWritercsvWriter.ESCAPE_MODE_DOUBLED);\r\n" //$NON-NLS-1$
-                 * + "csvWriter.setTextQualifier('\"');\r\n" + "csvWriter.setForceQualifier(true);\r\n"
-                 */+ "int nbRows = 0;\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "                            \"GBK\")));\r\n" + "                            \r\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + "csvWriter.setSeparator(';');\r\n" + "csvWriter.setQuoteStatus(com.talend.csv.CSVWriter.QuoteStatus.FORCE);\r\n" + "int nbRows = 0;\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "String[] columnNames = new String[numbOfColumn];\r\n" + "String[] nullables = new String[numbOfColumn];\r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "String[] lengths = new String[numbOfColumn];\r\n" + "String[] precisions = new String[numbOfColumn];\r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "String[] dbtypes = new String[numbOfColumn];\r\n" //$NON-NLS-1$
