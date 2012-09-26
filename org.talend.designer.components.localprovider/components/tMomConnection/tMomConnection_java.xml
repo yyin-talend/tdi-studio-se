@@ -9,9 +9,8 @@
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
-    STARTABLE="false"
-    SCHEMA_AUTO_PROPAGATE ="false"
-  >
+    STARTABLE="true"
+   >
     <SIGNATURE />
   </HEADER>
 
