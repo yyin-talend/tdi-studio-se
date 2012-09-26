@@ -198,7 +198,7 @@ public class ConnectionCreateAction extends SelectionAction {
                 }
 
                 // if EBCDIC + single schema mode, only have one output maximum
-                if (node.getComponent().getName().contains("EBCDIC") && node.isSingleSchemaForEBCDIC(table)
+                if (node.getComponent().getName().contains("EBCDIC") && node.checkSchemaForEBCDIC(table)
                         && curNodeConnector.getCurLinkNbOutput() > 0) {
                     return false;
                 }
