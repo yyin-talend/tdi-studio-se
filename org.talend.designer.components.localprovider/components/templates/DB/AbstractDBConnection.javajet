@@ -40,9 +40,10 @@ imports="
 	<%connUtil.useShareConnection(node);%>
 <%
 	} else {
+        String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
 %>
-    String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
-	if ("".equals(alias) || null == globalMap.get(KEY_DB_DATASOURCES)) {
+	if ((null == globalMap.get(KEY_DB_DATASOURCES))
+	    || "".equals(alias)) {
 		<%connUtil.classForName(node);%>
 		<%connUtil.createConnection(node);%>
 		globalMap.put("conn_<%=cid%>", conn_<%=cid%>);
