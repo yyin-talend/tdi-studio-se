@@ -275,6 +275,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             setControl(parent);
         }
         layout = new GridLayout();
+        layout.marginHeight = 0;
+        layout.verticalSpacing = 0;
         destinationNameFieldComposite = new Composite(pageComposite, SWT.NONE);
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
         destinationNameFieldComposite.setLayoutData(gridData);
@@ -572,7 +574,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
             saDestinationFilePath = this.getDestinationValue();
             sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
-            userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
             zipOption = "false"; // Do not extract the ZIP //$NON-NLS-1$
         }
 
@@ -608,9 +609,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);
             if (section == null) {
                 section = getDialogSettings().addNewSection(DESTINATION_FILE);
-            }
-            if (exportDependencies != null && !exportDependencies.isDisposed()) {
-                exportDependencies.setSelection(settings.getBoolean(STORE_DEPENDENCIES_ID));
             }
             if (jobScriptButton != null && !jobScriptButton.isDisposed()) {
                 jobScriptButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
@@ -756,12 +754,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 setDefaultDestination();
             }
             shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
-            systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
-            userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
-            modelButton.setSelection(settings.getBoolean(STORE_MODEL_ID));
             jobItemButton.setSelection(settings.getBoolean(STORE_JOB_ID));
-            exportDependencies.setEnabled(settings.getBoolean(STORE_JOB_ID));
-            exportDependencies.setSelection(settings.getBoolean(STORE_DEPENDENCIES_ID));
 
             jobScriptButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
@@ -848,15 +841,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             if (jobItemButton != null && !jobItemButton.isDisposed()) {
                 settings.put(STORE_JOB_ID, jobItemButton.getSelection());
             }
-            if (exportDependencies != null && !exportDependencies.isDisposed()) {
-                settings.put(STORE_DEPENDENCIES_ID, exportDependencies.getSelection());
-            }
 
             if (getCurrentExportType1().equals(JobExportType.POJO)) {
                 settings.put(STORE_SHELL_LAUNCHER_ID, shellLauncherButton.getSelection());
-                settings.put(STORE_SYSTEM_ROUTINE_ID, systemRoutineButton.getSelection());
-                settings.put(STORE_USER_ROUTINE_ID, userRoutineButton.getSelection());
-                settings.put(STORE_MODEL_ID, modelButton.getSelection());
                 settings.put(EXTRACT_ZIP_FILE, chkButton.getSelection());
                 return;
             } else if (getCurrentExportType1().equals(JobExportType.WSZIP)) {
@@ -880,8 +867,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
         if (comboType.equals(JobExportType.PETALSESB)) {
             exportChoiceMap.put(ExportChoice.needSourceCode, sourceButton.getSelection());
-            exportChoiceMap.put(ExportChoice.needDependencies, exportDependencies.getSelection());
-            exportChoiceMap.put(ExportChoice.needUserRoutine, userRoutineButton.getSelection());
+            exportChoiceMap.put(ExportChoice.needDependencies, Boolean.TRUE);
+            exportChoiceMap.put(ExportChoice.needUserRoutine, Boolean.TRUE);
             return exportChoiceMap;
         }
         exportChoiceMap.put(ExportChoice.needJobItem, false);
@@ -894,7 +881,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             exportChoiceMap.put(ExportChoice.esbServiceName, esbServiceName.getText());
             exportChoiceMap.put(ExportChoice.esbCategory, esbCategory.getText());
             exportChoiceMap.put(ExportChoice.esbExportType, esbTypeCombo.getText());
-            exportChoiceMap.put(ExportChoice.needDependencies, exportDependencies.getSelection());
+            exportChoiceMap.put(ExportChoice.needDependencies, jobItemButton.getSelection());
             exportChoiceMap.put(ExportChoice.needJobItem, jobItemButton.getSelection());
             exportChoiceMap.put(ExportChoice.needSourceCode, jobItemButton.getSelection()); // take source code also
             // when take item
@@ -919,7 +906,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         exportChoiceMap.put(ExportChoice.needAXISLIB, axisLibButton.getSelection());
         exportChoiceMap.put(ExportChoice.needWSDD, wsddButton.getSelection());
         exportChoiceMap.put(ExportChoice.needWSDL, wsdlButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needJobScript, jobScriptButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needJobScript, Boolean.TRUE);
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
         exportChoiceMap.put(ExportChoice.applyToChildren, applyToChildrenButton.getSelection());
 
@@ -964,7 +951,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         switch (getCurrentExportType1()) {
         case POJO:
-            createOptions(left, font);
+            layout = new GridLayout();
+            layout.verticalSpacing = 1;
+            layout.marginHeight = 0;
+            optionsGroup.setLayout(layout);
+            createOptions(optionsGroup, font);
             restoreWidgetValuesForPOJO();
             break;
         case JBOSSESB:
@@ -1026,14 +1017,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
         });
 
-        userRoutineButton = new Button(left, SWT.CHECK | SWT.LEFT);
-        userRoutineButton.setText("User Routines"); //$NON-NLS-1$
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 2;
-        userRoutineButton.setLayoutData(gd);
-        userRoutineButton.setSelection(true);
-        userRoutineButton.setFont(font);
-
         generateEndpointButton = new Button(left, SWT.CHECK | SWT.LEFT);
         generateEndpointButton.setText(Messages.getString("PetalsJobScriptsExportWizardPage.GenerateEndpoint")); //$NON-NLS-1$
         generateEndpointButton.setFont(font);
@@ -1074,12 +1057,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 validateOptionsGroup();
             }
         });
-
-        exportDependencies = new Button(left, SWT.CHECK);
-        exportDependencies.setText("Export Dependencies"); //$NON-NLS-1$
-        exportDependencies.setFont(font);
-        // We do not need it in fact, dependencies are exported by default
-        exportDependencies.setVisible(false);
 
         // Default context
         left = new Composite(optionsGroupComposite, SWT.NONE);
@@ -1249,24 +1226,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 1;
         jobItemButton.setLayoutData(gd);
-
-        exportDependencies = new Button(left, SWT.CHECK);
-        exportDependencies.setText("Export Dependencies"); //$NON-NLS-1$
-        exportDependencies.setFont(font);
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 2;
-        jobItemButton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-
-                exportDependencies.setEnabled(jobItemButton.getSelection());
-                if (!jobItemButton.getSelection()) {
-                    exportDependencies.setSelection(false);
-                }
-            }
-        });
-        exportDependencies.setLayoutData(gd);
 
         Label esbTypeLabel = new Label(left, SWT.None);
         esbTypeLabel.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.esbExportTypeLabel")); //$NON-NLS-1$

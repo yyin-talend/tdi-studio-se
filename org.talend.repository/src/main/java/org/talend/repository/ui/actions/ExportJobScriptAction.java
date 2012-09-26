@@ -56,7 +56,7 @@ public class ExportJobScriptAction extends AContextualAction {
             setEnabled(false);
             return;
         }
-        List<RepositoryNode> nodes = (List<RepositoryNode>) selection.toList();
+        List<RepositoryNode> nodes = selection.toList();
         for (RepositoryNode node : nodes) {
             if (node.getProperties(EProperties.CONTENT_TYPE) != ERepositoryObjectType.PROCESS) {
                 canWork = false;
@@ -76,6 +76,7 @@ public class ExportJobScriptAction extends AContextualAction {
         setEnabled(canWork);
     }
 
+    @Override
     public boolean isVisible() {
         return isEnabled();
     }
@@ -87,6 +88,7 @@ public class ExportJobScriptAction extends AContextualAction {
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EXPORT_JOB_ICON));
     }
 
+    @Override
     protected void doRun() {
         JobScriptsExportWizard processWizard = new JobScriptsExportWizard();
         IWorkbench workbench = getWorkbench();
@@ -96,7 +98,7 @@ public class ExportJobScriptAction extends AContextualAction {
         Shell activeShell = Display.getCurrent().getActiveShell();
         WizardDialog dialog = new WizardDialog(activeShell, processWizard);
         workbench.saveAllEditors(true);
-        dialog.setPageSize(830, 450);
+        dialog.setPageSize(830, 500);
         dialog.open();
 
         // collector

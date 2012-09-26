@@ -24,8 +24,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
 /**
  * Page of the Job Scripts Export Wizard. <br/>
  * 
- * @referto WizardArchiveFileResourceExportPage1 $Id:
- *          JobScriptsExportWizardPage.java 1 2006-12-13 下午03:09:07 bqian
+ * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 下午03:09:07 bqian
  * 
  */
 public abstract class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
@@ -65,7 +64,6 @@ public abstract class JavaJobScriptsExportWizardPage extends JobScriptsExportWiz
         super("JavaJobscriptsExportPage1", selection); //$NON-NLS-1$
     }
 
-    
     /**
      * Hook method for saving widget values for restoration by the next instance of this class.
      */
@@ -82,9 +80,6 @@ public abstract class JavaJobScriptsExportWizardPage extends JobScriptsExportWiz
             directoryNames = addToHistory(directoryNames, getDestinationValue());
             settings.put(STORE_DESTINATION_NAMES_ID, directoryNames);
             settings.put(STORE_SHELL_LAUNCHER_ID, shellLauncherButton.getSelection());
-            settings.put(STORE_SYSTEM_ROUTINE_ID, systemRoutineButton.getSelection());
-            settings.put(STORE_USER_ROUTINE_ID, userRoutineButton.getSelection());
-            settings.put(STORE_MODEL_ID, modelButton.getSelection());
             settings.put(STORE_JOB_ID, jobItemButton.getSelection());
             settings.put(STORE_SOURCE_ID, jobScriptButton.getSelection());
             settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
@@ -104,16 +99,13 @@ public abstract class JavaJobScriptsExportWizardPage extends JobScriptsExportWiz
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
             if (directoryNames != null && directoryNames.length > 0) {
-                for (int i = 0; i < directoryNames.length; i++) {
-                    addDestinationItem(directoryNames[i]);
+                for (String directoryName : directoryNames) {
+                    addDestinationItem(directoryName);
                 }
             }
             setDefaultDestination();
 
             shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
-            systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
-            userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
-            modelButton.setSelection(settings.getBoolean(STORE_MODEL_ID));
             jobItemButton.setSelection(settings.getBoolean(STORE_JOB_ID));
             jobScriptButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
@@ -127,8 +119,8 @@ public abstract class JavaJobScriptsExportWizardPage extends JobScriptsExportWiz
             launcherCombo.select(0);
         }
         try {
-            setProcessItem((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(
-                    getProcessItem().getProperty()).getItem());
+            setProcessItem((ProcessItem) ProxyRepositoryFactory.getInstance().getUptodateProperty(getProcessItem().getProperty())
+                    .getItem());
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
@@ -139,8 +131,8 @@ public abstract class JavaJobScriptsExportWizardPage extends JobScriptsExportWiz
         }
     }
 
-	@Override
-	protected String getProcessType() {
-		return "Job";
-	}
+    @Override
+    protected String getProcessType() {
+        return "Job";
+    }
 }
