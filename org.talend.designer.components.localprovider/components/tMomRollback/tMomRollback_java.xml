@@ -35,7 +35,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tMomOutput"
+      FILTER="REGEXP:^tMomOutput|tMomConnection$"
       NUM_ROW="10"
     />
         <PARAMETER
