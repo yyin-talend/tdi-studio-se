@@ -16,7 +16,6 @@ imports="
 %>
 	<%@ include file="../templates/DB/Input/HelpClass.javajet"%>
 <%
-
 	class DBInputBeginUtil extends DefaultDBInputUtil{
 	
 		private INode node = null;
@@ -80,31 +79,41 @@ imports="
 	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
 	 		String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
 	 		String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__"); 
-%>
-			java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
-			<%this.setURL(node);%>
-	        String dbUser_<%=cid %> = <%=dbuser%>;
-	        String dbPwd_<%=cid %> = <%=dbpwd%>;
+%>			
+			java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+            if (null != dataSources_<%=cid%>) {
 <%
-			if(("ORACLE_WALLET").equals(connectionType)) {
+                String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
 %>
-			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
+                conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+            } else {
+				java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
+				<%this.setURL(node);%>
+				String dbUser_<%=cid %> = <%=dbuser%>;
+				String dbPwd_<%=cid %> = <%=dbpwd%>;
 <%
-			}else if (dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
+				if(("ORACLE_WALLET").equals(connectionType)) {
 %>
-			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+					conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
 <%
-			} else {
+				}else if (dbproperties == null || ("\"\"").equals(dbproperties) || ("").equals(dbproperties)) {
 %>
-			String atnParams_<%=cid%> = <%=dbproperties%>;
-			atnParams_<%=cid%> = atnParams_<%=cid%>.replaceAll("&", "\n");
-			java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
-			atnParamsPrope_<%=cid%>.put("user",dbUser_<%=cid%>);
-			atnParamsPrope_<%=cid%>.put("password",dbPwd_<%=cid%>);
-			atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
-			conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
+					conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 <%
+				} else {
+%>
+				String atnParams_<%=cid%> = <%=dbproperties%>;
+				atnParams_<%=cid%> = atnParams_<%=cid%>.replaceAll("&", "\n");
+				java.util.Properties atnParamsPrope_<%=cid%> = new java.util.Properties();
+				atnParamsPrope_<%=cid%>.put("user",dbUser_<%=cid%>);
+				atnParamsPrope_<%=cid%>.put("password",dbPwd_<%=cid%>);
+				atnParamsPrope_<%=cid%>.load(new java.io.ByteArrayInputStream(atnParams_<%=cid%>.getBytes()));
+				conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, atnParamsPrope_<%=cid%>);
+<%
+				}
+%>
 			}
+<%
 			if(!"ojdbc12-8i.jar".equals(dbVersion)){%>
 				java.sql.Statement stmtGetTZ_<%=cid%> = conn_<%=cid%>.createStatement();
 				java.sql.ResultSet rsGetTZ_<%=cid%> = stmtGetTZ_<%=cid%>.executeQuery("select sessiontimezone from dual");
@@ -113,7 +122,7 @@ imports="
 					sessionTimezone_<%=cid%> = rsGetTZ_<%=cid%>.getString(1);
 				}
 				((oracle.jdbc.OracleConnection)conn_<%=cid%>).setSessionTimeZone(sessionTimezone_<%=cid%>);
-			<%
+<%
 			}
 		}
 		
@@ -215,11 +224,8 @@ imports="
 	    	}
 	    	if(isTSWithTZ && supportTSTZ){
 	    	%>
-	    		TalendTimestampWithTZ talendTimestampWithTZ = null;
-	    		if (((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(<%=currentColNo%>) != null) {
-	    			talendTimestampWithTZ = OracleTIMESTAMPTZUtils.toTalendTSTZ(conn_<%=cid%>,
-	                    ((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(<%=currentColNo%>).toBytes());
-                }
+    			TalendTimestampWithTZ talendTimestampWithTZ = OracleTIMESTAMPTZUtils.toTalendTSTZ(conn_<%=cid%>,
+                    ((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(<%=currentColNo%>).toBytes());
                 if(talendTimestampWithTZ != null){
                 	<%=firstConnName%>.<%=column.getLabel()%> = talendTimestampWithTZ;
                 }else{

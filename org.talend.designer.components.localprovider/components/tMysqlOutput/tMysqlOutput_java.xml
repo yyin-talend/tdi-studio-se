@@ -61,7 +61,7 @@
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
-      NUM_ROW="20"
+      NUM_ROW="15"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>    
@@ -70,14 +70,14 @@
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
       FILTER="tMysqlConnection"
-      NUM_ROW="20"
+      NUM_ROW="15"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"/>
           
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="30"
+      NUM_ROW="20"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
@@ -86,7 +86,7 @@
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="30"
+      NUM_ROW="20"
       REPOSITORY_VALUE="SERVER_NAME"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -97,7 +97,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="30"
+      NUM_ROW="20"
       REPOSITORY_VALUE="PORT"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -108,7 +108,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="25"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -119,7 +119,7 @@
 	<PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="50"
+      NUM_ROW="30"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -130,7 +130,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="50"
+      NUM_ROW="30"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -141,7 +141,7 @@
     <PARAMETER	
       NAME="TABLE"
       FIELD="DBTABLE"
-      NUM_ROW="60"
+      NUM_ROW="35"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -149,7 +149,7 @@
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="70"
+      NUM_ROW="40"
       NOT_SHOW_IF="PARALLELIZE == 'true'"
     >
       <ITEMS DEFAULT="NONE">
@@ -166,7 +166,7 @@
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="70"
+      NUM_ROW="40"
     >
       <ITEMS DEFAULT="INSERT">
         <ITEM NAME="INSERT" VALUE="INSERT" />
@@ -183,7 +183,7 @@
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="90"
+      NUM_ROW="45"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -192,13 +192,42 @@
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="90"
+      NUM_ROW="45"
       CONTEXT="REJECT"
       SHOW="true">
       <TABLE READONLY="true">
         <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
+    </PARAMETER>
+	
+	<PARAMETER
+	  NAME="NOTE"
+      FIELD="LABEL"
+      NUM_ROW="63"
+	  GROUP="DATASOURCE"
+	  SHOW_IF="USE_EXISTING_CONNECTION=='false'"
+    >
+    	<DEFAULT>This option only applies when deploying and running in the Talend Runtime</DEFAULT>
+    </PARAMETER>
+	<PARAMETER
+      NAME="SPECIFY_DATASOURCE_ALIAS"
+	  FIELD="CHECK"
+      NUM_ROW="64"
+      REQUIRED="true"
+	  GROUP="DATASOURCE"
+	  SHOW_IF="USE_EXISTING_CONNECTION=='false'"
+    >      
+    </PARAMETER>
+	<PARAMETER
+      NAME="DATASOURCE_ALIAS"
+	  FIELD="TEXT"
+      NUM_ROW="65"
+      REQUIRED="true"
+	  GROUP="DATASOURCE"
+	  SHOW_IF="(SPECIFY_DATASOURCE_ALIAS=='true' AND USE_EXISTING_CONNECTION=='false')"
+    >      
+	<DEFAULT>""</DEFAULT>
     </PARAMETER>
     
     <PARAMETER

@@ -50,7 +50,7 @@
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
-      NUM_ROW="20"
+      NUM_ROW="15"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -59,7 +59,7 @@
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
       FILTER="tOracleConnection"
-      NUM_ROW="20"
+      NUM_ROW="15"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
       DYNAMIC_SETTINGS="true"
     />         
@@ -67,7 +67,7 @@
     <PARAMETER
       NAME="CONNECTION_TYPE"
       FIELD="CLOSED_LIST"
-      NUM_ROW="30"
+      NUM_ROW="20"
       REPOSITORY_VALUE="CONNECTION_TYPE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -80,7 +80,7 @@
       </ITEMS>
     </PARAMETER>
     
-	<PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="35"
+	<PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="25"
 		REPOSITORY_VALUE="DB_VERSION" SHOW_IF="(USE_EXISTING_CONNECTION == 'false')">
 		<ITEMS DEFAULT="ORACLE_11">
 				<ITEM NAME="ORACLE_11-6" VALUE="ojdbc6-11g.jar" />
@@ -94,7 +94,7 @@
 	<PARAMETER
 		NAME="RAC_URL"
 		FIELD="TEXT"
-		NUM_ROW="37"
+		NUM_ROW="27"
 		REPOSITORY_VALUE="RAC_URL"
 		REQUIRED="true"
 		SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE == 'ORACLE_RAC')"
@@ -105,7 +105,7 @@
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="30"
       REPOSITORY_VALUE="SERVER_NAME"
       SHOW_IF="((USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE != 'ORACLE_OCI') and (CONNECTION_TYPE != 'ORACLE_WALLET') and (CONNECTION_TYPE != 'ORACLE_RAC'))"
     >
@@ -115,7 +115,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="30"
       REPOSITORY_VALUE="PORT"
       SHOW_IF="((USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE != 'ORACLE_OCI') and (CONNECTION_TYPE != 'ORACLE_WALLET') and (CONNECTION_TYPE != 'ORACLE_RAC'))"
     >
@@ -125,7 +125,7 @@
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="30"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -136,7 +136,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="50"
+      NUM_ROW="40"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE != 'ORACLE_OCI') and (CONNECTION_TYPE != 'ORACLE_WALLET') and (CONNECTION_TYPE != 'ORACLE_RAC')"
@@ -147,7 +147,7 @@
     <PARAMETER
       NAME="LOCAL_SERVICE_NAME"
       FIELD="TEXT"
-      NUM_ROW="50"
+      NUM_ROW="40"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and CONNECTION_TYPE == 'ORACLE_OCI')"
@@ -158,7 +158,7 @@
     <PARAMETER
       NAME="TABLESCHEMA"
       FIELD="TEXT"
-      NUM_ROW="50"
+      NUM_ROW="40"
       REPOSITORY_VALUE="SCHEMA"
       REQUIRED="false"
       SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE != 'ORACLE_RAC')"
@@ -169,7 +169,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="60"
+      NUM_ROW="45"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
       SHOW_IF="((USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE != 'ORACLE_WALLET'))"
@@ -180,7 +180,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="60"
+      NUM_ROW="45"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
       SHOW_IF="((USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE != 'ORACLE_WALLET'))"
@@ -191,7 +191,7 @@
     <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
-      NUM_ROW="70"
+      NUM_ROW="50"
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
@@ -200,7 +200,7 @@
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="80"
+      NUM_ROW="55"
       NOT_SHOW_IF="PARALLELIZE == 'true'"
     >
       <ITEMS DEFAULT="NONE">
@@ -216,7 +216,7 @@
       </ITEMS>
     </PARAMETER>
 
-	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="81"
+	<PARAMETER NAME="NOTE" FIELD="LABEL" NUM_ROW="56"
 			NOT_SHOW_IF="(TABLE_ACTION == 'NONE') OR (USE_EXISTING_CONNECTION == 'false')"	
 		>
 		<DEFAULT>Warning : this component configuration will automatically generate a commit before data insert/update/delete</DEFAULT>
@@ -225,7 +225,7 @@
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="80"
+      NUM_ROW="55"
     >
       <ITEMS DEFAULT="INSERT">
         <ITEM NAME="INSERT"           VALUE="INSERT" />
@@ -239,7 +239,7 @@
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="90"
+      NUM_ROW="60"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -248,26 +248,55 @@
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="90"
+      NUM_ROW="60"
       CONTEXT="REJECT"
       SHOW="true">
       <TABLE READONLY="true">
         <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
-    </PARAMETER>    
+    </PARAMETER>
+
+	<PARAMETER
+	  NAME="NOTE"
+      FIELD="LABEL"
+      NUM_ROW="63"
+	  GROUP="DATASOURCE"
+	  SHOW_IF="USE_EXISTING_CONNECTION=='false'"
+    >
+    	<DEFAULT>This option only applies when deploying and running in the Talend Runtime</DEFAULT>
+    </PARAMETER>
+	<PARAMETER
+      NAME="SPECIFY_DATASOURCE_ALIAS"
+	  FIELD="CHECK"
+      NUM_ROW="64"
+      REQUIRED="true"
+	  GROUP="DATASOURCE"
+	  SHOW_IF="USE_EXISTING_CONNECTION=='false'"
+    >      
+    </PARAMETER>
+	<PARAMETER
+      NAME="DATASOURCE_ALIAS"
+	  FIELD="TEXT"
+      NUM_ROW="65"
+      REQUIRED="true"
+	  GROUP="DATASOURCE"
+	  SHOW_IF="(SPECIFY_DATASOURCE_ALIAS=='true' AND USE_EXISTING_CONNECTION=='false')"
+    >      
+	<DEFAULT>""</DEFAULT>
+    </PARAMETER>	
     
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="100"
+      NUM_ROW="90"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
-      NUM_ROW="110"
+      NUM_ROW="100"
       SHOW="false"
     >       
       <DEFAULT>oracle_id</DEFAULT>
@@ -276,7 +305,7 @@
 	<PARAMETER
       NAME="JDBC_URL"
 	  FIELD="TEXT"
-      NUM_ROW="45"
+      NUM_ROW="35"
       REQUIRED="true"
 	  SHOW_IF="(USE_EXISTING_CONNECTION == 'false') and (CONNECTION_TYPE == 'ORACLE_WALLET')"
     > 
