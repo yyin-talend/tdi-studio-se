@@ -150,9 +150,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param codeOptions
      * @return
      */
-    private List<URL> posExportResource(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice, String contextName,
-            String launcher, int statisticPort, int tracePort, int i, IProcess jobProcess, ProcessItem processItem,
-            String selectedJobVersion, List<URL> resources, String... codeOptions) {
+    protected List<URL> posExportResource(ExportFileResource[] process, Map<ExportChoice, Object> exportChoice,
+            String contextName, String launcher, int statisticPort, int tracePort, int i, IProcess jobProcess,
+            ProcessItem processItem, String selectedJobVersion, List<URL> resources, String... codeOptions) {
         resources.addAll(getLauncher(isOptionChoosed(ExportChoice.needLauncher),
                 isOptionChoosed(ExportChoice.setParameterValues), isOptionChoosed(ExportChoice.needContext), jobProcess,
                 processItem, escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
@@ -241,7 +241,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         if (resourceService == null) {
             return;
         }
-        File inputMavenAssemblyFile = new File(resourceService.getMavenAssemblyFilePath());
+        File inputMavenAssemblyFile = new File(resourceService.getMavenScriptFilePath("assemby.xml")); //$NON-NLS-1$
         if (!inputMavenAssemblyFile.exists()) {
             return;
         }
@@ -292,7 +292,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                             ele.setText(jobVersion);
                         } else if ("dependencies".equals(ele.getName())) {
                             for (ModuleNeeded module : neededModules) {
-                                addMavenDependencyElement(ele, module.getModuleName());
+                                addMavenDependencyElement(ele, module.getModuleName(), "${basedir}/../lib/");
                             }
                         }
                     }
@@ -322,7 +322,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         }
     }
 
-    private void addMavenDependencyElement(Element parentElement, String jarName) {
+    protected void addMavenDependencyElement(Element parentElement, String jarName, String libFolder) {
         String jarNameWithoutExt = jarName;
         if (jarNameWithoutExt.indexOf(".") != -1) {
             jarNameWithoutExt = jarNameWithoutExt.substring(0, jarNameWithoutExt.lastIndexOf("."));
@@ -337,10 +337,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         Element scopeElement = dependencyElement.addElement("scope"); //$NON-NLS-1$
         scopeElement.setText("system"); //$NON-NLS-1$
         Element systemPathElement = dependencyElement.addElement("systemPath"); //$NON-NLS-1$
-        systemPathElement.setText("${basedir}/../lib/" + jarName); //$NON-NLS-1$
+        systemPathElement.setText(libFolder + jarName);
     }
 
-    private void saveXmlDocoment(Document document, File outputFile) throws IOException {
+    protected void saveXmlDocoment(Document document, File outputFile) throws IOException {
         XMLWriter output = null;
         try {
             output = new XMLWriter(new FileWriter(outputFile), OutputFormat.createPrettyPrint());
@@ -479,14 +479,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         if (PluginChecker.isRulesPluginLoaded()) {
             // hywang add for 6484,add final drl files or xls files to exported job script
-            ExportFileResource ruleFileResource = new ExportFileResource(null, "Rules/rules/final"); //$NON-NLS-N$ //$NON-NLS-1$
+            ExportFileResource ruleFileResource = new ExportFileResource(null, "Rules/rules/final"); //$NON-NLS-1$
             list.add(ruleFileResource);
             try {
                 Map<String, List<URL>> map = initUrlForRulesFiles(process);
                 Object[] keys = map.keySet().toArray();
-                for (int i = 0; i < keys.length; i++) {
-                    List<URL> talendDrlFiles = map.get(keys[i].toString());
-                    ruleFileResource.addResources(keys[i].toString(), talendDrlFiles);
+                for (Object key : keys) {
+                    List<URL> talendDrlFiles = map.get(key.toString());
+                    ruleFileResource.addResources(key.toString(), talendDrlFiles);
                 }
             } catch (CoreException e) {
                 ExceptionHandler.process(e);
@@ -692,7 +692,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
 
             IPath path = getSrcRootLocation();
-            path = path.append(projectName).append(jobFolderName); //$NON-NLS-1$
+            path = path.append(projectName).append(jobFolderName);
 
             FilenameFilter filter = new FilenameFilter() {
 
@@ -866,8 +866,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         List<URL> allJobScripts = new ArrayList<URL>();
         if (needChildren) {
             ProjectManager projectManager = ProjectManager.getInstance();
-            for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
-                JobInfo jobInfo = iter.next();
+            for (JobInfo jobInfo : list) {
                 Project project = projectManager.getProject(jobInfo.getProcessItem());
                 String childProjectName = projectName;
                 if (project != null) {
@@ -947,8 +946,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         if (neededLibraries == null) {
             // in case export as been done with option "not recompile", then libraires can't be retrieved when build.
             IDesignerCoreService designerService = RepositoryPlugin.getDefault().getDesignerCoreService();
-            for (int i = 0; i < process.length; i++) {
-                ExportFileResource resource = process[i];
+            for (ExportFileResource resource : process) {
                 ProcessItem item = (ProcessItem) resource.getItem();
                 String version = item.getProperty().getVersion();
                 if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
@@ -997,8 +995,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             }
         }
 
-        for (int i = 0; i < files.length; i++) {
-            File tempFile = files[i];
+        for (File tempFile : files) {
             try {
                 if (listModulesReallyNeeded.contains(tempFile.getName())) {
                     list.add(tempFile.toURL());
@@ -1478,8 +1475,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 }
             });
 
-            for (int i = 0; i < files.length; i++) {
-                File tempFile = files[i];
+            for (File tempFile : files) {
                 try {
                     if (libs.contains(tempFile.getName())) {
                         list.add(tempFile.toURL());
@@ -1518,11 +1514,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             IRulesProviderService rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(
                     IRulesProviderService.class);
 
-            for (int i = 0; i < process.length; i++) { // loop every exported job
+            for (ExportFileResource proces : process) { // loop every exported job
                 if (!urlList.isEmpty()) {
                     urlList = new ArrayList<URL>();
                 }
-                item = (process[i]).getItem();
+                item = (proces).getItem();
 
                 if (item instanceof ProcessItem) {
                     pi = (ProcessItem) item;
@@ -1536,7 +1532,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                             for (Object obj : node.getElementParameter()) {
                                 if (obj instanceof ElementParameterType) {
                                     ElementParameterType elementParameter = (ElementParameterType) obj;
-                                    if (elementParameter.getName().equals("PROPERTY:REPOSITORY_PROPERTY_TYPE")) { //$NON-NLS-N$ //$NON-NLS-1$
+                                    if (elementParameter.getName().equals("PROPERTY:REPOSITORY_PROPERTY_TYPE")) { //$NON-NLS-1$
                                         String id = elementParameter.getValue();
                                         if (factory.getLastVersion(id).getProperty().getItem() != null) {
                                             if (factory.getLastVersion(id).getProperty().getItem() instanceof RulesItem) {

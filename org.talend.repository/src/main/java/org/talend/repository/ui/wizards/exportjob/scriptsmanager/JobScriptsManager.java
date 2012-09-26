@@ -19,7 +19,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -97,9 +96,9 @@ public abstract class JobScriptsManager {
 
     public static final String CMDFORUNIX = "\"$@\""; //$NON-NLS-1$
 
-    private String selectedJobVersion; //$NON-NLS-1$
+    protected String selectedJobVersion;
 
-    private String bundleVersion; //$NON-NLS-1$
+    private String bundleVersion;
 
     protected IProgressMonitor progressMonitor; // achen added to fix bug
                                                 // 0006222
@@ -393,6 +392,7 @@ public abstract class JobScriptsManager {
      * @param codeOptions
      * @return
      */
+    @Deprecated
     protected String getCommandByTalendJob(String targetPlatform, String processId, String context, String processVersion,
             int statisticPort, int tracePort, String... codeOptions) {
         String[] cmd = new String[] {};
@@ -418,6 +418,7 @@ public abstract class JobScriptsManager {
      * @param codeOptions
      * @return
      */
+    @Deprecated
     protected String getCommandByTalendJob(String targetPlatform, ProcessItem processItem, String context, boolean needContext,
             int statisticPort, int tracePort, String... codeOptions) {
         String[] cmd = new String[] {};
@@ -617,11 +618,8 @@ public abstract class JobScriptsManager {
     protected List<URL> getResourcesURL(IResource[] resources, List<String> fileNames) {
         List<URL> list = new ArrayList<URL>();
 
-        for (Iterator<String> iter = fileNames.iterator(); iter.hasNext();) {
-            String name = iter.next();
-            for (int i = 0; i < resources.length; i++) {
-                IResource resource = resources[i];
-
+        for (String name : fileNames) {
+            for (IResource resource : resources) {
                 if (resource.getName().equals(name)) {
                     try {
                         URL url = resource.getLocation().toFile().toURL();

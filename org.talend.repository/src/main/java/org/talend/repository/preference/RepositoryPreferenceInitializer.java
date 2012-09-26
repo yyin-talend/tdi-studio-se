@@ -40,15 +40,13 @@ public class RepositoryPreferenceInitializer extends AbstractPreferenceInitializ
     @Override
     public void initializeDefaultPreferences() {
         final IPreferenceStore preferenceStore = RepositoryManager.getPreferenceStore();
-        // preferenceStore.setDefault(IRepositoryPrefConstants.MANUALLY_REFRESH, false);
-        // preferenceStore.setDefault(IRepositoryPrefConstants.CREATING_REFRESH, true);
-        // preferenceStore.setDefault(IRepositoryPrefConstants.SAVING_REFRESH, true);
-        // preferenceStore.setDefault(IRepositoryPrefConstants.DELETING_REFRESH, true);
         preferenceStore.setDefault(IRepositoryPrefConstants.MERGE_REFERENCE_PROJECT, true);
         preferenceStore.setDefault(IRepositoryPrefConstants.ANT_SCRIPT_TEMPLATE,
                 getScriptTemplate(IRepositoryPrefConstants.ANT_SCRIPT_TEMPLATE));
         preferenceStore.setDefault(IRepositoryPrefConstants.MAVEN_SCRIPT_TEMPLATE,
                 getScriptTemplate(IRepositoryPrefConstants.MAVEN_SCRIPT_TEMPLATE));
+        preferenceStore.setDefault(IRepositoryPrefConstants.MAVEN_OSGI_SCRIPT_TEMPLATE,
+                getScriptTemplate(IRepositoryPrefConstants.MAVEN_OSGI_SCRIPT_TEMPLATE));
     }
 
     private String getScriptTemplate(String type) {
@@ -59,8 +57,11 @@ public class RepositoryPreferenceInitializer extends AbstractPreferenceInitializ
         }
         File templateScriptFile = null;
         if (type == IRepositoryPrefConstants.MAVEN_SCRIPT_TEMPLATE) {
-            templateScriptFile = new File(resourceService.getMavenScriptFilePath());
+            templateScriptFile = new File(resourceService.getMavenScriptFilePath("pom.xml"));
+        } else if (type == IRepositoryPrefConstants.MAVEN_OSGI_SCRIPT_TEMPLATE) {
+            templateScriptFile = new File(resourceService.getMavenScriptFilePath("pom_osgi.xml"));
         } else {
+
             templateScriptFile = new File(resourceService.getAntScriptFilePath());
         }
         if (!templateScriptFile.exists()) {
