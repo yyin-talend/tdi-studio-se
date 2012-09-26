@@ -198,6 +198,7 @@ if(useExistingConnection) {
 %>
 		conn_<%=cid %> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
 	} else {
+<%
 		String javaDbDriver   = "org.gjt.mm.mysql.Driver";
 		dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__");
 %>
