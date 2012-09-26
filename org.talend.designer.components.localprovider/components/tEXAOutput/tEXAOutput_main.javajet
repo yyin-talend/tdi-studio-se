@@ -4,10 +4,8 @@ imports="
 	org.talend.core.model.process.INode
 	org.talend.core.model.process.ElementParameterParser
 	org.talend.core.model.process.IConnection
-	org.talend.core.model.metadata.IMetadataColumn
 	org.talend.core.model.metadata.IMetadataTable
 	org.talend.core.model.metadata.types.JavaTypesManager
-	org.talend.core.model.metadata.types.JavaType
     org.talend.core.model.metadata.MappingTypeRetriever
     org.talend.core.model.metadata.MetadataTalendType	
     org.talend.core.model.process.IConnectionCategory	
@@ -15,7 +13,6 @@ imports="
 	java.util.ArrayList
 	java.util.Map
 	java.util.HashMap
-	java.util.LinkedList
 "
 skeleton="../templates/db_output_bulk.skeleton"
 %>
@@ -26,7 +23,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String cid = node.getUniqueName();	
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
     String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 	List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__");
@@ -74,7 +70,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
 	
     ////////////////////////////////////////////////////////////
-    List<Column> colStruct = new ArrayList();
+    List<Column> colStruct = new ArrayList<Column>();
     for(Column colStmt : stmtStructure) {
     	if(!colStmt.isReplaced() && !colStmt.isAddCol()) {
     		colStruct.add(colStmt);
@@ -131,10 +127,8 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%
             }            
     		%>
-pstmt_<%=cid %>.addBatch();
             try {
-                //insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
-			insertedCount_<%=cid%> = insertedCount_<%=cid%> + 1;
+                insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
 
                 nb_line_<%=cid%>++;
             } catch(Exception e) {
@@ -622,7 +616,6 @@ pstmt_<%=cid %>.addBatch();
                     %>
                     commitCounter_<%=cid%>++;                
                     if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {   
-				pstmt_<%=cid %>.execute();
                         conn_<%=cid%>.commit();                	
                         commitCounter_<%=cid%>=0;                
                     }	

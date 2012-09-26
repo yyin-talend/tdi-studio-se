@@ -67,7 +67,6 @@ imports="
             if(!commitEvery.equals("") && !commitEvery.equals("0")) {
                 %>
                 if(commitCounter_<%=cid%> > 0) {
-			  pstmt_<%=cid %>.execute();
                     conn_<%=cid%>.commit();
                 }
                 <%
