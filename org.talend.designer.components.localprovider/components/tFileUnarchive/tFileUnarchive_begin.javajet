@@ -250,10 +250,10 @@
 				 new javax.crypto.CipherInputStream(target_<%=cid%>, 
 						 org.talend.archive.IntegrityUtil.createCipher(javax.crypto.Cipher.DECRYPT_MODE, <%=password%>)); 
 			 
-			 java.util.zip.ZipInputStream input_<%=cid%> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(target_<%=cid%>)); 
-		     java.util.zip.ZipEntry entry_<%=cid%> ; 
+			 org.apache.commons.compress.archivers.zip.ZipArchiveInputStream input_<%=cid%> = new org.apache.commons.compress.archivers.zip.ZipArchiveInputStream(new java.io.BufferedInputStream(target_<%=cid%>)); 
+		     org.apache.commons.compress.archivers.zip.ZipArchiveEntry entry_<%=cid%> ; 
 		     
-			 while ((entry_<%=cid%> = input_<%=cid%>.getNextEntry()) != null) { 
+			 while ((entry_<%=cid%> = input_<%=cid%>.getNextZipEntry()) != null) { 
 				 <% if(needPrintout) {%>
 				 		System.out.println("Source file  : " + entry_<%=cid%>.getName()); 
 				 <%}%>
@@ -295,7 +295,7 @@
 			//java.io.FileInputStream fileStream_<%=cid %> = new java.io.FileInputStream(file_<%=cid %>);
 			//java.io.BufferedInputStream bufferedStream_<%=cid%> = new java.io.BufferedInputStream(fileStream_<%=cid %>);
 			
-	 		org.apache.tools.zip.ZipFile zip_<%=cid %> = new org.apache.tools.zip.ZipFile(zipFileURL_<%=cid %>);
+	 		org.apache.commons.compress.archivers.zip.ZipFile zip_<%=cid %> = new org.apache.commons.compress.archivers.zip.ZipFile(zipFileURL_<%=cid %>);
 	 		//java.util.zip.ZipInputStream zipInputStream_<%=cid%> = new java.util.zip.ZipInputStream(bufferedStream_<%=cid%>);
 	 		//java.util.zip.ZipEntry entry_<%=cid%> ; 
 	           java.util.Enumeration enuFiles_<%=cid %> = zip_<%=cid %>.getEntries();
@@ -304,7 +304,7 @@
 	        
 	         while (enuFiles_<%=cid %>.hasMoreElements()) {
 	       // while ((entry_<%=cid%> = zipInputStream_<%=cid%>.getNextEntry()) != null) {  
-	            org.apache.tools.zip.ZipEntry entry_<%=cid %> = (org.apache.tools.zip.ZipEntry) enuFiles_<%=cid %>.nextElement();
+	            org.apache.commons.compress.archivers.zip.ZipArchiveEntry entry_<%=cid %> = (org.apache.commons.compress.archivers.zip.ZipArchiveEntry) enuFiles_<%=cid %>.nextElement();
 	        	<% if(needPrintout) {%>
 	        	System.out.println("Source file  : " + entry_<%=cid%>.getName()); 
 	        	<%}%>
