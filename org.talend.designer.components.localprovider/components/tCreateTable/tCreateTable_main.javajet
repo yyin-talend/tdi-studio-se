@@ -1911,7 +1911,7 @@ if(columnList != null && columnList.size() > 0) {
     String tableAction = ElementParameterParser.getValue(node,"__TABLEACTION__");
     String cid = node.getUniqueName();
     boolean tableNameIgnoreCase=false;
-    if("DB2".equalsIgnoreCase(dbType)||"POSTGRE".equalsIgnoreCase(dbType)||"POSTGREPLUS".equalsIgnoreCase(dbType)){
+    if("DB2".equalsIgnoreCase(dbType)||"POSTGRE".equalsIgnoreCase(dbType)||"POSTGREPLUS".equalsIgnoreCase(dbType)||"GREENPLUM".equalsIgnoreCase(dbType)){
     	tableNameIgnoreCase=true;
     }
     String createProjectionStr = "";
