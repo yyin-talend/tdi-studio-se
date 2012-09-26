@@ -41,7 +41,8 @@ imports="
 <%
 	} else {
 %>
-	if (null == globalMap.get(KEY_DB_DATASOURCES)) {
+    String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
+	if ("".equals(alias) || null == globalMap.get(KEY_DB_DATASOURCES)) {
 		<%connUtil.classForName(node);%>
 		<%connUtil.createConnection(node);%>
 		globalMap.put("conn_<%=cid%>", conn_<%=cid%>);
