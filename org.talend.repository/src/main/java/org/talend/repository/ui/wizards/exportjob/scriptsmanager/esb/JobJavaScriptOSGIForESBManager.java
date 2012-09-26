@@ -437,15 +437,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         boolean hasSAM = false;
 
         if (ROUTE.equals(itemType)) {
-            for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "cCXF")) {
+            for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "cCXF")) { //$NON-NLS-1$
                 // http://jira.talendforge.org/browse/TESB-3850
                 String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
                 if (!"MESSAGE".equals(format)) { //$NON-NLS-1$
-                    hasSAM = EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node); //$NON-NLS-1$
-                    if (hasSAM) {
+                    if (EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node)) { //$NON-NLS-1$
                         // SAM
                         additionalJobBeanParams = "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
-                        additionalJobBundleConfig ="<reference id=\"eventFeature\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>";
+                        additionalJobBundleConfig = "<reference id=\"eventFeature\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>";
+                        break;
                     }
                 }
             }
