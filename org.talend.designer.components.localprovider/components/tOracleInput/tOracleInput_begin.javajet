@@ -215,8 +215,11 @@ imports="
 	    	}
 	    	if(isTSWithTZ && supportTSTZ){
 	    	%>
-    			TalendTimestampWithTZ talendTimestampWithTZ = OracleTIMESTAMPTZUtils.toTalendTSTZ(conn_<%=cid%>,
-                    ((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(<%=currentColNo%>).toBytes());
+	    		TalendTimestampWithTZ talendTimestampWithTZ = null;
+	    		if (((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(<%=currentColNo%>) != null) {
+    				talendTimestampWithTZ = OracleTIMESTAMPTZUtils.toTalendTSTZ(conn_<%=cid%>,
+                    	((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(<%=currentColNo%>).toBytes());
+                }
                 if(talendTimestampWithTZ != null){
                 	<%=firstConnName%>.<%=column.getLabel()%> = talendTimestampWithTZ;
                 }else{
