@@ -1518,29 +1518,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 if (request instanceof CreateRequest) {
                     CreateRequest cRequest = (CreateRequest) request;
                     if (cRequest.getNewObject() instanceof Node) {
-                        Object newObject = (cRequest).getNewObject();
-                        if (newObject != null) {
-                            Node node = (Node) newObject;
-                            NodeContainer nodeContainer = new NodeContainer(node);
-                            Point originalPoint = ((CreateRequest) request).getLocation();
-
-                            RootEditPart rep = getViewer().getRootEditPart().getRoot();
-
-                            Point viewOriginalPosition = new Point();
-                            if (rep instanceof ScalableFreeformRootEditPart) {
-                                ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) rep;
-                                Viewport viewport = (Viewport) root.getFigure();
-                                viewOriginalPosition = viewport.getViewLocation();
-                            }
-                            Point point = new Point(originalPoint.x + viewOriginalPosition.x, originalPoint.y
-                                    + viewOriginalPosition.y);
-
-                            CreateNodeContainerCommand createCmd = new CreateNodeContainerCommand((Process) getProcess(),
-                                    nodeContainer, point);
-                            if (createCmd != null) {
-                                execCommandStack(createCmd);
-                            }
-                        }
                         IComponent component = ((Node) cRequest.getNewObject()).getComponent();
                         ModulesInstaller.installModules(getSite().getShell(), component);
                     }
