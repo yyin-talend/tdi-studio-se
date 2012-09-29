@@ -648,8 +648,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                addMavenBSButton.setEnabled(addBSButton.getSelection());
                 addAntBSButton.setEnabled(addBSButton.getSelection());
+                addMavenBSButton.setEnabled(addBSButton.getSelection());
             }
         });
 
@@ -664,7 +664,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         buildScriptsGroup.setFont(font);
 
         addAntBSButton = new Button(buildScriptsGroup, SWT.RADIO | SWT.LEFT);
-        addAntBSButton.setSelection(true);
         addAntBSButton.setText(Messages.getString("JobScriptsExportWizardPage.addBuildScripts.ant")); //$NON-NLS-1$
         addAntBSButton.setFont(font);
         addAntBSButton.setEnabled(addBSButton.getSelection());
@@ -682,6 +681,10 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 addBSButton.setEnabled(show);
                 addAntBSButton.setEnabled(addBSButton.getSelection());
                 addMavenBSButton.setEnabled(addBSButton.getSelection());
+                if (!show) {
+                    addAntBSButton.setSelection(show);
+                    addMavenBSButton.setSelection(show);
+                }
             }
         });
     }
