@@ -2692,6 +2692,9 @@ public class Node extends Element implements IGraphicalNode {
                 if (jobletService.isJobletComponent(this)) {
                     Map<String, INode> multiNodes = new HashMap<String, INode>();
                     for (INode node : process.getGeneratingNodes()) {
+                        if (("preStaLogCon").equals(node.getUniqueName())) {
+                            continue;
+                        }
                         String componentName = node.getComponent().getName();
                         if (componentName != null && componentName.equals(TPREJOB_STR)) {
                             if (!multiNodes.containsKey(TPREJOB_STR)) {
