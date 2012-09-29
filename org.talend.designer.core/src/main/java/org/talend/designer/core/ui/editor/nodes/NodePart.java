@@ -336,6 +336,16 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 ((NodeFigure) figure).repaint();
                 refreshVisuals();
             }
+        } else if (changeEvent.getPropertyName().equals(EParameterName.DUMMY.getName())) {
+            if (((INode) getModel()).isActivate()) {
+                ((NodeFigure) figure).setDummy(((Node) getModel()).isDummy());
+                ((NodeFigure) figure).setAlpha(-1);
+            } else {
+                ((NodeFigure) figure).setDummy(((Node) getModel()).isDummy());
+                ((NodeFigure) figure).setAlpha(Node.ALPHA_VALUE);
+            }
+            ((NodeFigure) figure).repaint();
+            refreshVisuals();
         } else if (changeEvent.getPropertyName().equals(EParameterName.START.getName())) {
             if (((INode) getModel()).isStart()) {
                 ((NodeFigure) figure).setStart(true);
