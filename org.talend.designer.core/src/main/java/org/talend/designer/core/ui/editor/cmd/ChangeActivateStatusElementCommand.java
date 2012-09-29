@@ -12,7 +12,13 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -145,7 +151,7 @@ public class ChangeActivateStatusElementCommand extends Command {
             node.setPropertyValue(EParameterName.ACTIVATE.getName(), value);
         }
 
-        dummyMiddleElement();
+        dummyMiddleElement(false);
 
         process.setActivate(true);
         process.checkStartNodes();
@@ -197,6 +203,7 @@ public class ChangeActivateStatusElementCommand extends Command {
             process = (Process) connectionList.get(0).getSource().getProcess();
         }
         process.setActivate(false);
+        dummyMiddleElement(true);
         for (Node node : nodeList) {
             if (isSameSchemaInputOutput(node)) {
                 node.setPropertyValue(EParameterName.DUMMY.getName(), value);
@@ -216,6 +223,7 @@ public class ChangeActivateStatusElementCommand extends Command {
             }
             curConn.updateAllId();
         }
+
         process.setActivate(true);
         process.checkStartNodes();
         process.checkProcess();
@@ -227,10 +235,131 @@ public class ChangeActivateStatusElementCommand extends Command {
         this.execute();
     }
 
-    private void dummyMiddleElement() {
-        if (value == false) {
-            return;
+    private void dummyMiddleElement(boolean undo) {
+
+        Map<List<INode>, List<IConnection>> middConnMap = getAllMiddleConnections();
+        Set<Entry<List<INode>, List<IConnection>>> middSet = middConnMap.entrySet();
+        Iterator<Entry<List<INode>, List<IConnection>>> middIte = middSet.iterator();
+        List<IConnection> notSameForConn = new ArrayList<IConnection>();
+        List<INode> notSameForNode = new ArrayList<INode>();
+        while (middIte.hasNext()) {
+            Entry<List<INode>, List<IConnection>> entry = middIte.next();
+            List<INode> nodeList = entry.getKey();
+            List<IConnection> connList = entry.getValue();
+            if (nodeList.size() == 2) {
+                INode firNode = nodeList.get(0);
+                INode secNode = nodeList.get(1);
+                if (!notSameForNode.contains(firNode)) {
+                    notSameForNode.add(firNode);
+                }
+                if (!notSameForNode.contains(secNode)) {
+                    notSameForNode.add(secNode);
+                }
+                for (IConnection conn : connList) {
+                    if (!notSameForConn.contains(conn)) {
+                        notSameForConn.add(conn);
+                    } else {
+                        continue;
+                    }
+                    Node source = (Node) conn.getSource();
+                    if (source.getUniqueName() != firNode.getUniqueName() && (source.getUniqueName() != secNode.getUniqueName())) {
+                        if (isSameSchemaInputOutput(source)) {
+                            conn.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
+                            source.setPropertyValue(EParameterName.DUMMY.getName(), true);
+                            // source.setPropertyValue(EParameterName.ACTIVATE.getName(), source.isActivate());
+                        }
+                    }
+
+                    Node target = (Node) conn.getTarget();
+                    if (target.getUniqueName() != firNode.getUniqueName() && (target.getUniqueName() != secNode.getUniqueName())) {
+                        if (isSameSchemaInputOutput(target)) {
+                            conn.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
+                            target.setPropertyValue(EParameterName.DUMMY.getName(), true);
+                            // target.setPropertyValue(EParameterName.ACTIVATE.getName(), target.isActivate());
+                        }
+                    }
+                }
+
+            }
+
         }
+
+        if (!value) {
+            for (Node node : nodeList) {
+                if (node.isActivate()) {
+                    continue;
+                }
+                Map<IConnection, Node> outMiddleNodes = getAllOutMiddleNodes(node);
+                Map<IConnection, Node> inMiddleNodes = getAllInMiddleNodes(node);
+
+                Set<Entry<IConnection, Node>> outSet = outMiddleNodes.entrySet();
+                Iterator<Entry<IConnection, Node>> outIte = outSet.iterator();
+                while (outIte.hasNext()) {
+                    Entry<IConnection, Node> en = outIte.next();
+                    IConnection enConn = en.getKey();
+                    if (!notSameForConn.contains(enConn)) {
+                        // if (enConn.isActivate()) {
+                        enConn.setPropertyValue(EParameterName.ACTIVATE.getName(), value);
+                        if (!notSameForNode.contains(enConn.getTarget())) {
+                            enConn.getTarget().setPropertyValue(EParameterName.DUMMY.getName(), value);
+                        }
+                        // }
+                    }
+
+                }
+
+                Set<Entry<IConnection, Node>> inSet = inMiddleNodes.entrySet();
+                Iterator<Entry<IConnection, Node>> inIte = inSet.iterator();
+                while (inIte.hasNext()) {
+                    Entry<IConnection, Node> en = inIte.next();
+                    IConnection enConn = en.getKey();
+                    if (!notSameForConn.contains(enConn)) {
+                        // if (enConn.isActivate()) {
+                        enConn.setPropertyValue(EParameterName.ACTIVATE.getName(), value);
+                        if (!notSameForNode.contains(enConn.getSource())) {
+                            enConn.getSource().setPropertyValue(EParameterName.DUMMY.getName(), value);
+                        }
+                        // }
+                    }
+
+                }
+            }
+        }
+
+    }
+
+    private Map<IConnection, Node> getAllOutMiddleNodes(INode node) {
+        Map<IConnection, Node> middleNodeMap = new HashMap<IConnection, Node>();
+        for (IConnection outConn : node.getOutgoingConnections()) {
+            if (outConn.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                if (!((Node) outConn.getTarget()).isActivate()) {
+                    middleNodeMap.put(outConn, null);
+                    middleNodeMap.putAll(getAllOutMiddleNodes((Node) outConn.getTarget()));
+                } else {
+                    middleNodeMap.put(outConn, (Node) outConn.getTarget());
+                }
+            }
+        }
+        return middleNodeMap;
+    }
+
+    private Map<IConnection, Node> getAllInMiddleNodes(INode node) {
+        Map<IConnection, Node> middleNodeMap = new HashMap<IConnection, Node>();
+        for (IConnection inConn : node.getIncomingConnections()) {
+            if (inConn.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                if (!((Node) inConn.getSource()).isActivate()) {
+                    middleNodeMap.put(inConn, null);
+                    middleNodeMap.putAll(getAllInMiddleNodes((Node) inConn.getSource()));
+                } else {
+                    middleNodeMap.put(inConn, (Node) inConn.getSource());
+                }
+            }
+        }
+        return middleNodeMap;
+    }
+
+    private Map<List<INode>, List<IConnection>> getAllMiddleConnections() {
+        Map<List<INode>, List<IConnection>> middConnMap = new HashMap<List<INode>, List<IConnection>>();
         Process process;
         if (nodeList.size() > 0) {
             process = (Process) nodeList.get(0).getProcess();
@@ -238,35 +367,106 @@ public class ChangeActivateStatusElementCommand extends Command {
             process = (Process) connectionList.get(0).getSource().getProcess();
         }
         List<? extends INode> nodes = process.getGraphicalNodes();
-        if (nodes != null && nodes.size() > 0) {
-            for (INode node : nodes) {
-                if (!node.isActivate()) {
-                    continue;
-                }
-                List<Connection> connIn = (List<Connection>) node.getIncomingConnections();
-                for (Connection in : connIn) {
-                    Node source = (Node) in.getSource();
-                    for (INode cNode : nodes) {
-                        if (cNode.getUniqueName().equals(node.getUniqueName())) {
-                            continue;
-                        }
-                        List<Connection> cConnOut = (List<Connection>) cNode.getOutgoingConnections();
-                        for (Connection cOut : cConnOut) {
-                            INode cTarget = cOut.getTarget();
-                            if (source.getUniqueName().equals(cTarget.getUniqueName())) {
-                                if (isSameSchemaInputOutput(source)) {
-                                    cOut.setPropertyValue(EParameterName.ACTIVATE.getName(), value);
-                                    in.setPropertyValue(EParameterName.ACTIVATE.getName(), value);
-                                    source.setPropertyValue(EParameterName.DUMMY.getName(), value);
-                                    source.setPropertyValue(EParameterName.ACTIVATE.getName(), source.isActivate());
-                                }
+        for (INode node : nodes) {
+            if (node.isActivate()) {
+                Map<IConnection, Node> outMiddleNodes = getAllOutMiddleNodes(node);
+                Map<IConnection, Node> inMiddleNodes = getAllInMiddleNodes(node);
 
+                Set<Entry<IConnection, Node>> outSet = outMiddleNodes.entrySet();
+                Iterator<Entry<IConnection, Node>> outIte = outSet.iterator();
+                boolean haveActivateTarget = false;
+                List<INode> nodeList = new ArrayList<INode>();
+                List<IConnection> connList = new ArrayList<IConnection>();
+                while (outIte.hasNext()) {
+                    Entry<IConnection, Node> en = outIte.next();
+                    Node enNode = en.getValue();
+                    IConnection enConn = en.getKey();
+                    if (enNode != null) {
+                        haveActivateTarget = true;
+                        if (!nodeList.contains(node)) {
+                            nodeList.add(node);
+                        }
+                        if (!nodeList.contains(enNode)) {
+                            nodeList.add(enNode);
+                        }
+                    }
+                    if (enConn != null && !connList.contains(enConn)) {
+                        connList.add(enConn);
+                    }
+                }
+                if (!haveActivateTarget) {
+                    outMiddleNodes.clear();
+                }
+                if (!nodeList.isEmpty() && !connList.isEmpty()) {
+                    Set<Entry<List<INode>, List<IConnection>>> middSet = middConnMap.entrySet();
+                    Iterator<Entry<List<INode>, List<IConnection>>> middIte = middSet.iterator();
+                    boolean exist = false;
+                    while (middIte.hasNext()) {
+                        Entry<List<INode>, List<IConnection>> entry = middIte.next();
+                        List<INode> enNodeList = entry.getKey();
+                        if (enNodeList.size() == 2 && nodeList.size() == 2) {
+                            if (enNodeList.get(0).getUniqueName().equals(nodeList.get(1).getUniqueName())
+                                    && enNodeList.get(1).getUniqueName().equals(nodeList.get(0).getUniqueName())) {
+                                exist = true;
+                            } else if (enNodeList.get(0).getUniqueName().equals(nodeList.get(0).getUniqueName())
+                                    && enNodeList.get(1).getUniqueName().equals(nodeList.get(1).getUniqueName())) {
+                                exist = true;
                             }
                         }
                     }
+                    if (!exist) {
+                        middConnMap.put(nodeList, connList);
+                    }
                 }
 
+                Set<Entry<IConnection, Node>> inSet = inMiddleNodes.entrySet();
+                Iterator<Entry<IConnection, Node>> inIte = inSet.iterator();
+                boolean haveActivateSource = false;
+                nodeList = new ArrayList<INode>();
+                connList = new ArrayList<IConnection>();
+                while (inIte.hasNext()) {
+                    Entry<IConnection, Node> en = inIte.next();
+                    Node enNode = en.getValue();
+                    IConnection enConn = en.getKey();
+                    if (enNode != null) {
+                        haveActivateSource = true;
+                        if (!nodeList.contains(node)) {
+                            nodeList.add(node);
+                        }
+                        if (!nodeList.contains(enNode)) {
+                            nodeList.add(enNode);
+                        }
+                    }
+                    if (enConn != null && !connList.contains(enConn)) {
+                        connList.add(enConn);
+                    }
+                }
+                if (!haveActivateSource) {
+                    inMiddleNodes.clear();
+                }
+                if (!nodeList.isEmpty() && !connList.isEmpty()) {
+                    Set<Entry<List<INode>, List<IConnection>>> middSet = middConnMap.entrySet();
+                    Iterator<Entry<List<INode>, List<IConnection>>> middIte = middSet.iterator();
+                    boolean exist = false;
+                    while (middIte.hasNext()) {
+                        Entry<List<INode>, List<IConnection>> entry = middIte.next();
+                        List<INode> enNodeList = entry.getKey();
+                        if (enNodeList.size() == 2 && nodeList.size() == 2) {
+                            if (enNodeList.get(0).getUniqueName().equals(nodeList.get(1).getUniqueName())
+                                    && enNodeList.get(1).getUniqueName().equals(nodeList.get(0).getUniqueName())) {
+                                exist = true;
+                            } else if (enNodeList.get(0).getUniqueName().equals(nodeList.get(0).getUniqueName())
+                                    && enNodeList.get(1).getUniqueName().equals(nodeList.get(1).getUniqueName())) {
+                                exist = true;
+                            }
+                        }
+                    }
+                    if (!exist) {
+                        middConnMap.put(nodeList, connList);
+                    }
+                }
             }
         }
+        return middConnMap;
     }
 }
