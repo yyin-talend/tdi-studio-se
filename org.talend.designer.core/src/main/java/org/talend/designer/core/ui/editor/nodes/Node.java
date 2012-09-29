@@ -1822,6 +1822,13 @@ public class Node extends Element implements IGraphicalNode {
                 hasActivatedOutput = true;
             }
         }
+        boolean hasActivatedSource = false;
+        if (hasActivatedOutput) {
+            hasActivatedSource = getAllInMiddleNodes(this);
+            if (!hasActivatedSource || activate) {
+                setPropertyValue(EParameterName.DUMMY.getName(), false);
+            }
+        }
         if (!hasActivatedOutput || activate) {
             setPropertyValue(EParameterName.DUMMY.getName(), false);
         }
@@ -1872,6 +1879,7 @@ public class Node extends Element implements IGraphicalNode {
      */
     public void setDummy(Boolean value) {
         dummy = value;
+        firePropertyChange(EParameterName.DUMMY.getName(), null, null);
     }
 
     @Override
@@ -3875,6 +3883,21 @@ public class Node extends Element implements IGraphicalNode {
     @Override
     public void setVirtualLinkTo(EConnectionType virtualLinkTo) {
         this.virtualLinkTo = virtualLinkTo;
+    }
+
+    private boolean getAllInMiddleNodes(INode node) {
+        boolean hasActivateSource = false;
+        for (IConnection inConn : node.getIncomingConnections()) {
+            if (inConn.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                if (!((Node) inConn.getSource()).isActivate()) {
+                    hasActivateSource = getAllInMiddleNodes((Node) inConn.getSource());
+                } else {
+                    hasActivateSource = true;
+                    return hasActivateSource;
+                }
+            }
+        }
+        return hasActivateSource;
     }
 
 }
