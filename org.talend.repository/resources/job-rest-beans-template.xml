@@ -32,7 +32,7 @@
 		<constructor-arg ref="serviceBean"/>
 	</bean>
 
-	<bean id="dom4jProvider" class="@JOBCLASSNAME@.DOM4JProvider"/>
+	<bean id="dom4jProvider" class="org.apache.cxf.jaxrs.provider.dom4j.DOM4JProvider"/>
 
 	<bean id="jsonProvider" class="org.apache.cxf.jaxrs.provider.json.JSONProvider">
 		<property name="ignoreNamespaces" value="true"/>
