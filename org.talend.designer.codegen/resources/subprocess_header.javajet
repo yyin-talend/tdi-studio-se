@@ -983,6 +983,7 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 			}
 			boolean isRunning = false;
 			String iterateId = "";
+			int iterateLoop = 0;
 			
 			public void run() {
 				java.util.Map threadRunResultMap = new java.util.HashMap();
@@ -999,6 +1000,7 @@ public void <%=subTree.getName() %>Process(final java.util.Map<String, Object> g
 %>
 
 	String iterateId = "";
+	int iterateLoop = 0;
 	String currentComponent = "";
 				
 	try {

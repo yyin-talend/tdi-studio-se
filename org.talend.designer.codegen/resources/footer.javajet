@@ -360,6 +360,9 @@ if(execStat){
 
 this.globalResumeTicket = true;//to run tPreJob
 
+java.util.concurrent.ConcurrentHashMap<Object, Object> concurrentHashMap = new java.util.concurrent.ConcurrentHashMap<Object, Object>();
+globalMap.put("concurrentHashMap", concurrentHashMap);
+
 <%
 //3. run pre-job
  if(!prejobNodes.isEmpty()){
