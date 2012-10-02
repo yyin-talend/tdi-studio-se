@@ -24,38 +24,37 @@ import org.talend.repository.utils.EmfModelUtils;
  */
 public class DataSourceConfig {
 
-    private String additionalJobBeanParams = ""; //$NON-NLS-1$
+    private DataSourceConfig() {
+    }
 
-    public DataSourceConfig(ProcessItem processItem) {
+    public static String getAdditionalJobBeanParams(ProcessItem processItem) {
         Set<String> aliases = new HashSet<String>();
         for (Object o : processItem.getProcess().getNode()) {
             if (o instanceof NodeType) {
                 NodeType node = (NodeType) o;
                 if (EmfModelUtils.isComponentActive(node)) {
-                    String alias = EmfModelUtils.computeTextElementValue("DATASOURCE_ALIAS", node);
+                    String alias = EmfModelUtils.computeTextElementValue("DATASOURCE_ALIAS", node); //$NON-NLS-1$
                     if (!"".equals(alias)) {
                         aliases.add(alias);
                     }
                 }
             }
         }
+        String additionalJobBeanParams = ""; //$NON-NLS-1$
         if (!aliases.isEmpty()) {
             additionalJobBeanParams +=
-                  "\n\t\t<property name=\"dataSources\">"
-                + "\n\t\t\t<map>";
+                  "\n\t\t<property name=\"dataSources\">" //$NON-NLS-1$
+                + "\n\t\t\t<map>"; //$NON-NLS-1$
             for (String alias : aliases) {
                 additionalJobBeanParams +=
-                          "\n\t\t\t\t<entry key=\"" + alias + "\">"
-                        + "\n\t\t\t\t\t<reference interface=\"javax.sql.DataSource\" filter=\"(osgi.jndi.service.name=" + alias + ")\"/>"
-                        + "\n\t\t\t\t</entry>";
+                          "\n\t\t\t\t<entry key=\"" + alias + "\">" //$NON-NLS-1$
+                        + "\n\t\t\t\t\t<reference interface=\"javax.sql.DataSource\" filter=\"(osgi.jndi.service.name=" + alias + ")\"/>" //$NON-NLS-1$
+                        + "\n\t\t\t\t</entry>"; //$NON-NLS-1$
             }
             additionalJobBeanParams +=
-                  "\n\t\t\t</map>"
-                + "\n\t\t</property>";
+                  "\n\t\t\t</map>" //$NON-NLS-1$
+                + "\n\t\t</property>"; //$NON-NLS-1$
         }
-    }
-
-    public String getAdditionalJobBeanParams() {
         return additionalJobBeanParams;
     }
 

@@ -308,9 +308,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return null != EmfModelUtils.getComponentByName(processItem, "tESBProviderRequest");
     }
 
-    private static boolean isRESTClientJob(ProcessItem processItem) {
-        return null != EmfModelUtils.getComponentByName(processItem, "tRESTClient");
-    }
+//    private static boolean isRESTClientJob(ProcessItem processItem) {
+//        return null != EmfModelUtils.getComponentByName(processItem, "tRESTClient");
+//    }
 
     private static NodeType getRESTRequestComponent(ProcessItem processItem) {
         return EmfModelUtils.getComponentByName(processItem, "tRESTRequest");
@@ -379,9 +379,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     + "\n\t\t<property name=\"contextName\" value=\"karaf\"/>\n\t</bean>";
         }
         // OSGi DataSource
-        DataSourceConfig dataSourceConfig = new DataSourceConfig(processItem);
-        additionalJobBeanParams += dataSourceConfig.getAdditionalJobBeanParams();
-        // additionalBeansConfig += dataSourceConfig.getAdditionalJobBundleConfig();
+        additionalJobBeanParams += DataSourceConfig.getAdditionalJobBeanParams(processItem);
 
         BufferedReader br = null;
         BufferedWriter bw = null;
@@ -434,8 +432,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         String additionalJobBeanParams = "";
 
         // http://jira.talendforge.org/browse/TESB-3677
-        boolean hasSAM = false;
-
         if (ROUTE.equals(itemType)) {
             for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "cCXF")) { //$NON-NLS-1$
                 // http://jira.talendforge.org/browse/TESB-3850
@@ -460,8 +456,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
 
         // OSGi DataSource
-        DataSourceConfig dataSourceConfig = new DataSourceConfig(processItem);
-        additionalJobBeanParams += dataSourceConfig.getAdditionalJobBeanParams();
+        additionalJobBeanParams += DataSourceConfig.getAdditionalJobBeanParams(processItem);
 
         BufferedReader br = null;
         BufferedWriter bw = null;
@@ -586,11 +581,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     File dependencyFile = new File(url.getPath());
                     bundleClasspath.append(',').append(libResource.getDirectoryName()).append(PATH_SEPARATOR)
                             .append(dependencyFile.getName());
-                    // add systemRoutines.jar as emded resource to allow proper Import-Package calculation
-                    if ("systemRoutines.jar".equals(dependencyFile.getName())) {
-                        bin.putResource(libResource.getDirectoryName() + PATH_SEPARATOR + dependencyFile.getName(),
-                                new FileResource(dependencyFile));
-                    }
+                    bin.putResource(libResource.getDirectoryName() + PATH_SEPARATOR + dependencyFile.getName(),
+                            new FileResource(dependencyFile));
                     // analyzer.addClasspath(new File(url.getPath()));
                 }
             }
