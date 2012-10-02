@@ -579,9 +579,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 Set<URL> resources = libResource.getResourcesByRelativePath(path);
                 for (URL url : resources) {
                     File dependencyFile = new File(url.getPath());
-                    bundleClasspath.append(',').append(libResource.getDirectoryName()).append(PATH_SEPARATOR)
-                            .append(dependencyFile.getName());
-                    bin.putResource(libResource.getDirectoryName() + PATH_SEPARATOR + dependencyFile.getName(),
+                    String relativePath = libResource.getDirectoryName() + PATH_SEPARATOR + dependencyFile.getName();
+                    bundleClasspath.append(',').append(relativePath);
+                    bin.putResource(relativePath,
                             new FileResource(dependencyFile));
                     // analyzer.addClasspath(new File(url.getPath()));
                 }

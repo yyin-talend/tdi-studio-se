@@ -15,8 +15,10 @@ package org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.utils.EmfModelUtils;
 
 /**
@@ -28,18 +30,7 @@ public class DataSourceConfig {
     }
 
     public static String getAdditionalJobBeanParams(ProcessItem processItem) {
-        Set<String> aliases = new HashSet<String>();
-        for (Object o : processItem.getProcess().getNode()) {
-            if (o instanceof NodeType) {
-                NodeType node = (NodeType) o;
-                if (EmfModelUtils.isComponentActive(node)) {
-                    String alias = EmfModelUtils.computeTextElementValue("DATASOURCE_ALIAS", node); //$NON-NLS-1$
-                    if (!"".equals(alias)) {
-                        aliases.add(alias);
-                    }
-                }
-            }
-        }
+        Set<String> aliases = getAliases(processItem);
         String additionalJobBeanParams = ""; //$NON-NLS-1$
         if (!aliases.isEmpty()) {
             additionalJobBeanParams +=
@@ -56,6 +47,26 @@ public class DataSourceConfig {
                 + "\n\t\t</property>"; //$NON-NLS-1$
         }
         return additionalJobBeanParams;
+    }
+
+    private static Set<String> getAliases(ProcessItem processItem) {
+        Set<String> aliases = new HashSet<String>();
+        for (Object o : processItem.getProcess().getNode()) {
+            if (o instanceof NodeType) {
+                NodeType node = (NodeType) o;
+                if (EmfModelUtils.isComponentActive(node)) {
+                    String alias = EmfModelUtils.computeTextElementValue("DATASOURCE_ALIAS", node); //$NON-NLS-1$
+                    if (!"".equals(alias)) {
+                        aliases.add(alias);
+                    }
+                }
+            }
+        } 
+        Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(processItem);
+        for (JobInfo subjobInfo : subjobInfos) {
+            aliases.addAll(getAliases(subjobInfo.getProcessItem()));
+        }
+        return aliases;
     }
 
 }
