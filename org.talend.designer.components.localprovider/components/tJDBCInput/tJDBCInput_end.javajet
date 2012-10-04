@@ -12,6 +12,7 @@ INode node = (INode) codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 %>
 }
+rs_<%=cid %>.close();
 stmt_<%=cid%>.close();
 
 <%
