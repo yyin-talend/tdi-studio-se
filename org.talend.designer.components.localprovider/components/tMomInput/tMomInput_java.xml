@@ -32,13 +32,14 @@
     <CONNECTOR CTYPE="RUN_IF" />
   </CONNECTORS>
 
+
   <PARAMETERS>
     <PARAMETER
 	NAME="KEEPLISTENING"
 	FIELD="CHECK"
 	SHOW="true"
 	NUM_ROW="10"
-	SHOW_IF="(SERVER == 'JBOSS') OR (SERVER == 'WEBSPHERE') OR (SERVER == 'ACTIVEMQ' AND USEMAX == 'false')"
+	SHOW_IF="(SERVER == 'JBOSS') OR (SERVER == 'WEBSPHERE') OR (USE_CONNECTION == 'true' or SERVER == 'ACTIVEMQ' AND USEMAX == 'false')"
     	>
       <DEFAULT IF="(SERVER == 'JBOSS')">true</DEFAULT>
       <DEFAULT IF="(SERVER == 'WEBSPHERE')">false</DEFAULT>
@@ -48,7 +49,7 @@
     <PARAMETER
 	NAME="STARTSERVER"
 	FIELD="CHECK"
-	SHOW_IF="SERVER == 'ACTIVEMQ'"
+	SHOW_IF="(SERVER == 'ACTIVEMQ') or (USE_CONNECTION == 'true')"
 	NUM_ROW="60"
 	>
       <DEFAULT >false</DEFAULT>
@@ -57,19 +58,19 @@
     <PARAMETER
 	NAME="USEMAX"
 	FIELD="CHECK"
-	SHOW_IF="(SERVER == 'ACTIVEMQ')AND (KEEPLISTENING == 'false')"
+	SHOW_IF="((USE_CONNECTION == 'true') or (SERVER == 'ACTIVEMQ')) AND (KEEPLISTENING == 'false')"
 	NUM_ROW="15"
 	>
       <DEFAULT >false</DEFAULT>
     </PARAMETER>
-    
+
     <PARAMETER
 	NAME="USE_CONNECTION"
 	FIELD="CHECK"
-	NUM_ROW="1"
-	>
-      <DEFAULT >false</DEFAULT>
-    </PARAMETER>
+	NUM_ROW="1">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>  
+
 
     <PARAMETER
 	NAME="CONNECTION"
@@ -92,7 +93,7 @@
     <PARAMETER
 	NAME="TIMEOUT"
 	FIELD="TEXT"
-	SHOW_IF="(SERVER == 'JBOSS' and KEEPLISTENING == 'TRUE')or (SERVER == 'ACTIVEMQ' and KEEPLISTENING == 'false' and USEMAX == 'false')"
+	SHOW_IF="(SERVER == 'JBOSS' and KEEPLISTENING == 'TRUE') or (((SERVER == 'ACTIVEMQ') or (USE_CONNECTION == 'true')) and KEEPLISTENING == 'false' and USEMAX == 'false')"
 	NUM_ROW="12"
 	>
       <DEFAULT>1</DEFAULT>
@@ -101,7 +102,7 @@
     <PARAMETER
       	NAME="MAXMSG"
         FIELD="TEXT"
-        SHOW_IF="(SERVER == 'ACTIVEMQ' and KEEPLISTENING == 'false' and USEMAX == 'true')"
+        SHOW_IF="(((SERVER == 'ACTIVEMQ') or (USE_CONNECTION == 'true')) and KEEPLISTENING == 'false' and USEMAX == 'true')"
         NUM_ROW="17"
     	>
       <DEFAULT>1000</DEFAULT>
@@ -183,7 +184,7 @@
 	FIELD="TEXT"
 	SHOW="true"
 	NUM_ROW="35"
-	SHOW_IF="(SERVER == 'JBOSS') or (SERVER == 'ACTIVEMQ')"
+	SHOW_IF="(SERVER == 'JBOSS') or (SERVER == 'ACTIVEMQ') or (USE_CONNECTION == 'true')"
 	>
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -192,7 +193,7 @@
 	NAME="MSGTYPE"
 	FIELD="CLOSED_LIST"
 	NUM_ROW="35"
-	SHOW_IF="(SERVER == 'JBOSS')or (SERVER == 'ACTIVEMQ')"
+	SHOW_IF="(SERVER == 'JBOSS') or (SERVER == 'ACTIVEMQ') or (USE_CONNECTION == 'true')"
 	>
       <ITEMS DEFAULT="TOPIC">
 	<ITEM NAME="TOPIC"   VALUE="Topic" />
@@ -229,21 +230,21 @@
 	REQUIRED="true"
 	NUM_ROW="45"
 	>
-      <TABLE IF="((SERVER == 'JBOSS') or (SERVER == 'ACTIVEMQ')) AND (IS_USE_MESSAGE_ID == 'false')" READONLY="false">
+      <TABLE IF="((USE_CONNECTION == 'true') or (SERVER == 'JBOSS') or (SERVER == 'ACTIVEMQ')) AND (IS_USE_MESSAGE_ID == 'false')" READONLY="false">
       	<COLUMN NAME="from" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
       	<COLUMN NAME="message" TYPE="id_String" LENGTH="255" CUSTOM="true"/>
       </TABLE>
-      <TABLE IF="((SERVER == 'JBOSS') or (SERVER == 'ACTIVEMQ')) AND (IS_USE_MESSAGE_ID == 'true')" READONLY="false">
+      <TABLE IF="((USE_CONNECTION == 'true') or (SERVER == 'JBOSS') or (SERVER == 'ACTIVEMQ')) AND (IS_USE_MESSAGE_ID == 'true')" READONLY="false">
 	<COLUMN NAME="from" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
 	<COLUMN NAME="messageid" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
 	<COLUMN NAME="message" TYPE="id_String" LENGTH="255" CUSTOM="true"/>
       </TABLE>
-      <TABLE IF="(SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'true')" READONLY="false">
+      <TABLE IF="(USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'true')" READONLY="false">
 	<COLUMN NAME="from" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
 	<COLUMN NAME="messageid" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
 	<COLUMN NAME="message" TYPE="id_String" LENGTH="255" CUSTOM="true"/>
       </TABLE>
-      <TABLE IF="(SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'false')" READONLY="false">
+      <TABLE IF="(USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'false')" READONLY="false">
       	<COLUMN NAME="from" TYPE="id_String" LENGTH="255" READONLY="true" CUSTOM="true"/>
       	<COLUMN NAME="message" TYPE="id_String" LENGTH="255" CUSTOM="true"/>
       </TABLE>
@@ -274,7 +275,7 @@
 	FIELD="CHECK" 
 	REQUIRED="true" 
 	NUM_ROW="60" 
-	SHOW_IF="(SERVER == 'WEBSPHERE') AND (MESSAGE_BODY_TYPE != 'MAP')"
+	SHOW_IF="(USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE') AND (MESSAGE_BODY_TYPE != 'MAP')"
 	>
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -283,7 +284,7 @@
 	NAME="MSG_ID"
 	FIELD="TEXT"
 	NUM_ROW="70"
-	SHOW_IF="(SERVER == 'WEBSPHERE') AND (IS_USE_MESSAGE_ID == 'true') AND (MESSAGE_BODY_TYPE != 'MAP')"
+	SHOW_IF="(USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE') AND (IS_USE_MESSAGE_ID == 'true') AND (MESSAGE_BODY_TYPE != 'MAP')"
 	> 
       <DEFAULT>""</DEFAULT>
     </PARAMETER> 
@@ -293,7 +294,7 @@
 	FIELD="CHECK" 
 	REQUIRED="true" 
 	NUM_ROW="80" 
-	SHOW_IF="(SERVER == 'WEBSPHERE') AND (BROWSE == 'false')"
+	SHOW_IF="(USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE') AND (BROWSE == 'false')"
 	>
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -303,7 +304,7 @@
 	FIELD="CHECK" 
 	REQUIRED="true" 
 	NUM_ROW="90" 
-	SHOW_IF="(SERVER == 'WEBSPHERE') AND (KEEPLISTENING == 'false') AND (COMMIT == 'false') AND (BROWSE == 'false')"
+	SHOW_IF="(USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE') AND (KEEPLISTENING == 'false') AND (COMMIT == 'false') AND (BROWSE == 'false')"
 	>
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -317,7 +318,7 @@
 	FIELD="CHECK" 
 	REQUIRED="true" 
 	NUM_ROW="10" 
-	SHOW_IF="(SERVER == 'WEBSPHERE') AND (ROLLBACK == 'false') AND (COMMIT == 'false')"
+	SHOW_IF="(USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE') AND (ROLLBACK == 'false') AND (COMMIT == 'false')"
 	>
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -327,7 +328,7 @@
 	FIELD="CHECK" 
 	REQUIRED="false" 
 	NUM_ROW="20" 
-	SHOW_IF="(SERVER == 'ACTIVEMQ')"
+	SHOW_IF="(SERVER == 'ACTIVEMQ') or (USE_CONNECTION == 'true')"
 	>
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -336,7 +337,7 @@
 	NAME="ACKNOWLEDGMENT_MODE" 
 	FIELD="CLOSED_LIST" 
 	NUM_ROW="30"  
-	SHOW_IF="(SERVER != 'WEBSPHERE')"
+	SHOW_IF="(USE_CONNECTION == 'true') or (SERVER != 'WEBSPHERE')"
 	>
       <ITEMS DEFAULT="AUTO_ACKNOWLEDGE">
 	<ITEM NAME="AUTO_ACKNOWLEDGE"   VALUE="AUTO_ACKNOWLEDGE" />
@@ -350,7 +351,7 @@
 	FIELD="CHECK" 
 	NUM_ROW="40"
 	REQUIRED="false" 
-	SHOW_IF="(SERVER != 'WEBSPHERE')" 
+	SHOW_IF="(USE_CONNECTION == 'true') or (SERVER != 'WEBSPHERE')" 
 	>
       <DEFAULT>"false"</DEFAULT>
     </PARAMETER>
@@ -361,7 +362,7 @@
 	REQUIRED="false"
 	NUM_ROW="50"
 	NB_LINES="3"
-	SHOW_IF="(GET_JMS_HEADER == 'true') AND (SERVER != 'WEBSPHERE')"
+	SHOW_IF="(GET_JMS_HEADER == 'true') AND ((USE_CONNECTION == 'true') or (SERVER != 'WEBSPHERE'))"
 	>
       <ITEMS>
 	<ITEM NAME="JMS_HEADER_NAME" FIELD="CLOSED_LIST">
@@ -387,7 +388,7 @@
 	FIELD="CHECK" 
 	NUM_ROW="60"
 	REQUIRED="false" 
-	SHOW_IF="(SERVER != 'WEBSPHERE')" 
+	SHOW_IF="(USE_CONNECTION == 'true') or (SERVER != 'WEBSPHERE')" 
 	>
       <DEFAULT>"false"</DEFAULT>
     </PARAMETER>
@@ -398,7 +399,7 @@
 	REQUIRED="false"
 	NUM_ROW="70"
 	NB_LINES="3"
-	SHOW_IF="(GET_JMS_PROPERTIES == 'true') AND (SERVER != 'WEBSPHERE')"
+	SHOW_IF="(GET_JMS_PROPERTIES == 'true') AND ((USE_CONNECTION == 'true') or (SERVER != 'WEBSPHERE'))"
 	>
       <ITEMS>
 	<ITEM NAME="JMS_PROPERTIES_NAME" FIELD="TEXT">
@@ -425,7 +426,7 @@
 	FIELD="CHECK" 
 	NUM_ROW="80"
 	REQUIRED="false" 
-	SHOW_IF="(SERVER == 'WEBSPHERE')" 
+	SHOW_IF="(USE_CONNECTION == 'false') or (SERVER == 'WEBSPHERE')" 
 	>
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -436,7 +437,7 @@
 	REQUIRED="false"
 	NUM_ROW="90"
 	NB_LINES="3"
-	SHOW_IF="(GET_MQMD_FIELDS == 'true') AND (SERVER == 'WEBSPHERE')"
+	SHOW_IF="(GET_MQMD_FIELDS == 'true') AND ((USE_CONNECTION == 'true') or (SERVER == 'WEBSPHERE'))"
     	>
       <ITEMS>
 	<ITEM NAME="MQMD_FIELD_NAME" FIELD="CLOSED_LIST">
@@ -478,7 +479,7 @@
 	NUM_ROW="80"
 	REQUIRED="false"
 	GROUP="HEADERS"
-	SHOW_IF="(SERVER == 'WEBSPHERE')" 
+	SHOW_IF="(USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE')" 
 	>
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -489,7 +490,7 @@
 	NUM_ROW="81"
 	REQUIRED="false" 
 	GROUP="HEADERS"
-	SHOW_IF="(USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
+	SHOW_IF="(USE_MQ_HEADER=='true') AND ((USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE'))" 
 	>
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -501,7 +502,7 @@
 	REQUIRED="false"
 	NUM_ROW="82"
 	GROUP="HEADERS"
-	SHOW_IF="(USE_MQ_HEADER == 'true') AND (USE_FIX_MQRFH2=='true') AND (SERVER == 'WEBSPHERE')"
+	SHOW_IF="(USE_CONNECTION == 'false') and (USE_MQ_HEADER == 'true') AND (USE_FIX_MQRFH2=='true') AND (SERVER == 'WEBSPHERE')"
     	>
       <ITEMS>
 	<ITEM NAME="MQMD_FIELD_NAME" FIELD="CLOSED_LIST">
@@ -525,7 +526,7 @@
 	NUM_ROW="83"
 	REQUIRED="false" 
 	GROUP="HEADERS"
-	SHOW_IF="(USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
+	SHOW_IF="(USE_CONNECTION == 'false') and (USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
 	>
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -536,7 +537,7 @@
 	REQUIRED="false"
 	NUM_ROW="84"
 	GROUP="HEADERS"
-	SHOW_IF="(USE_MQ_HEADER == 'true') AND (USE_MQRFH2_MCD=='true') AND (SERVER == 'WEBSPHERE')"
+	SHOW_IF="(USE_CONNECTION == 'false') and (USE_MQ_HEADER == 'true') AND (USE_MQRFH2_MCD=='true') AND (SERVER == 'WEBSPHERE')"
     	>
       <ITEMS>
 	<ITEM NAME="MQMD_FIELD_NAME" FIELD="CLOSED_LIST">
@@ -557,7 +558,7 @@
 	NUM_ROW="85"
 	REQUIRED="false"
 	GROUP="HEADERS"		  
-	SHOW_IF="(USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
+	SHOW_IF="(USE_CONNECTION == 'false') and (USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
 	>
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -568,7 +569,7 @@
 	REQUIRED="false"
 	NUM_ROW="86"
 	GROUP="HEADERS"
-	SHOW_IF="(USE_MQ_HEADER == 'true') AND (USE_MQRFH2_JMS=='true') AND (SERVER == 'WEBSPHERE')"
+	SHOW_IF="(USE_CONNECTION == 'false') and (USE_MQ_HEADER == 'true') AND (USE_MQRFH2_JMS=='true') AND (SERVER == 'WEBSPHERE')"
     	>
       <ITEMS>
 	<ITEM NAME="MQMD_FIELD_NAME" FIELD="CLOSED_LIST" >
@@ -594,7 +595,7 @@
 	NUM_ROW="87"
 	REQUIRED="false" 
 	GROUP="HEADERS"
-	SHOW_IF="(USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
+	SHOW_IF="(USE_CONNECTION == 'false') and (USE_MQ_HEADER=='true') AND (SERVER == 'WEBSPHERE')" 
 	>
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -605,7 +606,7 @@
 	REQUIRED="false"
 	NUM_ROW="88"
 	GROUP="HEADERS"
-	SHOW_IF="(USE_MQ_HEADER == 'true') AND (USE_MQRFH2_USR=='true') AND (SERVER == 'WEBSPHERE')"
+	SHOW_IF="(USE_CONNECTION == 'false') and (USE_MQ_HEADER == 'true') AND (USE_MQRFH2_USR=='true') AND (SERVER == 'WEBSPHERE')"
     	>
       <ITEMS>
 	<ITEM NAME="MQMD_FIELD_NAME" FIELD="TEXT" />
@@ -614,7 +615,7 @@
     </PARAMETER>
 
     <PARAMETER NAME="SET_MQ_SSL_CIPHER" FIELD="CHECK" NUM_ROW="95"
-	       REQUIRED="false" SHOW_IF="(SERVER == 'WEBSPHERE')" GROUP="SSL">
+	       REQUIRED="false" SHOW_IF="(USE_CONNECTION == 'false') and (SERVER == 'WEBSPHERE')" GROUP="SSL">
       <DEFAULT>"false"</DEFAULT>
     </PARAMETER>
     <PARAMETER
@@ -623,7 +624,7 @@
 	NUM_ROW="96"
 	REQUIRED="false"
 	GROUP="SSL"
-	SHOW_IF="(SET_MQ_SSL_CIPHER == 'true') AND (SERVER == 'WEBSPHERE')">	  
+	SHOW_IF="(USE_CONNECTION == 'false') and (SET_MQ_SSL_CIPHER == 'true') AND (SERVER == 'WEBSPHERE')">	  
       <ITEMS DEFAULT="NULL_MD5">
 	<ITEM NAME="NULL_MD5" VALUE="SSL_RSA_WITH_NULL_MD5"/>
 	<ITEM NAME="NULL_SHA" VALUE="SSL_RSA_WITH_NULL_SHA"/>
@@ -653,6 +654,8 @@
 
       <TEMPLATE NAME="In" COMPONENT="tMomInputIn" />
 
+      <TEMPLATE_PARAM SOURCE="self.USE_CONNECTION" TARGET="Loop.USE_CONNECTION" />
+      <TEMPLATE_PARAM SOURCE="self.CONNECTION" TARGET="Loop.CONNECTION" />
       <TEMPLATE_PARAM SOURCE="self.KEEPLISTENING" TARGET="Loop.KEEPLISTENING" />
       <TEMPLATE_PARAM SOURCE="self.STARTSERVER" TARGET="Loop.STARTSERVER" />
       <TEMPLATE_PARAM SOURCE="self.USEMAX" TARGET="Loop.USEMAX" />

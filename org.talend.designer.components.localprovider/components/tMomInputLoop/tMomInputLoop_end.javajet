@@ -9,6 +9,7 @@
 	<%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+        boolean isUseConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
 	String cid = node.getUniqueName();
 	cid = cid.replaceAll("_Loop", "");
 	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
@@ -18,7 +19,7 @@
 	String acknowledgmentMode = ElementParameterParser.getValue(node, "__ACKNOWLEDGMENT_MODE__");
 	String msgBobyType =  ElementParameterParser.getValue(node, "__MESSAGE_BODY_TYPE__");
 	
-	if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {
+	if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType) || isUseConnection) {
 		if ("CLIENT_ACKNOWLEDGE".equals(acknowledgmentMode)) {
 		%>
 			message_<%=cid%>.acknowledge();
@@ -41,7 +42,7 @@
 				break;
 			<%			
 			}
-		}else if(("ActiveMQ").equals(serverType)){
+		}else if(("ActiveMQ").equals(serverType) || isUseConnection) {
 			if (("true").equals(ElementParameterParser.getValue(node,"__USEMAX__"))) {
 			%>
 				}

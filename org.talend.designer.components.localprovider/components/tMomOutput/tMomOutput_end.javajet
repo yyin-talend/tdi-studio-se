@@ -9,10 +9,11 @@
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
 String cid = node.getUniqueName();
 String serverType=ElementParameterParser.getValue(node, "__SERVER__");
 boolean transacted = "true".equals(ElementParameterParser.getValue(node, "__IS_TRANSACTED__"));
-if(("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)){
+if(("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType) || isUseSharedConnection){
 	String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
 	if (transacted) {
 %>

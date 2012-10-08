@@ -18,10 +18,8 @@ class="MomInput"
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
 	String host=ElementParameterParser.getValue(node, "__SERVERADDRESS__");
 	String port=ElementParameterParser.getValue(node, "__SERVERPORT__");
-	String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
 	String to = ElementParameterParser.getValue(node, "__TO__");
 	String deliverMode = ElementParameterParser.getValue(node, "__DELIVERY_MODE__");
 	
@@ -41,26 +39,12 @@ class="MomInput"
 		}
 %>
 	java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
-<%
-	if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {// server judgement
-	
+
 	/*---------------------------------------1.initial jms connection factry---------------------------------*/ 
-		if(("JBoss").equals(serverType)){ 
-%>
-			props_<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY,"org.jnp.interfaces.NamingContextFactory");
-			props_<%=cid%>.put(javax.naming.Context.PROVIDER_URL, <%=host%>+":"+<%=port%>);
-			props_<%=cid%>.put("java.naming.rmi.security.manager", "yes");
-			
-			javax.naming.Context context_<%=cid%>=new javax.naming.InitialContext(props_<%=cid%>);
-			javax.jms.ConnectionFactory factory_<%=cid%>
-				= (javax.jms.ConnectionFactory)context_<%=cid%>.lookup("ConnectionFactory");	
-				
-<%
-		}else if(("ActiveMQ").equals(serverType)){
-%>
+
 			// BS
-			String url_<%=cid %> ="";
-      <%if(failover){
+			String url_<%=cid%> ="";
+      <% if(failover) {
 				StringBuilder sbServers=new StringBuilder();
 				int i=0;
 				for(Map<String, String> serversMap : servers) {
@@ -76,104 +60,29 @@ class="MomInput"
 				%>
 				// BS
 				url_<%=cid %> = "failover:(<%=sbServers.toString()%>)?randomize=false";
-			<%}else{%>
+			<% } else { %>
 				url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
-			<%}%>			
+			<% } %>			
 			
 			System.out.println("Connecting to URL: " + url_<%=cid %>);
-//			System.out.println("Producing " + (<%=!("Queue").equals(msgType)%> ? "topic" : "queue") + ": " + <%=to %>);
-			
+
 			
 			org.apache.activemq.ActiveMQConnectionFactory factory_<%=cid %> = 
 				new org.apache.activemq.ActiveMQConnectionFactory(url_<%=cid %>);
 <%
-		}
 		
 		/*---------------------------------------2.create Queue Or Topic from connection ---------------------------------*/ 
 %>	
 				
-<%
-		if(dbuser == null || ("\"\"").equals(dbuser) || ("").equals(dbuser)) {
-%>
+<%		if(dbuser == null || ("\"\"").equals(dbuser) || ("").equals(dbuser)) { %>
 			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection();
-<%
-		} else {
-%>
+<%		} else { %>
 			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection(<%=dbuser%>,<%=dbpwd%>);
-<%
-		}
-%>
-		connection_<%=cid %>.start();
-	
+<%		} %>
+
+                connection_<%=cid %>.start();
+
+		globalMap.put("connection_<%=cid%>", connection_<%=cid %>);
+		
 		javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
-		
-//		javax.jms.Destination des_<%=cid %>;
-<%
-		if (("Queue").equals(msgType)) {
-%>
-			//des_<%=cid %> = session_<%=cid %>.createQueue(<%=to %>);
-<%
-		} else {
-%>
-	    	//des_<%=cid %> = session_<%=cid %>.createTopic(<%=to %>);
-<%
-		}
-%>
-//		javax.jms.MessageProducer producer_<%=cid %> = session_<%=cid %>.createProducer(des_<%=cid %>);
-		
-<%
-		if ("N_PERSISTENT".equals(deliverMode)) {
-%>
-//			producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
-<%
-		} else if ("PERSISTENT".equals(deliverMode)) {
-%>
-//			producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.PERSISTENT);
-<%
-		}
-%>
-		
-
-<%
-	}else{ //server judgement   /***WebSphere MQ*****/
-		String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
-		String qm=ElementParameterParser.getValue(node, "__QM__");
-		String queue = ElementParameterParser.getValue(node, "__QUEUE__");
-		boolean needSSLCipher = ("true").equals(ElementParameterParser.getValue(node,"__SET_MQ_SSL_CIPHER__"));
-		String sslCipher = ElementParameterParser.getValue(node, "__MQ_SSL_CIPHER__");
-%>
-	    props_<%=cid%>.put("hostname", <%=host%>);
-	    props_<%=cid%>.put("port", Integer.valueOf(<%=port%>));
-	    props_<%=cid%>.put("channel", <%=channel%>);
-	    props_<%=cid%>.put("CCSID", new Integer(1208));
-	    props_<%=cid%>.put("transport", "MQSeries");
-	    
-	    <%
-		if(needSSLCipher){
-		%>
-			com.ibm.mq.MQEnvironment.sslCipherSuite = "<%=sslCipher%>";
-		<%
-		}
-		if(!(dbuser == null) && !("\"\"").equals(dbuser) && !("").equals(dbuser)) {
-		%>
-			props_<%=cid%>.put("userID",<%=dbuser%>);
-			props_<%=cid%>.put("password",<%=dbpwd%>);
-		<%
-		}
-		%>
-	
-            com.ibm.mq.MQQueueManager qMgr_<%=cid%> = new com.ibm.mq.MQQueueManager(<%=qm%>, props_<%=cid%>);
-	    com.ibm.mq.MQQueue remoteQ_<%=cid%> = qMgr_<%=cid%>.accessQueue(<%=queue%>, 16);
-	    com.ibm.mq.MQPutMessageOptions opM_<%=cid%> = new com.ibm.mq.MQPutMessageOptions();
-<%	    
-	    if (transacted) {
-%>	
-		opM_<%=cid%>.options=opM_<%=cid%>.options+com.ibm.mq.MQC.MQGMO_SYNCPOINT;
-<%
-	    }
-	}
-%>
-	
-
-
-		
+						

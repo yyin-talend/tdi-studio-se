@@ -26,6 +26,7 @@ class="MomInput"
 	
 	String msgBobyType =  ElementParameterParser.getValue(node, "__MESSAGE_BODY_TYPE__");
 	
+        boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
 	boolean setJmsHeader =  ("true").equals(ElementParameterParser.getValue(node, "__SET_JMS_HEADER__"));
 	List<Map<String,String>> jmsHeaders = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__JMS_HEADERS__");
 	
@@ -57,7 +58,7 @@ class="MomInput"
 			IConnection conn = conns.get(0);
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
 			
-				if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {
+				if (isUseSharedConnection || ("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {
 				
 					/*-------------------1.is use message id.this functions just use map message type-------------------------------------*/
 					if(("true").equals(useMsgId)){

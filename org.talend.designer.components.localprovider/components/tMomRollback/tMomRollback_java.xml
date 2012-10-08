@@ -47,6 +47,7 @@
         <ITEM NAME="WEBSPHERE"   VALUE="WebSphere" />
         <ITEM NAME="JBOSS"   VALUE="JBoss" />
         <ITEM NAME="ACTIVEMQ" VALUE="ActiveMQ"/>
+      <ITEM NAME="ACTIVEMQ_CONNECTION" VALUE="ActiveMQ"/>
       </ITEMS>
     </PARAMETER>
     <PARAMETER

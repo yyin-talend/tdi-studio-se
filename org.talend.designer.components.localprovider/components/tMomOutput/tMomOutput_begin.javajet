@@ -18,6 +18,10 @@ class="MomInput"
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+
+        boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
+        String connectionComponentName = ElementParameterParser.getValue(node, "__CONNECTION__");
+
 	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
 	String host=ElementParameterParser.getValue(node, "__SERVERADDRESS__");
 	String port=ElementParameterParser.getValue(node, "__SERVERPORT__");
@@ -41,8 +45,41 @@ class="MomInput"
 		}
 %>
 	java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
+
+<%      if (isUseSharedConnection) { %>
+	        javax.jms.Connection connection_<%=cid %> = (javax.jms.Connection) globalMap.get("connection_<%=connectionComponentName%>");
+                connection_<%=cid %>.start();
+	
+		javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
+		
+		javax.jms.Destination des_<%=cid %>;
 <%
-	if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {// server judgement
+		if (("Queue").equals(msgType)) {
+%>
+			des_<%=cid %> = session_<%=cid %>.createQueue(<%=to %>);
+<%
+		} else {
+%>
+	    	des_<%=cid %> = session_<%=cid %>.createTopic(<%=to %>);
+<%
+		}
+%>
+ 
+		    javax.jms.MessageProducer producer_<%=cid %> = session_<%=cid %>.createProducer(des_<%=cid %>);
+		
+<%
+		if ("N_PERSISTENT".equals(deliverMode)) {
+%>
+			producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
+<%
+		} else if ("PERSISTENT".equals(deliverMode)) {
+%>
+			producer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.PERSISTENT);
+<%
+		}
+%>
+		    
+<%      } else if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {// server judgement
 	
 	/*---------------------------------------1.initial jms connection factry---------------------------------*/ 
 		if(("JBoss").equals(serverType)){ 
@@ -56,8 +93,9 @@ class="MomInput"
 				= (javax.jms.ConnectionFactory)context_<%=cid%>.lookup("ConnectionFactory");	
 				
 <%
-		}else if(("ActiveMQ").equals(serverType)){
+		}else if(("ActiveMQ").equals(serverType) || isUseSharedConnection) {
 %>
+			// BS
 			String url_<%=cid %> ="";
       <%if(failover){
 				StringBuilder sbServers=new StringBuilder();
@@ -73,6 +111,7 @@ class="MomInput"
 					i++;
 				}
 				%>
+				// BS
 				url_<%=cid %> = "failover:(<%=sbServers.toString()%>)?randomize=false";
 			<%}else{%>
 				url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
@@ -90,17 +129,12 @@ class="MomInput"
 		/*---------------------------------------2.create Queue Or Topic from connection ---------------------------------*/ 
 %>	
 				
-<%
-		if(dbuser == null || ("\"\"").equals(dbuser) || ("").equals(dbuser)) {
-%>
+<%               if(dbuser == null || ("\"\"").equals(dbuser) || ("").equals(dbuser)) { %>
 			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection();
-<%
-		} else {
-%>
+<%		} else { %>
 			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection(<%=dbuser%>,<%=dbpwd%>);
-<%
-		}
-%>
+<%		} %>
+			
 		connection_<%=cid %>.start();
 	
 		javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);

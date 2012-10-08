@@ -20,6 +20,8 @@ imports="
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	cid = cid.replaceAll("_Loop", "");
+        boolean isUseConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
+        String connectionComponentName = ElementParameterParser.getValue(node, "__CONNECTION__");
 	String serverType=ElementParameterParser.getValue(node, "__SERVER__");
 	String host=ElementParameterParser.getValue(node, "__SERVERADDRESS__");
 	String port=ElementParameterParser.getValue(node, "__SERVERPORT__");
@@ -47,8 +49,97 @@ imports="
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		metadata = metadatas.get(0);
 		columns = metadata.getListColumns();
+	} %>
+
+	// isUseConnection = <%=isUseConnection%>
+        <% if (isUseConnection) { %>
+    
+	    javax.jms.Connection connection_<%=cid %> = (javax.jms.Connection) globalMap.get("connection_<%=connectionComponentName%>");
+	    connection_<%=cid %>.start();
+	    javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
+	    javax.jms.Destination des_<%=cid %> = null;
+		<%
+		if (("Queue").equals(msgType)) {
+		%>
+			des_<%=cid %> = session_<%=cid %>.createQueue(<%=from %>);
+		<%
+		} else {
+		%>
+	    	des_<%=cid %> = session_<%=cid %>.createTopic(<%=from %>);
+		<%
+		}
+		%>
+
+		javax.jms.MessageProducer replyProducer_<%=cid %> = session_<%=cid %>.createProducer(null);
+		replyProducer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
+			
+		javax.jms.MessageConsumer consumer_<%=cid %> = session_<%=cid %>.createConsumer(des_<%=cid %>);
+		
+		// BS
+		javax.jms.MessageProducer producer_<%=cid%> = null;
+
+
+		// Receive message
+			<% boolean useMax = ("true").equals(ElementParameterParser.getValue(node,"__USEMAX__"));
+			String maxiumMessages = ElementParameterParser.getValue(node,"__MAXMSG__");
+			String receiveTimeOut = ElementParameterParser.getValue(node,"__TIMEOUT__");
+			if(("true").equals(kListen)){
+			%>
+				System.out.println("We will consume messages while they continue to be delivered ");
+				javax.jms.Message message_<%=cid%>;
+				while ((message_<%=cid%> = consumer_<%=cid %>.receive()) != null) {
+			<%
+			}else if (useMax) {
+			%>
+				int maxMsg_<%=cid %> = <%=maxiumMessages %>;
+				System.out.println("We are about to wait until we consume: " + maxMsg_<%=cid %> + " message(s) then we will shutdown");
+				for (int i_<%=cid %> = 0; i_<%=cid %> < maxMsg_<%=cid %> ;) {
+			        javax.jms.Message message_<%=cid%> = consumer_<%=cid %>.receive();
+			        if (message_<%=cid%> != null) {
+		            	i_<%=cid %>++;
+			<%
+			}else {
+			%>
+			    System.out.println("We will wait for messages within: " + <%=receiveTimeOut%>*1000 + " ms, and then we will shutdown");
+			    javax.jms.Message message_<%=cid%>;
+			    while ((message_<%=cid%> = consumer_<%=cid %>.receive(<%=receiveTimeOut%>*1000)) != null) {
+			<%
+			} %>
+			    
+		/*-----------------------------------------------------------4.judge message body type---------------------------------------*/
+		<%
+		if(("true").equals(useMsgId) && !"Map".equals(msgBobyType)){
+		%>
+			if (message_<%=cid%> instanceof javax.jms.MapMessage) {
+				javax.jms.MapMessage txtMsg_<%=cid%> = (javax.jms.MapMessage) message_<%=cid%>;
+				String msg_<%=cid %> = txtMsg_<%=cid%>.getString(<%=msgId%>);
+				if(msg_<%=cid %> !=null){
+
+		<%
+		}else{
+			if ("Text".equals(msgBobyType)) {
+			%>
+				javax.jms.TextMessage txtMsg_<%=cid%> = (javax.jms.TextMessage) message_<%=cid%>;
+				String msg_<%=cid %> = txtMsg_<%=cid%>.getText();
+			
+			<%
+			} else if ("Bytes".equals(msgBobyType)) {
+			%>
+				javax.jms.BytesMessage bytesMsg_<%=cid%> = (javax.jms.BytesMessage) message_<%=cid%>;
+				byte[] bytesMsgBody_<%=cid%> = new byte[(int)bytesMsg_<%=cid%>.getBodyLength()];
+				bytesMsg_<%=cid%>.readBytes(bytesMsgBody_<%=cid%>);
+				String msg_<%=cid %> = new String(bytesMsgBody_<%=cid%>);
+			<%
+			} else if ("Map".equals(msgBobyType)) {
+			%>
+				javax.jms.MapMessage  msg_<%=cid %>  = (javax.jms.MapMessage) message_<%=cid%>;
+			<%
+			}
 	}
-	if (("JBoss").equals(serverType)||("ActiveMQ").equals(serverType)) {
+		%>
+
+			
+<%      } else if (("JBoss").equals(serverType)||("ActiveMQ").equals(serverType)) {
 	
 		/*---------------------------------------1.initial jms connection factry---------------------------------*/ 
 		if(("JBoss").equals(serverType) ){ // server judgement
@@ -66,6 +157,7 @@ imports="
 		}else if(("ActiveMQ").equals(serverType)){
 			boolean startServer = ("true").equals(ElementParameterParser.getValue(node, "__STARTSERVER__"));
 			%>
+			// BS
 			String url_<%=cid %> ="";
 			<%if(failover){
 				StringBuilder sbServers=new StringBuilder();
@@ -81,6 +173,7 @@ imports="
 					i++;
 				}
 				%>
+				// BS
 				url_<%=cid %> = "failover:(<%=sbServers.toString()%>)?randomize=false";
 			<%}else{%>
 				url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
