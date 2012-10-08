@@ -905,7 +905,6 @@ skeleton="../templates/db_output_bulk.skeleton"
                 <%if ((rejectConnName==null && !useExistingConnection) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ||("COPY".equals(dataAction)) ) {
                 %>
                 try {
-					if (stmtBuilder_<%=cid%> != null && stmtBuilder_<%=cid%>.length() != 0 ) { // stmtBuilder_<%=cid%> start
 						<%
 						if (!"COPY".equals(dataAction)) {
 						%>
@@ -913,6 +912,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             	    	<%
             	    	} else {
 						%>
+					if (stmtBuilder_<%=cid%> != null && stmtBuilder_<%=cid%>.length() != 0 ) { // stmtBuilder_<%=cid%> start
 						java.io.ByteArrayInputStream bais_<%=cid%> = new ByteArrayInputStream(stmtBuilder_<%=cid%>.toString().getBytes());
 
 						((com.vertica.PGStatement)stmt_<%=cid%>).executeCopyIn(template_<%=cid%>, bais_<%=cid%>);
