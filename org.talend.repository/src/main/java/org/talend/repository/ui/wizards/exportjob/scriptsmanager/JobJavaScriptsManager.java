@@ -32,10 +32,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.dom4j.Comment;
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.Node;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
@@ -107,6 +105,7 @@ import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.resource.IResourceService;
+import org.talend.resources.util.EMavenBuildScriptProperties;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -248,9 +247,18 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         String projectName = getCorrespondingProjectName(processItem);
         String jobName = processItem.getProperty().getLabel();
         String jobVersion = processItem.getProperty().getVersion();
+        String jobExportedJarName = jobName + '_' + jobVersion.replaceAll("\\.", "_"); //$NON-NLS-1$//$NON-NLS-2$
+        jobExportedJarName = jobExportedJarName.toLowerCase();
 
         Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
                 processItem.getProperty().getId(), selectedJobVersion);
+
+        // set the maven build properties
+        final Map<String, String> mavenPropertiesMap = new HashMap<String, String>();
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ProjectName.getScript(), projectName);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.JobName.getScript(), jobName);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.JobVersion.getScript(), jobVersion);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.JobExportedJarName.getScript(), jobExportedJarName);
 
         File mavenBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_BUILD_FILE_NAME);
         File mavenAssemblyFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_ASSEMBLY_FILE_NAME);
@@ -272,36 +280,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     Object obj = nodeIterator.next();
                     if (obj instanceof Element) {
                         Element ele = (Element) obj;
-                        // remove comments.
-                        Iterator commentIterator = ele.nodeIterator();
-                        while (commentIterator.hasNext()) {
-                            Object commentObj = commentIterator.next();
-                            if (commentObj instanceof Comment) {
-                                Comment comment = (Comment) commentObj;
-                                if (comment.getNodeType() == Node.COMMENT_NODE) {
-                                    ele.remove(comment);
-                                }
-                            }
-                        }
                         // set the properties
                         if ("properties".equals(ele.getName())) { //$NON-NLS-1$
-                            Element projectNameEle = ele.element("project.name"); //$NON-NLS-1$
-                            if (projectNameEle != null) {
-                                projectNameEle.setText(projectName);
-                            }
-                            Element jobNameEle = ele.element("job.name"); //$NON-NLS-1$
-                            if (jobNameEle != null) {
-                                jobNameEle.setText(jobName);
-                            }
-                            Element jobVersionEle = ele.element("job.version"); //$NON-NLS-1$
-                            if (jobVersionEle != null) {
-                                jobVersionEle.setText(jobVersion);
-                            }
-                            String exportedJarJobName = jobName + '_' + jobVersion.replaceAll("\\.", "_"); //$NON-NLS-1$//$NON-NLS-2$
-                            Element exportedJarJobNameEle = ele.element("job.name.exportedJar"); //$NON-NLS-1$
-                            if (exportedJarJobNameEle != null) {
-                                exportedJarJobNameEle.setText(exportedJarJobName.toLowerCase());
-                            }
+                            replaceMavenBuildScriptProperty(ele, "project.name", mavenPropertiesMap); //$NON-NLS-1$
+                            replaceMavenBuildScriptProperty(ele, "job.name", mavenPropertiesMap); //$NON-NLS-1$
+                            replaceMavenBuildScriptProperty(ele, "job.version", mavenPropertiesMap); //$NON-NLS-1$
+                            replaceMavenBuildScriptProperty(ele, "job.exportedJar.name", mavenPropertiesMap); //$NON-NLS-1$
                         } else if ("dependencies".equals(ele.getName())) { //$NON-NLS-1$
                             for (ModuleNeeded module : neededModules) {
                                 addMavenDependencyElement(ele, module.getModuleName(), "${basedir}/../lib/"); //$NON-NLS-1$
@@ -331,6 +315,22 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             scriptsUrls.add(mavenAssemblyFile.toURL());
         } catch (Exception e) {
             ExceptionHandler.process(e);
+        }
+    }
+
+    protected void replaceMavenBuildScriptProperty(Element parentElement, String propertyName,
+            Map<String, String> mavenPropertiesMap) {
+        Element element = parentElement.element(propertyName);
+        if (element != null) {
+            String text = element.getTextTrim();
+            String newText = text;
+            for (String script : mavenPropertiesMap.keySet()) {
+                String value = mavenPropertiesMap.get(script);
+                if (value != null) {
+                    newText = newText.replace(script, value);
+                }
+            }
+            element.setText(newText);
         }
     }
 
