@@ -5,16 +5,11 @@ imports="
 		org.talend.core.model.process.ElementParameterParser  
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.core.model.metadata.IMetadataColumn
-		org.talend.core.model.metadata.MetadataTalendType
-		org.talend.core.model.metadata.types.JavaTypesManager
-		org.talend.core.model.metadata.types.JavaType 
 		org.talend.core.model.process.IConnection
 	 org.talend.commons.utils.generation.CodeGenerationUtils
 		
 		java.util.List
 		java.util.ArrayList
-		java.util.Map
-		java.util.HashMap
 		java.util.LinkedList
 "
 %>
@@ -616,6 +611,7 @@ if(!useExistingConn) {
     <%
 }
 %>
+nb_line_<%=cid%> = nb_line_update_<%=cid%> + nb_line_inserted_<%=cid%> + nb_line_deleted_<%=cid%>;
 
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);
 globalMap.put("<%=cid %>_NB_LINE_UPDATED",nb_line_update_<%=cid%>);
