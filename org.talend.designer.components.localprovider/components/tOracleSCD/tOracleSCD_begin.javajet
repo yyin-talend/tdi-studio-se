@@ -220,10 +220,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
 			    	}
 			    	if(isTSWithTZ && supportTSTZ){
                     %>
-	                    TalendTimestampWithTZ talendTimestampWithTZ = OracleTIMESTAMPTZUtils.toTalendTSTZ(connection_<%=cid%>,
-		                    ((oracle.jdbc.OracleResultSet) resultSet_<%=cid%>).getTIMESTAMPTZ(<%=index%>).toBytes());
-		                if(talendTimestampWithTZ != null){
-		                	<%=struct%>.<%=searchColumn.getColumnName()%> = talendTimestampWithTZ;
+	                    TalendTimestampWithTZ talendTimestampWithTZ_<%=cid%> = null;
+	                    if(((oracle.jdbc.OracleResultSet) resultSet_<%=cid%>).getTIMESTAMPTZ(<%=index%>) != null){
+	                    	talendTimestampWithTZ_<%=cid%> = OracleTIMESTAMPTZUtils.toTalendTSTZ(connection_<%=cid%>,
+	                    	((oracle.jdbc.OracleResultSet) resultSet_<%=cid%>).getTIMESTAMPTZ(<%=index%>).toBytes());
+	                    }
+		                if(talendTimestampWithTZ_<%=cid%> != null){
+		                	<%=struct%>.<%=searchColumn.getColumnName()%> = talendTimestampWithTZ_<%=cid%>;
 		                }else{
 		                	<%=struct%>.<%=searchColumn.getColumnName()%> = null;
 		                }
