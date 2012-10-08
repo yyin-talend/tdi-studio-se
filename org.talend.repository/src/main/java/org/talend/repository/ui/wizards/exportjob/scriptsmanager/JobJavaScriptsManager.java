@@ -283,12 +283,25 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                                 }
                             }
                         }
-                        if ("groupId".equals(ele.getName())) { //$NON-NLS-1$
-                            ele.setText(projectName);
-                        } else if ("artifactId".equals(ele.getName())) { //$NON-NLS-1$
-                            ele.setText(jobName);
-                        } else if ("version".equals(ele.getName())) { //$NON-NLS-1$
-                            ele.setText(jobVersion);
+                        // set the properties
+                        if ("properties".equals(ele.getName())) { //$NON-NLS-1$
+                            Element projectNameEle = ele.element("project.name"); //$NON-NLS-1$
+                            if (projectNameEle != null) {
+                                projectNameEle.setText(projectName);
+                            }
+                            Element jobNameEle = ele.element("job.name"); //$NON-NLS-1$
+                            if (jobNameEle != null) {
+                                jobNameEle.setText(jobName);
+                            }
+                            Element jobVersionEle = ele.element("job.version"); //$NON-NLS-1$
+                            if (jobVersionEle != null) {
+                                jobVersionEle.setText(jobVersion);
+                            }
+                            String exportedJarJobName = jobName + '_' + jobVersion.replaceAll("\\.", "_"); //$NON-NLS-1$//$NON-NLS-2$
+                            Element exportedJarJobNameEle = ele.element("job.name.exportedJar"); //$NON-NLS-1$
+                            if (exportedJarJobNameEle != null) {
+                                exportedJarJobNameEle.setText(exportedJarJobName.toLowerCase());
+                            }
                         } else if ("dependencies".equals(ele.getName())) { //$NON-NLS-1$
                             for (ModuleNeeded module : neededModules) {
                                 addMavenDependencyElement(ele, module.getModuleName(), "${basedir}/../lib/"); //$NON-NLS-1$
