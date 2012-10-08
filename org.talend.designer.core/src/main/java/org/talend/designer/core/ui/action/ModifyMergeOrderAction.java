@@ -104,6 +104,12 @@ public class ModifyMergeOrderAction extends SelectionAction {
                             Messages.getString("ModifyMergeOrderAction.ConnectionModifyError")); //$NON-NLS-1$
                     return;
                 }
+                if (connection.getSource().getIncomingConnections(EConnectionType.ON_SUBJOB_ERROR).size() != 0
+                        || connection.getSource().getIncomingConnections(EConnectionType.ON_SUBJOB_OK).size() != 0) {
+                    MessageDialog.openError(new Shell(), Messages.getString("ModifyMergeOrderAction.ERROE"), //$NON-NLS-1$
+                            Messages.getString("ModifyMergeOrderAction.ConnectionModifyError")); //$NON-NLS-1$
+                    return;
+                }
             }
             ChangeMergeOrderCommand cmd = new ChangeMergeOrderCommand(mergeComponent, dialog.getConnectionList());
             execute(cmd);
