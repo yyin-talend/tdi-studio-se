@@ -2723,6 +2723,14 @@ public class CLASS {
         }        
     }
     
+    public class GreenplumManager extends PostgrePlusManager {
+    	 public GreenplumManager(String cid) {
+             super(cid);
+         }
+         protected String getDBMSId() {
+             return GREENPLUM;
+         }
+    }
     public class PostgrePlusManager extends Manager {
         public PostgrePlusManager(String cid) {
             super(cid);
@@ -3462,6 +3470,8 @@ public class CLASS {
                 manager = new OracleManager(cid);
             } else if(dbmsId.equalsIgnoreCase(POSTGREPLUS)) {
                 manager = new PostgrePlusManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(GREENPLUM)) {
+                manager = new GreenplumManager(cid);
             } else if(dbmsId.equalsIgnoreCase(POSTGRESQL)) {
                 manager = new PostgreManager(cid);
             } else if(dbmsId.equalsIgnoreCase(SQLITE)) {
