@@ -25,6 +25,8 @@ import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.wsdl.extensions.soap.SOAPBody;
 import javax.wsdl.extensions.soap.SOAPOperation;
 import javax.wsdl.extensions.soap12.SOAP12Address;
+import javax.wsdl.extensions.soap12.SOAP12Binding;
+import javax.wsdl.extensions.soap12.SOAP12Body;
 import javax.wsdl.extensions.soap12.SOAP12Operation;
 import javax.wsdl.factory.WSDLFactory;
 import javax.xml.namespace.QName;
@@ -405,6 +407,9 @@ public class ComponentBuilder {
             if (soapBindingElem != null && soapBindingElem instanceof SOAPBinding) {
                 SOAPBinding soapBinding = (SOAPBinding) soapBindingElem;
                 style = soapBinding.getStyle();
+            } else if (soapBindingElem != null && soapBindingElem instanceof SOAP12Binding) {
+                SOAPBinding soapBinding = (SOAPBinding) soapBindingElem;
+                style = soapBinding.getStyle();
             }
 
             Iterator opIter = operations.iterator();
@@ -437,13 +442,16 @@ public class ComponentBuilder {
         if (operElem != null && operElem instanceof SOAPOperation) {
             SOAPOperation soapOperation = (SOAPOperation) operElem;
             operationInfo.setSoapActionURI(soapOperation.getSoapActionURI());
+        } else if (operElem != null && operElem instanceof SOAP12Operation) {
+            SOAPOperation soapOperation = (SOAPOperation) operElem;
+            operationInfo.setSoapActionURI(soapOperation.getSoapActionURI());
         }
         BindingInput bindingInput = bindingOper.getBindingInput();
         BindingOutput bindingOutput = bindingOper.getBindingOutput();
         Vector bodyElems = findExtensibilityElement(bindingInput.getExtensibilityElements(), "body");
         ExtensibilityElement bodyElem = (ExtensibilityElement) bodyElems.elementAt(0);
 
-        if (bodyElem != null && bodyElem instanceof SOAPBody) {
+        if (bodyElem != null && ((bodyElem instanceof SOAPBody) || (bodyElem instanceof SOAP12Body))) {
             SOAPBody soapBody = (SOAPBody) bodyElem;
             List styles = soapBody.getEncodingStyles();
             String encodingStyle = null;
