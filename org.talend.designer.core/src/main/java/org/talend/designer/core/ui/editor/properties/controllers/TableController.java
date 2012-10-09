@@ -113,6 +113,7 @@ public class TableController extends AbstractElementPropertySectionController {
         // add listener to tableMetadata (listen the event of the toolbars)
         tableEditorView.getExtendedTableModel().addAfterOperationListListener(new IListenableListListener() {
 
+            @Override
             public void handleEvent(ListenableListEvent event) {
                 if (elem instanceof Node) {
                     Node node = (Node) elem;
@@ -173,12 +174,10 @@ public class TableController extends AbstractElementPropertySectionController {
             Point size = tableEditorView.getExtendedToolbar().getToolbar().computeSize(SWT.DEFAULT, SWT.DEFAULT);
             toolbarSize = size.y + 5;
         }
-        // fix to use SWT.VIRTUAL + ILazyContentProvider
-        // int currentHeightEditor = table.getHeaderHeight() + ((List) param.getValue()).size() * table.getItemHeight()
-        // + table.getItemHeight() + toolbarSize;
-        int minHeightEditor = table.getHeaderHeight() + getNumberLines(param) * table.getItemHeight() + table.getItemHeight()
-                + toolbarSize;
-        int ySize2 = minHeightEditor;
+        // fix to use SWT.VIRTUAL
+        int currentHeightEditor = table.getHeaderHeight() + Math.min(((List) param.getValue()).size(), 50)
+                * table.getItemHeight() + table.getItemHeight() + toolbarSize;
+        int ySize2 = currentHeightEditor;
 
         formData.bottom = new FormAttachment(0, top + ySize2);
         mainComposite.setLayoutData(formData);
@@ -206,7 +205,7 @@ public class TableController extends AbstractElementPropertySectionController {
 
         updateTableValues(param);
 
-        tableEditorModel.setData(elem, param, (Process) part.getProcess());
+        tableEditorModel.setData(elem, param, part.getProcess());
         PropertiesTableEditorView<Map<String, Object>> tableEditorView = new PropertiesTableEditorView<Map<String, Object>>(
                 subComposite, SWT.NONE, tableEditorModel, !param.isBasedOnSchema(), false);
         tableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());
@@ -244,6 +243,7 @@ public class TableController extends AbstractElementPropertySectionController {
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent arg0) {
         // TODO Auto-generated method stub
 
@@ -278,9 +278,9 @@ public class TableController extends AbstractElementPropertySectionController {
             Object[] itemsValue = param.getListItemsValue();
             if (itemsValue != null && param.getValue() != null && param.getValue() instanceof List) {
                 List<Map<String, Object>> values = (List<Map<String, Object>>) param.getValue();
-                for (int i = 0; i < itemsValue.length; i++) {
-                    if (itemsValue[i] instanceof IElementParameter) {
-                        IElementParameter columnParam = (IElementParameter) itemsValue[i];
+                for (Object element : itemsValue) {
+                    if (element instanceof IElementParameter) {
+                        IElementParameter columnParam = (IElementParameter) element;
                         if (columnParam.getFieldType() == EParameterFieldType.COLUMN_LIST
                                 || columnParam.getFieldType() == EParameterFieldType.PREV_COLUMN_LIST
                                 || columnParam.getFieldType() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
@@ -603,7 +603,7 @@ public class TableController extends AbstractElementPropertySectionController {
                             if (o instanceof Integer) {
                                 Integer nb = (Integer) o;
                                 if ((nb >= oldItems.length) || (nb == -1)) {
-                                    currentLine.put(items[j], (String) tmpParam.getDefaultClosedListValue());
+                                    currentLine.put(items[j], tmpParam.getDefaultClosedListValue());
                                 } else {
                                     currentLine.put(items[j], oldItems[nb]);
                                 }
@@ -611,7 +611,7 @@ public class TableController extends AbstractElementPropertySectionController {
                                 if (o instanceof String) {
                                     Integer nb = new Integer(tmpParam.getIndexOfItemFromList((String) o));
                                     if (nb == -1) {
-                                        currentLine.put(items[j], (String) tmpParam.getDefaultClosedListValue());
+                                        currentLine.put(items[j], tmpParam.getDefaultClosedListValue());
                                     }
                                 }
                             }
@@ -650,7 +650,7 @@ public class TableController extends AbstractElementPropertySectionController {
         tmpParam = (IElementParameter) itemsValue[0];
         switch (tmpParam.getFieldType()) {
         case CONTEXT_PARAM_NAME_LIST:
-            line.put(items[0], (String) tmpParam.getDefaultClosedListValue());
+            line.put(items[0], tmpParam.getDefaultClosedListValue());
             break;
         case CLOSED_LIST:
         case COLUMN_LIST:
@@ -728,8 +728,8 @@ public class TableController extends AbstractElementPropertySectionController {
         // not
         if (itemsValue.length > 0) {
             boolean b = false;
-            for (int i = 0; i < itemsValue.length; i++) {
-                tmpParam = (IElementParameter) itemsValue[i];
+            for (Object element : itemsValue) {
+                tmpParam = (IElementParameter) element;
                 if (tmpParam != null) {
                     b = tmpParam.getFieldType() == EParameterFieldType.COLUMN_LIST;
                     if (b) {
