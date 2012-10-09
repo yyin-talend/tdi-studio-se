@@ -19,9 +19,11 @@ import java.util.Map;
 
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.preview.ExcelSchemaBean;
 
 /**
@@ -55,7 +57,7 @@ public class FileInputExcelNode extends FileInputNode {
 
         // add base parameters
         String[] paramNames = new String[] {
-                "FILENAME", "ENCODING", "LIMIT", "HEADER", "FOOTER", "REMOVE_EMPTY_ROW", "FIRST_COLUMN", "LAST_COLUMN", "WITH_FORMAT" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
+                "FILENAME", "ENCODING", "LIMIT", "HEADER", "FOOTER", "REMOVE_EMPTY_ROW", "FIRST_COLUMN", "LAST_COLUMN", "WITH_FORMAT", "VERSION_2007" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
 
         String[] paramValues;
 
@@ -68,28 +70,25 @@ public class FileInputExcelNode extends FileInputNode {
         case JAVA:
             paramValues = new String[] { filename, encoding == null ? TalendTextUtils.addQuotes("ISO-8859-1") : encoding, //$NON-NLS-1$
                     limitRows.equals("0") ? "50" : limitRows, header, footer, emptyEmptyRow, bean.getFirstColumn(), //$NON-NLS-1$ //$NON-NLS-2$
-                    bean.getLastColumn(), "true" }; //$NON-NLS-1$
+                    bean.getLastColumn(), "true", versionCheck }; //$NON-NLS-1$
             break;
         default: // PERL
             paramValues = new String[] { filename, encoding == null ? TalendTextUtils.addQuotes("ISO-8859-1") : encoding, //$NON-NLS-1$
                     limitRows.equals("0") ? "50" : limitRows, header, footer, emptyEmptyRow, //$NON-NLS-1$ //$NON-NLS-2$
                     bean.getFirstColumn() == null ? null : "'" + bean.getFirstColumn() + "'", //$NON-NLS-1$ //$NON-NLS-2$
-                    bean.getLastColumn() == null ? null : "'" + bean.getLastColumn() + "'", "true" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    bean.getLastColumn() == null ? null : "'" + bean.getLastColumn() + "'", "true", versionCheck }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
+        IComponent component = ComponentsFactoryProvider.getInstance().get("tFileInputExcel");
+        this.setElementParameters(component.createElementParameters(this));
         for (int i = 0; i < paramNames.length; i++) {
-            if (paramValues[i] != null && !paramValues[i].equals("")) { //$NON-NLS-1$
-                TextElementParameter param = new TextElementParameter(paramNames[i], paramValues[i]);
-                addParameter(param);
+            if (paramValues[i] != null) {
+                IElementParameter param = this.getElementParameter(paramNames[i]);
+                if (param != null) {
+                    param.setValue(paramValues[i]);
+                }
             }
         }
-
-        // hywang for excel2007 wizard
-        ElementParameter checkVesionFor2007 = new ElementParameter(this);
-        checkVesionFor2007.setName("VERSION_2007"); //$NON-NLS-N$
-        checkVesionFor2007.setValue(versionCheck);
-        addParameter(checkVesionFor2007);
-
         addSheetsParameters();
 
         if (!isPerlProject()) {
@@ -111,15 +110,21 @@ public class FileInputExcelNode extends FileInputNode {
                 TalendTextUtils.addQuotes(excelBean.getDecimalSeparator()) };
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null && !paramValues[i].equals("")) { //$NON-NLS-1$
-                TextElementParameter param = new TextElementParameter(paramNames[i], paramValues[i]);
-                addParameter(param);
+                IElementParameter param = this.getElementParameter(paramNames[i]);
+                if (param != null) {
+                    param.setValue(paramValues[i]);
+                }
             }
         }
     }
 
     public void addSheetsParameters() {
-        TextElementParameter param = new TextElementParameter("ALL_SHEETS", Boolean.toString(excelBean.isSelectAllSheets())); //$NON-NLS-1$
-        addParameter(param);
+        if (Boolean.toString(excelBean.isSelectAllSheets()) != null) {
+            IElementParameter param = this.getElementParameter("ALL_SHEETS");
+            if (param != null) {
+                param.setValue(Boolean.toString(excelBean.isSelectAllSheets()));
+            }
+        }
 
         ArrayList x = excelBean.getSheetsList();
         if (x == null) {
@@ -133,11 +138,10 @@ public class FileInputExcelNode extends FileInputNode {
             map.put("SHEETNAME", TalendTextUtils.addQuotes(string.toString())); //$NON-NLS-1$
             list.add(map);
         }
-
-        ObjectElementParameter sheetsListParam = new ObjectElementParameter("SHEETLIST", list); //$NON-NLS-1$
-        sheetsListParam.setListItemsDisplayCodeName(new String[] { "SHEETNAME" }); //$NON-NLS-1$
-        addParameter(sheetsListParam);
-
+        IElementParameter param = this.getElementParameter("SHEETLIST");
+        if (param != null) {
+            param.setValue(list);
+        }
     }
 
     /*
