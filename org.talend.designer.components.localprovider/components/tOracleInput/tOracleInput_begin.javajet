@@ -194,7 +194,7 @@ imports="
 	    	boolean noNullValues = ("true").equals(ElementParameterParser.getValue(node, "__NO_NULL_VALUES__"));
 
 	    	String dbType = column.getType();
-	    	boolean isTSWithTZ = dbType.matches("TIMESTAMP\\(\\d\\) WITH TIME ZONE");
+	    	boolean isTSWithTZ = dbType.matches("TIMESTAMP WITH TIME ZONE");
 	    	
 	    	String dbVersion = "";
 			String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
@@ -215,11 +215,11 @@ imports="
 	    	}
 	    	if(isTSWithTZ && supportTSTZ){
 	    	%>
-    			TalendTimestampWithTZ talendTimestampWithTZ = null;
-    			if (((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(<%=currentColNo%>) != null) {
-	    			talendTimestampWithTZ = OracleTIMESTAMPTZUtils.toTalendTSTZ(conn_<%=cid%>,
-	                    ((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(<%=currentColNo%>).toBytes());
-	            }
+	    		TalendTimestampWithTZ talendTimestampWithTZ = null;
+	    		if (((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(<%=currentColNo%>) != null) {
+    				talendTimestampWithTZ = OracleTIMESTAMPTZUtils.toTalendTSTZ(conn_<%=cid%>,
+                    	((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(<%=currentColNo%>).toBytes());
+                }
                 if(talendTimestampWithTZ != null){
                 	<%=firstConnName%>.<%=column.getLabel()%> = talendTimestampWithTZ;
                 }else{

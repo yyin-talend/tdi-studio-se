@@ -90,12 +90,17 @@ abstract class  Manager {
             } else {
                 dataType = metadataColumn.getType();
             }
+            
+            Integer length = metadataColumn.getLength() == null ? 0 : metadataColumn.getLength();
+            
             if ("mysql_id".equalsIgnoreCase(getDBMSId()) && dataType.endsWith("UNSIGNED") ) {
             	createTableSQL.append(dataType.substring(0,dataType.indexOf("UNSIGNED"))) ; 
-            }else {
+            }else if("oracle_id".equalsIgnoreCase(getDBMSId()) && dataType.matches("TIMESTAMP WITH TIME ZONE")){
+            	createTableSQL.append("TIMESTAMP("+length+") WITH TIME ZONE");
+            }else{
             	createTableSQL.append(dataType);
-            }            
-            Integer length = metadataColumn.getLength() == null ? 0 : metadataColumn.getLength();
+            }
+                        
             Integer precision = metadataColumn.getPrecision() == null ? 0 : metadataColumn.getPrecision();
             boolean lengthIgnored = mappingType.isLengthIgnored(getDBMSId(), dataType);
             boolean precisionIgnored = mappingType.isPrecisionIgnored(getDBMSId(), dataType);
