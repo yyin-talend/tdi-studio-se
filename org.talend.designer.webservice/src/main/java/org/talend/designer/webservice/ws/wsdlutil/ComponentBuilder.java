@@ -408,7 +408,7 @@ public class ComponentBuilder {
                 SOAPBinding soapBinding = (SOAPBinding) soapBindingElem;
                 style = soapBinding.getStyle();
             } else if (soapBindingElem != null && soapBindingElem instanceof SOAP12Binding) {
-                SOAPBinding soapBinding = (SOAPBinding) soapBindingElem;
+                SOAP12Binding soapBinding = (SOAP12Binding) soapBindingElem;
                 style = soapBinding.getStyle();
             }
 
@@ -443,7 +443,7 @@ public class ComponentBuilder {
             SOAPOperation soapOperation = (SOAPOperation) operElem;
             operationInfo.setSoapActionURI(soapOperation.getSoapActionURI());
         } else if (operElem != null && operElem instanceof SOAP12Operation) {
-            SOAPOperation soapOperation = (SOAPOperation) operElem;
+            SOAP12Operation soapOperation = (SOAP12Operation) operElem;
             operationInfo.setSoapActionURI(soapOperation.getSoapActionURI());
         }
         BindingInput bindingInput = bindingOper.getBindingInput();
@@ -451,12 +451,23 @@ public class ComponentBuilder {
         Vector bodyElems = findExtensibilityElement(bindingInput.getExtensibilityElements(), "body");
         ExtensibilityElement bodyElem = (ExtensibilityElement) bodyElems.elementAt(0);
 
-        if (bodyElem != null && ((bodyElem instanceof SOAPBody) || (bodyElem instanceof SOAP12Body))) {
+        if (bodyElem != null && bodyElem instanceof SOAPBody) {
             SOAPBody soapBody = (SOAPBody) bodyElem;
             List styles = soapBody.getEncodingStyles();
             String encodingStyle = null;
             if (styles != null) {
                 encodingStyle = styles.get(0).toString();
+            }
+            if (encodingStyle == null) {
+                encodingStyle = DEFAULT_SOAP_ENCODING_STYLE;
+            }
+            operationInfo.setEncodingStyle(encodingStyle.toString());
+            operationInfo.setTargetObjectURI(soapBody.getNamespaceURI());
+        } else if (bodyElem != null && bodyElem instanceof SOAP12Body) {
+            SOAP12Body soapBody = (SOAP12Body) bodyElem;
+            String encodingStyle = null;
+            if (soapBody.getEncodingStyle() != null) {
+                encodingStyle = soapBody.getEncodingStyle().toString();
             }
             if (encodingStyle == null) {
                 encodingStyle = DEFAULT_SOAP_ENCODING_STYLE;
