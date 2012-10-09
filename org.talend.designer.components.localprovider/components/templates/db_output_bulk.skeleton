@@ -328,12 +328,14 @@ public class CLASS {
                         } else {
                             dataType = column.getColumn().getType();
                         }
+                        Integer length = column.getColumn().getLength() == null ? 0 : column.getColumn().getLength();
                         if ("mysql_id".equalsIgnoreCase(getDBMSId()) && dataType.endsWith("UNSIGNED")) {                            
                             createSQL.append(dataType.substring(0,dataType.indexOf("UNSIGNED"))) ;                            
-                        }else {                            
+                        }else if("oracle_id".equalsIgnoreCase(getDBMSId()) && dataType.matches("TIMESTAMP WITH TIME ZONE")){
+                            createSQL.append("TIMESTAMP("+length+") WITH TIME ZONE");
+                        }else{                            
                             createSQL.append(dataType);
                         }
-                        Integer length = column.getColumn().getLength() == null ? 0 : column.getColumn().getLength();
                         Integer precision = column.getColumn().getPrecision() == null ? 0 : column.getColumn().getPrecision();
                         boolean lengthIgnored = mappingType.isLengthIgnored(getDBMSId(), dataType);
                         boolean precisionIgnored = mappingType.isPrecisionIgnored(getDBMSId(), dataType);
@@ -2484,7 +2486,7 @@ public class CLASS {
                 setStmt.append("}");
             } else if(typeToGenerate.equals("Date")) {
                 setStmt.append("if(" + incomingConnName + "." + column.getName() + " != null) {\r\n");
-                boolean isTSWithTZ = dbType.matches("TIMESTAMP\\(\\d\\) WITH TIME ZONE");
+                boolean isTSWithTZ = dbType.matches("TIMESTAMP WITH TIME ZONE");
                 if(isTSWithTZ && ("ojdbc5-11g.jar".equals(dbVersion) || "ojdbc6-11g.jar".equals(dbVersion) || "ojdbc14-10g.jar".equals(dbVersion))){
                     setStmt.append("if("+ incomingConnName + "." + column.getName() + " instanceof TalendTimestampWithTZ){\r\n");
                     setStmt.append("((oracle.jdbc.OraclePreparedStatement)" + prefix + cid + ").setTIMESTAMPTZ(" + index + ", new oracle.sql.TIMESTAMPTZ(conn_" + cid + ", ((TalendTimestampWithTZ)"+ incomingConnName + "." + column.getName() +").getTimestamp(),((TalendTimestampWithTZ)"+ incomingConnName + "." + column.getName() +").getCalendar()));\r\n");

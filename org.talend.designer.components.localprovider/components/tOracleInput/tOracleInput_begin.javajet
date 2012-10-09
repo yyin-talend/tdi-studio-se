@@ -203,7 +203,7 @@ imports="
 	    	boolean noNullValues = ("true").equals(ElementParameterParser.getValue(node, "__NO_NULL_VALUES__"));
 
 	    	String dbType = column.getType();
-	    	boolean isTSWithTZ = dbType.matches("TIMESTAMP\\(\\d\\) WITH TIME ZONE");
+	    	boolean isTSWithTZ = dbType.matches("TIMESTAMP WITH TIME ZONE");
 	    	
 	    	String dbVersion = "";
 			String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
