@@ -49,6 +49,8 @@ public class ChangeSpecifyKeysAndColumnsFortCassandraInput extends AbstractJobMi
                             ElementParameterType columnStart = ComponentUtilities.getNodeProperty(node, "COLUMN_START");
                             ElementParameterType columnEnd = ComponentUtilities.getNodeProperty(node, "COLUMN_END");
                             ElementParameterType columnLimit = ComponentUtilities.getNodeProperty(node, "COLUMN_LIMIT");
+                            ElementParameterType columnFamilyType = ComponentUtilities
+                                    .getNodeProperty(node, "COLUMN_FAMILY_TYPE");
 
                             ElementParameterType keyStart = ComponentUtilities.getNodeProperty(node, "KEY_START");
                             ElementParameterType keyEnd = ComponentUtilities.getNodeProperty(node, "KEY_END");
@@ -60,7 +62,8 @@ public class ChangeSpecifyKeysAndColumnsFortCassandraInput extends AbstractJobMi
                                 ComponentUtilities.getNodeProperty(node, "SPECIFY_KEYS").setValue("true");
 
                                 ComponentUtilities.addNodeProperty(node, "SPECIFY_COLUMNS", "CHECK");
-                                if (!"".equals(columns.getValue()) && !"\"\"".equals(columns.getValue())) {
+                                if ("SUPER".equals(columnFamilyType.getValue()) && (!"".equals(columns.getValue()))
+                                        && (!"\"\"".equals(columns.getValue()))) {
                                     ComponentUtilities.getNodeProperty(node, "SPECIFY_COLUMNS").setValue("true");
                                 }
 
