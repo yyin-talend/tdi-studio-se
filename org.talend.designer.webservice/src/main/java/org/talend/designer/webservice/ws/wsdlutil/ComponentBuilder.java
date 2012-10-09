@@ -24,6 +24,8 @@ import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.wsdl.extensions.soap.SOAPBody;
 import javax.wsdl.extensions.soap.SOAPOperation;
+import javax.wsdl.extensions.soap12.SOAP12Address;
+import javax.wsdl.extensions.soap12.SOAP12Operation;
 import javax.wsdl.factory.WSDLFactory;
 import javax.xml.namespace.QName;
 
@@ -379,6 +381,9 @@ public class ComponentBuilder {
                 if (element != null && element instanceof SOAPAddress) {
                     SOAPAddress soapAddr = (SOAPAddress) element;
                     operation.setTargetURL(soapAddr.getLocationURI());
+                } else if (element != null && element instanceof SOAP12Address) {
+                    SOAP12Address soapAddr = (SOAP12Address) element;
+                    operation.setTargetURL(soapAddr.getLocationURI());
                 }
                 component.addOperation(operation);
             }
@@ -410,6 +415,10 @@ public class ComponentBuilder {
                 ExtensibilityElement operElem = (ExtensibilityElement) operElems.elementAt(0);
                 if (operElem != null && operElem instanceof SOAPOperation) {
 
+                    OperationInfo operationInfo = new OperationInfo(style);
+                    buildOperation(operationInfo, oper);
+                    operationInfos.add(operationInfo);
+                } else if (operElem != null && operElem instanceof SOAP12Operation) {
                     OperationInfo operationInfo = new OperationInfo(style);
                     buildOperation(operationInfo, oper);
                     operationInfos.add(operationInfo);
