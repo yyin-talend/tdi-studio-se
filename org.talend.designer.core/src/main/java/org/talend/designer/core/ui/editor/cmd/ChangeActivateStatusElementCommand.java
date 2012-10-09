@@ -194,6 +194,24 @@ public class ChangeActivateStatusElementCommand extends Command {
         return true;
     }
 
+    private boolean hasActivateInputOutput(Node node) {
+        boolean hasActivateInput = false;
+        for (Connection connection : (List<Connection>) node.getIncomingConnections()) {
+            if (connection.isActivate() && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                hasActivateInput = true;
+                break;
+            }
+        }
+
+        boolean hasActivateOutput = false;
+        for (Connection outputConnection : (List<Connection>) node.getOutgoingConnections()) {
+            if (outputConnection.isActivate() && outputConnection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                hasActivateOutput = true;
+            }
+        }
+        return hasActivateOutput && hasActivateInput;
+    }
+
     @Override
     public void undo() {
         Process process;
@@ -242,6 +260,7 @@ public class ChangeActivateStatusElementCommand extends Command {
         Iterator<Entry<List<INode>, List<IConnection>>> middIte = middSet.iterator();
         List<IConnection> notSameForConn = new ArrayList<IConnection>();
         List<INode> notSameForNode = new ArrayList<INode>();
+        List<Node> connNodeList = new ArrayList<Node>();
         while (middIte.hasNext()) {
             Entry<List<INode>, List<IConnection>> entry = middIte.next();
             List<INode> nodeList = entry.getKey();
@@ -267,6 +286,7 @@ public class ChangeActivateStatusElementCommand extends Command {
                             conn.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
                             source.setPropertyValue(EParameterName.DUMMY.getName(), true);
                             // source.setPropertyValue(EParameterName.ACTIVATE.getName(), source.isActivate());
+                            connNodeList.add(source);
                         }
                     }
 
@@ -276,12 +296,17 @@ public class ChangeActivateStatusElementCommand extends Command {
                             conn.setPropertyValue(EParameterName.ACTIVATE.getName(), true);
                             target.setPropertyValue(EParameterName.DUMMY.getName(), true);
                             // target.setPropertyValue(EParameterName.ACTIVATE.getName(), target.isActivate());
+                            connNodeList.add(target);
                         }
                     }
                 }
 
             }
 
+        }
+
+        for (Node node : connNodeList) {
+            node.setPropertyValue(EParameterName.ACTIVATE.getName(), node.isActivate());
         }
 
         if (!value) {
@@ -300,7 +325,7 @@ public class ChangeActivateStatusElementCommand extends Command {
                     if (!notSameForConn.contains(enConn)) {
                         // if (enConn.isActivate()) {
                         enConn.setPropertyValue(EParameterName.ACTIVATE.getName(), value);
-                        if (!notSameForNode.contains(enConn.getTarget())) {
+                        if (!notSameForNode.contains(enConn.getTarget()) && !hasActivateInputOutput((Node) enConn.getTarget())) {
                             enConn.getTarget().setPropertyValue(EParameterName.DUMMY.getName(), value);
                         }
                         // }
@@ -316,7 +341,7 @@ public class ChangeActivateStatusElementCommand extends Command {
                     if (!notSameForConn.contains(enConn)) {
                         // if (enConn.isActivate()) {
                         enConn.setPropertyValue(EParameterName.ACTIVATE.getName(), value);
-                        if (!notSameForNode.contains(enConn.getSource())) {
+                        if (!notSameForNode.contains(enConn.getSource()) && !hasActivateInputOutput((Node) enConn.getSource())) {
                             enConn.getSource().setPropertyValue(EParameterName.DUMMY.getName(), value);
                         }
                         // }
