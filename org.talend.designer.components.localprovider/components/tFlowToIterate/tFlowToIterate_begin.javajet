@@ -11,3 +11,4 @@ imports="
 	String cid = node.getUniqueName();
 %>
 int nb_line_<%=cid%> = 0;
+int counter_<%=cid %> = 0;

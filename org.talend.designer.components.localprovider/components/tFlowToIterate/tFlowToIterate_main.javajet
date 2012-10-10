@@ -45,7 +45,6 @@ if (inMainConns != null && !inMainConns.isEmpty()) {
         %>            
             globalMap.put("<%=inputRowName %>.<%=columnLabel %>", <%=inputRowName %>.<%=columnLabel %>);
             nb_line_<%=cid %>++;  
-            globalMap.put("<%=cid %>_CURRENT_ITERATION", nb_line_<%=cid %>);
         <%  
           }
         %>
@@ -57,10 +56,11 @@ if (inMainConns != null && !inMainConns.isEmpty()) {
         %>
               globalMap.put(<%= line.get("KEY") %>, <%=inputRowName %>.<%= line.get("VALUE") %>);
               nb_line_<%=cid %>++;
-              globalMap.put("<%=cid %>_CURRENT_ITERATION", nb_line_<%=cid %>);
         <%
             }
         %>
  <%
 	}            
 %> 
+       counter_<%=cid %>++;
+       globalMap.put("<%=cid %>_CURRENT_ITERATION", counter_<%=cid %>);
