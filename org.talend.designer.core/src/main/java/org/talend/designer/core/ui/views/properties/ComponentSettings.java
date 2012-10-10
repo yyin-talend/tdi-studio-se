@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.model.process.Element;
 import org.talend.designer.core.ui.editor.process.JobTemplateViewsAndProcessUtil;
 
@@ -30,11 +29,7 @@ public class ComponentSettings {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView(ComponentSettingsView.ID);
         if (view == null) {
-            try {
-                view = page.showView(ComponentSettingsView.ID);
-            } catch (Exception e) {
-                ExceptionHandler.process(e);
-            }
+            return; // don't do anything. before it made the view appear for nothing even in other product like DQ.
         }
         if (view != null && view instanceof ComponentSettingsView) {
             ComponentSettingsView settingView = (ComponentSettingsView) view;
