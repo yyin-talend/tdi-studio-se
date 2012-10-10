@@ -222,8 +222,8 @@ public class Problems {
         for (Problem problem : problemList.getProblemList()) {
             String elementUniqueName = element.getUniqueName();
             if (problem.getNodeName() != null && problem.getNodeName().equals(elementUniqueName)
-                    && problem.getStatus().equals(status)
-                    && problem.getJobInfo().getJobName().equals(element.getProcess().getName())) {
+                    && problem.getStatus().equals(status) && problem.getJobInfo() != null
+                    && problem.getJobInfo().getJobId().equals(element.getProcess().getId())) {
                 statusList.add(problem.getDescription());
             }
         }
