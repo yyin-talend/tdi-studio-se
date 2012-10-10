@@ -17,6 +17,9 @@ import java.util.List;
 import org.eclipse.gef.ui.actions.Clipboard;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
@@ -101,11 +104,15 @@ public class GEFCopyAction extends SelectionAction {
         if (!objects.isEmpty()) {
             Clipboard clipboard = Clipboard.getDefault();
 
+            org.eclipse.swt.dnd.Clipboard systemClipboard = new org.eclipse.swt.dnd.Clipboard(Display.getCurrent());
+
             boolean noteTextActived = false;
 
             boolean connectionTextActived = false;
 
             boolean nodeLabelActived = false;
+
+            Text text = null;
 
             if (objects.size() == 1) {
                 if (objects.get(0) instanceof NoteEditPart) {
@@ -130,19 +137,26 @@ public class GEFCopyAction extends SelectionAction {
 
             if (noteTextActived) {
 
-                Text text = ((NoteEditPart) objects.get(0)).getDirectEditManager().getTextControl();
+                text = ((NoteEditPart) objects.get(0)).getDirectEditManager().getTextControl();
                 clipboard.setContents(text.getSelectionText());
 
             } else if (connectionTextActived) {
 
-                Text text = ((ConnLabelEditPart) objects.get(0)).getDirectEditManager().getTextControl();
+                text = ((ConnLabelEditPart) objects.get(0)).getDirectEditManager().getTextControl();
                 clipboard.setContents(text.getSelectionText());
 
             } else if (nodeLabelActived) {
-                Text text = (Text) ((NodeLabelEditPart) objects.get(0)).getDirectEditManager().getCellEditor().getControl();
+                text = (Text) ((NodeLabelEditPart) objects.get(0)).getDirectEditManager().getCellEditor().getControl();
                 clipboard.setContents(text.getSelectionText());
             } else {
                 clipboard.setContents(objects);
+            }
+
+            if (text != null && !("").equals(text.getSelectionText())) {
+                TextTransfer textTransfer = TextTransfer.getInstance();
+                Transfer[] transfers = new Transfer[] { textTransfer };
+                Object[] data = new Object[] { text.getSelectionText() };
+                systemClipboard.setContents(data, transfers);
             }
         }
 

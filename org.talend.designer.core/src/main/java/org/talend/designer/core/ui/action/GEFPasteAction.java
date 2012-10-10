@@ -123,7 +123,9 @@ public class GEFPasteAction extends SelectionAction {
             systemObject = systemClipboard.getContents(TextTransfer.getInstance());
         }
 
-        if (o == null && systemObject != null && systemObject instanceof String) {
+        List obj = getSelectedObjects();
+        if (o == null && systemObject != null && systemObject instanceof String
+                && (obj.get(0) instanceof NodeLabelEditPart || obj.get(0) instanceof ConnLabelEditPart)) {
             return true;
         }
 
