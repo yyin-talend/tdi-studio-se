@@ -50,7 +50,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
 		boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
 		
-		boolean eventMode = ("true").equals(ElementParameterParser.getValue(node,"__EVENT_MODE__"));
+		String mode = ElementParameterParser.getValue(node,"__GENERATION_MODE__");
+		boolean eventMode = "EVENT_MODE".equals(mode);
 		
 		if(!version07){//version judgement
 			boolean bReadRealValue = ("true").equals(ElementParameterParser.getValue(node, "__READ_REAL_VALUE__"));
