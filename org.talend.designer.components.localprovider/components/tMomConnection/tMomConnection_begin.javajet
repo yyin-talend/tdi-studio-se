@@ -11,7 +11,7 @@ imports="
     java.util.Map
     org.talend.core.model.utils.TalendTextUtils
 " 
-class="MomInput"
+class="MomConnection"
 %>
 
 <%

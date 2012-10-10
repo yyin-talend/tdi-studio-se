@@ -23,10 +23,13 @@ if(("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType) || isUseShare
 <%
 	} else {
 %>
-	System.out.println("Closing connection");
 	producer_<%=cid %>.close();
-    session_<%=cid %>.close();
+        session_<%=cid %>.close();
+
+	<% if (!isUseSharedConnection) { %>	    
+	System.out.println("Closing connection");
     connection_<%=cid %>.close();
+        <% } %>
 
 <%
 	}

@@ -14,7 +14,7 @@ boolean transacted = "true".equals(ElementParameterParser.getValue(node, "__IS_T
 
 if (transacted) {
 %>
-		globalMap.put("producer_<%=cid %>",producer_<%=cid %>);
+    //		globalMap.put("producer_<%=cid %>",producer_<%=cid %>);
 		globalMap.put("session_<%=cid %>",session_<%=cid %>);
 		globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
 <%
