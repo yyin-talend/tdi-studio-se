@@ -25,7 +25,11 @@ import java.util.jar.Attributes;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
+import org.eclipse.core.resources.IProject;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.model.general.Project;
+import org.talend.repository.ProjectManager;
+import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.ui.utils.ZipToFile;
 
 /**
@@ -338,13 +342,25 @@ public class JavaJobExportReArchieveCreator {
     }
 
     public static String getTmpFolder() {
-        String tmp = System.getProperty("user.dir") + "/newjarFolder"; //$NON-NLS-1$ //$NON-NLS-2$
+        String tmp = getTmpFolderPath() + "/newjarFolder"; //$NON-NLS-1$ //$NON-NLS-2$
         tmp = tmp.replace('\\', '/');
         File f = new File(tmp);
         if (!f.exists()) {
             f.mkdir();
         }
         return tmp;
+    }
+
+    private static String getTmpFolderPath() {
+        Project project = ProjectManager.getInstance().getCurrentProject();
+        String tmpFolder;
+        try {
+            IProject physProject = ResourceModelUtils.getProject(project);
+            tmpFolder = physProject.getFolder("temp").getLocation().toPortableString(); //$NON-NLS-1$
+        } catch (Exception e) {
+            tmpFolder = System.getProperty("user.dir"); //$NON-NLS-1$
+        }
+        return tmpFolder;
     }
 
     /**
@@ -365,7 +381,7 @@ public class JavaJobExportReArchieveCreator {
      * @return
      */
     public static String getTmpDestinationFolder() {
-        String tmp = System.getProperty("user.dir") + "/newExportFolder";//$NON-NLS-1$ //$NON-NLS-2$
+        String tmp = getTmpFolderPath() + "/newExportFolder";//$NON-NLS-1$ //$NON-NLS-2$
         tmp = tmp.replace('\\', '/');
         File f = new File(tmp);
         if (!f.exists()) {
