@@ -325,7 +325,7 @@
 		<IMPORT NAME="commons-vfs"          MODULE="commons-vfs.jar" REQUIRED="true" />
 		<IMPORT NAME="commons-log"          MODULE="commons-logging-1.1.jar" REQUIRED="true" />
 		<IMPORT NAME="commons-beanutils"    MODULE="commons-beanutils-1.7.jar" REQUIRED="true" />
-		<IMPORT NAME="commons-colections"   MODULE="commons-collections-3.2.jar" REQUIRED="true" />
+		<IMPORT NAME="commons-colections"   MODULE="commons-collections-3.2.jar" REQUIRED="true" BundleID="" />
 		<IMPORT NAME="commons-fileupload"   MODULE="commons-fileupload-1.0.jar" REQUIRED="true" />
 		<IMPORT NAME="commons-pool"         MODULE="commons-pool-1.2.jar" REQUIRED="true" />
 		<IMPORT NAME="commons-digester"     MODULE="commons-digester-1.7.jar" REQUIRED="true" />

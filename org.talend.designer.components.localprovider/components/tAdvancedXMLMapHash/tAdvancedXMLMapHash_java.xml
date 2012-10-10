@@ -54,6 +54,7 @@
         NAME="ApacheCommonsCollection32"
         MODULE="commons-collections-3.2.jar"
         REQUIRED="true"
+        BundleID=""
       />
       <IMPORT
         NAME="Jboss"
