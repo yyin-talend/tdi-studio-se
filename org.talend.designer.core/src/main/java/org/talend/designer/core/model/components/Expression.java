@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.language.LanguageManager;
@@ -26,10 +27,9 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
-
-import com.ibm.icu.util.StringTokenizer;
 
 /**
  * This class will test an expression in the element parameters. <br>
@@ -60,6 +60,8 @@ public final class Expression {
     private static final String EQUALS = "=="; //$NON-NLS-1$
 
     private static final String NOT_EQUALS = "!="; //$NON-NLS-1$
+
+    private static final String IN = "IN"; //$NON-NLS-1$
 
     // private static ElementParameter currentParam;
 
@@ -138,6 +140,68 @@ public final class Expression {
         return false;
     }
 
+    /**
+     * Only works for any check in the schema actually, and only for DB_TYPE. Syntax should be like:
+     * 
+     * SCHEMA.DB_TYPE IN ['BLOB','CLOB']
+     * 
+     * 
+     * @param simpleExpression
+     * @return
+     */
+    private static boolean evaluateInExpression(String simpleExpression, List<? extends IElementParameter> listParam) {
+        String[] strings = null;
+        if (simpleExpression.contains(" IN [")) { //$NON-NLS-1$
+            strings = simpleExpression.split(" IN \\["); //$NON-NLS-1$
+        } else {
+            strings = simpleExpression.split(" IN\\["); //$NON-NLS-1$
+        }
+        String variableToTest = strings[0].split("\\.")[1]; // we take only the value DB_TYPE //$NON-NLS-1$
+        ElementParameter currentParam = (ElementParameter) listParam.get(0); // take the first one, in all case we only
+                                                                             // want to get the element linked
+        if (variableToTest.contains("DB_TYPE")) { //$NON-NLS-1$
+            IElement element = currentParam.getElement();
+            if (element == null || (!(element instanceof INode))) {
+                throwUnsupportedExpression(simpleExpression, currentParam);
+                return false;
+            }
+            INode node = (INode) element;
+            String valuesToTest = strings[1].substring(0, strings[1].length() - 1); // string must be like:
+                                                                                    // 'BLOB','CLOB']
+                                                                                    // so remove the last ]
+            String[] values = valuesToTest.split("'"); //$NON-NLS-1$
+            if (values.length > 1) { // in this case we have something like: 'A','B','C' first, then values will be
+                                     // like: <empty> / A / , / B / , / C / <empty>
+                for (String value : values) {
+                    if (value.isEmpty() || value.trim().equals(",")) { //$NON-NLS-1$
+                        continue;
+                    }
+                    for (IMetadataTable table : node.getMetadataList()) {
+                        for (IMetadataColumn column : table.getListColumns()) {
+                            if (column.getType().equals(value)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            } else {
+                throwUnsupportedExpression(simpleExpression, currentParam);
+            }
+        } else {
+            throwUnsupportedExpression(simpleExpression, currentParam);
+        }
+        return false;
+    }
+
+    private static void throwUnsupportedExpression(String simpleExpression, ElementParameter currentParam) {
+        if (currentParam != null && currentParam.getElement() != null) {
+            ExceptionHandler.process(new Exception("Element: '" + currentParam.getElement().getElementName() //$NON-NLS-1$
+                    + "' does not support expression '" + simpleExpression + "'")); //$NON-NLS-1$ //$NON-NLS-2$
+        } else {
+            ExceptionHandler.process(new Exception("Expression '" + simpleExpression + "' not supported")); //$NON-NLS-1$//$NON-NLS-2$
+        }
+    }
+
     private static boolean evaluateSimpleExpression(String simpleExpression, List<? extends IElementParameter> listParam,
             ElementParameter currentParam) {
         boolean showParameter = false;
@@ -149,18 +213,21 @@ public final class Expression {
                 test = NOT_EQUALS;
             }
         }
-
-        String[] strings = null;
-        if (test != null) {
-            strings = simpleExpression.split(test);
-        } else {
-            strings = new String[] { simpleExpression };
+        if (simpleExpression.startsWith("SCHEMA.") && (simpleExpression.contains(" IN [") || //$NON-NLS-1$ //$NON-NLS-2$
+                simpleExpression.contains(" IN[")) && simpleExpression.endsWith("]")) { //$NON-NLS-1$ //$NON-NLS-2$
+            return evaluateInExpression(simpleExpression, listParam);
         }
+        if (test == null) {
+            throwUnsupportedExpression(simpleExpression, currentParam);
+            return false;
+        }
+
+        String[] strings = simpleExpression.split(test);
 
         String variableName = null, variableValue = null;
 
-        for (int i = 0; i < strings.length; i++) {
-            String string = strings[i].trim();
+        for (String string2 : strings) {
+            String string = string2.trim();
             if (string.contains("'")) { // value //$NON-NLS-1$
                 variableValue = string;
                 variableValue = variableValue.substring(1, string.lastIndexOf("'")); //$NON-NLS-1$
@@ -186,21 +253,20 @@ public final class Expression {
 
         // 3 levels of variable name accepted maximum (ex: MY_VAR.TABLE.FIELD == 'test')
         String[] varNames;
-        StringTokenizer token = new StringTokenizer(variableName, "."); //$NON-NLS-1$
         varNames = StringUtils.split(variableName, '.');
 
         // wyang: only for bug:9055, to search the related Node, for example tFTPGet wants to check tFTPConnection info
         // variableName like: #LINK@NODE.CONNECTION.SFTP ----->it is a checkbox in tFTPConnection
         // #LINK@NODE, #PREVIOUS@NODE, #NEXT@NODE ----->implement them later
         if ((variableName != null) && (variableValue != null)) {
-            if (varNames[0].equals("#LINK@NODE")) {
+            if (varNames[0].equals("#LINK@NODE")) { //$NON-NLS-1$
                 if (currentParam != null && currentParam.getElement() instanceof INode) {
                     INode node = (INode) currentParam.getElement();
-                    String relatedNodeName = ElementParameterParser.getValue(node, "__" + varNames[1] + "__");
+                    String relatedNodeName = ElementParameterParser.getValue(node, "__" + varNames[1] + "__"); //$NON-NLS-1$ //$NON-NLS-2$
                     List<? extends INode> generatingNodes = node.getProcess().getGeneratingNodes();
                     for (INode aNode : generatingNodes) {
                         if (aNode.getUniqueName().equals(relatedNodeName)) {
-                            simpleExpression = simpleExpression.replace(varNames[0] + "." + varNames[1] + ".", "");
+                            simpleExpression = simpleExpression.replace(varNames[0] + "." + varNames[1] + ".", ""); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
                             List<? extends IElementParameter> elementParameters = aNode.getElementParameters();
                             // let's supose the currentParam = null, there won't want deal with the TABLE field, only
                             // deal with LIST/CHECKBOX
@@ -325,9 +391,9 @@ public final class Expression {
                         boolean child = false;
                         Map<String, IElementParameter> childParameters = param.getChildParameters();
 
-                        if ("PROPERTY".equals(param.getName())) {
+                        if ("PROPERTY".equals(param.getName())) { //$NON-NLS-1$
                             if (childParameters != null) {
-                                IElementParameter iElementParameter = childParameters.get("PROPERTY_TYPE");
+                                IElementParameter iElementParameter = childParameters.get("PROPERTY_TYPE"); //$NON-NLS-1$
                                 if (iElementParameter != null) {
                                     Object value2 = iElementParameter.getValue();
                                     if (variableValue.equals(value2.toString())) {
@@ -362,7 +428,7 @@ public final class Expression {
                     }
                     if (value instanceof String) {
                         if (testedParameter.getListItemsValue() instanceof Object[]) {
-                            Object[] values = (Object[]) testedParameter.getListItemsValue();
+                            Object[] values = testedParameter.getListItemsValue();
                             for (int i = 0; i < values.length && !found; i++) {
                                 if (values[i].equals(value)) {
                                     String variableCode = testedParameter.getListItemsDisplayCodeName()[i];
