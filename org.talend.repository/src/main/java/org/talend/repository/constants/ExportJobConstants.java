@@ -41,6 +41,12 @@ public interface ExportJobConstants {
 
     public static final String MAVEN_BUILD_FILE_NAME = "pom.xml"; //$NON-NLS-1$
 
+    public static final String MAVEN_KARAF_BUILD_BUNDLE_FILE_NAME = "pom-bundle.xml"; //$NON-NLS-1$
+
+    public static final String MAVEN_KARAF_BUILD_FEATURE_FILE_NAME = "pom-feature.xml"; //$NON-NLS-1$
+
+    public static final String MAVEN_KARAF_BUILD_PARENT_FILE_NAME = "pom-parent.xml"; //$NON-NLS-1$
+
     public static final String MAVEN_ASSEMBLY_FILE_NAME = "assembly.xml"; //$NON-NLS-1$
 
     public static final String MAVEN_BUILD_FILE_PATH = MAVEN_BUILD_SCRIPT_HOME + PATH_SEPARATOR + MAVEN_BUILD_FILE_NAME; //$NON-NLS-1$

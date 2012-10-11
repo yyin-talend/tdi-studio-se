@@ -27,9 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.Manifest;
 
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ModuleNeeded;
@@ -209,7 +206,6 @@ public class JobJavaScriptOSGIForESBWithMavenManager extends JobJavaScriptOSGIFo
 
         File mavenBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_BUILD_FILE_NAME);
         File mavenAssemblyFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_ASSEMBLY_FILE_NAME);
-        SAXReader saxReader = new SAXReader();
         try {
             FileOutputStream mavenBuildFileOutputStream = null;
             try {
@@ -220,27 +216,7 @@ public class JobJavaScriptOSGIForESBWithMavenManager extends JobJavaScriptOSGIFo
                     mavenBuildFileOutputStream.close();
                 }
             }
-            Document pomDocument = saxReader.read(mavenBuildFile);
-            setMavenBuildScriptProperties(pomDocument, mavenPropertiesMap);
-
-            Iterator rootNodeIter = pomDocument.nodeIterator();
-            while (rootNodeIter.hasNext()) {
-                Element rootEle = (Element) rootNodeIter.next();
-                Iterator nodeIterator = rootEle.nodeIterator();
-                while (nodeIterator.hasNext()) {
-                    Object obj = nodeIterator.next();
-                    if (obj instanceof Element) {
-                        Element ele = (Element) obj;
-                        if ("dependencies".equals(ele.getName())) { //$NON-NLS-1$
-                            removeComments(ele);
-                            for (ModuleNeeded module : neededModules) {
-                                addMavenDependencyElement(ele, module.getModuleName(), "${lib.path}/"); //$NON-NLS-1$
-                            }
-                        }
-                    }
-                }
-            }
-            saveXmlDocoment(pomDocument, mavenBuildFile);
+            updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, neededModules, "${lib.path}/");
             scriptsUrls.add(mavenBuildFile.toURL());
             scriptsUrls.add(mavenAssemblyFile.toURL());
         } catch (Exception e) {

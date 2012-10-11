@@ -34,6 +34,7 @@ import java.util.Set;
 
 import org.dom4j.Comment;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.OutputFormat;
@@ -264,7 +265,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         File mavenBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_BUILD_FILE_NAME);
         File mavenAssemblyFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_ASSEMBLY_FILE_NAME);
-        SAXReader saxReader = new SAXReader();
         try {
             FileOutputStream mavenBuildFileOutputStream = null;
             try {
@@ -273,34 +273,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             } finally {
                 mavenBuildFileOutputStream.close();
             }
-            Document pomDocument = saxReader.read(mavenBuildFile);
-            setMavenBuildScriptProperties(pomDocument, mavenPropertiesMap);
-
-            Iterator rootNodeIter = pomDocument.nodeIterator();
-            while (rootNodeIter.hasNext()) {
-                Element rootEle = (Element) rootNodeIter.next();
-                Iterator nodeIterator = rootEle.nodeIterator();
-                while (nodeIterator.hasNext()) {
-                    Object obj = nodeIterator.next();
-                    if (obj instanceof Element) {
-                        Element ele = (Element) obj;
-                        if ("dependencies".equals(ele.getName())) { //$NON-NLS-1$
-                            removeComments(ele);
-                            for (ModuleNeeded module : neededModules) {
-                                addMavenDependencyElement(ele, module.getModuleName(), "${lib.path}/"); //$NON-NLS-1$
-                            }
-                        }
-                    }
-                }
-            }
-            // List sourceDirectorylist = pomDocument.selectNodes("//build/sourceDirectory"); //$NON-NLS-1$
-            // Iterator sourceDirectoryIter = sourceDirectorylist.iterator();
-            // while (sourceDirectoryIter.hasNext()) {
-            // Element sourceDirectoryElement = (Element) sourceDirectoryIter.next();
-            // String value = sourceDirectoryElement.getText();
-            //                sourceDirectoryElement.setText(value.replace("@jobName@", jobName)); //$NON-NLS-1$
-            // }
-            saveXmlDocoment(pomDocument, mavenBuildFile);
+            updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, neededModules, "${lib.path}/");
             scriptsUrls.add(mavenBuildFile.toURL());
             FilesUtils.copyFile(inputMavenAssemblyFile, mavenAssemblyFile);
             // Document assemblyDocument = saxReader.read(mavenAssemblyFile);
@@ -359,6 +332,15 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         }
     }
 
+    protected void addMavenDependencyElements(Document pomDocument, Set<ModuleNeeded> neededModules, String libFolder) {
+        Element rootElement = pomDocument.getRootElement();
+        Element parentEle = rootElement.element("dependencies"); //$NON-NLS-1$
+        removeComments(parentEle);
+        for (ModuleNeeded module : neededModules) {
+            addMavenDependencyElement(parentEle, module.getModuleName(), libFolder); //$NON-NLS-1$
+        }
+    }
+
     protected void addMavenDependencyElement(Element parentElement, String jarName, String libFolder) {
         String jarNameWithoutExt = jarName;
         if (jarNameWithoutExt.indexOf(".") != -1) { //$NON-NLS-1$
@@ -375,6 +357,37 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         scopeElement.setText("system"); //$NON-NLS-1$
         Element systemPathElement = dependencyElement.addElement("systemPath"); //$NON-NLS-1$
         systemPathElement.setText(libFolder + jarName);
+    }
+
+    protected void updateMavenBuildFileContent(File mavenBuildFile, Map<String, String> mavenPropertiesMap)
+            throws DocumentException, IOException {
+        updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, null, null);
+    }
+
+    protected void updateMavenBuildFileContent(File mavenBuildFile, Map<String, String> mavenPropertiesMap,
+            Set<ModuleNeeded> neededModules, String libFolder) throws DocumentException, IOException {
+        SAXReader saxReader = new SAXReader();
+        Document pomDocument = saxReader.read(mavenBuildFile);
+        setMavenBuildScriptProperties(pomDocument, mavenPropertiesMap);
+        if (neededModules != null && neededModules.size() > 0) {
+            if (libFolder == null) {
+                libFolder = "${lib.path}/"; //$NON-NLS-1$
+            }
+            addMavenDependencyElements(pomDocument, neededModules, libFolder);
+        }
+        saveXmlDocoment(pomDocument, mavenBuildFile);
+    }
+
+    protected void createMavenBuildFileFromTemplate(File mavenBuildFile, String mavenScript) throws IOException {
+        FileOutputStream mavenBuildFileOutputStream = null;
+        try {
+            mavenBuildFileOutputStream = new FileOutputStream(mavenBuildFile);
+            mavenBuildFileOutputStream.write(mavenScript.getBytes());
+        } finally {
+            if (mavenBuildFileOutputStream != null) {
+                mavenBuildFileOutputStream.close();
+            }
+        }
     }
 
     protected void removeComments(Element ele) {
