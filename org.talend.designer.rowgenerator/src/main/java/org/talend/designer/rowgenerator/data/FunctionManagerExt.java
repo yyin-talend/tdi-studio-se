@@ -182,7 +182,9 @@ public class FunctionManagerExt extends FunctionManager {
                         } else {
                             // add by wzhang to fix bug 8732.
                             try {
-                                Pattern regex = Pattern.compile("(\\.|\\w)+\\(([^()]|\\(([^()])*\\))*\\)|\".*?\"|\\w+", //$NON-NLS-1$
+                                //                                Pattern regex = Pattern.compile("(\\.|\\w)+\\(([^()]|\\(([^()])*\\))*\\)|\".*?\"|\\w+", //$NON-NLS-1$
+                                // Pattern.CANON_EQ);
+                                Pattern regex = Pattern.compile("[^,]+", //$NON-NLS-1$
                                         Pattern.CANON_EQ);
                                 Matcher m = regex.matcher(para);
                                 List<String> strs = new ArrayList<String>();
