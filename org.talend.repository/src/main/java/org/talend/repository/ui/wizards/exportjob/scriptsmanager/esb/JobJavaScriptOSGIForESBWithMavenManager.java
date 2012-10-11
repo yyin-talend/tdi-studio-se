@@ -27,10 +27,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.Manifest;
 
-import org.dom4j.Comment;
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
@@ -44,6 +42,7 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.constants.ExportJobConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.resource.IResourceService;
+import org.talend.resources.util.EMavenBuildScriptProperties;
 
 /**
  * created by nrousseau on Sep 25, 2012 Detailled comment
@@ -197,6 +196,14 @@ public class JobJavaScriptOSGIForESBWithMavenManager extends JobJavaScriptOSGIFo
         String jobName = processItem.getProperty().getLabel();
         String jobVersion = processItem.getProperty().getVersion();
 
+        // set the maven properties
+        final Map<String, String> mavenPropertiesMap = new HashMap<String, String>();
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemProjectName.getVarScript(), projectName);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemName.getVarScript(), jobName);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemVersion.getVarScript(), jobVersion);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.BundleConfigPrivatePackage.getVarScript(), privatePackage);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.BundleConfigExportService.getVarScript(), exportService);
+
         Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
                 processItem.getProperty().getId(), selectedJobVersion);
 
@@ -214,6 +221,8 @@ public class JobJavaScriptOSGIForESBWithMavenManager extends JobJavaScriptOSGIFo
                 }
             }
             Document pomDocument = saxReader.read(mavenBuildFile);
+            setMavenBuildScriptProperties(pomDocument, mavenPropertiesMap);
+
             Iterator rootNodeIter = pomDocument.nodeIterator();
             while (rootNodeIter.hasNext()) {
                 Element rootEle = (Element) rootNodeIter.next();
@@ -222,68 +231,10 @@ public class JobJavaScriptOSGIForESBWithMavenManager extends JobJavaScriptOSGIFo
                     Object obj = nodeIterator.next();
                     if (obj instanceof Element) {
                         Element ele = (Element) obj;
-                        // remove comments.
-                        Iterator commentIterator = ele.nodeIterator();
-                        while (commentIterator.hasNext()) {
-                            Object commentObj = commentIterator.next();
-                            if (commentObj instanceof Comment) {
-                                Comment comment = (Comment) commentObj;
-                                if (comment.getNodeType() == Node.COMMENT_NODE) {
-                                    ele.remove(comment);
-                                }
-                            }
-                        }
-                        if ("groupId".equals(ele.getName())) { //$NON-NLS-1$
-                            ele.setText(projectName);
-                        } else if ("artifactId".equals(ele.getName())) { //$NON-NLS-1$
-                            ele.setText(jobName);
-                        } else if ("version".equals(ele.getName())) { //$NON-NLS-1$
-                            ele.setText(jobVersion);
-                        } else if ("dependencies".equals(ele.getName())) { //$NON-NLS-1$
+                        if ("dependencies".equals(ele.getName())) { //$NON-NLS-1$
+                            removeComments(ele);
                             for (ModuleNeeded module : neededModules) {
-                                addMavenDependencyElement(ele, module.getModuleName(), "${basedir}/src/main/resources/lib/"); //$NON-NLS-1$
-                            }
-                        } else if ("build".equals(ele.getName())) { //$NON-NLS-1$
-                            Element bundleElements = ele.element("plugins").element("plugin").element("configuration") //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
-                                    .element("instructions"); //$NON-NLS-1$
-                            Element bundleVersionElement = bundleElements.element("Bundle-Version"); //$NON-NLS-1$
-                            bundleVersionElement.setText(jobVersion);
-                            // remove comments.
-                            commentIterator = bundleVersionElement.nodeIterator();
-                            while (commentIterator.hasNext()) {
-                                Object commentObj = commentIterator.next();
-                                if (commentObj instanceof Comment) {
-                                    Comment comment = (Comment) commentObj;
-                                    if (comment.getNodeType() == Node.COMMENT_NODE) {
-                                        ele.remove(comment);
-                                    }
-                                }
-                            }
-                            Element privPackageElement = bundleElements.element("Private-Package"); //$NON-NLS-1$
-                            privPackageElement.setText(privatePackage);
-                            // remove comments.
-                            commentIterator = privPackageElement.nodeIterator();
-                            while (commentIterator.hasNext()) {
-                                Object commentObj = commentIterator.next();
-                                if (commentObj instanceof Comment) {
-                                    Comment comment = (Comment) commentObj;
-                                    if (comment.getNodeType() == Node.COMMENT_NODE) {
-                                        ele.remove(comment);
-                                    }
-                                }
-                            }
-                            Element exportServiceElement = bundleElements.element("Export-Service"); //$NON-NLS-1$
-                            exportServiceElement.setText(exportService);
-                            // remove comments.
-                            commentIterator = exportServiceElement.nodeIterator();
-                            while (commentIterator.hasNext()) {
-                                Object commentObj = commentIterator.next();
-                                if (commentObj instanceof Comment) {
-                                    Comment comment = (Comment) commentObj;
-                                    if (comment.getNodeType() == Node.COMMENT_NODE) {
-                                        ele.remove(comment);
-                                    }
-                                }
+                                addMavenDependencyElement(ele, module.getModuleName(), "${lib.path}/"); //$NON-NLS-1$
                             }
                         }
                     }

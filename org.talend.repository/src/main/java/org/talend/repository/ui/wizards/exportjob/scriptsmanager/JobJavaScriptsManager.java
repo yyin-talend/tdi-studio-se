@@ -32,8 +32,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.dom4j.Comment;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
@@ -239,7 +241,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         if (resourceService == null) {
             return;
         }
-        File inputMavenAssemblyFile = new File(resourceService.getMavenScriptFilePath("assembly.xml")); //$NON-NLS-1$
+        File inputMavenAssemblyFile = new File(resourceService.getMavenScriptFilePath("job/assembly.xml")); //$NON-NLS-1$
         if (!inputMavenAssemblyFile.exists()) {
             return;
         }
@@ -250,15 +252,15 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         String jobExportedJarName = jobName + '_' + jobVersion.replaceAll("\\.", "_"); //$NON-NLS-1$//$NON-NLS-2$
         jobExportedJarName = jobExportedJarName.toLowerCase();
 
+        // set the maven properties
+        final Map<String, String> mavenPropertiesMap = new HashMap<String, String>();
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemProjectName.getVarScript(), projectName);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemName.getVarScript(), jobName);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemVersion.getVarScript(), jobVersion);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemExportedJarName.getVarScript(), jobExportedJarName);
+
         Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
                 processItem.getProperty().getId(), selectedJobVersion);
-
-        // set the maven build properties
-        final Map<String, String> mavenPropertiesMap = new HashMap<String, String>();
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.ProjectName.getScript(), projectName);
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.JobName.getScript(), jobName);
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.JobVersion.getScript(), jobVersion);
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.JobExportedJarName.getScript(), jobExportedJarName);
 
         File mavenBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_BUILD_FILE_NAME);
         File mavenAssemblyFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_ASSEMBLY_FILE_NAME);
@@ -272,6 +274,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 mavenBuildFileOutputStream.close();
             }
             Document pomDocument = saxReader.read(mavenBuildFile);
+            setMavenBuildScriptProperties(pomDocument, mavenPropertiesMap);
+
             Iterator rootNodeIter = pomDocument.nodeIterator();
             while (rootNodeIter.hasNext()) {
                 Element rootEle = (Element) rootNodeIter.next();
@@ -280,15 +284,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     Object obj = nodeIterator.next();
                     if (obj instanceof Element) {
                         Element ele = (Element) obj;
-                        // set the properties
-                        if ("properties".equals(ele.getName())) { //$NON-NLS-1$
-                            replaceMavenBuildScriptProperty(ele, "project.name", mavenPropertiesMap); //$NON-NLS-1$
-                            replaceMavenBuildScriptProperty(ele, "job.name", mavenPropertiesMap); //$NON-NLS-1$
-                            replaceMavenBuildScriptProperty(ele, "job.version", mavenPropertiesMap); //$NON-NLS-1$
-                            replaceMavenBuildScriptProperty(ele, "job.exportedJar.name", mavenPropertiesMap); //$NON-NLS-1$
-                        } else if ("dependencies".equals(ele.getName())) { //$NON-NLS-1$
+                        if ("dependencies".equals(ele.getName())) { //$NON-NLS-1$
+                            removeComments(ele);
                             for (ModuleNeeded module : neededModules) {
-                                addMavenDependencyElement(ele, module.getModuleName(), "${basedir}/../lib/"); //$NON-NLS-1$
+                                addMavenDependencyElement(ele, module.getModuleName(), "${lib.path}/"); //$NON-NLS-1$
                             }
                         }
                     }
@@ -318,19 +317,45 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         }
     }
 
-    protected void replaceMavenBuildScriptProperty(Element parentElement, String propertyName,
-            Map<String, String> mavenPropertiesMap) {
-        Element element = parentElement.element(propertyName);
-        if (element != null) {
-            String text = element.getTextTrim();
+    @SuppressWarnings("rawtypes")
+    protected void setMavenBuildScriptProperties(Document pomDocument, Map<String, String> mavenPropertiesMap) {
+        // for groupId, artifactId,version
+        Element rootElement = pomDocument.getRootElement();
+        replaceMavenBuildScriptProperties(rootElement, mavenPropertiesMap);
+
+        // parent
+        Element parentEle = rootElement.element("parent"); //$NON-NLS-1$
+        if (parentEle != null) {
+            replaceMavenBuildScriptProperties(parentEle, mavenPropertiesMap);
+        }
+        // properties
+        Element propertiesEle = rootElement.element("properties"); //$NON-NLS-1$
+        if (propertiesEle != null) {
+            replaceMavenBuildScriptProperties(propertiesEle, mavenPropertiesMap);
+        }
+
+    }
+
+    @SuppressWarnings("rawtypes")
+    private void replaceMavenBuildScriptProperties(Element parentElement, Map<String, String> mavenPropertiesMap) {
+        Iterator propertiesIt = parentElement.elementIterator();
+        while (propertiesIt.hasNext()) {
+            Element propEle = (Element) propertiesIt.next();
+            final String text = propEle.getText();
             String newText = text;
+            boolean replaced = false;
             for (String script : mavenPropertiesMap.keySet()) {
-                String value = mavenPropertiesMap.get(script);
-                if (value != null) {
-                    newText = newText.replace(script, value);
+                if (newText.contains(script)) {
+                    String value = mavenPropertiesMap.get(script);
+                    if (value != null) {
+                        replaced = true;
+                        newText = newText.replace(script, value);
+                    }
                 }
             }
-            element.setText(newText);
+            if (replaced && !text.equals(newText)) {
+                propEle.setText(newText);
+            }
         }
     }
 
@@ -350,6 +375,20 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         scopeElement.setText("system"); //$NON-NLS-1$
         Element systemPathElement = dependencyElement.addElement("systemPath"); //$NON-NLS-1$
         systemPathElement.setText(libFolder + jarName);
+    }
+
+    protected void removeComments(Element ele) {
+        // remove comments.
+        Iterator commentIterator = ele.nodeIterator();
+        while (commentIterator.hasNext()) {
+            Object commentObj = commentIterator.next();
+            if (commentObj instanceof Comment) {
+                Comment comment = (Comment) commentObj;
+                if (comment.getNodeType() == Node.COMMENT_NODE) {
+                    ele.remove(comment);
+                }
+            }
+        }
     }
 
     protected void saveXmlDocoment(Document document, File outputFile) throws IOException {
