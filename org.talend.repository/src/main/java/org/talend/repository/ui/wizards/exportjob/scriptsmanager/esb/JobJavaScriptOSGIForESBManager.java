@@ -379,7 +379,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     + "\n\t\t<property name=\"contextName\" value=\"karaf\"/>\n\t</bean>";
         }
         // OSGi DataSource
-        additionalJobBeanParams += DataSourceConfig.getAdditionalJobBeanParams(processItem);
+        additionalJobBeanParams += DataSourceConfig.getAdditionalJobBeanParams(processItem, true);
 
         BufferedReader br = null;
         BufferedWriter bw = null;
@@ -458,7 +458,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
 
         // OSGi DataSource
-        additionalJobBeanParams += DataSourceConfig.getAdditionalJobBeanParams(processItem);
+        additionalJobBeanParams += DataSourceConfig.getAdditionalJobBeanParams(processItem, false);
 
         BufferedReader br = null;
         BufferedWriter bw = null;

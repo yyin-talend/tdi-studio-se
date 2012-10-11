@@ -29,7 +29,7 @@ public class DataSourceConfig {
     private DataSourceConfig() {
     }
 
-    public static String getAdditionalJobBeanParams(ProcessItem processItem) {
+    public static String getAdditionalJobBeanParams(ProcessItem processItem, boolean addOsgiPrefix) {
         Set<String> aliases = getAliases(processItem);
         String additionalJobBeanParams = ""; //$NON-NLS-1$
         if (!aliases.isEmpty()) {
@@ -39,7 +39,7 @@ public class DataSourceConfig {
             for (String alias : aliases) {
                 additionalJobBeanParams +=
                           "\n\t\t\t\t<entry key=\"" + alias + "\">" //$NON-NLS-1$
-                        + "\n\t\t\t\t\t<reference interface=\"javax.sql.DataSource\" filter=\"(osgi.jndi.service.name=" + alias + ")\"/>" //$NON-NLS-1$
+                        + "\n\t\t\t\t\t<" + (addOsgiPrefix ? "osgi:" : "") + "reference interface=\"javax.sql.DataSource\" filter=\"(osgi.jndi.service.name=" + alias + ")\"/>" //$NON-NLS-1$
                         + "\n\t\t\t\t</entry>"; //$NON-NLS-1$
             }
             additionalJobBeanParams +=
