@@ -620,11 +620,16 @@ public final class CodeGeneratorEmittersPoolFactory {
         } catch (Error e) {
             throw new ClassNotFoundException(e.getMessage(), e);
         }
-        Method[] methods = theClass.getDeclaredMethods();
-        for (int i = 0; i < methods.length; ++i) {
-            if (methods[i].getName().equals(methodName)) {
-                return methods[i];
+        // TDI-23079
+        try {
+            Method[] methods = theClass.getDeclaredMethods();
+            for (int i = 0; i < methods.length; ++i) {
+                if (methods[i].getName().equals(methodName)) {
+                    return methods[i];
+                }
             }
+        } catch (Exception e) {
+            return null;
         }
         return null;
     }
