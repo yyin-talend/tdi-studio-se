@@ -308,9 +308,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return null != EmfModelUtils.getComponentByName(processItem, "tESBProviderRequest");
     }
 
-    // private static boolean isRESTClientJob(ProcessItem processItem) {
-    // return null != EmfModelUtils.getComponentByName(processItem, "tRESTClient");
-    // }
+//    private static boolean isRESTClientJob(ProcessItem processItem) {
+//        return null != EmfModelUtils.getComponentByName(processItem, "tRESTClient");
+//    }
 
     private static NodeType getRESTRequestComponent(ProcessItem processItem) {
         return EmfModelUtils.getComponentByName(processItem, "tRESTRequest");
@@ -440,15 +440,17 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     if (EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node)) { //$NON-NLS-1$
                         // SAM
                         additionalJobBeanParams = "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
-                        additionalJobBundleConfig = "<reference id=\"eventFeature\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>";
+                        additionalJobBundleConfig = "<reference id=\"eventFeature\"  xmlns:ext=\"http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0\" " +
+                        		"ext:proxy-method=\"classes\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>";
                         break;
                     }
                 }
             }
         } else { // JOB
-            if (isESBJob(processItem)) {
+            if(isESBJob(processItem)) {
                 additionalJobInterfaces = "<value>routines.system.api.TalendESBJob</value>"; //$NON-NLS-1$
                 if (isESBProviderJob(processItem)) {
+                	
                     additionalJobInterfaces += "\n\t\t\t<value>routines.system.api.TalendESBJobFactory</value>"; //$NON-NLS-1$
                     additionalServiceProps = "<entry key=\"multithreading\" value=\"true\" />"; //$NON-NLS-1$
                 }
@@ -559,7 +561,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             } else { // JOB
                 NodeType restRequestComponent = getRESTRequestComponent(pi);
                 if (null != restRequestComponent && "".equals(importPackages)
-                        && EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent)) {
+                    && EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent)) {
                     importPackages = "org.apache.cxf.jaxrs.security,";
                 }
             }
@@ -673,16 +675,16 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return StringUtils.join(pkgs.toArray(), ",");
     }
 
-    // private String addAdditionalRequiredBundles(ProcessItem pi, String requiredBundles) {
-    // if (isRESTClientJob(pi) || isRESTProviderJob(pi)) {
-    // String bundlesToAdd = "org.apache.cxf.cxf-rt-frontend-jaxrs" + ",org.apache.cxf.cxf-rt-rs-extension-providers";
-    // // check if we need add ',' after already existing bundles
-    // requiredBundles = (requiredBundles != null && !"".equals(requiredBundles)) ? requiredBundles + "," : "";
-    // requiredBundles = requiredBundles + bundlesToAdd;
-    // }
-    //
-    // return requiredBundles;
-    // }
+//    private String addAdditionalRequiredBundles(ProcessItem pi, String requiredBundles) {
+//        if (isRESTClientJob(pi) || isRESTProviderJob(pi)) {
+//            String bundlesToAdd = "org.apache.cxf.cxf-rt-frontend-jaxrs" + ",org.apache.cxf.cxf-rt-rs-extension-providers";
+//            // check if we need add ',' after already existing bundles
+//            requiredBundles = (requiredBundles != null && !"".equals(requiredBundles)) ? requiredBundles + "," : "";
+//            requiredBundles = requiredBundles + bundlesToAdd;
+//        }
+//
+//        return requiredBundles;
+//    }
 
     private static void addRouteOsgiDependencies(Analyzer analyzer, ExportFileResource libResource,
             List<ProcessItem> itemToBeExport) throws IOException {
@@ -817,35 +819,35 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         File[] files = file.listFiles(FilesUtils.getAcceptModuleFilesFilter());
 
         // if (!useBeans) {
-        // Gets all the jar files
-        if (neededLibraries == null) {
-            // in case export as been done with option "not recompile", then
-            // libraires can't be retrieved when
-            // build.
-            IDesignerCoreService designerService = RepositoryPlugin.getDefault().getDesignerCoreService();
-            for (ExportFileResource resource : process) {
-                ProcessItem item = (ProcessItem) resource.getItem();
-                String version = item.getProperty().getVersion();
-                if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
-                    version = this.getSelectedJobVersion();
+            // Gets all the jar files
+            if (neededLibraries == null) {
+                // in case export as been done with option "not recompile", then
+                // libraires can't be retrieved when
+                // build.
+                IDesignerCoreService designerService = RepositoryPlugin.getDefault().getDesignerCoreService();
+                for (ExportFileResource resource : process) {
+                    ProcessItem item = (ProcessItem) resource.getItem();
+                    String version = item.getProperty().getVersion();
+                    if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
+                        version = this.getSelectedJobVersion();
+                    }
+                    ProcessItem selectedProcessItem;
+                    if (resource.getNode() != null) {
+                        selectedProcessItem = ItemCacheManager.getProcessItem(resource.getNode().getRoot().getProject(), item
+                                .getProperty().getId(), version);
+                    } else {
+                        // if no node given, take in the current project only
+                        selectedProcessItem = ItemCacheManager.getProcessItem(item.getProperty().getId(), version);
+                    }
+                    IProcess iProcess = designerService.getProcessFromProcessItem(selectedProcessItem);
+                    neededLibraries = iProcess.getNeededLibraries(true);
+                    if (neededLibraries != null) {
+                        listModulesReallyNeeded.addAll(neededLibraries);
+                    }
                 }
-                ProcessItem selectedProcessItem;
-                if (resource.getNode() != null) {
-                    selectedProcessItem = ItemCacheManager.getProcessItem(resource.getNode().getRoot().getProject(), item
-                            .getProperty().getId(), version);
-                } else {
-                    // if no node given, take in the current project only
-                    selectedProcessItem = ItemCacheManager.getProcessItem(item.getProperty().getId(), version);
-                }
-                IProcess iProcess = designerService.getProcessFromProcessItem(selectedProcessItem);
-                neededLibraries = iProcess.getNeededLibraries(true);
-                if (neededLibraries != null) {
-                    listModulesReallyNeeded.addAll(neededLibraries);
-                }
+            } else {
+                listModulesReallyNeeded.addAll(neededLibraries);
             }
-        } else {
-            listModulesReallyNeeded.addAll(neededLibraries);
-        }
         // }
 
         collectRoutines.addAll(collectRoutines(process, useBeans));
