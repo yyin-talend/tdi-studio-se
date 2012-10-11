@@ -127,6 +127,8 @@ public class GEFPasteAction extends SelectionAction {
         if (o == null
                 && systemObject != null
                 && systemObject instanceof String
+                && obj != null
+                && obj.size() == 1
                 && (obj.get(0) instanceof NodeLabelEditPart || obj.get(0) instanceof ConnLabelEditPart || obj.get(0) instanceof NoteEditPart)) {
             return true;
         }
