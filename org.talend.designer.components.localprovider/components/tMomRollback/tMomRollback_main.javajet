@@ -31,12 +31,12 @@ imports="
 		javax.jms.Session session_<%=cid%> = (javax.jms.Session)globalMap.get("session_<%=connectionCid%>");
 		javax.jms.Connection connection_<%=cid%> = (javax.jms.Connection)globalMap.get("connection_<%=connectionCid%>");
 		javax.jms.MessageProducer producer_<%=cid%> = (javax.jms.MessageProducer)globalMap.get("producer_<%=connectionCid%>");
-		if(session_<%=cid%> != null && producer_<%=cid %> != null && connection_<%=cid %> != null) {
+		if(session_<%=cid%> != null && connection_<%=cid %> != null) {
 			session_<%=cid%>.rollback();
 <%  
 		if(close){
 %>
-			producer_<%=cid %>.close();
+		if (producer_<%=cid %> != null) { producer_<%=cid %>.close(); }
 	        session_<%=cid %>.close();
 	        connection_<%=cid %>.close();
 <% 

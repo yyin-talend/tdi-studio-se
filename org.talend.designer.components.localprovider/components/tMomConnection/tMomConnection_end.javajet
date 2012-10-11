@@ -12,13 +12,13 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 boolean transacted = "true".equals(ElementParameterParser.getValue(node, "__IS_TRANSACTED__"));
 
-if (transacted) {
+//if (transacted) {
 %>
     //		globalMap.put("producer_<%=cid %>",producer_<%=cid %>);
 		globalMap.put("session_<%=cid %>",session_<%=cid %>);
 		globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
 <%
-	} else {
+//	} else {
 %>
 // 2012.10.02 Renat asked not to close the connections here.
 //	System.out.println("Closing connection");
@@ -26,5 +26,5 @@ if (transacted) {
 //    session_<%=cid %>.close();
 //    connection_<%=cid %>.close();
 <%
-	}
+//	}
 %>

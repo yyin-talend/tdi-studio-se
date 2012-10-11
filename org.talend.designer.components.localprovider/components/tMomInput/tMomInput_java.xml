@@ -156,7 +156,7 @@
 	>
       <DEFAULT IF="(SERVER == 'JBOSS')">jbossall-client.jar</DEFAULT>
       <DEFAULT IF="(SERVER == 'WEBSPHERE')">com.ibm.mq.jar;com.ibm.mqjms.jar;websphere-connector-1_5.jar;talendMQRFH2.jar</DEFAULT>
-      <DEFAULT IF="(SERVER == 'ACTIVEMQ')">activemq-all-5.1.0.jar</DEFAULT>
+      <DEFAULT IF="(SERVER == 'ACTIVEMQ')">activemq-all-5.7.0.jar</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -328,7 +328,7 @@
 	FIELD="CHECK" 
 	REQUIRED="false" 
 	NUM_ROW="20" 
-	SHOW_IF="(SERVER == 'ACTIVEMQ') or (USE_CONNECTION == 'true')"
+	SHOW_IF="(SERVER == 'ACTIVEMQ') and (USE_CONNECTION == 'false')"
 	>
       <DEFAULT>false</DEFAULT>
     </PARAMETER>

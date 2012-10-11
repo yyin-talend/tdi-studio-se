@@ -53,9 +53,9 @@
 		
 		}
  		System.out.println("Closing connection");
-        consumer_<%=cid %>.close();
-        session_<%=cid %>.close();
-        connection_<%=cid %>.close();
+//        consumer_<%=cid %>.close();
+//      session_<%=cid %>.close();
+//        connection_<%=cid %>.close();
 	<%		
 	}else{
 		boolean isCommit = ("true").equals(ElementParameterParser.getValue(node, "__COMMIT__"));
