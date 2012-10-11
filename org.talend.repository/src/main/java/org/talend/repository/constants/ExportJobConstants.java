@@ -33,24 +33,16 @@ public interface ExportJobConstants {
 
     public static final String ANT_BUILD_FILE_NAME = "build.xml"; //$NON-NLS-1$
 
-    public static final String ANT_BUILD_FILE_PATH = ANT_BUILD_SCRIPT_HOME + PATH_SEPARATOR + ANT_BUILD_FILE_NAME;
-
     public static final String ANT_BUILD_PROPERTIES_FILE_NAME = "build.properties"; //$NON-NLS-1$
 
-    public static final String MAVEN_BUILD_SCRIPT_HOME = BUILD_SCRIPTS_HOME + "/maven"; //$NON-NLS-1$
-
     public static final String MAVEN_BUILD_FILE_NAME = "pom.xml"; //$NON-NLS-1$
+
+    public static final String MAVEN_ASSEMBLY_FILE_NAME = "assembly.xml"; //$NON-NLS-1$
 
     public static final String MAVEN_KARAF_BUILD_BUNDLE_FILE_NAME = "pom-bundle.xml"; //$NON-NLS-1$
 
     public static final String MAVEN_KARAF_BUILD_FEATURE_FILE_NAME = "pom-feature.xml"; //$NON-NLS-1$
 
     public static final String MAVEN_KARAF_BUILD_PARENT_FILE_NAME = "pom-parent.xml"; //$NON-NLS-1$
-
-    public static final String MAVEN_ASSEMBLY_FILE_NAME = "assembly.xml"; //$NON-NLS-1$
-
-    public static final String MAVEN_BUILD_FILE_PATH = MAVEN_BUILD_SCRIPT_HOME + PATH_SEPARATOR + MAVEN_BUILD_FILE_NAME; //$NON-NLS-1$
-
-    public static final String MAVEN_ASSEMBLY_FILE_PATH = MAVEN_BUILD_SCRIPT_HOME + PATH_SEPARATOR + MAVEN_ASSEMBLY_FILE_NAME; //$NON-NLS-1$
 
 }

@@ -23,17 +23,20 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.talend.core.model.repository.IRepositoryPrefConstants;
-import org.talend.core.model.repository.RepositoryManager;
+import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.i18n.Messages;
 
 /**
- * DOC ycbai class global comment. Detailled comment
+ * DOC ggu class global comment. Detailled comment <br/>
+ * 
+ * $Id: talend.epf 55206 2011-02-15 17:32:14Z mhirt $
+ * 
  */
-public class MavenScriptPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public abstract class AbstractScriptPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    public MavenScriptPreferencePage() {
+    public AbstractScriptPreferencePage() {
         super(FLAT);
-        setPreferenceStore(RepositoryManager.getPreferenceStore());
+        setPreferenceStore(RepositoryPlugin.getDefault().getPreferenceStore());
     }
 
     /*
@@ -46,12 +49,15 @@ public class MavenScriptPreferencePage extends FieldEditorPreferencePage impleme
         Composite parent = (Composite) super.createContents(p);
 
         Label scriptLabel = new Label(parent, SWT.NONE);
+        scriptLabel.setText(getHeadTitle());
 
-        scriptLabel.setText("Script");
-        scriptLabel.setLayoutData(new GridData());
-
-        final StyledText scriptTxt = new StyledText(parent, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-        scriptTxt.setLayoutData(new GridData(GridData.FILL_BOTH));
+        final StyledText scriptTxt = new StyledText(parent, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+        GridData layoutData = new GridData(GridData.FILL_BOTH);
+        layoutData.heightHint = 450;
+        layoutData.minimumHeight = 450;
+        layoutData.widthHint = 550;
+        layoutData.minimumWidth = 550;
+        scriptTxt.setLayoutData(layoutData);
         scriptTxt.setText(getPreferenceStore().getString(getPreferenceKey()));
 
         scriptTxt.addModifyListener(new ModifyListener() {
@@ -64,9 +70,11 @@ public class MavenScriptPreferencePage extends FieldEditorPreferencePage impleme
         return parent;
     }
 
-    protected String getPreferenceKey() {
-        return IRepositoryPrefConstants.MAVEN_SCRIPT_TEMPLATE;
+    protected String getHeadTitle() {
+        return Messages.getString("AbstractScriptPreferencePage_scriptTitle"); //$NON-NLS-1$
     }
+
+    protected abstract String getPreferenceKey();
 
     /*
      * (non-Javadoc)

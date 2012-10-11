@@ -133,6 +133,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     protected static final String USERROUTINE_JAR = "userRoutines.jar"; //$NON-NLS-1$
 
+    protected static final String MAVEN_PROP_LIB_PATH = "${lib.path}/"; //$NON-NLS-1$
+
     private boolean needMappingInSystemRoutine = false;
 
     /**
@@ -233,7 +235,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     private void addMavenBuildScripts(List<URL> scriptsUrls, ProcessItem processItem, String selectedJobVersion) {
-        String mavenScript = RepositoryManager.getPreferenceStore().getString(IRepositoryPrefConstants.MAVEN_SCRIPT_TEMPLATE);
+        String mavenScript = RepositoryPlugin.getDefault().getPreferenceStore()
+                .getString(IRepositoryPrefConstants.MAVEN_SCRIPT_AUTONOMOUSJOB_TEMPLATE);
         if (mavenScript == null) {
             return;
         }
@@ -242,8 +245,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         if (resourceService == null) {
             return;
         }
-        File inputMavenAssemblyFile = new File(resourceService.getMavenScriptFilePath("job/assembly.xml")); //$NON-NLS-1$
-        if (!inputMavenAssemblyFile.exists()) {
+        String assemblyMavenScript = RepositoryPlugin.getDefault().getPreferenceStore()
+                .getString(IRepositoryPrefConstants.MAVEN_SCRIPT_AUTONOMOUSJOB_ASSEMBLY_TEMPLATE);
+        if (assemblyMavenScript == null) {
             return;
         }
 
@@ -266,31 +270,33 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         File mavenBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_BUILD_FILE_NAME);
         File mavenAssemblyFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_ASSEMBLY_FILE_NAME);
         try {
-            FileOutputStream mavenBuildFileOutputStream = null;
+            FileOutputStream outStream = null;
             try {
-                mavenBuildFileOutputStream = new FileOutputStream(mavenBuildFile);
-                mavenBuildFileOutputStream.write(mavenScript.getBytes());
+                outStream = new FileOutputStream(mavenBuildFile);
+                outStream.write(mavenScript.getBytes());
             } finally {
-                mavenBuildFileOutputStream.close();
+                if (outStream != null) {
+                    outStream.close();
+                }
             }
-            updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, neededModules, "${lib.path}/");
+            updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, neededModules, MAVEN_PROP_LIB_PATH);
             scriptsUrls.add(mavenBuildFile.toURL());
-            FilesUtils.copyFile(inputMavenAssemblyFile, mavenAssemblyFile);
-            // Document assemblyDocument = saxReader.read(mavenAssemblyFile);
-            //            List directoryEleslist = assemblyDocument.selectNodes("//fileSets/fileSet/directory"); //$NON-NLS-1$
-            // Iterator directoryElesIter = directoryEleslist.iterator();
-            // while (directoryElesIter.hasNext()) {
-            // Element directoryElement = (Element) directoryElesIter.next();
-            // directoryElement.setText(jobName);
-            // }
-            // saveXmlDocoment(assemblyDocument, mavenAssemblyFile);
+
+            try {
+                outStream = new FileOutputStream(mavenAssemblyFile);
+                outStream.write(assemblyMavenScript.getBytes());
+            } finally {
+                if (outStream != null) {
+                    outStream.close();
+                }
+            }
+
             scriptsUrls.add(mavenAssemblyFile.toURL());
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
     }
 
-    @SuppressWarnings("rawtypes")
     protected void setMavenBuildScriptProperties(Document pomDocument, Map<String, String> mavenPropertiesMap) {
         // for groupId, artifactId,version
         Element rootElement = pomDocument.getRootElement();
@@ -337,7 +343,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         Element parentEle = rootElement.element("dependencies"); //$NON-NLS-1$
         removeComments(parentEle);
         for (ModuleNeeded module : neededModules) {
-            addMavenDependencyElement(parentEle, module.getModuleName(), libFolder); //$NON-NLS-1$
+            addMavenDependencyElement(parentEle, module.getModuleName(), libFolder);
         }
     }
 
@@ -371,7 +377,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         setMavenBuildScriptProperties(pomDocument, mavenPropertiesMap);
         if (neededModules != null && neededModules.size() > 0) {
             if (libFolder == null) {
-                libFolder = "${lib.path}/"; //$NON-NLS-1$
+                libFolder = MAVEN_PROP_LIB_PATH;
             }
             addMavenDependencyElements(pomDocument, neededModules, libFolder);
         }
@@ -810,8 +816,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                         + PATH_SEPARATOR + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + PATH_SEPARATOR
                         + JavaUtils.JAVA_SYSTEM_ROUTINES_API_DIRECTORY, systemRoutinesFileUrls);
             }
-
-            List<IRepositoryViewObject> collectRoutines = new ArrayList<IRepositoryViewObject>();
+            // add for routines
             boolean useBeans = false;
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
                 ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault()
@@ -820,41 +825,47 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     useBeans = true;
                 }
             }
-
-            collectRoutines.addAll(collectRoutines(process, useBeans));
-
-            Set<String> dependedRoutines = new HashSet<String>();
-            for (IRepositoryViewObject obj : collectRoutines) {
-                dependedRoutines.add(obj.getLabel() + "." //$NON-NLS-1$
-                        + ECodeLanguage.JAVA.getExtension());
-            }
-
-            if (useBeans) {
-                rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + USER_BEANS_PATH);
-            } else {
-                rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY);
-            }
-            List<URL> userRoutinesFileUrls = new ArrayList<URL>();
-            if (rep.exists()) {
-                for (IResource fileResource : rep.members()) {
-                    if (fileResource instanceof IFile
-                            && ((IFile) fileResource).getFileExtension().equals(ECodeLanguage.JAVA.getExtension())
-                            && dependedRoutines.contains(((IFile) fileResource).getName())) {
-                        userRoutinesFileUrls.add(fileResource.getLocationURI().toURL());
-                    }
-                }
-
-                if (useBeans) {
-                    resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + USER_BEANS_PATH, userRoutinesFileUrls);
-                } else {
-                    resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY,
-                            userRoutinesFileUrls);
-                }
-            }
-
+            addRoutinesSourceCodes(process, resource, javaProject, useBeans);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
+    }
+
+    protected void addRoutinesSourceCodes(ExportFileResource[] process, ExportFileResource resource, IProject javaProject,
+            boolean useBeans) throws Exception {
+        List<IRepositoryViewObject> collectRoutines = new ArrayList<IRepositoryViewObject>();
+
+        collectRoutines.addAll(collectRoutines(process, useBeans));
+
+        Set<String> dependedRoutines = new HashSet<String>();
+        for (IRepositoryViewObject obj : collectRoutines) {
+            dependedRoutines.add(obj.getLabel() + "." //$NON-NLS-1$
+                    + ECodeLanguage.JAVA.getExtension());
+        }
+        IFolder rep = null;
+        if (useBeans) {
+            rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + USER_BEANS_PATH);
+        } else {
+            rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY);
+        }
+        List<URL> userRoutinesFileUrls = new ArrayList<URL>();
+        if (rep.exists()) {
+            for (IResource fileResource : rep.members()) {
+                if (fileResource instanceof IFile
+                        && ((IFile) fileResource).getFileExtension().equals(ECodeLanguage.JAVA.getExtension())
+                        && dependedRoutines.contains(((IFile) fileResource).getName())) {
+                    userRoutinesFileUrls.add(fileResource.getLocationURI().toURL());
+                }
+            }
+
+            if (useBeans) {
+                resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + USER_BEANS_PATH, userRoutinesFileUrls);
+            } else {
+                resource.addResources(JOB_SOURCE_FOLDER_NAME + PATH_SEPARATOR + JavaUtils.JAVA_ROUTINES_DIRECTORY,
+                        userRoutinesFileUrls);
+            }
+        }
+
     }
 
     protected void addXmlMapping(ExportFileResource resource, boolean needSource) {

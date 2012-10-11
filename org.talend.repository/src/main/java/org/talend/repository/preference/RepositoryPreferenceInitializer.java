@@ -13,16 +13,16 @@
 package org.talend.repository.preference;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.io.SAXReader;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
-import org.talend.core.model.repository.RepositoryManager;
+import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.constants.ExportJobConstants;
 import org.talend.resource.IResourceService;
 
 /**
@@ -39,43 +39,50 @@ public class RepositoryPreferenceInitializer extends AbstractPreferenceInitializ
      */
     @Override
     public void initializeDefaultPreferences() {
-        final IPreferenceStore preferenceStore = RepositoryManager.getPreferenceStore();
+        final IPreferenceStore preferenceStore = RepositoryPlugin.getDefault().getPreferenceStore();
         preferenceStore.setDefault(IRepositoryPrefConstants.MERGE_REFERENCE_PROJECT, true);
-        preferenceStore.setDefault(IRepositoryPrefConstants.ANT_SCRIPT_TEMPLATE,
-                getScriptTemplate(IRepositoryPrefConstants.ANT_SCRIPT_TEMPLATE));
-        preferenceStore.setDefault(IRepositoryPrefConstants.MAVEN_SCRIPT_TEMPLATE,
-                getScriptTemplate(IRepositoryPrefConstants.MAVEN_SCRIPT_TEMPLATE));
-        preferenceStore.setDefault(IRepositoryPrefConstants.MAVEN_OSGI_SCRIPT_TEMPLATE,
-                getScriptTemplate(IRepositoryPrefConstants.MAVEN_OSGI_SCRIPT_TEMPLATE));
+
+        preferenceStore.setDefault(IRepositoryPrefConstants.ANT_SCRIPT_TEMPLATE, getAntScriptXmlString());
+        preferenceStore.setDefault(IRepositoryPrefConstants.MAVEN_SCRIPT_AUTONOMOUSJOB_TEMPLATE, getMavenScriptXmlString("job/" //$NON-NLS-1$
+                + ExportJobConstants.MAVEN_BUILD_FILE_NAME));
+        preferenceStore.setDefault(IRepositoryPrefConstants.MAVEN_SCRIPT_AUTONOMOUSJOB_ASSEMBLY_TEMPLATE,
+                getMavenScriptXmlString("job/" + ExportJobConstants.MAVEN_ASSEMBLY_FILE_NAME)); //$NON-NLS-1$
+
+        preferenceStore.setDefault(IRepositoryPrefConstants.MAVEN_OSGI_SCRIPT_TEMPLATE, getMavenScriptXmlString("osgi/" //$NON-NLS-1$
+                + ExportJobConstants.MAVEN_BUILD_FILE_NAME));
+
     }
 
-    private String getScriptTemplate(String type) {
+    private String getAntScriptXmlString() {
         IResourceService resourceService = (IResourceService) GlobalServiceRegister.getDefault().getService(
                 IResourceService.class);
         if (resourceService == null) {
             return EMPTY_STR;
         }
-        File templateScriptFile = null;
-        if (type == IRepositoryPrefConstants.MAVEN_SCRIPT_TEMPLATE) {
-            templateScriptFile = new File(resourceService.getMavenScriptFilePath("job/pom.xml")); //$NON-NLS-1$
-        } else if (type == IRepositoryPrefConstants.MAVEN_OSGI_SCRIPT_TEMPLATE) {
-            templateScriptFile = new File(resourceService.getMavenScriptFilePath("osgi/pom.xml")); //$NON-NLS-1$
-        } else {
-            templateScriptFile = new File(resourceService.getAntScriptFilePath());
-        }
-        if (!templateScriptFile.exists()) {
-            return EMPTY_STR;
-        }
+        File templateScriptFile = new File(resourceService.getAntScriptFilePath());
 
-        SAXReader saxReader = new SAXReader();
-        Document document = null;
-        try {
-            document = saxReader.read(templateScriptFile);
-        } catch (DocumentException e) {
-            ExceptionHandler.process(e);
-        }
-
-        return document.asXML();
+        return getScriptXmlString(templateScriptFile);
     }
 
+    private String getMavenScriptXmlString(String pathWithPom) {
+        IResourceService resourceService = (IResourceService) GlobalServiceRegister.getDefault().getService(
+                IResourceService.class);
+        if (resourceService == null) {
+            return EMPTY_STR;
+        }
+        File templateScriptFile = new File(resourceService.getMavenScriptFilePath(pathWithPom));
+
+        return getScriptXmlString(templateScriptFile);
+    }
+
+    private String getScriptXmlString(File templateScriptFile) {
+        if (templateScriptFile != null && templateScriptFile.exists()) {
+            try {
+                return new Scanner(templateScriptFile).useDelimiter("\\A").next(); //$NON-NLS-1$
+            } catch (FileNotFoundException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return ""; //$NON-NLS-1$
+    }
 }

@@ -17,14 +17,23 @@ import org.talend.core.model.repository.IRepositoryPrefConstants;
 /**
  * DOC ycbai class global comment. Detailled comment
  */
-public class OSGIMavenScriptPreferencePage extends MavenScriptPreferencePage {
+public class AutonomousJobAntScriptPreferencePage extends AbstractScriptPreferencePage {
 
-    public OSGIMavenScriptPreferencePage() {
+    /**
+     * DOC ggu AntScriptPreferencePage constructor comment.
+     */
+    public AutonomousJobAntScriptPreferencePage() {
         super();
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.preference.AbstractScriptPreferencePage#getPreferenceKey()
+     */
+    @Override
     protected String getPreferenceKey() {
-        return IRepositoryPrefConstants.MAVEN_OSGI_SCRIPT_TEMPLATE;
+        return IRepositoryPrefConstants.ANT_SCRIPT_TEMPLATE;
     }
 
 }

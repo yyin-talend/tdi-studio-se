@@ -33,9 +33,9 @@ import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.designer.runprocess.ProcessorException;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.constants.ExportJobConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.resource.IResourceService;
@@ -175,10 +175,9 @@ public class JobJavaScriptOSGIForESBWithMavenManager extends JobJavaScriptOSGIFo
         list.add(sourceCodeResource);
     }
 
-    @SuppressWarnings("rawtypes")
     private void addMavenBuildScripts(List<URL> scriptsUrls, ProcessItem processItem, String selectedJobVersion,
             String privatePackage, String exportService) {
-        String mavenScript = RepositoryManager.getPreferenceStore()
+        String mavenScript = RepositoryPlugin.getDefault().getPreferenceStore()
                 .getString(IRepositoryPrefConstants.MAVEN_OSGI_SCRIPT_TEMPLATE);
         if (mavenScript == null) {
             return;
@@ -205,7 +204,6 @@ public class JobJavaScriptOSGIForESBWithMavenManager extends JobJavaScriptOSGIFo
                 processItem.getProperty().getId(), selectedJobVersion);
 
         File mavenBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_BUILD_FILE_NAME);
-        File mavenAssemblyFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_ASSEMBLY_FILE_NAME);
         try {
             FileOutputStream mavenBuildFileOutputStream = null;
             try {
@@ -216,9 +214,8 @@ public class JobJavaScriptOSGIForESBWithMavenManager extends JobJavaScriptOSGIFo
                     mavenBuildFileOutputStream.close();
                 }
             }
-            updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, neededModules, "${lib.path}/");
+            updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, neededModules, MAVEN_PROP_LIB_PATH);
             scriptsUrls.add(mavenBuildFile.toURL());
-            scriptsUrls.add(mavenAssemblyFile.toURL());
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
