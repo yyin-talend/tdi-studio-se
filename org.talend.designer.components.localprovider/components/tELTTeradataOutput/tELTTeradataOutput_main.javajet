@@ -99,20 +99,9 @@ if(useExistingConn) {
 }
 %>
 
-<%if(("INSERT_OR_UPDATE").equals(dataAction)||("UPDATE_OR_INSERT").equals(dataAction)){%>
-
-java.sql.PreparedStatement pstmtInsert_<%=cid %> =null;
-
-java.sql.PreparedStatement pstmtUpdate_<%=cid %> =null;
-
-java.sql.PreparedStatement pstmt_<%=cid %> =null;
-
-<%}else{%>
-
 java.sql.PreparedStatement pstmt_<%=cid %> =null;
 	
 <%
-}
 
 class Column{
 
@@ -262,35 +251,6 @@ String updateQuery = "UPDATE "+tableName_<%=cid%>+" FROM (" + select_query + ") 
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
 
 	<%		
-	}else if (("INSERT_OR_UPDATE").equals(dataAction)){
-	%>
-
-String insertQuery = "INSERT INTO "+tableName_<%=cid%>+" (<%=insertColName.toString()%>) "+select_query;
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
-
-String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
-<%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
-+"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
-<%}%>
-;
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
-		
-	<%
-	}else if (("UPDATE_OR_INSERT").equals(dataAction)){
-	%>
-
-String updateQuery = "UPDATE "+tableName_<%=cid%>+" SET (<%=insertColName.toString()%>) = ("+select_query+") "
-<%if(CodeGenerationUtils.hasAlphaNumericCharacter(whereClause)) {%>
-+"  WHERE " + <%=CodeGenerationUtils.replaceAllCrBySpace(whereClause)%>
-<%}%>
-;
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(updateQuery);
-				
-String insertQuery = "INSERT INTO "+tableName_<%=cid%>+" (<%=insertColName.toString()%>) "+select_query;
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(insertQuery);
-
-	<%
-			
 	}else if (("DELETE").equals(dataAction)){
 	%>
 	
@@ -389,32 +349,6 @@ System.out.println("Updating with : \n" + updateQuery +"\n");
 nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 	System.out.println("--> " + nb_line_update_<%=cid%> + " rows updated. \n");
 	<%
-	}else if (("INSERT_OR_UPDATE").equals(dataAction)){
-%>
-	try{
-		System.out.println("Inserting with : \n" + insertQuery + "\n");
-		nb_line_inserted_<%=cid%> = pstmtInsert_<%=cid %>.executeUpdate();
-		System.out.println("--> " + nb_line_inserted_<%=cid%> + " rows inserted. \n");
-	
-	}catch(Exception e){
-		System.out.println("Updating with : \n" + updateQuery +"\n");
-		nb_line_update_<%=cid%> = pstmtUpdate_<%=cid %>.executeUpdate();
-		System.out.println("--> " + nb_line_update_<%=cid%> + " rows updated. \n");
-	}
-<%
-	}else if (("UPDATE_OR_INSERT").equals(dataAction)){
-%>
-	try{
-		System.out.println("Updating with : \n" + updateQuery +"\n");
-		nb_line_update_<%=cid%> = pstmtUpdate_<%=cid %>.executeUpdate();
-		System.out.println("--> " + nb_line_update_<%=cid%> + " rows updated. \n");
-	}catch(Exception e){
-		System.out.println("Inserting with : \n" + insertQuery + "\n");
-		nb_line_inserted_<%=cid%> = pstmtInsert_<%=cid %>.executeUpdate();
-		System.out.println("--> " + nb_line_inserted_<%=cid%> + " rows inserted. \n");
-	}
-<%
-	
 	}else if (("DELETE").equals(dataAction)){
 		%>
 	System.out.println("Deleting with : \n" + deleteQuery +"\n");
@@ -448,26 +382,9 @@ nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 
 
 
-	if(("INSERT_OR_UPDATE").equals(dataAction)||("UPDATE_OR_INSERT").equals(dataAction)){
 %>
 
-if(pstmtUpdate_<%=cid%> != null){
-
-	pstmtUpdate_<%=cid %>.close();
-	
-}else if(pstmt_<%=cid %> != null) {
-
-	pstmt_<%=cid %>.close();
-	
-}
-
-<%	
-	}else{
-%>
 pstmt_<%=cid %>.close();
-<%
-	}
-%>
 
 <%
 if(!useExistingConn) {

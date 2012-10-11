@@ -35,25 +35,6 @@
 
   <PARAMETERS>
     <PARAMETER
-      NAME="TABLE_ACTION"
-      FIELD="CLOSED_LIST"
-      NUM_ROW="6"
-      NOT_SHOW_IF="PARALLELIZE == 'true'"
-      SHOW="false"
-    >
-      <ITEMS DEFAULT="NONE">
-        <ITEM NAME="NONE"	VALUE="NONE"/>
-<!-- 
-        <ITEM NAME="DROP_CREATE" VALUE="DROP_CREATE"/>
-        <ITEM NAME="CREATE" VALUE="CREATE"/>
-        <ITEM NAME="CREATE_IF_NOT_EXISTS" VALUE="CREATE_IF_NOT_EXISTS"/>
-        <ITEM NAME="CLEAR" VALUE="CLEAR"/>
- -->
-      </ITEMS>
-    </PARAMETER>
-
-
-    <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
       NUM_ROW="6"
@@ -62,10 +43,6 @@
         <ITEM NAME="INSERT"           VALUE="INSERT" />
 		<ITEM NAME="UPDATE"           VALUE="UPDATE"/>
 		<ITEM NAME="DELETE"           VALUE="DELETE"/>
-		<!-- 
-        <ITEM NAME="INSERT_OR_UPDATE" VALUE="INSERT_OR_UPDATE"/>
-        <ITEM NAME="UPDATE_OR_INSERT" VALUE="UPDATE_OR_INSERT"/>
-		 -->        
       </ITEMS>
     </PARAMETER>
 
