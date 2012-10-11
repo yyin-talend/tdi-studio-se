@@ -487,7 +487,7 @@ SHOW_IF="(SET_MQ_SSL_CIPHER == 'true') AND (SERVER == 'WEBSPHERE')">
     <IMPORT NAME="ACTIVEMQ LIB" MODULE="activemq-all-5.1.0.jar" REQUIRED="false" />
     <IMPORT NAME="JAVA_SSIST" MODULE="javassist.jar" REQUIRED="true" /> 
     <IMPORT NAME="TROVE" MODULE="trove.jar" REQUIRED="true" />   
-    <IMPORT NAME="LOG4J" MODULE="log4j-1.2.15.jar" REQUIRED="false" /> 
+    <IMPORT NAME="LOG4J" MODULE="log4j-1.2.15.jar" REQUIRED="false" BundleID="" /> 
     <IMPORT NAME="TALENDMQRFH2" MODULE="talendMQRFH2.jar" REQUIRED="false" />
   </IMPORTS>
 </CODEGENERATION>

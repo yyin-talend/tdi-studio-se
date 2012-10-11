@@ -204,7 +204,7 @@
 		<IMPORTS>
 			<!-- APACHE 0.20.203 -->
 			<IMPORT NAME="Driver-Hadoop-0.20.203" MODULE="hadoop-core-0.20.203.0.jar"  REQUIRED_IF="HIVE_VERSION=='APACHE_0_20_203'" />
-			<IMPORT NAME="Driver-Commons-Log4j-1.2.15" MODULE="log4j-1.2.15.jar"  REQUIRED_IF="HIVE_VERSION=='APACHE_0_20_203'" />
+			<IMPORT NAME="Driver-Commons-Log4j-1.2.15" MODULE="log4j-1.2.15.jar"  REQUIRED_IF="HIVE_VERSION=='APACHE_0_20_203'" BundleID="" />
 			<IMPORT NAME="Driver-Hive-Exec-0.7.1" MODULE="hive-exec-0.7.1.jar"  REQUIRED_IF="HIVE_VERSION=='APACHE_0_20_203'" />
 			<IMPORT NAME="Driver-Hive-Jdbc-0.7.1" MODULE="hive-jdbc-0.7.1.jar"  REQUIRED_IF="HIVE_VERSION=='APACHE_0_20_203'" />
 			<IMPORT NAME="Driver-Hive-Metastore-0.7.1" MODULE="hive-metastore-0.7.1.jar"  REQUIRED_IF="HIVE_VERSION=='APACHE_0_20_203'" />
@@ -218,7 +218,7 @@
 			
 			<!-- MAPR2 -->
 			<IMPORT NAME="hadoop-0.20.2-dev-core-mapr2.jar" MODULE="hadoop-0.20.2-dev-core-mapr2.jar"  REQUIRED_IF="HIVE_VERSION=='MAPR2'" />
-			<IMPORT NAME="log4j-1.2.16" MODULE="log4j-1.2.16.jar"  REQUIRED_IF="HIVE_VERSION=='MAPR2'" />
+			<IMPORT NAME="log4j-1.2.16" MODULE="log4j-1.2.16.jar"  REQUIRED_IF="HIVE_VERSION=='MAPR2'" BundleID="" />
 			<IMPORT NAME="hive-exec-0.9.0-mapr2.jar" MODULE="hive-exec-0.9.0-mapr2.jar"  REQUIRED_IF="HIVE_VERSION=='MAPR2'" />
 			<IMPORT NAME="hive-jdbc-0.9.0-mapr2.jar" MODULE="hive-jdbc-0.9.0-mapr2.jar"  REQUIRED_IF="HIVE_VERSION=='MAPR2'" />
 			<IMPORT NAME="hive-metastore-0.9.0-mapr2.jar" MODULE="hive-metastore-0.9.0-mapr2.jar"  REQUIRED_IF="HIVE_VERSION=='MAPR2'" />
@@ -285,7 +285,7 @@
 			<IMPORT NAME="derby-10.4.2.0.jar" MODULE="derby-10.4.2.0.jar"  REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0')"/>
 			<IMPORT NAME="commons-configuration-1.6.jar" MODULE="commons-configuration-1.6.jar"  REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0')"/>
 			<IMPORT NAME="jdo2-api-2.3-ec.jar" MODULE="jdo2-api-2.3-ec.jar"  REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0')"/>
-			<IMPORT NAME="log4j-1.2.15.jar" MODULE="log4j-1.2.15.jar"  REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0')" />
+			<IMPORT NAME="log4j-1.2.15.jar" MODULE="log4j-1.2.15.jar"  REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0')" BundleID="" />
 			<IMPORT NAME="slf4j-api-1.6.1.jar" MODULE="slf4j-api-1.6.1.jar"  REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0')" />
 			<IMPORT NAME="slf4j-log4j12-1.6.1.jar" MODULE="slf4j-log4j12-1.6.1.jar"  REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0')" />
 			<IMPORT NAME="jackson-core-asl-1.8.8.jar" MODULE="jackson-core-asl-1.8.8.jar" REQUIRED="false" REQUIRED_IF="(HIVE_VERSION=='APACHE_1_0_0' OR HIVE_VERSION=='HDP_1_0')"/>
@@ -299,7 +299,7 @@
 			<IMPORT NAME="hive-service-0.8.1-cdh4.0.1.jar" MODULE="hive-service-0.8.1-cdh4.0.1.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'" />
 			<IMPORT NAME="libfb303_new.jar" MODULE="libfb303_new.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'" />
 			<IMPORT NAME="libthrift.jar" MODULE="libthrift.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'" />
-			<IMPORT NAME="log4j-1.2.16.jar" MODULE="log4j-1.2.16.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'" />
+			<IMPORT NAME="log4j-1.2.16.jar" MODULE="log4j-1.2.16.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'" BundleID="" />
 			<IMPORT NAME="slf4j-api-1.6.1.jar" MODULE="slf4j-api-1.6.1.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'" />
 			<IMPORT NAME="slf4j-log4j12-1.6.1.jar" MODULE="slf4j-log4j12-1.6.1.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'" />
 			<IMPORT NAME="hadoop-common-2.0.0-cdh4.0.1.jar" MODULE="hadoop-common-2.0.0-cdh4.0.1.jar"  REQUIRED_IF="HIVE_VERSION=='Cloudera_CDH4'" />
