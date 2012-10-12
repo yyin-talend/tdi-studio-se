@@ -1681,7 +1681,7 @@ public class Node extends Element implements IGraphicalNode {
         }
 
         if (id.equals(EParameterName.VARIABLES.getName()) /* tSetGlovarVar */
-                || id.equals("MAP"))/* tFlowToIterate */{ //$NON-NLS-1$
+                || id.equals("MAP") || id.equals(EParameterName.DEFAULT_MAP.getName()))/* tFlowToIterate */{ //$NON-NLS-1$
             firePropertyChange(RETURNS_CHANGED, null, null);
         }
 

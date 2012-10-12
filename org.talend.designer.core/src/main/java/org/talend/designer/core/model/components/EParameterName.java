@@ -322,7 +322,10 @@ public enum EParameterName {
 
     // Route Component Type
     ROUTE_COMPONENT_TYPE("ROUTE_COMPONENT_TYPE"),
-    ROUTE_COMPONENT_TYPE_ID("ROUTE_COMPONENT_TYPE_ID");
+    ROUTE_COMPONENT_TYPE_ID("ROUTE_COMPONENT_TYPE_ID"),
+
+    // tFlowToIterator
+    DEFAULT_MAP("DEFAULT_MAP");
 
     private String displayName;
 

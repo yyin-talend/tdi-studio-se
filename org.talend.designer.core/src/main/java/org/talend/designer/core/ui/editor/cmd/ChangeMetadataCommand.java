@@ -580,8 +580,40 @@ public class ChangeMetadataCommand extends Command {
             if (EConnectionType.FLOW_MAIN.equals(connStyle) || EConnectionType.FLOW_MERGE.equals(connStyle)
                     || EConnectionType.FLOW_REF.equals(connStyle)) {
                 ColumnListController.updateColumnList(targetNode, columnNameChanged);
+                // fix for TDI-23202
+                // reset value in order to call "firePropertyChange(RETURNS_CHANGED, null, null)"
+                IElementParameter defaultMap = targetNode.getElementParameter(EParameterName.DEFAULT_MAP.getName());
+                if (defaultMap != null) {
+                    if ("tFlowToIterate".equals(targetNode.getComponent().getName())) {
+                        // update target properties incase any old columns are removed
+                        IElementParameter elementParameter = targetNode.getElementParameter("MAP");
+                        if (elementParameter != null) {
+                            Object value = elementParameter.getValue();
+                            if (value instanceof List) {
+                                for (Object obj : (List) value) {
+                                    if (obj instanceof Map) {
+                                        Object object = ((Map) obj).get("VALUE");
+                                        if (newOutputMetadata != null && !newOutputMetadata.getListColumns().isEmpty()) {
+                                            boolean found = false;
+                                            for (IMetadataColumn column : newOutputMetadata.getListColumns()) {
+                                                if (column.getLabel().equals(object)) {
+                                                    found = true;
+                                                }
+                                            }
+                                            if (!found) {
+                                                ((Map) obj).put("VALUE", newOutputMetadata.getListColumns().get(0).getLabel());
+                                            }
+                                        } else {
+                                            ((Map) obj).put("VALUE", "");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    targetNode.setPropertyValue(EParameterName.DEFAULT_MAP.getName(), defaultMap.getValue());
+                }
             }
-
         }
 
     }
