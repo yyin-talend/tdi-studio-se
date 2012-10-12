@@ -1239,7 +1239,7 @@ class SQLiteManager extends Manager {
         return "org.sqlite.JDBC";
     }
     public String getConnectionURL() {
-        return "\"jdbc:sqlite:/\" + " + dbName.toLowerCase();
+        return "\"jdbc:sqlite:/\" + " + dbName;
     }
     protected String getDBMSId() {
         return "sqlite_id";
