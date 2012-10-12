@@ -15,7 +15,6 @@ package org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -28,36 +27,23 @@ import java.util.Set;
 import java.util.jar.Manifest;
 
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.core.GlobalServiceRegister;
-import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.repository.IRepositoryPrefConstants;
-import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.designer.runprocess.ProcessorException;
-import org.talend.repository.RepositoryPlugin;
-import org.talend.repository.constants.ExportJobConstants;
 import org.talend.repository.documentation.ExportFileResource;
-import org.talend.resource.IResourceService;
 import org.talend.resources.util.EMavenBuildScriptProperties;
 
 /**
- * created by nrousseau on Sep 25, 2012 Detailled comment
+ * 
+ * DOC ggu class global comment. Detailled comment <br/>
+ * 
+ * $Id: talend.epf 55206 2011-02-15 17:32:14Z mhirt $
  * 
  */
-public class JobJavaScriptOSGIForESBWithMavenManager extends JobJavaScriptOSGIForESBManager {
+public abstract class JavaScriptForESBWithMavenManager extends JobJavaScriptOSGIForESBManager {
 
-    /**
-     * DOC nrousseau JobJavaScriptOSGIForESBWithMavenManager constructor comment.
-     * 
-     * @param exportChoiceMap
-     * @param contextName
-     * @param launcher
-     * @param statisticPort
-     * @param tracePort
-     */
-    public JobJavaScriptOSGIForESBWithMavenManager(Map<ExportChoice, Object> exportChoiceMap, String contextName,
-            String launcher, int statisticPort, int tracePort) {
+    public JavaScriptForESBWithMavenManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher,
+            int statisticPort, int tracePort) {
         super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
     }
 
@@ -71,10 +57,9 @@ public class JobJavaScriptOSGIForESBWithMavenManager extends JobJavaScriptOSGIFo
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] processes, String... codeOptions)
             throws ProcessorException {
-        List<ExportFileResource> list = new ArrayList<ExportFileResource>();
-        list = super.getExportResources(processes, codeOptions);
+        List<ExportFileResource> list = super.getExportResources(processes, codeOptions);
 
-        String privatePackage = "", exportService = ""; //$NON-NLS-1$ //$NON-NLS-2$
+        String privatePackage = "", exportService = "", bundleClasspath = ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         Iterator<ExportFileResource> it = list.iterator();
         while (it.hasNext()) {
@@ -106,6 +91,7 @@ public class JobJavaScriptOSGIForESBWithMavenManager extends JobJavaScriptOSGIFo
                             Manifest manifest = new Manifest(fis);
                             exportService = manifest.getMainAttributes().getValue("Export-Service"); //$NON-NLS-1$
                             privatePackage = manifest.getMainAttributes().getValue("Private-Package"); //$NON-NLS-1$
+                            bundleClasspath = manifest.getMainAttributes().getValue("Bundle-Classpath"); //$NON-NLS-1$
                             fis.close();
                         } catch (URISyntaxException e) {
                             ExceptionHandler.process(e);
@@ -119,28 +105,42 @@ public class JobJavaScriptOSGIForESBWithMavenManager extends JobJavaScriptOSGIFo
             }
         }
 
+        Map<String, String> mavenPropertiesMap = getMavenPropertiesMap((ProcessItem) processes[0].getItem(), privatePackage,
+                exportService, bundleClasspath);
+
         addSourceCodeToExport(list, processes, codeOptions);
 
-        addMavenScriptToExport(list, processes, privatePackage, exportService);
+        addMavenScriptToExport(list, processes, mavenPropertiesMap);
 
         return list;
     }
 
     /**
-     * DOC nrousseau Comment method "addMavenScriptToExport".
      * 
-     * @param list
-     * @param processes
-     * @param codeOptions
+     * DOC ggu Comment method "getMavenPropertiesMap".
+     * 
+     * @param processItem
+     * @param privatePackage
+     * @param exportService
+     * @param bundleClasspath
+     * @return
      */
-    private void addMavenScriptToExport(List<ExportFileResource> list, ExportFileResource[] processes, String privatePackage,
-            String exportService) {
-        List<URL> scriptsUrls = new ArrayList<URL>();
-        addMavenBuildScripts(scriptsUrls, (ProcessItem) processes[0].getItem(),
-                processes[0].getItem().getProperty().getVersion(), privatePackage, exportService);
-        ExportFileResource mavenResource = new ExportFileResource(null, ""); //$NON-NLS-1$
-        mavenResource.addResources("", scriptsUrls); //$NON-NLS-1$
-        list.add(mavenResource);
+    protected Map<String, String> getMavenPropertiesMap(ProcessItem processItem, String privatePackage, String exportService,
+            String bundleClasspath) {
+        String projectName = getCorrespondingProjectName(processItem);
+        String jobName = processItem.getProperty().getLabel();
+        String jobVersion = processItem.getProperty().getVersion();
+
+        // set the maven properties
+        final Map<String, String> mavenPropertiesMap = new HashMap<String, String>();
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemProjectName.getVarScript(), projectName);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemName.getVarScript(), jobName);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemVersion.getVarScript(), jobVersion);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.BundleConfigPrivatePackage.getVarScript(), privatePackage);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.BundleConfigExportService.getVarScript(), exportService);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.BundleConfigBundleClasspath.getVarScript(), bundleClasspath);
+
+        return mavenPropertiesMap;
     }
 
     /**
@@ -175,49 +175,24 @@ public class JobJavaScriptOSGIForESBWithMavenManager extends JobJavaScriptOSGIFo
         list.add(sourceCodeResource);
     }
 
-    private void addMavenBuildScripts(List<URL> scriptsUrls, ProcessItem processItem, String selectedJobVersion,
-            String privatePackage, String exportService) {
-        String mavenScript = RepositoryPlugin.getDefault().getPreferenceStore()
-                .getString(IRepositoryPrefConstants.MAVEN_OSGI_SCRIPT_TEMPLATE);
-        if (mavenScript == null) {
-            return;
-        }
-        IResourceService resourceService = (IResourceService) GlobalServiceRegister.getDefault().getService(
-                IResourceService.class);
-        if (resourceService == null) {
-            return;
-        }
-
-        String projectName = getCorrespondingProjectName(processItem);
-        String jobName = processItem.getProperty().getLabel();
-        String jobVersion = processItem.getProperty().getVersion();
-
-        // set the maven properties
-        final Map<String, String> mavenPropertiesMap = new HashMap<String, String>();
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemProjectName.getVarScript(), projectName);
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemName.getVarScript(), jobName);
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemVersion.getVarScript(), jobVersion);
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.BundleConfigPrivatePackage.getVarScript(), privatePackage);
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.BundleConfigExportService.getVarScript(), exportService);
-
-        Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
-                processItem.getProperty().getId(), selectedJobVersion);
-
-        File mavenBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_BUILD_FILE_NAME);
-        try {
-            FileOutputStream mavenBuildFileOutputStream = null;
-            try {
-                mavenBuildFileOutputStream = new FileOutputStream(mavenBuildFile);
-                mavenBuildFileOutputStream.write(mavenScript.getBytes());
-            } finally {
-                if (mavenBuildFileOutputStream != null) {
-                    mavenBuildFileOutputStream.close();
-                }
-            }
-            updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, neededModules, MAVEN_PROP_LIB_PATH);
-            scriptsUrls.add(mavenBuildFile.toURL());
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
+    /**
+     * DOC nrousseau Comment method "addMavenScriptToExport".
+     * 
+     * @param list
+     * @param processes
+     * @param codeOptions
+     */
+    private void addMavenScriptToExport(List<ExportFileResource> list, ExportFileResource[] processes,
+            Map<String, String> mavenPropertiesMap) {
+        List<URL> scriptsUrls = new ArrayList<URL>();
+        addMavenBuildScripts(scriptsUrls, (ProcessItem) processes[0].getItem(),
+                processes[0].getItem().getProperty().getVersion(), mavenPropertiesMap);
+        ExportFileResource mavenResource = new ExportFileResource(null, ""); //$NON-NLS-1$
+        mavenResource.addResources("", scriptsUrls); //$NON-NLS-1$
+        list.add(mavenResource);
     }
+
+    protected abstract void addMavenBuildScripts(List<URL> scriptsUrls, ProcessItem processItem, String selectedJobVersion,
+            Map<String, String> mavenPropertiesMap);
+
 }

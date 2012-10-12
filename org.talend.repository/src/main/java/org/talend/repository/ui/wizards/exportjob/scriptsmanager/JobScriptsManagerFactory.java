@@ -21,7 +21,7 @@ import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPa
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptESBManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptOSGIForESBManager;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptOSGIForESBWithMavenManager;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.OSGIJavaScriptForESBWithMavenManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsJobJavaScriptsManager;
 
 /**
@@ -48,7 +48,7 @@ public class JobScriptsManagerFactory {
             case OSGI:
                 if (exportChoiceMap.containsKey(ExportChoice.needMavenScript)
                         && exportChoiceMap.get(ExportChoice.needMavenScript) == Boolean.TRUE) {
-                    return new JobJavaScriptOSGIForESBWithMavenManager(exportChoiceMap, contextName, launcher, statisticPort,
+                    return new OSGIJavaScriptForESBWithMavenManager(exportChoiceMap, contextName, launcher, statisticPort,
                             tracePort);
                 } else {
                     return new JobJavaScriptOSGIForESBManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
