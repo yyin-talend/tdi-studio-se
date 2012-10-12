@@ -70,6 +70,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.CoreRepositoryPlugin;
+import org.talend.core.repository.model.IRepositoryFactory;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
 import org.talend.core.repository.model.ResourceModelUtils;
@@ -377,6 +378,22 @@ public class RepositoryService implements IRepositoryService {
                                 language, userInfo);
                         project = repositoryFactory.createProject(projectInfor);
                     }
+                } else {
+                    if (project != null && !project.getEmfProject().isLocal() && repositoryFactory.isLocalConnectionProvider()) {
+                        List<IRepositoryFactory> rfList = RepositoryFactoryProvider.getAvailableRepositories();
+                        IRepositoryFactory remoteFactory = null;
+                        for (IRepositoryFactory rf : rfList) {
+                            if (!rf.isLocalConnectionProvider()) {
+                                remoteFactory = rf;
+                                break;
+                            }
+                        }
+                        if (remoteFactory != null) {
+                            repositoryFactory.setRepositoryFactoryFromProvider(remoteFactory);
+                            repositoryFactory.getRepositoryContext().setOffline(true);
+                        }
+                    }
+
                 }
                 repositoryContext.setProject(project);
 
