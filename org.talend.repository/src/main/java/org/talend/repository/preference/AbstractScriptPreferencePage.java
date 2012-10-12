@@ -15,8 +15,6 @@ package org.talend.repository.preference;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -33,6 +31,10 @@ import org.talend.repository.i18n.Messages;
  * 
  */
 public abstract class AbstractScriptPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+
+    private StyledText scriptTxt;
+
+    private boolean isDefaultPresentedForScriptTxt = false;
 
     public AbstractScriptPreferencePage() {
         super(FLAT);
@@ -51,7 +53,7 @@ public abstract class AbstractScriptPreferencePage extends FieldEditorPreference
         Label scriptLabel = new Label(parent, SWT.NONE);
         scriptLabel.setText(getHeadTitle());
 
-        final StyledText scriptTxt = new StyledText(parent, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+        scriptTxt = new StyledText(parent, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
         GridData layoutData = new GridData(GridData.FILL_BOTH);
         layoutData.heightHint = 450;
         layoutData.minimumHeight = 450;
@@ -59,13 +61,6 @@ public abstract class AbstractScriptPreferencePage extends FieldEditorPreference
         layoutData.minimumWidth = 550;
         scriptTxt.setLayoutData(layoutData);
         scriptTxt.setText(getPreferenceStore().getString(getPreferenceKey()));
-
-        scriptTxt.addModifyListener(new ModifyListener() {
-
-            public void modifyText(ModifyEvent e) {
-                getPreferenceStore().setValue(getPreferenceKey(), ((StyledText) e.getSource()).getText().trim());
-            }
-        });
 
         return parent;
     }
@@ -91,6 +86,39 @@ public abstract class AbstractScriptPreferencePage extends FieldEditorPreference
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
     public void init(IWorkbench workbench) {
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#performDefaults()
+     */
+    @Override
+    protected void performDefaults() {
+        super.performDefaults();
+        if (scriptTxt != null && !scriptTxt.isDisposed()) {
+            isDefaultPresentedForScriptTxt = true;
+            scriptTxt.setText(getPreferenceStore().getDefaultString(getPreferenceKey()));
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#performOk()
+     */
+    @Override
+    public boolean performOk() {
+        boolean ok = super.performOk();
+        if (scriptTxt != null && !scriptTxt.isDisposed()) {
+            if (isDefaultPresentedForScriptTxt) {
+                getPreferenceStore().setToDefault(getPreferenceKey());
+            } else {
+                getPreferenceStore().setValue(getPreferenceKey(), scriptTxt.getText());
+            }
+            isDefaultPresentedForScriptTxt = false;
+        }
+        return ok;
     }
 
 }
