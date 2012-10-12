@@ -652,6 +652,7 @@ public class LoginComposite extends Composite {
 
         data = new FormData();
         data.top = new FormAttachment(0, HORIZONTAL_THREE_SPACE);
+        data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
         data.right = new FormAttachment(100, -HORIZONTAL_TWO_SPACE);
         data.bottom = new FormAttachment(100, -HORIZONTAL_FOUR_SPACE);
         manageProjectsButton.setLayoutData(data);
@@ -669,7 +670,7 @@ public class LoginComposite extends Composite {
         data.left = new FormAttachment(manageProjectLabel1, HORIZONTAL_SPACE);
         data.bottom = new FormAttachment(manageProjectLabel1, HORIZONTAL_FOUR_SPACE, SWT.CENTER);
         Point pbtnPoint = manageProjectsButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        data.right = new FormAttachment(100, -HORIZONTAL_THREE_SPACE - pbtnPoint.x);
+        data.right = new FormAttachment(0, 300);
         manageViewer.getControl().setLayoutData(data);
     }
 
@@ -883,7 +884,7 @@ public class LoginComposite extends Composite {
         data = new FormData();
         data.top = new FormAttachment(tosProjectLabel, 0, SWT.TOP);
         data.left = new FormAttachment(tosProjectLabel, HORIZONTAL_SPACE);
-        data.right = new FormAttachment(90, -HORIZONTAL_TWO_SPACE);
+        data.right = new FormAttachment(0, 300);
         projectViewer.getControl().setLayoutData(data);
 
         // refresh button
@@ -892,6 +893,7 @@ public class LoginComposite extends Composite {
         fillProjectsBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
         data = new FormData();
         data.top = new FormAttachment(projectViewer.getControl(), 0, SWT.CENTER);
+        data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
         data.right = new FormAttachment(100, -HORIZONTAL_TWO_SPACE);
         fillProjectsBtn.setLayoutData(data);
 
@@ -903,7 +905,7 @@ public class LoginComposite extends Composite {
         } else {
             data.top = new FormAttachment(projectViewer.getControl(), HORIZONTAL_TWO_SPACE);
         }
-        data.right = new FormAttachment(90, -HORIZONTAL_TWO_SPACE);
+        data.right = new FormAttachment(projectViewer.getCombo(), 0, SWT.RIGHT);
         // data.bottom = new FormAttachment(projectViewer.getControl(), HORIZONTAL_SPACE + 50);
         openProjectBtn.setLayoutData(data);
     }
@@ -1096,13 +1098,14 @@ public class LoginComposite extends Composite {
         manageConnectionsButton.setImage(ImageProvider.getImage(EImage.THREE_DOTS_ICON));
         formData = new FormData();
         formData.top = new FormAttachment(group, HORIZONTAL_SPACE, SWT.CENTER);
+        formData.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
         formData.right = new FormAttachment(100, -HORIZONTAL_TWO_SPACE);
         manageConnectionsButton.setLayoutData(formData);
 
         group.setLayout(new FormLayout());
         formData = new FormData();
         formData.top = new FormAttachment(0, 0);
-        formData.left = new FormAttachment(0, -HORIZONTAL_SPACE);
+        formData.left = new FormAttachment(0, 0);
         formData.right = new FormAttachment(manageConnectionsButton, -HORIZONTAL_SPACE);
         formData.bottom = new FormAttachment(100, -2);
         group.setLayoutData(formData);
@@ -1123,7 +1126,7 @@ public class LoginComposite extends Composite {
         formData = new FormData();
         formData.top = new FormAttachment(connectionLabel, 0, SWT.CENTER);
         formData.left = new FormAttachment(connectionLabel, HORIZONTAL_SPACE);
-        formData.right = new FormAttachment(95, 12);
+        formData.right = new FormAttachment(0, 300);
         connectionsViewer.getControl().setLayoutData(formData);
 
         // tis e-mail
@@ -1142,7 +1145,7 @@ public class LoginComposite extends Composite {
         formData = new FormData();
         formData.top = new FormAttachment(emailLabel, 0, SWT.CENTER);
         formData.left = new FormAttachment(emailLabel, HORIZONTAL_SPACE);
-        formData.right = new FormAttachment(95, 12);
+        formData.right = new FormAttachment(0, 300);
         user.setLayoutData(formData);
 
         // tis password
@@ -1157,8 +1160,8 @@ public class LoginComposite extends Composite {
         passwordLabel.setText(Messages.getString("LoginComposite.passwordTitle")); //$NON-NLS-1$
         formData = new FormData();
         formData.top = new FormAttachment(passwordComposite, 3, SWT.TOP);
-        formData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE - 5);//
-        formData.right = new FormAttachment(0, LEFTSPACE - 5);// - 5
+        formData.left = new FormAttachment(0, HORIZONTAL_TWO_SPACE);//
+        formData.right = new FormAttachment(0, LEFTSPACE);// - 5
         // formData.bottom = new FormAttachment(100, -1);
         passwordLabel.setLayoutData(formData);
 
@@ -1168,7 +1171,7 @@ public class LoginComposite extends Composite {
         formData = new FormData();
         formData.top = new FormAttachment(passwordComposite, 1, SWT.TOP);
         formData.left = new FormAttachment(passwordLabel, HORIZONTAL_SPACE);
-        formData.right = new FormAttachment(100, -45);
+        formData.right = new FormAttachment(0, 300);
         // formData.bottom = new FormAttachment(100, -1);
         passwordText.setLayoutData(formData);
 
