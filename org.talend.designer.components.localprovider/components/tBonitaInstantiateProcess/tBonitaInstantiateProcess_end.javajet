@@ -3,11 +3,6 @@ imports="
 			org.talend.core.model.process.INode 
 			org.talend.core.model.process.ElementParameterParser 
 			org.talend.designer.codegen.config.CodeGeneratorArgument
-			java.util.List
-			org.talend.core.model.process.IConnection
-			org.talend.core.model.process.IConnectionCategory
-			org.talend.core.model.metadata.IMetadataColumn
-			org.talend.core.model.metadata.IMetadataTable
 " 
 %>
 
@@ -17,10 +12,9 @@ imports="
 	String cid = node.getUniqueName();
 
 	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
-%>	
-try {
-	loginContext_<%=cid%>.logout();
-} catch (javax.security.auth.login.LoginException lee_<%=cid%>) {
+	String clientMode = ElementParameterParser.getValue(node, "__CLIENT_MODE__");
+%>
+} catch (Exception lee_<%=cid%>) {
 <%
 	if (dieOnError) {
 %>
@@ -30,6 +24,22 @@ try {
 %>
 		System.err.println(lee_<%=cid%>.getMessage());
 <%	
+	}
+%>
+} finally {
+<%
+	if ("HTTP_CLIENT".equals(clientMode)) {
+%>
+	if (httpConn_<%=cid %> != null) {
+		httpConn_<%=cid %>.disconnect();
+	}
+<%
+	} else {
+%>
+	if (loginContext_<%=cid%> != null) {
+		loginContext_<%=cid%>.logout();
+	}
+<%
 	}
 %>
 }
