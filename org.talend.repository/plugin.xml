@@ -1677,6 +1677,15 @@
               name="ChangeSpecifyKeysAndColumnsFortCassandraInput"
               version="5.1.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.1.1"
+              class="org.talend.repository.model.migration.ChangeDefaultClientMode4OldJobsBonitaInstantiateProcess"
+              description="Change the default value of the new added field: Client Mode from Http Client to Java Client when migrating old jobs to 5.2.0 for tBonitaInstantiateProcess"
+              id="org.talend.repository.model.changeDefaultClientMode4OldJobsBonitaInstantiateProcess"
+              name="ChangeDefaultClientMode4OldJobsBonitaInstantiateProcess"
+              version="5.1.2">
+        </projecttask>
 
    </extension>
    
