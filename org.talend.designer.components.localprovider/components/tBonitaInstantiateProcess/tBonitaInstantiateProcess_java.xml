@@ -60,7 +60,7 @@
       REQUIRED="true"
       SHOW_IF="CLIENT_MODE=='HTTP_CLIENT'"
     >
-    	<DEFAULT>"http://localhost:9090/bonita-server-rest/API/runtimeAPI/instantiateProcessWithVariables/"</DEFAULT>
+    	<DEFAULT>"http://localhost:9090/bonita-server-rest"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER NAME="AUTH_USERNAME" FIELD="TEXT" NUM_ROW="4" REQUIRED="true" SHOW_IF="CLIENT_MODE=='HTTP_CLIENT'" GROUP="AUTHORIZATION">

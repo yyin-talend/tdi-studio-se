@@ -22,7 +22,7 @@ imports="
 %>
 	String processInstanceUUID_<%=cid%> = null;
 	String parameters_<%=cid%> ="options=user:"+<%=userName%>;
-	String url_<%=cid %> = <%=url%> + <%=process_name%> +"--" +<%=process_version%>;
+	String url_<%=cid %> = <%=url%> + "/API/runtimeAPI/instantiateProcessWithVariables/" + <%=process_name%> +"--" +<%=process_version%>;
 	java.net.HttpURLConnection httpConn_<%=cid %> = null;
 	
 	try {
