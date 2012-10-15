@@ -128,6 +128,8 @@ try{
 				}	
 				}else{
 					if(oirginalColumnsSize%schemaOptNum==0){
+						isOirginalColumn = true;
+						oirginalColumnsSize++;
 %>
 					extractEBCDICFieldUtil_<%=cid%>.putValue_Oirginal_<%=oirginalColumnsSize/schemaOptNum%>(<%=outConn.getName()%>,<%=inConn.getName()%>);
 <%
