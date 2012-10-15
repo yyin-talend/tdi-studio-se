@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.xml.sax.simpleparser;
 
+import java.io.Reader;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -113,6 +114,7 @@ public class SimpleSAXLooper implements ISAXLooper,Callable {
     }
     
     public Object call() throws Exception {
+        Reader reader = null;
 		try {
             DefaultHandler hd = new SimpleSAXLoopHandler(nodes, bcache);
             SAXParser saxParser = null;
@@ -126,17 +128,22 @@ public class SimpleSAXLooper implements ISAXLooper,Callable {
             saxParser.setProperty("http://xml.org/sax/properties/lexical-handler", hd);
             if (fileURL != null) {
             	// routines.system.UnicodeReader.java is used to ignore the BOM of the source file.
-                org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(
-                        new UnicodeReader(new java.io.FileInputStream(fileURL),this.charset));
-//                inSource.setEncoding(this.charset);
+                reader = new UnicodeReader(new java.io.FileInputStream(fileURL),this.charset);
+                org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(reader);
                 saxParser.parse(inSource, hd);
             } else {
-                org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(new UnicodeReader(is,this.charset));
-//                inSource.setEncoding(this.charset);
-                saxParser.parse(is, hd);
+                reader = new UnicodeReader(is,this.charset);
+                org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(reader);
+                saxParser.parse(inSource, hd);
             }
         } finally {
-        	bcache.notifyErrorOccurred();
+            try {
+                if(reader!=null) {
+                    reader.close();
+                }
+            } finally {
+                bcache.notifyErrorOccurred();
+            }
         }
 		return null;
 	}
