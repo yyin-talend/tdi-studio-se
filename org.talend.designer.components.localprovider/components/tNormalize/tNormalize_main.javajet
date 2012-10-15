@@ -67,22 +67,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                 metadataColumns != null && !metadataColumns.isEmpty()) {//3
             %>
             if(<%=incomingConnName %>.<%=normalizeColumn%> != null && <%=incomingConnName %>.<%=normalizeColumn%>.trim().length() > 0) {
-                    <%if(useCSV){%>
+                 <% if(useCSV){%>
                         com.talend.csv.CSVReader reader_<%=cid%> = new com.talend.csv.CSVReader(new java.io.StringReader(<%=incomingConnName %>.<%=normalizeColumn%>), '<%=delim %>');
-                        <%if(isTrim){%>
-                        reader_<%=cid%>.setTrimWhitespace(true);
-                        <%
-                        }else{
-                        %>
                         reader_<%=cid%>.setTrimWhitespace(false);
                         <%
-                        }
                         if("ESCAPE_MODE_BACKSLASH".equals(escapeMode)) {
                         %>
                         reader_<%=cid%>.setEscapeChar('\\');
-                        <% } else {%>
+                       <%} else {%>
                      	reader_<%=cid%>.setEscapeChar('<%=textEnclosure %>');
-                        <% } %>
+                       <%} %>
                         reader_<%=cid%>.setQuoteChar('<%=textEnclosure %>');
                         if (reader_<%=cid%>.readNext()) {
                             normalizeRecord_<%=cid%> = reader_<%=cid%>.getValues();
@@ -90,15 +84,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                             normalizeRecord_<%=cid%> = new String[1];
                         }
                     <% 
-                    	} else { 
+                    } else { 
                     		if(isDiscardTrailingEmptyStr){
                     %>
                     
-                        	normalizeRecord_<%=cid%> = <%=incomingConnName %>.<%=normalizeColumn%><%if(isTrim){%>.trim()<%}%>.split(<%=delim %>);
+                        	normalizeRecord_<%=cid%> = <%=incomingConnName %>.<%=normalizeColumn%>.split(<%=delim %>);
                     <%
                     		}else{
                     %>
-                    		normalizeRecord_<%=cid%> = <%=incomingConnName %>.<%=normalizeColumn%><%if(isTrim){%>.trim()<%}%>.split(<%=delim %>,-1);
+                    		normalizeRecord_<%=cid%> = <%=incomingConnName %>.<%=normalizeColumn%>.split(<%=delim %>,-1);
                     <%
                     		}
                     }
@@ -200,7 +194,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                 for(IMetadataColumn metadataColumn : metadataColumns) {
                     if(metadataColumn.getLabel().equals(normalizeColumn)) {
                         %>
-                        <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = normalizeRecord_<%=cid%>[i_<%=cid%>];
+                        <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = normalizeRecord_<%=cid%>[i_<%=cid%>]<%if(isTrim){%>.trim()<%}%>;
                         <%
                     } else {
                         %>
