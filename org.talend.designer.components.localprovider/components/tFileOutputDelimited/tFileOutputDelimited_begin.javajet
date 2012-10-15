@@ -1,10 +1,15 @@
 <%@ jet 
 imports="
+	org.talend.core.model.process.IConnection
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.metadata.IMetadataTable
     org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.metadata.types.JavaType
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.utils.NodeUtil
     java.util.List
 " 
 %>
@@ -19,6 +24,14 @@ String outStream = ElementParameterParser.getValue(node,"__STREAMNAME__");
 String fileName = ElementParameterParser.getValue(node,"__FILENAME__");
 
 boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
+int schemaOptNum  = Integer.parseInt(ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__"));
+boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
+String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
+String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
+String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
+String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+boolean split = ("true").equals(ElementParameterParser.getValue(node, "__SPLIT__"));
 
 String parallelize = ElementParameterParser.getValue(node,"__PARALLELIZE__");
 boolean isParallelize = (parallelize!=null&&!("").equals(parallelize))?("true").equals(parallelize):false;
@@ -26,7 +39,233 @@ boolean isParallelize = (parallelize!=null&&!("").equals(parallelize))?("true").
 %>
 String fileName_<%=cid%> = "";
 <%
-	
+List<IMetadataTable> metadatas = node.getMetadataList();
+List< ? extends IConnection> conns = node.getIncomingConnections();
+if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
+	IMetadataTable metadata = metadatas.get(0);
+	boolean hasDynamic = metadata.isDynamicSchema();
+	IMetadataColumn dynamicCol = metadata.getDynamicColumn();
+	for (IConnection conn : conns) {//B1
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//C1
+	    	List<IMetadataColumn> columns = metadata.getListColumns();
+	       	int sizeColumns = columns.size();
+			if(sizeColumns> schemaOptNum){//D1
+%>
+	class FileOutputDelimitedUtil_<%=cid%>{
+<%
+				if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {//E1 not use CSV Option
+					if(isIncludeHeader && ((!useStream && split)||(hasDynamic))){//F1
+						for (int i = 0; i < sizeColumns; i++) {//H1
+	                        IMetadataColumn column = columns.get(i);
+	                       	if(i%schemaOptNum==0){
+%>
+		public void putHeaderVaule_<%=i/schemaOptNum%>(java.io.Writer out<%=cid %>,final String OUT_DELIM_<%=cid %>)throws Exception{
+<%
+							}
+							if(!("id_Dynamic".equals(column.getTalendType()))) {
+%>
+									out<%=cid %>.write("<%=column.getLabel() %>");
+<%
+							}else{
+%>
+									routines.system.DynamicUtils.writeHeaderToDelimitedFile(<%=conn.getName() %>.<%=column.getLabel() %>, out<%=cid %>, OUT_DELIM_<%=cid %>); 
+<%
+							}
+							if(i != sizeColumns - 1) {
+%>
+									out<%=cid %>.write(OUT_DELIM_<%=cid %>);
+<%
+							}
+							if((i+1)%schemaOptNum==0){
+%>
+		}
+<%
+							}
+						}//H1
+						if(sizeColumns>0&&(sizeColumns%schemaOptNum)>0){
+%>
+		}
+<%
+						}
+					}//F1
+        			for (int i = 0; i < sizeColumns; i++) {//F2
+        				IMetadataColumn column = columns.get(i);
+    					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+    					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
+	                    if(i%schemaOptNum==0){
+%>
+		public void putVaule_<%=i/schemaOptNum%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,StringBuilder sb_<%=cid %>,final String OUT_DELIM_<%=cid %>){
+<%
+						}
+    					if(!isPrimitive) {
+%>
+							if(<%=conn.getName() %>.<%=column.getLabel() %> != null) {
+<%
+    				    } 
+    				    if(column.getTalendType().equals("id_Dynamic")){
+%>
+    				    		routines.system.DynamicUtils.writeValuesToStringBuilder(<%=conn.getName() %>.<%=column.getLabel() %>, sb_<%=cid %>, OUT_DELIM_<%=cid %>);
+<%
+    				    }else{
+%>
+								sb_<%=cid %>.append(
+<%
+    			        	String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+    			        	if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
+%>
+    							FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
+<%	
+    						} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+								if(javaType == JavaTypesManager.BIGDECIMAL) {
+%>
+        						FormatterUtils.format_Number(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString(), <%= thousandsSeparator %>, <%= decimalSeparator %>)					
+<% 
+        						} else { 
+%>
+        						FormatterUtils.format_Number(new java.math.BigDecimal(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)).toPlainString(), <%= thousandsSeparator %>, <%= decimalSeparator %>)						
+<% 
+        						}
+							} else if(javaType == JavaTypesManager.BIGDECIMAL){
+%>
+    							<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString()
+<%
+							} else if(javaType == JavaTypesManager.BYTE_ARRAY){
+%>
+    							java.nio.charset.Charset.forName(<%=encoding %>).decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString()
+<%
+    			        	} else {
+%>
+								<%=conn.getName() %>.<%=column.getLabel() %>
+<%				
+    			        	}
+%>
+    							);
+<%
+    					}
+    					if(!isPrimitive) {
+%>
+    					    } 
+<%
+    			        } 
+    			        if(i != sizeColumns - 1) {
+%>					
+    			            sb_<%=cid %>.append(OUT_DELIM_<%=cid %>);
+<%
+    			        }
+    			        if((i+1)%schemaOptNum==0){
+%>
+		}
+<%
+						}
+    		        }//F2
+					if(sizeColumns>0&&(sizeColumns%schemaOptNum)>0){
+%>
+		}
+<%
+					}
+				}else{
+					//E2 use CSV Option
+					if(isIncludeHeader && hasDynamic){//F3
+						for (int i = 0; i < sizeColumns; i++) {//H3
+	                        IMetadataColumn column = columns.get(i);
+	                       	if(i%schemaOptNum==0){
+%>
+		public void putHeaderVaule_<%=i/schemaOptNum%>(String[] headColu<%=cid%>)throws Exception{
+<%
+							}
+							if(!("id_Dynamic".equals(column.getTalendType()))) {
+%>
+									headColu<%=cid%>[<%=i%>]="<%=column.getLabel() %>";
+<%
+							}else{
+%>
+									for(int mi=0;mi<<%=conn.getName()%>.<%=dynamicCol.getLabel()%>.getColumnCount();mi++){
+        	    		     			headColu<%=cid%>[<%=i%>+mi]=<%=conn.getName()%>.<%=dynamicCol.getLabel()%>.getColumnMetadata(mi).getName();
+        	    		     		}
+<%
+							}
+							if((i+1)%schemaOptNum==0){
+%>
+		}
+<%
+							}
+						}//H3
+						if(sizeColumns>0&&(sizeColumns%schemaOptNum)>0){
+%>
+		}
+<%
+						}
+					}//F3
+        			for (int i = 0; i < sizeColumns; i++) {//F4
+        				IMetadataColumn column = columns.get(i);
+    					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+    					String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+    					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
+	                    if(i%schemaOptNum==0){
+%>
+		public void putVaule_<%=i/schemaOptNum%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,String[] row<%=cid%>){
+<%
+						}
+    					if(("id_Dynamic").equals(column.getTalendType())) {
+%>
+							if (<%=conn.getName()%>.<%=column.getLabel()%> != null) {
+                            	routines.system.DynamicUtils.writeValuesToStringArray(<%=conn.getName()%>.<%=column.getLabel()%>, row<%=cid%>, <%=i%>);
+                            }
+<%
+                		}else{
+%> 
+                			row<%=cid%>[<%=i%>]=<%=isPrimitive? "":conn.getName()+"."+column.getLabel()+ "==null?\"\":"%>
+<%					
+                			if(javaType == JavaTypesManager.STRING ){
+%>
+							<%=conn.getName() %>.<%=column.getLabel() %>;
+<%
+                			}else if(javaType == JavaTypesManager.DATE && pattern != null){
+%>
+							FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>);
+<%
+                			}else if(javaType == JavaTypesManager.BYTE_ARRAY){
+%>							java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString();
+<%
+                			} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+        						if(javaType == JavaTypesManager.BIGDECIMAL) {%>
+        					FormatterUtils.format_Number(<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString(), <%= thousandsSeparator %>, <%= decimalSeparator %>);
+<%  	
+								} else { %>
+							FormatterUtils.format_Number(new java.math.BigDecimal(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)).toPlainString(), <%= thousandsSeparator %>, <%= decimalSeparator %>);						
+<%		
+								}
+        					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
+%>
+							<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString();
+<%
+                			} else{
+%>
+							String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
+<%
+                			}
+                		}
+    			        if((i+1)%schemaOptNum==0){
+%>
+		}
+<%
+						}
+    		        }//F4
+					if(sizeColumns>0&&(sizeColumns%schemaOptNum)>0){
+%>
+		}
+<%
+					}
+				}
+%>
+	}
+	FileOutputDelimitedUtil_<%=cid%> fileOutputDelimitedUtil_<%=cid%>=new FileOutputDelimitedUtil_<%=cid%>();
+<%
+			}//D1
+		}//C1
+	}//B1
+}//A1
+
 if(!useStream){
 %>
 fileName_<%=cid%> = (new java.io.File(<%=fileName%>)).getAbsolutePath().replace("\\","/");
@@ -70,7 +309,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 
     <%
     
-    List<IMetadataTable> metadatas = node.getMetadataList();
+    
     if ((metadatas!=null)&&(metadatas.size()>0)) {
         IMetadataTable metadata = metadatas.get(0);
         if (metadata!=null) {
@@ -90,17 +329,10 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 "ROWSEPARATOR"
             );
             
-            String encoding = ElementParameterParser.getValue(
-                node,
-                "__ENCODING__"
-            );
-            
-            boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
     		String fileNewname = ElementParameterParser.getValue(node,"__FILENAME__");
     		
     		boolean isInRowMode = ("true").equals(ElementParameterParser.getValue(node,"__ROW_MODE__"));
     		
-    		boolean split = ("true").equals(ElementParameterParser.getValue(node, "__SPLIT__"));
             String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
             
             boolean compress = ("true").equals(ElementParameterParser.getValue(node,"__COMPRESS__"));
@@ -211,6 +443,13 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 	    		        int sizeColumns = columns.size();
 	    		        for (int i = 0; i < sizeColumns; i++) {
 	    		            IMetadataColumn column = columns.get(i);
+                            if(sizeColumns > schemaOptNum){
+                            	if(i%schemaOptNum==0){
+%>
+                            		fileOutputDelimitedUtil_<%=cid%>.putHeaderVaule_<%=i/schemaOptNum%>(out<%=cid %>,OUT_DELIM_<%=cid %>);
+<%
+                            	}
+                            }else{//AA
 	    		            %>
 	    		            out<%=cid %>.write("<%=column.getLabel() %>");
 	    		            <%
@@ -219,6 +458,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 	    		                out<%=cid %>.write(OUT_DELIM_<%=cid %>);
 	    		                <%
 	    		            }
+	    		            }//AA
 	    		        }
     		        %>
     		        out<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);
@@ -280,6 +520,13 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		        int sizeColumns = columns.size();
     		        for (int i = 0; i < sizeColumns; i++) {
     		            IMetadataColumn column = columns.get(i);
+  						if(sizeColumns > schemaOptNum){
+                            if(i%schemaOptNum==0){
+%>
+                            		fileOutputDelimitedUtil_<%=cid%>.putHeaderVaule_<%=i/schemaOptNum%>(out<%=cid %>,OUT_DELIM_<%=cid %>);
+<%
+                            }
+                        }else{//BB
     		            %>
     		            out<%=cid %>.write("<%=column.getLabel() %>");
     		            <%
@@ -288,6 +535,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     		                out<%=cid %>.write(OUT_DELIM_<%=cid %>);
     		                <%
     		            }
+    		            }//BB
     		        }
     		        %>
     		        out<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);
@@ -306,13 +554,11 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 
     <%
     
-    List<IMetadataTable> metadatas = node.getMetadataList();
     if ((metadatas!=null)&&(metadatas.size()>0)) {
         IMetadataTable metadata = metadatas.get(0);
         if (metadata!=null) {                       
         	List<IMetadataColumn> columns = metadata.getListColumns();
 	    	int sizeColumns = columns.size(); 
-            String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
     		String delim = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
     		String rowSeparator = ElementParameterParser.getValue(node, "__CSVROWSEPARATOR__");
     		boolean useOSLineSeparator = ("true").equals(ElementParameterParser.getValue(node,"__OS_LINE_SEPARATOR_AS_ROW_SEPARATOR__"));
@@ -328,8 +574,6 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
  				textEnclosure1 = "\"\\\"\"";
  			}
  			
-        	boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
-        	boolean split = ("true").equals(ElementParameterParser.getValue(node, "__SPLIT__"));
         	boolean isInRowMode = ("true").equals(ElementParameterParser.getValue(node,"__ROW_MODE__"));
             String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
             
@@ -596,9 +840,17 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 	         			for(int i = 0 ; i < sizeColumns ; i++)
 	        			{
 	        				IMetadataColumn column = columns.get(i);
+							if(sizeColumns> schemaOptNum){
+                            	if(i%schemaOptNum==0){
+%>
+                        fileOutputDelimitedUtil_<%=cid%>.putHeaderVaule_<%=i/schemaOptNum%>(headColu<%=cid%>);
+<%
+                            	}
+                           	}else{//CC
         				%>	      	
         				headColu<%=cid%>[<%=i%>]="<%=column.getLabel() %>";
         				<%
+        					}//CC
          				}
     	            %>	 
     	            CsvWriter<%=cid%>.writeNext(headColu<%=cid%>);
@@ -711,9 +963,17 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 	    	        for(int i = 0; i < sizeColumns; i++)
 	        		{
 	        			IMetadataColumn column = columns.get(i);
+						if(sizeColumns> schemaOptNum){
+                            if(i%schemaOptNum==0){
+%>
+                     fileOutputDelimitedUtil_<%=cid%>.putHeaderVaule_<%=i/schemaOptNum%>(headColu<%=cid%>);
+<%
+                            }
+                       	}else{//DD
         			%>
        				headColu<%=cid%>[<%=i%>]="<%=column.getLabel() %>";
        				<%
+       					}//DD
 	        		}
     	        %>
         		CsvWriter<%=cid%>.writeNext(headColu<%=cid%>);	

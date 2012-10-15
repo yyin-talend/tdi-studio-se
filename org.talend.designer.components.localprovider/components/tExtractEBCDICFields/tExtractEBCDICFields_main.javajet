@@ -25,6 +25,7 @@ String field = ElementParameterParser.getValue(node, "__FIELD__");
 String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
 String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
+int schemaOptNum  = Integer.parseInt(ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__"));
 List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
 String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
 boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
@@ -96,6 +97,7 @@ try{
 <%
 	IMetadataTable outputMetadataTable = outConn.getMetadataTable();
 	IMetadataTable inputMetadataTable = inConn.getMetadataTable();
+	int oirginalColumnsSize=0;
 	for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) {
 		if(outputCol.getLabel().equals(field)){
 			continue;
@@ -104,6 +106,7 @@ try{
 		for(IMetadataColumn inputCol : inputMetadataTable.getListColumns()){	
 			JavaType stringType =  JavaTypesManager.getJavaTypeFromId(inputCol.getTalendType());
 			if( outputCol.getLabel().equals( inputCol.getLabel()) ){
+				if(outputMetadataTable.getListColumns().size() <= schemaOptNum){
 				isOirginalColumn = true;
 				if(stringType == JavaTypesManager.STRING){
 					boolean trimStr = false;
@@ -122,6 +125,13 @@ try{
 %>
 					<%=outConn.getName()%>.<%=outputCol.getLabel()%> = <%=inConn.getName()%>.<%=inputCol.getLabel()%>;
 <%
+				}	
+				}else{
+					if(oirginalColumnsSize%schemaOptNum==0){
+%>
+					extractEBCDICFieldUtil_<%=cid%>.putValue_Oirginal_<%=oirginalColumnsSize/schemaOptNum%>(<%=outConn.getName()%>,<%=inConn.getName()%>);
+<%
+					}
 				}
 				break;
 			}
@@ -141,10 +151,10 @@ try{
 	for(int valueN = 0 ; valueN < newColumnList.size();valueN++){//----- for begin
 			IMetadataColumn column = newColumnList.get(valueN);
 			Integer orgainLength = column.getOriginalLength();
-			Integer length = column.getLength();
 			String orgainType = column.getType();
 			Integer precision = column.getPrecision();
 			if(precision==null) precision = 0;
+			if(outputMetadataTable.getListColumns().size() <= schemaOptNum){
 			if(orgainLength==null || orgainLength.intValue()==0 || orgainType==null || "".endsWith(orgainType.trim())) {
 %>
 //////////////////////////////////////////////////
@@ -205,6 +215,13 @@ DB Type of the column:<%=column.getLabel()%> should be X, 1, 2, 3, 9, B, T
 //////////////////////////////////////////////////
 <%
 			}
+			}else{
+				if(valueN%schemaOptNum==0){
+%>
+			extractEBCDICFieldUtil_<%=cid%>.putValue_unOirginal_<%=valueN/schemaOptNum%>(<%=outConn.getName() %>,bbRecord_<%=cid %>);
+<%
+				}
+			}
 	}//----- for end
 	if(!("").equals(rejectConnName) && rejectConnName.equals(firstConnName)){
 %>
@@ -225,10 +242,20 @@ DB Type of the column:<%=column.getLabel()%> should be X, 1, 2, 3, 9, B, T
 %>
 			<%=rejectConnName %> = new <%=rejectConnName %>Struct();
 <%
-            for(IMetadataColumn column : outConn.getMetadataTable().getListColumns()) {
+            int outputColumnSize=outConn.getMetadataTable().getListColumns().size();
+            for(int rejectColNo=0;rejectColNo<outputColumnSize;rejectColNo++) {
+            	IMetadataColumn column=outConn.getMetadataTable().getListColumns().get(rejectColNo);
+            	if(outputColumnSize <= schemaOptNum){
 %>
     			<%=rejectConnName%>.<%=column.getLabel()%> = <%=firstConnName %>.<%=column.getLabel() %>;
 <%
+				}else{
+					if(rejectColNo%schemaOptNum==0){
+%>
+			extractEBCDICFieldUtil_<%=cid%>.putValue_reject_<%=rejectColNo/schemaOptNum%>(<%=rejectConnName %>,<%=firstConnName %>);
+<%
+					}
+				}
 			}
 %>    
 		    <%=rejectConnName%>.errorMessage = ex_<%=cid %>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
