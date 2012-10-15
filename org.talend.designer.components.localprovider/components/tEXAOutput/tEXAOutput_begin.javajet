@@ -105,16 +105,6 @@ String tableName_<%=cid%> = <%=tableName%>;
 boolean whetherReject_<%=cid%> = false;
 
 
-<%
-String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-if(useExistingConn.equals("true")) {
-    String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-    String conn = "conn_" + connection;
-    %>
-    java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-    <%
-} else {
-    %>
     String dbProperties_<%=cid%> = <%=dbproperties%>;
     String url_<%=cid%> = null;
     if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
@@ -127,9 +117,7 @@ if(useExistingConn.equals("true")) {
      java.lang.Class.forName("com.exasol.jdbc.EXADriver");
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
     <%
-}
 String useCommitControl = ElementParameterParser.getValue(node,"__USE_COMMIT_CONTROL__");
-if(!useExistingConn.equals("true")) {
     if(useCommitControl.equals("true")) {// if use commit control
         if(!commitEvery.equals("") && !commitEvery.equals("0")) {
             %>
@@ -139,7 +127,6 @@ if(!useExistingConn.equals("true")) {
             <%
         }
     }
-}
 if(columnList != null && columnList.size() > 0) {    
     if(!tableAction.equals("NONE")) {
         Manager manager = getManager(dbmsId, cid);

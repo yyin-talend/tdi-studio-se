@@ -19,15 +19,7 @@ imports="
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-    String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-    if(useExistingConn.equals("true")) {
-        String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-        String conn = "conn_" + connection;
-        %>
-        java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-        <%
-    } else {
-        %>
+	%>
         String dbProperties_<%=cid%> = <%=dbproperties%>;
         String url_<%=cid%> = null;
         if(dbProperties_<%=cid%> == null || dbProperties_<%=cid%>.trim().length() == 0) {
@@ -39,12 +31,8 @@ imports="
         String dbPwd_<%=cid %> = <%=dbpwd%>;
         java.lang.Class.forName("com.exasol.jdbc.EXADriver");
         java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-        <%  
-    }
-    %>
 
     <%
-    if(!useExistingConn.equals("true")) {
         if(!commitEvery.equals("") && !commitEvery.equals("0")) {
             %>
             conn_<%=cid%>.setAutoCommit(false);            
@@ -52,7 +40,6 @@ imports="
             int commitCounter_<%=cid%> = 0;
             <%
         }
-    }
     %>
     java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();    
     String query_<%=cid %> = "";
