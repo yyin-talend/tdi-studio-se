@@ -97,7 +97,7 @@
 		</PARAMETER>
 		
 		<PARAMETER NAME="CREATE" FIELD="CHECK" REQUIRED="true"
-			NUM_ROW="10" SHOW_IF="false">
+			NUM_ROW="10" SHOW="false">
 			<DEFAULT>true</DEFAULT>
 		</PARAMETER>
 

@@ -57,7 +57,7 @@
       FIELD="SCHEMA_TYPE"
       NUM_ROW="1"
       CONTEXT="OUTPUT_MAIN"
-      SHOW_IF="false">
+      SHOW="false">
       <TABLE READONLY="true" IF="((OPERATION=='ADDTOLIST') or (OPERATION=='REMOVEFROMLIST')) and (MUTIPLE_OPERATION=='true')">
         <COLUMN NAME="ListKeyType" TYPE="id_String" READONLY="true"/>
 		<COLUMN NAME="ListKeyValue" TYPE="id_String" READONLY="true"/>
