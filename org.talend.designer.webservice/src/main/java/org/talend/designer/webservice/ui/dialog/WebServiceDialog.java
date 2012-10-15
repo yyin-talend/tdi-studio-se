@@ -218,6 +218,11 @@ public class WebServiceDialog extends Dialog implements WebServiceEventListener 
         List<IMetadataColumn> inputmetadata = webServiceUI.getInputValue();
         WebServiceComponent wenCom = webServiceComponentMain.getWebServiceComponent();
 
+        IMetadataTable wenMetadata = wenCom.getMetadataFromConnector("OUTPUT");
+        if (wenMetadata != null && outputMetadata != wenMetadata) {
+            outputMetadata = wenMetadata;
+        }
+
         // save schema.
         if (outputMetaCopy != null) {
             if (!outputMetaCopy.sameMetadataAs(outputMetadata, IMetadataColumn.OPTIONS_NONE)) {
