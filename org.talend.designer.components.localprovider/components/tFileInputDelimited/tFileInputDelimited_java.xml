@@ -184,7 +184,7 @@
 		  NAME="DESTINATION"
 		  FIELD="TEXT"
 		  NUM_ROW="90"
-		  SHOW_IF="false">
+		  SHOW="false">
 			<DEFAULT></DEFAULT>
 		</PARAMETER>		
 	</ADVANCED_PARAMETERS>
