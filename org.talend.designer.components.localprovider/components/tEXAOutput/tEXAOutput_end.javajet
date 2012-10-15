@@ -62,7 +62,6 @@ imports="
     %>
     
     <%
-    if(!useExistingConn.equals("true")) {
         if(useCommitControl.equals("true")) {
             if(!commitEvery.equals("") && !commitEvery.equals("0")) {
                 %>
@@ -74,9 +73,6 @@ imports="
         }
         %>  
         conn_<%=cid%> .close();
-        <%
-    }
-    %>
 
 	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
 	nb_line_update_<%=cid%>=nb_line_update_<%=cid%> + updatedCount_<%=cid%>;
