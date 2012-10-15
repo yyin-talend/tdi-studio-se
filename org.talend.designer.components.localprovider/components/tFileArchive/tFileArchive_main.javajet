@@ -24,8 +24,6 @@
 	String password = ElementParameterParser.getValue(node,"__PASSWORD__");
 	
 	List<Map<String, String>> masks = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MASK__");	
-	
-	String zip64Mode = ElementParameterParser.getValue(node, "__ZIP64_MODE__");
 	%>
 
 
@@ -128,11 +126,6 @@
         out_<%=cid %> = new org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream(new java.io.BufferedOutputStream(output_stream_<%=cid%>)); 
         out_<%=cid %>.setLevel(level_<%=cid %>);
         out_<%=cid %>.setEncoding(<%=encoding%>);
-        <%if("ALWAYS".equals(zip64Mode)) {%>
-        out_<%=cid %>.setUseZip64(org.apache.commons.compress.archivers.zip.Zip64Mode.Always);
-        <%} else if("NEVER".equals(zip64Mode)) {%>
-        out_<%=cid %>.setUseZip64(org.apache.commons.compress.archivers.zip.Zip64Mode.Never);
-        <%}%>
         // here get the file list
         for (int i_<%=cid %> = 0; i_<%=cid %> < list_<%=cid %>.size(); i_<%=cid %>++) {
             java.io.BufferedInputStream in_<%=cid %> = new java.io.BufferedInputStream(new java.io.FileInputStream(list_<%=cid %>.get(i_<%=cid %>)));
