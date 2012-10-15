@@ -94,7 +94,7 @@
 			<ITEM NAME="ORACLE_8" VALUE="ojdbc12-8i.jar" />
 		</ITEMS>
 	</PARAMETER>
-
+	
 	<PARAMETER
 		NAME="RAC_URL"
 		FIELD="TEXT"
@@ -554,6 +554,9 @@
   </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
+     <IMPORTS>
+       <IMPORT NAME="Talend-oracle-timestamptz" MODULE="talend-oracle-timestamptz.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6')  OR (DB_VERSION=='ORACLE_11') OR (DB_VERSION=='ORACLE_10')" /> 
+     </IMPORTS> 
    </CODEGENERATION>
    
   <RETURNS>

@@ -280,6 +280,7 @@
    <CODEGENERATION>
     <IMPORTS>
        <IMPORT NAME="TNS" MODULE="tns.jar" REQUIRED="true" />    
+       <IMPORT NAME="Talend-oracle-timestamptz" MODULE="talend-oracle-timestamptz.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6')  OR (DB_VERSION=='ORACLE_11') OR (DB_VERSION=='ORACLE_10')" /> 
     </IMPORTS>   
    </CODEGENERATION>
 
