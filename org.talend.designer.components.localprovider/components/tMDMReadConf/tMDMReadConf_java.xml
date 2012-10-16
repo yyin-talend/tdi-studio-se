@@ -36,7 +36,7 @@
 	    	NAME="DESTINATION"
 	    	FIELD="TEXT"
 	    	NUM_ROW="2"
-	    	SHOW_IF="false"
+	    	SHOW="false"
 	    	>
 	    	<DEFAULT>tMDMInputIn_1</DEFAULT>
 	    </PARAMETER>
