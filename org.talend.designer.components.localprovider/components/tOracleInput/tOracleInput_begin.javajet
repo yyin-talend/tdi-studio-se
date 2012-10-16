@@ -217,8 +217,7 @@ imports="
 	    	%>
 	    		TalendTimestampWithTZ talendTimestampWithTZ = null;
 	    		if (((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(<%=currentColNo%>) != null) {
-    				talendTimestampWithTZ = OracleTIMESTAMPTZUtils.toTalendTSTZ(conn_<%=cid%>,
-                    	((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(<%=currentColNo%>).toBytes());
+    				talendTimestampWithTZ = org.talend.oracle.OracleTSTZUtil.toTalendTSTZ(((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(<%=currentColNo%>).toBytes()); 
                 }
                 if(talendTimestampWithTZ != null){
                 	<%=firstConnName%>.<%=column.getLabel()%> = talendTimestampWithTZ;

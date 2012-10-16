@@ -221,8 +221,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
 			    	if(isTSWithTZ && supportTSTZ){
                     %>
 	                    if(((oracle.jdbc.OracleResultSet) resultSet_<%=cid%>).getTIMESTAMPTZ(<%=index%>) != null){
-	                    	<%=struct%>.<%=searchColumn.getColumnName()%> = OracleTIMESTAMPTZUtils.toTalendTSTZ(connection_<%=cid%>,
-	                    	((oracle.jdbc.OracleResultSet) resultSet_<%=cid%>).getTIMESTAMPTZ(<%=index%>).toBytes());
+	                    	<%=struct%>.<%=searchColumn.getColumnName()%> = org.talend.oracle.OracleTSTZUtil.toTalendTSTZ(((oracle.jdbc.OracleResultSet) resultSet_<%=cid%>).getTIMESTAMPTZ(<%=index%>).toBytes()); 
 	                    }else{
 	                    	<%=struct%>.<%=searchColumn.getColumnName()%> = null;
 	                    }
