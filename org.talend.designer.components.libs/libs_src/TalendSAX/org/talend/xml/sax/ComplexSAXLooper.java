@@ -1,6 +1,7 @@
 package org.talend.xml.sax;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,12 +12,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.talend.xml.sax.FunctionRegister;
-import org.talend.xml.sax.LoopEntry;
-import org.talend.xml.sax.SAXLoopCompositeHandler;
-import org.talend.xml.sax.SAXLoopHandler;
-import org.talend.xml.sax.SAXLoopIterator;
-import org.talend.xml.sax.SAXMultiLoopIterator;
 import org.talend.xml.sax.commons.ISAXLooper;
 import org.talend.xml.sax.function.inter.Function;
 import org.talend.xml.sax.io.UnicodeReader;
@@ -142,6 +137,7 @@ public class ComplexSAXLooper implements ISAXLooper {
      */
     public void parse(String fileURL, String charset) {
         this.charset = charset;
+        Reader reader = null;
         try {
             DefaultHandler hd = null;
             SAXParser saxParser = null;
@@ -158,9 +154,8 @@ public class ComplexSAXLooper implements ISAXLooper {
                 hd = newHandler2();
             }
             saxParser.setProperty("http://xml.org/sax/properties/lexical-handler", hd);
-            org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(
-                    new UnicodeReader(new java.io.FileInputStream(fileURL),this.charset));
-//            inSource.setEncoding(this.charset);
+            reader = new UnicodeReader(new java.io.FileInputStream(fileURL),this.charset);
+            org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(reader);
             saxParser.parse(inSource, hd);
 
         } catch (ParserConfigurationException e) {
@@ -169,6 +164,14 @@ public class ComplexSAXLooper implements ISAXLooper {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if(reader!=null) {
+                try {
+                    reader.close();
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -179,6 +182,7 @@ public class ComplexSAXLooper implements ISAXLooper {
      */
     public void parse(java.io.InputStream is, String charset) {
         this.charset = charset;
+        Reader reader = null;
         try {
             DefaultHandler hd = null;
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
@@ -189,9 +193,9 @@ public class ComplexSAXLooper implements ISAXLooper {
             }
             saxParser.setProperty("http://xml.org/sax/properties/lexical-handler", hd);
             // routines.system.UnicodeReader.java is used to ignore the BOM of the source file.
-            org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(new UnicodeReader(is,this.charset));
-//            inSource.setEncoding(this.charset);
-            saxParser.parse(is, hd);
+            reader = new UnicodeReader(is,this.charset);
+            org.xml.sax.InputSource inSource = new org.xml.sax.InputSource(reader);
+            saxParser.parse(inSource, hd);
 
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
@@ -199,6 +203,14 @@ public class ComplexSAXLooper implements ISAXLooper {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if(reader!=null) {
+                try {
+                    reader.close();
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
