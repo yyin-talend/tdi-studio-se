@@ -100,7 +100,7 @@
 			}
 			//http://jira.talendforge.org/browse/TESB-3850
 			String formatType = ElementParameterParser.getValue(node, "__DATAFORMAT__");
-			if ("true".equals(useSAM) && !"MESSAGE".equals(formatType)) {
+			if ("true".equals(useSAM) && !"RAW".equals(formatType)) {
 %>
 				// Add Service Activity Monitor Service to <%=endpointVar%>
 				if (eventFeature != null) {

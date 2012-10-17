@@ -436,7 +436,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "cCXF")) { //$NON-NLS-1$
                 // http://jira.talendforge.org/browse/TESB-3850
                 String format = EmfModelUtils.computeTextElementValue("DATAFORMAT", node); //$NON-NLS-1$
-                if (!"MESSAGE".equals(format)) { //$NON-NLS-1$
+                if (!"RAW".equals(format)) { //$NON-NLS-1$
                     if (EmfModelUtils.computeCheckElementValue("ENABLE_SAM", node)) { //$NON-NLS-1$
                         // SAM
                         additionalJobBeanParams = "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
