@@ -24,7 +24,11 @@ String outStream = ElementParameterParser.getValue(node,"__STREAMNAME__");
 String fileName = ElementParameterParser.getValue(node,"__FILENAME__");
 
 boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
-int schemaOptNum  = Integer.parseInt(ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__"));
+int schemaOptNum=100;
+String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
+if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
+	schemaOptNum  = Integer.parseInt(schemaOptNumStr);
+}
 boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
 String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
 boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;

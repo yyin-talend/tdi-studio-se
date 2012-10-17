@@ -19,7 +19,11 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
-int schemaOptNum  = Integer.parseInt(ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__"));
+int schemaOptNum=100;
+String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
+if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
+	schemaOptNum  = Integer.parseInt(schemaOptNumStr);
+}
 
 if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

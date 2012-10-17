@@ -26,7 +26,11 @@ String field = ElementParameterParser.getValue(node, "__FIELD__");
 String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
 String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
-int schemaOptNum  = Integer.parseInt(ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__"));
+int schemaOptNum=100;
+String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
+if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
+	schemaOptNum  = Integer.parseInt(schemaOptNumStr);
+}
 List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
 String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
 boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
