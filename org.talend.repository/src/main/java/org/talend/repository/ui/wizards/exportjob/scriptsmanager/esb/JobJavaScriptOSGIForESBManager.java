@@ -185,6 +185,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     for (ModuleNeeded module : neededModules) {
                         if (module.getBundleName() == null) { // if no bundle defined for this, add to the jars to
                                                               // export
+                            // temp workaround for https://jira.talendforge.org/browse/TDI-22934
+                            if (module.getModuleName().startsWith("camel-core-")
+                                     || module.getModuleName().startsWith("dom4j-")) {
+                                continue;
+                            }
                             neededLibraries.add(module.getModuleName());
                         }
                     }
@@ -213,7 +218,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 if (ROUTE.equals(itemType)) {
                     addOSGIRouteResources(osgiResource, processItem);
                 }
-
             }
 
             // Gets talend libraries
