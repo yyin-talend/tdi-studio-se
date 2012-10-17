@@ -573,9 +573,9 @@ class ExportItemWizardPage extends WizardPage {
                     if (!reloadExportPath(DIRECTORY_PATH).equals("")) {
                         String newPath = reloadExportPath(DIRECTORY_PATH) + "\\" + arcFileName + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$
                         this.archivePathField.setText(newPath);
+                    } else {
+                        this.archivePathField.setText(reloadExportPath(DIRECTORY_PATH));
                     }
-                } else {
-                    this.archivePathField.setText(reloadExportPath(DIRECTORY_PATH));
                 }
             }
         }
