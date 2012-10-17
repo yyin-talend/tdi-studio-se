@@ -560,13 +560,22 @@ class ExportItemWizardPage extends WizardPage {
                 arcFileName = node.getObject().getLabel();
             }
             if (reloadExportPath(ARCHIVE_PATH) != null) {
-                String newPath = reloadExportPath(ARCHIVE_PATH)
-                        .substring(0, reloadExportPath(ARCHIVE_PATH).lastIndexOf("\\") + 1) + arcFileName + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$
-                this.archivePathField.setText(newPath);
+                // when first open the exportItem dialog ,the exportPath maybe empty,need judge
+                if (!reloadExportPath(ARCHIVE_PATH).equals("")) {
+                    String newPath = reloadExportPath(ARCHIVE_PATH).substring(0,
+                            reloadExportPath(ARCHIVE_PATH).lastIndexOf("\\") + 1) + arcFileName + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$
+                    this.archivePathField.setText(newPath);
+                } else {
+                    this.archivePathField.setText(reloadExportPath(ARCHIVE_PATH));
+                }
             } else {
                 if (reloadExportPath(DIRECTORY_PATH) != null) {
-                    String newPath = reloadExportPath(DIRECTORY_PATH) + "\\" + arcFileName + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$
-                    this.archivePathField.setText(newPath);
+                    if (!reloadExportPath(DIRECTORY_PATH).equals("")) {
+                        String newPath = reloadExportPath(DIRECTORY_PATH) + "\\" + arcFileName + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$
+                        this.archivePathField.setText(newPath);
+                    }
+                } else {
+                    this.archivePathField.setText(reloadExportPath(DIRECTORY_PATH));
                 }
             }
         }
