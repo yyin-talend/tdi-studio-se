@@ -1619,18 +1619,43 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
     }
 
     private Command getChangePropertyCommand(RepositoryNode selectedNode, Node node, ConnectionItem connectionItem) {
-        ERepositoryObjectType selectedNodetype = selectedNode.getObjectType();
-        EDatabaseComponentName name = EDatabaseComponentName.getCorrespondingComponentName(connectionItem, selectedNodetype);
-        if (name != null) {
-            List<String> componentNameList = new ArrayList<String>();
-            componentNameList.add(name.getInputComponentName());
-            componentNameList.add(name.getOutPutComponentName());
-            String nodeComponentName = node.getComponent().getName();
-            if (componentNameList.contains(nodeComponentName)) {
-                IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-                if (param != null) {
-                    return getPropertyPublicPart(selectedNode, param, node, connectionItem);
+        ERepositoryObjectType selectedNodeType = selectedNode.getObjectType();
+
+        IComponentName rcSetting = RepositoryComponentManager.getSetting(connectionItem, selectedNodeType);
+        if (rcSetting == null) {
+            for (IDragAndDropServiceHandler handler : DragAndDropManager.getHandlers()) {
+                rcSetting = handler.getCorrespondingComponentName(connectionItem, selectedNodeType);
+                if (rcSetting != null) {
+                    break;
                 }
+            }
+            if (rcSetting == null) {
+                return null;
+            }
+        }
+
+        List<IComponent> neededComponents = RepositoryComponentManager.filterNeededComponents(connectionItem, selectedNode,
+                selectedNodeType);
+        for (IDragAndDropServiceHandler handler : DragAndDropManager.getHandlers()) {
+            List<IComponent> comList = handler.filterNeededComponents(connectionItem, selectedNode, selectedNodeType);
+            if (comList != null) {
+                for (IComponent handlerComp : comList) {
+                    if (!neededComponents.contains(handlerComp)) {
+                        neededComponents.add(handlerComp);
+                    }
+                }
+            }
+        }
+
+        List<String> componentNameList = new ArrayList<String>();
+        for (IComponent component : neededComponents) {
+            componentNameList.add(component.getName());
+        }
+        String nodeComponentName = node.getComponent().getName();
+        if (componentNameList.contains(nodeComponentName)) {
+            IElementParameter param = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            if (param != null) {
+                return getPropertyPublicPart(selectedNode, param, node, connectionItem);
             }
         }
 
