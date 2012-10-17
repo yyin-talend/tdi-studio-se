@@ -114,7 +114,12 @@ public final class Expression {
     }
 
     public static boolean evaluate(final String string, List<? extends IElementParameter> listParam, ElementParameter curParam) {
-        // currentParam = curParam;
+        if (Boolean.FALSE.toString().equals(string)) {
+            return false;
+        }
+        if (Boolean.TRUE.toString().equals(string)) {
+            return true;
+        }
         if (string.contains("(") //$NON-NLS-1$
                 && (isThereCondition(string, AND) || isThereCondition(string, OR))) {
             return evaluateExpression(new Expression(string), listParam, curParam).isValid();
