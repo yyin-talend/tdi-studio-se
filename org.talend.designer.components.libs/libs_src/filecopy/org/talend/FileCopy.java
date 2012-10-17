@@ -100,8 +100,13 @@ public class FileCopy {
         try {
             in = srcInputStream.getChannel();
             out = new FileOutputStream(dest).getChannel();
-
-            in.transferTo(0, in.size(), out);
+            
+            int maxCount = (32 * 1024 * 1024) - (28 * 1024);
+            long size = in.size();
+            long position = 0;
+            while (position < size) {
+                position += in.transferTo(position, maxCount, out);
+            }
 
             in.close();
             out.close();
