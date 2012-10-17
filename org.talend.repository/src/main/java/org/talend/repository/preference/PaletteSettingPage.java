@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteRoot;
@@ -186,6 +189,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
     private ViewerFilter getFilterForComponent(final boolean isVisible) {
         ViewerFilter filter = new ViewerFilter() {
 
+            @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
                 PaletteEntry entry = (PaletteEntry) element;
 
@@ -274,6 +278,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
         GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).applyTo(displayComponentsButton);
         displayComponentsButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 setComponentVisible(hiddenViewer.getSelection(), true);
                 // getButton(IDialogConstants.OK_ID).setEnabled(true);
@@ -289,6 +294,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
         hideCompnentsButton.setLayoutData(gridData);
         hideCompnentsButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 setComponentVisible(displayViewer.getSelection(), false);
                 // getButton(IDialogConstants.OK_ID).setEnabled(true);
@@ -351,7 +357,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
                 retreiveAllEntry(list, en);
             }
         } else {
-            String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent()); //$NON-NLS-1$ //$NON-NLS-2$
+            String family = ComponentsFactoryProvider.getPaletteEntryFamily(entry.getParent());
             list.add(family + FAMILY_SPEARATOR + entry.getLabel());
         }
 
@@ -359,7 +365,7 @@ public class PaletteSettingPage extends ProjectSettingPage {
 
     @SuppressWarnings("unchecked")
     public List<ComponentSetting> getComponentsFromProject(Project project) {
-        List<ComponentSetting> components = (List<ComponentSetting>) project.getEmfProject().getComponentsSettings();
+        List<ComponentSetting> components = project.getEmfProject().getComponentsSettings();
         return components;
     }
 
@@ -453,8 +459,15 @@ public class PaletteSettingPage extends ProjectSettingPage {
             ShowStandardAction.getInstance().doRun();
             if (needCodeGen) {
                 IComponentsFactory components = ComponentsFactoryProvider.getInstance();
-                CorePlugin.getDefault().getCodeGeneratorService().refreshTemplates();
-                CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
+                Job refreshTemplates = CorePlugin.getDefault().getCodeGeneratorService().refreshTemplates();
+                refreshTemplates.addJobChangeListener(new JobChangeAdapter() {
+
+                    @Override
+                    public void done(IJobChangeEvent event) {
+                        CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
+                    }
+                });
+
             }
 
             // ComponentUtilities.updatePalette();
@@ -498,8 +511,8 @@ public class PaletteSettingPage extends ProjectSettingPage {
     }
 
     protected void cancelPressed() {
-        for (Iterator iterator = statusBackup.keySet().iterator(); iterator.hasNext();) {
-            String name = (String) iterator.next();
+        for (Object element : statusBackup.keySet()) {
+            String name = (String) element;
             setComponentVisibleForRestore(name, statusBackup.get(name));
         }
     }
