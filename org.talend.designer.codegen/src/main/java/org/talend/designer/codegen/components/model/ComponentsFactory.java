@@ -145,7 +145,7 @@ public class ComponentsFactory implements IComponentsFactory {
     // generation indirectly.
     // tFileInputFullRow + tSocketOutput : needed for DataViewer
     private static final String[] COMPONENTS_ALWAYS_NEEDED = { "tPrejob", "tPostjob", //$NON-NLS-1$ //$NON-NLS-2$ 
-            "tJava", "tLibraryLoad", "tFileInputFullRow", "tSocketOutput", "tFilterRow" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
+            "tJava", "tLibraryLoad", "tFileInputFullRow", "tSocketOutput", "tFilterRow", "tELTMysqlMap" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
 
     public ComponentsFactory() {
         if (!INCLUDEFILEINJET_SUFFIX.equals(".inc.javajet")) { //$NON-NLS-1$
