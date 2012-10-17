@@ -1201,7 +1201,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         }
 
                         // add the check result to resultList, hold the value.
-                        if (result != null) {
+                        if (result != null && !PluginChecker.isEBCDICPluginLoaded()) {
                             result.setJob(getProcess());
                             setConfigrationForReadOnlyJob(result);
                             schemaResults.add(result);
