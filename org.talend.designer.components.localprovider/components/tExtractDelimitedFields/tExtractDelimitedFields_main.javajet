@@ -86,6 +86,8 @@ if(outConns!=null){
 if(outConn!=null && inConn!=null){
 %>
 try{
+
+	<%=outConn.getName() %> = new <%=outConn.getName() %>Struct();
 <%
 	IMetadataTable inputMetadataTable = inConn.getMetadataTable();
 	for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
@@ -110,9 +112,7 @@ try{
 //set original columns
 List<IMetadataColumn> newColumnList = new ArrayList<IMetadataColumn>();
 IMetadataTable outputMetadataTable = outConn.getMetadataTable();
-%>
-	<%=outConn.getName() %> = new <%=outConn.getName() %>Struct();
-<%
+
 	for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) {
 		boolean isOirginalColumn = false;
 		for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
