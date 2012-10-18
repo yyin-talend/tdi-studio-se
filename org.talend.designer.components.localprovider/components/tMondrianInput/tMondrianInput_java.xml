@@ -353,7 +353,10 @@
 		<IMPORT NAME="Driver-JAVADB-DERBYCLIENT" MODULE="derbyclient.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-JAVADB-DERBYNET" MODULE="derbynet.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-SQLITE-JDBC-NESTED" MODULE="sqlitejdbc-v056.jar" REQUIRED="true" />
-		<IMPORT NAME="Driver-SYBASE-JCONN3" MODULE="jconn3.jar" REQUIRED="true" />		
+		<IMPORT NAME="Driver-SYBASE-JCONN3" MODULE="jconn3.jar" REQUIRED="true" />
+
+		<IMPORT NAME="mondrian_2"        MODULE="mondrian_2.jar" REQUIRED="false" />		
+		<IMPORT NAME="mondrian_3"        MODULE="mondrian_3.jar" REQUIRED="false" />		
      </IMPORTS>
    </CODEGENERATION>
 
