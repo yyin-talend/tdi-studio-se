@@ -75,6 +75,7 @@ public class NodeFigure extends Figure {
 
     private AnchorListener targetListener = new AnchorListener() {
 
+        @Override
         public void anchorMoved(ConnectionAnchor anchor) {
             updateTarget();
         }
@@ -163,6 +164,7 @@ public class NodeFigure extends Figure {
                     for (final ConnectionFigure curConn : newSourceConnections) {
                         AnchorListener sourceListener = new AnchorListener() {
 
+                            @Override
                             public void anchorMoved(ConnectionAnchor anchor) {
                                 if (curConn != null) {
                                     updateSource(curConn);
@@ -190,8 +192,8 @@ public class NodeFigure extends Figure {
 
                 } else {
                     INodeConnector mainNodeConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
-                    ConnectionFigure connection = new ConnectionFigure(mainNodeConnector
-                            .getConnectionProperty(EConnectionType.FLOW_MAIN), node);
+                    ConnectionFigure connection = new ConnectionFigure(
+                            mainNodeConnector.getConnectionProperty(EConnectionType.FLOW_MAIN), node);
                     connection.setTargetDecoration(null);
                     connection.setStart(new Point(figBounds.x, figBounds.y + figBounds.height / 2));
                     connection.setEnd(new Point(figBounds.x + figBounds.width, figBounds.y + figBounds.height / 2));
@@ -267,10 +269,12 @@ public class NodeFigure extends Figure {
 
         private boolean useRectangle;
 
+        @Override
         public Insets getInsets(IFigure figure) {
             return null;
         }
 
+        @Override
         public void paint(IFigure figure, Graphics g, Insets theInsets) {
             Rectangle r = getPaintRectangle(figure, theInsets);
 
@@ -303,8 +307,9 @@ public class NodeFigure extends Figure {
 
     public void addSourceConnection(ConnectionFigure sourceConnection) {
         if (!sourceDummyMap.keySet().contains(sourceConnection)) {
-            if (connection != null)
+            if (connection != null) {
                 connection.disposeColors();
+            }
             connection = new ConnectionFigure(sourceConnection.getConnection(), sourceConnection.getConnectionProperty(), node);
             connection.setTargetDecoration(null);
             add(connection);
@@ -329,8 +334,9 @@ public class NodeFigure extends Figure {
             targetConnection.getSourceAnchor().removeAnchorListener(targetListener);
         }
         this.targetConnection = targetConnection;
-        if (connection != null)
+        if (connection != null) {
             connection.disposeColors();
+        }
         connection = new ConnectionFigure(targetConnection.getConnection(), targetConnection.getConnectionProperty(), node);
         connection.setTargetDecoration(null);
         add(connection);
@@ -372,10 +378,16 @@ public class NodeFigure extends Figure {
             ResourceDisposeUtil.disposeColor(connection.getForegroundColor());
         }
         // connection.disposeColors();
-        if (targetConnection != null)
+        if (targetConnection != null) {
             targetConnection.disposeColors();
-        if (targetDummy != null)
+        }
+        if (targetDummy != null) {
             targetDummy.disposeColors();
+        }
+    }
+
+    public ImageFigure getImageFigure() {
+        return fig;
     }
 
 }
