@@ -2048,9 +2048,9 @@ public class CLASS {
                     }
                     setStatement.append("}\r\n");
                 } else {
-                    setStatement.append(pstmt + ".set" + generatedType + "(" + paramIndex + ", " + variable + ");\r\n");
+                    setStatement.append(pstmt + "."+"set" + generatedType + "(" + paramIndex + ", " + variable + ");\r\n");
                     if(isSourceKeyEnableNull){
-                        setStatement.append(pstmt + ".set" + generatedType + "(" + (paramIndex+1) + ", " + variable + ");\r\n");
+                        setStatement.append(pstmt + "."+"set" + generatedType + "(" + (paramIndex+1) + ", " + variable + ");\r\n");
                     }
                 }
                 if(isObject) {
