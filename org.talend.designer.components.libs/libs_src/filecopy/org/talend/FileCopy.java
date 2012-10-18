@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2011 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2012 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -35,7 +35,9 @@ public class FileCopy {
 
     public static void copyFile(String srcFileName, String desFileName, boolean delSrc) throws Exception {
 
-        FileInputStream srcInputStream = new FileInputStream(srcFileName);
+        FileInputStream srcInputStream = null;
+        try{
+        srcInputStream = new FileInputStream(srcFileName);
         long lastModified = new File(srcFileName).lastModified();
         int available = srcInputStream.available();
         if (available > L_SIZE) {// X > 100M
@@ -47,6 +49,11 @@ public class FileCopy {
         }
         // keep modification_time
         new File(desFileName).setLastModified(lastModified);
+        }finally{
+            if(srcInputStream!=null){
+                srcInputStream.close();
+            }
+        }
     }
 
     private static void copyFileS(String srcFileName, FileInputStream srcInputStream, String desFileName, boolean delSrc)
@@ -93,8 +100,13 @@ public class FileCopy {
         try {
             in = srcInputStream.getChannel();
             out = new FileOutputStream(dest).getChannel();
-
-            in.transferTo(0, in.size(), out);
+            
+            int maxCount = (32 * 1024 * 1024) - (28 * 1024);
+            long size = in.size();
+            long position = 0;
+            while (position < size) {
+                position += in.transferTo(position, maxCount, out);
+            }
 
             in.close();
             out.close();
