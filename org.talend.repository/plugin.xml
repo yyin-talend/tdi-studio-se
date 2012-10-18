@@ -1925,44 +1925,5 @@
             name="TOS">
       </provider>
    </extension>
-   <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            category="org.talend.designer.core.ui.preferences.ImportExportPreferencePage"
-            class="org.talend.repository.preference.AutonomousJobPreferencePage"
-            id="org.talend.repository.preference.AutonomousJob"
-            name="%preferencePage.AutonomousJob">
-      </page>
-      <page
-            category="org.talend.repository.preference.AutonomousJob"
-            class="org.talend.repository.preference.AutonomousJobAntScriptPreferencePage"
-            id="org.talend.repository.preference.AutonomousJobAntScript"
-            name="%preferencePage.AutonomousJobAnt">
-      </page>
-      <page
-            category="org.talend.repository.preference.AutonomousJob"
-            class="org.talend.repository.preference.AutonomousJobMavenScriptPreferencePage"
-            id="org.talend.repository.preference.AutonomousJobMavenScript"
-            name="%preferencePage.AutonomousJobMaven">
-      </page>
-      <page
-            category="org.talend.repository.preference.AutonomousJobMavenScript"
-            class="org.talend.repository.preference.AutonomousJobAssemblyMavenScriptPreferencePage"
-            id="org.talend.repository.preference.AutonomousJobAssemblyMavenScript"
-            name="assembly">
-      </page>
-      <page
-            category="org.talend.designer.core.ui.preferences.ImportExportPreferencePage"
-            class="org.talend.repository.preference.OSGIBundlePreferencePage"
-            id="org.talend.repository.preference.OSGIBundle"
-            name="%preferencePage.Osgi">
-      </page>
-      <page
-            category="org.talend.repository.preference.OSGIBundle"
-            class="org.talend.repository.preference.OSGIBundleMavenScriptPreferencePage"
-            id="org.talend.repository.preference.OSGIBundleMavenScript"
-            name="%preferencePage.OsgiMaven">
-      </page>
-   </extension>
 
 </plugin>

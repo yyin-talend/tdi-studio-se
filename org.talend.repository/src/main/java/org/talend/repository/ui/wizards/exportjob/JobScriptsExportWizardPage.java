@@ -73,6 +73,7 @@ import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
@@ -101,6 +102,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsJobJavaScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsTemporaryOptionsKeeper;
 import org.talend.repository.utils.JobVersionUtils;
+import org.talend.resource.IExportJobResourcesService;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
@@ -639,6 +641,15 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @param optionsGroup
      */
     private void createBuildScriptGroup(Composite optionsGroup) {
+        IExportJobResourcesService resourcesService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IExportJobResourcesService.class)) {
+            resourcesService = (IExportJobResourcesService) GlobalServiceRegister.getDefault().getService(
+                    IExportJobResourcesService.class);
+        }
+        if (resourcesService == null) {
+            return;
+        }
+
         Font font = optionsGroup.getFont();
 
         addBSButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
@@ -649,8 +660,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                addAntBSButton.setEnabled(addBSButton.getSelection());
-                addMavenBSButton.setEnabled(addBSButton.getSelection());
+                boolean selected = addBSButton.getSelection();
+                addAntBSButton.setEnabled(selected);
+                addMavenBSButton.setEnabled(selected);
+                if (!selected) {
+                    addAntBSButton.setSelection(selected);
+                    addMavenBSButton.setSelection(selected);
+                }
             }
         });
 
@@ -1348,8 +1364,13 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         // exportChoice.put(ExportChoice.needDependencies, exportDependencies.getSelection());
         exportChoiceMap.put(ExportChoice.setParameterValues, setParametersValueButton2.getSelection());
         // exportChoice.put(ExportChoice.needGenerateCode, genCodeButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needAntScript, addAntBSButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needMavenScript, addMavenBSButton.getSelection());
+        if (addAntBSButton != null) {
+            exportChoiceMap.put(ExportChoice.needAntScript, addAntBSButton.getSelection());
+        }
+        if (addMavenBSButton != null) {
+            exportChoiceMap.put(ExportChoice.needMavenScript, addMavenBSButton.getSelection());
+        }
+
         return exportChoiceMap;
     }
 

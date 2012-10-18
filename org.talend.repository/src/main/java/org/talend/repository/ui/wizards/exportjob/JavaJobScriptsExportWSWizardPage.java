@@ -69,6 +69,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsEx
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.PetalsTemporaryOptionsKeeper;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.SaUtils;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.petals.TalendUtils;
+import org.talend.resource.IExportJobResourcesService;
 
 /**
  * DOC x class global comment. Detailled comment <br/>
@@ -895,7 +896,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             exportChoiceMap.put(ExportChoice.needContext, true);
             exportChoiceMap.put(ExportChoice.needJobItem, false);
             exportChoiceMap.put(ExportChoice.needSourceCode, false);
-            exportChoiceMap.put(ExportChoice.needMavenScript, addBSButton.getSelection());
+            if (addBSButton != null) {
+                exportChoiceMap.put(ExportChoice.needMavenScript, addBSButton.getSelection());
+            }
             return exportChoiceMap;
         }
 
@@ -1270,6 +1273,15 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     }
 
     private void createOptionsForOSGIESB(Composite optionsComposite, Font font) {
+        IExportJobResourcesService resourcesService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IExportJobResourcesService.class)) {
+            resourcesService = (IExportJobResourcesService) GlobalServiceRegister.getDefault().getService(
+                    IExportJobResourcesService.class);
+        }
+        if (resourcesService == null) {
+            return;
+        }
+
         addBSButton = new Button(optionsComposite, SWT.CHECK | SWT.LEFT);
         addBSButton.setText("Add maven script"); //$NON-NLS-1$
         addBSButton.setFont(font);

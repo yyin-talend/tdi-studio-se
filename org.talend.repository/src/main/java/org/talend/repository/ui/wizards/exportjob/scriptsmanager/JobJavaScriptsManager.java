@@ -78,9 +78,7 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.RulesItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
@@ -103,11 +101,12 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
-import org.talend.repository.constants.ExportJobConstants;
+import org.talend.repository.constants.IExportJobConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.resource.IResourceService;
+import org.talend.repository.preference.constants.IExportJobPrefConstants;
+import org.talend.resource.IExportJobResourcesService;
 import org.talend.resources.util.EMavenBuildScriptProperties;
 
 /**
@@ -191,23 +190,32 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         if (!isOptionChoosed(ExportChoice.needAntScript) && !isOptionChoosed(ExportChoice.needMavenScript)) {
             return;
         }
+        IExportJobResourcesService resourcesService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IExportJobResourcesService.class)) {
+            resourcesService = (IExportJobResourcesService) GlobalServiceRegister.getDefault().getService(
+                    IExportJobResourcesService.class);
+        }
+        if (resourcesService == null) {
+            return;
+        }
         List<URL> scriptsUrls = new ArrayList<URL>();
         if (isOptionChoosed(ExportChoice.needAntScript)) {
-            addAntBuildScripts(scriptsUrls);
+            addAntBuildScripts(resourcesService, scriptsUrls);
         } else if (isOptionChoosed(ExportChoice.needMavenScript)) {
-            addMavenBuildScripts(scriptsUrls, processItem, selectedJobVersion);
+            addMavenBuildScripts(resourcesService, scriptsUrls, processItem, selectedJobVersion);
         }
         resource.addResources(scriptsUrls);
     }
 
-    private void addAntBuildScripts(List<URL> scriptsUrls) {
+    private void addAntBuildScripts(IExportJobResourcesService resourcesService, List<URL> scriptsUrls) {
         try {
-            String antScript = RepositoryManager.getPreferenceStore().getString(IRepositoryPrefConstants.ANT_SCRIPT_TEMPLATE);
+            String antScript = resourcesService.getScriptFromPreferenceStore(IExportJobPrefConstants.ANT_SCRIPT_TEMPLATE);
             if (antScript == null) {
                 return;
             }
-            File antBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.ANT_BUILD_FILE_NAME);
-            File antPropertiesFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.ANT_BUILD_PROPERTIES_FILE_NAME);
+            File antBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + IExportJobConstants.ANT_BUILD_FILE_NAME);
+            File antPropertiesFile = new File(getTmpFolder() + PATH_SEPARATOR
+                    + IExportJobConstants.ANT_BUILD_PROPERTIES_FILE_NAME);
             FileOutputStream antBuildFileOutputStream = null;
             FileOutputStream antPropertiesOutputStream = null;
             try {
@@ -217,10 +225,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                         IBrandingService.class);
                 if (brandingService != null) {
-                    props.put(ExportJobConstants.PRODUCT_VENDOR, brandingService.getCorporationName());
-                    props.put(ExportJobConstants.PRODUCT_NAME, brandingService.getFullProductName());
+                    props.put(IExportJobConstants.PRODUCT_VENDOR, brandingService.getCorporationName());
+                    props.put(IExportJobConstants.PRODUCT_NAME, brandingService.getFullProductName());
                 }
-                props.put(ExportJobConstants.PRODUCT_VERSION, VersionUtils.getVersion());
+                props.put(IExportJobConstants.PRODUCT_VERSION, VersionUtils.getVersion());
                 antPropertiesOutputStream = new FileOutputStream(antPropertiesFile);
                 props.store(new FileOutputStream(antPropertiesFile), "");
             } finally {
@@ -234,19 +242,15 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         }
     }
 
-    private void addMavenBuildScripts(List<URL> scriptsUrls, ProcessItem processItem, String selectedJobVersion) {
-        String mavenScript = RepositoryPlugin.getDefault().getPreferenceStore()
-                .getString(IRepositoryPrefConstants.MAVEN_SCRIPT_AUTONOMOUSJOB_TEMPLATE);
+    private void addMavenBuildScripts(IExportJobResourcesService resourcesService, List<URL> scriptsUrls,
+            ProcessItem processItem, String selectedJobVersion) {
+        String mavenScript = resourcesService
+                .getScriptFromPreferenceStore(IExportJobPrefConstants.MAVEN_SCRIPT_AUTONOMOUSJOB_TEMPLATE);
         if (mavenScript == null) {
             return;
         }
-        IResourceService resourceService = (IResourceService) GlobalServiceRegister.getDefault().getService(
-                IResourceService.class);
-        if (resourceService == null) {
-            return;
-        }
-        String assemblyMavenScript = RepositoryPlugin.getDefault().getPreferenceStore()
-                .getString(IRepositoryPrefConstants.MAVEN_SCRIPT_AUTONOMOUSJOB_ASSEMBLY_TEMPLATE);
+        String assemblyMavenScript = resourcesService
+                .getScriptFromPreferenceStore(IExportJobPrefConstants.MAVEN_SCRIPT_AUTONOMOUSJOB_ASSEMBLY_TEMPLATE);
         if (assemblyMavenScript == null) {
             return;
         }
@@ -267,8 +271,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
                 processItem.getProperty().getId(), selectedJobVersion);
 
-        File mavenBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_BUILD_FILE_NAME);
-        File mavenAssemblyFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_ASSEMBLY_FILE_NAME);
+        File mavenBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + IExportJobConstants.MAVEN_BUILD_FILE_NAME);
+        File mavenAssemblyFile = new File(getTmpFolder() + PATH_SEPARATOR + IExportJobConstants.MAVEN_ASSEMBLY_FILE_NAME);
         try {
             FileOutputStream outStream = null;
             try {
@@ -561,7 +565,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         List<URL> list = new ArrayList<URL>();
         if (isOptionChoosed(ExportChoice.needAntScript)) {
             Bundle bundle = Platform.getBundle(org.talend.resources.ResourcesPlugin.PLUGIN_ID);
-            Enumeration entryPaths = bundle.getEntryPaths(ExportJobConstants.ANT_BUILD_SCRIPT_LIB_DIR);
+            Enumeration entryPaths = bundle.getEntryPaths(IExportJobConstants.ANT_BUILD_SCRIPT_LIB_DIR);
             if (entryPaths == null) {
                 return list;
             }

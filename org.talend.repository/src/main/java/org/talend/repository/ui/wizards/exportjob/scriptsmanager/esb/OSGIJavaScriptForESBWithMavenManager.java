@@ -23,11 +23,10 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.designer.runprocess.LastGenerationInfo;
-import org.talend.repository.RepositoryPlugin;
-import org.talend.repository.constants.ExportJobConstants;
-import org.talend.resource.IResourceService;
+import org.talend.repository.constants.IExportJobConstants;
+import org.talend.repository.preference.constants.IExportJobPrefConstants;
+import org.talend.resource.IExportJobResourcesService;
 
 /**
  * created by nrousseau on Sep 25, 2012 Detailled comment
@@ -44,28 +43,30 @@ public class OSGIJavaScriptForESBWithMavenManager extends JavaScriptForESBWithMa
      * @param statisticPort
      * @param tracePort
      */
-    public OSGIJavaScriptForESBWithMavenManager(Map<ExportChoice, Object> exportChoiceMap, String contextName,
-            String launcher, int statisticPort, int tracePort) {
+    public OSGIJavaScriptForESBWithMavenManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher,
+            int statisticPort, int tracePort) {
         super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
     }
 
     @Override
     protected void addMavenBuildScripts(List<URL> scriptsUrls, ProcessItem processItem, String selectedJobVersion,
             Map<String, String> mavenPropertiesMap) {
-        String mavenScript = RepositoryPlugin.getDefault().getPreferenceStore()
-                .getString(IRepositoryPrefConstants.MAVEN_OSGI_SCRIPT_TEMPLATE);
-        if (mavenScript == null) {
+        IExportJobResourcesService resourcesService = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IExportJobResourcesService.class)) {
+            resourcesService = (IExportJobResourcesService) GlobalServiceRegister.getDefault().getService(
+                    IExportJobResourcesService.class);
+        }
+        if (resourcesService == null) {
             return;
         }
-        IResourceService resourceService = (IResourceService) GlobalServiceRegister.getDefault().getService(
-                IResourceService.class);
-        if (resourceService == null) {
+        String mavenScript = resourcesService.getScriptFromPreferenceStore(IExportJobPrefConstants.MAVEN_OSGI_SCRIPT_TEMPLATE);
+        if (mavenScript == null) {
             return;
         }
         Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
                 processItem.getProperty().getId(), selectedJobVersion);
 
-        File mavenBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + ExportJobConstants.MAVEN_BUILD_FILE_NAME);
+        File mavenBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + IExportJobConstants.MAVEN_BUILD_FILE_NAME);
         try {
             FileOutputStream mavenBuildFileOutputStream = null;
             try {

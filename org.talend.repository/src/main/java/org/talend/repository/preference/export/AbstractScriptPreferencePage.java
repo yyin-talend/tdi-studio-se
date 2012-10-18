@@ -10,9 +10,10 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.preference;
+package org.talend.repository.preference.export;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.GridData;
@@ -21,7 +22,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -36,9 +36,9 @@ public abstract class AbstractScriptPreferencePage extends FieldEditorPreference
 
     private boolean isDefaultPresentedForScriptTxt = false;
 
-    public AbstractScriptPreferencePage() {
+    public AbstractScriptPreferencePage(IPreferenceStore preferenceStore) {
         super(FLAT);
-        setPreferenceStore(RepositoryPlugin.getDefault().getPreferenceStore());
+        setPreferenceStore(preferenceStore);
     }
 
     /*

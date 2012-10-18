@@ -15,7 +15,7 @@ package org.talend.repository.constants;
 /**
  * DOC ycbai class global comment. Detailled comment
  */
-public interface ExportJobConstants {
+public interface IExportJobConstants {
 
     public static final String PRODUCT_VENDOR = "product.vendor"; //$NON-NLS-1$
 
