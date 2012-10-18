@@ -79,6 +79,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
+import org.talend.core.repository.constants.FileConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
@@ -121,7 +122,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     public static final String ALL_VERSIONS = "Latest"; //$NON-NLS-1$
 
-    protected static final String OUTPUT_FILE_SUFFIX = ".zip"; //$NON-NLS-1$
+    protected static final String OUTPUT_FILE_SUFFIX = FileConstants.ZIP_FILE_SUFFIX;
 
     // widgets
     protected Button shellLauncherButton;

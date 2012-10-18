@@ -83,6 +83,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.model.utils.JavaResourcesHelper;
+import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.ui.IRulesProviderService;
@@ -103,7 +104,6 @@ import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.constants.ExportJobConstants;
-import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -569,7 +569,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 Object entryPath = entryPaths.nextElement();
                 if (entryPath != null && entryPath instanceof String) {
                     String path = (String) entryPath;
-                    if (path.endsWith(".jar")) { //$NON-NLS-1$
+                    if (path.endsWith(FileConstants.JAR_FILE_SUFFIX)) {
                         URL entry = bundle.getEntry(path);
                         if (entry != null) {
                             try {
@@ -1153,7 +1153,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         try {
             String classRoot = getClassRootLocation();
-            String jarPath = getTmpFolder() + PATH_SEPARATOR + jobFolderName + ".jar"; //$NON-NLS-1$
+            String jarPath = getTmpFolder() + PATH_SEPARATOR + jobFolderName + FileConstants.JAR_FILE_SUFFIX;
             // Exports the jar file
             JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
 
@@ -1532,8 +1532,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             File[] files = file.listFiles(new FilenameFilter() {
 
                 public boolean accept(File dir, String name) {
-                    return name.toLowerCase().endsWith(".jar") || name.toLowerCase().endsWith(".properties") //$NON-NLS-1$ //$NON-NLS-2$
-                            || name.toLowerCase().endsWith(".zip") ? true : false; //$NON-NLS-1$
+                    return name.toLowerCase().endsWith(FileConstants.JAR_FILE_SUFFIX)
+                            || name.toLowerCase().endsWith(FileConstants.PROPERTIES_FILE_SUFFIX)
+                            || name.toLowerCase().endsWith(FileConstants.ZIP_FILE_SUFFIX) ? true : false;
                 }
             });
 

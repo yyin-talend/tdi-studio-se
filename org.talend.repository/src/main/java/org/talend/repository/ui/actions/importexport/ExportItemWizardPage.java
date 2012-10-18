@@ -75,6 +75,7 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.repository.constants.FileConstants;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
@@ -532,10 +533,10 @@ class ExportItemWizardPage extends WizardPage {
         this.directoryPathField = new Text(projectGroup, SWT.BORDER);
 
         this.directoryPathField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));
-        String reloaded = reloadExportPath(DIRECTORY_PATH);
-        if (reloaded != null) {
-            this.directoryPathField.setText(reloaded);
-            this.lastPath = reloaded;
+        String exportDirPath = reloadExportPath(DIRECTORY_PATH);
+        if (exportDirPath != null) {
+            this.directoryPathField.setText(exportDirPath);
+            this.lastPath = exportDirPath;
         }
 
         browseDirectoriesButton = new Button(projectGroup, SWT.PUSH);
@@ -559,24 +560,18 @@ class ExportItemWizardPage extends WizardPage {
             } else {
                 arcFileName = node.getObject().getLabel();
             }
-            if (reloadExportPath(ARCHIVE_PATH) != null) {
-                // when first open the exportItem dialog ,the exportPath maybe empty,need judge
-                if (!reloadExportPath(ARCHIVE_PATH).equals("")) {
-                    String newPath = reloadExportPath(ARCHIVE_PATH).substring(0,
-                            reloadExportPath(ARCHIVE_PATH).lastIndexOf("\\") + 1) + arcFileName + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$
+            String exportArchivePath = reloadExportPath(ARCHIVE_PATH);
+            // when first open the exportItem dialog ,the exportPath maybe empty,need judge
+            if (exportArchivePath != null && exportArchivePath.trim().length() > 0) {
+                File beforeExportArchiveFolder = new File(exportArchivePath).getParentFile();
+                if (beforeExportArchiveFolder.exists()) {
+                    String newPath = new File(beforeExportArchiveFolder, arcFileName + FileConstants.ZIP_FILE_SUFFIX)
+                            .getAbsolutePath();
                     this.archivePathField.setText(newPath);
-                } else {
-                    this.archivePathField.setText(reloadExportPath(ARCHIVE_PATH));
                 }
-            } else {
-                if (reloadExportPath(DIRECTORY_PATH) != null) {
-                    if (!reloadExportPath(DIRECTORY_PATH).equals("")) {
-                        String newPath = reloadExportPath(DIRECTORY_PATH) + "\\" + arcFileName + ".zip"; //$NON-NLS-1$ //$NON-NLS-2$
-                        this.archivePathField.setText(newPath);
-                    } else {
-                        this.archivePathField.setText(reloadExportPath(DIRECTORY_PATH));
-                    }
-                }
+            } else if (exportDirPath != null && exportDirPath.trim().length() > 0) {
+                String newPath = exportDirPath + File.separator + arcFileName + FileConstants.ZIP_FILE_SUFFIX;
+                this.archivePathField.setText(newPath);
             }
         }
 
@@ -628,13 +623,7 @@ class ExportItemWizardPage extends WizardPage {
         directoryPathField.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                if (getDialogSettings() != null) {
-                    IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);
-                    if (section == null) {
-                        section = getDialogSettings().addNewSection(DESTINATION_FILE);
-                    }
-                    section.put(DIRECTORY_PATH, directoryPathField.getText());
-                }
+                saveExportPath(DIRECTORY_PATH, directoryPathField.getText());
             }
 
         });
@@ -660,14 +649,7 @@ class ExportItemWizardPage extends WizardPage {
         archivePathField.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                if (getDialogSettings() != null) {
-                    IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);
-                    if (section == null) {
-                        section = getDialogSettings().addNewSection(DESTINATION_FILE);
-                    }
-                    section.put(ARCHIVE_PATH, archivePathField.getText());
-                }
-
+                saveExportPath(ARCHIVE_PATH, archivePathField.getText());
             }
 
         });
@@ -837,7 +819,7 @@ class ExportItemWizardPage extends WizardPage {
             previouslyBrowsedDirectory = selectedDirectory;
             directoryPathField.setText(previouslyBrowsedDirectory);
             lastPath = directoryPathField.getText().trim();
-            saveExportPath(DIRECTORY_PATH);
+            saveExportPath(DIRECTORY_PATH, lastPath);
 
         }
 
@@ -872,19 +854,21 @@ class ExportItemWizardPage extends WizardPage {
             previouslyBrowsedArchive = selectedArchive;
             archivePathField.setText(previouslyBrowsedArchive);
             lastPath = archivePathField.getText().trim();
-            saveExportPath(ARCHIVE_PATH);
+            saveExportPath(ARCHIVE_PATH, lastPath);
 
         }
 
     }
 
-    private void saveExportPath(String pathType) {
+    private void saveExportPath(String pathType, String path) {
         if (getDialogSettings() != null) {
             IDialogSettings section = getDialogSettings().getSection(DESTINATION_FILE);
             if (section == null) {
                 section = getDialogSettings().addNewSection(DESTINATION_FILE);
             }
-            section.put(pathType, lastPath);
+            if (section != null) {
+                section.put(pathType, path);
+            }
         }
     }
 

@@ -53,6 +53,7 @@ import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IProcessor;
@@ -423,13 +424,13 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     protected String getOutputSuffix() {
         switch (getCurrentExportType1()) {
         case WSWAR:
-            return ".war"; //$NON-NLS-1$
+            return FileConstants.WAR_FILE_SUFFIX;
         case JBOSSESB:
-            return ".esb"; //$NON-NLS-1$
+            return FileConstants.ESB_FILE_SUFFIX;
         case OSGI:
-            return ".jar"; //$NON-NLS-1$
+            return FileConstants.JAR_FILE_SUFFIX;
         default:
-            return ".zip"; //$NON-NLS-1$
+            return FileConstants.ZIP_FILE_SUFFIX;
         }
     }
 
@@ -446,19 +447,19 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         JobExportType jobExportType = getCurrentExportType1();
         switch (jobExportType) {
         case WSWAR:
-            dialog.setFilterExtensions(new String[] { "*.war", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
+            dialog.setFilterExtensions(new String[] { "*" + FileConstants.WAR_FILE_SUFFIX, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
             break;
         case JBOSSESB:
-            dialog.setFilterExtensions(new String[] { "*.esb", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
+            dialog.setFilterExtensions(new String[] { "*" + FileConstants.ESB_FILE_SUFFIX, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
             break;
         case OSGI:
-            dialog.setFilterExtensions(new String[] { "*.jar", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
+            dialog.setFilterExtensions(new String[] { "*" + FileConstants.JAR_FILE_SUFFIX, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
             break;
         case PETALSESB:
-            dialog.setFilterExtensions(new String[] { "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
+            dialog.setFilterExtensions(new String[] { "*" + FileConstants.ZIP_FILE_SUFFIX, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
             break;
         default:
-            dialog.setFilterExtensions(new String[] { "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
+            dialog.setFilterExtensions(new String[] { "*" + FileConstants.ZIP_FILE_SUFFIX, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (jobExportType.equals(JobExportType.PETALSESB)) {
@@ -559,7 +560,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             if (directoryNames != null && directoryNames.length > 0) {
                 // destination
                 for (int i = 0; i < directoryNames.length; i++) {
-                    if (directoryNames[i].toLowerCase().endsWith(".zip")) { //$NON-NLS-1$
+                    if (directoryNames[i].toLowerCase().endsWith(FileConstants.ZIP_FILE_SUFFIX)) {
                         directoryNames[i] = (directoryNames[i].charAt(0) + "").toUpperCase() + directoryNames[i].substring(1);//$NON-NLS-1$
                         addDestinationItem(directoryNames[i]);
                     }
@@ -595,7 +596,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 String fileName = getDefaultFileNameWithType();
                 // destination
                 for (int i = 0; i < directoryNames.length; i++) {
-                    if (directoryNames[i].toLowerCase().endsWith(".esb")) { //$NON-NLS-1$
+                    if (directoryNames[i].toLowerCase().endsWith(FileConstants.ESB_FILE_SUFFIX)) {
                         directoryNames[i] = (directoryNames[i].charAt(0) + "").toUpperCase() + directoryNames[i].substring(1);//$NON-NLS-1$
                         addDestinationItem(directoryNames[i]);
                     }
@@ -659,7 +660,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             if (directoryNames != null && directoryNames.length > 0) {
                 String fileName = getDefaultFileNameWithType();
                 for (int i = 0; i < directoryNames.length; i++) {
-                    if (directoryNames[i].toLowerCase().endsWith(".jar")) { //$NON-NLS-1$
+                    if (directoryNames[i].toLowerCase().endsWith(FileConstants.JAR_FILE_SUFFIX)) {
                         directoryNames[i] = (directoryNames[i].charAt(0) + "").toUpperCase() + directoryNames[i].substring(1);//$NON-NLS-1$
                         addDestinationItem(directoryNames[i]);
                     }
@@ -682,7 +683,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 String fileName = getDefaultFileNameWithType();
                 // destination
                 for (int i = 0; i < directoryNames.length; i++) {
-                    if (directoryNames[i].toLowerCase().endsWith(".war") || directoryNames[i].toLowerCase().endsWith(".zip")) { //$NON-NLS-1$
+                    if (directoryNames[i].toLowerCase().endsWith(FileConstants.WAR_FILE_SUFFIX)
+                            || directoryNames[i].toLowerCase().endsWith(FileConstants.ZIP_FILE_SUFFIX)) {
                         directoryNames[i] = (directoryNames[i].charAt(0) + "").toUpperCase() + directoryNames[i].substring(1);//$NON-NLS-1$
                         addDestinationItem(directoryNames[i]);
                     }
@@ -731,8 +733,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
             String fileName = getDefaultFileNameWithType();
-            if (!fileName.endsWith(".zip")) {//$NON-NLS-1$
-                fileName = fileName + ".zip";//$NON-NLS-1$
+            if (!fileName.endsWith(FileConstants.ZIP_FILE_SUFFIX)) {
+                fileName = fileName + FileConstants.ZIP_FILE_SUFFIX;
             }
             if (directoryNames != null && directoryNames.length > 0) {
                 // destination
@@ -744,7 +746,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                     // } else {
                     // destination = dirPath.append(fileName).toOSString();
                     // }
-                    if (directoryNames[i].toLowerCase().endsWith(".zip")) { //$NON-NLS-1$
+                    if (directoryNames[i].toLowerCase().endsWith(FileConstants.ZIP_FILE_SUFFIX)) {
                         directoryNames[i] = (directoryNames[i].charAt(0) + "").toUpperCase() + directoryNames[i].substring(1);//$NON-NLS-1$
                         addDestinationItem(directoryNames[i]);
                     }

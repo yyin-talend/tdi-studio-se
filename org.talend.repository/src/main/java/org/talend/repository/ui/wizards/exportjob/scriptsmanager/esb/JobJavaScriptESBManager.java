@@ -26,7 +26,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.Attributes;
@@ -52,6 +51,7 @@ import org.talend.core.PluginChecker;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
+import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
@@ -59,7 +59,6 @@ import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage;
-import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 
 /**
@@ -68,13 +67,12 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsM
  */
 public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
-    public JobJavaScriptESBManager(Map<ExportChoice, Object> exportChoiceMap,
-			String contextName, String launcher, int statisticPort,
-			int tracePort) {
-		super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
-	}
+    public JobJavaScriptESBManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher,
+            int statisticPort, int tracePort) {
+        super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
+    }
 
-	private static Logger log = Logger.getLogger(ExceptionHandler.class);
+    private static Logger log = Logger.getLogger(ExceptionHandler.class);
 
     public static final String EXPORT_METHOD = "runJob"; //$NON-NLS-1$
 
@@ -114,8 +112,8 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         List<URL> talendLibraries = getExternalLibraries(true, process);
         libResource.addResources(talendLibraries);
 
-        for (int i = 0; i < process.length; i++) {
-            ProcessItem processItem = (ProcessItem) process[i].getItem();
+        for (ExportFileResource proces : process) {
+            ProcessItem processItem = (ProcessItem) proces.getItem();
             String jobName = processItem.getProperty().getLabel();
             String packageName = JavaResourcesHelper.getProjectFolderName(processItem) + "." //$NON-NLS-1$
                     + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
@@ -128,7 +126,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
             }
 
             // generate the source files
-            String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
+            String libPath = calculateLibraryPathFromDirectory(proces.getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
             String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
                     + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
@@ -136,13 +134,11 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
 
             if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
                 generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren),
-                        progressMonitor);
+                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren), progressMonitor);
                 generateESBActionFile(processItem, contextName);
             }
 
-            addJobItem(process, processItem, isOptionChoosed(ExportChoice.needJobItem), itemsResource,
-                    selectedJobVersion);
+            addJobItem(process, processItem, isOptionChoosed(ExportChoice.needJobItem), itemsResource, selectedJobVersion);
 
             addDependencies(process, processItem, isOptionChoosed(ExportChoice.needDependencies), itemsResource);
 
@@ -158,7 +154,7 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
             libResource.addResources(getJobScripts(processItem, selectedJobVersion, needJob));
 
             // dynamic db xml mapping
-            addXmlMapping(process[i], isOptionChoosed(ExportChoice.needSourceCode));
+            addXmlMapping(proces, isOptionChoosed(ExportChoice.needSourceCode));
 
         }
 
@@ -278,13 +274,11 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
             }
         }
 
-        for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
-            JobInfo jobInfo = iter.next();
+        for (JobInfo jobInfo : list) {
             libResource.addResources(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(), true));
             addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), contextResource,
                     isOptionChoosed(ExportChoice.needContext));
-            addDependencies(allResources, jobInfo.getProcessItem(), isOptionChoosed(ExportChoice.needDependencies),
-                    srcResource);
+            addDependencies(allResources, jobInfo.getProcessItem(), isOptionChoosed(ExportChoice.needDependencies), srcResource);
         }
 
     }
@@ -429,14 +423,14 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
         a.put(Attributes.Name.IMPLEMENTATION_VENDOR, service.getFullProductName());
         return manifest;
     }
-    
-	@Override
+
+    @Override
     public void setTopFolder(List<ExportFileResource> resourcesToExport) {
         return;
     }
 
-	@Override
-	public String getOutputSuffix() {
-		return ".esb";
-	}
+    @Override
+    public String getOutputSuffix() {
+        return FileConstants.ESB_FILE_SUFFIX;
+    }
 }

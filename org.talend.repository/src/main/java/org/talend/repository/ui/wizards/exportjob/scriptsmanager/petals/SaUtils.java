@@ -26,6 +26,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.talend.core.repository.constants.FileConstants;
 
 /**
  * A set of utility methods used to create a Petals service assembly for the Talend SE.
@@ -49,13 +50,14 @@ public class SaUtils {
 
         IPath saPath = new Path(saFilePath);
         String saName = saPath.lastSegment();
-        if (saName.endsWith(".zip")) //$NON-NLS-1$
+        if (saName.endsWith(FileConstants.ZIP_FILE_SUFFIX)) {
             saName = saName.substring(0, saName.length() - 4);
+        }
 
         String suName = saName.replace("sa-", "su-"); //$NON-NLS-1$ //$NON-NLS-2$
         String jbiXmlContent = generateJbiXmlForTalendSA(saName, jobDescription, suName);
         Map<String, File> entries = new HashMap<String, File>(1);
-        entries.put(suName + ".zip", suFile); //$NON-NLS-1$
+        entries.put(suName + FileConstants.ZIP_FILE_SUFFIX, suFile);
 
         File saFile = null;
         try {
@@ -148,11 +150,13 @@ public class SaUtils {
         }
 
         zos.close();
-        if (zipFile.exists() && !zipFile.delete())
+        if (zipFile.exists() && !zipFile.delete()) {
             zipFile.deleteOnExit();
+        }
 
-        if (!temporaryFile.renameTo(zipFile))
+        if (!temporaryFile.renameTo(zipFile)) {
             throw new IOException("Could not move temporary archive to target destination."); //$NON-NLS-1$
+        }
 
         return zipFile;
     }

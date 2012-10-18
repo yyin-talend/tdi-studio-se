@@ -66,11 +66,11 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryContentHandler;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryContentManager;
+import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.utils.ResourceFilenameHelper;
 import org.talend.designer.core.model.utils.emf.component.impl.IMPORTTypeImpl;
 import org.talend.repository.ProjectManager;
-import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.IFileExporterFullPath;
 import org.talend.repository.documentation.TarFileExporterFullPath;
 import org.talend.repository.documentation.ZipFileExporterFullPath;
@@ -153,13 +153,13 @@ public class ExportItemUtil {
             File tmpDirectory = null;
             Map<File, IPath> toExport;
 
-            if (destination.getName().endsWith(".tar")) { //$NON-NLS-1$
+            if (destination.getName().endsWith(FileConstants.TAR_FILE_SUFFIX)) {
                 createFolder(destination.getParentFile());
                 exporter = new TarFileExporterFullPath(destination.getAbsolutePath(), false);
-            } else if (destination.getName().endsWith(".tar.gz")) { //$NON-NLS-1$
+            } else if (destination.getName().endsWith(FileConstants.TAR_GZ_FILE_SUFFIX)) {
                 createFolder(destination.getParentFile());
                 exporter = new TarFileExporterFullPath(destination.getAbsolutePath(), true);
-            } else if (destination.getName().endsWith(".zip")) { //$NON-NLS-1$
+            } else if (destination.getName().endsWith(FileConstants.ZIP_FILE_SUFFIX)) {
                 createFolder(destination.getParentFile());
                 exporter = new ZipFileExporterFullPath(destination.getAbsolutePath(), true);
             } else {
@@ -364,7 +364,7 @@ public class ExportItemUtil {
                         item.setParent(null);
                     }
                 } else {
-                    List<ReferenceFileItem> referenceFiles = (List<ReferenceFileItem>) item.getReferenceResources();
+                    List<ReferenceFileItem> referenceFiles = item.getReferenceResources();
                     if (referenceFiles != null && !referenceFiles.isEmpty()) {
                         ProxyRepositoryFactory.getInstance().unloadResources(item.getProperty());
                     }
@@ -487,7 +487,7 @@ public class ExportItemUtil {
     }
 
     private void computeReferenceFilesAndPaths(File destinationFile, Item item, IPath fileNamePath) {
-        List<ReferenceFileItem> referenceFiles = (List<ReferenceFileItem>) item.getReferenceResources();
+        List<ReferenceFileItem> referenceFiles = item.getReferenceResources();
         if (referenceFiles != null && !referenceFiles.isEmpty()) {
             for (ReferenceFileItem ri : referenceFiles) {
                 IPath rfPath = fileNamePath.addFileExtension(ri.getExtension());
@@ -586,8 +586,9 @@ public class ExportItemUtil {
 
     private void saveResources(ResourceSet resourceSet) throws IOException, PersistenceException {
         for (Resource resource : resourceSet.getResources()) {
-            if (resource.getURI().isFile())
+            if (resource.getURI().isFile()) {
                 EmfHelper.saveResource(resource);
+            }
         }
     }
 

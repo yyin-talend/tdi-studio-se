@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.repository.constants.FileConstants;
 import org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWSWizardPage.JobExportType;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager.ExportChoice;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptESBManager;
@@ -38,9 +39,11 @@ public class JobScriptsManagerFactory {
             case POJO:
                 return new JobJavaScriptsManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
             case WSWAR:
-                return new JobJavaScriptsWSManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort, ".war");
+                return new JobJavaScriptsWSManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort,
+                        FileConstants.WAR_FILE_SUFFIX);
             case WSZIP:
-                return new JobJavaScriptsWSManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort, ".zip");
+                return new JobJavaScriptsWSManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort,
+                        FileConstants.ZIP_FILE_SUFFIX);
             case JBOSSESB:
                 return new JobJavaScriptESBManager(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
             case PETALSESB:

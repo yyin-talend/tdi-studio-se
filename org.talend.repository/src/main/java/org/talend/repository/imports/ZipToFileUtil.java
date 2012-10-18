@@ -22,6 +22,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.talend.core.repository.constants.FileConstants;
+
 /**
  * DOC Administrator class global comment. Detailled comment
  */
@@ -52,7 +54,7 @@ public class ZipToFileUtil {
         File file;
         File zipDir;
         zipDir = new File(zipDirectory);
-        String zipFileName = zipDir.getName() + ".zip";
+        String zipFileName = zipDir.getName() + FileConstants.ZIP_FILE_SUFFIX;
         try {
             this.zipOut = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFileName)));
             handleDir(zipDir, this.zipOut);
@@ -141,17 +143,17 @@ public class ZipToFileUtil {
         boolean flag = true;
         // delete all the file
         File[] files = dirFile.listFiles();
-        for (int i = 0; i < files.length; i++) {
+        for (File file : files) {
             // delete the file
-            if (files[i].isFile()) {
-                flag = deleteFile(files[i].getAbsolutePath());
+            if (file.isFile()) {
+                flag = deleteFile(file.getAbsolutePath());
                 if (!flag) {
                     break;
                 }
             }
 
             else {
-                flag = deleteDirectory(files[i].getAbsolutePath());
+                flag = deleteDirectory(file.getAbsolutePath());
                 if (!flag) {
                     break;
                 }
