@@ -146,6 +146,8 @@ public class Node extends Element implements IGraphicalNode {
 
     public static final String RETURNS_CHANGED = "returns changed";
 
+    public static final String ICON_CHANGE = "iconChange";//$NON-NLS-1$
+
     public static final int DEFAULT_SIZE = 32;
 
     protected Point location = new Point(0, 0);
@@ -3878,6 +3880,10 @@ public class Node extends Element implements IGraphicalNode {
     @Override
     public void setVirtualLinkTo(EConnectionType virtualLinkTo) {
         this.virtualLinkTo = virtualLinkTo;
+    }
+
+    public void fireImageChage() {
+        firePropertyChange(ICON_CHANGE, null, null);
     }
 
 }

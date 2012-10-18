@@ -48,6 +48,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
+import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -67,6 +68,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.IJobletProviderService;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.core.model.components.DummyComponent;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ExternalUtilities;
@@ -324,6 +326,9 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             refreshVisuals();
             getParent().refresh();
             needUpdateSubjob = true;
+        } else if (changeEvent.getPropertyName().equals(Node.ICON_CHANGE)) {
+            changeIcon((Node) changeEvent.getSource());
+            refreshVisuals();
         } else if (changeEvent.getPropertyName().equals(EParameterName.ACTIVATE.getName())) {
             if (((INode) getModel()).isActivate()) {
                 ((NodeFigure) figure).setDummy(((Node) getModel()).isDummy());
@@ -714,4 +719,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         return null;
     }
 
+    public void changeIcon(Node node) {
+        ((NodeFigure) getFigure()).getImageFigure().setImage(
+                CoreImageProvider.getComponentIcon(node.getComponent(), ICON_SIZE.ICON_32));
+    }
 }

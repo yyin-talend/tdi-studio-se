@@ -190,8 +190,8 @@ public class NodeFigure extends Figure {
 
                 } else {
                     INodeConnector mainNodeConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
-                    ConnectionFigure connection = new ConnectionFigure(mainNodeConnector
-                            .getConnectionProperty(EConnectionType.FLOW_MAIN), node);
+                    ConnectionFigure connection = new ConnectionFigure(
+                            mainNodeConnector.getConnectionProperty(EConnectionType.FLOW_MAIN), node);
                     connection.setTargetDecoration(null);
                     connection.setStart(new Point(figBounds.x, figBounds.y + figBounds.height / 2));
                     connection.setEnd(new Point(figBounds.x + figBounds.width, figBounds.y + figBounds.height / 2));
@@ -376,6 +376,10 @@ public class NodeFigure extends Figure {
             targetConnection.disposeColors();
         if (targetDummy != null)
             targetDummy.disposeColors();
+    }
+
+    public ImageFigure getImageFigure() {
+        return fig;
     }
 
 }
