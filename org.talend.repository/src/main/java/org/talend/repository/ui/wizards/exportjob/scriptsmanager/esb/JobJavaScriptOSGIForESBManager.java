@@ -577,21 +577,22 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         } else {
             importPackages += "routines.system.api,org.apache.cxf.management.counters,*;resolution:=optional";
             analyzer.setProperty(Analyzer.IMPORT_PACKAGE, importPackages);
-
-            StringBuilder bundleClasspath = new StringBuilder(".");
-            Set<String> relativePathList = libResource.getRelativePathList();
-            for (String path : relativePathList) {
-                Set<URL> resources = libResource.getResourcesByRelativePath(path);
-                for (URL url : resources) {
-                    File dependencyFile = new File(url.getPath());
-                    String relativePath = libResource.getDirectoryName() + PATH_SEPARATOR + dependencyFile.getName();
-                    bundleClasspath.append(',').append(relativePath);
-                    bin.putResource(relativePath, new FileResource(dependencyFile));
-                    // analyzer.addClasspath(new File(url.getPath()));
-                }
-            }
-            analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH, bundleClasspath.toString());
         }
+
+        StringBuilder bundleClasspath = new StringBuilder(".");
+        Set<String> relativePathList = libResource.getRelativePathList();
+        for (String path : relativePathList) {
+            Set<URL> resources = libResource.getResourcesByRelativePath(path);
+            for (URL url : resources) {
+                File dependencyFile = new File(url.getPath());
+                String relativePath = libResource.getDirectoryName() + PATH_SEPARATOR + dependencyFile.getName();
+                bundleClasspath.append(',').append(relativePath);
+                bin.putResource(relativePath, new FileResource(dependencyFile));
+                // analyzer.addClasspath(new File(url.getPath()));
+            }
+        }
+        analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH, bundleClasspath.toString());
+
         // } else {
         //            String additionalImports = ""; //$NON-NLS-1$
         // for (ProcessItem processItem : itemToBeExport) {
@@ -727,9 +728,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 if (exportPackages != null && !"".equals(exportPackages)) {
                     analyzer.setProperty(Analyzer.EXPORT_PACKAGE, exportPackages);
                 }
-                if (!libResource.getAllResources().isEmpty()) {
-                    analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH, getClassPath(libResource));
-                }
             }
         }
     }
@@ -780,21 +778,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
             }
         }
-    }
-
-    private static String getClassPath(ExportFileResource libResource) {
-        StringBuffer libBuffer = new StringBuffer();
-        libBuffer.append(PACKAGE_SEPARATOR).append(","); //$NON-NLS-1$ 
-        Set<String> relativePathList = libResource.getRelativePathList();
-        for (String path : relativePathList) {
-            Set<URL> resources = libResource.getResourcesByRelativePath(path);
-            for (URL url : resources) {
-                File currentResource = new File(url.getPath());
-                libBuffer.append(libResource.getDirectoryName() + PATH_SEPARATOR + currentResource.getName()).append(","); //$NON-NLS-1$
-            }
-        }
-        libBuffer.deleteCharAt(libBuffer.length() - 1);
-        return libBuffer.toString();
     }
 
     @Override
