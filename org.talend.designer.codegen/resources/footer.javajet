@@ -417,19 +417,20 @@ this.globalResumeTicket = false;//to run others jobs
                 threadLocal.set(threadRunResultMap);
 	    	    
 				<%=createCallProcess(rootNode, process.getName(), true) %>
-	        	
-                Integer localErrorCode = (Integer)(((java.util.Map)threadLocal.get()).get("errorCode"));
-                String localStatus = (String)(((java.util.Map)threadLocal.get()).get("status"));
-                if (localErrorCode != null) {
-                    if (errorCode == null || localErrorCode.compareTo(errorCode) > 0) {
-                       errorCode = localErrorCode;
-                    }
-                }
-                if(!status.equals("failure")){
-                        status = localStatus;
-                }	
-         	    
-                runningThreadCount.add(-1);	        	
+	        	finally {
+	                Integer localErrorCode = (Integer)(((java.util.Map)threadLocal.get()).get("errorCode"));
+	                String localStatus = (String)(((java.util.Map)threadLocal.get()).get("status"));
+	                if (localErrorCode != null) {
+	                    if (errorCode == null || localErrorCode.compareTo(errorCode) > 0) {
+	                       errorCode = localErrorCode;
+	                    }
+	                }
+	                if(!status.equals("failure")){
+	                        status = localStatus;
+	                }	
+	         	    
+	                runningThreadCount.add(-1);
+	            }	        	
 	    	}
 		}.start();
 		
