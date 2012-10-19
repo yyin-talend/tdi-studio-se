@@ -132,6 +132,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     protected static final String USERROUTINE_JAR = "userRoutines.jar"; //$NON-NLS-1$
 
+    protected static final String USERBEANS_JAR = "userBeans.jar"; //$NON-NLS-1$
+
     protected static final String MAVEN_PROP_LIB_PATH = "${lib.path}/"; //$NON-NLS-1$
 
     private boolean needMappingInSystemRoutine = false;
@@ -1299,8 +1301,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             return list;
         }
         try {
-            String classRoot = getClassRootLocation();
-            List<String> include = new ArrayList<String>();
             boolean useBeans = false;
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
                 ICamelDesignerCoreService service = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
@@ -1309,10 +1309,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     useBeans = true;
                 }
             }
+            String include;
+            String jar;
             if (useBeans) {
-                include.add(USER_BEANS_PATH);
+                include = USER_BEANS_PATH;
+                jar = USERBEANS_JAR;
             } else {
-                include.add(USER_ROUTINES_PATH);
+                include = USER_ROUTINES_PATH;
+                jar = USERROUTINE_JAR;
             }
 
             List<String> excludes = new ArrayList<String>();
@@ -1320,18 +1324,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             excludes.add(USER_ROUTINES_PATH); // remove all
             excludes.add(USER_BEANS_PATH);
 
-            String jarPath = getTmpFolder() + PATH_SEPARATOR + USERROUTINE_JAR;
+            String jarPath = getTmpFolder() + PATH_SEPARATOR + jar;
 
             // make a jar file of user routine classes
-            JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
-            jarbuilder.setIncludeDir(include);
+            JarBuilder jarbuilder = new JarBuilder(getClassRootLocation(), jarPath);
+            jarbuilder.setIncludeDir(Collections.singletonList(include));
             jarbuilder.setIncludeRoutines(getRoutineDependince(process, false, useBeans));
             jarbuilder.setExcludeDir(excludes);
             jarbuilder.buildJar();
 
-            File jarFile = new File(jarPath);
-            URL url = jarFile.toURL();
-            list.add(url);
+            list.add(new File(jarPath).toURI().toURL());
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
