@@ -1740,6 +1740,10 @@ if(columnList != null && columnList.size() > 0) {
     manager.setNode(node);
     String tableAction = ElementParameterParser.getValue(node,"__TABLEACTION__");
     String cid = node.getUniqueName();    
+    boolean tableNameCaseSensitive=false; 
+ 	if("DB2".equalsIgnoreCase(dbType)||"POSTGRE".equalsIgnoreCase(dbType)||"POSTGREPLUS".equalsIgnoreCase(dbType)||"GREENPLUM".equalsIgnoreCase(dbType)){ 
+ 	 	tableNameCaseSensitive=true; 
+ 	} 
     %>
     try{
         <%=manager.getConnection()%>
@@ -1768,7 +1772,7 @@ if(columnList != null && columnList.size() > 0) {
 	            boolean whetherExist_<%=cid%> = false;
 	            while(rsTable_<%=cid%>.next()) {
 	                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-	                if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>)) {
+	                if(table_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(<%=tableName%>)) {
 	                    whetherExist_<%=cid%> = true;
 	                    break;
 	                }
