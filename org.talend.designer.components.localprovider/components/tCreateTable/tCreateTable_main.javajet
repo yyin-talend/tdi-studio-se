@@ -1915,9 +1915,9 @@ if(columnList != null && columnList.size() > 0) {
     manager.setNode(node);
     String tableAction = ElementParameterParser.getValue(node,"__TABLEACTION__");
     String cid = node.getUniqueName();
-    boolean tableNameIgnoreCase=false;
+    boolean tableNameCaseSensitive=false;
     if("DB2".equalsIgnoreCase(dbType)||"POSTGRE".equalsIgnoreCase(dbType)||"POSTGREPLUS".equalsIgnoreCase(dbType)||"GREENPLUM".equalsIgnoreCase(dbType)){
-    	tableNameIgnoreCase=true;
+    	tableNameCaseSensitive=true;
     }
     String createProjectionStr = "";
     if("VERTICA".equals(dbType)){
@@ -1955,7 +1955,7 @@ if(columnList != null && columnList.size() > 0) {
 	            boolean whetherExist_<%=cid%> = false;
 	            while(rsTable_<%=cid%>.next()) {
 	                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-	                if(table_<%=cid%>.equals<%if(!tableNameIgnoreCase){%>IgnoreCase<%}%>(<%=tableName%>)) {
+	                if(table_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(<%=tableName%>)) {
 	                    whetherExist_<%=cid%> = true;
 	                    break;
 	                }
