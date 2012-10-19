@@ -317,13 +317,36 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
     public boolean close() {
         testComposite.stopServerThread();
         if (isESCClose) {
-            boolean flag = MessageDialog.openConfirm(getParentShell(), Messages.getString("ExpressionBuilderDialog.message"),
-                    Messages.getString("ExpressionBuilderDialog.Confirm"));
-            if (!flag) {
-                return false;
+            if (!defaultExpression.equals(newExpression())) {
+                boolean flag = MessageDialog.openConfirm(getParentShell(), Messages.getString("ExpressionBuilderDialog.message"),
+                        Messages.getString("ExpressionBuilderDialog.Confirm"));
+                if (!flag) {
+                    categoryComposite.setFocus();
+                    return false;
+                }
             }
         }
         return super.close();
+    }
+
+    private String newExpression() {
+        String expression = null;
+        int startInx = nodeStyle.indexOf("-") + 2;//$NON-NLS-1$ 
+        int endInx = nodeStyle.lastIndexOf("-") - 1;//$NON-NLS-1$
+        String sub;
+        if (endInx - startInx > 0) {
+            sub = nodeStyle.substring(startInx, endInx);
+        } else {
+            sub = nodeStyle;
+        }
+        if (sub.equals("tRowGenerator")) { //$NON-NLS-1$
+            expression = expressionComposite.getReplaceExpression();
+            expressionForTable = expression; // hywang add for 9225
+        } else {
+            expression = expressionComposite.getExpression();
+            expressionForTable = expression;
+        }
+        return expression;
     }
 
     /**
@@ -407,12 +430,12 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
             for (Variable var1 : persistance.loadExpression().getVariables()) {
                 boolean needAdd = true;
                 for (Variable var2 : vars) {
-                    if (var1.getName().equals(var2.getName())) {
+                    if (var1.getName() != null && var1.getName().equals(var2.getName())) {
                         needAdd = false;
                         break;
                     }
                 }
-                if (needAdd) {
+                if (var1.getName() != null && needAdd) {
                     vars.add(var1);
                 }
             }
