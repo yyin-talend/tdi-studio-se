@@ -61,10 +61,12 @@ import org.talend.designer.hl7.action.HL7DisconnectAction;
 import org.talend.designer.hl7.action.HL7FixValueAction;
 import org.talend.designer.hl7.action.ImportHL7StructureAction;
 import org.talend.designer.hl7.action.SetRepetableAction;
+import org.talend.designer.hl7.action.StringUtil;
 import org.talend.designer.hl7.managers.HL7Manager;
 import org.talend.designer.hl7.managers.HL7OutputManager;
 import org.talend.designer.hl7.ui.data.Element;
 import org.talend.designer.hl7.ui.data.HL7TreeNode;
+import org.talend.designer.hl7.ui.data.NameSpaceNode;
 import org.talend.designer.hl7.ui.edit.HL7OutputTableViewerProvider;
 import org.talend.designer.hl7.ui.edit.HL7TargetTreeViewerProvider;
 import org.talend.designer.hl7.ui.edit.SchemaXMLLinker;
@@ -378,6 +380,9 @@ public class HL7OutputUI extends HL7UI {
                 TreeItem treeItem = (TreeItem) element;
                 HL7TreeNode node = (HL7TreeNode) treeItem.getData();
                 if (property.equals("C1")) {
+                    if (value != null && value.toString().length() == 0) {
+                        value = node.getLabel();
+                    }
                     node.setLabel((String) value);
                 }
                 if (property.equals("C4")) {
@@ -540,13 +545,29 @@ public class HL7OutputUI extends HL7UI {
             }
             String errorMessage = null;
 
+            // Added by plv for bug TDI-23335.
+            if ("C4".equals(property)) { //$NON-NLS-1$
+                validateLabel = StringUtil.validateLabelForFixedValue(text.getText());
+            }
+            if ("C1".equals(property) && selectNode != null && selectNode instanceof NameSpaceNode) {
+                validateLabel = StringUtil.validateLabelForNameSpace(text.getText());
+            } else {
+                validateLabel = StringUtil.validateLabelForXML(text.getText());
+            }
+            if (!validateLabel) {
+                errorMessage = "Invalid string for XML Label. Label was not changed.";
+            }
+
             if (errorMessage == null) {
                 text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_WHITE));
             } else {
                 text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_RED));
                 if (showAlertIfError) {
-                    text.setText(selectedText);
+                    if (selectedText != null) {
+                        text.setText(selectedText);
+                    }
                     MessageDialog.openError(text.getShell(), "Invalid XML label.", errorMessage);
+                    text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_WHITE));
                 }
             }
         }

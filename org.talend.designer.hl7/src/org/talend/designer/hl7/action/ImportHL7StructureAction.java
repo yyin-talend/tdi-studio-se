@@ -420,7 +420,7 @@ public class ImportHL7StructureAction extends SelectionProviderAction {
     public void selectionChanged(IStructuredSelection selection) {
         this.setEnabled(true);
         HL7TreeNode node = (HL7TreeNode) this.getStructuredSelection().getFirstElement();
-        if (node != null) {
+        if (node != null && form != null) {
             // hl7ui.setSelectedText(node.getLabel());
             // Added by Marvin Wang on Sep. 11, 2012 for bug TDI-20702.
             form.setSelectedText(node.getLabel());
