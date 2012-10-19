@@ -45,7 +45,12 @@ public class CLASS
        //        toReturn += createCallProcess(conn.getTarget(),  className, isMultiThread);
        //    }
        //}            
-       toReturn += "\n}finally {\n}"; 
+        if(isMultiThread){
+            toReturn += "\n}catch (Error e_" + rootNode.getUniqueName() + ") {\n";
+            toReturn += "\ne_" + rootNode.getUniqueName() + ".printStackTrace();\n";
+            toReturn += "globalMap.put(\""+rootNode.getUniqueName()+ "_SUBPROCESS_STATE\", -1);\n";
+        }
+       toReturn += "\n}"; 
        return toReturn;
     }
 		 
