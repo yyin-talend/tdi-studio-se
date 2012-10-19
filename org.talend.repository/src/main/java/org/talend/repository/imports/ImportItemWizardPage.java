@@ -102,6 +102,7 @@ import org.talend.repository.documentation.IDocumentationService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.imports.TreeBuilder.IContainerNode;
 import org.talend.repository.imports.TreeBuilder.ProjectNode;
+import org.talend.repository.imports.TreeBuilder.TypeNode;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -380,6 +381,12 @@ class ImportItemWizardPage extends WizardPage {
             return false;
         }
         // hide the generated documentation node , avoid to import .
+        if (element != null && element instanceof TypeNode) {
+            ERepositoryObjectType type = ((TypeNode) element).type;
+            if (ERepositoryObjectType.JOB_DOC.equals(type) || ERepositoryObjectType.JOBLET_DOC.equals(type)) {
+                return false;
+            }
+        }
         if (element instanceof IContainerNode) {
             List importElement = ((IContainerNode) element).getChildren();
             for (Object node : importElement) {
