@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.database.conn.version.DbVersion4DriversForOracle11;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContext;
@@ -337,12 +338,15 @@ public class JavaProcessUtil {
         } else if (name.equals("DB_VERSION")) { //$NON-NLS-1$
             String jdbcName = (String) value;
             //
-            if (jdbcName != null && !jdbcName.equals("Access_2003") && !jdbcName.equals("Access_2007")) {
-                if (jdbcName.contains("11g")) { //$NON-NLS-1$
+            if (jdbcName != null) {
+                if (jdbcName.contains(DbVersion4DriversForOracle11.DRIVER_1_6)
+                        || jdbcName.contains(DbVersion4DriversForOracle11.DRIVER_1_5)) {
                     if (System.getProperty("java.version").startsWith("1.6")) { //$NON-NLS-1$ //$NON-NLS-2$
-                        jdbcName = jdbcName.replace('5', '6');
+                        jdbcName = jdbcName.replaceAll(DbVersion4DriversForOracle11.DRIVER_1_5,
+                                DbVersion4DriversForOracle11.DRIVER_1_6);
                     } else {
-                        jdbcName = jdbcName.replace('6', '5');
+                        jdbcName = jdbcName.replaceAll(DbVersion4DriversForOracle11.DRIVER_1_6,
+                                DbVersion4DriversForOracle11.DRIVER_1_5);
                     }
                 }
 
