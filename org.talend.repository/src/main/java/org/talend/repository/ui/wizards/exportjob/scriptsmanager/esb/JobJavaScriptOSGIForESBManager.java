@@ -225,10 +225,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             libResource.addResources(talendLibraries);
 
             // Gets system routines
-            List<URL> systemRoutineList = getSystemRoutine(processes, true);
+            List<URL> systemRoutineList = getSystemRoutine(processes);
             libResource.addResources(systemRoutineList);
             // Gets user routines
-            List<URL> userRoutineList = getUserRoutine(processes, true);
+            List<URL> userRoutineList = getUserRoutine(processes);
             libResource.addResources(userRoutineList);
 
             // generate the META-INFO folder

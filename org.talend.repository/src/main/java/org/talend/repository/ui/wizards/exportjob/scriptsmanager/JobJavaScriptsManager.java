@@ -512,11 +512,13 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         ExportFileResource rootResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
         list.add(rootResource);
         // Gets system routines
-        List<URL> systemRoutineList = getSystemRoutine(process, isOptionChoosed(ExportChoice.needSystemRoutine));
-        rootResource.addResources(systemRoutineList);
+        if (isOptionChoosed(ExportChoice.needSystemRoutine)) {
+            rootResource.addResources(getSystemRoutine(process));
+        }
         // Gets user routines
-        List<URL> userRoutineList = getUserRoutine(process, isOptionChoosed(ExportChoice.needUserRoutine));
-        rootResource.addResources(userRoutineList);
+        if (isOptionChoosed(ExportChoice.needUserRoutine)) {
+            rootResource.addResources(getUserRoutine(process));
+        }
 
         // Gets talend libraries
         List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(ExportChoice.needTalendLibraries), process,
@@ -1214,9 +1216,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @return
      */
     protected String getClassRootLocation() throws Exception {
-        IPath binPath = getClassRootPath();
-        URL url = binPath.toFile().toURL();
-        return url.getPath();
+        return getClassRootPath().toFile().toURI().toURL().getPath();
     }
 
     private IPath getClassRootPath() throws Exception {
@@ -1259,13 +1259,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param needSystemRoutine
      * @return
      */
-    protected List<URL> getSystemRoutine(ExportFileResource[] process, boolean needSystemRoutine) {
-        List<URL> list = new ArrayList<URL>();
-        if (!needSystemRoutine) {
-            return list;
-        }
+    protected List<URL> getSystemRoutine(ExportFileResource[] process) {
         try {
-            String classRoot = getClassRootLocation();
             List<String> include = new ArrayList<String>();
             include.add(SYSTEM_ROUTINES_PATH);
             if (needMappingInSystemRoutine) {
@@ -1275,18 +1270,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String jarPath = getTmpFolder() + PATH_SEPARATOR + SYSTEMROUTINE_JAR;
 
             // make a jar file of system routine classes
-            JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
+            JarBuilder jarbuilder = new JarBuilder(getClassRootLocation(), jarPath);
             jarbuilder.setIncludeDir(include);
             jarbuilder.setIncludeRoutines(getRoutineDependince(process, true, false));
             jarbuilder.buildJar();
 
-            File jarFile = new File(jarPath);
-            URL url = jarFile.toURL();
-            list.add(url);
+            return Collections.singletonList(new File(jarPath).toURI().toURL());
         } catch (Exception e) {
             ExceptionHandler.process(e);
+            return Collections.emptyList();
         }
-        return list;
     }
 
     /**
@@ -1295,11 +1288,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @param needUserRoutine
      * @return
      */
-    protected List<URL> getUserRoutine(ExportFileResource[] process, boolean needUserRoutine) {
-        List<URL> list = new ArrayList<URL>();
-        if (!needUserRoutine) {
-            return list;
-        }
+    protected List<URL> getUserRoutine(ExportFileResource[] process) {
         try {
             boolean useBeans = false;
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
@@ -1333,11 +1322,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             jarbuilder.setExcludeDir(excludes);
             jarbuilder.buildJar();
 
-            list.add(new File(jarPath).toURI().toURL());
+            return Collections.singletonList(new File(jarPath).toURI().toURL());
         } catch (Exception e) {
             ExceptionHandler.process(e);
+            return Collections.emptyList();
         }
-        return list;
     }
 
     private List<File> getRoutineDependince(ExportFileResource[] process, boolean system, boolean useBeans) {

@@ -186,10 +186,10 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         list.add(metaInfoFolder);
 
         // Gets system routines
-        List<URL> systemRoutineList = getSystemRoutine(process, true);
+        List<URL> systemRoutineList = getSystemRoutine(process);
         libResource.addResources(systemRoutineList);
         // Gets user routines
-        List<URL> userRoutineList = getUserRoutine(process, true);
+        List<URL> userRoutineList = getUserRoutine(process);
         libResource.addResources(userRoutineList);
 
         // Gets axis libraries

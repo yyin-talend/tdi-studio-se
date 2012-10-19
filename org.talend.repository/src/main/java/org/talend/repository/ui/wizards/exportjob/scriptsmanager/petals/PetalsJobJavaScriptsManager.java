@@ -114,12 +114,12 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
             // dynamic db xml mapping
             addXmlMapping(proces, isOptionChoosed(ExportChoice.needSourceCode));
 
-            List<URL> systemRoutineList = getSystemRoutine(process, true);
+            List<URL> systemRoutineList = getSystemRoutine(process);
             libResource.addResources(systemRoutineList);
 
             addDependencies(process, processItem, needDependencies, libResource);
             if (needUserRoutines) {
-                List<URL> userRoutineList = getUserRoutine(process, true);
+                List<URL> userRoutineList = getUserRoutine(process);
                 libResource.addResources(userRoutineList);
             }
             // Generate jar file for the job
