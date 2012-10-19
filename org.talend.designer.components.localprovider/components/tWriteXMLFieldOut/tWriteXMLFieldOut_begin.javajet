@@ -56,25 +56,48 @@ java.util.Map<String,String> flowValues_<%=cid%> = null;
 class ThreadXMLField_<%=cid%> extends Thread {
 	java.util.Queue<String> queue;
 	java.util.List<java.util.Map<String,String>> flows;
+	Exception lastException;
+	String currentComponent;
 	
 	ThreadXMLField_<%=cid%>(java.util.Queue q) {
 		this.queue = q;
 		globalMap.put("queue_<%=virtualTargetCid%>", queue);
+		lastException = null;
 	}
 	
 	ThreadXMLField_<%=cid%>(java.util.Queue q, java.util.List<java.util.Map<String,String>> l) {
 		this.queue = q;
 		this.flows = l;
+		lastException = null;
 		globalMap.put("queue_<%=virtualTargetCid%>", queue);
 		globalMap.put("flows_<%=virtualTargetCid%>", flows);
+	}
+	
+	public Exception getLastException() {
+		return this.lastException;
+	}
+	public String getCurrentComponent() {
+		return this.currentComponent;
 	}
 
 	@Override
 	public void run() {
 		try {
 			<%=virtualTargetCid%>Process(globalMap);
-		} catch (TalendException e) {
-			e.printStackTrace();
+		} catch (TalendException te) {
+<%
+			boolean dieOnError = "true".equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
+			if(dieOnError) {
+%>
+				this.lastException = te.getException();
+				this.currentComponent = te.getCurrentComponent();
+<%
+			} else {
+%>
+				te.printStackTrace();
+<%
+			}
+%>
 		}
 	}
 }
