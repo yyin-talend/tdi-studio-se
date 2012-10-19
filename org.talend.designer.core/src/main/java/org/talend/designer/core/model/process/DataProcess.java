@@ -3046,6 +3046,17 @@ public class DataProcess {
             parallelizeNode.getMetadataList().add(newMetadata);
             parallelizeNode.setSubProcessStart(true);
             parallelizeNode.setProcess(process);
+            
+            // when using parallelize function in tMap, "Die when one of parallelize subjobs fails" of tParallelize should be set true
+            IElementParameter dieOnErrorParameters = parallelizeNode.getElementParameter("DIE_ON_ERROR");
+            if (dieOnErrorParameters == null) {
+                dieOnErrorParameters = new ElementParameter(parallelizeNode);
+                dieOnErrorParameters.setName("DIE_ON_ERROR");
+                dieOnErrorParameters.setFieldType(EParameterFieldType.CHECK);
+                ((List<IElementParameter>) parallelizeNode.getElementParameters()).add(dieOnErrorParameters);
+            }
+            dieOnErrorParameters.setValue(Boolean.TRUE);
+            
             List<IConnection> outgoingConnections = new ArrayList<IConnection>();
             List<IConnection> incomingConnections = new ArrayList<IConnection>();
             parallelizeNode.setIncomingConnections(incomingConnections);
