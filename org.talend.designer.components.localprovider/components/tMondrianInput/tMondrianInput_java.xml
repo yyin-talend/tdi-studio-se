@@ -337,7 +337,7 @@
 		<IMPORT NAME="Driver-DB2-LICENSE-CU" MODULE="db2jcc_license_cu.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver_MaxDB" 		MODULE="sapdbc.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-MSSQL" 		MODULE="jtds-1.2.5.jar" REQUIRED="true" />
-        <IMPORT NAME="Driver-Oracle11g-2" 	MODULE="ojdbc6-11g.jar" REQUIRED="true" />
+        <IMPORT NAME="Driver-Oracle11g-2" 	MODULE="ojdbc6.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-POSTGRESQL" 	MODULE="postgresql-8.3-603.jdbc3.jar" REQUIRED="true" />	
 		<IMPORT NAME="Driver-FIREBIRD" 		MODULE="jaybird-full-2.1.1.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-HSQLDb" 		MODULE="hsqldb.jar" REQUIRED="true"/>
@@ -354,8 +354,7 @@
 		<IMPORT NAME="Driver-JAVADB-DERBYNET" MODULE="derbynet.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-SQLITE-JDBC-NESTED" MODULE="sqlitejdbc-v056.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-SYBASE-JCONN3" MODULE="jconn3.jar" REQUIRED="true" />
-
-		<IMPORT NAME="mondrian_2"        MODULE="mondrian_2.jar" REQUIRED="false" />		
+		<IMPORT NAME="mondrian_2"        MODULE="mondrian_2.jar" REQUIRED="false" />
 		<IMPORT NAME="mondrian_3"        MODULE="mondrian_3.jar" REQUIRED="false" />		
      </IMPORTS>
    </CODEGENERATION>

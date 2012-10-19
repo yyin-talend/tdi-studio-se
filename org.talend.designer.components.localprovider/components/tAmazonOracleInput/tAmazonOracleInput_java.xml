@@ -39,8 +39,8 @@
 		<PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="30"
 			REPOSITORY_VALUE="DB_VERSION" SHOW_IF="(USE_EXISTING_CONNECTION == 'false')">
 			<ITEMS DEFAULT="ORACLE_11">
-				<ITEM NAME="ORACLE_11-6" VALUE="ojdbc6-11g.jar" />
-				<ITEM NAME="ORACLE_11" VALUE="ojdbc5-11g.jar" />
+				<ITEM NAME="ORACLE_11-6" VALUE="ojdbc6.jar" />
+				<ITEM NAME="ORACLE_11" VALUE="ojdbc5.jar" />
 			</ITEMS>
 		</PARAMETER>
 		<PARAMETER NAME="HOST" FIELD="TEXT" NUM_ROW="40"
@@ -165,7 +165,7 @@
 	</ADVANCED_PARAMETERS>
 	<CODEGENERATION>
      <IMPORTS>
-       <IMPORT NAME="Driver-Oracle11g-1" MODULE="ojdbc5-11g.jar" REQUIRED="false" />
+       <IMPORT NAME="Driver-Oracle11g-1" MODULE="ojdbc5.jar" REQUIRED="false" />
 	   <IMPORT NAME="Driver-Oracle-XDB" MODULE="xdb.jar" REQUIRED="true" />
 	   <IMPORT NAME="Driver-Oracle-XMLPARSERV2" MODULE="xmlparserv2.jar" REQUIRED="true" />
      </IMPORTS>	

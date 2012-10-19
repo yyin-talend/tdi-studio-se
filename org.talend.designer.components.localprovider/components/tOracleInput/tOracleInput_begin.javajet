@@ -62,7 +62,7 @@ imports="
 		
 		public String getDirverClassName(INode node){
 			String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__"); 
-			if("ojdbc5-11g.jar".equals(dbVersion) || "ojdbc6-11g.jar".equals(dbVersion) ){
+			if("ojdbc5.jar".equals(dbVersion) || "ojdbc6.jar".equals(dbVersion) ){
 			    return "oracle.jdbc.OracleDriver";	
 			}else {
 				return "oracle.jdbc.driver.OracleDriver";	
@@ -114,7 +114,7 @@ imports="
 %>
 			}
 <%
-			if(!"ojdbc12-8i.jar".equals(dbVersion)){%>
+			if(!"ojdbc12.jar".equals(dbVersion)){%>
 				java.sql.Statement stmtGetTZ_<%=cid%> = conn_<%=cid%>.createStatement();
 				java.sql.ResultSet rsGetTZ_<%=cid%> = stmtGetTZ_<%=cid%>.executeQuery("select sessiontimezone from dual");
 				String sessionTimezone_<%=cid%> = java.util.TimeZone.getDefault().getID();
@@ -128,7 +128,7 @@ imports="
 		
 		public void afterUseExistConnection(INode node) {
 			String dbVersion =  ElementParameterParser.getValue(node, "__DB_VERSION__");
-			if(!"ojdbc12-8i.jar".equals(dbVersion)){%>
+			if(!"ojdbc12.jar".equals(dbVersion)){%>
 				if(((oracle.jdbc.OracleConnection)conn_<%=cid%>).getSessionTimeZone() == null){
 					java.sql.Statement stmtGetTZ_<%=cid%> = conn_<%=cid%>.createStatement();
 					java.sql.ResultSet rsGetTZ_<%=cid%> = stmtGetTZ_<%=cid%>.executeQuery("select sessiontimezone from dual");
@@ -219,7 +219,7 @@ imports="
 				dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__");
 			}
 	    	boolean supportTSTZ = false;
-	    	if("ojdbc5-11g.jar".equals(dbVersion) || "ojdbc6-11g.jar".equals(dbVersion) || "ojdbc14-10g.jar".equals(dbVersion)){
+	    	if("ojdbc5.jar".equals(dbVersion) || "ojdbc6.jar".equals(dbVersion) || "ojdbc14.jar".equals(dbVersion)){
 	    		supportTSTZ = true;
 	    	}
 	    	if(isTSWithTZ && supportTSTZ){

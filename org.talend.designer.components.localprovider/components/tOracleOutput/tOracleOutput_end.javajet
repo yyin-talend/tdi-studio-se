@@ -19,7 +19,7 @@ imports="
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	
 	String dbVersion = ElementParameterParser.getValue(node, "__DB_VERSION__"); 
-	boolean isUseBatchByDBVersion = !"ojdbc12-8i.jar".equalsIgnoreCase(dbVersion);	
+	boolean isUseBatchByDBVersion = !"ojdbc12.jar".equalsIgnoreCase(dbVersion);	
 	
 	boolean useExistingConnection = "true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"));
 	
