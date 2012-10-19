@@ -306,6 +306,14 @@ private class TalendException extends Exception {
 		this.globalMap = globalMap;
 		this.e = e;
 	}
+	
+	public Exception getException() {
+		return this.e;
+	}
+	
+	public String getCurrentComponent() {
+		return this.currentComponent;
+	}
 
 	@Override
 	public void printStackTrace() {
@@ -552,9 +560,27 @@ private class TalendException extends Exception {
 					}
 				}
 				//end
+				
+				/*
+				This part of code has been added in order to call the correct onComponentError and onSubjobError for the specific components (like tWriteXMLField, tWriteJSONField, tMDMOutput, tBRMS, ...).
+				*/
+				INode subjob_start_node = node;
+				boolean hasBeenChanged = true;
+				
+				while(subjob_start_node.getDesignSubjobStartNode().isVirtualGenerateNode() && hasBeenChanged) {
+					hasBeenChanged = false;
+					if(subjob_start_node.getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_COMPONENT_OK) != null) {
+						if(subjob_start_node.getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_COMPONENT_OK).size() >0) {
+							if(subjob_start_node.getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_COMPONENT_OK).get(0).getSource().getVirtualLinkTo()==EConnectionType.ON_COMPONENT_OK) {
+								subjob_start_node = subjob_start_node.getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_COMPONENT_OK).get(0).getSource();
+								hasBeenChanged = true;
+							}
+						}
+					}
+				}
+				
 				%>
-				<%=node.getDesignSubjobStartNode().getUniqueName() %>_onSubJobError(exception, errorComponent, globalMap);
-
+					<%=subjob_start_node.getDesignSubjobStartNode().getUniqueName() %>_onSubJobError(exception, errorComponent, globalMap);
 			}
 			<%
 		}
