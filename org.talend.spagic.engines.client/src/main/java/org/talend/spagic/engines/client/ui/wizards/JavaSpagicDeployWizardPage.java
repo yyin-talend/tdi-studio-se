@@ -66,7 +66,7 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
 
     @Override
     protected List<ExportFileResource> getExportResources() throws ProcessorException {
-        return manager.getExportResources(process);
+        return getManager().getExportResources(process);
     }
 
     @Override
@@ -138,8 +138,8 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
             // genCodeButton.setSelection(settings.getBoolean(STORE_GENERATECODE_ID));
         }
 
-        launcherCombo.setItems(manager.getLauncher());
-        if (manager.getLauncher().length > 0) {
+        launcherCombo.setItems(getManager().getLauncher());
+        if (getManager().getLauncher().length > 0) {
             launcherCombo.select(0);
         }
         if (process.length > 0) {
@@ -149,7 +149,7 @@ public class JavaSpagicDeployWizardPage extends SpagicDeployWizardPage {
             } catch (PersistenceException e) {
                 e.printStackTrace();
             }
-            List<String> contextNames = manager.getJobContextsComboValue((ProcessItem) process[0].getItem());
+            List<String> contextNames = getManager().getJobContextsComboValue((ProcessItem) process[0].getItem());
             contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
             if (contextNames.size() > 0) {
                 contextCombo.select(0);

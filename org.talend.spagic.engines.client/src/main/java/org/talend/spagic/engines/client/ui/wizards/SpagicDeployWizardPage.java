@@ -368,6 +368,15 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         return true;
     }
 
+    protected JobScriptsManager getManager() {
+        if (manager == null) {
+            Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
+            return new SpagicJavaDeployManager(exportChoiceMap, contextCombo.getText(), "all", IProcessor.NO_STATISTICS, //$NON-NLS-1$
+                    IProcessor.NO_TRACES);
+        }
+        return manager;
+    }
+
     /**
      * The Finish button was pressed. Try to do the required work now and answer a boolean indicating success. If false
      * is returned then the wizard will not close.
