@@ -1988,6 +1988,10 @@
       <description>Retourne une réponse comme fournisseur de service à la fin de chaque cycle d’un Job Talend.</description>
       <topic href="guide/components/fr/tESBProviderResponse.html" label="tESBProviderResponse Component Documentation"/>
    </context>
+   <context id="tRESTClient">
+      <description>Le composant tRESTClient est utilisé pour interagir avec des fournisseurs de services Web RESTful, en envoyant des requêtes HTTP et HTTPS, à l'aide de CXF (JAX-RS).</description>
+      <topic href="guide/components/fr/tRESTClient.html" label="tRESTClient Component Documentation"/>
+   </context>
    <context id="tRESTRequest">
       <description>Ce composant vous permet de recevoir les requêtes GET/POST/PUT/DELETE des clients, du côté serveur.</description>
       <topic href="guide/components/fr/tRESTRequest.html" label="tRESTRequest Component Documentation"/>
