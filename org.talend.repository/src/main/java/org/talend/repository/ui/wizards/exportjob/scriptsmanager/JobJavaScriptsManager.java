@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -347,8 +348,19 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     protected void addMavenDependencyElements(Document pomDocument, Set<ModuleNeeded> neededModules, String libFolder) {
         Element rootElement = pomDocument.getRootElement();
         Element parentEle = rootElement.element("dependencies"); //$NON-NLS-1$
+        if (parentEle == null) {
+            parentEle = rootElement.addElement("dependencies");//$NON-NLS-1$
+        }
         removeComments(parentEle);
-        for (ModuleNeeded module : neededModules) {
+        List<ModuleNeeded> modelesList = new ArrayList<ModuleNeeded>();
+        modelesList.addAll(neededModules);
+        Collections.sort(modelesList, new Comparator<ModuleNeeded>() {
+
+            public int compare(ModuleNeeded m1, ModuleNeeded m2) {
+                return m1.getModuleName().compareToIgnoreCase(m2.getModuleName());
+            }
+        });
+        for (ModuleNeeded module : modelesList) {
             addMavenDependencyElement(parentEle, module.getModuleName(), libFolder);
         }
     }

@@ -60,7 +60,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.JavaResourcesHelper;
-import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.ICamelDesignerCoreService;
@@ -92,13 +92,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         super(exportChoiceMap, contextName, launcher, statisticPort, tracePort);
     }
 
-    private static final String PACKAGE_SEPARATOR = ".";
+    private static final String PACKAGE_SEPARATOR = "."; //$NON-NLS-1$
 
-    private static final String JAVA = "java";
+    private static final String JAVA = "java"; //$NON-NLS-1$
 
-    private static final String ROUTE = "route";
+    private static final String ROUTE = "route"; //$NON-NLS-1$
 
-    private static final String JOB = "job";
+    private static final String JOB = "job"; //$NON-NLS-1$
 
     private static final String OSGI_INF = "OSGI-INF"; //$NON-NLS-1$
 
@@ -183,13 +183,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
                             processItem.getProperty().getId(), jobVersion);
                     for (ModuleNeeded module : neededModules) {
-                        if (module.getBundleName() == null) { // if no bundle defined for this, add to the jars to
-                                                              // export
-                            // temp workaround for https://jira.talendforge.org/browse/TDI-22934
-                            if (module.getModuleName().startsWith("camel-core-")
-                                     || module.getModuleName().startsWith("dom4j-")) {
-                                continue;
-                            }
+                        if (enableNeededLibraries(module)) {
                             neededLibraries.add(module.getModuleName());
                         }
                     }
@@ -224,13 +218,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             List<URL> talendLibraries = getExternalLibraries(true, processes, neededLibraries);
             libResource.addResources(talendLibraries);
 
-            // Gets system routines
-            List<URL> systemRoutineList = getSystemRoutine(processes);
-            libResource.addResources(systemRoutineList);
-            // Gets user routines
-            List<URL> userRoutineList = getUserRoutine(processes);
-            libResource.addResources(userRoutineList);
-
+            // There have been source codes for routines for maven. so no routines jar
+            if (!isOptionChoosed(ExportChoice.needMavenScript)) {
+                // Gets system routines
+                List<URL> systemRoutineList = getSystemRoutine(processes);
+                libResource.addResources(systemRoutineList);
+                // Gets user routines
+                List<URL> userRoutineList = getUserRoutine(processes);
+                libResource.addResources(userRoutineList);
+            }
             // generate the META-INFO folder
             ExportFileResource metaInfoFolder = genMetaInfoFolder(libResource, itemToBeExport);
             list.add(0, metaInfoFolder);
@@ -239,6 +235,25 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
 
         return list;
+    }
+
+    protected boolean enableNeededLibraries(ModuleNeeded module) {
+        // if no bundle defined for this, add to the jars to export
+        if (module.getBundleName() == null || "".equals(module.getBundleName())) { //$NON-NLS-1$
+            return !isExcludedLib(module.getModuleName());
+        }
+        return false;
+    }
+
+    protected boolean isExcludedLib(String libName) {
+        if (libName != null) {
+            // temp workaround for https://jira.talendforge.org/browse/TDI-22934
+            if (libName.startsWith("camel-core-") //$NON-NLS-1$
+                    || libName.startsWith("dom4j-")) { //$NON-NLS-1$
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -732,54 +747,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
     }
 
-    /**
-     * DOC hywang Comment method "caculateDependenciesBundles".
-     * 
-     * @return
-     */
-    private String caculateDependenciesBundles(ProcessItem processItem) {
-        StringBuffer requiredBundles = new StringBuffer();
-        // this list is used to avoid add dumplicated bundle
-        List<String> alreadyAddedBundles = new ArrayList<String>();
-
-        List<String> segments = new ArrayList<String>();
-        Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
-                processItem.getProperty().getId(), jobVersion);
-
-        generateBundleSegments(neededModules, alreadyAddedBundles, segments);
-        int index = 0;
-        for (String segment : segments) {
-            if (index != segments.size() - 1) {
-                segment = segment + ",";
-            }
-            requiredBundles.append(segment);
-            index++;
-        }
-        segments = null;
-        alreadyAddedBundles = null;
-        return requiredBundles.toString();
-    }
-
-    private static void generateBundleSegments(Set<ModuleNeeded> neededModules, List<String> alreadyAddedBundles,
-            List<String> segments) {
-        for (ModuleNeeded module : neededModules) {
-            String bundleName = module.getBundleName();
-            String bundleVersion = module.getBundleVersion();
-            // the last dependence should not contain "," and "\n"
-            String bundleToAdd = bundleName;
-            if (bundleVersion != null && !"".equals(bundleVersion)) {
-                bundleToAdd = bundleName + ";bundle-version=" + TalendTextUtils.addQuotes(bundleVersion);
-            }
-
-            if (bundleToAdd != null && !"".equals(bundleToAdd)) {
-                if (!alreadyAddedBundles.contains(bundleToAdd)) {
-                    segments.add(bundleToAdd);
-                    alreadyAddedBundles.add(bundleToAdd);
-                }
-            }
-        }
-    }
-
     @Override
     protected List<URL> getExternalLibraries(boolean needLibraries, ExportFileResource[] process, Set<String> neededLibraries) {
         List<URL> list = new ArrayList<URL>();
@@ -807,6 +774,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
         if (!useBeans || isOptionChoosed(ExportChoice.needMavenScript)) {
             // Gets all the jar files
+            /*
+             * FIXME, I think, this should be never executed in osgi manager, should remove it.
+             */
             if (neededLibraries == null) {
                 // in case export as been done with option "not recompile", then
                 // libraires can't be retrieved when
@@ -871,7 +841,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     @Override
     public String getOutputSuffix() {
-        return ".jar";
+        return FileConstants.JAR_FILE_SUFFIX;
     }
 
 }

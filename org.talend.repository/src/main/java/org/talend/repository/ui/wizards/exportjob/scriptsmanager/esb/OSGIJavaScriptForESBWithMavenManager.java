@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Path;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ModuleNeeded;
@@ -27,6 +28,7 @@ import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.repository.constants.IExportJobConstants;
 import org.talend.repository.preference.constants.IExportJobPrefConstants;
 import org.talend.resource.IExportJobResourcesService;
+import org.talend.resources.util.EMavenBuildScriptProperties;
 
 /**
  * created by nrousseau on Sep 25, 2012 Detailled comment
@@ -83,4 +85,36 @@ public class OSGIJavaScriptForESBWithMavenManager extends JavaScriptForESBWithMa
             ExceptionHandler.process(e);
         }
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JavaScriptForESBWithMavenManager#
+     * getMenifestMavenProperties(java.net.URL, java.util.Map)
+     */
+    @Override
+    protected void getMenifestMavenProperties(URL manifestURL, Map<String, String> mavenPropertiesMap) {
+        super.getMenifestMavenProperties(manifestURL, mavenPropertiesMap);
+
+        // reset the Bundle-Classpath to remove the routines jar
+        String bundleClasspathName = EMavenBuildScriptProperties.BundleConfigBundleClasspath.getVarScript();
+        String bundleClasspath = mavenPropertiesMap.get(bundleClasspathName);
+        final String splitChar = ","; //$NON-NLS-1$
+        String[] classpathes = bundleClasspath.split(splitChar);
+        StringBuffer sb = new StringBuffer(200);
+        for (int i = 0; i < classpathes.length; i++) {
+            String path = classpathes[i];
+            Path libPath = new Path(path);
+            String libName = libPath.lastSegment(); // lib name with jar extension
+            if (isRoutines(path) || isExcludedLib(libName)) {
+                continue;
+            }
+            sb.append(path);
+            if (i < classpathes.length - 1) { // the last one don't add it
+                sb.append(splitChar);
+            }
+        }
+        mavenPropertiesMap.put(bundleClasspathName, sb.toString());
+    }
+
 }

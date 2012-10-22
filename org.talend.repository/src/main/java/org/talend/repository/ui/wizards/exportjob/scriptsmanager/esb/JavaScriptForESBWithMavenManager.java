@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.jar.Manifest;
 
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.runprocess.ProcessorException;
@@ -41,6 +42,14 @@ import org.talend.resources.util.EMavenBuildScriptProperties;
  * 
  */
 public abstract class JavaScriptForESBWithMavenManager extends JobJavaScriptOSGIForESBManager {
+
+    public static final String SRC_PATH = "src/"; //$NON-NLS-1$
+
+    public static final String MAVEN_RESOURCES_PATH = SRC_PATH + "main/resources/"; //$NON-NLS-1$
+
+    public static final String MAVEN_SRC_PATH = SRC_PATH + "main/java/"; //$NON-NLS-1$
+
+    public static final String MAVEN_RESOURCES_LIB_PATH = MAVEN_RESOURCES_PATH + "lib/"; //$NON-NLS-1$
 
     public JavaScriptForESBWithMavenManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher,
             int statisticPort, int tracePort) {
@@ -59,7 +68,7 @@ public abstract class JavaScriptForESBWithMavenManager extends JobJavaScriptOSGI
             throws ProcessorException {
         List<ExportFileResource> list = super.getExportResources(processes, codeOptions);
 
-        String privatePackage = "", exportService = "", bundleClasspath = ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        Map<String, String> mavenPropertiesMap = getMainMavenProperties((ProcessItem) processes[0].getItem());
 
         Iterator<ExportFileResource> it = list.iterator();
         while (it.hasNext()) {
@@ -70,7 +79,7 @@ public abstract class JavaScriptForESBWithMavenManager extends JobJavaScriptOSGI
                     if (path.startsWith("OSGI")) { //$NON-NLS-1$
                         Set<URL> urls = resource.getResourcesByRelativePath(path);
                         // put OSGI_INF to /src/main/resources/
-                        newResourcesMap.put("src/main/resources/" + path, urls); //$NON-NLS-1$
+                        newResourcesMap.put(MAVEN_RESOURCES_PATH + path, urls);
                     }
                 }
                 resource.removeAllMap();
@@ -78,41 +87,69 @@ public abstract class JavaScriptForESBWithMavenManager extends JobJavaScriptOSGI
                     resource.addResources(path, new ArrayList<URL>(newResourcesMap.get(path)));
                 }
             } else if (LIBRARY_FOLDER_NAME.equals(resource.getDirectoryName())) {
-                resource.setDirectoryName("src/main/resources/lib/"); //$NON-NLS-1$
+                resource.setDirectoryName(MAVEN_RESOURCES_LIB_PATH);
             } else if (META_INF.equals(resource.getDirectoryName())) {
                 it.remove();
                 if (!resource.getAllResources().isEmpty()) {
                     Set<URL> urls = resource.getAllResources().iterator().next();
                     if (!urls.isEmpty()) {
                         URL manifestURL = urls.iterator().next();
-                        try {
-                            File manifestFile = new File(manifestURL.toURI());
-                            FileInputStream fis = new FileInputStream(manifestFile);
-                            Manifest manifest = new Manifest(fis);
-                            exportService = manifest.getMainAttributes().getValue("Export-Service"); //$NON-NLS-1$
-                            privatePackage = manifest.getMainAttributes().getValue("Private-Package"); //$NON-NLS-1$
-                            bundleClasspath = manifest.getMainAttributes().getValue("Bundle-Classpath"); //$NON-NLS-1$
-                            fis.close();
-                        } catch (URISyntaxException e) {
-                            ExceptionHandler.process(e);
-                        } catch (FileNotFoundException e) {
-                            ExceptionHandler.process(e);
-                        } catch (IOException e) {
-                            ExceptionHandler.process(e);
-                        }
+                        getMenifestMavenProperties(manifestURL, mavenPropertiesMap);
                     }
                 }
             }
         }
-
-        Map<String, String> mavenPropertiesMap = getMavenPropertiesMap((ProcessItem) processes[0].getItem(), privatePackage,
-                exportService, bundleClasspath);
 
         addSourceCodeToExport(list, processes, codeOptions);
 
         addMavenScriptToExport(list, processes, mavenPropertiesMap);
 
         return list;
+    }
+
+    /**
+     * DOC ggu Comment method "getMenifestProperties".
+     * 
+     * @param manifestURL
+     * @param mavenPropertiesMap
+     */
+    protected void getMenifestMavenProperties(URL manifestURL, Map<String, String> mavenPropertiesMap) {
+        try {
+            File manifestFile = new File(manifestURL.toURI());
+            FileInputStream fis = new FileInputStream(manifestFile);
+            Manifest manifest = new Manifest(fis);
+
+            setBundleManifestAttribute(mavenPropertiesMap, manifest, "Private-Package", //$NON-NLS-1$
+                    EMavenBuildScriptProperties.BundleConfigPrivatePackage);
+            setBundleManifestAttribute(mavenPropertiesMap, manifest, "Export-Package", //$NON-NLS-1$
+                    EMavenBuildScriptProperties.BundleConfigExportPackage);
+            setBundleManifestAttribute(mavenPropertiesMap, manifest, "Import-Package", //$NON-NLS-1$
+                    EMavenBuildScriptProperties.BundleConfigImportPackage);
+            setBundleManifestAttribute(mavenPropertiesMap, manifest, "Export-Service", //$NON-NLS-1$
+                    EMavenBuildScriptProperties.BundleConfigExportService);
+            setBundleManifestAttribute(mavenPropertiesMap, manifest, "Bundle-Classpath", //$NON-NLS-1$
+                    EMavenBuildScriptProperties.BundleConfigBundleClasspath);
+
+            fis.close();
+        } catch (URISyntaxException e) {
+            ExceptionHandler.process(e);
+        } catch (FileNotFoundException e) {
+            ExceptionHandler.process(e);
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    private void setBundleManifestAttribute(Map<String, String> mavenPropertiesMap, Manifest manifest, String attrName,
+            EMavenBuildScriptProperties prop) {
+        if (manifest == null || prop == null || mavenPropertiesMap == null) {
+            return;
+        }
+        String attrValue = manifest.getMainAttributes().getValue(attrName);
+        if (attrValue == null || "".equals(attrValue.trim())) { //$NON-NLS-1$
+            return;
+        }
+        mavenPropertiesMap.put(prop.getVarScript(), attrValue);
     }
 
     /**
@@ -125,8 +162,7 @@ public abstract class JavaScriptForESBWithMavenManager extends JobJavaScriptOSGI
      * @param bundleClasspath
      * @return
      */
-    protected Map<String, String> getMavenPropertiesMap(ProcessItem processItem, String privatePackage, String exportService,
-            String bundleClasspath) {
+    protected Map<String, String> getMainMavenProperties(ProcessItem processItem) {
         String projectName = getCorrespondingProjectName(processItem);
         String jobName = processItem.getProperty().getLabel();
         String jobVersion = processItem.getProperty().getVersion();
@@ -136,9 +172,6 @@ public abstract class JavaScriptForESBWithMavenManager extends JobJavaScriptOSGI
         mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemProjectName.getVarScript(), projectName);
         mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemName.getVarScript(), jobName);
         mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemVersion.getVarScript(), jobVersion);
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.BundleConfigPrivatePackage.getVarScript(), privatePackage);
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.BundleConfigExportService.getVarScript(), exportService);
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.BundleConfigBundleClasspath.getVarScript(), bundleClasspath);
 
         return mavenPropertiesMap;
     }
@@ -162,10 +195,10 @@ public abstract class JavaScriptForESBWithMavenManager extends JobJavaScriptOSGI
         for (String path : processes[0].getRelativePathList()) {
             Set<URL> urls = processes[0].getResourcesByRelativePath(path);
             // put OSGI_INF to /src/main/resources/
-            if (path.startsWith("src/")) { //$NON-NLS-1$
-                newResourcesMap.put(path.replace("src/", "src/main/java/"), urls); //$NON-NLS-1$//$NON-NLS-2$
+            if (path.startsWith(SRC_PATH)) {
+                newResourcesMap.put(path.replace(SRC_PATH, MAVEN_SRC_PATH), urls);
             } else {
-                newResourcesMap.put("src/main/resources/" + path, urls); //$NON-NLS-1$
+                newResourcesMap.put(MAVEN_RESOURCES_PATH + path, urls);
             }
         }
         ExportFileResource sourceCodeResource = new ExportFileResource(null, ""); //$NON-NLS-1$
@@ -190,6 +223,28 @@ public abstract class JavaScriptForESBWithMavenManager extends JobJavaScriptOSGI
         ExportFileResource mavenResource = new ExportFileResource(null, ""); //$NON-NLS-1$
         mavenResource.addResources("", scriptsUrls); //$NON-NLS-1$
         list.add(mavenResource);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.JobJavaScriptOSGIForESBManager#enableNeededLibraries
+     * (org.talend.core.model.general.ModuleNeeded)
+     */
+    @Override
+    protected boolean enableNeededLibraries(ModuleNeeded module) {
+        if (isOptionChoosed(ExportChoice.needMavenScript)) {
+            return true; // add all.
+        }
+        return super.enableNeededLibraries(module);
+    }
+
+    protected boolean isRoutines(String value) {
+        if (value != null && (value.endsWith(SYSTEMROUTINE_JAR) || value.endsWith(USERROUTINE_JAR))) {
+            return true;
+        }
+        return false;
     }
 
     protected abstract void addMavenBuildScripts(List<URL> scriptsUrls, ProcessItem processItem, String selectedJobVersion,
