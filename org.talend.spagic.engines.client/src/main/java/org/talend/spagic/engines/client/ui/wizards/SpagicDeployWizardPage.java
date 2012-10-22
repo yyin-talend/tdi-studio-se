@@ -109,8 +109,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
-        for (int i = 0; i < nodes.length; i++) {
-            RepositoryNode node = nodes[i];
+        for (RepositoryNode node : nodes) {
             if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
                 addTreeNode(node, node.getProperties(EProperties.LABEL).toString(), list);
             }
@@ -142,9 +141,9 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         if (nodes.length <= 0) {
             return;
         }
-        for (int i = 0; i < nodes.length; i++) {
-            addTreeNode((RepositoryNode) nodes[i], path + "/" //$NON-NLS-1$
-                    + ((RepositoryNode) nodes[i]).getProperties(EProperties.LABEL).toString(), list);
+        for (Object node2 : nodes) {
+            addTreeNode((RepositoryNode) node2, path + "/" //$NON-NLS-1$
+                    + ((RepositoryNode) node2).getProperties(EProperties.LABEL).toString(), list);
         }
     }
 
@@ -154,6 +153,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
     /**
      * (non-Javadoc) Method declared on IDialogPage.
      */
+    @Override
     public void createControl(Composite parent) {
 
         initializeDialogUnits(parent);
@@ -184,6 +184,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
      * 
      * @see org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1#validateSourceGroup()
      */
+    @Override
     protected boolean validateSourceGroup() {
         return true;
     }
@@ -192,6 +193,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
      * Create the export options specification widgets.
      * 
      */
+    @Override
     protected void createOptionsGroupButtons(Group optionsGroup) {
         Font font = optionsGroup.getFont();
         optionsGroup.setLayout(new GridLayout(1, true));
@@ -366,12 +368,22 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         return true;
     }
 
+    protected JobScriptsManager getManager() {
+        if (manager == null) {
+            Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
+            return new SpagicJavaDeployManager(exportChoiceMap, contextCombo.getText(), "all", IProcessor.NO_STATISTICS, //$NON-NLS-1$
+                    IProcessor.NO_TRACES);
+        }
+        return manager;
+    }
+
     /**
      * The Finish button was pressed. Try to do the required work now and answer a boolean indicating success. If false
      * is returned then the wizard will not close.
      * 
      * @returns boolean
      */
+    @Override
     public boolean finish() {
         Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         boolean canExport = false;
@@ -427,14 +439,14 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
 
         List<JobResource> jobResources = new ArrayList<JobResource>();
 
-        for (int i = 0; i < process.length; i++) {
+        for (ExportFileResource proces : process) {
             try {
-                process[i].setProcess((ProcessItem) ProxyRepositoryFactory.getInstance()
-                        .getUptodateProperty(process[i].getItem().getProperty()).getItem());
+                proces.setProcess((ProcessItem) ProxyRepositoryFactory.getInstance()
+                        .getUptodateProperty(proces.getItem().getProperty()).getItem());
             } catch (PersistenceException e) {
                 e.printStackTrace();
             }
-            ProcessItem processItem = (ProcessItem) process[i].getItem();
+            ProcessItem processItem = (ProcessItem) proces.getItem();
             JobInfo jobInfo = new JobInfo(processItem, processItem.getProcess().getDefaultContext());
             jobResources.add(new JobResource(projectName, jobInfo));
 
@@ -505,6 +517,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
      * 
      * @return java.lang.String
      */
+    @Override
     protected String getDestinationLabel() {
         // return DataTransferMessages.ArchiveExport_destinationLabel;
         return Messages.getString("SapgicDeployWizard.FileLabel"); //$NON-NLS-1$
@@ -539,6 +552,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
      * Answer the contents of self's destination specification widget. If this value does not have a suffix then add it
      * first.
      */
+    @Override
     protected String getDestinationValue() {
         String idealSuffix = getOutputSuffix();
         String destinationText = super.getDestinationValue();
@@ -575,6 +589,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
     /**
      * Open an appropriate destination browser so that the user can specify a source to import from.
      */
+    @Override
     protected void handleDestinationBrowseButtonPressed() {
         FileDialog dialog = new FileDialog(getContainer().getShell(), SWT.SAVE);
         dialog.setFilterExtensions(new String[] { "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
@@ -595,6 +610,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
     /**
      * Hook method for saving widget values for restoration by the next instance of this class.
      */
+    @Override
     protected void internalSaveWidgetValues() {
     }
 
@@ -602,6 +618,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
      * Hook method for restoring widget values to the values that they held last time this wizard was used to
      * completion.
      */
+    @Override
     protected void restoreWidgetValues() {
     }
 
@@ -610,6 +627,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
      * 
      * @see org.eclipse.ui.wizards.datatransfer.WizardFileSystemResourceExportPage1#destinationEmptyMessage()
      */
+    @Override
     protected String destinationEmptyMessage() {
         return ""; //$NON-NLS-1$
     }
