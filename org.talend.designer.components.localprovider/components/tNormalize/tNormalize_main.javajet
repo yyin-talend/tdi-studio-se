@@ -69,6 +69,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
             if(<%=incomingConnName %>.<%=normalizeColumn%> != null && <%=incomingConnName %>.<%=normalizeColumn%>.trim().length() > 0) {
                     <%if(useCSV){%> 				
                         com.csvreader.CsvReader reader_<%=cid%> = new com.csvreader.CsvReader(new java.io.StringReader(<%=incomingConnName %>.<%=normalizeColumn%>), '<%=delim %>');
+                        reader_<%=cid%>.setEscapeMode(com.csvreader.CsvReader.<%=escapeMode %>);
+                        reader_<%=cid%>.setTextQualifier('<%=textEnclosure %>');
                         reader_<%=cid%>.setTrimWhitespace(false);
                         if (reader_<%=cid%>.readRecord()) {
                             normalizeRecord_<%=cid%> = reader_<%=cid%>.getValues();
@@ -112,6 +114,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
             <%
        			}
             %>
+			<%if(isTrim){%>
+            for(int i_<%=cid%>=0;i_<%=cid%><normalizeRecord_<%=cid%>.length;i_<%=cid%>++){
+            	if(normalizeRecord_<%=cid%>[i_<%=cid%>]!=null){
+            		normalizeRecord_<%=cid%>[i_<%=cid%>]=normalizeRecord_<%=cid%>[i_<%=cid%>].trim();
+            	}
+            }
+            <%}%>
             for(int i_<%=cid%> = 0 ; i_<%=cid%> < lastNoEmptyIndex_<%=cid%> ; i_<%=cid%>++) {
                 currentRecord_<%=cid%> = new StringBuilder();
                 nb_line_<%=cid%>++;               
@@ -186,7 +195,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                 for(IMetadataColumn metadataColumn : metadataColumns) {
                     if(metadataColumn.getLabel().equals(normalizeColumn)) {
                         %>
-                        <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = normalizeRecord_<%=cid%>[i_<%=cid%>]<%if(isTrim){%>.trim()<%}%>;
+                        <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = normalizeRecord_<%=cid%>[i_<%=cid%>];
                         <%
                     } else {
                         %>
