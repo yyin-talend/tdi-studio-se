@@ -120,14 +120,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
             <%
        			}
             %>
-            <%if(isTrim){%>
-            for(int i_<%=cid%>=0;i_<%=cid%><normalizeRecord_<%=cid%>.length;i_<%=cid%>++){
+            for(int i_<%=cid%> = 0 ; i_<%=cid%> < lastNoEmptyIndex_<%=cid%> ; i_<%=cid%>++) {
+  			<%if(isTrim){%>
             	if(normalizeRecord_<%=cid%>[i_<%=cid%>]!=null){
             		normalizeRecord_<%=cid%>[i_<%=cid%>]=normalizeRecord_<%=cid%>[i_<%=cid%>].trim();
             	}
-            }
             <%}%>
-            for(int i_<%=cid%> = 0 ; i_<%=cid%> < lastNoEmptyIndex_<%=cid%> ; i_<%=cid%>++) {
                 currentRecord_<%=cid%> = new StringBuilder();
                 nb_line_<%=cid%>++;               
                 <%
