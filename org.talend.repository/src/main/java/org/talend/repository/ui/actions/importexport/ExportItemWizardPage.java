@@ -564,7 +564,11 @@ class ExportItemWizardPage extends WizardPage {
             // when first open the exportItem dialog ,the exportPath maybe empty,need judge
             if (exportArchivePath != null && exportArchivePath.trim().length() > 0) {
                 File beforeExportArchiveFolder = new File(exportArchivePath).getParentFile();
-                if (beforeExportArchiveFolder == null || beforeExportArchiveFolder.exists()) {
+                /*
+                 * TDI-22791, when the exportArchivePath is only name without path. No need check the existed or not.
+                 * Because will be create the parent folders, when export item.
+                 */
+                if (beforeExportArchiveFolder != null/* && beforeExportArchiveFolder.exists() */) {
                     String newPath = new File(beforeExportArchiveFolder, arcFileName + FileConstants.ZIP_FILE_SUFFIX)
                             .getAbsolutePath();
                     this.archivePathField.setText(newPath);
