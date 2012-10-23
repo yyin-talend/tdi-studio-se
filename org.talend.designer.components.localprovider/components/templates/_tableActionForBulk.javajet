@@ -64,7 +64,7 @@ if (!isParallelize) {
             boolean whetherExist_<%=cid%> = false;
             while(rsTable_<%=cid%>.next()) {
                 String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-                if(table_<%=cid%>.equals<%if(!tableNameIgnoreCase){%>IgnoreCase<%}%>(<%=table%>)) {
+                if(table_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(<%=table%>)) {
                     whetherExist_<%=cid%> = true;
                     break;
                 }

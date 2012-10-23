@@ -74,9 +74,9 @@ if (!isParallelize) {
             stmtCreate_<%=cid%>.close();
 <%
         } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
-			boolean tableNameIgnoreCase=false; 
+			boolean tableNameCaseSensitive=false; 
  	 		if(DB2.equalsIgnoreCase(dbmsId)||POSTGRESQL.equalsIgnoreCase(dbmsId)){ 
- 	 			tableNameIgnoreCase=true; 
+ 	 			tableNameCaseSensitive=true; 
  	 		} 
 			//to fixed: bug8422
 			if((cid.equals("talendLogs_DB") || cid.equals("talendStats_DB") || cid.equals("talendMeter_DB"))){
@@ -143,7 +143,7 @@ if (!isParallelize) {
 	                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
 	                String schema_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_SCHEM");
 	                if(table_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(<%=table%>) 
-	                	&& (schema_<%=cid%>.equals<%if(!tableNameIgnoreCase){%>IgnoreCase<%}%>(dbschema_<%=cid%>) || dbschema_<%=cid%>.trim().length() ==0)) {
+	                	&& (schema_<%=cid%>.equals<%if(!tableNameCaseSensitive){%>IgnoreCase<%}%>(dbschema_<%=cid%>) || dbschema_<%=cid%>.trim().length() ==0)) {
 	                    whetherExist_<%=cid%> = true;
 	                    break;
 	                }
