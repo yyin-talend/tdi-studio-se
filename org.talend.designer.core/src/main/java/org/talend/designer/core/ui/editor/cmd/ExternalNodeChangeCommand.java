@@ -44,6 +44,8 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
@@ -169,14 +171,36 @@ public class ExternalNodeChangeCommand extends Command {
         }
     }
 
-    private boolean getPropagate() {
+    private boolean getPropagate(IConnection connection, Map<String, Boolean> jobletMap) {
         if (propagate == null) {
             propagate = MessageDialog
                     .openQuestion(
                             new Shell(),
                             Messages.getString("ExternalNodeChangeCommand.propagate"), Messages.getString("ExternalNodeChangeCommand.propagateMessage")); //$NON-NLS-1$ //$NON-NLS-2$
+            if (propagate) {
+                changeCollapsedState(false, jobletMap, connection.getTarget());
+            }
+
         }
         return propagate;
+    }
+
+    private void changeCollapsedState(boolean state, Map<String, Boolean> map, INode node) {
+        if (node instanceof Node) {
+            NodeContainer nc = ((Node) node).getNodeContainer();
+            if (nc instanceof JobletContainer) {
+                if (((JobletContainer) nc).isCollapsed() && !state) {
+                    map.put(nc.getNode().getUniqueName(), false);
+                    ((JobletContainer) nc).setCollapsed(state);
+
+                } else if (!((JobletContainer) nc).isCollapsed() && state) {
+                    if (map.get(nc.getNode().getUniqueName()) != null && !map.get(nc.getNode().getUniqueName())) {
+                        ((JobletContainer) nc).setCollapsed(state);
+
+                    }
+                }
+            }
+        }
     }
 
     private void propagateInput() {
@@ -252,11 +276,13 @@ public class ExternalNodeChangeCommand extends Command {
                     if (table == null || table.getListColumns().isEmpty()) {
                         initTraceList.add(connection);
                     }
+                    INode connTar = connection.getTarget();
                     boolean openDialog = false;
+                    Map<String, Boolean> jobletMap = new HashMap<String, Boolean>();
                     if (isForTemlate()) {
                         openDialog = true;
                     } else {
-                        openDialog = getPropagate();
+                        openDialog = getPropagate(connection, jobletMap);
                     }
 
                     if (openDialog) {
@@ -265,7 +291,6 @@ public class ExternalNodeChangeCommand extends Command {
                         if (connection != null) {
                             IMetadataTable connTable = connection.getMetadataTable();
                             IMetadataTable dataTable = dataComponent.getTable();
-
                             for (IElementParameter param : ((Node) connection.getTarget()).getElementParameters()) {
                                 if (param.getFieldType().equals(EParameterFieldType.SCHEMA_TYPE)
                                         && param.getContext().equals(connection.getConnectorName())) {
@@ -293,6 +318,30 @@ public class ExternalNodeChangeCommand extends Command {
                                 cmd.execute(true);
                                 metadataOutputChanges.add(cmd);
                             }
+                            if (((Node) connTar).isJoblet()) {
+                                IElementParameter param = connTar.getElementParameter(connection.getTarget().getUniqueName());
+                                if (param != null) {
+                                    IMetadataTable originaleOutputTable = connTar.getMetadataFromConnector(param.getContext());
+                                    if (originaleOutputTable != null) {
+                                        MetadataToolHelper.copyTable(dataTable, originaleOutputTable);
+                                    }
+                                }
+
+                            } else if (((Node) connTar).getJobletNode() != null) {
+                                IElementParameter param = ((Node) connTar).getJobletNode().getElementParameter(
+                                        connection.getTarget().getUniqueName());
+                                if (param != null) {
+                                    IMetadataTable originaleOutputTable = ((Node) connTar).getJobletNode()
+                                            .getMetadataFromConnector(param.getContext());
+                                    if (originaleOutputTable != null) {
+                                        MetadataToolHelper.copyTable(dataTable, originaleOutputTable);
+                                    }
+                                }
+                            }
+
+                        }
+                        if (((Node) connTar).isJoblet()) {
+                            changeCollapsedState(true, jobletMap, connTar);
                         }
 
                     } else {

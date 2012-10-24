@@ -3551,13 +3551,14 @@ public class Node extends Element implements IGraphicalNode {
     public void reloadComponent(IComponent component, Map<String, Object> parameters) {
         reloadingComponent = true;
         currentStatus = 0;
+        Object obj = parameters.get(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS);
+        Map<String, Object> storeValueMap = storeValue(obj);
         init(component);
         IElementParameter param = getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
         if (param != null) {
             param.setValue(Boolean.TRUE);
         }
 
-        Object obj = parameters.get(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS);
         if (obj != null) {
             List<? extends IElementParameter> oldElementParameters = (List<? extends IElementParameter>) obj;
             for (IElementParameter sourceParam : oldElementParameters) {
@@ -3578,7 +3579,13 @@ public class Node extends Element implements IGraphicalNode {
                         if (sourceChildParam == null) {
                             continue;
                         }
-                        setPropertyValue(sourceParam.getName() + ":" + sourceChildParam.getName(), sourceChildParam.getValue()); //$NON-NLS-1$
+                        String pname = sourceParam.getName() + ":" + sourceChildParam.getName();//$NON-NLS-1$
+                        if (storeValueMap.get(pname) != null) {
+                            setPropertyValue(pname, storeValueMap.get(pname));
+                        } else {
+                            setPropertyValue(pname, sourceChildParam.getValue());
+                        }
+
                         if (targetChildParam.getFieldType() == EParameterFieldType.TABLE) {
                             targetChildParam.setListItemsValue(sourceChildParam.getListItemsValue());
                         }
@@ -3632,6 +3639,26 @@ public class Node extends Element implements IGraphicalNode {
         // }
         // }
         reloadingComponent = false;
+    }
+
+    private Map<String, Object> storeValue(Object obj) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        if (obj == null) {
+            return map;
+        }
+        List<? extends IElementParameter> oldElementParameters = (List<? extends IElementParameter>) obj;
+        for (IElementParameter sourceParam : oldElementParameters) {
+            map.put(sourceParam.getName(), sourceParam.getValue());
+
+            for (String name : sourceParam.getChildParameters().keySet()) {
+                IElementParameter sourceChildParam = sourceParam.getChildParameters().get(name);
+                if (sourceChildParam == null) {
+                    continue;
+                }
+                map.put(sourceParam.getName() + ":" + sourceChildParam.getName(), sourceChildParam.getValue()); //$NON-NLS-1$
+            }
+        }
+        return map;
     }
 
     /*

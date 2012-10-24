@@ -204,8 +204,8 @@ public class ChangeMetadataCommand extends Command {
         }
         for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
             if (connec.isActivate()
-                    && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || ((connec.getLineStyle().equals(
-                            EConnectionType.FLOW_MERGE) && (connec.getInputId() == 1))))) {
+                    && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || isinputContainerOutput(connec) || ((connec
+                            .getLineStyle().equals(EConnectionType.FLOW_MERGE) && (connec.getInputId() == 1))))) {
                 if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isMultiSchema())
                         || (connec.getMetaName().equals(newOutputMetadata.getTableName()))) {
                     IODataComponent output = new IODataComponent(connec, newOutputMetadata);
@@ -226,6 +226,16 @@ public class ChangeMetadataCommand extends Command {
                 }
             }
         }
+    }
+
+    private boolean isinputContainerOutput(Connection connec) {
+        boolean isREF = connec.getLineStyle().equals(EConnectionType.FLOW_REF);
+        if (isREF && (connec.getTarget().getOutgoingConnections().size() == 1)) {
+            if (connec.getTarget().getOutgoingConnections().get(0).getLineStyle().equals(EConnectionType.FLOW_REF)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void setInternal(boolean internal) {

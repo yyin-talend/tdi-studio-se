@@ -269,7 +269,7 @@ public class JobletConnectionReconnectCommand extends Command {
                         boolean sameFlag = oldMetadataTable.sameMetadataAs(targetOldMetadataTable, IMetadataColumn.OPTIONS_NONE);
                         // For the auto propagate.
                         if (!sameFlag && newTarget.getComponent().isSchemaAutoPropagated()
-                                && (targetOldMetadataTable.getListColumns().isEmpty())) {
+                                && (targetOldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
                             ChangeMetadataCommand changeMetadataCmd = new ChangeMetadataCommand(newTarget, null, null,
                                     oldMetadataTable);
                             changeMetadataCmd.execute(true);
