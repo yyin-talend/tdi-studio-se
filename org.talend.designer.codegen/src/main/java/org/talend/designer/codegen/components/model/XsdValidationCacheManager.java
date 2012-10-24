@@ -80,20 +80,14 @@ public class XsdValidationCacheManager {
 
     public boolean needCheck(java.io.File file, long currentCRC) {
         String path = file.getAbsolutePath();
-        if (forceXSDAlreadyChecked) {
-            alreadyCheckedXsd.put(path, currentCRC);
-            return false;
-        } else {
-            Long lastCheckedCRC = alreadyCheckedXsd.get(path);
+        Long lastCheckedCRC = alreadyCheckedXsd.get(path);
 
-            if (lastCheckedCRC == null) {
-                return true;
-            }
-
-            boolean isChanged = currentCRC != lastCheckedCRC;
-
-            return isChanged;
+        if (lastCheckedCRC == null) {
+            return true;
         }
+
+        boolean isChanged = currentCRC != lastCheckedCRC;
+        return isChanged;
     }
 
     public void setChecked(File file, long currentCRC) {
