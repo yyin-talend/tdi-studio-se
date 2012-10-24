@@ -22,6 +22,7 @@
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
 	boolean sftp = false;
+	boolean useGlob = ("true").equals(ElementParameterParser.getValue(node, "__PERL5_REGEX__"));
 	if(("true").equals(useExistingConn)){
 		List<? extends INode> nodeList = node.getProcess().getGeneratingNodes();
 		for(INode n : nodeList){
@@ -47,7 +48,11 @@ try{
 			String tempdir<%=cid %> =  localdir<%=cid %>;
 			String filemask<%=cid %> = key<%=cid %>; 
 			String dir<%=cid %> = null;	
-			String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;	
+        	<%if(!useGlob) {//perl5 mode not support windows(\) path separator at the mask string%>
+                String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;
+            <%} else {%>
+                String mask<%=cid %> = filemask<%=cid%>;
+            <%}%>	
 			int i<%=cid %> = mask<%=cid %>.lastIndexOf('/');
   			if (i<%=cid %>!=-1){
 				dir<%=cid %> = mask<%=cid %>.substring(0, i<%=cid %>); 
@@ -147,7 +152,11 @@ try{
 			String tempdir<%=cid %> =  localdir<%=cid %>;
 			String filemask<%=cid %> = key<%=cid %>; 
 			String dir<%=cid %> = null;	
-			String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;	
+		    <%if(!useGlob) {//perl5 mode not support windows(\) path separator at the mask string%>
+                String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;
+            <%} else {%>
+                String mask<%=cid %> = filemask<%=cid%>;
+            <%}%>	
 			int i<%=cid %> = mask<%=cid %>.lastIndexOf('/');
   			if (i<%=cid %>!=-1){
 				dir<%=cid %> = mask<%=cid %>.substring(0, i<%=cid %>); 
