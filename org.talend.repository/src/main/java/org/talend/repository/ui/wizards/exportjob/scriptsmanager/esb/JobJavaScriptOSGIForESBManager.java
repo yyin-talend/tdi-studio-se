@@ -238,8 +238,14 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     protected boolean enableNeededLibraries(ModuleNeeded module) {
-        // if no bundle defined for this, add to the jars to export
-        if (module.getBundleName() == null || "".equals(module.getBundleName())) { //$NON-NLS-1$
+        /*
+         * If null, will add the lib always.
+         * 
+         * If empty, nothing will be added.
+         * 
+         * Else, add the bundle id in "Require-Bundle", but don't add the lib.
+         */
+        if (module.getBundleName() == null/* || "".equals(module.getBundleName()) */) { // TDI-23403
             return !isExcludedLib(module.getModuleName());
         }
         return false;
