@@ -105,24 +105,14 @@ public class ZipFileUtils {
     }
 
     public static String unZip(File unZipFile, String destFileName) {
-        return unZip(unZipFile.getPath(), destFileName);
-    }
-
-    public static String unZip(String unZipFileName) {
-        return unZip(unZipFileName, null);
-    }
-
-    public static String unZip(String unZipFileName, String destFileName) {
-        File unzipFile = new File(unZipFileName);
-
         if (destFileName == null || destFileName.trim().length() == 0) {
-            destFileName = unzipFile.getParent();
+            destFileName = unZipFile.getParent();
         }
 
         File destFile;
         ZipFile zipFile = null;
         try {
-            zipFile = new ZipFile(unzipFile);
+            zipFile = new ZipFile(unZipFile);
             for (Enumeration entries = zipFile.entries(); entries.hasMoreElements();) {
                 ZipEntry entry = (ZipEntry) entries.nextElement();
                 destFile = new File(destFileName, entry.getName());
@@ -141,6 +131,15 @@ public class ZipFileUtils {
             }
         }
         return null;
+    }
+
+    public static String unZip(String unZipFileName) {
+        return unZip(unZipFileName, null);
+    }
+
+    public static String unZip(String unZipFileName, String destFileName) {
+        return unZip(new File(unZipFileName), destFileName);
+
     }
 
     private static void unZipFile(File destFile, ZipFile zipFile, ZipEntry entry) throws IOException {

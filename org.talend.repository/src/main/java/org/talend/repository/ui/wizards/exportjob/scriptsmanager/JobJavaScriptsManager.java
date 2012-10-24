@@ -1172,28 +1172,21 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
 
         try {
-            String classRoot = getClassRootLocation();
-            String jarPath = getTmpFolder() + PATH_SEPARATOR + jobFolderName + FileConstants.JAR_FILE_SUFFIX;
+            File jarFile = new File(getTmpFolder() + File.separatorChar + jobFolderName + FileConstants.JAR_FILE_SUFFIX);
             // Exports the jar file
-            JarBuilder jarbuilder = new JarBuilder(classRoot, jarPath);
+            JarBuilder jarbuilder = new JarBuilder(getClassRootFileLocation(), jarFile);
 
             // builds the jar file of the job classes,needContext specifies whether inclucdes the context.
             // add the job
             String jobPath = projectName + PATH_SEPARATOR + jobFolderName;
-            List<String> include = new ArrayList<String>();
-            include.add(jobPath);
-            jarbuilder.setIncludeDir(include);
+            jarbuilder.setIncludeDir(Collections.singleton(jobPath));
             // filter the context
-            String contextPaht = jobPath + PATH_SEPARATOR + JOB_CONTEXT_FOLDER;
-            List<String> excludes = new ArrayList<String>(1);
-            excludes.add(contextPaht);
-            jarbuilder.setExcludeDir(excludes);
+            String contextPath = jobPath + PATH_SEPARATOR + JOB_CONTEXT_FOLDER;
+            jarbuilder.setExcludeDir(Collections.singleton(contextPath));
 
             jarbuilder.buildJar();
 
-            File jarFile = new File(jarPath);
-            URL url = jarFile.toURL();
-            list.add(url);
+            list.add(jarFile.toURI().toURL());
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
@@ -1228,10 +1221,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @return
      */
     protected String getClassRootLocation() throws Exception {
-        return getClassRootPath().toFile().toURI().toURL().getPath();
+        return getClassRootFileLocation().toURI().toURL().getPath();
     }
 
-    private IPath getClassRootPath() throws Exception {
+    private File getClassRootFileLocation() throws CoreException {
+        return getClassRootPath().toFile();
+    }
+
+    private IPath getClassRootPath() throws CoreException {
         IProject project = RepositoryPlugin.getDefault().getRunProcessService().getProject(ECodeLanguage.JAVA);
 
         IJavaProject javaProject = JavaCore.create(project);
@@ -1279,15 +1276,15 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 include.add(JavaUtils.JAVA_XML_MAPPING);
             }
 
-            String jarPath = getTmpFolder() + PATH_SEPARATOR + SYSTEMROUTINE_JAR;
+            File jarFile = new File(getTmpFolder() + File.separatorChar + SYSTEMROUTINE_JAR);
 
             // make a jar file of system routine classes
-            JarBuilder jarbuilder = new JarBuilder(getClassRootLocation(), jarPath);
+            JarBuilder jarbuilder = new JarBuilder(getClassRootFileLocation(), jarFile);
             jarbuilder.setIncludeDir(include);
             jarbuilder.setIncludeRoutines(getRoutineDependince(process, true, false));
             jarbuilder.buildJar();
 
-            return Collections.singletonList(new File(jarPath).toURI().toURL());
+            return Collections.singletonList(jarFile.toURI().toURL());
         } catch (Exception e) {
             ExceptionHandler.process(e);
             return Collections.emptyList();
@@ -1320,38 +1317,36 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 jar = USERROUTINE_JAR;
             }
 
-            List<String> excludes = new ArrayList<String>();
-            excludes.add(SYSTEM_ROUTINES_PATH);
-            excludes.add(USER_ROUTINES_PATH); // remove all
-            excludes.add(USER_BEANS_PATH);
-
-            String jarPath = getTmpFolder() + PATH_SEPARATOR + jar;
+            File jarFile = new File(getTmpFolder() + File.separatorChar + jar);
 
             // make a jar file of user routine classes
-            JarBuilder jarbuilder = new JarBuilder(getClassRootLocation(), jarPath);
-            jarbuilder.setIncludeDir(Collections.singletonList(include));
+            JarBuilder jarbuilder = new JarBuilder(getClassRootFileLocation(), jarFile);
+            jarbuilder.setIncludeDir(Collections.singleton(include));
             jarbuilder.setIncludeRoutines(getRoutineDependince(process, false, useBeans));
-            jarbuilder.setExcludeDir(excludes);
+            jarbuilder.setExcludeDir(Arrays.asList(
+                    SYSTEM_ROUTINES_PATH,
+                    USER_ROUTINES_PATH, // remove all
+                    USER_BEANS_PATH
+            ));
             jarbuilder.buildJar();
 
-            return Collections.singletonList(new File(jarPath).toURI().toURL());
+            return Collections.singletonList(jarFile.toURI().toURL());
         } catch (Exception e) {
             ExceptionHandler.process(e);
             return Collections.emptyList();
         }
     }
 
-    private List<File> getRoutineDependince(ExportFileResource[] process, boolean system, boolean useBeans) {
-        List<File> userRoutines = null;
+    private Collection<File> getRoutineDependince(ExportFileResource[] process, boolean system, boolean useBeans) {
+        Collection<File> userRoutines = null;
         try {
-            String classRoot = getClassRootLocation();
             if (useBeans) {
-                userRoutines = getAllFiles(classRoot, USER_BEANS_PATH);
+                userRoutines = getAllFiles(getClassRootFileLocation(), USER_BEANS_PATH);
             } else {
-                userRoutines = getAllFiles(classRoot, USER_ROUTINES_PATH);
+                userRoutines = getAllFiles(getClassRootFileLocation(), USER_ROUTINES_PATH);
             }
 
-            List<IRepositoryViewObject> collectRoutines = collectRoutines(process, system, useBeans);
+            Collection<IRepositoryViewObject> collectRoutines = collectRoutines(process, system, useBeans);
 
             Iterator<File> iterator = userRoutines.iterator();
             while (iterator.hasNext()) {
@@ -1375,8 +1370,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 }
             }
 
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
@@ -1384,14 +1377,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     }
 
-    protected List<IRepositoryViewObject> collectRoutines(ExportFileResource[] process, boolean system, boolean useBeans) {
-        Collection<IRepositoryViewObject> collectRoutines = null;
-
-        collectRoutines = collectRoutines(process, useBeans);
-
-        List<IRepositoryViewObject> allRoutines = new ArrayList<IRepositoryViewObject>();
-
-        for (IRepositoryViewObject object : collectRoutines) {
+    protected Collection<IRepositoryViewObject> collectRoutines(ExportFileResource[] process, boolean system, boolean useBeans) {
+        Collection<IRepositoryViewObject> allRoutines = new ArrayList<IRepositoryViewObject>();
+        for (IRepositoryViewObject object : collectRoutines(process, useBeans)) {
             Item item = object.getProperty().getItem();
             if (item instanceof RoutineItem && (((RoutineItem) item).isBuiltIn() == system)) {
                 allRoutines.add(object);
@@ -1434,9 +1422,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             if (allRoutinesNames.isEmpty()) {
                 toReturn.addAll(RoutinesUtil.getCurrentSystemRoutines());
             } else {
-                List<IRepositoryViewObject> availableRoutines;
                 try {
-                    availableRoutines = factory.getAll(ProjectManager.getInstance().getCurrentProject(),
+                    List<IRepositoryViewObject> availableRoutines = factory.getAll(ProjectManager.getInstance().getCurrentProject(),
                             ERepositoryObjectType.ROUTINES);
                     for (IRepositoryViewObject object : availableRoutines) {
                         if (allRoutinesNames.contains(object.getLabel())) {
@@ -1625,10 +1612,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         return map;
     }
 
-    private List<File> getAllFiles(String rootPath, String childPath) {
-        final List<File> list = new ArrayList<File>();
-        File file = new File(rootPath, childPath);
-        file.listFiles(new java.io.FilenameFilter() {
+    private Collection<File> getAllFiles(File rootFile, String childPath) {
+        final Collection<File> list = new ArrayList<File>();
+        new File(rootFile, childPath).listFiles(new java.io.FilenameFilter() {
 
             public boolean accept(java.io.File dir, String name) {
                 File file = new java.io.File(dir, name);

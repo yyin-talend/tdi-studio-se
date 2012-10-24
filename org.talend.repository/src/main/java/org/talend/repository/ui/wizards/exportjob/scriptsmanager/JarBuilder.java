@@ -18,14 +18,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
-import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.repository.utils.ZipFileUtils;
 
 /**
@@ -34,23 +33,21 @@ import org.talend.repository.utils.ZipFileUtils;
  * $Id: MakeJarRunnable.java Mar 30, 200712:49:05 PM bqian $
  * 
  */
-public class JarBuilder {
+class JarBuilder {
 
-    String dir = null;
+    final File dir;
 
-    String jarFile = null;
+    final File jarFile;
 
-    String jarname = null;
+    Collection<String> includeDirs = null;
 
-    List<String> includeDirs = null;
+    Collection<String> excludeDirs = null;
 
-    List<String> excludeDirs = null;
+    Collection<File> excludeFiles = null;
 
-    List<File> excludeFiles = null;
+    Collection<File> includeRoutines = null;
 
-    List<File> includeRoutines = null;
-
-    private static final String SYSTEM = "system"; //$NON-NLS-1$
+//    private static final String SYSTEM = "system"; //$NON-NLS-1$
 
     private static final String CONTEXT = "context"; //$NON-NLS-1$
 
@@ -64,26 +61,24 @@ public class JarBuilder {
      * @param jarName
      * @param includeDirs
      */
-    JarBuilder(String root, String jarFile) {
+    JarBuilder(File root, File jarFile) {
         this.dir = root;
         this.jarFile = jarFile;
-        File file = new File(jarFile);
-        this.jarname = file.getName();
     }
 
-    public void setIncludeDir(List<String> includeDirs) {
+    public void setIncludeDir(Collection<String> includeDirs) {
         this.includeDirs = includeDirs;
     }
 
-    public void setExcludeDir(List<String> excludeDirs) {
+    public void setExcludeDir(Collection<String> excludeDirs) {
         this.excludeDirs = excludeDirs;
     }
 
-    public void setExcludeFiles(List<File> excludeFiles) {
+    public void setExcludeFiles(Collection<File> excludeFiles) {
         this.excludeFiles = excludeFiles;
     }
 
-    public void setIncludeRoutines(List<File> includeRoutines) {
+    public void setIncludeRoutines(Collection<File> includeRoutines) {
         this.includeRoutines = includeRoutines;
     }
 
@@ -92,17 +87,15 @@ public class JarBuilder {
      * 
      * @return
      */
-    private List<File> getExportedFiles() {
+    private Collection<File> getExportedFiles() {
 
         if (includeDirs == null) {
-            includeDirs = new ArrayList<String>();
-            includeDirs.add(""); //$NON-NLS-1$
+            includeDirs = Collections.singleton(""); //$NON-NLS-1$
         }
-        List<File> includeFiles = getAllFiles(includeDirs);
+        Collection<File> includeFiles = getAllFiles(includeDirs);
 
         if (excludeDirs != null) {
-            List<File> excludeFiles = getAllFiles(excludeDirs);
-            includeFiles.removeAll(excludeFiles);
+            includeFiles.removeAll(getAllFiles(excludeDirs));
         }
         if (excludeFiles != null) {
             includeFiles.removeAll(excludeFiles);
@@ -118,12 +111,12 @@ public class JarBuilder {
         return includeFiles;
     }
 
-    private List<File> getAllFiles(List<String> subDirs) {
-        final List<File> list = new ArrayList<File>();
+    private Collection<File> getAllFiles(Collection<String> subDirs) {
+        final Collection<File> list = new ArrayList<File>();
 
-        for (int i = 0; i < subDirs.size(); i++) {
+        for (String subDir : subDirs) {
 
-            File subFile = new File(dir, subDirs.get(i));
+            File subFile = new File(dir, subDir);
             subFile.listFiles(new java.io.FilenameFilter() {
 
                 public boolean accept(java.io.File dir, String name) {
@@ -141,14 +134,12 @@ public class JarBuilder {
         return list;
     }
 
-    private Manifest getManifest() throws IOException {
-
+    private Manifest getManifest() {
         Manifest manifest = new Manifest();
-        Map<String, Attributes> m = manifest.getEntries();
         Attributes a = new Attributes();
         a.put(Attributes.Name.IMPLEMENTATION_VERSION, "1.0"); //$NON-NLS-1$
         a.put(Attributes.Name.IMPLEMENTATION_VENDOR, "Talend Open Studio"); //$NON-NLS-1$
-        m.put(jarname, a);
+        manifest.getEntries().put(jarFile.getName(), a);
         return manifest;
     }
 
@@ -157,11 +148,8 @@ public class JarBuilder {
      * 
      * @throws Exception
      */
-    public void buildJar() throws Exception {
-        File root = new File(dir);
-        final List<File> list = getExportedFiles();
-        Manifest manifest = getManifest();
-        exportJar(root, list, manifest);
+    public void buildJar() throws IOException {
+        exportJar(dir, getExportedFiles(), getManifest());
     }
 
     /**
@@ -171,7 +159,7 @@ public class JarBuilder {
      */
     private void createTempSubFolder(String tempFolderPath, File srcFile) {
         if (srcFile.isDirectory() && !srcFile.getName().equals(CONTEXT)) {
-            File projectFolder = new File(tempFolderPath + File.separator + srcFile.getName());
+            File projectFolder = new File(tempFolderPath + File.separatorChar + srcFile.getName());
             if (!projectFolder.exists()) {
                 projectFolder.mkdir();
                 File[] folderFiles = srcFile.listFiles();
@@ -189,10 +177,9 @@ public class JarBuilder {
      * @param list
      * @param manifest
      */
-    private void exportJar(File root, List<File> list, Manifest manifest) throws Exception {
-        File file = new File(jarFile);
-        if (file.exists()) {
-            String tempFolderPath = file.getParent() + File.separator + TEMP;
+    private void exportJar(File root, Collection<File> list, Manifest manifest) throws IOException {
+        if (jarFile.exists()) {
+            String tempFolderPath = jarFile.getParent() + File.separatorChar + TEMP;
             ZipFileUtils.unZip(jarFile, tempFolderPath);
             for (File subf : list) {
                 String desFileName = subf.getAbsolutePath().substring(root.getAbsolutePath().length() + 1);
@@ -201,29 +188,33 @@ public class JarBuilder {
                     srcFile = srcFile.getParentFile();
                 }
                 createTempSubFolder(tempFolderPath, srcFile);
+                FileChannel srcChannel = null;
+                FileChannel dstChannel = null;
                 try {
-                    FileChannel srcChannel = new FileInputStream(subf.getAbsoluteFile()).getChannel();
-                    FileChannel dstChannel = new FileOutputStream(tempFolderPath + File.separator + desFileName).getChannel();
+                    srcChannel = new FileInputStream(subf.getAbsoluteFile()).getChannel();
+                    dstChannel = new FileOutputStream(tempFolderPath + File.separatorChar + desFileName).getChannel();
                     dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
-                    srcChannel.close();
-                    dstChannel.close();
-                } catch (IOException e) {
-                    ExceptionHandler.process(e);
+                } finally {
+                    if (null != srcChannel) {
+                        srcChannel.close();
+                    }
+                    if (null != dstChannel) {
+                        dstChannel.close();
+                    }
                 }
             }
-            ZipFileUtils.zip(tempFolderPath, jarFile, false);
+            ZipFileUtils.zip(tempFolderPath, jarFile.getPath(), false);
         } else {
             JarOutputStream jarOut = null;
             try {
                 jarOut = new JarOutputStream(new FileOutputStream(jarFile), manifest);
 
-                for (int i = 0; i < list.size(); i++) {
-                    String filename = list.get(i).getAbsolutePath();
-                    filename = filename.substring(root.getAbsolutePath().length() + 1);
+                for (File subf : list) {
+                    String filename = subf.getAbsolutePath().substring(root.getAbsolutePath().length() + 1);
                     JarEntry entry = new JarEntry(filename.replace('\\', '/'));
                     jarOut.putNextEntry(entry);
 
-                    FileInputStream fin = new FileInputStream(list.get(i));
+                    FileInputStream fin = new FileInputStream(subf);
                     byte[] buf = new byte[4096];
                     int read;
                     while ((read = fin.read(buf)) != -1) {
@@ -235,13 +226,8 @@ public class JarBuilder {
                     jarOut.flush();
                 }
             } finally {
-
                 if (jarOut != null) {
-                    try {
-                        jarOut.close();
-                    } catch (Exception e) {
-                        // do nothing
-                    }
+                    jarOut.close();
                 }
             }
         }
