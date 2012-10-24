@@ -96,7 +96,6 @@ if(outConn!=null && inConn!=null){
 			public void putValue_Oirginal_<%=oirginalColumnsSize/schemaOptNum%>(final <%=outConn.getName() %>Struct <%=outConn.getName() %>,final <%=inConn.getName() %>Struct <%=inConn.getName() %>){
 <%
 					}
-					oirginalColumnsSize++;
 					isOirginalColumn = true;
 					if(stringType == JavaTypesManager.STRING){
 						boolean trimStr = false;
@@ -121,6 +120,7 @@ if(outConn!=null && inConn!=null){
 			}
 <%
 					}
+					oirginalColumnsSize++;
 					break;
 				}
 			}
