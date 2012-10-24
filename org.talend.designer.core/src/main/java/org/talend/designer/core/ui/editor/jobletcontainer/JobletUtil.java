@@ -21,6 +21,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
@@ -519,6 +520,11 @@ public class JobletUtil {
     }
 
     public boolean checkModify(JobletContainer jobletContainer) {
+        IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                IJobletProviderService.class);
+        if (service != null) {
+            service.reloadJobletProcess(jobletContainer.getNode());
+        }
         IProcess process = jobletContainer.getNode().getComponent().getProcess();
         List<? extends INode> nodeList = process.getGraphicalNodes();
         List<NodeContainer> containerList = jobletContainer.getNodeContainers();
@@ -530,6 +536,9 @@ public class JobletUtil {
             }
             for (INode nodeOra : nodeList) {
                 if (nodeOra.getUniqueName().equals(jobletUnique)) {
+                    // if (nodeOra.isActivate() != node.isActivate()) {
+                    // return true;
+                    // }
                     List<? extends IElementParameter> paras = node.getElementParameters();
                     for (IElementParameter para : paras) {
                         if (para == null) {
@@ -610,6 +619,26 @@ public class JobletUtil {
                     List<IMetadataTable> oraTables = nodeOra.getMetadataList();
                     if (nodeTables.size() != oraTables.size()) {
                         return true;
+                    }
+                    for (IMetadataTable tab : nodeTables) {
+                        for (IMetadataTable oraTab : oraTables) {
+                            if (tab.getTableName().equals(oraTab.getTableName())) {
+                                if (tab.getListColumns().size() != oraTab.getListColumns().size()) {
+                                    return true;
+                                } else {
+                                    for (IMetadataColumn c : tab.getListColumns()) {
+                                        IMetadataColumn oraColumn = oraTab.getColumn(c.getLabel());
+                                        if (oraColumn == null) {
+                                            return true;
+                                        } else if (!c.getTalendType().equals(oraColumn.getTalendType())) {
+                                            return true;
+                                        } else if (!c.getType().equals(oraColumn.getType())) {
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     IExternalNode OraExternalNode = nodeOra.getExternalNode();
                     if (OraExternalNode != null) {

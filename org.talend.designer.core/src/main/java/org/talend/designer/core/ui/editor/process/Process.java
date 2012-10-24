@@ -1177,22 +1177,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         boolean needUpdate = jutil.checkModify(jobletCon);
                         // if (!isReadOnly) {
                         saveJobletNode(jobletCon, needUpdate);
-                        // } else {
-                        // if (service != null) {
-                        // if (needUpdate) {
-                        // service.reloadJobletProcess(jobletCon.getNode());
-                        // service.updateJobletCom(jobletCon.getNode());
-                        // } else {
-                        // needUpdate = service.checkModify(jobletCon);
-                        // if (needUpdate) {
-                        // service.reloadJobletProcess(jobletCon.getNode());
-                        // service.updateJobletCom(jobletCon.getNode());
-                        // }
-                        // }
-                        //
-                        // }
-                        // }
-                        // addNewJobletNode(jobletCon);
+                        saveNode(fileFact, processType, nList, cList, container.getNode(), factory);
                     } else {
                         saveNode(fileFact, processType, nList, cList, container.getNode(), factory);
                     }
@@ -1200,32 +1185,14 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
             }
             if (element instanceof JobletContainer) {
                 JobletContainer jobletCon = (JobletContainer) element;
-                saveNode(fileFact, processType, nList, cList, ((NodeContainer) element).getNode(), factory);
-
-                // IJobletProviderService service = (IJobletProviderService)
-                // GlobalServiceRegister.getDefault().getService(
-                // IJobletProviderService.class);
-                // boolean isReadOnly = false;
-                // if (service != null) {
-                // isReadOnly = service.isReadOnly(jobletCon.getNode());
-                // }
-                boolean needUpdate = jutil.checkModify(jobletCon);
-                // if (!isReadOnly) {
+                boolean needUpdate = false;
+                IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                        IJobletProviderService.class);
+                if (service != null) {
+                    needUpdate = service.checkModify(jobletCon);
+                }
                 saveJobletNode(jobletCon, needUpdate);
-                // } else {
-                // if (service != null) {
-                // if (needUpdate) {
-                // service.reloadJobletProcess(jobletCon.getNode());
-                // service.updateJobletCom(jobletCon.getNode());
-                // } else {
-                // needUpdate = service.checkModify(jobletCon);
-                // if (needUpdate) {
-                // service.reloadJobletProcess(jobletCon.getNode());
-                // service.updateJobletCom(jobletCon.getNode());
-                // }
-                // }
-                // }
-                // }
+                saveNode(fileFact, processType, nList, cList, ((NodeContainer) element).getNode(), factory);
             } else if (element instanceof NodeContainer) {
                 saveNode(fileFact, processType, nList, cList, ((NodeContainer) element).getNode(), factory);
             } else if (element instanceof Note) {
