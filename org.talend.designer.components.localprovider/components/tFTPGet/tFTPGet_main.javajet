@@ -20,6 +20,8 @@ String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
 boolean sftp = false;
 
+boolean usePerl5 = ("true").equals(ElementParameterParser.getValue(node, "__PERL5_REGEX__"));
+
 if ("true".equals(useExistingConn)) {
   List<? extends INode> nodeList = node.getProcess().getGeneratingNodes();
 
@@ -37,14 +39,21 @@ if ("true".equals(useExistingConn)) {
 try {
   globalMap.put("<%=cid %>_CURRENT_STATUS", "No file transfered.");
   String dir_<%=cid %> = root_<%=cid %>;
+  <%if(!usePerl5) {//perl5 mode not support windows(\) path separator at the mask string%>
   String mask_<%=cid %> = maskStr_<%=cid%>.replaceAll("\\\\", "/") ;
+  <%} else {%>
+  String mask_<%=cid %> = maskStr_<%=cid%>;
+  <%}%>
   int i_<%=cid %> = mask_<%=cid %>.lastIndexOf('/'); 
 
   if (i_<%=cid %> != -1){
     dir_<%=cid %> = mask_<%=cid %>.substring(0, i_<%=cid %>); 
     mask_<%=cid %> = mask_<%=cid %>.substring(i_<%=cid %>+1);  
   }
+  
+  <%if(!usePerl5) {%>
   mask_<%=cid %> = org.apache.oro.text.GlobCompiler.globToPerl5(mask_<%=cid %>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
+  <%}%>
   
   if (dir_<%=cid %>!=null && !"".equals(dir_<%=cid %>)){
     if ((".*").equals(mask_<%=cid %>)) {
