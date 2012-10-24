@@ -21,7 +21,8 @@ imports="
 		String userName = ElementParameterParser.getValue(node, "__USERNAME__");
 %>
 	String processInstanceUUID_<%=cid%> = null;
-	String parameters_<%=cid%> ="options=user:"+<%=userName%>;
+	StringBuilder parameters_<%=cid%> = new StringBuilder("options=user:");
+	parameters_<%=cid%>.append(<%=userName%>);
 	String url_<%=cid %> = <%=url%> + "API/runtimeAPI/instantiateProcessWithVariables/" + <%=process_name%> +"--" +<%=process_version%>;
 	java.net.HttpURLConnection httpConn_<%=cid %> = null;
 	

@@ -35,16 +35,19 @@ imports="
 								if ("HTTP_CLIENT".equals(clientMode)) {
 									if (i==0) {
 %>
-parameters_<%=cid%> = parameters_<%=cid%> + "&variables=<map>";
+parameters_<%=cid%>.append("&variables=<map>");
 <%
 									}
 %>
-parameters_<%=cid%> = parameters_<%=cid%> + "<entry><string><%=columns.get(i).getLabel() %></string><string>" 
-+ <%=conn.getName()%>.<%=(columns.get(i)).getLabel()%> + "</string></entry>";
+parameters_<%=cid%>.append("<entry><string><%=columns.get(i).getLabel() %></string><string>");
+parameters_<%=cid%>.append("<![CDATA[");
+parameters_<%=cid%>.append(String.valueOf(<%=conn.getName()%>.<%=(columns.get(i)).getLabel()%>).replaceAll("&","%26"));
+parameters_<%=cid%>.append("]]>");
+parameters_<%=cid%>.append("</string></entry>");
 <%
 									if (i==sizeColumns-1) {
 %>
-parameters_<%=cid%> = parameters_<%=cid%> + "</map>";
+parameters_<%=cid%>.append("</map>");
 <%
 									}
 								} else {
@@ -62,7 +65,7 @@ parameters_<%=cid%> = parameters_<%=cid%> + "</map>";
 		if ("HTTP_CLIENT".equals(clientMode)) {
 %>
 		java.io.DataOutputStream output_<%=cid%> = new java.io.DataOutputStream(httpConn_<%=cid %>.getOutputStream());
-		output_<%=cid%>.writeBytes(parameters_<%=cid%>);
+		output_<%=cid%>.writeBytes(parameters_<%=cid%>.toString());
 		output_<%=cid%>.flush();
 		if (output_<%=cid%> != null) {
 			output_<%=cid%>.close();
