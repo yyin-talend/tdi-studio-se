@@ -1414,6 +1414,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 Request request = (Request) targetRequestField.get(tool);
                 EditPart editPart = (EditPart) targetEditpartField.get(tool);
 
+                if ((request instanceof CreateRequest) && readOnly) {
+                    return;
+                }
+
                 if (request instanceof CreateRequest && editPart instanceof SubjobContainerPart) {
                     Object object = ((CreateRequest) request).getNewObject();
                     if (object instanceof Node) {
