@@ -431,7 +431,7 @@ public class JavaProcessorUtilities {
             }
             if (!jarsNeedRetrieve.isEmpty()) {
                 ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
-                repositoryBundleService.retrieve(jarsNeedRetrieve, libDir.getAbsolutePath());
+                repositoryBundleService.retrieve(jarsNeedRetrieve, libDir.getAbsolutePath(), false);
             }
         }
     }
