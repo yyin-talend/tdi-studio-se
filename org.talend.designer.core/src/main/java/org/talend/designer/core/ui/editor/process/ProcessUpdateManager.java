@@ -1111,8 +1111,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             Map<String, EUpdateResult> deletedOrReselect = getDeletedOrReselectTablesMap();
                             List<Object> parameter = null;
                             // renamed
-                            if (newSourceId != null && !newSourceId.equals(propertyValue)
-                                    && !PluginChecker.isEBCDICPluginLoaded()) {
+                            if (newSourceId != null && !newSourceId.equals(propertyValue)) {
                                 String[] newSourceIdAndName = UpdateManagerUtils.getSourceIdAndChildName(newSourceId);
                                 if (newSourceIdAndName != null) {
                                     IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem,
@@ -1201,7 +1200,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         }
 
                         // add the check result to resultList, hold the value.
-                        if (result != null && !PluginChecker.isEBCDICPluginLoaded()) {
+                        if (result != null) {
                             result.setJob(getProcess());
                             setConfigrationForReadOnlyJob(result);
                             schemaResults.add(result);
