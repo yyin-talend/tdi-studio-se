@@ -38,6 +38,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.designer.core.model.components.EParameterName;
@@ -53,6 +54,7 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.joblet.model.JobletNode;
 import org.talend.designer.joblet.model.JobletProcess;
+import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -257,6 +259,9 @@ public class JobletUtil {
         } else {
             cloneNode.setReadOnly(false);
         }
+
+        cloneNode.setDummy(node.isDummy());
+        cloneNode.setActivate(node.isActivate());
 
         List<? extends IElementParameter> elementParas = node.getElementParameters();
         for (IElementParameter elementPara : elementParas) {
@@ -776,6 +781,28 @@ public class JobletUtil {
         }
         return subList;
 
+    }
+
+    public boolean isRed(JobletContainer jobletContainer) {
+        IProcess2 jobletProcess = (IProcess2) jobletContainer.getNode().getComponent().getProcess();
+        ERepositoryStatus status = ProxyRepositoryFactory.getInstance().getStatus(jobletProcess.getProperty().getItem());
+        if (status == ERepositoryStatus.LOCK_BY_OTHER) {
+            return true;
+        }
+        IEditorPart[] editors = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getDirtyEditors();
+        if (editors.length <= 0) {
+            return false;
+        }
+        for (int i = 0; i < editors.length; i++) {
+            IEditorPart editor = editors[i];
+            RepositoryEditorInput editorInput = (RepositoryEditorInput) editor.getEditorInput();
+            String jobletId = editorInput.getId();
+            if (jobletId.equals(jobletProcess.getId())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
