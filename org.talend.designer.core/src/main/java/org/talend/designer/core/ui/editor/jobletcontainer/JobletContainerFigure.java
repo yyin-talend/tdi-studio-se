@@ -15,8 +15,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.utils.image.ColorUtils;
@@ -25,15 +23,12 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem.ProblemStatus;
-import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
-import org.talend.repository.editor.RepositoryEditorInput;
-import org.talend.repository.model.ERepositoryStatus;
 
 public class JobletContainerFigure extends Figure {
 
@@ -159,7 +154,8 @@ public class JobletContainerFigure extends Figure {
     }
 
     private void refreshNodes() {
-        if (isRed() && rectFig != null) {
+        boolean isRed = new JobletUtil().isRed(this.jobletContainer);
+        if (isRed && rectFig != null) {
             rectFig.setBackgroundColor(new Color(Display.getDefault(), red));
         } else if (rectFig != null) {
             rectFig.setBackgroundColor(new Color(Display.getDefault(), green));
@@ -174,7 +170,7 @@ public class JobletContainerFigure extends Figure {
         if (!jobletContainer.isCollapsed()) {
             for (Object ele : jobletContainer.getElements()) {
                 if (ele instanceof Node) {
-                    ((Node) ele).setReadOnly(isRed());
+                    ((Node) ele).setReadOnly(isRed);
                 }
             }
         }

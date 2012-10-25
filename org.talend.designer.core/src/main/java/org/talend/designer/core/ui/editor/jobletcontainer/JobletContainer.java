@@ -123,7 +123,7 @@ public class JobletContainer extends NodeContainer {
                 }
                 // }
             }
-            //totalRectangle.setLocation(jobletNodeRec.getLocation());
+            // totalRectangle.setLocation(jobletNodeRec.getLocation());
             // totalRectangle.x = totalRectangle.x - EXPEND_SIZE * 2;
             totalRectangle.y = totalRectangle.y - EXPEND_SIZE * 2;
             totalRectangle.height = totalRectangle.height + EXPEND_SIZE * 4;
@@ -227,10 +227,12 @@ public class JobletContainer extends NodeContainer {
             }
             if (needchangeLock) {
                 if (!((Boolean) value)) {
-                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                            IJobletProviderService.class);
-                    if (service != null) {
-                        service.lockJoblet(this.getNode());
+                    if (!new JobletUtil().isRed(this)) {
+                        IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                                IJobletProviderService.class);
+                        if (service != null) {
+                            service.lockJoblet(this.getNode());
+                        }
                     }
                 } else {
                     IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
@@ -500,6 +502,21 @@ public class JobletContainer extends NodeContainer {
                 }
             }
         }
+
+        if (!isCollapsed()) {
+            for (NodeContainer nodeContainer : this.nodeContainers) {
+                Node connNode = nodeContainer.getNode();
+                IProcess jobletProcess = this.getNode().getComponent().getProcess();
+                List<? extends INode> jobletNodes = jobletProcess.getGraphicalNodes();
+                for (INode n : jobletNodes) {
+                    if (connNode.getUniqueName().equals(n.getUniqueName())) {
+                        connNode.setDummy(n.isDummy());
+                        connNode.setActivate(n.isActivate());
+                    }
+                }
+            }
+        }
+
     }
 
     public void updateSubjobContainer() {
