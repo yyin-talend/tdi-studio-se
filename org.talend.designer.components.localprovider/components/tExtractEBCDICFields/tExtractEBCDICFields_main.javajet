@@ -110,8 +110,8 @@ try{
 		for(IMetadataColumn inputCol : inputMetadataTable.getListColumns()){	
 			JavaType stringType =  JavaTypesManager.getJavaTypeFromId(inputCol.getTalendType());
 			if( outputCol.getLabel().equals( inputCol.getLabel()) ){
+			isOirginalColumn = true;
 				if(outputMetadataTable.getListColumns().size() <= schemaOptNum){
-				isOirginalColumn = true;
 				if(stringType == JavaTypesManager.STRING){
 					boolean trimStr = false;
 					if(trimSelects!=null){
@@ -133,12 +133,12 @@ try{
 				}else{
 					if(oirginalColumnsSize%schemaOptNum==0){
 						isOirginalColumn = true;
-						oirginalColumnsSize++;
 %>
 					extractEBCDICFieldUtil_<%=cid%>.putValue_Oirginal_<%=oirginalColumnsSize/schemaOptNum%>(<%=outConn.getName()%>,<%=inConn.getName()%>);
 <%
 					}
 				}
+				oirginalColumnsSize++;
 				break;
 			}
 		}
