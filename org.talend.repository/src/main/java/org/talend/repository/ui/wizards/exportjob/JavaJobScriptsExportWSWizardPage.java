@@ -1039,7 +1039,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         });
 
         sourceButton = new Button(left, SWT.CHECK | SWT.LEFT);
-        sourceButton.setText("Source Files"); //$NON-NLS-1$
+        sourceButton.setText(Messages.getString("JobScriptsExportWizardPage.sourceFiles")); //$NON-NLS-1$
         gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 2;
         sourceButton.setLayoutData(gd);
