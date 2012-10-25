@@ -16,6 +16,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IESBService;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.CDCConnection;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -153,6 +155,19 @@ public class DetecteViewImpactAction extends AContextualAction {
                         Object obj = selection.getFirstElement();
                         RepositoryNode nodeObj = (RepositoryNode) obj;
                         Item item = nodeObj.getObject().getProperty().getItem();
+                        if (item instanceof ConnectionItem) {
+                            if (GlobalServiceRegister.getDefault().isServiceRegistered(IESBService.class)) {
+                                IESBService service = (IESBService) GlobalServiceRegister.getDefault().getService(
+                                        IESBService.class);
+                                if (service != null) {
+                                    boolean flag = service.isServiceItem(item.eClass().getClassifierID());
+                                    if (flag) {
+                                        canWork = false;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                         for (IRepositoryContentHandler handler : RepositoryContentManager.getHandlers()) {
                             ERepositoryObjectType stype = handler.getRepositoryObjectType(item);
                             if (stype == objectType) {
