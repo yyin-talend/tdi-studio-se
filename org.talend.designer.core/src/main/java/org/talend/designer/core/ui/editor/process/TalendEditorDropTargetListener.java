@@ -599,19 +599,31 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                         IContextManager contextManager = process.getContextManager();
                         List<IContext> listContext = contextManager.getListContext();
                         // context group will reflect absolutely if no context variable in contextViewer
-                        if (!ConnectionContextHelper.containsVariable(contextManager)) {
-                            // for bug 15608
-                            ConnectionContextHelper.addContextVarForJob(process, contextItem, contextManager);
-                            // ConnectionContextHelper.checkAndAddContextsVarDND(contextItem, contextManager);
-                            created = true;
-                        } else {
-                            Set<String> addedContext = ConnectionContextHelper.checkAndAddContextVariables(contextItem,
-                                    contextSet, contextManager, false);
-                            if (addedContext != null && addedContext.size() > 0) {
-                                ConnectionContextHelper.addContextVarForJob(process, contextItem, contextSet);
+                        // if (!ConnectionContextHelper.containsVariable(contextManager)) {
+                        // for bug 15608
+                        // ConnectionContextHelper.addContextVarForJob(process, contextItem, contextManager);
+                        // ConnectionContextHelper.checkAndAddContextsVarDND(contextItem, contextManager);
+
+                        Set<String> addedVars = ConnectionContextHelper.checkAndAddContextVariables(contextItem, contextSet,
+                                process.getContextManager(), false);
+                        if (addedVars != null && !addedVars.isEmpty()
+                                && !ConnectionContextHelper.isAddContextVar(contextItem, contextManager, contextSet)) {
+                            // show
+                            Map<String, Set<String>> addedVarsMap = new HashMap<String, Set<String>>();
+                            addedVarsMap.put(item.getProperty().getLabel(), contextSet);
+                            if (ConnectionContextHelper.showContextdialog(process, contextItem, process.getContextManager(),
+                                    addedVarsMap, contextSet)) {
                                 created = true;
                             }
                         }
+                        // } else {
+                        // Set<String> addedContext = ConnectionContextHelper.checkAndAddContextVariables(contextItem,
+                        // contextSet, contextManager, false);
+                        // if (addedContext != null && addedContext.size() > 0) {
+                        // ConnectionContextHelper.addContextVarForJob(process, contextItem, contextSet);
+                        // created = true;
+                        // }
+                        // }
                     }
                 }
             }
