@@ -10,6 +10,7 @@ imports="
 	org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.process.INode 
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.utils.NodeUtil
 	
 	java.util.ArrayList
 	java.util.List
@@ -93,7 +94,7 @@ if(outConn!=null && inConn!=null){
 				if( outputCol.getLabel().equals( inputCol.getLabel()) ){
 					if(oirginalColumnsSize%schemaOptNum==0){
 %>
-			public void putValue_Oirginal_<%=oirginalColumnsSize/schemaOptNum%>(final <%=outConn.getName() %>Struct <%=outConn.getName() %>,final <%=inConn.getName() %>Struct <%=inConn.getName() %>){
+			public void putValue_Oirginal_<%=oirginalColumnsSize/schemaOptNum%>(final <%=outConn.getName() %>Struct <%=outConn.getName() %>,final <%=NodeUtil.getPrivateConnClassName(inConn) %>Struct <%=inConn.getName() %>){
 <%
 					}
 					isOirginalColumn = true;
