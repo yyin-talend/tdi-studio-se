@@ -418,7 +418,10 @@
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
-  </CODEGENERATION>
+     <IMPORTS>
+       <IMPORT NAME="Driver-Mysql5" MODULE="mysql-connector-java-5.1.0-bin.jar" REQUIRED="false" />
+     </IMPORTS> 
+    </CODEGENERATION>
    
   <RETURNS>
     <RETURN NAME="NB_LINE"          TYPE="id_Integer" AVAILABILITY="AFTER"/>
