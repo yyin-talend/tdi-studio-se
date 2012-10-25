@@ -1199,7 +1199,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         }
 
                         // add the check result to resultList, hold the value.
-                        if (result != null && !PluginChecker.isEBCDICPluginLoaded()) {
+                        if (result != null) {
                             result.setJob(getProcess());
                             setConfigrationForReadOnlyJob(result);
                             schemaResults.add(result);
@@ -1508,7 +1508,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             if ((param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath)
                                     || (repositoryConnection instanceof SalesforceSchemaConnection
                                             && "MODULENAME".equals(repositoryValue) && !((SalesforceSchemaConnection) repositoryConnection)
-                                            .isUseCustomModuleName())) {
+                                                .isUseCustomModuleName())) {
                                 continue;
                             }
                             IMetadataTable table = null;
