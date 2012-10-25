@@ -332,6 +332,10 @@
   </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
+    <IMPORTS>
+       <IMPORT NAME="Driver-OjdbcConnector6" MODULE="ojdbc6.jar" REQUIRED="false" />
+       <IMPORT NAME="Driver-OjdbcConnector5" MODULE="ojdbc5.jar" REQUIRED="false" />
+    </IMPORTS> 
    </CODEGENERATION>
 
   <RETURNS>

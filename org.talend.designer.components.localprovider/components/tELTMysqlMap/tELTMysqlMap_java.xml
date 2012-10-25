@@ -177,6 +177,10 @@
    </PARAMETERS>
 
    <CODEGENERATION>
+     <IMPORTS>
+       <IMPORT NAME="MYSQL_5" MODULE="mysql-connector-java-5.1.0-bin.jar" REQUIRED="false" />
+       <IMPORT NAME="MYSQL_4" MODULE="mysql-connector-java-3.1.14-bin.jar" REQUIRED="false" />
+     </IMPORTS>
    </CODEGENERATION>
    
    <RETURNS>

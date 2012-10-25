@@ -158,8 +158,10 @@
     	</PARAMETER>
 	</ADVANCED_PARAMETERS>
 
-   <CODEGENERATION>
-   </CODEGENERATION>
-
+  <CODEGENERATION>
+     <IMPORTS>
+       <IMPORT NAME="Driver-MysqlConnector" MODULE="mysql-connector-java-5.1.0-bin.jar" REQUIRED="false" />
+     </IMPORTS> 
+    </CODEGENERATION>
    <RETURNS/>
 </COMPONENT>

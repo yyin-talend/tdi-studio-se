@@ -237,6 +237,8 @@
    <CODEGENERATION>
     <IMPORTS>
        <IMPORT NAME="TNS" MODULE="tns.jar" REQUIRED="true" />    
+       <IMPORT NAME="Driver-Ojdbc6" MODULE="ojdbc6.jar" REQUIRED="false" />
+       <IMPORT NAME="Driver-Ojdbc5" MODULE="ojdbc5.jar" REQUIRED="false" />
     </IMPORTS>   
    </CODEGENERATION>
 

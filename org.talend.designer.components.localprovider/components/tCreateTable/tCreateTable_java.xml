@@ -676,8 +676,8 @@
 		<IMPORT NAME="Driver-JAVADB-DERBYNET" MODULE="derbynet.jar" REQUIRED_IF="DBTYPE=='JAVADB'"/>
 		<IMPORT NAME="Driver-SQLITE-JDBC-NESTED" MODULE="sqlitejdbc-v056.jar" REQUIRED_IF="DBTYPE=='SQLITE'" />
 		<IMPORT NAME="Driver-SYBASE-JCONN3" MODULE="jconn3.jar" REQUIRED_IF="DBTYPE=='SYBASE'" />		
-		<IMPORT NAME="Driver-Teradata" MODULE="terajdbc4.jar" REQUIRED_IF="DBTYPE=='TERADATA'" />
-		<IMPORT NAME="Driver-Teradata" MODULE="tdgssconfig.jar" REQUIRED_IF="DBTYPE=='TERADATA'" />
+		<IMPORT NAME="Driver-Teradata_jdbc" MODULE="terajdbc4.jar" REQUIRED_IF="DBTYPE=='TERADATA'" />
+		<IMPORT NAME="Driver-Teradata_config" MODULE="tdgssconfig.jar" REQUIRED_IF="DBTYPE=='TERADATA'" />
 		<IMPORT NAME="Driver-Netezza" MODULE="nzjdbc.jar" REQUIRED_IF="DBTYPE=='NETEZZA'" />
 		<IMPORT NAME="Driver-VERTICA" MODULE="vertica_3.0_jdk_5.jar" REQUIRED_IF="(DBTYPE=='VERTICA') and (USE_EXISTING_CONNECTION == 'false') and (DB_VERTICA_VERSION=='VERTICA_3')" /> 
 		<IMPORT NAME="Driver-VERTICA_3.5" MODULE="vertica_3.5_jdk_5.jar" REQUIRED_IF="(DBTYPE=='VERTICA') and (USE_EXISTING_CONNECTION == 'false') and (DB_VERTICA_VERSION=='VERTICA_3.5')" />

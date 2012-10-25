@@ -272,6 +272,10 @@
       
       <TEMPLATE_PARAM SOURCE="self.DATA_ACTION"  TARGET="tMBE.DATA_ACTION" />
     </TEMPLATES>
+    <IMPORTS>
+      <IMPORT NAME="Mysql_Driver5"  MODULE="mysql-connector-java-5.1.0-bin.jar"  REQUIRED="true" />
+      <IMPORT NAME="Mysql_Driver4"  MODULE="mysql-connector-java-3.1.14-bin.jar"  REQUIRED="false" />
+    </IMPORTS>
   </CODEGENERATION>
   <RETURNS/>
 </COMPONENT>
