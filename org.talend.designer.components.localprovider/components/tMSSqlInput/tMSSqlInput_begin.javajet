@@ -99,7 +99,7 @@ imports="
 %>
             if(tmpContent_<%=cid%> != null) {
             	if (talendToDBList_<%=cid %> .contains(rsmd_<%=cid %>.getColumnTypeName(<%=currentColNo%>).toUpperCase(java.util.Locale.ENGLISH))) {
-            		<%=firstConnName%>.<%=column.getLabel()%> = FormatterUtils.formatUnwithE(Double.valueOf(tmpContent_<%=cid%>));
+            		<%=firstConnName%>.<%=column.getLabel()%> = FormatterUtils.formatUnwithE(tmpContent_<%=cid%>);
             	} else {
                 	<%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%><%=trimMethod%>;
                 }
