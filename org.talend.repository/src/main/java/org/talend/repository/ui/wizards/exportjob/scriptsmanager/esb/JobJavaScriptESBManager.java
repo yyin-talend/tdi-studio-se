@@ -360,10 +360,10 @@ public class JobJavaScriptESBManager extends JobJavaScriptsManager {
      * @return
      */
     protected ExportFileResource genMetaInfoFolder() {
-        ExportFileResource metaInfoResource = new ExportFileResource(null, "META-INF"); //$NON-NLS-1$
+        ExportFileResource metaInfoResource = new ExportFileResource(null, FileConstants.META_INF_FOLDER_NAME);
 
         // generate the MANIFEST.MF file in the temp folder
-        String manifestPath = getTmpFolder() + PATH_SEPARATOR + "MANIFEST.MF"; //$NON-NLS-1$
+        String manifestPath = getTmpFolder() + PATH_SEPARATOR + FileConstants.MANIFEST_MF_FILE_NAME;
 
         FileOutputStream fos = null;
         try {

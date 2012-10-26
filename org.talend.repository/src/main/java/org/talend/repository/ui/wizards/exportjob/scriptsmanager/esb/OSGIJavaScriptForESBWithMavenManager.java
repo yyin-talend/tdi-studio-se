@@ -22,9 +22,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.Path;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.IOsgiDependenciesService;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.repository.constants.IExportJobConstants;
 import org.talend.repository.preference.constants.IExportJobPrefConstants;
 import org.talend.resource.IExportJobResourcesService;
@@ -65,8 +64,6 @@ public class OSGIJavaScriptForESBWithMavenManager extends JavaScriptForESBWithMa
         if (mavenScript == null) {
             return;
         }
-        Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
-                processItem.getProperty().getId(), selectedJobVersion);
 
         File mavenBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + IExportJobConstants.MAVEN_BUILD_FILE_NAME);
         try {
@@ -79,7 +76,7 @@ public class OSGIJavaScriptForESBWithMavenManager extends JavaScriptForESBWithMa
                     mavenBuildFileOutputStream.close();
                 }
             }
-            updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, neededModules, MAVEN_PROP_LIB_PATH);
+            updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, true);
             scriptsUrls.add(mavenBuildFile.toURL());
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -95,26 +92,40 @@ public class OSGIJavaScriptForESBWithMavenManager extends JavaScriptForESBWithMa
     @Override
     protected void getMenifestMavenProperties(URL manifestURL, Map<String, String> mavenPropertiesMap) {
         super.getMenifestMavenProperties(manifestURL, mavenPropertiesMap);
+        Set<String> theProvidedModules = getProvidedModuleNames();
 
         // reset the Bundle-Classpath to remove the routines jar
         String bundleClasspathName = EMavenBuildScriptProperties.BundleConfigBundleClasspath.getVarScript();
         String bundleClasspath = mavenPropertiesMap.get(bundleClasspathName);
-        final String splitChar = ","; //$NON-NLS-1$
-        String[] classpathes = bundleClasspath.split(splitChar);
+        String[] classpathes = bundleClasspath.split(IOsgiDependenciesService.ITEM_SEPARATOR);
         StringBuffer sb = new StringBuffer(200);
         for (int i = 0; i < classpathes.length; i++) {
             String path = classpathes[i];
             Path libPath = new Path(path);
             String libName = libPath.lastSegment(); // lib name with jar extension
-            if (isRoutines(path) || isExcludedLib(libName)) {
+            // because export the routine/bean resource codes to build by maven, so no need routine/ben jar.
+            if (isRoutines(path) || isBeans(path) || theProvidedModules.contains(libName)) {
                 continue;
             }
             sb.append(path);
             if (i < classpathes.length - 1) { // the last one don't add it
-                sb.append(splitChar);
+                sb.append(IOsgiDependenciesService.ITEM_SEPARATOR);
             }
         }
         mavenPropertiesMap.put(bundleClasspathName, sb.toString());
     }
 
+    protected boolean isRoutines(String value) {
+        if (value != null && (value.endsWith(SYSTEMROUTINE_JAR) || value.endsWith(USERROUTINE_JAR))) {
+            return true;
+        }
+        return false;
+    }
+
+    protected boolean isBeans(String value) {
+        if (value != null && value.endsWith(USERBEANS_JAR)) {
+            return true;
+        }
+        return false;
+    }
 }

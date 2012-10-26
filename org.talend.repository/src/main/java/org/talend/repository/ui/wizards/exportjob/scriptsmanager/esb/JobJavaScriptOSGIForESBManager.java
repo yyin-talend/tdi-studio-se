@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.Manifest;
 
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -104,9 +105,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private static final String BLUEPRINT = "blueprint"; //$NON-NLS-1$
 
-    protected static final String META_INF = "META-INF"; //$NON-NLS-1$
-
     private static final String SPRING = "spring"; //$NON-NLS-1$
+
+    private MultiKeyMap requireBundleModules = new MultiKeyMap();
 
     private String jobName;
 
@@ -123,13 +124,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             throws ProcessorException {
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
 
-        ExportFileResource libResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
         ExportFileResource osgiResource = new ExportFileResource(null, ""); //$NON-NLS-1$;
         ExportFileResource jobScriptResource = new ExportFileResource(null, ""); //$NON-NLS-1$
 
         List<ProcessItem> itemToBeExport = new ArrayList<ProcessItem>();
 
-        list.add(libResource);
         list.add(osgiResource);
         list.add(jobScriptResource);
 
@@ -138,8 +137,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // editor mode.
         ProcessorUtilities.setExportConfig(JAVA, "", ""); //$NON-NLS-1$
 
-        // Gets talend libraries
-        Set<String> neededLibraries = new HashSet<String>();
         try {
             for (ExportFileResource process : processes) {
                 ProcessItem processItem = (ProcessItem) process.getItem();
@@ -176,20 +173,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
                 ProcessorUtilities.setExportConfig(JAVA, standardJars, libPath);
 
+                String processId = processItem.getProperty().getId();
                 if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
                     generateJobFiles(processItem, contextName, jobVersion, statisticPort != IProcessor.NO_STATISTICS,
                             tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren),
                             true /* isExportAsOSGI */, progressMonitor);
-                    Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
-                            processItem.getProperty().getId(), jobVersion);
-                    for (ModuleNeeded module : neededModules) {
-                        if (enableNeededLibraries(module)) {
-                            neededLibraries.add(module.getModuleName());
-                        }
-                    }
+                    analysisModules(processId, jobVersion);
                 } else {
-                    LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processItem.getProperty().getId(),
-                            jobVersion, Collections.<ModuleNeeded> emptySet());
+                    LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processId, jobVersion,
+                            Collections.<ModuleNeeded> emptySet());
                     LastGenerationInfo.getInstance().setLastMainJob(null);
                 }
 
@@ -213,20 +205,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     addOSGIRouteResources(osgiResource, processItem);
                 }
             }
-
-            // Gets talend libraries
-            List<URL> talendLibraries = getExternalLibraries(true, processes, neededLibraries);
-            libResource.addResources(talendLibraries);
-
-            // There have been source codes for routines for maven. so no routines jar
-            if (!isOptionChoosed(ExportChoice.needMavenScript)) {
-                // Gets system routines
-                List<URL> systemRoutineList = getSystemRoutine(processes);
-                libResource.addResources(systemRoutineList);
-                // Gets user routines
-                List<URL> userRoutineList = getUserRoutine(processes);
-                libResource.addResources(userRoutineList);
+            ExportFileResource libResource = getCompiledLibExportFileResource(processes);
+            if (libResource != null) {
+                list.add(libResource);
             }
+            ExportFileResource providedLibResources = getProvidedLibExportFileResource(processes);
+            if (providedLibResources != null) {
+                list.add(providedLibResources);
+            }
+
             // generate the META-INFO folder
             ExportFileResource metaInfoFolder = genMetaInfoFolder(libResource, itemToBeExport);
             list.add(0, metaInfoFolder);
@@ -237,25 +224,129 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return list;
     }
 
-    protected boolean enableNeededLibraries(ModuleNeeded module) {
-        /*
-         * If null, will add the lib always.
-         * 
-         * If empty, nothing will be added.
-         * 
-         * Else, add the bundle id in "Require-Bundle", but don't add the lib.
-         */
-        if (module.getBundleName() == null/* || "".equals(module.getBundleName()) */) { // TDI-23403
-            return !isExcludedLib(module.getModuleName());
+    @Override
+    protected void analysisModules(String processId, String processVersion) {
+        Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(processId,
+                processVersion);
+        for (ModuleNeeded module : neededModules) {
+            if (isCompiledLib(module)) {
+                addModuleNeededsInMap(getCompiledModules(), processId, processVersion, module);
+            } else if (isRequireBundleLib(module)) {
+                addModuleNeededsInMap(getRequireBundleModules(), processId, processVersion, module);
+            } else {
+                addModuleNeededsInMap(getExcludedModules(), processId, processVersion, module);
+            }
+        }
+    }
+
+    @Override
+    protected ExportFileResource getCompiledLibExportFileResource(ExportFileResource[] processes) {
+        ExportFileResource libResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
+        // Gets talend libraries
+        List<URL> talendLibraries = getExternalLibraries(true, processes, getCompiledModuleNames());
+        if (talendLibraries != null) {
+            libResource.addResources(talendLibraries);
+        }
+        addRoutinesResources(processes, libResource);
+        return libResource;
+    }
+
+    @Override
+    protected void addRoutinesResources(ExportFileResource[] processes, ExportFileResource libResource) {
+        // Gets system routines
+        List<URL> systemRoutineList = getSystemRoutine(processes);
+        libResource.addResources(systemRoutineList);
+        // Gets user routines
+        List<URL> userRoutineList = getUserRoutine(processes);
+        libResource.addResources(userRoutineList);
+    }
+
+    protected ExportFileResource getProvidedLibExportFileResource(ExportFileResource[] processes) {
+        Set<String> providedModuleNames = getProvidedModuleNames();
+        if (providedModuleNames.isEmpty()) {
+            return null; // if empty, won't add the privided lib folder
+        }
+        ExportFileResource libResource = new ExportFileResource(null, PROVIDED_LIB_FOLDER);
+
+        List<URL> providedUrls = getNeededModuleURLs(providedModuleNames);
+        if (providedUrls.isEmpty()) {
+            return null; // if empty, won't add the privided lib folder
+        }
+        libResource.addResources(providedUrls);
+        return libResource;
+    }
+
+    /**
+     * 
+     * This should be same as @see isIncludedLib. But, there are some special jar to exclude temp.
+     */
+    @Override
+    protected boolean isCompiledLib(ModuleNeeded module) {
+        if (module != null) {
+            /*
+             * If null, will add the lib always.
+             * 
+             * If empty, nothing will be added.
+             * 
+             * Else, add the bundle id in "Require-Bundle", but don't add the lib.
+             */
+            if (isIncludedLib(module)) {
+                return !isSpecialLib(module.getModuleName());
+            }
         }
         return false;
     }
 
-    protected boolean isExcludedLib(String libName) {
+    protected boolean isSpecialLib(String libName) {
         if (libName != null) {
             // temp workaround for https://jira.talendforge.org/browse/TDI-22934
             if (libName.startsWith("camel-core-") //$NON-NLS-1$
                     || libName.startsWith("dom4j-")) { //$NON-NLS-1$
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * If null, will add the lib always. @see isIncludedLib
+     * 
+     * If empty, nothing will be added. @see isExcludedLib
+     * 
+     * Else, add the bundle id in "Require-Bundle", but don't add the lib. @see isIncludedInRequireBundle
+     */
+    protected boolean isIncludedLib(ModuleNeeded module) {
+        if (module != null) {
+            if (module.getBundleName() == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected boolean isProvidedLib(ModuleNeeded module) {
+        return isRequireBundleLib(module) || isExcludedLib(module);
+    }
+
+    /**
+     * nothing will be added.
+     */
+    @Override
+    protected boolean isExcludedLib(ModuleNeeded module) {
+        if (module != null) {
+            if (module.getBundleName() != null && "".equals(module.getBundleName().trim())) { //$NON-NLS-1$
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * check for the lib for "Require-Bundle"
+     */
+    protected boolean isRequireBundleLib(ModuleNeeded module) {
+        if (module != null) {
+            if (module.getBundleName() != null && !"".equals(module.getBundleName().trim())) { //$NON-NLS-1$
                 return true;
             }
         }
@@ -521,15 +612,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     private static String getMetaInfSpringFolder() {
-        return META_INF.concat(PATH_SEPARATOR).concat(SPRING);
+        return FileConstants.META_INF_FOLDER_NAME.concat(PATH_SEPARATOR).concat(SPRING);
     }
 
     private ExportFileResource genMetaInfoFolder(ExportFileResource libResource, List<ProcessItem> itemToBeExport)
             throws IOException {
-        ExportFileResource metaInfoResource = new ExportFileResource(null, META_INF);
+        ExportFileResource metaInfoResource = new ExportFileResource(null, FileConstants.META_INF_FOLDER_NAME);
 
         // generate the MANIFEST.MF file in the temp folder
-        File manifestFile = new File(getTmpFolder() + PATH_SEPARATOR + "MANIFEST.MF"); //$NON-NLS-1$
+        File manifestFile = new File(getTmpFolder() + PATH_SEPARATOR + FileConstants.MANIFEST_MF_FILE_NAME);
 
         FileOutputStream fos = null;
         try {
@@ -755,9 +846,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     @Override
     protected List<URL> getExternalLibraries(boolean needLibraries, ExportFileResource[] process, Set<String> neededLibraries) {
-        List<URL> list = new ArrayList<URL>();
         if (!needLibraries) {
-            return list;
+            return Collections.emptyList();
         }
         // jar from routines
         List<IRepositoryViewObject> collectRoutines = new ArrayList<IRepositoryViewObject>();
@@ -771,12 +861,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         // Lists all the needed jar files
         Set<String> listModulesReallyNeeded = new HashSet<String>();
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
-        IJavaProject project = JavaCore.create(prj);
-        IPath libPath = project.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
-        File file = libPath.toFile();
-        File[] files = file.listFiles(FilesUtils.getAcceptModuleFilesFilter());
 
         if (!useBeans || isOptionChoosed(ExportChoice.needMavenScript)) {
             // Gets all the jar files
@@ -827,16 +911,27 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             }
         }
 
+        return getNeededModuleURLs(listModulesReallyNeeded);
+
+    }
+
+    protected List<URL> getNeededModuleURLs(Set<String> neededModules) {
+        List<URL> list = new ArrayList<URL>();
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        IProject prj = root.getProject(JavaUtils.JAVA_PROJECT_NAME);
+        IJavaProject project = JavaCore.create(prj);
+        IPath libPath = project.getResource().getLocation().append(JavaUtils.JAVA_LIB_DIRECTORY);
+        File file = libPath.toFile();
+        File[] files = file.listFiles(FilesUtils.getAcceptModuleFilesFilter());
         for (File tempFile : files) {
             try {
-                if (listModulesReallyNeeded.contains(tempFile.getName())) {
+                if (neededModules.contains(tempFile.getName())) {
                     list.add(tempFile.toURI().toURL());
                 }
             } catch (MalformedURLException e) {
                 ExceptionHandler.process(e);
             }
         }
-
         return list;
     }
 
@@ -850,4 +945,23 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return FileConstants.JAR_FILE_SUFFIX;
     }
 
+    /**
+     * Getter for requireBundleModules.
+     * 
+     * @return the requireBundleModules
+     */
+    protected MultiKeyMap getRequireBundleModules() {
+        return this.requireBundleModules;
+    }
+
+    protected Set<String> getProvidedModuleNames() {
+        Set<String> providedModulesSet = super.getExcludedModuleNames();
+
+        for (Object obj : getRequireBundleModules().values()) {
+            if (obj instanceof ModuleNeeded) {
+                providedModulesSet.add(((ModuleNeeded) obj).getModuleName());
+            }
+        }
+        return providedModulesSet;
+    }
 }

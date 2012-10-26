@@ -52,6 +52,7 @@ import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.JavaResourcesHelper;
+import org.talend.core.repository.constants.FileConstants;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -127,8 +128,8 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         List<URL> talendLibraries = getExternalLibraries(true, process);
         libResource.addResources(talendLibraries);
 
-        for (int i = 0; i < process.length; i++) {
-            ProcessItem processItem = (ProcessItem) process[i].getItem();
+        for (ExportFileResource proces : process) {
+            ProcessItem processItem = (ProcessItem) proces.getItem();
 
             String selectedJobVersion = processItem.getProperty().getVersion();
             if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
@@ -136,7 +137,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             }
 
             // generate the source files
-            String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
+            String libPath = calculateLibraryPathFromDirectory(proces.getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
             String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
                     + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
@@ -165,7 +166,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             libResource.addResources(getJobScripts(processItem, selectedJobVersion, needJob));
 
             // dynamic db xml mapping
-            addXmlMapping(process[i], isOptionChoosed(ExportChoice.needSourceCode));
+            addXmlMapping(proces, isOptionChoosed(ExportChoice.needSourceCode));
 
         }
 
@@ -224,8 +225,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             }
         }
 
-        for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
-            JobInfo jobInfo = iter.next();
+        for (JobInfo jobInfo : list) {
             libResource.addResources(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(),
                     isOptionChoosed(ExportChoice.needJobScript)));
             addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), contextResource,
@@ -463,13 +463,13 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
      * @return
      */
     private ExportFileResource genMetaInfoFolder(Boolean needMetaInfo) {
-        ExportFileResource metaInfoResource = new ExportFileResource(null, "META-INF"); //$NON-NLS-1$
+        ExportFileResource metaInfoResource = new ExportFileResource(null, FileConstants.META_INF_FOLDER_NAME);
         if (!needMetaInfo) {
             return metaInfoResource;
         }
 
         // generate the MANIFEST.MF file in the temp folder
-        String manifestPath = getTmpFolder() + PATH_SEPARATOR + "MANIFEST.MF"; //$NON-NLS-1$
+        String manifestPath = getTmpFolder() + PATH_SEPARATOR + FileConstants.MANIFEST_MF_FILE_NAME;
 
         Manifest manifest = new Manifest();
         Map<String, Attributes> m = manifest.getEntries();
@@ -529,6 +529,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
          * @param args String[] command-line arguments.
          * @return
          */
+        @Override
         protected int run(String[] args) {
 
             // Parse the arguments

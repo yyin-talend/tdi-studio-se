@@ -48,13 +48,13 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
+import org.talend.core.repository.constants.FileConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryPlugin;
-import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
@@ -73,6 +73,8 @@ public abstract class JobScriptsManager {
     protected static final String WINDOWS_LAUNCHER = "run.bat"; //$NON-NLS-1$
 
     protected static final String LIBRARY_FOLDER_NAME = "lib"; //$NON-NLS-1$
+
+    protected static final String PROVIDED_LIB_FOLDER = "provided-lib"; //$NON-NLS-1$
 
     protected static final String PATH_SEPARATOR = "/"; //$NON-NLS-1$
 
@@ -852,6 +854,6 @@ public abstract class JobScriptsManager {
     }
 
     public String getOutputSuffix() {
-        return ".zip";
+        return FileConstants.ZIP_FILE_SUFFIX;
     }
 }

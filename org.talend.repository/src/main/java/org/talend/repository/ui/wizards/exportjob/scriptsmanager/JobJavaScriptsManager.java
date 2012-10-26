@@ -28,11 +28,13 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.dom4j.Comment;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -135,9 +137,102 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     protected static final String USERBEANS_JAR = "userBeans.jar"; //$NON-NLS-1$
 
-    protected static final String MAVEN_PROP_LIB_PATH = "${lib.path}/"; //$NON-NLS-1$
+    protected static final String MAVEN_PROP_LIB_PATH = "${lib.path}" + PATH_SEPARATOR; //$NON-NLS-1$
+
+    protected static final String MAVEN_PROP_PROVIDED_LIB_PATH = "${provided.lib.path}" + PATH_SEPARATOR;//$NON-NLS-1$
 
     private boolean needMappingInSystemRoutine = false;
+
+    private MultiKeyMap compiledModules = new MultiKeyMap();
+
+    private MultiKeyMap excludedModules = new MultiKeyMap();
+
+    /**
+     * Getter for compiledModules.
+     * 
+     * @return the compiledModules
+     */
+    protected MultiKeyMap getCompiledModules() {
+        return this.compiledModules;
+    }
+
+    /**
+     * Getter for excludedModules.
+     * 
+     * @return the excludedModules
+     */
+    protected MultiKeyMap getExcludedModules() {
+        return this.excludedModules;
+    }
+
+    protected Set<ModuleNeeded> getCompiledModuleNeededs() {
+        return getModuleNeededs(getCompiledModules());
+    }
+
+    @SuppressWarnings("rawtypes")
+    private Set<ModuleNeeded> getModuleNeededs(MultiKeyMap map) {
+        Set<ModuleNeeded> modulesSet = new HashSet<ModuleNeeded>(100);
+        Collection allModules = map.values();
+        for (Object obj : allModules) {
+            if (obj instanceof ModuleNeeded) {
+                modulesSet.add((ModuleNeeded) obj);
+            } else if (obj instanceof Set) {
+                Set set = (Set) obj;
+                if (!set.isEmpty()) {
+                    modulesSet.addAll(set);
+                }
+            }
+        }
+        return modulesSet;
+    }
+
+    protected Set<String> getCompiledModuleNames() {
+        Set<String> compiledModulesSet = new HashSet<String>(100);
+
+        for (ModuleNeeded module : getCompiledModuleNeededs()) {
+            compiledModulesSet.add(module.getModuleName());
+        }
+        return compiledModulesSet;
+    }
+
+    protected Set<ModuleNeeded> getExcludedModuleNeededs() {
+        return getModuleNeededs(getExcludedModules());
+    }
+
+    protected Set<String> getExcludedModuleNames() {
+        Set<String> providedModulesSet = new HashSet<String>(100);
+
+        for (ModuleNeeded module : getExcludedModuleNeededs()) {
+            providedModulesSet.add(module.getModuleName());
+        }
+        return providedModulesSet;
+    }
+
+    protected void analysisModules(String processId, String processVersion) {
+        Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(processId,
+                processVersion);
+        for (ModuleNeeded module : neededModules) {
+            if (isCompiledLib(module)) {
+                addModuleNeededsInMap(getCompiledModules(), processId, processVersion, module);
+
+                // } else if (isExcludedLib(module)) { //FIXME no need, all are in "else"
+                // addNameofModules(getExcludedModules(), processId, processVersion, module);
+            } else {
+                addModuleNeededsInMap(getExcludedModules(), processId, processVersion, module);
+            }
+        }
+    }
+
+    protected void addModuleNeededsInMap(MultiKeyMap modulesMap, String processId, String processVersion, ModuleNeeded module) {
+        if (modulesMap != null && module != null) {
+            Set<ModuleNeeded> modulesSet = (Set<ModuleNeeded>) modulesMap.get(processId, processVersion);
+            if (modulesSet == null) {
+                modulesSet = new LinkedHashSet<ModuleNeeded>(50);
+                modulesMap.put(processId, processVersion, modulesSet);
+            }
+            modulesSet.add(module);
+        }
+    }
 
     /**
      * DOC informix Comment method "posExportResource".
@@ -258,21 +353,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             return;
         }
 
-        String projectName = getCorrespondingProjectName(processItem);
         String jobName = processItem.getProperty().getLabel();
         String jobVersion = processItem.getProperty().getVersion();
         String jobExportedJarName = jobName + '_' + jobVersion.replaceAll("\\.", "_"); //$NON-NLS-1$//$NON-NLS-2$
         jobExportedJarName = jobExportedJarName.toLowerCase();
 
         // set the maven properties
-        final Map<String, String> mavenPropertiesMap = new HashMap<String, String>();
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemProjectName.getVarScript(), projectName);
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemName.getVarScript(), jobName);
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemVersion.getVarScript(), jobVersion);
+        final Map<String, String> mavenPropertiesMap = getMainMavenProperties(processItem);
         mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemExportedJarName.getVarScript(), jobExportedJarName);
-
-        Set<ModuleNeeded> neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
-                processItem.getProperty().getId(), selectedJobVersion);
 
         File mavenBuildFile = new File(getTmpFolder() + PATH_SEPARATOR + IExportJobConstants.MAVEN_BUILD_FILE_NAME);
         File mavenAssemblyFile = new File(getTmpFolder() + PATH_SEPARATOR + IExportJobConstants.MAVEN_ASSEMBLY_FILE_NAME);
@@ -286,7 +374,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     outStream.close();
                 }
             }
-            updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, neededModules, MAVEN_PROP_LIB_PATH);
+            updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, true);
             scriptsUrls.add(mavenBuildFile.toURL());
 
             try {
@@ -302,6 +390,31 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
+    }
+
+    /**
+     * 
+     * DOC ggu Comment method "getMavenPropertiesMap".
+     * 
+     * @param item
+     * @param privatePackage
+     * @param exportService
+     * @param bundleClasspath
+     * @return
+     */
+    protected Map<String, String> getMainMavenProperties(Item item) {
+        String projectName = getCorrespondingProjectName(item);
+        String jobName = item.getProperty().getLabel();
+        String jobVersion = item.getProperty().getVersion();
+
+        // set the maven properties
+        final Map<String, String> mavenPropertiesMap = new HashMap<String, String>();
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemGroupName.getVarScript(), projectName + '.' + jobName);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemProjectName.getVarScript(), projectName);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemName.getVarScript(), jobName);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemVersion.getVarScript(), jobVersion);
+
+        return mavenPropertiesMap;
     }
 
     protected void setMavenBuildScriptProperties(Document pomDocument, Map<String, String> mavenPropertiesMap) {
@@ -320,6 +433,15 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             replaceMavenBuildScriptProperties(propertiesEle, mavenPropertiesMap);
         }
 
+    }
+
+    protected void setMavenBuildScriptModules(Document pomDocument) {
+        Element rootElement = pomDocument.getRootElement();
+        // parent
+        Element parentEle = rootElement.element("modules"); //$NON-NLS-1$
+        if (parentEle != null) {
+            removeComments(parentEle);
+        }
     }
 
     @SuppressWarnings("rawtypes")
@@ -383,21 +505,14 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         systemPathElement.setText(libFolder + jarName);
     }
 
-    protected void updateMavenBuildFileContent(File mavenBuildFile, Map<String, String> mavenPropertiesMap)
-            throws DocumentException, IOException {
-        updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, null, null);
-    }
-
     protected void updateMavenBuildFileContent(File mavenBuildFile, Map<String, String> mavenPropertiesMap,
-            Set<ModuleNeeded> neededModules, String libFolder) throws DocumentException, IOException {
+            boolean addDependencies) throws DocumentException, IOException {
         SAXReader saxReader = new SAXReader();
         Document pomDocument = saxReader.read(mavenBuildFile);
         setMavenBuildScriptProperties(pomDocument, mavenPropertiesMap);
-        if (neededModules != null && neededModules.size() > 0) {
-            if (libFolder == null) {
-                libFolder = MAVEN_PROP_LIB_PATH;
-            }
-            addMavenDependencyElements(pomDocument, neededModules, libFolder);
+        if (addDependencies) {
+            addMavenDependencyElements(pomDocument, getCompiledModuleNeededs(), MAVEN_PROP_LIB_PATH);
+            addMavenDependencyElements(pomDocument, getExcludedModuleNeededs(), MAVEN_PROP_PROVIDED_LIB_PATH);
         }
         saveXmlDocoment(pomDocument, mavenBuildFile);
     }
@@ -473,8 +588,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, String... codeOptions)
             throws ProcessorException {
 
-        Set<String> neededLibraries = null;
-        Set<ModuleNeeded> neededModules = null;
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
             String selectedJobVersion = processItem.getProperty().getVersion();
@@ -485,25 +598,15 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             // TODO: option doNotCompileCode is deprecated now.
             // code is just kept like this to avoid too big changes right now.
             if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
-                if (neededLibraries == null) {
-                    neededLibraries = new HashSet<String>();
-                }
-                if (neededModules == null) {
-                    neededModules = new HashSet<ModuleNeeded>();
-                }
                 if (contextName != null) {
                     jobProcess = generateJobFiles(processItem, contextName, selectedJobVersion,
                             statisticPort != IProcessor.NO_STATISTICS || isOptionChoosed(ExportChoice.addStatistics),
                             tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren), progressMonitor);
                 }
-                neededModules = LastGenerationInfo.getInstance().getModulesNeededWithSubjobPerJob(
-                        processItem.getProperty().getId(), selectedJobVersion);
-                for (ModuleNeeded module : neededModules) {
-                    neededLibraries.add(module.getModuleName());
-                }
+                analysisModules(processItem.getProperty().getId(), selectedJobVersion);
             } else {
                 LastGenerationInfo.getInstance().setModulesNeededWithSubjobPerJob(processItem.getProperty().getId(),
-                        processItem.getProperty().getVersion(), neededModules);
+                        processItem.getProperty().getVersion(), Collections.<ModuleNeeded> emptySet());
                 LastGenerationInfo.getInstance().setLastMainJob(null);
             }
             List<URL> resources = new ArrayList<URL>();
@@ -521,25 +624,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         List<ExportFileResource> list = new ArrayList<ExportFileResource>(Arrays.asList(process));
 
         // Add the java system libraries
-        ExportFileResource rootResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
-        list.add(rootResource);
-        // Gets system routines
-        if (isOptionChoosed(ExportChoice.needSystemRoutine)) {
-            rootResource.addResources(getSystemRoutine(process));
-        }
-        // Gets user routines
-        if (isOptionChoosed(ExportChoice.needUserRoutine)) {
-            rootResource.addResources(getUserRoutine(process));
-        }
-
-        // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(ExportChoice.needTalendLibraries), process,
-                neededLibraries);
-        rootResource.addResources(talendLibraries);
-
-        // Add libraries which are needed by build scripts.
-        List<URL> buildScriptLibraries = getBuildScriptLibraries();
-        rootResource.addResources(buildScriptLibraries);
+        ExportFileResource libResource = getCompiledLibExportFileResource(process);
+        list.add(libResource);
 
         // Gets jobInfo.properties
         if (!(process.length > 1)) {
@@ -575,6 +661,36 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         }
         return list;
 
+    }
+
+    protected ExportFileResource getCompiledLibExportFileResource(ExportFileResource[] processes) {
+        ExportFileResource libResource = new ExportFileResource(null, LIBRARY_FOLDER_NAME);
+        // Gets talend libraries
+        List<URL> talendLibraries = getExternalLibraries(isOptionChoosed(ExportChoice.needTalendLibraries), processes,
+                getCompiledModuleNames());
+        if (talendLibraries != null) {
+            libResource.addResources(talendLibraries);
+        }
+        // routines
+        addRoutinesResources(processes, libResource);
+
+        // Add libraries which are needed by build scripts.
+        List<URL> buildScriptLibraries = getBuildScriptLibraries();
+        libResource.addResources(buildScriptLibraries);
+        return libResource;
+    }
+
+    protected void addRoutinesResources(ExportFileResource[] processes, ExportFileResource libResource) {
+        // Gets system routines
+        if (isOptionChoosed(ExportChoice.needSystemRoutine)) {
+            List<URL> systemRoutineList = getSystemRoutine(processes);
+            libResource.addResources(systemRoutineList);
+        }
+        // Gets user routines
+        if (isOptionChoosed(ExportChoice.needUserRoutine)) {
+            List<URL> userRoutineList = getUserRoutine(processes);
+            libResource.addResources(userRoutineList);
+        }
     }
 
     protected List<URL> getBuildScriptLibraries() {
@@ -1323,11 +1439,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             JarBuilder jarbuilder = new JarBuilder(getClassRootFileLocation(), jarFile);
             jarbuilder.setIncludeDir(Collections.singleton(include));
             jarbuilder.setIncludeRoutines(getRoutineDependince(process, false, useBeans));
-            jarbuilder.setExcludeDir(Arrays.asList(
-                    SYSTEM_ROUTINES_PATH,
-                    USER_ROUTINES_PATH, // remove all
-                    USER_BEANS_PATH
-            ));
+            jarbuilder.setExcludeDir(Arrays.asList(SYSTEM_ROUTINES_PATH, USER_ROUTINES_PATH, // remove all
+                    USER_BEANS_PATH));
             jarbuilder.buildJar();
 
             return Collections.singletonList(jarFile.toURI().toURL());
@@ -1423,8 +1536,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 toReturn.addAll(RoutinesUtil.getCurrentSystemRoutines());
             } else {
                 try {
-                    List<IRepositoryViewObject> availableRoutines = factory.getAll(ProjectManager.getInstance().getCurrentProject(),
-                            ERepositoryObjectType.ROUTINES);
+                    List<IRepositoryViewObject> availableRoutines = factory.getAll(ProjectManager.getInstance()
+                            .getCurrentProject(), ERepositoryObjectType.ROUTINES);
                     for (IRepositoryViewObject object : availableRoutines) {
                         if (allRoutinesNames.contains(object.getLabel())) {
                             allRoutinesNames.remove(object.getLabel());
@@ -1643,6 +1756,20 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             String directory = fileResource.getDirectoryName();
             fileResource.setDirectoryName(topFolder + "/" + directory); //$NON-NLS-1$
         }
+    }
+
+    /**
+     * 
+     * DOC ggu Comment method "isCompiledLib".
+     * 
+     * The modudle will be use to compile and run the job.
+     */
+    protected boolean isCompiledLib(ModuleNeeded module) {
+        return module != null; // should add all by default
+    }
+
+    protected boolean isExcludedLib(ModuleNeeded module) {
+        return false; // default, no exclued lib
     }
 
 }
