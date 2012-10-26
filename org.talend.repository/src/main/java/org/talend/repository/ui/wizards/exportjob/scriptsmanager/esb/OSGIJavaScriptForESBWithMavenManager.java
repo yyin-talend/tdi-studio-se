@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.Path;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IOsgiDependenciesService;
-import org.talend.core.model.properties.ProcessItem;
 import org.talend.repository.constants.IExportJobConstants;
 import org.talend.repository.preference.constants.IExportJobPrefConstants;
 import org.talend.resource.IExportJobResourcesService;
@@ -50,8 +49,7 @@ public class OSGIJavaScriptForESBWithMavenManager extends JavaScriptForESBWithMa
     }
 
     @Override
-    protected void addMavenBuildScripts(List<URL> scriptsUrls, ProcessItem processItem, String selectedJobVersion,
-            Map<String, String> mavenPropertiesMap) {
+    protected void addMavenBuildScripts(List<URL> scriptsUrls, Map<String, String> mavenPropertiesMap) {
         IExportJobResourcesService resourcesService = null;
         if (GlobalServiceRegister.getDefault().isServiceRegistered(IExportJobResourcesService.class)) {
             resourcesService = (IExportJobResourcesService) GlobalServiceRegister.getDefault().getService(
