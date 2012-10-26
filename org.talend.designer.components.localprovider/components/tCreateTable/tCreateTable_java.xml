@@ -414,8 +414,8 @@
 		REPOSITORY_VALUE="DB_VERSION"
 		SHOW_IF="(DBTYPE=='MYSQL') and (USE_EXISTING_CONNECTION == 'false')">
 		<ITEMS DEFAULT="MYSQL_5">
-			<ITEM NAME="MYSQL_5" VALUE="mysql-connector-java-5.1.0-bin.jar" />
-			<ITEM NAME="MYSQL_4" VALUE="mysql-connector-java-3.1.14-bin.jar" />
+			<ITEM NAME="MYSQL_5" VALUE="MYSQL_5" />
+			<ITEM NAME="MYSQL_4" VALUE="MYSQL_4" />
 		</ITEMS>
 	</PARAMETER>
 	<!--Mysql configuration end-->
@@ -654,7 +654,7 @@
 		<IMPORT NAME="Driver_MaxDB" MODULE="sapdbc.jar" REQUIRED_IF="DBTYPE=='MAXDB'" />
 		<IMPORT NAME="Driver-MSSQL" MODULE="jtds-1.2.5.jar" REQUIRED_IF="DBTYPE=='MSSQL'" />
 		<IMPORT NAME="Driver-MYSQL4" MODULE="mysql-connector-java-3.1.14-bin.jar" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') and (DBTYPE=='MYSQL') and (DB_MYSQL_VERSION=='MYSQL_4')"/>
-		<IMPORT NAME="Driver-MYSQL5" MODULE="mysql-connector-java-5.1.0-bin.jar" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') and (DBTYPE=='MYSQL') and (DB_MYSQL_VERSION=='MYSQL_5')"/>
+		<IMPORT NAME="Driver-MYSQL5" MODULE="mysql-connector-java-5.1.22-bin.jar" REQUIRED_IF="(USE_EXISTING_CONNECTION == 'false') and (DBTYPE=='MYSQL') and (DB_MYSQL_VERSION=='MYSQL_5')"/>
         <IMPORT NAME="Driver-Oracle8i" MODULE="ojdbc12.jar" REQUIRED="false" />
         <IMPORT NAME="Driver-Oracle9i" MODULE="ojdbc14-9i.jar" REQUIRED="false" />
         <IMPORT NAME="Driver-Oracle10g" MODULE="ojdbc14.jar" REQUIRED="false" />

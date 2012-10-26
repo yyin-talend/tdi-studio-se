@@ -1703,6 +1703,15 @@
               name="ChangeOracleJarName4OracleComponents"
               version="5.1.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.1.1"
+              class="org.talend.repository.model.migration.ChangeMysqlJarReference4MysqlComponents"
+              description="change mysql de version value and avoid to depend on jdbc jar name"
+              id="org.talend.repository.model.migration.ChangeMysqlJarReference4MysqlComponents"
+              name="ChangeMysqlJarReference4MysqlComponents"
+              version="5.1.2">
+        </projecttask>
    </extension>
    
    <extension
