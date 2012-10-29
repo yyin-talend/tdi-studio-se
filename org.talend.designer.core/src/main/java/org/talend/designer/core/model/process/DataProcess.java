@@ -270,7 +270,7 @@ public class DataProcess {
         if (graphicalNode.isDummy() && !graphicalNode.isActivate()) {
             IComponent component = ComponentsFactoryProvider.getInstance().get("tDummyRow"); //$NON-NLS-1$
             if (component != null) { // only if component is available
-                dataNode = new DataNode(component, uniqueName); //$NON-NLS-1$
+                dataNode = new DataNode(component, uniqueName);
                 dataNode.setActivate(true);
                 dataNode.setStart(graphicalNode.isStart());
                 dataNode.setMetadataList(graphicalNode.getMetadataList());
@@ -303,7 +303,7 @@ public class DataProcess {
             if (!connection.isActivate()) {
                 continue;
             }
-            IElementParameter monitorParam = connection.getElementParameter(EParameterName.MONITOR_CONNECTION.getName()); //$NON-NLS-1$
+            IElementParameter monitorParam = connection.getElementParameter(EParameterName.MONITOR_CONNECTION.getName());
             if (monitorParam != null && (!connection.getLineStyle().equals(EConnectionType.FLOW_REF))
                     && ((Boolean) monitorParam.getValue())) {
                 addvFlowMeterBetween(dataNode, buildDataNodeFromNode(connection.getTarget(), prefix), connection,
@@ -886,9 +886,10 @@ public class DataProcess {
             targetNode = itemsMap.get(itemList.get(i));
             // We set the type of the connection which linked two components in case of a virtual component. ONLY in
             // case of the first component
-            if (itemList.get(i).getOutputConnections().size() > 0)
+            if (itemList.get(i).getOutputConnections().size() > 0) {
                 targetNode.setVirtualLinkTo(EConnectionType.getTypeFromName(itemList.get(i).getOutputConnections().get(0)
                         .getConnectionType()));
+            }
             targetFound = false;
             if (targetNode != null) {
                 for (int j = 0; j < targetNode.getElementParameters().size() && !targetFound; j++) {
@@ -1146,10 +1147,10 @@ public class DataProcess {
                 dataConnec.setName(connection.getName());
                 dataConnec.setSource(refSource);
                 dataConnec.setTarget(hashNode);
-                dataConnec.setLinkNodeForHash((AbstractNode) buildCheckMap.get(connection.getTarget()));
+                dataConnec.setLinkNodeForHash(buildCheckMap.get(connection.getTarget()));
                 dataConnec.setConnectorName(connection.getConnectorName());
 
-                IElementParameter monitorParam = connection.getElementParameter(EParameterName.MONITOR_CONNECTION.getName()); //$NON-NLS-1$
+                IElementParameter monitorParam = connection.getElementParameter(EParameterName.MONITOR_CONNECTION.getName());
                 // if there is a monitor on this connection, then add the vFlowMeter and move the base lookup connection
                 // source from "graphicalNode" to the new meterNode.
                 if (monitorParam != null && ((Boolean) monitorParam.getValue())) {
@@ -1548,7 +1549,7 @@ public class DataProcess {
                 }
             }
             if (!exist && node.isELTComponent()) {
-                buildDataNodeFromNode((Node) node);
+                buildDataNodeFromNode(node);
             }
         }
 
@@ -1839,11 +1840,12 @@ public class DataProcess {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getOutgoingConnections();
             mainConnections = nodeUseValidationRule.getOutgoingConnections("FLOW");//$NON-NLS-1$
         }
-        if (validRuleConnections == null || validRuleConnections.size() == 0)
+        if (validRuleConnections == null || validRuleConnections.size() == 0) {
             return;
+        }
 
         if (mainConnections != null && mainConnections.size() > 0) {
-            dataConnection = (DataConnection) mainConnections.get(0);
+            dataConnection = mainConnections.get(0);
         }
 
         if (dataConnection != null) {
@@ -2084,7 +2086,7 @@ public class DataProcess {
         dataConnec.setName(joinNode.getUniqueName() + "_" + connection.getName());//$NON-NLS-1$
         dataConnec.setSource(joinNode);
         dataConnec.setTarget(hashNode);
-        dataConnec.setLinkNodeForHash((AbstractNode) buildCheckMap.get(connection.getTarget()));
+        dataConnec.setLinkNodeForHash(buildCheckMap.get(connection.getTarget()));
         dataConnec.setConnectorName(connection.getConnectorName());
 
         inputNode_outgoingConnections.add(dataConnec);
@@ -2103,7 +2105,7 @@ public class DataProcess {
             rejectLink.setLineStyle(EConnectionType.FLOW_MAIN);
             rejectLink.setMetadataTable(rejectMetadataTable);
             rejectLink.setConnectorName("REJECT"); //$NON-NLS-1$
-            rejectLink.setName(conn.getName()); //$NON-NLS-1$
+            rejectLink.setName(conn.getName());
             rejectLink.setSource(joinNode);
             rejectLink.setTarget(targetNode);
             ((List<IConnection>) joinNode.getOutgoingConnections()).add(rejectLink);
@@ -2142,8 +2144,9 @@ public class DataProcess {
             mainConnections = nodeUseValidationRule.getOutgoingConnections("FLOW");
         }
 
-        if (validRuleConnections == null || validRuleConnections.size() == 0)
+        if (validRuleConnections == null || validRuleConnections.size() == 0) {
             return;
+        }
 
         if (mainConnections != null && mainConnections.size() > 0) {
             dataConnection = (DataConnection) mainConnections.get(0);
@@ -2271,7 +2274,7 @@ public class DataProcess {
             rejectLink.setLineStyle(EConnectionType.FLOW_MAIN);
             rejectLink.setMetadataTable(rejectMetadataTable);
             rejectLink.setConnectorName("REJECT"); //$NON-NLS-1$
-            rejectLink.setName(conn.getName()); //$NON-NLS-1$
+            rejectLink.setName(conn.getName());
             rejectLink.setSource(filterNode);
             rejectLink.setTarget(targetNode);
             ((List<IConnection>) filterNode.getOutgoingConnections()).add(rejectLink);
@@ -2370,7 +2373,7 @@ public class DataProcess {
             List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
             if (conditions != null && conditions.size() > 0) {
                 for (ConditionType condition : conditions) {
-                    Map<String, Object> map = new HashMap<String, Object>();//$NON-NLS-1$
+                    Map<String, Object> map = new HashMap<String, Object>();
                     map.put("INPUT_COLUMN", condition.getInputColumn());//$NON-NLS-1$
                     map.put("FUNCTION", condition.getFunction().getLiteral()); //$NON-NLS-1$
                     map.put("OPERATOR", condition.getOperator().getLiteral()); //$NON-NLS-1$
@@ -2400,7 +2403,7 @@ public class DataProcess {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         EMap<String, String> map = rulesConnection.getInnerJoins();
         for (Entry<String, String> entry : map) {
-            Map<String, Object> tabMap = new HashMap<String, Object>();//$NON-NLS-1$
+            Map<String, Object> tabMap = new HashMap<String, Object>();
             tabMap.put("INPUT_COLUMN", entry.getKey());//$NON-NLS-1$
             tabMap.put("LOOKUP_COLUMN", entry.getValue()); //$NON-NLS-1$
             list.add(tabMap);
@@ -2534,6 +2537,15 @@ public class DataProcess {
 
         incomingConnections.add(mergeOutputConnection);
         INode oldNodeTarget = ((DataConnection) mergeOutputConnection).getTarget();
+        // add for bug TDI-21740 , record input connection order.
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        List<? extends IConnection> incomingConns = oldNodeTarget.getIncomingConnections();
+        for (IConnection list : incomingConns) {
+            String name = list.getUniqueName();
+            if (name != null) {
+                map.put(name, incomingConns.indexOf(list));
+            }
+        }
         ((DataConnection) mergeOutputConnection).setTarget(hashNode);
         oldNodeTarget.getIncomingConnections().remove(mergeOutputConnection);
 
@@ -2566,7 +2578,7 @@ public class DataProcess {
         dataConnec.setMonitorConnection(mergeOutputConnection.isMonitorConnection());
         dataConnec.setTracesCondition(mergeOutputConnection.getTracesCondition());
         dataConnec.setEnabledTraceColumns(mergeOutputConnection.getEnabledTraceColumns());
-        dataConnec.setName(mergeOutputConnection.getName()); //$NON-NLS-1$
+        dataConnec.setName(mergeOutputConnection.getName());
         dataConnec.setSource(hashNode);
         dataConnec.setLinkNodeForHash(((DataConnection) mergeOutputConnection).getLinkNodeForHash());
         dataConnec.setElementParameters(mergeOutputConnection.getElementParameters());
@@ -2591,7 +2603,14 @@ public class DataProcess {
         }
         dataConnec.setInputId(inputId);
         outgoingConnections.add(dataConnec);
-        ((List<IConnection>) oldNodeTarget.getIncomingConnections()).add(dataConnec);
+        // add for bug TDI-21740 , add dataConnec to oldNodeTarget with suitable position
+        Set<Map.Entry<String, Integer>> set = map.entrySet();
+        for (Entry<String, Integer> entry2 : set) {
+            Map.Entry<String, Integer> entry = entry2;
+            if (entry.getKey().equals(dataConnec.getUniqueName())) {
+                ((List<IConnection>) oldNodeTarget.getIncomingConnections()).add(entry.getValue(), dataConnec);
+            }
+        }
 
         ((DataConnection) mergeOutputConnection).setLineStyle(EConnectionType.FLOW_MAIN);
         ((DataConnection) mergeOutputConnection).setConnectorName(EConnectionType.FLOW_MAIN.getName());
@@ -2618,9 +2637,9 @@ public class DataProcess {
         if (changeStartNode) {
             INode oldStartNode = null;
             if (mergeDataNode.isThereLinkWithHash()) {
-                oldStartNode = ((AbstractNode) mergeDataNode.getSubProcessStartNode(false));
+                oldStartNode = (mergeDataNode.getSubProcessStartNode(false));
             } else {
-                oldStartNode = ((AbstractNode) mergeDataNode.getDesignSubjobStartNode());
+                oldStartNode = (mergeDataNode.getDesignSubjobStartNode());
             }
             ((AbstractNode) afterMergeStart).setStart(oldStartNode.isStart());
             ((AbstractNode) oldStartNode).setStart(false);
@@ -2817,8 +2836,8 @@ public class DataProcess {
 
         IExternalNode externalNode = graphicalNode.getExternalNode();
         if (externalNode != null) {
-            AbstractExternalData externalEmfData = ((IExternalNode) externalNode).getExternalEmfData();
-            ((IExternalNode) newGraphicalNode.getExternalNode()).setExternalEmfData(externalEmfData);
+            AbstractExternalData externalEmfData = (externalNode).getExternalEmfData();
+            (newGraphicalNode.getExternalNode()).setExternalEmfData(externalEmfData);
         }
         // fwang fixed bug TDI-8027
         if (graphicalNode.getExternalData() != null) {
@@ -3046,8 +3065,9 @@ public class DataProcess {
             parallelizeNode.getMetadataList().add(newMetadata);
             parallelizeNode.setSubProcessStart(true);
             parallelizeNode.setProcess(process);
-            
-            // when using parallelize function in tMap, "Die when one of parallelize subjobs fails" of tParallelize should be set true
+
+            // when using parallelize function in tMap, "Die when one of parallelize subjobs fails" of tParallelize
+            // should be set true
             IElementParameter dieOnErrorParameters = parallelizeNode.getElementParameter("DIE_ON_ERROR");
             if (dieOnErrorParameters == null) {
                 dieOnErrorParameters = new ElementParameter(parallelizeNode);
@@ -3056,7 +3076,7 @@ public class DataProcess {
                 ((List<IElementParameter>) parallelizeNode.getElementParameters()).add(dieOnErrorParameters);
             }
             dieOnErrorParameters.setValue(Boolean.TRUE);
-            
+
             List<IConnection> outgoingConnections = new ArrayList<IConnection>();
             List<IConnection> incomingConnections = new ArrayList<IConnection>();
             parallelizeNode.setIncomingConnections(incomingConnections);
