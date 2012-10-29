@@ -30,6 +30,7 @@ import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
@@ -86,10 +87,11 @@ public class ExternalNodeChangeCommand extends Command {
 
     private boolean isMetaLanguage = false;
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public ExternalNodeChangeCommand(Node node, IExternalNode externalNode, boolean... bs) {
-        if (bs.length > 0)
+        if (bs.length > 0) {
             this.isMetaLanguage = bs[0];
+        }
 
         this.node = node;
 
@@ -103,10 +105,11 @@ public class ExternalNodeChangeCommand extends Command {
         init();
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public ExternalNodeChangeCommand(Node node, IExternalNode externalNode, IExternalData oldExternalData, boolean... bs) {
-        if (bs.length > 0)
+        if (bs.length > 0) {
             this.isMetaLanguage = bs[0];
+        }
 
         this.node = node;
 
@@ -124,7 +127,7 @@ public class ExternalNodeChangeCommand extends Command {
 
         connectionsToDelete = new HashMap<Connection, IODataComponent>();
 
-        for (IODataComponent dataComponent : (List<IODataComponent>) inAndOut.getOuputs()) {
+        for (IODataComponent dataComponent : inAndOut.getOuputs()) {
             IConnection connection = dataComponent.getConnection();
             boolean metadataExists = false;
             for (IMetadataTable metadata : newMetaDataList) {
@@ -297,7 +300,7 @@ public class ExternalNodeChangeCommand extends Command {
                                 }
                             }
                             if (schemaParam != null) {
-                                ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) connection.getTarget(), schemaParam,
+                                ChangeMetadataCommand cmd = new ChangeMetadataCommand(connection.getTarget(), schemaParam,
                                         connTable, dataTable);
                                 cmd.execute(true);
                                 metadataOutputChanges.add(cmd);
@@ -311,7 +314,7 @@ public class ExternalNodeChangeCommand extends Command {
                                 }
                             }
                             if (schemaParam != null) {
-                                ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) connection.getSource(), schemaParam,
+                                ChangeMetadataCommand cmd = new ChangeMetadataCommand(connection.getSource(), schemaParam,
                                         connTable, dataTable);
                                 cmd.execute(true);
                                 metadataOutputChanges.add(cmd);
