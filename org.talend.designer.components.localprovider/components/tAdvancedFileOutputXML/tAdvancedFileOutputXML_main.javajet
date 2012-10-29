@@ -628,6 +628,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		boolean useStream = ("true").equals(ElementParameterParser.getValue(node,"__USESTREAM__"));
 				String outStream = ElementParameterParser.getValue(node,"__STREAMNAME__");
 				//*******************add for feature:8873 end ****************
+				
+				boolean needFileValid = ("true").equals(ElementParameterParser.getValue(node, "__FILE_VALID__"));
+				
+				boolean needDTDValid = ("true").equals(ElementParameterParser.getValue(node, "__DTD_VALID__"));
+				String dtdRootName = ElementParameterParser.getValue(node, "__DTD_NAME__");
+        		String dtdFileName = ElementParameterParser.getValue(node, "__DTD_SYSTEMID__");
+        		
+        		boolean needXSLValid = ("true").equals(ElementParameterParser.getValue(node, "__XSL_VALID__"));
+        		String xslType = ElementParameterParser.getValue(node, "__XSL_TYPE__");
+				String xslHref = ElementParameterParser.getValue(node, "__XSL_HREF__");
         		
         		// init tool
                 XMLTool tool = new XMLTool();
@@ -860,6 +870,19 @@ if(groupTable.size()>0){					//init the generate tool.
         output_<%=cid%>.write(doc_<%=cid%>);
         output_<%=cid%>.close();
         doc_<%=cid%>  = org.dom4j.DocumentHelper.createDocument();
+<%
+		if (!isMerge && needFileValid) {
+			if(needDTDValid) {
+%>
+			doc_<%=cid %>.addDocType(<%=dtdRootName %>, null, <%=dtdFileName %>);
+<%
+			} else if(needXSLValid) {
+%>
+			doc_<%=cid %>.addProcessingInstruction("xml-stylesheet", inMap_<%=cid %>);
+<%			
+			}
+		}
+%>
     	groupElementList_<%=cid%>.clear();
     }
 <%
@@ -1203,6 +1226,22 @@ else if(("Null").equals(mode)){
 		out_<%=cid%> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(file_<%=cid%> + currentFileCount_<%=cid %> + suffix_<%=cid %>), <%=encoding%>));
         out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding%>+"\"?>");
         out_<%=cid%>.newLine();
+        
+<%
+		if (needFileValid) {
+			if (needDTDValid) {
+%>
+    		out_<%=cid%>.write("<!DOCTYPE "+<%=dtdRootName %>+" SYSTEM \"" + <%=dtdFileName %> + "\">");
+    		out_<%=cid%>.newLine();
+<%
+			} else if (needXSLValid) {
+%>
+			out_<%=cid%>.write("<?xml-stylesheet type=\""+<%=xslType %>+"\" href=\""+<%=xslHref%>+"\">");
+			out_<%=cid%>.newLine();
+<%			
+			}
+		}
+%>
 	}
 <%
 	}
