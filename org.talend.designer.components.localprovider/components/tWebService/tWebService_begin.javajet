@@ -59,6 +59,7 @@ String tempPath = ElementParameterParser.getValue(node,"__TMPPATH__");
 if("".equals(tempPath))tempPath="\"\"";
 
 %>
+	System.setProperty("javax.xml.transform.TransformerFactory", "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
     System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
 	//shade the log level for DynamicClientFactory.class
 	java.util.logging.Logger LOG_<%=cid%> = org.apache.cxf.common.logging.LogUtils.getL7dLogger(org.apache.cxf.endpoint.dynamic.DynamicClientFactory.class);					
