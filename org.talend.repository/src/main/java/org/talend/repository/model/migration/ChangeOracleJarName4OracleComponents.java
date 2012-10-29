@@ -38,29 +38,31 @@ public class ChangeOracleJarName4OracleComponents extends
     @Override
     public ExecutionResult execute(Item item) {
         ProcessType processType = getProcessType(item);
-        String[] oracleCompNames = {"tOracleBulkExec","tOracleClose","tOracleCommit","tOracleConnection","tOracleInput",
-        		"tOracleOutput","tOracleOutputBulk","tOracleOutputBulkExec","tOracleRollback","tOracleRow","tOracleSCD","tOracleSCDELT",
-        		"tOracleSP","tOracleTableList","tAmazonOracleClose","tAmazonOracleCommit","tAmazonOracleConnection","tAmazonOracleInput",
-        		"tAmazonOracleOutput","tAmazonOracleRollback","tAmazonOracleRow","tMondrianInput","tCreateTable","tOracleInvalidRows",
-        		"tOracleValidRows","tELTOracleMap","tOracleCDC","tOracleSCDELT"}; //$NON-NLS-1$
+        String[] oracleCompNames = {"tOracleBulkExec", "tOracleClose", "tOracleCommit", "tOracleConnection", "tOracleInput",
+        		"tOracleOutput", "tOracleOutputBulk", "tOracleOutputBulkExec", "tOracleRollback", "tOracleRow", 
+        		"tOracleSCD", "tOracleSCDELT", "tOracleSP", "tOracleTableList", "tAmazonOracleClose", 
+        		"tAmazonOracleCommit", "tAmazonOracleConnection", "tAmazonOracleInput",
+        		"tAmazonOracleOutput", "tAmazonOracleRollback", "tAmazonOracleRow", "tMondrianInput", 
+        		"tCreateTable", "tOracleInvalidRows",
+        		"tOracleValidRows", "tELTOracleMap", "tOracleCDC", "tOracleSCDELT"}; //$NON-NLS-1$
         	
         	
     	IComponentConversion changeOracleDriverJarType = new IComponentConversion() {
 
 	        public void transform(NodeType node) {
-	        	ElementParameterType db_version = ComponentUtilities.getNodeProperty(node, "DB_VERSION"); //$NON-NLS-2$
-	        	if (db_version != null) {
-	        		String jar_value = db_version.getValue(); //$NON-NLS-3$
-	        		if ("ojdbc6-11g.jar".equalsIgnoreCase(jar_value)) {
-	        			db_version.setValue("ojdbc6.jar");
-	        		} else if ("ojdbc5-11g.jar".equalsIgnoreCase(jar_value)) {
-	        			db_version.setValue("ojdbc5.jar");
-	        		} else if ("ojdbc14-10g.jar".equalsIgnoreCase(jar_value)) {
-	        			db_version.setValue("ojdbc14.jar");
-	        		} else if ("ojdbc14-9i.jar".equalsIgnoreCase(jar_value)) {
+	        	ElementParameterType dbVersion = ComponentUtilities.getNodeProperty(node, "DB_VERSION"); //$NON-NLS-2$
+	        	if (dbVersion != null) {
+	        		String jarValue = dbVersion.getValue(); //$NON-NLS-3$
+	        		if ("ojdbc6-11g.jar".equalsIgnoreCase(jarValue)) {
+	        			dbVersion.setValue("ojdbc6.jar");
+	        		} else if ("ojdbc5-11g.jar".equalsIgnoreCase(jarValue)) {
+	        			dbVersion.setValue("ojdbc5.jar");
+	        		} else if ("ojdbc14-10g.jar".equalsIgnoreCase(jarValue)) {
+	        			dbVersion.setValue("ojdbc14.jar");
+	        		} else if ("ojdbc14-9i.jar".equalsIgnoreCase(jarValue)) {
 	//                			db_version.setValue("ojdbc14-9i.jar");
-	        		} else if ("ojdbc12-8i.jar".equalsIgnoreCase(jar_value)) {
-	        			db_version.setValue("ojdbc12.jar");
+	        		} else if ("ojdbc12-8i.jar".equalsIgnoreCase(jarValue)) {
+	        			dbVersion.setValue("ojdbc12.jar");
 	        		}
 	        	}
 	        }

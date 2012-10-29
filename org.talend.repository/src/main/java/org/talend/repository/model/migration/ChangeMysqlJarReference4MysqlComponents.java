@@ -38,22 +38,22 @@ public class ChangeMysqlJarReference4MysqlComponents extends
     @Override
     public ExecutionResult execute(Item item) {
         ProcessType processType = getProcessType(item);
-        String[] mysqlCompNames = {"tAmazonMysqlConnection","tAmazonMysqlInput","tAmazonMysqlOutput","tAmazonMysqlRow",
-                "tCreateTable","tELTMysqlMap","tMondrianInput","tMysqlBulkExec","tMysqlConnection",
-                "tMysqlInput","tMysqlOutput","tMysqlOutputBulkExec","tMysqlRow","tMysqlSCD","tMysqlSCDELT",
-                "tMysqlSP","tMySQLInvalidRows","tMySQLValidRows","tMysqlCDC"}; //$NON-NLS-1$
+        String[] mysqlCompNames = {"tAmazonMysqlConnection", "tAmazonMysqlInput", "tAmazonMysqlOutput", "tAmazonMysqlRow",
+                "tCreateTable", "tELTMysqlMap", "tMondrianInput", "tMysqlBulkExec", "tMysqlConnection",
+                "tMysqlInput", "tMysqlOutput", "tMysqlOutputBulkExec", "tMysqlRow", "tMysqlSCD", "tMysqlSCDELT",
+                "tMysqlSP", "tMySQLInvalidRows", "tMySQLValidRows", "tMysqlCDC"}; //$NON-NLS-1$
         	
         	
     	IComponentConversion changeOracleDriverJarType = new IComponentConversion() {
 
 	        public void transform(NodeType node) {
-	        	ElementParameterType db_version = ComponentUtilities.getNodeProperty(node, "DB_VERSION"); //$NON-NLS-2$
-	        	if (db_version != null) {
-	        		String jar_value = db_version.getValue(); //$NON-NLS-3$
-	        		if ("mysql-connector-java-5.1.0-bin.jar".equalsIgnoreCase(jar_value)) {
-	        			db_version.setValue("MYSQL_5");
-	        		} else if ("mysql-connector-java-3.1.14-bin.jar".equalsIgnoreCase(jar_value)) {
-	        			db_version.setValue("MYSQL_4");
+	        	ElementParameterType dbVersion = ComponentUtilities.getNodeProperty(node, "DB_VERSION"); //$NON-NLS-2$
+	        	if (dbVersion != null) {
+	        		String jarValue = dbVersion.getValue(); //$NON-NLS-3$
+	        		if ("mysql-connector-java-5.1.0-bin.jar".equalsIgnoreCase(jarValue)) {
+	        			dbVersion.setValue("MYSQL_5");
+	        		} else if ("mysql-connector-java-3.1.14-bin.jar".equalsIgnoreCase(jarValue)) {
+	        			dbVersion.setValue("MYSQL_4");
 	        		}
 	        	}
 	        }
@@ -78,7 +78,7 @@ public class ChangeMysqlJarReference4MysqlComponents extends
     }
 
     public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2012, 9, 26, 10, 0, 0);
+        GregorianCalendar gc = new GregorianCalendar(2012, 10, 26, 10, 0, 0);
         return gc.getTime();
     }
 }
