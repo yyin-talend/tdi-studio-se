@@ -133,14 +133,17 @@ public class Schema2XMLDragAndDropHandler {
      */
     class TreeDragSourceListener implements TransferDragSourceListener {
 
+        @Override
         public void dragFinished(DragSourceEvent event) {
             event.getSource();
         }
 
+        @Override
         public void dragSetData(DragSourceEvent event) {
             event.getSource();
         }
 
+        @Override
         public void dragStart(DragSourceEvent event) {
             TableItem[] items = linker.getSource().getSelection();
             if (items.length == 0) {
@@ -158,6 +161,7 @@ public class Schema2XMLDragAndDropHandler {
             }
         }
 
+        @Override
         public Transfer getTransfer() {
             return LocalDataTransfer.getInstance();
         }
@@ -172,6 +176,7 @@ public class Schema2XMLDragAndDropHandler {
      */
     public class TableDropTargetListener implements TransferDropTargetListener {
 
+        @Override
         public void dragEnter(DropTargetEvent event) {
         }
 
@@ -193,12 +198,15 @@ public class Schema2XMLDragAndDropHandler {
             return null;
         }
 
+        @Override
         public void dragLeave(DropTargetEvent event) {
         }
 
+        @Override
         public void dragOperationChanged(DropTargetEvent event) {
         }
 
+        @Override
         public void dropAccept(DropTargetEvent event) {
 
         }
@@ -208,6 +216,7 @@ public class Schema2XMLDragAndDropHandler {
          * 
          * @see org.eclipse.jface.util.TransferDropTargetListener#getTransfer()
          */
+        @Override
         public Transfer getTransfer() {
             return LocalDataTransfer.getInstance();
         }
@@ -217,6 +226,7 @@ public class Schema2XMLDragAndDropHandler {
          * 
          * @see org.eclipse.jface.util.TransferDropTargetListener#isEnabled(org.eclipse.swt.dnd.DropTargetEvent)
          */
+        @Override
         public boolean isEnabled(DropTargetEvent event) {
             FOXManager manager = getManager();
             if (manager != null) {
@@ -237,6 +247,7 @@ public class Schema2XMLDragAndDropHandler {
             return true;
         }
 
+        @Override
         public void dragOver(DropTargetEvent event) {
             // System.out.println("\n>>drop");
             DropTarget dropTarget = (DropTarget) event.getSource();
@@ -284,6 +295,7 @@ public class Schema2XMLDragAndDropHandler {
          * 
          * @see org.eclipse.swt.dnd.DropTargetListener#drop(org.eclipse.swt.dnd.DropTargetEvent)
          */
+        @Override
         public void drop(DropTargetEvent event) {
             // System.out.println("\n>>drop");
             DropTarget dropTarget = (DropTarget) event.getSource();
@@ -342,7 +354,7 @@ public class Schema2XMLDragAndDropHandler {
                 }
                 // add by xzhang
                 if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_TEXT)) {
-                    if (targetNode.hasChildren()) {
+                    if (hasElementChildren(targetNode)) {
                         // add for bug 11723.
                         List<FOXTreeNode> children = targetNode.getChildren();
                         for (FOXTreeNode foxTreeNode : children) {
@@ -362,7 +374,7 @@ public class Schema2XMLDragAndDropHandler {
                     }
                     IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
                     targetNode.setColumn(metaColumn);
-                    setDefaultFixValue(targetNode);
+                    targetNode.setDefaultValue(null);
                 } else if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_SUBELEMENT)) {
                     if (!(targetNode instanceof Element)) {
                         MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
@@ -426,7 +438,7 @@ public class Schema2XMLDragAndDropHandler {
                             targetNode.addChild(child);
                         }
                     }
-                    setDefaultFixValue(targetNode);
+                    // setDefaultFixValue(targetNode);
                 }
 
                 if (row != null) {
@@ -473,6 +485,17 @@ public class Schema2XMLDragAndDropHandler {
             treeNode.setDefaultValue(null);
         }
 
+        private boolean hasElementChildren(FOXTreeNode node) {
+            boolean haveElementChild = false;
+            for (FOXTreeNode child : node.getChildren()) {
+                if (child instanceof Element) {
+                    haveElementChild = true;
+                    break;
+                }
+            }
+            return haveElementChild;
+        }
+
         // reset all the treenode add row to relative column
         // private void resetTree(FOXTreeNode root, String row) {
         // root.getChildren();
@@ -483,8 +506,9 @@ public class Schema2XMLDragAndDropHandler {
 
         // reset all the treeNode add row to relative column
         private void setTreeNodeRow(FOXTreeNode root, String row) {
-            if (root == null)
+            if (root == null) {
                 return;
+            }
             root.setRow(row);
             if (root instanceof Element) {
                 Element element = (Element) root;
