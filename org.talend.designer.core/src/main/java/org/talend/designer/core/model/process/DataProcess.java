@@ -2537,6 +2537,15 @@ public class DataProcess {
 
         incomingConnections.add(mergeOutputConnection);
         INode oldNodeTarget = ((DataConnection) mergeOutputConnection).getTarget();
+        // add for bug TDI-21740 , record input connection order.
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        List<? extends IConnection> incomingConns = oldNodeTarget.getIncomingConnections();
+        for (IConnection list : incomingConns) {
+            String name = list.getUniqueName();
+            if (name != null) {
+                map.put(name, incomingConns.indexOf(list));
+            }
+        }
         ((DataConnection) mergeOutputConnection).setTarget(hashNode);
         oldNodeTarget.getIncomingConnections().remove(mergeOutputConnection);
 
@@ -2594,7 +2603,14 @@ public class DataProcess {
         }
         dataConnec.setInputId(inputId);
         outgoingConnections.add(dataConnec);
-        ((List<IConnection>) oldNodeTarget.getIncomingConnections()).add(dataConnec);
+        // add for bug TDI-21740 , add dataConnec to oldNodeTarget with suitable position
+        Set<Map.Entry<String, Integer>> set = map.entrySet();
+        for (Iterator<Map.Entry<String, Integer>> it = set.iterator(); it.hasNext();) {
+            Map.Entry<String, Integer> entry = (Map.Entry<String, Integer>) it.next();
+            if (entry.getKey().equals(dataConnec.getUniqueName())) {
+                ((List<IConnection>) oldNodeTarget.getIncomingConnections()).add(entry.getValue(), dataConnec);
+            }
+        }
 
         ((DataConnection) mergeOutputConnection).setLineStyle(EConnectionType.FLOW_MAIN);
         ((DataConnection) mergeOutputConnection).setConnectorName(EConnectionType.FLOW_MAIN.getName());
@@ -3052,17 +3068,18 @@ public class DataProcess {
             parallelizeNode.getMetadataList().add(newMetadata);
             parallelizeNode.setSubProcessStart(true);
             parallelizeNode.setProcess(process);
-            
-            // when using parallelize function in tMap, "Die when one of parallelize subjobs fails" of tParallelize should be set true
+
+            // when using parallelize function in tMap, "Die when one of parallelize subjobs fails" of tParallelize
+            // should be set true
             IElementParameter dieOnErrorParameters = parallelizeNode.getElementParameter("DIE_ON_ERROR");
             if (dieOnErrorParameters == null) {
-            	dieOnErrorParameters = new ElementParameter(parallelizeNode);
-            	dieOnErrorParameters.setName("DIE_ON_ERROR");
+                dieOnErrorParameters = new ElementParameter(parallelizeNode);
+                dieOnErrorParameters.setName("DIE_ON_ERROR");
                 dieOnErrorParameters.setFieldType(EParameterFieldType.CHECK);
                 ((List<IElementParameter>) parallelizeNode.getElementParameters()).add(dieOnErrorParameters);
             }
             dieOnErrorParameters.setValue(Boolean.TRUE);
-            
+
             List<IConnection> outgoingConnections = new ArrayList<IConnection>();
             List<IConnection> incomingConnections = new ArrayList<IConnection>();
             parallelizeNode.setIncomingConnections(incomingConnections);
