@@ -161,7 +161,7 @@ public class JobletContainerFigure extends Figure {
             rectFig.setBackgroundColor(new Color(Display.getDefault(), green));
         }
 
-        if (isRed() && outlineFigure != null) {
+        if (isRed && outlineFigure != null) {
             outlineFigure.setBackgroundColor(new Color(Display.getDefault(), red));
         } else if (outlineFigure != null) {
             outlineFigure.setBackgroundColor(new Color(Display.getDefault(), green));
@@ -201,7 +201,7 @@ public class JobletContainerFigure extends Figure {
 
         rectFig.setLocation(new Point(location.x, /* preferedSize.height + */location.y));
         rectFig.setSize(new Dimension(rectangle.width, rectangle.height /*- preferedSize.height*/));
-        if (isRed() && rectFig != null) {
+        if (new JobletUtil().isRed(this.jobletContainer) && rectFig != null) {
             rectFig.setBackgroundColor(new Color(Display.getDefault(), red));
             outlineFigure.setBackgroundColor(new Color(Display.getDefault(), red));
         } else {
@@ -296,24 +296,4 @@ public class JobletContainerFigure extends Figure {
         }
     }
 
-    private boolean isRed() {
-        IProcess2 jobletProcess = (IProcess2) this.jobletContainer.getNode().getComponent().getProcess();
-        ERepositoryStatus status = ProxyRepositoryFactory.getInstance().getStatus(jobletProcess.getProperty().getItem());
-        if (status == ERepositoryStatus.LOCK_BY_OTHER) {
-            return true;
-        }
-        IEditorPart[] editors = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getDirtyEditors();
-        if (editors.length <= 0) {
-            return false;
-        }
-        for (IEditorPart editor : editors) {
-            RepositoryEditorInput editorInput = (RepositoryEditorInput) editor.getEditorInput();
-            String jobletId = editorInput.getId();
-            if (jobletId.equals(jobletProcess.getId())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }
