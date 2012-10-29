@@ -74,7 +74,7 @@ public class OSGIJavaScriptForESBWithMavenManager extends JavaScriptForESBWithMa
                     mavenBuildFileOutputStream.close();
                 }
             }
-            updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, true);
+            updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, true, false);
             scriptsUrls.add(mavenBuildFile.toURL());
         } catch (Exception e) {
             ExceptionHandler.process(e);

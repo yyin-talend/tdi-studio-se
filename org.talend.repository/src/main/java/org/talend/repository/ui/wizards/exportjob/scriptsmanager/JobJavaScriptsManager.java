@@ -147,6 +147,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     private MultiKeyMap excludedModules = new MultiKeyMap();
 
+    private List<String> mavenModules = new ArrayList<String>();
+
     /**
      * Getter for compiledModules.
      * 
@@ -163,6 +165,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      */
     protected MultiKeyMap getExcludedModules() {
         return this.excludedModules;
+    }
+
+    protected List<String> getMavenModules() {
+        return this.mavenModules;
     }
 
     protected Set<ModuleNeeded> getCompiledModuleNeededs() {
@@ -221,6 +227,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                 addModuleNeededsInMap(getExcludedModules(), processId, processVersion, module);
             }
         }
+    }
+
+    protected void analysisMavenModule(Item item) {
     }
 
     protected void addModuleNeededsInMap(MultiKeyMap modulesMap, String processId, String processVersion, ModuleNeeded module) {
@@ -374,7 +383,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     outStream.close();
                 }
             }
-            updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, true);
+            updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, true, false);
             scriptsUrls.add(mavenBuildFile.toURL());
 
             try {
@@ -441,6 +450,19 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         Element parentEle = rootElement.element("modules"); //$NON-NLS-1$
         if (parentEle != null) {
             removeComments(parentEle);
+            List originalElements = parentEle.elements();
+            List oldElements = new ArrayList(originalElements);
+            originalElements.clear();
+            List<String> mavenModules = getMavenModules();
+            for (String module : mavenModules) {
+                Element moduleElement = parentEle.addElement("module"); //$NON-NLS-1$
+                moduleElement.setText(module);
+            }
+            for (Object eleObj : oldElements) {
+                if (eleObj instanceof Element) {
+                    parentEle.add((Element) eleObj);
+                }
+            }
         }
     }
 
@@ -506,15 +528,23 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     protected void updateMavenBuildFileContent(File mavenBuildFile, Map<String, String> mavenPropertiesMap,
-            boolean addDependencies) throws DocumentException, IOException {
+            boolean addDependencies, boolean updateModules) throws DocumentException, IOException {
         SAXReader saxReader = new SAXReader();
         Document pomDocument = saxReader.read(mavenBuildFile);
         setMavenBuildScriptProperties(pomDocument, mavenPropertiesMap);
+        if (updateModules) {
+            setMavenBuildScriptModules(pomDocument);
+        }
         if (addDependencies) {
             addMavenDependencyElements(pomDocument, getCompiledModuleNeededs(), MAVEN_PROP_LIB_PATH);
             addMavenDependencyElements(pomDocument, getExcludedModuleNeededs(), MAVEN_PROP_PROVIDED_LIB_PATH);
         }
         saveXmlDocoment(pomDocument, mavenBuildFile);
+    }
+
+    protected void updateMavenBuildFileContent(File mavenBuildFile, Map<String, String> mavenPropertiesMap)
+            throws DocumentException, IOException {
+        updateMavenBuildFileContent(mavenBuildFile, mavenPropertiesMap, false, false);
     }
 
     protected void createMavenBuildFileFromTemplate(File mavenBuildFile, String mavenScript) throws IOException {
@@ -537,7 +567,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             if (commentObj instanceof Comment) {
                 Comment comment = (Comment) commentObj;
                 if (comment.getNodeType() == Node.COMMENT_NODE) {
-                    ele.remove(comment);
+                    commentIterator.remove();
                 }
             }
         }

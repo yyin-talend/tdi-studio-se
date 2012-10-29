@@ -185,6 +185,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     LastGenerationInfo.getInstance().setLastMainJob(null);
                 }
 
+                analysisMavenModule(processItem);
+
                 // generate jar file for job
                 getJobScriptsUncompressed(jobScriptResource, processItem);
 
