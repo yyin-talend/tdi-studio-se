@@ -200,8 +200,6 @@ public class EmfComponent extends AbstractComponent {
 
     private boolean isAlreadyLoad = false;
 
-    private boolean needSingleOutput = false;
-
     // weak ref used so that memory is not used by a static ComponentResourceFactoryImpl instance
     private static SoftReference<ComponentResourceFactoryImpl> compResFactorySoftRef;
 
@@ -3095,9 +3093,6 @@ public class EmfComponent extends AbstractComponent {
                 ExceptionHandler.process(e);
             }
         }
-        if (needSingleOutput) {
-            return false;
-        }
         return compType.getHEADER().isISMULTIPLYINGOUTPUTS();
     }
 
@@ -3464,23 +3459,4 @@ public class EmfComponent extends AbstractComponent {
     public String getSourceBundleName() {
         return bundleName;
     }
-
-    /**
-     * Getter for needSingleOutput.
-     * 
-     * @return the needSingleOutput
-     */
-    public boolean isNeedSingleOutput() {
-        return this.needSingleOutput;
-    }
-
-    /**
-     * Sets the needSingleOutput.
-     * 
-     * @param needSingleOutput the needSingleOutput to set
-     */
-    public void setNeedSingleOutput(boolean needSingleOutput) {
-        this.needSingleOutput = needSingleOutput;
-    }
-
 }
