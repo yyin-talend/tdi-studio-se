@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,13 +31,18 @@ import org.apache.axis.wsdl.WSDL2Java;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionEvent;
@@ -49,6 +55,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
@@ -237,114 +244,168 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
      * org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
     private void generateJavaFile() {
-        Node node = (Node) elem;
 
-        IProcess process = node.getProcess();
-        String jobName = process.getName();
-        String nodeName = node.getUniqueName();
+        final IWorkspaceRunnable op = new IWorkspaceRunnable() {
 
-        String wsdlfile = (String) node.getPropertyValue("ENDPOINT"); //$NON-NLS-1$
-        wsdlfile = wsdlfile.substring(1, wsdlfile.length() - 1);
-        if (wsdlfile.equals("")) {
-            MessageDialog.openError(Display.getDefault().getActiveShell(),
-                    org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.TOS"),
-                    org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.WSDLEquals"));
-            return;
-        }
-        File dir = new File(getTmpFolder());
+            public void run(IProgressMonitor monitor) throws CoreException {
+                Node node = (Node) elem;
 
-        TalendWSDL2Java java2WSDL = new TalendWSDL2Java();
+                IProcess process = node.getProcess();
+                String jobName = process.getName();
+                String nodeName = node.getUniqueName();
 
-        boolean hasError = java2WSDL.generateWSDL(new String[] { "-o" + dir, "-p" + PACK, wsdlfile }); //$NON-NLS-1$ //$NON-NLS-2$
+                String wsdlfile = (String) node.getPropertyValue("ENDPOINT"); //$NON-NLS-1$
+                wsdlfile = wsdlfile.substring(1, wsdlfile.length() - 1);
+                if (wsdlfile.equals("")) {
+                    Display.getDefault().syncExec(new Runnable() {
 
-        // give some info about the generate stub.jar result to GUI.
-        if (hasError) {
-            MessageDialog
-                    .openError(
-                            Display.getDefault().getActiveShell(),
-                            org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.TOS"), org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.generateFileFailed" //$NON-NLS-1$ //$NON-NLS-2$
-                                            , java2WSDL.getException().getClass().getCanonicalName(), java2WSDL.getException()
-                                                    .getMessage()));
-        } else {
-            MessageDialog.openInformation(Display.getDefault().getActiveShell(),
-                    org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.TOS"), //$NON-NLS-1$
-                    org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.generateFileFailedFromWSDL", wsdlfile)); //$NON-NLS-1$
-        }
+                        @Override
+                        public void run() {
+                            MessageDialog.openError(Display.getDefault().getActiveShell(),
+                                    org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.TOS"),
+                                    org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.WSDLEquals"));
+                        }
 
-        IPath path = new Path(jobName + "/" + nodeName); //$NON-NLS-1$
+                    });
 
-        String[] filter = new String[] { "java" }; //$NON-NLS-1$
-        Collection listFiles = FileUtils.listFiles(dir, filter, true);
-        Iterator iterator = listFiles.iterator();
-        String name = "";
-        for (int i = 0; i < listFiles.size(); i++) {
-            File javaFile = (File) listFiles.toArray()[i];
-            String parentFileName = javaFile.getParentFile().getName();
-            if (!parentFileName.equals("routines")) {
-                name = parentFileName;
-            }
-        }
-        List<RoutineItem> returnItemList = new ArrayList<RoutineItem>();
-
-        while (iterator.hasNext()) {
-            File javaFile = (File) iterator.next();
-            String fileName = javaFile.getName();
-            String label = fileName.substring(0, fileName.indexOf('.'));
-            try {
-                RoutineItem returnItem = createRoutine(path, label, javaFile, name);
-                returnItemList.add(returnItem);
-                syncRoutine(returnItem, true, name);
-
-                refreshProject();
-
-            } catch (IllegalArgumentException e) {
-                // nothing need to do for the duplicate label, there don't overwrite it.
-            } catch (Exception e) {
-                ExceptionHandler.process(e);
-            }
-        }
-
-        Project currentProject = ProjectManager.getInstance().getCurrentProject();
-        IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
-        IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
-        List<IRepositoryViewObject> all;
-        Item item = null;
-
-        try {
-            all = factory.getAll(currentProject, ERepositoryObjectType.PROCESS, true, true);
-            for (IRepositoryViewObject repositoryViewObject : all) {
-                if (repositoryViewObject.getLabel().equals(jobName)) {
-                    item = repositoryViewObject.getProperty().getItem();
+                    return;
                 }
-            }
-        } catch (PersistenceException ex) {
-            ExceptionHandler.process(ex);
-        }
+                File dir = new File(getTmpFolder());
 
-        try {
-            List<RoutinesParameterType> needList = new ArrayList<RoutinesParameterType>();
-            List<RoutinesParameterType> createJobRoutineDependencies = RoutinesUtil.createJobRoutineDependencies(false);
-            for (RoutineItem returnItem : returnItemList) {
-                for (RoutinesParameterType routinesParameterType : createJobRoutineDependencies) {
-                    if (routinesParameterType.getId().equals(returnItem.getProperty().getId())) {
-                        needList.add(routinesParameterType);
+                final TalendWSDL2Java java2WSDL = new TalendWSDL2Java();
+
+                boolean hasError = java2WSDL.generateWSDL(new String[] { "-o" + dir, "-p" + PACK, wsdlfile }); //$NON-NLS-1$ //$NON-NLS-2$
+
+                // give some info about the generate stub.jar result to GUI.
+                final String tempWsdlfile = wsdlfile;
+                if (hasError) {
+                    Display.getDefault().syncExec(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            MessageDialog.openError(
+                                    Display.getDefault().getActiveShell(),
+                                    org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.TOS"), org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.generateFileFailed" //$NON-NLS-1$ //$NON-NLS-2$
+                                                    , java2WSDL.getException().getClass().getCanonicalName(), java2WSDL
+                                                            .getException().getMessage()));
+                        }
+
+                    });
+
+                } else {
+                    Display.getDefault().syncExec(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            MessageDialog.openInformation(Display.getDefault().getActiveShell(),
+                                    org.talend.designer.core.i18n.Messages.getString("WSDL2JAVAController.TOS"), //$NON-NLS-1$
+                                    org.talend.designer.core.i18n.Messages.getString(
+                                            "WSDL2JAVAController.generateFileFailedFromWSDL", tempWsdlfile)); //$NON-NLS-1$
+                        }
+
+                    });
+
+                }
+
+                IPath path = new Path(jobName + "/" + nodeName); //$NON-NLS-1$
+
+                String[] filter = new String[] { "java" }; //$NON-NLS-1$
+                Collection listFiles = FileUtils.listFiles(dir, filter, true);
+                Iterator iterator = listFiles.iterator();
+                String name = "";
+                for (int i = 0; i < listFiles.size(); i++) {
+                    File javaFile = (File) listFiles.toArray()[i];
+                    String parentFileName = javaFile.getParentFile().getName();
+                    if (!parentFileName.equals("routines")) {
+                        name = parentFileName;
                     }
                 }
+                List<RoutineItem> returnItemList = new ArrayList<RoutineItem>();
+
+                while (iterator.hasNext()) {
+                    File javaFile = (File) iterator.next();
+                    String fileName = javaFile.getName();
+                    String label = fileName.substring(0, fileName.indexOf('.'));
+                    try {
+                        RoutineItem returnItem = createRoutine(path, label, javaFile, name);
+                        returnItemList.add(returnItem);
+                        syncRoutine(returnItem, true, name);
+
+                        refreshProject();
+
+                    } catch (IllegalArgumentException e) {
+                        // nothing need to do for the duplicate label, there don't overwrite it.
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+
+                Project currentProject = ProjectManager.getInstance().getCurrentProject();
+                IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(
+                        IRepositoryService.class);
+                IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
+                List<IRepositoryViewObject> all;
+                Item item = null;
+
+                try {
+                    all = factory.getAll(currentProject, ERepositoryObjectType.PROCESS, true, true);
+                    for (IRepositoryViewObject repositoryViewObject : all) {
+                        if (repositoryViewObject.getLabel().equals(jobName)) {
+                            item = repositoryViewObject.getProperty().getItem();
+                        }
+                    }
+                } catch (PersistenceException ex) {
+                    ExceptionHandler.process(ex);
+                }
+
+                try {
+                    List<RoutinesParameterType> needList = new ArrayList<RoutinesParameterType>();
+                    List<RoutinesParameterType> createJobRoutineDependencies = RoutinesUtil.createJobRoutineDependencies(false);
+                    for (RoutineItem returnItem : returnItemList) {
+                        for (RoutinesParameterType routinesParameterType : createJobRoutineDependencies) {
+                            if (routinesParameterType.getId().equals(returnItem.getProperty().getId())) {
+                                needList.add(routinesParameterType);
+                            }
+                        }
+                    }
+                    if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
+                        ((org.talend.designer.core.ui.editor.process.Process) process).addGeneratingRoutines(needList);
+                    }
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+
+                // try {
+                // RoutinesUtil.createJobRoutineDependencies(false);
+                // } catch (PersistenceException e) {
+                // ExceptionHandler.process(e);
+                // }
+                FilesUtils.removeFolder(dir, true);
             }
-            if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
-                ((org.talend.designer.core.ui.editor.process.Process) process).addGeneratingRoutines(needList);
+
+        };
+        IRunnableWithProgress iRunnableWithProgress = new IRunnableWithProgress() {
+
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                try {
+                    ISchedulingRule schedulingRule = workspace.getRoot();
+                    // the update the project files need to be done in the workspace runnable to avoid all
+                    // notification
+                    // of changes before the end of the modifications.
+                    workspace.run(op, schedulingRule, IWorkspace.AVOID_UPDATE, monitor);
+                } catch (CoreException e) {
+                    // throw new InvocationTargetException(e);
+                }
             }
-        } catch (PersistenceException e) {
+        };
+        try {
+            PlatformUI.getWorkbench().getProgressService().run(true, true, iRunnableWithProgress);
+        } catch (InvocationTargetException e) {
+            ExceptionHandler.process(e);
+        } catch (InterruptedException e) {
             ExceptionHandler.process(e);
         }
-
-        // try {
-        // RoutinesUtil.createJobRoutineDependencies(false);
-        // } catch (PersistenceException e) {
-        // ExceptionHandler.process(e);
-        // }
-        FilesUtils.removeFolder(dir, true);
-
     }
 
     private void refreshProject() {
