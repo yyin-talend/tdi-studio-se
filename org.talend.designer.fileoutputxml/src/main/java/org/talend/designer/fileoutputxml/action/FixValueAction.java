@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.fileoutputxml.i18n.Messages;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.Element;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.treeNode.FOXTreeNode;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 
@@ -62,7 +63,7 @@ public class FixValueAction extends SelectionProviderAction {
     }
 
     private void setFixValue(FOXTreeNode node) {
-        String label = null; //$NON-NLS-1$
+        String label = null;
         while (!StringUtil.validateLabelForFixedValue(label)) {
             InputDialog dialog = new InputDialog(null, Messages.getString("FixValueAction.1"), //$NON-NLS-1$
                     Messages.getString("FixValueAction.2"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
@@ -100,7 +101,19 @@ public class FixValueAction extends SelectionProviderAction {
             } else if (node.getColumn() != null) {
                 this.setEnabled(false);
             } else if (node.getChildren() != null && !node.getChildren().isEmpty()) {
-                this.setEnabled(false);
+                // this.setEnabled(false);
+                boolean haveElementChild = false;
+                for (FOXTreeNode child : node.getChildren()) {
+                    if (child instanceof Element) {
+                        haveElementChild = true;
+                        break;
+                    }
+                }
+                if (haveElementChild) {
+                    setEnabled(false);
+                } else {
+                    setEnabled(true);
+                }
             } else {
                 this.setEnabled(true);
             }
