@@ -36,6 +36,7 @@ import org.talend.repository.ui.views.IRepositoryView;
  * 
  * @deprecated
  */
+@Deprecated
 public class RepositoryPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
     private CheckBoxFieldEditor manuallyRefreshEditor;
@@ -109,6 +110,7 @@ public class RepositoryPreferencePage extends FieldEditorPreferencePage implemen
 
         manuallyRefreshEditor.getButton().addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 boolean value = manuallyRefreshEditor.getBooleanValue();
                 creatingRefreshEditor.setChecked(!value);
@@ -118,6 +120,7 @@ public class RepositoryPreferencePage extends FieldEditorPreferencePage implemen
         });
         final SelectionAdapter listener = new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 boolean value = creatingRefreshEditor.getBooleanValue() || savingRefreshEditor.getBooleanValue()
                         || deletingRefreshEditor.getBooleanValue();
@@ -135,7 +138,7 @@ public class RepositoryPreferencePage extends FieldEditorPreferencePage implemen
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
     public void init(IWorkbench workbench) {
-        setPreferenceStore(RepositoryManager.getPreferenceStore());
+        setPreferenceStore(RepositoryManager.getRepositoryPreferenceStore());
     }
 
     @Override
