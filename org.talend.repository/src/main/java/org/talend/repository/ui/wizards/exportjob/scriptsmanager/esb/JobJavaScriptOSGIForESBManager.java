@@ -466,9 +466,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         if (!endpointUri.isEmpty() && !endpointUri.contains("://") && !endpointUri.startsWith("/")) {
             endpointUri = "/" + endpointUri;
         }
-        if (endpointUri.contains("://")) {
-            endpointUri = new URL(endpointUri).getPath();
-        }
+        // TESB-5916: Rest service can't be deployed in the Runtime on the port said in the studio
+//        if (endpointUri.contains("://")) {
+//            endpointUri = new URL(endpointUri).getPath();
+//        }
         if (endpointUri.equals("/services/") || endpointUri.equals("/services")) {
             // pass as is
         } else if (endpointUri.startsWith("/services/")) {
