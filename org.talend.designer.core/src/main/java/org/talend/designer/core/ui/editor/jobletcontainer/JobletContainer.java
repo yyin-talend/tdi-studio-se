@@ -6,12 +6,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.ui.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
@@ -113,6 +115,15 @@ public class JobletContainer extends NodeContainer {
             Rectangle jobletNodeRec = this.node.getNodeContainer().getNodeContainerRectangle();
             for (NodeContainer container : nodeContainers) {
                 Rectangle curRect = container.getNodeContainerRectangle();
+                if (node.getNodeContainer() instanceof JobletContainer) {
+                    String title = (String) node.getNodeContainer().getPropertyValue(EParameterName.SUBJOB_TITLE.getName());
+                    SimpleHtmlFigure titleFigure = new SimpleHtmlFigure();
+                    titleFigure.setText("<b> " + title + "</b>"); //$NON-NLS-1$ //$NON-NLS-2$
+                    Dimension preferedSize = titleFigure.getPreferredSize();
+                    if (preferedSize.width > curRect.width) {
+                        curRect.setSize(preferedSize.width + 6, curRect.height);
+                    }
+                }
                 // if (container.getNode().isDesignSubjobStartNode()) {
                 // totalRectangle = curRect.getCopy();
                 // } else {

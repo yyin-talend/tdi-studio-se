@@ -189,7 +189,7 @@ public class JobletContainerFigure extends Figure {
         collapseFigure.setSize(preferedSize.height, preferedSize.height);
 
         titleFigure.setSize(preferedSize.width, preferedSize.height - 2);
-        titleFigure.setLocation(new Point((rectangle.width - preferedSize.height) / 2 + location.x, location.y));
+        titleFigure.setLocation(new Point((rectangle.width - preferedSize.width) / 2 + location.x, location.y));
         titleFigure.setVisible(showTitle);
 
         outlineFigure.setLocation(new Point(location.x, location.y));
