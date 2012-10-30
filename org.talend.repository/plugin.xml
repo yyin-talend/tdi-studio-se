@@ -1738,7 +1738,7 @@
             context="%libraryneeded.dbconnectionwizard"
             language="java"
             message="%libraryneeded.forsqlconnection"
-            name="mysql-connector-java-5.1.0-bin.jar"
+            name="mysql-connector-java-5.1.22-bin.jar"
             required="false"/>
       <libraryNeeded
             context="%libraryneeded.dbconnectionwizard"
