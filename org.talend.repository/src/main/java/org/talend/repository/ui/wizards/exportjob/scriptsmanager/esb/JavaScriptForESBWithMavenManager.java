@@ -196,6 +196,22 @@ public abstract class JavaScriptForESBWithMavenManager extends JobJavaScriptOSGI
         list.add(sourceCodeResource);
     }
 
+    @Override
+    protected ExportFileResource getProvidedLibExportFileResource(ExportFileResource[] processes) {
+        Set<String> providedModuleNames = getExcludedModuleNames();
+        if (providedModuleNames.isEmpty()) {
+            return null; // if empty, won't add the privided lib folder
+        }
+        ExportFileResource libResource = new ExportFileResource(null, PROVIDED_LIB_FOLDER);
+
+        List<URL> providedUrls = getNeededModuleURLs(providedModuleNames);
+        if (providedUrls.isEmpty()) {
+            return null; // if empty, won't add the privided lib folder
+        }
+        libResource.addResources(providedUrls);
+        return libResource;
+    }
+
     /**
      * DOC nrousseau Comment method "addMavenScriptToExport".
      * 

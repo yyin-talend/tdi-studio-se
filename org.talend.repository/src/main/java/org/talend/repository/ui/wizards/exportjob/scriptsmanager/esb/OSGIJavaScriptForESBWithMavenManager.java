@@ -90,11 +90,14 @@ public class OSGIJavaScriptForESBWithMavenManager extends JavaScriptForESBWithMa
     @Override
     protected void getMenifestMavenProperties(URL manifestURL, Map<String, String> mavenPropertiesMap) {
         super.getMenifestMavenProperties(manifestURL, mavenPropertiesMap);
-        Set<String> theProvidedModules = getProvidedModuleNames();
+        Set<String> theProvidedModules = getExcludedModuleNames();
 
         // reset the Bundle-Classpath to remove the routines jar
         String bundleClasspathName = EMavenBuildScriptProperties.BundleConfigBundleClasspath.getVarScript();
         String bundleClasspath = mavenPropertiesMap.get(bundleClasspathName);
+        if (bundleClasspath == null) {
+            return; //
+        }
         String[] classpathes = bundleClasspath.split(IOsgiDependenciesService.ITEM_SEPARATOR);
         StringBuffer sb = new StringBuffer(200);
         for (int i = 0; i < classpathes.length; i++) {

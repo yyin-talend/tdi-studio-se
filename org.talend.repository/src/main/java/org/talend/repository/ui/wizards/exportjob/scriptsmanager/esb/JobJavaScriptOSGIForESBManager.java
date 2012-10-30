@@ -264,18 +264,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     protected ExportFileResource getProvidedLibExportFileResource(ExportFileResource[] processes) {
-        Set<String> providedModuleNames = getProvidedModuleNames();
-        if (providedModuleNames.isEmpty()) {
-            return null; // if empty, won't add the privided lib folder
-        }
-        ExportFileResource libResource = new ExportFileResource(null, PROVIDED_LIB_FOLDER);
-
-        List<URL> providedUrls = getNeededModuleURLs(providedModuleNames);
-        if (providedUrls.isEmpty()) {
-            return null; // if empty, won't add the privided lib folder
-        }
-        libResource.addResources(providedUrls);
-        return libResource;
+        return null; // default, no provided lib for osgi bundle
     }
 
     /**
@@ -956,13 +945,24 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         return this.requireBundleModules;
     }
 
-    protected Set<String> getProvidedModuleNames() {
+    protected Set<ModuleNeeded> getRequireBundleModuleNeededs() {
+        return getModuleNeededs(getRequireBundleModules());
+    }
+
+    @Override
+    protected Set<ModuleNeeded> getExcludedModuleNeededs() {
+        Set<ModuleNeeded> excludedModuleNeededs = super.getExcludedModuleNeededs();
+
+        excludedModuleNeededs.addAll(getRequireBundleModuleNeededs());
+        return excludedModuleNeededs;
+    }
+
+    @Override
+    protected Set<String> getExcludedModuleNames() {
         Set<String> providedModulesSet = super.getExcludedModuleNames();
 
-        for (Object obj : getRequireBundleModules().values()) {
-            if (obj instanceof ModuleNeeded) {
-                providedModulesSet.add(((ModuleNeeded) obj).getModuleName());
-            }
+        for (ModuleNeeded module : getRequireBundleModuleNeededs()) {
+            providedModulesSet.add(module.getModuleName());
         }
         return providedModulesSet;
     }

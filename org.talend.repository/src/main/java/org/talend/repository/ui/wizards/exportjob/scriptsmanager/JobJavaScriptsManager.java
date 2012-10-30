@@ -173,7 +173,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     @SuppressWarnings("rawtypes")
-    private Set<ModuleNeeded> getModuleNeededs(MultiKeyMap map) {
+    protected Set<ModuleNeeded> getModuleNeededs(MultiKeyMap map) {
         Set<ModuleNeeded> modulesSet = new HashSet<ModuleNeeded>(100);
         Collection allModules = map.values();
         for (Object obj : allModules) {
@@ -227,6 +227,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     }
 
     protected void analysisMavenModule(Item item) {
+        // will collect the modules for maven pom
     }
 
     protected void addModuleNeededsInMap(MultiKeyMap modulesMap, String processId, String processVersion, ModuleNeeded module) {
@@ -415,7 +416,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
         // set the maven properties
         final Map<String, String> mavenPropertiesMap = new HashMap<String, String>();
-        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemGroupName.getVarScript(), projectName + '.' + jobName);
+        mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemGroupName.getVarScript(),
+                JavaResourcesHelper.getGroupItemName(projectName, jobName));
         mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemProjectName.getVarScript(), projectName);
         mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemName.getVarScript(), jobName);
         mavenPropertiesMap.put(EMavenBuildScriptProperties.ItemVersion.getVarScript(), jobVersion);
