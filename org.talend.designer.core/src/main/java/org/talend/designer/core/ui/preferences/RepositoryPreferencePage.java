@@ -49,8 +49,9 @@ public class RepositoryPreferencePage extends FieldEditorPreferencePage implemen
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
 
+    @Override
     public void init(IWorkbench workbench) {
-        setPreferenceStore(RepositoryManager.getPreferenceStore());
+        setPreferenceStore(RepositoryManager.getRepositoryPreferenceStore());
     }
 
     @Override

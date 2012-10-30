@@ -30,7 +30,7 @@ public class RepositoryPreferenceInitializer extends AbstractPreferenceInitializ
     @Override
     public void initializeDefaultPreferences() {
         final IPreferenceStore preferenceStore = RepositoryPlugin.getDefault().getPreferenceStore();
-        preferenceStore.setDefault(IRepositoryPrefConstants.MERGE_REFERENCE_PROJECT, true);
+        // preferenceStore.setDefault(IRepositoryPrefConstants.MERGE_REFERENCE_PROJECT, true);
     }
 
 }
