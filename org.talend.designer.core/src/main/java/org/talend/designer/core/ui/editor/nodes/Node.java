@@ -2324,37 +2324,13 @@ public class Node extends Element implements IGraphicalNode {
                 }
             }
 
-            if (this.getOutgoingConnections("REJECT").size() > 0) {//$NON-NLS-1$
-                boolean isShow = true;
-                for (IConnection iconn : this.getOutgoingConnections("REJECT")) {//$NON-NLS-1$
-                    if (iconn instanceof Connection) {
-                        Connection conn = (Connection) iconn;
-                        isShow = conn.getSourceNodeConnector().isShow();
-                        if (!isShow) {
-                            break;
-                        }
-                    }
+            for (IConnection connection : getOutgoingConnections()) {
+                if (!connection.getSourceNodeConnector().isShow()) {
+                    Problems.add(ProblemStatus.ERROR, this, "Please remove the "
+                            + connection.getSourceNodeConnector().getLinkName() + " connections");
                 }
-                if (!isShow) {
-                    EParameterFieldType fieldType = param.getFieldType();
-                    switch (fieldType) {
-                    case CLOSED_LIST:
-                        if (param.getName().equals("DATA_ACTION")) {//$NON-NLS-1$
-                            if (((String) param.getValue()).equals("INSERT")) {//$NON-NLS-1$
-                                Problems.add(ProblemStatus.ERROR, this, Messages.getString("Node.Remove_Rejects")); //$NON-NLS-1$
-                            }
-                        }
-                    case CHECK:
-                        if (param.getName().equals("DIE_ON_ERROR")) {//$NON-NLS-1$
-                            if ((Boolean) param.getValue() == true) {
-                                Problems.add(ProblemStatus.ERROR, this, Messages.getString("Node.Remove_Rejects")); //$NON-NLS-1$
-                            }
-                        }
-
-                    }
-                }
-
             }
+
             if (param.isRequired() && param.isShow(getElementParameters())) {
                 EParameterFieldType fieldType = param.getFieldType();
                 String value;
