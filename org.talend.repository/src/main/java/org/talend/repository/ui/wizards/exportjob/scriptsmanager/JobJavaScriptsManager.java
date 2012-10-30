@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -53,12 +52,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
-import org.osgi.framework.Bundle;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -726,27 +723,13 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     protected List<URL> getBuildScriptLibraries() {
         List<URL> list = new ArrayList<URL>();
         if (isOptionChoosed(ExportChoice.needAntScript)) {
-            Bundle bundle = Platform.getBundle(org.talend.resources.ResourcesPlugin.PLUGIN_ID);
-            Enumeration entryPaths = bundle.getEntryPaths(IExportJobConstants.ANT_BUILD_SCRIPT_LIB_DIR);
-            if (entryPaths == null) {
-                return list;
+            IExportJobResourcesService resourcesService = null;
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(IExportJobResourcesService.class)) {
+                resourcesService = (IExportJobResourcesService) GlobalServiceRegister.getDefault().getService(
+                        IExportJobResourcesService.class);
             }
-            while (entryPaths.hasMoreElements()) {
-                Object entryPath = entryPaths.nextElement();
-                if (entryPath != null && entryPath instanceof String) {
-                    String path = (String) entryPath;
-                    if (path.endsWith(FileConstants.JAR_FILE_SUFFIX)) {
-                        URL entry = bundle.getEntry(path);
-                        if (entry != null) {
-                            try {
-                                URL fileUrl = FileLocator.toFileURL(entry);
-                                list.add(fileUrl);
-                            } catch (Exception e) {
-                                continue;
-                            }
-                        }
-                    }
-                }
+            if (resourcesService != null) {
+                list = resourcesService.getAntRequiredLibs();
             }
         } else if (isOptionChoosed(ExportChoice.needMavenScript)) {
             // TODO:
