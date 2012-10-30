@@ -17,6 +17,7 @@
   </HEADER>
 
   <FAMILIES>
+	<FAMILY>Databases/AmazonRDS/MySQL</FAMILY>
     <FAMILY>Cloud/AmazonRDS/MySQL</FAMILY>
   </FAMILIES>
 
