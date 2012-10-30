@@ -16,6 +16,7 @@
   </HEADER>
 
   <FAMILIES>
+    <FAMILY>Databases/AmazonRDS/Oracle</FAMILY>
     <FAMILY>Cloud/AmazonRDS/Oracle</FAMILY>
   </FAMILIES>
 
