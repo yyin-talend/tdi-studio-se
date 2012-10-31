@@ -360,9 +360,12 @@ public class ChangeActivateStatusElementCommand extends Command {
         Map<IConnection, Node> middleNodeMap = new HashMap<IConnection, Node>();
         for (IConnection outConn : node.getOutgoingConnections()) {
             if (outConn.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+
                 if (!((Node) outConn.getTarget()).isActivate()) {
                     middleNodeMap.put(outConn, null);
-                    middleNodeMap.putAll(getAllOutMiddleNodes((Node) outConn.getTarget()));
+                    if (isSameSchemaInputOutput((Node) outConn.getTarget())) {
+                        middleNodeMap.putAll(getAllOutMiddleNodes((Node) outConn.getTarget()));
+                    }
                 } else {
                     middleNodeMap.put(outConn, (Node) outConn.getTarget());
                 }
@@ -377,7 +380,10 @@ public class ChangeActivateStatusElementCommand extends Command {
             if (inConn.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                 if (!((Node) inConn.getSource()).isActivate()) {
                     middleNodeMap.put(inConn, null);
-                    middleNodeMap.putAll(getAllInMiddleNodes((Node) inConn.getSource()));
+
+                    if (isSameSchemaInputOutput((Node) inConn.getSource())) {
+                        middleNodeMap.putAll(getAllInMiddleNodes((Node) inConn.getSource()));
+                    }
                 } else {
                     middleNodeMap.put(inConn, (Node) inConn.getSource());
                 }
