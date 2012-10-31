@@ -3,6 +3,8 @@ package org.talend.designer.components.hashfile.common;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.Iterator;
 import org.talend.designer.components.hashfile.memory.AdvancedMemoryHashFile;
 
 public class MapHashFile {
@@ -38,5 +40,28 @@ public class MapHashFile {
 
 	public Map<String, String> getKeyMap() {
 		return keyMap;
+	}
+	public void clearCache(String key){
+		clearChildCache(getRootCache(key));
+	}
+	public void clearChildCache(String root){
+		Set<String> set = keyMap.keySet();
+		Iterator<String> it = set.iterator();
+		while(it.hasNext()){
+			String key = it.next();
+			if(keyMap.get(key).equals(root)){
+				this.resourceMap.remove(key);
+				clearChildCache(key);
+			}
+		}
+		this.resourceMap.remove(root);
+	}
+	
+	public String getRootCache(String cache){
+		String root;
+		while((root = keyMap.get(cache))!=null){
+			cache=root;
+		}
+		return cache;
 	}
 }

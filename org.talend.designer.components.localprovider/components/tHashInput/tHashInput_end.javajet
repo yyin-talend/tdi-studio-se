@@ -147,6 +147,13 @@
 	nb_line_<%=cid %>++;
 }	
 <%
+ 	boolean release_cache = "true".equals(ElementParameterParser.getValue(node, "__RELEASE_CACHE__"));
+	if(release_cache){
+		String jobName = codeGenArgument.getJobName();
+%>	
+		mf_<%=cid %>.clearCache("tHashFile_<%=jobName %>_" + pid +"_<%=tHashOutputName %>");
+<%
+	}
 }
 %>
 
