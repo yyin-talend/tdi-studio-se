@@ -35,6 +35,18 @@
   <PARAMETERS>
 
     <PARAMETER
+	NAME="SERVER"
+	FIELD="CLOSED_LIST"
+	NUM_ROW="20"
+	>
+      <ITEMS DEFAULT="ActiveMQ">
+        <!--ITEM NAME="WEBSPHERE"   VALUE="WebSphere" />
+        <ITEM NAME="JBOSS"   VALUE="JBoss" /-->
+        <ITEM NAME="ACTIVEMQ" VALUE="ActiveMQ"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
 	NAME="FAILOVER"
 	FIELD="CHECK"
 	NUM_ROW="15"
