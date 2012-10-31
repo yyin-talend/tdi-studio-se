@@ -71,7 +71,7 @@ boolean isVirtualIn = componentName.endsWith("TMAP_IN");
 boolean isVirtualOut = componentName.endsWith("TMAP_OUT");
 
 String uniqueNameComponent = componentName.replaceAll("_TMAP_IN", "");
-uniqueNameComponent = componentName.replaceAll("_TMAP_OUT", "");
+uniqueNameComponent = uniqueNameComponent.replaceAll("_TMAP_OUT", "");
 
 if(isVirtualIn) {
 	List<IConnection> localInputConnections = inputConnections;
@@ -303,7 +303,7 @@ class  <%=className%>  {
 
 HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
 
-String currentJoinedTableNames = "";
+int currentJoinedTableIndex = 0;
 
 int sizeInputTables = inputTables.size();
         
@@ -319,11 +319,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 		nextInputTable = inputTables.get(iInputTable + 1);
 	}
 	
-	if(currentJoinedTableNames.length() > 0) {
-		currentJoinedTableNames += "__";
-	}
-	
-	currentJoinedTableNames += currentInputTable.getName();
+	currentJoinedTableIndex++;
 
 	String currentTableName = currentInputTable.getName();
     IConnection currentConection = hNameToConnection.get(currentTableName);
@@ -346,7 +342,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 	
 		%>
 	
-		class SortableRow_<%= currentJoinedTableNames %> implements Comparable<SortableRow_<%= currentJoinedTableNames %>>, routines.system.IPersistableRow<SortableRow_<%= currentJoinedTableNames %>> { // G_TM_B_001 
+		class SortableRow_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%> implements Comparable<SortableRow_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>>, routines.system.IPersistableRow<SortableRow_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>> { // G_TM_B_001 
 
 			boolean is__rejectedInnerJoin;
 
@@ -521,7 +517,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 		
 		
 		
-		        public int compareTo(SortableRow_<%= currentJoinedTableNames %> other) {
+		        public int compareTo(SortableRow_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%> other) {
 
                     int returnValue = 0;
                     
@@ -913,15 +909,15 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 	%>
 	
 
-	org.talend.designer.components.lookup.persistent.PersistentRowSorterIterator<SortableRow_<%= currentJoinedTableNames %>> fsi_<%= currentJoinedTableNames %> = 
-		new org.talend.designer.components.lookup.persistent.PersistentRowSorterIterator<SortableRow_<%= currentJoinedTableNames %>>(
-			<%= tempFolder %> + "/"+ jobName +"_tMapData_" + pid +"_<%= hasConcurrencyContext ? threadInsertedString + "_" : "" %><%= currentJoinedTableNames %>", <%= rowsBufferSize %>) {
-			public SortableRow_<%= currentJoinedTableNames %> createRowInstance() {
-				return new SortableRow_<%= currentJoinedTableNames %>();
+	org.talend.designer.components.lookup.persistent.PersistentRowSorterIterator<SortableRow_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>> fsi_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%> = 
+		new org.talend.designer.components.lookup.persistent.PersistentRowSorterIterator<SortableRow_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>>(
+			<%= tempFolder %> + "/"+ jobName +"_tMapData_" + pid +"_<%= hasConcurrencyContext ? threadInsertedString + "_" : "" %><%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>", <%= rowsBufferSize %>) {
+			public SortableRow_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%> createRowInstance() {
+				return new SortableRow_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>();
 			}
 		};
 	
-	fsi_<%= currentJoinedTableNames %>.initPut();
+	fsi_<%=uniqueNameComponent%>_<%=currentJoinedTableIndex%>.initPut();
 
 		
 		

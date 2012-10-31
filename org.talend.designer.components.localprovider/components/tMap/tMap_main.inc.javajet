@@ -223,7 +223,7 @@
 				 	} // T_TM_M_300
 			
 
-
+		int currentJoinedTableIndex = 1;
 		// exprKey(s) initialization(s) for Main flow
 		// ---------------------------------------------
 		boolean isFirstTableIsLookupPersistent = sizeInputTables > 1 && inputTables.get(1).isPersistent() && !"ALL_ROWS".equals(inputTables.get(1).getMatchingMode());
@@ -308,9 +308,9 @@
 			
 		        %>
 
-                    SortableRow_<%= mainInputTableName %> rsc_<%= mainInputTableName %> = fsi_<%= mainInputTableName %>.getNextFreeRow();
+                    SortableRow_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%> rsc_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%> = fsi_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.getNextFreeRow();
 
-                    rsc_<%= mainInputTableName %>.fillFrom(<%= mainInputTableName %><%
+                    rsc_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.fillFrom(<%= mainInputTableName %><%
                     
                     for (IMetadataColumn column : nextLookupColumnsKeys) {
                     	String columnName = column.getLabel();
@@ -318,7 +318,7 @@
                     }
                     %>);
 
-                    fsi_<%= mainInputTableName %>.put(rsc_<%= mainInputTableName %>);
+                    fsi_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.put(rsc_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>);
 
 				<%
 
@@ -332,7 +332,7 @@
 		if(isFirstTableIsLookupPersistent && !isVirtualOut) { // T_TM_M_212
 	    %>
 	
-	      fsi_<%= mainInputTableName %>.endPut();
+	      fsi_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.endPut();
 	      
 		<%
 		} // T_TM_M_212
@@ -366,9 +366,9 @@
 		String previousLookupName = null;
 		String previousTableName = mainInputTableName;
 
-		String currentJoinedTableNames = mainInputTableName;
-		String previousJoinedTablesPersistentSortedDelimited = null;
-		String nextJoinedTableNames = mainInputTableName;
+		
+		int previousJoinedTablesPersistentSortedDelimited = 0;
+		int nextJoinedTableIndex = currentJoinedTableIndex;
 
 		List<IConnection> cumulatedInputConnections = new ArrayList<IConnection>();
 
@@ -479,7 +479,7 @@
 					
 					isLastPersistentSortedTableForTMAP_OUT = isVirtualOut && isFirstPersistentSortedTable;
 
-					nextJoinedTableNames += "__" + tableName; 
+					nextJoinedTableIndex++;
 
 					if(isFirstPersistentSortedTable && isVirtualOut) {
 						break;
@@ -498,10 +498,10 @@
 
             if(isPersistentSortedTable) { // T_TM_M_294
 
-				previousJoinedTablesPersistentSortedDelimited = currentJoinedTableNames;
+				previousJoinedTablesPersistentSortedDelimited = currentJoinedTableIndex;
 
 				%>				
-				SortableRow_<%= currentJoinedTableNames %> rsc_<%= currentJoinedTableNames %>;
+				SortableRow_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%> rsc_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>;
 			
 				<%
 				if(!isOneOfReloadLookupMode) {
@@ -512,7 +512,7 @@
 				%>
 				
 
-				fsi_<%= currentJoinedTableNames %>.initGet();
+				fsi_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.initGet();
 
 				<%
 				if(true || previousTableName != null && !previousTableName.equals(mainInputTableName)) {
@@ -533,15 +533,15 @@
 
 				<%= isFirstPersistentSortedTable && !firstLookupIsPersistentSorted && !isVirtualIn ? "boolean " : "" %><%= rejectedInnerJoin %> = false;
 			
-	           	while (fsi_<%= currentJoinedTableNames %>.hasNext()) { // G_TM_M_250 loop "<%= currentJoinedTableNames %>"
+	           	while (fsi_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.hasNext()) { // G_TM_M_250 loop "<%= currentJoinedTableIndex %>"
 				
 
 								<%
 								if(isLastPersistentSortedTable) {
 									%>
-									 // CALL close loop of lookup '<%=currentJoinedTableNames %>'
+									 // CALL close loop of lookup '<%=currentJoinedTableIndex %>'
 									<%
-									gm.addBlocksCodeToClose(new BlockCode("G_TM_M_250 close loop read file data '" + currentJoinedTableNames +"'"));
+									gm.addBlocksCodeToClose(new BlockCode("G_TM_M_250 close loop read file data '" + currentJoinedTableIndex +"'"));
 								}
 								%>
 
@@ -549,8 +549,8 @@
 					%>
 				
 				
-					rsc_<%= currentJoinedTableNames %> = (SortableRow_<%= currentJoinedTableNames %>) fsi_<%= currentJoinedTableNames %>.next();
-               		rsc_<%= currentJoinedTableNames %>.copyDataTo(<%
+					rsc_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%> = (SortableRow_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>) fsi_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.next();
+               		rsc_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.copyDataTo(<%
                		
                			String comma = "";
 		         		for(IConnection aConnection : cumulatedInputConnections) {
@@ -561,7 +561,7 @@
                		
                		%>);
                		
-               		<%= rejectedInnerJoin %> = rsc_<%= currentJoinedTableNames %>.is__rejectedInnerJoin;
+               		<%= rejectedInnerJoin %> = rsc_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.is__rejectedInnerJoin;
                		
 			<%
 			}  // T_TM_M_294 
@@ -680,12 +680,12 @@
 	                        		    	if(exprKeyValue_<%= tableName %>__<%= aKeysNames[iKeyName] %> == null) {
 	                        		    		hasCasePrimitiveKeyWithNull_<%= uniqueNameComponent%> = true;
 	                        		    	} else {
-	                        		    		<%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = (<%= typeToGenerate %>)(<%= nullableType %>) rsc_<%= currentJoinedTableNames %>.exprKey_<%= tableName %>__<%= aKeysNames[iKeyName] %>;
+	                        		    		<%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = (<%= typeToGenerate %>)(<%= nullableType %>) rsc_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.exprKey_<%= tableName %>__<%= aKeysNames[iKeyName] %>;
                         		    		}
                         		    		<%
                         		    	} else {
 	                        		    	%>
-                        		    		<%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = rsc_<%= currentJoinedTableNames %>.exprKey_<%= tableName %>__<%= aKeysNames[iKeyName] %>;
+                        		    		<%= tableName %>HashKey.<%= aKeysNames[iKeyName] %> = rsc_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.exprKey_<%= tableName %>__<%= aKeysNames[iKeyName] %>;
                         		    		<%
                         		    	}
 
@@ -1128,9 +1128,9 @@
 
 								%>
 
-								SortableRow_<%= nextJoinedTableNames %> rsc_<%= nextJoinedTableNames %> = new SortableRow_<%= nextJoinedTableNames %>();
+								SortableRow_<%=componentNameForKeyProblem%>_<%=nextJoinedTableIndex%> rsc_<%=componentNameForKeyProblem%>_<%=nextJoinedTableIndex%> = new SortableRow_<%=componentNameForKeyProblem%>_<%=nextJoinedTableIndex%>();
 
-								rsc_<%= nextJoinedTableNames %>.fillFrom(<%
+								rsc_<%=componentNameForKeyProblem%>_<%=nextJoinedTableIndex%>.fillFrom(<%
 
 						    	    String comma = "";
 			         				for(IConnection aConnection : cumulatedInputConnections) {
@@ -1147,12 +1147,12 @@
 					
 								%>);
 
-								rsc_<%= nextJoinedTableNames %>.is__rejectedInnerJoin = <%= rejectedInnerJoin %>;
+								rsc_<%=componentNameForKeyProblem%>_<%=nextJoinedTableIndex%>.is__rejectedInnerJoin = <%= rejectedInnerJoin %>;
 						
 								<%= rejectedInnerJoin %> = false;
 
 								// Sort and store in KeyFile(s) and DataFile(s)
-								fsi_<%= nextJoinedTableNames %>.put(rsc_<%= nextJoinedTableNames %>);
+								fsi_<%=componentNameForKeyProblem%>_<%=nextJoinedTableIndex%>.put(rsc_<%=componentNameForKeyProblem%>_<%=nextJoinedTableIndex%>);
 					
 								<%
 
@@ -1224,7 +1224,7 @@
        		    	&& (isFirstPersistentSortedTable || previousStateIsFirstPersistentSortedTable == true)
        		    ) { // T_TM_M_299
 				%>				
-					fsi_<%= previousJoinedTablesPersistentSortedDelimited %>.endGet();
+					fsi_<%=componentNameForKeyProblem%>_<%=previousJoinedTablesPersistentSortedDelimited%>.endGet();
 				<%
 				} // T_TM_M_299
 	    	        	
@@ -1233,7 +1233,7 @@
                 if(!isVirtualOut && !isLastTable && nextInputTable != null && nextInputTable.isPersistent()) { // T_TM_M_238
                 %> 
 	            	
-	            	fsi_<%= nextJoinedTableNames %>.endPut();
+	            	fsi_<%=componentNameForKeyProblem%>_<%=nextJoinedTableIndex%>.endPut();
 	            	
 				<%
 				} // T_TM_M_238
@@ -1248,9 +1248,9 @@
 					lastPersistentSortedTableIsAlreadyProcessed = true;
 				}
 
-				currentJoinedTableNames = nextJoinedTableNames;
+				currentJoinedTableIndex = nextJoinedTableIndex;
 				
-				//System.out.println("currentJoinedTableNames=" + currentJoinedTableNames);
+				//System.out.println("currentJoinedTableIndex=" + currentJoinedTableIndex);
 
             	previousTableName = tableName;
 
