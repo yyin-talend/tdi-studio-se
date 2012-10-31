@@ -29,6 +29,8 @@ import org.talend.core.model.process.INode;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 
@@ -314,6 +316,7 @@ public class ChangeActivateStatusElementCommand extends Command {
                 if (node.isActivate()) {
                     continue;
                 }
+
                 Map<IConnection, Node> outMiddleNodes = getAllOutMiddleNodes(node);
                 Map<IConnection, Node> inMiddleNodes = getAllInMiddleNodes(node);
 
@@ -392,7 +395,18 @@ public class ChangeActivateStatusElementCommand extends Command {
             process = (Process) connectionList.get(0).getSource().getProcess();
         }
         List<? extends INode> nodes = process.getGraphicalNodes();
+        List<INode> jobletandnodeList = new ArrayList<INode>();
         for (INode node : nodes) {
+            if (((Node) node).isJoblet() && !((Node) node).getNodeContainer().isCollapsed()) {
+                for (NodeContainer nc : ((JobletContainer) ((Node) node).getNodeContainer()).getNodeContainers()) {
+                    jobletandnodeList.add(nc.getNode());
+                }
+            } else {
+                jobletandnodeList.add(node);
+            }
+        }
+        for (INode node : jobletandnodeList) {
+
             if (node.isActivate()) {
                 Map<IConnection, Node> outMiddleNodes = getAllOutMiddleNodes(node);
                 Map<IConnection, Node> inMiddleNodes = getAllInMiddleNodes(node);

@@ -524,7 +524,7 @@ public class JobletContainer extends NodeContainer {
                 IProcess jobletProcess = this.getNode().getComponent().getProcess();
                 List<? extends INode> jobletNodes = jobletProcess.getGraphicalNodes();
                 for (INode n : jobletNodes) {
-                    if (connNode.getUniqueName().equals(n.getUniqueName())) {
+                    if (connNode.getJoblet_unique_name().equals(n.getUniqueName())) {
                         connNode.setDummy(n.isDummy());
                         connNode.setActivate(n.isActivate());
                     }
