@@ -1778,6 +1778,11 @@ public class LoginComposite extends Composite {
             if (repositoryId != null && repositoryId.equals("remote") && isSVNProviderPluginLoadedRemote() && isWorkSpaceSame()) { //$NON-NLS-1$
                 JSONObject archivaProperties = getArchivaServicesProperties(getAdminURL());
 
+                // Added by Marvin Wang on Oct. 31, 2012 for bug TDI-22060, more details, refer to the comment following
+                // the bug.
+                if ("".equals(archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY)))
+                    return;
+
                 archivaServiceURL = archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY) + ARCHIVA_SERVICES_SEGMENT;
                 repository = archivaProperties.getString(ARCHIVA_REPOSITORY_KEY);
                 username = archivaProperties.getString(ARCHIVA_USER);
