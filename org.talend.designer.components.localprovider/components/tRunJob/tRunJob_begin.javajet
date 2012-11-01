@@ -1,10 +1,14 @@
 <%@ jet 
 imports="
-	import org.talend.core.model.process.INode
-	import org.talend.core.model.process.ElementParameterParser
-	import org.talend.designer.codegen.config.CodeGeneratorArgument
-	import org.talend.designer.runprocess.ProcessorUtilities
-	import org.talend.designer.runprocess.ProcessorException
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.designer.runprocess.ProcessorUtilities
+	org.talend.designer.runprocess.ProcessorException
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.metadata.IMetadataTable
+    java.util.List
 "
 %>
 <%
@@ -29,6 +33,24 @@ String[] commandLine = new String[] {"<command>"};
 String childJobName;
 int jobNamePosition;
 %>
+
+<%
+    //for TDI-22465
+    List< ? extends IConnection> conns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+    if (conns !=null && conns.size()>0) {
+        IMetadataTable metadata = conns.get(0).getMetadataTable();
+        if(metadata !=null){
+            if(metadata.getListColumns().size()<1){
+%>
+//////////////////////////////////////////////////
+	           component <%=metadata.getTableName()%> should have schema when component have main flow!  
+//////////////////////////////////////////////////
+<%
+            }
+		}
+    } 
+%>
+
 <%
 try {
 	if(useDynamicJob){
