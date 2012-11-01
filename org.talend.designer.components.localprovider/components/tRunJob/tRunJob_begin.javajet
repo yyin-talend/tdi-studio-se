@@ -43,7 +43,7 @@ int jobNamePosition;
             if(metadata.getListColumns().size()<1){
 %>
 //////////////////////////////////////////////////
-	           component <%=metadata.getTableName()%> should have schema when component have main flow!  
+	           schema of <%=cid %> can't be empty  
 //////////////////////////////////////////////////
 <%
             }
