@@ -199,16 +199,6 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="SK_DB_SEQUENCE"
-      FIELD="TEXT"
-      NUM_ROW="61"
-      SHOW_IF="SK_CREATION == 'DB_SEQUENCE'"
-      SHOW="false"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-	
-    <PARAMETER
       NAME="SK_INPUT_FIELD"
       FIELD="PREV_COLUMN_LIST"
       NUM_ROW="61"
