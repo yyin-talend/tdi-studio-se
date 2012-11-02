@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -130,6 +132,38 @@ public class JobErrorsChecker {
                         }
                     }
                     IFile sourceFile = synchronizer.getFile(item);
+                    // check the item has compile error when export job
+                    boolean ret = false;
+                    IMarker[] markers = sourceFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
+                    for (IMarker marker : markers) {
+                        Integer lineNr = (Integer) marker.getAttribute(IMarker.LINE_NUMBER);
+                        String message = (String) marker.getAttribute(IMarker.MESSAGE);
+                        Integer severity = (Integer) marker.getAttribute(IMarker.SEVERITY);
+                        Integer start = (Integer) marker.getAttribute(IMarker.CHAR_START);
+                        Integer end = (Integer) marker.getAttribute(IMarker.CHAR_END);
+                        if (lineNr != null && message != null && severity != null && start != null && end != null) {
+                            switch (severity) {
+                            case IMarker.SEVERITY_ERROR:
+                                ret = true;
+                                break;
+                            default:
+                                break;
+                            }
+                        }
+                    }
+                    if (ret) {
+                        if (isJob) {
+                            MessageDialog.openError(Display.getDefault().getActiveShell(),
+                                    Messages.getString("JobErrorsChecker_compile_errors"), //$NON-NLS-1$
+                                    Messages.getString("JobErrorsChecker_compile_error_content", item.getProperty().getLabel())); //$NON-NLS-1$
+                        } else {
+                            MessageDialog.openError(Display.getDefault().getActiveShell(), Messages
+                                    .getString("CamelJobErrorsChecker_compile_errors"), //$NON-NLS-1$
+                                    Messages.getString(
+                                            "CamelJobErrorsChecker_compile_error_content", item.getProperty().getLabel())); //$NON-NLS-1$
+                        }
+                        return true;
+                    }
 
                     if (isPerl) {
                         // check syntax error in perl. java use auto build to check syntax
