@@ -49,47 +49,49 @@
 			public void copyAllFiles(java.io.File rootFolder, int pathLength, java.io.File newDesFileFolder) {
 
 				java.io.File[] fileList = rootFolder.listFiles();
-
-				if (fileList.length > 0) {
-				
-					for (java.io.File file : fileList) {				
-
-						if (file.isDirectory()) {
-							copyAllFiles(file, pathLength, newDesFileFolder);
-						} else {
-						
-							String srcFilePath = file.getPath();
-
-							String temFileName = srcFilePath.substring(pathLength);
-
-							java.io.File desFile = new java.io.File(newDesFileFolder, temFileName);
-
-							String desFilePath = desFile.getPath();
-
-							java.io.File parentFile = desFile.getParentFile();
-
-							if (!parentFile.exists()) {
-								parentFile.mkdirs();
+				if(fileList!=null){
+					if (fileList.length > 0) {
+					
+						for (java.io.File file : fileList) {
+	
+							if (file.isDirectory()) {
+								copyAllFiles(file, pathLength, newDesFileFolder);
+							} else {
+							
+								String srcFilePath = file.getPath();
+	
+								String temFileName = srcFilePath.substring(pathLength);
+	
+								java.io.File desFile = new java.io.File(newDesFileFolder, temFileName);
+	
+								String desFilePath = desFile.getPath();
+	
+								java.io.File parentFile = desFile.getParentFile();
+	
+								if (!parentFile.exists()) {
+									parentFile.mkdirs();
+								}
+	
+								try	{				
+									org.talend.FileCopy.copyFile(srcFilePath, desFilePath, false);
+								} catch (Exception e){ 
+									e.printStackTrace();
+								}
 							}
-
-							try	{				
-								org.talend.FileCopy.copyFile(srcFilePath, desFilePath, false);
-							} catch (Exception e){ 				
-								e.printStackTrace();
-							}
+	
 						}
-
-					}
-				} else{ //it is an empty folder.        
-        
-					String srcFolderPath = rootFolder.getPath();
-
-					String temFolderName = srcFolderPath.substring(pathLength);
-
-					java.io.File desFolder = new java.io.File(newDesFileFolder, temFolderName);
-					desFolder.mkdirs();     
-				} 
-        
+					} else{ //it is an empty folder.
+	        
+						String srcFolderPath = rootFolder.getPath();
+	
+						String temFolderName = srcFolderPath.substring(pathLength);
+	
+						java.io.File desFolder = new java.io.File(newDesFileFolder, temFolderName);
+						desFolder.mkdirs();
+					} 
+        		}else{
+        			System.err.println("Path name \""+rootFolder.getPath()+"\"  does not denote a directory, or if an I/O error occurs.");
+        		}
 			}
 		}
     
@@ -147,15 +149,11 @@
 %>
 
 		}
+		globalMap.put("<%=cid %>_DESTINATION_FILEPATH",desFile_<%=cid %>.getPath()); 
+		globalMap.put("<%=cid %>_DESTINATION_FILENAME",desFile_<%=cid %>.getName()); 
 
-        String desFilePath_<%=cid %>=desFile_<%=cid %>.getPath().replaceAll("\\\\", "/");
-		globalMap.put("<%=cid %>_DESTINATION_FILEPATH",desFilePath_<%=cid %>);
-		globalMap.put("<%=cid %>_DESTINATION_FILENAME",desFile_<%=cid %>.getName());
-		String  srcFilePathFolder_<%=cid%>=srcFileName_<%=cid %>.replaceAll("\\\\", "/");
-		desDirName_<%=cid %>=desDirName_<%=cid %>.replaceAll("\\\\", "/");
-		srcFilePathFolder_<%=cid%>=srcFilePathFolder_<%=cid%>.substring(0,srcFilePathFolder_<%=cid%>.lastIndexOf("/")+1);
-		globalMap.put("<%=cid %>_SOURCE_DIRECTORY", srcFilePathFolder_<%=cid %>);
-		globalMap.put("<%=cid %>_DESTINATION_DIRECTORY", desDirName_<%=cid %>);
+		globalMap.put("<%=cid %>_SOURCE_DIRECTORY", srcFile_<%=cid %>.getParent());
+		globalMap.put("<%=cid %>_DESTINATION_DIRECTORY", desFile_<%=cid %>.getParent());
 <%
 	}
 %>        
