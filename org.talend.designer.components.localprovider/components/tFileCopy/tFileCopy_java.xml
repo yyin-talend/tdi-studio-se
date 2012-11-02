@@ -95,7 +95,7 @@
       FIELD="TEXT"
       NUM_ROW="50"
       REQUIRED="true"
-      SHOW_IF="RENAME == 'true'"
+      SHOW_IF="(ENABLE_COPY_DIRECTORY=='false') AND (RENAME == 'true')"
     > 
     <DEFAULT>"NewName.temp"</DEFAULT>  
     </PARAMETER>
