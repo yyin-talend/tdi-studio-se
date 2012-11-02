@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.system.EnvironmentUtils;
@@ -60,10 +61,6 @@ public final class Expression {
     private static final String EQUALS = "=="; //$NON-NLS-1$
 
     private static final String NOT_EQUALS = "!="; //$NON-NLS-1$
-
-    private static final String IN = "IN"; //$NON-NLS-1$
-
-    // private static ElementParameter currentParam;
 
     private Expression(String expressionString) {
         this.expressionString = expressionString;
@@ -161,22 +158,34 @@ public final class Expression {
         } else {
             strings = simpleExpression.split(" IN\\["); //$NON-NLS-1$
         }
-        String variableToTest = strings[0].split("\\.")[1]; // we take only the value DB_TYPE //$NON-NLS-1$
-        ElementParameter currentParam = (ElementParameter) listParam.get(0); // take the first one, in all case we only
-                                                                             // want to get the element linked
-        if (variableToTest.contains("DB_TYPE")) { //$NON-NLS-1$
-            IElement element = currentParam.getElement();
-            if (element == null || (!(element instanceof INode))) {
-                throwUnsupportedExpression(simpleExpression, currentParam);
-                return false;
+        String[] splittedString = strings[0].split("\\."); //$NON-NLS-1$
+        String parameterName = splittedString[0]; // take parameter name (SCHEMA in example here)
+        String variableToTest = splittedString[1]; // we take only the value DB_TYPE
+        IElementParameter currentParam = null;
+        for (IElementParameter param : listParam) {
+            if (param.getName().equals(parameterName)) {
+                currentParam = param;
+                break;
             }
-            INode node = (INode) element;
-            String valuesToTest = strings[1].substring(0, strings[1].length() - 1); // string must be like:
-                                                                                    // 'BLOB','CLOB']
-                                                                                    // so remove the last ]
-            String[] values = valuesToTest.split("'"); //$NON-NLS-1$
-            if (values.length > 1) { // in this case we have something like: 'A','B','C' first, then values will be
-                                     // like: <empty> / A / , / B / , / C / <empty>
+        }
+        if (currentParam == null) {
+            currentParam = listParam.get(0); // take the first one, in all case we only
+        }
+        // want to get the element linked
+
+        String valuesToTest = strings[1].substring(0, strings[1].length() - 1); // string must be like:
+                                                                                // 'BLOB','CLOB']
+                                                                                // so remove the last ]
+        String[] values = valuesToTest.split("'"); //$NON-NLS-1$
+        if (values.length > 1) { // in this case we have something like: 'A','B','C' first, then values will be
+            // like: <empty> / A / , / B / , / C / <empty>
+            if ("SCHEMA".equals(parameterName) && variableToTest.contains("DB_TYPE")) { //$NON-NLS-1$ //$NON-NLS-2$
+                IElement element = currentParam.getElement();
+                if (element == null || (!(element instanceof INode))) {
+                    throwUnsupportedExpression(simpleExpression, currentParam);
+                    return false;
+                }
+                INode node = (INode) element;
                 for (String value : values) {
                     if (value.isEmpty() || value.trim().equals(",")) { //$NON-NLS-1$
                         continue;
@@ -189,16 +198,34 @@ public final class Expression {
                         }
                     }
                 }
+            } else if (currentParam.getFieldType() == EParameterFieldType.TABLE) {
+                if (ArrayUtils.contains(currentParam.getListItemsDisplayCodeName(), variableToTest)) {
+                    List<Map<String, Object>> allLines = (List<Map<String, Object>>) currentParam.getValue();
+                    for (Map<String, Object> line : allLines) {
+                        // for each line, check if the column we want have one of the value defined in the "IN".
+                        Object o = line.get(variableToTest);
+                        if (o != null && (o instanceof String)) {
+                            String currentValue = (String) o;
+                            for (String value : values) {
+                                if (value.isEmpty() || value.trim().equals(",")) { //$NON-NLS-1$
+                                    continue;
+                                }
+                                if (currentValue.equals(value)) {
+                                    return true;
+                                }
+                            }
+
+                        }
+                    }
+                }
             } else {
                 throwUnsupportedExpression(simpleExpression, currentParam);
             }
-        } else {
-            throwUnsupportedExpression(simpleExpression, currentParam);
         }
         return false;
     }
 
-    private static void throwUnsupportedExpression(String simpleExpression, ElementParameter currentParam) {
+    private static void throwUnsupportedExpression(String simpleExpression, IElementParameter currentParam) {
         if (currentParam != null && currentParam.getElement() != null) {
             ExceptionHandler.process(new Exception("Element: '" + currentParam.getElement().getElementName() //$NON-NLS-1$
                     + "' does not support expression '" + simpleExpression + "'")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -218,7 +245,7 @@ public final class Expression {
                 test = NOT_EQUALS;
             }
         }
-        if (simpleExpression.startsWith("SCHEMA.") && (simpleExpression.contains(" IN [") || //$NON-NLS-1$ //$NON-NLS-2$
+        if ((simpleExpression.contains(" IN [") || //$NON-NLS-1$ 
                 simpleExpression.contains(" IN[")) && simpleExpression.endsWith("]")) { //$NON-NLS-1$ //$NON-NLS-2$
             return evaluateInExpression(simpleExpression, listParam);
         }
