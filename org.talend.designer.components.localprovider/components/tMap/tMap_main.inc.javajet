@@ -845,8 +845,20 @@
   									%>
 						
 									<%if(isMultipleResultMode) { // T 56 %>
-	
-		  								forceLoop<%= tableName %> = true;
+										<%if(!("ALL_ROWS").equals(matchingMode)){%>
+											forceLoop<%= tableName %> = true;
+										<%}else{
+											if(!externalTable.isPersistent()){%>
+			  									forceLoop<%= tableName %> = !tHash_Lookup_<%=tableName%>.isEmpty();
+			  								<%
+			  								}else{
+			  								//PersistentLookupManager.lookup() is init whole file. so hasNext means if this file is empty.
+			  								%>
+			  									forceLoop<%= tableName %> = false;
+			  								<%
+			  								}
+			  							}
+			  							%>
 	  					
   									<% } // T 56 %>
   									  		
