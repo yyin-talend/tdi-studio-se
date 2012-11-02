@@ -43,6 +43,17 @@ class="MomInput"
 		if ((metadatas!=null)&&(metadatas.size()>0)) {
 			metadata = metadatas.get(0);
 		}
+
+        boolean isCommitRollback = (!node.getProcess().getNodesOfType("tMomCommit").isEmpty()
+	|| !node.getProcess().getNodesOfType("tMomRollback").isEmpty());
+
+        if (isUseSharedConnection) {
+		for (INode pNode : node.getProcess().getNodesOfType("tMomConnection")) {
+			if (pNode.getUniqueName().equals(connectionComponentName)) {
+				transacted = "true".equals(ElementParameterParser.getValue(pNode, "__IS_TRANSACTED__")); 
+			}	
+		}
+	}
 %>
 	java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
 
@@ -79,6 +90,12 @@ class="MomInput"
 <%
 		}
 %>
+
+		<%if(!isCommitRollback && transacted){%>
+        	try {   // For rollback
+		<%
+		}
+		%>
 		    
 <%      } else if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType)) {// server judgement
 	
@@ -166,7 +183,11 @@ class="MomInput"
 		}
 %>
 		
-
+		<%if(!isCommitRollback && transacted){%>
+        	try {   // For rollback
+		<%
+		}
+		%>
 <%
 	}else{ //server judgement   /***WebSphere MQ*****/
 		String channel=ElementParameterParser.getValue(node, "__CHANNEL__");

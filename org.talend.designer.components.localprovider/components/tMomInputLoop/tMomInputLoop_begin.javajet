@@ -42,7 +42,18 @@ imports="
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
 	
 	boolean useMqHeader = "true".equals(ElementParameterParser.getValue(node, "__USE_MQ_HEADER__"));
+
+        boolean isCommitRollback = (!node.getProcess().getNodesOfType("tMomCommit").isEmpty()
+	|| !node.getProcess().getNodesOfType("tMomRollback").isEmpty());
     	
+        if (isUseConnection) {
+		for (INode pNode : node.getProcess().getNodesOfType("tMomConnection")) {
+			if (pNode.getUniqueName().equals(connectionComponentName)) {
+				transacted = "true".equals(ElementParameterParser.getValue(pNode, "__IS_TRANSACTED__")); 
+			}	
+		}
+	}
+
 	IMetadataTable metadata=null;
 	List<IMetadataColumn> columns = null;
 	List<IMetadataTable> metadatas = node.getMetadataList();
@@ -80,6 +91,11 @@ imports="
 		// BS
 		javax.jms.MessageProducer producer_<%=cid%> = null;
 
+		<%if(!isCommitRollback && transacted){%>
+        	try {   // For rollback
+		<%
+		}
+		%>
 
 		// Receive message
 			<% boolean useMax = ("true").equals(ElementParameterParser.getValue(node,"__USEMAX__"));
@@ -160,6 +176,7 @@ imports="
 			boolean startServer = ("true").equals(ElementParameterParser.getValue(node, "__STARTSERVER__"));
 			%>
 			// BS
+
 			String url_<%=cid %> ="";
 			<%if(failover){
 				StringBuilder sbServers=new StringBuilder();
@@ -213,6 +230,9 @@ imports="
 		connection_<%=cid %>.start();
 		javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
 		javax.jms.Destination des_<%=cid %> = null;
+
+
+
 		<%
 		if (("Queue").equals(msgType)) {
 		%>
@@ -231,6 +251,22 @@ imports="
 		
 		// BS
 		javax.jms.MessageProducer producer_<%=cid%> = null;
+
+		<%	// if commmit or rollback component exists and set transacted - put session to global map
+		if( ("ActiveMQ").equals(serverType) && isCommitRollback && transacted ) {
+		%>
+    		globalMap.put("producer_<%=cid %>",producer_<%=cid %>);
+		globalMap.put("session_<%=cid %>",session_<%=cid %>);
+		globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
+                <%
+		}
+		%>
+
+		<%if(("ActiveMQ").equals(serverType) /*&& !isUseConnection*/ && !isCommitRollback && transacted){%>
+        	try {   // For rollback
+		<%
+		}
+		%>
 		
 		<%		
 		/*---------------------------------------3.recevice message form server ---------------------------------*/ 	

@@ -7,6 +7,7 @@
 %>
 
 	<%
+
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
         boolean isUseConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_CONNECTION__"));
@@ -18,7 +19,21 @@
 	String timeOut=ElementParameterParser.getValue(node, "__TIMEOUT__");
 	String acknowledgmentMode = ElementParameterParser.getValue(node, "__ACKNOWLEDGMENT_MODE__");
 	String msgBobyType =  ElementParameterParser.getValue(node, "__MESSAGE_BODY_TYPE__");
-	
+	boolean transacted = "true".equals(ElementParameterParser.getValue(node, "__IS_TRANSACTED__"));	
+        String connectionComponentName = ElementParameterParser.getValue(node, "__CONNECTION__");
+
+        boolean isCommitRollback = (!node.getProcess().getNodesOfType("tMomCommit").isEmpty()
+	|| !node.getProcess().getNodesOfType("tMomRollback").isEmpty());
+ 
+
+        if (isUseConnection) {
+		for (INode pNode : node.getProcess().getNodesOfType("tMomConnection")) {
+			if (pNode.getUniqueName().equals(connectionComponentName)) {
+				transacted = "true".equals(ElementParameterParser.getValue(pNode, "__IS_TRANSACTED__")); 
+			}	
+		}
+	}
+
 	if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType) || isUseConnection) {
 		if ("CLIENT_ACKNOWLEDGE".equals(acknowledgmentMode)) {
 		%>
@@ -52,10 +67,36 @@
 		%>
 		
 		}
+
+		<%	
+		if( ("JBoss").equals(serverType) || ( ("ActiveMQ").equals(serverType) && !isCommitRollback) ){
+		%>
  		System.out.println("Closing connection");
-//        consumer_<%=cid %>.close();
-//      session_<%=cid %>.close();
-//        connection_<%=cid %>.close();
+		<%	// if no commmit or rollback component exists and set transacted - commit session
+		if(transacted){
+		%>
+		session_<%=cid%>.commit();
+		<%	
+		}
+		%> // if no commmit or rollback component exists - close session
+                consumer_<%=cid %>.close();
+                session_<%=cid %>.close();
+                connection_<%=cid %>.close();
+		<%	
+		}
+		%>
+		<%if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
+		}catch(Exception ex){
+			System.out.println("A Active MQ error occurred :" + ex);
+	                ex.printStackTrace();
+			session_<%=cid%>.rollback();
+                        consumer_<%=cid %>.close();
+                        session_<%=cid %>.close();
+                        connection_<%=cid %>.close();
+		}
+		<%
+		}
+		%>
 	<%		
 	}else{
 		boolean isCommit = ("true").equals(ElementParameterParser.getValue(node, "__COMMIT__"));
