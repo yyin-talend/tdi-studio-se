@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
@@ -604,14 +605,17 @@ public class JavaProcessorUtilities {
         if (missingJars != null) {
             final String Message = missingJars;
             if (!CommonsPlugin.isHeadless()) {
-                Display.getDefault().syncExec(new Runnable() {
+                Display display = DisplayUtils.getDisplay();
+                if (display != null) {
+                    display.syncExec(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        MessageDialog.openError(Display.getDefault().getActiveShell(), "Error!", Message);
-                    }
+                        @Override
+                        public void run() {
+                            MessageDialog.openError(Display.getDefault().getActiveShell(), "Error!", Message);
+                        }
 
-                });
+                    });
+                }
             }
             throw new BusinessException(missingJars);
         }
