@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.FigureCanvas;
@@ -459,6 +460,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     @Override
     public void doSave(IProgressMonitor monitor) {
+        if (monitor == null) {
+            monitor = new NullProgressMonitor();
+        }
+
         monitor.beginTask("begin save job...", 100); //$NON-NLS-1$
         monitor.worked(10);
         savePreviewPictures();
