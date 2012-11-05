@@ -4,19 +4,25 @@ import java.util.List;
 
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.window.Window;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.designer.xmlmap.dnd.CreateNodeConnectionRequest;
 import org.talend.designer.xmlmap.dnd.DropType;
 import org.talend.designer.xmlmap.dnd.TransferdType;
 import org.talend.designer.xmlmap.dnd.TransferedObject;
+import org.talend.designer.xmlmap.i18n.Messages;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
@@ -80,8 +86,11 @@ public class InsertNewColumnCommand extends Command {
                         outputTree = (OutputXmlTree) targetModel;
                     }
                     if (outputTree != null) {
-                        fillTreeNode(outputTree.getNodes(), sourceNode, outputTree.getName(), expression,
+                        boolean fillNode = fillTreeNode(outputTree.getNodes(), sourceNode, outputTree.getName(), expression,
                                 (OutputTreeNode) createdNode);
+                        if (!fillNode) {
+                            return;
+                        }
                         if (index != -1) {
                             outputTree.getNodes().add(index, (OutputTreeNode) createdNode);
                         } else {
@@ -98,7 +107,8 @@ public class InsertNewColumnCommand extends Command {
                     VarNode varNode = (VarNode) createdNode;
                     if (targetVar.eContainer() instanceof VarTable) {
                         VarTable varTable = (VarTable) targetVar.eContainer();
-                        String name = getUniqueTableEntry(varTable.getNodes(), sourceNode.getName());
+                        String validSourceName = validSourceNodeName(varTable.getNodes(), sourceNode);
+                        String name = getUniqueTableEntry(varTable.getNodes(), validSourceName);
                         varNode.setName(name);
                         varNode.setType(sourceNode.getType());
                         varNode.setExpression(expression);
@@ -110,7 +120,11 @@ public class InsertNewColumnCommand extends Command {
                 case DROP_INSERT_INPUT:
                     if (targetModel instanceof InputXmlTree) {
                         InputXmlTree inputTree = (InputXmlTree) targetModel;
-                        fillTreeNode(inputTree.getNodes(), sourceNode, inputTree.getName(), expression, (TreeNode) createdNode);
+                        boolean fillNode = fillTreeNode(inputTree.getNodes(), sourceNode, inputTree.getName(), expression,
+                                (TreeNode) createdNode);
+                        if (!fillNode) {
+                            return;
+                        }
                         inputTree.getNodes().add((TreeNode) createdNode);
                         createLookupConnection(sourceNode, (TreeNode) createdNode);
                         AbstractInOutTree abstractTree = XmlMapUtil.getAbstractInOutTree(sourceNode);
@@ -126,11 +140,11 @@ public class InsertNewColumnCommand extends Command {
                 VarNodeEditPart part = (VarNodeEditPart) obj;
                 VarNode sourceNode = (VarNode) part.getModel();
 
-                String tableName = "Var";
+                String tableName = "Var"; //$NON-NLS-1$
                 if (sourceNode.eContainer() instanceof VarTable) {
                     tableName = ((VarTable) sourceNode.eContainer()).getName();
                 }
-                String expression = tableName + "." + sourceNode.getName();
+                String expression = tableName + "." + sourceNode.getName(); //$NON-NLS-1$
                 if (dropType == DropType.DROP_INSERT_OUTPUT) {
                     int index = -1;
                     OutputXmlTree outputTree = null;
@@ -277,14 +291,64 @@ public class InsertNewColumnCommand extends Command {
 
     }
 
-    private void fillTreeNode(List<? extends AbstractNode> validationList, TreeNode sourceNode, String sourceTableName,
+    private String validSourceNodeName(final List<? extends AbstractNode> validationList, TreeNode sourceNode) {
+        String sourceName = sourceNode.getName();
+        boolean isValidate = MetadataToolHelper.isValidColumnName(sourceName);
+        boolean fixing = false;
+        if (!isValidate) {
+            if (sourceName.contains(":")) { //$NON-NLS-1$
+                if (sourceNode.eContainer() instanceof TreeNode) {
+                    TreeNode parent = (TreeNode) sourceNode.eContainer();
+                    for (TreeNode child : parent.getChildren()) {
+                        if (child.getNodeType() == NodeType.NAME_SPACE) {
+                            if (sourceName.startsWith(child.getName() + ":")) { //$NON-NLS-1$
+                                sourceName = sourceName.substring(child.getName().length() + 1, sourceName.length());
+                                fixing = true;
+                            }
+                        }
+                    }
+                    if (!fixing) {
+                        sourceName = sourceName.substring(sourceName.indexOf(":"), sourceName.length()); //$NON-NLS-1$
+                        fixing = true;
+                    }
+                }
+            }
+            if (!fixing || !MetadataToolHelper.isValidColumnName(sourceName)) {
+                IInputValidator validataor = new IInputValidator() {
+
+                    @Override
+                    public String isValid(String newText) {
+                        return XmlMapUtil.isValidColumnName(validationList, newText);
+                    }
+
+                };
+                InputDialog dialog = new InputDialog(
+                        null,
+                        Messages.getString("InsertNewColumnCommand_createNew"), Messages.getString("InsertNewColumnCommand_message"), sourceName, validataor); //$NON-NLS-1$ //$NON-NLS-2$
+                int open = dialog.open();
+                if (open == Window.CANCEL) {
+                    return null;
+                } else {
+                    sourceName = dialog.getValue();
+                }
+            }
+        }
+
+        return sourceName;
+    }
+
+    private boolean fillTreeNode(final List<? extends AbstractNode> validationList, TreeNode sourceNode, String sourceTableName,
             String expression, TreeNode target) {
-        String name = getUniqueTableEntry(validationList, sourceNode.getName());
+        // fix for TDI-23298
+        String validSourceName = validSourceNodeName(validationList, sourceNode);
+
+        String name = getUniqueTableEntry(validationList, validSourceName);
         target.setName(name);
         target.setType(sourceNode.getType());
         target.setExpression(expression);
         target.setPattern(sourceNode.getPattern());
         target.setXpath(XmlMapUtil.getXPath(sourceTableName, target.getName(), target.getNodeType()));
+        return true;
     }
 
     private void createConnection(AbstractNode sourceNode, AbstractNode targetNode) {
@@ -325,7 +389,7 @@ public class InsertNewColumnCommand extends Command {
             if (!exists) {
                 break;
             }
-            newName = nameToCreate + "_" + counter++;
+            newName = nameToCreate + "_" + counter++; //$NON-NLS-1$
         }
         return newName;
     }

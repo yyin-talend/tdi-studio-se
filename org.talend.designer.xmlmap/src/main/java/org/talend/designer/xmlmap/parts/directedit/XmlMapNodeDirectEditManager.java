@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.tools.CellEditorLocator;
@@ -25,6 +26,8 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.expressionbuilder.IExpressionBuilderDialogController;
@@ -44,6 +47,7 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
+import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.tree.IUILookupMode;
 import org.talend.designer.xmlmap.model.tree.IUIMatchingMode;
 import org.talend.designer.xmlmap.model.tree.LOOKUP_MODE;
@@ -86,7 +90,7 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
     protected void initCellEditor() {
         DirectEditType directEditType = cellAndType.get(getCellEditor());
         if (model instanceof AbstractNode) {
-            AbstractNode abstractNode = (AbstractNode) model;
+            final AbstractNode abstractNode = (AbstractNode) model;
             if (directEditType != null) {
                 switch (directEditType) {
                 case EXPRESSION:
@@ -101,9 +105,26 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
                         variable = "";
                     }
                     getCellEditor().setValue(variable);
-                    text = (Text) ((TextCellEditor) getCellEditor()).getControl();
-                    text.selectAll();
+                    final Text nametext = (Text) ((TextCellEditor) getCellEditor()).getControl();
+                    nametext.selectAll();
+                    if (model instanceof VarNode) {
+                        nametext.addModifyListener(new ModifyListener() {
 
+                            @Override
+                            public void modifyText(ModifyEvent e) {
+                                List<VarNode> children = new ArrayList<VarNode>();
+                                children.addAll(((VarTable) abstractNode.eContainer()).getNodes());
+                                children.remove(model);
+                                String message = XmlMapUtil.isValidColumnName(children, ((Text) e.widget).getText());
+                                if (message != null) {
+                                    nametext.setBackground(ColorConstants.red);
+                                } else {
+                                    nametext.setBackground(ColorConstants.white);
+                                }
+                            }
+                        });
+
+                    }
                     break;
                 case VAR_NODE_TYPE:
                     if (getCellEditor() instanceof ComboBoxCellEditor) {
@@ -245,6 +266,7 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
         return matcheModel;
     }
 
+    @Override
     protected CellEditor createCellEditorOn(Composite composite) {
         Composite parent = (Composite) source.getViewer().getControl();
         CellEditor cellEditor = null;
@@ -423,10 +445,12 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
         super.commit();
     }
 
+    @Override
     public void showFeedback() {
         getEditPart().showSourceFeedback(getDirectEditRequest());
     }
 
+    @Override
     public CellEditor getCellEditor() {
         return super.getCellEditor();
     }

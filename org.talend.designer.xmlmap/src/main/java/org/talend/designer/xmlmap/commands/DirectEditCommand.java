@@ -20,6 +20,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
@@ -64,7 +65,7 @@ public class DirectEditCommand extends Command {
 
     public DirectEditCommand(EditPart targetEditPart, AbstractNode model, DirectEditType type, Object newValue) {
         this.targetEditPart = targetEditPart;
-        this.model = (AbstractNode) model;
+        this.model = model;
         this.newValue = newValue;
         this.type = type;
     }
@@ -197,6 +198,16 @@ public class DirectEditCommand extends Command {
                     }
                     varModel.setType(javaTypeFromLabel.getId());
                 } else if (DirectEditType.NODE_NAME.equals(type)) {
+                    if (model instanceof VarNode) {
+                        List<VarNode> children = new ArrayList<VarNode>();
+                        children.addAll(((VarTable) model.eContainer()).getNodes());
+                        children.remove(model);
+                        String message = XmlMapUtil.isValidColumnName(children, (String) newValue);
+                        if (message != null) {
+                            MessageDialog.openError(null, "Error", message);
+                            return;
+                        }
+                    }
                     model.setName((String) newValue);
                 }
 

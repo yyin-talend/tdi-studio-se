@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPart;
+import org.talend.core.model.metadata.MetadataToolHelper;
+import org.talend.designer.xmlmap.i18n.Messages;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
@@ -40,6 +42,7 @@ import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.expressionutil.TableEntryLocation;
 import org.talend.designer.xmlmap.ui.expressionutil.XmlMapExpressionManager;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 
 /**
  * wchen class global comment. Detailled comment
@@ -720,7 +723,7 @@ public class XmlMapUtil {
 
     public static OutputTreeNodeEditPart getParentLoopNodeEditPart(OutputTreeNodeEditPart nodePart) {
         if (nodePart != null && nodePart instanceof OutputTreeNodeEditPart) {
-            OutputTreeNodeEditPart nodePartTemp = (OutputTreeNodeEditPart) nodePart;
+            OutputTreeNodeEditPart nodePartTemp = nodePart;
             TreeNode model = (TreeNode) nodePartTemp.getModel();
             if (model.isLoop()) {
                 return nodePartTemp;
@@ -855,6 +858,20 @@ public class XmlMapUtil {
             }
         }
         return true;
+    }
+
+    public static String isValidColumnName(final List<? extends AbstractNode> validationList, String newName) {
+        if (!StringUtil.validateLabelForXML(newName) || !MetadataToolHelper.isValidColumnName(newName)) {
+            return Messages.getString("InsertNewColumn_invalid", newName);
+        } else {
+            for (AbstractNode existed : validationList) {
+                if (existed.getName().equals(newName)) {
+                    return Messages.getString("InsertNewColumn_existed");
+                }
+            }
+        }
+        return null;
+
     }
 
 }
