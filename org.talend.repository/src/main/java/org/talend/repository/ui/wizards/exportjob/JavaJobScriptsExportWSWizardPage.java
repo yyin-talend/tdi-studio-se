@@ -880,7 +880,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         Map<ExportChoice, Object> exportChoiceMap = new EnumMap<ExportChoice, Object>(ExportChoice.class);
         if (comboType.equals(JobExportType.PETALSESB)) {
             exportChoiceMap.put(ExportChoice.needSourceCode, sourceButton.getSelection());
-            exportChoiceMap.put(ExportChoice.needDependencies, exportDependencies.getSelection());
+            exportChoiceMap.put(ExportChoice.needDependencies, Boolean.TRUE);
             exportChoiceMap.put(ExportChoice.needUserRoutine, userRoutineButton.getSelection());
             return exportChoiceMap;
         }

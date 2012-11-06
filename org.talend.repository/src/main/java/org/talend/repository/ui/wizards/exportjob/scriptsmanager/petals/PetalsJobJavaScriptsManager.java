@@ -75,7 +75,6 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
 
         // Get options
         boolean needSource = (Boolean) exportChoice.get(ExportChoice.needSourceCode);
-        boolean needDependencies = (Boolean) exportChoice.get(ExportChoice.needDependencies);
         boolean needUserRoutines = (Boolean) exportChoice.get(ExportChoice.needUserRoutine);
 
         boolean generateEndpoint = PetalsTemporaryOptionsKeeper.INSTANCE.isGenerateEndpoint();
@@ -117,7 +116,6 @@ public class PetalsJobJavaScriptsManager extends JobJavaScriptsManager {
             List<URL> systemRoutineList = getSystemRoutine(process, true);
             libResource.addResources(systemRoutineList);
 
-            addDependencies(process, processItem, needDependencies, libResource);
             if (needUserRoutines) {
                 List<URL> userRoutineList = getUserRoutine(process, true);
                 libResource.addResources(userRoutineList);
