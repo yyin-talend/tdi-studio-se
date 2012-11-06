@@ -652,14 +652,10 @@ public class LoginComposite extends Composite {
 
         data = new FormData();
         data.top = new FormAttachment(0, HORIZONTAL_THREE_SPACE);
-        if (EnvironmentUtils.isWindowsSystem()) {
-            data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
-        } else if (EnvironmentUtils.isLinuxUnixSystem()) {
-            data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 38);
-        } else {
-            data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
-        }
-
+        GC gc = new GC(manageProjectsButton);
+        Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.manageProjectsButton")); //$NON-NLS-1$
+        gc.dispose();
+        data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - labelSize.x - HORIZONTAL_TWO_SPACE);
         data.right = new FormAttachment(100, -HORIZONTAL_TWO_SPACE);
         data.bottom = new FormAttachment(100, -HORIZONTAL_FOUR_SPACE);
         manageProjectsButton.setLayoutData(data);
@@ -900,14 +896,10 @@ public class LoginComposite extends Composite {
         fillProjectsBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
         data = new FormData();
         data.top = new FormAttachment(projectViewer.getControl(), 0, SWT.CENTER);
-        if (EnvironmentUtils.isWindowsSystem()) {
-            data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
-        } else if (EnvironmentUtils.isLinuxUnixSystem()) {
-            data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 38);
-        } else {
-            data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
-        }
-
+        GC gc = new GC(fillProjectsBtn);
+        Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.manageProjectsButton")); //$NON-NLS-1$
+        gc.dispose();
+        data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - labelSize.x - HORIZONTAL_TWO_SPACE);
         data.right = new FormAttachment(100, -HORIZONTAL_TWO_SPACE);
         fillProjectsBtn.setLayoutData(data);
 
@@ -1112,13 +1104,10 @@ public class LoginComposite extends Composite {
         manageConnectionsButton.setImage(ImageProvider.getImage(EImage.THREE_DOTS_ICON));
         formData = new FormData();
         formData.top = new FormAttachment(group, HORIZONTAL_SPACE, SWT.CENTER);
-        if (EnvironmentUtils.isWindowsSystem()) {
-            formData.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
-        } else if (EnvironmentUtils.isLinuxUnixSystem()) {
-            formData.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 38);
-        } else {
-            formData.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
-        }
+        GC gc = new GC(manageConnectionsButton);
+        Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.manageProjectsButton")); //$NON-NLS-1$
+        gc.dispose();
+        formData.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - labelSize.x - HORIZONTAL_TWO_SPACE);
         formData.right = new FormAttachment(100, -HORIZONTAL_TWO_SPACE);
         manageConnectionsButton.setLayoutData(formData);
 
