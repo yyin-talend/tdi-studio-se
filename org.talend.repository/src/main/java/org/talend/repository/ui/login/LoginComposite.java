@@ -652,7 +652,14 @@ public class LoginComposite extends Composite {
 
         data = new FormData();
         data.top = new FormAttachment(0, HORIZONTAL_THREE_SPACE);
-        data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
+        if (EnvironmentUtils.isWindowsSystem()) {
+            data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
+        } else if (EnvironmentUtils.isLinuxUnixSystem()) {
+            data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 38);
+        } else {
+            data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
+        }
+
         data.right = new FormAttachment(100, -HORIZONTAL_TWO_SPACE);
         data.bottom = new FormAttachment(100, -HORIZONTAL_FOUR_SPACE);
         manageProjectsButton.setLayoutData(data);
@@ -893,7 +900,14 @@ public class LoginComposite extends Composite {
         fillProjectsBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
         data = new FormData();
         data.top = new FormAttachment(projectViewer.getControl(), 0, SWT.CENTER);
-        data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
+        if (EnvironmentUtils.isWindowsSystem()) {
+            data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
+        } else if (EnvironmentUtils.isLinuxUnixSystem()) {
+            data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 38);
+        } else {
+            data.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
+        }
+
         data.right = new FormAttachment(100, -HORIZONTAL_TWO_SPACE);
         fillProjectsBtn.setLayoutData(data);
 
@@ -1098,7 +1112,13 @@ public class LoginComposite extends Composite {
         manageConnectionsButton.setImage(ImageProvider.getImage(EImage.THREE_DOTS_ICON));
         formData = new FormData();
         formData.top = new FormAttachment(group, HORIZONTAL_SPACE, SWT.CENTER);
-        formData.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
+        if (EnvironmentUtils.isWindowsSystem()) {
+            formData.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
+        } else if (EnvironmentUtils.isLinuxUnixSystem()) {
+            formData.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 38);
+        } else {
+            formData.left = new FormAttachment(100, -HORIZONTAL_TWO_SPACE - 28);
+        }
         formData.right = new FormAttachment(100, -HORIZONTAL_TWO_SPACE);
         manageConnectionsButton.setLayoutData(formData);
 
