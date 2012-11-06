@@ -22,32 +22,37 @@
         	String connectionName = connection.getName();
 
             IMetadataTable metadataTable = connection.getMetadataTable();
-            
+
+			boolean includeParallelComps = false;
+			List<? extends INode> listPartitions= node.getProcess().getNodesOfType("tPartitioner");
+			if (listPartitions!=null && listPartitions.size() > 0 ) {
+				includeParallelComps = true;
+			}
 %>
 tHash_Lookup_<%=connectionName%>.endPut();
-if (isMultiThreaded_<%=cid%>) {
+<%
+			if (includeParallelComps) {
+%>
 java.util.List<java.util.concurrent.ConcurrentHashMap<String,Object>> mapsList_<%=cid%> = 
 	(java.util.List<java.util.concurrent.ConcurrentHashMap<String,Object>>)globalMap.get("THREAD_MAPS_"+jobName);
-if (mapsList_<%=cid%> != null) {
-for (java.util.concurrent.ConcurrentHashMap<String,Object> map : mapsList_<%=cid%>) {
-	if (globalMap != map) {
-		
-		org.talend.designer.components.lookup.memory.ConcurrentAdvancedMemoryLookup
-	   							<<%=connectionName%>Struct> tmp = (org.talend.designer.components.lookup.memory.ConcurrentAdvancedMemoryLookup
-	   							<<%=connectionName%>Struct>)tHash_Lookup_<%=connectionName%>;
-	   							
-		map.put("tHash_Lookup_<%=connectionName%>",org.talend.designer.components.lookup.memory.ConcurrentAdvancedMemoryLookup.
-	   							<<%=connectionName%>Struct>copyLookup(tmp));
-	} 
-}
-}
-}
-
+	if (mapsList_<%=cid%> != null) {
+		for (java.util.concurrent.ConcurrentHashMap<String,Object> map : mapsList_<%=cid%>) {
+			if (globalMap != map) {
+				
+				org.talend.designer.components.lookup.memory.ConcurrentAdvancedMemoryLookup
+			   							<<%=connectionName%>Struct> tmp = (org.talend.designer.components.lookup.memory.ConcurrentAdvancedMemoryLookup
+			   							<<%=connectionName%>Struct>)tHash_Lookup_<%=connectionName%>;
+			   							
+				map.put("tHash_Lookup_<%=connectionName%>",org.talend.designer.components.lookup.memory.ConcurrentAdvancedMemoryLookup.
+			   							<<%=connectionName%>Struct>copyLookup(tmp));
+			} 
+		}
+	}
 
 } 
 }//end synchronized
 <%
+			}
 		}
 	}
-
 %>
