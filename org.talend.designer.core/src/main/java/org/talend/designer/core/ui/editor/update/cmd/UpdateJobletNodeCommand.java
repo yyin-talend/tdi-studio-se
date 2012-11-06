@@ -21,6 +21,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.gef.commands.Command;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.model.components.ComponentUtilities;
@@ -34,9 +36,12 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.update.UpdateResult;
+import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -101,7 +106,7 @@ public class UpdateJobletNodeCommand extends Command {
                             if (newComponent == null) {
                                 continue;
                             }
-
+                            boolean neesPro = needPropagate(node);
                             if (node.isJoblet()) {
                                 if (result.isNeedReloadJoblet()) {
                                     reloadNode(node, newComponent);
@@ -110,6 +115,7 @@ public class UpdateJobletNodeCommand extends Command {
                             } else {
                                 reloadNode(node, newComponent);
                             }
+                            propagate(node, neesPro);
                         }
                         process.checkProcess();
                     }
@@ -391,6 +397,74 @@ public class UpdateJobletNodeCommand extends Command {
                 }
             }
         }
+    }
+
+    private boolean needPropagate(Node jobletNode) {
+        List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
+        boolean opened = false;
+        for (IProcess2 process : openedProcesses) {
+            if (process.getId().equals(jobletNode.getProcess().getId())) {
+                opened = true;
+            }
+        }
+        if (!opened) {
+            return false;
+        }
+        AbstractProcessProvider jobletProcessProvider = AbstractProcessProvider.findProcessProviderFromPID(IComponent.JOBLET_PID);
+        if (jobletProcessProvider != null) {
+            List<UpdateResult> resultList = jobletProcessProvider.checkJobletNodeSchema(jobletNode.getProcess());
+            if (resultList.size() <= 0) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void propagate(Node jobletNode, boolean needPro) {
+        if (!needPro) {
+            return;
+        }
+
+        for (IConnection outConn : jobletNode.getOutgoingConnections()) {
+            IMetadataTable tab = jobletNode.getMetadataFromConnector(outConn.getConnectorName());
+            IMetadataTable tmpClone = tab.clone(true);
+            IMetadataTable newOutputMetadata = jobletNode.getMetadataTable(outConn.getConnectorName());
+            IMetadataTable toCopy = newOutputMetadata.clone();
+            Node targetNode = (Node) outConn.getTarget();
+
+            String dbmsId = null;
+            IMetadataTable copy = null;
+            if (((Node) targetNode).getMetadataFromConnector(outConn.getConnectorName()) != null) {
+                dbmsId = targetNode.getMetadataFromConnector(outConn.getConnectorName()).getDbms();
+                MetadataToolHelper.copyTable(dbmsId, toCopy, tmpClone);
+                toCopy = tmpClone;
+
+                // only if the target node have exactly the same connector
+                copy = ((Node) targetNode).getMetadataFromConnector(outConn.getConnectorName()).clone(true);
+            } else {
+                final String mainConnector = "FLOW"; // can only be FLOW right now for this case. //$NON-NLS-1$
+
+                dbmsId = targetNode.getMetadataFromConnector(mainConnector).getDbms();
+                MetadataToolHelper.copyTable(dbmsId, toCopy, tmpClone);
+                toCopy = tmpClone;
+                // if don't have the same connector, take the main connector of the component.
+
+                copy = ((Node) targetNode).getMetadataFromConnector(mainConnector).clone(true);
+            }
+
+            MetadataToolHelper.copyTable(dbmsId, toCopy, copy);
+            ChangeMetadataCommand cmd = new ChangeMetadataCommand(targetNode, null, null, copy, null);// inputSchemaParam);
+            cmd.execute(true);
+        }
+
+        try {
+            ProxyRepositoryFactory.getInstance().save(((Process) jobletNode.getProcess()).getProperty().getItem());
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        }
+
     }
 
 }
