@@ -1712,6 +1712,15 @@
               name="ChangeMysqlJarReference4MysqlComponents"
               version="5.1.2">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.2.0"
+              class="org.talend.repository.model.migration.ChangeActiveMqJarName4MOMComponents"
+              description="Change activemq-all-5.1.0.jar to activemq-all-5.7.0.jar in jobs where tMOM components are used"
+              id="org.talend.repository.model.migration.ChangeActiveMqJarName4MOMComponents"
+              name="ChangeActiveMqJarName4MOMComponents"
+              version="5.2.1">
+        </projecttask>        
    </extension>
    
    <extension
