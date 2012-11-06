@@ -55,6 +55,7 @@ public class DefaultRunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessFactory#getSyntaxChecker(org.talend.core.model.temp.ECodeLanguage)
      */
+    @Override
     public ICodeProblemsChecker getSyntaxChecker(ECodeLanguage codeLanguage) {
         return SyntaxCheckerFactory.getInstance().getSyntaxChecker(codeLanguage);
     }
@@ -64,10 +65,12 @@ public class DefaultRunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessFactory#setActiveProcess(org.talend.core.model.process.IProcess)
      */
+    @Override
     public void setActiveProcess(IProcess2 activeProcess) {
         RunProcessPlugin.getDefault().getRunProcessContextManager().setActiveProcess(activeProcess);
     }
 
+    @Override
     public void setActiveProcess(IProcess2 activeProcess, boolean refreshUI) {
         RunProcessPlugin.getDefault().getRunProcessContextManager().setActiveProcess(activeProcess, refreshUI);
     }
@@ -77,6 +80,7 @@ public class DefaultRunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#getSelectedContext()
      */
+    @Override
     public IContext getSelectedContext() {
         return RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext().getSelectedContext();
     }
@@ -86,6 +90,7 @@ public class DefaultRunProcessService implements IRunProcessService {
      * 
      * @param activeProcess IProcess
      */
+    @Override
     public void removeProcess(IProcess activeProcess) {
         RunProcessPlugin.getDefault().getRunProcessContextManager().removeProcess(activeProcess);
     }
@@ -97,6 +102,7 @@ public class DefaultRunProcessService implements IRunProcessService {
      * org.eclipse.core.runtime.IPath, java.lang.String, org.apache.log4j.Level, java.lang.String, int, int,
      * java.lang.String)
      */
+    @Override
     public int perlExec(StringBuffer out, StringBuffer err, IPath absCodePath, String contextName, Level level,
             String perlInterpreterLibOption, String perlModuleDirectoryOption, int statOption, int traceOption,
             String... codeOptions) throws ProcessorException {
@@ -118,6 +124,7 @@ public class DefaultRunProcessService implements IRunProcessService {
      * org.talend.designer.runprocess.IRunProcessFactory#createCodeProcessor(org.talend.core.model.process.IProcess,
      * boolean)
      */
+    @Override
     public IProcessor createCodeProcessor(IProcess process, Property property, ECodeLanguage language, boolean filenameFromLabel) {
         switch (language) {
         case PERL:
@@ -156,14 +163,17 @@ public class DefaultRunProcessService implements IRunProcessService {
         return new JavaProcessor(process, property, filenameFromLabel);
     }
 
+    @Override
     public IPerformanceData createPerformanceData(String data) {
         return new PerformanceData(data);
     }
 
+    @Override
     public String getRoutineFilenameExt() {
         return ROUTINE_FILENAME_EXT;
     }
 
+    @Override
     public IProject getProject(ECodeLanguage language) throws CoreException {
         switch (language) {
         case PERL:
@@ -184,6 +194,7 @@ public class DefaultRunProcessService implements IRunProcessService {
         }
     }
 
+    @Override
     public IJavaProject getJavaProject() throws CoreException {
         return JavaProcessorUtilities.getJavaProject();
     }
@@ -194,19 +205,22 @@ public class DefaultRunProcessService implements IRunProcessService {
      * @seeorg.talend.designer.runprocess.IRunProcessService#setDelegateService(org.talend.designer.runprocess.
      * IRunProcessService)
      */
+    @Override
     public void setDelegateService(IRunProcessService delegateService) {
         throw new UnsupportedOperationException(Messages.getString("DefaultRunProcessService.methodCalledError")); //$NON-NLS-1$
     }
 
+    @Override
     public void updateLibraries(Set<String> jobModuleList, IProcess process) {
         switch (LanguageManager.getCurrentLanguage()) {
         case JAVA:
-             JavaProcessorUtilities.computeLibrariesPath(new HashSet<String>(jobModuleList), null);
+            JavaProcessorUtilities.computeLibrariesPath(new HashSet<String>(jobModuleList), process);
         default:
             // nothing
         }
     }
 
+    @Override
     public void refreshView() {
         ProcessView view = ProcessView.findProcessView();
         if (view != null) {
@@ -219,6 +233,7 @@ public class DefaultRunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#getPauseTime()
      */
+    @Override
     public int getPauseTime() {
         return RunProcessPlugin.getDefault().getPreferenceStore().getInt(RunProcessPrefsConstants.STRACESTIME);
     }
@@ -228,6 +243,7 @@ public class DefaultRunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#needDeleteAllJobs()
      */
+    @Override
     public boolean needDeleteAllJobs() {
         return !DeleteAllJobWhenStartUp.executed;
     }
@@ -237,6 +253,7 @@ public class DefaultRunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#deleteAllJobx(boolean)
      */
+    @Override
     public void deleteAllJobs(boolean fromPluginModel) {
         new DeleteAllJobWhenStartUp().startup(fromPluginModel);
     }
@@ -246,6 +263,7 @@ public class DefaultRunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#getRunProcessAction()
      */
+    @Override
     public IAction getRunProcessAction() {
         return null;
     }
@@ -255,6 +273,7 @@ public class DefaultRunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#enableTraceForActiveRunProcess()
      */
+    @Override
     public boolean enableTraceForActiveRunProcess() {
         return false;
     }
@@ -264,6 +283,7 @@ public class DefaultRunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#saveJobBeforeRun(org.talend.core.model.process.IProcess)
      */
+    @Override
     public void saveJobBeforeRun(IProcess activeProcess) {
         // TODO Auto-generated method stub
 
@@ -274,11 +294,13 @@ public class DefaultRunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessService#getPreferenceStore()
      */
+    @Override
     public IPreferenceStore getPreferenceStore() {
         // TODO Auto-generated method stub
         return null;
     }
 
+    @Override
     public IProcess getActiveProcess() {
         if (RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext() == null) {
             return null;
@@ -287,6 +309,7 @@ public class DefaultRunProcessService implements IRunProcessService {
         return RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext().getProcess();
     }
 
+    @Override
     public boolean checkExportProcess(IStructuredSelection selection, boolean isJob) {
         return JobErrorsChecker.checkExportErrors(selection, isJob);
     }

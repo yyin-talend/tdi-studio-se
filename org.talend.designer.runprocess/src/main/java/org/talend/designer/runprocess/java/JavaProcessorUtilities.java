@@ -70,6 +70,7 @@ import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.runprocess.LastGenerationInfo;
+import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 
 /**
@@ -496,6 +497,7 @@ public class JavaProcessorUtilities {
         IClasspathEntry[] entries = javaProject.getRawClasspath();
         IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
         IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY));
+        boolean isDependencyMissingJars = false;
 
         boolean changesDone = false;
         if (!ArrayUtils.contains(entries, jreClasspathEntry)) {
@@ -518,23 +520,18 @@ public class JavaProcessorUtilities {
         }
 
         Set<String> listModulesReallyNeeded = jobModuleList;
+        List<ModuleNeeded> listFromRoutines = null;
+
         if (listModulesReallyNeeded == null) {
             listModulesReallyNeeded = new HashSet<String>();
         } else {
-            // see bug 0005559: Import cannot be resolved in routine after
-            // opening Job Designer
-            if (process != null && process instanceof IProcess2 && ((IProcess2) process).getProperty() != null
-                    && ((IProcess2) process).getProperty().getItem() instanceof ProcessItem) {
-                List<ModuleNeeded> modulesNeededs = ModulesNeededProvider
-                        .getModulesNeededForRoutines((ProcessItem) ((IProcess2) process).getProperty().getItem());
-                for (ModuleNeeded moduleNeeded : modulesNeededs) {
-                    listModulesReallyNeeded.add(moduleNeeded.getModuleName());
-                }
-
-            } else {
-                for (ModuleNeeded moduleNeeded : ModulesNeededProvider.getModulesNeededForRoutines()) {
-                    listModulesReallyNeeded.add(moduleNeeded.getModuleName());
-                }
+            // only for wizards or additional jars only to make the java project compile without any error.
+            listFromRoutines = ModulesNeededProvider.getModulesNeededForRoutines();
+            // list contains all routines linked to job as well as routines not used in the job
+            // rebuild the list to have only the libs linked to routines "not used".
+            listFromRoutines.removeAll(listModulesReallyNeeded);
+            for (ModuleNeeded moduleNeeded : listFromRoutines) {
+                listModulesReallyNeeded.add(moduleNeeded.getModuleName());
             }
         }
 
@@ -581,11 +578,13 @@ public class JavaProcessorUtilities {
         }
 
         String missingJars = null;
+        Set<String> missingJarsSet = new HashSet<String>();
         // sort
         int exchange = 2; // The first,second library is JVM and SRC.
         for (String jar : listModulesReallyNeeded) {
             int index = indexOfEntry(entries, jar);
             if (index < 0) {
+                missingJarsSet.add(jar);
                 if (missingJars == null) {
                     missingJars = "Missing jar:" + jar;
                 } else {
@@ -607,22 +606,110 @@ public class JavaProcessorUtilities {
             javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null);
         }
         if (missingJars != null) {
+            // If job does not dependency any routine or the current process is not a job, just output some logs.
+            // But if a job dependency routines, will show a info dialog for user.
             final String Message = missingJars;
-            if (!CommonsPlugin.isHeadless()) {
-                Display display = DisplayUtils.getDisplay();
-                if (display != null) {
-                    display.syncExec(new Runnable() {
+            // ExceptionHandler.log(Message)
+            handleMissingJarsForProcess(process, missingJarsSet);
 
-                        @Override
-                        public void run() {
-                            MessageDialog.openError(Display.getDefault().getActiveShell(), "Error!", Message);
-                        }
-
-                    });
-                }
-            }
             throw new BusinessException(missingJars);
         }
+    }
+
+    /**
+     * Handles the missing jars for process, if the process is job process, then check if the missing jars are required
+     * by job(means dependency by job process), if YES, then pop-up a dialog to warning user. If No, then just output
+     * the all missing jars in log. If the process is route process, then just output log. Added by Marvin Wang on
+     * Nov.6, 2012.
+     * 
+     * @param process
+     * @param missingJars
+     */
+    private static void handleMissingJarsForProcess(IProcess process, final Set<String> missingJars) {
+        if (process instanceof IProcess2) {
+            IProcess2 process2 = (IProcess2) process;
+            Item processItem = process2.getProperty().getItem();
+            ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
+                    ICamelDesignerCoreService.class);
+            if (camelService.isInstanceofCamel(processItem)) {
+                ExceptionHandler.log(outputMsgForMissingJars(missingJars, false));
+            } else {
+                final Set<String> missingJarsForProcess = filterMissingJarsForProcess(process2, missingJars);
+                if (missingJarsForProcess != null && missingJarsForProcess.size() > 0) {
+                    if (!CommonsPlugin.isHeadless()) {
+                        Display display = DisplayUtils.getDisplay();
+                        if (display != null) {
+                            display.syncExec(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    ExceptionHandler.log(outputMsgForMissingJars(missingJars, false));
+                                    MessageDialog.openWarning(Display.getDefault().getActiveShell(), "Warning!",
+                                            outputMsgForMissingJars(missingJarsForProcess, true));
+                                }
+
+                            });
+                        }
+                    }
+                } else if (missingJarsForProcess != null && missingJarsForProcess.size() <= 0) {
+                    ExceptionHandler.log(outputMsgForMissingJars(missingJars, false));
+                }
+            }
+        }
+    }
+
+    /**
+     * Filters the missing jars and get the jars relied by Job process. Added by Marvin Wang on Nov 6, 2012.
+     * 
+     * @param process
+     * @param missingJars
+     * @return
+     */
+    private static Set<String> filterMissingJarsForProcess(IProcess2 process, Set<String> missingJars) {
+        Set<String> missingJarsDependenciedByProcess = new HashSet<String>();
+        if (missingJars != null && missingJars.size() > 0) {
+            List<ModuleNeeded> listFromRoutines = ModulesNeededProvider.getModulesNeededForRoutines((ProcessItem) process
+                    .getProperty().getItem());
+            if (listFromRoutines != null && listFromRoutines.size() > 0) {
+                for (ModuleNeeded moduleNeeded : listFromRoutines) {
+                    String moduleName = moduleNeeded.getModuleName();
+                    if (moduleName != null) {
+                        for (String missingJar : missingJars) {
+                            if (moduleName.equals(missingJar)) {
+                                missingJarsDependenciedByProcess.add(missingJar);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return missingJarsDependenciedByProcess;
+    }
+
+    /**
+     * Added by Marvin Wang on Nov 6, 2012.
+     * 
+     * @param missingJars
+     * @param isJobProcess
+     * @return
+     */
+    private static String outputMsgForMissingJars(Set<String> missingJars, boolean isJobProcess) {
+        StringBuffer sb = new StringBuffer("");
+        if (missingJars != null && missingJars.size() > 0) {
+            if (isJobProcess) {
+                sb.append(Messages.getString("JavaProcessorUtilities.msg.missingjar.forjob"));
+            } else {
+                sb.append(Messages.getString("JavaProcessorUtilities.msg.missingjar"));
+            }
+            for (String missingJar : missingJars) {
+                sb.append(missingJar);
+                sb.append(", ");
+            }
+            String outputString = sb.toString().trim();
+            int lastIndexOf = outputString.lastIndexOf(",");
+            return outputString.substring(0, lastIndexOf);
+        }
+        return sb.toString();
     }
 
     private static int indexOfEntry(final IClasspathEntry[] dest, final String jarName) {
