@@ -218,8 +218,8 @@
                 %>
                 for(String str_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
                 	java.io.File file_<%=cid%> = new java.io.File(str_<%=cid%>);
-                <%if(!nonUpdate){%>
-					<%if(waitRelease) {%>
+                	
+            	<%if(waitRelease) {%>
 					if (isWindows_<%=cid %>){
 						java.io.File tempfile_<%=cid%> =new java.io.File(file_<%=cid %>.getAbsolutePath()+".talendTempfile");
 						Thread.sleep(<%=interval%>);
@@ -237,8 +237,9 @@
 	                		continue;
 	                	}
 					}
-					<%}%>
-					
+				<%}%>
+				
+                <%if(!nonUpdate){%>
 					if(originalMap_<%=cid %>.get(str_<%=cid %>)==null ){
                     	originalMap_<%=cid %>.put(str_<%=cid %>,file_<%=cid %>.lastModified());
 					} else if(originalMap_<%=cid %>.get(str_<%=cid %>)!=file_<%=cid %>.lastModified()) {
@@ -249,26 +250,6 @@
                         break;                        
                     }
             	<%}else{%>
-					<%if(waitRelease) {%>
-					if (isWindows_<%=cid %>){
-						java.io.File tempfile_<%=cid%> =new java.io.File(file_<%=cid %>.getAbsolutePath()+".talendTempfile");
-						Thread.sleep(<%=interval%>);
-						if(file_<%=cid %>.renameTo(tempfile_<%=cid%>)) {
-	  						tempfile_<%=cid%>.renameTo(file_<%=cid %>); 
-	  					} else {
-	  						continue;
-	  					}
-					} else {
-						long timestamp_<%=cid%> = file_<%=cid %>.lastModified();
-	
-						Thread.sleep(<%=interval%>);
-	
-	                	if(file_<%=cid %>.lastModified() != timestamp_<%=cid%>){
-	                		continue;
-	                	}
-					}
-					<%}%>
-					
 					if(originalMap_<%=cid %>.get(str_<%=cid %>)==null ){
                     	originalMap_<%=cid %>.put(str_<%=cid %>,file_<%=cid %>.lastModified());
 					} else if(originalMap_<%=cid %>.get(str_<%=cid %>)!=file_<%=cid %>.lastModified()) {
