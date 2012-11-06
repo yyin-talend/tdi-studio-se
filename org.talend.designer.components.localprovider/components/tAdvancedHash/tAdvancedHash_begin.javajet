@@ -22,6 +22,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
 
 
     List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
@@ -84,6 +85,11 @@
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_<%=connectionName%> = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.<%= matchingModeStr %>;
 			   
+			   synchronized(this) {
+			   		if (globalMap.get("tHash_Lookup_<%=connectionName%>") == null) {
+			   			
+			   			
+			   		
 			   <%
 				if (hashConfiguration != null && hashConfiguration.isPersistent() || bSortOnDisk) {
 				%>
@@ -105,10 +111,20 @@
 	   			<%	
 	   			} else {
 	   			%>
-	   				org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
+	   			org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = null;
+	   			boolean isMultiThreaded_<%=cid%> = false;
+	   			if (globalMap.get("MULTI_THREADED_JOB_"+jobName) == null || !((Boolean)globalMap.get("MULTI_THREADED_JOB_"+jobName))) {
+	   				tHash_Lookup_<%=connectionName%> = 
 	   					org.talend.designer.components.lookup.memory.AdvancedMemoryLookup.
 	   						<<%=connectionName%>Struct>getLookup(matchingModeEnum_<%=connectionName%>);
-
+	   			} else {
+	   				
+	   				tHash_Lookup_<%=connectionName%> = 
+	   						org.talend.designer.components.lookup.memory.ConcurrentAdvancedMemoryLookup.
+	   							<<%=connectionName%>Struct>getLookup(matchingModeEnum_<%=connectionName%>);
+	   				isMultiThreaded_<%=cid%> = true;
+	   			}
+				   
 		   	   	   globalMap.put("tHash_Lookup_<%=connectionName%>", tHash_Lookup_<%=connectionName%>);
 		   	   	   
 				<%

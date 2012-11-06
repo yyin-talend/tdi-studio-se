@@ -608,12 +608,12 @@ public class Connection extends Element implements IConnection, IPerformance {
             if (!lineStyle.equals(EConnectionType.TABLE) && !lineStyle.equals(EConnectionType.ITERATE)) {
                 if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
                         EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF,
-                        EConnectionType.ROUTE_WHEN, EConnectionType.ROUTE_CATCH)
+                        EConnectionType.ROUTE_WHEN, EConnectionType.ROUTE_CATCH, EConnectionType.STARTS)
                         && source != null && source.getComponent().getName().equals(source.getLabel())) {
                     uniqueName = connectorName;
                 } else if (!isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
                         EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF,
-                        EConnectionType.ROUTE_WHEN, EConnectionType.ROUTE_CATCH)
+                        EConnectionType.ROUTE_WHEN, EConnectionType.ROUTE_CATCH, EConnectionType.STARTS)
                         || uniqueName == null || !uniqueName.startsWith(lineStyle.getDefaultLinkName())) {
                     uniqueName = name;
                 }
@@ -909,7 +909,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                     uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_TRY_CONNECTION_NAME);
                 }
             } else if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
-                    EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF)) {
+                    EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF, EConnectionType.STARTS)) {
                 // see 3443, these links should have unique name
                 if (uniqueName == null || uniqueName.equals(lineStyle.getDefaultLinkName())) {
                     uniqueName = source.getProcess().generateUniqueConnectionName(lineStyle.getDefaultLinkName());
@@ -965,7 +965,7 @@ public class Connection extends Element implements IConnection, IPerformance {
                                 EConnectionType.ON_COMPONENT_ERROR, EConnectionType.ON_SUBJOB_OK,
                                 EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF, EConnectionType.ROUTE,
                                 EConnectionType.ROUTE_TRY, EConnectionType.ROUTE_CATCH, EConnectionType.ROUTE_FINALLY,
-                                EConnectionType.ROUTE_ENDBLOCK, EConnectionType.ROUTE_WHEN, EConnectionType.ROUTE_OTHER)) {
+                                EConnectionType.ROUTE_ENDBLOCK, EConnectionType.ROUTE_WHEN, EConnectionType.ROUTE_OTHER, EConnectionType.STARTS)) {
                     source.getProcess().removeUniqueConnectionName(uniqueName);
                 }
             }

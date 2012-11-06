@@ -13,6 +13,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
 
     List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
 
@@ -24,6 +25,27 @@
             
 %>
 tHash_Lookup_<%=connectionName%>.endPut();
+if (isMultiThreaded_<%=cid%>) {
+java.util.List<java.util.concurrent.ConcurrentHashMap<String,Object>> mapsList_<%=cid%> = 
+	(java.util.List<java.util.concurrent.ConcurrentHashMap<String,Object>>)globalMap.get("THREAD_MAPS_"+jobName);
+if (mapsList_<%=cid%> != null) {
+for (java.util.concurrent.ConcurrentHashMap<String,Object> map : mapsList_<%=cid%>) {
+	if (globalMap != map) {
+		
+		org.talend.designer.components.lookup.memory.ConcurrentAdvancedMemoryLookup
+	   							<<%=connectionName%>Struct> tmp = (org.talend.designer.components.lookup.memory.ConcurrentAdvancedMemoryLookup
+	   							<<%=connectionName%>Struct>)tHash_Lookup_<%=connectionName%>;
+	   							
+		map.put("tHash_Lookup_<%=connectionName%>",org.talend.designer.components.lookup.memory.ConcurrentAdvancedMemoryLookup.
+	   							<<%=connectionName%>Struct>copyLookup(tmp));
+	} 
+}
+}
+}
+
+
+} 
+}//end synchronized
 <%
 		}
 	}

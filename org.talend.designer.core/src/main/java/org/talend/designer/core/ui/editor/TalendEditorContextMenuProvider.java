@@ -316,6 +316,8 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             retrieveConnectors(subMenu, EConnectionType.ON_COMPONENT_OK);
 
             retrieveConnectors(subMenu, EConnectionType.ON_COMPONENT_ERROR);
+			
+			retrieveConnectors(subMenu, EConnectionType.STARTS);
 
             action = new NodeBreakpointAction(part);
             ((NodeBreakpointAction) action).update();
