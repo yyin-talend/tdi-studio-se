@@ -128,6 +128,12 @@
         %>
       
         int count_<%=cid %> = 0;
+        
+        <%if(waitRelease) {%>
+        String osName_<%=cid %> = System.getProperty("os.name");
+        boolean isWindows_<%=cid %> = osName_<%=cid %> != null && osName_<%=cid %>.toLowerCase().startsWith("win");
+        <%}%>
+        
         while (true) {
             <%
             if(!("").equals(ElementParameterParser.getValue(node,"__MAX_ITERATIONS__"))){
@@ -165,12 +171,11 @@
    					//fix bug 22123,if we can rename the filename,that means no other program is using the file.
            			if(waitRelease){
            			%>
-           			String osName_<%=cid %> = System.getProperty("os.name");
-	  				if (osName_<%=cid %> != null && osName_<%=cid %>.toLowerCase().startsWith("win")){
-	  					java.io.File tempfile=new java.io.File(file_<%=cid %>.getAbsolutePath()+".talendTempfile"); 
+	  				if (isWindows_<%=cid %>){
+	  					java.io.File tempfile_<%=cid%> =new java.io.File(file_<%=cid %>.getAbsolutePath()+".talendTempfile"); 
 	  					Thread.sleep(<%=interval%>);
-	  					if(file_<%=cid %>.renameTo(tempfile)) {
-	  						tempfile.renameTo(file_<%=cid %>); 
+	  					if(file_<%=cid %>.renameTo(tempfile_<%=cid%>)) {
+	  						tempfile_<%=cid%>.renameTo(file_<%=cid %>); 
 	  					} else {
 	  						continue;
 	  					}
@@ -214,9 +219,29 @@
                 for(String str_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
                 	java.io.File file_<%=cid%> = new java.io.File(str_<%=cid%>);
                 <%if(!nonUpdate){%>
-                    if(originalMap_<%=cid %>.get(str_<%=cid %>)==null ){
+					<%if(waitRelease) {%>
+					if (isWindows_<%=cid %>){
+						java.io.File tempfile_<%=cid%> =new java.io.File(file_<%=cid %>.getAbsolutePath()+".talendTempfile");
+						Thread.sleep(<%=interval%>);
+						if(file_<%=cid %>.renameTo(tempfile_<%=cid%>)) {
+	  						tempfile_<%=cid%>.renameTo(file_<%=cid %>); 
+	  					} else {
+	  						continue;
+	  					}
+					} else {
+						long timestamp_<%=cid%> = file_<%=cid %>.lastModified();
+	
+						Thread.sleep(<%=interval%>);
+	
+	                	if(file_<%=cid %>.lastModified() != timestamp_<%=cid%>){
+	                		continue;
+	                	}
+					}
+					<%}%>
+					
+					if(originalMap_<%=cid %>.get(str_<%=cid %>)==null ){
                     	originalMap_<%=cid %>.put(str_<%=cid %>,file_<%=cid %>.lastModified());
-					}else if(originalMap_<%=cid %>.get(str_<%=cid %>)!=file_<%=cid %>.lastModified()) {
+					} else if(originalMap_<%=cid %>.get(str_<%=cid %>)!=file_<%=cid %>.lastModified()) {
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
                        	found_<%=cid %> = true;
@@ -224,9 +249,29 @@
                         break;                        
                     }
             	<%}else{%>
-            		if(originalMap_<%=cid %>.get(str_<%=cid %>)==null ){
+					<%if(waitRelease) {%>
+					if (isWindows_<%=cid %>){
+						java.io.File tempfile_<%=cid%> =new java.io.File(file_<%=cid %>.getAbsolutePath()+".talendTempfile");
+						Thread.sleep(<%=interval%>);
+						if(file_<%=cid %>.renameTo(tempfile_<%=cid%>)) {
+	  						tempfile_<%=cid%>.renameTo(file_<%=cid %>); 
+	  					} else {
+	  						continue;
+	  					}
+					} else {
+						long timestamp_<%=cid%> = file_<%=cid %>.lastModified();
+	
+						Thread.sleep(<%=interval%>);
+	
+	                	if(file_<%=cid %>.lastModified() != timestamp_<%=cid%>){
+	                		continue;
+	                	}
+					}
+					<%}%>
+					
+					if(originalMap_<%=cid %>.get(str_<%=cid %>)==null ){
                     	originalMap_<%=cid %>.put(str_<%=cid %>,file_<%=cid %>.lastModified());
-					}else if(originalMap_<%=cid %>.get(str_<%=cid %>)!=file_<%=cid %>.lastModified()) {
+					} else if(originalMap_<%=cid %>.get(str_<%=cid %>)!=file_<%=cid %>.lastModified()) {
             			originalMap_<%=cid%>.put(str_<%=cid %>,file_<%=cid %>.lastModified());
             			globalMap.put("<%=cid %>_NOT_UPDATED_FILE", null);
             			found_<%=cid%> = false;
@@ -265,8 +310,7 @@
    					//fix bug 22123,if we can rename the filename,that means no other program is using the file.
            			if(waitRelease) {
            			%>
-           			String osName_<%=cid %> = System.getProperty("os.name");
-	  				if (osName_<%=cid %> != null && osName_<%=cid %>.toLowerCase().startsWith("win")){
+	  				if (isWindows_<%=cid %>){
 	  					java.io.File tempfile=new java.io.File(file_<%=cid %>.getAbsolutePath()+".talendTempfile"); 
 	  					Thread.sleep(<%=interval%>);
 	  					if(file_<%=cid %>.renameTo(tempfile)) {
@@ -294,9 +338,30 @@
 				}
                 for(String str_<%=cid %> : fetchFilesOneTime_<%=cid %>) {
                 	java.io.File file_<%=cid%> = new java.io.File(str_<%=cid %>);
-                    if(originalMap_<%=cid %>.get(str_<%=cid %>)==null ){
+                	
+					<%if(waitRelease) {%>
+					if (isWindows_<%=cid %>){
+						java.io.File tempfile_<%=cid%> =new java.io.File(file_<%=cid %>.getAbsolutePath()+".talendTempfile");
+						Thread.sleep(<%=interval%>);
+						if(file_<%=cid %>.renameTo(tempfile_<%=cid%>)) {
+	  						tempfile_<%=cid%>.renameTo(file_<%=cid %>); 
+	  					} else {
+	  						continue;
+	  					}
+					} else {
+						long timestamp_<%=cid%> = file_<%=cid %>.lastModified();
+	
+						Thread.sleep(<%=interval%>);
+	
+	                	if(file_<%=cid %>.lastModified() != timestamp_<%=cid%>){
+	                		continue;
+	                	}
+					}
+					<%}%>
+					
+					if(originalMap_<%=cid %>.get(str_<%=cid %>)==null ){
                     	originalMap_<%=cid %>.put(str_<%=cid %>,file_<%=cid %>.lastModified());
-					}else if(originalMap_<%=cid %>.get(str_<%=cid %>)!=file_<%=cid %>.lastModified()) {
+					} else if(originalMap_<%=cid %>.get(str_<%=cid %>)!=file_<%=cid %>.lastModified()) {
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_UPDATED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;
