@@ -1717,80 +1717,11 @@
    <extension
          point="org.talend.core.librariesNeeded">
       <libraryNeeded
-            context="%libraryneeded.fileldifwizard"
-            language="perl"
-            message="%libraryneeded.forthiswizard"
-            name="Net::LDAP::LDIF"
-            required="true"/>
-      <libraryNeeded
-            context="%libraryneeded.filedelimitedwizard"
-            language="perl"
-            message="%libraryneeded.forthiswizard.csv"
-            name="Text::CSV_XS"
-            required="false"/>
-      <libraryNeeded
-            context="%libraryneeded.filexmlwizard"
-            language="perl"
-            message="%libraryneeded.forthiswizard"
-            name="XML::LibXML"
-            required="true"/>
-      <libraryNeeded
-            context="%libraryneeded.dbconnectionwizard"
-            language="java"
-            message="%libraryneeded.forsqlconnection"
-            name="mysql-connector-java-5.1.22-bin.jar"
-            required="false"/>
-      <libraryNeeded
-            context="%libraryneeded.dbconnectionwizard"
-            language="java"
-            message="%libraryneeded.fororacleconnection"
-            name="ojdbc5-11g.jar"
-            required="false"/>
-	<libraryNeeded
-            context="%libraryneeded.dbconnectionwizard"
-            language="java"
-            message="%libraryneeded.forparaccelconnection"
-            name="paraccel-jdbc.jar"
-            required="false"/>
-    <libraryNeeded
-            context="%libraryneeded.dbconnectionwizard"
-            language="java"
-            message="%libraryneeded.fornetezzaconnection"
-            name="nzjdbc.jar"
-            required="false"/>             
-      <libraryNeeded
-            context="%libraryneeded.dbconnectionwizard"
-            language="java"
-            message="%libraryneeded.forpostgresqlconnection"
-            name="postgresql-8.3-603.jdbc3.jar"
-            required="false"/>
-      <libraryNeeded
           context="JBoss ESB Export"
           language="java"
           message="Library needed to export to JBoss ESB"
           name="jbossesb-rosetta.jar"
           required="true"/>
-      <libraryNeeded
-            context="%libraryneeded.dbconnectionwizard"
-            language="java"
-            message="%libraryneeded.forsasconnection"
-            name="sas.core.jar"
-            required="true">
-      </libraryNeeded>
-      <libraryNeeded
-            context="%libraryneeded.dbconnectionwizard"
-            language="java"
-            message="%libraryneeded.forsasconnection"
-            name="sas.svc.connection.jar"
-            required="true">
-      </libraryNeeded>
-      <libraryNeeded
-            context="%libraryneeded.dbconnectionwizard"
-            language="java"
-            message="%libraryneeded.forsasconnection"
-            name="sas.intrnet.javatools.jar"
-            required="true">
-      </libraryNeeded>
    </extension>
    <!--
    <extension
