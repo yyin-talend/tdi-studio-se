@@ -189,7 +189,7 @@ public class DirectEditCommand extends Command {
                             outModel.setDefaultValue("");
                         }
                     }
-
+                    model.setExpression((String) newValue);
                 } else if (DirectEditType.VAR_NODE_TYPE.equals(type)) {
                     VarNode varModel = (VarNode) model;
                     JavaType javaTypeFromLabel = JavaTypesManager.getJavaTypeFromLabel((String) newValue);
@@ -208,10 +208,13 @@ public class DirectEditCommand extends Command {
                             return;
                         }
                     }
+                    String oldName = model.getName();
+                    String oldExpression = XmlMapUtil.VAR_TABLE_NAME + XmlMapUtil.EXPRESSION_SEPARATOR + oldName;
                     model.setName((String) newValue);
+                    String newExpression = XmlMapUtil.VAR_TABLE_NAME + XmlMapUtil.EXPRESSION_SEPARATOR + model.getName();
+                    XmlMapUtil.updateTargetExpression(model, oldExpression, newExpression, expressionManager);
                 }
 
-                model.setExpression((String) newValue);
             }
 
         } catch (PatternSyntaxException ex) {

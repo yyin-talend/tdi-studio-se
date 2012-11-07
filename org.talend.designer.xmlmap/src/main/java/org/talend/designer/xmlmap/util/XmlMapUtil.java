@@ -77,6 +77,8 @@ public class XmlMapUtil {
 
     public static final String DEFAULT_NAME_SPACE_PREFIX = "(default)";
 
+    public static final String VAR_TABLE_NAME = "Var";
+
     /**
      * 
      * DOC talend Comment method "getXPathLength".
@@ -220,34 +222,40 @@ public class XmlMapUtil {
     }
 
     private static void updateTargetExpression(TreeNode treeNode, String oldXpath, XmlMapExpressionManager expressionManager) {
-        String convertToExpression = convertToExpression(oldXpath);
-        TableEntryLocation previousLocation = expressionManager.parseTableEntryLocation(convertToExpression).get(0);
-        TableEntryLocation newLocation = expressionManager.parseTableEntryLocation(
-                XmlMapUtil.convertToExpression(treeNode.getXpath())).get(0);
+        String oldExpression = convertToExpression(oldXpath);
+        String newExpression = XmlMapUtil.convertToExpression(treeNode.getXpath());
+        updateTargetExpression(treeNode, oldExpression, newExpression, expressionManager);
+    }
+
+    public static void updateTargetExpression(AbstractNode renamedNode, String oldExpression, String newExpression,
+            XmlMapExpressionManager expressionManager) {
+        TableEntryLocation previousLocation = expressionManager.parseTableEntryLocation(oldExpression).get(0);
+        TableEntryLocation newLocation = expressionManager.parseTableEntryLocation(newExpression).get(0);
 
         List<INodeConnection> connections = new ArrayList<INodeConnection>();
-        connections.addAll(treeNode.getOutgoingConnections());
-        connections.addAll(treeNode.getLookupOutgoingConnections());
+        connections.addAll(renamedNode.getOutgoingConnections());
+        if (renamedNode instanceof TreeNode) {
+            connections.addAll(((TreeNode) renamedNode).getLookupOutgoingConnections());
+        }
 
         for (INodeConnection connection : connections) {
             AbstractNode target = connection.getTarget();
             List<TableEntryLocation> targetLocaitons = expressionManager.parseTableEntryLocation(target.getExpression());
             for (TableEntryLocation current : targetLocaitons) {
                 if (current.equals(previousLocation)) {
-                    String newExpression = expressionManager.replaceExpression(target.getExpression(), current, newLocation);
-                    target.setExpression(newExpression);
+                    String replaced = expressionManager.replaceExpression(target.getExpression(), current, newLocation);
+                    target.setExpression(replaced);
                 }
             }
 
         }
-        for (FilterConnection connection : treeNode.getFilterOutGoingConnections()) {
+        for (FilterConnection connection : renamedNode.getFilterOutGoingConnections()) {
             AbstractInOutTree target = connection.getTarget();
             List<TableEntryLocation> targetLocaitons = expressionManager.parseTableEntryLocation(target.getExpressionFilter());
             for (TableEntryLocation current : targetLocaitons) {
                 if (current.equals(previousLocation)) {
-                    String newExpression = expressionManager
-                            .replaceExpression(target.getExpressionFilter(), current, newLocation);
-                    target.setExpressionFilter(newExpression);
+                    String replaced = expressionManager.replaceExpression(target.getExpressionFilter(), current, newLocation);
+                    target.setExpressionFilter(replaced);
                 }
             }
         }

@@ -85,8 +85,10 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 directEditManager = new XmlMapNodeDirectEditManager(this, new XmlMapNodeCellEditorLocator(selectedFigure));
             }
             // }
-            directEditManager.show();
-            ((XmlMapGraphicViewer) getViewer()).getMapperManager().setCurrentDirectEditManager(directEditManager);
+            if (directEditManager != null) {
+                directEditManager.show();
+                ((XmlMapGraphicViewer) getViewer()).getMapperManager().setCurrentDirectEditManager(directEditManager);
+            }
         }
     }
 
