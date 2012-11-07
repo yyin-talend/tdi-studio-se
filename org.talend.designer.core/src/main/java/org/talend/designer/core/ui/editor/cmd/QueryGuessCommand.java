@@ -22,6 +22,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQRuleService;
+import org.talend.core.database.EDatabase4DriverClassName;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
@@ -216,25 +217,31 @@ public class QueryGuessCommand extends Command {
         // hywang add for bug 7575
         if (dbType != null && dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
             isJdbc = true;
-            String driverClassName = node.getElementParameter("DRIVER_CLASS").getValue().toString(); //$NON-NLS-N$
+            String driverClassName = node.getElementParameter("DRIVER_CLASS").getValue().toString();
             driverClassName = TalendTextUtils.removeQuotes(driverClassName);
             //
-            if (driverClassName != null && !"".equals(driverClassName)) { //$NON-NLS-N$
+            if (driverClassName != null && !"".equals(driverClassName)) {
                 boolean isContextModeDriverClass = ContextParameterUtils.containContextVariables(driverClassName);
                 if (isContextModeDriverClass) {
                     driverClassName = JavaProcessUtil.getContextOriginalValue(process, driverClassName);
                 }
             }
+            // specil handle Sybase Database's driverClassName
+            if (driverClassName != null && !"".equals(driverClassName)) {
+                if (driverClassName.equals("com.sybase.jdbc3.jdbc.SybDataSource")) {
+                    driverClassName = EDatabase4DriverClassName.SYBASEASE.getDriverClass();
+                }
+            }
 
             // DRIVER_JAR:
-            String driverJarName = node.getElementParameter("DRIVER_JAR").getValue().toString(); //$NON-NLS-N$
-            if (driverJarName != null && driverJarName.startsWith("[") && driverJarName.endsWith("]")) { //$NON-NLS-N$ //$NON-NLS-N$
+            String driverJarName = node.getElementParameter("DRIVER_JAR").getValue().toString();
+            if (driverJarName != null && driverJarName.startsWith("[") && driverJarName.endsWith("]")) {
                 driverJarName = driverJarName.substring(1, driverJarName.length() - 1);
-                if (driverJarName != null && driverJarName.startsWith("{") && driverJarName.endsWith("}")) { //$NON-NLS-N$ //$NON-NLS-N$
+                if (driverJarName != null && driverJarName.startsWith("{") && driverJarName.endsWith("}")) {
                     driverJarName = driverJarName.substring(1, driverJarName.length() - 1);
                 }
             }
-            if (driverJarName != null && !"".equals(driverJarName)) { //$NON-NLS-N$
+            if (driverJarName != null && !"".equals(driverJarName)) {
                 boolean isContextMode = ContextParameterUtils.containContextVariables(driverJarName);
                 if (isContextMode) {
                     driverJarName = JavaProcessUtil.getContextOriginalValue(process, driverJarName);
