@@ -557,5 +557,16 @@
             level="20"
             name="ReadDiagramAction"/>
    </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="isActiveEditorOfBusinessModelEditor">
+         <not>
+            <instanceof
+                  value="org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor">
+            </instanceof>
+         </not>
+      </definition>
+   </extension>
    
 </plugin>
