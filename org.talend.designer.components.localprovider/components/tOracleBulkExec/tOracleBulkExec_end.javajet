@@ -33,10 +33,12 @@ if(("UPDATE").equals(dataAction)) {
         java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
         stmtUpdateBulk_<%=cid%>.close();
-        tableName_<%=cid%> = tmpTableName_<%=cid%>;
+    }finally{
+        tableName_<%=cid%> = "tmp_<%=cid.replaceFirst("tOracleOutputBulkExec","tOOBE")%>" + "_" + pid;
         java.sql.Statement stmtTmpDrop_<%=cid%> = conn_<%=cid%>.createStatement();
         stmtTmpDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
         stmtTmpDrop_<%=cid%>.close();         
+    }
         <%
     }
 }
