@@ -22,6 +22,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ITDQRuleService;
+import org.talend.core.database.EDatabase4DriverClassName;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
@@ -223,6 +224,12 @@ public class QueryGuessCommand extends Command {
                 boolean isContextModeDriverClass = ContextParameterUtils.containContextVariables(driverClassName);
                 if (isContextModeDriverClass) {
                     driverClassName = JavaProcessUtil.getContextOriginalValue(process, driverClassName);
+                }
+            }
+            // specil handle Sybase Database's driverClassName
+            if (driverClassName != null && !"".equals(driverClassName)) {
+                if (driverClassName.equals("com.sybase.jdbc3.jdbc.SybDataSource")) {
+                    driverClassName = EDatabase4DriverClassName.SYBASEASE.getDriverClass();
                 }
             }
 
