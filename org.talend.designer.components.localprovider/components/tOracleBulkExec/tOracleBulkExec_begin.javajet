@@ -567,10 +567,15 @@ String command_<%=cid %> = "sqlldr '" + username_<%=cid %> + "/" + password_<%=c
 
 <%
 if(("UPDATE").equals(data_action)) {
+	if(columnList != null && columnList.size() > 0) {
     %>
+    try{
     java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
     stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>)");
     stmtCreateTmp_<%=cid%>.close();
+	<%
+    }
+	%>
     final Process process_<%=cid %> = Runtime.getRuntime().exec(command_<%=cid %>);
     <%
 } else {
