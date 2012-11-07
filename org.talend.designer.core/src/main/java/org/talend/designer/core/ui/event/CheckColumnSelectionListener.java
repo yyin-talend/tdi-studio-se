@@ -170,11 +170,17 @@ public class CheckColumnSelectionListener implements ITableColumnSelectionListen
         // this.param.setValue(new Boolean(checked));
         // }
         String columnId = tableViewerCreatorColumn.getId();
-        IBeanPropertyAccessors accessor = tableViewerCreator.getColumn(columnId).getBeanPropertyAccessors();
+        TableViewerCreatorColumnNotModifiable column = tableViewerCreator.getColumn(columnId);
+        IBeanPropertyAccessors accessor = column.getBeanPropertyAccessors();
 
         List inputList = tableViewerCreator.getInputList();
         for (int i = 0; i < inputList.size(); i++) {
-            accessor.set(inputList.get(i), checked ? false : true);
+            if (tableViewerCreator instanceof TableViewerCreator && column instanceof TableViewerCreatorColumn) {
+                ((TableViewerCreator) tableViewerCreator).setBeanValue((TableViewerCreatorColumn) column, inputList.get(i),
+                        checked ? false : true, true);
+            } else {
+                accessor.set(inputList.get(i), checked ? false : true);
+            }
         }
 
         if (checked) {
@@ -184,6 +190,7 @@ public class CheckColumnSelectionListener implements ITableColumnSelectionListen
         }
         tableViewerCreatorColumn.getTableColumn().setImage(
                 checked ? ImageProvider.getImage(EImage.CHECKED_ICON) : ImageProvider.getImage(EImage.UNCHECKED_ICON));
+        this.param.setValue(new Boolean(checked));
         tableViewerCreator.refreshTableEditorControls();
 
     }
