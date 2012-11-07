@@ -1741,10 +1741,10 @@ public abstract class DataMapTableView extends Composite implements IDataMapTabl
                         .getCurrentModifiedBean();
                 styledTextHandler.setCurrentEntry(currentModifiedEntry);
                 Text text = (Text) e.widget;
-                if (Math.abs(text.getText().length() - styledTextHandler.getStyledText().getText().length()) > 1) {
-                    styledTextHandler.setTextWithoutNotifyListeners(text.getText());
-                    // highlightLineAndSetSelectionOfStyledText(expressionTextEditor);
-                }
+                // if (Math.abs(text.getText().length() - styledTextHandler.getStyledText().getText().length()) > 1) {
+                styledTextHandler.setTextWithoutNotifyListeners(text.getText());
+                // highlightLineAndSetSelectionOfStyledText(expressionTextEditor);
+                // }
             }
 
         });
