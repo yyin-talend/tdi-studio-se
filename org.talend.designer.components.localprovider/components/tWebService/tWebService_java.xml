@@ -144,7 +144,7 @@
         	<ITEM NAME="DOCUMENT_LITERAL_WRAPPED" VALUE="DOCUMENT_LITERAL_WRAPPED" />
       		</ITEMS>
 		</PARAMETER>-->
-		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" REQUIRED="true" NUM_ROW="62" SHOW="false"  REPOSITORY_VALUE="ENDPOINT">
+		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" REQUIRED="true" NUM_ROW="62" SHOW="true"  REPOSITORY_VALUE="ENDPOINT">
 			<DEFAULT>"http://www.deeptraining.com/webservices/weather.asmx?WSDL"</DEFAULT>
 		</PARAMETER>
 		
@@ -181,7 +181,7 @@
 
 		<PARAMETER NAME="OUTPUT_PARAMS" FIELD="TABLE" NUM_ROW="80"
 
-			NB_LINES="6" SHOW="false"  REPOSITORY_VALUE="OUTPUT_PARAMS">
+			NB_LINES="6" SHOW="true"  REPOSITORY_VALUE="OUTPUT_PARAMS">
 			<ITEMS>
 				<ITEM NAME="EXPRESSION"/>
 				<ITEM NAME="COLUMN"/>
@@ -224,7 +224,7 @@
 			<IMPORT NAME="geronimo-ws-metadata" MODULE="geronimo-ws-metadata_2.0_spec-1.1.3.jar" REQUIRED="true"/>
 			
 			<!--<IMPORT NAME="jaxb-api" MODULE="jaxb-api-2.2.3.jar" REQUIRED="true"/>-->
-			<IMPORT NAME="jaxb-xjc" MODULE="jaxb-xjc-2.2.5.jar" REQUIRED="true"/>
+			<IMPORT NAME="jaxb-xjc" MODULE="jaxb-xjc-2.2.5-modified.jar" REQUIRED="true"/>
 			
 			<IMPORT NAME="neethi" MODULE="neethi-3.0.2.jar" REQUIRED="true"/>
 			
