@@ -603,9 +603,9 @@ public class JavaProcessorUtilities {
                     missingJarsForRoutinesOnly.add(jar);
                 }
                 if (missingJars == null) {
-                    missingJars = "Missing jar:" + jar;
+                    missingJars = Messages.getString("JavaProcessorUtilities.msg.missingjar.forProcess") + jar; //$NON-NLS-1$
                 } else {
-                    missingJars = missingJars + ", " + jar;
+                    missingJars = missingJars + ", " + jar; //$NON-NLS-1$
                 }
             }
             if (index >= 0 && index != exchange) {
@@ -667,7 +667,9 @@ public class JavaProcessorUtilities {
 
                         @Override
                         public void run() {
-                            MessageDialog.openWarning(Display.getDefault().getActiveShell(), "Warning!", subForMsg(sb.toString()));
+                            MessageDialog.openWarning(Display.getDefault().getActiveShell(),
+                                    Messages.getString("JavaProcessorUtilities.msg.missingjar.warningtitle"), //$NON-NLS-1$
+                                    subForMsg(sb.toString()));
                         }
 
                     });
