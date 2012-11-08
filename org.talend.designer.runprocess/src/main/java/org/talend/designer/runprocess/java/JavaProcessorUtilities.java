@@ -50,6 +50,7 @@ import org.talend.commons.exception.CommonExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.utils.data.extractor.ModuleNameExtractor;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
@@ -351,6 +352,9 @@ public class JavaProcessorUtilities {
             neededLibraries.add(module.getModuleName());
         }
 
+        // Added by Marvin Wang on Nov. 8, 2012 just for extract the jar name without directory.
+        neededLibraries = ModuleNameExtractor.extractFileName(neededLibraries);
+
         if (process == null || !(process instanceof IProcess2)) {
             if (neededLibraries.isEmpty() && process != null) {
                 neededLibraries = process.getNeededLibraries(true);
@@ -429,10 +433,13 @@ public class JavaProcessorUtilities {
     public static void checkJavaProjectLib(Collection<String> jarsNeeded) {
         File libDir = getJavaProjectLibFolder();
         if ((libDir != null) && (libDir.isDirectory())) {
-            Set<String> jarsNeedRetrieve = new HashSet<String>(jarsNeeded);
+            // Changed by Marvin Wang on Nov. 8, 2012, it should extract the jar name without directory.
+            Set<String> jarsNeededOnlyIncludeName = ModuleNameExtractor.extractFileName(jarsNeeded);
+            Set<String> jarsNeedRetrieve = new HashSet<String>(jarsNeededOnlyIncludeName);
             for (File externalLib : libDir.listFiles(FilesUtils.getAcceptJARFilesFilter())) {
                 jarsNeedRetrieve.remove(externalLib.getName());
             }
+
             if (!jarsNeedRetrieve.isEmpty()) {
                 ILibraryManagerService repositoryBundleService = CorePlugin.getDefault().getRepositoryBundleService();
                 repositoryBundleService.retrieve(jarsNeedRetrieve, libDir.getAbsolutePath(), false);
@@ -519,10 +526,12 @@ public class JavaProcessorUtilities {
             changesDone = true;
         }
 
-        Set<String> listModulesReallyNeeded = jobModuleList;
+        // Added by Marvin Wang on Nov. 8, 2012. Maybe some modules are in the list with a directory, so cut the
+        // directory only file name remaining.
+        Set<String> listModulesReallyNeeded = ModuleNameExtractor.extractFileName(jobModuleList);
         Set<String> listModulesNeededByProcess = new HashSet<String>();
-        if (jobModuleList != null && jobModuleList.size() > 0) {
-            for (String jobModule : jobModuleList) {
+        if (listModulesReallyNeeded != null && listModulesReallyNeeded.size() > 0) {
+            for (String jobModule : listModulesReallyNeeded) {
                 listModulesNeededByProcess.add(jobModule);
             }
         }
