@@ -292,7 +292,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         if (libName != null) {
             // temp workaround for https://jira.talendforge.org/browse/TDI-22934
             if (libName.startsWith("camel-core-") //$NON-NLS-1$
-                    || libName.startsWith("dom4j-")) { //$NON-NLS-1$
+                    || libName.startsWith("dom4j-") //$NON-NLS-1$
+            // temp workaround for https://jira.talendforge.org/browse/TESB-7271
+                    || libName.startsWith("ojdbc")) { //$NON-NLS-1$
                 return true;
             }
         }
