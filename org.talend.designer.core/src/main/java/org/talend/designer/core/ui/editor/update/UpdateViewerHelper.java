@@ -18,9 +18,9 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.internal.WorkbenchMessages;
-import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
+import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * ggu class global comment. Detailled comment
@@ -186,12 +186,19 @@ public class UpdateViewerHelper {
         if (item == null) {
             return;
         }
+        boolean jobletUpdate = false;
+        if (item.getParent() != null && item.getParent().getNode() != null && (item.getParent().getNode() instanceof Node)
+                && ((Node) item.getParent().getNode()).isJoblet()) {
+            jobletUpdate = true;
+        }
         // not checked
         if (!state && !item.getResultObject().isReadOnly()) {
             EUpdateResult resultType = item.getResultObject().getResultType();
             if (resultType == EUpdateResult.UPDATE || resultType == EUpdateResult.ADD || resultType == EUpdateResult.DELETE) {
                 item.setChecked(false);
             }
+        } else if (item.getResultObject().isReadOnly() && jobletUpdate) {
+            return;
         } else {
             // keep the checked
             item.setChecked(true);

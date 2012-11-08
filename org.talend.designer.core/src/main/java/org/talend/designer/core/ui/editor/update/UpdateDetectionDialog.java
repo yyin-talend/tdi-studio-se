@@ -62,6 +62,8 @@ public class UpdateDetectionDialog extends SelectionDialog {
 
     private static final String WARNING_MESSAGE = Messages.getString("UpdateDetectionDialog.WarningMessage"); //$NON-NLS-1$
 
+    private static final String JOBLET_MESSAGE = "Job closed will be updated automatically.";
+
     private static final String READ_ONLY_JOB_WARNING_MESSAGE = Messages
             .getString("ProcessUpdateManager.ReadOnlyProcessUpdateWarningMessages"); //$NON-NLS-1$
 
@@ -186,7 +188,11 @@ public class UpdateDetectionDialog extends SelectionDialog {
 
     private void checkInitialSelections() {
         for (UpdateResult result : getInputElements()) {
-            result.setChecked(true);
+            if (result.getResultType() != EUpdateResult.RELOAD && result.getRemark() != null
+                    && !result.getRemark().startsWith(UpdatesConstants.JOBLET + UpdatesConstants.COLON)) {
+                result.setChecked(true);
+            }
+            // result.setChecked(true);
             if (result.isReadOnlyProcess()) {
                 result.setChecked(false);
                 this.isJobReadOnly = true;
@@ -441,7 +447,11 @@ public class UpdateDetectionDialog extends SelectionDialog {
             imageLabe.setVisible(true);
         }
         if (messLabel != null && !messLabel.isDisposed()) {
-            messLabel.setText("\n" + WARNING_MESSAGE); //$NON-NLS-1$
+            if (isJobletResult()) {
+                messLabel.setText("\n" + WARNING_MESSAGE + "\n" + JOBLET_MESSAGE); //$NON-NLS-1$
+            } else {
+                messLabel.setText("\n" + WARNING_MESSAGE); //$NON-NLS-1$
+            }
         }
     }
 
@@ -450,11 +460,20 @@ public class UpdateDetectionDialog extends SelectionDialog {
             imageLabe.setVisible(false);
         }
         if (messLabel != null && !messLabel.isDisposed()) {
-            if (isOnlySimpleShow()) {
-                messLabel.setText(Messages.getString("UpdateDetectionDialog.ShowDependenciesMess")); //$NON-NLS-1$
+            if (isJobletResult()) {
+                if (isOnlySimpleShow()) {
+                    messLabel.setText(Messages.getString("UpdateDetectionDialog.ShowDependenciesMess") + "\n" + JOBLET_MESSAGE); //$NON-NLS-1$
+                } else {
+                    messLabel.setText(DEFAULT_MESSAGE + "\n" + JOBLET_MESSAGE); //$NON-NLS-1$
+                }
             } else {
-                messLabel.setText(DEFAULT_MESSAGE);
+                if (isOnlySimpleShow()) {
+                    messLabel.setText(Messages.getString("UpdateDetectionDialog.ShowDependenciesMess")); //$NON-NLS-1$
+                } else {
+                    messLabel.setText(DEFAULT_MESSAGE);
+                }
             }
+
         }
     }
 
@@ -463,10 +482,24 @@ public class UpdateDetectionDialog extends SelectionDialog {
             imageLabe.setVisible(true);
         }
         if (messLabel != null && !messLabel.isDisposed()) {
-            messLabel.setText(READ_ONLY_JOB_WARNING_MESSAGE);
+            if (isJobletResult()) {
+                messLabel.setText(READ_ONLY_JOB_WARNING_MESSAGE + "\n" + JOBLET_MESSAGE); //$NON-NLS-1$
+            } else {
+                messLabel.setText(READ_ONLY_JOB_WARNING_MESSAGE);
+            }
         }
         if (selectButton != null && !selectButton.isDisposed()) {
             selectButton.setVisible(false);
         }
+    }
+
+    private boolean isJobletResult() {
+        if (getInputElements() != null && getInputElements().size() > 0) {
+            if (getInputElements().get(0).getRemark() != null
+                    && getInputElements().get(0).getRemark().startsWith(UpdatesConstants.JOBLET + UpdatesConstants.COLON)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

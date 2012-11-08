@@ -171,8 +171,8 @@ public final class UpdateManagerUtils {
         return Collections.emptyList();
     }
 
-    public static boolean executeUpdates(final List<UpdateResult> results) {
-        return executeUpdates(results, false);
+    public static boolean executeUpdates(final List<UpdateResult> results, final boolean updateAllJobs) {
+        return executeUpdates(results, false, updateAllJobs);
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
@@ -192,13 +192,14 @@ public final class UpdateManagerUtils {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public static boolean executeUpdates(final List<UpdateResult> results, final boolean onlySimpleShow) {
+    public static boolean executeUpdates(final List<UpdateResult> results, final boolean onlySimpleShow,
+            final boolean updateAllJobs) {
         RepositoryWorkUnit<Boolean> repositoryWorkUnit = new RepositoryWorkUnit<Boolean>(
                 Messages.getString("UpdateManagerUtils.updateMOfification")) { //$NON-NLS-1$
 
             @Override
             protected void run() throws LoginException, PersistenceException {
-                result = doExecuteUpdates(results, onlySimpleShow);
+                result = doExecuteUpdates(results, onlySimpleShow, updateAllJobs);
             }
 
         };
@@ -207,7 +208,7 @@ public final class UpdateManagerUtils {
         return repositoryWorkUnit.getResult();
     }
 
-    private static boolean doExecuteUpdates(final List<UpdateResult> results, boolean onlySimpleShow) {
+    private static boolean doExecuteUpdates(final List<UpdateResult> results, boolean onlySimpleShow, final boolean updateAllJobs) {
         if (results == null || results.isEmpty()) {
             return false;
         }
@@ -230,6 +231,9 @@ public final class UpdateManagerUtils {
 
                         IRepositoryViewObject previousObj = null;
                         for (UpdateResult result : results) {
+                            if (!result.isChecked()) {
+                                continue;
+                            }
                             // several results may keep the same objectId , they are from the same process . So no need
                             // unload each time.
                             IRepositoryViewObject currentObj = null;
@@ -290,7 +294,7 @@ public final class UpdateManagerUtils {
                             }
 
                             // execute
-                            executeUpdate(result, monitor);
+                            executeUpdate(result, monitor, updateAllJobs);
 
                             if (result.getObjectId() != null) {
                                 result.setJob(null);
@@ -411,7 +415,7 @@ public final class UpdateManagerUtils {
                         }
 
                         // execute
-                        executeUpdate(result, monitor);
+                        executeUpdate(result, monitor, true);
 
                         if (result.getObjectId() != null) {
                             result.setJob(null);
@@ -512,7 +516,7 @@ public final class UpdateManagerUtils {
                     process2.setProperty(property);
                 }
 
-                ProcessType processType = process2.saveXmlFile();
+                ProcessType processType = process2.saveXmlFile(false);
 
                 Item item = process2.getProperty().getItem();
                 if (item instanceof JobletProcessItem) {
@@ -530,7 +534,7 @@ public final class UpdateManagerUtils {
 
     }
 
-    private static void executeUpdate(UpdateResult result, IProgressMonitor monitor) {
+    private static void executeUpdate(UpdateResult result, IProgressMonitor monitor, boolean updateAllJobs) {
         if (result.isReadOnlyProcess()) {
             return;
         }
@@ -580,7 +584,12 @@ public final class UpdateManagerUtils {
             if (job != null) {
                 if (job instanceof IProcess2) {
                     IProcess2 process = (IProcess2) job;
-                    process.getCommandStack().execute(command);
+                    if (updateAllJobs) {
+                        process.getCommandStack().execute(command);
+                    } else {
+                        command.execute();
+                    }
+
                     if (process.getEditor() != null) {
                         isSaveModifiedItem = true;
                     }

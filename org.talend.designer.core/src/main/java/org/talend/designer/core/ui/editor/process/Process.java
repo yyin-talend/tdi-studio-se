@@ -1217,6 +1217,84 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         return processType;
     }
 
+    @Override
+    public ProcessType saveXmlFile(boolean checkJoblet) throws IOException {
+
+        init();
+
+        TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
+        ProcessType processType = createProcessType(fileFact);
+
+        ParametersType params = fileFact.createParametersType();
+        processType.setParameters(params);
+
+        saveElementParameters(fileFact, this.getElementParameters(), processType.getParameters().getElementParameter(),
+                processType);
+        saveRoutinesDependencies(processType);
+
+        EList nList = processType.getNode();
+        EList cList = processType.getConnection();
+        MetadataEmfFactory factory = new MetadataEmfFactory();
+        JobletUtil jutil = new JobletUtil();
+        // save according to elem order to keep zorder (children insertion) in
+        // diagram
+        for (Element element : elem) {
+            if (element instanceof SubjobContainer) {
+                saveSubjob(fileFact, processType, (SubjobContainer) element);
+                for (NodeContainer container : ((SubjobContainer) element).getNodeContainers()) {
+                    if (container instanceof JobletContainer) {
+                        if (checkJoblet) {
+                            JobletContainer jobletCon = (JobletContainer) container;
+                            boolean needUpdate = false;
+                            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault()
+                                    .getService(IJobletProviderService.class);
+                            if (service != null) {
+                                needUpdate = service.checkModify(jobletCon);
+                            }
+
+                            saveJobletNode(jobletCon, needUpdate);
+                        }
+
+                        saveNode(fileFact, processType, nList, cList, container.getNode(), factory);
+                    } else {
+                        saveNode(fileFact, processType, nList, cList, container.getNode(), factory);
+                    }
+                }
+            }
+            if (element instanceof JobletContainer) {
+                if (checkJoblet) {
+                    JobletContainer jobletCon = (JobletContainer) element;
+                    boolean needUpdate = false;
+                    IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                            IJobletProviderService.class);
+                    if (service != null) {
+                        needUpdate = service.checkModify(jobletCon);
+                    }
+                    saveJobletNode(jobletCon, needUpdate);
+                }
+
+                saveNode(fileFact, processType, nList, cList, ((NodeContainer) element).getNode(), factory);
+            } else if (element instanceof NodeContainer) {
+                saveNode(fileFact, processType, nList, cList, ((NodeContainer) element).getNode(), factory);
+            } else if (element instanceof Note) {
+                saveNote(fileFact, processType, (Note) element);
+            }
+        }
+
+        /**
+         * Save the contexts informations
+         */
+        processType.setDefaultContext(contextManager.getDefaultContext().getName());
+        processType.setScreenshot(getScreenshot());
+        if (getScreenshot() != null) {
+            processType.getScreenshots().put("process", getScreenshot());
+        }
+        setScreenshot(null); // once be saved, set the screenshot to null to free memory
+        contextManager.saveToEmf(processType.getContext());
+        return processType;
+
+    }
+
     private void saveSubjob(TalendFileFactory fileFact, ProcessType process, SubjobContainer subjobContainer) {
         SubjobType sj = fileFact.createSubjobType();
 
