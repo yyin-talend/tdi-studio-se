@@ -62,7 +62,7 @@ public class UpdateDetectionDialog extends SelectionDialog {
 
     private static final String WARNING_MESSAGE = Messages.getString("UpdateDetectionDialog.WarningMessage"); //$NON-NLS-1$
 
-    private static final String JOBLET_MESSAGE = "Job closed will be updated automatically.";
+    private static final String JOBLET_MESSAGE = Messages.getString("UpdateDetectionDialog.jobletMessage"); //$NON-NLS-1$
 
     private static final String READ_ONLY_JOB_WARNING_MESSAGE = Messages
             .getString("ProcessUpdateManager.ReadOnlyProcessUpdateWarningMessages"); //$NON-NLS-1$
@@ -448,7 +448,7 @@ public class UpdateDetectionDialog extends SelectionDialog {
         }
         if (messLabel != null && !messLabel.isDisposed()) {
             if (isJobletResult()) {
-                messLabel.setText("\n" + WARNING_MESSAGE + "\n" + JOBLET_MESSAGE); //$NON-NLS-1$
+                messLabel.setText("\n" + WARNING_MESSAGE + "\n" + JOBLET_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
                 messLabel.setText("\n" + WARNING_MESSAGE); //$NON-NLS-1$
             }
@@ -462,7 +462,7 @@ public class UpdateDetectionDialog extends SelectionDialog {
         if (messLabel != null && !messLabel.isDisposed()) {
             if (isJobletResult()) {
                 if (isOnlySimpleShow()) {
-                    messLabel.setText(Messages.getString("UpdateDetectionDialog.ShowDependenciesMess") + "\n" + JOBLET_MESSAGE); //$NON-NLS-1$
+                    messLabel.setText(Messages.getString("UpdateDetectionDialog.ShowDependenciesMess") + "\n" + JOBLET_MESSAGE); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
                     messLabel.setText(DEFAULT_MESSAGE + "\n" + JOBLET_MESSAGE); //$NON-NLS-1$
                 }
