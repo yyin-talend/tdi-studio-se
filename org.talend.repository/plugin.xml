@@ -1720,7 +1720,16 @@
               id="org.talend.repository.model.migration.ChangeActiveMqJarName4MOMComponents"
               name="ChangeActiveMqJarName4MOMComponents"
               version="5.2.1">
-        </projecttask>        
+        </projecttask> 
+        <projecttask
+              beforeLogon="false"
+              breaks="5.2.0"
+              class="org.talend.repository.model.migration.AddMomInputToComponentsListMigrationTask"
+              description="If in tMOMCommit tMomRollback ComponentsList selection is empty and in Job tMomInput component exists, add it to  Component List select value"
+              id="org.talend.repository.model.migration.AddMomInputToComponentsListMigrationTask"
+              name="AddMomInputToComponentsListMigrationTask"
+              version="5.2.1">
+        </projecttask> 
    </extension>
    
    <extension
