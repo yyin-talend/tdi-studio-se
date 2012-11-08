@@ -219,7 +219,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             // generate the META-INFO folder
             ExportFileResource metaInfoFolder = genMetaInfoFolder(libResource, itemToBeExport);
             list.add(0, metaInfoFolder);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ProcessorException(e);
         }
 
@@ -351,8 +351,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      * @param processItem
      * @throws MalformedURLException
      */
-    private static void addOSGIRouteResources(ExportFileResource osgiResource, ProcessItem processItem)
-            throws MalformedURLException {
+    protected void addOSGIRouteResources(ExportFileResource osgiResource, ProcessItem processItem) throws Exception {
         ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                 ICamelDesignerCoreService.class);
         List<IPath> paths = camelService.synchronizeRouteResource(processItem);
@@ -467,9 +466,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             endpointUri = "/" + endpointUri;
         }
         // TESB-5916: Rest service can't be deployed in the Runtime on the port said in the studio
-//        if (endpointUri.contains("://")) {
-//            endpointUri = new URL(endpointUri).getPath();
-//        }
+        // if (endpointUri.contains("://")) {
+        // endpointUri = new URL(endpointUri).getPath();
+        // }
         if (endpointUri.equals("/services/") || endpointUri.equals("/services")) {
             // pass as is
         } else if (endpointUri.startsWith("/services/")) {

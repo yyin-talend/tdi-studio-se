@@ -14,6 +14,7 @@ package org.talend.repository.ui.wizards.exportjob.scriptsmanager;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
@@ -72,9 +73,9 @@ public abstract class JobScriptsManager {
 
     protected static final String WINDOWS_LAUNCHER = "run.bat"; //$NON-NLS-1$
 
-    protected static final String LIBRARY_FOLDER_NAME = "lib"; //$NON-NLS-1$
+    protected static final String LIBRARY_FOLDER_NAME = IMavenProperties.LIBRARY_FOLDER_NAME;
 
-    protected static final String PROVIDED_LIB_FOLDER = "provided-lib"; //$NON-NLS-1$
+    protected static final String PROVIDED_LIB_FOLDER = IMavenProperties.PROVIDED_LIB_FOLDER_NAME;
 
     protected static final String PATH_SEPARATOR = "/"; //$NON-NLS-1$
 
@@ -98,6 +99,8 @@ public abstract class JobScriptsManager {
 
     public static final String CMDFORUNIX = "\"$@\""; //$NON-NLS-1$
 
+    public static final String LAUNCHER_ALL = "all"; //$NON-NLS-1$
+
     protected String selectedJobVersion;
 
     private String bundleVersion;
@@ -116,6 +119,8 @@ public abstract class JobScriptsManager {
     protected int statisticPort;
 
     protected int tracePort;
+
+    private File tempExportFolder;
 
     public JobScriptsManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher, int statisticPort,
             int tracePort) {
@@ -476,6 +481,24 @@ public abstract class JobScriptsManager {
                 // do nothing here
             }
         }
+    }
+
+    protected File getSystemTempFolder() {
+        if (tempExportFolder == null) {
+            try {
+                tempExportFolder = File.createTempFile("Talend", null); //$NON-NLS-1$
+                if (tempExportFolder.exists() && tempExportFolder.isFile()) {
+                    tempExportFolder.delete();
+                }
+                tempExportFolder.mkdirs(); // use the same tmp file to make the tmp folder.
+
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+                tempExportFolder = new File(getTmpFolder());
+            }
+
+        }
+        return tempExportFolder;
     }
 
     /**

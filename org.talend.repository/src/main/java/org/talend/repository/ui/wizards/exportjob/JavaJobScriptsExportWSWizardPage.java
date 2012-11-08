@@ -51,6 +51,7 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.constants.FileConstants;
@@ -414,7 +415,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     public JobScriptsManager createJobScriptsManager() {
         Map<ExportChoice, Object> exportChoiceMap = getExportChoiceMap();
         String launcher = (getCurrentExportType1() == JobExportType.POJO) ? launcherCombo.getText() : "all";
-        String context = (contextCombo == null || contextCombo.isDisposed()) ? "Default" : contextCombo.getText();
+        String context = (contextCombo == null || contextCombo.isDisposed()) ? IContext.DEFAULT : contextCombo.getText();
         JobScriptsManager manager = JobScriptsManagerFactory.createManagerInstance(exportChoiceMap, context, launcher,
                 IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, getCurrentExportType1());
         manager.setDestinationPath(getDestinationValue());

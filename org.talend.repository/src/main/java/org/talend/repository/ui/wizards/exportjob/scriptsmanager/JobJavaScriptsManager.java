@@ -134,10 +134,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
 
     protected static final String USERBEANS_JAR = "userBeans.jar"; //$NON-NLS-1$
 
-    protected static final String MAVEN_PROP_LIB_PATH = "${lib.path}" + PATH_SEPARATOR; //$NON-NLS-1$
-
-    protected static final String MAVEN_PROP_PROVIDED_LIB_PATH = "${provided.lib.path}" + PATH_SEPARATOR;//$NON-NLS-1$
-
     private boolean needMappingInSystemRoutine = false;
 
     private MultiKeyMap compiledModules = new MultiKeyMap();
@@ -431,12 +427,12 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         replaceMavenBuildScriptProperties(rootElement, mavenPropertiesMap);
 
         // parent
-        Element parentEle = rootElement.element("parent"); //$NON-NLS-1$
+        Element parentEle = rootElement.element(IMavenProperties.ELE_PARENT);
         if (parentEle != null) {
             replaceMavenBuildScriptProperties(parentEle, mavenPropertiesMap);
         }
         // properties
-        Element propertiesEle = rootElement.element("properties"); //$NON-NLS-1$
+        Element propertiesEle = rootElement.element(IMavenProperties.ELE_PROPERTIES);
         if (propertiesEle != null) {
             replaceMavenBuildScriptProperties(propertiesEle, mavenPropertiesMap);
         }
@@ -446,7 +442,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
     protected void setMavenBuildScriptModules(Document pomDocument) {
         Element rootElement = pomDocument.getRootElement();
         // parent
-        Element parentEle = rootElement.element("modules"); //$NON-NLS-1$
+        Element parentEle = rootElement.element(IMavenProperties.ELE_MODULES);
         if (parentEle != null) {
             removeComments(parentEle);
             List originalElements = parentEle.elements();
@@ -454,7 +450,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             originalElements.clear();
             List<String> mavenModules = getMavenModules();
             for (String module : mavenModules) {
-                Element moduleElement = parentEle.addElement("module"); //$NON-NLS-1$
+                Element moduleElement = parentEle.addElement(IMavenProperties.ELE_MODULE);
                 moduleElement.setText(module);
             }
             for (Object eleObj : oldElements) {
@@ -488,11 +484,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         }
     }
 
+    protected void setMavenDependencyElements(Document pomDocument) {
+        addMavenDependencyElements(pomDocument, getCompiledModuleNeededs(), IMavenProperties.LIB_PATH);
+        addMavenDependencyElements(pomDocument, getExcludedModuleNeededs(), IMavenProperties.PROVIDED_LIB_PATH);
+    }
+
     protected void addMavenDependencyElements(Document pomDocument, Set<ModuleNeeded> neededModules, String libFolder) {
         Element rootElement = pomDocument.getRootElement();
-        Element parentEle = rootElement.element("dependencies"); //$NON-NLS-1$
+        Element parentEle = rootElement.element(IMavenProperties.ELE_DEPENDENCIES);
         if (parentEle == null) {
-            parentEle = rootElement.addElement("dependencies");//$NON-NLS-1$
+            parentEle = rootElement.addElement(IMavenProperties.ELE_DEPENDENCIES);
         }
         removeComments(parentEle);
         List<ModuleNeeded> modelesList = new ArrayList<ModuleNeeded>();
@@ -513,16 +514,16 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         if (jarNameWithoutExt.indexOf(".") != -1) { //$NON-NLS-1$
             jarNameWithoutExt = jarNameWithoutExt.substring(0, jarNameWithoutExt.lastIndexOf(".")); //$NON-NLS-1$
         }
-        Element dependencyElement = parentElement.addElement("dependency"); //$NON-NLS-1$
-        Element groupIdElement = dependencyElement.addElement("groupId"); //$NON-NLS-1$
+        Element dependencyElement = parentElement.addElement(IMavenProperties.ELE_DEPENDENCY);
+        Element groupIdElement = dependencyElement.addElement(IMavenProperties.ELE_GROUP_ID);
         groupIdElement.setText(jarNameWithoutExt);
-        Element artifactIdElement = dependencyElement.addElement("artifactId"); //$NON-NLS-1$
+        Element artifactIdElement = dependencyElement.addElement(IMavenProperties.ELE_ARTIFACT_ID);
         artifactIdElement.setText(jarNameWithoutExt);
-        Element versionElement = dependencyElement.addElement("version"); //$NON-NLS-1$
+        Element versionElement = dependencyElement.addElement(IMavenProperties.ELE_VERSION);
         versionElement.setText("1.0"); //$NON-NLS-1$
-        Element scopeElement = dependencyElement.addElement("scope"); //$NON-NLS-1$
+        Element scopeElement = dependencyElement.addElement(IMavenProperties.ELE_SCOPE);
         scopeElement.setText("system"); //$NON-NLS-1$
-        Element systemPathElement = dependencyElement.addElement("systemPath"); //$NON-NLS-1$
+        Element systemPathElement = dependencyElement.addElement(IMavenProperties.ELE_SYSTEMPATH);
         systemPathElement.setText(libFolder + jarName);
     }
 
@@ -535,8 +536,7 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             setMavenBuildScriptModules(pomDocument);
         }
         if (addDependencies) {
-            addMavenDependencyElements(pomDocument, getCompiledModuleNeededs(), MAVEN_PROP_LIB_PATH);
-            addMavenDependencyElements(pomDocument, getExcludedModuleNeededs(), MAVEN_PROP_PROVIDED_LIB_PATH);
+            setMavenDependencyElements(pomDocument);
         }
         saveXmlDocoment(pomDocument, mavenBuildFile);
     }

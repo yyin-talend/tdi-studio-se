@@ -77,6 +77,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
@@ -121,8 +122,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     protected static final String ESB_CATEGORY = "category";//$NON-NLS-1$
 
     protected static final String QUERY_MESSAGE_NAME = "queryMessageName";//$NON-NLS-1$
-
-    public static final String ALL_VERSIONS = "Latest"; //$NON-NLS-1$
 
     protected static final String OUTPUT_FILE_SUFFIX = FileConstants.ZIP_FILE_SUFFIX;
 
@@ -453,7 +452,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         String currentVersion = JobVersionUtils.getCurrentVersion(nodes[0]);
         versionCombo.setItems(allVersions);
         if (allVersions.length > 1) {
-            versionCombo.add(JobScriptsExportWizardPage.ALL_VERSIONS);
+            versionCombo.add(RelationshipItemBuilder.LATEST_VERSION);
         }
         versionCombo.setText(currentVersion);
         selectedJobVersion = currentVersion;
@@ -1174,7 +1173,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         } else {
             targetPath = getDestinationValue();
         }
-        if (this.selectedJobVersion != null && this.selectedJobVersion.equals(JobScriptsExportWizardPage.ALL_VERSIONS)) {
+        if (this.selectedJobVersion != null && this.selectedJobVersion.equals(RelationshipItemBuilder.LATEST_VERSION)) {
 
             if (this.originalRootFolderName == null) {
                 this.originalRootFolderName = manager.getRootFolderName(getDestinationValue());

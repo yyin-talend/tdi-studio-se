@@ -37,6 +37,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.relationship.RelationshipItemBuilder;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.designer.runprocess.ItemCacheManager;
@@ -52,7 +53,6 @@ import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.wizards.exportjob.JavaJobExportReArchieveCreator;
-import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.utils.JobVersionUtils;
 
@@ -112,7 +112,7 @@ public class JobExportAction implements IRunnableWithProgress {
             if (nodes != null && nodes.size() > 0) {
                 int size = nodes.size();
                 if (size == 1) {
-                    if (jobVersion != null && jobVersion.equals(JobScriptsExportWizardPage.ALL_VERSIONS)) {
+                    if (jobVersion != null && jobVersion.equals(RelationshipItemBuilder.LATEST_VERSION)) {
                         String[] allVersions = JobVersionUtils.getAllVersions(nodes.get(0));
                         for (String version : allVersions) {
                             monitor.subTask(Messages.getString(
@@ -188,7 +188,7 @@ public class JobExportAction implements IRunnableWithProgress {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                     ExportFileResource resource = new ExportFileResource(processItem, path + processItem.getProperty().getLabel());
                     processItem.getProcess().getNode();
-                    resource.setNode((RepositoryNode) node);
+                    resource.setNode(node);
                     value.add(resource);
                 }
             }
@@ -245,16 +245,45 @@ public class JobExportAction implements IRunnableWithProgress {
         }
         manager.setTopFolder(resourcesToExport);
 
-        // boolean ok =executeExportOperation(new ArchiveFileExportOperationFullPath(process));
-        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
-                getTempDestinationValue());
+        doArchiveExport(monitor, resourcesToExport);
 
-        executeExportOperation(exporterOperation, monitor);
-
-        // path can like name/name
-        manager.deleteTempFiles();
+        clean();
         ProcessorUtilities.resetExportConfig();
 
+        boolean generated = generatedCodes(version, monitor, processes);
+        if (!generated) {
+            return false;
+        }
+
+        monitor.subTask(Messages.getString("JobScriptsExportWizardPage.newExportSuccess", type)); //$NON-NLS-1$
+        reBuildJobZipFile(processes);
+        return true;
+    }
+
+    /**
+     * DOC ggu Comment method "doArchiveExport".
+     * 
+     * @param monitor
+     * @param resourcesToExport
+     */
+    protected void doArchiveExport(IProgressMonitor monitor, List<ExportFileResource> resourcesToExport) {
+        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
+                getTempDestinationValue());
+        executeExportOperation(exporterOperation, monitor);
+    }
+
+    protected void clean() {
+        manager.deleteTempFiles();
+    }
+
+    /**
+     * DOC ggu Comment method "generatedCodes".
+     * 
+     * @param version
+     * @param monitor
+     * @param processes
+     */
+    protected boolean generatedCodes(String version, IProgressMonitor monitor, List<ExportFileResource> processes) {
         String projectName = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                 .getProject().getLabel();
 
@@ -283,8 +312,6 @@ public class JobExportAction implements IRunnableWithProgress {
                 }
             }
         }
-        monitor.subTask(Messages.getString("JobScriptsExportWizardPage.newExportSuccess", type)); //$NON-NLS-1$
-        reBuildJobZipFile(processes);
         return true;
     }
 
@@ -327,7 +354,7 @@ public class JobExportAction implements IRunnableWithProgress {
      * 
      * @param processes
      */
-    private void reBuildJobZipFile(List<ExportFileResource> processes) {
+    protected void reBuildJobZipFile(List<ExportFileResource> processes) {
         JavaJobExportReArchieveCreator creator = null;
         String zipFile = getTempDestinationValue();
         String destinationZipFile = manager.getDestinationPath();
@@ -353,10 +380,10 @@ public class JobExportAction implements IRunnableWithProgress {
                 }
             }
             // Modified by Marvin Wang on Feb.1, 2012 for bug
-            if (canCreateNewFile(destinationZipFile))
+            if (canCreateNewFile(destinationZipFile)) {
                 // rezip the tmpFolder to zipFile
                 ZipToFile.zipFile(tmpFolder, destinationZipFile);
-            else {
+            } else {
                 MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Can not create a file",
                         "Can not create a file or have not the permission to create a file!");
             }

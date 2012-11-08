@@ -32,6 +32,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.documentation.ExportFileResource;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.IMavenProperties;
 import org.talend.resources.util.EMavenBuildScriptProperties;
 
 /**
@@ -42,16 +43,6 @@ import org.talend.resources.util.EMavenBuildScriptProperties;
  * 
  */
 public abstract class JavaScriptForESBWithMavenManager extends JobJavaScriptOSGIForESBManager {
-
-    public static final String SRC_PATH = "src/"; //$NON-NLS-1$
-
-    public static final String MAVEN_RESOURCES_PATH = SRC_PATH + "main/resources/"; //$NON-NLS-1$
-
-    public static final String MAVEN_SRC_PATH = SRC_PATH + "main/java/"; //$NON-NLS-1$
-
-    public static final String MAVEN_RESOURCES_LIB_PATH = MAVEN_RESOURCES_PATH + LIBRARY_FOLDER_NAME + PATH_SEPARATOR;
-
-    public static final String MAVEN_RESOURCES_PROVIDED_LIB_PATH = MAVEN_RESOURCES_PATH + PROVIDED_LIB_FOLDER + PATH_SEPARATOR;
 
     public JavaScriptForESBWithMavenManager(Map<ExportChoice, Object> exportChoiceMap, String contextName, String launcher,
             int statisticPort, int tracePort) {
@@ -81,7 +72,7 @@ public abstract class JavaScriptForESBWithMavenManager extends JobJavaScriptOSGI
                     if (path.startsWith("OSGI")) { //$NON-NLS-1$
                         Set<URL> urls = resource.getResourcesByRelativePath(path);
                         // put OSGI_INF to /src/main/resources/
-                        newResourcesMap.put(MAVEN_RESOURCES_PATH + path, urls);
+                        newResourcesMap.put(IMavenProperties.MAIN_RESOURCES_PATH + path, urls);
                     }
                 }
                 resource.removeAllMap();
@@ -89,9 +80,9 @@ public abstract class JavaScriptForESBWithMavenManager extends JobJavaScriptOSGI
                     resource.addResources(path, new ArrayList<URL>(newResourcesMap.get(path)));
                 }
             } else if (LIBRARY_FOLDER_NAME.equals(resource.getDirectoryName())) {
-                resource.setDirectoryName(MAVEN_RESOURCES_LIB_PATH);
+                resource.setDirectoryName(IMavenProperties.MAIN_RESOURCES_LIB_PATH);
             } else if (PROVIDED_LIB_FOLDER.equals(resource.getDirectoryName())) {
-                resource.setDirectoryName(MAVEN_RESOURCES_PROVIDED_LIB_PATH);
+                resource.setDirectoryName(IMavenProperties.MAIN_RESOURCES_PROVIDED_LIB_PATH);
             } else if (FileConstants.META_INF_FOLDER_NAME.equals(resource.getDirectoryName())) {
                 it.remove();
                 if (!resource.getAllResources().isEmpty()) {
@@ -183,10 +174,10 @@ public abstract class JavaScriptForESBWithMavenManager extends JobJavaScriptOSGI
         for (String path : processes[0].getRelativePathList()) {
             Set<URL> urls = processes[0].getResourcesByRelativePath(path);
             // put OSGI_INF to /src/main/resources/
-            if (path.startsWith(SRC_PATH)) {
-                newResourcesMap.put(path.replace(SRC_PATH, MAVEN_SRC_PATH), urls);
+            if (path.startsWith(IMavenProperties.SRC_PATH)) {
+                newResourcesMap.put(path.replace(IMavenProperties.SRC_PATH, IMavenProperties.MAIN_JAVA_PATH), urls);
             } else {
-                newResourcesMap.put(MAVEN_RESOURCES_PATH + path, urls);
+                newResourcesMap.put(IMavenProperties.MAIN_RESOURCES_PATH + path, urls);
             }
         }
         ExportFileResource sourceCodeResource = new ExportFileResource(null, ""); //$NON-NLS-1$
