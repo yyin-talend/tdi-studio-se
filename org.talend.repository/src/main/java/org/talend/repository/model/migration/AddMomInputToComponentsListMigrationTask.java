@@ -47,8 +47,6 @@ public class AddMomInputToComponentsListMigrationTask extends AbstractJobMigrati
 						"tMomRollback".equals(currentNode.getComponentName())) {
 						EList elements = currentNode.getElementParameter();
 						Iterator iterator = elements.iterator();
-						String endpoint = null;
-						boolean isFoundWSDLLocation = false;
 						while (iterator.hasNext()) {
 							ElementParameterType elementParameter = (ElementParameterType) iterator
 									.next();
@@ -75,8 +73,6 @@ public class AddMomInputToComponentsListMigrationTask extends AbstractJobMigrati
 					if ("tMomInput".equals(currentNode.getComponentName()) ) {
 						EList elements = currentNode.getElementParameter();
 						Iterator iterator = elements.iterator();
-						String endpoint = null;
-						boolean isFoundWSDLLocation = false;
 						while (iterator.hasNext()) {
 							ElementParameterType elementParameter = (ElementParameterType) iterator
 									.next();
