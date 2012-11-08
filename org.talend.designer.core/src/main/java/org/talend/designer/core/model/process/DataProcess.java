@@ -1692,6 +1692,9 @@ public class DataProcess {
             if (!mergeInfo.isEmpty()) {
                 ((AbstractNode) node).setThereLinkWithMerge(true);
                 ((AbstractNode) node).setLinkedMergeInfo(mergeInfo);
+            } else {
+                ((AbstractNode) node).setThereLinkWithMerge(false);
+                ((AbstractNode) node).setLinkedMergeInfo(null);
             }
         }
         // set the preStaLogCon must be first
