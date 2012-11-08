@@ -12,7 +12,9 @@
 // ============================================================================
 package org.talend.designer.dbmap.ui.visualmap.table;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.swt.SWT;
@@ -43,6 +45,7 @@ import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.language.AbstractDbLanguage.JOIN;
 import org.talend.designer.dbmap.language.IJoinType;
@@ -321,6 +324,18 @@ public class InputDataMapTableView extends DataMapTableView {
                 menu = new Menu(getShell());
 
                 IJoinType[] availableJoins = mapperManager.getCurrentLanguage().getAvailableJoins();
+
+                // TDI-22916 Add by plv:Remove the full outer join for tELTMysqlMap
+                if (mapperManager.getComponent().getElementParameter(EParameterName.COMPONENT_NAME.getName()).getValue()
+                        .equals("tELTMysqlMap")) {
+                    List<IJoinType> joinTypes = new ArrayList<IJoinType>();
+                    for (IJoinType joinType : availableJoins) {
+                        if (!joinType.equals(JOIN.FULL_OUTER_JOIN)) {
+                            joinTypes.add(joinType);
+                        }
+                    }
+                    availableJoins = (IJoinType[]) joinTypes.toArray(new IJoinType[joinTypes.size()]);
+                }
 
                 for (int i = 0; i < availableJoins.length; ++i) {
                     final String text = availableJoins[i].getLabel();
