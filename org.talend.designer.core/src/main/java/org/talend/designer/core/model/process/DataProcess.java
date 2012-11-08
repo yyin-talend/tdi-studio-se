@@ -1692,6 +1692,9 @@ public class DataProcess {
             if (!mergeInfo.isEmpty()) {
                 ((AbstractNode) node).setThereLinkWithMerge(true);
                 ((AbstractNode) node).setLinkedMergeInfo(mergeInfo);
+            } else {
+                ((AbstractNode) node).setThereLinkWithMerge(false);
+                ((AbstractNode) node).setLinkedMergeInfo(null);
             }
         }
         // set the preStaLogCon must be first
@@ -2605,8 +2608,8 @@ public class DataProcess {
         outgoingConnections.add(dataConnec);
         // add for bug TDI-21740 , add dataConnec to oldNodeTarget with suitable position
         Set<Map.Entry<String, Integer>> set = map.entrySet();
-        for (Iterator<Map.Entry<String, Integer>> it = set.iterator(); it.hasNext();) {
-            Map.Entry<String, Integer> entry = (Map.Entry<String, Integer>) it.next();
+        for (Entry<String, Integer> entry2 : set) {
+            Map.Entry<String, Integer> entry = entry2;
             if (entry.getKey().equals(dataConnec.getUniqueName())) {
                 ((List<IConnection>) oldNodeTarget.getIncomingConnections()).add(entry.getValue(), dataConnec);
             }
