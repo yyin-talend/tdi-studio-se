@@ -172,6 +172,7 @@ public class ConcurrentAdvancedMemoryLookup<V>  extends AdvancedMemoryLookup<V> 
     private int sizeResultList;
 
     private boolean hasResult;
+    private V lastCheckedKey;
     
     public ConcurrentAdvancedMemoryLookup(MATCHING_MODE matchingMode, boolean keepAllValues, boolean countValuesForEachKey) {
         super();
@@ -180,37 +181,72 @@ public class ConcurrentAdvancedMemoryLookup<V>  extends AdvancedMemoryLookup<V> 
         this.countValuesForEachKey = countValuesForEachKey; // || this.matchingMode == MATCHING_MODE.UNIQUE_MATCH;
         if (matchingMode != MATCHING_MODE.ALL_ROWS) {
             if (matchingMode == MATCHING_MODE.UNIQUE_MATCH && !keepAllValues) {
-                uniqueHash = new ConcurrentHashMap<V, V>(1000,.9f, 1);
+                uniqueHash = new ConcurrentHashMap<V, V>(1000,.75f, 1);
+            }
+            if (this.countValuesForEachKey) {
+                counterHash = new ConcurrentHashMap<V, Integer>(1000, .75f, 1);
+            }
+            mapOfCol = new ConcurrentMultiLazyValuesMap(new ConcurrentHashMap(1000,.75f,1));
+        }
+    }
+    public ConcurrentAdvancedMemoryLookup(ConcurrentAdvancedMemoryLookup<V> other) {
+    	super();
+        this.keepAllValues = other.keepAllValues;
+        this.matchingMode = other.matchingMode == null ? MATCHING_MODE.UNIQUE_MATCH : other.matchingMode;
+        this.countValuesForEachKey = other.countValuesForEachKey;
+        if (matchingMode != MATCHING_MODE.ALL_ROWS) {
+            if (matchingMode == MATCHING_MODE.UNIQUE_MATCH && !keepAllValues) {
+                uniqueHash = new ConcurrentHashMap<V,V>(other.uniqueHash.size(),.75f,1);
+                uniqueHash.putAll(other.uniqueHash);//new ConcurrentHashMap<V, V>(1000,.9f, 1);
             }
             if (this.countValuesForEachKey) {
                 counterHash = new ConcurrentHashMap<V, Integer>(1000, .9f, 1);
+                counterHash.putAll(other.counterHash);
             }
             mapOfCol = new ConcurrentMultiLazyValuesMap(new ConcurrentHashMap(1000,.9f,1));
+            mapOfCol.putAll(other.mapOfCol);
         }
     }
     public static synchronized <V> ConcurrentAdvancedMemoryLookup<V> copyLookup(ConcurrentAdvancedMemoryLookup<V> other) {
     	ConcurrentAdvancedMemoryLookup<V> tmp = new ConcurrentAdvancedMemoryLookup<V>(other.matchingMode,other.keepAllValues, other.countValuesForEachKey);
     	tmp.uniqueHash = other.uniqueHash;
-    	int tUHS = tmp.uniqueHash.size();
-    	int oUHS = other.uniqueHash.size();
+    	
     	tmp.counterHash = other.counterHash;
-    	int tCHS = tmp.counterHash.size();
-    	int oCHS = other.counterHash.size();
+    	if (tmp.counterHash != null) {
+    		int tCHS = tmp.counterHash.size();
+    		int oCHS = other.counterHash.size();
+    	}
     	tmp.mapOfCol = other.mapOfCol;
-    	int tMOCS = tmp.mapOfCol.size();
-    	int oMOCS = other.mapOfCol.size();
+    	if (tmp.mapOfCol != null) {
+    		int tMOCS = tmp.mapOfCol.size();
+    		int oMOCS = other.mapOfCol.size();
+    	}
+    	
     	tmp.list = other.list;
     	if (tmp.list != null) {
-    	int tls = tmp.list.size();
-    	int ols = other.list.size();
+    		int tls = tmp.list.size();
+    		int ols = other.list.size();
     	}
     	tmp.arrayValues = other.arrayValues;
     	tmp.arrayIsDirty = other.arrayIsDirty;
     	tmp.listResult = other.listResult;
     	tmp.objectResult= other.objectResult;
-    	
+    	if (tmp.uniqueHash != null) {
+        	int tUHS = tmp.uniqueHash.size();
+        	int oUHS = other.uniqueHash.size();
+        }
     	
     	return tmp;
+    }
+    public String getSnapshot() {
+    	String rc = "";
+    	rc += "arrayValues = ["+arrayValues+"]";
+    	rc += "\tarrIsDirts = ["+arrayIsDirty+"]";
+    	rc += "\tcounterHash = ["+counterHash+"]";
+    	rc += "\tlist = ["+list+"]";
+    	rc += "\tobjectResult = ["+objectResult+"]";
+    	rc += "\tlastCheckedKey = ["+lastCheckedKey+"]";
+    	return rc;
     }
     public static <V> ConcurrentAdvancedMemoryLookup<V> getLookup(MATCHING_MODE matchingMode) {
         return new ConcurrentAdvancedMemoryLookup<V>(matchingMode, false, false);
@@ -288,9 +324,7 @@ public class ConcurrentAdvancedMemoryLookup<V>  extends AdvancedMemoryLookup<V> 
     	};
     }
     public void lookup(V key) {
-    	if (key == null) {
-    		System.out.println("KEY IS NULL");
-    	}
+    	lastCheckedKey = key;
         if (matchingMode == MATCHING_MODE.UNIQUE_MATCH) {
             listResult = null;
             objectResult = uniqueHash.get(key);

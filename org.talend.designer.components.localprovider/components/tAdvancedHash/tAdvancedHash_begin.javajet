@@ -90,9 +90,12 @@
 			   %>
 			   		org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE matchingModeEnum_<%=connectionName%> = 
 			   			org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE.<%= matchingModeStr %>;
-			   <%if (includeParallelComps) {%>
+			   			
+			   <%if (includeParallelComps && !(hashConfiguration != null && hashConfiguration.isPersistent() || bSortOnDisk)) {%>
 			   synchronized(this) {
+			   		try {  
 			   		if (globalMap.get("tHash_Lookup_<%=connectionName%>") == null) {
+			   		
 			   <%
 			   	}
 				if (hashConfiguration != null && hashConfiguration.isPersistent() || bSortOnDisk) {
@@ -112,10 +115,12 @@
 	   				tHash_Lookup_<%=connectionName%>.initPut();
 
 		   	   	   globalMap.put("tHash_Lookup_<%=connectionName%>", tHash_Lookup_<%=connectionName%>);
+		   	   	   
 	   			<%	
 	   			} else {
 	   				if (includeParallelComps) {
 	   			%>
+	   			
 	   			org.talend.designer.components.lookup.memory.AdvancedMemoryLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
 	   						org.talend.designer.components.lookup.memory.ConcurrentAdvancedMemoryLookup.
 	   							<<%=connectionName%>Struct>getLookup(matchingModeEnum_<%=connectionName%>);
@@ -142,4 +147,4 @@
 	}
 
 %>
-            
+           
