@@ -423,7 +423,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
      * 
      * @param path
      */
-    private RoutineItem createRoutine(IPath path, String label, File initFile, String name) {
+    private RoutineItem createRoutine(final IPath path, String label, File initFile, String name) {
 
         Property property = PropertiesFactory.eINSTANCE.createProperty();
         property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
@@ -431,7 +431,7 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
         property.setStatusCode(""); //$NON-NLS-1$
         property.setLabel(label);
 
-        RoutineItem routineItem = PropertiesFactory.eINSTANCE.createRoutineItem();
+        final RoutineItem routineItem = PropertiesFactory.eINSTANCE.createRoutineItem();
 
         routineItem.setProperty(property);
 
@@ -458,11 +458,23 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
         routineContent = chanageRoutinesPackage(routineContent, name);
         byteArray.setInnerContent(routineContent.getBytes());
         routineItem.setContent(byteArray);
-        IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+        final IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
             property.setId(repositoryFactory.getNextId());
             repositoryFactory.createParentFoldersRecursively(ERepositoryObjectType.getItemType(routineItem), path);
-            repositoryFactory.create(routineItem, path);
+            Display.getDefault().syncExec(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        repositoryFactory.create(routineItem, path);
+                    } catch (PersistenceException e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+
+            });
+
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
         }
