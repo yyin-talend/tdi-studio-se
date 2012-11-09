@@ -157,6 +157,7 @@
       <import plugin="org.talend.metadata.managment.ui"/>
       <import plugin="org.talend.libraries.jexcel"/>
       <import plugin="org.talend.libraries.jdom"/>
+      <import plugin="org.eclipse.jdt.groovy.core"/>
    </requires>
 
    <plugin
