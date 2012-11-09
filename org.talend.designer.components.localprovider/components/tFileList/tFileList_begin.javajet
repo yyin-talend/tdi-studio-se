@@ -18,6 +18,7 @@
   boolean useGlob = ("true").equals(ElementParameterParser.getValue(node, "__GLOBEXPRESSIONS__"));
   List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
   boolean toSlash = ("true").equals(ElementParameterParser.getValue(node, "__FORMAT_FILEPATH_TO_SLASH__"));
+  boolean caseSensitive = ("YES").equals(ElementParameterParser.getValue(node, "__CASE_SENSITIVE__"));
   
   class codeGenerater{
     public void genFileNameOder(String _cid, String _suffix){
@@ -195,7 +196,7 @@
   %>   
     
   String directory_<%=cid%> = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>;
-  java.util.List<String> maskList_<%=cid %> = new java.util.ArrayList<String>();
+  final java.util.List<String> maskList_<%=cid %> = new java.util.ArrayList<String>();
   <%
   if (files.size() == 0){
     if (useGlob){
@@ -216,37 +217,32 @@
   <%}%>  
   int NB_FILE<%=cid%> = 0;
 
-  for (String filemask_<%=cid%> : maskList_<%=cid%>) {
-  	boolean case_sensitive_<%=cid%> = <%=("YES").equals(ElementParameterParser.getValue(node, "__CASE_SENSITIVE__")) %>;
-  
-    <%if (useGlob){%>
-      filemask_<%=cid%> = org.apache.oro.text.GlobCompiler.globToPerl5(filemask_<%=cid%>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
+  final boolean case_sensitive_<%=cid%> = <%=caseSensitive %>;
     <%
-    }
     if (ifexclude){
     %>   
       String excludefilemask_<%=cid%> = <%=ElementParameterParser.getValue(node, "__EXCLUDEFILEMASK__")%>;
-	  List<java.util.regex.Pattern> excludefileNameEachPattern_<%=cid%> = new java.util.ArrayList<java.util.regex.Pattern>();
+	  final List<java.util.regex.Pattern> excludefileNameEachPattern_<%=cid%> = new java.util.ArrayList<java.util.regex.Pattern>();
 	  if(excludefilemask_<%=cid%>!=null && !"".equals(excludefilemask_<%=cid%>)) {
 	  	for(String excludefilemaskEach_<%=cid%> : excludefilemask_<%=cid%>.split(",")) {
 	  	 <%if (useGlob){%>
 	  		excludefilemaskEach_<%=cid%> = org.apache.oro.text.GlobCompiler.globToPerl5(excludefilemaskEach_<%=cid%>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
-	  	 <%}%>
-	  	 	if (!case_sensitive_<%=cid%>){
+	  	 <%}
+	  	 	if (!caseSensitive){
+	  	 %>
 				excludefileNameEachPattern_<%=cid%>.add(java.util.regex.Pattern.compile(excludefilemaskEach_<%=cid%>,java.util.regex.Pattern.CASE_INSENSITIVE));
+		 <%
 			} else {
+		 %>
 				excludefileNameEachPattern_<%=cid%>.add(java.util.regex.Pattern.compile(excludefilemaskEach_<%=cid%>));
-			}	  	 		
+		 <%
+			}
+		 %>	  	 		
 	  	}
 	  }
     <%}%>
-    java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_<%=cid%>);
-    
-    if (!case_sensitive_<%=cid%>){
-      fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_<%=cid%>, java.util.regex.Pattern.CASE_INSENSITIVE);
-    } 
-    java.io.File file_<%=cid%> = new java.io.File(directory_<%=cid%>);
     final java.util.List<java.io.File> list_<%=cid%> = new java.util.ArrayList<java.io.File>();
+	java.io.File file_<%=cid%> = new java.io.File(directory_<%=cid%>);
     
     <%
     if (incldSubdir) {
@@ -258,8 +254,41 @@
               if (("FILES").equals(filelistType)) {
               %>
                 if (!file.isDirectory()) {
-                  list_<%=cid%>.add(file);
-                  return true;
+                  	String fileName_<%=cid%> = file.getName();
+					for (final String filemask_<%=cid%> : maskList_<%=cid%>) {
+						String filemask_compile_<%=cid%> = filemask_<%=cid%>;
+						<%if (useGlob){%>
+					    	filemask_compile_<%=cid%> = org.apache.oro.text.GlobCompiler.globToPerl5(filemask_<%=cid%>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
+					    <%
+					    }
+					    if (caseSensitive){
+					    %>
+					      java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_compile_<%=cid%>);
+					    <%
+					    }else{
+					    %>
+					      java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_compile_<%=cid%>, java.util.regex.Pattern.CASE_INSENSITIVE);
+		               <%
+		                }
+		               %>
+	                  	if (fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).matches()){
+		                  <%if (ifexclude){%>
+						 		boolean isExclude_<%=cid%> = false;
+						        for(java.util.regex.Pattern pattern : excludefileNameEachPattern_<%=cid%>) {
+						        	if(pattern.matcher(fileName_<%=cid%>).matches()) {
+						        		isExclude_<%=cid%> = true;
+						        		break;
+						        	}
+						        }
+						        if(!isExclude_<%=cid%>) {
+						          list_<%=cid%>.add(file);
+						        }
+		                  <%}else{%>
+			                  list_<%=cid%>.add(file);
+		                  <%}%>
+						}
+					}
+                	return true;
                 } else {
                   file.listFiles(this);
                 }
@@ -269,16 +298,80 @@
                 if (!file.isDirectory()) {
                   return true;
                 } else {
-                  list_<%=cid%>.add(file);
+                	String fileName_<%=cid%> = file.getName();
+                	for (final String filemask_<%=cid%> : maskList_<%=cid%>) {
+                		String filemask_compile_<%=cid%> = filemask_<%=cid%>;
+						<%if (useGlob){%>
+					    	filemask_compile_<%=cid%> = org.apache.oro.text.GlobCompiler.globToPerl5(filemask_<%=cid%>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
+					    <%
+					    }
+					    if (caseSensitive){
+					    %>
+					      java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_compile_<%=cid%>);
+					    <%
+					    }else{
+					    %>
+					      java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_compile_<%=cid%>, java.util.regex.Pattern.CASE_INSENSITIVE);
+		               <%
+		                }
+		               %>
+	                  	if (fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).matches()){
+		                  <%if (ifexclude){%>
+						 		boolean isExclude_<%=cid%> = false;
+						        for(java.util.regex.Pattern pattern : excludefileNameEachPattern_<%=cid%>) {
+						        	if(pattern.matcher(fileName_<%=cid%>).matches()) {
+						        		isExclude_<%=cid%> = true;
+						        		break;
+						        	}
+						        }
+						        if(!isExclude_<%=cid%>) {
+						          list_<%=cid%>.add(file);
+						        }
+		                  <%}else{%>
+			                  list_<%=cid%>.add(file);
+		                  <%}%>
+						}
+					}
                   file.listFiles(this);
                 }
               <%
               } else if(("BOTH").equals(filelistType)) {
               %>
-                if (!file.isDirectory()) {
-                  list_<%=cid%>.add(file);
-                } else {
-                  list_<%=cid%>.add(file);
+                 String fileName_<%=cid%> = file.getName();
+                 for (final String filemask_<%=cid%> : maskList_<%=cid%>) {
+                 	String filemask_compile_<%=cid%> = filemask_<%=cid%>;
+					<%if (useGlob){%>
+				    	filemask_compile_<%=cid%> = org.apache.oro.text.GlobCompiler.globToPerl5(filemask_<%=cid%>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
+				    <%
+				    }
+				    if (caseSensitive){
+				    %>
+				      java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_compile_<%=cid%>);
+				    <%
+				    }else{
+				    %>
+				      java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_compile_<%=cid%>, java.util.regex.Pattern.CASE_INSENSITIVE);
+	               <%
+	                }
+	               %>
+                  	if (fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).matches()){
+	                  <%if (ifexclude){%>
+					 		boolean isExclude_<%=cid%> = false;
+					        for(java.util.regex.Pattern pattern : excludefileNameEachPattern_<%=cid%>) {
+					        	if(pattern.matcher(fileName_<%=cid%>).matches()) {
+					        		isExclude_<%=cid%> = true;
+					        		break;
+					        	}
+					        }
+					        if(!isExclude_<%=cid%>) {
+					          list_<%=cid%>.add(file);
+					        }
+	                  <%}else{%>
+		                  list_<%=cid%>.add(file);
+	                  <%}%>
+					}
+				}
+                if (file.isDirectory()) {
                   file.listFiles(this);
                 }
               <%
@@ -291,25 +384,124 @@
     <%
     } else {
     %> 
-      file_<%=cid%>.listFiles(new java.io.FilenameFilter() {
-          public boolean accept(java.io.File dir, String name) {
-              java.io.File file = new java.io.File(dir, name);
+		file_<%=cid%>.listFiles(new java.io.FilenameFilter() {
+			public boolean accept(java.io.File dir, String name) {
+				java.io.File file = new java.io.File(dir, name);
               <%
               if (("FILES").equals(filelistType)) {
               %>
                 if (!file.isDirectory()) {
-                  list_<%=cid%>.add(file);
+                	String fileName_<%=cid%> = file.getName();
+                	for (final String filemask_<%=cid%> : maskList_<%=cid%>) {
+						String filemask_compile_<%=cid%> = filemask_<%=cid%>;
+						<%if (useGlob){%>
+							filemask_compile_<%=cid%> = org.apache.oro.text.GlobCompiler.globToPerl5(filemask_<%=cid%>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
+						<%
+						}
+						if (caseSensitive){
+						%>
+							java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_compile_<%=cid%>);
+						<%
+						}else{
+						%>
+							java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_compile_<%=cid%>, java.util.regex.Pattern.CASE_INSENSITIVE);
+						<%
+						} 
+						%>
+	                  	if (fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).matches()){
+	                  <%if (ifexclude){%>
+					 		boolean isExclude_<%=cid%> = false;
+					        for(java.util.regex.Pattern pattern : excludefileNameEachPattern_<%=cid%>) {
+					        	if(pattern.matcher(fileName_<%=cid%>).matches()) {
+					        		isExclude_<%=cid%> = true;
+					        		break;
+					        	}
+					        }
+					        if(!isExclude_<%=cid%>) {
+					          list_<%=cid%>.add(file);
+					        }
+	                  <%}else{%>
+		                  list_<%=cid%>.add(file);
+	                  <%}%>
+						}
+					}
                 }
               <%
               } else if (("DIRECTORIES").equals(filelistType)) {
               %>
                 if (file.isDirectory()) {
-                  list_<%=cid%>.add(file);
+                	String fileName_<%=cid%> = file.getName();
+                	for (final String filemask_<%=cid%> : maskList_<%=cid%>) {
+	                	String filemask_compile_<%=cid%> = filemask_<%=cid%>;
+						<%if (useGlob){%>
+							filemask_compile_<%=cid%> = org.apache.oro.text.GlobCompiler.globToPerl5(filemask_<%=cid%>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
+						<%
+						}
+						if (caseSensitive){
+						%>
+							java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_compile_<%=cid%>);
+						<%
+						}else{
+						%>
+							java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_compile_<%=cid%>, java.util.regex.Pattern.CASE_INSENSITIVE);
+						<%
+						} 
+						%>
+	                  	if (fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).matches()){
+		                  <%if (ifexclude){%>
+						 		boolean isExclude_<%=cid%> = false;
+						        for(java.util.regex.Pattern pattern : excludefileNameEachPattern_<%=cid%>) {
+						        	if(pattern.matcher(fileName_<%=cid%>).matches()) {
+						        		isExclude_<%=cid%> = true;
+						        		break;
+						        	}
+						        }
+						        if(!isExclude_<%=cid%>) {
+						          list_<%=cid%>.add(file);
+						        }
+		                  <%}else{%>
+			                  list_<%=cid%>.add(file);
+		                  <%}%>
+						}
+					}
                 }
               <%
               } else if (("BOTH").equals(filelistType)) {
               %>
-                list_<%=cid%>.add(file);
+                	String fileName_<%=cid%> = file.getName();
+                	for (final String filemask_<%=cid%> : maskList_<%=cid%>) {
+	                	String filemask_compile_<%=cid%> = filemask_<%=cid%>;
+						<%if (useGlob){%>
+							filemask_compile_<%=cid%> = org.apache.oro.text.GlobCompiler.globToPerl5(filemask_<%=cid%>.toCharArray(), org.apache.oro.text.GlobCompiler.DEFAULT_MASK);
+						<%
+						}
+						if (caseSensitive){
+						%>
+							java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_compile_<%=cid%>);
+						<%
+						}else{
+						%>
+							java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_compile_<%=cid%>, java.util.regex.Pattern.CASE_INSENSITIVE);
+						<%
+						} 
+						%>
+	                  	if (fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).matches()){
+		                  <%if (ifexclude){%>
+						 		boolean isExclude_<%=cid%> = false;
+						        for(java.util.regex.Pattern pattern : excludefileNameEachPattern_<%=cid%>) {
+						        	if(pattern.matcher(fileName_<%=cid%>).matches()) {
+						        		isExclude_<%=cid%> = true;
+						        		break;
+						        	}
+						        }
+						        if(!isExclude_<%=cid%>) {
+						          list_<%=cid%>.add(file);
+						        }
+		                  <%}else{%>
+			                  list_<%=cid%>.add(file);
+		                  <%}%>
+						}
+					}
               <%
               }
               %>
@@ -320,8 +512,6 @@
     <%
     }
     %> 
-    //int NB_FILE<%=cid%> = 0;
-    java.io.File [] tempArray_<%=cid %> = list_<%=cid%>.toArray(new java.io.File[list_<%=cid%>.size()]);
     <%
     boolean bOrdByDefault = "true".equals(ElementParameterParser.getValue(node, "__ORDER_BY_NOTHING__"));
     boolean bOrdByFileName = "true".equals(ElementParameterParser.getValue(node, "__ORDER_BY_FILENAME__"));
@@ -336,52 +526,30 @@
     
     if (bOrdByDefault){
     %>
-      java.util.Arrays.sort(tempArray_<%=cid %>);
+      java.util.Collections.sort(list_<%=cid %>);
     <%
     } else if (bOrdByFileName){
       cg.genFileNameOder(cid, suffix);
       %>
-      java.util.Arrays.sort(tempArray_<%=cid %>, fileName<%=suffix%>_<%=cid%>);
+      java.util.Collections.sort(list_<%=cid%>, fileName<%=suffix%>_<%=cid%>);
     <%
     } else if (bOrdByFileSize){
       cg.genFileSizeOder(cid, suffix);
       %>
-      java.util.Arrays.sort(tempArray_<%=cid %>, filseSize<%=suffix%>_<%=cid%>);
+      java.util.Collections.sort(list_<%=cid %>, filseSize<%=suffix%>_<%=cid%>);
     <%
     } else if (bOrdByModifiedTime){
       cg.genLastModifiedOder(cid, suffix);
       %>
-      java.util.Arrays.sort(tempArray_<%=cid %>, lastModified<%=suffix%>_<%=cid%>);
+      java.util.Collections.sort(list_<%=cid %>, lastModified<%=suffix%>_<%=cid%>);
     <%
     }
     %>
-        
-    java.util.List<java.io.File> fileList_<%=cid%> = new java.util.ArrayList<java.io.File>();
-    fileList_<%=cid%> = java.util.Arrays.asList(tempArray_<%=cid %>);
     
-    for (int i_<%=cid%> = 0; i_<%=cid%> < fileList_<%=cid%>.size(); i_<%=cid%>++){
-      java.io.File files_<%=cid%> = fileList_<%=cid%>.get(i_<%=cid%>);
+    for (int i_<%=cid%> = 0; i_<%=cid%> < list_<%=cid%>.size(); i_<%=cid%>++){
+      java.io.File files_<%=cid%> = list_<%=cid%>.get(i_<%=cid%>);
       String fileName_<%=cid%> = files_<%=cid%>.getName();
       
-      <%if (ifexclude){%> 
-        if (!fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).matches()){
-          continue;
-        }
-        boolean isExclude_<%=cid%> = false;
-        for(java.util.regex.Pattern pattern : excludefileNameEachPattern_<%=cid%>) {
-        	if(pattern.matcher(fileName_<%=cid%>).matches()) {
-        		isExclude_<%=cid%> = true;
-        		break;
-        	}
-        }
-        if(isExclude_<%=cid%>) {
-          continue;
-        }
-      <%} else {%>
-        if (!fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).matches()){
-          continue;
-        }
-      <%}%> 
       String currentFileName_<%=cid%> = files_<%=cid%>.getName(); 
       String currentFilePath_<%=cid%> = files_<%=cid%>.getAbsolutePath();
       String currentFileDirectory_<%=cid%> = files_<%=cid%>.getParent();
