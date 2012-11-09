@@ -122,9 +122,15 @@ format_<%=cid %>.setEncoding(<%=encoding%>);
 <%@ include file="tFileOutputMSXML_begin.inc.javajet"%>
 
 <%
-		OptimizeCodeGenerator optimizeGen = new OptimizeCodeGenerator(cid, ("true").equals(ElementParameterParser.getValue(node,"__OPTIMIZE_CODE__")));
+		int schemaOptNum=100;
+		String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
+		if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
+			schemaOptNum  = Integer.parseInt(schemaOptNumStr);
+		}
+		OptimizeCodeGenerator optimizeGen = new OptimizeCodeGenerator(cid,schemaOptNum );
 		optimizeGen.setBeginPart(true);
 		optimizeGen.incomingName = incomingName;
+		optimizeGen.initIsOptimizeCode();
 		optimizeGen.generateCode(node);
 	}
 }

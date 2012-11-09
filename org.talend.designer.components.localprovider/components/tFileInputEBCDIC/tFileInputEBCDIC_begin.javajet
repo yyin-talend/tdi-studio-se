@@ -21,7 +21,12 @@
     
 	String filename = ElementParameterParser.getValue(node,"__FILENAME__");
 	String copybook = ElementParameterParser.getValue(node,"__COPYBOOK__");
-	boolean isOptimizeCode=("true").equals(ElementParameterParser.getValue(node,"__OPTIMIZE_CODE__"));
+	int schemaOptNum=100;
+	String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
+	if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
+		schemaOptNum  = Integer.parseInt(schemaOptNumStr);
+	}
+	boolean isOptimizeCode=false;
 %>
 
 	// open file
@@ -34,6 +39,26 @@
 <%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 	List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
+	for(Map<String, String> schemaMap : schemas) {
+			String schemaName = schemaMap.get("SCHEMA");
+			if(conns != null && conns.size() > 0){
+				for(IConnection conn : conns){
+					if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+						if(schemaName.equals(conn.getMetadataTable().getLabel())){
+							IMetadataTable justMetadata = conn.getMetadataTable();
+							List<IMetadataColumn> justColumnList = justMetadata.getListColumns();
+							if(schemaOptNum<justColumnList.size()){
+								isOptimizeCode=true;
+							}
+							break;
+						}
+					}
+				}
+			}
+			if(isOptimizeCode){
+				break;
+			}
+		}
 	if(isOptimizeCode){
 %>
 	class EBCDICUtil_<%=cid%>{
@@ -61,21 +86,21 @@
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
 					IMetadataColumn column = justColumnList.get(valueN);
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-					if(valueN%100==0){
+					if(valueN%schemaOptNum==0){
 %>
-					public void getValue_<%=schemaName%>_<%=valueN/100%>(final <%=justConn.getName() %>Struct <%=justConn.getName() %>,List inrecord_<%=cid %>){
+					public void getValue_<%=schemaName%>_<%=valueN/schemaOptNum%>(final <%=justConn.getName() %>Struct <%=justConn.getName() %>,List inrecord_<%=cid %>){
 <%
 					}
 %>				
 						<%=justConn.getName() %>.<%=column.getLabel()%> = (<%=javaType.getLabel() %>)inrecord_<%=cid %>.get(<%=valueN%>);
 <%
-					if((valueN+1)%100==0){
+					if((valueN+1)%schemaOptNum==0){
 %>
 					}
 <%
 					}
 				}
-					if(sizeListColumns>0&&(sizeListColumns%100)>0){
+					if(sizeListColumns>0&&(sizeListColumns%schemaOptNum)>0){
 %>
 					}
 <%
@@ -142,9 +167,9 @@ if(justConn != null){//------BBB
 		<%=justConn.getName() %>.<%=column.getLabel()%> = (<%=javaType.getLabel() %>)inrecord_<%=cid %>.get(<%=valueN%>);
 <%
 			}else{
-				if(valueN%100==0){
+				if(valueN%schemaOptNum==0){
 %>
-		ebcdicUtil_<%=cid%>.getValue_<%=schemaName%>_<%=valueN/100%>(<%=justConn.getName() %>,inrecord_<%=cid %>);
+		ebcdicUtil_<%=cid%>.getValue_<%=schemaName%>_<%=valueN/schemaOptNum%>(<%=justConn.getName() %>,inrecord_<%=cid %>);
 <%
 				}
 			}
