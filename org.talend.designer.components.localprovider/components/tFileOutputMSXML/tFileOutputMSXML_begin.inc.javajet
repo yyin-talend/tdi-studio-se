@@ -480,12 +480,13 @@ class OptimizeCodeGenerator {
 	String cid;
 	boolean isBeginPart = false;
 	boolean isOptimizeCode = false;
+	int schemaOptNum=100;
 	
 	String incomingName = "";
 	
-	public OptimizeCodeGenerator (String cid,boolean isOptimizeCode) {
+	public OptimizeCodeGenerator (String cid,int schemaOptNum) {
 		this.cid = cid;
-		this.isOptimizeCode = isOptimizeCode;
+		this.schemaOptNum = schemaOptNum;
 	}
 	public void setBeginPart (boolean isBegin) {
 		this.isBeginPart = isBegin;
@@ -498,7 +499,26 @@ class OptimizeCodeGenerator {
 	public boolean isOptimizeCode() {
 		return this.isOptimizeCode;
 	}
-	
+	public void initIsOptimizeCode(){
+		IConnection incomingConn = null;
+    	INode preNode = null;
+    	List<IMetadataTable> preMetadatas = null;
+    	IMetadataTable preMetadata = null;
+    	for (IConnection conn : incomingConns) {
+    		if ( conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
+    			incomingConn = conn;
+				preNode = incomingConn.getSource();
+				preMetadatas = preNode.getMetadataList();
+				preMetadata = preMetadatas.get(0);
+    			if(preMetadata!=null){
+    				this.isOptimizeCode=this.isOptimizeCode || (this.schemaOptNum < preMetadata.getListColumns().size());
+    			}
+    		}
+    		if(this.isOptimizeCode){
+    			break;
+    		}
+    	}
+	}
 	public void generateCode(INode node) {
 		generateClassNameWithRBlock();
 		// generate the variable part for the begin part
@@ -612,9 +632,9 @@ java.util.Map<String,String> prefixToUriForNamespace_<%=sourceName %>_<%=cid%> =
 	                if (this.isBeginPart && this.isOptimizeCode) {
 						int columnsCount=0;
 						for(IMetadataColumn column :preMetadata.getListColumns()){
-							if(columnsCount%100==0){
+							if(columnsCount%this.schemaOptNum==0){
 %>
-	void putValue_<%=incomingConn.getUniqueName()%>_<%=columnsCount/100%>(final <%=NodeUtil.getPrivateConnClassName(incomingConn)%>Struct <%=incomingConn.getName() %>){
+	void putValue_<%=incomingConn.getUniqueName()%>_<%=columnsCount/this.schemaOptNum%>(final <%=NodeUtil.getPrivateConnClassName(incomingConn)%>Struct <%=incomingConn.getName() %>){
 <%
 							}
 %>
@@ -623,14 +643,14 @@ java.util.Map<String,String> prefixToUriForNamespace_<%=sourceName %>_<%=cid%> =
 			isXML10Char_<%=cid%> = org.talend.util.xml.XMLText.isValid(<%tool.getValue(column); %>);
 		}
 <%
-							if((columnsCount+1)%100==0){
+							if((columnsCount+1)%this.schemaOptNum==0){
 %>
 	}
 <%
 							}
 							columnsCount++;
 						}
-						if(preMetadata.getListColumns().size()>0&&(preMetadata.getListColumns().size()%100)>0){
+						if(preMetadata.getListColumns().size()>0&&(preMetadata.getListColumns().size()%this.schemaOptNum)>0){
 %>
 	}
 <%
@@ -690,9 +710,9 @@ if(!this.isBeginPart && this.isOptimizeCode) {
 	if (this.isBeginPart && this.isOptimizeCode) {
 		int count=0;
 		for(IMetadataColumn column :preMetadata.getListColumns()){
-			if(count%100==0){
+			if(count%this.schemaOptNum==0){
 %>
-	putValue_<%=incomingConn.getUniqueName()%>_<%=count/100%>(<%=incomingConn.getName() %>);
+	putValue_<%=incomingConn.getUniqueName()%>_<%=count/this.schemaOptNum%>(<%=incomingConn.getName() %>);
 <%
 			}
 			count++;
