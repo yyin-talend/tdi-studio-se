@@ -27,7 +27,13 @@
 	List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
 	String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
 	boolean isTrimAll = (isTrimAllStr!=null&&!("").equals(isTrimAllStr))?("true").equals(isTrimAllStr):true;
-	boolean isOptimizeCode=("true").equals(ElementParameterParser.getValue(node,"__OPTIMIZE_CODE__"));
+	int schemaOptNum=100;
+	String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
+	if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
+		schemaOptNum  = Integer.parseInt(schemaOptNumStr);
+	}
+	boolean isOptimizeCode=false;
+
 if(!customSetOriginalLength){//------11111
 %>
 	// open file
@@ -43,6 +49,26 @@ if(!customSetOriginalLength){//------11111
 <%
 		List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 		List<Map<String, String>> schemas = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SCHEMAS__");
+		for(Map<String, String> schemaMap : schemas) {
+			String schemaName = schemaMap.get("SCHEMA");
+			if(conns != null && conns.size() > 0){
+				for(IConnection conn : conns){
+					if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+						if(schemaName.equals(conn.getMetadataTable().getLabel())){
+							IMetadataTable justMetadata = conn.getMetadataTable();
+							List<IMetadataColumn> justColumnList = justMetadata.getListColumns();
+							if(schemaOptNum<justColumnList.size()){
+								isOptimizeCode=true;
+							}
+							break;
+						}
+					}
+				}
+			}
+			if(isOptimizeCode){
+				break;
+			}
+		}
 	if(isOptimizeCode){
 %>
 	class EBCDICUtil_<%=cid%>{
@@ -50,8 +76,6 @@ if(!customSetOriginalLength){//------11111
 	
 	for(Map<String, String> schemaMap : schemas) {//------AAA0
 		String schemaName = schemaMap.get("SCHEMA");
-		String code = schemaMap.get("CODE");
-	
 		IConnection justConn = null; //------->get the right output connection--->to get the columns info
 		if(conns != null && conns.size() > 0){
 			for(IConnection conn : conns){
@@ -71,9 +95,9 @@ if(!customSetOriginalLength){//------11111
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
 					IMetadataColumn column = justColumnList.get(valueN);
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-					if(valueN%100==0){
+					if(valueN%schemaOptNum==0){
 %>
-				public void getValue_<%=schemaName%>_<%=valueN/100%>(final <%=justConn.getName() %>Struct <%=justConn.getName() %>,List inrecord_<%=cid %>){
+				public void getValue_<%=schemaName%>_<%=valueN/schemaOptNum%>(final <%=justConn.getName() %>Struct <%=justConn.getName() %>,List inrecord_<%=cid %>){
 <%
 					}
 					if(javaType == JavaTypesManager.STRING){
@@ -85,13 +109,13 @@ if(!customSetOriginalLength){//------11111
 						<%=justConn.getName() %>.<%=column.getLabel()%> = (<%=javaType.getLabel() %>)inrecord_<%=cid %>.get(<%=valueN%>);
 <%
 					}
-				    if((valueN+1)%100==0){
+				    if((valueN+1)%schemaOptNum==0){
 %>
 					}
 <%
 					}
 				}
-				if(sizeListColumns>0&&(sizeListColumns%100)>0){
+				if(sizeListColumns>0&&(sizeListColumns%schemaOptNum)>0){
 %>
 				}
 <%
@@ -160,9 +184,9 @@ if(!customSetOriginalLength){//------11111
 <%
 						}
 					}else{
-						if(valueN%100==0){
+						if(valueN%schemaOptNum==0){
 %>
-						ebcdicUtil_<%=cid%>.getValue_<%=schemaName%>_<%=valueN/100%>(<%=justConn.getName() %>,inrecord_<%=cid %>);
+						ebcdicUtil_<%=cid%>.getValue_<%=schemaName%>_<%=valueN/schemaOptNum%>(<%=justConn.getName() %>,inrecord_<%=cid %>);
 <%
 						}
 					}
@@ -181,6 +205,9 @@ if(!customSetOriginalLength){//------11111
 				IMetadataTable justMetadata = conn.getMetadataTable();
 				List<IMetadataColumn> justColumnList = justMetadata.getListColumns();
 				int sizeListColumns = justColumnList.size();
+				if(schemaOptNum < sizeListColumns){
+					isOptimizeCode=true;
+				}
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {//------BBB00
 					IMetadataColumn column = justColumnList.get(valueN);
 					Integer orgainLength  = column.getOriginalLength();
@@ -213,12 +240,11 @@ the original size in the column:<%=column.getLabel()%> should be bigger than 0
 						for (int valueN=0; valueN<sizeListColumns; valueN++) {//------B02
 							IMetadataColumn column = justColumnList.get(valueN);
 							Integer orgainLength = column.getOriginalLength();
-							Integer length = column.getLength();
 							String orgainType = column.getType();
 							Integer precision = column.getPrecision();
-							if(valueN%100==0){
+							if(valueN%schemaOptNum==0){
 %>
-							public void getValue_<%=valueN/100%>(final <%=conn.getName()%>Struct <%=conn.getName() %>,java.nio.ByteBuffer bbRecord_<%=cid %>) throws Exception{
+							public void getValue_<%=valueN/schemaOptNum%>(final <%=conn.getName()%>Struct <%=conn.getName() %>,java.nio.ByteBuffer bbRecord_<%=cid %>) throws Exception{
 <%
 							}
 							if(precision==null) precision = 0;
@@ -273,13 +299,13 @@ DB Type of the column:<%=column.getLabel()%> should be X, 1, 2, 3, 9, B, T
 //////////////////////////////////////////////////
 <%
 							}
-				    		if((valueN+1)%100==0){
+				    		if((valueN+1)%schemaOptNum==0){
 %>
 							}
 <%
 							}
 						}//------B02
-						if(sizeListColumns>0&&(sizeListColumns%100)>0){
+						if(sizeListColumns>0&&(sizeListColumns%schemaOptNum)>0){
 %>
 							}
 <%
@@ -302,7 +328,6 @@ DB Type of the column:<%=column.getLabel()%> should be X, 1, 2, 3, 9, B, T
 					for (int valueN=0; valueN<sizeListColumns; valueN++) {//------BBB12
 						IMetadataColumn column = justColumnList.get(valueN);
 						Integer orgainLength = column.getOriginalLength();
-						Integer length = column.getLength();
 						String orgainType = column.getType();
 						Integer precision = column.getPrecision();
 						if(!isOptimizeCode){
@@ -359,9 +384,9 @@ DB Type of the column:<%=column.getLabel()%> should be X, 1, 2, 3, 9, B, T
 <%
 							}
 						}else{
-							if(valueN%100==0){
+							if(valueN%schemaOptNum==0){
 %>
-							ebcdicUtil_<%=cid%>.getValue_<%=valueN/100%>(<%=conn.getName() %>,bbRecord_<%=cid %>);
+							ebcdicUtil_<%=cid%>.getValue_<%=valueN/schemaOptNum%>(<%=conn.getName() %>,bbRecord_<%=cid %>);
 <%
 							}
 						}

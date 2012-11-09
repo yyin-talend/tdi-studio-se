@@ -14,8 +14,10 @@ imports="
 	org.talend.core.model.metadata.types.JavaType
 	org.talend.core.model.process.IConnectionCategory
 	org.talend.core.model.utils.NodeUtil
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.process.EConnectionType
 "
-
+skeleton="tFileOutputMSXML_java.skeleton"
 %>
 
 <%
@@ -25,20 +27,37 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String allowEmpty = ElementParameterParser.getValue(node, "__CREATE_EMPTY_ELEMENT__");
 
-String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 String cid = node.getUniqueName();
 
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 boolean isDeleteEmptyFile = ("true").equals(ElementParameterParser.getValue(node, "__DELETE_EMPTYFILE__"));
 boolean escapeText = ("true").equals(ElementParameterParser.getValue(node, "__ESCAPE_TEXT__"));
 
+String incomingName = (String)codeGenArgument.getIncomingName();
 List<IMetadataTable> metadatas = NodeUtil.getIncomingMetadataTable(node, IConnectionCategory.FLOW);
 if ((metadatas!=null)&&(metadatas.size()>0)) {
+	final List< ? extends IConnection> incomingConns = node.getIncomingConnections(); 
+	if (incomingName == null && incomingConns.size() > 0) 
+	{ 
+	   incomingName = incomingConns.get(0).getName(); 
+	} 
+%>
+<%@ include file="tFileOutputMSXML_begin.inc.javajet"%>
+
+<%
+	int schemaOptNum=100;
+	String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
+	if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
+		schemaOptNum  = Integer.parseInt(schemaOptNumStr);
+	}
+	OptimizeCodeGenerator optimizeGen = new OptimizeCodeGenerator(cid,schemaOptNum);
+	optimizeGen.incomingName = incomingName;
+	optimizeGen.initIsOptimizeCode();
 %>
 	java.io.FileOutputStream stream_<%=cid%> = new java.io.FileOutputStream(fileName_<%=cid%>);
  	
 	org.dom4j.io.XMLWriter output_<%=cid%> = null;
-<%if (("true").equals(ElementParameterParser.getValue(node,"__OPTIMIZE_CODE__"))) {%>
+<%if (optimizeGen.isOptimizeCode()) {%>
 	if(talendWrapTool_<%=cid %>.isXML10Char_<%=cid%>) {
 <%} else {%>
 	if(isXML10Char_<%=cid%>) {
