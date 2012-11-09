@@ -580,7 +580,6 @@ public final class UpdateManagerUtils {
             //
             Object job = result.getJob();
             boolean executed = false;
-            boolean isSaveModifiedItem = false;
             if (job != null) {
                 if (job instanceof IProcess2) {
                     IProcess2 process = (IProcess2) job;
@@ -590,16 +589,13 @@ public final class UpdateManagerUtils {
                         command.execute();
                     }
 
-                    if (process.getEditor() != null) {
-                        isSaveModifiedItem = true;
-                    }
                     executed = true;
                 }
             }
             if (!executed) {
                 command.execute();
             }
-            if (result.isFromItem() || !isSaveModifiedItem) {
+            if (result.isFromItem()) {
                 // save updated process
                 saveModifiedItem(result);
             }
