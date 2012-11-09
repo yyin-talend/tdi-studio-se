@@ -487,6 +487,7 @@ class OptimizeCodeGenerator {
 	public OptimizeCodeGenerator (String cid,int schemaOptNum) {
 		this.cid = cid;
 		this.schemaOptNum = schemaOptNum;
+		initIsOptimizeCode();
 	}
 	public void setBeginPart (boolean isBegin) {
 		this.isBeginPart = isBegin;

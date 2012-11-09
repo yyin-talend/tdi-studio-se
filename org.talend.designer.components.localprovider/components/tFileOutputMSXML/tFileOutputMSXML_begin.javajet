@@ -132,7 +132,6 @@ format_<%=cid %>.setTrimText(<%=trimText%>);
 		OptimizeCodeGenerator optimizeGen = new OptimizeCodeGenerator(cid,schemaOptNum );
 		optimizeGen.setBeginPart(true);
 		optimizeGen.incomingName = incomingName;
-		optimizeGen.initIsOptimizeCode();
 		optimizeGen.generateCode(node);
 	}
 }

@@ -70,7 +70,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				}
     			OptimizeCodeGenerator optimizeGen = new OptimizeCodeGenerator(cid,schemaOptNum);
     			optimizeGen.incomingName = incomingName;
-    			optimizeGen.initIsOptimizeCode();
 				optimizeGen.generateCode(node);
 // ------------------- *** Common code start *** ------------------- //
 //			}
