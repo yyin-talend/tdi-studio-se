@@ -2540,15 +2540,6 @@ public class DataProcess {
 
         incomingConnections.add(mergeOutputConnection);
         INode oldNodeTarget = ((DataConnection) mergeOutputConnection).getTarget();
-        // add for bug TDI-21740 , record input connection order.
-        Map<String, Integer> map = new HashMap<String, Integer>();
-        List<? extends IConnection> incomingConns = oldNodeTarget.getIncomingConnections();
-        for (IConnection list : incomingConns) {
-            String name = list.getUniqueName();
-            if (name != null) {
-                map.put(name, incomingConns.indexOf(list));
-            }
-        }
         ((DataConnection) mergeOutputConnection).setTarget(hashNode);
         oldNodeTarget.getIncomingConnections().remove(mergeOutputConnection);
 
@@ -2606,13 +2597,11 @@ public class DataProcess {
         }
         dataConnec.setInputId(inputId);
         outgoingConnections.add(dataConnec);
-        // add for bug TDI-21740 , add dataConnec to oldNodeTarget with suitable position
-        Set<Map.Entry<String, Integer>> set = map.entrySet();
-        for (Entry<String, Integer> entry2 : set) {
-            Map.Entry<String, Integer> entry = entry2;
-            if (entry.getKey().equals(dataConnec.getUniqueName())) {
-                ((List<IConnection>) oldNodeTarget.getIncomingConnections()).add(entry.getValue(), dataConnec);
-            }
+        // add for bug TDI-21740
+        if (inputId == 1) {
+            ((List<IConnection>) oldNodeTarget.getIncomingConnections()).add(0, dataConnec);
+        } else {
+            ((List<IConnection>) oldNodeTarget.getIncomingConnections()).add(dataConnec);
         }
 
         ((DataConnection) mergeOutputConnection).setLineStyle(EConnectionType.FLOW_MAIN);
