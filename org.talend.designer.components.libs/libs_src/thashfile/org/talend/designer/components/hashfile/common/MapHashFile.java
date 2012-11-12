@@ -46,12 +46,14 @@ public class MapHashFile {
 	}
 	public void clearChildCache(String root){
 		Set<String> set = keyMap.keySet();
-		Iterator<String> it = set.iterator();
-		while(it.hasNext()){
-			String key = it.next();
-			if(keyMap.get(key).equals(root)){
-				this.resourceMap.remove(key);
-				clearChildCache(key);
+		synchronized(keyMap) {
+			Iterator<String> it = set.iterator();
+			while(it.hasNext()){
+				String key = it.next();
+				if(keyMap.get(key).equals(root)){
+					this.resourceMap.remove(key);
+					clearChildCache(key);
+				}
 			}
 		}
 		this.resourceMap.remove(root);

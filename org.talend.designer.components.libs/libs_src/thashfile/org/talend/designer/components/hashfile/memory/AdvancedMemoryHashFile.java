@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.components.hashfile.memory;
 
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,9 +35,9 @@ public class AdvancedMemoryHashFile<V> {
     public AdvancedMemoryHashFile(MATCHING_MODE matchingMode) {
         this.matchingMode = matchingMode;
         if (matchingMode == MATCHING_MODE.KEEP_ALL) {
-            allList = new ArrayList<V>();
+            allList = Collections.synchronizedList(new ArrayList<V>());
         } else if (matchingMode == MATCHING_MODE.KEEP_FIRST) {
-            firstHash = new HashMap<V, V>();
+            firstHash = Collections.synchronizedMap(new HashMap<V, V>());
         }
     }
 
