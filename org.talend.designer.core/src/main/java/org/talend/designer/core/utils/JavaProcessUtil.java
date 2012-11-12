@@ -160,36 +160,7 @@ public class JavaProcessUtil {
 
         List<? extends INode> nodeList = process.getGeneratingNodes();
         for (INode node : nodeList) {
-            List<ModuleNeeded> moduleList = node.getModulesNeeded();
-            for (ModuleNeeded needed : moduleList) {
-                if (needed.isRequired(node.getElementParameters())) {
-                    modulesNeeded.add(needed);
-                }
-            }
-            for (IElementParameter curParam : node.getElementParameters()) {
-                if (curParam.getFieldType() == null) {
-                    continue; // field can be null in some really specific cases, like for example when preview from
-                    // wizard.
-                }
-                if (curParam.getFieldType().equals(EParameterFieldType.MODULE_LIST)) {
-                    if (curParam.getValue() != null && !"".equals(curParam.getValue())) { // if the parameter //$NON-NLS-1$
-                        // is not empty.
-                        modulesNeeded.add(getModuleValue(process, (String) curParam.getValue()));
-                    }
-                } else if (curParam.getFieldType() == EParameterFieldType.TABLE) {
-                    getModulesInTable(process, curParam, modulesNeeded);
-                }
-
-                // see feature 4720 Add libraries for different version DB components and tMomInput components
-                // IElementParameter elementParameter = node.getElementParameter("USE_EXISTING_CONNECTION");
-                // if (elementParameter != null && elementParameter.isShow(node.getElementParameters())
-                // && Boolean.TRUE.equals(elementParameter.getValue())) {
-                if (curParam.isShow(node.getElementParameters())) {
-                    findMoreLibraries(process, modulesNeeded, curParam, true);
-                } else {
-                    findMoreLibraries(process, modulesNeeded, curParam, false);
-                }
-            }
+            addNodeRelatedModules(process, modulesNeeded, node);
 
             if (withChildrens) {
                 if (node.getComponent().getName().equals("tRunJob")) { //$NON-NLS-1$
@@ -219,6 +190,42 @@ public class JavaProcessUtil {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * DOC nrousseau Comment method "addNodeRelatedModules".
+     * @param process
+     * @param modulesNeeded
+     * @param node
+     */
+    public static void addNodeRelatedModules(final IProcess process, List<ModuleNeeded> modulesNeeded, INode node) {
+        if (node.isActivate()) {
+            // if node is deactivated, we don't need at all its dependencies.
+        }
+        List<ModuleNeeded> moduleList = node.getModulesNeeded();
+        for (ModuleNeeded needed : moduleList) {
+            if (needed.isRequired(node.getElementParameters())) {
+                modulesNeeded.add(needed);
+            }
+        }
+        for (IElementParameter curParam : node.getElementParameters()) {
+            if (curParam.getFieldType() == null) {
+                continue; // field can be null in some really specific cases, like for example when preview from
+                // wizard.
+            }
+            if (!curParam.isShow(node.getElementParameters())) {
+                continue;
+            }
+            if (curParam.getFieldType().equals(EParameterFieldType.MODULE_LIST)) {
+                if (curParam.getValue() != null && !"".equals(curParam.getValue())) { // if the parameter //$NON-NLS-1$
+                    // is not empty.
+                    modulesNeeded.add(getModuleValue(process, (String) curParam.getValue()));
+                }
+            } else if (curParam.getFieldType() == EParameterFieldType.TABLE) {
+                getModulesInTable(process, curParam, modulesNeeded);
+            }
+            findMoreLibraries(process, modulesNeeded, curParam);
         }
     }
 
@@ -305,8 +312,7 @@ public class JavaProcessUtil {
      * @param neededLibraries
      * @param curParam
      */
-    public static void findMoreLibraries(final IProcess process, List<ModuleNeeded> modulesNeeded, IElementParameter curParam,
-            boolean flag) {
+    public static void findMoreLibraries(final IProcess process, List<ModuleNeeded> modulesNeeded, IElementParameter curParam) {
 
         Object value = curParam.getValue();
         String name = curParam.getName();
@@ -350,19 +356,17 @@ public class JavaProcessUtil {
                     }
                 }
 
-                if (flag == true) {
-                    String jars = (jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
-                            TalendTextUtils.SINGLE_QUOTE, "");
-                    String separator = ";"; //$NON-NLS-1$
-                    if (jars.contains(separator)) {
-                        for (String jar : jars.split(separator)) {
-                            ModuleNeeded module = new ModuleNeeded(null, jar, null, true);
-                            modulesNeeded.add(module);
-                        }
-                    } else {
-                        ModuleNeeded module = new ModuleNeeded(null, jars, null, true);
+                String jars = (jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
+                        TalendTextUtils.SINGLE_QUOTE, "");
+                String separator = ";"; //$NON-NLS-1$
+                if (jars.contains(separator)) {
+                    for (String jar : jars.split(separator)) {
+                        ModuleNeeded module = new ModuleNeeded(null, jar, null, true);
                         modulesNeeded.add(module);
                     }
+                } else {
+                    ModuleNeeded module = new ModuleNeeded(null, jars, null, true);
+                    modulesNeeded.add(module);
                 }
             }
         } else if (name.equals("MQ_DERVIERS")) { //$NON-NLS-1$

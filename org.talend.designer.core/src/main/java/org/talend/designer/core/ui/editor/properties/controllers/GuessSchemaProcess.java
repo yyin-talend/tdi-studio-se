@@ -29,9 +29,7 @@ import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.ModuleNeeded;
-import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContext;
-import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
@@ -126,7 +124,7 @@ public class GuessSchemaProcess {
                 }
             }
         } else { // hywang add for 9594
-            if (node.getComponent().getName().equals("tJDBCInput")) { //$NON-NLS-N$
+            if (node.getComponent().getName().equals("tJDBCInput")) {
                 List<String> drivers = EDatabaseVersion4Drivers.getDrivers(info.getTrueDBTypeForJDBC(), info.getDbVersion());
                 String moduleNeedName = "";
                 Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
@@ -143,29 +141,12 @@ public class GuessSchemaProcess {
                 process.addNodeContainer(new NodeContainer(libNode1));
             }
         }
-
-        for (IElementParameter param : node.getElementParameters()) {
-            List<ModuleNeeded> neededLibraries = new ArrayList<ModuleNeeded>();
-            JavaProcessUtil.findMoreLibraries(process, neededLibraries, param, true); // add by hywang
-            // for bug 8350
-            // add for tJDBCInput component
-            if (param.getFieldType().equals(EParameterFieldType.MODULE_LIST)) {
-                if (!"".equals(param.getValue())) { //$NON-NLS-1$
-                    // if the parameter is not empty.
-                    String moduleValue = (String) param.getValue();
-                    neededLibraries.add(new ModuleNeeded(null, moduleValue, null, true)); //$NON-NLS-1$
-                }
-                if (param.isShow(node.getElementParameters())) {
-                    JavaProcessUtil.findMoreLibraries(process, neededLibraries, param, true);
-                } else {
-                    JavaProcessUtil.findMoreLibraries(process, neededLibraries, param, false);
-                }
-            }
-            for (ModuleNeeded module : neededLibraries) {
-                Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
-                libNode1.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                process.addNodeContainer(new NodeContainer(libNode1));
-            }
+        List<ModuleNeeded> neededLibraries = new ArrayList<ModuleNeeded>();
+        JavaProcessUtil.addNodeRelatedModules(process, neededLibraries, node);
+        for (ModuleNeeded module : neededLibraries) {
+            Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
+            libNode1.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            process.addNodeContainer(new NodeContainer(libNode1));
         }
 
         // create the tLibraryLoad for the output component which is "tFileOutputDelimited"
@@ -179,7 +160,7 @@ public class GuessSchemaProcess {
             fetchSize = 1000;
         }
         String codeStart, codeMain, codeEnd;
-        temppath = (Path) buildTempCSVFilename();
+        temppath = buildTempCSVFilename();
         // Should also replace "/r". NMa.
         memoSQL = memoSQL.replace("\r", " ");// ISO-8859-15
         codeStart = "java.lang.Class.forName(\"" + info.getDriverClassName() + "\");\r\n" + "String url = \"" + info.getUrl() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -207,7 +188,7 @@ public class GuessSchemaProcess {
 
                 + "csvWriter.writeNext(columnNames);\r\n" + "csvWriter.writeNext(nullables);\r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "csvWriter.writeNext(lengths);\r\n" + "csvWriter.writeNext(precisions);\r\n" //$NON-NLS-1$ //$NON-NLS-2$
-                + "csvWriter.writeNext(dbtypes);\r\n" + "while (rs.next()) {"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "csvWriter.writeNext(dbtypes);\r\n" + "while (rs.next()) {"; //$NON-NLS-1$ //$NON-NLS-2$ 
 
         codeMain = "String[] dataOneRow = new String[numbOfColumn];\r\n" + "for (int i = 1; i <= numbOfColumn; i++) {\r\n" //$NON-NLS-1$ //$NON-NLS-2$
                 + "    \r\n" + "    String tempStr = rs.getString(i);\r\n" + "    dataOneRow[i-1] = tempStr;\r\n" + "}\r\n" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -228,7 +209,7 @@ public class GuessSchemaProcess {
 
         }
 
-        Node flexNode = new Node(component, process); //$NON-NLS-1$
+        Node flexNode = new Node(component, process);
         flexNode.setPropertyValue("CODE_START", codeStart); //$NON-NLS-1$
         flexNode.setPropertyValue("CODE_MAIN", codeMain); //$NON-NLS-1$
         flexNode.setPropertyValue("CODE_END", codeEnd); //$NON-NLS-1$
