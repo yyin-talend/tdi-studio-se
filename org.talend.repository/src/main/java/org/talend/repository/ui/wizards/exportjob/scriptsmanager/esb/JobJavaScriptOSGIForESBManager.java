@@ -280,7 +280,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
              * Else, add the bundle id in "Require-Bundle", but don't add the lib.
              */
             if (isIncludedLib(module)) {
-                return !isSpecialLib(module.getModuleName());
+                return true;
             }
         }
         return false;
