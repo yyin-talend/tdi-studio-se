@@ -113,11 +113,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     private String jobClassName;
 
-    private String jobVersion;
-
     private String itemType = null;
 
-    private final File classesLocation = new File(getTmpFolder() + File.separator + "classes");
+    private final File classesLocation = new File(getTmpFolder() + File.separator + "classes"); //$NON-NLS-1$;
 
     @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] processes, String... codeOptions)
@@ -152,7 +150,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 jobName = processItem.getProperty().getLabel();
                 jobClassName = getPackageName(processItem) + PACKAGE_SEPARATOR + jobName;
 
-                jobVersion = processItem.getProperty().getVersion();
+                String jobVersion = processItem.getProperty().getVersion();
                 if (!isMultiNodes() && getSelectedJobVersion() != null) {
                     jobVersion = getSelectedJobVersion();
                 }

@@ -54,7 +54,6 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.utils.ZipToFile;
 import org.talend.repository.ui.wizards.exportjob.JavaJobExportReArchieveCreator;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
-import org.talend.repository.utils.JobVersionUtils;
 
 /**
  * 
@@ -100,30 +99,20 @@ public class JobExportAction implements IRunnableWithProgress {
     }
 
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-        try {
-            final EventLoopProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
+        final EventLoopProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
 
-            progressMonitor.beginTask(
-                    Messages.getString("JobScriptsExportWizardPage.newExportJobScript", type), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-            // int i = 0;
-            // int nodeSize = nodes.size();
-            // manager.setTmpFleDeleted(false);
-            // Changed by Marvin Wang on Jun.1, 2012 for bug TDI-21244, the original codes have some logical problems.
+        progressMonitor.beginTask(
+                Messages.getString("JobScriptsExportWizardPage.newExportJobScript", type), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+        try {
             if (nodes != null && nodes.size() > 0) {
                 int size = nodes.size();
                 if (size == 1) {
                     if (jobVersion != null && jobVersion.equals(RelationshipItemBuilder.LATEST_VERSION)) {
-                        String[] allVersions = JobVersionUtils.getAllVersions(nodes.get(0));
-                        for (String version : allVersions) {
-                            monitor.subTask(Messages.getString(
-                                    "JobScriptsExportWizardPage.newExportJob0", type, nodes.get(0).getLabel(), version)); //$NON-NLS-1$
-                            // Commentted by Marvin Wang on Jun.1, 2012.
-                            // FIXME Here will export all nodes for each loop. Maybe only the lastest version can be
-                            // saved,
-                            // caz the privious versions are deleted.
-                            if (!exportJobScript(nodes, version, bundleVersion, progressMonitor)) {
-                                return;
-                            }
+                        ProcessItem item = ItemCacheManager.getProcessItem(nodes.get(0).getId(),
+                                RelationshipItemBuilder.LATEST_VERSION);
+                        String version = item.getProperty().getVersion();
+                        if (!exportJobScript(nodes, version, version, progressMonitor)) {
+                            return;
                         }
                     } else {
                         if (!exportJobScript(nodes, jobVersion, bundleVersion, progressMonitor)) {
@@ -139,32 +128,9 @@ public class JobExportAction implements IRunnableWithProgress {
                     monitor.subTask(Messages.getString("JobScriptsExportWizardPage.newExportSuccess", "all"));
                 }
             }
-            // for (RepositoryNode node : nodes) {
-            // // if (i == nodeSize - 1)
-            // // manager.setTmpFleDeleted(true);
-            // List<RepositoryNode> exportedNode = new ArrayList<RepositoryNode>();
-            // exportedNode.add(node);
-            // if (jobVersion != null && jobVersion.equals(JobScriptsExportWizardPage.ALL_VERSIONS)) {
-            // String[] allVersions = JobVersionUtils.getAllVersions(node);
-            // for (String version : allVersions) {
-            // monitor.subTask(Messages
-            //                            .getString("JobScriptsExportWizardPage.newExportJob0", type, node.getLabel(), version)); //$NON-NLS-1$
-            // if (!exportJobScript(nodes, version, bundleVersion, progressMonitor)) {
-            // return;
-            // }
-            // }
-            // } else {
-            //                monitor.subTask(Messages.getString("JobScriptsExportWizardPage.newExportJob1", type, node.getLabel(), jobVersion)); //$NON-NLS-1$
-            // if (!exportJobScript(nodes, jobVersion, bundleVersion, progressMonitor)) {
-            // return;
-            // }
-            // }
-            // // i++;
-            // monitor.subTask(Messages.getString(
-            //                    "JobScriptsExportWizardPage.newExportJobSucessful", type, node.getLabel(), jobVersion)); //$NON-NLS-1$
-            // }
-            progressMonitor.done();
+
         } finally {
+            progressMonitor.done();
             ProcessorUtilities.resetExportConfig();
         }
     }
@@ -173,14 +139,9 @@ public class JobExportAction implements IRunnableWithProgress {
         List<ExportFileResource> value = new ArrayList<ExportFileResource>();
         for (final RepositoryNode node : nodes) {
             if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
-                @SuppressWarnings({ "unchecked", "serial" })
-                List<RepositoryNode> children = new ArrayList<RepositoryNode>() {
-
-                    {
-                        addAll((Collection<? extends RepositoryNode>) node.getChildren());
-                    }
-                };
-                value.addAll(getProcesses(children, node.getProperties(EProperties.LABEL).toString() + "/"));
+                List<RepositoryNode> children = new ArrayList<RepositoryNode>(
+                        (Collection<? extends RepositoryNode>) node.getChildren());
+                value.addAll(getProcesses(children, node.getProperties(EProperties.LABEL).toString() + "/")); //$NON-NLS-1$
             }
             if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
                 IRepositoryViewObject repositoryObject = node.getObject();
