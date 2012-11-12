@@ -33,6 +33,7 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.JobContext;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -43,6 +44,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
@@ -279,6 +281,12 @@ public final class UpdateManagerUtils {
                                         process = designerCoreService.getProcessFromJobletProcessItem((JobletProcessItem) item);
                                     }
                                     result.setJob(process);
+
+                                    if (process != null && (result.getUpdateType() == EUpdateItemType.JOBLET_CONTEXT)) {
+                                        if ((result.getParameter() instanceof List) && process.getContextManager() != null) {
+                                            process.getContextManager().setListContext((List<IContext>) result.getParameter());
+                                        }
+                                    }
 
                                     // node stored in result set is not the same instance as in process after we
                                     // load again the closed process, so need to find the corresponding node in process
