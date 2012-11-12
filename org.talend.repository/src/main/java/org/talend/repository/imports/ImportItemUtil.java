@@ -449,9 +449,14 @@ public class ImportItemUtil {
                             }
                         }
 
+                        List<Item> items = new ArrayList<Item>();
+
                         for (ItemRecord itemRecord : itemRecords) {
                             if (!monitor.isCanceled()) {
                                 if (itemRecord.isValid()) {
+                                    if (itemRecord.getProperty() != null && itemRecord.getItem() != null) {
+                                        items.add(itemRecord.getItem());
+                                    }
                                     importItemRecord(manager, itemRecord, overwrite, destinationPath, overwriteDeletedItems,
                                             idDeletedBeforeImport, contentType, monitor);
 
@@ -482,6 +487,10 @@ public class ImportItemUtil {
                             if (service != null) {
                                 service.loadComponentsFromProviders();
                             }
+                        }
+
+                        for (Item itemRecord : items) {
+                            RelationshipItemBuilder.getInstance().addOrUpdateItem(itemRecord, true);
                         }
                         // cannot cancel this part
                         //                monitor.beginTask(Messages.getString("ImportItemWizardPage.ApplyMigrationTasks"), itemRecords.size() + 1); //$NON-NLS-1$
@@ -828,7 +837,7 @@ public class ImportItemUtil {
                 }
 
                 if (tmpItem != null) {
-                    RelationshipItemBuilder.getInstance().addOrUpdateItem(tmpItem, true);
+                    // RelationshipItemBuilder.getInstance().addOrUpdateItem(tmpItem, true);
                     if (tmpItem.getState() != null) {
                         if (itemType != null) {
                             final Set<String> folders = restoreFolder.getFolders(itemType);
