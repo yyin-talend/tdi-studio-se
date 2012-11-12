@@ -83,4 +83,8 @@ public class TosBrandingService extends AbstractTalendBrandingService {
     public String getOptionName() {
         return "for Data Integration";
     }
+
+    public String getUserManuals() {
+        return "DI";
+    }
 }
