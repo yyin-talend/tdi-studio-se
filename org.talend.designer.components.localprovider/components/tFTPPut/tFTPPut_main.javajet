@@ -58,8 +58,10 @@ try{
 				dir<%=cid %> = mask<%=cid %>.substring(0, i<%=cid %>); 
 				mask<%=cid %> = mask<%=cid %>.substring(i<%=cid %>+1);	 
     		}
-    		if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) tempdir<%=cid %> = tempdir<%=cid %> + "/" + dir<%=cid %>;  
-    		mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
+    		if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) tempdir<%=cid %> = tempdir<%=cid %> + "/" + dir<%=cid %>;
+    		<%if(!useGlob) {%>
+				mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
+    		<%}%>
     		final String finalMask<%=cid %> = mask<%=cid %>;
     		java.io.File[] listings<%=cid %> = null;       
         	java.io.File file<%=cid %> = new java.io.File(tempdir<%=cid %>);
@@ -163,7 +165,9 @@ try{
 				mask<%=cid %> = mask<%=cid %>.substring(i<%=cid %>+1);	 
     		}
     		if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) tempdir<%=cid %> = tempdir<%=cid %> + "/" + dir<%=cid %>;  
-    		mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
+		    <%if(!useGlob) {%>
+	    		mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
+	    	<%}%>
     		final String finalMask<%=cid %> = mask<%=cid %>;
     		java.io.File[] listings<%=cid %> = null;       
         	java.io.File file<%=cid %> = new java.io.File(tempdir<%=cid %>);
