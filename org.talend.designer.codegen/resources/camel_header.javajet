@@ -56,7 +56,7 @@
 			if(param != null && !"__UNIQUE_NAME__".equals(param.getValue())){
 				cid = (String)param.getValue()+"_"+cid;	
 			}
-			String endpointVar = "endpoint" + cid;
+			String endpointVar = "endpoint_" + node.getUniqueName();
 			String uriRef = "uriMap.get(\"" + cid + "\")";
 %>
 				// CXF endpoint for <%=cid%>
