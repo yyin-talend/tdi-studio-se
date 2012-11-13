@@ -19,7 +19,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,6 +48,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.designer.runprocess.ProcessorException;
@@ -95,9 +95,9 @@ public abstract class JobScriptsManager {
 
     public static final String CMDFORUNIX = "\"$@\""; //$NON-NLS-1$
 
-    private String selectedJobVersion; //$NON-NLS-1$
+    private String selectedJobVersion;
 
-    private String bundleVersion; //$NON-NLS-1$
+    private String bundleVersion;
 
     protected IProgressMonitor progressMonitor; // achen added to fix bug
                                                 // 0006222
@@ -319,7 +319,8 @@ public abstract class JobScriptsManager {
             if (value == null) {
                 contextParameterValues += " " + CTX_PARAMETER_ARG + " " + name + "=" + null;//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
             } else if (value != null && !"".equals(value)) {//$NON-NLS-1$
-                contextParameterValues += " " + CTX_PARAMETER_ARG + " " + name + "=" + value;//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+                contextParameterValues += " " + CTX_PARAMETER_ARG + " " + name + "=" //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+                        + TalendQuoteUtils.addQuotes(value);
             }
         }
         contextParameterValues = contextParameterValues + " ";//$NON-NLS-1$
@@ -390,6 +391,7 @@ public abstract class JobScriptsManager {
      * @param codeOptions
      * @return
      */
+    @Deprecated
     protected String getCommandByTalendJob(String targetPlatform, String processId, String context, String processVersion,
             int statisticPort, int tracePort, String... codeOptions) {
         String[] cmd = new String[] {};
@@ -415,6 +417,7 @@ public abstract class JobScriptsManager {
      * @param codeOptions
      * @return
      */
+    @Deprecated
     protected String getCommandByTalendJob(String targetPlatform, ProcessItem processItem, String context, boolean needContext,
             int statisticPort, int tracePort, String... codeOptions) {
         String[] cmd = new String[] {};
@@ -614,11 +617,8 @@ public abstract class JobScriptsManager {
     protected List<URL> getResourcesURL(IResource[] resources, List<String> fileNames) {
         List<URL> list = new ArrayList<URL>();
 
-        for (Iterator<String> iter = fileNames.iterator(); iter.hasNext();) {
-            String name = iter.next();
-            for (int i = 0; i < resources.length; i++) {
-                IResource resource = resources[i];
-
+        for (String name : fileNames) {
+            for (IResource resource : resources) {
                 if (resource.getName().equals(name)) {
                     try {
                         URL url = resource.getLocation().toFile().toURL();
