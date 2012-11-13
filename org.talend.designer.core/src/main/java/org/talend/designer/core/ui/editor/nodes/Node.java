@@ -2822,11 +2822,12 @@ public class Node extends Element implements IGraphicalNode {
                                 noSchema = true;
                             }
                         }
-
                     }
                 }
-
-                if ((mainConnector.getMaxLinkInput() == 0) && (mainConnector.getMaxLinkOutput() != 0)) {
+                // display error in the tRunJob Component that the schema is empty when a output main link exists.
+                if ((mainConnector.getMaxLinkInput() == 0 || ("tRunJob".equals(getComponent().getName())
+                        && (mainConnector.getMaxLinkInput() != 0) && getCurrentActiveLinksNbOutput(EConnectionType.FLOW_MAIN) > 0))
+                        && (mainConnector.getMaxLinkOutput() != 0)) {
                     if (table.getListColumns().size() == 0) {
                         String errorMessage = Messages.getString("Node.noSchemaDefined"); //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
