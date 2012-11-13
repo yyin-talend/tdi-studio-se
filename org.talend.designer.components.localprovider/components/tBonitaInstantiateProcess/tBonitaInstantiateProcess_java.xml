@@ -167,7 +167,7 @@
       FIELD="TEXT"
       NUM_ROW="50"
       REQUIRED="true"
-      SHOW_IF="CLIENT_MODE=='JAVA_CLIENT' AND USE_PROCESS_ID=='true'"
+      SHOW_IF="(CLIENT_MODE=='JAVA_CLIENT') AND (USE_PROCESS_ID=='true')"
     >
     <DEFAULT>""</DEFAULT>
     </PARAMETER>
