@@ -21,6 +21,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.compiler.BuildContext;
 import org.eclipse.jdt.core.compiler.CompilationParticipant;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
@@ -34,6 +35,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.codegen.ITalendSynchronizer;
+import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -88,6 +90,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
         if (routineToUpdate) {
             Display.getDefault().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     try {
                         RepositoryManager.refresh(ERepositoryObjectType.ROUTINES);
@@ -154,7 +157,9 @@ public class JavaCompilationParticipant extends CompilationParticipant {
      */
     @Override
     public boolean isActive(IJavaProject project) {
-        if (CommonsPlugin.isHeadless()) {
+        // if commandline or no GUI yeet, don't do anything
+        if (CommonsPlugin.isHeadless() || !PlatformUI.isWorkbenchRunning()
+                || CodeGeneratorEmittersPoolFactory.isInitializeStart()) {
             return false;
         }
         if (JavaProcessorUtilities.getJavaProject() != null) {
