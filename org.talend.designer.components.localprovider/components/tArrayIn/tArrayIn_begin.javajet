@@ -33,6 +33,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         }
             
         String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
+        if (origin != null && origin.startsWith("tIterateToFlow")) {
+        	inComingName = "OnSubjobOk";
+        }
         %>
         
         int nb_line_<%= cid %> = 0;
