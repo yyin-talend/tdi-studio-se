@@ -2032,7 +2032,8 @@ public class Node extends Element implements IGraphicalNode {
 
         for (int j = 0; j < getIncomingConnections().size(); j++) {
             connec = getIncomingConnections().get(j);
-            if (!connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
+            // if (!connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
+            if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
                 INode source = connec.getSource();
                 if (source.getJobletNode() != null) {
                     source = source.getJobletNode();
@@ -2056,9 +2057,10 @@ public class Node extends Element implements IGraphicalNode {
             if (nodeTmp.getJobletNode() != null) {
                 nodeTmp = nodeTmp.getJobletNode();
             }
-            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)
-                    || nodeTmp.getOutgoingConnections(EConnectionType.TABLE).size() != 0
-                    || nodeTmp.getIncomingConnections(EConnectionType.TABLE).size() != 0) {
+            if ((connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)
+                    || nodeTmp.getOutgoingConnections(EConnectionType.TABLE).size() != 0 || nodeTmp.getIncomingConnections(
+                    EConnectionType.TABLE).size() != 0)
+                    && !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
                 // System.out.println(" ** Ref Link Found in:" + nodeTmp + "
                 // from:" + this);
                 targetWithRef = (Node) nodeTmp;
