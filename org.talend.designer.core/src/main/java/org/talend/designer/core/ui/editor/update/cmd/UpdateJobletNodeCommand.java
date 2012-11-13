@@ -31,6 +31,7 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
@@ -66,7 +67,7 @@ public class UpdateJobletNodeCommand extends Command {
     /**
      * this function is moved from the method updateGraphicalNodes.
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     @Override
     public void execute() {
         Object job = result.getJob();
@@ -129,7 +130,7 @@ public class UpdateJobletNodeCommand extends Command {
         }
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void updateRenaming(Process process, final String oldName, final String newName) {
         if (process == null || oldName == null || newName == null) {
             return;
@@ -147,7 +148,7 @@ public class UpdateJobletNodeCommand extends Command {
         process.checkProcess();
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void updateSchema(Process process, Node node) {
         if (process == null || node == null) {
             return;
@@ -211,7 +212,7 @@ public class UpdateJobletNodeCommand extends Command {
         return parameters;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void updatePropertyChangeEvents(Process process, PropertyChangeEvent evt) {
         if (process == null || evt == null) {
             return;
@@ -282,7 +283,7 @@ public class UpdateJobletNodeCommand extends Command {
      * 
      * @param evt
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private void updateGraphicalNodesSchema(Process process, PropertyChangeEvent evt) {
         if (!(evt.getSource() instanceof INode)) {
             return;
@@ -436,13 +437,13 @@ public class UpdateJobletNodeCommand extends Command {
 
             String dbmsId = null;
             IMetadataTable copy = null;
-            if (((Node) targetNode).getMetadataFromConnector(outConn.getConnectorName()) != null) {
+            if (targetNode.getMetadataFromConnector(outConn.getConnectorName()) != null) {
                 dbmsId = targetNode.getMetadataFromConnector(outConn.getConnectorName()).getDbms();
                 MetadataToolHelper.copyTable(dbmsId, toCopy, tmpClone);
                 toCopy = tmpClone;
 
                 // only if the target node have exactly the same connector
-                copy = ((Node) targetNode).getMetadataFromConnector(outConn.getConnectorName()).clone(true);
+                copy = targetNode.getMetadataFromConnector(outConn.getConnectorName()).clone(true);
             } else {
                 final String mainConnector = "FLOW"; // can only be FLOW right now for this case. //$NON-NLS-1$
 
@@ -451,7 +452,7 @@ public class UpdateJobletNodeCommand extends Command {
                 toCopy = tmpClone;
                 // if don't have the same connector, take the main connector of the component.
 
-                copy = ((Node) targetNode).getMetadataFromConnector(mainConnector).clone(true);
+                copy = targetNode.getMetadataFromConnector(mainConnector).clone(true);
             }
 
             MetadataToolHelper.copyTable(dbmsId, toCopy, copy);
