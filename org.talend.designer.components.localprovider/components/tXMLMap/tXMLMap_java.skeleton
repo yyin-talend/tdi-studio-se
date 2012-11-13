@@ -293,14 +293,14 @@ public class CLASS {
 					nodesXPath.put(currentNodeXPath, ".");
 				}else{
 					String nodeXPathWithPrefix = buildXPathWithPrefix(node, dPrefixMapping);
-					if(nodeXPathWithPrefix.startsWith(finalLoopNodeXPath)){
+					if(isChild(nodeXPathWithPrefix,finalLoopNodeXPath)){
 						String relativeXPath = nodeXPathWithPrefix.substring(finalLoopNodeXPath.length() + 1);
 						nodesXPath.put(currentNodeXPath, relativeXPath);
 					}else{
 						StringBuilder relativeXPath = new StringBuilder();
 						String tmp = finalLoopNodeXPath;
 						
-						while(!nodeXPathWithPrefix.startsWith(tmp)){
+						while(!isChild(nodeXPathWithPrefix,tmp)){
 							int index = tmp.lastIndexOf("/");
 							if(index<0){ break; }
 							tmp = tmp.substring(0,index);
@@ -311,12 +311,15 @@ public class CLASS {
 						}else{
 							relativeXPath.append(nodeXPathWithPrefix.substring(tmp.length() + 1));
 						}
-						relativeXPath.toString();
 						nodesXPath.put(currentNodeXPath, relativeXPath.toString());
 					}
 				}
 			}
-		} 
+		}
+		
+		private boolean isChild(String asChild,String asParent) {
+            return asChild.startsWith(asParent) && '/' == asChild.charAt(asParent.length());
+		}
 		
 		private String buildXPathWithPrefix(TreeNode node, Map<String,String> dPrefixMapping){
 			String xpath = getXPath(node);
