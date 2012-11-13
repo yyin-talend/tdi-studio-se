@@ -278,9 +278,9 @@
             	java.util.Collections.sort(fetchFilesOneTime_<%=cid%>);
             	String [] arrayFetchFilesOneTime_<%=cid%> = fetchFilesOneTime_<%=cid %>.toArray(new String[]{});
             	for(String str_<%=cid %> : originalFiles_<%=cid %>) {
-            		java.io.File file_<%=cid%> = new java.io.File(str_<%=cid%>);
             		int index_delete_<%=cid%> = java.util.Arrays.binarySearch(arrayFetchFilesOneTime_<%=cid%>,str_<%=cid %>);
                     if(index_delete_<%=cid%> < 0) {
+	            		java.io.File file_<%=cid%> = new java.io.File(str_<%=cid%>);
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_DELETED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;  
@@ -337,7 +337,7 @@
             			originalMap_<%=cid%>.put(str_<%=cid %>,file_<%=cid %>.lastModified());
 	            		String fileMD5_<%=cid%> = util_<%=cid %>.getFileChecksum(file_<%=cid%>);
             			if(!fileMD5_<%=cid%>.equals(originalContentMap_<%=cid%>.get(str_<%=cid%>))){
-							originalContentMap_<%=cid%>.put(str_<%=cid%>,util_<%=cid %>.getFileChecksum(file_<%=cid%>));
+							originalContentMap_<%=cid%>.put(str_<%=cid%>,fileMD5_<%=cid%>);
 	            			globalMap.put("<%=cid %>_NOT_UPDATED_FILE", null);
 	            			found_<%=cid%> = false;
             			}else{
@@ -362,9 +362,9 @@
                 java.util.Collections.sort(fetchFilesOneTime_<%=cid%>);
                 String [] arrayFetchFilesOneTime_<%=cid%> = fetchFilesOneTime_<%=cid %>.toArray(new String[]{});
                 for(String str_<%=cid %> : originalFiles_<%=cid %>) {
-                	java.io.File file_<%=cid%> = new java.io.File(str_<%=cid%>);
                 	int index_fileall_<%=cid%> = java.util.Arrays.binarySearch(arrayFetchFilesOneTime_<%=cid%>,str_<%=cid %>);
                     if(index_fileall_<%=cid%> < 0 ) {
+	                	java.io.File file_<%=cid%> = new java.io.File(str_<%=cid%>);
                     	globalMap.put("<%=cid %>_FILENAME", file_<%=cid %>.getName());
                         globalMap.put("<%=cid %>_DELETED_FILE", file_<%=cid %>.getAbsolutePath());
                         found_<%=cid %> = true;
