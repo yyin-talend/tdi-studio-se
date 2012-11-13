@@ -661,6 +661,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             public void widgetSelected(SelectionEvent e) {
                 boolean selected = addBSButton.getSelection();
                 addAntBSButton.setEnabled(selected);
+                addAntBSButton.setSelection(true);
                 addMavenBSButton.setEnabled(selected);
                 if (!selected) {
                     addAntBSButton.setSelection(selected);
