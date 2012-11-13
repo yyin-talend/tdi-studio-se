@@ -1885,8 +1885,9 @@ public class Node extends Element implements IGraphicalNode {
                 connec = (Connection) getIncomingConnections().get(j);
                 if (connec.isActivate()) {
                     if ((connec.getLineStyle().equals(EConnectionType.RUN_IF)
-                            || connec.getLineStyle().equals(EConnectionType.ON_COMPONENT_ERROR) || connec.getLineStyle().equals(
-                            EConnectionType.ON_COMPONENT_OK) || connec.getLineStyle().equals(EConnectionType.STARTS))) {
+                            || connec.getLineStyle().equals(EConnectionType.ON_COMPONENT_ERROR)
+                            || connec.getLineStyle().equals(EConnectionType.ON_COMPONENT_OK) || connec.getLineStyle().equals(
+                            EConnectionType.STARTS))) {
                         runIf = true;
                     }
                     if (!runIf) {
@@ -2751,7 +2752,7 @@ public class Node extends Element implements IGraphicalNode {
                         || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                         || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                         || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)
-						|| (getCurrentActiveLinksNbInput(EConnectionType.STARTS) > 0)
+                        || (getCurrentActiveLinksNbInput(EConnectionType.STARTS) > 0)
                 /*
                  * http://jira.talendforge.org/browse/TESB-4858 Modified By LiXiaopeng 2012-2-13 ||
                  * (getCurrentActiveLinksNbInput(EConnectionType.ROUTE_WHEN) > 0)
@@ -2918,11 +2919,12 @@ public class Node extends Element implements IGraphicalNode {
                                 noSchema = true;
                             }
                         }
-
                     }
                 }
-
-                if ((mainConnector.getMaxLinkInput() == 0) && (mainConnector.getMaxLinkOutput() != 0)) {
+                // display error in the tRunJob Component that the schema is empty when a output main link exists.
+                if ((mainConnector.getMaxLinkInput() == 0 || ("tRunJob".equals(getComponent().getName())
+                        && (mainConnector.getMaxLinkInput() != 0) && getCurrentActiveLinksNbOutput(EConnectionType.FLOW_MAIN) > 0))
+                        && (mainConnector.getMaxLinkOutput() != 0)) {
                     if (table.getListColumns().size() == 0) {
                         String errorMessage = Messages.getString("Node.noSchemaDefined"); //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
@@ -3683,7 +3685,8 @@ public class Node extends Element implements IGraphicalNode {
         } else if ((getCurrentActiveLinksNbInput(EConnectionType.ROUTE_WHEN) > 0) && isFirstLinkOrder) {
             String errorMessage = Messages.getString("Node.errorMessage5"); //$NON-NLS-1$
             Problems.add(ProblemStatus.ERROR, this, errorMessage);
-        } else if ((getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0 || getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0 || getCurrentActiveLinksNbInput(EConnectionType.STARTS) > 0)
+        } else if ((getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0
+                || getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0 || getCurrentActiveLinksNbInput(EConnectionType.STARTS) > 0)
                 && isFirstLinkOrder) {
             String errorMessage = Messages.getString("Node.errorMessage4"); //$NON-NLS-1$
             Problems.add(ProblemStatus.ERROR, this, errorMessage);
