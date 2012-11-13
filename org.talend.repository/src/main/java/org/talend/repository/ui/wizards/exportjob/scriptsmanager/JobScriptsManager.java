@@ -50,6 +50,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.designer.runprocess.ProcessorException;
@@ -328,7 +329,9 @@ public abstract class JobScriptsManager {
             if (value == null) {
                 contextParameterValues += " " + CTX_PARAMETER_ARG + " " + name + "=" + null;//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
             } else if (value != null && !"".equals(value)) {//$NON-NLS-1$
-                contextParameterValues += " " + CTX_PARAMETER_ARG + " " + name + "=" + value;//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+            // Changed by Marvin Wang on Nov.13, 2012 for bug TDI-23253 to add double quotation marks for value.
+                contextParameterValues += " " + CTX_PARAMETER_ARG + " " + name + "="//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
+                        + TalendQuoteUtils.addQuotes(value);
             }
         }
         contextParameterValues = contextParameterValues + " ";//$NON-NLS-1$
