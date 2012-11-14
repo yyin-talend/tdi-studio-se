@@ -14,7 +14,12 @@ package org.talend.designer.core.ui.wizards;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.talend.commons.exception.LoginException;
@@ -135,33 +140,46 @@ public class NewProcessWizard extends Wizard {
     @SuppressWarnings("unchecked")
     @Override
     public boolean performFinish() {
-        try {
 
-            property.setId(repositoryFactory.getNextId());
-            // changed by hqzhang for TDI-19527, label=displayName
-            property.setLabel(property.getDisplayName());
+        RepositoryWorkUnit<Object> workUnit = new RepositoryWorkUnit<Object>(this.getWindowTitle(), this) {
 
-            ProcessType process = TalendFileFactory.eINSTANCE.createProcessType();
-            ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();
-            // add depended routines.
-            List<RoutinesParameterType> dependenciesInPreference = RoutinesUtil.createDependenciesInPreference();
-            parameterType.getRoutinesParameter().addAll(dependenciesInPreference);
-            process.setParameters(parameterType);
-            processItem.setProcess(process);
-            RepositoryWorkUnit<Object> workUnit = new RepositoryWorkUnit<Object>(this.getWindowTitle(), this) {
+            @Override
+            protected void run() throws LoginException, PersistenceException {
+                IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                IWorkspaceRunnable operation = new IWorkspaceRunnable() {
 
-                @Override
-                protected void run() throws LoginException, PersistenceException {
-                    repositoryFactory.create(processItem, mainPage.getDestinationPath());
+                    @Override
+                    public void run(IProgressMonitor monitor) throws CoreException {
+                        try {
+                            property.setId(repositoryFactory.getNextId());
+                            // changed by hqzhang for TDI-19527, label=displayName
+                            property.setLabel(property.getDisplayName());
+
+                            ProcessType process = TalendFileFactory.eINSTANCE.createProcessType();
+                            ParametersType parameterType = TalendFileFactory.eINSTANCE.createParametersType();
+                            // add depended routines.
+                            List<RoutinesParameterType> dependenciesInPreference = RoutinesUtil.createDependenciesInPreference();
+                            parameterType.getRoutinesParameter().addAll(dependenciesInPreference);
+                            process.setParameters(parameterType);
+                            processItem.setProcess(process);
+                            repositoryFactory.create(processItem, mainPage.getDestinationPath());
+                        } catch (PersistenceException e) {
+                            MessageDialog.openError(getShell(), Messages.getString("NewProcessWizard.failureTitle"), Messages //$NON-NLS-1$
+                                    .getString("NewProcessWizard.failureText") + " : " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+                            ExceptionHandler.process(e);
+                        }
+                    }
+                };
+                try {
+                    workspace.run(operation, null);
+                } catch (CoreException e) {
+                    ExceptionHandler.process(e);
                 }
-            };
-            workUnit.setAvoidUnloadResources(true);
-            repositoryFactory.executeRepositoryWorkUnit(workUnit);
-        } catch (PersistenceException e) {
-            MessageDialog.openError(getShell(), Messages.getString("NewProcessWizard.failureTitle"), Messages //$NON-NLS-1$
-                    .getString("NewProcessWizard.failureText") + " : " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
-            ExceptionHandler.process(e);
-        }
+            }
+        };
+        workUnit.setAvoidUnloadResources(true);
+        repositoryFactory.executeRepositoryWorkUnit(workUnit);
+
         return processItem != null;
     }
 
