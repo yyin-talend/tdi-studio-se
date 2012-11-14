@@ -12,6 +12,7 @@
 	
 	<!-- modification 2: compile classpath -->
 	<path id="compile.classpath">
+		<pathelement location="${component.plugin.home}/tMSSqlInput/jtds-1.2.5.jar" />
 	</path>
 
 	<!-- #################################################### -->	

@@ -30,7 +30,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 	String table = ElementParameterParser.getValue(node,"__TABLE__");	
 	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
-    String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+    final String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
     
     //feature:2880
     getManager(dbmsId, cid, node);//register the MSSQLManager
@@ -221,6 +221,11 @@ skeleton="../templates/db_output_bulk.skeleton"
                 }
                 <%
             }else if(("Date").equals(typeToGenerate)){
+		    	String dbType = column.getColumn().getType();
+				if(dbType==null || "".equals(dbType.trim())){
+					MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(dbmsId);
+					dbType = mappingType.getDefaultSelectedDbType(column.getColumn().getTalendType());
+				}
                 %>
                 if(<%=incomingConnName%>.<%=column.getName()%>!=null){
                     // timestamp < min java date value (year 1) || timestamp > max mysql value (year 10000) => set 0000-00-00 as date in MySQL
@@ -228,7 +233,11 @@ skeleton="../templates/db_output_bulk.skeleton"
                     if (date_<%=cid %> < year1_<%=cid %> || date_<%=cid %> >= year10000_<%=cid %>) {
                         <%=prefix+cid%>.setString(counter<%=cid%>, "0000-00-00 00:00:00");
                     } else {
-                        <%=prefix+cid%>.setTimestamp(counter<%=cid%>, new java.sql.Timestamp(date_<%=cid %>));
+		         <%if("DATETIMEOFFSET".equals(dbType)){%>
+		                <%=prefix+cid%>.setTimestamp(count<%=cid%>, new java.sql.Timestamp(date_<%=cid %>),calendar_datetimeoffset_<%=cid%>);
+		         <%} else {%>
+		         		<%=prefix+cid%>.setTimestamp(count<%=cid%>, new java.sql.Timestamp(date_<%=cid %>));
+		         <%}%>
                     }
                 }else{
         

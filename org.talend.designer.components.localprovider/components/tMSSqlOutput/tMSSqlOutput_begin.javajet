@@ -95,6 +95,8 @@ calendar_<%=cid %>.set(10000, 0, 1, 0, 0, 0);
 long year10000_<%=cid %> = calendar_<%=cid %>.getTime().getTime();
 long date_<%=cid %>;
 
+java.util.Calendar calendar_datetimeoffset_<%=cid%> = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"));
+
 <%
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
