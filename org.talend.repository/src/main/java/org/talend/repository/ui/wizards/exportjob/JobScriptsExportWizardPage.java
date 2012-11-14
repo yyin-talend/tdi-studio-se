@@ -706,6 +706,14 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         });
     }
 
+    public boolean isAddMavenScript() {
+        if (addMavenBSButton != null) {
+            return addMavenBSButton.getSelection();
+        }
+
+        return false;
+    }
+
     /**
      * DOC zli Comment method "getJobContextValues".
      * 

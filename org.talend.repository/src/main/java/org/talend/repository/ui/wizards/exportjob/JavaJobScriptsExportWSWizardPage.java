@@ -455,7 +455,11 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             dialog.setFilterExtensions(new String[] { "*" + FileConstants.ESB_FILE_SUFFIX, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
             break;
         case OSGI:
-            dialog.setFilterExtensions(new String[] { "*" + FileConstants.JAR_FILE_SUFFIX, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
+            if (isAddMavenScript()) {
+                dialog.setFilterExtensions(new String[] { "*" + FileConstants.ZIP_FILE_SUFFIX, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
+            } else {
+                dialog.setFilterExtensions(new String[] { "*" + FileConstants.JAR_FILE_SUFFIX, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
+            }
             break;
         case PETALSESB:
             dialog.setFilterExtensions(new String[] { "*" + FileConstants.ZIP_FILE_SUFFIX, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
@@ -491,11 +495,17 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         if (selectedFileName == null) {
             return;
         }
-        if (!selectedFileName.endsWith(getOutputSuffix())) {
-            selectedFileName += getOutputSuffix();
+        String idealSuffix;
+        if (isAddMavenScript()) {
+            idealSuffix = FileConstants.ZIP_FILE_SUFFIX;
+        } else {
+            idealSuffix = getOutputSuffix();
+        }
+        if (!selectedFileName.endsWith(idealSuffix)) {
+            selectedFileName += idealSuffix;
         }
         // when user change the name of job,will add the version auto
-        if (selectedFileName != null && !selectedFileName.endsWith(getSelectedJobVersion() + getOutputSuffix())) {
+        if (selectedFileName != null && !selectedFileName.endsWith(getSelectedJobVersion() + idealSuffix)) {
             String b = selectedFileName.substring(0, (selectedFileName.length() - 4));
             File file = new File(b);
 
@@ -506,12 +516,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             if (str.equals(s)) {
                 if (getDefaultFileName().get(1) != null && !"".equals(getDefaultFileName().get(1))) {
                     selectedFileName = b + ((JobExportType.OSGI.equals(jobExportType)) ? "-" : "_") + getDefaultFileName().get(1)
-                            + getOutputSuffix();
+                            + idealSuffix;
                 } else {
-                    selectedFileName = b + getOutputSuffix();
+                    selectedFileName = b + idealSuffix;
                 }
             } else {
-                selectedFileName = b + getOutputSuffix();
+                selectedFileName = b + idealSuffix;
             }
 
         }
@@ -1397,6 +1407,14 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         } else {
             return null;
         }
+    }
+
+    public boolean isAddMavenScript() {
+        if (addBSButton != null) {
+            return addBSButton.getSelection();
+        }
+
+        return false;
     }
 
     /*
