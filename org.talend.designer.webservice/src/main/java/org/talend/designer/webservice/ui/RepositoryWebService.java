@@ -63,8 +63,8 @@ import org.talend.designer.webservice.ws.WSDLDiscoveryHelper;
 import org.talend.designer.webservice.ws.wsdlinfo.Function;
 import org.talend.designer.webservice.ws.wsdlinfo.ParameterInfo;
 import org.talend.designer.webservice.ws.wsdlinfo.PortNames;
+import org.talend.designer.webservice.ws.wsdlutil.ServiceHelperConfiguration;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
-import org.talend.webservice.helper.conf.ServiceHelperConfiguration;
 
 /**
  * DOC Administrator class global comment. Detailled comment
@@ -229,6 +229,7 @@ public class RepositoryWebService extends AbstractWebService {
         wsdlField = new LabelledFileField(wsdlUrlcomposite, ExternalWebServiceUIProperties.FILE_LABEL,
                 ExternalWebServiceUIProperties.FILE_EXTENSIONS, 1, SWT.BORDER) {
 
+            @Override
             protected void setFileFieldValue(String result) {
                 if (result != null) {
                     getTextControl().setText(TalendTextUtils.addQuotes(PathUtils.getPortablePath(result)));
@@ -283,6 +284,7 @@ public class RepositoryWebService extends AbstractWebService {
         ExtendedTableModel<PortNames> portModel = new ExtendedTableModel<PortNames>("PORTNAMELIST", allPortNames); //$NON-NLS-1$
         portListTableView = new AbstractDataTableEditorView<PortNames>(portTabComposite, SWT.NONE, portModel, false, true, false) {
 
+            @Override
             protected void setTableViewerCreatorOptions(TableViewerCreator<PortNames> newTableViewerCreator) {
                 super.setTableViewerCreatorOptions(newTableViewerCreator);
                 newTableViewerCreator.setHeaderVisible(false);
@@ -290,6 +292,7 @@ public class RepositoryWebService extends AbstractWebService {
                 newTableViewerCreator.setReadOnly(true);
             }
 
+            @Override
             protected void createColumns(TableViewerCreator<PortNames> tableViewerCreator, Table table) {
                 TableViewerCreatorColumn rowColumn = new TableViewerCreatorColumn(tableViewerCreator);
                 rowColumn.setTitle(Messages.getString("WebServiceUI.COLUMN")); //$NON-NLS-1$
@@ -338,6 +341,7 @@ public class RepositoryWebService extends AbstractWebService {
         ExtendedTableModel<Function> funModel = new ExtendedTableModel<Function>("FUNCTIONLIST", allfunList); //$NON-NLS-1$
         listTableView = new AbstractDataTableEditorView<Function>(tabComposite, SWT.NONE, funModel, false, true, false) {
 
+            @Override
             protected void setTableViewerCreatorOptions(TableViewerCreator<Function> newTableViewerCreator) {
                 super.setTableViewerCreatorOptions(newTableViewerCreator);
                 newTableViewerCreator.setHeaderVisible(false);
@@ -345,6 +349,7 @@ public class RepositoryWebService extends AbstractWebService {
                 newTableViewerCreator.setReadOnly(true);
             }
 
+            @Override
             protected void createColumns(TableViewerCreator<Function> tableViewerCreator, Table table) {
                 TableViewerCreatorColumn rowColumn = new TableViewerCreatorColumn(tableViewerCreator);
                 rowColumn.setTitle(Messages.getString("WebServiceUI.COLUMN")); //$NON-NLS-1$
@@ -375,6 +380,7 @@ public class RepositoryWebService extends AbstractWebService {
     private void addListenerForWSDLCom() {
         refreshbut.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(PlatformUI.getWorkbench().getDisplay()
                         .getActiveShell().getShell());
@@ -427,6 +433,7 @@ public class RepositoryWebService extends AbstractWebService {
 
         listTable.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] item = listTable.getSelection();
                 currentFunction = (Function) item[0].getData();
@@ -449,6 +456,7 @@ public class RepositoryWebService extends AbstractWebService {
 
         portListTable.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] item = portListTable.getSelection();
                 currentPortName = (PortNames) item[0].getData();

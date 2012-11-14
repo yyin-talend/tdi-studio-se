@@ -14,8 +14,6 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 
-import org.talend.webservice.helper.conf.ServiceHelperConfiguration;
-
 import com.ibm.wsdl.ImportImpl;
 
 /**

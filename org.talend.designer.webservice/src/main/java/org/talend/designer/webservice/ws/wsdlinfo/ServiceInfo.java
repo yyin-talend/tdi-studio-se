@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.exolab.castor.xml.schema.Schema;
-import org.talend.webservice.helper.conf.ServiceHelperConfiguration;
+import org.talend.designer.webservice.ws.wsdlutil.ServiceHelperConfiguration;
 
 /**
  * 
@@ -54,6 +54,7 @@ public class ServiceInfo {
         operations.add(operation);
     }
 
+    @Override
     public String toString() {
         return getServerName();
     }

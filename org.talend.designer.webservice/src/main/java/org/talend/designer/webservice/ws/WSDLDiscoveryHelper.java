@@ -13,7 +13,7 @@ import org.talend.designer.webservice.ws.wsdlinfo.OperationInfo;
 import org.talend.designer.webservice.ws.wsdlinfo.ParameterInfo;
 import org.talend.designer.webservice.ws.wsdlinfo.ServiceInfo;
 import org.talend.designer.webservice.ws.wsdlutil.ComponentBuilder;
-import org.talend.webservice.helper.conf.ServiceHelperConfiguration;
+import org.talend.designer.webservice.ws.wsdlutil.ServiceHelperConfiguration;
 
 /**
  * 
@@ -126,8 +126,8 @@ public class WSDLDiscoveryHelper {
                         if (element.getType() != null) {
                             operationName = operationName + element.getType() + ",";
                         } else if (element.getParameterInfos() != null && !element.getParameterInfos().isEmpty()) {
-                            for (Iterator iterator3 = element.getParameterInfos().iterator(); iterator3.hasNext();) {
-                                ParameterInfo elementBranch = (ParameterInfo) iterator3.next();
+                            for (Object element2 : element.getParameterInfos()) {
+                                ParameterInfo elementBranch = (ParameterInfo) element2;
                                 if (elementBranch.getType() != null) {
                                     operationName = operationName + elementBranch.getType() + ",";
                                 } else {

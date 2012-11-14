@@ -109,8 +109,8 @@ import org.talend.designer.webservice.ws.WSDLDiscoveryHelper;
 import org.talend.designer.webservice.ws.wsdlinfo.Function;
 import org.talend.designer.webservice.ws.wsdlinfo.ParameterInfo;
 import org.talend.designer.webservice.ws.wsdlinfo.PortNames;
+import org.talend.designer.webservice.ws.wsdlutil.ServiceHelperConfiguration;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
-import org.talend.webservice.helper.conf.ServiceHelperConfiguration;
 
 /**
  * gcui class global comment. Detailled comment
@@ -368,12 +368,13 @@ public class WebServiceUI extends AbstractWebService {
             ParameterInfo paraout = new ParameterInfo();
             for (Map<String, String> map : outputMap) {
                 if (map.get("PARAMETERINFO") != null && map.get("PARAMETERINFO") instanceof String) {
-                    String ele = (String) map.get("PARAMETERINFO"); //$NON-NLS-1$
+                    String ele = map.get("PARAMETERINFO"); //$NON-NLS-1$
                     int arraySize = 0;
                     String paraIndex = null;
                     if (map.get("PARAMETERARRAYSIZE") != null) {
-                        if (!map.get("PARAMETERARRAYSIZE").equals(""))
+                        if (!map.get("PARAMETERARRAYSIZE").equals("")) {
                             arraySize = Integer.valueOf(map.get("PARAMETERARRAYSIZE"));
+                        }
                     }
                     if (map.get("PARAMETERINDEX") != null && !map.get("PARAMETERINDEX").equals("")) {
                         paraIndex = map.get("PARAMETERINDEX");
@@ -385,7 +386,7 @@ public class WebServiceUI extends AbstractWebService {
                             // ParameterInfo parain = new ParameterInfo();
                             // parain.setName(ele);
                             // } else {
-                            for (int i = 0; i < paraoutList.size(); i++) {
+                            for (int i = paraoutList.size() - 1; i >= 0; i--) {
                                 ParameterInfo para2 = paraoutList.get(i);
                                 if (paraParent.equals(para2.getName())) {
                                     // para.setParent(para2);
@@ -413,7 +414,7 @@ public class WebServiceUI extends AbstractWebService {
             fun.setOutputParameters(paraoutList);
             for (Map<String, String> map : outputMap) {
                 if (map.get("ELEMENT") != null && map.get("ELEMENT") instanceof String) {
-                    String ele = (String) map.get("ELEMENT"); //$NON-NLS-1$
+                    String ele = map.get("ELEMENT"); //$NON-NLS-1$
                     if (!ele.equals("")) {
                         OutPutMappingData data = new OutPutMappingData();
                         if (para.getName() == null) {
@@ -448,12 +449,13 @@ public class WebServiceUI extends AbstractWebService {
             List<Map<String, String>> inputparaValue = (List<Map<String, String>>) INPUT_PARAMSPara.getValue();
             for (Map<String, String> map : inputparaValue) {
                 if (map.get("PARAMETERINFO") != null && map.get("PARAMETERINFO") instanceof String) {
-                    String ele = (String) map.get("PARAMETERINFO"); //$NON-NLS-1$
+                    String ele = map.get("PARAMETERINFO"); //$NON-NLS-1$
                     int arraySize = 0;
                     String paraIndex = null;
                     if (map.get("PARAMETERARRAYSIZE") != null) {
-                        if (!map.get("PARAMETERARRAYSIZE").equals(""))
+                        if (!map.get("PARAMETERARRAYSIZE").equals("")) {
                             arraySize = Integer.valueOf(map.get("PARAMETERARRAYSIZE"));
+                        }
                     }
                     if (map.get("PARAMETERINDEX") != null && !map.get("PARAMETERINDEX").equals("")) {
                         paraIndex = map.get("PARAMETERINDEX");
@@ -493,7 +495,7 @@ public class WebServiceUI extends AbstractWebService {
             for (Map<String, String> map : inputparaValue) {
                 InputMappingData data = new InputMappingData();
                 if (map.get("EXPRESSION") != null && map.get("EXPRESSION") instanceof String) {
-                    String expr = (String) map.get("EXPRESSION");
+                    String expr = map.get("EXPRESSION");
                     data.setInputColumnValue(expr);
                 }
 
@@ -707,7 +709,7 @@ public class WebServiceUI extends AbstractWebService {
             List<ParameterInfo> list = fun.getInputParameters();
             if (list != null) {
                 if (map.get("EXPRESSION") != null && map.get("EXPRESSION") instanceof String) { //$NON-NLS-1$ //$NON-NLS-2$
-                    String expr = (String) map.get("EXPRESSION"); //$NON-NLS-1$
+                    String expr = map.get("EXPRESSION"); //$NON-NLS-1$
 
                     if (inPutcolumnList == null || inPutcolumnList.size() <= 0) {
                         Map<String, String> exPmap = webParser.parseInTableEntryLocations(expr);
@@ -812,7 +814,7 @@ public class WebServiceUI extends AbstractWebService {
             OutPutMappingData data = new OutPutMappingData();
 
             if (map.get("ELEMENT") != null && map.get("ELEMENT") instanceof String) { //$NON-NLS-1$ //$NON-NLS-2$
-                String ele = (String) map.get("ELEMENT"); //$NON-NLS-1$
+                String ele = map.get("ELEMENT"); //$NON-NLS-1$
                 String reArrayOutEle = "";
                 if (ele.endsWith("]")) {
                     int lastArray = ele.lastIndexOf("[");
@@ -867,7 +869,7 @@ public class WebServiceUI extends AbstractWebService {
                 }
             }
             if (map.get("EXPRESSION") != null && map.get("EXPRESSION") instanceof String) { //$NON-NLS-1$ //$NON-NLS-2$
-                String exp = (String) map.get("EXPRESSION"); //$NON-NLS-1$
+                String exp = map.get("EXPRESSION"); //$NON-NLS-1$
                 String reArrayOutExp = "";
                 if (exp.endsWith("]")) {
                     int lastArray = exp.lastIndexOf("[");
@@ -1100,6 +1102,7 @@ public class WebServiceUI extends AbstractWebService {
 
         tabFolder.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 if (expressinPutTableView == null) {
                     return;
@@ -1187,6 +1190,7 @@ public class WebServiceUI extends AbstractWebService {
         wsdlField = new LabelledFileField(wsdlUrlcomposite, ExternalWebServiceUIProperties.FILE_LABEL,
                 ExternalWebServiceUIProperties.FILE_EXTENSIONS, 1, SWT.BORDER) {
 
+            @Override
             protected void setFileFieldValue(String result) {
                 if (result != null) {
                     getTextControl().setText(TalendTextUtils.addQuotes(PathUtils.getPortablePath(result)));
@@ -1201,8 +1205,9 @@ public class WebServiceUI extends AbstractWebService {
             public void modifyText(ModifyEvent e) {
                 // TODO Auto-generated method stub
                 URLValue = wsdlField.getText();
-                if (connection != null)
+                if (connection != null) {
                     connection.setWSDL(URLValue);
+                }
             }
         });
 
@@ -1246,6 +1251,7 @@ public class WebServiceUI extends AbstractWebService {
         ExtendedTableModel<PortNames> portModel = new ExtendedTableModel<PortNames>("PORTNAMELIST", allPortNames); //$NON-NLS-1$
         portListTableView = new AbstractDataTableEditorView<PortNames>(portTabComposite, SWT.NONE, portModel, false, true, false) {
 
+            @Override
             protected void setTableViewerCreatorOptions(TableViewerCreator<PortNames> newTableViewerCreator) {
                 super.setTableViewerCreatorOptions(newTableViewerCreator);
                 newTableViewerCreator.setHeaderVisible(false);
@@ -1253,6 +1259,7 @@ public class WebServiceUI extends AbstractWebService {
                 newTableViewerCreator.setReadOnly(true);
             }
 
+            @Override
             protected void createColumns(TableViewerCreator<PortNames> tableViewerCreator, Table table) {
                 TableViewerCreatorColumn rowColumn = new TableViewerCreatorColumn(tableViewerCreator);
                 rowColumn.setTitle(Messages.getString("WebServiceUI.COLUMN")); //$NON-NLS-1$
@@ -1301,6 +1308,7 @@ public class WebServiceUI extends AbstractWebService {
         ExtendedTableModel<Function> funModel = new ExtendedTableModel<Function>("FUNCTIONLIST", allfunList); //$NON-NLS-1$
         listTableView = new AbstractDataTableEditorView<Function>(tabComposite, SWT.NONE, funModel, false, true, false) {
 
+            @Override
             protected void setTableViewerCreatorOptions(TableViewerCreator<Function> newTableViewerCreator) {
                 super.setTableViewerCreatorOptions(newTableViewerCreator);
                 newTableViewerCreator.setHeaderVisible(false);
@@ -1308,6 +1316,7 @@ public class WebServiceUI extends AbstractWebService {
                 newTableViewerCreator.setReadOnly(true);
             }
 
+            @Override
             protected void createColumns(TableViewerCreator<Function> tableViewerCreator, Table table) {
                 TableViewerCreatorColumn rowColumn = new TableViewerCreatorColumn(tableViewerCreator);
                 rowColumn.setTitle(Messages.getString("WebServiceUI.COLUMN")); //$NON-NLS-1$
@@ -1338,6 +1347,7 @@ public class WebServiceUI extends AbstractWebService {
     private void addListenerForWSDLCom() {
         refreshbut.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 final Job job = new Job("t") {
 
@@ -1430,6 +1440,7 @@ public class WebServiceUI extends AbstractWebService {
 
         listTable.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] item = listTable.getSelection();
                 currentFunction = (Function) item[0].getData();
@@ -1523,6 +1534,7 @@ public class WebServiceUI extends AbstractWebService {
 
         portListTable.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] item = portListTable.getSelection();
                 currentPortName = (PortNames) item[0].getData();
@@ -1547,8 +1559,9 @@ public class WebServiceUI extends AbstractWebService {
             ParameterInfo first = list.get(0);
             if (first.getParameterInfos() != null && !first.getParameterInfos().isEmpty()) {
                 return isOnlyOnePara(list.get(0).getParameterInfos());
-            } else
+            } else {
                 return first;
+            }
 
         }
 
@@ -1768,6 +1781,7 @@ public class WebServiceUI extends AbstractWebService {
         columnInPutTableView = new AbstractDataTableEditorView<IMetadataColumn>(viewComposite, SWT.BORDER, model, false, true,
                 false) {
 
+            @Override
             protected void setTableViewerCreatorOptions(TableViewerCreator<IMetadataColumn> newTableViewerCreator) {
                 super.setTableViewerCreatorOptions(newTableViewerCreator);
                 newTableViewerCreator.setHeaderVisible(true);
@@ -1775,6 +1789,7 @@ public class WebServiceUI extends AbstractWebService {
                 newTableViewerCreator.setReadOnly(true);
             }
 
+            @Override
             @SuppressWarnings("unchecked")
             protected void createColumns(TableViewerCreator<IMetadataColumn> tableViewerCreator, Table table) {
                 TableViewerCreatorColumn rowColumn = new TableViewerCreatorColumn(tableViewerCreator);
@@ -1869,6 +1884,7 @@ public class WebServiceUI extends AbstractWebService {
         expressinPutTableView = new AbstractDataTableEditorView<InputMappingData>(safhEx, SWT.NONE | SWT.MULTI
                 | SWT.FULL_SELECTION | SWT.SINGLE, targetModel, false, true, false) {
 
+            @Override
             protected void setTableViewerCreatorOptions(TableViewerCreator<InputMappingData> newTableViewerCreator) {
                 super.setTableViewerCreatorOptions(newTableViewerCreator);
                 newTableViewerCreator.setHeaderVisible(true);
@@ -1876,6 +1892,7 @@ public class WebServiceUI extends AbstractWebService {
                 newTableViewerCreator.setReadOnly(false);
             }
 
+            @Override
             protected void createColumns(TableViewerCreator<InputMappingData> tableViewerCreator, final Table table) {
                 // input mapping express cloumn.
                 TableViewerCreatorColumn<InputMappingData, String> expressionColumn = new TableViewerCreatorColumn<InputMappingData, String>(
@@ -1915,6 +1932,7 @@ public class WebServiceUI extends AbstractWebService {
                 expressionColumn.setCellEditor(cellEditorForIn);
                 cellEditorForIn.addListener(new DialogErrorForCellEditorListener(cellEditorForIn, expressionColumn) {
 
+                    @Override
                     public void newValidValueTyped(int itemIndex, Object previousValue, Object newValue, CELL_EDITOR_STATE state) {
                         if (state == CELL_EDITOR_STATE.EDITING) {
                             tabTotabLinkForin.onXPathValueChanged(rowTableForin, table, previousValue.toString(),
@@ -1923,6 +1941,7 @@ public class WebServiceUI extends AbstractWebService {
 
                     }
 
+                    @Override
                     public String validateValue(String value, int beanPosition) {
                         return null;
                     }
@@ -2134,12 +2153,14 @@ public class WebServiceUI extends AbstractWebService {
     private void addListenerForInputCom() {
         rowTableForin.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
             }
         });
 
         expressTableForIn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] selectedItem = expressTableForIn.getSelection();
                 currentElementIndexForIn = expressTableForIn.getSelectionIndex();
@@ -2200,6 +2221,7 @@ public class WebServiceUI extends AbstractWebService {
         });
         inputschemaButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
 
                 Shell shell = uiParent.getShell();
@@ -2259,6 +2281,7 @@ public class WebServiceUI extends AbstractWebService {
         });
         addListButForIn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 Shell shell = uiParent.getShell();
                 // if (currentInputMappingData.getParameter().getArraySize() != 0) {
@@ -2394,10 +2417,11 @@ public class WebServiceUI extends AbstractWebService {
 
         removeButForIn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] items = expressTableForIn.getSelection();
-                for (int i = 0; i < items.length; i++) {
-                    InputMappingData info = (InputMappingData) items[i].getData();
+                for (TableItem item : items) {
+                    InputMappingData info = (InputMappingData) item.getData();
                     // if (info.getInputColumnValue() != null && !"".equals(info.getInputColumnValue())) {
                     // // info.getInputColumnValue().
                     // info.setInputColumnValue(null);
@@ -2421,6 +2445,7 @@ public class WebServiceUI extends AbstractWebService {
 
         normalizeButForIn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 String columnName = currentInputMappingData.getInputColumnValue();
                 if (!(columnName.contains("normalize(") && columnName.contains(",\":\")"))) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -2436,6 +2461,7 @@ public class WebServiceUI extends AbstractWebService {
 
         denorButForIn.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 String columnName = currentInputMappingData.getInputColumnValue();
                 if (!(columnName.contains("denormalize(") && columnName.contains(",\":\")"))) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -2510,6 +2536,7 @@ public class WebServiceUI extends AbstractWebService {
         ExtendedTableModel<OutPutMappingData> model = new ExtendedTableModel<OutPutMappingData>("OUTPUTELEMENT", outParaList); //$NON-NLS-1$
         rowoutPutTableView = new AbstractDataTableEditorView<OutPutMappingData>(safhExRow, SWT.NONE, model, false, true, false) {
 
+            @Override
             protected void setTableViewerCreatorOptions(TableViewerCreator<OutPutMappingData> newTableViewerCreator) {
                 super.setTableViewerCreatorOptions(newTableViewerCreator);
                 newTableViewerCreator.setHeaderVisible(true);
@@ -2517,6 +2544,7 @@ public class WebServiceUI extends AbstractWebService {
                 newTableViewerCreator.setReadOnly(true);
             }
 
+            @Override
             protected void createColumns(TableViewerCreator<OutPutMappingData> tableViewerCreator, final Table table) {
                 TableViewerCreatorColumn rowColumn = new TableViewerCreatorColumn(tableViewerCreator);
                 rowColumn.setTitle(Messages.getString("WebServiceUI.ELEMENT")); //$NON-NLS-1$
@@ -2629,6 +2657,7 @@ public class WebServiceUI extends AbstractWebService {
         expressoutPutTableView = new AbstractDataTableEditorView<OutPutMappingData>(safhEx, SWT.NONE | SWT.MULTI
                 | SWT.FULL_SELECTION | SWT.SINGLE, targetModel, false, true, false) {
 
+            @Override
             protected void setTableViewerCreatorOptions(TableViewerCreator<OutPutMappingData> newTableViewerCreator) {
                 super.setTableViewerCreatorOptions(newTableViewerCreator);
                 newTableViewerCreator.setHeaderVisible(true);
@@ -2636,6 +2665,7 @@ public class WebServiceUI extends AbstractWebService {
                 newTableViewerCreator.setReadOnly(false);
             }
 
+            @Override
             protected void createColumns(TableViewerCreator<OutPutMappingData> tableViewerCreator, final Table table) {
                 TableViewerCreatorColumn<OutPutMappingData, String> expressionColumn = new TableViewerCreatorColumn<OutPutMappingData, String>(
                         tableViewerCreator);
@@ -2686,6 +2716,7 @@ public class WebServiceUI extends AbstractWebService {
                 expressionColumn.setCellEditor(cellEditorForOut);
                 cellEditorForOut.addListener(new DialogErrorForCellEditorListener(cellEditorForOut, expressionColumn) {
 
+                    @Override
                     public void newValidValueTyped(int itemIndex, Object previousValue, Object newValue, CELL_EDITOR_STATE state) {
                         if (state == CELL_EDITOR_STATE.EDITING) {
                             tabTotabLinkForout.onXPathValueChanged(rowTableForout, table, previousValue.toString(),
@@ -2694,6 +2725,7 @@ public class WebServiceUI extends AbstractWebService {
 
                     }
 
+                    @Override
                     public String validateValue(String value, int beanPosition) {
                         // TODO Auto-generated method stub
                         return null;
@@ -2742,6 +2774,7 @@ public class WebServiceUI extends AbstractWebService {
     private void addListenerForOutputCom() {
         rowTableForout.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] items = rowTableForout.getSelection();
                 currentElementIndexForOut = rowTableForout.getSelectionIndex();
@@ -2780,6 +2813,7 @@ public class WebServiceUI extends AbstractWebService {
 
         expressTableForout.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] items = expressTableForout.getSelection();
                 currentIndexForOutExpress = expressTableForout.getSelectionIndex();
@@ -2832,6 +2866,7 @@ public class WebServiceUI extends AbstractWebService {
 
         addListButForOut.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 Shell shell = uiParent.getShell();
 
@@ -2937,10 +2972,11 @@ public class WebServiceUI extends AbstractWebService {
 
         removeButForout.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] items = rowTableForout.getSelection();
-                for (int i = 0; i < items.length; i++) {
-                    OutPutMappingData info = (OutPutMappingData) items[i].getData();
+                for (TableItem item : items) {
+                    OutPutMappingData info = (OutPutMappingData) item.getData();
                     // ParameterInfo info = (ParameterInfo) items[i].getData();
                     rowoutPutTableView.getExtendedTableModel().remove(info);
                     tabTotabLinkForout.updateLinksStyleAndControlsSelection(rowTableForout, true);
@@ -2958,6 +2994,7 @@ public class WebServiceUI extends AbstractWebService {
 
         normalizeButForOut.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] items = expressTableForout.getSelection();
                 OutPutMappingData currentData = (OutPutMappingData) items[0].getData();
@@ -2974,6 +3011,7 @@ public class WebServiceUI extends AbstractWebService {
 
         denorButForOut.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] items = expressTableForout.getSelection();
                 OutPutMappingData currentData = (OutPutMappingData) items[0].getData();
@@ -2990,6 +3028,7 @@ public class WebServiceUI extends AbstractWebService {
 
         schemaButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 // create the Schema MetadataDialog
                 MetadataDialog metaDialog = null;
@@ -3315,7 +3354,7 @@ public class WebServiceUI extends AbstractWebService {
         WebServiceExpressionParser webParser = new WebServiceExpressionParser("\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*"); //$NON-NLS-1$
         for (Map<String, String> map : inputparaValue) {
             if (map.get("SOURCE") != null && map.get("SOURCE") instanceof String) { //$NON-NLS-1$ //$NON-NLS-2$
-                String source = (String) map.get("SOURCE"); //$NON-NLS-1$
+                String source = map.get("SOURCE"); //$NON-NLS-1$
                 if ("".equals(source)) { //$NON-NLS-1$
                     continue;
                 }
@@ -3338,11 +3377,11 @@ public class WebServiceUI extends AbstractWebService {
                 if (sourceItem != null) {
                     TableItem targetItem = null;
                     Object targetData = null;
-                    for (int i = 0; i < tarItems.length; i++) {
-                        if (tarItems[i].getData() == null) {
+                    for (TableItem tarItem : tarItems) {
+                        if (tarItem.getData() == null) {
                             continue;
                         }
-                        String columnName = ((InputMappingData) tarItems[i].getData()).getInputColumnValue();
+                        String columnName = ((InputMappingData) tarItem.getData()).getInputColumnValue();
                         if (columnName == null || "".equals(columnName)) { //$NON-NLS-1$
                             continue;
                         }
@@ -3356,8 +3395,8 @@ public class WebServiceUI extends AbstractWebService {
                             String rowValue = entry.getValue();
 
                             if (columnValue.equals(source)) {
-                                targetItem = tarItems[i];
-                                targetData = tarItems[i].getData();
+                                targetItem = tarItem;
+                                targetData = tarItem.getData();
                                 if (targetItem == null) {
                                     continue;
                                 }
@@ -3385,7 +3424,7 @@ public class WebServiceUI extends AbstractWebService {
         WebServiceExpressionParser webParser = new WebServiceExpressionParser("\\s*\\w+(\\[\\d+?\\])?\\s*"); //$NON-NLS-1$
         for (Map<String, String> map : outputMap) {
             if (map.get("SOURCE") != null && map.get("SOURCE") instanceof String) { //$NON-NLS-1$ //$NON-NLS-2$
-                String source = (String) map.get("SOURCE"); //$NON-NLS-1$
+                String source = map.get("SOURCE"); //$NON-NLS-1$
 
                 TableItem sourceItem = null;
                 Object sourceData = null;
@@ -3408,11 +3447,11 @@ public class WebServiceUI extends AbstractWebService {
                 if (sourceItem != null) {
                     TableItem targetItem = null;
                     Object targetData = null;
-                    for (int i = 0; i < tarItems.length; i++) {
-                        if (tarItems[i].getData() == null) {
+                    for (TableItem tarItem : tarItems) {
+                        if (tarItem.getData() == null) {
                             continue;
                         }
-                        String columnName = ((OutPutMappingData) tarItems[i].getData()).getParameterName();
+                        String columnName = ((OutPutMappingData) tarItem.getData()).getParameterName();
                         if (columnName == null || "".equals(columnName)) { //$NON-NLS-1$
                             continue;
                         }
@@ -3435,8 +3474,8 @@ public class WebServiceUI extends AbstractWebService {
                         // while (ite.hasNext()) {
                         // String columnValue = ite.next();
                         if (columnName.equals(source)) {
-                            targetItem = tarItems[i];
-                            targetData = tarItems[i].getData();
+                            targetItem = tarItem;
+                            targetData = tarItem.getData();
 
                             if (targetItem == null) {
                                 continue;
@@ -3615,8 +3654,9 @@ public class WebServiceUI extends AbstractWebService {
 
                 if (inputData.getParameterName() != null) {
                     String name = inputData.getParameterName();
-                    if (!name.equals(""))
+                    if (!name.equals("")) {
                         parameter.setElement(name);
+                    }
                 } else if (inputData.getParameterName() == null && inputData.getParameter() != null) {
                     if (inputData.getParameter().getParent() != null) {
                         String name = new ParameterInfoUtil().getParentName(inputData.getParameter());
@@ -3699,8 +3739,9 @@ public class WebServiceUI extends AbstractWebService {
                 Map<String, String> eleMap = new HashMap<String, String>(3);
                 if (outData.getParameterName() != null) {
                     String name = outData.getParameterName();
-                    if (!name.equals(""))
+                    if (!name.equals("")) {
                         parameter.setElement(name);
+                    }
                 } else {
                     parameter.setElement(para.getName());
                 }
