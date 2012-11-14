@@ -472,7 +472,7 @@
 				return "";
 			else {
 				addColumnsToSQL(sql);
-				return "INSERT INTO " + getTable() + " (" + getColumnList(", ") + ") (" + previous().run(sql) + ")";
+				return "INSERT INTO " + getTable() + " (" + getColumnList(", ") + ") " + previous().run(sql);
 			}
 		}
 	}
