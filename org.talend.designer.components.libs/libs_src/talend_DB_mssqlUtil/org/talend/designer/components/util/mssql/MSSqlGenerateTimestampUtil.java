@@ -1,6 +1,6 @@
 // ============================================================================
 //
-// Copyright (C) 2006-2009 Talend Inc. - www.talend.com
+// Copyright (C) 2006-2012 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
@@ -104,13 +104,25 @@ public class MSSqlGenerateTimestampUtil {
         return null;
     }
     
+    /**
+     * parse datetimeoffset string to date.
+     * datetimeoffset string show as YYYY-MM-DD hh:mm:ss[.nnnnnnn] [+|-]hh:mm
+     * and no enough infomation for the DST decision,so no DST consider.
+     * @param datetimeOffsetString
+     * @return
+     */
     private java.util.Date parseDatetimeOffset(String datetimeOffsetString) {
     	int idx = datetimeOffsetString.lastIndexOf(' ');
 		String datetimeString = datetimeOffsetString.substring(0,idx);
 		String offsetString = datetimeOffsetString.substring(idx+1);
 		int offset = TimeZone.getTimeZone("GMT"+offsetString).getRawOffset();
+
+		//local timezone
+		TimeZone local = TimeZone.getDefault();
+		int localOffset = local.getRawOffset();
+		
 		long milliseconds = java.sql.Timestamp.valueOf(datetimeString).getTime();
-		long millisecondsToGMT1970_01_01 = milliseconds - offset;
+		long millisecondsToGMT1970_01_01 = milliseconds - offset + localOffset;
 		return new java.util.Date(millisecondsToGMT1970_01_01);
     }
     
