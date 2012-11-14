@@ -109,8 +109,8 @@ import org.talend.designer.webservice.ws.WSDLDiscoveryHelper;
 import org.talend.designer.webservice.ws.wsdlinfo.Function;
 import org.talend.designer.webservice.ws.wsdlinfo.ParameterInfo;
 import org.talend.designer.webservice.ws.wsdlinfo.PortNames;
+import org.talend.designer.webservice.ws.wsdlutil.ServiceHelperConfiguration;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
-import org.talend.webservice.helper.conf.ServiceHelperConfiguration;
 
 /**
  * gcui class global comment. Detailled comment
@@ -385,7 +385,7 @@ public class WebServiceUI extends AbstractWebService {
                             // ParameterInfo parain = new ParameterInfo();
                             // parain.setName(ele);
                             // } else {
-                            for (int i = 0; i < paraoutList.size(); i++) {
+                            for (int i = paraoutList.size() - 1; i >= 0; i--) {
                                 ParameterInfo para2 = paraoutList.get(i);
                                 if (paraParent.equals(para2.getName())) {
                                     // para.setParent(para2);

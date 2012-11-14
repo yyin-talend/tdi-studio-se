@@ -63,8 +63,8 @@ import org.talend.designer.webservice.ws.WSDLDiscoveryHelper;
 import org.talend.designer.webservice.ws.wsdlinfo.Function;
 import org.talend.designer.webservice.ws.wsdlinfo.ParameterInfo;
 import org.talend.designer.webservice.ws.wsdlinfo.PortNames;
+import org.talend.designer.webservice.ws.wsdlutil.ServiceHelperConfiguration;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
-import org.talend.webservice.helper.conf.ServiceHelperConfiguration;
 
 /**
  * DOC Administrator class global comment. Detailled comment
