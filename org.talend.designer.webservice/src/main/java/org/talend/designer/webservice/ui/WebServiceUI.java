@@ -109,8 +109,8 @@ import org.talend.designer.webservice.ws.WSDLDiscoveryHelper;
 import org.talend.designer.webservice.ws.wsdlinfo.Function;
 import org.talend.designer.webservice.ws.wsdlinfo.ParameterInfo;
 import org.talend.designer.webservice.ws.wsdlinfo.PortNames;
+import org.talend.designer.webservice.ws.wsdlutil.ServiceHelperConfiguration;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
-import org.talend.webservice.helper.conf.ServiceHelperConfiguration;
 
 /**
  * gcui class global comment. Detailled comment
@@ -368,12 +368,13 @@ public class WebServiceUI extends AbstractWebService {
             ParameterInfo paraout = new ParameterInfo();
             for (Map<String, String> map : outputMap) {
                 if (map.get("PARAMETERINFO") != null && map.get("PARAMETERINFO") instanceof String) {
-                    String ele = (String) map.get("PARAMETERINFO"); //$NON-NLS-1$
+                    String ele = map.get("PARAMETERINFO"); //$NON-NLS-1$
                     int arraySize = 0;
                     String paraIndex = null;
                     if (map.get("PARAMETERARRAYSIZE") != null) {
-                        if (!map.get("PARAMETERARRAYSIZE").equals(""))
+                        if (!map.get("PARAMETERARRAYSIZE").equals("")) {
                             arraySize = Integer.valueOf(map.get("PARAMETERARRAYSIZE"));
+                        }
                     }
                     if (map.get("PARAMETERINDEX") != null && !map.get("PARAMETERINDEX").equals("")) {
                         paraIndex = map.get("PARAMETERINDEX");
@@ -385,7 +386,7 @@ public class WebServiceUI extends AbstractWebService {
                             // ParameterInfo parain = new ParameterInfo();
                             // parain.setName(ele);
                             // } else {
-                            for (int i = 0; i < paraoutList.size(); i++) {
+                            for (int i = paraoutList.size() - 1; i >= 0; i--) {
                                 ParameterInfo para2 = paraoutList.get(i);
                                 if (paraParent.equals(para2.getName())) {
                                     // para.setParent(para2);
@@ -413,7 +414,7 @@ public class WebServiceUI extends AbstractWebService {
             fun.setOutputParameters(paraoutList);
             for (Map<String, String> map : outputMap) {
                 if (map.get("ELEMENT") != null && map.get("ELEMENT") instanceof String) {
-                    String ele = (String) map.get("ELEMENT"); //$NON-NLS-1$
+                    String ele = map.get("ELEMENT"); //$NON-NLS-1$
                     if (!ele.equals("")) {
                         OutPutMappingData data = new OutPutMappingData();
                         if (para.getName() == null) {
@@ -448,12 +449,13 @@ public class WebServiceUI extends AbstractWebService {
             List<Map<String, String>> inputparaValue = (List<Map<String, String>>) INPUT_PARAMSPara.getValue();
             for (Map<String, String> map : inputparaValue) {
                 if (map.get("PARAMETERINFO") != null && map.get("PARAMETERINFO") instanceof String) {
-                    String ele = (String) map.get("PARAMETERINFO"); //$NON-NLS-1$
+                    String ele = map.get("PARAMETERINFO"); //$NON-NLS-1$
                     int arraySize = 0;
                     String paraIndex = null;
                     if (map.get("PARAMETERARRAYSIZE") != null) {
-                        if (!map.get("PARAMETERARRAYSIZE").equals(""))
+                        if (!map.get("PARAMETERARRAYSIZE").equals("")) {
                             arraySize = Integer.valueOf(map.get("PARAMETERARRAYSIZE"));
+                        }
                     }
                     if (map.get("PARAMETERINDEX") != null && !map.get("PARAMETERINDEX").equals("")) {
                         paraIndex = map.get("PARAMETERINDEX");
@@ -493,7 +495,7 @@ public class WebServiceUI extends AbstractWebService {
             for (Map<String, String> map : inputparaValue) {
                 InputMappingData data = new InputMappingData();
                 if (map.get("EXPRESSION") != null && map.get("EXPRESSION") instanceof String) {
-                    String expr = (String) map.get("EXPRESSION");
+                    String expr = map.get("EXPRESSION");
                     data.setInputColumnValue(expr);
                 }
 
@@ -707,7 +709,7 @@ public class WebServiceUI extends AbstractWebService {
             List<ParameterInfo> list = fun.getInputParameters();
             if (list != null) {
                 if (map.get("EXPRESSION") != null && map.get("EXPRESSION") instanceof String) { //$NON-NLS-1$ //$NON-NLS-2$
-                    String expr = (String) map.get("EXPRESSION"); //$NON-NLS-1$
+                    String expr = map.get("EXPRESSION"); //$NON-NLS-1$
 
                     if (inPutcolumnList == null || inPutcolumnList.size() <= 0) {
                         Map<String, String> exPmap = webParser.parseInTableEntryLocations(expr);
@@ -812,7 +814,7 @@ public class WebServiceUI extends AbstractWebService {
             OutPutMappingData data = new OutPutMappingData();
 
             if (map.get("ELEMENT") != null && map.get("ELEMENT") instanceof String) { //$NON-NLS-1$ //$NON-NLS-2$
-                String ele = (String) map.get("ELEMENT"); //$NON-NLS-1$
+                String ele = map.get("ELEMENT"); //$NON-NLS-1$
                 String reArrayOutEle = "";
                 if (ele.endsWith("]")) {
                     int lastArray = ele.lastIndexOf("[");
@@ -867,7 +869,7 @@ public class WebServiceUI extends AbstractWebService {
                 }
             }
             if (map.get("EXPRESSION") != null && map.get("EXPRESSION") instanceof String) { //$NON-NLS-1$ //$NON-NLS-2$
-                String exp = (String) map.get("EXPRESSION"); //$NON-NLS-1$
+                String exp = map.get("EXPRESSION"); //$NON-NLS-1$
                 String reArrayOutExp = "";
                 if (exp.endsWith("]")) {
                     int lastArray = exp.lastIndexOf("[");
@@ -1201,8 +1203,9 @@ public class WebServiceUI extends AbstractWebService {
             public void modifyText(ModifyEvent e) {
                 // TODO Auto-generated method stub
                 URLValue = wsdlField.getText();
-                if (connection != null)
+                if (connection != null) {
                     connection.setWSDL(URLValue);
+                }
             }
         });
 
@@ -1547,8 +1550,9 @@ public class WebServiceUI extends AbstractWebService {
             ParameterInfo first = list.get(0);
             if (first.getParameterInfos() != null && !first.getParameterInfos().isEmpty()) {
                 return isOnlyOnePara(list.get(0).getParameterInfos());
-            } else
+            } else {
                 return first;
+            }
 
         }
 
@@ -2396,8 +2400,8 @@ public class WebServiceUI extends AbstractWebService {
 
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] items = expressTableForIn.getSelection();
-                for (int i = 0; i < items.length; i++) {
-                    InputMappingData info = (InputMappingData) items[i].getData();
+                for (TableItem item : items) {
+                    InputMappingData info = (InputMappingData) item.getData();
                     // if (info.getInputColumnValue() != null && !"".equals(info.getInputColumnValue())) {
                     // // info.getInputColumnValue().
                     // info.setInputColumnValue(null);
@@ -2939,8 +2943,8 @@ public class WebServiceUI extends AbstractWebService {
 
             public void widgetSelected(SelectionEvent e) {
                 TableItem[] items = rowTableForout.getSelection();
-                for (int i = 0; i < items.length; i++) {
-                    OutPutMappingData info = (OutPutMappingData) items[i].getData();
+                for (TableItem item : items) {
+                    OutPutMappingData info = (OutPutMappingData) item.getData();
                     // ParameterInfo info = (ParameterInfo) items[i].getData();
                     rowoutPutTableView.getExtendedTableModel().remove(info);
                     tabTotabLinkForout.updateLinksStyleAndControlsSelection(rowTableForout, true);
@@ -3338,11 +3342,11 @@ public class WebServiceUI extends AbstractWebService {
                 if (sourceItem != null) {
                     TableItem targetItem = null;
                     Object targetData = null;
-                    for (int i = 0; i < tarItems.length; i++) {
-                        if (tarItems[i].getData() == null) {
+                    for (TableItem tarItem : tarItems) {
+                        if (tarItem.getData() == null) {
                             continue;
                         }
-                        String columnName = ((InputMappingData) tarItems[i].getData()).getInputColumnValue();
+                        String columnName = ((InputMappingData) tarItem.getData()).getInputColumnValue();
                         if (columnName == null || "".equals(columnName)) { //$NON-NLS-1$
                             continue;
                         }
@@ -3356,8 +3360,8 @@ public class WebServiceUI extends AbstractWebService {
                             String rowValue = entry.getValue();
 
                             if (columnValue.equals(source)) {
-                                targetItem = tarItems[i];
-                                targetData = tarItems[i].getData();
+                                targetItem = tarItem;
+                                targetData = tarItem.getData();
                                 if (targetItem == null) {
                                     continue;
                                 }
@@ -3408,11 +3412,11 @@ public class WebServiceUI extends AbstractWebService {
                 if (sourceItem != null) {
                     TableItem targetItem = null;
                     Object targetData = null;
-                    for (int i = 0; i < tarItems.length; i++) {
-                        if (tarItems[i].getData() == null) {
+                    for (TableItem tarItem : tarItems) {
+                        if (tarItem.getData() == null) {
                             continue;
                         }
-                        String columnName = ((OutPutMappingData) tarItems[i].getData()).getParameterName();
+                        String columnName = ((OutPutMappingData) tarItem.getData()).getParameterName();
                         if (columnName == null || "".equals(columnName)) { //$NON-NLS-1$
                             continue;
                         }
@@ -3435,8 +3439,8 @@ public class WebServiceUI extends AbstractWebService {
                         // while (ite.hasNext()) {
                         // String columnValue = ite.next();
                         if (columnName.equals(source)) {
-                            targetItem = tarItems[i];
-                            targetData = tarItems[i].getData();
+                            targetItem = tarItem;
+                            targetData = tarItem.getData();
 
                             if (targetItem == null) {
                                 continue;
@@ -3615,8 +3619,9 @@ public class WebServiceUI extends AbstractWebService {
 
                 if (inputData.getParameterName() != null) {
                     String name = inputData.getParameterName();
-                    if (!name.equals(""))
+                    if (!name.equals("")) {
                         parameter.setElement(name);
+                    }
                 } else if (inputData.getParameterName() == null && inputData.getParameter() != null) {
                     if (inputData.getParameter().getParent() != null) {
                         String name = new ParameterInfoUtil().getParentName(inputData.getParameter());
@@ -3699,8 +3704,9 @@ public class WebServiceUI extends AbstractWebService {
                 Map<String, String> eleMap = new HashMap<String, String>(3);
                 if (outData.getParameterName() != null) {
                     String name = outData.getParameterName();
-                    if (!name.equals(""))
+                    if (!name.equals("")) {
                         parameter.setElement(name);
+                    }
                 } else {
                     parameter.setElement(para.getName());
                 }
