@@ -218,18 +218,27 @@ public class Connection extends Element implements IConnection, IPerformance {
             addElementParameter(param);
         }
         if (lineStyle.equals(EConnectionType.ROUTE_WHEN)) {
-
+            String[] strList = { "constant", "el", "groovy", "header", "javaScript", "jxpath", "mvel", "ognl", "php", "property",
+                    "python", "ruby", "simple", "spel", "sql", "xpath", "xquery" };
+            IElementParameter supportedLanguages = source.getElementParameter("ROUTE_WHEN_LANGUAGES");
+            if(supportedLanguages != null){
+                Object[] values = supportedLanguages.getListItemsValue();
+                if(values != null){
+                    strList = new String[values.length];
+                    System.arraycopy(values, 0, strList, 0, values.length);
+                }
+            }
+            
             IElementParameter param = new ElementParameter(this);
             param.setCategory(EComponentCategory.BASIC);
             param.setName(EParameterName.ROUTETYPE.getName());
             param.setDisplayName(EParameterName.ROUTETYPE.getDisplayName());
-            String[] strList = { "constant", "el", "groovy", "header", "javaScript", "jxpath", "mvel", "ognl", "php", "property",
-                    "python", "ruby", "simple", "spel", "sql", "xpath", "xquery" };
             param.setListItemsValue(strList); //$NON-NLS-1$
             param.setListItemsDisplayName(strList);
             param.setListItemsDisplayCodeName(strList);
             param.setNbLines(1);
             param.setFieldType(EParameterFieldType.CLOSED_LIST);
+            param.setValue(supportedLanguages.getValue());
             param.setShow(true);
             param.setNumRow(1);
             addElementParameter(param);
