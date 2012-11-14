@@ -32,9 +32,19 @@ INode node = (INode) codeGenArgument.getArgument();
 List< ? extends IConnection> connsIf = node.getIncomingConnections();
 if(connsIf.size()>0) {
 	if(connsIf.get(0).getLineStyle()==EConnectionType.ROUTE_WHEN) {
+		INode sourceNode = connsIf.get(0).getSource();
+		String languageType = connsIf.get(0).getRouteConnectionType();
+		String condition = connsIf.get(0).getCondition();
+		String expression = "none".equals(languageType)?condition:languageType+"("+condition+")";
+		if("cIntercept".equals(sourceNode.getComponent().getName())){
 %>
-		.when().<%=connsIf.get(0).getRouteConnectionType()%>(<%=connsIf.get(0).getCondition()%>)
+		.when(<%=expression%>)
 <%
+		}else{
+%>
+		.when().<%=expression%>
+<%
+		}
 	} else if(connsIf.get(0).getLineStyle()==EConnectionType.ROUTE_OTHER) {
 %>
 		.otherwise()
