@@ -99,19 +99,16 @@ public class ModuleListController extends AbstractElementPropertySectionControll
                     String file = brmsDialog.getFile();
                     if (file != null && !file.equals("")) {
                         String lastSegment = TalendTextUtils.addQuotes(Path.fromOSString(file).lastSegment());
-                        if (!elem.getPropertyValue(propertyName).equals(lastSegment)) {
-                            try {
-                                CorePlugin.getDefault().getLibrariesService()
-                                        .deployLibrary(Path.fromOSString(file).toFile().toURL());
-                            } catch (Exception e) {
-                                ExceptionHandler.process(e);
-                            }
+                        try {
+                            CorePlugin.getDefault().getLibrariesService().deployLibrary(Path.fromOSString(file).toFile().toURL());
+                        } catch (Exception e) {
+                            ExceptionHandler.process(e);
+                        }
 
-                            // update the combo current value
-                            CCombo combo = (CCombo) hashCurControls.get(propertyName);
-                            if (combo != null && !combo.isDisposed()) {
-                                combo.setText(Path.fromOSString(file).lastSegment());
-                            }
+                        // update the combo current value
+                        CCombo combo = (CCombo) hashCurControls.get(propertyName);
+                        if (combo != null && !combo.isDisposed()) {
+                            combo.setText(Path.fromOSString(file).lastSegment());
                         }
                         return new PropertyChangeCommand(elem, propertyName, lastSegment);
                     }
