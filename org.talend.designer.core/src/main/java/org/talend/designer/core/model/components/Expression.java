@@ -309,6 +309,28 @@ public final class Expression {
 
                 }
             }
+            /*
+             * TESB-6240 GangLiu
+             * Test the connection configuration.
+             */
+            else if("#LINK@CONNECTOR".equals(varNames[0])){
+                if(listParam != null && listParam.size()>0){
+                    IElement element = listParam.get(0).getElement();
+                    if(element != null && element instanceof INode){
+                        INode node = (INode) element;
+                        if(varNames.length>2 && varNames[1]!=null && varNames[2]!=null){
+                            IConnection[] allConnections = node.getProcess().getAllConnections("TYPE:"+varNames[1]);
+                            for(IConnection c: allConnections){
+                                IElementParameter elementParameter = c.getElementParameter(varNames[2]);
+                               if(variableValue.equals(elementParameter.getValue())){
+                                   return true;
+                               }
+                            }
+                        }
+                    }
+                }
+                return false;
+            }// End of TESB-6240
         }
 
         if ((variableName != null) && (variableValue != null)) {
