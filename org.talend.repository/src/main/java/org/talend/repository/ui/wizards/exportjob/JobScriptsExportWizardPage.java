@@ -694,11 +694,16 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                boolean show = jobScriptButton.getSelection();
-                addBSButton.setEnabled(show);
-                if (!show) {
-                    addAntBSButton.setEnabled(show);
-                    addMavenBSButton.setEnabled(show);
+                boolean showScriptButton = jobScriptButton.getSelection();
+                boolean showBSButton = addBSButton.getSelection();
+                addBSButton.setEnabled(showScriptButton);
+                if (!showScriptButton) {
+                    addAntBSButton.setEnabled(showScriptButton);
+                    addMavenBSButton.setEnabled(showScriptButton);
+                }
+                if (showScriptButton && showBSButton) {
+                    addAntBSButton.setEnabled(showScriptButton);
+                    addMavenBSButton.setEnabled(showScriptButton);
                 }
             }
         });
