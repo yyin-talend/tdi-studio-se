@@ -367,13 +367,17 @@ public class JobExportAction implements IRunnableWithProgress {
     private boolean canCreateNewFile(String disZipFileStr) {
         boolean flag = true;
         File disZipFile = new File(disZipFileStr);
-        if (!disZipFile.exists()) {
-            try {
-                disZipFile.createNewFile();
-            } catch (IOException e) {
-                flag = false;
-                ExceptionHandler.process(e);
+        File parentFile = disZipFile.getParentFile();
+        try {
+            if (!parentFile.exists()) {
+                parentFile.mkdirs();
             }
+            if (!disZipFile.exists()) {
+                disZipFile.createNewFile();
+            }
+        } catch (IOException e) {
+            flag = false;
+            ExceptionHandler.process(e);
         }
         return flag;
     }
