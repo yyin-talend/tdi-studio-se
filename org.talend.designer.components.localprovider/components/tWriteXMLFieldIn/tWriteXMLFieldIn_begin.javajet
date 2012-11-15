@@ -26,12 +26,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	List< ? extends IConnection> conns = node.getOutgoingConnections();
 		if(conns!=null && conns.size()>0){
     		IConnection conn = conns.get(0);
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
 	int nb_line_<%=cid%> = 0;
 	java.util.Queue<String> queue_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=cid%>");
 	while(true) {
 			if (!queue_<%=cid%>.isEmpty()) {
 <%
+			}
 		}
 	}
 }

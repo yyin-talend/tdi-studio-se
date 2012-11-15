@@ -30,6 +30,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	List< ? extends IConnection> conns = node.getOutgoingConnections();
 		if(conns!=null && conns.size()>0){
     		IConnection conn = conns.get(0);
+    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
 	}
 	if (globalMap.containsKey("<%=cid%>_FINISH") ) {
@@ -40,6 +41,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 }
 globalMap.remove("<%=cid%>_FINISH");
 <%
+			}
 		}
 	}
 }

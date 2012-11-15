@@ -4,7 +4,8 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.IMetadataTable
     java.util.List
-   	org.talend.core.model.process.IConnection    
+   	org.talend.core.model.process.IConnection
+	org.talend.core.model.process.IConnectionCategory
 "
 %>
 
@@ -20,6 +21,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
     	List< ? extends IConnection> conns = node.getOutgoingConnections();
 		if(conns!=null && conns.size()>0){
+			if (conns.get(0).getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
 	int nb_line_<%=cid%> = 0;
 	net.sf.json.xml.XMLSerializer xmlSerializer_<%=cid%> = new net.sf.json.xml.XMLSerializer(); 
@@ -33,6 +35,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	while(true) {
 			if (!queue_<%=cid%>.isEmpty()) {
 <%
+			}
 		}
 	}
 }
