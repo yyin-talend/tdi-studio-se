@@ -13,6 +13,8 @@
 package org.talend.designer.core.ui.editor.nodes;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -2030,10 +2032,23 @@ public class Node extends Element implements IGraphicalNode {
         }
         IConnection connec;
 
-        for (int j = 0; j < getIncomingConnections().size(); j++) {
-            connec = getIncomingConnections().get(j);
+        List<IConnection> connection = (List<IConnection>) getIncomingConnections();
+
+        Collections.sort(connection, new Comparator<IConnection>() {
+
+            @Override
+            public int compare(IConnection arg0, IConnection arg1) {
+                if (arg1.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                    return 1;
+                }
+                return 0;
+            }
+
+        });
+
+        for (int j = 0; j < connection.size(); j++) {
+            connec = connection.get(j);
             if (!connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
-                // if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
                 INode source = connec.getSource();
                 if (source.getJobletNode() != null) {
                     source = source.getJobletNode();
@@ -2059,8 +2074,8 @@ public class Node extends Element implements IGraphicalNode {
             }
             if ((connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)
                     || nodeTmp.getOutgoingConnections(EConnectionType.TABLE).size() != 0 || nodeTmp.getIncomingConnections(
-                    EConnectionType.TABLE).size() != 0)) {
-                // && !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY) ) {
+                    EConnectionType.TABLE).size() != 0)
+                    && !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
                 // System.out.println(" ** Ref Link Found in:" + nodeTmp + "
                 // from:" + this);
                 targetWithRef = (Node) nodeTmp;
