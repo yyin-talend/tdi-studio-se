@@ -9,7 +9,6 @@
     org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.metadata.types.JavaType    
-    org.talend.core.model.process.EConnectionType
     java.util.List
     java.util.Map
   "
@@ -54,11 +53,11 @@ if (metadatas != null && metadatas.size()>0) {
   IMetadataTable metadata = metadatas.get(0);
   if (metadata != null) { 
   
-  	List<? extends IConnection> outputConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+  	List<? extends IConnection> outputConns = node.getOutgoingConnections();
   	List<IMetadataColumn> outputColumnList = null;
   	if (outputConns != null && outputConns.size() > 0) {
 	  	IConnection outputConn = outputConns.get(0);
-	  	if(outputConn!=null){
+	  	if(outputConn!=null && outputConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
 		  	IMetadataTable outputMetadata = outputConn.getMetadataTable();
 		  	if(outputMetadata!=null){
 		  		outputColumnList = outputMetadata.getListColumns();
