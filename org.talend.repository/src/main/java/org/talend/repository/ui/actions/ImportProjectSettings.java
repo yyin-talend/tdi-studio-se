@@ -40,7 +40,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- *wchen class global comment. Detailled comment
+ * wchen class global comment. Detailled comment
  */
 public class ImportProjectSettings {
 
@@ -82,6 +82,10 @@ public class ImportProjectSettings {
         final Document document = analyseur.parse(file);
         final NodeList nodes = document.getElementsByTagName("exportParameter"); //$NON-NLS-1$
         List addedComponentSetting = new ArrayList();
+        List technical = project.getTechnicalStatus();
+        List documentation = project.getDocumentationStatus();
+        technical.clear();
+        documentation.clear();
 
         for (int i = 0; i < nodes.getLength(); i++) {
             final Node node = nodes.item(i);
@@ -89,10 +93,8 @@ public class ImportProjectSettings {
             final Node typeAttr = attrMap.getNamedItem("type"); //$NON-NLS-1$
 
             if ("technicalStatus".equals(typeAttr.getTextContent())) { //$NON-NLS-1$
-                List technical = project.getTechnicalStatus();
                 updateStatus(node, attrMap, technical, "technicalStatus"); //$NON-NLS-1$
             } else if ("documentationStatus".equals(typeAttr.getTextContent())) { //$NON-NLS-1$
-                List documentation = project.getDocumentationStatus();
                 updateStatus(node, attrMap, documentation, "documentationStatus"); //$NON-NLS-1$
             } else if ("security".equals(typeAttr.getTextContent())) { //$NON-NLS-1$
                 project.isHidePassword();
@@ -187,23 +189,23 @@ public class ImportProjectSettings {
      * @param status
      */
     private void updateStatus(final Node node, final NamedNodeMap attrMap, List status, String statusType) {
-        boolean update = false;
-
-        for (int j = 0; j < status.size(); j++) {
-            Status s = (Status) status.get(j);
-            if (s.getCode().equals(attrMap.getNamedItem("name").getTextContent())) { //$NON-NLS-1$
-                s.setLabel(node.getTextContent());
-                update = true;
-            }
-        }
+        // boolean update = false;
+        //
+        // for (int j = 0; j < status.size(); j++) {
+        // Status s = (Status) status.get(j);
+        //            if (s.getCode().equals(attrMap.getNamedItem("name").getTextContent())) { //$NON-NLS-1$
+        // s.setLabel(node.getTextContent());
+        // update = true;
+        // }
+        // }
 
         // add new status and logs
-        if (update == false) {
-            Status newOne = PropertiesFactoryImpl.init().createStatus();
-            newOne.setCode(attrMap.getNamedItem("name").getTextContent()); //$NON-NLS-1$
-            newOne.setLabel(node.getTextContent());
-            status.add(newOne);
-        }
+        // if (update == false) {
+        Status newOne = PropertiesFactoryImpl.init().createStatus();
+        newOne.setCode(attrMap.getNamedItem("name").getTextContent()); //$NON-NLS-1$
+        newOne.setLabel(node.getTextContent());
+        status.add(newOne);
+        // }
 
     }
 }
