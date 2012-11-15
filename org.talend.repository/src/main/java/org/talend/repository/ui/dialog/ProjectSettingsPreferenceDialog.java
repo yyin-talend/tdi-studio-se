@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.dialog;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 
@@ -50,6 +51,8 @@ import org.talend.repository.ui.actions.ImportProjectSettings;
  * wchen class global comment. Detailled comment
  */
 public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
+
+    private static final String TEMP_PRODUCT_SETTING_XML = "TempProductSetting.xml";
 
     private Button importButton;
 
@@ -122,6 +125,38 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
 
     }
 
+    @Override
+    protected void okPressed() {
+        super.okPressed();
+        rollBack(false);
+    }
+
+    /**
+     * roll back if click cancel button and delete temp file.
+     * 
+     * @param rollback
+     */
+    private void rollBack(boolean rollback) {
+        File file = new File(TEMP_PRODUCT_SETTING_XML);
+        if (file.exists()) {
+            if (rollback) {
+                ImportProjectSettings settings = new ImportProjectSettings(TEMP_PRODUCT_SETTING_XML);
+                try {
+                    settings.updateProjectSettings();
+                } catch (Exception e) {
+                    //
+                }
+            }
+            file.delete();
+        }
+    }
+
+    @Override
+    protected void cancelPressed() {
+        super.cancelPressed();
+        rollBack(true);
+    }
+
     private void importPressed() {
 
         FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
@@ -132,6 +167,8 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
         ImportProjectSettings settings = new ImportProjectSettings(path);
 
         boolean error = false;
+        ExportProjectSettings original = new ExportProjectSettings(TEMP_PRODUCT_SETTING_XML);
+        original.saveProjectSettings();
         try {
             settings.updateProjectSettings();
         } catch (Exception e) {
