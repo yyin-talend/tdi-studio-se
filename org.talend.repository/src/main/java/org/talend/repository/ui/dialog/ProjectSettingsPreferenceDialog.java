@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.preference.PreferenceDialog;
@@ -52,7 +53,7 @@ import org.talend.repository.ui.actions.ImportProjectSettings;
  */
 public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
 
-    private static final String TEMP_PRODUCT_SETTING_XML = "TempProductSetting.xml";
+    private static final String TEMP_PRODUCT_SETTING_XML = "TempProductSetting.xml"; //$NON-NLS-1$
 
     private Button importButton;
 
@@ -114,7 +115,7 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
 
     private void commiteProjectSettings() {
         // excute a workUnit to do svn commite
-        RepositoryWorkUnit repositoryWorkUnit = new RepositoryWorkUnit(ProjectManager.getInstance().getCurrentProject(), "") {
+        RepositoryWorkUnit repositoryWorkUnit = new RepositoryWorkUnit(ProjectManager.getInstance().getCurrentProject(), "") { //$NON-NLS-1$
 
             public void run() throws PersistenceException {
                 // do nothing
@@ -192,8 +193,12 @@ public class ProjectSettingsPreferenceDialog extends PreferenceDialog {
         fileDialog.setFilterExtensions(files);
 
         String path = fileDialog.open();
-        ExportProjectSettings settings = new ExportProjectSettings(path);
-        settings.saveProjectSettings();
+        if (!new File(path).exists()
+                || MessageDialog.openConfirm(getShell(), Messages.getString("ProjectSettingsPreferenceDialog.overwriteTitle"), //$NON-NLS-1$
+                        Messages.getString("ProjectSettingsPreferenceDialog.overwriteMessage"))) { //$NON-NLS-1$
+            ExportProjectSettings settings = new ExportProjectSettings(path);
+            settings.saveProjectSettings();
+        }
 
     }
 
