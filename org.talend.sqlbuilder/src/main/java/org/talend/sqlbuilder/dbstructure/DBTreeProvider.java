@@ -404,20 +404,21 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
             boolean isBuildIn) {
         for (Object currentTable : ConnectionHelper.getTables(metadataConnection)) {
             org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = (org.talend.core.model.metadata.builder.connection.MetadataTable) currentTable;
-            RepositoryNode tableNode = createMetatable(node, repObj, metadataTable, isBuildIn);
-            if (TableHelper.isDeleted(metadataTable)) {
-                // ignore recycle node
-            } else {
-                node.getChildren().add(tableNode);
-            }
+            if (metadataTable.getSourceName() != null) {
+                RepositoryNode tableNode = createMetatable(node, repObj, metadataTable, isBuildIn);
+                if (TableHelper.isDeleted(metadataTable)) {
+                    // ignore recycle node
+                } else {
+                    node.getChildren().add(tableNode);
+                }
+                if (connectionParameters.getMetadataTable() != null
+                        && metadataTable.getLabel().equals(connectionParameters.getMetadataTable().getLabel())) {
+                    this.selectedExtReposiotryNode = tableNode;
+                }
 
-            if (connectionParameters.getMetadataTable() != null
-                    && metadataTable.getLabel().equals(connectionParameters.getMetadataTable().getLabel())) {
-                this.selectedExtReposiotryNode = tableNode;
+                // create columns
+                createColumns(tableNode, repObj, currentTable, isBuildIn);
             }
-
-            // create columns
-            createColumns(tableNode, repObj, currentTable, isBuildIn);
         }
     }
 
