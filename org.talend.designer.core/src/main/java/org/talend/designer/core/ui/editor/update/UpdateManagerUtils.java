@@ -289,7 +289,7 @@ public final class UpdateManagerUtils {
                                     if (process != null && result.getUpdateObject() instanceof INode) {
                                         INode toUpdate = (INode) result.getUpdateObject();
                                         for (INode node : process.getGraphicalNodes()) {
-                                            if (node.getLabel().equals(toUpdate.getLabel())) {
+                                            if (node.getUniqueName().equals(toUpdate.getUniqueName())) {
                                                 result.setUpdateObject(node);
                                             }
                                         }
@@ -410,7 +410,7 @@ public final class UpdateManagerUtils {
                                 if (process != null && result.getUpdateObject() instanceof INode) {
                                     INode toUpdate = (INode) result.getUpdateObject();
                                     for (INode node : process.getGraphicalNodes()) {
-                                        if (node.getLabel().equals(toUpdate.getLabel())) {
+                                        if (node.getUniqueName().equals(toUpdate.getUniqueName())) {
                                             result.setUpdateObject(node);
                                         }
                                     }
