@@ -236,10 +236,14 @@ skeleton="../templates/db_output_bulk.skeleton"
 					dbType = mappingType.getDefaultSelectedDbType(column.getColumn().getTalendType());
 				}
                 if(ignoreDateOutofRange){
-                	if(("DATE".equals(dbType) || "DATETIME2".equals(dbType) || "DATETIMEOFFSET".equals(dbType))){
+                	if(("DATE".equals(dbType) || "DATETIME2".equals(dbType))){
                 		String pattern = column.getColumn().getPattern();
                 %>
                     	<%=prefix+cid%>.setString(counter<%=cid%>,TalendDate.formatDate(<%=pattern%>, <%=incomingConnName%>.<%=column.getName()%>));
+				<%
+				    } else if("DATETIMEOFFSET".equals(dbType)) {
+				%>
+						<%=prefix+cid%>.setString(counter<%=cid%>,TalendDate.formatDatetimeoffset(<%=incomingConnName%>.<%=column.getName()%>));
 				<%
 					}else{
 				%>

@@ -245,10 +245,14 @@ skeleton="../templates/db_output_bulk.skeleton"
 		                <%=prefix+cid%>.setString(count<%=cid%>, "0000-00-00 00:00:00");
 		            } else {
 				<%if(ignoreDateOutofRange){
-                	if(("DATE".equals(dbType) || "DATETIME2".equals(dbType) || "DATETIMEOFFSET".equals(dbType))){
+                	if(("DATE".equals(dbType) || "DATETIME2".equals(dbType))){
                 		String pattern = column.getColumn().getPattern();
                 %>
                     	<%=prefix+cid%>.setString(count<%=cid%>,TalendDate.formatDate(<%=pattern%>, <%=incomingConnName%>.<%=column.getName()%>));
+				<%
+					} else if("DATETIMEOFFSET".equals(dbType)) {
+				%>
+						<%=prefix+cid%>.setString(count<%=cid%>,TalendDate.formatDatetimeoffset(<%=incomingConnName%>.<%=column.getName()%>));
 				<%
 					}else{
 				%>
