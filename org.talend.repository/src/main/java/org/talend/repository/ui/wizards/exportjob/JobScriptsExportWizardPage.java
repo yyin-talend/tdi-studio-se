@@ -1352,7 +1352,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         manager = createJobScriptsManager();
 
         // Save dirty editors if possible but do not stop if not all are saved
-        saveDirtyEditors();
+        // delete because it have been occurred before
+        // saveDirtyEditors();
         // about to invoke the operation so save our state
         saveWidgetValues();
 
