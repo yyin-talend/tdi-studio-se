@@ -73,6 +73,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
@@ -87,6 +88,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.NodeReturn;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -103,6 +105,8 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.projectsetting.ElementParameter2ParameterType;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.UpgradeElementHelper;
+import org.talend.designer.joblet.model.JobletNode;
+import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -3582,6 +3586,11 @@ public class Node extends Element implements IGraphicalNode {
 
                         if (targetChildParam.getFieldType() == EParameterFieldType.TABLE) {
                             targetChildParam.setListItemsValue(sourceChildParam.getListItemsValue());
+                        } else if (targetChildParam.getFieldType() == EParameterFieldType.CONNECTION_LIST) {
+                            if (((getPropertyValue(pname) == null || getPropertyValue(pname).toString().length() == 0))
+                                    && component.getProcess() instanceof IProcess2) {
+                                storeConn(sourceParam, pname);
+                            }
                         }
                     }
                 }
@@ -3653,6 +3662,34 @@ public class Node extends Element implements IGraphicalNode {
             }
         }
         return map;
+    }
+
+    private void storeConn(IElementParameter sourceParam, String pname) {
+        IProcess2 comProcess = (IProcess2) component.getProcess();
+
+        if (comProcess.getProperty().getItem() instanceof JobletProcessItem) {
+            JobletProcess jobletProcess = ((JobletProcessItem) comProcess.getProperty().getItem()).getJobletProcess();
+            List<JobletNode> jobletNodes = jobletProcess.getJobletNodes();
+            out: for (JobletNode jNode : jobletNodes) {
+                if (jNode.isInput()) {
+                    List list = jNode.getElementParameter();
+                    in: for (Object object : list) {
+                        if (object instanceof ElementParameterType) {
+                            if (((ElementParameterType) object).getName().equals("UNIQUE_NAME")
+                                    && ((ElementParameterType) object).getValue().equals(sourceParam.getName())) {
+                                EConnectionType deType = this.getConnectorFromName(sourceParam.getName())
+                                        .getDefaultConnectionType();
+                                if (this.getIncomingConnections(deType).size() > 0) {
+                                    setPropertyValue(pname, this.getIncomingConnections(deType).get(0).getUniqueName());
+                                    break out;
+                                }
+                                break in;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /*
