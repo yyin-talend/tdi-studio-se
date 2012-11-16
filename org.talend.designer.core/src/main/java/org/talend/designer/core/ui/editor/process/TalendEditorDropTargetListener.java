@@ -1815,18 +1815,22 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                 nodeCmd.setTarget(originalTarget);
                 execCommandStack(nodeCmd);
 
+                // TDI-22977:need judge the current Drag/Drop node's outputs for update the target
+                // Setting,such as the target is TMap
+                if (node.getOutgoingConnections().size() > 0) {
+                    if (node.getComponent().getName().equals("tMap")) {
+                        CreateComponentOnLinkHelper.setupTMap(node);
+                    }
+                    if (originalTarget.getComponent().getName().equals("tMap")) {
+                        CreateComponentOnLinkHelper.updateTMap(originalTarget, targetConnection, node
+                                .getOutgoingConnections().get(0));
+                    }
+                    originalTarget.renameData(targetConnection.getName(), node.getOutgoingConnections().get(0)
+                            .getName());
+                }
                 if (!ConnectionCreateCommand.isCreatingConnection()) {
                     return true;
                 }
-
-                if (node.getComponent().getName().equals("tMap")) {
-                    CreateComponentOnLinkHelper.setupTMap(node);
-                }
-                if (originalTarget.getComponent().getName().equals("tMap")) {
-                    CreateComponentOnLinkHelper
-                            .updateTMap(originalTarget, targetConnection, node.getOutgoingConnections().get(0));
-                }
-                originalTarget.renameData(targetConnection.getName(), node.getOutgoingConnections().get(0).getName());
                 executed = true;
             }
         }
