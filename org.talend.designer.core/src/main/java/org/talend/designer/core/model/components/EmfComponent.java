@@ -2682,14 +2682,21 @@ public class EmfComponent extends AbstractComponent {
         return version;
     }
 
+    private List<ModuleNeeded> componentImportNeedsList = new ArrayList<ModuleNeeded>();
+
+    private static final String DB_VERSION = "DB_VERSION";
+
+    private static final String MQ_DERVIERS = "MQ_DERVIERS";
+
     @Override
     public List<ModuleNeeded> getModulesNeeded() {
+        if (componentImportNeedsList != null && componentImportNeedsList.size() > 0) {
+            return componentImportNeedsList;
+        }
         List<String> moduleNames = new ArrayList<String>();
-        List<ModuleNeeded> componentImportNeedsList = new ArrayList<ModuleNeeded>();
         if (!isAlreadyLoad) {
             if (compType.getCODEGENERATION().getIMPORTS() != null) {
                 EList emfImportList = compType.getCODEGENERATION().getIMPORTS().getIMPORT();
-                info.getImportType().addAll(emfImportList);
                 for (int i = 0; i < emfImportList.size(); i++) {
                     IMPORTType importType = (IMPORTType) emfImportList.get(i);
                     String msg = getTranslatedValue(importType.getNAME() + ".INFO"); //$NON-NLS-1$
@@ -2705,6 +2712,7 @@ public class EmfComponent extends AbstractComponent {
                     componentImportNeeds.setShow(importType.isSHOW());
                     componentImportNeedsList.add(componentImportNeeds);
                 }
+                info.getImportType().addAll(emfImportList);
                 List<String> componentList = info.getComponentNames();
                 for (IMultipleComponentManager multipleComponentManager : getMultipleComponentManagers()) {
                     for (IMultipleComponentItem multipleComponentItem : multipleComponentManager.getItemList()) {
@@ -2718,6 +2726,47 @@ public class EmfComponent extends AbstractComponent {
                                 ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(),
                                         moduleNeeded.getModuleName(), moduleNeeded.getInformationMsg(),
                                         moduleNeeded.isRequired(), moduleNeeded.getInstallURL(), moduleNeeded.getRequiredIf());
+                                componentImportNeedsList.add(componentImportNeeds);
+                            }
+                        }
+                    }
+                }
+            }
+            EList parametersList = compType.getPARAMETERS().getPARAMETER();
+            for (int i = 0; i < parametersList.size(); i++) {
+                PARAMETERType parameterType = (PARAMETERType) parametersList.get(i);
+                if (parameterType.getNAME().equals(DB_VERSION)) {
+                    EList itemsList = parameterType.getITEMS().getITEM();
+                    for (int j = 0; j < itemsList.size(); j++) {
+                        ITEMType itemType = (ITEMType) itemsList.get(j);
+                        if (itemType.getVALUE().contains(".jar")) {
+                            if (!moduleNames.contains(itemType.getVALUE())) {
+                                moduleNames.add(itemType.getVALUE());
+                                String msg = getTranslatedValue(itemType.getNAME() + ".INFO"); //$NON-NLS-1$
+                                if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
+                                    msg = Messages.getString("modules.required"); //$NON-NLS-1$
+                                }
+                                ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), itemType.getVALUE(), msg,
+                                        true, new ArrayList(), null);
+                                componentImportNeeds.setShow(false);
+                                componentImportNeedsList.add(componentImportNeeds);
+                            }
+                        }
+                    }
+                } else if (parameterType.getNAME().equals(MQ_DERVIERS)) {
+                    EList defaultList = parameterType.getDEFAULT();
+                    for (int j = 0; j < defaultList.size(); j++) {
+                        DEFAULTType defaultType = (DEFAULTType) defaultList.get(j);
+                        String value = defaultType.getValue();
+                        String[] values = value.split(";");
+                        for (int x = 0; x < values.length; x++) {
+                            String valueIndex = values[x];
+                            if (!moduleNames.contains(valueIndex)) {
+                                moduleNames.add(valueIndex);
+                                String msg = Messages.getString("modules.required");
+                                ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), valueIndex, msg, true,
+                                        new ArrayList(), defaultType.getIF());
+                                componentImportNeeds.setShow(false);
                                 componentImportNeedsList.add(componentImportNeeds);
                             }
                         }
