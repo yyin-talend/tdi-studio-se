@@ -1705,6 +1705,15 @@
         </projecttask>
         <projecttask
               beforeLogon="false"
+              breaks="5.2.0"
+              class="org.talend.repository.model.migration.ChangeOracleJarName4OracleComponentsByDB_VERSION"
+              description="change the jar name of the oracle jdbc drivers by a variable"
+              id="org.talend.repository.model.migration.ChangeOracleJarName4OracleComponentsByDB_VERSION"
+              name="ChangeOracleJarName4OracleComponentsByDB_VERSION"
+              version="5.2.1">
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
               breaks="5.1.1"
               class="org.talend.repository.model.migration.ChangeMysqlJarReference4MysqlComponents"
               description="change mysql de version value and avoid to depend on jdbc jar name"
