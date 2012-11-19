@@ -50,16 +50,16 @@ public class AddConnectionVersionForJobsettingMigrationTask extends AbstractJobM
                 if (object instanceof ElementParameterTypeImpl) {
                     ElementParameterTypeImpl parameterType = (ElementParameterTypeImpl) object;
                     String name = parameterType.getName();
-                    if ("DB_TYPE_IMPLICIT_CONTEXT".equals(name)) { //$NON-NLS-N$
+                    if ("DB_TYPE_IMPLICIT_CONTEXT".equals(name)) {
                         dbTypeImplicit = parameterType.getValue();
                     }
-                    if ("DB_TYPE".equals(name)) {//$NON-NLS-N$
+                    if ("DB_TYPE".equals(name)) {
                         dbTypeStatsLog = parameterType.getValue();
                     }
-                    if ("DB_VERSION_IMPLICIT_CONTEXT".equals(name)) { //$NON-NLS-N$
+                    if ("DB_VERSION_IMPLICIT_CONTEXT".equals(name)) {
                         dbImplicitVersionRepository = parameterType.getValue();
                     }
-                    if ("DB_VERSION".equals(name)) { //$NON-NLS-N$
+                    if ("DB_VERSION".equals(name)) {
                         dbStasLogVersionRepository = parameterType.getValue();
                     }
                 }
@@ -68,21 +68,21 @@ public class AddConnectionVersionForJobsettingMigrationTask extends AbstractJobM
             boolean stasLogSame = sameDB(dbTypeStatsLog, dbStasLogVersionRepository);
 
             if (!implicitSame) {
-                if (dbTypeImplicit.toUpperCase().contains("MYSQL")) { //$NON-NLS-N$
-                    setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "mysql-connector-java-5.1.0-bin.jar"); //$NON-NLS-N$//$NON-NLS-N$
-                } else if (dbTypeImplicit.toUpperCase().contains("ORACLE")) { //$NON-NLS-N$
-                    setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "ojdbc14-10g.jar"); //$NON-NLS-N$//$NON-NLS-N$
-                } else if (dbTypeImplicit.toUpperCase().contains("ACCESS")) { //$NON-NLS-N$
-                    setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "ACCESS_2003"); //$NON-NLS-N$//$NON-NLS-N$
+                if (dbTypeImplicit.toUpperCase().contains("MYSQL")) {
+                    setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "mysql-connector-java-5.1.22-bin.jar");
+                } else if (dbTypeImplicit.toUpperCase().contains("ORACLE")) {
+                    setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "ojdbc14-10g.jar");
+                } else if (dbTypeImplicit.toUpperCase().contains("ACCESS")) {
+                    setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "ACCESS_2003");
                 }
             }
             if (!stasLogSame) {
-                if (dbTypeStatsLog.toUpperCase().contains("MYSQL")) { //$NON-NLS-N$
-                    setParameterValue(elementParameter, "DB_VERSION", "mysql-connector-java-5.1.0-bin.jar"); //$NON-NLS-N$//$NON-NLS-N$
-                } else if (dbTypeStatsLog.toUpperCase().contains("ORACLE")) { //$NON-NLS-N$
-                    setParameterValue(elementParameter, "DB_VERSION", "ojdbc14-10g.jar"); //$NON-NLS-N$//$NON-NLS-N$
-                } else if (dbTypeStatsLog.toUpperCase().contains("ACCESS")) { //$NON-NLS-N$
-                    setParameterValue(elementParameter, "DB_VERSION", "ACCESS_2007"); //$NON-NLS-N$//$NON-NLS-N$
+                if (dbTypeStatsLog.toUpperCase().contains("MYSQL")) {
+                    setParameterValue(elementParameter, "DB_VERSION", "mysql-connector-java-5.1.22-bin.jar");
+                } else if (dbTypeStatsLog.toUpperCase().contains("ORACLE")) {
+                    setParameterValue(elementParameter, "DB_VERSION", "ojdbc14-10g.jar");
+                } else if (dbTypeStatsLog.toUpperCase().contains("ACCESS")) {
+                    setParameterValue(elementParameter, "DB_VERSION", "ACCESS_2007");
                 }
             }
 
@@ -102,11 +102,11 @@ public class AddConnectionVersionForJobsettingMigrationTask extends AbstractJobM
 
     private boolean sameDB(String dbType, String dbVersion) {
         boolean b = true;
-        if (dbType.toUpperCase().contains("MYSQL") && !dbVersion.toUpperCase().contains("MYSQL")) { //$NON-NLS-N$ //$NON-NLS-N$
+        if (dbType.toUpperCase().contains("MYSQL") && !dbVersion.toUpperCase().contains("MYSQL")) {
             b = false;
-        } else if (dbType.toUpperCase().contains("ORACLE") && !dbVersion.toUpperCase().contains("OJDBC")) { //$NON-NLS-N$ //$NON-NLS-N$
+        } else if (dbType.toUpperCase().contains("ORACLE") && !dbVersion.toUpperCase().contains("OJDBC")) {
             b = false;
-        } else if (dbType.toUpperCase().contains("ACCESS") && !dbVersion.toUpperCase().contains("ACCESS")) { //$NON-NLS-N$ //$NON-NLS-N$
+        } else if (dbType.toUpperCase().contains("ACCESS") && !dbVersion.toUpperCase().contains("ACCESS")) {
             b = false;
         }
         return b;
