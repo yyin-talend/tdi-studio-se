@@ -140,17 +140,7 @@
       <DEFAULT IF="(SERVER == 'ACTIVEMQ')">"61616"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER 
-	NAME="MQ_DERVIERS"
-	FIELD="TEXT" 
-	NUM_ROW="30" 
-	SHOW="false"
-	>
-      <DEFAULT IF="(SERVER == 'JBOSS')">jbossall-client.jar</DEFAULT>
-      <DEFAULT IF="(SERVER == 'WEBSPHERE')">com.ibm.mq.jar;com.ibm.mqjms.jar;websphere-connector-1_5.jar;talendMQRFH2.jar</DEFAULT>
-      <DEFAULT IF="(SERVER == 'ACTIVEMQ')">activemq-all-5.7.0.jar</DEFAULT>
-    </PARAMETER>
-    
+   
     <PARAMETER
 	NAME="USER"
 	FIELD="TEXT"

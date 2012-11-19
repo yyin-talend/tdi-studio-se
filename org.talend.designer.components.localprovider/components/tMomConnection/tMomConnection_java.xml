@@ -98,10 +98,7 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
-    <!--PARAMETER NAME="MQ_DERVIERS" FIELD="TEXT" NUM_ROW="30" SHOW="false">
-      <DEFAULT>activemq-all-5.7.0.jar</DEFAULT>
-    </PARAMETER-->
-    
+   
     <!--PARAMETER
 	NAME="TO"
 	FIELD="TEXT"

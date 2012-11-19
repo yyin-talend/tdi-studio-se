@@ -148,17 +148,7 @@
       </ITEMS>
     </PARAMETER>	    
 
-    <PARAMETER 
-	NAME="MQ_DERVIERS"
-	FIELD="TEXT" 
-	NUM_ROW="30" 
-	SHOW="false"
-	>
-      <DEFAULT IF="(SERVER == 'JBOSS')">jbossall-client.jar</DEFAULT>
-      <DEFAULT IF="(SERVER == 'WEBSPHERE')">com.ibm.mq.jar;com.ibm.mqjms.jar;websphere-connector-1_5.jar;talendMQRFH2.jar</DEFAULT>
-      <DEFAULT IF="(SERVER == 'ACTIVEMQ')">activemq-all-5.7.0.jar</DEFAULT>
-    </PARAMETER>
-    
+   
     <PARAMETER
 	NAME="USER"
 	FIELD="TEXT"
@@ -664,7 +654,6 @@
       <TEMPLATE_PARAM SOURCE="self.SERVER" TARGET="Loop.SERVER" />
       <TEMPLATE_PARAM SOURCE="self.SERVERADDRESS" TARGET="Loop.SERVERADDRESS" />
       <TEMPLATE_PARAM SOURCE="self.SERVERPORT" TARGET="Loop.SERVERPORT" />
-      <TEMPLATE_PARAM SOURCE="self.MQ_DERVIERS" TARGET="Loop.MQ_DERVIERS" />
       <TEMPLATE_PARAM SOURCE="self.USER" TARGET="Loop.USER" />
       <TEMPLATE_PARAM SOURCE="self.PASS" TARGET="Loop.PASS" />
       <TEMPLATE_PARAM SOURCE="self.FROM" TARGET="Loop.FROM" />
