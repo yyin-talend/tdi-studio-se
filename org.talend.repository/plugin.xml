@@ -1707,7 +1707,7 @@
               beforeLogon="false"
               breaks="5.2.0"
               class="org.talend.repository.model.migration.ChangeOracleJarName4OracleComponentsByDB_VERSION"
-              description="change the jar name of the oracle jdbc drivers by a variable"
+              description="change item value of DB_VERSION for oracle components, for exmpale : from oracle6.jar to ORACLE_11-6"
               id="org.talend.repository.model.migration.ChangeOracleJarName4OracleComponentsByDB_VERSION"
               name="ChangeOracleJarName4OracleComponentsByDB_VERSION"
               version="5.2.1">
