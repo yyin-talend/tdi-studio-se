@@ -208,7 +208,7 @@ if(!useExistingConnection) {
 }
 %>
 <%
-if (useBatchSize && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion) && (("UPDATE").equals(dataAction)||("DELETE").equals(dataAction))) {
+if (useBatchSize && "MYSQL_5".equals(dbVersion) && (("UPDATE").equals(dataAction)||("DELETE").equals(dataAction))) {
     if(!("").equals(batchSize)&&!("0").equals(batchSize)) {
 %>
    int batchSize_<%=cid%> = <%=batchSize%>;
@@ -332,7 +332,7 @@ if(columnList != null && columnList.size() > 0) {
 	        	        
 <%
 	    } else {//extended-insert mode(begin)
-	    	if ("mysql-connector-java-3.1.14-bin.jar".equals(dbVersion)) {
+	    	if ("MYSQL_4".equals(dbVersion)) {
 %>	            
 	            class BufferLine_<%=cid%> {
     	            <% 
@@ -403,7 +403,7 @@ if(columnList != null && columnList.size() > 0) {
 	            String insertColValue<%=cid%> =  "<%=insertValueStmt.toString()%>"; 
 	            int rowCount<%=cid%> = 0;	 
 <%
-			} else if ("mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) {
+			} else if ("MYSQL_5".equals(dbVersion)) {
 %>
 				String insert_<%=cid%> = "INSERT INTO `" + <%=table%> + "` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)";
 <%	
@@ -478,7 +478,7 @@ if(columnList != null && columnList.size() > 0) {
 }
 }
 if(isDynamic) {
-	if ("mysql-connector-java-3.1.14-bin.jar".equals(dbVersion) && extendedInsert) {
+	if ("MYSQL_4".equals(dbVersion) && extendedInsert) {
 %>
 
 	class BufferLine_<%=cid%> {
@@ -559,7 +559,7 @@ if(isDynamic) {
 		    String insertColName<%=cid%>="";
 		    int counter<%=cid%>=1;
 <%
-	}else if ("mysql-connector-java-5.1.0-bin.jar".equals(dbVersion) && extendedInsert){			       
+	}else if ("MYSQL_5".equals(dbVersion) && extendedInsert){			       
 %>
 	int batchSizeCounter_<%=cid%>=0;
 	int batchSize_<%=cid%>=0;

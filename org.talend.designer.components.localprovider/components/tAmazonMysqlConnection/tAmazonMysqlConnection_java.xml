@@ -49,7 +49,7 @@
 		REPOSITORY_VALUE="DB_VERSION"
 		READONLY="true">
 		<ITEMS DEFAULT="MYSQL_5">
-			<ITEM NAME="MYSQL_5" VALUE="mysql-connector-java-5.1.0-bin.jar" />
+			<ITEM NAME="MYSQL_5" VALUE="MYSQL_5" />
 		</ITEMS>
 	</PARAMETER>
 	
@@ -158,8 +158,10 @@
     	</PARAMETER>
 	</ADVANCED_PARAMETERS>
 
-   <CODEGENERATION>
-   </CODEGENERATION>
-
+  <CODEGENERATION>
+     <IMPORTS>
+       <IMPORT NAME="Driver-MysqlConnector" MODULE="mysql-connector-java-5.1.22-bin.jar" REQUIRED_IF="DB_VERSION == 'MYSQL_5'" />
+     </IMPORTS> 
+    </CODEGENERATION>
    <RETURNS/>
 </COMPONENT>

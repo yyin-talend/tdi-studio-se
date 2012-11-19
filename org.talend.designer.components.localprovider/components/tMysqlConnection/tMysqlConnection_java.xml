@@ -49,8 +49,8 @@
 		NUM_ROW="10"
 		REPOSITORY_VALUE="DB_VERSION">
 		<ITEMS DEFAULT="MYSQL_5">
-			<ITEM NAME="MYSQL_5" VALUE="mysql-connector-java-5.1.0-bin.jar" />
-			<ITEM NAME="MYSQL_4" VALUE="mysql-connector-java-3.1.14-bin.jar" />
+			<ITEM NAME="MYSQL_5" VALUE="MYSQL_5" />
+			<ITEM NAME="MYSQL_4" VALUE="MYSQL_4" />
 		</ITEMS>
 	</PARAMETER>
 	
@@ -160,6 +160,10 @@
 	</ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
+    <IMPORTS>
+      <IMPORT NAME="Mysql_Driver5"  MODULE="mysql-connector-java-5.1.22-bin.jar"  REQUIRED_IF="(DB_VERSION == 'MYSQL_5')" />
+      <IMPORT NAME="Mysql_Driver4"  MODULE="mysql-connector-java-3.1.14-bin.jar"  REQUIRED_IF="(DB_VERSION == 'MYSQL_4')" />
+    </IMPORTS>
    </CODEGENERATION>
 
    <RETURNS/>

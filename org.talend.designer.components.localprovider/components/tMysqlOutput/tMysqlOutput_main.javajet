@@ -233,7 +233,7 @@ if(columnList != null && columnList.size() > 0) {
 	        	        
 <%
 	    } else {//extended-insert mode(begin)
-	    	if ("mysql-connector-java-3.1.14-bin.jar".equals(dbVersion)) {
+	    	if ("MYSQL_4".equals(dbVersion)) {
 %>	            
 	            ////////////////////////////////////////////////////////////////////////////////////////////
 	            
@@ -300,7 +300,7 @@ if(columnList != null && columnList.size() > 0) {
 	            int rowCount<%=cid%> = 0;	 
 <%
 		    }
-		} else if ("mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) {
+		} else if ("MYSQL_5".equals(dbVersion)) {
 				List< ? extends IConnection> conns_dynamic = node.getIncomingConnections();
 				if(conns_dynamic!=null && conns_dynamic.size()>0){
 					IConnection conn = conns_dynamic.get(0);
@@ -626,7 +626,7 @@ if(columnList != null && columnList.size() > 0) {
 <%
 	    	}
 	    }
-	    if ("mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) {
+	    if ("MYSQL_5".equals(dbVersion)) {
 	    	if ((extendedInsert&&"INSERT".equals(dataAction)) || (useBatchSize&&("UPDATE".equals(dataAction)||"DELETE".equals(dataAction)))) {
 			    if((!("").equals(numPerInsert)&&!("0").equals(numPerInsert))
 			    	||(!("").equals(batchSize)&&!("0").equals(batchSize))) {
@@ -647,7 +647,7 @@ if(columnList != null && columnList.size() > 0) {
         <%	
         if(("INSERT").equals(dataAction)) {
             if(extendedInsert) {//extended-insert mode(begin)
-            	if ("mysql-connector-java-3.1.14-bin.jar".equals(dbVersion)) {
+            	if ("MYSQL_4".equals(dbVersion)) {
 	                ExtendInsertOperation eiOperation = new ExtendInsertOperation(); 
 	                int insertableCount = 0;
 	                for(Column column : colStruct) {
@@ -726,7 +726,7 @@ if(columnList != null && columnList.size() > 0) {
 			    counter<%=cid%>=1;
 	                }    
 <% 
-				} else if ("mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) {
+				} else if ("MYSQL_5".equals(dbVersion)) {
 	 				int counter = 1;
 	                for(Column column : colStruct) {
 	                    if(column.isInsertable()) {
@@ -936,7 +936,7 @@ if(columnList != null && columnList.size() > 0) {
             }    
     		%>
     		
-    		<%if (rejectConnName == null && useBatchSize && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) { // whether use batch
+    		<%if (rejectConnName == null && useBatchSize && "MYSQL_5".equals(dbVersion)) { // whether use batch
     		%>
     		pstmt_<%=cid %>.addBatch();
     		nb_line_<%=cid%>++;    		 
@@ -1374,7 +1374,7 @@ if(columnList != null && columnList.size() > 0) {
                 <%
             }    		
         	%>
-        	<%if (rejectConnName == null && useBatchSize && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) { // whether use batch
+        	<%if (rejectConnName == null && useBatchSize && "MYSQL_5".equals(dbVersion)) { // whether use batch
     		%>
     		pstmt_<%=cid %>.addBatch();
     		nb_line_<%=cid%>++;    		 
@@ -1644,7 +1644,7 @@ if(columnList != null && columnList.size() > 0) {
             <%
         }	
         	//////////batch execute by batch size///////
-    	if (extendedInsert && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion) && ("INSERT").equals(dataAction)) {
+    	if (extendedInsert && "MYSQL_5".equals(dbVersion) && ("INSERT").equals(dataAction)) {
     		if(!("").equals(numPerInsert ) && !("0").equals(numPerInsert )) {
     		%>
     			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
@@ -1691,7 +1691,7 @@ if(columnList != null && columnList.size() > 0) {
     		}
     	
     	}
-    	if (useBatchSize && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion) &&(rejectConnName==null)&& (("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
+    	if (useBatchSize && "MYSQL_5".equals(dbVersion) &&(rejectConnName==null)&& (("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction))) {
     		if(!("").equals(batchSize) && !("0").equals(batchSize)) {
     		%>
     			if ( batchSize_<%=cid%> <= batchSizeCounter_<%=cid%>) {                
@@ -1751,7 +1751,7 @@ if(columnList != null && columnList.size() > 0) {
        
                 if(commitEvery_<%=cid%> <= commitCounter_<%=cid%>) {
                 
-                <%if ((rejectConnName==null && useBatchSize && "mysql-connector-java-5.1.0-bin.jar".equals(dbVersion)) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
+                <%if ((rejectConnName==null && useBatchSize && "MYSQL_5".equals(dbVersion)) && (("INSERT").equals(dataAction) || ("UPDATE").equals(dataAction) || ("DELETE").equals(dataAction)) ) {
                 %>
                 try {
                 		int countSum_<%=cid%> = 0;

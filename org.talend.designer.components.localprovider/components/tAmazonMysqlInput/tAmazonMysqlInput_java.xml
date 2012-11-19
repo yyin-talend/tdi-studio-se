@@ -51,7 +51,7 @@
 		READONLY="true"
 		SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
 		<ITEMS DEFAULT="MYSQL_5">
-			<ITEM NAME="MYSQL_5" VALUE="mysql-connector-java-5.1.0-bin.jar" />
+			<ITEM NAME="MYSQL_5" VALUE="MYSQL_5" />
 		</ITEMS>
 	</PARAMETER>
 	
@@ -237,7 +237,10 @@
    </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
-   </CODEGENERATION>
+     <IMPORTS>
+       <IMPORT NAME="Driver-Mysql5" MODULE="mysql-connector-java-5.1.22-bin.jar" REQUIRED_IF="(DB_VERSION == 'MYSQL_5') AND (USE_EXISTING_CONNECTION == 'false')" />
+     </IMPORTS> 
+    </CODEGENERATION>
 
    <RETURNS>
       <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>

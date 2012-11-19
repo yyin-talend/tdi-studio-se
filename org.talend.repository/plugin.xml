@@ -1327,6 +1327,13 @@
           	id="org.talend.repository.model.migration.ChangeDefaultValueFortNormalizeCSVOption"
           	name="ChangeDefaultValueFortNormalizeCSVOption">
    	 	</projecttask>
+        <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.ChangeMysqlJarReference4MysqlComponents"
+            description="change mysql db version value and avoid to depend on jdbc jar name"
+            id="org.talend.repository.model.migration.ChangeMysqlJarReference4MysqlComponents"
+            name="ChangeMysqlJarReference4MysqlComponents"
+        </projecttask>
    	 	
    </extension>
    
