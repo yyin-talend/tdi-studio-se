@@ -34,6 +34,7 @@
 		}
 	}
 
+	
 	if (("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType) || isUseConnection) {
 		if ("CLIENT_ACKNOWLEDGE".equals(acknowledgmentMode)) {
 		%>
@@ -64,39 +65,27 @@
 			<%
 			}
 		}
-		%>
-		
-		}
-
-		<%	
-		if( ("JBoss").equals(serverType) || ( ("ActiveMQ").equals(serverType) && !isCommitRollback) ){
-		%>
- 		System.out.println("Closing connection");
-		<%	// if no commmit or rollback component exists and set transacted - commit session
-		if(transacted){
-		%>
-		session_<%=cid%>.commit();
-		<%	
-		}
-		%> // if no commmit or rollback component exists - close session
-                consumer_<%=cid %>.close();
-                session_<%=cid %>.close();
-                connection_<%=cid %>.close();
-		<%	
-		}
-		%>
-		<%if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
+               if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
+			if (session_<%=cid%> != null && connection_<%=cid %> != null) session_<%=cid%>.commit();
 		}catch(Exception ex){
 			System.out.println("A Active MQ error occurred :" + ex);
 	                ex.printStackTrace();
-			session_<%=cid%>.rollback();
-                        consumer_<%=cid %>.close();
-                        session_<%=cid %>.close();
-                        connection_<%=cid %>.close();
+			if (session_<%=cid%> != null  && connection_<%=cid %> != null) session_<%=cid%>.rollback();
 		}
-		<%
+                <%}%>
 		}
-		%>
+		<%if( ("ActiveMQ").equals(serverType) && !isCommitRollback && !isUseConnection){%>
+ 		 if (session_<%=cid%> != null  && connection_<%=cid %> != null) session_<%=cid %>.close();
+                 if (connection_<%=cid %> != null) connection_<%=cid %>.close();
+		<%}%>
+
+		<%if( ("JBoss").equals(serverType) ){%>
+ 		System.out.println("Closing connection");
+                consumer_<%=cid %>.close();
+                session_<%=cid %>.close();
+                connection_<%=cid %>.close();
+		<%}%>
+
 	<%		
 	}else{
 		boolean isCommit = ("true").equals(ElementParameterParser.getValue(node, "__COMMIT__"));

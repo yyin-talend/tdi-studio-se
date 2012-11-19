@@ -62,12 +62,9 @@ imports="
 		columns = metadata.getListColumns();
 	} %>
 
-	// isUseConnection = <%=isUseConnection%>
         <% if (isUseConnection) { %>
-    
 	    javax.jms.Connection connection_<%=cid %> = (javax.jms.Connection) globalMap.get("connection_<%=connectionComponentName%>");
 	    connection_<%=cid %>.start();
-	    //javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
 	    javax.jms.Session session_<%=cid %> = (javax.jms.Session) globalMap.get("session_<%=connectionComponentName%>");
 	    
 	    javax.jms.Destination des_<%=cid %> = null;
@@ -88,14 +85,7 @@ imports="
 			
 		javax.jms.MessageConsumer consumer_<%=cid %> = session_<%=cid %>.createConsumer(des_<%=cid %>);
 		
-		// BS
 		javax.jms.MessageProducer producer_<%=cid%> = null;
-
-		<%if(!isCommitRollback && transacted){%>
-        	try {   // For rollback
-		<%
-		}
-		%>
 
 		// Receive message
 			<% boolean useMax = ("true").equals(ElementParameterParser.getValue(node,"__USEMAX__"));
@@ -106,12 +96,26 @@ imports="
 				System.out.println("We will consume messages while they continue to be delivered ");
 				javax.jms.Message message_<%=cid%>;
 				while ((message_<%=cid%> = consumer_<%=cid %>.receive()) != null) {
+
+
+		<%if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
+        	try {   // For rollback
+		<%
+		}
+		%>
 			<%
 			}else if (useMax) {
 			%>
 				int maxMsg_<%=cid %> = <%=maxiumMessages %>;
 				System.out.println("We are about to wait until we consume: " + maxMsg_<%=cid %> + " message(s) then we will shutdown");
 				for (int i_<%=cid %> = 0; i_<%=cid %> < maxMsg_<%=cid %> ;) {
+
+		<%if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
+        	try {   // For rollback
+
+		<%
+		}
+		%>
 			        javax.jms.Message message_<%=cid%> = consumer_<%=cid %>.receive();
 			        if (message_<%=cid%> != null) {
 		            	i_<%=cid %>++;
@@ -121,6 +125,13 @@ imports="
 			    System.out.println("We will wait for messages within: " + <%=receiveTimeOut%>*1000 + " ms, and then we will shutdown");
 			    javax.jms.Message message_<%=cid%>;
 			    while ((message_<%=cid%> = consumer_<%=cid %>.receive(<%=receiveTimeOut%>*1000)) != null) {
+
+		<%if(("ActiveMQ").equals(serverType) /*&& !isUseConnection*/ && !isCommitRollback && transacted){%>
+        	try {   // For rollback
+
+		<%
+		}
+		%>
 			<%
 			} %>
 			    
@@ -262,12 +273,6 @@ imports="
 		}
 		%>
 
-		<%if(("ActiveMQ").equals(serverType) /*&& !isUseConnection*/ && !isCommitRollback && transacted){%>
-        	try {   // For rollback
-		<%
-		}
-		%>
-		
 		<%		
 		/*---------------------------------------3.recevice message form server ---------------------------------*/ 	
 		if(("JBoss").equals(serverType) ){ 
@@ -277,6 +282,7 @@ imports="
 			javax.jms.Message message_<%=cid%>;
 		
 			while((message_<%=cid%>=consumer_<%=cid %>.receive())!=null){
+
 		<%		
 		}else if(("ActiveMQ").equals(serverType)){
 			boolean useMax = ("true").equals(ElementParameterParser.getValue(node,"__USEMAX__"));
@@ -287,12 +293,26 @@ imports="
 				System.out.println("We will consume messages while they continue to be delivered ");
 				javax.jms.Message message_<%=cid%>;
 				while ((message_<%=cid%> = consumer_<%=cid %>.receive()) != null) {
+
+		<%if(("ActiveMQ").equals(serverType) /*&& !isUseConnection*/ && !isCommitRollback && transacted){%>
+        	try {   // For rollback
+
+		<%
+		}
+		%>
 			<%
 			}else if (useMax) {
 			%>
 				int maxMsg_<%=cid %> = <%=maxiumMessages %>;
 				System.out.println("We are about to wait until we consume: " + maxMsg_<%=cid %> + " message(s) then we will shutdown");
 				for (int i_<%=cid %> = 0; i_<%=cid %> < maxMsg_<%=cid %> ;) {
+
+		<%if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
+        	try {   // For rollback
+
+		<%
+		}
+		%>
 			        javax.jms.Message message_<%=cid%> = consumer_<%=cid %>.receive();
 			        if (message_<%=cid%> != null) {
 		            	i_<%=cid %>++;
@@ -302,6 +322,12 @@ imports="
 			    System.out.println("We will wait for messages within: " + <%=receiveTimeOut%>*1000 + " ms, and then we will shutdown");
 			    javax.jms.Message message_<%=cid%>;
 			    while ((message_<%=cid%> = consumer_<%=cid %>.receive(<%=receiveTimeOut%>*1000)) != null) {
+
+		<%if(("ActiveMQ").equals(serverType) /*&& !isUseConnection*/ && !isCommitRollback && transacted){%>
+        	try {   // For rollback
+		<%
+		}
+		%>
 			<%
 			}
 		}
