@@ -69,7 +69,7 @@ public class AddConnectionVersionForJobsettingMigrationTask extends AbstractJobM
 
             if (!implicitSame) {
                 if (dbTypeImplicit.toUpperCase().contains("MYSQL")) {
-                    setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "mysql-connector-java-5.1.22-bin.jar");
+                    setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "mysql-connector-java-5.1.0-bin.jar");
                 } else if (dbTypeImplicit.toUpperCase().contains("ORACLE")) {
                     setParameterValue(elementParameter, "DB_VERSION_IMPLICIT_CONTEXT", "ojdbc14-10g.jar");
                 } else if (dbTypeImplicit.toUpperCase().contains("ACCESS")) {
@@ -78,7 +78,7 @@ public class AddConnectionVersionForJobsettingMigrationTask extends AbstractJobM
             }
             if (!stasLogSame) {
                 if (dbTypeStatsLog.toUpperCase().contains("MYSQL")) {
-                    setParameterValue(elementParameter, "DB_VERSION", "mysql-connector-java-5.1.22-bin.jar");
+                    setParameterValue(elementParameter, "DB_VERSION", "mysql-connector-java-5.1.0-bin.jar");
                 } else if (dbTypeStatsLog.toUpperCase().contains("ORACLE")) {
                     setParameterValue(elementParameter, "DB_VERSION", "ojdbc14-10g.jar");
                 } else if (dbTypeStatsLog.toUpperCase().contains("ACCESS")) {
