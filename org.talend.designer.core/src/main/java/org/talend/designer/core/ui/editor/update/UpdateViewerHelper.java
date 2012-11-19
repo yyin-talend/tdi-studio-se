@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.internal.WorkbenchMessages;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -186,6 +187,8 @@ public class UpdateViewerHelper {
         if (item == null) {
             return;
         }
+        List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
+        boolean isOpened = openedProcesses.contains(item.getResultObject().getJob());
         boolean jobletUpdate = false;
         if (item.getParent() != null && item.getParent().getNode() != null && (item.getParent().getNode() instanceof Node)
                 && ((Node) item.getParent().getNode()).isJoblet()) {
@@ -196,6 +199,10 @@ public class UpdateViewerHelper {
             EUpdateResult resultType = item.getResultObject().getResultType();
             if (resultType == EUpdateResult.UPDATE || resultType == EUpdateResult.ADD || resultType == EUpdateResult.DELETE) {
                 item.setChecked(false);
+            } else if (jobletUpdate
+                    && !isOpened
+                    && (resultType == EUpdateResult.JOBLET_UPDATE || resultType == EUpdateResult.RELOAD)) {
+                item.setChecked(state);
             }
         } else if (item.getResultObject().isReadOnly() && jobletUpdate) {
             return;

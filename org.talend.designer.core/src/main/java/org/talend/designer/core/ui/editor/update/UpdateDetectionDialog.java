@@ -199,10 +199,12 @@ public class UpdateDetectionDialog extends SelectionDialog {
             }
             switch (result.getResultType()) {
             case RENAME:
-            case RELOAD:
-            case JOBLET_UPDATE:
                 this.canCancel = false;
                 this.canDeselect = false;
+            case RELOAD:
+            case JOBLET_UPDATE:
+                this.canCancel = true;
+                this.canDeselect = true;
                 return;
             default:
                 this.canCancel = true;
