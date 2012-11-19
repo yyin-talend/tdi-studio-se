@@ -110,6 +110,7 @@ import org.talend.designer.webservice.ws.wsdlinfo.Function;
 import org.talend.designer.webservice.ws.wsdlinfo.ParameterInfo;
 import org.talend.designer.webservice.ws.wsdlinfo.PortNames;
 import org.talend.designer.webservice.ws.wsdlutil.ServiceHelperConfiguration;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
@@ -280,6 +281,8 @@ public class WebServiceUI extends AbstractWebService {
 
     private WSDLSchemaConnection connection = null;
 
+    private ConnectionItem connectionItem;
+
     private List<Function> funList = new ArrayList<Function>();
 
     private List<PortNames> portNameList = new ArrayList<PortNames>();
@@ -310,6 +313,7 @@ public class WebServiceUI extends AbstractWebService {
         this.webServiceManager = webServiceMain.getWebServiceManager();
         this.connector = webServiceMain.getWebServiceComponent();
         this.connection = (WSDLSchemaConnection) connectionItem.getConnection();
+        this.connectionItem = connectionItem;
         URLValue = new String();
         // getInConnList();
         // getOutConnList();
@@ -1099,6 +1103,13 @@ public class WebServiceUI extends AbstractWebService {
         wsdlTabItem.setControl(createWSDLStatus());
         inputMappingTabItem.setControl(createInputMappingStatus());
         outputMappingTabItem.setControl(createOutputMappingStatus());
+
+        boolean flag = ProjectManager.getInstance().isInCurrentMainProject(this.connectionItem);
+        if (!flag) {
+            wsdlTabItem.getControl().setEnabled(false);
+            inputMappingTabItem.getControl().setEnabled(false);
+            outputMappingTabItem.getControl().setEnabled(false);
+        }
 
         tabFolder.addSelectionListener(new SelectionAdapter() {
 
