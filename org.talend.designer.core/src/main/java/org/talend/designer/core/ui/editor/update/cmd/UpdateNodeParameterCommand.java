@@ -46,7 +46,6 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
@@ -455,7 +454,7 @@ public class UpdateNodeParameterCommand extends Command {
                                     if (parameter.size() >= 2) {
                                         IMetadataTable newTable = (IMetadataTable) parameter.get(0);
                                         String schemaName = (String) parameter.get(1);
-                                        IMetadataTable metadataTable = MetadataToolHelper.getMetadataTableFromNode(node,
+                                        IMetadataTable metadataTable = MetadataToolHelper.getMetadataTableFromNodeLabel(node,
                                                 schemaName);
                                         if (metadataTable != null) {
                                             MetadataToolHelper.copyTable(newTable, metadataTable);
@@ -471,45 +470,43 @@ public class UpdateNodeParameterCommand extends Command {
                         if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
                             IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault()
                                     .getService(IDesignerMapperService.class);
-                            if (service == null || externalNode == null || externalNode.getExternalData() == null) {
-                                return;
-                            }
-                            List<Object> parameter = (List<Object>) result.getParameter();
-                            if (parameter.size() == 2) {
-                                if (node.getComponent() != null && "tMap".equals(node.getComponent().getName())) { //$NON-NLS-1$
-                                    IMetadataTable newTable = (IMetadataTable) parameter.get(0);
-                                    String schemaId = (String) parameter.get(1);
-                                    service.updateMapperTableEntries(externalNode, schemaId, newTable);
-                                    node.setMetadataList(externalNode.getMetadataList());
-                                    syncSchemaForTMap(node);
-                                    // update metadataList,or it will cause bug 21080
-                                    for (IExternalMapTable latestTable : externalNode.getExternalData().getOutputTables()) {
-                                        for (IMetadataTable tableExsit : node.getMetadataList()) {
-                                            // find table,and update the table
-                                            if (latestTable.getName().equals(tableExsit.getTableName())) {
-                                                List<IMetadataColumn> newColumns = newTable.getListColumns();
-                                                for (IMetadataColumn column : tableExsit.getListColumns()) {
-                                                    for (IMetadataColumn newColumn : newColumns) {
-                                                        if (newColumn.getLabel().equals(column.getLabel())) {
-                                                            column.setTalendType(newColumn.getTalendType());
-                                                            column.setNullable(newColumn.isNullable());
-                                                            column.setComment(newColumn.getComment());
-                                                            column.setDefault(newColumn.getDefault());
-                                                            column.setLength(newColumn.getLength());
-                                                            column.setType(newColumn.getType());
-                                                            column.setKey(newColumn.isKey());
-                                                            column.setPrecision(newColumn.getPrecision());
-                                                            break;
+                            if (service != null && externalNode != null && externalNode.getExternalData() != null) {
+                                List<Object> parameter = (List<Object>) result.getParameter();
+                                if (parameter.size() >= 2) {
+                                    if (node.getComponent() != null && "tMap".equals(node.getComponent().getName())) { //$NON-NLS-1$
+                                        IMetadataTable newTable = (IMetadataTable) parameter.get(0);
+                                        String schemaId = (String) parameter.get(1);
+                                        service.updateMapperTableEntries(externalNode, schemaId, newTable);
+                                        node.setMetadataList(externalNode.getMetadataList());
+                                        syncSchemaForTMap(node);
+                                        // update metadataList,or it will cause bug 21080
+                                        for (IExternalMapTable latestTable : externalNode.getExternalData().getOutputTables()) {
+                                            for (IMetadataTable tableExsit : node.getMetadataList()) {
+                                                // find table,and update the table
+                                                if (latestTable.getName().equals(tableExsit.getTableName())) {
+                                                    List<IMetadataColumn> newColumns = newTable.getListColumns();
+                                                    for (IMetadataColumn column : tableExsit.getListColumns()) {
+                                                        for (IMetadataColumn newColumn : newColumns) {
+                                                            if (newColumn.getLabel().equals(column.getLabel())) {
+                                                                column.setTalendType(newColumn.getTalendType());
+                                                                column.setNullable(newColumn.isNullable());
+                                                                column.setComment(newColumn.getComment());
+                                                                column.setDefault(newColumn.getDefault());
+                                                                column.setLength(newColumn.getLength());
+                                                                column.setType(newColumn.getType());
+                                                                column.setKey(newColumn.isKey());
+                                                                column.setPrecision(newColumn.getPrecision());
+                                                                break;
+                                                            }
                                                         }
                                                     }
+                                                    break;
                                                 }
-                                                break;
                                             }
                                         }
                                     }
                                 }
                             }
-                            return;
                         }
 
                     } else if (result.getParameter() instanceof IMetadataTable) {
@@ -587,21 +584,25 @@ public class UpdateNodeParameterCommand extends Command {
 
                                 sourceIdAndChildName = UpdateManagerUtils.getSourceIdAndChildName(newSourceId);
                                 final String newSchemaName = sourceIdAndChildName[1];
-                                Map<String, Object> lineValue = (Map<String, Object>) parameter.get(3);
-                                if (lineValue != null) {
-                                    IMetadataTable metadataTable = MetadataToolHelper.getMetadataTableFromNode(node,
-                                            oldSchemaName);
-                                    Object schemaName = lineValue.get(IEbcdicConstant.FIELD_SCHEMA);
-                                    if (metadataTable != null && schemaName != null) {
-                                        lineValue.put(IEbcdicConstant.FIELD_SCHEMA, newSchemaName);
-
-                                        MetadataToolHelper.copyTable(newTable, metadataTable);
-                                        syncSchemaForEBCDIC(node, metadataTable);
-                                        metadataTable.setLabel(newSchemaName);
-
+                                IMetadataTable metadataTable = MetadataToolHelper.getMetadataTableFromNodeLabel(node,
+                                        oldSchemaName);
+                                if (metadataTable != null && oldSchemaName != null) {
+                                    List<Map<String, Object>> paramValues = (List<Map<String, Object>>) node
+                                            .getPropertyValue(IEbcdicConstant.TABLE_SCHEMAS);
+                                    for (Map<String, Object> line : paramValues) {
+                                        if (line.get(IEbcdicConstant.FIELD_SCHEMA).equals(oldSchemaName)) {
+                                            line.remove(IEbcdicConstant.FIELD_SCHEMA);
+                                            line.put(IEbcdicConstant.FIELD_SCHEMA, newSchemaName);
+                                        }
                                     }
+                                    PropertyChangeCommand cmd = new PropertyChangeCommand(node, IEbcdicConstant.TABLE_SCHEMAS,
+                                            paramValues);
+                                    cmd.execute();
+
+                                    MetadataToolHelper.copyTable(newTable, metadataTable);
+                                    metadataTable.setLabel(newSchemaName);
+                                    syncSchemaForEBCDIC(node, metadataTable);
                                 }
-                                return;
                             }
                         }
                     }
@@ -610,22 +611,19 @@ public class UpdateNodeParameterCommand extends Command {
                     if (GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
                         IDesignerMapperService service = (IDesignerMapperService) GlobalServiceRegister.getDefault().getService(
                                 IDesignerMapperService.class);
-                        if (service == null || externalNode == null || externalNode.getExternalData() == null) {
-                            return;
-                        }
-                        IExternalData externalData = externalNode.getExternalData();
-                        parameter = (List<Object>) result.getParameter();
-                        if (parameter.size() == 3) {
-                            if (node.getComponent() != null && "tMap".equals(node.getComponent().getName())) { //$NON-NLS-1$
-                                newTable = (IMetadataTable) parameter.get(0);
-                                String schemaId = (String) parameter.get(1);
-                                String newSchemaId = (String) parameter.get(2);
-                                service.renameMapperTable(externalNode, schemaId, newSchemaId, newTable);
-                                node.setMetadataList(externalNode.getMetadataList());
-                                syncSchemaForTMap(node);
+                        if (service != null && externalNode != null && externalNode.getExternalData() != null) {
+                            parameter = (List<Object>) result.getParameter();
+                            if (parameter.size() >= 3) {
+                                if (node.getComponent() != null && "tMap".equals(node.getComponent().getName())) { //$NON-NLS-1$
+                                    newTable = (IMetadataTable) parameter.get(0);
+                                    String schemaId = (String) parameter.get(1);
+                                    String newSchemaId = (String) parameter.get(2);
+                                    service.renameMapperTable(externalNode, schemaId, newSchemaId, newTable);
+                                    node.setMetadataList(externalNode.getMetadataList());
+                                    syncSchemaForTMap(node);
+                                }
                             }
                         }
-                        return;
                     }
 
                     String schemaParamName = UpdatesConstants.SCHEMA + UpdatesConstants.COLON

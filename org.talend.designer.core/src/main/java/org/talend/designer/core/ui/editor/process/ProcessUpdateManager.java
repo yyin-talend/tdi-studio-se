@@ -1069,8 +1069,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
         if (PluginChecker.isEBCDICPluginLoaded()) {
             List<UpdateResult> resultForEBCDIC = checkNodeSchemaFromRepositoryForEBCDIC(node, onlySimpleShow);
-            if (resultForEBCDIC != null) {
-                schemaResults.addAll(resultForEBCDIC);
+            if (resultForEBCDIC != null && !resultForEBCDIC.isEmpty()) {
+                // means it's one ebcdic component, no need to check others
+                return resultForEBCDIC;
             }
             // return schemaResults;
         }
@@ -1367,7 +1368,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             IMetadataTable metadataTable = null;
                                             // metadataTable =
                                             // node.getMetadataFromConnector(schemaTypeParam.getContext());
-                                            metadataTable = MetadataToolHelper.getMetadataTableFromNode(node, schemaName);
+                                            metadataTable = MetadataToolHelper.getMetadataTableFromNodeLabel(node, schemaName);
 
                                             if (metadataTable != null
                                                     && (onlySimpleShow || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
