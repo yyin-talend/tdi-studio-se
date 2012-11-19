@@ -32,17 +32,16 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 /**
  * DOC Administrator class global comment. Detailled comment
  */
-public class ChangeOracleJarName4OracleComponents extends AbstractJobMigrationTask {
+public class ChangeOracleJarName4OracleComponentsByDB_VERSION extends AbstractJobMigrationTask {
 
     @Override
     public ExecutionResult execute(Item item) {
         ProcessType processType = getProcessType(item);
         String[] oracleCompNames = { "tOracleBulkExec", "tOracleClose", "tOracleCommit", "tOracleConnection", "tOracleInput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                "tOracleOutput", "tOracleOutputBulk", "tOracleOutputBulkExec", "tOracleRollback", "tOracleRow", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                "tOracleSCD", "tOracleSCDELT", "tOracleSP", "tOracleTableList", "tAmazonOracleClose", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                "tAmazonOracleCommit", "tAmazonOracleConnection", "tAmazonOracleInput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                "tAmazonOracleOutput", "tAmazonOracleRollback", "tAmazonOracleRow", "tMondrianInput", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                "tCreateTable", "tOracleInvalidRows", //$NON-NLS-1$ //$NON-NLS-2$
+                "tOracleOutput", "tOracleOutputBulk", "tOracleOutputBulkExec", "tOracleRollback", "tOracleRow", "tOracleSCD", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+                "tOracleSCDELT", "tOracleSP", "tOracleTableList", "tAmazonOracleClose", "tAmazonOracleCommit", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                "tAmazonOracleConnection", "tAmazonOracleInput", "tAmazonOracleOutput", "tAmazonOracleRollback", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                "tAmazonOracleRow", "tMondrianInput", "tCreateTable", "tOracleInvalidRows", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 "tOracleValidRows", "tELTOracleMap", "tOracleCDC", "tOracleSCDELT" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
         IComponentConversion changeOracleDriverJarType = new IComponentConversion() {
@@ -51,16 +50,16 @@ public class ChangeOracleJarName4OracleComponents extends AbstractJobMigrationTa
                 ElementParameterType dbVersion = ComponentUtilities.getNodeProperty(node, "DB_VERSION"); //$NON-NLS-1$
                 if (dbVersion != null) {
                     String jarValue = dbVersion.getValue();
-                    if ("ojdbc6-11g.jar".equalsIgnoreCase(jarValue)) { //$NON-NLS-1$
-                        dbVersion.setValue("ojdbc6.jar"); //$NON-NLS-1$
-                    } else if ("ojdbc5-11g.jar".equalsIgnoreCase(jarValue)) { //$NON-NLS-1$
-                        dbVersion.setValue("ojdbc5.jar"); //$NON-NLS-1$
-                    } else if ("ojdbc14-10g.jar".equalsIgnoreCase(jarValue)) { //$NON-NLS-1$
-                        dbVersion.setValue("ojdbc14.jar"); //$NON-NLS-1$
+                    if ("ojdbc6.jar".equalsIgnoreCase(jarValue)) { //$NON-NLS-1$
+                        dbVersion.setValue("ORACLE_11-6"); //$NON-NLS-1$
+                    } else if ("ojdbc5.jar".equalsIgnoreCase(jarValue)) { //$NON-NLS-1$
+                        dbVersion.setValue("ORACLE_11"); //$NON-NLS-1$
+                    } else if ("ojdbc14.jar".equalsIgnoreCase(jarValue)) { //$NON-NLS-1$
+                        dbVersion.setValue("ORACLE_10"); //$NON-NLS-1$
                     } else if ("ojdbc14-9i.jar".equalsIgnoreCase(jarValue)) { //$NON-NLS-1$
-                        // db_version.setValue("ojdbc14-9i.jar");
-                    } else if ("ojdbc12-8i.jar".equalsIgnoreCase(jarValue)) { //$NON-NLS-1$
-                        dbVersion.setValue("ojdbc12.jar"); //$NON-NLS-1$
+                        dbVersion.setValue("ORACLE_9"); //$NON-NLS-1$
+                    } else if ("ojdbc12.jar".equalsIgnoreCase(jarValue)) { //$NON-NLS-1$
+                        dbVersion.setValue("ORACLE_8"); //$NON-NLS-1$
                     }
                 }
             }
@@ -85,7 +84,7 @@ public class ChangeOracleJarName4OracleComponents extends AbstractJobMigrationTa
     }
 
     public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2012, 10, 15, 10, 0, 0);
+        GregorianCalendar gc = new GregorianCalendar(2012, 10, 19, 10, 0, 0);
         return gc.getTime();
     }
 }

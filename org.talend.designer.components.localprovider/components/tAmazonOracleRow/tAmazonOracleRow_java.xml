@@ -75,8 +75,8 @@
 	<PARAMETER NAME="DB_VERSION" FIELD="CLOSED_LIST" NUM_ROW="35"
 		REPOSITORY_VALUE="DB_VERSION" SHOW_IF="(USE_EXISTING_CONNECTION == 'false')">
 		<ITEMS DEFAULT="ORACLE_11">
-			<ITEM NAME="ORACLE_11-6" VALUE="ojdbc6.jar" />
-			<ITEM NAME="ORACLE_11" VALUE="ojdbc5.jar" />
+			<ITEM NAME="ORACLE_11-6" VALUE="ORACLE_11-6" />
+			<ITEM NAME="ORACLE_11" VALUE="ORACLE_11" />
 		</ITEMS>
 	</PARAMETER>
 
@@ -333,8 +333,8 @@
 
    <CODEGENERATION>
     <IMPORTS>
-       <IMPORT NAME="Driver-OjdbcConnector6" MODULE="ojdbc6.jar" REQUIRED="false" />
-       <IMPORT NAME="Driver-OjdbcConnector5" MODULE="ojdbc5.jar" REQUIRED="false" />
+       <IMPORT NAME="Driver-OjdbcConnector6" MODULE="ojdbc6.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6') AND (USE_EXISTING_CONNECTION == 'false')" />
+       <IMPORT NAME="Driver-OjdbcConnector5" MODULE="ojdbc5.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11') AND (USE_EXISTING_CONNECTION == 'false')" />
     </IMPORTS> 
    </CODEGENERATION>
 

@@ -139,7 +139,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 	boolean isTSWithTZ = searchingColumn.getDbType().matches("TIMESTAMP WITH TIME ZONE");
                 	
 			    	boolean supportTSTZ = false;
-			    	if("ojdbc5.jar".equals(dbVersion) || "ojdbc6.jar".equals(dbVersion) || "ojdbc14.jar".equals(dbVersion)){
+			    	if("ORACLE_11".equals(dbVersion) || "ORACLE_11-6".equals(dbVersion) || "ORACLE_10".equals(dbVersion)){
 			    		supportTSTZ = true;
 			    	}
 			    	if(isTSWithTZ && supportTSTZ){
