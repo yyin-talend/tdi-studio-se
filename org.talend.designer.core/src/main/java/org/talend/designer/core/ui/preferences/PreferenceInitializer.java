@@ -135,6 +135,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         // store.setDefault(ITalendCorePrefConstants.ITEM_INDEX, false);
 
         store.setDefault(IRepositoryPrefConstants.USE_EXPORT_SAVE, false);
+        store.setDefault(IRepositoryPrefConstants.ADD_CLASSPATH_JAR, true);
+
         if (!CommonsPlugin.isHeadless()) {
             Display display = Display.getCurrent();
             if (display == null) {
@@ -143,6 +145,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
             if (display != null) {
                 display.syncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         IPreferenceStore store = CorePlugin.getDefault().getPreferenceStore();
                         Font font = new Font(null, "courier", 10, SWT.NONE); //$NON-NLS-1$

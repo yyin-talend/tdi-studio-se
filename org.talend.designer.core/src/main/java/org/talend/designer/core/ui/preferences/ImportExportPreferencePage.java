@@ -13,10 +13,6 @@
 package org.talend.designer.core.ui.preferences;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.ui.swt.preferences.CheckBoxFieldEditor;
@@ -26,16 +22,9 @@ import org.talend.designer.core.i18n.Messages;
 
 public class ImportExportPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    private boolean isSaveUsed = true;
-
-    private CheckBoxFieldEditor isUsedCheckButton;
-
     public ImportExportPreferencePage() {
-
         super(GRID);
-
-        IPreferenceStore store = getPreferenceStore();
-        setPreferenceStore(store);
+        setPreferenceStore(DesignerPlugin.getDefault().getPreferenceStore());
 
     }
 
@@ -46,37 +35,18 @@ public class ImportExportPreferencePage extends FieldEditorPreferencePage implem
      */
     @Override
     protected void createFieldEditors() {
-        // TODO Auto-generated method stub
-        String text = "ImportExportPreferencePage.exportJobScript";
-        isUsedCheckButton = new CheckBoxFieldEditor(IRepositoryPrefConstants.USE_EXPORT_SAVE, Messages.getString(text),
-                getFieldEditorParent());
+        CheckBoxFieldEditor isUsedCheckButton = new CheckBoxFieldEditor(IRepositoryPrefConstants.USE_EXPORT_SAVE,
+                Messages.getString("ImportExportPreferencePage.exportJobScript"), getFieldEditorParent()); //$NON-NLS-1$
         addField(isUsedCheckButton);
-        IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
 
-        isSaveUsed = store.getBoolean(IRepositoryPrefConstants.USE_EXPORT_SAVE);
-
-        isUsedCheckButton.getButton().setSelection(isSaveUsed);
-        SelectionListener listener = new SelectionListener() {
-
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // TODO Auto-generated method stub
-
-            }
-
-            public void widgetSelected(SelectionEvent e) {
-                // TODO Auto-generated method stub
-                IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
-                store.setValue(IRepositoryPrefConstants.USE_EXPORT_SAVE, ((Button) e.getSource()).getSelection());
-            }
-
-        };
-        isUsedCheckButton.getButton().addSelectionListener(listener);
+        CheckBoxFieldEditor addClasspathJarButton = new CheckBoxFieldEditor(IRepositoryPrefConstants.ADD_CLASSPATH_JAR,
+                Messages.getString("ImportExportPreferencePage.addClasspathJar"), getFieldEditorParent()); //$NON-NLS-1$
+        addField(addClasspathJarButton);
     }
 
     @Override
     public void init(IWorkbench workbench) {
-        // TODO Auto-generated method stub
-        
+
     }
 
 }

@@ -35,11 +35,15 @@ import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.genhtml.FileCopyUtils;
 import org.talend.core.model.process.JobInfo;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.relationship.RelationshipItemBuilder;
+import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.runtime.CoreRuntimePlugin;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.runprocess.ItemCacheManager;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -217,7 +221,19 @@ public class JobExportAction implements IRunnableWithProgress {
         }
 
         monitor.subTask(Messages.getString("JobScriptsExportWizardPage.newExportSuccess", type)); //$NON-NLS-1$
-        reBuildJobZipFile(processes);
+        boolean addClasspathJar = true;
+        IDesignerCoreService designerCoreService = CoreRuntimePlugin.getInstance().getDesignerCoreService();
+        if (designerCoreService != null) {
+            addClasspathJar = designerCoreService.getDesignerCorePreferenceStore().getBoolean(
+                    IRepositoryPrefConstants.ADD_CLASSPATH_JAR);
+        }
+        if (addClasspathJar) {
+            reBuildJobZipFile(processes);
+        } else {
+            String zipFile = getTempDestinationValue();
+            String destinationZipFile = manager.getDestinationPath();
+            FileCopyUtils.copy(zipFile, destinationZipFile);
+        }
         return true;
     }
 
