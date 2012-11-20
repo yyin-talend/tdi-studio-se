@@ -1738,7 +1738,16 @@
               id="org.talend.repository.model.migration.AddMomInputToComponentsListMigrationTask"
               name="AddMomInputToComponentsListMigrationTask"
               version="5.2.1">
-        </projecttask> 
+        </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.2.0"
+              class="org.talend.repository.model.migration.ChangeOracleJarName4OracleDriver"
+              description="change the jar name of the oracle jdbc drivers to be exactly the same with the official oracle jdbc drivers"
+              id="org.talend.repository.model.migration.ChangeOracleJarName4OracleDriver"
+              name="ChangeOracleJarName4OracleDriver"
+              version="5.2.1">
+        </projecttask>
    </extension>
    
    <extension
