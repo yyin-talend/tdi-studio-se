@@ -176,13 +176,34 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			%>
 			// Add ":" to comply with base64 ldif syntax
 				item_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64,item_<%=cid %>,<%=encoding%>);
-				if(!isPrintable_<%=cid %> && <%=isBase64%>){
-					util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:: " + item_<%=cid %>, wrap_<%=cid %>);
-				}else{
-					util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
-				}
-		}				
 <%
+			List<IMetadataColumn> columns_sub = metadata.getListColumns();
+            for (int j = 0; j < columns_sub.size(); j++) {
+                IMetadataColumn column_sub = columns_sub.get(j);
+                JavaType javaType_sub = JavaTypesManager.getJavaTypeFromId(column_sub.getTalendType());
+                if(javaType_sub == JavaTypesManager.BYTE_ARRAY && column_sub.getLabel().equals(column.getLabel())){
+%>
+				    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:: " + item_<%=cid %>, wrap_<%=cid %>);
+<%
+                }else if(column_sub.getLabel().equals(column.getLabel())){
+					if(isBase64){
+%>
+						if(!isPrintable_<%=cid %>){
+							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + item_<%=cid %>, wrap_<%=cid %>);
+						}else{
+							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+	               		}
+<%
+					}else{
+%>
+                    	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+<%
+				   }
+                }
+            }
+%>
+		}
+<%			
 	}else{
 %>
 		// follow LDIF rules or not
@@ -200,12 +221,31 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		%>
 		// Add ":" to comply with base64 ldif syntax
 			value_<%=column.getLabel() %>_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64,value_<%=column.getLabel() %>_<%=cid %>,<%=encoding%>);
-		if(!isPrintable_<%=cid %> && <%=isBase64%>){
-			util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-		}else{
-			util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-		}
 <%
+			List<IMetadataColumn> columns_sub = metadata.getListColumns();
+            for (int j = 0; j < columns_sub.size(); j++) {
+                IMetadataColumn column_sub = columns_sub.get(j);
+                JavaType javaType_sub = JavaTypesManager.getJavaTypeFromId(column_sub.getTalendType());
+                if(javaType_sub == JavaTypesManager.BYTE_ARRAY && column_sub.getLabel().equals(column.getLabel())){
+%>
+                    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+<%
+                }else if(column_sub.getLabel().equals(column.getLabel())){
+					if(isBase64){
+%>
+						if(!isPrintable_<%=cid %>){
+							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+						}else{
+							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+	               		}
+<%
+					}else{
+%>
+	                   util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+<%
+					}
+                }
+            }
 	}
 %>
 	needSeparator_<%=cid %> = true;
@@ -262,11 +302,32 @@ sb_<%=cid %>.append("-\n");
 				%>
 				// Add ":" to comply with base64 ldif syntax
 	                item_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64,item_<%=cid %>,<%=encoding%>);
-	                if(!isPrintable_<%=cid %> && <%=isBase64%>){
+<%
+    			List<IMetadataColumn> columns_sub = metadata.getListColumns();
+                for (int j = 0; j < columns_sub.size(); j++) {
+                    IMetadataColumn column_sub = columns_sub.get(j);
+                    JavaType javaType_sub = JavaTypesManager.getJavaTypeFromId(column_sub.getTalendType());
+                    if(javaType_sub == JavaTypesManager.BYTE_ARRAY && column_sub.getLabel().equals(column.getLabel())){
+%>
 						util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:: " + item_<%=cid %>, wrap_<%=cid %>);
-					}else{
-						util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
-					}
+<%
+                    }else if(column_sub.getLabel().equals(column.getLabel())){
+    					if(isBase64){
+%>
+    						if(!isPrintable_<%=cid %>){
+    							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + item_<%=cid %>, wrap_<%=cid %>);
+    						}else{
+    							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+    	               		}
+<%
+					   }else{
+%>
+	                    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+<%
+					   }
+                    }
+			     }
+%>
 		}
 <%
 	}else{
@@ -286,13 +347,31 @@ sb_<%=cid %>.append("-\n");
 			%>
 			// Add ":" to comply with base64 ldif syntax
 				value_<%=column.getLabel() %>_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64,value_<%=column.getLabel() %>_<%=cid %>,<%=encoding%>);
-	            if(!isPrintable_<%=cid %> && <%=isBase64%>){
-					util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-				}else{
-					util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-				}
-
 <%
+			List<IMetadataColumn> columns_sub = metadata.getListColumns();
+            for (int j = 0; j < columns_sub.size(); j++) {
+                IMetadataColumn column_sub = columns_sub.get(j);
+                JavaType javaType_sub = JavaTypesManager.getJavaTypeFromId(column_sub.getTalendType());
+                if(javaType_sub == JavaTypesManager.BYTE_ARRAY && column_sub.getLabel().equals(column.getLabel())){
+%>
+                    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+<%
+                }else if(column_sub.getLabel().equals(column.getLabel())){
+					if(isBase64){
+%>
+						if(!isPrintable_<%=cid %>){
+							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+						}else{
+							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+	               		}
+<%
+					}else{
+%>
+	                   util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+<%
+					}
+                }
+            }
 	}
 %>
 		canOutput_<%=cid %> = true;
