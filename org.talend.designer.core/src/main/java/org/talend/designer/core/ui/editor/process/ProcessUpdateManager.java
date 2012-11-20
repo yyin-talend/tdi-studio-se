@@ -39,7 +39,7 @@ import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.metadata.IEbcdicConstant;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.FTPConnection;
@@ -1069,8 +1069,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
         if (PluginChecker.isEBCDICPluginLoaded()) {
             List<UpdateResult> resultForEBCDIC = checkNodeSchemaFromRepositoryForEBCDIC(node, onlySimpleShow);
-            if (resultForEBCDIC != null) {
-                schemaResults.addAll(resultForEBCDIC);
+            if (resultForEBCDIC != null && !resultForEBCDIC.isEmpty()) {
+                // means it's one ebcdic component, no need to check others
+                return resultForEBCDIC;
             }
         }
 
@@ -1366,7 +1367,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             IMetadataTable metadataTable = null;
                                             // metadataTable =
                                             // node.getMetadataFromConnector(schemaTypeParam.getContext());
-                                            metadataTable = MetadataTool.getMetadataTableFromNode(node, schemaName);
+                                            metadataTable = MetadataToolHelper.getMetadataTableFromNodeLabel(node, schemaName);
 
                                             if (metadataTable != null
                                                     && (onlySimpleShow || !metadataTable.sameMetadataAs(copyOfrepositoryMetadata,
@@ -1508,7 +1509,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             if ((param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath)
                                     || (repositoryConnection instanceof SalesforceSchemaConnection
                                             && "MODULENAME".equals(repositoryValue) && !((SalesforceSchemaConnection) repositoryConnection)
-                                                .isUseCustomModuleName())) {
+                                            .isUseCustomModuleName())) {
                                 continue;
                             }
                             IMetadataTable table = null;
