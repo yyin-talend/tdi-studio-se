@@ -18,10 +18,11 @@
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 	    IMetadataTable metadata = metadatas.get(0);
 	    if (metadata!=null) {
-	    List<? extends IConnection> conns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+	    	List<? extends IConnection> conns = node.getOutgoingConnections();
 			if (conns!=null && conns.size()>0) {
-				IConnection conn = conns.get(0);
-				String inputConnName = null;
+			  IConnection conn = conns.get(0);
+			  String inputConnName = null;
+			  if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 				if (node.getIncomingConnections()!=null) {
 					for (IConnection incomingConn : node.getIncomingConnections()) {
 						if (incomingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -35,6 +36,7 @@
 						}
 					}
 				}
+			  }
 			}
 		}
 	}
