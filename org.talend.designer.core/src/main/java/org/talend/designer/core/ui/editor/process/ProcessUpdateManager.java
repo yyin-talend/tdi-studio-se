@@ -2042,10 +2042,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 }
                 result.setResult(EUpdateItemType.JOBLET_CONTEXT, EUpdateResult.JOBLET_UPDATE, parameter, UpdatesConstants.CONTEXT
                         + UpdatesConstants.COLON + source);
-                result.setJob(getProcess());
                 if (!openedProcesses.contains(getProcess())) {
                     result.setFromItem(true);
                 }
+                result.setJob(getProcess());
                 setConfigrationForReadOnlyJob(result);
                 contextResults.add(result);
             }

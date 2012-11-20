@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.internal.WorkbenchMessages;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -190,17 +191,20 @@ public class UpdateViewerHelper {
         List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
         boolean isOpened = openedProcesses.contains(item.getResultObject().getJob());
         boolean jobletUpdate = false;
+        boolean jobletContext = false;
         if (item.getParent() != null && item.getParent().getNode() != null && (item.getParent().getNode() instanceof Node)
                 && ((Node) item.getParent().getNode()).isJoblet()) {
             jobletUpdate = true;
+        }
+        if (item.getParent() != null && item.getParent().getType() == EUpdateItemType.JOBLET_CONTEXT) {
+            jobletContext = true;
         }
         // not checked
         if (!state && !item.getResultObject().isReadOnly()) {
             EUpdateResult resultType = item.getResultObject().getResultType();
             if (resultType == EUpdateResult.UPDATE || resultType == EUpdateResult.ADD || resultType == EUpdateResult.DELETE) {
                 item.setChecked(false);
-            } else if (jobletUpdate
-                    && !isOpened
+            } else if ((jobletUpdate || jobletContext) && !isOpened
                     && (resultType == EUpdateResult.JOBLET_UPDATE || resultType == EUpdateResult.RELOAD)) {
                 item.setChecked(state);
             }

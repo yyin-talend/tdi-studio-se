@@ -188,8 +188,7 @@ public class UpdateDetectionDialog extends SelectionDialog {
 
     private void checkInitialSelections() {
         for (UpdateResult result : getInputElements()) {
-            if (result.getResultType() != EUpdateResult.RELOAD && result.getRemark() != null
-                    && !result.getRemark().startsWith(UpdatesConstants.JOBLET + UpdatesConstants.COLON)) {
+            if (!result.isFromItem()) {
                 result.setChecked(true);
             }
             // result.setChecked(true);
