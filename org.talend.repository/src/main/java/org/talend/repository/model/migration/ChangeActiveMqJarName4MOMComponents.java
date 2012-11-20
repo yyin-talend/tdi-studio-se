@@ -34,8 +34,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
  * tMOM components are used. 
  */
 public class ChangeActiveMqJarName4MOMComponents extends AbstractJobMigrationTask {
-	private static String OLD_NAME = "activemq-all-5.1.0.jar";
-	private static String NEW_NAME = "activemq-all-5.7.0.jar";
+	private static final String PROPERTY_TO_REMOVE = "MQ_DERVIERS";
 
     @Override
     public ExecutionResult execute(Item item) {
@@ -44,12 +43,9 @@ public class ChangeActiveMqJarName4MOMComponents extends AbstractJobMigrationTas
         	
     	IComponentConversion changeActiveMqDriverJarType = new IComponentConversion() {
 	        public void transform(NodeType node) {
-	        	ElementParameterType mq_drivers = ComponentUtilities.getNodeProperty(node, "MQ_DERVIERS"); //$NON-NLS-2$
+	        	ElementParameterType mq_drivers = ComponentUtilities.getNodeProperty(node, PROPERTY_TO_REMOVE); //$NON-NLS-2$
 	        	if (mq_drivers != null) {
-	        		String jar_value = mq_drivers.getValue(); //$NON-NLS-3$
-	        		if (OLD_NAME.equalsIgnoreCase(jar_value)) {
-	        			mq_drivers.setValue(NEW_NAME);
-	        		}
+	        		ComponentUtilities.removeNodeProperty(node, PROPERTY_TO_REMOVE);
 	        	}
 	        }
     	};
