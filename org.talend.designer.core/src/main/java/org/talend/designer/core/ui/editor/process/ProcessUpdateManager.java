@@ -2031,6 +2031,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             }
         }
         List<UpdateResult> contextResults = new ArrayList<UpdateResult>();
+        List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
         for (String source : reformMap.keySet()) {
             Set<String> set = reformMap.get(source);
             if (set != null && !set.isEmpty()) {
@@ -2042,6 +2043,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 result.setResult(EUpdateItemType.JOBLET_CONTEXT, EUpdateResult.JOBLET_UPDATE, parameter, UpdatesConstants.CONTEXT
                         + UpdatesConstants.COLON + source);
                 result.setJob(getProcess());
+                if (!openedProcesses.contains(getProcess())) {
+                    result.setFromItem(true);
+                }
                 setConfigrationForReadOnlyJob(result);
                 contextResults.add(result);
             }

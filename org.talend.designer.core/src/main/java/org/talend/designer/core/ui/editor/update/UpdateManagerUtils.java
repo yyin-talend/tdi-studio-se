@@ -163,7 +163,12 @@ public final class UpdateManagerUtils {
     }
 
     public static List<IProcess2> getOpenedProcess() {
-        IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+        IEditorReference[] reference = null;
+        if (PlatformUI.getWorkbench() != null && PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null
+                && PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage() != null) {
+            reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+        }
+
         if (reference != null) {
             List<IProcess2> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
             if (processes != null) {
@@ -546,6 +551,8 @@ public final class UpdateManagerUtils {
         if (result.isReadOnlyProcess()) {
             return;
         }
+        boolean isJobletContext = false;
+
         // update
         Command command = null;
         switch (result.getUpdateType()) {
@@ -574,6 +581,7 @@ public final class UpdateManagerUtils {
             command = executeJobletNodesUpdates(result);
             break;
         case JOBLET_CONTEXT:
+            isJobletContext = true;
             command = new Command() { // have update in checking.
             };
             break;
@@ -591,7 +599,7 @@ public final class UpdateManagerUtils {
             if (job != null) {
                 if (job instanceof IProcess2) {
                     IProcess2 process = (IProcess2) job;
-                    if (updateAllJobs) {
+                    if (updateAllJobs || isJobletContext) {
                         process.getCommandStack().execute(command);
                     } else {
                         command.execute();
