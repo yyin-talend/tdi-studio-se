@@ -15,9 +15,13 @@ package org.talend.designer.core.ui.editor.update;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.gef.commands.Command;
@@ -33,18 +37,13 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.JobContext;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.repository.RepositoryObject;
-import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
@@ -67,7 +66,6 @@ import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.model.ERepositoryStatus;
-import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * ggu class global comment. Detailled comment
@@ -182,14 +180,14 @@ public final class UpdateManagerUtils {
         return executeUpdates(results, false, updateAllJobs);
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public static boolean executeUpdates(final List<UpdateResult> results, final IProcess2 currentProcess) {
         RepositoryWorkUnit<Boolean> repositoryWorkUnit = new RepositoryWorkUnit<Boolean>(
                 Messages.getString("UpdateManagerUtils.updateMOfification")) { //$NON-NLS-1$
 
             @Override
             protected void run() throws LoginException, PersistenceException {
-                result = doExecuteUpdates(results, currentProcess);
+                result = doExecuteUpdates(results, true);
             }
 
         };
@@ -198,7 +196,7 @@ public final class UpdateManagerUtils {
         return repositoryWorkUnit.getResult();
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public static boolean executeUpdates(final List<UpdateResult> results, final boolean onlySimpleShow,
             final boolean updateAllJobs) {
         RepositoryWorkUnit<Boolean> repositoryWorkUnit = new RepositoryWorkUnit<Boolean>(
@@ -225,120 +223,7 @@ public final class UpdateManagerUtils {
                     .getShell(), results, onlySimpleShow);
 
             if (checkDialog.open() == IDialogConstants.OK_ID) {
-                // final List<Object> selectResult = Arrays.asList(checkDialog.getResult());
-                ProgressDialog progress = new ProgressDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()) {
-
-                    @Override
-                    public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                        monitor.setCanceled(false);
-                        int size = (results.size() * 2 + 1) * UpdatesConstants.SCALE;
-                        monitor.beginTask(Messages.getString("UpdateManagerUtils.Update"), size); //$NON-NLS-1$
-
-                        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-
-                        IRepositoryViewObject previousObj = null;
-                        for (UpdateResult result : results) {
-                            if (!result.isChecked()) {
-                                continue;
-                            }
-                            // several results may keep the same objectId , they are from the same process . So no need
-                            // unload each time.
-                            IRepositoryViewObject currentObj = null;
-                            String currentId = result.getObjectId();
-                            if (result.getJob() == null && previousObj != null && previousObj.getId().equals(currentId)) {
-                                currentObj = previousObj;
-                            } else if (previousObj instanceof RepositoryObject) {
-                                if (!ERepositoryStatus.LOCK_BY_USER
-                                        .equals(factory.getStatus(previousObj.getProperty().getItem()))) {
-                                    ((RepositoryObject) previousObj).unload();
-                                    previousObj = null;
-                                }
-                            }
-
-                            if (result.getJob() == null) {
-                                if (currentObj == null && currentId != null) {
-                                    boolean checkOnlyLastVersion = Boolean.parseBoolean(DesignerPlugin.getDefault()
-                                            .getPreferenceStore().getString("checkOnlyLastVersion")); //$NON-NLS-1$
-                                    try {
-                                        if (checkOnlyLastVersion || result.getObjectVersion() == null) {
-                                            currentObj = factory.getLastVersion(currentId);
-                                        } else {
-                                            List<IRepositoryViewObject> allVersion = factory.getAllVersion(currentId);
-                                            for (IRepositoryViewObject obj : allVersion) {
-                                                if (obj.getVersion().equals(result.getObjectVersion())) {
-                                                    currentObj = obj;
-                                                }
-                                            }
-
-                                        }
-                                    } catch (PersistenceException e) {
-                                        ExceptionHandler.process(e);
-                                    }
-                                }
-                                if (currentObj != null) {
-                                    previousObj = currentObj;
-                                    Item item = currentObj.getProperty().getItem();
-                                    IProcess process = null;
-                                    IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
-                                    if (item instanceof ProcessItem) {
-                                        process = designerCoreService.getProcessFromProcessItem((ProcessItem) item);
-                                    } else if (item instanceof JobletProcessItem) {
-                                        process = designerCoreService.getProcessFromJobletProcessItem((JobletProcessItem) item);
-                                    }
-                                    result.setJob(process);
-
-                                    if (process != null && (result.getUpdateType() == EUpdateItemType.JOBLET_CONTEXT)) {
-                                        if ((result.getParameter() instanceof List) && process.getContextManager() != null) {
-                                            process.getContextManager().setListContext((List<IContext>) result.getParameter());
-                                        }
-                                    }
-
-                                    // node stored in result set is not the same instance as in process after we
-                                    // load again the closed process, so need to find the corresponding node in process
-                                    if (process != null && result.getUpdateObject() instanceof INode) {
-                                        INode toUpdate = (INode) result.getUpdateObject();
-                                        for (INode node : process.getGraphicalNodes()) {
-                                            if (node.getUniqueName().equals(toUpdate.getUniqueName())) {
-                                                result.setUpdateObject(node);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            // execute
-                            executeUpdate(result, monitor, updateAllJobs);
-
-                            if (result.getObjectId() != null) {
-                                result.setJob(null);
-                            }
-
-                        }
-
-                        // update joblet reference
-                        upadateJobletReferenceInfor();
-
-                        // refresh
-                        refreshRelatedViewers(results);
-
-                        // hyWang add method checkandRefreshProcess for bug7248
-                        checkandRefreshProcess(results);
-
-                        monitor.worked(1 * UpdatesConstants.SCALE);
-                        monitor.done();
-                    }
-
-                };
-                try {
-                    progress.executeProcess();
-                } catch (InvocationTargetException e) {
-                    ExceptionHandler.process(e);
-                    //
-                } catch (InterruptedException e) {
-                    ExceptionHandler.process(e);
-                    //
-                }
-                return !results.isEmpty();
+                return doExecuteUpdates(results, updateAllJobs);
             }
         } finally {
             results.clear();
@@ -346,17 +231,11 @@ public final class UpdateManagerUtils {
         return false;
     }
 
-    private static boolean doExecuteUpdates(final List<UpdateResult> results, final IProcess2 currentProcess) {
+    private static boolean doExecuteUpdates(final List<UpdateResult> results, final boolean updateAllJobs) {
         if (results == null || results.isEmpty()) {
             return false;
         }
         try {
-            // UpdateDetectionDialog checkDialog = new UpdateDetectionDialog(Display.getCurrent().getActiveShell(),
-            // results,
-            // onlySimpleShow);
-
-            // if (checkDialog.open() == IDialogConstants.OK_ID) {
-            // final List<Object> selectResult = Arrays.asList(checkDialog.getResult());
             ProgressDialog progress = new ProgressDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()) {
 
                 @Override
@@ -367,32 +246,57 @@ public final class UpdateManagerUtils {
 
                     ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
-                    IRepositoryViewObject previousObj = null;
+                    // first list by job we need to update
+
+                    Map<String, Set<String>> jobIdToVersion = new HashMap<String, Set<String>>();
+                    Map<String, Boolean> jobIdClosed = new HashMap<String, Boolean>();
+
                     for (UpdateResult result : results) {
-                        // several results may keep the same objectId , they are from the same process . So no need
-                        // unload each time.
-                        IRepositoryViewObject currentObj = null;
-                        String currentId = result.getObjectId();
-                        if (result.getJob() == null && previousObj != null && previousObj.getId().equals(currentId)) {
-                            currentObj = previousObj;
-                        } else if (previousObj instanceof RepositoryObject) {
-                            if (!ERepositoryStatus.LOCK_BY_USER.equals(factory.getStatus(previousObj.getProperty().getItem()))) {
-                                ((RepositoryObject) previousObj).unload();
-                                previousObj = null;
+                        String id = result.getObjectId();
+                        String version = result.getObjectVersion();
+                        if (id == null) {
+                            if (result.getJob() != null && result.getJob() instanceof IProcess) {
+                                IProcess process = (IProcess) result.getJob();
+                                id = process.getId();
+                                version = process.getVersion();
+                                result.setObjectId(id);
+                                result.setObjectVersion(version);
+                            } else {
+                                continue;
                             }
                         }
+                        Set<String> versionList;
+                        if (!jobIdToVersion.containsKey(id)) {
+                            versionList = new HashSet<String>();
+                            jobIdToVersion.put(id, versionList);
+                        } else {
+                            versionList = jobIdToVersion.get(id);
+                        }
+                        versionList.add(version);
+                        jobIdClosed.put(id + " - " + version, result.isFromItem()); //$NON-NLS-1$
+                    }
 
-                        if (result.getJob() == null) {
-                            if (currentObj == null && currentId != null) {
+                    // now will execute updates only for the job selected depends this list.
+                    for (String currentId : jobIdToVersion.keySet()) {
+
+                        for (String version : jobIdToVersion.get(currentId)) {
+                            IRepositoryViewObject currentObj = null;
+                            boolean closedItem = jobIdClosed.get(currentId + " - " + version); //$NON-NLS-1$
+
+                            IProcess process = null;
+                            Item item = null;
+
+                            if (closedItem) {
+                                // if item is closed, then just load it.
                                 boolean checkOnlyLastVersion = Boolean.parseBoolean(DesignerPlugin.getDefault()
                                         .getPreferenceStore().getString("checkOnlyLastVersion")); //$NON-NLS-1$
                                 try {
-                                    if (checkOnlyLastVersion || result.getObjectVersion() == null) {
+                                    if (checkOnlyLastVersion || version == null) {
                                         currentObj = factory.getLastVersion(currentId);
                                     } else {
                                         List<IRepositoryViewObject> allVersion = factory.getAllVersion(currentId);
                                         for (IRepositoryViewObject obj : allVersion) {
-                                            if (obj.getVersion().equals(result.getObjectVersion())) {
+                                            if (obj.getVersion().equals(version)) {
                                                 currentObj = obj;
                                             }
                                         }
@@ -401,39 +305,67 @@ public final class UpdateManagerUtils {
                                 } catch (PersistenceException e) {
                                     ExceptionHandler.process(e);
                                 }
-                            }
-                            if (currentObj != null) {
-                                previousObj = currentObj;
-                                Item item = currentObj.getProperty().getItem();
-                                IProcess process = null;
+
+                                if (currentObj == null) {
+                                    // item not found, don't do anything
+                                    continue;
+                                }
+                                item = currentObj.getProperty().getItem();
+                                if (ERepositoryStatus.LOCK_BY_OTHER.equals(factory.getStatus(item))) {
+                                    // if item is locked by another user, don't do anything, or it might corrupt the
+                                    // file.
+                                    continue;
+                                }
+
                                 IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
                                 if (item instanceof ProcessItem) {
                                     process = designerCoreService.getProcessFromProcessItem((ProcessItem) item);
                                 } else if (item instanceof JobletProcessItem) {
                                     process = designerCoreService.getProcessFromJobletProcessItem((JobletProcessItem) item);
                                 }
-                                result.setJob(process);
+                            }
+                            for (UpdateResult result : results) {
+                                if (!StringUtils.equals(currentId, result.getObjectId())) {
+                                    continue; // not the current job we need to update
+                                }
+                                if (closedItem) {
+                                    result.setJob(process);
+                                }
+                                // execute
+                                executeUpdate(result, monitor, updateAllJobs);
 
-                                // node stored in result set is not the same instance as in process after we
-                                // load again the closed process, so need to find the corresponding node in process
-                                if (process != null && result.getUpdateObject() instanceof INode) {
-                                    INode toUpdate = (INode) result.getUpdateObject();
-                                    for (INode node : process.getGraphicalNodes()) {
-                                        if (node.getUniqueName().equals(toUpdate.getUniqueName())) {
-                                            result.setUpdateObject(node);
-                                        }
+                                if (closedItem) {
+                                    result.setJob(null);
+                                }
+                            }
+
+                            if (closedItem && process instanceof IProcess2) {
+                                IProcess2 process2 = (IProcess2) process;
+                                ProcessType processType;
+                                try {
+                                    processType = process2.saveXmlFile(false);
+                                    if (item instanceof JobletProcessItem) {
+                                        ((JobletProcessItem) item).setJobletProcess((JobletProcess) processType);
+                                    } else {
+                                        ((ProcessItem) item).setProcess(processType);
                                     }
+                                    factory.save(item);
+                                } catch (IOException e) {
+                                    ExceptionHandler.process(e);
+                                } catch (PersistenceException e) {
+                                    ExceptionHandler.process(e);
+                                }
+                            }
+
+                            if (closedItem && !ERepositoryStatus.LOCK_BY_USER.equals(factory.getStatus(item))) {
+                                // unload item from memory, but only if this one is not locked by current user.
+                                try {
+                                    factory.unloadResources(item.getProperty());
+                                } catch (PersistenceException e) {
+                                    ExceptionHandler.process(e);
                                 }
                             }
                         }
-
-                        // execute
-                        executeUpdate(result, monitor, true);
-
-                        if (result.getObjectId() != null) {
-                            result.setJob(null);
-                        }
-
                     }
 
                     // update joblet reference
@@ -470,7 +402,7 @@ public final class UpdateManagerUtils {
      * 
      * ggu Comment method "refreshViewers".
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private static void refreshRelatedViewers(List results) {
         boolean context = false;
         boolean jobSetting = false;
@@ -514,37 +446,6 @@ public final class UpdateManagerUtils {
         if (palette) {
             ComponentUtilities.updatePalette();
         }
-    }
-
-    private static void saveModifiedItem(UpdateResult updateResult) {
-
-        // save
-        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
-
-        try {
-            if (updateResult.getJob() instanceof IProcess2) {
-                IProcess2 process2 = (IProcess2) updateResult.getJob();
-                Property property = factory.getUptodateProperty(process2.getProperty());
-                if (property != null) {
-                    process2.setProperty(property);
-                }
-
-                ProcessType processType = process2.saveXmlFile(false);
-
-                Item item = process2.getProperty().getItem();
-                if (item instanceof JobletProcessItem) {
-                    ((JobletProcessItem) item).setJobletProcess((JobletProcess) processType);
-                } else {
-                    ((ProcessItem) item).setProcess(processType);
-                }
-                factory.save(item);
-            }
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-        } catch (IOException e) {
-            ExceptionHandler.process(e);
-        }
-
     }
 
     private static void executeUpdate(UpdateResult result, IProgressMonitor monitor, boolean updateAllJobs) {
@@ -611,10 +512,6 @@ public final class UpdateManagerUtils {
             if (!executed) {
                 command.execute();
             }
-            if (result.isFromItem()) {
-                // save updated process
-                saveModifiedItem(result);
-            }
             subMonitor.worked(1);
 
         }
@@ -638,7 +535,7 @@ public final class UpdateManagerUtils {
     /*
      * context
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private static Command executeContextUpdates(UpdateResult result) {
         if (result == null) {
             return null;
@@ -653,7 +550,7 @@ public final class UpdateManagerUtils {
     /*
      * contextGroup
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     private static Command executeContextGroupUpdates(UpdateResult result) {
         if (result == null) {
             return null;

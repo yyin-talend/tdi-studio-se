@@ -14,10 +14,11 @@ package org.talend.designer.core.ui.editor.update.cmd;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.gef.commands.Command;
@@ -36,6 +37,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
@@ -106,16 +108,20 @@ public class UpdateJobletNodeCommand extends Command {
                             if (newComponent == null) {
                                 continue;
                             }
-                            boolean neesPro = needPropagate(node);
-                            if (node.isJoblet()) {
+                            // node loaded is from loading in the check.
+                            // need to get the instance from process, or this process will be done with wrong instance
+                            // of node.
+                            Node currentNode = getOriginalNodeFromProcess(node);
+                            boolean neesPro = needPropagate(currentNode);
+                            if (currentNode.isJoblet()) {
                                 if (result.isNeedReloadJoblet()) {
-                                    reloadNode(node, newComponent);
+                                    reloadNode(currentNode, newComponent);
                                 }
-                                ((JobletContainer) node.getNodeContainer()).updateJobletNodes(true);
+                                ((JobletContainer) currentNode.getNodeContainer()).updateJobletNodes(true);
                             } else {
-                                reloadNode(node, newComponent);
+                                reloadNode(currentNode, newComponent);
                             }
-                            propagate(node, neesPro);
+                            propagate(currentNode, neesPro);
                         }
                         process.checkProcess();
                     }
@@ -127,6 +133,18 @@ public class UpdateJobletNodeCommand extends Command {
                 }
             }
         }
+    }
+
+    private Node getOriginalNodeFromProcess(Node nodeFromUpdateChecker) {
+        // instance of node before might not be good (loaded while check updates needed)
+        // so get the instance of the node of the current job in this object.
+        IProcess process = (IProcess) result.getJob();
+        for (INode node : process.getGraphicalNodes()) {
+            if (node.getUniqueName().equals(nodeFromUpdateChecker.getUniqueName())) {
+                return (Node) node;
+            }
+        }
+        return null;
     }
 
     @SuppressWarnings("unchecked")
@@ -147,18 +165,21 @@ public class UpdateJobletNodeCommand extends Command {
         process.checkProcess();
     }
 
-    @SuppressWarnings("unchecked")
     private void updateSchema(Process process, Node node) {
         if (process == null || node == null) {
             return;
         }
+        // node loaded is from loading in the check.
+        // need to get the instance from process, or this process will be done with wrong instance
+        // of node.
+        Node currentNode = getOriginalNodeFromProcess(node);
 
-        String componentName = node.getComponent().getName();
+        String componentName = currentNode.getComponent().getName();
         IComponent newComponent = ComponentsFactoryProvider.getInstance().get(componentName);
         if (newComponent == null) {
             return;
         }
-        reloadNode(node, newComponent);
+        reloadNode(currentNode, newComponent);
 
         process.checkProcess();
     }
@@ -174,9 +195,6 @@ public class UpdateJobletNodeCommand extends Command {
     }
 
     private Map<String, Object> createParameters(Node node, IComponent newComponent) {
-        if (node == null) {
-            Collections.emptyMap();
-        }
         Map<String, Object> parameters = new HashMap<String, Object>();
         if (node.getComponent().getComponentType() != EComponentType.JOBLET) {
             if (node.getExternalData() != null) {
@@ -219,9 +237,14 @@ public class UpdateJobletNodeCommand extends Command {
         String propertyName = evt.getPropertyName();
         Object updateObject = result.getUpdateObject();
 
-        List<INode> jobletNodes = null;
-        if (updateObject instanceof List) {
-            jobletNodes = new ArrayList((List<INode>) updateObject);
+        Set<String> jobletNodeNames = new HashSet<String>();
+        if (updateObject != null) {
+            if (!(updateObject instanceof List)) {
+                return;
+            }
+            for (INode jobletNode : (List<INode>) updateObject) {
+                jobletNodeNames.add(jobletNode.getComponent().getName());
+            }
         }
 
         if (propertyName.equals(ComponentUtilities.NORMAL)) {
@@ -229,7 +252,7 @@ public class UpdateJobletNodeCommand extends Command {
                 /*
                  * if jobletNodes==null, will reload all component. Or, olny reload the fixed node.
                  */
-                if (jobletNodes != null && !jobletNodes.contains(node)) {
+                if (updateObject != null && !jobletNodeNames.contains(node.getComponent().getName())) {
                     continue;
                 }
 
@@ -240,39 +263,7 @@ public class UpdateJobletNodeCommand extends Command {
                 reloadNode(node, newComponent);
             }
             process.checkProcess();
-            // moved (bug 4231)
-            // } else
-            // if (propertyName.equals(ComponentUtilities.JOBLET_NAME_CHANGED)) {
-            // String oldName = (String) evt.getOldValue();
-            // String newName = (String) evt.getNewValue();
-            //
-            // updateRenaming(process, oldName, newName);
-            // } else
-            //
-            // if (propertyName.equals(ComponentUtilities.JOBLET_SCHEMA_CHANGED)) {
-            // // updateGraphicalNodesSchema(process, evt);
-            // INode sourceNode = (INode) evt.getSource();
-            // String componentName = sourceNode.getComponent().getName();
-            // IComponent newComponent = ComponentsFactoryProvider.getInstance().get(componentName);
-            // if (newComponent == null) {
-            // return;
-            // }
-            // List<Node> nodesToUpdate = new ArrayList<Node>();
-            // for (Node node : (List<Node>) process.getGraphicalNodes()) {
-            // if (node.getComponent().getName().equals(componentName)) {
-            // nodesToUpdate.add(node);
-            // }
-            // }
-            // for (Node node : nodesToUpdate) {
-            // Map<String, Object> parameters = createParameters(node);
-            // if (!parameters.isEmpty()) {
-            // node.reloadComponent(newComponent, parameters);
-            // }
-            // }
-            //
-            // ((Process) sourceNode.getProcess()).checkProcess();
         }
-
     }
 
     /**
@@ -436,13 +427,13 @@ public class UpdateJobletNodeCommand extends Command {
 
             String dbmsId = null;
             IMetadataTable copy = null;
-            if (((Node) targetNode).getMetadataFromConnector(outConn.getConnectorName()) != null) {
+            if (targetNode.getMetadataFromConnector(outConn.getConnectorName()) != null) {
                 dbmsId = targetNode.getMetadataFromConnector(outConn.getConnectorName()).getDbms();
                 MetadataToolHelper.copyTable(dbmsId, toCopy, tmpClone);
                 toCopy = tmpClone;
 
                 // only if the target node have exactly the same connector
-                copy = ((Node) targetNode).getMetadataFromConnector(outConn.getConnectorName()).clone(true);
+                copy = targetNode.getMetadataFromConnector(outConn.getConnectorName()).clone(true);
             } else {
                 final String mainConnector = "FLOW"; // can only be FLOW right now for this case. //$NON-NLS-1$
 
@@ -451,7 +442,7 @@ public class UpdateJobletNodeCommand extends Command {
                 toCopy = tmpClone;
                 // if don't have the same connector, take the main connector of the component.
 
-                copy = ((Node) targetNode).getMetadataFromConnector(mainConnector).clone(true);
+                copy = targetNode.getMetadataFromConnector(mainConnector).clone(true);
             }
 
             MetadataToolHelper.copyTable(dbmsId, toCopy, copy);

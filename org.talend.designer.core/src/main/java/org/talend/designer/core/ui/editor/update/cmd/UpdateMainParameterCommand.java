@@ -55,9 +55,6 @@ public class UpdateMainParameterCommand extends Command {
         if (job == null) {
             return;
         }
-        if (result.getUpdateObject() != job) {
-            return;
-        }
         if (job instanceof IProcess2) {
             Process process = (Process) job;
 
@@ -249,8 +246,8 @@ public class UpdateMainParameterCommand extends Command {
             String[] drivers = StatsAndLogsConstants.MYSQL_VERSION_DRIVER;
             // if driver is not set , set to the default
             boolean found = false;
-            for (int i = 0; i < drivers.length; i++) {
-                if (drivers[i].equals(dbVersionParam.getValue())) {
+            for (String driver : drivers) {
+                if (driver.equals(dbVersionParam.getValue())) {
                     found = true;
                 }
             }

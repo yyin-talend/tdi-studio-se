@@ -49,6 +49,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.node.IExternalMapTable;
 import org.talend.core.model.properties.ConnectionItem;
@@ -95,8 +96,18 @@ public class UpdateNodeParameterCommand extends Command {
             return;
         }
         Object updateObject = result.getUpdateObject();
-        if (updateObject == null) {
+        if (updateObject == null || (!(updateObject instanceof Node)) || (!(result.getJob() instanceof IProcess))) {
             return;
+        }
+        // instance of node before might not be good (loaded while check updates needed)
+        // so get the instance of the node of the current job in this object.
+        IProcess process = (IProcess) result.getJob();
+        for (INode node : process.getGraphicalNodes()) {
+            if (node.getUniqueName().equals(((Node) updateObject).getUniqueName())) {
+                updateObject = node;
+                result.setUpdateObject(updateObject);
+                break;
+            }
         }
         switch (result.getUpdateType()) {
         case NODE_PROPERTY:
@@ -121,13 +132,10 @@ public class UpdateNodeParameterCommand extends Command {
             return;
         }
 
-        if (updateObject instanceof Node) {
-            Node node = (Node) updateObject;
-            if (node.getProcess() instanceof IProcess2) {
-                PropertyChangeCommand pcc = new PropertyChangeCommand(node, EParameterName.UPDATE_COMPONENTS.getName(),
-                        Boolean.TRUE);
-                ((IProcess2) node.getProcess()).getCommandStack().execute(pcc);
-            }
+        Node node = (Node) updateObject;
+        if (node.getProcess() instanceof IProcess2) {
+            PropertyChangeCommand pcc = new PropertyChangeCommand(node, EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+            ((IProcess2) node.getProcess()).getCommandStack().execute(pcc);
         }
     }
 
