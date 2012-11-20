@@ -189,6 +189,40 @@
 		public Collection<IElementParameter> parameters;
 		
 		
+		private String dbType = null;
+		
+		public void setDbType(String dbType){
+			this.dbType = dbType;
+		}
+        protected String getProtectedChar() {
+        	if(dbType==null){
+        		return "";
+        	} else if("MYSQL".equals(dbType)){
+        		return "`";
+        	}
+        	String[] array_types = new String[]{"DB2","GREENPLUM","POSTGRE","POSTGREPLUS","PARACCEL","INGRES","SQLITE","TERADATA","INTERBASE"};
+        	for(String db :array_types){
+        		if(db.equals(dbType)){
+        			return "\\\"";
+        		}
+        	}
+        	return "";
+        }
+        protected String getLProtectedChar() {
+        	if("MSSQL".equals(dbType)){
+        		return "[";
+        	} else {
+        		return getProtectedChar();
+        	}
+        }
+        protected String getRProtectedChar() {
+        	if("MSSQL".equals(dbType)){
+        		return "]";
+        	} else {
+        		return getProtectedChar();
+        	}
+        }
+		
 		public abstract String run(SQL sql) throws Exception;
 		
 		/**
@@ -259,9 +293,9 @@
 				String str = "";
 				for (int i=0; i < columns.size(); i++) {
 					if (i == (columns.size()-1))
-						str += (alias == null ? "" : alias + ".") + columns.get(i).getLabel();
+						str += (alias == null ? "" : alias + ".") + getLProtectedChar() + columns.get(i).getLabel() + getRProtectedChar();
 					else
-						str += (alias == null ? "" : alias + ".") + columns.get(i).getLabel() + separator;
+						str += (alias == null ? "" : alias + ".") + getLProtectedChar() + columns.get(i).getLabel() + getRProtectedChar() + separator;
 				}
 				return str;
 			}
@@ -444,9 +478,9 @@
 			String schema = (String)getParameterByName("SCHEMA_NAME").getValue();
 			String table = (String)getParameterByName("TABLE_NAME").getValue();
 			if (schema == null || schema.equals("") || schema.equals("\"\""))
-				ret = "\" + " + table + " + \"";
+				ret = getLProtectedChar() + "\" + " + table + " + \"" + getRProtectedChar();
 			else
-				ret = "\" + " + schema + " + \".\" + " + table + " + \"";
+				ret = getLProtectedChar() + "\" + " + schema + " + \"" + getRProtectedChar()+"."+getLProtectedChar()+"\" + "+ table + " + \"" + getRProtectedChar();
 			return ret;
 		}
 		
@@ -565,7 +599,7 @@
 			boolean firstGroupByFlag = true;
 			if (hasGroupBys) {
 				for (Map<String,Object> groupby : groupbys) {
-					String inputColumn = groupby.get("INPUT_COLUMN").toString();
+					String inputColumn = getLProtectedChar()+groupby.get("INPUT_COLUMN").toString()+getRProtectedChar() ;
 					if (firstGroupByFlag)
 						ret += inputColumn;
 					else
@@ -680,9 +714,9 @@
 			String schema = (String)getParameterByName("SCHEMA_NAME").getValue();
 			String table = (String)getParameterByName("TABLE_NAME").getValue();
 			if (schema == null || schema.equals("") || schema.equals("\"\""))
-				ret = "\" + " + table + " + \"";
+				ret = getLProtectedChar()+"\" + " + table + " + \"" + getRProtectedChar();
 			else
-				ret = "\" + " + schema + " + \".\" + " + table + " + \"";
+				ret = getLProtectedChar()+"\" + " + schema + " + \"" + getRProtectedChar()+"." + getLProtectedChar() + "\" + " + table + " + \""+getRProtectedChar();
 			return ret;
 		}
 		
@@ -802,9 +836,9 @@
 				if (isSchemaColumn(physicalName) || isAdditionalColumn(physicalName)) {
 					String tmp;
 					if (isAdditionalColumn(physicalName))
-						tmp = "\" + " + getAdditionalColumnSQL(physicalName) + " + \"";
+						tmp = getLProtectedChar() + "\" + " + getAdditionalColumnSQL(physicalName) + " + \"" + getRProtectedChar();
 					else
-						tmp = physicalName;
+						tmp = getLProtectedChar() +physicalName+getRProtectedChar();
 					if (tableAlias != null)
 						tmp = tableAlias + "." + tmp;
 					if (function != null)
@@ -959,6 +993,12 @@
 				head = current_component;
 			if (previous_component != null)
 				current_component.addInputNode(previous_component);
+			if(dbtype!=null){
+				if (previous_component != null){
+					previous_component.setDbType(dbtype);
+				}
+				current_component.setDbType(dbtype);
+			}
 			previous_component = current_component;
 			tail = current_component;
 		}
@@ -972,6 +1012,7 @@
 			}	
 		}
 	}
+	head.setDbType(dbtype);
 	
 //	String t1 = "";
 //	ELTNode c = head;
