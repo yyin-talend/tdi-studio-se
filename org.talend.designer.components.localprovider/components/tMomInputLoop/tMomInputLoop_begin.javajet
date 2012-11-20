@@ -53,6 +53,8 @@ imports="
 		for (INode pNode : node.getProcess().getNodesOfType("tMomConnection")) {
 			if (pNode.getUniqueName().equals(connectionComponentName)) {
 				transacted = "true".equals(ElementParameterParser.getValue(pNode, "__IS_TRANSACTED__")); 
+				serverType = ElementParameterParser.getValue(pNode, "__SERVER__");
+                           	failover =  ("true").equals(ElementParameterParser.getValue(pNode, "__FAILOVER__"));
 			}	
 		}
 	}
