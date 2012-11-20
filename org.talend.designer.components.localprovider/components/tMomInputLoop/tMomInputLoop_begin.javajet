@@ -40,6 +40,9 @@ imports="
 	
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
+
+	String strHost = null;
+	String strPort = null;
 	
 	boolean useMqHeader = "true".equals(ElementParameterParser.getValue(node, "__USE_MQ_HEADER__"));
 
@@ -186,28 +189,34 @@ imports="
 		}else if(("ActiveMQ").equals(serverType)){
 			boolean startServer = ("true").equals(ElementParameterParser.getValue(node, "__STARTSERVER__"));
 			%>
-			// BS
-
 			String url_<%=cid %> ="";
-			<%if(failover){
-				StringBuilder sbServers=new StringBuilder();
+      <%if(failover){%>
+			url_<%=cid %> = "failover:(";
+			<%
 				int i=0;
 				for(Map<String, String> serversMap : servers) {
-					String strHost = TalendTextUtils.removeQuotes(serversMap.get("SERVERS_HOST"));
-					String strPort = TalendTextUtils.removeQuotes(serversMap.get("SERVERS_PORT"));
-					if(i>0)sbServers.append(",");
-					sbServers.append("tcp://");
-					sbServers.append(strHost);
-					sbServers.append(":");
-					sbServers.append(strPort);
+					strHost = serversMap.get("SERVERS_HOST");
+					strPort = serversMap.get("SERVERS_PORT");
+
+					if(i>0) {
+					%>
+					url_<%=cid %> = url_<%=cid %> +",";
+					<%
+					}
+					%>
+					url_<%=cid %> = url_<%=cid %> +"tcp://";
+					url_<%=cid %> = url_<%=cid %> +<%=strHost%>;
+					url_<%=cid %> = url_<%=cid %> +":";
+					url_<%=cid %> = url_<%=cid %> +<%=strPort%>;
+					<%
 					i++;
 				}
 				%>
-				// BS
-				url_<%=cid %> = "failover:(<%=sbServers.toString()%>)?randomize=false";
+				url_<%=cid %> = url_<%=cid %> +")?randomize=false";
 			<%}else{%>
 				url_<%=cid %> = "tcp://"+<%=host%>+":"+<%=port%>;
-			<%}%>
+			<%}%>			
+
 			<%
 			if(startServer){
 			%>
