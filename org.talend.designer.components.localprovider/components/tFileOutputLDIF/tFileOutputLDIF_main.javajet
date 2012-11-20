@@ -40,6 +40,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		StringBuilder sb_<%=cid %> = new StringBuilder();
 		boolean needSeparator_<%=cid %> = false;
 		boolean canOutput_<%=cid %> = false;				   		
+		boolean isPrintable_<%=cid %> = false;
 <%		
     			boolean generateOneAlready = false; //only for Modify append the char '-'
     			List<IMetadataColumn> columns = metadata.getListColumns();
@@ -157,12 +158,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	<%if(isMultiValue){%>		
 		String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
 		for(String item_<%=cid %> : values_<%=column.getLabel() %>_<%=cid %>){
+			// follow LDIF rules or not
+            isPrintable_<%=cid %> =  netscape.ldap.util.LDIF.isPrintable(item_<%=cid %>.getBytes(<%=encoding%>));
 			<%
 			// Not binary and no explicit base64 encoding --> check if base 64 encoding needed
 			if(!isBinary && !isBase64){
 				%>
 				// If content doesn't follow LDIF rules, it must be base64 encoded
-				if(!netscape.ldap.util.LDIF.isPrintable(item_<%=cid %>.getBytes(<%=encoding%>))){
+				if(!isPrintable_<%=cid %>){
 					encodingBase64 = true;
 				}
 				else{
@@ -173,15 +176,44 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			%>
 			// Add ":" to comply with base64 ldif syntax
 				item_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64,item_<%=cid %>,<%=encoding%>);
-				util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + item_<%=cid %>, wrap_<%=cid %>);
-		}				
 <%
+			List<IMetadataColumn> columns_sub = metadata.getListColumns();
+            for (int j = 0; j < columns_sub.size(); j++) {
+                IMetadataColumn column_sub = columns_sub.get(j);
+                JavaType javaType_sub = JavaTypesManager.getJavaTypeFromId(column_sub.getTalendType());
+                if(javaType_sub == JavaTypesManager.BYTE_ARRAY && column_sub.getLabel().equals(column.getLabel())){
+%>
+				    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:: " + item_<%=cid %>, wrap_<%=cid %>);
+<%
+                }else if(column_sub.getLabel().equals(column.getLabel())){
+					if(isBase64){
+%>
+						if(!isPrintable_<%=cid %>){
+							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + item_<%=cid %>, wrap_<%=cid %>);
+						}else{
+							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+	               		}
+<%
+					}else{
+%>
+                    	util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+<%
+				   }
+                }
+            }
+%>
+		}
+<%			
 	}else{
+%>
+		// follow LDIF rules or not
+        isPrintable_<%=cid %> =  netscape.ldap.util.LDIF.isPrintable(value_<%=column.getLabel() %>_<%=cid %>.getBytes(<%=encoding%>));
+<%
 		// Not binary and no explicit base64 encoding --> check if base 64 encoding needed
 		if(!isBinary && !isBase64){
 %>
 			// If content doesn't follow LDIF rules, it must be base64 encoded
-			if(!netscape.ldap.util.LDIF.isPrintable(value_<%=column.getLabel() %>_<%=cid %>.getBytes(<%=encoding%>))){
+			if(!isPrintable_<%=cid %>){
 				encodingBase64 = true;
 			}
 			<%
@@ -189,8 +221,31 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		%>
 		// Add ":" to comply with base64 ldif syntax
 			value_<%=column.getLabel() %>_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64,value_<%=column.getLabel() %>_<%=cid %>,<%=encoding%>);
-			util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
 <%
+			List<IMetadataColumn> columns_sub = metadata.getListColumns();
+            for (int j = 0; j < columns_sub.size(); j++) {
+                IMetadataColumn column_sub = columns_sub.get(j);
+                JavaType javaType_sub = JavaTypesManager.getJavaTypeFromId(column_sub.getTalendType());
+                if(javaType_sub == JavaTypesManager.BYTE_ARRAY && column_sub.getLabel().equals(column.getLabel())){
+%>
+                    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+<%
+                }else if(column_sub.getLabel().equals(column.getLabel())){
+					if(isBase64){
+%>
+						if(!isPrintable_<%=cid %>){
+							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+						}else{
+							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+	               		}
+<%
+					}else{
+%>
+	                   util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+<%
+					}
+                }
+            }
 	}
 %>
 	needSeparator_<%=cid %> = true;
@@ -229,12 +284,14 @@ sb_<%=cid %>.append("-\n");
 	<%if(isMultiValue){%>
 		String[] values_<%=column.getLabel() %>_<%=cid %> = value_<%=column.getLabel() %>_<%=cid %>.split(<%=separator %>);
 		for(String item_<%=cid %> : values_<%=column.getLabel() %>_<%=cid %>){
+		        //follow LDIF rules or not
+                isPrintable_<%=cid %> =  netscape.ldap.util.LDIF.isPrintable(item_<%=cid %>.getBytes(<%=encoding%>));     
 				<%
 				// Not binary and no explicit base64 encoding --> check if base 64 encoding needed
 				if(!isBinary && !isBase64){
 					%>
 					// If content doesn't follow LDIF rules, it must be base64 encoded
-					if(!netscape.ldap.util.LDIF.isPrintable(item_<%=cid %>.getBytes(<%=encoding%>))){
+					if(!isPrintable_<%=cid %>){
 						encodingBase64 = true;
 					}
 					else{
@@ -245,15 +302,44 @@ sb_<%=cid %>.append("-\n");
 				%>
 				// Add ":" to comply with base64 ldif syntax
 	                item_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64,item_<%=cid %>,<%=encoding%>);
-					util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + item_<%=cid %>, wrap_<%=cid %>);
+<%
+    			List<IMetadataColumn> columns_sub = metadata.getListColumns();
+                for (int j = 0; j < columns_sub.size(); j++) {
+                    IMetadataColumn column_sub = columns_sub.get(j);
+                    JavaType javaType_sub = JavaTypesManager.getJavaTypeFromId(column_sub.getTalendType());
+                    if(javaType_sub == JavaTypesManager.BYTE_ARRAY && column_sub.getLabel().equals(column.getLabel())){
+%>
+						util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:: " + item_<%=cid %>, wrap_<%=cid %>);
+<%
+                    }else if(column_sub.getLabel().equals(column.getLabel())){
+    					if(isBase64){
+%>
+    						if(!isPrintable_<%=cid %>){
+    							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + item_<%=cid %>, wrap_<%=cid %>);
+    						}else{
+    							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+    	               		}
+<%
+					   }else{
+%>
+	                    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + item_<%=cid %>, wrap_<%=cid %>);
+<%
+					   }
+                    }
+			     }
+%>
 		}
 <%
 	}else{
+%>
+                // follow LDIF rules or not
+                isPrintable_<%=cid %> =  netscape.ldap.util.LDIF.isPrintable(value_<%=column.getLabel() %>_<%=cid %>.getBytes(<%=encoding%>)); 
+<%
 				// Not binary and no explicit base64 encoding --> check if base 64 encoding needed
 				if(!isBinary && !isBase64){
 %>
 					// If content doesn't follow LDIF rules, it must be base64 encoded
-					if(!netscape.ldap.util.LDIF.isPrintable(value_<%=column.getLabel() %>_<%=cid %>.getBytes(<%=encoding%>))){
+					if(!isPrintable_<%=cid %>){
 						encodingBase64 = true;
 					}
 				<%
@@ -261,9 +347,31 @@ sb_<%=cid %>.append("-\n");
 			%>
 			// Add ":" to comply with base64 ldif syntax
 				value_<%=column.getLabel() %>_<%=cid %> = util_<%=cid %>.getBase64StringOrNot(encodingBase64,value_<%=column.getLabel() %>_<%=cid %>,<%=encoding%>);
-				util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:<%if(isBase64){%>:<%}%> " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
-
 <%
+			List<IMetadataColumn> columns_sub = metadata.getListColumns();
+            for (int j = 0; j < columns_sub.size(); j++) {
+                IMetadataColumn column_sub = columns_sub.get(j);
+                JavaType javaType_sub = JavaTypesManager.getJavaTypeFromId(column_sub.getTalendType());
+                if(javaType_sub == JavaTypesManager.BYTE_ARRAY && column_sub.getLabel().equals(column.getLabel())){
+%>
+                    util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %><%if(isBinary){%>;binary<%}%>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+<%
+                }else if(column_sub.getLabel().equals(column.getLabel())){
+					if(isBase64){
+%>
+						if(!isPrintable_<%=cid %>){
+							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>:: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+						}else{
+							util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+	               		}
+<%
+					}else{
+%>
+	                   util_<%=cid %>.breakString(sb_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+<%
+					}
+                }
+            }
 	}
 %>
 		canOutput_<%=cid %> = true;
