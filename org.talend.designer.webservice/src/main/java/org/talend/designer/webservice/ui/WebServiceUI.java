@@ -1105,7 +1105,7 @@ public class WebServiceUI extends AbstractWebService {
         outputMappingTabItem.setControl(createOutputMappingStatus());
 
         boolean flag = ProjectManager.getInstance().isInCurrentMainProject(this.connectionItem);
-        if (!flag) {
+        if (!flag && this.connectionItem != null) {
             wsdlTabItem.getControl().setEnabled(false);
             inputMappingTabItem.getControl().setEnabled(false);
             outputMappingTabItem.getControl().setEnabled(false);
