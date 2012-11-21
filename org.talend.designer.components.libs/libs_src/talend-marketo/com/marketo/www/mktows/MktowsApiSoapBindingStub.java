@@ -1412,8 +1412,7 @@ public class MktowsApiSoapBindingStub extends org.apache.axis.client.Stub implem
     public void addMarketoAuthenticatioNHeader(org.apache.axis.client.Call _call) throws Exception {
         // Request timestamp: a timestamp string in W3C WSDL date format
 
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-        String requestTimestamp = df.format(Calendar.getInstance().getTime());
+        String requestTimestamp = formatAsW3C(Calendar.getInstance().getTime());
         // System.out.println(requestTimestamp);
 
         String stringToEncrypt = requestTimestamp + clientAccessID;
@@ -1434,6 +1433,13 @@ public class MktowsApiSoapBindingStub extends org.apache.axis.client.Stub implem
 
         // System.out.println(authenticationHeader.getAsString());
         _call.addHeader(authenticationHeader);
+    }
+    
+    public String formatAsW3C(java.util.Date dt) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+        String text = df.format(dt);
+        String w3cValue = text.substring(0, 22) + ":" + text.substring(22);
+        return w3cValue;
     }
 
     public com.marketo.www.mktows.SuccessGetLeadActivity getLeadActivity(com.marketo.www.mktows.ParamsGetLeadActivity paramsGetLeadActivity) throws java.rmi.RemoteException {
