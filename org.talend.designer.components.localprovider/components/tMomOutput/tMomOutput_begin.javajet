@@ -63,11 +63,15 @@ class="MomInput"
 	java.util.Hashtable props_<%=cid%>=new java.util.Hashtable();
 
 <%      if (isUseSharedConnection) { %>
-	        javax.jms.Connection connection_<%=cid %> = (javax.jms.Connection) globalMap.get("connection_<%=connectionComponentName%>");
+            javax.jms.Connection connection_<%=cid %> = null;
+	    javax.jms.Session session_<%=cid %> = null;
+            try {
+	        connection_<%=cid %> = (javax.jms.Connection) globalMap.get("connection_<%=connectionComponentName%>");
                 connection_<%=cid %>.start();
-	
-		// javax.jms.Session session_<%=cid %> = connection_<%=cid %>.createSession(<%=transacted%>, javax.jms.Session.<%=acknowledgmentMode%>);
-		javax.jms.Session session_<%=cid %> = (javax.jms.Session) globalMap.get("session_<%=connectionComponentName%>");
+		session_<%=cid %> = (javax.jms.Session) globalMap.get("session_<%=connectionComponentName%>");
+		} catch (NullPointerException npe) {
+		    throw new RuntimeException("<%=connectionComponentName%> still not initialized. Try to redesign job.");
+		}
 		
 		javax.jms.Destination des_<%=cid %>;
 <%
@@ -95,6 +99,9 @@ class="MomInput"
 <%
 		}
 %>
+			globalMap.put("producer_<%=cid %>",producer_<%=cid %>);
+			globalMap.put("session_<%=cid %>",session_<%=cid %>);
+			globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
 
 		<%if(!isCommitRollback && transacted){%>
         	try {   // For rollback
@@ -194,6 +201,11 @@ class="MomInput"
 <%
 		}
 %>
+
+			globalMap.put("producer_<%=cid %>",producer_<%=cid %>);
+			globalMap.put("session_<%=cid %>",session_<%=cid %>);
+			globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
+
 		
 		<%if(!isCommitRollback && transacted){%>
         	try {   // For rollback

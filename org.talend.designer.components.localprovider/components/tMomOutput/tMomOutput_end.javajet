@@ -30,36 +30,33 @@ if (isUseSharedConnection) {
 
 if(("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType) || isUseSharedConnection){
 	String msgType = ElementParameterParser.getValue(node, "__MSGTYPE__");
-        	if (isCommitRollback && transacted) {%>
-			globalMap.put("producer_<%=cid %>",producer_<%=cid %>);
-			globalMap.put("session_<%=cid %>",session_<%=cid %>);
-			globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
-		<%	
-		}
 		if( ("JBoss").equals(serverType) || ( ("ActiveMQ").equals(serverType) && !isCommitRollback) ){
-		%>
- 		System.out.println("Closing connection");
-		<%	// if no commmit or rollback component exists and set transacted - commit session
+		// if no commmit or rollback component exists and set transacted - commit session
 		if(transacted){
 		%>
 		session_<%=cid%>.commit();
 		<%	
 		}
+                if (!isUseSharedConnection) {
 		%> // if no commmit or rollback component exists - close session
+ 		System.out.println("Closing connection");
 		producer_<%=cid %>.close();
                 session_<%=cid %>.close();
                 connection_<%=cid %>.close();
 		<%	
+		}
 		}
 		%>
 		<%if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
 		}catch(Exception ex){
 			System.out.println("A Active MQ error occurred :" + ex);
 	                ex.printStackTrace();
-			producer_<%=cid %>.close();
 			session_<%=cid%>.rollback();
+                        <%if (!isUseSharedConnection) {%>
+			producer_<%=cid %>.close();
                         session_<%=cid %>.close();
                         connection_<%=cid %>.close();
+			<%}%>
 		}
 		<%
 		}

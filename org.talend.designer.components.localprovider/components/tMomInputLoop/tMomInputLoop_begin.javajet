@@ -68,10 +68,15 @@ imports="
 	} %>
 
         <% if (isUseConnection) { %>
-	    javax.jms.Connection connection_<%=cid %> = (javax.jms.Connection) globalMap.get("connection_<%=connectionComponentName%>");
-	    connection_<%=cid %>.start();
-	    javax.jms.Session session_<%=cid %> = (javax.jms.Session) globalMap.get("session_<%=connectionComponentName%>");
-	    
+	    javax.jms.Connection connection_<%=cid %> = null;
+	    javax.jms.Session session_<%=cid %> = null;
+            try {
+	        connection_<%=cid %> = (javax.jms.Connection) globalMap.get("connection_<%=connectionComponentName%>");
+                connection_<%=cid %>.start();
+		session_<%=cid %> = (javax.jms.Session) globalMap.get("session_<%=connectionComponentName%>");
+	    } catch (NullPointerException npe) {
+	    throw new RuntimeException("<%=connectionComponentName%> still not initialized. Try to redesign job.");
+	    }
 	    javax.jms.Destination des_<%=cid %> = null;
 		<%
 		if (("Queue").equals(msgType)) {
@@ -87,11 +92,13 @@ imports="
 
 		javax.jms.MessageProducer replyProducer_<%=cid %> = session_<%=cid %>.createProducer(null);
 		replyProducer_<%=cid %>.setDeliveryMode(javax.jms.DeliveryMode.NON_PERSISTENT);
-			
 		javax.jms.MessageConsumer consumer_<%=cid %> = session_<%=cid %>.createConsumer(des_<%=cid %>);
-		
 		javax.jms.MessageProducer producer_<%=cid%> = null;
 
+		globalMap.put("producer_<%=cid %>",producer_<%=cid %>);
+		globalMap.put("session_<%=cid %>",session_<%=cid %>);
+		globalMap.put("connection_<%=cid %>",connection_<%=cid %>);
+		
 		// Receive message
 			<% boolean useMax = ("true").equals(ElementParameterParser.getValue(node,"__USEMAX__"));
 			String maxiumMessages = ElementParameterParser.getValue(node,"__MAXMSG__");
@@ -274,8 +281,8 @@ imports="
 		// BS
 		javax.jms.MessageProducer producer_<%=cid%> = null;
 
-		<%	// if commmit or rollback component exists and set transacted - put session to global map
-		if( ("ActiveMQ").equals(serverType) && isCommitRollback && transacted ) {
+		<%	//put session to global map
+		if( ("ActiveMQ").equals(serverType)) {
 		%>
     		globalMap.put("producer_<%=cid %>",producer_<%=cid %>);
 		globalMap.put("session_<%=cid %>",session_<%=cid %>);
