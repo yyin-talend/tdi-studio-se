@@ -257,6 +257,14 @@ public final class UpdateManagerUtils {
                         if (id == null) {
                             if (result.getJob() != null && result.getJob() instanceof IProcess) {
                                 IProcess process = (IProcess) result.getJob();
+                                if (process instanceof IProcess2
+                                        && ERepositoryStatus.LOCK_BY_OTHER.equals(factory.getStatus(((IProcess2) process)
+                                                .getProperty().getItem()))) {
+                                    // if item is locked by another user, don't do anything, or it might corrupt the
+                                    // file.
+                                    continue;
+
+                                }
                                 id = process.getId();
                                 version = process.getVersion();
                                 result.setObjectId(id);
@@ -311,11 +319,6 @@ public final class UpdateManagerUtils {
                                     continue;
                                 }
                                 item = currentObj.getProperty().getItem();
-                                if (ERepositoryStatus.LOCK_BY_OTHER.equals(factory.getStatus(item))) {
-                                    // if item is locked by another user, don't do anything, or it might corrupt the
-                                    // file.
-                                    continue;
-                                }
 
                                 IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
                                 if (item instanceof ProcessItem) {
@@ -324,6 +327,7 @@ public final class UpdateManagerUtils {
                                     process = designerCoreService.getProcessFromJobletProcessItem((JobletProcessItem) item);
                                 }
                             }
+
                             for (UpdateResult result : results) {
                                 if (!StringUtils.equals(currentId, result.getObjectId())) {
                                     continue; // not the current job we need to update
