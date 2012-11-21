@@ -113,8 +113,9 @@ public class JobInfoBuilder {
     private void exportJobInfo(Properties propertyFile) {
         File jobInfoFile = new File(jobPropertyFile);
         try {
-            if (!jobInfoFile.exists())
+            if (!jobInfoFile.exists()) {
                 jobInfoFile.createNewFile();
+            }
             InputStream fis = new FileInputStream(jobInfoFile);
             propertyFile.load(fis);
             fis.close();
@@ -157,6 +158,7 @@ public class JobInfoBuilder {
             propertyFile.setProperty(APPLY_CONTEXY_CHILDREN, String.valueOf(exportChoice.get(ExportChoice.applyToChildren)));
             propertyFile.setProperty(ADD_STATIC_CODE, String.valueOf(exportChoice.get(ExportChoice.addStatistics)));
         } else {
+            propertyFile.setProperty(ADD_STATIC_CODE, Boolean.FALSE.toString()); // TDI-23641, in studio, false always.
             propertyFile.setProperty(APPLY_CONTEXY_CHILDREN, String.valueOf(applyContextToChild));
         }
         propertyFile.setProperty(COMMANDLINE_VERSION, VersionUtils.getVersion());
