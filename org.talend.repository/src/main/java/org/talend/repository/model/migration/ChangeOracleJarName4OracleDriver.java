@@ -51,25 +51,29 @@ public class ChangeOracleJarName4OracleDriver extends AbstractJobMigrationTask {
                         moduleLib.setValue(convert(moduleLib.getValue()));
                     }
                     ElementParameterType hotLibs = ComponentUtilities.getNodeProperty(node, "HOTLIBS"); //$NON-NLS-1$
-                    for(Object element : hotLibs.getElementValue()) {
-                        if(element == null) {
-                            continue;
-                        }
-                        ElementValueType valueType = (ElementValueType)element;
-                        if("LIBPATH".equals(valueType.getElementRef())) { //$NON-NLS-1$
-                            valueType.setValue(convert(valueType.getValue()));
-                        }
+                    if (hotLibs != null) {
+	                    for(Object element : hotLibs.getElementValue()) {
+	                        if(element == null) {
+	                            continue;
+	                        }
+	                        ElementValueType valueType = (ElementValueType)element;
+	                        if("LIBPATH".equals(valueType.getElementRef())) { //$NON-NLS-1$
+	                            valueType.setValue(convert(valueType.getValue()));
+	                        }
+	                    }
                     }
                 } else {
                     ElementParameterType driverJars = ComponentUtilities.getNodeProperty(node, "DRIVER_JAR"); //$NON-NLS-1$
-                    for(Object element : driverJars.getElementValue()) {
-                        if(element == null) {
-                            continue;
-                        }
-                        ElementValueType valueType = (ElementValueType)element;
-                        if("JAR_NAME".equals(valueType.getElementRef())) { //$NON-NLS-1$
-                            valueType.setValue(convert2(valueType.getValue()));
-                        }
+                    if (driverJars != null) {
+	                    for(Object element : driverJars.getElementValue()) {
+	                        if(element == null) {
+	                            continue;
+	                        }
+	                        ElementValueType valueType = (ElementValueType)element;
+	                        if("JAR_NAME".equals(valueType.getElementRef())) { //$NON-NLS-1$
+	                            valueType.setValue(convert2(valueType.getValue()));
+	                        }
+	                    }
                     }
                 }
                 
