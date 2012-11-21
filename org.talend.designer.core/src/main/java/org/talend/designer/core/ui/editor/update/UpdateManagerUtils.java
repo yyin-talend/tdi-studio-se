@@ -217,7 +217,7 @@ public final class UpdateManagerUtils {
                     .getShell(), results, onlySimpleShow);
 
             if (checkDialog.open() == IDialogConstants.OK_ID) {
-                return doExecuteUpdates(results, updateAllJobs);
+                return doExecuteUpdates(results, null);
             }
         } finally {
             results.clear();
@@ -225,7 +225,7 @@ public final class UpdateManagerUtils {
         return false;
     }
 
-    private static boolean doExecuteUpdates(final List<UpdateResult> results, final boolean updateAllJobs) {
+    private static boolean doExecuteUpdates(final List<UpdateResult> results, final IProcess2 currentProcess) {
         if (results == null || results.isEmpty()) {
             return false;
         }
@@ -330,7 +330,7 @@ public final class UpdateManagerUtils {
                                     result.setJob(process);
                                 }
                                 // execute
-                                executeUpdate(result, monitor, updateAllJobs);
+                                executeUpdate(result, monitor);
 
                                 if (closedItem) {
                                     result.setJob(null);
@@ -341,7 +341,7 @@ public final class UpdateManagerUtils {
                                 IProcess2 process2 = (IProcess2) process;
                                 ProcessType processType;
                                 try {
-                                    processType = process2.saveXmlFile(false);
+                                    processType = process2.saveXmlFile();
                                     if (item instanceof JobletProcessItem) {
                                         ((JobletProcessItem) item).setJobletProcess((JobletProcess) processType);
                                     } else {
