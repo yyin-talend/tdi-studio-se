@@ -1784,13 +1784,15 @@ public class LoginComposite extends Composite {
         }
         // if workspace different,no need to spent time check patches
         try {
-            if (repositoryId != null && repositoryId.equals("remote") && isSVNProviderPluginLoadedRemote() && isWorkSpaceSame()) { //$NON-NLS-1$
+            if (repositoryId != null && repositoryId.equals(RepositoryConstants.REPOSITORY_REMOTE_ID)
+                    && isSVNProviderPluginLoadedRemote() && isWorkSpaceSame()) {
                 JSONObject archivaProperties = getArchivaServicesProperties(getAdminURL());
 
                 // Added by Marvin Wang on Oct. 31, 2012 for bug TDI-22060, more details, refer to the comment following
                 // the bug.
-                if ("".equals(archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY)))
+                if ("".equals(archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY))) {
                     return;
+                }
 
                 archivaServiceURL = archivaProperties.getString(ARCHIVA_SERVICES_URL_KEY) + ARCHIVA_SERVICES_SEGMENT;
                 repository = archivaProperties.getString(ARCHIVA_REPOSITORY_KEY);
@@ -1847,8 +1849,8 @@ public class LoginComposite extends Composite {
     private String getAdminURL() {
         String tacURL = null;
         ConnectionBean currentBean = getConnection();
-        if (currentBean != null && currentBean.getRepositoryId().equals("remote")) { //$NON-NLS-1$
-            tacURL = currentBean.getDynamicFields().get("url"); //$NON-NLS-1$
+        if (currentBean != null && currentBean.getRepositoryId().equals(RepositoryConstants.REPOSITORY_REMOTE_ID)) {
+            tacURL = currentBean.getDynamicFields().get(RepositoryConstants.REPOSITORY_URL);
         }
         return tacURL;
     }
@@ -2402,12 +2404,7 @@ public class LoginComposite extends Composite {
         ConnectionBean firstElement = (ConnectionBean) sel.getFirstElement();
         if (!PluginChecker.isSVNProviderPluginLoaded()) {
             if (bean == null) {
-                bean = new ConnectionBean();
-                bean.setName("Local"); //$NON-NLS-1$
-                bean.setDescription("Default connection"); //$NON-NLS-1$
-                bean.setPassword(""); //$NON-NLS-1$
-                List<IRepositoryFactory> listRepository = getUsableRepositoryProvider();
-                bean.setRepositoryId(listRepository.get(0).getId());
+                bean = ConnectionBean.getDefaultConnectionBean();
                 bean.setUser("test@talend.com"); //$NON-NLS-1$
                 bean.setWorkSpace(getRecentWorkSpace());
                 bean.setComplete(true);
@@ -2415,18 +2412,6 @@ public class LoginComposite extends Composite {
             return bean;
         }
         return firstElement;
-    }
-
-    private List<IRepositoryFactory> getUsableRepositoryProvider() {
-        List<IRepositoryFactory> availableRepositories = RepositoryFactoryProvider.getAvailableRepositories();
-
-        List<IRepositoryFactory> result = new ArrayList<IRepositoryFactory>();
-        for (IRepositoryFactory repositoryFactory : availableRepositories) {
-            if (repositoryFactory.isDisplayToUser()) {
-                result.add(repositoryFactory);
-            }
-        }
-        return result;
     }
 
     private String getRecentWorkSpace() {

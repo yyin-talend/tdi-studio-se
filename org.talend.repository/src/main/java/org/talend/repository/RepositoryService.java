@@ -19,6 +19,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -45,6 +48,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ConnectionBean;
@@ -67,13 +71,14 @@ import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.impl.PropertiesFactoryImpl;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.repository.SVNConstant;
 import org.talend.core.model.utils.RepositoryManagerHelper;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.CoreRepositoryPlugin;
+import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.repository.model.IRepositoryFactory;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.RepositoryFactoryProvider;
-import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.repository.utils.ProjectHelper;
 import org.talend.core.repository.utils.RepositoryPathProvider;
 import org.talend.core.ui.DisableLanguageActions;
@@ -81,12 +86,14 @@ import org.talend.core.ui.IRulesProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.cwm.helper.ModelElementHelper;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProjectNodeHelper;
 import org.talend.repository.model.ProjectRepositoryNode;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.SalesforceModuleRepositoryObject;
@@ -113,8 +120,6 @@ import org.talend.repository.ui.views.IRepositoryView;
  */
 
 public class RepositoryService implements IRepositoryService {
-
-    private static final String PERSPECTIVE_DI_ID = "org.talend.rcp.perspective"; //$NON-NLS-1$
 
     /*
      * (non-Javadoc)
@@ -279,45 +284,21 @@ public class RepositoryService implements IRepositoryService {
         }
 
         if (ArrayUtils.contains(Platform.getApplicationArgs(), EclipseCommandLine.TALEND_DISABLE_LOGINDIALOG_COMMAND)) {
-            boolean deleteProjectIfExist = ArrayUtils.contains(Platform.getApplicationArgs(), "--deleteProjectIfExist");
+            boolean deleteProjectIfExist = ArrayUtils.contains(Platform.getApplicationArgs(), "--deleteProjectIfExist"); //$NON-NLS-1$
             IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                     IBrandingService.class);
             brandingService.getBrandingConfiguration().setUseProductRegistration(false);
             ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
 
-            String projectName = "AUTO_LOGIN_PROJECT";
-            int index = ArrayUtils.indexOf(Platform.getApplicationArgs(), "-project");
-            if (index > 0) {
-                if (index + 1 < Platform.getApplicationArgs().length) {
-                    projectName = Platform.getApplicationArgs()[index + 1];
-                }
-            }
-
-            String language = "java";
-            index = ArrayUtils.indexOf(Platform.getApplicationArgs(), "-language");
-            if (index > 0) {
-                if (index + 1 < Platform.getApplicationArgs().length) {
-                    language = Platform.getApplicationArgs()[index + 1];
-                }
-            }
-
-            String login = "auto@login.com";
-            index = ArrayUtils.indexOf(Platform.getApplicationArgs(), "-login");
-            if (index > 0) {
-                if (index + 1 < Platform.getApplicationArgs().length) {
-                    login = Platform.getApplicationArgs()[index + 1];
-                }
-            }
-
-            String password = "";
-            index = ArrayUtils.indexOf(Platform.getApplicationArgs(), "-password");
-            if (index > 0) {
-                if (index + 1 < Platform.getApplicationArgs().length) {
-                    password = Platform.getApplicationArgs()[index + 1];
-                }
-            }
-
-            String branch = null;
+            String projectName = getAppArgValue("-project", "AUTO_LOGIN_PROJECT"); //$NON-NLS-1$ //$NON-NLS-2$
+            String language = getAppArgValue("-language", ECodeLanguage.JAVA.getName()); //$NON-NLS-1$
+            String login = getAppArgValue("-login", "auto@login.com"); //$NON-NLS-1$ //$NON-NLS-2$
+            String password = getAppArgValue("-loginPass", ""); //$NON-NLS-1$ //$NON-NLS-2$
+            String tacURL = getAppArgValue("-tacURL", null); //$NON-NLS-1$
+            // if tacURL is null, the branch will be no useful.
+            String branch = getAppArgValue("-branch", null); //$NON-NLS-1$
+            // if tacURL is not null, will be remote
+            final boolean isRemote = tacURL != null;
 
             if (reload && lastBean != null) {
                 final String lastProject = preferenceManipulator.getLastProject();
@@ -338,6 +319,7 @@ public class RepositoryService implements IRepositoryService {
                 }
 
             }
+
             User userInfo = PropertiesFactoryImpl.eINSTANCE.createUser();
             userInfo.setLogin(login);
             try {
@@ -347,10 +329,21 @@ public class RepositoryService implements IRepositoryService {
             }
 
             try {
-                ConnectionBean bean = ConnectionBean.getDefaultConnectionBean();
-                if (reload && lastBean != null) {
+                ConnectionBean bean = null;
+
+                if (reload && lastBean != null) {// reload
                     bean = lastBean;
+                } else {
+                    if (tacURL != null && isRemote) { // remote
+                        bean = ConnectionBean.getDefaultRemoteConnectionBean();
+                        bean.setUser(login);
+                        bean.setPassword(password);
+                        bean.getDynamicFields().put(RepositoryConstants.REPOSITORY_URL, tacURL);
+                    } else {
+                        bean = ConnectionBean.getDefaultConnectionBean();
+                    }
                 }
+
                 Context ctx = CorePlugin.getContext();
                 RepositoryContext repositoryContext = new RepositoryContext();
                 ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, repositoryContext);
@@ -358,7 +351,6 @@ public class RepositoryService implements IRepositoryService {
                 repositoryContext.setUser(userInfo);
                 repositoryContext.setClearPassword(password);
                 repositoryContext.setFields(bean.getDynamicFields());
-                ProjectManager.getInstance().setMainProjectBranch(projectName, branch);
 
                 repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(bean
                         .getRepositoryId()));
@@ -369,11 +361,19 @@ public class RepositoryService implements IRepositoryService {
                         break;
                     }
                 }
+                if (project != null && branch != null) {
+                    ProjectManager.getInstance().setMainProjectBranch(project, branch);
+
+                }
                 if (!reload) {
                     if (deleteProjectIfExist && project != null) {
-                        ResourceModelUtils.getProject(project).delete(true, new NullProgressMonitor());
+                        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                        IProject eclipseProject = workspace.getRoot().getProject(project.getTechnicalLabel());
+                        if (eclipseProject.exists()) {
+                            eclipseProject.delete(true, new NullProgressMonitor());
+                        }
                     }
-                    if (project == null || deleteProjectIfExist) {
+                    if (!isRemote && (project == null || deleteProjectIfExist)) {
                         Project projectInfor = ProjectHelper.createProject(projectName, "", //$NON-NLS-1$
                                 language, userInfo);
                         project = repositoryFactory.createProject(projectInfor);
@@ -394,6 +394,9 @@ public class RepositoryService implements IRepositoryService {
                         }
                     }
 
+                }
+                if (project == null) {
+                    throw new LoginException(Messages.getString("RepositoryService.projectNotFound", projectName)); //$NON-NLS-1$
                 }
                 repositoryContext.setProject(project);
 
@@ -419,6 +422,17 @@ public class RepositoryService implements IRepositoryService {
             return true;
         }
         return false;
+    }
+
+    private String getAppArgValue(String arg, String defaultValue) {
+        String value = defaultValue;
+        int index = ArrayUtils.indexOf(Platform.getApplicationArgs(), arg);
+        if (index > 0) {
+            if (index + 1 < Platform.getApplicationArgs().length) {
+                value = Platform.getApplicationArgs()[index + 1];
+            }
+        }
+        return value;
     }
 
     /*
@@ -641,7 +655,8 @@ public class RepositoryService implements IRepositoryService {
             rulesService = (IRulesProviderService) GlobalServiceRegister.getDefault().getService(IRulesProviderService.class);
             try {
                 rulesService.syncRule(currentRepositoryItem);
-                String path = rulesService.getRuleFile(currentRepositoryItem, ".xls").getLocation().toOSString(); //$NON-NLS-1$
+                String path = rulesService.getRuleFile(currentRepositoryItem, FileConstants.XLS_FILE_SUFFIX).getLocation()
+                        .toOSString();
                 return path;
             } catch (SystemException e) {
             }
@@ -653,8 +668,9 @@ public class RepositoryService implements IRepositoryService {
         String branchSelection = ProjectManager.getInstance().getMainProjectBranch(
                 ProjectManager.getInstance().getCurrentProject());
         if (branchSelection != null) {
-            if (branchSelection.startsWith("tags")) {
-                MessageDialog.openInformation(shell, "Information", "the current login project is readonly");
+            if (branchSelection.startsWith(SVNConstant.NAME_TAGS)) {
+                MessageDialog.openInformation(shell, Messages.getString("RepositoryService.projectReadonlyTitle"), //$NON-NLS-1$
+                        Messages.getString("RepositoryService.projectReadonly")); //$NON-NLS-1$
             }
         }
         return true;
