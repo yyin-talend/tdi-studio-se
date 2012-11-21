@@ -536,7 +536,7 @@
 			boolean firstCondFlag = true;
 			if (hasBasicConditions) {
 				for (Map<String,Object> cond : conditions) {
-					String column = cond.get("INPUT_COLUMN").toString();
+					String column = getLProtectedChar() + cond.get("INPUT_COLUMN").toString() + getRProtectedChar();
 					String operator = cond.get("OPERATOR").toString();
 					String value = cond.get("RVALUE").toString();
 					String negate = cond.get("NEGATE").toString();
@@ -993,12 +993,6 @@
 				head = current_component;
 			if (previous_component != null)
 				current_component.addInputNode(previous_component);
-			if(dbtype!=null){
-				if (previous_component != null){
-					previous_component.setDbType(dbtype);
-				}
-				current_component.setDbType(dbtype);
-			}
 			previous_component = current_component;
 			tail = current_component;
 		}
@@ -1012,7 +1006,15 @@
 			}	
 		}
 	}
-	head.setDbType(dbtype);
+	ELTNode eachnode = tail;
+	while(true){
+		if(eachnode!=null){
+			eachnode.setDbType(dbtype);
+		}else{
+			break;
+		}
+		eachnode=eachnode.mainInputNode;
+	}
 	
 //	String t1 = "";
 //	ELTNode c = head;
