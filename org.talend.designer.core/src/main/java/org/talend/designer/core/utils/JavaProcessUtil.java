@@ -25,7 +25,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.talend.core.CorePlugin;
-import org.talend.core.database.conn.version.DbVersion4DriversForOracle11;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContext;
@@ -76,14 +75,15 @@ public class JavaProcessUtil {
                 if (arg0.getBundleName() == null && arg1.getBundleName() != null) {
                     return 1;
                 }
-                if (arg0.getBundleName() != null && arg1.getBundleName() != null && "".equals(arg0.getBundleName())
-                        && !"".equals(arg1.getBundleName())) {
+                if (arg0.getBundleName() != null && arg1.getBundleName() != null && "".equals(arg0.getBundleName()) //$NON-NLS-1$
+                        && !"".equals(arg1.getBundleName())) { //$NON-NLS-1$
                     return 1;
                 }
                 return 0;
             }
 
         });
+
         Set<String> dedupModulesList = new HashSet<String>();
         Iterator<ModuleNeeded> it = modulesNeeded.iterator();
         while (it.hasNext()) {
@@ -195,13 +195,15 @@ public class JavaProcessUtil {
 
     /**
      * DOC nrousseau Comment method "addNodeRelatedModules".
+     * 
      * @param process
      * @param modulesNeeded
      * @param node
      */
     public static void addNodeRelatedModules(final IProcess process, List<ModuleNeeded> modulesNeeded, INode node) {
-        if (node.isActivate()) {
+        if (!node.isActivate()) {
             // if node is deactivated, we don't need at all its dependencies.
+            return;
         }
         List<ModuleNeeded> moduleList = node.getModulesNeeded();
         for (ModuleNeeded needed : moduleList) {
@@ -243,7 +245,7 @@ public class JavaProcessUtil {
                     if (param.getFieldType() == EParameterFieldType.MODULE_LIST) {
                         for (Map<String, Object> line : values) {
                             String moduleName = (String) line.get(param.getName());
-                            if (moduleName != null && !"".equals(moduleName)) {
+                            if (moduleName != null && !"".equals(moduleName)) { //$NON-NLS-1$
 
                                 boolean isContextMode = ContextParameterUtils.containContextVariables(moduleName);
                                 if (isContextMode) {
@@ -256,16 +258,16 @@ public class JavaProcessUtil {
                                                 String value = context.getContextParameter(contextPara.getName()).getValue();
 
                                                 if (curParam.getName().equals(EParameterName.DRIVER_JAR.getName())
-                                                        && value.contains(";")) {
-                                                    String[] jars = value.split(";");
+                                                        && value.contains(";")) { //$NON-NLS-1$
+                                                    String[] jars = value.split(";"); //$NON-NLS-1$
                                                     for (String jar2 : jars) {
                                                         String jar = jar2;
-                                                        jar = jar.substring(jar.lastIndexOf("\\") + 1);
+                                                        jar = jar.substring(jar.lastIndexOf("\\") + 1); //$NON-NLS-1$
                                                         ModuleNeeded module = new ModuleNeeded(null, jar, null, true);
                                                         modulesNeeded.add(module);
                                                     }
                                                 } else {
-                                                    value = value.substring(value.lastIndexOf("\\") + 1);
+                                                    value = value.substring(value.lastIndexOf("\\") + 1); //$NON-NLS-1$
                                                     ModuleNeeded module = new ModuleNeeded(null, value, null, true);
                                                     modulesNeeded.add(module);
                                                 }
@@ -316,17 +318,17 @@ public class JavaProcessUtil {
 
         Object value = curParam.getValue();
         String name = curParam.getName();
-        if (name.equals("DRIVER_JAR")) {
+        if (name.equals("DRIVER_JAR")) { //$NON-NLS-1$
             // added for bug 13592. new parameter DRIVER_JAR was used for jdbc connection
             if (value != null && value instanceof List) {
                 List list = (List) value;
                 for (int i = 0; i < list.size(); i++) {
                     if (list.get(i) instanceof HashMap) {
                         HashMap map = (HashMap) list.get(i);// JAR_NAME
-                        Object object = map.get("JAR_NAME");
+                        Object object = map.get("JAR_NAME"); //$NON-NLS-1$
                         if (object != null && object instanceof String) {
                             String driverName = (String) object;
-                            if (driverName != null && !"".equals(driverName)) {
+                            if (driverName != null && !"".equals(driverName)) { //$NON-NLS-1$
                                 boolean isContextMode = ContextParameterUtils.containContextVariables(driverName);
                                 if (isContextMode) {
                                     getModulesInTable(process, curParam, modulesNeeded);
@@ -343,21 +345,9 @@ public class JavaProcessUtil {
             }
         } else if (name.equals("DB_VERSION")) { //$NON-NLS-1$
             String jdbcName = (String) value;
-            //
             if (jdbcName != null) {
-                if (jdbcName.contains(DbVersion4DriversForOracle11.DRIVER_1_6)
-                        || jdbcName.contains(DbVersion4DriversForOracle11.DRIVER_1_5)) {
-                    if (System.getProperty("java.version").startsWith("1.6")) { //$NON-NLS-1$ //$NON-NLS-2$
-                        jdbcName = jdbcName.replaceAll(DbVersion4DriversForOracle11.DRIVER_1_5,
-                                DbVersion4DriversForOracle11.DRIVER_1_6);
-                    } else {
-                        jdbcName = jdbcName.replaceAll(DbVersion4DriversForOracle11.DRIVER_1_6,
-                                DbVersion4DriversForOracle11.DRIVER_1_5);
-                    }
-                }
-
                 String jars = (jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
-                        TalendTextUtils.SINGLE_QUOTE, "");
+                        TalendTextUtils.SINGLE_QUOTE, ""); //$NON-NLS-1$
                 String separator = ";"; //$NON-NLS-1$
                 if (jars.contains(separator)) {
                     for (String jar : jars.split(separator)) {
@@ -369,23 +359,11 @@ public class JavaProcessUtil {
                     modulesNeeded.add(module);
                 }
             }
-        } else if (name.equals("MQ_DERVIERS")) { //$NON-NLS-1$
-            String path = (String) value;
-
-            if (path == null || path.equals("")) { //$NON-NLS-1$
-                return;
-            }
-
-            String separator = ";"; //$NON-NLS-1$
-            for (String jar : path.split(separator)) {
-                ModuleNeeded module = new ModuleNeeded(null, jar, null, true);
-                modulesNeeded.add(module);
-            }
         } else if (name.equals("HOTLIBS")) { //$NON-NLS-1$
             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
             Object[] listItemsValue = curParam.getListItemsValue();
             for (Map<String, Object> line : tableValues) {
-                Object libPath = line.get("LIBPATH");
+                Object libPath = line.get("LIBPATH"); //$NON-NLS-1$
                 if (libPath == null) {
                     continue;
                 }
