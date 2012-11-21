@@ -237,8 +237,8 @@
    <CODEGENERATION>
     <IMPORTS>
        <IMPORT NAME="TNS" MODULE="tns.jar" REQUIRED="true" />    
-       <IMPORT NAME="Driver-Ojdbc6" MODULE="ojdbc6.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6') AND (USE_EXISTING_CONNECTION == 'false')" />
-       <IMPORT NAME="Driver-Ojdbc5" MODULE="ojdbc5.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11') AND (USE_EXISTING_CONNECTION == 'false')" />
+       <IMPORT NAME="Driver-Ojdbc6" MODULE="ojdbc6.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11-6')" />
+       <IMPORT NAME="Driver-Ojdbc5" MODULE="ojdbc5.jar" REQUIRED_IF="(DB_VERSION == 'ORACLE_11')" />
     </IMPORTS>   
    </CODEGENERATION>
 
