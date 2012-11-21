@@ -194,6 +194,27 @@
 		public void setDbType(String dbType){
 			this.dbType = dbType;
 		}
+		
+		protected String translatetoString(String map,Map<String,Object> operation,String type){
+			String value = operation.get(type).toString();
+			IElementParameter opeParam =   getParameterByName(map);
+			if(!value.matches("^\\d+$")) {
+				return value;
+			}
+			for (int i = 0; i < opeParam.getListItemsDisplayCodeName().length; i++) {
+				IElementParameter tmpParam = (IElementParameter) opeParam.getListItemsValue()[i];
+				if(tmpParam!=null&&tmpParam.getName().equals(type)){
+					int intValue = Integer.parseInt((String) value);
+					if (tmpParam.getListItemsValue().length == 0) {
+						value = ""; 
+					} else {
+						value = (String) tmpParam.getListItemsValue()[(Integer) intValue];
+					}
+				}
+			}
+			return value.toString();
+		}
+
         protected String getProtectedChar() {
         	if(dbType==null){
         		return "";
@@ -536,7 +557,7 @@
 			boolean firstCondFlag = true;
 			if (hasBasicConditions) {
 				for (Map<String,Object> cond : conditions) {
-					String column = getLProtectedChar() + cond.get("INPUT_COLUMN").toString() + getRProtectedChar();
+					String column = getLProtectedChar() + translatetoString("CONDITIONS",cond,"INPUT_COLUMN") + getRProtectedChar();
 					String operator = cond.get("OPERATOR").toString();
 					String value = cond.get("RVALUE").toString();
 					String negate = cond.get("NEGATE").toString();
@@ -639,9 +660,9 @@
 			Boolean hasOperations = operations.size() > 0 ? true : false;
 			if (hasOperations) {
 				for (Map<String,Object> operation : operations) {
-					String inputColumn = translatetoString(operation,"INPUT_COLUMN");
-					String outputColumn = translatetoString(operation,"OUTPUT_COLUMN");
-					String function = translatetoString(operation,"FUNCTION");
+					String inputColumn = translatetoString("OPERATION",operation,"INPUT_COLUMN");
+					String outputColumn = translatetoString("OPERATION",operation,"OUTPUT_COLUMN");
+					String function = translatetoString("OPERATION",operation,"FUNCTION");
 					
 					HashMap<String,String> property = sql.getNeedsProperty("column", outputColumn);
 					if (property != null) {
@@ -661,26 +682,6 @@
 			else {
 				return false;
 			}
-		}
-		
-		private String translatetoString(Map<String,Object> operation,String type){
-		   String value = operation.get(type).toString();
-		   IElementParameter opeParam =   getParameterByName("OPERATION");
-		   if(!value.matches("^\\d+$")) {
-		   	 return value;
-		   }
-		    for (int i = 0; i < opeParam.getListItemsDisplayCodeName().length; i++) {
-		   	   IElementParameter tmpParam = (IElementParameter) opeParam.getListItemsValue()[i];
-		       if(tmpParam!=null&&tmpParam.getName().equals(type)){
-		         int intValue = Integer.parseInt((String) value);
-		   	     if (tmpParam.getListItemsValue().length == 0) {
-                    value = ""; 
-                 } else {
-                    value = (String) tmpParam.getListItemsValue()[(Integer) intValue];
-                 }
-		       }
-		   }
-		 return value.toString();
 		}
 		
 		public String run(SQL sql) throws Exception {
