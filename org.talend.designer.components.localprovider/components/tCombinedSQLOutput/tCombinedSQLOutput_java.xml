@@ -161,7 +161,7 @@
 		<PARAMETER 
 			NAME="CONNECTION_POSTGREPLUS" 
 			FIELD="COMPONENT_LIST"
-			FILTER="REGEXP:^tPostgrePlusConnection|tJDBCConnection$" 
+			FILTER="REGEXP:^tPostgresPlusConnection|tJDBCConnection$" 
 			NUM_ROW="3"
 			SHOW_IF="DBTYPE=='POSTGREPLUS'" 
 		/>		
