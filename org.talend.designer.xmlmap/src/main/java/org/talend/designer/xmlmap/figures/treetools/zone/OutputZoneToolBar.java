@@ -192,7 +192,9 @@ public class OutputZoneToolBar extends ZoneToolBar {
                             if (!min_size.isEnabled()) {
                                 min_size.setEnabled(true);
                             }
-
+                            // check problem for created output incase input main is multiloop
+                            graphicViewer.getMapperManager().getProblemsAnalyser().checkProblems(createOutputXmlTree);
+                            graphicViewer.getMapperManager().getMapperUI().updateStatusBar();
                         }
 
                     }
@@ -244,12 +246,12 @@ public class OutputZoneToolBar extends ZoneToolBar {
                                 manager.getMapperUI().getTabFolderEditors().getOutputMetaEditorView()
                                         .setMetadataTableEditor(null);
                             }
+                            graphicViewer.getMapperManager().getProblemsAnalyser().clearProblemsForTree(outputTree);
+                            graphicViewer.getMapperManager().getMapperUI().updateStatusBar();
                         }
                         if (mapData.getOutputTrees().isEmpty() && min_size.isEnabled()) {
                             min_size.setEnabled(false);
                         }
-
-                        // manager.refreshOutputTreeSchemaEditor(null);
 
                     }
                 });

@@ -22,6 +22,7 @@ import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
+import org.eclipse.jface.window.Window;
 import org.talend.datatools.xml.utils.XSDPopulationUtil2;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.cells.ITextCell;
@@ -86,7 +87,14 @@ public class TreeBranchContent extends Figure implements ITextCell {
 
         this.add(nameFigure);
         //
-        loopButtonFigure = new ToolBarButtonImageFigure(ImageProviderMapper.getImage(ImageInfo.SETLOOPFUNCTION_BUTTON));
+
+        ImageInfo infor = ImageInfo.SETLOOPFUNCTION_BUTTON;
+        if (treeNode instanceof OutputTreeNode) {
+            InputLoopNodesTable inputLoopNodesTable = ((OutputTreeNode) treeNode).getInputLoopNodesTable();
+            infor = (inputLoopNodesTable == null || inputLoopNodesTable.getInputloopnodes().isEmpty()) ? ImageInfo.SETLOOPFUNCTION_BUTTON_ERROR
+                    : ImageInfo.SETLOOPFUNCTION_BUTTON;
+        }
+        loopButtonFigure = new ToolBarButtonImageFigure(ImageProviderMapper.getImage(infor));
         loopButtonFigure.addMouseListener(new MouseListener.Stub() {
 
             @Override
@@ -109,7 +117,11 @@ public class TreeBranchContent extends Figure implements ITextCell {
                 }
                 SetLoopFunctionDialog nsDialog = new SetLoopFunctionDialog(null, outputTreeNode.getInputLoopNodesTable(),
                         loopNodes);
-                nsDialog.open();
+                if (nsDialog.open() == Window.OK) {
+                    ((XmlMapGraphicViewer) treeNodePart.getViewer()).getMapperManager().getProblemsAnalyser()
+                            .checkProblems(XmlMapUtil.getAbstractInOutTree(outputTreeNode));
+                    ((XmlMapGraphicViewer) treeNodePart.getViewer()).getMapperManager().getMapperUI().updateStatusBar();
+                }
             }
         });
 
@@ -209,6 +221,13 @@ public class TreeBranchContent extends Figure implements ITextCell {
                 if (!this.getChildren().contains(loopButtonFigure)) {
                     this.add(loopButtonFigure, 1);
                 }
+                InputLoopNodesTable loopNodesTable = ((OutputTreeNode) treeNode).getInputLoopNodesTable();
+                if (loopNodesTable == null || loopNodesTable.getInputloopnodes().isEmpty()) {
+                    loopButtonFigure.setImage(ImageProviderMapper.getImage(ImageInfo.SETLOOPFUNCTION_BUTTON_ERROR));
+                } else {
+                    loopButtonFigure.setImage(ImageProviderMapper.getImage(ImageInfo.SETLOOPFUNCTION_BUTTON));
+                }
+
             } else {
                 if (this.getChildren().contains(loopButtonFigure)) {
                     this.remove(loopButtonFigure);
@@ -232,10 +251,12 @@ public class TreeBranchContent extends Figure implements ITextCell {
 
     private DirectEditType type;
 
+    @Override
     public void setDirectEditType(DirectEditType type) {
         this.type = type;
     }
 
+    @Override
     public DirectEditType getDirectEditType() {
         return this.type;
     }

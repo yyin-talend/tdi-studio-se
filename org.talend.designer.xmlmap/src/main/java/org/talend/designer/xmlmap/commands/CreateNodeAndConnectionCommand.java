@@ -14,7 +14,6 @@ package org.talend.designer.xmlmap.commands;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPart;
-import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
@@ -22,7 +21,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.xmlmap.dnd.DragAndDrogDialog;
 import org.talend.designer.xmlmap.dnd.TransferedObject;
-import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
@@ -41,12 +39,14 @@ import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
-import org.talend.designer.xmlmap.util.InputLoopTableUtil;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
+ * 
+ * @deprecated see InsertNewColumnCommand/CreateDocChildrenCommand/UpdateExpressionCommand
  */
+@Deprecated
 public class CreateNodeAndConnectionCommand extends Command {
 
     private Object newObjects;
@@ -184,7 +184,7 @@ public class CreateNodeAndConnectionCommand extends Command {
                                         // default value
                                         childTarget.setExpression("");
                                     } else {
-                                        childTarget.setExpression(XmlMapUtil.convertToExpression(((TreeNode) child).getXpath()));
+                                        childTarget.setExpression(XmlMapUtil.convertToExpression(child.getXpath()));
                                         Connection conn = XmlmapFactory.eINSTANCE.createConnection();
                                         conn.setSource(child);
                                         conn.setTarget(childTarget);
@@ -222,9 +222,9 @@ public class CreateNodeAndConnectionCommand extends Command {
                             xmlMapData.getConnections().add(conn);
                         }
 
-                        if (sourceNode instanceof TreeNode) {
-                            createInputLoopTable((TreeNode) sourceNode, targetNode);
-                        }
+                        // if (sourceNode instanceof TreeNode) {
+                        // createInputLoopTable((TreeNode) sourceNode, targetNode);
+                        // }
                     }
                 }
 
@@ -254,13 +254,13 @@ public class CreateNodeAndConnectionCommand extends Command {
         return null;
     }
 
-    private void createInputLoopTable(TreeNode sourceNode, OutputTreeNode targetOutputNode) {
-        EditPartViewer viewer = targetEditPart.getViewer();
-        if (viewer instanceof XmlMapGraphicViewer) {
-            InputLoopTableUtil.addSourceLoopToInputLoopTable(sourceNode, targetOutputNode, ((XmlMapGraphicViewer) viewer)
-                    .getMapperManager().getMainInputTree());
-        }
-    }
+    // private void createInputLoopTable(TreeNode sourceNode, OutputTreeNode targetOutputNode) {
+    // EditPartViewer viewer = targetEditPart.getViewer();
+    // if (viewer instanceof XmlMapGraphicViewer) {
+    // InputLoopTableUtil.addSourceLoopToInputLoopTable(sourceNode, targetOutputNode, ((XmlMapGraphicViewer) viewer)
+    // .getMapperManager().getMainInputTree());
+    // }
+    // }
 
     private void doUpdate(AbstractNode sourceNode) {
         if (targetEditPart instanceof OutputTreeNodeEditPart) {
@@ -285,9 +285,9 @@ public class CreateNodeAndConnectionCommand extends Command {
                 }
             }
 
-            if (sourceNode instanceof TreeNode) {
-                createInputLoopTable((TreeNode) sourceNode, targetOutputNode);
-            }
+            // if (sourceNode instanceof TreeNode) {
+            // createInputLoopTable((TreeNode) sourceNode, targetOutputNode);
+            // }
 
             targetOutputNode.setExpression(expression);
             Connection conn = XmlmapFactory.eINSTANCE.createConnection();

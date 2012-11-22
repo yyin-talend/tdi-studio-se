@@ -20,7 +20,6 @@ import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
-import org.talend.designer.xmlmap.util.InputLoopTableUtil;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 public class CreateDocChildrenCommand extends Command {
@@ -93,13 +92,14 @@ public class CreateDocChildrenCommand extends Command {
                                     // default value
                                     childTarget.setExpression("");
                                 } else {
-                                    childTarget.setExpression(XmlMapUtil.convertToExpression(((TreeNode) child).getXpath()));
+                                    childTarget.setExpression(XmlMapUtil.convertToExpression(child.getXpath()));
                                     createConnection(child, childTarget);
                                 }
                             }
                         }
-                        InputLoopTableUtil
-                                .addSourceLoopToInputLoopTable(sourceNode, targetOutputNode, manager.getMainInputTree());
+                        // disable function of add source loop to target InputLoopNodesTable
+                        // InputLoopTableUtil
+                        // .addSourceLoopToInputLoopTable(sourceNode, targetOutputNode, manager.getMainInputTree());
                     }
                 } else if (objects.getType() == TransferdType.VAR) {
                     // VARE ==>OUTPUT
@@ -124,7 +124,6 @@ public class CreateDocChildrenCommand extends Command {
                         targetOutputNode.setAggregate(false);
                     }
                 }
-                // check if need update outputTree InputLoopNodesTable
             }
         }
         manager.refreshOutputTreeSchemaEditor((OutputXmlTree) XmlMapUtil.getAbstractInOutTree(targetOutputNode));

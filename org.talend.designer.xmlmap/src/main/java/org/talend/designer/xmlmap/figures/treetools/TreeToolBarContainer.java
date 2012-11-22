@@ -21,6 +21,7 @@ import org.eclipse.draw2d.Clickable;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.window.Window;
@@ -80,7 +81,14 @@ public class TreeToolBarContainer extends Figure {
         this.setLayoutManager(manager);
 
         if (abstractTree instanceof OutputXmlTree) {
-            setLoopFunctionButton = new SetLoopFunctionButton(ImageProviderMapper.getImage(ImageInfo.SETLOOPFUNCTION_BUTTON));
+            ImageInfo info = ImageInfo.SETLOOPFUNCTION_BUTTON;
+            EList<InputLoopNodesTable> inputLoopNodesTables = ((OutputXmlTree) abstractTree).getInputLoopNodesTables();
+            if (!inputLoopNodesTables.isEmpty() && inputLoopNodesTables.get(0) != null) {
+                if (inputLoopNodesTables.get(0).getInputloopnodes().isEmpty()) {
+                    info = ImageInfo.SETLOOPFUNCTION_BUTTON_ERROR;
+                }
+            }
+            setLoopFunctionButton = new SetLoopFunctionButton(ImageProviderMapper.getImage(info));
             this.add(setLoopFunctionButton);
             if (inputMainTable == null || !inputMainTable.isMultiLoops()) {
                 setLoopFunctionButton.setVisible(false);
@@ -156,6 +164,15 @@ public class TreeToolBarContainer extends Figure {
         if (setLoopFunctionButton != null && abstractTree instanceof OutputXmlTree) {
             if (inputMainTable != null && inputMainTable.isMultiLoops()) {
                 if (!XmlMapUtil.hasDocument(abstractTree)) {
+                    if (abstractTree instanceof OutputXmlTree) {
+                        EList<InputLoopNodesTable> inputLoopNodesTables = ((OutputXmlTree) abstractTree)
+                                .getInputLoopNodesTables();
+                        if (inputLoopNodesTables.isEmpty() || inputLoopNodesTables.get(0).getInputloopnodes().isEmpty()) {
+                            setLoopFunctionButton.setImage(ImageProviderMapper.getImage(ImageInfo.SETLOOPFUNCTION_BUTTON_ERROR));
+                        } else {
+                            setLoopFunctionButton.setImage(ImageProviderMapper.getImage(ImageInfo.SETLOOPFUNCTION_BUTTON));
+                        }
+                    }
                     setLoopFunctionButton.setVisible(true);
                 } else {
                     setLoopFunctionButton.setVisible(false);

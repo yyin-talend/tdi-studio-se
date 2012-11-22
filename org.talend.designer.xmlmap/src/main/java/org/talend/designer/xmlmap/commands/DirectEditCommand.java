@@ -18,12 +18,10 @@ import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.EditPart;
-import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
-import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection;
@@ -39,7 +37,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 import org.talend.designer.xmlmap.ui.expressionutil.TableEntryLocation;
 import org.talend.designer.xmlmap.ui.expressionutil.XmlMapExpressionManager;
-import org.talend.designer.xmlmap.util.InputLoopTableUtil;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
@@ -133,9 +130,9 @@ public class DirectEditCommand extends Command {
                                         }
 
                                         //
-                                        if (model instanceof OutputTreeNode && sourceNode instanceof TreeNode) {
-                                            createInputLoopTable((TreeNode) sourceNode, (OutputTreeNode) model);
-                                        }
+                                        // if (model instanceof OutputTreeNode && sourceNode instanceof TreeNode) {
+                                        // createInputLoopTable((TreeNode) sourceNode, (OutputTreeNode) model);
+                                        // }
 
                                         connection.setSource(sourceNode);
                                         connection.setTarget(model);
@@ -222,13 +219,13 @@ public class DirectEditCommand extends Command {
         }
     }
 
-    private void createInputLoopTable(TreeNode sourceNode, OutputTreeNode targetOutputNode) {
-        EditPartViewer viewer = targetEditPart.getViewer();
-        if (viewer instanceof XmlMapGraphicViewer) {
-            InputLoopTableUtil.addSourceLoopToInputLoopTable(sourceNode, targetOutputNode, ((XmlMapGraphicViewer) viewer)
-                    .getMapperManager().getMainInputTree());
-        }
-    }
+    // private void createInputLoopTable(TreeNode sourceNode, OutputTreeNode targetOutputNode) {
+    // EditPartViewer viewer = targetEditPart.getViewer();
+    // if (viewer instanceof XmlMapGraphicViewer) {
+    // InputLoopTableUtil.addSourceLoopToInputLoopTable(sourceNode, targetOutputNode, ((XmlMapGraphicViewer) viewer)
+    // .getMapperManager().getMainInputTree());
+    // }
+    // }
 
     protected AbstractNode findConnectionSource(XmlMapData mapperData, TableEntryLocation matchedLocation, int xpathLength,
             boolean findFromVar) {

@@ -17,7 +17,6 @@ import org.talend.designer.xmlmap.parts.AbstractNodePart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
-import org.talend.designer.xmlmap.util.InputLoopTableUtil;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 public class UpdateExpressionCommand extends Command {
@@ -66,8 +65,9 @@ public class UpdateExpressionCommand extends Command {
                                     && !"".equals(model.getExpression())) {
                                 model.setDefaultValue("");
                             }
-                            InputLoopTableUtil.addSourceLoopToInputLoopTable((TreeNode) sourceNode, model,
-                                    manager.getMainInputTree());
+                            // disable function of add source loop to target InputLoopNodesTable
+                            // InputLoopTableUtil.addSourceLoopToInputLoopTable((TreeNode) sourceNode, model,
+                            // manager.getMainInputTree());
                         }
                     }
                     // INPUT => INPUT
@@ -91,7 +91,6 @@ public class UpdateExpressionCommand extends Command {
                     createConnection(sourceNode, targetNode);
 
                 }
-                // check if need update outputTree InputLoopNodesTable
             }
         }
 
