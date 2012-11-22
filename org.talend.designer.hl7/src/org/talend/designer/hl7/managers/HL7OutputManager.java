@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -85,26 +85,26 @@ public class HL7OutputManager extends HL7Manager {
                     }
                 }
 
-                for (Map<String, String> map : maps) {
-                    if (map.containsValue(rowName)) {
-                        if (map.get("PARENT_ROW") != null && map.get("PARENT_ROW").equals(rowName)) {
-                            String schemaName = map.get("SCHEMA");
-                            int first = schemaName.indexOf("_");
-                            int second = schemaName.lastIndexOf("_");
-                            if (first > 0 && first < second) {
-                                schemaName = schemaName.substring(first + 1, second);
-                            }
-                            if (!schemaList.contains(schemaName)) {
-                                schemaList.add(schemaName);
-                                rowName = schemaName;// map.get(rowName);
-                                schemaMap.put(metadataTableName, rowName);
-                                break;
-                            }
-
-                        }
-
-                    }
-                }
+                // for (Map<String, String> map : maps) {
+                // if (map.containsValue(rowName)) {
+                // if (map.get("PARENT_ROW") != null && map.get("PARENT_ROW").equals(rowName)) {
+                // String schemaName = map.get("SCHEMA");
+                // int first = schemaName.indexOf("_");
+                // int second = schemaName.lastIndexOf("_");
+                // if (first > 0 && first < second) {
+                // schemaName = schemaName.substring(first + 1, second);
+                // }
+                // if (!schemaList.contains(schemaName)) {
+                // schemaList.add(schemaName);
+                // rowName = schemaName;// map.get(rowName);
+                // schemaMap.put(metadataTableName, rowName);
+                // break;
+                // }
+                //
+                // }
+                //
+                // }
+                // }
 
                 treeData = new ArrayList<HL7TreeNode>();
                 if (i == 0)// the first schema as current
