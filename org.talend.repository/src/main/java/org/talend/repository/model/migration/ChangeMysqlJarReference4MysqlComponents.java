@@ -38,22 +38,38 @@ public class ChangeMysqlJarReference4MysqlComponents extends
     @Override
     public ExecutionResult execute(Item item) {
         ProcessType processType = getProcessType(item);
-        String[] mysqlCompNames = {"tAmazonMysqlConnection", "tAmazonMysqlInput", "tAmazonMysqlOutput", "tAmazonMysqlRow",
-                "tCreateTable", "tELTMysqlMap", "tMondrianInput", "tMysqlBulkExec", "tMysqlConnection",
-                "tMysqlInput", "tMysqlOutput", "tMysqlOutputBulkExec", "tMysqlRow", "tMysqlSCD", "tMysqlSCDELT",
-                "tMysqlSP", "tMySQLInvalidRows", "tMySQLValidRows", "tMysqlCDC"}; //$NON-NLS-1$
+        String[] mysqlCompNames = {"tAmazonMysqlConnection", "tAmazonMysqlInput", "tAmazonMysqlOutput", "tAmazonMysqlRow", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                "tCreateTable", "tELTMysqlMap", "tMondrianInput", "tMysqlBulkExec", "tMysqlConnection", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                "tMysqlInput", "tMysqlOutput", "tMysqlOutputBulkExec", "tMysqlRow", "tMysqlSCD", "tMysqlSCDELT", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+                "tMysqlSP", "tMySQLInvalidRows", "tMySQLValidRows", "tMysqlCDC"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         	
         	
     	IComponentConversion changeOracleDriverJarType = new IComponentConversion() {
 
 	        public void transform(NodeType node) {
-	        	ElementParameterType dbVersion = ComponentUtilities.getNodeProperty(node, "DB_VERSION"); //$NON-NLS-2$
+	            if(node == null) {
+	                return;
+	            }
+	            
+	            if("tCreateTable".equals(node.getComponentName())) { //$NON-NLS-1$
+	                ElementParameterType dbVersion = ComponentUtilities.getNodeProperty(node, "DB_MYSQL_VERSION"); //$NON-NLS-1$
+	                if (dbVersion != null) {
+	                    String jarValue = dbVersion.getValue();
+	                    if ("mysql-connector-java-5.1.0-bin.jar".equalsIgnoreCase(jarValue)) { //$NON-NLS-1$
+	                        dbVersion.setValue("MYSQL_5"); //$NON-NLS-1$
+	                    } else if ("mysql-connector-java-3.1.14-bin.jar".equalsIgnoreCase(jarValue)) { //$NON-NLS-1$
+	                        dbVersion.setValue("MYSQL_4"); //$NON-NLS-1$
+	                    }
+	                }
+	            }
+	            
+	        	ElementParameterType dbVersion = ComponentUtilities.getNodeProperty(node, "DB_VERSION"); //$NON-NLS-1$
 	        	if (dbVersion != null) {
-	        		String jarValue = dbVersion.getValue(); //$NON-NLS-3$
-	        		if ("mysql-connector-java-5.1.0-bin.jar".equalsIgnoreCase(jarValue)) {
-	        			dbVersion.setValue("MYSQL_5");
-	        		} else if ("mysql-connector-java-3.1.14-bin.jar".equalsIgnoreCase(jarValue)) {
-	        			dbVersion.setValue("MYSQL_4");
+	        		String jarValue = dbVersion.getValue();
+	        		if ("mysql-connector-java-5.1.0-bin.jar".equalsIgnoreCase(jarValue)) {//$NON-NLS-1$
+	        			dbVersion.setValue("MYSQL_5");//$NON-NLS-1$
+	        		} else if ("mysql-connector-java-3.1.14-bin.jar".equalsIgnoreCase(jarValue)) {//$NON-NLS-1$
+	        			dbVersion.setValue("MYSQL_4");//$NON-NLS-1$
 	        		}
 	        	}
 	        }
@@ -61,7 +77,7 @@ public class ChangeMysqlJarReference4MysqlComponents extends
     	};
     	
     	for (String name : mysqlCompNames) {
-            IComponentFilter filter = new NameComponentFilter(name); //$NON-NLS-4$
+            IComponentFilter filter = new NameComponentFilter(name);
 
             try {
                 ModifyComponentsAction.searchAndModify(item, processType, filter, Arrays
