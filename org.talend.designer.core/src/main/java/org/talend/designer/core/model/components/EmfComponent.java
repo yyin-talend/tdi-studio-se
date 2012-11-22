@@ -2738,16 +2738,20 @@ public class EmfComponent extends AbstractComponent {
                     for (int j = 0; j < itemsList.size(); j++) {
                         ITEMType itemType = (ITEMType) itemsList.get(j);
                         if (itemType.getVALUE().contains(".jar")) {
-                            if (!moduleNames.contains(itemType.getVALUE())) {
-                                moduleNames.add(itemType.getVALUE());
-                                String msg = getTranslatedValue(itemType.getNAME() + ".INFO"); //$NON-NLS-1$
-                                if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
-                                    msg = Messages.getString("modules.required"); //$NON-NLS-1$
+                            String[] values = itemType.getVALUE().split(";");
+                            for (int x = 0; x < values.length; x++) {
+                                String valueIndex = values[x];
+                                if (!moduleNames.contains(valueIndex)) {
+                                    moduleNames.add(valueIndex);
+                                    String msg = getTranslatedValue(itemType.getNAME() + ".INFO"); //$NON-NLS-1$
+                                    if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
+                                        msg = Messages.getString("modules.required"); //$NON-NLS-1$
+                                    }
+                                    ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), valueIndex, msg, true,
+                                            new ArrayList(), null);
+                                    componentImportNeeds.setShow(false);
+                                    componentImportNeedsList.add(componentImportNeeds);
                                 }
-                                ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), itemType.getVALUE(), msg,
-                                        true, new ArrayList(), null);
-                                componentImportNeeds.setShow(false);
-                                componentImportNeedsList.add(componentImportNeeds);
                             }
                         }
                     }
