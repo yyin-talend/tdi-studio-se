@@ -2474,6 +2474,8 @@ public class Node extends Element implements IGraphicalNode {
             checktAggregateRow(param);
         }
 
+        checkJobletConnections();
+
         IElementParameter enableParallelizeParameter = getElementParameter(EParameterName.PARALLELIZE.getName());
         if (enableParallelizeParameter != null && enableParallelizeParameter.getValue() != null) {
             boolean x = (Boolean) enableParallelizeParameter.getValue();
@@ -2528,6 +2530,48 @@ public class Node extends Element implements IGraphicalNode {
                 }
                 errorMessage = errorMessage.substring(0, errorMessage.length() - 1);
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
+            }
+        }
+    }
+
+    private void checkJobletConnections() {
+        if (this.isJoblet()) {
+            IProcess2 comProcess = (IProcess2) component.getProcess();
+            List<String> rowList = new ArrayList<String>();
+            if (comProcess.getProperty().getItem() instanceof JobletProcessItem) {
+                JobletProcess jobletProcess = ((JobletProcessItem) comProcess.getProperty().getItem()).getJobletProcess();
+                List<JobletNode> jobletNodes = jobletProcess.getJobletNodes();
+                out: for (JobletNode jNode : jobletNodes) {
+                    if (jNode.isInput()) {
+                        List list = jNode.getElementParameter();
+                        in: for (Object object : list) {
+                            if (object instanceof ElementParameterType) {
+                                if (((ElementParameterType) object).getName().equals("UNIQUE_NAME")) {
+                                    IElementParameter elementParam = this.getElementParameter(((ElementParameterType) object)
+                                            .getValue());
+                                    if (elementParam == null) {
+                                        continue out;
+                                    }
+                                    for (String key : elementParam.getChildParameters().keySet()) {
+                                        IElementParameter param = elementParam.getChildParameters().get(key);
+                                        if (param != null && param.getName().equals("CONNECTION") && param.getValue() != null
+                                                && param.getValue().toString().length() > 0) {
+                                            if (rowList.contains((String) param.getValue())) {
+                                                String errorMessage = "Can't not have more than one input linked to the same connection";
+                                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                            } else {
+                                                rowList.add((String) param.getValue());
+                                            }
+                                            break in;
+                                        }
+                                    }
+
+                                    break in;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
