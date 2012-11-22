@@ -32,38 +32,56 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 /**
  * DOC Administrator class global comment. Detailled comment
  */
-public class ChangeMysqlJarReference4MysqlComponents extends AbstractJobMigrationTask {
+public class ChangeMysqlJarReference4MysqlComponents extends
+		AbstractJobMigrationTask {
 
     @Override
     public ExecutionResult execute(Item item) {
         ProcessType processType = getProcessType(item);
-        String[] mysqlCompNames = { "tAmazonMysqlConnection", "tAmazonMysqlInput", "tAmazonMysqlOutput", "tAmazonMysqlRow",
-                "tCreateTable", "tELTMysqlMap", "tMondrianInput", "tMysqlBulkExec", "tMysqlConnection", "tMysqlInput",
-                "tMysqlOutput", "tMysqlOutputBulkExec", "tMysqlRow", "tMysqlSCD", "tMysqlSCDELT",
-                "tMysqlSP", "tMySQLInvalidRows", "tMySQLValidRows", "tMysqlCDC" }; //$NON-NLS-1$
+        String[] mysqlCompNames = {"tAmazonMysqlConnection", "tAmazonMysqlInput", "tAmazonMysqlOutput", "tAmazonMysqlRow", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                "tCreateTable", "tELTMysqlMap", "tMondrianInput", "tMysqlBulkExec", "tMysqlConnection", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                "tMysqlInput", "tMysqlOutput", "tMysqlOutputBulkExec", "tMysqlRow", "tMysqlSCD", "tMysqlSCDELT", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+                "tMysqlSP", "tMySQLInvalidRows", "tMySQLValidRows", "tMysqlCDC"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        	
+        	
+    	IComponentConversion changeOracleDriverJarType = new IComponentConversion() {
 
-        IComponentConversion changeOracleDriverJarType = new IComponentConversion() {
-
-            public void transform(NodeType node) {
-                ElementParameterType dbVersion = ComponentUtilities.getNodeProperty(node, "DB_VERSION");
-                if (dbVersion != null) {
-                    String jarValue = dbVersion.getValue();
-                    if ("mysql-connector-java-5.1.0-bin.jar".equalsIgnoreCase(jarValue)) {
-                        dbVersion.setValue("MYSQL_5");
-                    } else if ("mysql-connector-java-3.1.14-bin.jar".equalsIgnoreCase(jarValue)) {
-                        dbVersion.setValue("MYSQL_4");
-                    }
-                }
-            }
-
-        };
-
-        for (String name : mysqlCompNames) {
+	        public void transform(NodeType node) {
+	            if(node == null) {
+	                return;
+	            }
+	            
+	            if("tCreateTable".equals(node.getComponentName())) { //$NON-NLS-1$
+	                ElementParameterType dbVersion = ComponentUtilities.getNodeProperty(node, "DB_MYSQL_VERSION"); //$NON-NLS-1$
+	                if (dbVersion != null) {
+	                    String jarValue = dbVersion.getValue();
+	                    if ("mysql-connector-java-5.1.0-bin.jar".equalsIgnoreCase(jarValue)) { //$NON-NLS-1$
+	                        dbVersion.setValue("MYSQL_5"); //$NON-NLS-1$
+	                    } else if ("mysql-connector-java-3.1.14-bin.jar".equalsIgnoreCase(jarValue)) { //$NON-NLS-1$
+	                        dbVersion.setValue("MYSQL_4"); //$NON-NLS-1$
+	                    }
+	                }
+	            }
+	            
+	        	ElementParameterType dbVersion = ComponentUtilities.getNodeProperty(node, "DB_VERSION"); //$NON-NLS-1$
+	        	if (dbVersion != null) {
+	        		String jarValue = dbVersion.getValue();
+	        		if ("mysql-connector-java-5.1.0-bin.jar".equalsIgnoreCase(jarValue)) {//$NON-NLS-1$
+	        			dbVersion.setValue("MYSQL_5");//$NON-NLS-1$
+	        		} else if ("mysql-connector-java-3.1.14-bin.jar".equalsIgnoreCase(jarValue)) {//$NON-NLS-1$
+	        			dbVersion.setValue("MYSQL_4");//$NON-NLS-1$
+	        		}
+	        	}
+	        }
+        
+    	};
+    	
+    	for (String name : mysqlCompNames) {
             IComponentFilter filter = new NameComponentFilter(name);
 
             try {
-                ModifyComponentsAction.searchAndModify(item, processType, filter,
-                        Arrays.<IComponentConversion> asList(changeOracleDriverJarType));
+                ModifyComponentsAction.searchAndModify(item, processType, filter, Arrays
+                        .<IComponentConversion> asList(changeOracleDriverJarType));
             } catch (PersistenceException e) {
                 // TODO Auto-generated catch block
                 ExceptionHandler.process(e);
@@ -76,7 +94,7 @@ public class ChangeMysqlJarReference4MysqlComponents extends AbstractJobMigratio
     }
 
     public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2012, 10, 19, 10, 0, 0);
+        GregorianCalendar gc = new GregorianCalendar(2012, 10, 26, 10, 0, 0);
         return gc.getTime();
     }
 }
