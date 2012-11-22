@@ -99,41 +99,52 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 				DocumentToFlat docToFlat_<%=cid%> = new DocumentToFlat();
 				docToFlat_<%=cid%>.setOriginalLoop("<%=loopPath %>");
 				docToFlat_<%=cid%>.setIsOptional(<%=xpathHelper.isLoopOptional() %>);
-				org.dom4j.Document doc_<%=cid%> = <%=mainInputName %>.<%=tmpNode.getName() %>.getDocument(); 
-				docToFlat_<%=cid%>.setDoc(doc_<%=cid%>);
-				docToFlat_<%=cid%>.setDefineNS(<%=xpathHelper.hasDefinedNS()%>);
-				docToFlat_<%=cid%>.setNamespaceTool(nsTool_<%=cid%>);
-				<%if(!xpathHelper.hasDefinedNS()){%>
-					//old version, find NS from doc
-					nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
-					java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid%> = nsTool_<%=cid%>.xmlNameSpaceMap;
-				<%}else{%>
-					java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid%> = new java.util.HashMap<String,String>();
-					<%=xpathHelper.buildNSMapping("xmlNameSpaceMap"+"_"+cid)%>
-				<%}%>
-				docToFlat_<%=cid%>.setXmlNameSpaceMap(xmlNameSpaceMap_<%=cid%>);
-				<%
-				Map<String,String> outNodesXPath = xpathHelper.getOutNodesXPath();
-				%>
-				String[] absolutePathMappings_<%=cid%> = new String[<%=outNodesXPath.size()%>];
-				String[] relativePathMappings_<%=cid%> = new String[<%=outNodesXPath.size()%>];
-				<%
-				int i = 0;
-				for (String key : outNodesXPath.keySet()) { 
-				    String val = outNodesXPath.get(key);
-				%>
-				absolutePathMappings_<%=cid%>[<%=i%>] = "<%=key%>";
-				relativePathMappings_<%=cid%>[<%=i%>] = "<%=val%>";
-				<%
-					i++;
+				
+				java.util.List<java.util.Map<String, String>> resultSet_<%=cid%> = null;
+				
+				if(<%=mainInputName %>.<%=tmpNode.getName() %>!=null &&  <%=mainInputName %>.<%=tmpNode.getName() %>.getDocument()!=null) {
+    				org.dom4j.Document doc_<%=cid%> = <%=mainInputName %>.<%=tmpNode.getName() %>.getDocument(); 
+    				docToFlat_<%=cid%>.setDoc(doc_<%=cid%>);
+    				docToFlat_<%=cid%>.setDefineNS(<%=xpathHelper.hasDefinedNS()%>);
+    				docToFlat_<%=cid%>.setNamespaceTool(nsTool_<%=cid%>);
+    				<%if(!xpathHelper.hasDefinedNS()){%>
+    					//old version, find NS from doc
+    					nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
+    					java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid%> = nsTool_<%=cid%>.xmlNameSpaceMap;
+    				<%}else{%>
+    					java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid%> = new java.util.HashMap<String,String>();
+    					<%=xpathHelper.buildNSMapping("xmlNameSpaceMap"+"_"+cid)%>
+    				<%}%>
+    				docToFlat_<%=cid%>.setXmlNameSpaceMap(xmlNameSpaceMap_<%=cid%>);
+    				<%
+    				Map<String,String> outNodesXPath = xpathHelper.getOutNodesXPath();
+    				%>
+    				String[] absolutePathMappings_<%=cid%> = new String[<%=outNodesXPath.size()%>];
+    				String[] relativePathMappings_<%=cid%> = new String[<%=outNodesXPath.size()%>];
+    				<%
+    				int i = 0;
+    				for (String key : outNodesXPath.keySet()) { 
+    				    String val = outNodesXPath.get(key);
+    				%>
+    				absolutePathMappings_<%=cid%>[<%=i%>] = "<%=key%>";
+    				relativePathMappings_<%=cid%>[<%=i%>] = "<%=val%>";
+    				<%
+    					i++;
+    				}
+    				%>
+    				docToFlat_<%=cid%>.setAbsolutePathMappings(absolutePathMappings_<%=cid%>);
+    				docToFlat_<%=cid%>.setCurrentRelativePathMappings(relativePathMappings_<%=cid%>);
+    				//generate document to flat data
+    				docToFlat_<%=cid%>.flat();
+    				//get flat data
+    				resultSet_<%=cid%> = docToFlat_<%=cid%>.getResultSet();
+				} else {
+					resultSet_<%=cid%> = new java.util.ArrayList<java.util.Map<String,String>>();
 				}
-				%>
-				docToFlat_<%=cid%>.setAbsolutePathMappings(absolutePathMappings_<%=cid%>);
-				docToFlat_<%=cid%>.setCurrentRelativePathMappings(relativePathMappings_<%=cid%>);
-				//generate document to flat data
-				docToFlat_<%=cid%>.flat();
-				//get flat data
-				java.util.List<java.util.Map<String, String>> resultSet_<%=cid%> = docToFlat_<%=cid%>.getResultSet();
+				
+				if(resultSet_<%=cid%>.size() == 0) {
+					resultSet_<%=cid%>.add(new java.util.HashMap<String,String>());
+				}
 				
 				for (java.util.Map<String,String> oneRow_<%=cid%>: resultSet_<%=cid%>) { // G_TXM_M_001
 					nb_line_<%=cid%>++;

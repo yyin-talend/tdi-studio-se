@@ -151,49 +151,60 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 					DocumentToFlat docToFlat_<%=cid%>_<%=index%> = new DocumentToFlat();
 					docToFlat_<%=cid%>_<%=index%>.setOriginalLoop("<%=loopPath %>");
 					docToFlat_<%=cid%>_<%=index%>.setIsOptional(<%=xpathHelperForMain.isLoopOptional() %>);
-					org.dom4j.Document doc_<%=cid%>_<%=index%> = <%=mainInputName %>.<%=documentNodeInMainInputTable.getName() %>.getDocument(); 
-					docToFlat_<%=cid%>_<%=index%>.setDoc(doc_<%=cid%>_<%=index%>);
-					docToFlat_<%=cid%>_<%=index%>.setDefineNS(<%=xpathHelperForMain.hasDefinedNS()%>);
-					docToFlat_<%=cid%>_<%=index%>.setNamespaceTool(nsTool_<%=cid%>);
-					<%if(!xpathHelperForMain.hasDefinedNS()){%>
-						//old version, find NS from doc
-						nsTool_<%=cid%>.countNSMap(doc_<%=cid%>_<%=index%>.getRootElement());
-						java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid%>_<%=index%> = nsTool_<%=cid%>.xmlNameSpaceMap;
-					<%}else{%>
-						java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid%>_<%=index%> = new java.util.HashMap<String,String>();
-						<%=xpathHelperForMain.buildNSMapping("xmlNameSpaceMap"+"_"+cid+"_"+index)%>
-					<%}%>
-					docToFlat_<%=cid%>_<%=index%>.setXmlNameSpaceMap(xmlNameSpaceMap_<%=cid%>_<%=index%>);
-					<%
-					Map<String,String> outNodesXPath = xpathHelperForMain.getOutNodesXPath();
-					%>
-					java.util.List<String> absolutePathMappingsList_<%=cid%>_<%=index%> = new java.util.ArrayList<String>();
-					java.util.List<String> relativePathMappingsList_<%=cid%>_<%=index%> = new java.util.ArrayList<String>();
-					<%
-					//not filter for the first input loop in output table
-					boolean needFilter = !(idx==0 && nestedLoopWhileCount==1);
-					boolean isMainInputLoopInNestLoop = (nestedLoopWhileCount == 1);
-					for (String key : outNodesXPath.keySet()) { 
-					    String val = outNodesXPath.get(key);
-					    //filter for output mapping
-					    if(needFilter && !loopHelper.belongToCurrentLoop(inputLoopNode,key,isMainInputLoopInNestLoop)) {//the node is not belong to current loop
-					    	continue;
-					    }
-					%>
-					absolutePathMappingsList_<%=cid%>_<%=index%>.add("<%=key%>");
-					relativePathMappingsList_<%=cid%>_<%=index%>.add("<%=val%>");
-					<%
-					}
-					%>
-					String[] absolutePathMappings_<%=cid%>_<%=index%> = absolutePathMappingsList_<%=cid%>_<%=index%>.toArray(new String[0]);
-					String[] relativePathMappings_<%=cid%>_<%=index%> = relativePathMappingsList_<%=cid%>_<%=index%>.toArray(new String[0]);
 					
-					docToFlat_<%=cid%>_<%=index%>.setAbsolutePathMappings(absolutePathMappings_<%=cid%>_<%=index%>);
-					docToFlat_<%=cid%>_<%=index%>.setCurrentRelativePathMappings(relativePathMappings_<%=cid%>_<%=index%>);
-					//generate document to flat data
-					docToFlat_<%=cid%>_<%=index%>.flat();
-					//get flat data
-					java.util.List<java.util.Map<String, String>> resultSet_<%=cid%>_<%=index%> = docToFlat_<%=cid%>_<%=index%>.getResultSet();
+					java.util.List<java.util.Map<String, String>> resultSet_<%=cid%>_<%=index%> = null;
+					
+					if(<%=mainInputName %>.<%=documentNodeInMainInputTable.getName() %>!=null && <%=mainInputName %>.<%=documentNodeInMainInputTable.getName() %>.getDocument()!=null) {
+    					org.dom4j.Document doc_<%=cid%>_<%=index%> = <%=mainInputName %>.<%=documentNodeInMainInputTable.getName() %>.getDocument(); 
+    					docToFlat_<%=cid%>_<%=index%>.setDoc(doc_<%=cid%>_<%=index%>);
+    					docToFlat_<%=cid%>_<%=index%>.setDefineNS(<%=xpathHelperForMain.hasDefinedNS()%>);
+    					docToFlat_<%=cid%>_<%=index%>.setNamespaceTool(nsTool_<%=cid%>);
+    					<%if(!xpathHelperForMain.hasDefinedNS()){%>
+    						//old version, find NS from doc
+    						nsTool_<%=cid%>.countNSMap(doc_<%=cid%>_<%=index%>.getRootElement());
+    						java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid%>_<%=index%> = nsTool_<%=cid%>.xmlNameSpaceMap;
+    					<%}else{%>
+    						java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid%>_<%=index%> = new java.util.HashMap<String,String>();
+    						<%=xpathHelperForMain.buildNSMapping("xmlNameSpaceMap"+"_"+cid+"_"+index)%>
+    					<%}%>
+    					docToFlat_<%=cid%>_<%=index%>.setXmlNameSpaceMap(xmlNameSpaceMap_<%=cid%>_<%=index%>);
+    					<%
+    					Map<String,String> outNodesXPath = xpathHelperForMain.getOutNodesXPath();
+    					%>
+    					java.util.List<String> absolutePathMappingsList_<%=cid%>_<%=index%> = new java.util.ArrayList<String>();
+    					java.util.List<String> relativePathMappingsList_<%=cid%>_<%=index%> = new java.util.ArrayList<String>();
+    					<%
+    					//not filter for the first input loop in output table
+    					boolean needFilter = !(idx==0 && nestedLoopWhileCount==1);
+    					boolean isMainInputLoopInNestLoop = (nestedLoopWhileCount == 1);
+    					for (String key : outNodesXPath.keySet()) { 
+    					    String val = outNodesXPath.get(key);
+    					    //filter for output mapping
+    					    if(needFilter && !loopHelper.belongToCurrentLoop(inputLoopNode,key,isMainInputLoopInNestLoop)) {//the node is not belong to current loop
+    					    	continue;
+    					    }
+    					%>
+    					absolutePathMappingsList_<%=cid%>_<%=index%>.add("<%=key%>");
+    					relativePathMappingsList_<%=cid%>_<%=index%>.add("<%=val%>");
+    					<%
+    					}
+    					%>
+    					String[] absolutePathMappings_<%=cid%>_<%=index%> = absolutePathMappingsList_<%=cid%>_<%=index%>.toArray(new String[0]);
+    					String[] relativePathMappings_<%=cid%>_<%=index%> = relativePathMappingsList_<%=cid%>_<%=index%>.toArray(new String[0]);
+    					
+    					docToFlat_<%=cid%>_<%=index%>.setAbsolutePathMappings(absolutePathMappings_<%=cid%>_<%=index%>);
+    					docToFlat_<%=cid%>_<%=index%>.setCurrentRelativePathMappings(relativePathMappings_<%=cid%>_<%=index%>);
+    					//generate document to flat data
+    					docToFlat_<%=cid%>_<%=index%>.flat();
+    					//get flat data
+    					resultSet_<%=cid%>_<%=index%> = docToFlat_<%=cid%>_<%=index%>.getResultSet();
+					} else {
+						resultSet_<%=cid%>_<%=index%> = new java.util.ArrayList<java.util.Map<String,String>>();
+					}
+					
+					if(resultSet_<%=cid%>_<%=index%>.size() == 0) {
+						resultSet_<%=cid%>_<%=index%>.add(new java.util.HashMap<String,String>());
+					}
 					
 					for (java.util.Map<String,String> oneRow_<%=cid%>_<%=index%>: resultSet_<%=cid%>_<%=index%>) { // G_TXM_M_001
 <%
