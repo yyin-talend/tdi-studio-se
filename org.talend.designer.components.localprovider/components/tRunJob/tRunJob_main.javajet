@@ -294,6 +294,8 @@ if (!useIndependentProcess){//AAAAAAAAAAAA
              <%=firstConnName %>.<%=label %> = ParserUtils.parseTo_Date(item_<%=cid %>[<%=i %>], <%= patternValue %>);
            <%} else if(javaType == JavaTypesManager.BYTE_ARRAY){%>							
              <%=firstConnName %>.<%=label %> = item_<%=cid %>[<%=i %>].getBytes();
+           <%}else if(javaType == JavaTypesManager.LIST) {%>
+           	 <%=firstConnName %>.<%=label %> = ParserUtils.parseTo_<%= typeToGenerate %>(item_<%=cid %>[<%=i %>], ",");
            <%} else {%>
              <%=firstConnName %>.<%=label %> = ParserUtils.parseTo_<%= typeToGenerate %>(item_<%=cid %>[<%=i %>]);
            <%}%>

@@ -83,6 +83,10 @@ for (int n = 0; n < globalBuffer.size(); n++)
 	%> 
 		<%=connName%>.<%=columnName%> = ParserUtils.parseTo_<%=typeToGenerate%>(ParserUtils.parseTo_Number(row_<%=cid%>[<%=i%>], <%=thousandsSeparator%>, <%=decimalSeparator%>));
 	<%
+		}else if(javaType == JavaTypesManager.LIST) {
+	%> 
+		<%=connName%>.<%=columnName%> = ParserUtils.parseTo_<%=typeToGenerate%>(row_<%=cid%>[<%=i%>], ",");
+	<%
 		} else { 
 	%>
 		<%=connName%>.<%=columnName%> = ParserUtils.parseTo_<%=typeToGenerate%>(row_<%=cid%>[<%=i%>]);
