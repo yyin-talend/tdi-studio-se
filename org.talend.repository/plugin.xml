@@ -1719,7 +1719,7 @@
               description="change mysql de version value and avoid to depend on jdbc jar name"
               id="org.talend.repository.model.migration.ChangeMysqlJarReference4MysqlComponents"
               name="ChangeMysqlJarReference4MysqlComponents"
-              version="5.1.2">
+              version="5.1.3">
         </projecttask>
         <projecttask
               beforeLogon="false"
