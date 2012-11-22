@@ -22,11 +22,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.runtime.image.ImageUtils.ICON_SIZE;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.dbmap.external.connection.IOConnection;
@@ -82,7 +84,11 @@ public class MapperMain {
         }
         // Shell shell = new Shell(display);
         // shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));
-        shell.setText(Messages.getString("MapperMain.title", connector.getComponent().getName(), connector.getUniqueName())); //$NON-NLS-1$
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+        String productName = brandingService.getFullProductName();
+        shell.setText(Messages.getString(
+                "MapperMain.title", productName, connector.getComponent().getName(), connector.getUniqueName())); //$NON-NLS-1$
         ExternalDbMapUiProperties uiProperties = mapperManager.getUiManager().getUiProperties();
         Rectangle boundsMapper = uiProperties.getBoundsMapper();
         if (uiProperties.isShellMaximized()) {
