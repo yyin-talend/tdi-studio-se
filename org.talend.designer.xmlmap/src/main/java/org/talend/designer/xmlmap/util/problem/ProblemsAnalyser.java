@@ -22,6 +22,7 @@ import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -87,24 +88,19 @@ public class ProblemsAnalyser {
         }
         if (mainInputTree.isMultiLoops()) {
             if (!XmlMapUtil.hasDocument(outputTree)) {
-                if (outputTree.getInputLoopNodesTables().size() == 1
-                        && outputTree.getInputLoopNodesTables().get(0).getInputloopnodes().isEmpty()) {
-                    for (OutputTreeNode outputNode : outputTree.getNodes()) {
-                        if (checkNodeInputLookTableProblem(outputNode, mainInputTree, false)) {
-                            String message = "Output tree " + outputTree.getName() + " have no source loop";
-                            addProblem(outputTree, new Problem(null, message, ProblemStatus.ERROR));
-                            break;
-                        }
-                    }
+                if (outputTree.getInputLoopNodesTables().isEmpty()
+                        || outputTree.getInputLoopNodesTables().get(0).getInputloopnodes().isEmpty()) {
+                    String message = outputTree.getName() + " have no source loop";
+                    addProblem(outputTree, new Problem(null, message, ProblemStatus.ERROR));
                 }
-
             } else {
                 List<TreeNode> loopNodes = new ArrayList<TreeNode>();
                 XmlMapUtil.getChildLoops(loopNodes, outputTree.getNodes(), false);
                 if (!loopNodes.isEmpty()) {
                     for (TreeNode node : loopNodes) {
-                        if (checkNodeInputLookTableProblem((OutputTreeNode) node, mainInputTree, true)) {
-                            String message = "Output loopNode" + node + " have no source loop";
+                        InputLoopNodesTable inutLoopTable = ((OutputTreeNode) node).getInputLoopNodesTable();
+                        if (inutLoopTable == null || inutLoopTable.getInputloopnodes().isEmpty()) {
+                            String message = node.getXpath() + " have no source loop";
                             addProblem(outputTree, new Problem(null, message, ProblemStatus.ERROR));
                         }
 
@@ -229,6 +225,12 @@ public class ProblemsAnalyser {
             } else {
                 list.add(problem);
             }
+        }
+    }
+
+    public void clearProblemsForTree(AbstractInOutTree tree) {
+        if (treeAndProblems.containsKey(tree)) {
+            treeAndProblems.get(tree).clear();
         }
     }
 

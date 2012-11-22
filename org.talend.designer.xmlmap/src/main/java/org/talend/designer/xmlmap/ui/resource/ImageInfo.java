@@ -48,6 +48,7 @@ public enum ImageInfo {
     TREE_COLLAPSE("/icons/tree_collapse.gif"), //$NON-NLS-1$
     ZONE_SASH("/icons/zone_sash.jpg"), //$NON-NLS-1$
     SETLOOPFUNCTION_BUTTON("/icons/setLoopFunctionButton.jpg"), //$NON-NLS-1$
+    SETLOOPFUNCTION_BUTTON_ERROR("/icons/setLoopFunctionButtonError.jpg"), //$NON-NLS-1$
     SORT_UP("/icons/sortup.gif"), //$NON-NLS-1$
     SORT_DOWN("/icons/sortdown.gif"), //$NON-NLS-1$
     PROPERTY_TOOL_ICON("/icons/property.png");

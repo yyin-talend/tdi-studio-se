@@ -120,12 +120,7 @@ public class DeleteTreeNodeAction extends SelectionAction {
                             }
 
                             parent.getChildren().remove(treeNode);
-                            if (input) {
-                                // remove delete loops in InputLoopTable for outputs
-                                List<TreeNode> subNodes = new ArrayList<TreeNode>();
-                                checkSubElementIsLoop(treeNode, subNodes);
-                                removeloopInOutputTree(subNodes);
-                            }
+
                             // check if tree is multiloop
                             List<TreeNode> loopNodes = new ArrayList<TreeNode>();
                             if (docRoot != null && docRoot.eContainer() instanceof AbstractInOutTree) {
@@ -138,6 +133,12 @@ public class DeleteTreeNodeAction extends SelectionAction {
                                         tree.setMultiLoops(false);
                                     }
                                 }
+                            }
+                            if (input) {
+                                // remove delete loops in InputLoopTable for outputs
+                                List<TreeNode> subNodes = new ArrayList<TreeNode>();
+                                checkSubElementIsLoop(treeNode, subNodes);
+                                removeloopInOutputTree(subNodes);
                             }
 
                         }
@@ -183,14 +184,20 @@ public class DeleteTreeNodeAction extends SelectionAction {
     }
 
     private void removeloopInOutputTree(List<TreeNode> oldLoops) {
+        boolean isMainInputMultiLoop = mapperManager.getMainInputTree() == null ? false : mapperManager.getMainInputTree()
+                .isMultiLoops();
         EList<OutputXmlTree> outputTrees = mapperManager.getCopyOfMapData().getOutputTrees();
-        for (TreeNode oldLoop : oldLoops) {
-            for (OutputXmlTree outputTree : outputTrees) {
-                EList<InputLoopNodesTable> inputLoopNodesTables = outputTree.getInputLoopNodesTables();
-                for (InputLoopNodesTable inputLoopTable : inputLoopNodesTables) {
-                    inputLoopTable.getInputloopnodes().remove(oldLoop);
+        for (OutputXmlTree outputTree : outputTrees) {
+            if (isMainInputMultiLoop) {
+                for (TreeNode oldLoop : oldLoops) {
+                    EList<InputLoopNodesTable> inputLoopNodesTables = outputTree.getInputLoopNodesTables();
+                    for (InputLoopNodesTable inputLoopTable : inputLoopNodesTables) {
+                        inputLoopTable.getInputloopnodes().remove(oldLoop);
+                    }
                 }
-
+                mapperManager.getProblemsAnalyser().checkProblems(outputTree);
+            } else {
+                outputTree.getInputLoopNodesTables().clear();
             }
         }
 

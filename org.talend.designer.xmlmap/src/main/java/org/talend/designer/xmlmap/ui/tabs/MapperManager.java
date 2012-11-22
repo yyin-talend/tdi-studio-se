@@ -88,13 +88,13 @@ public class MapperManager implements ISelectionChangedListener {
         this.mapperComponent = mapperComponent;
         this.copyOfMapData = copyOfMapData;
         problemsAnalyser = new ProblemsAnalyser(this);
-        problemsAnalyser.checkProblems();
         for (InputXmlTree input : copyOfMapData.getInputTrees()) {
             if (!input.isLookup()) {
                 mainInputTree = input;
                 break;
             }
         }
+        problemsAnalyser.checkProblems();
     }
 
     public XmlMapComponent getMapperComponent() {
@@ -167,6 +167,7 @@ public class MapperManager implements ISelectionChangedListener {
         return this.mapperUI;
     }
 
+    @Override
     public void selectionChanged(SelectionChangedEvent event) {
         if (!event.getSelection().isEmpty() && event.getSelection() instanceof IStructuredSelection) {
             Iterator iterator = ((IStructuredSelection) event.getSelection()).iterator();
@@ -315,6 +316,7 @@ public class MapperManager implements ISelectionChangedListener {
                 editor.setModifiedBeanListenable(inputMetaEditorView.getTableViewerCreator());
                 IModifiedBeanListener<IMetadataColumn> columnListener = new IModifiedBeanListener<IMetadataColumn>() {
 
+                    @Override
                     public void handleEvent(ModifiedBeanEvent<IMetadataColumn> event) {
                         fireCurrentDirectEditApply();
                         if (AbstractMetadataTableEditorView.ID_COLUMN_NAME.equals(event.column.getId())) {
@@ -334,6 +336,9 @@ public class MapperManager implements ISelectionChangedListener {
                                         treeNode.getChildren().clear();
                                         if (selectedInputTree == mainInputTree) {
                                             selectedInputTree.setMultiLoops(false);
+                                            for (OutputXmlTree outputTree : copyOfMapData.getOutputTrees()) {
+                                                outputTree.getInputLoopNodesTables().clear();
+                                            }
                                         }
                                     }
                                     treeNode.setType((String) event.newValue);
@@ -380,6 +385,7 @@ public class MapperManager implements ISelectionChangedListener {
 
                 editor.addAfterOperationListListener(new IListenableListListener() {
 
+                    @Override
                     public void handleEvent(ListenableListEvent event) {
                         if (event.type == TYPE.ADDED) {
                             EList<TreeNode> nodes = selectedInputTree.getNodes();
@@ -478,6 +484,7 @@ public class MapperManager implements ISelectionChangedListener {
 
                 IModifiedBeanListener<IMetadataColumn> columnListener = new IModifiedBeanListener<IMetadataColumn>() {
 
+                    @Override
                     public void handleEvent(ModifiedBeanEvent<IMetadataColumn> event) {
                         fireCurrentDirectEditApply();
                         if (AbstractMetadataTableEditorView.ID_COLUMN_NAME.equals(event.column.getId())) {
@@ -496,6 +503,11 @@ public class MapperManager implements ISelectionChangedListener {
                                         XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
                                         treeNode.getChildren().clear();
                                         selectedOutputTree.setMultiLoops(false);
+                                        selectedOutputTree.getInputLoopNodesTables().clear();
+                                        if (mainInputTree != null && mainInputTree.isMultiLoops()) {
+                                            selectedOutputTree.getInputLoopNodesTables().add(
+                                                    XmlmapFactory.eINSTANCE.createInputLoopNodesTable());
+                                        }
                                     }
                                     treeNode.setType((String) event.newValue);
 
@@ -541,6 +553,7 @@ public class MapperManager implements ISelectionChangedListener {
 
                 editor.addAfterOperationListListener(new IListenableListListener() {
 
+                    @Override
                     public void handleEvent(ListenableListEvent event) {
 
                         if (event.type == TYPE.ADDED) {
