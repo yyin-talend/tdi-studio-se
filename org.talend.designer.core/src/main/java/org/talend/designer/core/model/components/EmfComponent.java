@@ -2686,8 +2686,6 @@ public class EmfComponent extends AbstractComponent {
 
     private static final String DB_VERSION = "DB_VERSION";
 
-    private static final String MQ_DERVIERS = "MQ_DERVIERS";
-
     @Override
     public List<ModuleNeeded> getModulesNeeded() {
         if (componentImportNeedsList != null && componentImportNeedsList.size() > 0) {
@@ -2748,24 +2746,6 @@ public class EmfComponent extends AbstractComponent {
                                 }
                                 ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), itemType.getVALUE(), msg,
                                         true, new ArrayList(), null);
-                                componentImportNeeds.setShow(false);
-                                componentImportNeedsList.add(componentImportNeeds);
-                            }
-                        }
-                    }
-                } else if (parameterType.getNAME().equals(MQ_DERVIERS)) {
-                    EList defaultList = parameterType.getDEFAULT();
-                    for (int j = 0; j < defaultList.size(); j++) {
-                        DEFAULTType defaultType = (DEFAULTType) defaultList.get(j);
-                        String value = defaultType.getValue();
-                        String[] values = value.split(";");
-                        for (int x = 0; x < values.length; x++) {
-                            String valueIndex = values[x];
-                            if (!moduleNames.contains(valueIndex)) {
-                                moduleNames.add(valueIndex);
-                                String msg = Messages.getString("modules.required");
-                                ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), valueIndex, msg, true,
-                                        new ArrayList(), defaultType.getIF());
                                 componentImportNeeds.setShow(false);
                                 componentImportNeedsList.add(componentImportNeeds);
                             }
