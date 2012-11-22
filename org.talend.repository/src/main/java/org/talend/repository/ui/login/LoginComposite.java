@@ -504,11 +504,12 @@ public class LoginComposite extends Composite {
         repositoryComposite.setBackgroundMode(SWT.INHERIT_DEFAULT);
         repositoryComposite.setBackground(parent.getBackground());
         // repositoryComposite.setBackground(GREY_COLOR);
-
-        Label welcomeLabel = toolkit.createLabel(repositoryComposite, Messages.getString("LoginComposite.welcomeTitle")); //$NON-NLS-1$
+        String productName = brandingService.getFullProductName();
+        Label welcomeLabel = toolkit.createLabel(repositoryComposite,
+                Messages.getString("LoginComposite.welcomeTitle", productName)); //$NON-NLS-1$
         welcomeLabel.setBackground(repositoryComposite.getBackground());
         GC gc = new GC(welcomeLabel);
-        Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.welcomeTitle")); //$NON-NLS-1$
+        Point labelSize = gc.stringExtent(Messages.getString("LoginComposite.welcomeTitle", productName)); //$NON-NLS-1$
         gc.dispose();
 
         FormData welcomeLabelFormData = new FormData();
@@ -568,7 +569,8 @@ public class LoginComposite extends Composite {
         userEmailComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         userEmailComposite.setLayout(new FormLayout());
 
-        Label detailLabel = toolkit.createLabel(userEmailComposite, Messages.getString("LoginComposite.detailMessage")); //$NON-NLS-1$
+        Label detailLabel = toolkit.createLabel(userEmailComposite,
+                Messages.getString("LoginComposite.detailMessage", productName)); //$NON-NLS-1$
         detailLabel.setBackground(userEmailComposite.getBackground());
         FormData detailLabelFormData = new FormData();
         detailLabelFormData.top = new FormAttachment(0, 0);
