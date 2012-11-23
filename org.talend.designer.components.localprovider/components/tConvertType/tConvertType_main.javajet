@@ -259,7 +259,7 @@
         errorCode_<%=cid %> = "2"; //Other Java exception
       }
       <%=rejectConnName %>.errorCode = errorCode_<%=cid %>;
-      <%=rejectConnName %>.errorMessage = errorMessage_<%=cid %>;
+      <%=rejectConnName %>.errorMessage = errorMessage_<%=cid %> + " - Line: " + tos_count_<%=node.getUniqueName() %>;
     } else{
       <%=rejectConnName %> = null;
     }
