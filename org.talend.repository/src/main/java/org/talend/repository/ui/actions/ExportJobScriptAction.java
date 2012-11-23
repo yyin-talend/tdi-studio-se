@@ -14,13 +14,19 @@ package org.talend.repository.ui.actions;
 
 import java.util.List;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.internal.WorkbenchPage;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -97,7 +103,13 @@ public class ExportJobScriptAction extends AContextualAction {
 
         Shell activeShell = Display.getCurrent().getActiveShell();
         WizardDialog dialog = new WizardDialog(activeShell, processWizard);
-        workbench.saveAllEditors(true);
+
+        MessageDialog messageDialog = new MessageDialog(new Shell(), "", //$NON-NLS-1$
+                null, Messages.getString("ExportJobScriptAction.confirmMessage"), //$NON-NLS-1$
+                MessageDialog.CONFIRM, new String[] { "Continue", IDialogConstants.CANCEL_LABEL }, 0); //$NON-NLS-1$
+        if (checkDirtyPart(workbench) && messageDialog.open() == 0) {
+            workbench.saveAllEditors(true);
+        }
 
         dialog.setPageSize(830, 500);
         dialog.open();
@@ -106,5 +118,28 @@ public class ExportJobScriptAction extends AContextualAction {
         IPreferenceStore preferenceStore = RepositoryPlugin.getDefault().getPreferenceStore();
         int num = preferenceStore.getInt(ExportJobTokenCollector.TOS_COUNT_JOB_EXPORTS.getPrefKey());
         preferenceStore.setValue(ExportJobTokenCollector.TOS_COUNT_JOB_EXPORTS.getPrefKey(), num + 1);
+    }
+
+    /**
+     * DOC Administrator Comment method "checkDirtyPart".
+     * 
+     * @param workbench
+     */
+    @SuppressWarnings("restriction")
+    private boolean checkDirtyPart(IWorkbench workbench) {
+        ISaveablePart[] parts = null;
+        IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
+        for (int i = 0; i < windows.length; i++) {
+            IWorkbenchPage[] pages = windows[i].getPages();
+            for (int j = 0; j < pages.length; j++) {
+                WorkbenchPage page = (WorkbenchPage) pages[j];
+
+                parts = page.getDirtyParts();
+            }
+        }
+        if (parts != null && parts.length > 0) {
+            return true;
+        }
+        return false;
     }
 }
