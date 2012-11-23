@@ -69,7 +69,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.ui.branding.IBrandingService;
-import org.talend.core.utils.BrandingChecker;
+import org.talend.core.utils.TalendCacheUtils;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.core.ITisLocalProviderService;
@@ -159,7 +159,7 @@ public class ComponentsFactory implements IComponentsFactory {
         Project currentProject = ProjectManager.getInstance().getCurrentProject();
         if (currentProject != null && currentProject.getEmfProject() != null) {
 
-            List<ComponentSetting> components = (List<ComponentSetting>) currentProject.getEmfProject().getComponentsSettings();
+            List<ComponentSetting> components = currentProject.getEmfProject().getComponentsSettings();
             return components;
         }
         return Collections.emptyList();
@@ -231,8 +231,7 @@ public class ComponentsFactory implements IComponentsFactory {
         ProjectManager manager = ProjectManager.getInstance();
         List<Project> referencedProjects = manager.getReferencedProjects();
         for (Project curProject : referencedProjects) {
-            List<ComponentSetting> componentsSettings = (List<ComponentSetting>) curProject.getEmfProject()
-                    .getComponentsSettings();
+            List<ComponentSetting> componentsSettings = curProject.getEmfProject().getComponentsSettings();
             for (ComponentSetting setting : componentsSettings) {
                 if (setting.isHidden() && setting.getName().equals(settingInMain.getName())
                         && setting.getFamily().equals(settingInMain.getFamily())) {
@@ -262,7 +261,7 @@ public class ComponentsFactory implements IComponentsFactory {
         skeletonList = new ArrayList<String>();
         String installLocation = new Path(Platform.getConfigurationLocation().getURL().getPath()).toFile().getAbsolutePath();
         componentToProviderMap = new HashMap<IComponent, AbstractComponentsProvider>();
-        boolean isNeedClean = cleanComponentCache();
+        boolean isNeedClean = TalendCacheUtils.cleanComponentCache();
         isCreated = hasComponentFile(installLocation) && !isNeedClean;
         if (isReset) {
             isCreated = false;
@@ -348,6 +347,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
                 FileFilter fileFilter = new FileFilter() {
 
+                    @Override
                     public boolean accept(final File file) {
                         return file.isDirectory() && file.getName().charAt(0) != '.'
                                 && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER)
@@ -482,11 +482,6 @@ public class ComponentsFactory implements IComponentsFactory {
         return file.exists();
     }
 
-    private boolean cleanComponentCache() {
-        return ArrayUtils.contains(Platform.getApplicationArgs(), "--clean_component_cache")
-                || ArrayUtils.contains(Platform.getApplicationArgs(), "-clean") || BrandingChecker.isBrandingChanged();
-    }
-
     private void loadComponentsFromComponentsProviderExtension() {
         ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
         for (AbstractComponentsProvider componentsProvider : componentsProviderManager.getProviders()) {
@@ -517,6 +512,7 @@ public class ComponentsFactory implements IComponentsFactory {
         }
     }
 
+    @Override
     public void loadUserComponentsFromComponentsProviderExtension() {
         ComponentsProviderManager.getInstance().getProviders();
         ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
@@ -587,6 +583,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
         FileFilter fileFilter = new FileFilter() {
 
+            @Override
             public boolean accept(final File file) {
                 return file.isDirectory() && file.getName().charAt(0) != '.'
                         && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER)
@@ -607,6 +604,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
         FileFilter skeletonFilter = new FileFilter() {
 
+            @Override
             public boolean accept(final File file) {
                 String fileName = file.getName();
                 return file.isFile() && fileName.charAt(0) != '.'
@@ -913,6 +911,7 @@ public class ComponentsFactory implements IComponentsFactory {
         component.setImageRegistry(componentsImageRegistry);
     }
 
+    @Override
     public int size() {
         if (componentList == null) {
             init(false);
@@ -920,6 +919,7 @@ public class ComponentsFactory implements IComponentsFactory {
         return componentList.size();
     }
 
+    @Override
     public IComponent get(String name) {
         if (componentList == null) {
             init(false);
@@ -933,6 +933,7 @@ public class ComponentsFactory implements IComponentsFactory {
         return null;
     }
 
+    @Override
     public void initializeComponents(IProgressMonitor monitor) {
         this.monitor = monitor;
         if (componentList == null) {
@@ -942,6 +943,7 @@ public class ComponentsFactory implements IComponentsFactory {
         this.subMonitor = null;
     }
 
+    @Override
     public void initializeComponents(IProgressMonitor monitor, boolean duringLogon) {
         this.monitor = monitor;
         if (componentList == null) {
@@ -956,6 +958,7 @@ public class ComponentsFactory implements IComponentsFactory {
      * 
      * @see org.talend.core.model.components.IComponentsFactory#getComponents()
      */
+    @Override
     public Set<IComponent> getComponents() {
         if (componentList == null) {
             init(false);
@@ -963,6 +966,7 @@ public class ComponentsFactory implements IComponentsFactory {
         return componentList;
     }
 
+    @Override
     public List<IComponent> getCustomComponents() {
         if (customComponentList == null) {
             init(false);
@@ -975,6 +979,7 @@ public class ComponentsFactory implements IComponentsFactory {
      * 
      * @see org.talend.core.model.components.IComponentsFactory#getComponentPath()
      */
+    @Override
     public URL getComponentPath() throws IOException {
         String componentsPath = IComponentsFactory.COMPONENTS_LOCATION;
         IBrandingService breaningService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
@@ -992,6 +997,7 @@ public class ComponentsFactory implements IComponentsFactory {
      * 
      * @see org.talend.core.model.components.IComponentsFactory#getSkeletons()
      */
+    @Override
     public List<String> getSkeletons() {
         if (skeletonList == null) {
             init(false);
@@ -999,6 +1005,7 @@ public class ComponentsFactory implements IComponentsFactory {
         return skeletonList;
     }
 
+    @Override
     public void reset() {
         componentsImageRegistry.clear();
         componentList = null;
@@ -1008,6 +1015,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     }
 
+    @Override
     public void resetCache() {
         componentsImageRegistry.clear();
         componentList = null;
@@ -1026,6 +1034,7 @@ public class ComponentsFactory implements IComponentsFactory {
      * @see org.talend.core.model.components.IComponentsFactory#getFamilyTranslation(IComponent component,
      * java.lang.String)
      */
+    @Override
     public String getFamilyTranslation(Object component, String text) {
         String translated = Messages.getString(text);
 
@@ -1056,6 +1065,7 @@ public class ComponentsFactory implements IComponentsFactory {
      * 
      * @see org.talend.core.model.components.IComponentsFactory#getAllComponentsCanBeProvided()
      */
+    @Override
     public Map<String, String> getAllComponentsCanBeProvided() {
         List source = new ArrayList();
         if (allComponents == null) {
@@ -1080,6 +1090,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
                     FileFilter fileFilter = new FileFilter() {
 
+                        @Override
                         public boolean accept(final File file) {
                             return file.isDirectory() && file.getName().charAt(0) != '.'
                                     && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER);
@@ -1138,14 +1149,17 @@ public class ComponentsFactory implements IComponentsFactory {
             analyseur = fabrique.newDocumentBuilder();
             analyseur.setErrorHandler(new ErrorHandler() {
 
+                @Override
                 public void error(final SAXParseException exception) throws SAXException {
                     throw exception;
                 }
 
+                @Override
                 public void fatalError(final SAXParseException exception) throws SAXException {
                     throw exception;
                 }
 
+                @Override
                 public void warning(final SAXParseException exception) throws SAXException {
                     throw exception;
                 }
@@ -1197,10 +1211,12 @@ public class ComponentsFactory implements IComponentsFactory {
      * 
      * @see org.talend.core.model.components.IComponentsFactory#resetSpecificComponents()
      */
+    @Override
     public void resetSpecificComponents() {
         loadComponentsFromExtensions();
     }
 
+    @Override
     public Map<String, File> getComponentsProvidersFolder() {
         Map<String, File> list = new HashMap<String, File>();
 
@@ -1217,6 +1233,7 @@ public class ComponentsFactory implements IComponentsFactory {
         return list;
     }
 
+    @Override
     public Map<String, ImageDescriptor> getComponentsImageRegistry() {
         return componentsImageRegistry;
     }
