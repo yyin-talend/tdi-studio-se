@@ -35,7 +35,6 @@ import org.talend.designer.dbmap.external.connection.IOConnection;
 import org.talend.designer.dbmap.external.converter.ExternalDataConverter;
 import org.talend.designer.dbmap.external.data.ExternalDbMapData;
 import org.talend.designer.dbmap.external.data.ExternalDbMapUiProperties;
-import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.managers.MapperManager;
 import org.talend.designer.dbmap.model.MapperModel;
 import org.talend.designer.dbmap.model.table.InputTable;
@@ -87,8 +86,7 @@ public class MapperMain {
         IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
                 IBrandingService.class);
         String productName = brandingService.getFullProductName();
-        shell.setText(Messages.getString(
-                "MapperMain.title", productName, connector.getComponent().getName(), connector.getUniqueName())); //$NON-NLS-1$
+        shell.setText(productName + " - " + connector.getComponent().getName() + " - " + connector.getUniqueName()); //$NON-NLS-1$ //$NON-NLS-2$
         ExternalDbMapUiProperties uiProperties = mapperManager.getUiManager().getUiProperties();
         Rectangle boundsMapper = uiProperties.getBoundsMapper();
         if (uiProperties.isShellMaximized()) {
