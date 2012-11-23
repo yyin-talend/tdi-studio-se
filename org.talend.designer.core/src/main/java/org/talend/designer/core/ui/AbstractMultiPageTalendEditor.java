@@ -568,7 +568,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     if (file.exists()) {
                         ((AbstractDecoratedTextEditor) getEditor(2)).getDocumentProvider()
                                 .getDocument(getEditor(2).getEditorInput()).set(scriptValue);
-                        boolean isReadjob = ((JobEditorInput) getEditor(0).getEditorInput()).isReadOnly();
+                        boolean isReadjob = ((JobEditorInput) getEditor(0).getEditorInput()).checkReadOnly();
 
                         IProxyRepositoryFactory rFactory = ProxyRepositoryFactory.getInstance();
                         if (isReadjob || rFactory.isUserReadOnlyOnCurrentProject()) {
@@ -618,6 +618,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 } catch (IllegalAccessException e) {
                     ExceptionHandler.process(e);
                 } catch (InvocationTargetException e) {
+                    ExceptionHandler.process(e);
+                } catch (PersistenceException e) {
                     ExceptionHandler.process(e);
                 }
                 changeContextsViewStatus(false);
