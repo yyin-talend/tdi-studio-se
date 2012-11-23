@@ -106,18 +106,19 @@ public class ExportJobScriptAction extends AContextualAction {
 
         MessageDialog messageDialog = new MessageDialog(new Shell(), "", //$NON-NLS-1$
                 null, Messages.getString("ExportJobScriptAction.confirmMessage"), //$NON-NLS-1$
-                MessageDialog.CONFIRM, new String[] { "Continue", IDialogConstants.CANCEL_LABEL }, 0); //$NON-NLS-1$
+                MessageDialog.CONFIRM, new String[] {
+                        Messages.getString("ExportJobScriptAction.confirmContiune"), IDialogConstants.CANCEL_LABEL }, 0); //$NON-NLS-1$
         if (checkDirtyPart(workbench) && messageDialog.open() == 0) {
-            workbench.saveAllEditors(true);
+            // workbench.saveAllEditors(true);
+            dialog.setPageSize(830, 500);
+            dialog.open();
+
+            // collector
+            IPreferenceStore preferenceStore = RepositoryPlugin.getDefault().getPreferenceStore();
+            int num = preferenceStore.getInt(ExportJobTokenCollector.TOS_COUNT_JOB_EXPORTS.getPrefKey());
+            preferenceStore.setValue(ExportJobTokenCollector.TOS_COUNT_JOB_EXPORTS.getPrefKey(), num + 1);
         }
 
-        dialog.setPageSize(830, 500);
-        dialog.open();
-
-        // collector
-        IPreferenceStore preferenceStore = RepositoryPlugin.getDefault().getPreferenceStore();
-        int num = preferenceStore.getInt(ExportJobTokenCollector.TOS_COUNT_JOB_EXPORTS.getPrefKey());
-        preferenceStore.setValue(ExportJobTokenCollector.TOS_COUNT_JOB_EXPORTS.getPrefKey(), num + 1);
     }
 
     /**
