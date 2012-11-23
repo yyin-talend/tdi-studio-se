@@ -3070,7 +3070,8 @@ public class EmfComponent extends AbstractComponent {
         EList parameters = compType.getPARAMETERS().getPARAMETER();
         for (Object parameter : parameters) {
             pType = (PARAMETERType) parameter;
-            if ("SCHEMA".equals(pType.getNAME()) && "SCHEMA_TYPE".equals(pType.getFIELD()) && !pType.isREADONLY()) { //$NON-NLS-1$ //$NON-NLS-2$
+            if ("SCHEMA_TYPE".equals(pType.getFIELD()) && !pType.isREADONLY() && //$NON-NLS-1$ 
+                    (pType.getCONTEXT() == null || "FLOW".equals(pType.getCONTEXT()))) { //$NON-NLS-1$ 
                 useSchema = true;
                 break;
             }
