@@ -314,25 +314,6 @@ public class LoginDialog extends TrayDialog {
             }
         }
 
-        try {
-            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICoreTisService.class)) {
-                final ICoreTisService service = (ICoreTisService) GlobalServiceRegister.getDefault().getService(
-                        ICoreTisService.class);
-                if (service != null) {// if in TIS then update the bundle status according to the project type
-                    if (!service.validProject(project, needRestartForLocal)) {
-                        LoginComposite.isRestart = true;
-                        return true;
-                    }
-                }// else not in TIS so ignor caus we may not have a licence so we do not know which bundles belong to
-                 // DI, DQ or MDM
-            }
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-            loginComposite.populateProjectList();
-            MessageDialog.openError(getShell(), getShell().getText(), e.getMessage());
-            return false;
-        }
-
         // check for Talendforge
         if (PluginChecker.isExchangeSystemLoaded() && !TalendPropertiesUtil.isHideExchange()) {
             IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
@@ -359,6 +340,25 @@ public class LoginDialog extends TrayDialog {
                     }
                 }
             }
+        }
+
+        try {
+            if (GlobalServiceRegister.getDefault().isServiceRegistered(ICoreTisService.class)) {
+                final ICoreTisService service = (ICoreTisService) GlobalServiceRegister.getDefault().getService(
+                        ICoreTisService.class);
+                if (service != null) {// if in TIS then update the bundle status according to the project type
+                    if (!service.validProject(project, needRestartForLocal)) {
+                        LoginComposite.isRestart = true;
+                        return true;
+                    }
+                }// else not in TIS so ignor caus we may not have a licence so we do not know which bundles belong to
+                 // DI, DQ or MDM
+            }
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+            loginComposite.populateProjectList();
+            MessageDialog.openError(getShell(), getShell().getText(), e.getMessage());
+            return false;
         }
 
         final Shell shell = this.getShell();
