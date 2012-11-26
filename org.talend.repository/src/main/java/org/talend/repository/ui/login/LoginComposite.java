@@ -1209,7 +1209,7 @@ public class LoginComposite extends Composite {
         data = new FormData();
         data.top = new FormAttachment(svnBranchLabel, 0, SWT.CENTER);
         data.left = new FormAttachment(svnBranchLabel, HORIZONTAL_SPACE);
-        data.right = new FormAttachment(50, 0);
+        data.right = new FormAttachment(openProjectBtn, -40, SWT.LEFT);
         branchesViewer.getControl().setLayoutData(data);
     }
 
