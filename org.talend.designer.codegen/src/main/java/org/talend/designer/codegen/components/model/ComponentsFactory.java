@@ -69,7 +69,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.ui.branding.IBrandingService;
-import org.talend.core.utils.BrandingChecker;
+import org.talend.core.utils.TalendCacheUtils;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.core.ITisLocalProviderService;
@@ -261,7 +261,7 @@ public class ComponentsFactory implements IComponentsFactory {
         skeletonList = new ArrayList<String>();
         String installLocation = new Path(Platform.getConfigurationLocation().getURL().getPath()).toFile().getAbsolutePath();
         componentToProviderMap = new HashMap<IComponent, AbstractComponentsProvider>();
-        boolean isNeedClean = cleanComponentCache();
+        boolean isNeedClean = TalendCacheUtils.cleanComponentCache();
         isCreated = hasComponentFile(installLocation) && !isNeedClean;
         if (isReset) {
             isCreated = false;
@@ -480,11 +480,6 @@ public class ComponentsFactory implements IComponentsFactory {
                 + LanguageManager.getCurrentLanguage().toString().toLowerCase() + ComponentsFactory.TALEND_FILE_NAME;
         File file = new File(new Path(installLocation).append(filePath).toString());
         return file.exists();
-    }
-
-    private boolean cleanComponentCache() {
-        return ArrayUtils.contains(Platform.getApplicationArgs(), "--clean_component_cache")
-                || ArrayUtils.contains(Platform.getApplicationArgs(), "-clean") || BrandingChecker.isBrandingChanged();
     }
 
     private void loadComponentsFromComponentsProviderExtension() {
