@@ -194,7 +194,7 @@
 	    </PARAMETER> 		
 	    
 	    <PARAMETER NAME="SCHEMA_OPT_NUM" FIELD="TEXT" NUM_ROW="90"
-            REQUIRED="true" SHOW="true">
+            REQUIRED="true" SHOW="false">
             <DEFAULT>100</DEFAULT>
         </PARAMETER>		
 	</ADVANCED_PARAMETERS>
