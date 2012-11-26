@@ -19,7 +19,6 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
-import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContext;
@@ -55,10 +54,10 @@ public class ConvertRepositoryNodeToProcessNode {
 
     DatabaseConnection databaseConnection;
 
-    public ConvertRepositoryNodeToProcessNode(ConnectionItem connectionItem, String tableName) {
+    public ConvertRepositoryNodeToProcessNode(ConnectionItem connectionItem, IMetadataConnection convertedConnection,
+            String tableName) {
         databaseConnection = (DatabaseConnection) connectionItem.getConnection();
-        IMetadataConnection iMetadataConnection = null;
-        iMetadataConnection = ConvertionHelper.convert(databaseConnection);
+        IMetadataConnection iMetadataConnection = convertedConnection;
         String dbType = iMetadataConnection.getDbType();
         String username = iMetadataConnection.getUsername();
         String pwd = iMetadataConnection.getPassword();
@@ -106,7 +105,7 @@ public class ConvertRepositoryNodeToProcessNode {
 
         CompoundCommand cc = new CompoundCommand();
         // inital parameters command
-        ChangeValuesFromRepository changeValueCommand = new ChangeValuesFromRepository((Node) node, databaseConnection,
+        ChangeValuesFromRepository changeValueCommand = new ChangeValuesFromRepository(node, databaseConnection,
                 propertyParam.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), propertyId); //$NON-NLS-1$
         cc.add(changeValueCommand);
 
@@ -117,14 +116,14 @@ public class ConvertRepositoryNodeToProcessNode {
         cc.add(changeMetadataCommand);
 
         // guess query command
-        QueryGuessCommand queryGuessCommand = new QueryGuessCommand((Node) node, node.getMetadataList().get(0), schema, dbType,
+        QueryGuessCommand queryGuessCommand = new QueryGuessCommand(node, node.getMetadataList().get(0), schema, dbType,
                 databaseConnection);
         cc.add(queryGuessCommand);
 
         // execute the commands
         cc.execute();
 
-        IElementParameter query = node.getElementParameter("QUERY"); //$NON-NLS-N$ //$NON-NLS-1$
+        IElementParameter query = node.getElementParameter("QUERY"); //$NON-NLS-1$
         //
         memoSQL = query.getValue().toString();
         String memoSQLTemp = TalendTextUtils.removeQuotesIfExist(memoSQL);
