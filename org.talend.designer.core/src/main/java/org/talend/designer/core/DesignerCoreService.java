@@ -41,6 +41,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.genhtml.IJobSettingConstants;
+import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
@@ -105,10 +106,12 @@ public class DesignerCoreService implements IDesignerCoreService {
 
     private Map<String, java.util.Date> lastGeneratedJobs = new HashMap<String, java.util.Date>();
 
+    @Override
     public List<IProcess2> getOpenedProcess(IEditorReference[] reference) {
         return RepositoryManagerHelper.getOpenedProcess(reference);
     }
 
+    @Override
     public Item getProcessItem(MultiPageEditorPart talendEditor) {
         ProcessEditorInput processEditorInput = (ProcessEditorInput) talendEditor.getEditorInput();
         Item item = processEditorInput.getItem();
@@ -122,10 +125,12 @@ public class DesignerCoreService implements IDesignerCoreService {
      * org.talend.designer.core.IDesignerCoreService#getProcessFromProcessItem(org.talend.core.model.properties.ProcessItem
      * )
      */
+    @Override
     public IProcess getProcessFromProcessItem(ProcessItem processItem) {
         return getProcessFromProcessItem(processItem, false);
     }
 
+    @Override
     public IProcess getProcessFromProcessItem(ProcessItem processItem, boolean loadScreenshots) {
         Process process = null;
         process = new Process(processItem.getProperty());
@@ -133,6 +138,7 @@ public class DesignerCoreService implements IDesignerCoreService {
         return process;
     }
 
+    @Override
     public IProcess getProcessFromItem(Item item) {
         if (item instanceof ProcessItem) {
             return getProcessFromProcessItem((ProcessItem) item);
@@ -152,6 +158,7 @@ public class DesignerCoreService implements IDesignerCoreService {
      * org.talend.designer.core.IDesignerCoreService#getProcessFromJobletProcessItem(org.talend.core.model.properties
      * .JobletProcessItem)
      */
+    @Override
     public IProcess getProcessFromJobletProcessItem(JobletProcessItem jobletProcessItem) {
         AbstractProcessProvider processProvider = AbstractProcessProvider.findProcessProviderFromPID(IComponent.JOBLET_PID);
         if (processProvider != null) {
@@ -161,6 +168,7 @@ public class DesignerCoreService implements IDesignerCoreService {
         return null;
     }
 
+    @Override
     public ILabelProvider getGEFEditorNodeLabelProvider() {
         return new GefEditorLabelProvider();
     }
@@ -176,6 +184,7 @@ public class DesignerCoreService implements IDesignerCoreService {
      * 
      * @see org.talend.designer.core.IDesignerCoreService#getQueriesMap()
      */
+    @Override
     public List<Map> getMaps() {
         if (repositoryValueUtils == null) {
             repositoryValueUtils = new RepositoryValueUtils();
@@ -193,22 +202,27 @@ public class DesignerCoreService implements IDesignerCoreService {
      * org.talend.designer.core.IDesignerCoreService#getRepositoryAliasName(org.talend.core.model.properties.ConnectionItem
      * )
      */
+    @Override
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
         return repositoryValueUtils.getRepositoryAliasName(connectionItem);
     }
 
+    @Override
     public void switchToCurContextsView() {
         Contexts.switchToCurContextsView();
     }
 
+    @Override
     public void switchToCurComponentSettingsView() {
         ComponentSettings.switchToCurComponentSettingsView();
     }
 
+    @Override
     public void switchToCurJobSettingsView() {
         JobSettings.switchToCurJobSettingsView();
     }
 
+    @Override
     public void saveJobBeforeRun(IProcess activeProcess) {
         new SaveJobBeforeRunAction(activeProcess).run();
     }
@@ -220,6 +234,7 @@ public class DesignerCoreService implements IDesignerCoreService {
      * 
      * @see org.talend.designer.core.IDesignerCoreService#getCurrentProcess()
      */
+    @Override
     public IProcess getCurrentProcess() {
         IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         if (!(editor instanceof AbstractMultiPageTalendEditor)) {
@@ -234,6 +249,7 @@ public class DesignerCoreService implements IDesignerCoreService {
      * 
      * @see org.talend.designer.core.IDesignerCoreService#refreshDesignerPalette()
      */
+    @Override
     public void synchronizeDesignerUI(PropertyChangeEvent evt) {
         ComponentUtilities.updatePalette();
         // List<String> openJobs = new ArrayList<String>();
@@ -249,10 +265,12 @@ public class DesignerCoreService implements IDesignerCoreService {
      * 
      * @see org.talend.designer.core.IDesignerCoreService#getPreferenceStore(java.lang.String)
      */
+    @Override
     public String getPreferenceStore(String key) {
         return DesignerPlugin.getDefault().getPreferenceStore().getString(key);
     }
 
+    @Override
     public IPreferenceStore getDesignerCorePreferenceStore() {
         return DesignerPlugin.getDefault().getPreferenceStore();
     }
@@ -263,14 +281,17 @@ public class DesignerCoreService implements IDesignerCoreService {
      * @see
      * org.talend.designer.core.IDesignerCoreService#createPalette(org.talend.core.model.components.IComponentsFactory)
      */
+    @Override
     public PaletteRoot createPalette(IComponentsFactory factory) {
         return TalendEditorPaletteFactory.createPalette(factory);
     }
 
+    @Override
     public PaletteRoot createPalette(IComponentsFactory factory, boolean isFavorite) {
         return TalendEditorPaletteFactory.createPalette(factory, isFavorite);
     }
 
+    @Override
     public PaletteRoot getAllNodeStructure(IComponentsFactory factory) {
         return TalendEditorPaletteFactory.getAllNodeStructure(factory);
     }
@@ -282,10 +303,12 @@ public class DesignerCoreService implements IDesignerCoreService {
      * org.talend.designer.core.IDesignerCoreService#createPalette(org.talend.core.model.components.IComponentsFactory,
      * org.eclipse.gef.palette.PaletteRoot)
      */
+    @Override
     public PaletteRoot createPalette(IComponentsFactory compFac, PaletteRoot root) {
         return TalendEditorPaletteFactory.createPalette(compFac, root);
     }
 
+    @Override
     public PaletteRoot createPalette(IComponentsFactory compFac, PaletteRoot root, boolean isFavorite) {
         return TalendEditorPaletteFactory.createPalette(compFac, root, isFavorite);
     }
@@ -295,19 +318,23 @@ public class DesignerCoreService implements IDesignerCoreService {
      * 
      * @see org.talend.designer.core.IDesignerCoreService#setPaletteFilter(java.lang.String)
      */
+    @Override
     public void setPaletteFilter(String filter) {
         TalendEditorPaletteFactory.setFilter(filter);
     }
 
+    @Override
     public IAction getCreateProcessAction(boolean isToolbar) {
         return new CreateProcess(isToolbar);
     }
 
+    @Override
     public IAction getCreateBeanAction(boolean isToolbar) {
 
         return new CreateRoutineAction(isToolbar);
     }
 
+    @Override
     public List<PaletteEntry> createJobletEtnry() {
         List<PaletteEntry> list = new ArrayList<PaletteEntry>();
         for (AbstractProcessProvider provider : AbstractProcessProvider.findAllProcessProviders()) {
@@ -316,6 +343,7 @@ public class DesignerCoreService implements IDesignerCoreService {
         return list;
     }
 
+    @Override
     public boolean isTalendEditor(IEditorPart activeEditor) {
         if (activeEditor == null) {
             return false;
@@ -324,6 +352,7 @@ public class DesignerCoreService implements IDesignerCoreService {
 
     }
 
+    @Override
     public INode getRefrenceNode(String componentName) {
 
         if (componentName == null) {
@@ -341,6 +370,7 @@ public class DesignerCoreService implements IDesignerCoreService {
      * 
      * @see org.talend.designer.core.IDesignerCoreService#executeUpdatesManager(java.util.List)
      */
+    @Override
     public boolean executeUpdatesManager(List<UpdateResult> results, boolean onlySimpleShow) {
         return UpdateManagerUtils.executeUpdates(results, onlySimpleShow);
     }
@@ -350,6 +380,7 @@ public class DesignerCoreService implements IDesignerCoreService {
      * 
      * @see org.talend.designer.core.IDesignerCoreService#getProcessForJobTemplate()
      */
+    @Override
     public List<IProcess> getProcessForJobTemplate() {
         if (JobTemplateViewsAndProcessUtil.getInstance().getHelpProcess() != null) {
             // Everytime return a new list
@@ -365,6 +396,7 @@ public class DesignerCoreService implements IDesignerCoreService {
      * 
      * @see org.talend.designer.core.IDesignerCoreService#getLastGeneratedJobsDateMap()
      */
+    @Override
     public Map<String, java.util.Date> getLastGeneratedJobsDateMap() {
         return lastGeneratedJobs;
     }
@@ -376,6 +408,7 @@ public class DesignerCoreService implements IDesignerCoreService {
      * @param name
      * @return
      */
+    @Override
     public String getDisplayForProcessParameterFromName(final String name) {
 
         for (EParameterName param : EParameterName.values()) {
@@ -403,6 +436,7 @@ public class DesignerCoreService implements IDesignerCoreService {
         return name;
     }
 
+    @Override
     public void refreshComponentView(Item item) {
         try {
             IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
@@ -495,6 +529,7 @@ public class DesignerCoreService implements IDesignerCoreService {
      * 
      * nrousseau Comment method "removeConnection".
      */
+    @Override
     public void removeConnection(INode node, String schemaName) {
         for (IConnection connection : (List<IConnection>) node.getOutgoingConnections()) {
             if (connection.getMetaName().equals(schemaName)) {
@@ -519,8 +554,11 @@ public class DesignerCoreService implements IDesignerCoreService {
      * @see org.talend.designer.core.IDesignerCoreService#convertNode(org.talend.core.model.properties.ConnectionItem,
      * java.lang.String)
      */
-    public CsvArray convertNode(ConnectionItem connectionItem, String tableName) throws ProcessorException {
-        ConvertRepositoryNodeToProcessNode convertMove = new ConvertRepositoryNodeToProcessNode(connectionItem, tableName);
+    @Override
+    public CsvArray convertNode(ConnectionItem connectionItem, IMetadataConnection convertedConnection, String tableName)
+            throws ProcessorException {
+        ConvertRepositoryNodeToProcessNode convertMove = new ConvertRepositoryNodeToProcessNode(connectionItem,
+                convertedConnection, tableName);
         CsvArray array = null;
 
         array = convertMove.runMockProcess();
@@ -535,6 +573,7 @@ public class DesignerCoreService implements IDesignerCoreService {
      * org.talend.designer.core.IDesignerCoreService#updateTraceColumnValues(org.talend.core.model.process.IConnection,
      * java.util.Map, java.util.Set)
      */
+    @Override
     public void updateTraceColumnValues(IConnection conn, Map<String, String> changedNameColumns, Set<String> addedColumns) {
         if (changedNameColumns == null) {
             for (String curColumnName : addedColumns) {
@@ -577,6 +616,7 @@ public class DesignerCoreService implements IDesignerCoreService {
      * @see org.talend.designer.core.IDesignerCoreService#getConnection(java.util.List,
      * org.talend.core.model.metadata.IMetadataTable)
      */
+    @Override
     public IConnection getConnection(List<? extends IConnection> connections, IMetadataTable table) {
         return TracesConnectionUtils.getConnection(connections, table);
     }
@@ -587,20 +627,24 @@ public class DesignerCoreService implements IDesignerCoreService {
      * @see org.talend.designer.core.IDesignerCoreService#setTraceFilterParameters(org.talend.core.model.process.INode,
      * org.talend.core.model.metadata.IMetadataTable, java.util.Set, java.util.Map)
      */
+    @Override
     public void setTraceFilterParameters(INode node, IMetadataTable table, Set<String> preColumnSet,
             Map<String, String> changedNameColumns) {
         TracesConnectionUtils.setTraceFilterParameters(node, table, preColumnSet, changedNameColumns);
     }
 
+    @Override
     public void createStatsLogAndImplicitParamter(Project project) {
         ProjectSettingManager.createStatsAndLogsElement(project);
         ProjectSettingManager.createImplicitContextLoadElement(project);
     }
 
+    @Override
     public void removeJobLaunch(IRepositoryViewObject objToDelete) {
         JobLaunchShortcutManager.removeJobLaunch(objToDelete);
     }
 
+    @Override
     public void renameJobLaunch(IRepositoryViewObject obj, String originalName) {
         JobLaunchShortcutManager.renameJobLaunch(obj, originalName);
     }
@@ -610,10 +654,12 @@ public class DesignerCoreService implements IDesignerCoreService {
      * 
      * @see org.talend.designer.core.IDesignerCoreService#createTalendPaletteDrawer(java.lang.String)
      */
+    @Override
     public PaletteDrawer createTalendPaletteDrawer(String family) {
         return new TalendPaletteDrawer(family);
     }
 
+    @Override
     public boolean isDummyComponent(IComponent component) {
         if (component == null) {
             return false;
@@ -625,11 +671,13 @@ public class DesignerCoreService implements IDesignerCoreService {
         return false;
     }
 
+    @Override
     public void addProblems(Problem problem) {
         Problems.add(problem);
         Problems.refreshProblemTreeView();
     }
 
+    @Override
     public void reloadParamFromProjectSettings(ParametersType processType, String paramName) {
         if (EParameterName.STATANDLOG_USE_PROJECT_SETTINGS.getName().equals(paramName)) {
             ProjectSettingManager.reloadStatsAndLogFromProjectSettings(processType, ProjectManager.getInstance()
@@ -648,6 +696,7 @@ public class DesignerCoreService implements IDesignerCoreService {
      * org.talend.designer.core.IDesignerCoreService#getNeededLibrariesForProcess(org.talend.core.model.process.IProcess
      * , boolean)
      */
+    @Override
     public Set<ModuleNeeded> getNeededLibrariesForProcess(IProcess process, boolean withChildrens) {
         return JavaProcessUtil.getNeededModules(process, withChildrens);
     }
@@ -657,10 +706,12 @@ public class DesignerCoreService implements IDesignerCoreService {
      * 
      * @see org.talend.designer.core.IDesignerCoreService#createEmptyPalette()
      */
+    @Override
     public PaletteRoot createEmptyPalette() {
         return TalendEditorPaletteFactory.createEmptyPalette();
     }
 
+    @Override
     public boolean evaluate(final String string, List<? extends IElementParameter> listParam) {
         return Expression.evaluate(string, listParam);
     }
