@@ -49,60 +49,75 @@ if(!customSetOriginalLength){//------11111
        	for (IConnection conn : conns) {//------3333
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//------4444
     			if( conn.getName() == incomingName ) {	//------5555
-	    			IMetadataTable metadata = conn.getMetadataTable();
+	    			IMetadataTable metadata = metadatas.get(0);
 	    			List<IMetadataColumn> columns = metadata.getListColumns();
-	    			for (int i = 0; i < columns.size(); i++) {//------6666
-						IMetadataColumn column = columns.get(i);
-						Integer orgainLength = column.getOriginalLength();
-						Integer length = column.getLength();
-						String orgainType = column.getType();
-						Integer precision = column.getPrecision();
-						if(precision==null) precision = 0;
-						if(orgainLength==null || orgainLength.intValue()==0 || orgainType==null || "".endsWith(orgainType.trim())) {
+	    			List<IMetadataColumn> extColumns = new java.util.ArrayList<IMetadataColumn>();
+	    			for (IMetadataColumn tempColumn : columns) {
+	    				extColumns.add(tempColumn);
+	    			}
+	    			List<IMetadataColumn> inColumns = conn.getMetadataTable().getListColumns();
+	    			for (IMetadataColumn inColumn: inColumns) {//------6666
+						IMetadataColumn column = null;
+						for (int j = 0; j < extColumns.size(); j++) {// search the corresponding metadata column for the input column
+							if(inColumn.getLabel().equals(extColumns.get(j).getLabel()) ) {
+								column = extColumns.remove(j);
+								break;
+							}
+						}
+						// if not find, then the first one of the metadata columns is used to correspond the input column
+						if (column==null && !extColumns.isEmpty()) { 
+							column = extColumns.remove(0);
+						}
+						if (column != null ) { //------77777
+							Integer orgainLength = column.getOriginalLength();
+							Integer length = column.getLength();
+							String orgainType = column.getType();
+							Integer precision = column.getPrecision();
+							if(precision==null) precision = 0;
+							if(orgainLength==null || orgainLength.intValue()==0 || orgainType==null || "".endsWith(orgainType.trim())) {
 %>
 //////////////////////////////////////////////////
 the original size in the column:<%=column.getLabel()%> in the schema should be bigger than 0 and DB Type shouldn't be null or Empty
 //////////////////////////////////////////////////
 <%
-							continue;
- 						}
+								continue;
+	 						}
 %>
 						byte[] bb_<%=column.getLabel()%>_<%=cid%> = new byte[<%=orgainLength %>];
 <%
-						if(orgainType.equals("X")){
+							if(orgainType.equals("X")){
 %>				
-							if (<%=length %> < <%=conn.getName() %>.<%=column.getLabel()%>.length()) {
+							if (<%=length %> < <%=conn.getName() %>.<%=inColumn.getLabel()%>.length()) {
                  		   		throw new Exception("Value length must be less than the length in schema.");
                 			}
-							while(<%=length%> > <%=conn.getName() %>.<%=column.getLabel()%>.length()){
-								<%=conn.getName() %>.<%=column.getLabel()%> = <%=conn.getName() %>.<%=column.getLabel()%> + " ";							
+							while(<%=length%> > <%=conn.getName() %>.<%=inColumn.getLabel()%>.length()){
+								<%=conn.getName() %>.<%=inColumn.getLabel()%> = <%=conn.getName() %>.<%=inColumn.getLabel()%> + " ";							
 							}
-							bb_<%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>.getBytes(<%=encoding %>);
+							bb_<%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=inColumn.getLabel()%>.getBytes(<%=encoding %>);
 							fOut_<%=cid%>.write(bb_<%=column.getLabel()%>_<%=cid %>);
 <%
-						}else if(orgainType.equals("3") || orgainType.equals("9")) {
-							String isImpliedDecimalStr = column.getAdditionalField().get("ImpliedDecimal");
-							boolean isImpliedDecimal = (isImpliedDecimalStr!=null&&!("").equals(isImpliedDecimalStr))?("true").equals(isImpliedDecimalStr):true;
-							String isSignedStr = column.getAdditionalField().get("Signed");
-							boolean isSigned = (isSignedStr!=null&&!("").equals(isSignedStr))?("true").equals(isSignedStr):true;
-							if(orgainType.equals("3")){
+							}else if(orgainType.equals("3") || orgainType.equals("9")) {
+								String isImpliedDecimalStr = column.getAdditionalField().get("ImpliedDecimal");
+								boolean isImpliedDecimal = (isImpliedDecimalStr!=null&&!("").equals(isImpliedDecimalStr))?("true").equals(isImpliedDecimalStr):true;
+								String isSignedStr = column.getAdditionalField().get("Signed");
+								boolean isSigned = (isSignedStr!=null&&!("").equals(isSignedStr))?("true").equals(isSignedStr):true;
+								if(orgainType.equals("3")){
 %>
-								java.math.BigDecimal <%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>;
+								java.math.BigDecimal <%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=inColumn.getLabel()%>;
 								bb_<%=column.getLabel()%>_<%=cid%> = cobolConversion.EBCDICType3.writeType3Value(<%=orgainLength%>,<%=precision %>,<%=column.getLabel()%>_<%=cid%>,<%=isSigned %>);
 								fOut_<%=cid%>.write(bb_<%=column.getLabel()%>_<%=cid%>);
 <%
-							}else {
+								}else {
 %>
-								java.math.BigDecimal <%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>;
+								java.math.BigDecimal <%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=inColumn.getLabel()%>;
 								bb_<%=column.getLabel()%>_<%=cid%> = cobolConversion.EBCDICType9.writeType9Value(<%=length %>,<%=precision %>,<%=column.getLabel()%>_<%=cid%>,<%=isSigned %>,<%=isImpliedDecimal %>,<%=encoding %>);
 								fOut_<%=cid%>.write(bb_<%=column.getLabel()%>_<%=cid%>);
 <%
-							}
-						}else if(orgainType.equals("B")) {
-							String isSignedStr = column.getAdditionalField().get("Signed");
-							boolean isSigned = (isSignedStr!=null&&!("").equals(isSignedStr))?("true").equals(isSignedStr):true;
+								}
+							}else if(orgainType.equals("B")) {
+								String isSignedStr = column.getAdditionalField().get("Signed");
 %>
-							java.math.BigInteger <%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>.toBigInteger() ;
+							java.math.BigInteger <%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=inColumn.getLabel()%>.toBigInteger() ;
 							if(<%=column.getLabel()%>_<%=cid%>.compareTo(new java.math.BigInteger("0")) < 0 ){
 								for(int i=0;i< <%=orgainLength%>;i++){
 									bb_<%=column.getLabel()%>_<%=cid%>[i] = (byte)0xFF;
@@ -114,25 +129,26 @@ the original size in the column:<%=column.getLabel()%> in the schema should be b
 							}
 							fOut_<%=cid%>.write(bb_<%=column.getLabel()%>_<%=cid%>);
 <%
-						}else if (orgainType.equals("T")) {
+							}else if (orgainType.equals("T")) {
 %>
-							byte[] bArr_<%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>;
+							byte[] bArr_<%=column.getLabel()%>_<%=cid%> = <%=conn.getName() %>.<%=inColumn.getLabel()%>;
 							for(int j=0;j<bArr_<%=column.getLabel()%>_<%=cid%>.length;j++){
 								bb_<%=column.getLabel()%>_<%=cid%>[j] = bArr_<%=column.getLabel()%>_<%=cid%>[j];
 							}
 							fOut_<%=cid%>.write(bb_<%=column.getLabel()%>_<%=cid%>);
 <%
-						}else {
+							}else {
 %>
 //////////////////////////////////////////////////
 DB Type of the column:<%=column.getLabel()%> should be X, 3, 9, B, T
 //////////////////////////////////////////////////
 <%
-						}
+							}
 %>
 							fOut_<%=cid%>.flush();
 
 <%
+						} //-----77777
 					}//------66666
 				}//------5555
 			}//------4444
