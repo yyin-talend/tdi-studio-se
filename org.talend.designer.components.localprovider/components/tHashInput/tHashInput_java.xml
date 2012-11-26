@@ -38,7 +38,9 @@
 			NUM_ROW="5" SHOW_IF="(LINK_WITH =='false')">
 			<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.hash"</DEFAULT>
 		</PARAMETER>
-		
+		<PARAMETER NAME="RELEASE_CACHE" FIELD="CHECK" NUM_ROW="10" SHOW_IF="LINK_WITH =='true'">
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
 <!-- only when tHashOutput stores all rows, tHashInput could active the function: keep_first/keep_last/keep_all -->
 <!--
 		<PARAMETER NAME="KEYS_MANAGEMENT" FIELD="CLOSED_LIST"
