@@ -18,10 +18,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -33,6 +35,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.QueryRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
+import org.talend.repository.ui.wizards.metadata.ContextSetsSelectionDialog;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 
@@ -52,6 +55,7 @@ public class ReadQueriesAction extends AContextualAction {
         setImageDescriptor(ImageProvider.getImageDesc(EImage.READ_ICON));
     }
 
+    @Override
     protected void doRun() {
         IStructuredSelection selection = (IStructuredSelection) getSelection();
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
@@ -82,13 +86,23 @@ public class ReadQueriesAction extends AContextualAction {
         }
         Shell parentShell = new Shell(display);
         TextUtil.setDialogTitle(TalendTextUtils.SQL_BUILDER_TITLE_REP);
-        SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
+        Connection connection = dbConnectionItem.getConnection();
+        String selectedContext = null;
+        if (connection.isContextMode()) {
+            ContextItem contextItem = ContextUtils.getContextItemById2(connection.getContextId());
+            if (contextItem != null && connection.isContextMode()) {
+
+                ContextSetsSelectionDialog setsDialog = new ContextSetsSelectionDialog(null, contextItem, false);
+                setsDialog.open();
+                selectedContext = setsDialog.getSelectedContext();
+            }
+        }
+        SQLBuilderDialog dial = new SQLBuilderDialog(parentShell, repositoryNode, selectedContext);
 
         dial.setReadOnly(true);
 
-        Connection connection = dbConnectionItem.getConnection();
         if (connection instanceof DatabaseConnection) {
-            IMetadataConnection imetadataConnection = ConvertionHelper.convert((DatabaseConnection) connection, true);
+            IMetadataConnection imetadataConnection = ConvertionHelper.convert(connection, true);
             connParameters.setSchema(imetadataConnection.getSchema());
         }
         connParameters.setNodeReadOnly(true);
@@ -98,6 +112,7 @@ public class ReadQueriesAction extends AContextualAction {
         refresh(repositoryNode);
     }
 
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         if (canWork) {
