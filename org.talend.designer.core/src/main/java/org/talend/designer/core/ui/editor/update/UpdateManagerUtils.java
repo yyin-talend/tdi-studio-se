@@ -248,6 +248,9 @@ public final class UpdateManagerUtils {
                     Map<String, Boolean> jobIdClosed = new HashMap<String, Boolean>();
 
                     for (UpdateResult result : results) {
+                        if (!result.isChecked()) {
+                            continue;
+                        }
                         String id = result.getObjectId();
                         String version = result.getObjectVersion();
                         if (id == null) {
@@ -325,6 +328,9 @@ public final class UpdateManagerUtils {
                             }
 
                             for (UpdateResult result : results) {
+                                if (!result.isChecked()) {
+                                    continue;
+                                }
                                 if (!StringUtils.equals(currentId, result.getObjectId())) {
                                     continue; // not the current job we need to update
                                 }
@@ -416,6 +422,9 @@ public final class UpdateManagerUtils {
         boolean palette = false;
 
         for (UpdateResult result : (List<UpdateResult>) results) {
+            if (!result.isChecked()) {
+                continue;
+            }
             switch (result.getUpdateType()) {
             case CONTEXT:
             case JOBLET_CONTEXT:
@@ -590,6 +599,9 @@ public final class UpdateManagerUtils {
      */
     private static void checkandRefreshProcess(final List<UpdateResult> results) {
         for (UpdateResult tempResult : results) {
+            if (!tempResult.isChecked()) {
+                continue;
+            }
             if (tempResult.getJob() instanceof IProcess2) {
                 IProcess2 process = (IProcess2) tempResult.getJob();
                 process.checkProcess();
