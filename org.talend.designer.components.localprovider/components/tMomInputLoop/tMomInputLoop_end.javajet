@@ -115,3 +115,10 @@
 	<%
 	}
 	%>
+
+} finally {
+//        System.out.println("close connection after loop!");
+		<%if( ("ActiveMQ").equals(serverType) && !isUseConnection){%>
+                 if (connection_<%=cid %> != null) connection_<%=cid %>.close();
+		<%}%>
+}

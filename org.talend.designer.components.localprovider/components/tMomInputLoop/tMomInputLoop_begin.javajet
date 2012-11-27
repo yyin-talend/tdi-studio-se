@@ -14,7 +14,6 @@ imports="
     org.talend.core.model.utils.TalendTextUtils
 " 
 %>
-
 	<%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
@@ -67,8 +66,11 @@ imports="
 		columns = metadata.getListColumns();
 	} %>
 
+javax.jms.Connection connection_<%=cid %> = null;
+try {
+
         <% if (isUseConnection) { %>
-	    javax.jms.Connection connection_<%=cid %> = null;
+	    connection_<%=cid %> = null;
 	    javax.jms.Session session_<%=cid %> = null;
             try {
 	        connection_<%=cid %> = (javax.jms.Connection) globalMap.get("connection_<%=connectionComponentName%>");
@@ -248,11 +250,11 @@ imports="
 		<%	
 		if(dbuser == null || ("\"\"").equals(dbuser) || ("").equals(dbuser)) {
 		%>
-			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection();
+			connection_<%=cid %> = factory_<%=cid %>.createConnection();
 		<%
 		} else {
 		%>
-			javax.jms.Connection connection_<%=cid %> = factory_<%=cid %>.createConnection(<%=dbuser%>,<%=dbpwd%>);
+			connection_<%=cid %> = factory_<%=cid %>.createConnection(<%=dbuser%>,<%=dbpwd%>);
 		<%
 		}
 		%>
