@@ -291,7 +291,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             // temp workaround for https://jira.talendforge.org/browse/TDI-22934
             if (libName.startsWith("camel-core-") //$NON-NLS-1$
                     || libName.startsWith("dom4j-") //$NON-NLS-1$
-            // temp workaround for https://jira.talendforge.org/browse/TESB-7271
+                    // temp workaround for https://jira.talendforge.org/browse/TESB-7271
                     || libName.startsWith("ojdbc")) { //$NON-NLS-1$
                 return true;
             }
@@ -381,8 +381,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         try {
             final String classRootLocation = getClassRootLocation() + projectName + File.separator;
             for (String jobFolderName : jobFolderNames) {
-                String classRoot = classRootLocation + jobFolderName;
-                String targetPath = classesLocation + File.separator + projectName + File.separator + jobFolderName;
+                String classRoot = FilesUtils.getFileRealPath(classRootLocation + jobFolderName);
+                String targetPath = FilesUtils.getFileRealPath(classesLocation + File.separator + projectName + File.separator
+                        + jobFolderName);
                 File sourceFile = new File(classRoot);
                 File targetFile = new File(targetPath);
                 FilesUtils.copyFolder(sourceFile, targetFile, true, null, null, true, false);
@@ -687,7 +688,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         for (String path : relativePathList) {
             Set<URL> resources = libResource.getResourcesByRelativePath(path);
             for (URL url : resources) {
-                File dependencyFile = new File(url.getPath());
+                File dependencyFile = new File(FilesUtils.getFileRealPath(url.getPath()));
                 String relativePath = libResource.getDirectoryName() + PATH_SEPARATOR + dependencyFile.getName();
                 bundleClasspath.append(',').append(relativePath);
                 bin.putResource(relativePath, new FileResource(dependencyFile));
