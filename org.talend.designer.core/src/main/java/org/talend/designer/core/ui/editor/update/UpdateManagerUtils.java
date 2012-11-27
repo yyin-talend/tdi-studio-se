@@ -37,6 +37,7 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.JobContext;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -44,6 +45,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
@@ -328,6 +330,12 @@ public final class UpdateManagerUtils {
                                 }
                                 if (closedItem) {
                                     result.setJob(process);
+
+                                    if (process != null && (result.getUpdateType() == EUpdateItemType.JOBLET_CONTEXT)) {
+                                        if ((result.getParameter() instanceof List) && process.getContextManager() != null) {
+                                            process.getContextManager().setListContext((List<IContext>) result.getParameter());
+                                        }
+                                    }
                                 }
                                 // execute
                                 executeUpdate(result, monitor);
