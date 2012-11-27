@@ -32,10 +32,10 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.repository.i18n.Messages;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.editor.RepositoryEditorInput;
-import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -70,6 +70,12 @@ public class RenameFolderAction extends AContextualAction {
     protected void doRun() {
         ISelection selection = getSelection();
         Object obj = ((IStructuredSelection) selection).getFirstElement();
+        if (obj == null) {
+            MessageDialog.openWarning(new Shell(), Messages.getString("RenameFolderAction.warning.cannotFind.title"), Messages //$NON-NLS-1$
+                    .getString("RenameFolderAction.warning.cannotFind.message")); //$NON-NLS-1$
+            return;
+        }
+
         RepositoryNode node = (RepositoryNode) obj;
 
         // Check if some jobs in the folder are currently opened:
@@ -87,6 +93,10 @@ public class RenameFolderAction extends AContextualAction {
         path = RepositoryNodeUtilities.getPath(node);
         objectType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
 
+        openFolderWizard(node, objectType, path);
+    }
+
+    protected void openFolderWizard(RepositoryNode node, ERepositoryObjectType objectType, IPath path) {
         if (objectType != null) {
             FolderWizard processWizard = new FolderWizard(path, objectType, node.getObject().getLabel());
             Shell activeShell = Display.getCurrent().getActiveShell();
@@ -139,7 +149,7 @@ public class RenameFolderAction extends AContextualAction {
         setEnabled(canWork);
     }
 
-    private String getFirstOpenedChild(IRepositoryNode node) {
+    protected String getFirstOpenedChild(IRepositoryNode node) {
         if (node.hasChildren()) {
             IWorkbenchPage page = getActivePage();
             IEditorReference[] editorReferences = page.getEditorReferences();
