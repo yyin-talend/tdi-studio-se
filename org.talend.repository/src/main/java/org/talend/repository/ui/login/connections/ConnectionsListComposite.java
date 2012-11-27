@@ -202,6 +202,9 @@ public class ConnectionsListComposite extends Composite {
         });
 
         if (!list.isEmpty()) {
+            for (int i = 0; i < list.size(); i++) {
+                setSelectedConnection(list.get(i));
+            }
             setSelectedConnection(list.get(0));
         }
     }
