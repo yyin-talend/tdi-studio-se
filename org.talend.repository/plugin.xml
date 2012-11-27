@@ -1748,6 +1748,15 @@
               name="ChangeOracleJarName4OracleDriver"
               version="5.2.1">
         </projecttask>
+        <projecttask
+              beforeLogon="false"
+              breaks="5.2.0"
+              class="org.talend.repository.model.migration.RenametStandardizePhoneNumberColumnName"
+              description="Rename the schema column &quot;IsPossiblePhoneNumber &quot; to &quot;IsPossiblePhoneNumber&quot;"
+              id="org.talend.repository.model.migration.RenametStandardizePhoneNumberColumnName"
+              name="RenametStandardizePhoneNumberColumnName"
+              version="5.2.1">
+        </projecttask>
    </extension>
    
    <extension
