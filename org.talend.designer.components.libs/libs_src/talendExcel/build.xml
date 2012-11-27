@@ -16,7 +16,7 @@
 		<pathelement location="${component.plugin.home}/tMicrosoftCrmInput/geronimo-stax-api_1.0_spec-1.0.jar" />
 		<pathelement location="${component.plugin.home}/tFileInputExcel/log4j-1.2.15.jar" />
 		<pathelement location="${component.plugin.home}/tFileInputExcel/poi-3.8-20120913_modified_talend.jar" />
-		<pathelement location="${component.plugin.home}/tFileInputExcel/poi-ooxml-3.8-20120326.jar" />
+		<pathelement location="${component.plugin.home}/tFileInputExcel/poi-ooxml-3.8-20121127_modified_talend.jar" />
 		<pathelement location="${component.plugin.home}/tFileInputExcel/poi-ooxml-schemas-3.8-20120326.jar" />
 		<pathelement location="${component.plugin.home}/tFileInputExcel/poi-scratchpad-3.8-20120326.jar" />
 		<pathelement location="${component.plugin.home}/tMicrosoftCrmInput/xmlbeans-2.3.0.jar" />

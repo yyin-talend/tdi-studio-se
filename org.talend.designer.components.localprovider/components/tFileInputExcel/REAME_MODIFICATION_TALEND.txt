@@ -28,3 +28,16 @@ for (int i = 0; i < fs.length(); i++) {
     }
 	sb.append(c);
 }
+
+
+Modified by jjzhou 2012-11-27 for https://jira.talendforge.org/browse/TDI-23783 :
+change poi-ooxml-3.8-20120326.jar file name to poi-ooxml-3.8-20121127_modified_talend.jar
+class: org.apache.poi.xssf.eventusermodel.XSSFSheetXMLHandler.java
+(line 270)
+-   thisStr = formatter.formatRawCellContents(Double.parseDouble(n), this.formatIndex, this.formatString);
++   if(!DateUtil.isADateFormat(formatIndex,formatString)) {
+        java.text.DecimalFormat df = new java.text.DecimalFormat("#.####################################");
+        thisStr = df.format(Double.parseDouble(n));
+    }else{
+        thisStr = formatter.formatRawCellContents(Double.parseDouble(n), this.formatIndex, this.formatString);
+    }
