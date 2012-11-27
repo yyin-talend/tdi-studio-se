@@ -369,7 +369,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 display = site.getShell().getDisplay();
                 repFactory.addRepositoryWorkUnitListener(repositoryWorkListener);
                 repFactory.lock(currentProcess);
-                boolean locked = currentProcess.getProperty().getItem().getState().isLocked();
+                boolean locked = repFactory.getStatus(currentProcess) == ERepositoryStatus.LOCK_BY_USER;
                 if (!locked) {
                     setReadOnly(true);
                 }
