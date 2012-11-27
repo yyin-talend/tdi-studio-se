@@ -99,8 +99,8 @@ import java.util.Comparator;
 String talendJobInterfaces = "TalendJob";
 
 boolean talendMdmJob = !process.getNodesOfType("tMDMTriggerInput").isEmpty() || !process.getNodesOfType("tMDMTriggerOutput").isEmpty();
-boolean talendEsbJob = !process.getNodesOfType("tESBProviderRequest").isEmpty() || !process.getNodesOfType("tESBConsumer").isEmpty();
-boolean talendEsbJobFactory = !process.getNodesOfType("tESBProviderRequest").isEmpty();
+boolean talendEsbJob = !process.getNodesOfType("tESBProviderRequest").isEmpty() || !process.getNodesOfType("tESBConsumer").isEmpty() || !process.getNodesOfType("tRouteInput").isEmpty();
+boolean talendEsbJobFactory = !process.getNodesOfType("tESBProviderRequest").isEmpty() || !process.getNodesOfType("tRouteInput").isEmpty();
 
 if (talendMdmJob) {
 	talendJobInterfaces += ", TalendMDMJob"; // Talend MDM job
@@ -126,6 +126,8 @@ public class <%=process.getName()%> implements <%=talendJobInterfaces%> {
             }
             talendESBJob.setDataSources(dataSources);
 		}
+		// fix for TESB-7714
+		talendESBJob.setEndpointRegistry(registry);
 		return talendESBJob;
 	}
 <% } %>

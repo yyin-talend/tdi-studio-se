@@ -407,17 +407,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      * @author rzubairov
      * @return
      */
-    private static boolean isESBJob(ProcessItem processItem) {
-        return null != EmfModelUtils.getComponentByName(processItem, "tESBProviderRequest", "tESBConsumer");
+    private static boolean isTalendESBJob(ProcessItem processItem) {
+        return null != EmfModelUtils.getComponentByName(processItem, "tESBProviderRequest", "tESBConsumer", "tRouteInput");
     }
 
-    private static boolean isESBProviderJob(ProcessItem processItem) {
-        return null != EmfModelUtils.getComponentByName(processItem, "tESBProviderRequest");
+    private static boolean isTalendESBJobFactory(ProcessItem processItem) {
+        return null != EmfModelUtils.getComponentByName(processItem, "tESBProviderRequest", "tRouteInput");
     }
-
-    // private static boolean isRESTClientJob(ProcessItem processItem) {
-    // return null != EmfModelUtils.getComponentByName(processItem, "tRESTClient");
-    // }
 
     private static NodeType getRESTRequestComponent(ProcessItem processItem) {
         return EmfModelUtils.getComponentByName(processItem, "tRESTRequest");
@@ -555,9 +551,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
             }
         } else { // JOB
-            if (isESBJob(processItem)) {
+            if (isTalendESBJob(processItem)) {
                 additionalJobInterfaces = "<value>routines.system.api.TalendESBJob</value>"; //$NON-NLS-1$
-                if (isESBProviderJob(processItem)) {
+                if (isTalendESBJobFactory(processItem)) {
 
                     additionalJobInterfaces += "\n\t\t\t<value>routines.system.api.TalendESBJobFactory</value>"; //$NON-NLS-1$
                     additionalServiceProps = "<entry key=\"multithreading\" value=\"true\" />"; //$NON-NLS-1$
