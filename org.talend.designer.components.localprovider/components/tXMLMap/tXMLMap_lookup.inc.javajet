@@ -471,11 +471,11 @@ skeleton="tXMLMap_java.skeleton"
 								<%
 								}
 								%>
-									List<java.util.Map<String,Object>> result_<%=cid%> = null;
-									if(lookupDoc_<%=cid%>!=null) {
-    									result_<%=cid%> = lookupDoc_<%=cid%>.LookupDocument("<%=loopXPath%>",<%=isLoopOptional %>,<%= tableName %>HashKey.documentLookupResult,
-    										xPathAsOutput_<%=cid%>,xmlNameSpaceMap_<%=tableName%>,xpathToTypeMap_<%=tableName%>,xpathToPatternMap_<%=tableName%>,"<%=matchingMode%>");
+									if(lookupDoc_<%=cid%> == null) {
+										throw new RuntimeException("<%=tableName%>.<%=documentColumn%> can't be empty");
 									}
+									List<java.util.Map<String,Object>> result_<%=cid%> = lookupDoc_<%=cid%>.LookupDocument("<%=loopXPath%>",<%=isLoopOptional %>,<%= tableName %>HashKey.documentLookupResult,
+										xPathAsOutput_<%=cid%>,xmlNameSpaceMap_<%=tableName%>,xpathToTypeMap_<%=tableName%>,xpathToPatternMap_<%=tableName%>,"<%=matchingMode%>");
 									if(result_<%=cid%> == null || result_<%=cid%>.size() == 0) {
 										// not find
 									} else {
@@ -582,11 +582,11 @@ skeleton="tXMLMap_java.skeleton"
 									<%
 									}
 									%>
-									List<java.util.Map<String,Object>> result_<%=cid%> = null;
-									if(lookupDoc_<%=cid%>!=null) {
-        								result_<%=cid%> = lookupDoc_<%=cid%>.LookupDocument("<%=loopXPath%>",<%=isLoopOptional %>,<%= tableName %>HashKey.documentLookupResult,
-        									xPathAsOutput_<%=cid%>,xmlNameSpaceMap_<%=tableName%>,xpathToTypeMap_<%=tableName%>,xpathToPatternMap_<%=tableName%>,"<%=matchingMode%>");
+									if(lookupDoc_<%=cid%> == null) {
+										throw new RuntimeException("<%=tableName%>.<%=documentColumn%> can't be empty");
 									}
+									List<java.util.Map<String,Object>> result_<%=cid%> = lookupDoc_<%=cid%>.LookupDocument("<%=loopXPath%>",<%=isLoopOptional %>,<%= tableName %>HashKey.documentLookupResult,
+										xPathAsOutput_<%=cid%>,xmlNameSpaceMap_<%=tableName%>,xpathToTypeMap_<%=tableName%>,xpathToPatternMap_<%=tableName%>,"<%=matchingMode%>");
 									if(result_<%=cid%> == null || result_<%=cid%>.size() == 0) {
 										//do nothing
 									} else {
