@@ -327,4 +327,9 @@ public class FTPWizard extends RepositoryWizard implements INewWizard {
     public void setToolBar(boolean isToolbar) {
         this.isToolBar = isToolbar;
     }
+
+    @Override
+    public ConnectionItem getConnectionItem() {
+        return this.connectionItem;
+    }
 }
