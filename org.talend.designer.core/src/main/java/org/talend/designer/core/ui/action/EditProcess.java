@@ -36,6 +36,7 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingConfiguration;
 import org.talend.designer.core.DesignerPlugin;
@@ -164,38 +165,43 @@ public class EditProcess extends AbstractProcessAction implements IIntroAction {
             canWork = false;
         }
         if (canWork) {
+
             Object o = selection.getFirstElement();
             RepositoryNode node = (RepositoryNode) o;
-            switch (node.getType()) {
-            case REPOSITORY_ELEMENT:
-                if (node.getObjectType() != ERepositoryObjectType.PROCESS) {
-                    canWork = false;
-                } else {
-                    IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
-                    IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
-                    if (repFactory.isPotentiallyEditable(node.getObject())) {
-                        this.setText(EDIT_LABEL);
+            if (RepositoryManager.isOpenedItemInEditor(node.getObject())) {
+                canWork = false;
+            } else {
+                switch (node.getType()) {
+                case REPOSITORY_ELEMENT:
+                    if (node.getObjectType() != ERepositoryObjectType.PROCESS) {
+                        canWork = false;
                     } else {
-                        this.setText(OPEN_LABEL);
+                        IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
+                        IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
+                        if (repFactory.isPotentiallyEditable(node.getObject())) {
+                            this.setText(EDIT_LABEL);
+                        } else {
+                            this.setText(OPEN_LABEL);
+                        }
                     }
+                    break;
+                default:
+                    canWork = false;
                 }
-                break;
-            default:
-                canWork = false;
-            }
-            if (canWork && node.getObject() != null
-                    && ProxyRepositoryFactory.getInstance().getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
-                canWork = false;
-            }
-            if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
-                canWork = false;
-            }
+                if (canWork && node.getObject() != null
+                        && ProxyRepositoryFactory.getInstance().getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
+                    canWork = false;
+                }
+                if (canWork && !ProjectManager.getInstance().isInCurrentMainProject(node)) {
+                    canWork = false;
+                }
 
-            // If the editProcess action canwork is true, then detect that the job version is the latest verison or not.
-            if (canWork) {
-                canWork = isLastVersion(node);
+                // If the editProcess action canwork is true, then detect that the job version is the latest verison or
+                // not.
+                if (canWork) {
+                    canWork = isLastVersion(node);
+                }
             }
-
         }
         setEnabled(canWork);
     }

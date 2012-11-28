@@ -17,8 +17,10 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,9 +81,16 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.rulers.IColumnSupport;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
@@ -113,6 +122,7 @@ import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.routines.RoutinesUtil;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
+import org.talend.core.repository.constants.Constant;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.service.IDesignerPerlService;
@@ -183,11 +193,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     updateTitleImage();
                     return;
                 }
-                // propertyIsDirty = true;
-                // process = designerEditor.getProcess();
-                // process.getProperty().eAdapters().remove(dirtyListener);
-                // process.updateProperties();
-                // process.getProperty().eAdapters().add(dirtyListener);
 
                 if (Display.getCurrent() != null) {
                     propertyIsDirty = true;
@@ -202,6 +207,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         @Override
         public void workUnitFinished() {
             revisionChanged = true;
+            Display display = DisplayUtils.getDisplay();
             if (display != null) {
                 display.asyncExec(new Runnable() {
 
@@ -237,8 +243,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     public boolean revisionChanged = false;
 
     public String revisionNumStr = null;
-
-    protected Display display;
 
     private final IPartListener partListener = new IPartListener() {
 
@@ -291,6 +295,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
 
     };
+
+    private ServiceRegistration lockService;
 
     private IPropertyListener propertyListener = null;
 
@@ -350,7 +356,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      * @see org.eclipse.ui.part.MultiPageEditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
      */
     @Override
-    public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
+    public void init(final IEditorSite site, IEditorInput editorInput) throws PartInitException {
         setSite(site);
         setInput(editorInput);
         site.setSelectionProvider(new MultiPageTalendSelectionProvider(this));
@@ -358,15 +364,14 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         // Lock the process :
         IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
-        IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
+        final IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         processEditorInput = (JobEditorInput) editorInput;
-        IProcess2 currentProcess = processEditorInput.getLoadedProcess();
+        final IProcess2 currentProcess = processEditorInput.getLoadedProcess();
         if (!currentProcess.isReadOnly()) {
             try {
                 Property property = processEditorInput.getItem().getProperty();
                 propertyInformation = new ArrayList(property.getInformations());
                 property.eAdapters().add(dirtyListener);
-                display = site.getShell().getDisplay();
                 repFactory.addRepositoryWorkUnitListener(repositoryWorkListener);
                 repFactory.lock(currentProcess);
                 boolean locked = repFactory.getStatus(currentProcess) == ERepositoryStatus.LOCK_BY_USER;
@@ -383,6 +388,35 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             }
         } else {
             setReadOnly(true);
+            Bundle bundle = FrameworkUtil.getBundle(AbstractMultiPageTalendEditor.class);
+            final Display display = getSite().getShell().getDisplay();
+            this.lockService = bundle.getBundleContext().registerService(
+                    EventHandler.class.getName(),
+                    new EventHandler() {
+
+                        @Override
+                        public void handleEvent(Event event) {
+                            if (event.getProperty(Constant.ITEM_EVENT_PROPERTY_KEY) != null) {
+                                boolean readOnly = currentProcess.checkReadOnly();
+                                setReadOnly(readOnly);
+                                if (!readOnly) {
+                                    repFactory.addRepositoryWorkUnitListener(repositoryWorkListener);
+                                    display.asyncExec(new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                            setFocus();
+                                        }
+                                    });
+                                    Property property = processEditorInput.getItem().getProperty();
+                                    propertyInformation = new ArrayList(property.getInformations());
+                                    property.eAdapters().add(dirtyListener);
+                                }
+                            }
+                        }
+                    },
+                    new Hashtable<String, String>(Collections.singletonMap(EventConstants.EVENT_TOPIC,
+                            Constant.REPOSITORY_ITEM_EVENT_PREFIX + "*"))); //$NON-NLS-1$
             revisionChanged = true;
         }
         // if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
@@ -918,7 +952,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         changeCollapsedState(true, jobletMap);
         updateRunJobContext();
         designerEditor.getProcess().getProperty().eAdapters().remove(dirtyListener);
-        display = getSite().getShell().getDisplay();
         repFactory.addRepositoryWorkUnitListener(repositoryWorkListener);
 
         if (getActivePage() == 0 || getActivePage() == 1) {
@@ -1516,6 +1549,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         // setInput(null);
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         getSite().getWorkbenchWindow().getPartService().removePartListener(partListener);
+        this.lockService.unregister();
         super.dispose();
 
         if (isKeepPropertyLocked()) {

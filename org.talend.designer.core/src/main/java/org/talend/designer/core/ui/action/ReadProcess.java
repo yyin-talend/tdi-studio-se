@@ -24,6 +24,7 @@ import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.RepositoryManager;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
@@ -52,6 +53,7 @@ public class ReadProcess extends AbstractProcessAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
+    @Override
     protected void doRun() {
         ISelection selection = getSelection();
         Object obj = ((IStructuredSelection) selection).getFirstElement();
@@ -85,19 +87,24 @@ public class ReadProcess extends AbstractProcessAction {
      * @see org.talend.repository.ui.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         if (canWork) {
             Object o = selection.getFirstElement();
             RepositoryNode node = (RepositoryNode) o;
-            switch (node.getType()) {
-            case REPOSITORY_ELEMENT:
-                if (node.getObjectType() != ERepositoryObjectType.PROCESS) {
+            if (RepositoryManager.isOpenedItemInEditor(node.getObject())) {
+                canWork = false;
+            } else {
+                switch (node.getType()) {
+                case REPOSITORY_ELEMENT:
+                    if (node.getObjectType() != ERepositoryObjectType.PROCESS) {
+                        canWork = false;
+                    }
+                    break;
+                default:
                     canWork = false;
                 }
-                break;
-            default:
-                canWork = false;
             }
         }
         setEnabled(canWork);
