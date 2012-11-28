@@ -99,7 +99,10 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 				DocumentToFlat docToFlat_<%=cid%> = new DocumentToFlat();
 				docToFlat_<%=cid%>.setOriginalLoop("<%=loopPath %>");
 				docToFlat_<%=cid%>.setIsOptional(<%=xpathHelper.isLoopOptional() %>);
-				org.dom4j.Document doc_<%=cid%> = <%=mainInputName %>.<%=tmpNode.getName() %>.getDocument(); 
+				if(<%=mainInputName %>.<%=tmpNode.getName() %> == null || <%=mainInputName %>.<%=tmpNode.getName() %>.getDocument() == null) {
+					throw new RuntimeException("<%=mainInputName %>.<%=tmpNode.getName() %> can't be empty");
+				}
+				org.dom4j.Document doc_<%=cid%> = <%=mainInputName %>.<%=tmpNode.getName() %>.getDocument();
 				docToFlat_<%=cid%>.setDoc(doc_<%=cid%>);
 				docToFlat_<%=cid%>.setDefineNS(<%=xpathHelper.hasDefinedNS()%>);
 				docToFlat_<%=cid%>.setNamespaceTool(nsTool_<%=cid%>);
