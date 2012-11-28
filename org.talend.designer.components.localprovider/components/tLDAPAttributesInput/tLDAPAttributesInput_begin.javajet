@@ -165,7 +165,7 @@ do {
 	while (answer_<%=cid%> .hasMoreElements()) {//a
 		
 <%
-	List< ? extends IConnection> conns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+	List< ? extends IConnection> conns = node.getOutgoingConnections();
 
 	String rejectConnName = "";
 	List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
