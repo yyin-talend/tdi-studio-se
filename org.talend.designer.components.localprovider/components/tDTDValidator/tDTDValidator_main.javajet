@@ -5,13 +5,6 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.IConnection
 	org.talend.core.model.process.IConnectionCategory
-	java.io.*
-	javax.xml.transform.Source
-	javax.xml.transform.stream.StreamSource
-	javax.xml.validation.*
-	org.xml.sax.SAXException
-	org.xml.sax.SAXParseException
-	org.xml.sax.helpers.DefaultHandler
 "
 %>
 

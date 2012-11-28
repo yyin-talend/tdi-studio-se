@@ -6,7 +6,6 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.IMetadataColumn 
     org.talend.core.model.process.IConnection
-    org.talend.core.model.process.EConnectionType
     org.talend.core.model.process.BlockCode
     java.util.List
 	java.util.Map

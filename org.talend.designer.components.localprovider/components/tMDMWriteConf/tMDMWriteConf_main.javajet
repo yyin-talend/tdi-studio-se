@@ -9,7 +9,6 @@
     org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.metadata.types.JavaType    
-    org.talend.core.model.process.EConnectionType
     java.util.List
     java.util.Map
   "

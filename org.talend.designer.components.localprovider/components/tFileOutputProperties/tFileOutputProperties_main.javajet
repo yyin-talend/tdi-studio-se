@@ -2,8 +2,6 @@
 	imports="
         java.util.List
         org.talend.core.model.process.ElementParameterParser
-        org.talend.core.model.metadata.IMetadataColumn
-        org.talend.core.model.metadata.IMetadataTable
         org.talend.core.model.process.IConnection
         org.talend.core.model.process.IConnectionCategory
         org.talend.core.model.process.INode

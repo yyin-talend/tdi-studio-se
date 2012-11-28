@@ -1,8 +1,6 @@
 <%@ jet
 	imports="
     java.util.List
-    java.util.Map
-    
     org.talend.core.model.metadata.IMetadataColumn
     org.talend.core.model.metadata.IMetadataTable
     org.talend.core.model.process.ElementParameterParser

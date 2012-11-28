@@ -3,15 +3,6 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
-    org.talend.core.model.process.IConnection
-	org.talend.core.model.process.EConnectionType
-	java.io.File
-	javax.xml.transform.Transformer 
-	javax.xml.transform.TransformerConfigurationException 
-	javax.xml.transform.TransformerException 
-	javax.xml.transform.TransformerFactory 
-	javax.xml.transform.stream.StreamResult 
-	javax.xml.transform.stream.StreamSource
 	java.util.List
     java.util.Map	
 "

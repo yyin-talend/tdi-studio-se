@@ -7,8 +7,6 @@
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.IConnection
     org.talend.core.model.process.IConnectionCategory
-    org.talend.core.model.metadata.types.JavaTypesManager
-    org.talend.core.model.metadata.types.JavaType    
     org.talend.core.model.process.EConnectionType
     java.util.List
     java.util.Map
@@ -56,6 +54,15 @@ if (metadatas != null && metadatas.size()>0) {
   	List<? extends IConnection> outputConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
   	List<IMetadataColumn> outputColumnList = null;
   	List<IMetadataColumn> columnList =metadata.getListColumns();
+  	if (outputConns != null && outputConns.size() > 0) {
+	  	IConnection outputConn = outputConns.get(0);
+	  	if(outputConn!=null){
+		  	IMetadataTable outputMetadata = outputConn.getMetadataTable();
+		  	if(outputMetadata!=null){
+		  		outputColumnList = outputMetadata.getListColumns();
+		  	}
+	  	}
+  	}
   	
     String rejectConnName = null;
     List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
@@ -79,10 +86,6 @@ if (metadatas != null && metadatas.size()>0) {
       if (tmpconn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
         if(rejectConnName==null || !rejectConnName.equals(tmpconn.getName())){
           outConnName=tmpconn.getName();
-		  IMetadataTable outputMetadata = tmpconn.getMetadataTable();
-		  if(outputMetadata!=null){
-		      outputColumnList = outputMetadata.getListColumns();
-		  }
         }%>
         <%=tmpconn.getName() %> = null;
       <%
@@ -207,14 +210,11 @@ if (metadatas != null && metadatas.size()>0) {
           
           	<%
             for(IMetadataColumn column : columnList) {
-				if (!"xml".equals(column.getLabel()) && !"errorCode".equals(column.getLabel()) && !"errorMessage".equals(column.getLabel())) {
 			%>
 		  <%=rejectConnName%>.<%=column.getLabel()%> = <%=inputConnName %>.<%=column.getLabel() %>;
 		   	<%
-		   		}
 			}
-			%>   
-		  <%=rejectConnName%>.xml = input_<%=cid %>; 
+			%>    
           <%=rejectConnName %>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
         <%} else {%>
           System.err.println(e.getMessage());

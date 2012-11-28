@@ -4,11 +4,7 @@ imports="
     org.talend.core.model.metadata.IMetadataTable    
     org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
-    org.talend.core.model.process.ElementParameterParser
     java.util.List
-    java.util.Map    
-    org.talend.core.model.metadata.types.JavaTypesManager
-    org.talend.core.model.metadata.types.JavaType
     org.talend.core.model.process.IConnection
 "
 %>

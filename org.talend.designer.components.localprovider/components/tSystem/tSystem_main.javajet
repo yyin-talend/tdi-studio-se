@@ -5,7 +5,6 @@
 		org.talend.core.model.metadata.IMetadataTable 
     	org.talend.core.model.metadata.IMetadataColumn 
     	org.talend.core.model.process.IConnection
-    	org.talend.core.model.process.EConnectionType
     	java.util.List
     	org.talend.core.model.process.IConnectionCategory
 	"

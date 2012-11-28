@@ -7,7 +7,6 @@ imports="
 	org.talend.core.model.process.IConnection
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	org.talend.core.model.process.IConnectionCategory
-	org.talend.core.model.process.EConnectionType
 	java.util.List
 "
 %>

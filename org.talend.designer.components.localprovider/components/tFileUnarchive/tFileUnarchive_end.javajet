@@ -1,7 +1,4 @@
 <%@ jet 
-	imports="
-		org.talend.core.model.process.INode
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-	" 
+	imports="" 
 %>
 	}

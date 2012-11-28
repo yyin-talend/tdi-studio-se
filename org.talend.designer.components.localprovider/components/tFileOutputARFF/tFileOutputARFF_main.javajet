@@ -9,9 +9,6 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
     java.util.Map
-    java.util.ArrayList
-    org.talend.core.model.metadata.types.JavaTypesManager
-	org.talend.core.model.metadata.types.JavaType
 " 
 %>
 <%

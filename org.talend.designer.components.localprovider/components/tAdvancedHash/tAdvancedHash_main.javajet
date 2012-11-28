@@ -12,9 +12,6 @@
 		org.talend.core.model.process.IHashConfiguration
 		org.talend.core.model.process.IHashableColumn
 		org.talend.core.model.process.IMatchingMode
-		java.util.HashSet
-		java.util.Set
-		org.talend.core.model.process.EConnectionType
 		org.talend.core.model.process.IDataConnection
 	"
 %>

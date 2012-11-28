@@ -11,7 +11,6 @@ imports="
     java.util.Map
     org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
-	org.talend.core.model.process.INode
 "
 %>
 

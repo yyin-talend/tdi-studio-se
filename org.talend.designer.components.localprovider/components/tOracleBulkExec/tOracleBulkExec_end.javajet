@@ -4,7 +4,6 @@
         org.talend.core.model.process.ElementParameterParser
         org.talend.designer.codegen.config.CodeGeneratorArgument
         org.talend.core.model.metadata.IMetadataTable 
-        org.talend.core.model.metadata.IMetadataColumn
         org.talend.core.model.metadata.MetadataTalendType    
         org.talend.core.model.metadata.MappingTypeRetriever
         java.util.List

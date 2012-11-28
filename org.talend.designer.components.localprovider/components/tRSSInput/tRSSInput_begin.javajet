@@ -5,7 +5,6 @@ imports="
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
-    org.talend.commons.utils.StringUtils
     org.talend.core.model.process.IConnection
     org.talend.core.model.metadata.IMetadataColumn
   	org.talend.core.model.process.IConnectionCategory

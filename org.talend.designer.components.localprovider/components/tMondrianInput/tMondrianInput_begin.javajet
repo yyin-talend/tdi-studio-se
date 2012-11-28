@@ -10,7 +10,6 @@ imports="
 	org.talend.core.model.process.IConnectionCategory
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	java.util.List
-	java.util.Map
 " 
 %>
 

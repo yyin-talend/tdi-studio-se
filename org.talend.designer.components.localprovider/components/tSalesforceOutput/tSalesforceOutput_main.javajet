@@ -10,9 +10,7 @@ imports="
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType		
 		java.util.List
-		java.util.ArrayList
 		java.util.Map
-		java.util.HashMap
 		"
 %>
 <%

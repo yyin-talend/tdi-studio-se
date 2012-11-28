@@ -6,7 +6,6 @@
     	org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
     	org.talend.core.model.process.IConnection
-		java.util.Map
     	java.util.List
 	"
 %>

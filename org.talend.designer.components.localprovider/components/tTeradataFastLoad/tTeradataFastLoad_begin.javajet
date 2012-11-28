@@ -5,14 +5,8 @@ imports="
 		org.talend.core.model.process.ElementParameterParser  
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.core.model.metadata.IMetadataColumn
-		org.talend.core.model.metadata.MetadataTalendType
-		org.talend.core.model.metadata.types.JavaTypesManager
-		org.talend.core.model.metadata.types.JavaType 
-		
 		java.util.List
 		java.util.ArrayList
-		java.util.Map
-		java.util.HashMap
 		java.util.LinkedList
 " 
 %>

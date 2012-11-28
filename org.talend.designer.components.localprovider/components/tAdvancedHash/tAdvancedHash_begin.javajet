@@ -6,15 +6,10 @@
         org.talend.core.model.process.ElementParameterParser 
 		java.util.List
 		java.util.ArrayList
-		org.talend.core.model.metadata.IMetadataTable
-		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.core.model.process.IHashableInputConnections
 		org.talend.core.model.process.IHashConfiguration
 		org.talend.core.model.process.IHashableColumn
 		org.talend.core.model.process.IMatchingMode
-		java.util.HashSet
-		java.util.Set
-		org.talend.core.model.process.EConnectionType
 		org.talend.core.model.process.IDataConnection
 	"
 %>
