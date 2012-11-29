@@ -1714,7 +1714,7 @@
         </projecttask>
         <projecttask
               beforeLogon="false"
-              breaks="5.1.1"
+              breaks="5.2.0"
               class="org.talend.repository.model.migration.ChangeMysqlJarReference4MysqlComponents"
               description="change mysql de version value and avoid to depend on jdbc jar name"
               id="org.talend.repository.model.migration.ChangeMysqlJarReference4MysqlComponents"
