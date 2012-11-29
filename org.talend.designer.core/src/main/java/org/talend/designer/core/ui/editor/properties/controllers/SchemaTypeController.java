@@ -30,6 +30,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -59,6 +60,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
@@ -890,6 +892,82 @@ public class SchemaTypeController extends AbstractRepositoryController {
 
                 String id = dialog.getResult().getObject().getProperty().getId();
                 String name = dialog.getResult().getObject().getLabel();// The name is Table Name.
+                if (name != null) {
+                    if (elem instanceof Node) {
+                        Node nodeElement = (Node) elem;
+                        String value = id + " - " + name; //$NON-NLS-1$
+                        IMetadataTable repositoryMetadata = MetadataToolHelper.getMetadataFromRepository(value);
+                        if (nodeElement.getComponent().getName().equals("tSQLTemplateMerge")) {
+                            if (paramName.equals("SCHEMA")) {
+                                paramName = "SOURCE_TABLE";
+                                Command dbSelectorCommand = new PropertyChangeCommand(elem, paramName,
+                                        TalendTextUtils.addQuotes(repositoryMetadata.getTableName()));
+                                executeCommand(dbSelectorCommand);
+                                Text labelText = (Text) hashCurControls.get(paramName);
+                                labelText.setText(TalendTextUtils.addQuotes(repositoryMetadata.getTableName()));
+
+                                paramName = "SCHEMA:REPOSITORY_SCHEMA_TYPE";
+                                dbSelectorCommand = new PropertyChangeCommand(elem, paramName, TalendTextUtils.addQuotes(name));
+                                executeCommand(dbSelectorCommand);
+                                labelText = (Text) hashCurControls.get(paramName);
+                                labelText.setText(TalendTextUtils.addQuotes(name));
+                                paramName = "SCHEMA";
+                            } else if (paramName.equals("SCHEMA_TARGET")) {
+                                paramName = "TARGET_TABLE";
+                                Command dbSelectorCommand = new PropertyChangeCommand(elem, paramName,
+                                        TalendTextUtils.addQuotes(repositoryMetadata.getTableName()));
+                                executeCommand(dbSelectorCommand);
+                                Text labelText = (Text) hashCurControls.get(paramName);
+                                labelText.setText(TalendTextUtils.addQuotes(repositoryMetadata.getTableName()));
+
+                                paramName = "SCHEMA_TARGET:REPOSITORY_SCHEMA_TYPE";
+                                dbSelectorCommand = new PropertyChangeCommand(elem, paramName, TalendTextUtils.addQuotes(name));
+                                executeCommand(dbSelectorCommand);
+                                labelText = (Text) hashCurControls.get(paramName);
+                                labelText.setText(TalendTextUtils.addQuotes(name));
+                                paramName = "SCHEMA_TARGET";
+                            }
+                        } else if (nodeElement.getComponent().getName().startsWith("tSQLTemplate")) {
+                            if (paramName.equals("SCHEMA")) {
+                                paramName = "TABLE_NAME";
+                                Command dbSelectorCommand = new PropertyChangeCommand(elem, paramName,
+                                        TalendTextUtils.addQuotes(repositoryMetadata.getTableName()));
+                                executeCommand(dbSelectorCommand);
+                                Text labelText = (Text) hashCurControls.get(paramName);
+                                labelText.setText(TalendTextUtils.addQuotes(repositoryMetadata.getTableName()));
+
+                                paramName = "SCHEMA:REPOSITORY_SCHEMA_TYPE";
+                                dbSelectorCommand = new PropertyChangeCommand(elem, paramName, TalendTextUtils.addQuotes(name));
+                                executeCommand(dbSelectorCommand);
+                                labelText = (Text) hashCurControls.get(paramName);
+                                labelText.setText(TalendTextUtils.addQuotes(name));
+                                paramName = "SCHEMA";
+                            } else if (paramName.equals("SCHEMA_TARGET")) {
+                                paramName = "TABLE_NAME_TARGET";
+                                Command dbSelectorCommand = new PropertyChangeCommand(elem, paramName,
+                                        TalendTextUtils.addQuotes(repositoryMetadata.getTableName()));
+                                executeCommand(dbSelectorCommand);
+                                Text labelText = (Text) hashCurControls.get(paramName);
+                                labelText.setText(TalendTextUtils.addQuotes(repositoryMetadata.getTableName()));
+
+                                paramName = "SCHEMA_TARGET:REPOSITORY_SCHEMA_TYPE";
+                                dbSelectorCommand = new PropertyChangeCommand(elem, paramName, TalendTextUtils.addQuotes(name));
+                                executeCommand(dbSelectorCommand);
+                                labelText = (Text) hashCurControls.get(paramName);
+                                labelText.setText(TalendTextUtils.addQuotes(name));
+                                paramName = "SCHEMA_TARGET";
+                            }
+                        } else {
+                            Command dbSelectorCommand = new PropertyChangeCommand(elem, paramName,
+                                    TalendTextUtils.addQuotes(repositoryMetadata.getTableName()));
+                            executeCommand(dbSelectorCommand);
+                            Text labelText = (Text) hashCurControls.get(paramName);
+                            if (labelText != null) {
+                                labelText.setText(TalendTextUtils.addQuotes(repositoryMetadata.getTableName()));
+                            }
+                        }
+                    }
+                }
                 String value = id + " - " + name; //$NON-NLS-1$
 
                 String fullParamName = paramName + ":" + getRepositoryChoiceParamName(); //$NON-NLS-1$
