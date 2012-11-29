@@ -124,7 +124,7 @@ try {
 				    if (commandLine[j].indexOf("\"") >= 0){
 				    	if(commandLine[j].indexOf(".jar")>=0){
 				    %>
-				      		childJob_commandLine_<%=cid%>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap(<%=commandLine[j] %>.replaceAll(";",classpathSeparator_<%=cid%>)));
+				      		childJob_commandLine_<%=cid%>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap(<%=commandLine[j] %>).replaceAll(";",classpathSeparator_<%=cid%>));
 				    <%
 				    	}else{
 				    %>
@@ -134,7 +134,7 @@ try {
 				    }else{
 				    	if(commandLine[j].indexOf(".jar")>=0){
 				    %>
-				    		childJob_commandLine_<%=cid%>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap("<%=commandLine[j] %>".replaceAll(";",classpathSeparator_<%=cid%>)));
+				    		childJob_commandLine_<%=cid%>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap("<%=commandLine[j] %>").replaceAll(";",classpathSeparator_<%=cid%>));
 				    <%
 				    	}else{
 				    %>
