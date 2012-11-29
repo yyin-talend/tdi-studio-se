@@ -188,6 +188,9 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
 
     @Override
     public void doSave(IProgressMonitor monitor) {
+        if (haveDirtyJoblet()) {
+            return;
+        }
         // TODO Auto-generated method stub
         super.doSave(monitor);
         this.setName();
