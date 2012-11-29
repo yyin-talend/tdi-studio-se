@@ -117,6 +117,7 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.ResourceModelUtils;
 import org.talend.core.service.IDesignerPerlService;
 import org.talend.core.ui.ICreateXtextProcessService;
+import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.core.ui.branding.IBrandingConfiguration;
@@ -894,6 +895,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      */
     @Override
     public void doSave(final IProgressMonitor monitor) {
+        if (haveDirtyJoblet()) {
+            return;
+        }
         Item curItem = getProcess().getProperty().getItem();
         IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
@@ -984,6 +988,25 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
         refreshJobSettingsView();
         changeCollapsedState(false, jobletMap);
+    }
+
+    private boolean haveDirtyJoblet() {
+        IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                IJobletProviderService.class);
+        for (INode node : getProcess().getGraphicalNodes()) {
+            if ((node instanceof Node) && ((Node) node).isJoblet()) {
+                if (service != null) {
+                    if (service.jobletIsDirty(node)) {
+                        MessageDialog.openWarning(this.getContainer().getShell(),
+                                Messages.getString("MultiPageTalendEditor.DIRTY"), node.getComponent().getName() //$NON-NLS-1$
+                                        + Messages.getString("MultiPageTalendEditor.DIRTYMESSAGE")); //$NON-NLS-1$
+                        return true;
+                    }
+
+                }
+            }
+        }
+        return false;
     }
 
     private void changeCollapsedState(boolean state, Map<String, Boolean> map) {
