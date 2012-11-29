@@ -1,0 +1,223 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>tPartitioner</title><meta name="generator" content="DocBook XSL-NS Stylesheets V1.75.2"><link rel="home" href="bk-tdi-components-rg-fr..html" title="Composants Talend"><link rel="up" href="ch-orchestration.html" title="Chapitre&nbsp;18.&nbsp;Composants Orchestration"><link rel="prev" href="tParallelize.html" title="tParallelize"><link rel="next" href="tPostjob.html" title="tPostjob">
+</head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">tPartitioner</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tParallelize.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><th width="60%" align="center">Chapitre&nbsp;18.&nbsp;Composants Orchestration</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="tPostjob.html">Suivant</a></td></tr></table><hr></div><div lang="fr" class="section" title="tPartitioner"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tPartitioner"></a>tPartitioner</h2></div></div></div><div class="mediaobject"><img src="../images/tpartitioner_icon32_white.png"></div><div class="warning" title="Avertissement" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Avertissement</h3>
+   <p>Ce composant est disponible dans la <span class="emphasis"><strong>Palette</strong></span> de la
+			perspective <span class="emphasis"><strong>Integration</strong></span> de votre studio si vous avez
+			souscrit &agrave; l'une des solutions <span class="emphasis"><em>Talend Platform</em></span> ou Big Data. </p>
+   </div><p>Les composants de parall&eacute;lisation fonctionnent ensemble en &eacute;troite relation pour accomplir
+		des ex&eacute;cutions parall&egrave;les de processus donn&eacute;s. Le composant <span class="emphasis"><strong>tPartitioner</strong></span> divise les enregistrements d'entr&eacute;e en un nombre sp&eacute;cifique de
+		process. Le <span class="emphasis"><strong>tCollector</strong></span> envoie ces process aux composants
+		suivants. Le <span class="emphasis"><strong>tDepartitioner</strong></span> regroupe les sorties des
+		process parall&egrave;les trait&eacute;s. Le composant <span class="emphasis"><strong>tRecollector</strong></span>
+		capture la sortie d'un <span class="emphasis"><strong>tDepartitioner</strong></span> donn&eacute; et envoie les
+		donn&eacute;es captur&eacute;es au composant suivant.</p><div class="section" title="Propri&eacute;t&eacute;s du tPartitioner"><div class="titlepage"><div><div><h3 class="title"><a name="d54175e328986"></a>Propri&eacute;t&eacute;s du tPartitioner</h3></div></div></div><div class="informaltable"><table border="1"><colgroup><col><col><col></colgroup><tbody><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Famille de composant</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>Orchestration</p>
+						</td><td valign="top">&nbsp;</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Fonction</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Le composant <span class="emphasis"><strong>tPartitioner</strong></span> divise
+								les enregistrements d'entr&eacute;e en un nombre de process que le
+									<span class="emphasis"><strong>tCollector</strong></span> envoie pour
+								ex&eacute;cution parall&egrave;le.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Objectif</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant partitionne les donn&eacute;es d'entr&eacute;e avant que le
+									<span class="emphasis"><strong>tCollector</strong></span> les transf&egrave;re aux
+								processus d'ex&eacute;cutions parall&egrave;les.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Basic settings</strong></span>
+							</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Schema</em></span> et <span class="emphasis"><em>Edit
+								Schema</em></span></p>
+						</td><td valign="top">
+							<p>Un sch&eacute;ma est une description de lignes, i.e., il d&eacute;finit le nombre de champs qui sont
+		trait&eacute;s et pass&eacute;s au composant suivant. <span>Le sch&eacute;ma est soit
+			local (<span class="emphasis"><strong>Built-in</strong></span>) , soit distant dans le <span class="emphasis"><strong>Repository</strong></span></span>.</p>
+							<p>Cliquez sur <span class="emphasis"><strong>Edit Schema</strong></span> pour modifier le sch&eacute;ma. <span>Si vous effectuez des modifications, le sch&eacute;ma devient
+			automatiquement built-in.</span></p>
+							<p>Cliquez sur le bouton <span class="emphasis"><strong>Sync columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma
+		du composant pr&eacute;c&eacute;dent.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td>
+							<p>&nbsp;<span class="emphasis"><em>Number of Child Threads</em></span></p>
+						</td><td valign="top">
+							<p>Saisissez le nombre de process que vous souhaitez obtenir en
+								divisant les enregistrements d'entr&eacute;e.</p>
+							<p>Il est recommand&eacute; de saisir un nombre N-1 o&ugrave; N est le nombre total
+								de CPUs ou coeurs de la machine traitant les donn&eacute;es.</p>
+						</td></tr><tr><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Buffer Size</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Saisissez le nombre de lignes &agrave; traiter avant de lib&eacute;rer la m&eacute;moire.</p>
+							<p>Ce nombre repr&eacute;sente le nombre de lignes &agrave; mettre en cache pour chaque process g&eacute;n&eacute;r&eacute;.</p>
+						</td></tr><tr><td>&nbsp;</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>Use a key hash for partitions</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour utiliser le mode Hash pour r&eacute;partir les
+								enregistrements dans les process. </p>
+							<p>Une fois la case coch&eacute;e, la table <span class="emphasis"><strong>Key Columns</strong></span>
+								appara&icirc;t. Vous pouvez y configurer les colonnes sur lesquelles
+								appliquer le mode Hash. En mode Hash, les enregistrements r&eacute;pondant
+								aux crit&egrave;res sont r&eacute;partis dans les m&ecirc;mes process. </p>
+							<p>Si vous laissez cette case d&eacute;coch&eacute;e le mode de r&eacute;partition est Round-robin, ce qui
+								signifie que les enregistrements sont r&eacute;partis un par un dans chaque
+								process, de mani&egrave;re circulaire, jusqu'&agrave; ce que le dernier
+								enregistrement soit distribu&eacute;. Ce mode ne peut garantir que les
+								enregistrements r&eacute;pondant aux crit&egrave;res vont bien dans les m&ecirc;mes
+								process.</p>
+						</td></tr><tr><td>
+							<span class="emphasis"><strong>Advanced settings</strong></span>
+						</td><td valign="top">
+							<p>
+								<span class="emphasis"><em>tStatCatcher Statistics</em></span>
+							</p>
+						</td><td valign="top">
+							<p>Cochez cette case pour collecter les donn&eacute;es de log au niveau du
+								composant.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Utilisation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>Ce composant doit &ecirc;tre plac&eacute; apr&egrave;s le(s) composant(s) d'entr&eacute;e et
+								avant le <span class="emphasis"><strong>tCollector</strong></span>.</p>
+							<p>Ce composant utilise, et ne peut utiliser que le lien <span class="emphasis"><strong>Trigger &gt; Start</strong></span> pour se connecter au
+									<span class="emphasis"><strong>tCollector</strong></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Global Variables</strong></span>
+							</p>
+						</td><td valign="top">&nbsp;</td><td valign="top">
+							<p><span class="emphasis"><strong>NB_LINE</strong></span> : indique le nombre de lignes trait&eacute;es. Disponible
+		en tant que variable <span class="emphasis"><strong>After</strong></span>.</p>
+							<p> </p>
+							<p>Pour plus d'informations concernant les variables globales, consultez le <span class="emphasis"><em>Guide utilisateur de</em></span>
+		<span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Connections</strong></span>
+							</p>
+						</td><td>
+							<p>&nbsp;</p>
+						</td><td valign="top">
+							<p>Liens de sortie (de ce composant au composant suivant) :</p>
+							<p><span class="emphasis"><strong>Trigger</strong></span> : Start.</p>
+							<p> </p>
+							<p>Liens d'entr&eacute;e (du composant pr&eacute;c&eacute;dent &agrave; ce composant) :</p>
+							<p><span class="emphasis"><strong>Row</strong></span> : Main.</p>
+							<p> </p>
+							<p>Pour plus d'informations concernant les connexions, consultez le
+									<span class="emphasis"><em>Guide utilisateur de</em></span>
+								<span class="emphasis"><em>Talend Data Integration Studio</em></span>.</p>
+						</td></tr><tr><td valign="top">
+							<p>
+								<span class="emphasis"><strong>Limitation</strong></span>
+							</p>
+						</td><td colspan="2" valign="top">
+							<p>n/a</p>
+						</td></tr></tbody></table></div></div><div class="section" title="Sc&eacute;nario : Trier les lignes en doublon en mode parall&egrave;lethe duplicate rows in the parallel fashion"><div class="titlepage"><div><div><h3 class="title"><a name="ychen-20121126-orchestration-tpartitioner"></a>Sc&eacute;nario : Trier les lignes en doublon en mode parall&egrave;lethe duplicate rows in the
+			parallel fashion</h3></div></div></div><p>Le Job de ce sc&eacute;nario utilise les composants de parall&eacute;lisation afin de trier des
+			doublons dans les enregistrements clients.</p><p>Ce sc&eacute;nario permet d'expliquer le m&eacute;canisme de collaboration et de fonctionnement
+			entre les quatre composants de parall&eacute;lisation.</p><div class="mediaobject" align="center"><img src="../images/use_case-parallelization1.png" align="middle"></div><div class="section" title="Relier les composants"><div class="titlepage"><div><div><h4 class="title"><a name="d54175e329308"></a>Relier les composants</h4></div></div></div><div class="procedure"><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Dans la perspective <span class="emphasis"><strong>Integration</strong></span> de votre
+						studio, cr&eacute;ez un Job vide, nomm&eacute; <span class="emphasis"><em>Parallelization</em></span>, par exemple, &agrave; partir du n&#339;ud <span class="emphasis"><strong>Job Designs</strong></span> dans la vue <span class="emphasis"><strong>Repository</strong></span>.</p><p>Pour plus d'informations concernant la cr&eacute;ation d'un Job, consultez le
+						Guide utilisateur de votre studio d'int&eacute;gration.</p></li><li class="step" title="&Eacute;tape 2"><p>D&eacute;posez les composants suivants de la Palette dans l'espace de
+						mod&eacute;lisation graphique : un <span class="emphasis"><strong>tRowGenerator</strong></span>,
+						un <span class="emphasis"><strong>tPartitioner</strong></span>, un <span class="emphasis"><strong>tCollector</strong></span>, un <span class="emphasis"><strong>tUniqRow</strong></span>,
+						deux <span class="emphasis"><strong>tDepartitioner</strong></span>, deux <span class="emphasis"><strong>tRecollector</strong></span>, deux <span class="emphasis"><strong>tSortRow</strong></span> et deux <span class="emphasis"><strong>tLogRow</strong></span>.</p><p>Le <span class="emphasis"><strong>tRowGenerator</strong></span> g&eacute;n&egrave;re les donn&eacute;es &agrave;
+						transformer et &agrave; traiter en parall&egrave;le. Dans un cas d'utilisation r&eacute;elle,
+						vous pouvez utiliser d'autres composants, comme le <span class="emphasis"><strong>tMysqlInput</strong></span> ou le <span class="emphasis"><strong>tMap</strong></span> &agrave; la
+						place du <span class="emphasis"><strong>tRowGenerator</strong></span> afin de cr&eacute;er un
+						processus sophistiqu&eacute; pour pr&eacute;parer vos donn&eacute;es &agrave; traiter.</p></li><li class="step" title="&Eacute;tape 3"><p>Nommez les deux composants <span class="emphasis"><strong>tDepartitioner</strong></span>
+						<span class="emphasis"><em>Unique</em></span> et <span class="emphasis"><em>Duplicates</em></span>, respectivement.</p><p>Pour plus d'informations concernant le nommage d'un composant, consultez
+						le Guide utilisateur de votre studio.</p></li><li class="step" title="&Eacute;tape 4"><p>R&eacute;p&eacute;tez l'op&eacute;ration pour les deux <span class="emphasis"><strong>tLogRow</strong></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Reliez le <span class="emphasis"><strong>tPartitioner</strong></span> au <span class="emphasis"><strong>tCollector</strong></span> et &agrave; chaque <span class="emphasis"><strong>tRecollector</strong></span>, &agrave; l'aide de liens <span class="emphasis"><strong>Trigger &gt; Starts</strong></span>.</p></li><li class="step" title="&Eacute;tape 6"><p>Reliez les autres composants &agrave; l'aide d'un lien <span class="emphasis"><strong>Row
+							&gt; Main</strong></span>. Utilisez un lien <span class="emphasis"><strong>Row &gt;
+							Uniques</strong></span> pour connecter le <span class="emphasis"><strong>tUniqRow</strong></span> au <span class="emphasis"><strong>tDepartitioner</strong></span>
+						nomm&eacute; <span class="emphasis"><em>Unique</em></span> et un lien <span class="emphasis"><strong>Row &gt; Duplicates</strong></span> pour relier le <span class="emphasis"><strong>tUniqRow</strong></span> au composant <span class="emphasis"><strong>tDepartitioner</strong></span> nomm&eacute; <span class="emphasis"><em>Duplicates</em></span>.</p></li></ol></div></div><div class="section" title="Diviser les enregistrements d'entr&eacute;e"><div class="titlepage"><div><div><h4 class="title"><a name="d54175e329435"></a>Diviser les enregistrements d'entr&eacute;e</h4></div></div></div><div class="procedure" title="Proc&eacute;dure&nbsp;18.1.&nbsp;Configurer les enregistrements d'entr&eacute;e"><a name="d54175e329438"></a><p class="title"><b>Proc&eacute;dure&nbsp;18.1.&nbsp;Configurer les enregistrements d'entr&eacute;e</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tRowGenerator</strong></span> pour
+						ouvrir son &eacute;diteur.</p><div class="mediaobject" align="center"><img src="../images/use_case-parallelization2.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez cinq fois sur le bouton <span class="inlinemediaobject"><img src="../images/Button_Plus.png"></span> pour ajouter cinq lignes &agrave; la table <span class="emphasis"><strong>Schema</strong></span> et renommez-les respectivement <span class="emphasis"><em>id</em></span>, <span class="emphasis"><em>firstname</em></span>, <span class="emphasis"><em>lastname</em></span>,
+							<span class="emphasis"><em>city</em></span> et <span class="emphasis"><em>age</em></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la colonne <span class="emphasis"><strong>Type</strong></span>, s&eacute;lectionnez le
+						type <span class="emphasis"><strong>Integer</strong></span> pour la ligne <span class="emphasis"><em>id</em></span> et la ligne <span class="emphasis"><em>age</em></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans la colonne <span class="emphasis"><strong>Functions</strong></span>, s&eacute;lectionnez
+							<span class="emphasis"><strong>Numeric.sequence</strong></span> pour les lignes
+							<span class="emphasis"><em>id</em></span> et <span class="emphasis"><em>age</em></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>S&eacute;lectionnez <span class="emphasis"><strong>TalendDataGenerator.getFirstName</strong></span> pour la ligne <span class="emphasis"><em>firstname</em></span>, <span class="emphasis"><strong>TalendDataGenerator.getLastName</strong></span> pour la ligne <span class="emphasis"><em>lastname</em></span> et <span class="emphasis"><strong>TalendDataGenerator.getUsCity</strong></span> pour la ligne <span class="emphasis"><em>city</em></span>.</p></li><li class="step" title="&Eacute;tape 6"><p>Dans le champ <span class="emphasis"><strong>Number of Rows for
+							RowGenerator</strong></span>, saisissez le nombre de lignes d'entr&eacute;e que vous
+						souhaitez g&eacute;n&eacute;rer. Dans cet exemple, saisissez <span class="emphasis"><em>10000</em></span>. Dans un cas d'utilisation r&eacute;elle, le nombre est
+						souvent tellement grand que les composants de parall&eacute;lisation sont id&eacute;aux
+						pour g&eacute;rer le volume.</p></li><li class="step" title="&Eacute;tape 7"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour valider ces
+						modifications et acceptez la propagation propos&eacute;e par la bo&icirc;te de
+						dialogue.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;18.2.&nbsp;Configurer le composant tPartitioner"><a name="d54175e329541"></a><p class="title"><b>Proc&eacute;dure&nbsp;18.2.&nbsp;Configurer le composant tPartitioner</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tPartitioner</strong></span> pour
+						ouvrir sa vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-parallelization3.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Dans le champ <span class="emphasis"><strong>Number of Child Threads</strong></span>,
+						saisissez le nombre de process (threads) que vous souhaitez obtenir en
+						divisant les enregistrements d'entr&eacute;e. Dans cet exemple, saisissez <span class="emphasis"><em>4</em></span>.</p></li><li class="step" title="&Eacute;tape 3"><p>Si n&eacute;cessaire, modifiez la valeur dans le champ <span class="emphasis"><strong>Buffer Size</strong></span> afin d'adapter la capacit&eacute; de la m&eacute;moire. Dans
+						cet exemple, laissez la valeur par d&eacute;faut.</p></li><li class="step" title="&Eacute;tape 4"><p>Cochez la case <span class="emphasis"><strong>Use a key hash for
+							partitions</strong></span> pour afficher la table <span class="emphasis"><strong>Key
+							Columns</strong></span>.</p></li><li class="step" title="&Eacute;tape 5"><p>Cliquez trois fois sur le bouton <span class="inlinemediaobject"><img src="../images/Button_Plus.png"></span> pour ajouter trois lignes, puis s&eacute;lectionnez <span class="emphasis"><em>firstname</em></span>, <span class="emphasis"><em>lastname</em></span> et <span class="emphasis"><em>city</em></span>,
+						respectivement. Ces lignes sont les colonnes cl&eacute;s sur lesquelles le mode
+						Hash est appliqu&eacute; pour r&eacute;partir les enregistrements r&eacute;pondant aux m&ecirc;mes
+						crit&egrave;res que ceux du mode hash dans les m&ecirc;mes process.</p></li><li class="step" title="&Eacute;tape 6"><p> Cliquez sur le bouton <span class="inlinemediaobject"><img src="../images/DotButton.png"></span> &agrave; c&ocirc;t&eacute; du champ <span class="emphasis"><strong>Edit
+							schema</strong></span> pour ouvrir l'&eacute;diteur du sch&eacute;ma</p><div class="mediaobject" align="center"><img src="../images/use_case-parallelization4.png" align="middle"></div></li><li class="step" title="&Eacute;tape 7"><p>S&eacute;lectionnez toutes les lignes du sch&eacute;ma du <span class="emphasis"><strong>tPartitioner</strong></span> &agrave; l'aide des touches <span class="emphasis"><strong>Ctrl</strong></span> ou <span class="emphasis"><strong>Maj</strong></span>.</p><p>Le bouton <span class="inlinemediaobject"><img src="../images/Copy_button.png"></span> est alors disponible dans la barre d'outils.</p></li><li class="step" title="&Eacute;tape 8"><p>Cliquez sur le bouton <span class="inlinemediaobject"><img src="../images/Copy_button.png"></span> pour copier le sch&eacute;ma s&eacute;lectionn&eacute;.</p></li></ol></div></div><div class="section" title="D&eacute;doublonner les enregistrements d'entr&eacute;e"><div class="titlepage"><div><div><h4 class="title"><a name="d54175e329634"></a>D&eacute;doublonner les enregistrements d'entr&eacute;e</h4></div></div></div><div class="procedure" title="Proc&eacute;dure&nbsp;18.3.&nbsp;Configurer le tCollector"><a name="d54175e329637"></a><p class="title"><b>Proc&eacute;dure&nbsp;18.3.&nbsp;Configurer le tCollector</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tCollector</strong></span> pour
+						ouvrir sa vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-parallelization5.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="inlinemediaobject"><img src="../images/DotButton.png"></span> &agrave; c&ocirc;t&eacute; du champ <span class="emphasis"><strong>Edit
+							schema</strong></span> pour ouvrir l'&eacute;diteur de sch&eacute;ma.</p></li><li class="step" title="&Eacute;tape 3"><p>Appuyez sur les touches <span class="emphasis"><strong>Ctrl+V</strong></span> pour
+						coller le sch&eacute;ma du composant <span class="emphasis"><strong>tPartitioner</strong></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour valider ces
+						modifications et acceptez la propagation propos&eacute;e par la bo&icirc;te de
+						dialogue.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;18.4.&nbsp;Configurer le tUniqRow"><a name="d54175e329677"></a><p class="title"><b>Proc&eacute;dure&nbsp;18.4.&nbsp;Configurer le tUniqRow</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tUniqRow</strong></span> pour
+						ouvrir sa vue <span class="emphasis"><strong>Component</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-parallelization6.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Dans la table <span class="emphasis"><strong>Unique key</strong></span>, le sch&eacute;ma
+						appara&icirc;t automatiquement. Cochez les cases correspondant aux lignes
+							<span class="emphasis"><em>firstname</em></span>, <span class="emphasis"><em>lastname</em></span> et <span class="emphasis"><em>city</em></span> dans la
+						colonne <span class="emphasis"><strong>Key attribute</strong></span>. Le Job se base sur
+						les trois colonnes pour trier les doublons.</p><p>Si le sch&eacute;ma n'appara&icirc;t pas, cliquez sur le bouton <span class="emphasis"><strong>Sync columns</strong></span> pour r&eacute;cup&eacute;rer le sch&eacute;ma du composant
+						pr&eacute;c&eacute;dent. </p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;18.5.&nbsp;V&eacute;rifier le tDepartitioner"><a name="d54175e329715"></a><p class="title"><b>Proc&eacute;dure&nbsp;18.5.&nbsp;V&eacute;rifier le tDepartitioner</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le <span class="emphasis"><strong>tDepartitioner</strong></span>
+						nomm&eacute; <span class="emphasis"><em>Unique</em></span> pour ouvrir la vue <span class="emphasis"><strong>Component</strong></span>. Ce composant est connect&eacute; via la lien
+							<span class="emphasis"><strong>Unique</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-parallelization7.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Si n&eacute;cessaire, modifiez la valeur du champ <span class="emphasis"><strong>Buffer
+							Size</strong></span> pour adapter la capacit&eacute; de la m&eacute;moire. Dans cet
+						exemple, laissez la valeur par d&eacute;faut.</p></li><li class="step" title="&Eacute;tape 3"><p>Cliquez sur le bouton <span class="inlinemediaobject"><img src="../images/DotButton.png"></span> &agrave; c&ocirc;t&eacute; du champ <span class="emphasis"><strong>Edit
+							schema</strong></span> Pour ouvrir l'&eacute;diteur de sch&eacute;ma, puis, v&eacute;rifiez que
+						toutes les colonnes dont vous avez besoin apparaissent dans le sch&eacute;ma du
+							<span class="emphasis"><strong>tDepartitioner</strong></span>. Dans ce sc&eacute;nario,
+						&eacute;crivez en sortie toutes les colonnes re&ccedil;ues des composants
+						pr&eacute;c&eacute;dents.</p></li><li class="step" title="&Eacute;tape 4"><p>R&eacute;p&eacute;tez l'op&eacute;ration pour v&eacute;rifier le composant <span class="emphasis"><strong>tDepartitioner</strong></span> nomm&eacute; <span class="emphasis"><em>Duplicates</em></span>.</p></li></ol></div></div><div class="section" title="Ecrire en sortie les lignes uniques"><div class="titlepage"><div><div><h4 class="title"><a name="d54175e329764"></a>Ecrire en sortie les lignes uniques</h4></div></div></div><div class="procedure" title="Proc&eacute;dure&nbsp;18.6.&nbsp;Capturer les lignes uniques"><a name="d54175e329767"></a><p class="title"><b>Proc&eacute;dure&nbsp;18.6.&nbsp;Capturer les lignes uniques</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tRecollector</strong></span> reli&eacute; au <span class="emphasis"><strong>tLogRow</strong></span> nomm&eacute; <span class="emphasis"><em>Unique</em></span>,
+						pour ouvrir la vue <span class="emphasis"><strong>Component</strong></span> de ce
+							<span class="emphasis"><strong>tRecollector</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-parallelization10.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Cliquez sur le bouton <span class="inlinemediaobject"><img src="../images/DotButton.png"></span> &agrave; c&ocirc;t&eacute; du champ <span class="emphasis"><strong>Edit
+							schema</strong></span> pour ouvrir l'&eacute;diteur du sch&eacute;ma puis collez le sch&eacute;ma
+						du <span class="emphasis"><strong>tPartitioner</strong></span> pr&eacute;c&eacute;demment copi&eacute;.</p><p>Ce sch&eacute;ma doit &ecirc;tre coh&eacute;rent avec celui du composant <span class="emphasis"><strong>tDepartitioner</strong></span> fournissant les donn&eacute;es au <span class="emphasis"><strong>tRecollector</strong></span>. Dans cet exemple, le <span class="emphasis"><strong>tDepartitioner</strong></span> &agrave; utiliser poss&egrave;de le m&ecirc;me sch&eacute;ma
+						que le <span class="emphasis"><strong>tPartitioner</strong></span>. Si ce n'est pas votre
+						cas, copiez-collez le sch&eacute;ma du <span class="emphasis"><strong>tDepartitioner</strong></span> &agrave; utiliser.</p></li><li class="step" title="&Eacute;tape 3"><p>Cliquez sur <span class="emphasis"><strong>OK</strong></span> pour valider les
+						modifications et acceptez la propagation propos&eacute;e par la bo&icirc;te de
+						dialogue.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans le champ <span class="emphasis"><strong>Linked Departitioner</strong></span>,
+						s&eacute;lectionnez le composant <span class="emphasis"><strong>tDepartitioner</strong></span>
+						contenant les donn&eacute;es uniques. Dans cet exemple, c'est le composant
+							<span class="emphasis"><strong>tDepartitioner</strong></span> nomm&eacute; <span class="emphasis"><em>Unique</em></span>. S&eacute;lectionnez <span class="emphasis"><em>tDepartitioner_1 - Unique</em></span>.</p></li></ol></div><div class="procedure" title="Proc&eacute;dure&nbsp;18.7.&nbsp;Trier les lignes uniques"><a name="d54175e329845"></a><p class="title"><b>Proc&eacute;dure&nbsp;18.7.&nbsp;Trier les lignes uniques</b></p><ol class="procedure" type="1"><li class="step" title="&Eacute;tape 1"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tSortRow</strong></span>
+						reli&eacute; au composant <span class="emphasis"><strong>tLogRow</strong></span> nomm&eacute; <span class="emphasis"><em>Unique</em></span> pour ouvrir la vue <span class="emphasis"><strong>Component</strong></span> de ce <span class="emphasis"><strong>tSortRow</strong></span>.</p><div class="mediaobject" align="center"><img src="../images/use_case-parallelization8.png" align="middle"></div></li><li class="step" title="&Eacute;tape 2"><p>Sous la table <span class="emphasis"><strong>Criteria</strong></span>, cliquez trois
+						fois sur le bouton <span class="inlinemediaobject"><img src="../images/Button_Plus.png"></span> pour ajouter les trois lignes &agrave; la table.</p></li><li class="step" title="&Eacute;tape 3"><p>Dans la colonne <span class="emphasis"><strong>Schema column</strong></span>,
+						s&eacute;lectionnez, pour chaque ligne, la colonne du sch&eacute;ma &agrave; utiliser comme
+						crit&egrave;re de filtre. Dans cet exemple, s&eacute;lectionnez <span class="emphasis"><em>firstname</em></span>, <span class="emphasis"><em>lastname</em></span> et
+							<span class="emphasis"><em>city</em></span>.</p></li><li class="step" title="&Eacute;tape 4"><p>Dans la colonne <span class="emphasis"><strong>Sort num or alpha?</strong></span>,
+						s&eacute;lectionnez <span class="emphasis"><strong>alpha</strong></span> pour les trois lignes,
+						car les donn&eacute;es des colonnes <span class="emphasis"><em>firstname</em></span>,
+							<span class="emphasis"><em>lastname</em></span> et <span class="emphasis"><em>city</em></span> sont des lettres.</p></li><li class="step" title="&Eacute;tape 5"><p>Dans la colonne <span class="emphasis"><strong>Order asc or desc</strong></span>,
+						s&eacute;lectionnez <span class="emphasis"><strong>asc</strong></span> pour les trois
+						lignes.</p></li><li class="step" title="&Eacute;tape 6"><p>Double-cliquez sur le composant <span class="emphasis"><strong>tLogRow</strong></span>
+						nomm&eacute; <span class="emphasis"><em>Unique</em></span> pour ouvrir sa vue <span class="emphasis"><strong>Component</strong></span>.</p></li><li class="step" title="&Eacute;tape 7"><p>Dans la zone <span class="emphasis"><strong>Mode</strong></span>, s&eacute;lectionnez <span class="emphasis"><strong>Table (print values in celles of a table)</strong></span>.</p></li></ol></div></div><div class="section" title="Ecrire en sortie les lignes en doublon"><div class="titlepage"><div><div><h4 class="title"><a name="d54175e329942"></a>Ecrire en sortie les lignes en doublon</h4></div></div></div><p>Vous devez configurer le <span class="emphasis"><strong>tRecollector</strong></span>, le
+					<span class="emphasis"><strong>tSortRow</strong></span> et le <span class="emphasis"><strong>tLogRow</strong></span> (nomm&eacute; <span class="emphasis"><em>Duplicate</em></span>) afin
+				d'&eacute;crire en sortie les lignes en doublon.</p><div class="procedure"><ul class="procedure"><li class="step" title="&Eacute;tape 1"><p>R&eacute;p&eacute;tez, sur ces composants, les op&eacute;rations effectu&eacute;es pr&eacute;c&eacute;demment pour
+						&eacute;crire les lignes uniques, mais s&eacute;lectionnez<span class="emphasis"><em>
+							tDepartitioner_2 - Duplicate</em></span>, dans le champ <span class="emphasis"><strong>Linked tDepartitioner</strong></span> dans l'onglet <span class="emphasis"><strong>Basic settings</strong></span> du <span class="emphasis"><strong>tRecollecter</strong></span> &agrave; utiliser pour les lignes en doublon.</p></li></ul></div></div><div class="section" title="Ex&eacute;cuter le Job"><div class="titlepage"><div><div><h4 class="title"><a name="d54175e329975"></a>Ex&eacute;cuter le Job </h4></div></div></div><p>Appuyez sur <span class="emphasis"><strong>F6</strong></span> pour ex&eacute;cuter le Job.</p><p>La vue <span class="emphasis"><strong>Run</strong></span> s'ouvre automatiquement. Vous pouvez
+				v&eacute;rifier les r&eacute;sultats d'ex&eacute;cution.</p><div class="mediaobject" align="center"><img src="../images/use_case-parallelization9.png" align="middle"></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tParallelize.html">Pr&eacute;c&eacute;dent</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="ch-orchestration.html">Niveau sup&eacute;rieur</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="tPostjob.html">Suivant</a></td></tr><tr><td width="40%" align="left" valign="top">tParallelize&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="bk-tdi-components-rg-fr..html">Sommaire</a></td><td width="40%" align="right" valign="top">&nbsp;tPostjob</td></tr></table></div></body></html>

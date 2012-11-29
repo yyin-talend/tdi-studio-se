@@ -665,7 +665,7 @@
       <topic href="guide/components/en/tLastRegexlibExpressions.html" label="tLastRegexlibExpressions Component Documentation"/>
    </context>
    <context id="tLaunchDQReports">
-      <description>tLaunchDQReports can communicate with Talend Enterprise Data Quality in order to launch an analysis and save the results of the analysis in a database. Using this component, you can launch the generation of all types of reports: pdf, XML, or HTML.</description>
+      <description>tLaunchDQReports can communicate with Talend Data Quality in order to launch an analysis and save the results of the analysis in a database. Using this component, you can launch the generation of all types of reports: pdf, XML, or HTML.</description>
       <topic href="guide/components/en/tLaunchDQReports.html" label="tLaunchDQReports Component Documentation"/>
    </context>
    <context id="tMatchGroup">
@@ -777,7 +777,7 @@
       <topic href="guide/components/en/tSynonymSearch.html" label="tSynonymSearch Component Documentation"/>
    </context>
    <context id="tThresholdViolationAlert">
-      <description>tThresholdViolationAlert can communicate with Talend Enterprise Data Quality in order to check on thresholds put on the indicators used in analyses created in Talend Enterprise Data Quality. You can then use it with other components, for example tSendMail, to alert to the violation of thresholds.</description>
+      <description>tThresholdViolationAlert can communicate with Talend Data Quality in order to check on thresholds put on the indicators used in analyses created in Talend Data Quality. You can then use it with other components, for example tSendMail, to alert to the violation of thresholds.</description>
       <topic href="guide/components/en/tThresholdViolationAlert.html" label="tThresholdViolationAlert Component Documentation"/>
    </context>
    <context id="tUniqRow">
@@ -1517,7 +1517,7 @@
       <topic href="guide/components/en/tVerticaRow.html" label="tVerticaRow Component Documentation"/>
    </context>
    <context id="tCreateTable">
-      <description>This Java specific component helps create or drop any database table</description>
+      <description>This specific component helps create or drop any database tableRunning Mode</description>
       <topic href="guide/components/en/tCreateTable.html" label="tCreateTable Component Documentation"/>
    </context>
    <context id="tDBInput">
@@ -1909,7 +1909,7 @@
       <topic href="guide/components/en/tELTOracleMap.html" label="tELTOracleMap Component Documentation"/>
    </context>
    <context id="tELTOracleOutput">
-      <description>Executes the SQL Insert, Update and Delete statement to the Mysql database</description>
+      <description>Executes the SQL Insert, Update and Delete statement to the Mysql database.</description>
       <topic href="guide/components/en/tELTOracleOutput.html" label="tELTOracleOutput Component Documentation"/>
    </context>
    <context id="tELTPostgresqlInput">
@@ -2296,6 +2296,10 @@
       <description>Using a unique connection, this component commits in one go a global transaction instead of doing that on every row or every batch and thus provides gain in performance.</description>
       <topic href="guide/components/en/tMomCommit.html" label="tMomCommit Component Documentation"/>
    </context>
+   <context id="tMomConnection">
+      <description>This component opens a connection to the MQ Server for communication.</description>
+      <topic href="guide/components/en/tMomConnection.html" label="tMomConnection Component Documentation"/>
+   </context>
    <context id="tMomInput">
       <description>tMomInput makes it possible to set up asynchronous communications via a MOM server.</description>
       <topic href="guide/components/en/tMomInput.html" label="tMomInput Component Documentation"/>
@@ -2465,7 +2469,7 @@
       <topic href="guide/components/en/tBufferInput.html" label="tBufferInput Component Documentation"/>
    </context>
    <context id="tBufferOutput">
-      <description>This component allows a Webservice to access data. Indeed it had been designed to be exported as Webservice in order to access data on the web application server directly. For more information, see Talend Enterprise Studio User Guide.</description>
+      <description>This component allows a Webservice to access data. Indeed it had been designed to be exported as Webservice in order to access data on the web application server directly. For more information, see Talend Data Integration Studio User Guide.</description>
       <topic href="guide/components/en/tBufferOutput.html" label="tBufferOutput Component Documentation"/>
    </context>
    <context id="tContextDump">
@@ -2492,6 +2496,14 @@
       <description>Can be used to create an input flow in a Job for testing purposes, in particular for boundary test sets</description>
       <topic href="guide/components/en/tRowGenerator.html" label="tRowGenerator Component Documentation"/>
    </context>
+   <context id="tCollector">
+      <description>This component feeds the parallel execution processes with the threads generated by tPartitioner.</description>
+      <topic href="guide/components/en/tCollector.html" label="tCollector Component Documentation"/>
+   </context>
+   <context id="tDepartitioner">
+      <description>This component assembles the outputs of the parallel execution processes so that tRecollector can capture those outputs.</description>
+      <topic href="guide/components/en/tDepartitioner.html" label="tDepartitioner Component Documentation"/>
+   </context>
    <context id="tFlowToIterate">
       <description>This component is used to read data line by line from the input flow and store the data entries in iterative global variables.</description>
       <topic href="guide/components/en/tFlowToIterate.html" label="tFlowToIterate Component Documentation"/>
@@ -2516,6 +2528,10 @@
       <description>tParallelize helps you manage complex Job systems. It executes several subjobs simultaneously and synchronizes the execution of a subjob with other sub-jobs within the main Job.</description>
       <topic href="guide/components/en/tParallelize.html" label="tParallelize Component Documentation"/>
    </context>
+   <context id="tPartitioner">
+      <description>This component partitions the input data before tCollector can transfer them to the parallel execution processes.</description>
+      <topic href="guide/components/en/tPartitioner.html" label="tPartitioner Component Documentation"/>
+   </context>
    <context id="tPostjob">
       <description>tPostjob triggers a task required after the execution of a Job</description>
       <topic href="guide/components/en/tPostjob.html" label="tPostjob Component Documentation"/>
@@ -2523,6 +2539,10 @@
    <context id="tPrejob">
       <description>tPrejob triggers a task required for the execution of a Job</description>
       <topic href="guide/components/en/tPrejob.html" label="tPrejob Component Documentation"/>
+   </context>
+   <context id="tRecollector">
+      <description>Depending on tDepartitioner, the tRecollector component enables the output of the parallel execution results.</description>
+      <topic href="guide/components/en/tRecollector.html" label="tRecollector Component Documentation"/>
    </context>
    <context id="tReplicate">
       <description>Allows you to perform different operations on the same schema.</description>

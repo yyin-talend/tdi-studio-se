@@ -665,7 +665,7 @@
       <topic href="guide/components/fr/tLastRegexlibExpressions.html" label="tLastRegexlibExpressions Component Documentation"/>
    </context>
    <context id="tLaunchDQReports">
-      <description>Le tLaunchDQReports peut communiquer avec Talend Enterprise Data Quality pour lancer une analyse et sauvegarder les résultats de l’analyse dans une base de données. En utilisant ce composant, vous pouvez lancer la génération de tous types de rapports : PDF, XML, ou HTML.</description>
+      <description>Le tLaunchDQReports peut communiquer avec Talend Data Quality pour lancer une analyse et sauvegarder les résultats de l’analyse dans une base de données. En utilisant ce composant, vous pouvez lancer la génération de tous types de rapports : PDF, XML, ou HTML.</description>
       <topic href="guide/components/fr/tLaunchDQReports.html" label="tLaunchDQReports Component Documentation"/>
    </context>
    <context id="tMatchGroup">
@@ -777,7 +777,7 @@
       <topic href="guide/components/fr/tSynonymSearch.html" label="tSynonymSearch Component Documentation"/>
    </context>
    <context id="tThresholdViolationAlert">
-      <description>Le tThresholdViolationAlert peut communiquer avec Talend Enterprise Data Quality afin de vérifier les seuils définis sur les indicateurs utilisés dans des analyses créées dans Talend Enterprise Data Quality. Vous pouvez donc l’utiliser avec d’autres composants, par exemple le tSendMail, afin d’alerter en cas de violation des seuils.</description>
+      <description>Le tThresholdViolationAlert peut communiquer avec Talend Data Quality afin de vérifier les seuils définis sur les indicateurs utilisés dans des analyses créées dans Talend Data Quality. Vous pouvez donc l’utiliser avec d’autres composants, par exemple le tSendMail, afin d’alerter en cas de violation des seuils.</description>
       <topic href="guide/components/fr/tThresholdViolationAlert.html" label="tThresholdViolationAlert Component Documentation"/>
    </context>
    <context id="tUniqRow">
@@ -1517,7 +1517,7 @@
       <topic href="guide/components/fr/tVerticaRow.html" label="tVerticaRow Component Documentation"/>
    </context>
    <context id="tCreateTable">
-      <description>Ce composant permet de créer ou de supprimer n’importe quelle table d’une base de données</description>
+      <description>Ce composant permet de créer ou de supprimer n’importe quelle table d’une base de donnéesRunning Mode</description>
       <topic href="guide/components/fr/tCreateTable.html" label="tCreateTable Component Documentation"/>
    </context>
    <context id="tDBInput">
@@ -1909,7 +1909,7 @@
       <topic href="guide/components/fr/tELTOracleMap.html" label="tELTOracleMap Component Documentation"/>
    </context>
    <context id="tELTOracleOutput">
-      <description>Exécute la requête Insert ou Update dans la base de données Oracle</description>
+      <description>Exécute la requête Insert ou Update dans la base de données Oracle.</description>
       <topic href="guide/components/fr/tELTOracleOutput.html" label="tELTOracleOutput Component Documentation"/>
    </context>
    <context id="tELTPostgresqlInput">
@@ -2296,6 +2296,10 @@
       <description>En utilisant une connexion unique, commitez en une seule fois une transaction globale au lieu de commiter chaque ligne ou chaque lot de lignes. Ce composant permet un gain de performance.</description>
       <topic href="guide/components/fr/tMomCommit.html" label="tMomCommit Component Documentation"/>
    </context>
+   <context id="tMomConnection">
+      <description>Ce composant ouvre une connexion vers un serveur MQ dans un but de communication.</description>
+      <topic href="guide/components/fr/tMomConnection.html" label="tMomConnection Component Documentation"/>
+   </context>
    <context id="tMomInput">
       <description>Le tMomInput permet de mettre en place des communications asynchrones via un serveur MOM.</description>
       <topic href="guide/components/fr/tMomInput.html" label="tMomInput Component Documentation"/>
@@ -2465,7 +2469,7 @@
       <topic href="guide/components/fr/tBufferInput.html" label="tBufferInput Component Documentation"/>
    </context>
    <context id="tBufferOutput">
-      <description>Ce composant permet d’accéder aux données via un service Web. En effet, il a été conçu pour être exporté en tant que service Web afin d’accéder aux données directement à partir du serveur d’application Web. Pour plus d’informations, consultez le Guide utilisateur de Talend Enterprise Studio.</description>
+      <description>Ce composant permet d’accéder aux données via un service Web. En effet, il a été conçu pour être exporté en tant que service Web afin d’accéder aux données directement à partir du serveur d’application Web. Pour plus d’informations, consultez le Guide utilisateur de Talend Data Integration Studio.</description>
       <topic href="guide/components/fr/tBufferOutput.html" label="tBufferOutput Component Documentation"/>
    </context>
    <context id="tContextDump">
@@ -2492,6 +2496,14 @@
       <description>Ce composant peut être utilisé à des fins de test, pour créer un flux d’entrée dans le cadre de jeux de tests.</description>
       <topic href="guide/components/fr/tRowGenerator.html" label="tRowGenerator Component Documentation"/>
    </context>
+   <context id="tCollector">
+      <description>Ce composant peuple des processus d'exécutions parallèles avec des process générés par le tPartitioner.</description>
+      <topic href="guide/components/fr/tCollector.html" label="tCollector Component Documentation"/>
+   </context>
+   <context id="tDepartitioner">
+      <description>Ce composant rassemble les sorties des processus d’exécutions parallèles afin que le tRecollector capture ces sorties.</description>
+      <topic href="guide/components/fr/tDepartitioner.html" label="tDepartitioner Component Documentation"/>
+   </context>
    <context id="tFlowToIterate">
       <description>Le tFlowToIterate est utilisé afin de lire des données ligne par ligne et de stocker les entrées des données dans des variables globales itératives.</description>
       <topic href="guide/components/fr/tFlowToIterate.html" label="tFlowToIterate Component Documentation"/>
@@ -2516,6 +2528,10 @@
       <description>Le tParallelize permet de gérer des systèmes de job complexes. Il exécute plusieurs sous-jobs simultanément et synchronise l’exécution d’un sous-job avec celle d’autres sous-jobs du même job principal.</description>
       <topic href="guide/components/fr/tParallelize.html" label="tParallelize Component Documentation"/>
    </context>
+   <context id="tPartitioner">
+      <description>Ce composant partitionne les données d'entrée avant que le tCollector les transfère aux processus d'exécutions parallèles.</description>
+      <topic href="guide/components/fr/tPartitioner.html" label="tPartitioner Component Documentation"/>
+   </context>
    <context id="tPostjob">
       <description>Le tPostjob déclenche une action requise après l’exécution d’un Job.</description>
       <topic href="guide/components/fr/tPostjob.html" label="tPostjob Component Documentation"/>
@@ -2523,6 +2539,10 @@
    <context id="tPrejob">
       <description>Le tPrejob déclenche une action requise pour l’exécution d’un Job.</description>
       <topic href="guide/components/fr/tPrejob.html" label="tPrejob Component Documentation"/>
+   </context>
+   <context id="tRecollector">
+      <description>Selon le tDepartitioner, permet la sortie des résultats d'exécution parallèle.</description>
+      <topic href="guide/components/fr/tRecollector.html" label="tRecollector Component Documentation"/>
    </context>
    <context id="tReplicate">
       <description>Ce composant permet d’effectuer différentes opérations sur le même schéma.</description>
