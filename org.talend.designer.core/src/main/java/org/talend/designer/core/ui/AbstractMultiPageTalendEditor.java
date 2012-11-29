@@ -988,18 +988,20 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     }
 
     public boolean haveDirtyJoblet() {
-        IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                IJobletProviderService.class);
-        for (INode node : getProcess().getGraphicalNodes()) {
-            if ((node instanceof Node) && ((Node) node).isJoblet()) {
-                if (service != null) {
-                    if (service.jobletIsDirty(node)) {
-                        MessageDialog.openWarning(this.getContainer().getShell(),
-                                Messages.getString("MultiPageTalendEditor.DIRTY"), node.getComponent().getName() //$NON-NLS-1$
-                                        + Messages.getString("MultiPageTalendEditor.DIRTYMESSAGE")); //$NON-NLS-1$
-                        return true;
-                    }
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IJobletProviderService.class)) {
+            IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
+                    IJobletProviderService.class);
+            for (INode node : getProcess().getGraphicalNodes()) {
+                if ((node instanceof Node) && ((Node) node).isJoblet()) {
+                    if (service != null) {
+                        if (service.jobletIsDirty(node)) {
+                            MessageDialog.openWarning(this.getContainer().getShell(),
+                                    Messages.getString("MultiPageTalendEditor.DIRTY"), node.getComponent().getName() //$NON-NLS-1$
+                                            + Messages.getString("MultiPageTalendEditor.DIRTYMESSAGE")); //$NON-NLS-1$
+                            return true;
+                        }
 
+                    }
                 }
             }
         }
