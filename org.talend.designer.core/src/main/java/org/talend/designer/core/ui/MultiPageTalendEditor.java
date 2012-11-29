@@ -215,8 +215,8 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
             if ((node instanceof Node) && ((Node) node).isJoblet()) {
                 if (service != null) {
                     if (service.jobletIsDirty(node)) {
-                        MessageDialog.openWarning(this.getContainer().getShell(), "Dirty joblet", node.getComponent().getName()
-                                + " is dirty, Please save joblet first, otherwise you will lost the modification in joblet?");
+                        MessageDialog.openWarning(this.getContainer().getShell(), Messages.getString("MultiPageTalendEditor.DIRTY"), node.getComponent().getName() //$NON-NLS-1$
+                                + Messages.getString("MultiPageTalendEditor.DIRTYMESSAGE")); //$NON-NLS-1$
                         return true;
                     }
 
