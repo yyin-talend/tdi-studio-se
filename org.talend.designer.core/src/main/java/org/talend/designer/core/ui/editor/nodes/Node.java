@@ -3632,7 +3632,8 @@ public class Node extends Element implements IGraphicalNode {
                             targetChildParam.setListItemsValue(sourceChildParam.getListItemsValue());
                         } else if (targetChildParam.getFieldType() == EParameterFieldType.CONNECTION_LIST) {
                             if (((getPropertyValue(pname) == null || getPropertyValue(pname).toString().length() == 0))
-                                    && component.getProcess() instanceof IProcess2) {
+                                    && component.getProcess() instanceof IProcess2
+                                    && storeValueMap.containsKey(sourceParam.getName()) && !storeValueMap.containsKey(pname)) {
                                 storeConn(sourceParam, pname);
                             }
                         }
