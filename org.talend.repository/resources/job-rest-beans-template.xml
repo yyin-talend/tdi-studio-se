@@ -38,7 +38,7 @@
 		<property name="ignoreNamespaces" value="true"/>
 	</bean>
 
-	<bean id="job" class="@JOBCLASSNAME@">
+	<bean id="job" class="@JOBCLASSNAME@" destroy-method="destroy" >
 		<property name="runInTalendEsbRuntimeContainer" value="true" />
 		@ADDITIONAL_JOB_BEAN_PARAMS@
 	</bean>

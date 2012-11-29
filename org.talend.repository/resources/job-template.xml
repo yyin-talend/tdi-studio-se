@@ -5,7 +5,7 @@
 
 	@ADDITIONAL_JOB_BUNDLE_CONFIG@
 
-	<bean id="job" class="@JOBCLASSNAME@">
+	<bean id="job" class="@JOBCLASSNAME@" destroy-method="destroy" >
 		@ADDITIONAL_JOB_BEAN_PARAMS@
 	</bean>
 
