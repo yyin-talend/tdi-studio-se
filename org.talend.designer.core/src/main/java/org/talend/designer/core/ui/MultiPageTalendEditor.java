@@ -13,7 +13,6 @@
 package org.talend.designer.core.ui;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
@@ -25,13 +24,11 @@ import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.Property;
-import org.talend.core.ui.IJobletProviderService;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.OverlayImageProvider;
@@ -39,7 +36,6 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
-import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * This class is the main editor, the differents pages in it are: <br/>
@@ -206,24 +202,6 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
         // TODO Auto-generated method stub
         super.doSave(monitor);
         this.setName();
-    }
-
-    private boolean haveDirtyJoblet() {
-        IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
-                IJobletProviderService.class);
-        for (INode node : getProcess().getGraphicalNodes()) {
-            if ((node instanceof Node) && ((Node) node).isJoblet()) {
-                if (service != null) {
-                    if (service.jobletIsDirty(node)) {
-                        MessageDialog.openWarning(this.getContainer().getShell(), Messages.getString("MultiPageTalendEditor.DIRTY"), node.getComponent().getName() //$NON-NLS-1$
-                                + Messages.getString("MultiPageTalendEditor.DIRTYMESSAGE")); //$NON-NLS-1$
-                        return true;
-                    }
-
-                }
-            }
-        }
-        return false;
     }
 
 }
