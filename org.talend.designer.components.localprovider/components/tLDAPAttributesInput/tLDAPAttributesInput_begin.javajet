@@ -183,10 +183,10 @@ do {
 		if (conns.size()>0) {
 			for (int i=0;i<conns.size();i++) {
 				IConnection connTemp = conns.get(i);
-				if(i==0){
-					firstConnName = connTemp.getName();
-				}
 				if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+					if(i==0){
+						firstConnName = connTemp.getName();
+					}
 %>
 			<%=connTemp.getName() %> = null;			
 <%
@@ -248,8 +248,8 @@ do {
 			if (conns!=null) {//1
 				if (conns.size()>0) {//2
 					IConnection conn = conns.get(0); //the first connection
-					firstConnName = conn.getName();		 
 					if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//3
+						firstConnName = conn.getName();		 
 						%>		  
 		if (attrs_<%=cid%> != null) {//b
 <%
