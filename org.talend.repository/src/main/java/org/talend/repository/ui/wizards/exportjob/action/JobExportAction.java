@@ -208,7 +208,9 @@ public class JobExportAction implements IRunnableWithProgress {
             MessageBoxExceptionHandler.process(e);
             return false;
         }
-        manager.setTopFolder(resourcesToExport);
+        if (isMultiNodes()) {
+            manager.setTopFolder(resourcesToExport);
+        }
 
         doArchiveExport(monitor, resourcesToExport);
 
