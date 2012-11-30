@@ -120,25 +120,13 @@ if(useDynamicJob){
 		      <%
 		    } else if (i > 0){
 		      if (commandLineWindows[i].indexOf("\"") >= 0){
-		          if(commandLineWindows[i].indexOf(".jar")>=0){
 		      %>
 		        	paraList_<%=cid %>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap(<%=commandLineWindows[i] %>));
 		      <%
-		          }else{
-		      %>
-		      		paraList_<%=cid %>.add(<%=commandLineWindows[i] %>);
-		      <%
-		          }
 		      }else{
-		          if(commandLineWindows[i].indexOf(".jar")>=0){
-              %>
+	              %>
 		        	paraList_<%=cid %>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap("<%=commandLineWindows[i] %>"));
 		      <%
-		          }else{
-              %>
-		      		paraList_<%=cid %>.add("<%=commandLineWindows[i] %>");
-		      <%
-		          }
 		      }
 		    }
 		  }
@@ -158,20 +146,13 @@ if(useDynamicJob){
 		      	param = "\""+commandLineUnix[i]+"\"";
 		      }
 		      if (param.contains("$ROOT_PATH")) {
-		      	if(param.indexOf(".jar") >= 0){
 		      %>
 		        paraList_<%=cid %>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap(<%=param %>).replace("$ROOT_PATH",System.getProperty("user.dir")));
-		      <%}else{%>
-		        paraList_<%=cid %>.add(<%=param %>.replace("$ROOT_PATH",System.getProperty("user.dir")));
 		      <%
-		      	}
 		      }else{
-		     	if(param.indexOf(".jar") >= 0){
 		      %>
 		        paraList_<%=cid %>.add(dealChildJobLibrary_<%=cid %>.replaceJarPathsFromCrcMap(<%=param %>).replace("$ROOT_PATH",System.getProperty("user.dir")));
-		      <%}else{%>
-		        paraList_<%=cid %>.add(<%=param %>);
-		      <%}
+		      <%	
 		      }
 		    }
 		  }
