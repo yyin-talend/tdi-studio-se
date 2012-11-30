@@ -517,14 +517,16 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * @param node
      */
     public void removeNodeContainer(final NodeContainer nodeContainer) {
-        removeUniqueNodeName(nodeContainer.getNode().getUniqueName());
+        String uniqueName = nodeContainer.getNode().getUniqueName();
+        removeUniqueNodeName(uniqueName);
+        removeNode(uniqueName);
         nodes.remove(nodeContainer.getNode());
         Element toRemove = nodeContainer;
         List<Element> toAdd = new ArrayList<Element>();
         for (Object o : elem) {
             if (o instanceof SubjobContainer) {
                 SubjobContainer sjc = (SubjobContainer) o;
-                if (sjc.deleteNodeContainer(nodeContainer)) {
+                if (sjc.deleteNodeContainer(uniqueName)) {
                     if (nodeContainer.getNode().isDesignSubjobStartNode()) {
                         subjobContainers.remove(sjc);
                         toAdd.addAll(sjc.getNodeContainers());
@@ -539,6 +541,24 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         elem.addAll(toAdd);
 
         // fireStructureChange(NEED_UPDATE_JOB, elem);
+    }
+
+    /**
+     * DOC ycbai Comment method "removeNode".
+     * 
+     * @param nodeUniqueName
+     */
+    private void removeNode(String nodeUniqueName) {
+        if (nodeUniqueName == null) {
+            return;
+        }
+        Iterator<INode> nodeIter = nodes.iterator();
+        while (nodeIter.hasNext()) {
+            INode node = nodeIter.next();
+            if (nodeUniqueName.equals(node.getUniqueName())) {
+                nodeIter.remove();
+            }
+        }
     }
 
     /**
@@ -2839,6 +2859,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     /**
      * if delete a process item , should remove the problems of this .
      */
+    @Override
     public void removeProblems4ProcessDeleted() {
         if (isActivate()) {
             Problems.removeProblemsByProcess(this, true);
