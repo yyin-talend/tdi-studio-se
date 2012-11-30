@@ -2556,7 +2556,7 @@ public class Node extends Element implements IGraphicalNode {
                                         IElementParameter param = elementParam.getChildParameters().get(key);
                                         if (param != null && param.getName().equals("CONNECTION") && param.getValue() != null
                                                 && param.getValue().toString().length() > 0) {
-                                            if (rowList.contains((String) param.getValue())) {
+                                            if (rowList.contains(param.getValue())) {
                                                 String errorMessage = "Can't not have more than one input linked to the same connection";
                                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                                             } else {
@@ -3617,6 +3617,14 @@ public class Node extends Element implements IGraphicalNode {
                         IElementParameter targetChildParam = targetParam.getChildParameters().get(name);
                         IElementParameter sourceChildParam = sourceParam.getChildParameters().get(name);
                         if (sourceChildParam == null) {
+                            if (targetChildParam.getFieldType() == EParameterFieldType.CONNECTION_LIST) {
+                                String pname = targetParam.getName() + ":" + targetChildParam.getName();//$NON-NLS-1$
+                                if ((getPropertyValue(pname) == null || getPropertyValue(pname).toString().length() == 0)
+                                        && component.getProcess() instanceof IProcess2
+                                        && storeValueMap.containsKey(sourceParam.getName()) && !storeValueMap.containsKey(pname)) {
+                                    storeConn(sourceParam, pname);
+                                }
+                            }
                             continue;
                         }
                         String pname = sourceParam.getName() + ":" + sourceChildParam.getName();//$NON-NLS-1$
@@ -3629,8 +3637,9 @@ public class Node extends Element implements IGraphicalNode {
                         if (targetChildParam.getFieldType() == EParameterFieldType.TABLE) {
                             targetChildParam.setListItemsValue(sourceChildParam.getListItemsValue());
                         } else if (targetChildParam.getFieldType() == EParameterFieldType.CONNECTION_LIST) {
-                            if (((getPropertyValue(pname) == null || getPropertyValue(pname).toString().length() == 0))
-                                    && component.getProcess() instanceof IProcess2) {
+                            if ((getPropertyValue(pname) == null || getPropertyValue(pname).toString().length() == 0)
+                                    && component.getProcess() instanceof IProcess2
+                                    && storeValueMap.containsKey(sourceParam.getName()) && !storeValueMap.containsKey(pname)) {
                                 storeConn(sourceParam, pname);
                             }
                         }
