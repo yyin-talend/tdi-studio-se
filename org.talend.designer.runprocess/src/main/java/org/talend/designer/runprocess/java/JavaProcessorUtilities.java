@@ -725,6 +725,13 @@ public class JavaProcessorUtilities {
     }
 
     public static IJavaProject getJavaProject() {
+        if (javaProject == null) {
+            try {
+                initializeProject();
+            } catch (CoreException e) {
+                ExceptionHandler.process(e);
+            }
+        }
         return javaProject;
     }
 
