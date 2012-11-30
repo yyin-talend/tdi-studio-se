@@ -517,14 +517,15 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
      * @param node
      */
     public void removeNodeContainer(final NodeContainer nodeContainer) {
-        removeUniqueNodeName(nodeContainer.getNode().getUniqueName());
-        nodes.remove(nodeContainer.getNode());
+        String uniqueName = nodeContainer.getNode().getUniqueName();
+        removeUniqueNodeName(uniqueName);
+        removeNode(uniqueName);
         Element toRemove = nodeContainer;
         List<Element> toAdd = new ArrayList<Element>();
         for (Object o : elem) {
             if (o instanceof SubjobContainer) {
                 SubjobContainer sjc = (SubjobContainer) o;
-                if (sjc.deleteNodeContainer(nodeContainer)) {
+                if (sjc.deleteNodeContainer(uniqueName)) {
                     if (nodeContainer.getNode().isDesignSubjobStartNode()) {
                         subjobContainers.remove(sjc);
                         toAdd.addAll(sjc.getNodeContainers());
@@ -539,6 +540,24 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         elem.addAll(toAdd);
 
         // fireStructureChange(NEED_UPDATE_JOB, elem);
+    }
+
+    /**
+     * DOC ycbai Comment method "removeNode".
+     * 
+     * @param nodeUniqueName
+     */
+    private void removeNode(String nodeUniqueName) {
+        if (nodeUniqueName == null) {
+            return;
+        }
+        Iterator<INode> nodeIter = nodes.iterator();
+        while (nodeIter.hasNext()) {
+            INode node = nodeIter.next();
+            if (nodeUniqueName.equals(node.getUniqueName())) {
+                nodeIter.remove();
+            }
+        }
     }
 
     /**

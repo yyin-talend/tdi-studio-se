@@ -373,6 +373,9 @@ public class ConnectionCreateCommand extends Command {
                         monitorConnection);
             }
         } else { // in case of redo, reuse the same instance
+            if (newMetadata != null) {
+                source.getMetadataList().add(newMetadata);
+            }
             connection.reconnect(source, target, newLineStyle);
         }
         INodeConnector nodeConnectorSource, nodeConnectorTarget;
@@ -421,7 +424,6 @@ public class ConnectionCreateCommand extends Command {
         source.checkAndRefreshNode();
         target.checkAndRefreshNode();
         // ((Process) source.getProcess()).checkProcess();
-        connection = null;
     }
 
     @Override

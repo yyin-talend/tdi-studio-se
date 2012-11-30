@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.subjobcontainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -218,6 +219,32 @@ public class SubjobContainer extends Element implements ISubjobContainer {
             return true;
         }
         return false;
+    }
+
+    /**
+     * DOC ycbai Comment method "deleteNodeContainer".
+     * 
+     * @param nodeUniqueName
+     * @return
+     */
+    public boolean deleteNodeContainer(String nodeUniqueName) {
+        boolean deleted = false;
+        if (nodeUniqueName == null) {
+            return deleted;
+        }
+        List<NodeContainer> nContainers = getNodeContainers();
+        Iterator<NodeContainer> nodeContainerIter = nContainers.iterator();
+        while (nodeContainerIter.hasNext()) {
+            NodeContainer nc = nodeContainerIter.next();
+            if (nodeUniqueName.equals(nc.getNode().getUniqueName())) {
+                nodeContainerIter.remove();
+                deleted = true;
+            }
+        }
+        if (deleted) {
+            updateSubjobContainer();
+        }
+        return deleted;
     }
 
     /**
