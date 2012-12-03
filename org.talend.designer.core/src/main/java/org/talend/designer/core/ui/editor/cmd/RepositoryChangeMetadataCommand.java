@@ -30,7 +30,9 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
+import org.talend.core.model.repository.DragAndDropManager;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.IDragAndDropServiceHandler;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -38,6 +40,8 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.repository.UpdateRepositoryUtils;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -109,6 +113,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
             IElementParameter parameter = node.getElementParameter("SAP_FUNCTION");
             if (parameter != null)
                 setSAPFunctionName(node, parameter.getValue() == null ? null : (String) parameter.getValue());
+            setTableRelevantParameterValues();
         }
         super.execute();
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
@@ -167,6 +172,31 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
             }
         }
         node.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+    }
+
+    protected void setTableRelevantParameterValues() {
+        Connection conn = connection;
+        if (conn == null) {
+            if (newPropValue != null && newPropValue instanceof String) {
+                String schemaId = (String) newPropValue;
+                String[] values = schemaId.split(" - "); //$NON-NLS-1$
+                String repositoryID = values[0];
+                RepositoryNode repositoryNode = RepositoryNodeUtilities.getRepositoryNode(repositoryID);
+                if (repositoryNode != null && repositoryNode.getObject() != null) {
+                    Item item = repositoryNode.getObject().getProperty().getItem();
+                    if (item instanceof ConnectionItem) {
+                        ConnectionItem conItem = (ConnectionItem) item;
+                        conn = conItem.getConnection();
+                    }
+                }
+
+            }
+        }
+        for (IDragAndDropServiceHandler handler : DragAndDropManager.getHandlers()) {
+            if (handler.canHandle(conn)) {
+                handler.handleTableRelevantParameters(node, newOutputMetadata);
+            }
+        }
     }
 
     @Override
