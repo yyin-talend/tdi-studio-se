@@ -81,6 +81,7 @@ public class TabFolderEditors extends CTabFolder {
 
         tabFolderEditors.addListener(SWT.Selection, new Listener() {
 
+            @Override
             public void handleEvent(Event event) {
                 lastSelectedTab = tabFolderEditors.getSelectionIndex();
                 mapperManager.getUiManager().refreshSqlExpression();
@@ -128,7 +129,7 @@ public class TabFolderEditors extends CTabFolder {
 
         inputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
         inputMetaEditor.setShowDbTypeColumn(true, false, false);
-        inputMetaEditor.setShowDbColumnName(false, false);
+        inputMetaEditor.setShowDbColumnName(true, false);
         inputMetaEditor.setShowPatternColumn(false);
         inputMetaEditor.setShowTalendTypeColumn(false);
         inputMetaEditor.initGraphicComponents();
@@ -136,7 +137,7 @@ public class TabFolderEditors extends CTabFolder {
 
         outputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
         outputMetaEditor.setShowDbTypeColumn(true, false, false);
-        outputMetaEditor.setShowDbColumnName(false, false);
+        outputMetaEditor.setShowDbColumnName(true, false);
         outputMetaEditor.setShowTalendTypeColumn(false);
         outputMetaEditor.setShowPatternColumn(false);
         outputMetaEditor.initGraphicComponents();
