@@ -38,6 +38,7 @@ import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LightweightSystem;
+import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.SWTGraphics;
 import org.eclipse.draw2d.SimpleRaisedBorder;
 import org.eclipse.draw2d.Viewport;
@@ -180,7 +181,6 @@ import org.talend.designer.core.ui.editor.process.CreateComponentOnLinkHelper;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.process.TalendEditorDropTargetListener;
-import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
@@ -200,6 +200,8 @@ import org.talend.repository.ui.views.IRepositoryView;
  */
 public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPalette implements
         ITabbedPropertySheetPageContributor, IJobResourceProtection, ITalendEditor {
+
+    private ConnectionPart selectedConnectionPart = null;
 
     private static Logger log = Logger.getLogger(AbstractTalendEditor.class);
 
@@ -1087,7 +1089,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     @Override
     public void dispose() {
-        CreateComponentOnLinkHelper.setSelectedConnection(null);
         ProcessorUtilities.editorClosed(this);
         talendPaletteViewerProvider = null;
 
@@ -1421,7 +1422,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                     return;
                 }
 
-                if (request instanceof CreateRequest && editPart instanceof SubjobContainerPart) {
+                if (request instanceof CreateRequest && selectedConnectionPart != null) {
                     Object object = ((CreateRequest) request).getNewObject();
                     if (object instanceof Node) {
                         Node node = (Node) object;
@@ -1437,14 +1438,14 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                         }
                         Point point = new Point(originalPoint.x + viewOriginalPosition.x, originalPoint.y
                                 + viewOriginalPosition.y);
-
-                        Connection targetConnection = CreateComponentOnLinkHelper.getSelectedConnection();
-                        for (Object child : getProcessPart().getChildren()) {
-                            if (child instanceof SubjobContainerPart) {
-                                CreateComponentOnLinkHelper.unselectAllConnections((SubjobContainerPart) child);
-                            }
-                        }
-
+                        //
+                        // Connection targetConnection = CreateComponentOnLinkHelper.getSelectedConnection();
+                        // for (Object child : getProcessPart().getChildren()) {
+                        // if (child instanceof SubjobContainerPart) {
+                        // CreateComponentOnLinkHelper.unselectAllConnections((SubjobContainerPart) child);
+                        // }
+                        // }
+                        Connection targetConnection = (Connection) selectedConnectionPart.getModel();
                         if (targetConnection != null) {
                             NodeContainer nodeContainer = new NodeContainer(node);
                             if (getProcess() instanceof Process) {
@@ -1579,6 +1580,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         @Override
         public void mouseUp(org.eclipse.swt.events.MouseEvent mouseEvent, EditPartViewer viewer) {
             createConnection = false;
+            selectedConnectionPart = null;
+            CreateComponentOnLinkHelper.unselectAllConnections(getProcessPart());
             if (mouseEvent.button != 2) {
                 super.mouseUp(mouseEvent, viewer);
             } else {
@@ -1590,8 +1593,12 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         @Override
         public void keyDown(org.eclipse.swt.events.KeyEvent keyEvent, EditPartViewer viewer) {
             int keyCode = keyEvent.keyCode;//
-
-            if (keyEvent.stateMask == SWT.CTRL
+            if (selectedConnectionPart != null) {
+                if (selectedConnectionPart != null) {
+                    CreateComponentOnLinkHelper.unselectConnection(selectedConnectionPart);
+                }
+                selectedConnectionPart = null;
+            } else if (keyEvent.stateMask == SWT.CTRL
                     && (keyCode == SWT.ARROW_UP || keyCode == SWT.ARROW_DOWN || keyCode == SWT.ARROW_LEFT || keyCode == SWT.ARROW_RIGHT)) {
                 List<EditPart> parts = viewer.getSelectedEditParts();
                 if (parts == null) {
@@ -1780,8 +1787,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 } catch (IllegalAccessException e) {
                     ExceptionHandler.process(e);
                 }
-                if (request instanceof CreateRequest) {
-                    Object node = ((CreateRequest) request).getNewObject();
+                if (request instanceof CreateRequest && ((CreateRequest) request).getNewObject() instanceof Node) {
+                    Node node = (Node) ((CreateRequest) request).getNewObject();
                     RootEditPart rep = getViewer().getRootEditPart().getRoot();
 
                     Point viewOriginalPosition = new Point();
@@ -1793,34 +1800,45 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
                     org.eclipse.draw2d.geometry.Point draw2dPosition = new org.eclipse.draw2d.geometry.Point(mouseEvent.x
                             + viewOriginalPosition.x, mouseEvent.y + viewOriginalPosition.y);
-                    SubjobContainerPart containerPart = null;
+                    double zoom = 1.0;
+                    if (viewer.getRootEditPart() instanceof TalendScalableFreeformRootEditPart) {
+                        ZoomManager zoomManager = ((TalendScalableFreeformRootEditPart) viewer.getRootEditPart())
+                                .getZoomManager();
+                        zoom = zoomManager.getZoom();
+                    }
 
-                    for (Object child : getProcessPart().getChildren()) {
-                        if (child instanceof SubjobContainerPart) {
-                            SubjobContainer container = (SubjobContainer) ((SubjobContainerPart) child).getModel();
-                            if (container.getSubjobContainerRectangle().contains(draw2dPosition)) {
-                                containerPart = (SubjobContainerPart) child;
+                    List<ConnectionPart> connectionParts = CreateComponentOnLinkHelper.getConnectionParts(getProcessPart(),
+                            draw2dPosition, node);
+
+                    double minDistance = 1000000000;
+                    for (ConnectionPart part : connectionParts) {
+                        if (part.getFigure() instanceof PolylineConnection) {
+                            PolylineConnection connection = (PolylineConnection) part.getFigure();
+                            Point pt1 = connection.getStart();
+                            Point pt2 = connection.getEnd();
+                            double distance = CreateComponentOnLinkHelper.getDistanceOrthogonal(draw2dPosition.x,
+                                    draw2dPosition.y, pt1, pt2, zoom);
+                            if (distance < minDistance) {
+                                selectedConnectionPart = part;
+                                minDistance = Math.min(distance, minDistance);
                             }
                         }
                     }
 
-                    if (containerPart != null && node instanceof Node) {
-                        List<org.talend.designer.core.ui.editor.connections.Connection> connections = CreateComponentOnLinkHelper
-                                .getConnection(containerPart, draw2dPosition, (Node) node);
-                        for (org.talend.designer.core.ui.editor.connections.Connection connection : connections) {
-                            CreateComponentOnLinkHelper.selectConnection(connection, containerPart);
-                        }
-
-                        if (connections.isEmpty()) {
-                            CreateComponentOnLinkHelper.unselectAllConnections(containerPart);
-                        }
-                    } else {
+                    if (selectedConnectionPart != null && minDistance < 15) {
                         for (Object child : getProcessPart().getChildren()) {
                             if (child instanceof SubjobContainerPart) {
                                 CreateComponentOnLinkHelper.unselectAllConnections((SubjobContainerPart) child);
                             }
                         }
+                        CreateComponentOnLinkHelper.selectConnection(selectedConnectionPart);
+                    } else {
+                        if (selectedConnectionPart != null) {
+                            CreateComponentOnLinkHelper.unselectConnection(selectedConnectionPart);
+                        }
+                        selectedConnectionPart = null;
                     }
+
                 }
             }
             super.mouseMove(mouseEvent, viewer);
