@@ -249,7 +249,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         @Override
         public void partOpened(IWorkbenchPart part) {
-
+            IProcess2 process = getProcess();
+            ((Process) process).setEditor(AbstractMultiPageTalendEditor.this);
         }
 
         @Override
@@ -774,7 +775,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     protected void createPage1() {
         IProcess2 process = getProcess();
         codeEditor = CodeEditorFactory.getInstance().getCodeEditor(getCurrentLang(), process);
-        ((Process) process).setEditor(this);
         processor = ProcessorUtilities.getProcessor(process, process.getProperty(), process.getContextManager()
                 .getDefaultContext());
         if (processor instanceof IJavaBreakpointListener) {
