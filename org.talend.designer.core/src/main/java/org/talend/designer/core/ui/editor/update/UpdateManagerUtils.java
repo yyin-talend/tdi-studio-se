@@ -163,7 +163,16 @@ public final class UpdateManagerUtils {
     }
 
     public static List<IProcess2> getOpenedProcess() {
-        IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+        IEditorReference[] reference = null;
+        if (PlatformUI.getWorkbench() != null && PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null
+                && PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage() != null) {
+            reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+        } else if (PlatformUI.getWorkbench() != null && PlatformUI.getWorkbench().getWorkbenchWindows().length > 0) {
+            if (PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage() != null) {
+                reference = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getActivePage().getEditorReferences();
+            }
+        }
+
         if (reference != null) {
             List<IProcess2> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
             if (processes != null) {
