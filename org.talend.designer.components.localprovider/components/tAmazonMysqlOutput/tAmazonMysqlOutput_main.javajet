@@ -1374,7 +1374,6 @@ if(columnList != null && columnList.size() > 0) {
         	<%if (rejectConnName == null && useBatchSize && "MYSQL_5".equals(dbVersion)) { // whether use batch
     		%>
     		pstmt_<%=cid %>.addBatch();
-    		nb_line_<%=cid%>++;    		 
 			
     		  <%if (useBatchSize && !("").equals(batchSize) && !("0").equals(batchSize)) {
     		  %>
