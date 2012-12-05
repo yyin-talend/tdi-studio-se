@@ -24,11 +24,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.runtime.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
@@ -153,16 +152,13 @@ public class JobErrorsChecker {
                     }
                     if (ret) {
                         if (isJob) {
-                            MessageDialog.openError(Display.getDefault().getActiveShell(),
-                                    Messages.getString("JobErrorsChecker_compile_errors"), //$NON-NLS-1$
-                                    Messages.getString("JobErrorsChecker_compile_error_content", item.getProperty().getLabel())); //$NON-NLS-1$
+                            throw new ProcessorException(Messages.getString("JobErrorsChecker_compile_errors") + "\n" + //$NON-NLS-1$
+                                    Messages.getString("JobErrorsChecker_compile_error_content", item.getProperty().getLabel()));
                         } else {
-                            MessageDialog.openError(Display.getDefault().getActiveShell(), Messages
-                                    .getString("CamelJobErrorsChecker_compile_errors"), //$NON-NLS-1$
-                                    Messages.getString(
-                                            "CamelJobErrorsChecker_compile_error_content", item.getProperty().getLabel())); //$NON-NLS-1$
+                            throw new ProcessorException(Messages.getString("CamelJobErrorsChecker_compile_errors") + "\n" + //$NON-NLS-1$
+                                    Messages.getString("CamelJobErrorsChecker_compile_error_content", item.getProperty()
+                                            .getLabel()));
                         }
-                        return true;
                     }
 
                     if (isPerl) {
@@ -175,7 +171,8 @@ public class JobErrorsChecker {
                     Problems.addRoutineFile(sourceFile, ProblemType.JOB, item.getProperty().getLabel(), item.getProperty()
                             .getVersion(), true);
                 } catch (Exception e) {
-                    ExceptionHandler.process(e);
+                    MessageBoxExceptionHandler.process(e);
+                    return true;
                 }
 
             }
@@ -185,17 +182,19 @@ public class JobErrorsChecker {
             List<Problem> errors = Problems.getProblemList().getProblemsBySeverity(ProblemStatus.ERROR);
             ErrorDetailTreeBuilder builder = new ErrorDetailTreeBuilder();
             List<JobErrorEntry> input = builder.createTreeInput(errors, jobIds);
-            if (input.size() > 0) {
-                String label = ((JobErrorEntry) input.get(0)).getLabel();
-                if (isJob) {
-                    MessageDialog.openError(Display.getDefault().getActiveShell(),
-                            Messages.getString("JobErrorsChecker_compile_errors"), //$NON-NLS-1$
-                            Messages.getString("JobErrorsChecker_compile_error_content", label)); //$NON-NLS-1$
-                } else {
-                    MessageDialog.openError(Display.getDefault().getActiveShell(),
-                            Messages.getString("CamelJobErrorsChecker_compile_errors"), //$NON-NLS-1$
-                            Messages.getString("CamelJobErrorsChecker_compile_error_content", label)); //$NON-NLS-1$
+            try {
+                if (input.size() > 0) {
+                    String label = ((JobErrorEntry) input.get(0)).getLabel();
+                    if (isJob) {
+                        throw new ProcessorException(Messages.getString("JobErrorsChecker_compile_errors") + "\n" + //$NON-NLS-1$
+                                Messages.getString("JobErrorsChecker_compile_error_content", label));
+                    } else {
+                        throw new ProcessorException(Messages.getString("CamelJobErrorsChecker_compile_errors") + "\n" + //$NON-NLS-1$
+                                Messages.getString("CamelJobErrorsChecker_compile_error_content", label));
+                    }
                 }
+            } catch (Exception e) {
+                MessageBoxExceptionHandler.process(e);
                 return true;
             }
 
