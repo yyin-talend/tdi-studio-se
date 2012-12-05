@@ -227,7 +227,7 @@ public class JobletUtil {
         return cloneNodeContainer;
     }
 
-    public Node cloneNode(Node node, IProcess process, boolean lockByOther) {
+    public Node cloneNode(Node node, IProcess process, Map<String, List<? extends IElementParameter>> paraMap, boolean lockByOther) {
         NodePart nodePart = new NodePart();
         IJobletProviderService service = (IJobletProviderService) GlobalServiceRegister.getDefault().getService(
                 IJobletProviderService.class);
@@ -263,7 +263,13 @@ public class JobletUtil {
         cloneNode.setDummy(node.isDummy());
         cloneNode.setActivate(node.isActivate());
 
-        List<? extends IElementParameter> elementParas = node.getElementParameters();
+        List<? extends IElementParameter> elementParas = null;
+        if (paraMap.containsKey(node.getUniqueName())) {
+            elementParas = (List<? extends IElementParameter>) paraMap.get(node.getUniqueName());
+        } else {
+            elementParas = node.getElementParameters();
+        }
+
         for (IElementParameter elementPara : elementParas) {
             if (elementPara.getName() != null && !elementPara.getName().equals("UNIQUE_NAME")) {
                 IElementParameter cloneElement = cloneNode.getElementParameter(elementPara.getName());

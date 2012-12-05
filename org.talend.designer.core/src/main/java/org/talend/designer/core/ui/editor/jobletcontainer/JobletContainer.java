@@ -1,9 +1,11 @@
 package org.talend.designer.core.ui.editor.jobletcontainer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.draw2d.geometry.Dimension;
@@ -293,9 +295,11 @@ public class JobletContainer extends NodeContainer {
                 lockByOther = util.lockByOthers(((IProcess2) jobletProcess).getProperty().getItem());
             }
 
+            Map<String, List<? extends IElementParameter>> paraMap = new HashMap<String, List<? extends IElementParameter>>();
             // List<NodeContainer> temList = new ArrayList<NodeContainer>(nodeContainers);
             for (NodeContainer nc : nodeContainers) {
                 if (this.node.getProcess() instanceof IProcess2) {
+                    paraMap.put(nc.getNode().getJoblet_unique_name(), nc.getNode().getElementParameters());
                     ((IProcess2) this.node.getProcess()).removeUniqueNodeName(nc.getNode().getUniqueName());
                 }
             }
@@ -311,7 +315,7 @@ public class JobletContainer extends NodeContainer {
                     // if (canAdd) {
                     conns.addAll(temNode.getIncomingConnections());
                     conns.addAll(temNode.getOutgoingConnections());
-                    Node jnode = util.cloneNode(temNode, this.node.getProcess(), lockByOther);
+                    Node jnode = util.cloneNode(temNode, this.node.getProcess(), paraMap, lockByOther);
                     NodeContainer nodeContainer = util.cloneNodeContainer(temNode.getNodeContainer(), jnode);
                     jnode.setJobletnode(this.node);
                     jnode.setJoblet_unique_name(temNode.getUniqueName());
