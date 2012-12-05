@@ -32,6 +32,7 @@ import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.sqlbuilder.util.ConnectionParameters;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -282,7 +283,7 @@ public class TracesConnectionUtils {
         dbs.init();
         List<String> names = dbs.getNeedSchemaDBNames();
         boolean ifNeedSchemaDB = names.contains(productName);
-        if (isNeedSchema && isSchemaInValid && !ifNeedSchemaDB) { //$NON-NLS-1$
+        if (isNeedSchema && isSchemaInValid && !ifNeedSchemaDB) {
             parameters.setConnectionComment(Messages.getString("SQLBuilderRepositoryNodeManager.connectionComment")); //$NON-NLS-1$
             return null;
         }
@@ -311,7 +312,35 @@ public class TracesConnectionUtils {
         if ("".equals(connection.getLabel())) { //$NON-NLS-1$
             connection.setLabel(parameters.getDatasource());
         }
-        final String product = EDatabaseTypeName.getTypeFromDisplayName(connection.getDatabaseType()).getProduct();
+        String driverClassByDbType = null;
+        if (parameters.getDriverClass() != null) {
+            driverClassByDbType = parameters.getDriverClass();
+        } else {
+            driverClassByDbType = ExtractMetaDataUtils.getDriverClassByDbType(dbType);
+        }
+        String driverJar = parameters.getDriverJar();
+        connection.setDriverClass(driverClassByDbType);
+        connection.setDriverJarPath(driverJar);
+        String databaseType = connection.getDatabaseType();
+        if (driverClassByDbType != null && !"".equals(driverClassByDbType)
+                && EDatabaseTypeName.GENERAL_JDBC.getDisplayName().equals(parameters.getDbType())) {
+            if (driverClassByDbType.startsWith("\"") && driverClassByDbType.endsWith("\"")) {
+                driverClassByDbType = TalendTextUtils.removeQuotes(driverClassByDbType);
+            }
+            String dbTypeByClassName = "";
+            if (driverJar != null && !"".equals(driverJar)) {
+                dbTypeByClassName = ExtractMetaDataUtils.getDbTypeByClassNameAndDriverJar(driverClassByDbType, driverJar);
+            } else {
+                dbTypeByClassName = ExtractMetaDataUtils.getDbTypeByClassName(driverClassByDbType);
+            }
+
+            if (dbTypeByClassName != null) {
+                databaseType = dbTypeByClassName;
+            }
+        }
+
+        final String product = EDatabaseTypeName.getTypeFromDisplayName(databaseType).getProduct();
+        ;
         connection.setProductId(product);
         if (MetadataTalendType.getDefaultDbmsFromProduct(product) != null) {
             final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
@@ -321,20 +350,11 @@ public class TracesConnectionUtils {
         if (!isSchemaInValid && isNeedSchema) {
             schema = schema.replaceAll("\'", ""); //$NON-NLS-1$ //$NON-NLS-2$
             schema = schema.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
-            connection.setUiSchema(schema); //$NON-NLS-1$ //$NON-NLS-2$
+            connection.setUiSchema(schema);
         }
         connection.setServerName(parameters.getHost());
         connection.setAdditionalParams(parameters.getJdbcProperties());
 
-        String driverClassByDbType = null;
-        if (parameters.getDriverClass() != null) {
-            driverClassByDbType = parameters.getDriverClass();
-        } else {
-            driverClassByDbType = ExtractMetaDataUtils.getDriverClassByDbType(dbType);
-        }
-
-        connection.setDriverClass(driverClassByDbType);
-        connection.setDriverJarPath(parameters.getDriverJar());
         connection.setURL(parameters.getCombineURL());
 
         connection.setDBRootPath(parameters.getDirectory());
