@@ -436,49 +436,49 @@ public class PropertyTypeController extends AbstractRepositoryController {
                     } else
 
                     // file delimited
-                    if (ERepositoryCategoryType.DELIMITED.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                    if (ERepositoryCategoryType.DELIMITED.getName().equals(repositoryValue)) {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_DELIMITED);
                     }
                     // file positional
-                    if (ERepositoryCategoryType.POSITIONAL.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                    if (ERepositoryCategoryType.POSITIONAL.getName().equals(repositoryValue)) {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_POSITIONAL);
                     }
                     // file regexp
-                    if (ERepositoryCategoryType.REGEX.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                    if (ERepositoryCategoryType.REGEX.getName().equals(repositoryValue)) {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_REGEXP);
                     }
                     // file xml
                     if (ERepositoryCategoryType.XML.getName().equals(repositoryValue)
                     // bug 18012
-                            || repositoryValue.startsWith(ERepositoryCategoryType.XML.getName())) { //$NON-NLS-1$
+                            || repositoryValue.startsWith(ERepositoryCategoryType.XML.getName())) {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_XML);
                     }
                     // file ldif
-                    if (ERepositoryCategoryType.LDIF.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                    if (ERepositoryCategoryType.LDIF.getName().equals(repositoryValue)) {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_LDIF);
                     }
                     // excel
-                    if (ERepositoryCategoryType.EXCEL.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                    if (ERepositoryCategoryType.EXCEL.getName().equals(repositoryValue)) {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EXCEL);
                     }
                     // generic schema
-                    if (ERepositoryCategoryType.GENERIC.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                    if (ERepositoryCategoryType.GENERIC.getName().equals(repositoryValue)) {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
                     }
                     // ldap
-                    if (ERepositoryCategoryType.LDAP.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                    if (ERepositoryCategoryType.LDAP.getName().equals(repositoryValue)) {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_LDAP_SCHEMA);
                     }
                     // wsdl
-                    if (ERepositoryCategoryType.WSDL.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                    if (ERepositoryCategoryType.WSDL.getName().equals(repositoryValue)) {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_WSDL_SCHEMA);
                     }
@@ -487,23 +487,23 @@ public class PropertyTypeController extends AbstractRepositoryController {
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_WSDL_SCHEMA);
                     }
                     // salesforce
-                    if (ERepositoryCategoryType.SALESFORCE.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                    if (ERepositoryCategoryType.SALESFORCE.getName().equals(repositoryValue)) {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
                     }
                     // ebcdic
-                    if (ERepositoryCategoryType.EBCDIC.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                    if (ERepositoryCategoryType.EBCDIC.getName().equals(repositoryValue)) {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_EBCDIC);
                     }
 
                     // mdm
-                    if (ERepositoryCategoryType.MDM.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                    if (ERepositoryCategoryType.MDM.getName().equals(repositoryValue)) {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_MDMCONNECTION);
                     }
                     // sap
-                    if (ERepositoryCategoryType.SAP.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                    if (ERepositoryCategoryType.SAP.getName().equals(repositoryValue)) {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_SAPCONNECTIONS);
                     }
@@ -513,12 +513,12 @@ public class PropertyTypeController extends AbstractRepositoryController {
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_SAP_IDOC);
                     }
 
-                    if (ERepositoryCategoryType.HEADERFOOTER.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                    if (ERepositoryCategoryType.HEADERFOOTER.getName().equals(repositoryValue)) {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_HEADER_FOOTER);
                     }
                     // brms
-                    if (ERepositoryCategoryType.BRMS.getName().equals(repositoryValue)) { //$NON-NLS-1$
+                    if (ERepositoryCategoryType.BRMS.getName().equals(repositoryValue)) {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_BRMS);
                     }
@@ -528,7 +528,11 @@ public class PropertyTypeController extends AbstractRepositoryController {
                         realNode = (RepositoryNode) repositoryService
                                 .getRootRepositoryNode(ERepositoryObjectType.METADATA_FILE_HL7);
                     }
-
+                    // last resort we assume that the repository value was named after the root component type key
+                    if (realNode == null) {
+                        realNode = (RepositoryNode) repositoryService.getRootRepositoryNode(ERepositoryObjectType
+                                .getTypeFromKey(repositoryValue));
+                    }
                     if (realNode != null) {
                         final IMetadataService metadataService = CorePlugin.getDefault().getMetadataService();
                         if (metadataService != null) {
