@@ -139,6 +139,8 @@
 				REQUIRED_IF="GENERATION_MODE == 'DOM4J'" />
 			<IMPORT NAME="Java_xercesImpl" MODULE="xercesImpl.jar"
 				REQUIRED_IF="GENERATION_MODE == 'XERCES'" />
+			<IMPORT NAME="Java_xalan" MODULE="xalan.jar"
+                REQUIRED_IF="GENERATION_MODE == 'XERCES'" />
 			<IMPORT NAME="Java_talendSAX" MODULE="TalendSAX.jar"
 				REQUIRED_IF="GENERATION_MODE == 'SAX'" />
 		</IMPORTS>
