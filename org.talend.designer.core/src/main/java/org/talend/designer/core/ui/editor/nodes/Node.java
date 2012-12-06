@@ -54,6 +54,7 @@ import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlTypesManager;
+import org.talend.core.model.metadata.types.TypesManager;
 import org.talend.core.model.process.BlockCode;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -3164,6 +3165,20 @@ public class Node extends Element implements IGraphicalNode {
                                 schemaSynchronized = false;
                                 String errorMessage = Messages.getString(
                                         "Node.differentFromSchemaDefined", inputConnecion.getName()); //$NON-NLS-1$
+                                Problems.add(ProblemStatus.WARNING, this, errorMessage);
+                            }
+                        }
+                    }
+                    if (outputMeta != null) {
+                        for (int i = 0; i < outputMeta.getListColumns().size(); i++) {
+                            IMetadataColumn column = outputMeta.getListColumns().get(i);
+                            String sourceType = column.getType();
+                            String typevalue = column.getTalendType();
+                            String currentDbmsId = outputMeta.getDbms();
+                            // TDI-21862:when drag/drop a special schema onto a component,need check if this schema's
+                            // dbType compatible with this component
+                            if (!TypesManager.checkDBType(currentDbmsId, typevalue, sourceType)) {
+                                String errorMessage = "the schema's dbType not correct for this component"; //$NON-NLS-1$
                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
                         }
