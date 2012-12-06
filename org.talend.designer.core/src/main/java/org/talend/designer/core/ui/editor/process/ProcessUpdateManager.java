@@ -1567,7 +1567,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             if ((param.getFieldType().equals(EParameterFieldType.FILE) && isXsdPath)
                                     || (repositoryConnection instanceof SalesforceSchemaConnection
                                             && "MODULENAME".equals(repositoryValue) && !((SalesforceSchemaConnection) repositoryConnection)
-                                            .isUseCustomModuleName())) {
+                                                .isUseCustomModuleName())) {
                                 continue;
                             }
                             IMetadataTable table = null;
@@ -2099,6 +2099,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             }
         }
         List<UpdateResult> contextResults = new ArrayList<UpdateResult>();
+        List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
         for (String source : reformMap.keySet()) {
             Set<String> set = reformMap.get(source);
             if (set != null && !set.isEmpty()) {
@@ -2109,6 +2110,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 }
                 result.setResult(EUpdateItemType.JOBLET_CONTEXT, EUpdateResult.JOBLET_UPDATE, parameter, UpdatesConstants.CONTEXT
                         + UpdatesConstants.COLON + source);
+                if (!openedProcesses.contains(getProcess())) {
+                    result.setFromItem(true);
+                }
                 result.setJob(getProcess());
                 setConfigrationForReadOnlyJob(result);
                 contextResults.add(result);
