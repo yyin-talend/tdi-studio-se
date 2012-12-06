@@ -84,6 +84,8 @@ public class QueryGuessCommand extends Command {
 
     private IProcess process;
 
+    // Added TDQ-5616 yyin 20121206
+    private String whereClause = null;
     /**
      * The property is defined in an element, which can be either a node or a connection.
      * 
@@ -328,9 +330,19 @@ public class QueryGuessCommand extends Command {
         if (isJdbc && conn != null) {
             schema = getDefaultSchema(realTableName);
         }
-        newQuery = TalendTextUtils.addSQLQuotes(QueryUtil.generateNewQuery(node, newOutputMetadataTable, isJdbc, dbType, schema,
-                realTableName));
-        return newQuery;
+        newQuery = QueryUtil.generateNewQuery(node, newOutputMetadataTable, isJdbc, dbType, schema, realTableName);
+
+        // Added yyin TDQ-5616: if there are where clause, append it to the query
+        if (whereClause != null) {// the where clause is inputted by the user, so no need to modify it.
+            newQuery = newQuery.substring(0, newQuery.length() - 1) + whereClause + "\"";//$NON-NLS-1$
+        }// ~
+
+        return TalendTextUtils.addSQLQuotes(newQuery);
+    }
+
+    // Added TDQ-5616 yyin 20121206
+    public void setWhereClause(String clause) {
+        this.whereClause = clause;
     }
 
     // get DatabaseConnection
