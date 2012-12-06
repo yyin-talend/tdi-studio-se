@@ -75,6 +75,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * 
      * @see org.talend.core.model.process.AbstractExternalNode#initialize()
      */
+    @Override
     public void initialize() {
         initRowGeneratorMain();
         rowGeneratorMain.loadInitialParamters();
@@ -86,6 +87,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * 
      * @see org.talend.designer.core.model.components.IExternalComponent#getPersistentData()
      */
+    @Override
     public IExternalData getExternalData() {
         return null;
     }
@@ -99,6 +101,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * 
      * @see org.talend.designer.core.model.components.IExternalComponent#open(org.eclipse.swt.widgets.Display)
      */
+    @Override
     public int open(final Display display) {
         initRowGeneratorMain();
         rowGeneratorMain.createModelFromExternalData(getIODataComponents(), getMetadataList(), externalData, true);
@@ -128,6 +131,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * 
      * @see org.talend.designer.core.model.components.IExternalComponent#open()
      */
+    @Override
     public int open(final Composite parent) {
         initRowGeneratorMain();
         rowGeneratorMain.createModelFromExternalData(getIODataComponents(), getMetadataList(), externalData, true);
@@ -141,6 +145,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * 
      * @see org.talend.designer.core.model.components.IExternalComponent#setPersistentData(java.lang.Object)
      */
+    @Override
     public void setExternalData(IExternalData externalData) {
 
     }
@@ -177,7 +182,27 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      */
     @Override
     public void setMetadataList(List<IMetadataTable> metadataTablesOut) {
-        this.metadataListOut = metadataTablesOut;
+        boolean needUpdateMetadata = false;
+        if (this.metadataListOut == null) {
+            needUpdateMetadata = true;
+        } else if (this.metadataListOut.size() != metadataTablesOut.size()) {
+            needUpdateMetadata = true;
+        } else {
+            for (IMetadataTable metaTable : this.metadataListOut) {
+                for (IMetadataTable externalMetaTable : metadataTablesOut) {
+                    if (!metaTable.sameMetadataAs(externalMetaTable, IMetadataColumn.OPTIONS_NONE)) {
+                        needUpdateMetadata = true;
+                        break;
+                    }
+                }
+                if (needUpdateMetadata) {
+                    break;
+                }
+            }
+        }
+        if (needUpdateMetadata) {
+            this.metadataListOut = metadataTablesOut;
+        }
     }
 
     /*
@@ -218,6 +243,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * 
      * @see org.talend.core.model.process.IExternalNode#renameInputConnection(java.lang.String, java.lang.String)
      */
+    @Override
     public void renameInputConnection(String oldName, String newName) {
         // do nothing, because tRowGenerator has not Input Connections.
     }
@@ -227,6 +253,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * 
      * @see org.talend.core.model.process.IExternalNode#renameOutputConnection(java.lang.String, java.lang.String)
      */
+    @Override
     public void renameOutputConnection(String oldName, String newName) {
         if (oldName == null || newName == null) {
             throw new NullPointerException();
@@ -242,7 +269,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         }
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public String getNumber() {
         boolean end = false;
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
@@ -259,7 +286,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         return this.number;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void setNumber(String number) {
         this.number = number;
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
@@ -273,7 +300,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         }
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getMapList() {
         List<Map<String, Object>> map = new ArrayList<Map<String, Object>>();
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
@@ -330,7 +357,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         List<Map<String, Object>> map = getMapList();
         String arrayValue = ""; //$NON-NLS-1$
         if (map.size() > index) {
-            arrayValue = (String) map.get(index).get(ARRAY); //$NON-NLS-1$
+            arrayValue = (String) map.get(index).get(ARRAY);
             for (int i = 0; i < map.size(); i++) {
                 Map<String, Object> line = map.get(i);
                 if (ext.getLabel().equals(line.get(COLUMN_NAME))) {
@@ -342,7 +369,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         return arrayValue;
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void setTableElementParameter(List<Map<String, Object>> epsl) {
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
         for (int i = 0; i < eps.size(); i++) {
@@ -443,6 +470,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * 
      * @see org.talend.core.model.process.IExternalNode#getComponentDocumentation(java.lang.String, java.lang.String)
      */
+    @Override
     public IComponentDocumentation getComponentDocumentation(String componentName, String tempFolderPath) {
         RowGeneratorComponentDocumentation componentDocumentation = new RowGeneratorComponentDocumentation();
         componentDocumentation.setComponentName(componentName);
@@ -500,6 +528,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * 
      * @see org.talend.core.model.process.IExternalNode#getTMapExternalData()
      */
+    @Override
     public IExternalData getTMapExternalData() {
         // TODO Auto-generated method stub
         return null;

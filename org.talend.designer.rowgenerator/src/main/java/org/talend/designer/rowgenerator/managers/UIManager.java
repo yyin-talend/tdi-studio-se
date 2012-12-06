@@ -186,7 +186,7 @@ public class UIManager {
         ExternalRowGeneratorUiProperties.setWeightsDatasFlowViewSashForm(generatorUI.getDatasFlowViewSashForm().getWeights());
         ExternalRowGeneratorUiProperties.setShellMaximized(generatorUI.getRowGenUIParent().getShell().getMaximized());
         if (!ExternalRowGeneratorUiProperties.isShellMaximized()) {
-            ExternalRowGeneratorUiProperties.setBoundsRowGen(generatorUI.getRowGenUIParent().getBounds());
+            ExternalRowGeneratorUiProperties.setBoundsRowGen(generatorUI.getRowGenUIParent().getShell().getBounds());
         }
         ExternalRowGeneratorUiProperties.setShowColumnsList(getShowColumnsList());
     }
