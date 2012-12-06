@@ -119,7 +119,6 @@ import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.IJobletProviderService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.IRepositoryChangedListener;
-import org.talend.repository.ProjectManager;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -150,6 +149,7 @@ import org.talend.repository.viewer.ui.viewer.RepositoryTreeViewer;
  * 
  * @deprecated have replaced by CNF repository view (@see RepoViewCommonNavigator)
  */
+@Deprecated
 public class RepositoryView extends ViewPart implements IRepositoryView, ITabbedPropertySheetPageContributor,
         IRepositoryChangedListener, ISelectionListener {
 
@@ -196,7 +196,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     protected ProjectRepositoryNode createRootNode() {
         final ProjectRepositoryNode projectRepNode = new ProjectRepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
-        ProjectManager.getInstance().updateViewProjectNode(projectRepNode);
+        // ProjectManager.getInstance().updateViewProjectNode(projectRepNode);
         return projectRepNode;
     }
 
@@ -382,6 +382,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * 
      * @deprecated I think, should check for this, it's good or not. need more test..
      */
+    @Deprecated
     protected void expandCollapseAll() {
         /* need to expand so that all folderItem will be created */
         viewer.expandAll();
@@ -804,7 +805,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     if (description == null || "".equals(description)) {//$NON-NLS-1$
                         return content;
                     }
-                    return content + "\n" + "  Description: " + description;//$NON-NLS-1$//$NON-NLS-1$
+                    return content + "\n" + "  Description: " + description;//$NON-NLS-1$
                 }
             }
         };
@@ -1132,8 +1133,9 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             List<UpdateResult> updateResults = manager.getUpdatesNeeded(EUpdateItemType.RELOAD);
             updateAllResults.addAll(updateResults);
         }
-        if (manager != null)
+        if (manager != null) {
             manager.executeUpdates(updateAllResults);
+        }
     }
 
     /*
@@ -1193,8 +1195,9 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     public void refreshAllChildNodes(RepositoryNode rootNode) {
         if (rootNode != null) {
             rootNode.setInitialized(false);
-            if (!rootNode.getContentType().equals(ERepositoryObjectType.METADATA))
+            if (!rootNode.getContentType().equals(ERepositoryObjectType.METADATA)) {
                 rootNode.getChildren().clear();
+            }
             // for bug 11786
             if (rootNode.getParent() instanceof ProjectRepositoryNode) {
                 ((ProjectRepositoryNode) rootNode.getParent()).clearNodeAndProjectCash();
