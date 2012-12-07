@@ -9,7 +9,6 @@
     org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.metadata.types.JavaType    
-    org.talend.core.model.process.EConnectionType
     java.util.List
     java.util.Map
   "
@@ -54,18 +53,6 @@ if (metadatas != null && metadatas.size()>0) {
   IMetadataTable metadata = metadatas.get(0);
   if (metadata != null) { 
   
-  	List<? extends IConnection> outputConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
-  	List<IMetadataColumn> outputColumnList = null;
-  	if (outputConns != null && outputConns.size() > 0) {
-	  	IConnection outputConn = outputConns.get(0);
-	  	if(outputConn!=null){
-		  	IMetadataTable outputMetadata = outputConn.getMetadataTable();
-		  	if(outputMetadata!=null){
-		  		outputColumnList = outputMetadata.getListColumns();
-		  	}
-	  	}
-  	}
-  	
     String rejectConnName = null;
     List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
     List<IMetadataColumn> rejectColumnList = null;
@@ -82,12 +69,18 @@ if (metadatas != null && metadatas.size()>0) {
    
     String outConnName = null;
     List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+    List<IMetadataColumn> outputColumnList = null;
 
     for(IConnection tmpconn : outgoingConns) {
       if (tmpconn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
         if(rejectConnName==null || !rejectConnName.equals(tmpconn.getName())){
           outConnName=tmpconn.getName();
-        }%>
+	  IMetadataTable outputMetadata = tmpconn.getMetadataTable();
+	  if(outputMetadata!=null){
+	      outputColumnList = outputMetadata.getListColumns();
+	  }
+	}
+      %>
         <%=tmpconn.getName() %> = null;
       <%
       }
