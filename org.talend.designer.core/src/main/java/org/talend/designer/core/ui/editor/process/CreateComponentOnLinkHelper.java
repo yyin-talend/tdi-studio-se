@@ -40,8 +40,6 @@ import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
  */
 public class CreateComponentOnLinkHelper {
 
-    private static Connection selectedConnection;
-
     public static void setupTMap(Node node) {
         if (!GlobalServiceRegister.getDefault().isServiceRegistered(IDesignerMapperService.class)) {
             return;
@@ -84,7 +82,6 @@ public class CreateComponentOnLinkHelper {
                                 if (fig.getLineWidth() != 2) {
                                     fig.setLineWidth(2);
                                     connPart.refresh();
-                                    setSelectedConnection(connection);
                                 }
                             } else {
                                 ConnectionFigure fig = (ConnectionFigure) connPart.getFigure();
@@ -101,8 +98,7 @@ public class CreateComponentOnLinkHelper {
     }
 
     public static void unselectAllConnections(SubjobContainerPart containerPart) {
-        setSelectedConnection(null);
-        List children = ((SubjobContainerPart) containerPart).getChildren();
+        List children = containerPart.getChildren();
         for (int i = 0; i < children.size(); i++) {
             Object object = children.get(i);
             if (object instanceof NodeContainerPart) {
@@ -285,11 +281,102 @@ public class CreateComponentOnLinkHelper {
         return connArgs;
     }
 
-    public static Connection getSelectedConnection() {
-        return selectedConnection;
+    public static List<ConnectionPart> getConnectionParts(ProcessPart processPart, Point point, Node node) {
+        List<ConnectionPart> connectionParts = new ArrayList<ConnectionPart>();
+        for (Object child : processPart.getChildren()) {
+            if (child instanceof SubjobContainerPart) {
+                SubjobContainerPart subJobPart = (SubjobContainerPart) child;
+                for (Object sChilde : subJobPart.getChildren()) {
+                    if (sChilde instanceof NodeContainerPart) {
+                        NodeContainerPart nodeCPart = (NodeContainerPart) sChilde;
+                        for (Object nChild : nodeCPart.getChildren()) {
+                            if (nChild instanceof NodePart) {
+                                for (Object conn : ((NodePart) nChild).getTargetConnections()) {
+                                    if (conn instanceof ConnectionPart
+                                            && canCreateNodeOnLink((Connection) ((ConnectionPart) conn).getModel(), node)) {
+                                        ConnectionPart connPart = (ConnectionPart) conn;
+                                        if (connPart.getFigure() != null && connPart.getFigure().getBounds().contains(point)) {
+                                            connectionParts.add((ConnectionPart) conn);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
+        return connectionParts;
     }
 
-    public static void setSelectedConnection(Connection selectedConnection) {
-        CreateComponentOnLinkHelper.selectedConnection = selectedConnection;
+    public static void unselectAllConnections(ProcessPart processPart) {
+        for (Object child : processPart.getChildren()) {
+            if (child instanceof SubjobContainerPart) {
+                SubjobContainerPart subJobPart = (SubjobContainerPart) child;
+                for (Object sChilde : subJobPart.getChildren()) {
+                    if (sChilde instanceof NodeContainerPart) {
+                        NodeContainerPart nodeCPart = (NodeContainerPart) sChilde;
+                        for (Object nChild : nodeCPart.getChildren()) {
+                            if (nChild instanceof NodePart) {
+                                for (Object conn : ((NodePart) nChild).getTargetConnections()) {
+                                    if (conn instanceof ConnectionPart) {
+                                        unselectConnection((ConnectionPart) conn);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
     }
+
+    public static void selectConnection(ConnectionPart connPart) {
+        ConnectionFigure fig = (ConnectionFigure) connPart.getFigure();
+        if (fig.getLineWidth() != 2) {
+            fig.setLineWidth(2);
+            connPart.refresh();
+        }
+    }
+
+    public static void unselectConnection(ConnectionPart connPart) {
+        ConnectionFigure fig = (ConnectionFigure) connPart.getFigure();
+        if (fig.getLineWidth() != 1) {
+            fig.setLineWidth(1);
+            connPart.refresh();
+        }
+    }
+
+    public static double getDistanceOrthogonal(double x, double y, Point point1, Point point2, double zoom) {
+        double dis = 0;
+        double a, b, c;
+        a = lineDis(point1.x * zoom, point1.y * zoom, point2.x * zoom, point2.y * zoom);// distance of point1 to point2
+        b = lineDis(point1.x * zoom, point1.y * zoom, x, y); // distance of point1 to x,y
+        c = lineDis(point2.x * zoom, point2.y * zoom, x, y);// distance of point2 to x,y
+        if (c + b == a) {// on the line of point1-point2
+            dis = 0;
+            return dis;
+        }
+        if (c * c >= a * a + b * b) {
+            return 1000000000;
+        }
+        if (b * b >= a * a + c * c) {
+            return 1000000000;
+        }
+
+        double p = (a + b + c) / 2;
+        double s = Math.sqrt(p * (p - a) * (p - b) * (p - c));
+        dis = 2 * s / a;
+        return dis;
+    }
+
+    private static double lineDis(double x1, double y1, double x2, double y2) {
+        double lineLength = 0;
+        lineLength = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+        return lineLength;
+    }
+
 }
