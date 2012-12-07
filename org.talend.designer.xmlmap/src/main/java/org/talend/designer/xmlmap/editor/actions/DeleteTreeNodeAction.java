@@ -16,12 +16,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
-import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
@@ -138,7 +136,7 @@ public class DeleteTreeNodeAction extends SelectionAction {
                                 // remove delete loops in InputLoopTable for outputs
                                 List<TreeNode> subNodes = new ArrayList<TreeNode>();
                                 checkSubElementIsLoop(treeNode, subNodes);
-                                removeloopInOutputTree(subNodes);
+                                XmlMapUtil.removeloopInOutputTree(mapperManager, subNodes);
                             }
 
                         }
@@ -181,26 +179,6 @@ public class DeleteTreeNodeAction extends SelectionAction {
         for (TreeNode treeNode : subTreeNode.getChildren()) {
             checkSubElementIsLoop(treeNode, subLoops);
         }
-    }
-
-    private void removeloopInOutputTree(List<TreeNode> oldLoops) {
-        boolean isMainInputMultiLoop = mapperManager.getMainInputTree() == null ? false : mapperManager.getMainInputTree()
-                .isMultiLoops();
-        EList<OutputXmlTree> outputTrees = mapperManager.getCopyOfMapData().getOutputTrees();
-        for (OutputXmlTree outputTree : outputTrees) {
-            if (isMainInputMultiLoop) {
-                for (TreeNode oldLoop : oldLoops) {
-                    EList<InputLoopNodesTable> inputLoopNodesTables = outputTree.getInputLoopNodesTables();
-                    for (InputLoopNodesTable inputLoopTable : inputLoopNodesTables) {
-                        inputLoopTable.getInputloopnodes().remove(oldLoop);
-                    }
-                }
-                mapperManager.getProblemsAnalyser().checkProblems(outputTree);
-            } else {
-                outputTree.getInputLoopNodesTables().clear();
-            }
-        }
-
     }
 
     public boolean isInput() {
