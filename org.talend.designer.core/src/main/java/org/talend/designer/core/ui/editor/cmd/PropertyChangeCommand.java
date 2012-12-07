@@ -21,6 +21,7 @@ import java.util.Map;
 import org.eclipse.gef.commands.Command;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -255,18 +256,43 @@ public class PropertyChangeCommand extends Command {
         if (newValue instanceof String) {
             dbType = (String) newValue;
         }
+        IElementParameter schemaParameter = null;
         if (propName.equals(EParameterName.DB_TYPE.getName())) {
             IElementParameter elementParameter = elem.getElementParameter(EParameterName.DB_VERSION.getName());
-            IElementParameter elementParameter2 = elem.getElementParameter(EParameterName.SCHEMA_DB.getName());
+            schemaParameter = elem.getElementParameter(EParameterName.SCHEMA_DB.getName());
             setDbVersion(elementParameter, dbType);
-            DesignerUtilities.setSchemaDB(elementParameter2, newValue);
+            DesignerUtilities.setSchemaDB(schemaParameter, newValue);
         } else if (propName.equals(JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE.getName()))) {//$NON-NLS-1$
             IElementParameter elementParameter = elem.getElementParameter(JobSettingsConstants
                     .getExtraParameterName(EParameterName.DB_VERSION.getName()));
-            IElementParameter elementParameter2 = elem.getElementParameter(JobSettingsConstants
-                    .getExtraParameterName(EParameterName.SCHEMA_DB.getName()));
+            schemaParameter = elem.getElementParameter(JobSettingsConstants.getExtraParameterName(EParameterName.SCHEMA_DB
+                    .getName()));
             setDbVersion(elementParameter, dbType);
-            DesignerUtilities.setSchemaDB(elementParameter2, newValue);
+            DesignerUtilities.setSchemaDB(schemaParameter, newValue);
+        }
+        // Some DB not need fill the schema parameter for the JobSetting View "Extra" ,"Stats&Logs"
+        if (schemaParameter != null) {
+            if (currentParam.getValue() != null) {
+                int indexOfItemFromList = currentParam.getIndexOfItemFromList(currentParam.getValue().toString());
+                if (indexOfItemFromList != -1) {
+                    dbType = currentParam.getListItemsDisplayCodeName()[indexOfItemFromList];
+                }
+            }
+            if (EDatabaseTypeName.GENERAL_JDBC.getProduct().equals(dbType) || EDatabaseTypeName.GODBC.getProduct().equals(dbType)
+                    || EDatabaseTypeName.MYSQL.getProduct().equals(dbType)
+                    || EDatabaseTypeName.IBMDB2.getProduct().equals(dbType)
+                    || EDatabaseTypeName.SYBASEASE.getProduct().equals(dbType)
+                    || EDatabaseTypeName.SYBASEIQ.getProduct().equals(dbType)
+                    || EDatabaseTypeName.INGRES.getProduct().equals(dbType)
+                    || EDatabaseTypeName.INTERBASE.getProduct().equals(dbType)
+                    || EDatabaseTypeName.SQLITE.getProduct().equals(dbType)
+                    || EDatabaseTypeName.FIREBIRD.getProduct().equals(dbType)
+                    || EDatabaseTypeName.ACCESS.getProduct().equals(dbType)
+                    || EDatabaseTypeName.TERADATA.getProduct().equals(dbType)) {
+                if (!schemaParameter.getValue().equals("")) {
+                    schemaParameter.setValue("");
+                }
+            }
         }
         if (!toUpdate
                 && (currentParam.getFieldType().equals(EParameterFieldType.RADIO)
