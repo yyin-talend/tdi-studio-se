@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -57,7 +56,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.talend.commons.debug.TalendDebugHandler;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
-import org.talend.core.model.components.ComponentCompilations;
 import org.talend.designer.codegen.i18n.Messages;
 
 /**
@@ -328,7 +326,7 @@ public class TalendJetEmitter extends JETEmitter {
                 } else {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-                    DataInputStream dis = new DataInputStream(contents);
+                    DataInputStream dis = new DataInputStream(targetFile.getContents());
                     int len = 0;
                     byte[] buf = new byte[1024];
                     while (((len = dis.read(buf))) != -1) {
@@ -336,9 +334,14 @@ public class TalendJetEmitter extends JETEmitter {
                     }
                     dis.close();
 
-                    byte[] currentContent = baos.toByteArray();
-                    byte[] newContent = outputStream.toByteArray();
-                    if (!Arrays.equals(newContent, currentContent)) {
+                    String currentContent = baos.toString();
+                    String newContent = outputStream.toString();
+                    // since the build is done on linux, if use windows, it will use different rules for \r + \n
+                    // so compare without \r, at least to see if original string is the same
+                    // if yes, consider all is ok, no need to replace the content and recompile
+                    currentContent = currentContent.replace("\r", ""); //$NON-NLS-1$//$NON-NLS-2$ 
+                    newContent = newContent.replace("\r", ""); //$NON-NLS-1$//$NON-NLS-2$ 
+                    if (!newContent.equals(currentContent)) {
                         subProgressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETUpdating_message", //$NON-NLS-1$
                                 new Object[] { targetFile.getFullPath() }));
                         targetFile.setContents(contents, true, true, new SubProgressMonitor(subProgressMonitor, 1));
@@ -347,13 +350,14 @@ public class TalendJetEmitter extends JETEmitter {
                     }
                 }
 
+                // if jetEmitter.getMethod() == null, means the class file doesn't exist anymore
+                // it should be impossible to have only the class file deleted and the .java never modified, but still
+                // handle this case.
                 if (needRebuild || jetEmitter.getMethod() == null) {
                     subProgressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETBuilding_message", //$NON-NLS-1$
                             new Object[] { project.getName() }));
 
-                    if (!ComponentCompilations.getMarkers()) {
-                        project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new SubProgressMonitor(subProgressMonitor, 1));
-                    }
+                    project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new SubProgressMonitor(subProgressMonitor, 1));
 
                     IMarker[] markers = targetFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
                     boolean errors = false;
