@@ -101,7 +101,7 @@ if("FLOW_MODE".equals(mode)){
 			List<IMetadataColumn> columns = metadata.getListColumns();
 	    	String inConnName = "", outConnName = "", rejectConnName = null;
 	    	List<? extends IConnection> inConns = node.getIncomingConnections();
-	    	List<? extends IConnection> outConns = node.getOutgoingConnections();
+	    	List<? extends IConnection> outConns = node.getOutgoingSortedConnections();
 	    	List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
 			if (rejectConns != null && rejectConns.size() > 0) {
 				for (IConnection rejectConn : rejectConns) {

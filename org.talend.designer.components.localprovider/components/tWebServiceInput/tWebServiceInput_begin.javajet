@@ -282,7 +282,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         // component was linked to our tJavaRow.        
         String outputRowName = new String("output_row");
         
-        List< ? extends IConnection> outConns = node.getOutgoingConnections();
+        List< ? extends IConnection> outConns = node.getOutgoingSortedConnections();
         if (outConns != null && !outConns.isEmpty()) {
             IConnection outConn = outConns.get(0);
             outputRowName = outConn.getName();

@@ -41,11 +41,7 @@ org.talend.net.Object reader_<%=cid%> = cmd_<%=cid%>.invoke("ExecuteReader");
 <%
 IMetadataTable metadata = metadatas.get(0);
     List<? extends IConnection> connsout = node.getOutgoingConnections();
-    String connName = null;
-    if (node.getIncomingConnections().size() == 1) {
-        IConnection conn = node.getIncomingConnections().get(0);
-        connName = conn.getName();
-    }
+    
     List<IMetadataColumn> columnsout = metadata.getListColumns();
     String populateOutput = "";
     String outName = null;

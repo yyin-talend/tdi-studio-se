@@ -38,7 +38,7 @@ if(metadatas != null && metadatas.size() > 0) {
     }
 }
 List< ? extends IConnection> inputConns = node.getIncomingConnections();
-List< ? extends IConnection> outputConns = node.getOutgoingConnections();
+List< ? extends IConnection> outputConns = node.getOutgoingSortedConnections();
 boolean hasInputRow = false;
 boolean hasOutputRow = false;
 if (inputConns != null || inputConns.size() > 0) {
