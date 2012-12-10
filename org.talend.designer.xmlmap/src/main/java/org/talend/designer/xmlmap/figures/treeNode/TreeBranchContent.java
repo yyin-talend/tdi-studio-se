@@ -102,7 +102,7 @@ public class TreeBranchContent extends Figure implements ITextCell {
                 OutputTreeNode outputTreeNode = (OutputTreeNode) treeNode;
                 List<TreeNode> loopNodes = new ArrayList<TreeNode>();
                 if (inputMainTable != null && inputMainTable.isMultiLoops()) {
-                    loopNodes.addAll(XmlMapUtil.getMultiLoopsForInputTree(inputMainTable));
+                    loopNodes.addAll(XmlMapUtil.getMultiLoopsForXmlTree(inputMainTable));
                 }
                 InputLoopNodesTable inputLoopNodesTable = null;
                 if (outputTreeNode.getInputLoopNodesTable() != null) {

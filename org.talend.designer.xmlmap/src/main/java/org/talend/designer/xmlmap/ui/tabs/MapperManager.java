@@ -13,8 +13,10 @@
 package org.talend.designer.xmlmap.ui.tabs;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.CellEditor;
@@ -432,6 +434,80 @@ public class MapperManager implements ISelectionChangedListener {
                                 }
                             }
 
+                        } else if (event.type == TYPE.REPLACED) {
+                            // fix for TDI-24071
+                            List added = (List) event.addedObjects;
+                            List removed = (List) event.removedObjects;
+
+                            List treeNodeToRemove = new ArrayList();
+                            List<IMetadataColumn> removedColumn = new ArrayList<IMetadataColumn>();
+                            List<IMetadataColumn> addedColumn = new ArrayList<IMetadataColumn>();
+                            if (!added.isEmpty()) {
+                                addedColumn.addAll((List<IMetadataColumn>) added.get(0));
+                            }
+                            if (!removed.isEmpty()) {
+                                removedColumn.addAll((List<IMetadataColumn>) removed.get(0));
+                            }
+                            Map<IMetadataColumn, TreeNode> nodeMap = new HashMap<IMetadataColumn, TreeNode>();
+                            for (int i = 0; i < removedColumn.size(); i++) {
+                                IMetadataColumn column = removedColumn.get(i);
+                                TreeNode node = selectedInputTree.getNodes().get(i);
+                                boolean found = false;
+                                for (IMetadataColumn columnAdded : addedColumn) {
+                                    if (column.sameMetacolumnAs(columnAdded)) {
+                                        nodeMap.put(columnAdded, node);
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (!found) {
+                                    XmlMapUtil.detachNodeConnections(node, copyOfMapData, true);
+                                }
+                            }
+                            boolean needCheckOutput = false;
+                            List<TreeNode> oldLoops = new ArrayList<TreeNode>();
+                            // remove all
+                            if (selectedInputTree == mainInputTree && mainInputTree.isMultiLoops()) {
+                                needCheckOutput = true;
+                                oldLoops.addAll(XmlMapUtil.getMultiLoopsForXmlTree(selectedInputTree));
+                            }
+                            selectedInputTree.getNodes().clear();
+                            // add all
+                            for (IMetadataColumn column : addedColumn) {
+                                TreeNode treeNode = nodeMap.get(column);
+                                if (treeNode == null) {
+                                    treeNode = XmlmapFactory.eINSTANCE.createTreeNode();
+                                    treeNode.setName(column.getLabel());
+                                    treeNode.setType(column.getTalendType());
+                                    treeNode.setNullable(column.isNullable());
+                                    treeNode.setPattern(column.getPattern());
+                                    treeNode.setXpath(XmlMapUtil.getXPath(selectedInputTree.getName(), treeNode.getName(),
+                                            treeNode.getNodeType()));
+                                    if (XmlMapUtil.DOCUMENT.equals(column.getTalendType())) {
+                                        TreeNode createTreeNode = XmlmapFactory.eINSTANCE.createTreeNode();
+                                        createTreeNode.setName("root");
+                                        createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                                        createTreeNode.setNodeType(NodeType.ELEMENT);
+                                        createTreeNode.setXpath(XmlMapUtil.getXPath(treeNode.getXpath(),
+                                                createTreeNode.getName(), createTreeNode.getNodeType()));
+                                        createTreeNode.setLoop(true);
+                                        createTreeNode.setMain(true);
+                                        treeNode.getChildren().add(createTreeNode);
+                                    }
+                                }
+
+                                selectedInputTree.getNodes().add(treeNode);
+                            }
+                            // for multi loops ,incase the doc node with multi loop is deleted
+                            if (needCheckOutput) {
+                                List<TreeNode> newloopNodes = XmlMapUtil.getMultiLoopsForXmlTree(selectedInputTree);
+                                if (newloopNodes.size() < 2) {
+                                    selectedInputTree.setMultiLoops(false);
+                                }
+                                oldLoops.removeAll(newloopNodes);
+                                XmlMapUtil.removeloopInOutputTree(MapperManager.this, oldLoops);
+                            }
+                            mapperUI.updateStatusBar();
                         }
                     }
 
@@ -601,6 +677,74 @@ public class MapperManager implements ISelectionChangedListener {
                                 }
                             }
 
+                        } else if (event.type == TYPE.REPLACED) {
+                            // fix for TDI-24071
+                            List added = (List) event.addedObjects;
+                            List removed = (List) event.removedObjects;
+
+                            List<IMetadataColumn> removedColumn = new ArrayList<IMetadataColumn>();
+                            List<IMetadataColumn> addedColumn = new ArrayList<IMetadataColumn>();
+                            if (!added.isEmpty()) {
+                                addedColumn.addAll((List<IMetadataColumn>) added.get(0));
+                            }
+                            if (!removed.isEmpty()) {
+                                removedColumn.addAll((List<IMetadataColumn>) removed.get(0));
+                            }
+                            Map<IMetadataColumn, OutputTreeNode> nodeMap = new HashMap<IMetadataColumn, OutputTreeNode>();
+                            for (int i = 0; i < removedColumn.size(); i++) {
+                                IMetadataColumn column = removedColumn.get(i);
+                                OutputTreeNode node = selectedOutputTree.getNodes().get(i);
+                                boolean found = false;
+                                for (IMetadataColumn columnAdded : addedColumn) {
+                                    if (column.sameMetacolumnAs(columnAdded)) {
+                                        nodeMap.put(columnAdded, node);
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (!found) {
+                                    XmlMapUtil.detachNodeConnections(node, copyOfMapData, true);
+                                }
+                            }
+                            // remove all
+                            boolean needCheck = false;
+                            if (selectedOutputTree.isMultiLoops()) {
+                                needCheck = true;
+                            }
+                            selectedOutputTree.getNodes().clear();
+                            // add all
+                            for (IMetadataColumn column : addedColumn) {
+                                OutputTreeNode treeNode = nodeMap.get(column);
+                                if (treeNode == null) {
+                                    treeNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                                    treeNode.setName(column.getLabel());
+                                    treeNode.setType(column.getTalendType());
+                                    treeNode.setNullable(column.isNullable());
+                                    treeNode.setPattern(column.getPattern());
+                                    treeNode.setXpath(XmlMapUtil.getXPath(selectedInputTree.getName(), treeNode.getName(),
+                                            treeNode.getNodeType()));
+                                    if (XmlMapUtil.DOCUMENT.equals(column.getTalendType())) {
+                                        TreeNode createTreeNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                                        createTreeNode.setName("root");
+                                        createTreeNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                                        createTreeNode.setNodeType(NodeType.ELEMENT);
+                                        createTreeNode.setXpath(XmlMapUtil.getXPath(treeNode.getXpath(),
+                                                createTreeNode.getName(), createTreeNode.getNodeType()));
+                                        createTreeNode.setLoop(true);
+                                        createTreeNode.setMain(true);
+                                        treeNode.getChildren().add(createTreeNode);
+                                    }
+                                }
+                                selectedOutputTree.getNodes().add(treeNode);
+                            }
+                            if (needCheck) {
+                                List<TreeNode> newloopNodes = XmlMapUtil.getMultiLoopsForXmlTree(selectedOutputTree);
+                                if (newloopNodes.size() < 2) {
+                                    selectedOutputTree.setMultiLoops(false);
+                                }
+                            }
+                            mapperUI.updateStatusBar();
+                            mapperUI.updateStatusBar();
                         }
 
                     }

@@ -45,6 +45,7 @@ import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
 import org.talend.designer.xmlmap.i18n.Messages;
 import org.talend.designer.xmlmap.ui.tabs.table.OutputXmlTreeSchemaTableView;
+import org.talend.designer.xmlmap.ui.tabs.table.XmlMapMetadataTableEditorView;
 import org.talend.designer.xmlmap.ui.tabs.table.XmlTreeSchemaTableView;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
@@ -109,13 +110,13 @@ public class TabFolderEditors extends CTabFolder {
         inOutMetaEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
         item.setControl(inOutMetaEditorContainer);
 
-        inputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
+        inputMetaEditor = new XmlMapMetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
         inputMetaEditor.initGraphicComponents();
         // inputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
 
         addListenersToInputButtons();
 
-        outputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
+        outputMetaEditor = new XmlMapMetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
         outputMetaEditor.initGraphicComponents();
         // outputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
 

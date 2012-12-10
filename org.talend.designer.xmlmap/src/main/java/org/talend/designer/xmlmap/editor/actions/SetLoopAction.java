@@ -138,7 +138,7 @@ public class SetLoopAction extends SelectionAction {
             }
             if (input) {
                 // check if child is mapped to output remove the old loop in output node
-                removeloopInOutputTree(loopNodes);
+                XmlMapUtil.removeloopInOutputTree(mapperManager, loopNodes);
                 // disable the function to add sourceloop into InputLoopNodesTable automatically
                 // add input loopNodes to InputLoopNodesTable
                 // addInputLoopNodesToOutput(model, model);
@@ -217,26 +217,6 @@ public class SetLoopAction extends SelectionAction {
                 }
             }
         }
-    }
-
-    private void removeloopInOutputTree(List<TreeNode> oldLoops) {
-        boolean isMainInputMultiLoop = mapperManager.getMainInputTree() == null ? false : mapperManager.getMainInputTree()
-                .isMultiLoops();
-        EList<OutputXmlTree> outputTrees = mapperManager.getCopyOfMapData().getOutputTrees();
-        for (OutputXmlTree outputTree : outputTrees) {
-            if (isMainInputMultiLoop) {
-                for (TreeNode oldLoop : oldLoops) {
-                    EList<InputLoopNodesTable> inputLoopNodesTables = outputTree.getInputLoopNodesTables();
-                    for (InputLoopNodesTable inputLoopTable : inputLoopNodesTables) {
-                        inputLoopTable.getInputloopnodes().remove(oldLoop);
-                    }
-                }
-                mapperManager.getProblemsAnalyser().checkProblems(outputTree);
-            } else {
-                outputTree.getInputLoopNodesTables().clear();
-            }
-        }
-
     }
 
     private void cleanSubLoop(TreeNode docRoot) {
