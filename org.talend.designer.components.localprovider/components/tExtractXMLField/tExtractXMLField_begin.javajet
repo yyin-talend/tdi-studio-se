@@ -1,7 +1,16 @@
 <%@ jet 
 imports="
     org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnectionCategory
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.utils.NodeUtil
+    java.util.Map
+    java.util.List
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
 "
 %>
 
@@ -9,6 +18,30 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	
+	List<Map<String, String>> mapping = (List<Map<String,String>>)ElementParameterParser.getObjectValueXML(node, "__MAPPING__");
+	int schemaOptNum=100;
+	String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
+	if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
+		schemaOptNum  = Integer.parseInt(schemaOptNumStr);
+	}
+	String xmlField = ElementParameterParser.getValue(node, "__XMLFIELD__");
+
+	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+	boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
+	
+	IConnection inConn = null;
+	List< ? extends IConnection> inConns = node.getIncomingConnections();
+	List<IMetadataColumn> inColumns = null;
+	if (inConns!=null) {
+		for (IConnection incomingConn : inConns) {
+			if (incomingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+				inConn = incomingConn;
+				inColumns = inConn.getMetadataTable().getListColumns();
+				break;
+			}
+		}
+	}
 %>
 int nb_line_<%=cid%> = 0;
 
@@ -145,6 +178,236 @@ class XML_API_<%=cid%>{
         }
         return false;
     }
+<%
+String rejectConnName = "";
+List<IMetadataColumn> rejectColumnList = null;
+List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+if(rejectConns != null && rejectConns.size() > 0) {
+    IConnection rejectConn = rejectConns.get(0);
+    rejectColumnList = rejectConn.getMetadataTable().getListColumns();
+    rejectConnName = rejectConn.getName(); 
+}
+
+IConnection outConn = null;
+String firstConnName = "";
+List< ? extends IConnection> outConns = node.getOutgoingConnections();
+if(outConns!=null){
+    for (IConnection conn : outConns) {
+    	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    		outConn = conn;
+    		firstConnName = outConn.getName();
+    		break;
+    	}
+    }
+}
+if (outConn!=null) {
+	if(schemaOptNum < mapping.size()){//whether to optimize
+		for (int i=0;i<mapping.size();i++) {  //for S_0
+			String query = mapping.get(i).get("QUERY");
+			String nodeCheck = mapping.get(i).get("NODECHECK");
+			if(i%schemaOptNum==0){
+%>
+			public void putValue_<%=i/schemaOptNum%>(<%=NodeUtil.getPrivateConnClassName(outConn)%>Struct <%=firstConnName%>,<%if(inConn!=null){%><%=NodeUtil.getPrivateConnClassName(inConn)%>Struct <%=inConn.getName()%>,<%}%>
+				String xmlStr_<%=cid%>,org.dom4j.tree.AbstractNode temp_<%=cid %>,NameSpaceTool_<%=cid%> nsTool_<%=cid%>,String loopQuery_<%=cid %>,java.util.HashMap xmlNameSpaceMap_<%=cid%>,org.dom4j.Node node_<%=cid %>,
+					String str_<%=cid %>,XML_API_<%=cid%> xml_api_<%=cid%>)throws Exception {
+<%
+			}
+			if(query!=null && query.trim().length()>0){  // if S_0_0
+%>
+				org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>,loopQuery_<%=cid %>));
+			    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
+			    Object obj<%=i%>_<%=cid%> = xTmp<%=i%>_<%=cid%>.evaluate(temp_<%=cid%>);
+			    if(obj<%=i%>_<%=cid%> instanceof String || obj<%=i%>_<%=cid%> instanceof Number){
+    				node_<%=cid%> = temp_<%=cid%>;
+    				str_<%=cid %> = String.valueOf(obj<%=i%>_<%=cid%>);
+   				}else{
+				    node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
+<%
+					if(("true").equals(nodeCheck)){
+%>
+					str_<%=cid %> = node_<%=cid %>==null?null:node_<%=cid %>.asXML();
+<%
+					}else{
+%>
+				    str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid %>);
+<%
+					}
+%>
+				}
+<%
+				for(IMetadataColumn column:outConn.getMetadataTable().getListColumns()) { // for S_0_0_0
+					if (mapping.get(i).get("SCHEMA_COLUMN")!=null) { // if S_0_0_0_0
+						if (column.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) { //if S_0_0_0_0_0
+	        				
+							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+							JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+							String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+							
+							boolean isNotSetDefault = false;
+							String defaultValue=column.getDefault();
+							if(defaultValue!=null){
+								isNotSetDefault = defaultValue.length()==0;
+							}else{
+								isNotSetDefault=true;
+							}
+							
+							if(("true").equals(nodeCheck)){
+								if(!("id_Document".equals(column.getTalendType()))) { 
+%>
+									<%=firstConnName %>.<%=column.getLabel() %> = str_<%=cid %>;
+<%
+								} else {
+%>
+									<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Document(str_<%=cid %>);
+<%
+								}
+	            				continue;
+	            			}
+							if(javaType == JavaTypesManager.STRING){
+								if(column.isNullable()){
+%>
+									if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
+											<%=firstConnName %>.<%=column.getLabel() %> =null;
+									}else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+										<%=firstConnName %>.<%=column.getLabel() %> ="";
+									}else if(xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
+										<%=firstConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?null:column.getDefault()%>;
+									}else{
+<%
+								}else{ // column.isNullable()
+%>
+									if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+										<%=firstConnName %>.<%=column.getLabel() %> ="";
+									}else if(xml_api_<%=cid%>.isMissing(node_<%=cid%> )){ 
+										<%=firstConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
+									}else{
+<%
+								}
+							}else{ // other type
+								if(column.isNullable()){
+%>	
+										if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
+											<%=firstConnName %>.<%=column.getLabel() %> =null;
+										}else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>) || xml_api_<%=cid%>.isMissing(node_<%=cid%>)){
+											<%=firstConnName %>.<%=column.getLabel() %>=<%=isNotSetDefault?null:column.getDefault()%>;
+										}else{
+<%
+								}else{ // column.isNullable()
+%>
+										if(xml_api_<%=cid%>.isMissing(node_<%=cid%>) || xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+											<%=firstConnName %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
+										}else{
+<%
+								}
+							}
+									
+							if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+%>
+				<%=firstConnName%>.<%=column.getLabel() %> = str_<%= cid %>;
+<%
+							} else {
+								if (javaType == JavaTypesManager.DATE) {
+%>
+				<%=firstConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%= cid %>, <%= patternValue %>);
+<%
+								} else {
+%>
+				<%=firstConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%= cid %>);
+<%
+								}
+							}
+%>
+									}
+<%
+							break;
+	        			} // if S_0_0_0_0_1
+					} // if S_0_0_0_1
+				} // for S_0_0_1
+			}else if(inConn!=null){
+				for(IMetadataColumn inColumn:inColumns) {
+					if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
+						if (inColumn.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
+%>
+		<%=firstConnName%>.<%=inColumn.getLabel()%> = <%=inConn.getName() %>.<%=inColumn.getLabel()%>;
+<%
+							break;
+						}
+					}
+				}
+			}// if S_0_1
+			if((i+1)%schemaOptNum==0){
+%>
+			}
+<%
+			}
+		} // for S_1
+		if(mapping.size()>0&&(mapping.size()%schemaOptNum)>0){
+%>
+			}
+<%
+		}
+		if(!dieOnError && !("").equals(rejectConnName) && rejectColumnList != null && rejectColumnList.size() > 0) {//reject before extract
+			if(inConn!=null){
+				int columnNo=0;
+		 		for(IMetadataColumn column : outConn.getMetadataTable().getListColumns()) {
+	    	  		if(!xmlField.equals(column.getLabel())){
+	    	  			for(IMetadataColumn inColumn : inConn.getMetadataTable().getListColumns()){
+	    	  				if(inColumn.getLabel().equals(column.getLabel())){
+	    	  					if(columnNo%schemaOptNum==0){
+%>
+			public void putRejectValueBeforeExtract_<%=columnNo/schemaOptNum%>(<%=rejectConnName%>Struct <%=rejectConnName%>,<%=NodeUtil.getPrivateConnClassName(inConn)%>Struct <%=inConn.getName()%>){
+<%
+		 						}
+%>
+    			<%=rejectConnName%>.<%=column.getLabel()%> = <%=inConn.getName() %>.<%=column.getLabel()%>;
+<%
+	    						if((columnNo+1)%schemaOptNum==0){
+%>
+			}
+<%
+								}
+								columnNo++;
+								break;
+	    					}
+	    				}
+	    			}
+	    	    }
+				if(columnNo>0&&(columnNo%schemaOptNum)>0){
+%>
+			}
+<%
+				}
+	    	}
+		}//reject before extract
+		
+		if(!dieOnError && !("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {//reject extract
+	    	int columnNo=0;
+    	 	for(IMetadataColumn column : outConn.getMetadataTable().getListColumns()) {
+    	 		if(columnNo%schemaOptNum==0){
+%>
+			public void putRejectValueAfterExtract_<%=columnNo/schemaOptNum%>(<%=rejectConnName%>Struct <%=rejectConnName%>,<%=firstConnName %>Struct <%=firstConnName %>){
+<%
+		 		}
+%>
+     			<%=rejectConnName%>.<%=column.getLabel()%> = <%=firstConnName %>.<%=column.getLabel() %>;
+<%
+				if((columnNo+1)%schemaOptNum==0){
+%>
+			}
+<%
+				}
+				columnNo++;
+    	    }
+			if(columnNo>0&&(columnNo%schemaOptNum)>0){
+%>
+			}
+<%
+			}
+		}//reject extract
+		
+	}//whether to optimize
+}
+%>
 }
 
 XML_API_<%=cid%> xml_api_<%=cid%> = new XML_API_<%=cid%>();
