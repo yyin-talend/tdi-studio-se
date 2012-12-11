@@ -40,6 +40,7 @@ if(columnList != null && columnList.size() > 0) {
         %>
         java.sql.Connection conn_<%=cid%> = (java.sql.Connection) globalMap.get("<%=connectionName%>");
         String schema_<%=cid%> = (String) globalMap.get("dbschema_<%=connection%>");
+        String dbUser_<%=cid %> = (String) globalMap.get("username_<%=connection%>");
         <%
     } else {
         String dbname= ElementParameterParser.getValue(node, "__DBNAME__");    
@@ -104,12 +105,15 @@ if(columnList != null && columnList.size() > 0) {
     %>
     String tableName_<%=cid%> = null;
     String sourceTable_<%=cid%> = null;
+    String schema4search_<%=cid%> = null;
     if(schema_<%=cid%> != null && schema_<%=cid%>.trim().length() != 0) {
         tableName_<%=cid%> = schema_<%=cid%> + "." + <%=ElementParameterParser.getValue(node, "__TABLE__")%>;
         sourceTable_<%=cid%> = schema_<%=cid%> + "." + <%=ElementParameterParser.getValue(node, "__TABLE_SRC__")%>;
+        schema4search_<%=cid%> = schema_<%=cid%>.toUpperCase();
     } else {
         tableName_<%=cid%> = <%=ElementParameterParser.getValue(node, "__TABLE__")%>;
         sourceTable_<%=cid%> = <%=ElementParameterParser.getValue(node, "__TABLE_SRC__")%>;
+        schema4search_<%=cid%> = dbUser_<%=cid %>.toUpperCase();
     }
     <%
     String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
@@ -137,14 +141,16 @@ if(columnList != null && columnList.size() > 0) {
         } else if(("CREATE_IF_NOT_EXISTS").equals(tableAction) || ("DROP_IF_EXISTS_AND_CREATE").equals(tableAction)) {
             %>
             java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
-            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+            String tableName4Search_<%=cid%> = <%=tableName%>;
+            if(tableName4Search_<%=cid%>.indexOf("\"")==-1){
+            	tableName4Search_<%=cid%> = tableName4Search_<%=cid%>.toUpperCase();
+            }else{
+            	tableName4Search_<%=cid%> = tableName4Search_<%=cid%>.replaceAll("\"","");
+            }
+            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, schema4search_<%=cid%>, tableName4Search_<%=cid%>, new String[]{"TABLE"});
             boolean whetherExist_<%=cid%> = false;
-            while(rsTable_<%=cid%>.next()) {
-                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-                if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>)) {
+            if(rsTable_<%=cid%>.next()) {
                     whetherExist_<%=cid%> = true;
-                    break;
-                }
             }
             rsTable_<%=cid%>.close();
             <%
