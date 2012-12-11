@@ -52,6 +52,7 @@ if (metadatas != null && metadatas.size()>0) {
   if (metadata != null) { 
   
   	List<? extends IConnection> outputConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+  	List<IMetadataColumn> inputColumnList = null;
   	List<IMetadataColumn> outputColumnList = null;
   	List<IMetadataColumn> columnList =metadata.getListColumns();
   	
@@ -92,14 +93,52 @@ if (metadatas != null && metadatas.size()>0) {
       IConnection inputConn = inputConns.get(0);
       if(inputConn!=null){
       	inputConnName = inputConn.getName();
+      	IMetadataTable inputMetadata = inputConn.getMetadataTable();
+      	if(inputMetadata!=null) {
+      		inputColumnList = inputMetadata.getListColumns();
+      	}
 	  }
 	}
+
+	boolean docInput = false;
 
     if (outConnName != null && inputConnName!=null) {
     %>
       <%=outConnName %> = new <%=outConnName %>Struct();
+    <%
+    	boolean docOutput = false;
+        if(inputColumnList!=null) {
+        	for(IMetadataColumn inputColumn : inputColumnList) {
+        		if(doc!=null && doc.equals(inputColumn.getLabel())) {
+        			if("id_Document".equals(inputColumn.getTalendType())) {
+        				docInput = true;
+        			}
+        			break;
+        		}
+        	}
+        }
+    
+        if(docInput && outputColumnList!=null) {
+        	for(IMetadataColumn outputColumn : outputColumnList) {
+        		if(doc!=null && doc.equals(outputColumn.getLabel())) {
+        			if("id_Document".equals(outputColumn.getTalendType())) {
+        				docOutput = true;
+        			}
+        			break;
+        		}
+        	}
+        }
+        
+        if(docInput && docOutput) {
+    %>
+      <%=outConnName %>.<%=doc%> = <%=inputConnName%>.<%=doc%>;
+    <%
+        } else {
+    %>
       <%=outConnName %>.<%=doc%> = <%=inputConnName%>.<%=doc%>.toString();
-    <%}%>
+    <% 
+    	}
+    }%>
     input_<%=cid %> = <%=inputConnName%>.<%=doc%>.toString();
 
     try {
@@ -206,9 +245,15 @@ if (metadatas != null && metadatas.size()>0) {
           	<%
             for(IMetadataColumn column : columnList) {
 				if (!"xml".equals(column.getLabel()) && !"errorCode".equals(column.getLabel()) && !"errorMessage".equals(column.getLabel())) {
+					if(docInput && doc!=null && doc.equals(column.getLabel()) && "id_String".equals(column.getTalendType())) {
+			%>
+		  <%=rejectConnName%>.<%=column.getLabel()%> = <%=inputConnName %>.<%=column.getLabel() %>.toString();
+			<%
+					} else {
 			%>
 		  <%=rejectConnName%>.<%=column.getLabel()%> = <%=inputConnName %>.<%=column.getLabel() %>;
 		   	<%
+		   			}
 		   		}
 			}
 			%>   
