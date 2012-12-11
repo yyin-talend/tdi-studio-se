@@ -118,6 +118,8 @@
 			<IMPORT NAME="SAAJ-API" MODULE="saaj-api-1.3.jar" REQUIRED="true" />
 			<IMPORT NAME="SAAJ-IMPL" MODULE="saaj-impl-1.3.2.jar"
 				REQUIRED="true" />
+			<IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" REQUIRED="true"/>
+            <IMPORT NAME="jaxpri" MODULE="jaxp-ri.jar" REQUIRED="true"/>
 		</IMPORTS>
 	</CODEGENERATION>
 
