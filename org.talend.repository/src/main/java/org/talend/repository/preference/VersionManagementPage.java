@@ -237,7 +237,7 @@ public class VersionManagementPage extends ProjectSettingPage {
             }
 
             public void treeExpanded(TreeExpansionEvent event) {
-                refreshCheckedTreeView();
+                // refreshCheckedTreeView();
             }
         });
 
