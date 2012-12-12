@@ -6,6 +6,7 @@
 	org.talend.core.model.process.IConnection
 	org.talend.core.model.process.INode
 	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.process.IConnectionCategory
 	"
 %>
 
@@ -17,11 +18,13 @@
 
 <%
 	String strOutputConnectionName="";
-	List< ? extends IConnection> conns = node.getOutgoingConnections();
+	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
  	if(conns!=null){
 		if (conns.size()>0){
-                IConnection conn =conns.get(0);
-		    strOutputConnectionName=conn.getName();
+            IConnection conn =conns.get(0);
+            if(conn!=null && conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+		    	strOutputConnectionName=conn.getName();
+		    }
 		}
 	}
 

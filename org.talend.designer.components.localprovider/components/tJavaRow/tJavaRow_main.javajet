@@ -5,6 +5,7 @@ imports="
     org.talend.core.model.process.IConnection
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnectionCategory
     java.util.List
 "
 %>
@@ -33,10 +34,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             inputRowName = inConn.getName();
         }
         
-        List< ? extends IConnection> outConns = node.getOutgoingConnections();
+        List< ? extends IConnection> outConns = node.getOutgoingSortedConnections();
         if (outConns != null && !outConns.isEmpty()) {
             IConnection outConn = outConns.get(0);
-            outputRowName = outConn.getName();
+            if(outConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+            	outputRowName = outConn.getName();
+            }
         }
 
         // In case the user would make some tricky Java things, he can use

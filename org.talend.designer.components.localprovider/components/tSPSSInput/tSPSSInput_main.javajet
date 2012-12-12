@@ -2,7 +2,6 @@
 imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.IConnection
-    org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.metadata.IMetadataTable
     org.talend.core.model.metadata.IMetadataColumn
@@ -10,8 +9,6 @@ imports="
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.metadata.types.JavaType
     java.util.List
-    java.util.ArrayList
-    java.util.Map
 "
 %>
 
@@ -21,6 +18,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 String outputConnName = null;
+IConnection outConn = null;
 List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 if (conns!=null) {
 	if (conns.size()>0) {
@@ -28,15 +26,11 @@ if (conns!=null) {
 			IConnection connTemp = conns.get(i);
 			if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 				outputConnName = connTemp.getName();
+				outConn=connTemp;
 				break;
 			}
 		}
 	}
-}
-IConnection outConn = null;
-List< ? extends IConnection> outConns = node.getOutgoingConnections();
-if(outConns!=null){
-	outConn = outConns.get(0);
 }
 if(outConn!=null){
 	int i=0;

@@ -12,13 +12,10 @@
 		org.talend.core.model.process.IMatchingMode
 		java.util.List
 		java.util.ArrayList
-		java.util.HashSet
-		java.util.Set
 		java.util.Map
 		java.util.HashMap
 		java.util.Comparator
 		java.util.Collections
-		org.talend.core.model.process.EConnectionType
 		org.talend.core.model.process.IDataConnection
 		org.talend.designer.xmlmap.XmlMapComponent
 		org.eclipse.emf.common.util.EList
@@ -42,7 +39,6 @@
 
 
     List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
-    List<IConnection> outConnections = (List<IConnection>) node.getOutgoingConnections();
     
 	if (connections != null && connections.size() > 0) { // T_AH_100
         for (IConnection connection : connections) { // T_AH_101

@@ -4,7 +4,6 @@
     java.util.Map
     org.talend.core.model.metadata.IMetadataColumn
     org.talend.core.model.process.BlockCode
-    org.talend.core.model.process.EConnectionType
     org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.process.IConnection
     org.talend.core.model.process.IConnectionCategory
@@ -18,7 +17,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();  
 //for TDI-23590 deal with FLOW_MERGE connection
 List<? extends IConnection> inConns = node.getIncomingConnections();
-List<? extends IConnection> outConns = node.getOutgoingConnections();
+List<? extends IConnection> outConns = node.getOutgoingSortedConnections();
 
 if (inConns == null || inConns.isEmpty() || outConns == null || outConns.isEmpty()){
   return "";

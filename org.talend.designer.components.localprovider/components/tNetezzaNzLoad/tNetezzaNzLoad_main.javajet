@@ -3,7 +3,6 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser 
     org.talend.core.model.metadata.IMetadataTable
-    org.talend.core.model.metadata.IMetadataColumn
     org.talend.core.model.metadata.MetadataTalendType    
     org.talend.core.model.metadata.MappingTypeRetriever 
     org.talend.core.model.process.IConnection
@@ -50,7 +49,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	}
 	
 	List< ? extends IConnection> inputConns = node.getIncomingConnections();
-	List< ? extends IConnection> outputConns = node.getOutgoingConnections();
+	List< ? extends IConnection> outputConns = node.getOutgoingSortedConnections();
 	boolean hasInputRow = false;
 	boolean hasOutputRow = false;
 	if (inputConns != null || inputConns.size() > 0) {
