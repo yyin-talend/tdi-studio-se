@@ -1783,10 +1783,10 @@ public class MultiSchemasUI {
                 for (SchemasKeyData schema : children) {
                     final String name = schema.getUniqueRecord();
                     if (!name.equals(oldValue)) {
-                        list.add(name);
+                        list.add(name.toUpperCase());
                     }
                 }
-                if (list.contains(newValue)) {
+                if (newValue != null && list.contains(newValue.toUpperCase())) {
                     errorMsg = "'" + newValue + "' already exist.";
                 }
             }
