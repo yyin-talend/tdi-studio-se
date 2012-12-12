@@ -15,12 +15,15 @@ package org.talend.designer.xmlmap.editor.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.gef.ui.actions.SelectionAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.designer.xmlmap.XmlMapPlugin;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
@@ -65,42 +68,66 @@ public class ImportTreeFromXml extends SelectionAction {
         FileDialog f = new FileDialog(shell);
         String file = f.open();
         if (file != null) {
-            boolean clickOk = TreeUtil.getFoxTreeNodesForXmlMap(file, shell, list);
-            if (clickOk) {
-                TreeNode treeNodeRoot = XmlMapUtil.getTreeNodeRoot(parentNode);
+            boolean clickOk = false;
+            TreeNode treeNodeRoot = null;
+            String detailedMessage = "";
+            try {
+                clickOk = TreeUtil.getFoxTreeNodesForXmlMap(file, shell, list);
+                if (!clickOk) {
+                    return;
+                }
+                treeNodeRoot = XmlMapUtil.getTreeNodeRoot(parentNode);
                 XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getCopyOfMapData(), true);
                 parentNode.getChildren().clear();
                 prepareEmfTreeNode(list, parentNode);
-
-                if (parentNode.getChildren().isEmpty()) {
-                    TreeNode rootNode = null;
-                    if (input) {
-                        rootNode = XmlmapFactory.eINSTANCE.createTreeNode();
-                    } else {
-                        rootNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+                StringBuffer sb = new StringBuffer();
+                sb.append(e.toString());
+                sb.append("\n");
+                if (e.getStackTrace() != null) {
+                    for (StackTraceElement trace : e.getStackTrace()) {
+                        sb.append(trace.toString());
+                        sb.append("\n");
                     }
-                    rootNode.setName("root");
-                    rootNode.setNodeType(NodeType.ELEMENT);
-                    rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-                    rootNode.setXpath(XmlMapUtil.getXPath(parentNode.getXpath(), "root", NodeType.ELEMENT));
-                    parentNode.getChildren().add(rootNode);
-                    showError();
                 }
+                detailedMessage = sb.toString();
+
+            }
+
+            boolean childrenEmpty = false;
+            if (parentNode.getChildren().isEmpty()) {
+                childrenEmpty = true;
+                TreeNode rootNode = null;
+                if (input) {
+                    rootNode = XmlmapFactory.eINSTANCE.createTreeNode();
+                } else {
+                    rootNode = XmlmapFactory.eINSTANCE.createOutputTreeNode();
+                }
+                rootNode.setName("root");
+                rootNode.setNodeType(NodeType.ELEMENT);
+                rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                rootNode.setXpath(XmlMapUtil.getXPath(parentNode.getXpath(), "root", NodeType.ELEMENT));
+                parentNode.getChildren().add(rootNode);
                 // loop / main
                 parentNode.getChildren().get(0).setLoop(true);
                 parentNode.getChildren().get(0).setMain(true);
-
-                if (parentNode.eContainer() instanceof InputXmlTree) {
-                    XmlMapConnectionBuilder.rebuildLinks(parentNode, mapperManager.getCopyOfMapData());
-                    mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
-                } else if (parentNode.eContainer() instanceof OutputXmlTree) {
-                    mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) parentNode.eContainer());
-                }
-                if (treeNodeRoot.eContainer() instanceof AbstractInOutTree) {
-                    mapperManager.getProblemsAnalyser().checkProblems((AbstractInOutTree) treeNodeRoot.eContainer());
-                    mapperManager.getMapperUI().updateStatusBar();
-                }
             }
+            if (childrenEmpty || (detailedMessage != null && !"".equals(detailedMessage))) {
+                showError(detailedMessage);
+            }
+
+            if (parentNode.eContainer() instanceof InputXmlTree) {
+                XmlMapConnectionBuilder.rebuildLinks(parentNode, mapperManager.getCopyOfMapData());
+                mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
+            } else if (parentNode.eContainer() instanceof OutputXmlTree) {
+                mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) parentNode.eContainer());
+            }
+            if (treeNodeRoot != null && treeNodeRoot.eContainer() instanceof AbstractInOutTree) {
+                mapperManager.getProblemsAnalyser().checkProblems((AbstractInOutTree) treeNodeRoot.eContainer());
+                mapperManager.getMapperUI().updateStatusBar();
+            }
+
         }
 
     }
@@ -190,8 +217,9 @@ public class ImportTreeFromXml extends SelectionAction {
         setSelection(new StructuredSelection(selection));
     }
 
-    protected void showError() {
-        MessageDialog.openError(null, "Error", "Import fail, please check your xml file!");
+    private void showError(String detailedMessage) {
+        ErrorDialogWidthDetailArea dialog = new ErrorDialogWidthDetailArea(null, XmlMapPlugin.PLUGIN_ID,
+                "Import fail, please check the xml file!", detailedMessage, IStatus.ERROR);
     }
 
     public boolean isInput() {

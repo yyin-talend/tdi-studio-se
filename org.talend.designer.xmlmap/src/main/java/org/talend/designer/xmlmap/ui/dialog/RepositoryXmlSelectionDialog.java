@@ -26,6 +26,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.MDMConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.Folder;
 import org.talend.designer.xmlmap.i18n.Messages;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
@@ -58,6 +59,7 @@ public class RepositoryXmlSelectionDialog extends RepositoryReviewDialog {
         return composite;
     }
 
+    @Override
     protected boolean isSelectionValid(SelectionChangedEvent event) {
         boolean highlightOKButton = true;
         IStructuredSelection selection = (IStructuredSelection) event.getSelection();
@@ -66,6 +68,10 @@ public class RepositoryXmlSelectionDialog extends RepositoryReviewDialog {
         } else {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             if (node.getObject() == null || node.getObject().getProperty() == null) {
+                return false;
+            }
+
+            if (node.getObject() instanceof Folder) {
                 return false;
             }
 

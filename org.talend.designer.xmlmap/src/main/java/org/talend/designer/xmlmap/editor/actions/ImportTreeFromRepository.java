@@ -25,17 +25,18 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef.ui.actions.SelectionAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.commons.xml.XmlUtil;
 import org.talend.core.GlobalServiceRegister;
@@ -55,6 +56,7 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.IMDMProviderService;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.designer.xmlmap.XmlMapPlugin;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
@@ -136,10 +138,10 @@ public class ImportTreeFromRepository extends SelectionAction {
             TreeNode treeNodeRoot = XmlMapUtil.getTreeNodeRoot(schemaNode);
 
             XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getCopyOfMapData(), true);
-            schemaNode.getChildren().clear();
             RepositoryNode repositoryNode = reviewDialog.getResult();
 
             Item item = repositoryNode.getObject().getProperty().getItem();
+            String detailedMessage = "";
             try {
                 if (item instanceof XmlFileConnectionItem) {
                     XmlFileConnectionItem xmlitem = (XmlFileConnectionItem) item;
@@ -152,20 +154,33 @@ public class ImportTreeFromRepository extends SelectionAction {
                 }
             } catch (Exception e) {
                 ExceptionHandler.process(e);
-            } finally {
-                if (schemaNode.getChildren().isEmpty()) {
-                    TreeNode rootNode = createModel();
-                    rootNode.setName("root");
-                    rootNode.setNodeType(NodeType.ELEMENT);
-                    rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
-                    rootNode.setXpath(XmlMapUtil.getXPath(schemaNode.getXpath(), "root", NodeType.ELEMENT));
-                    schemaNode.getChildren().add(rootNode);
-                    showError();
+                StringBuffer sb = new StringBuffer();
+                sb.append(e.toString());
+                sb.append("\n");
+                if (e.getStackTrace() != null) {
+                    for (StackTraceElement trace : e.getStackTrace()) {
+                        sb.append(trace.toString());
+                        sb.append("\n");
+                    }
+                }
+                detailedMessage = sb.toString();
+            }
+            boolean childrenEmpty = false;
+            if (schemaNode.getChildren().isEmpty()) {
+                childrenEmpty = true;
+                TreeNode rootNode = createModel();
+                rootNode.setName("root");
+                rootNode.setNodeType(NodeType.ELEMENT);
+                rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
+                rootNode.setXpath(XmlMapUtil.getXPath(schemaNode.getXpath(), "root", NodeType.ELEMENT));
+                schemaNode.getChildren().add(rootNode);
+                if (loopNode == null) {
+                    schemaNode.getChildren().get(0).setLoop(true);
+                    schemaNode.getChildren().get(0).setMain(true);
                 }
             }
-            if (loopNode == null && !schemaNode.getChildren().isEmpty()) {
-                schemaNode.getChildren().get(0).setLoop(true);
-                schemaNode.getChildren().get(0).setMain(true);
+            if (childrenEmpty || (detailedMessage != null && !"".equals(detailedMessage))) {
+                showError(detailedMessage);
             }
 
             AbstractInOutTree tree = null;
@@ -184,7 +199,7 @@ public class ImportTreeFromRepository extends SelectionAction {
         }
     }
 
-    private void prepareEmfTreeFromXml(XmlFileConnection connection) {
+    private void prepareEmfTreeFromXml(XmlFileConnection connection) throws Exception {
         if (!connection.isInputModel()) {
             String file = connection.getXmlFilePath();
             List<FOXTreeNode> list = new ArrayList<FOXTreeNode>();
@@ -206,8 +221,10 @@ public class ImportTreeFromRepository extends SelectionAction {
                 if (xsdFile != null && new File(xsdFile).exists()) {
                     list = TreeUtil.getFoxTreeNodesForXmlMap(xsdFile, rootXpath);
                 }
+            } else {
+                throw new FileNotFoundException();
             }
-
+            schemaNode.getChildren().clear();
             root = connection.getRoot();
             loop = connection.getLoop();
             group = connection.getGroup();
@@ -244,6 +261,7 @@ public class ImportTreeFromRepository extends SelectionAction {
                     list = TreeUtil.getFoxTreeNodesForXmlMap(xsdFile, absoluteXPathQuery);
                 }
             }
+            schemaNode.getChildren().clear();
             prepareEmfTree(list, schemaNode);
         }
 
@@ -344,7 +362,7 @@ public class ImportTreeFromRepository extends SelectionAction {
         return false;
     }
 
-    private void prepareEmfTreeFromMdm(MDMConnection connection, String selectedConcept) {
+    private void prepareEmfTreeFromMdm(MDMConnection connection, String selectedConcept) throws Exception {
         if (connection == null || selectedConcept == null) {
             return;
         }
@@ -375,9 +393,11 @@ public class ImportTreeFromRepository extends SelectionAction {
                         this.schemaTargets = conceptTargets;
                         List<FOXTreeNode> list = TreeUtil.getFoxTreeNodesForXmlMap(getTempTemplateXSDFile().getAbsolutePath(),
                                 absoluteXPathQuery);
+
                         TreeNode pNode = schemaNode;
                         if (MdmConceptType.RECEIVE.equals(selected.getConceptType())) {
                             List<FOXTreeNode> updateNodesList = TreeUtil.parseMDMUpdateReport(shell, true);
+                            schemaNode.getChildren().clear();
                             if (updateNodesList == null) {
                                 if (prefix != null && !"".equals(prefix)) {
                                     String[] preValues = prefix.split(XmlMapUtil.XPATH_SEPARATOR);
@@ -404,12 +424,14 @@ public class ImportTreeFromRepository extends SelectionAction {
                                 pNode = itemNode;
                                 absoluteXPathQuery = "/exchange/item" + absoluteXPathQuery; //$NON-NLS-1$
                             }
+                        } else {
+                            schemaNode.getChildren().clear();
                         }
                         prepareEmfTree(list, pNode);
                     } else {
                         List<FOXTreeNode> list = TreeUtil.getFoxTreeNodesForXmlMap(getTempTemplateXSDFile().getAbsolutePath(),
                                 selected.getRoot().get(0).getXMLPath());
-
+                        schemaNode.getChildren().clear();
                         root = selected.getRoot();
                         loop = selected.getLoop();
                         group = selected.getGroup();
@@ -445,7 +467,7 @@ public class ImportTreeFromRepository extends SelectionAction {
         if (targetAbsolutePath == null) {
             targetAbsolutePath = new ArrayList<String>();
             targetAbsolutePath.add(absoluteXPathQuery);
-            Pattern regex = Pattern.compile(RELATIVE_PATH_PATTERN, Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE //$NON-NLS-1$
+            Pattern regex = Pattern.compile(RELATIVE_PATH_PATTERN, Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE
                     | Pattern.MULTILINE);
             for (Object obj : schemaTargets) {
                 String relativeXPathQuery = "";
@@ -497,7 +519,7 @@ public class ImportTreeFromRepository extends SelectionAction {
     /*
      * same as XmlFileOutputStep2Form.initXmlTreeData()
      */
-    private String initFileContent(XmlFileConnection connection) {
+    private String initFileContent(XmlFileConnection connection) throws IOException {
         byte[] bytes = connection.getFileContent();
         Project project = ProjectManager.getInstance().getCurrentProject();
         IProject fsProject = null;
@@ -526,30 +548,20 @@ public class ImportTreeFromRepository extends SelectionAction {
         }
         File temfile = new File(temPath + File.separator + fileName);
         if (!temfile.exists()) {
-            try {
-                temfile.createNewFile();
-            } catch (IOException e) {
-                ExceptionHandler.process(e);
-            }
+            temfile.createNewFile();
         }
 
         FileOutputStream outStream;
-        try {
-            outStream = new FileOutputStream(temfile);
-            outStream.write(bytes);
-            outStream.close();
-        } catch (FileNotFoundException e1) {
-            ExceptionHandler.process(e1);
-        } catch (IOException e) {
-            ExceptionHandler.process(e);
-        }
+        outStream = new FileOutputStream(temfile);
+        outStream.write(bytes);
+        outStream.close();
 
         return temfile.getPath();
 
     }
 
     private File getTempTemplateXSDFile() {
-        IPath tempPath = new Path(System.getProperty("user.dir")).append("temp"); //$NON-NLS-1$ //$NON-NLS-1$ //$NON-NLS-2$
+        IPath tempPath = new Path(System.getProperty("user.dir")).append("temp"); //$NON-NLS-1$ //$NON-NLS-2$
         File tempFile = tempPath.toFile();
         if (!tempFile.exists()) {
             tempFile.mkdirs();
@@ -752,8 +764,9 @@ public class ImportTreeFromRepository extends SelectionAction {
         setSelection(new StructuredSelection(selection));
     }
 
-    private void showError() {
-        MessageDialog.openError(null, "Error", "Import from repository fail, please check your repository connection!");
+    private void showError(String detailedMessage) {
+        ErrorDialogWidthDetailArea dialog = new ErrorDialogWidthDetailArea(null, XmlMapPlugin.PLUGIN_ID,
+                "Import from repository fail, please check the repository connection!", detailedMessage, IStatus.ERROR);
     }
 
     public boolean isInput() {
