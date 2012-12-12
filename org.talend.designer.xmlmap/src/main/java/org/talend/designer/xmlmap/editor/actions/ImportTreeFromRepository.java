@@ -210,9 +210,6 @@ public class ImportTreeFromRepository extends SelectionAction {
             } else if (!connection.getLoop().isEmpty()) {
                 rootXpath = connection.getLoop().get(0).getXMLPath();
             }
-            if (rootXpath == null) {
-                return;
-            }
             File xmlFile = new File(file);
             if (xmlFile.exists() && !file.endsWith(".zip")) {
                 list = TreeUtil.getFoxTreeNodesForXmlMap(xmlFile.getAbsolutePath(), rootXpath);
@@ -260,6 +257,8 @@ public class ImportTreeFromRepository extends SelectionAction {
                 if (xsdFile != null && new File(xsdFile).exists()) {
                     list = TreeUtil.getFoxTreeNodesForXmlMap(xsdFile, absoluteXPathQuery);
                 }
+            } else {
+                throw new FileNotFoundException();
             }
             schemaNode.getChildren().clear();
             prepareEmfTree(list, schemaNode);
