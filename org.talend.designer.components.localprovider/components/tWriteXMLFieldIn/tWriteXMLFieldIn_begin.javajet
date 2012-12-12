@@ -7,6 +7,9 @@ imports="
     java.util.List
    	org.talend.core.model.process.IConnection    
 	org.talend.core.model.process.IConnectionCategory
+	org.talend.core.model.utils.NodeUtil
+	org.talend.core.model.process.EConnectionType
+	org.talend.core.model.utils.NodeUtil
 "
 %>
 
@@ -25,12 +28,69 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		if(conns!=null && conns.size()>0){
     		IConnection conn = conns.get(0);
     		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-%>
-	int nb_line_<%=cid%> = 0;
-	java.util.Queue<String> queue_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=cid%>");
-	while(true) {
-			if (!queue_<%=cid%>.isEmpty()) {
-<%
+    		
+				INode sourceNode = node.getIncomingConnections(EConnectionType.ON_COMPONENT_OK).get(0).getSource();
+				String virtualSourceCid = sourceNode.getUniqueName();
+				INode startNode = NodeUtil.getSpecificStartNode(sourceNode);
+				String startNodeCid = null; 
+				if(startNode != null){
+					startNodeCid = startNode.getUniqueName();
+				} 
+    			IConnection nextMergeConn = NodeUtil.getNextMergeConnection(node);
+    			if(nextMergeConn != null && nextMergeConn.getInputId()>1 && startNodeCid != null){
+   				%>
+    				java.util.Queue<String> queue_<%=cid%> = new java.util.concurrent.ConcurrentLinkedQueue<String>();
+					
+					class ThreadXMLField_<%=cid%> extends Thread {
+						java.util.Queue<String> queue;
+						java.util.List<java.util.Map<String,String>> flows;
+						Exception lastException;
+						String currentComponent;
+						
+						ThreadXMLField_<%=cid%>(java.util.Queue q) {
+							this.queue = q;
+							globalMap.put("queue_<%=virtualSourceCid%>", queue);
+							lastException = null;
+						}
+						
+						ThreadXMLField_<%=cid%>(java.util.Queue q, java.util.List<java.util.Map<String,String>> l) {
+							this.queue = q;
+							this.flows = l;
+							lastException = null;
+							globalMap.put("queue_<%=virtualSourceCid%>", queue);
+							globalMap.put("flows_<%=virtualSourceCid%>", flows);
+						}
+						
+						public Exception getLastException() {
+							return this.lastException;
+						}
+						public String getCurrentComponent() {
+							return this.currentComponent;
+						}
+					
+						@Override
+						public void run() {
+							try {
+								<%=startNodeCid%>Process(globalMap);
+							} catch (TalendException te) {
+								te.printStackTrace();
+							}
+						}
+					}
+					
+					ThreadXMLField_<%=cid%> txf_<%=cid%> = new ThreadXMLField_<%=cid%>(queue_<%=cid%>);
+					txf_<%=cid%>.start();
+    			<%
+    			}else{
+				%>
+					java.util.Queue<String> queue_<%=cid%> = (java.util.Queue<String>) globalMap.get("queue_<%=cid%>");
+				<%
+				}
+				%>
+				int nb_line_<%=cid%> = 0;
+				while(true) {
+						if (!queue_<%=cid%>.isEmpty()) {
+			<%
 			}
 		}
 	}
