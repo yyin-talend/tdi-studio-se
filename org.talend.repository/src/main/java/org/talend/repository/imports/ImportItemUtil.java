@@ -454,6 +454,8 @@ public class ImportItemUtil {
                                     }
                                     importItemRecord(manager, itemRecord, overwrite, destinationPath, overwriteDeletedItems,
                                             idDeletedBeforeImport, contentType, monitor);
+                                    statAndLogsSettingsReloaded = false;
+                                    implicitSettingsReloaded = false;
 
                                     monitor.worked(1);
                                 }
@@ -1603,8 +1605,8 @@ public class ImportItemUtil {
             return;
         }
 
-        for (Iterator iterator = manager.getPaths().iterator(); iterator.hasNext();) {
-            String value = iterator.next().toString();
+        for (Object element : manager.getPaths()) {
+            String value = element.toString();
             file = new File(value);
             if (extRoutines.contains(file.getName())) {
                 try {
@@ -1624,11 +1626,10 @@ public class ImportItemUtil {
         if (extRoutines.isEmpty()) {
             return;
         }
-        IPath tmpDir = new Path(System.getProperty("user.dir") + File.separatorChar + "tmpJar"); //$NON-NLS-1$  //$NON-NLS-1$
+        IPath tmpDir = new Path(System.getProperty("user.dir") + File.separatorChar + "tmpJar"); //$NON-NLS-1$  
 
         File dirFile = tmpDir.toFile();
-        for (Iterator<IPath> iterator = manager.getPaths().iterator(); iterator.hasNext();) {
-            IPath path = iterator.next();
+        for (IPath path : manager.getPaths()) {
             String fileName = path.lastSegment();
             if (extRoutines.contains(fileName)) {
                 try {
