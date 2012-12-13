@@ -132,6 +132,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
     WidgetFactory widgetFactory = new WidgetFactory();
 
+    @Override
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
         String aliasName = RepositoryObjectHelper.getRepositoryAliasName(connectionItem);
         return aliasName != null ? aliasName : ""; //$NON-NLS-1$
@@ -204,8 +205,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                 }
 
                 if (repositoryObjects != null && (repositoryObjects.size() != 0)) {
-                    // repositoryTableMap.clear();
-                    // repositoryQueryStoreMap.clear();
                     tableIdAndDbTypeMap.clear();
                     tableIdAndDbSchemaMap.clear();
 
@@ -218,88 +217,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                             if (connection.isReadOnly()) {
                                 continue;
                             }
-                            /* code for cache repositoryConnectionItemMap.put should be deleted ,bug 16969 */
-                            // if (repositoryValue != null) {
-                            // if ((connection instanceof DelimitedFileConnection)
-                            // && (repositoryValue.equals(ERepositoryCategoryType.DELIMITED.getName()))) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // if ((connection instanceof PositionalFileConnection)
-                            // && (repositoryValue.equals(ERepositoryCategoryType.POSITIONAL.getName()))) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // if ((connection instanceof FileExcelConnection)
-                            // && (repositoryValue.equals(ERepositoryCategoryType.EXCEL.getName()))) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // if ((connection instanceof EbcdicConnection)
-                            // && (repositoryValue.equals(ERepositoryCategoryType.EBCDIC.getName()))) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // if ((connection instanceof HL7Connection)
-                            // && (repositoryValue.equals(ERepositoryCategoryType.HL7.getName()))) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // if ((connection instanceof FTPConnection)
-                            // && (repositoryValue.equals(ERepositoryCategoryType.FTP.getName()))) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // if ((connection instanceof BRMSConnection)
-                            // && (repositoryValue.equals(ERepositoryCategoryType.BRMS.getName()))) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // if ((connection instanceof MDMConnection)
-                            // && (repositoryValue.equals(ERepositoryCategoryType.MDM.getName()))) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // if ((connection instanceof RegexpFileConnection)
-                            // && (repositoryValue.equals(ERepositoryCategoryType.REGEX.getName()))) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // if ((connection instanceof XmlFileConnection)
-                            // && (repositoryValue.equals(ERepositoryCategoryType.XML.getName()))) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // if ((connection instanceof GenericSchemaConnection)
-                            // && (repositoryValue.equals(ERepositoryCategoryType.GENERIC.getName()))) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // if ((connection instanceof LDAPSchemaConnection)
-                            // && (repositoryValue.equals(ERepositoryCategoryType.LDAP.getName()))) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // if ((connection instanceof WSDLSchemaConnection)
-                            // && (repositoryValue.equals(ERepositoryCategoryType.WSDL.getName()))) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // if ((connection instanceof SalesforceSchemaConnection)
-                            // && (repositoryValue.equals(ERepositoryCategoryType.SALESFORCE.getName()))) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // if ((connection instanceof SAPConnection)
-                            // && (repositoryValue.equals(ERepositoryCategoryType.SAP.getName()))) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // if ((connection instanceof HeaderFooterConnection)
-                            // && (repositoryValue.equals(ERepositoryCategoryType.HEADERFOOTER.getName()))) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // if ((connection instanceof DatabaseConnection)
-                            // && (repositoryValue.startsWith(ERepositoryCategoryType.DATABASE.getName()))) {
-                            // String currentDbType = (String) RepositoryToComponentProperty.getValue(connection,
-                            //                                            "TYPE", null); //$NON-NLS-1$
-                            //                                    if (repositoryValue.contains(":")) { // database is specified //$NON-NLS-1$
-                            //                                        String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$;
-                            // if (MetadataTalendType.sameDBProductType(neededDbType, currentDbType)) {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // } else {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
-                            // }
-                            // } else {
-                            // repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            // }
                             for (Object tableObj : ConnectionHelper.getTables(connection)) {
                                 org.talend.core.model.metadata.builder.connection.MetadataTable table;
 
@@ -321,18 +238,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                     }
                                 }
                             }
-                            /* query cache should be deleted ,bug 16969 */
-                            // if (connection instanceof DatabaseConnection) {
-                            // DatabaseConnection dbConnection = (DatabaseConnection) connection;
-                            // QueriesConnection queriesConnection = dbConnection.getQueries();
-                            // if (queriesConnection != null) {
-                            // List<Query> qs = queriesConnection.getQuery();
-                            // for (Query query : qs) {
-                            //                                        repositoryQueryStoreMap.put(connectionItem.getProperty().getId() + " - " //$NON-NLS-1$
-                            // + query.getLabel(), query);
-                            // }
-                            // }
-                            // }
 
                             monitorWrap.worked(1);
                         }
@@ -381,6 +286,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      * 
      * @return an instance of Element
      */
+    @Override
     public Element getElement() {
         return elem;
     }
@@ -485,7 +391,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
         // System.out.println("********************** NEW ADDCOMPONENTS
         // **********************");
-        // TabbedPropertyComposite tabbedPropertyComposite = this.getTabbedPropertyComposite();
         int additionalHeightSize = 0;
         boolean hasDynamicRow = false;
         for (int i = 0; i < listParam.size(); i++) {
@@ -578,15 +483,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                 }
                             }
 
-                            //                            lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()) - lastTime; //$NON-NLS-1$
-                            // if (DynamicTabbedPropertySection.DEBUG_TIME) {
-                            //                                System.out.println("DC;create:" + curParam.getField().getName() + ";" + getCurrentComponent() //$NON-NLS-1$ //$NON-NLS-2$
-                            //                                        + ";" + lastTime); //$NON-NLS-1$
-                            // }
-
-                            // System.out.println("param:" + curParam.getName()
-                            // + " - curRowSize:" + curRowSize);
-
                             maxRowSize = 0;
                             if (curRowSize > maxRowSize) {
                                 maxRowSize = curRowSize;
@@ -608,63 +504,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
         resizeScrolledComposite();
     }
-
-    // /**
-    // * DOC Administrator Comment method "updateMainParameters".
-    // */
-    // protected void updateMainParameters() {
-    // oldQueryStoreType = (String) elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
-    // if (oldQueryStoreType != null) {
-    // if (oldQueryStoreType.equals(EmfComponent.REPOSITORY)) {
-    // showQueryStoreRepositoryList(true);
-    // updateRepositoryList();
-    // } else {
-    // showQueryStoreRepositoryList(false);
-    // }
-    // }
-    //
-    // IElementParameter param = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName());
-    // if (param != null) {
-    // oldPropertyType = (String) param.getValue();
-    // if (param.isShow(elem.getElementParameters())) {
-    // if (oldPropertyType.equals(EmfComponent.REPOSITORY)) {
-    // showPropertyRepositoryList(true, false);
-    // updateRepositoryList();
-    // } else {
-    // showPropertyRepositoryList(false, false);
-    // }
-    // } else {
-    // showPropertyRepositoryList(false, false);
-    // }
-    // }
-    // // for job settings extra (feature 2710)
-    // param = elem.getElementParameter(extraPropertyTypeName);
-    // if (param != null) {
-    // oldPropertyType = (String) param.getValue();
-    // if (param.isShow(elem.getElementParameters())) {
-    // if (oldPropertyType.equals(EmfComponent.REPOSITORY)) {
-    // showPropertyRepositoryList(true, true);
-    // updateRepositoryList();
-    // } else {
-    // showPropertyRepositoryList(false, true);
-    // }
-    // } else {
-    // showPropertyRepositoryList(false, true);
-    // }
-    // }
-    // oldProcessType = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
-    // if (oldProcessType != null) {
-    // String[] list =
-    // elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName()).getListItemsDisplayName();
-    // if ((oldProcessType.equals("NO_PROCESS") || (list.length == 0))) { //$NON-NLS-1$
-    // updateProcessList();
-    // updateContextList();
-    // if (elem instanceof Node) {
-    // ((Node) elem).checkAndRefreshNode();
-    // }
-    // }
-    // }
-    // }
 
     /**
      * DOC Administrator Comment method "isNeedRedraw".
@@ -758,11 +597,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
     }
 
     private void resizeScrolledComposite() {
-        // Point compositeSize = composite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        //
-        // Point parentSize = getParent().getSize();
-        //
-        // System.out.println("compositeSize:" + compositeSize + " / parentSize:" + parentSize);
 
         lastCompositeSize = getParent().getClientArea().height;
 
@@ -770,56 +604,37 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         propertyResized = true;
     }
 
+    @Override
     public void refresh() {
-
-        Thread thread = new Thread() {
+        // refactore because of TDI-24184
+        Display.getDefault().asyncExec(new Runnable() {
 
             @Override
             public void run() {
-                try {
-                    operationInThread();
-                } catch (Exception e) {
-                    // e.printStackTrace();
-                    ExceptionHandler.process(e);
-                }
+                operationInThread();
             }
-        };
-        thread.start();
+        });
+
     }
 
-    private void operationInThread() {
-        // TimeMeasure.display = false;
-        // TimeMeasure.measureActive = true;
-        //        TimeMeasure.begin("DC:refresh:" + getCurrentComponent()); //$NON-NLS-1$
-
+    // refactore to be synchonized with the dispose() method because of TDI-24184
+    // the synchronized methodis a quick fix but not the ideal one because this method is accessing many attributes
+    // of the current class that may be modified by other thread (just like "elem" modified by the dispose() method.
+    synchronized private void operationInThread() {
         if (elem == null) {
             return;
         }
         List<? extends IElementParameter> listParam = elem.getElementParametersWithChildrens(); // hywang modified for
-        // 6484
-
-        // IElementParameter jobParam = elem.getElementParameterFromField(EParameterFieldType.PROCESS_TYPE);
-        // if (jobParam != null) {
-        // updateContextList(jobParam);
-        // if (elem instanceof Node) {
-        // ((Node) elem).checkAndRefreshNode();
-        // }
-        // }
 
         Boolean updateNeeded = (Boolean) elem.getPropertyValue(updataComponentParamName);
 
         if (updateNeeded != null) {
             if (updateNeeded) {
-                Display.getDefault().syncExec(new Runnable() {
-
-                    public void run() {
-                        if (elem != null) {
-                            addComponents(forceRedraw);
-                            elem.setPropertyValue(updataComponentParamName, new Boolean(false));
-                            forceRedraw = false;
-                        }
-                    }
-                });
+                if (elem != null) {
+                    addComponents(forceRedraw);
+                    elem.setPropertyValue(updataComponentParamName, new Boolean(false));
+                    forceRedraw = false;
+                }
             }
         }
 
@@ -844,39 +659,28 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                     }
                     final List<Problem> nodePros = javaProblem;
 
-                    Display.getDefault().syncExec(new Runnable() {
-
-                        public void run() {
-                            if (generator != null) {
-                                AbstractElementPropertySectionController controller = generator.getController(e.getFieldType(),
-                                        MultipleThreadDynamicComposite.this);
-                                if (controller != null) {
-                                    controller.updateCodeProblems(nodePros);
-                                    controller.refresh(e, checkErrorsWhenViewRefreshed);
-                                }
-                            }
-
+                    if (generator != null) {
+                        AbstractElementPropertySectionController controller = generator.getController(e.getFieldType(),
+                                MultipleThreadDynamicComposite.this);
+                        if (controller != null) {
+                            controller.updateCodeProblems(nodePros);
+                            controller.refresh(e, checkErrorsWhenViewRefreshed);
                         }
-                    });
+                    }
 
                 }
             }
         }
         if (propertyResized) {
-            Display.getDefault().syncExec(new Runnable() {
+            try {
+                removeListener(SWT.Resize, resizeListener);
+                getParent().layout();
 
-                public void run() {
-                    try {
-                        removeListener(SWT.Resize, resizeListener);
-                        getParent().layout();
-
-                        composite.pack();
-                        propertyResized = false;
-                        addListener(SWT.Resize, resizeListener);
-                    } catch (Exception e) {
-                    }
-                }
-            });
+                composite.pack();
+                propertyResized = false;
+                addListener(SWT.Resize, resizeListener);
+            } catch (Exception e) {
+            }
 
         }
 
@@ -887,13 +691,11 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         //            System.out.println("DC;total;" + getCurrentComponent() + ";" + time); //$NON-NLS-1$ //$NON-NLS-2$
         // }
 
-        isRefreshing = false;
     }
-
-    public static boolean isRefreshing = false;
 
     private final Listener resizeListener = new Listener() {
 
+        @Override
         public void handleEvent(Event event) {
             resizeLimiter.resetTimer();
             resizeLimiter.startIfExecutable(true, null);
@@ -907,6 +709,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             if (!isDisposed()) {
                 getDisplay().asyncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         if (!isDisposed() && !getParent().isDisposed()) {
                             int currentSize = getParent().getClientArea().height;
@@ -949,13 +752,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             Element element, boolean isCompactView) {
         super(parentComposite, styles);
         setCompactView(isCompactView);
-        // for job settings extra (feature 2710)
-        // if (section == EComponentCategory.EXTRA) {
-        // updataComponentParamName =
-        // JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
-        // } else {
         updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
-        // }
         FormData d = new FormData();
         d.left = new FormAttachment(0, 0);
         d.right = new FormAttachment(100, 0);
@@ -986,11 +783,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         if (elem instanceof Process) {
             process = (Process) elem;
         }
-        // added by achen fix 0005991 & 0005993
-        // if (elem instanceof StatsAndLogsElement || elem instanceof ImplicitContextLoadElement) {
-        // process = ActiveProcessTracker.getCurrentProcess();
-        // }
-        // end
         if (process != null) {
             part = (AbstractMultiPageTalendEditor) process.getEditor();
         }
@@ -1000,10 +792,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         layout.spacing = ITabbedPropertyConstants.VMARGIN + 1;
         composite.setLayout(layout);
 
-        /* caches deleted by bug16969 */
-        // repositoryQueryStoreMap = new HashMap<String, Query>();
-        // repositoryConnectionItemMap = new HashMap<String, ConnectionItem>();
-        // repositoryTableMap = new HashMap<String, IMetadataTable>();
         hashCurControls = new DualHashBidiMap();
 
         if ((currentComponent == null) || (!currentComponent.equals(elem.getElementName()))) {
@@ -1015,26 +803,10 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
         propertyResized = true;
         addListener(SWT.Resize, resizeListener);
-        addListener(SWT.FocusOut, new Listener() {
-
-            public void handleEvent(Event event) {
-                // if the focus is lost reinitialise all information from repository
-                /* bug 16969 */
-                // repositoryTableMap.clear();
-                // repositoryQueryStoreMap.clear();
-                // repositoryConnectionItemMap.clear();
-            }
-
-        });
 
         if (getCommandStack() != null) {
             getCommandStack().addCommandStackEventListener(commandStackEventListener);
         }
-        // for job settings extra (feature 2710)
-        // extraPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
-        // extraRepositoryPropertyTypeName =
-        // JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE
-        // .getName());
     }
 
     /*
@@ -1043,14 +815,15 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      * @see org.eclipse.swt.widgets.Widget#dispose()
      */
     @Override
-    public void dispose() {
+    synchronized public void dispose() {
         CommandStack cmdStack = getCommandStack();
         if (cmdStack != null) {
             cmdStack.removeCommandStackEventListener(commandStackEventListener);
         }
         disposeChildren();
-        if (widgetFactory != null)
+        if (widgetFactory != null) {
             widgetFactory.dispose();
+        }
         super.dispose();
         process = null;
         elem = null;
@@ -1062,6 +835,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
     CommandStackEventListener commandStackEventListener = new CommandStackEventListener() {
 
+        @Override
         public void stackChanged(CommandStackEvent event) {
             int detail = event.getDetail();
             if ((getElement() instanceof org.talend.designer.core.ui.editor.connections.Connection)
@@ -1086,6 +860,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      * 
      * @param curRowSize int
      */
+    @Override
     public void setCurRowSize(int curRowSize) {
         this.curRowSize = curRowSize;
     }
@@ -1104,6 +879,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      * 
      * @return the curRowSize
      */
+    @Override
     public int getCurRowSize() {
         return this.curRowSize;
     }
@@ -1113,6 +889,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      * 
      * @return the hashCurControls
      */
+    @Override
     public BidiMap getHashCurControls() {
         return this.hashCurControls;
     }
@@ -1122,6 +899,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      * 
      * @return the part
      */
+    @Override
     public AbstractMultiPageTalendEditor getPart() {
         return this.part;
     }
@@ -1131,6 +909,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      * 
      * @return the section
      */
+    @Override
     public EComponentCategory getSection() {
         return this.section;
     }
@@ -1185,6 +964,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      * 
      * @return the tableIdAndDbTypeMap
      */
+    @Override
     public Map<String, String> getTableIdAndDbTypeMap() {
         if (this.tableIdAndDbTypeMap.isEmpty()) {
             updateRepositoryList();
@@ -1197,50 +977,13 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      * 
      * @return the tableIdAndDbSchemaMap
      */
+    @Override
     public Map<String, String> getTableIdAndDbSchemaMap() {
         if (this.tableIdAndDbSchemaMap.isEmpty()) {
             updateRepositoryList();
         }
         return this.tableIdAndDbSchemaMap;
     }
-
-    /* query cache should be deleted ,bug 16969 */
-    // /**
-    // * Getter for repositoryQueryStoreMap.
-    // *
-    // * @return the repositoryQueryStoreMap
-    // */
-    // public Map<String, Query> getRepositoryQueryStoreMap() {
-    // if (this.repositoryQueryStoreMap.isEmpty()) {
-    // updateRepositoryList();
-    // }
-    // return repositoryQueryStoreMap;
-    // }
-
-    // /**
-    // * dev Comment method "getRepositoryTableMap".
-    // *
-    // * @return Map
-    // */
-    // public Map<String, IMetadataTable> getRepositoryTableMap() {
-    // if (this.repositoryTableMap.isEmpty()) {
-    // updateRepositoryList();
-    // }
-    // return this.repositoryTableMap;
-    // }
-
-    /* 16969 */
-    // /**
-    // * dev Comment method "getRepositoryConnectionItemMap".
-    // *
-    // * @return Map
-    // */
-    // public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
-    // if (this.repositoryConnectionItemMap.isEmpty()) {
-    // updateRepositoryList();
-    // }
-    // return this.repositoryConnectionItemMap;
-    // }
 
     /**
      * hywang Comment method "getRepositoryFileItemMap".
@@ -1276,6 +1019,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getComposite()
      */
+    @Override
     public Composite getComposite() {
         return composite;
     }
