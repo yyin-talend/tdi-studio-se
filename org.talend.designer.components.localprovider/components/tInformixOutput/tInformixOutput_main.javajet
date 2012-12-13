@@ -4,10 +4,10 @@ imports="
     org.talend.core.model.process.INode
     org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.process.IConnection
-    org.talend.core.model.metadata.IMetadataColumn
+	org.talend.core.model.metadata.IMetadataColumn
     org.talend.core.model.metadata.IMetadataTable
     org.talend.core.model.metadata.types.JavaTypesManager
-    org.talend.core.model.metadata.types.JavaType
+	org.talend.core.model.metadata.types.JavaType
     org.talend.core.model.metadata.MappingTypeRetriever
     org.talend.core.model.metadata.MetadataTalendType    
     org.talend.core.model.process.IConnectionCategory    
@@ -15,7 +15,7 @@ imports="
     java.util.ArrayList
     java.util.Map
     java.util.HashMap
-    java.util.LinkedList
+	java.util.LinkedList
 "
 skeleton="../templates/db_output_bulk.skeleton"
 %>
@@ -860,7 +860,6 @@ skeleton="../templates/db_output_bulk.skeleton"
             if (rejectConnName == null  && ("true").equals(useBatchSize) && !useExistingConnection) {
 %>
     		pstmt_<%=cid %>.addBatch();
-    		nb_line_<%=cid%>++;    		 
 			
 <%				
 				if (("true").equals(useBatchSize) && !("").equals(batchSize) && !("0").equals(batchSize)) {
