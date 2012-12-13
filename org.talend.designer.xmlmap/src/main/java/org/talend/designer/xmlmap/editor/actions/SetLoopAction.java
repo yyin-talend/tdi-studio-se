@@ -82,7 +82,7 @@ public class SetLoopAction extends SelectionAction {
         TreeNode docRoot = XmlMapUtil.getTreeNodeRoot(model);
         AbstractInOutTree abstractTree = (AbstractInOutTree) docRoot.eContainer();
         boolean isLookup = abstractTree != mapperManager.getMainInputTree() && !(abstractTree instanceof OutputXmlTree);
-        // remove old loop
+        // remove old group
         if (model instanceof OutputTreeNode) {
             OutputTreeNode outputNode = (OutputTreeNode) model;
             if (docRoot != null) {
@@ -100,10 +100,6 @@ public class SetLoopAction extends SelectionAction {
             }
         }
         if (!isLookup) {
-            boolean hasDocument = false;
-            if (abstractTree != null) {
-                hasDocument = XmlMapUtil.hasDocument(abstractTree);
-            }
 
             // TDI-20147
             List<TreeNode> loopNodes = new ArrayList<TreeNode>();
@@ -127,15 +123,7 @@ public class SetLoopAction extends SelectionAction {
             XmlMapUtil.clearMainNode(model);
             XmlMapUtil.upsetMainNode(model);
 
-            if (hasDocument) {
-                List<TreeNode> loopNodeList = new ArrayList<TreeNode>();
-                getLoopNode(docRoot, loopNodeList);
-                if (loopNodeList != null && loopNodeList.size() > 1) {
-                    abstractTree.setMultiLoops(true);
-                } else {
-                    abstractTree.setMultiLoops(false);
-                }
-            }
+            abstractTree.setMultiLoops(XmlMapUtil.checkMultiLoopsStatus(abstractTree));
             if (input) {
                 // check if child is mapped to output remove the old loop in output node
                 XmlMapUtil.removeloopInOutputTree(mapperManager, loopNodes);
@@ -153,15 +141,7 @@ public class SetLoopAction extends SelectionAction {
                     }
                     ((OutputTreeNode) treeNode).setInputLoopNodesTable(null);
                 }
-                // find input loop node and add to InputLoopNodesTable
-                // List<TreeNode> sourceLoopNodes = new ArrayList<TreeNode>();
-                // XmlMapUtil.findChildSourceLoop(model, sourceLoopNodes);
-                // if (!sourceLoopNodes.isEmpty()) {
-                // InputLoopNodesTable createInputLoopNodesTable = XmlmapFactory.eINSTANCE.createInputLoopNodesTable();
-                // ((OutputTreeNode) model).setInputLoopNodesTable(createInputLoopNodesTable);
-                // createInputLoopNodesTable.getInputloopnodes().addAll(sourceLoopNodes);
-                // ((OutputXmlTree) abstractTree).getInputLoopNodesTables().add(createInputLoopNodesTable);
-                // }
+
             }
         } else {
             if (docRoot != null) {
