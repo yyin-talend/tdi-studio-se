@@ -1353,6 +1353,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 type = "ORACLE_SID"; //$NON-NLS-1$
             }
         }
+        // Get real hsqldb type
+        if (type.equals(EDatabaseTypeName.HSQLDB.name())
+                && getValueFromRepositoryName(element, "RUNNING_MODE").equals("HSQLDB_INPROGRESS_PERSISTENT")) {//$NON-NLS-1$ //$NON-NLS-1$
+            type = EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName();
+        }
         // If the dbtype has been setted don't reset it again unless the dbtype of connParameters is null.
         if (StringUtils.trimToNull(type) == null && StringUtils.trimToNull(connParameters.getDbType()) == null) {
             type = EDatabaseTypeName.GENERAL_JDBC.getXmlName();
@@ -1404,6 +1409,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
 
         String dir = getValueFromRepositoryName(element, EConnectionParameterName.DIRECTORY.getName());
+        if (type.equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName())) {
+            dir = getValueFromRepositoryName(elem, EConnectionParameterName.DBPATH.getName());
+        }
         connParameters.setDirectory(dir);
 
         // General jdbc
@@ -1492,6 +1500,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             connParameters = new ConnectionParameters();
         }
 
+        String dbType = connParameters.getDbType();
         Object value = elem.getPropertyValue("USE_EXISTING_CONNECTION"); //$NON-NLS-1$
         IElementParameter compList = elem.getElementParameterFromField(EParameterFieldType.COMPONENT_LIST);
         if (value != null && (value instanceof Boolean) && ((Boolean) value) && compList != null) {
@@ -1519,7 +1528,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setSchema(getParameterValueWithContext(element, EConnectionParameterName.SCHEMA.getName(), context));
         connParameters.setHost(getParameterValueWithContext(element, EConnectionParameterName.SERVER_NAME.getName(), context));
         connParameters.setUserName(getParameterValueWithContext(element, EConnectionParameterName.USERNAME.getName(), context));
-        connParameters.setDirectory(getParameterValueWithContext(element, EConnectionParameterName.DIRECTORY.getName(), context));
+        String dir = getParameterValueWithContext(element, EConnectionParameterName.DIRECTORY.getName(), context);
+        if (dbType.equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName())) {
+            dir = getParameterValueWithContext(element, EConnectionParameterName.DBPATH.getName(), context);
+        }
+        connParameters.setDirectory(dir);
         connParameters.setHttps(Boolean.parseBoolean(getParameterValueWithContext(element,
                 EConnectionParameterName.HTTPS.getName(), context)));
         String url = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element,
@@ -1530,7 +1543,6 @@ public abstract class AbstractElementPropertySectionController implements Proper
             // "RAC_" + EConnectionParameterName.URL.getName(), context));
             // Changed by Marvin Wang on Feb. 14, 2012 for bug TDI-19597. Above is the original code, below is new code
             // to get the Oracle RAC url.
-            String dbType = connParameters.getDbType();
             if (EDatabaseTypeName.ORACLE_RAC.getDisplayName().equals(dbType)) {
                 url = TalendTextUtils.removeQuotesIfExist(getParameterValueWithContext(element, "RAC_"
                         + EConnectionParameterName.URL.getName(), context));
@@ -1683,6 +1695,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
             } else {
                 type = "ORACLE_SID"; //$NON-NLS-1$
             }
+        }
+        // Get real hsqldb type
+        if (type.equals(EDatabaseTypeName.HSQLDB.name())
+                && getValueFromRepositoryName(elem, "RUNNING_MODE").equals("HSQLDB_INPROGRESS_PERSISTENT")) {//$NON-NLS-1$ //$NON-NLS-1$
+            type = EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName();
         }
         connParameters.setDbType(type);
 

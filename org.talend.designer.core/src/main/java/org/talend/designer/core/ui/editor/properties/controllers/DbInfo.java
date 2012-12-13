@@ -189,6 +189,10 @@ public class DbInfo {
                     || dbType.equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName()) || dbType
                     .equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) && wapperDriver != null) {
                 try {
+                    // if HSQLDB_IN_PROGRESS connection is not closed,HSQLDB_IN_PROGRESS can't open
+                    if (conn != null && !conn.isClosed() && dbType.equals(EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName())) {
+                        conn.close();
+                    }
                     wapperDriver.connect("jdbc:derby:;shutdown=true", null); //$NON-NLS-1$
                 } catch (SQLException e) {
                     // exception of shutdown success. no need to catch.
