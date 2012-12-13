@@ -15,6 +15,7 @@ package org.talend.designer.xmlmap;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -81,6 +82,7 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         return XMLMapperHelper.isGeneratedAsVirtualComponent(this);
     }
 
+    @Override
     public int open(Display display) {
 
         // TimeMeasure.start("Total open");
@@ -113,18 +115,22 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         return mapperMain.getMapperDialogResponse();
     }
 
+    @Override
     public void initialize() {
     }
 
+    @Override
     public int open(Composite parent) {
         return open(parent.getDisplay());
     }
 
+    @Override
     public void setExternalData(IExternalData persistentData) {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void renameInputConnection(String oldName, String newName) {
         XmlMapData externalEmfData = (XmlMapData) getExternalEmfData();
         for (InputXmlTree inputTree : externalEmfData.getInputTrees()) {
@@ -136,6 +142,7 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         }
     }
 
+    @Override
     public void renameOutputConnection(String oldName, String newName) {
         XmlMapData externalEmfData = (XmlMapData) getExternalEmfData();
         for (OutputXmlTree outputTree : externalEmfData.getOutputTrees()) {
@@ -147,11 +154,13 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         }
     }
 
+    @Override
     public IComponentDocumentation getComponentDocumentation(String componentName, String tempFolderPath) {
         // TODO Auto-generated method stub
         return null;
     }
 
+    @Override
     public IExternalData getTMapExternalData() {
         // TODO Auto-generated method stub
         return null;
@@ -186,10 +195,11 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
     @Override
     public void buildExternalData(AbstractExternalData abstractData) {
         if (abstractData instanceof XmlMapData) {
-            this.emfMapData = (XmlMapData) abstractData;
+            this.emfMapData = abstractData;
         }
     }
 
+    @Override
     public AbstractExternalData getExternalEmfData() {
         if (this.emfMapData == null) {
             this.emfMapData = XmlmapFactory.eINSTANCE.createXmlMapData();
@@ -198,10 +208,12 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         return this.emfMapData;
     }
 
+    @Override
     public void setExternalEmfData(AbstractExternalData emfMapData) {
         this.emfMapData = emfMapData;
     }
 
+    @Override
     public IHashConfiguration getHashConfiguration(String connectionName) {
 
         IHashConfiguration hashConfigurationForMapper = null;
@@ -265,20 +277,22 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         return this.generationManager;
     }
 
+    @Override
     public List<BlockCode> getBlocksCodeToClose() {
         if (generationManager == null) {
-            throw new IllegalStateException(); //$NON-NLS-1$
+            throw new IllegalStateException();
         }
         return this.generationManager.getBlocksCodeToClose();
     }
 
+    @Override
     public List<String> checkNeededRoutines(List<String> possibleRoutines, String additionalString) {
         List<String> routinesToAdd = new ArrayList<String>();
         XmlMapData xmlMapData = (XmlMapData) getExternalEmfData();
         for (String routine : possibleRoutines) {
             List<OutputXmlTree> listOutput = xmlMapData.getOutputTrees();
             for (OutputXmlTree outTable : listOutput) {
-                List<OutputTreeNode> listOutEntry = (List<OutputTreeNode>) outTable.getNodes();
+                List<OutputTreeNode> listOutEntry = outTable.getNodes();
                 if (listOutEntry != null && !listOutEntry.isEmpty()) {
                     for (OutputTreeNode outEntry : listOutEntry) {
                         String expression = outEntry.getExpression();
@@ -293,9 +307,9 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
                     routinesToAdd.add(routine);
                 }
             }
-            List<InputXmlTree> listInput = (List<InputXmlTree>) xmlMapData.getInputTrees();
+            List<InputXmlTree> listInput = xmlMapData.getInputTrees();
             for (InputXmlTree inputTable : listInput) {
-                List<TreeNode> listInEntry = (List<TreeNode>) inputTable.getNodes();
+                List<TreeNode> listInEntry = inputTable.getNodes();
                 if (listInEntry != null && !listInEntry.isEmpty()) {
                     for (TreeNode inEntry : listInEntry) {
                         String expression = inEntry.getExpression();
@@ -310,9 +324,9 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
                     routinesToAdd.add(routine);
                 }
             }
-            List<VarTable> listVar = (List<VarTable>) xmlMapData.getVarTables();
+            List<VarTable> listVar = xmlMapData.getVarTables();
             for (VarTable varTable : listVar) {
-                List<VarNode> listVarEntry = (List<VarNode>) varTable.getNodes();
+                List<VarNode> listVarEntry = varTable.getNodes();
                 if (listVarEntry != null && !listVarEntry.isEmpty()) {
                     for (VarNode varEntry : listVarEntry) {
                         String expression = varEntry.getExpression();
@@ -328,6 +342,7 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
 
     }
 
+    @Override
     public List<Problem> getProblems() {
         initMapperMain();
         return mapperMain.getMapperManager().getProblemsAnalyser().getProblems();
@@ -377,6 +392,12 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
             }
         }
         if (toRemove != null) {
+            if (!toRemove.isLookup() && toRemove.isMultiLoops()) {
+                EList<OutputXmlTree> outputTrees = externalEmfData.getOutputTrees();
+                for (OutputXmlTree outputTree : outputTrees) {
+                    outputTree.getInputLoopNodesTables().clear();
+                }
+            }
             for (TreeNode treeNode : toRemove.getNodes()) {
                 XmlMapUtil.detachNodeConnections(treeNode, externalEmfData, true);
             }

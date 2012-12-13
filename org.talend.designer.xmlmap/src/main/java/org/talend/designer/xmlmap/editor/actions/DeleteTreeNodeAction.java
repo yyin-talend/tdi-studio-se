@@ -120,17 +120,9 @@ public class DeleteTreeNodeAction extends SelectionAction {
                             parent.getChildren().remove(treeNode);
 
                             // check if tree is multiloop
-                            List<TreeNode> loopNodes = new ArrayList<TreeNode>();
                             if (docRoot != null && docRoot.eContainer() instanceof AbstractInOutTree) {
                                 AbstractInOutTree tree = (AbstractInOutTree) docRoot.eContainer();
-                                if (tree.isMultiLoops()) {
-                                    List<TreeNode> nodesToCheck = new ArrayList<TreeNode>();
-                                    nodesToCheck.add(docRoot);
-                                    XmlMapUtil.getChildLoops(loopNodes, nodesToCheck, false);
-                                    if (loopNodes.size() < 2) {
-                                        tree.setMultiLoops(false);
-                                    }
-                                }
+                                tree.setMultiLoops(XmlMapUtil.checkMultiLoopsStatus(tree));
                             }
                             if (input) {
                                 // remove delete loops in InputLoopTable for outputs

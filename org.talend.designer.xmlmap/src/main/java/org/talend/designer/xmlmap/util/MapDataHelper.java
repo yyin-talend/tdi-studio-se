@@ -150,7 +150,14 @@ public class MapDataHelper {
                     EList<TreeNode> children = found.getChildren();
                     if (!children.isEmpty()) {
                         XmlMapUtil.detachNodeConnections(found, mapData, true);
+                        List<TreeNode> copyOfChildren = new ArrayList<TreeNode>(found.getChildren());
                         found.getChildren().clear();
+                        if (!inputTree.isLookup() && inputTree.isMultiLoops()) {
+                            List<TreeNode> oldLoops = new ArrayList<TreeNode>();
+                            XmlMapUtil.getChildLoops(oldLoops, copyOfChildren, false);
+                            inputTree.setMultiLoops(XmlMapUtil.checkMultiLoopsStatus(inputTree));
+                            XmlMapUtil.removeloopInOutputTree(mapData, inputTree, oldLoops);
+                        }
                     }
                 }
 
