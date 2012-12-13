@@ -106,6 +106,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // TODO Auto-generated method stub
 
@@ -113,10 +114,12 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     SelectionListener listenerSelection = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
 
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand();
             executeCommand(cmd);
@@ -203,6 +206,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
         final DecoratedField dField1 = new DecoratedField(subComposite, SWT.PUSH, new IControlCreator() {
 
+            @Override
             public Control createControl(Composite parent, int style) {
                 return new Button(parent, style);
             }
@@ -223,6 +227,12 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             openSQLEditorButton.setEnabled(ExtractMetaDataUtils.haveLoadMetadataNode());
         }
 
+        // Added by Marvin Wang on Dec.13, 2012 for bug TDI-7559.
+        IElementParameter typePara = elem.getElementParameter("TYPE"); //$NON-NLS-1$
+        if ("Hive".equalsIgnoreCase((String) typePara.getValue())) { //$NON-NLS-1$
+            openSQLEditorButton.setVisible(false);
+        }
+
         FormData data1 = new FormData();
         data1.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
         data1.left = new FormAttachment(100, -(ITabbedPropertyConstants.HSPACE + STANDARD_BUTTON_WIDTH));
@@ -234,6 +244,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
         IControlCreator txtCtrl = new IControlCreator() {
 
+            @Override
             public Control createControl(final Composite parent, final int style) {
                 return createColorStyledText(parent, style);
             }
@@ -273,6 +284,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         }
         queryText.addKeyListener(new KeyListener() {
 
+            @Override
             public void keyPressed(KeyEvent e) {
                 if (switchParam != null) {
                     switchParam.setValue(Boolean.FALSE);
@@ -280,6 +292,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
             }
 
+            @Override
             public void keyReleased(KeyEvent e) {
             }
 
@@ -346,6 +359,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         IControlCreator txtCtrl = new IControlCreator() {
 
+            @Override
             public Control createControl(final Composite parent, final int style) {
                 return createColorStyledText(parent, style);
             }
