@@ -900,8 +900,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         try {
             repFactory.updateLockStatus();
-        } catch (PersistenceException e1) {
-            ExceptionHandler.process(e1);
+            // For TDI-23825, if not lock by user try to lock again.
+            boolean locked = repFactory.getStatus(curItem) == ERepositoryStatus.LOCK_BY_USER;
+            if (!locked && !getProcess().isReadOnly()) {
+                repFactory.lock(curItem);
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
         }
         ERepositoryStatus status = repFactory.getStatus(curItem);
         if (!status.equals(ERepositoryStatus.LOCK_BY_USER)) {
