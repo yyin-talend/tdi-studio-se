@@ -71,11 +71,13 @@ import org.talend.core.ui.ILastVersionChecker;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.action.SaveAsRoutineAction;
 import org.talend.designer.core.ui.action.SaveAsSQLPatternAction;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.editor.RepositoryEditorInput;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
@@ -300,6 +302,25 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
 
     @Override
     public void doSave(final IProgressMonitor monitor) {
+        IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
+        final IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
+        try {
+            repFactory.updateLockStatus();
+            // For TDI-23825, if not lock by user try to lock again.
+            boolean locked = repFactory.getStatus(item) == ERepositoryStatus.LOCK_BY_USER;
+            if (!locked) {
+                repFactory.lock(item);
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        ERepositoryStatus status = repFactory.getStatus(item);
+        if (!status.equals(ERepositoryStatus.LOCK_BY_USER) && !repFactory.getRepositoryContext().isEditableAsReadOnly()) {
+            MessageDialog.openWarning(getEditorSite().getShell(),
+                    Messages.getString("AbstractMultiPageTalendEditor.canNotSaveTitle"),
+                    Messages.getString("AbstractMultiPageTalendEditor.canNotSaveMessage.routine"));
+            return;
+        }
         EList adapters = item.getProperty().eAdapters();
         adapters.remove(dirtyListener);
         super.doSave(monitor);
@@ -307,9 +328,6 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         try {
             ByteArray byteArray = item.getContent();
             byteArray.setInnerContentFromFile(((FileEditorInput) getEditorInput()).getFile());
-            IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
-            final IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
-
             try {
                 CorePlugin.getDefault().getRunProcessService().getJavaProject().getProject()
                         .build(IncrementalProjectBuilder.AUTO_BUILD, null);

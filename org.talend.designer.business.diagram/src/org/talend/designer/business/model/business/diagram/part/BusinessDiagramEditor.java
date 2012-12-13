@@ -24,6 +24,7 @@ import org.eclipse.gmf.runtime.diagram.ui.internal.editparts.NoteAttachmentEditP
 import org.eclipse.gmf.runtime.diagram.ui.parts.IDiagramGraphicalViewer;
 import org.eclipse.gmf.runtime.diagram.ui.resources.editor.ide.document.StorageDiagramDocumentProvider;
 import org.eclipse.gmf.runtime.diagram.ui.resources.editor.ide.editor.FileDiagramEditor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
@@ -57,13 +58,16 @@ import org.talend.designer.business.diagram.custom.dnd.BusinessDiagramDropTarget
 import org.talend.designer.business.diagram.custom.edit.parts.BaseBusinessItemRelationShipEditPart;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
 import org.talend.designer.business.diagram.custom.figures.BusinessItemShapeFigure;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessEditPartFactory;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 import org.talend.designer.business.model.business.diagram.providers.BusinessDiagramActionProvider;
 import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.repository.editor.RepositoryEditorInput;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -171,10 +175,29 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
 
     @Override
     public void doSave(IProgressMonitor progressMonitor) {
-        super.doSave(progressMonitor);
         if (repositoryEditorInput != null) {
-            DiagramResourceManager diagramResourceManager = new DiagramResourceManager();
             BusinessProcessItem businessProcessItem = (BusinessProcessItem) repositoryEditorInput.getItem();
+            IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
+            IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
+            try {
+                repFactory.updateLockStatus();
+                // For TDI-23825, if not lock by user try to lock again.
+                boolean locked = repFactory.getStatus(businessProcessItem) == ERepositoryStatus.LOCK_BY_USER;
+                if (!locked) {
+                    repFactory.lock(businessProcessItem);
+                }
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
+            ERepositoryStatus status = repFactory.getStatus(businessProcessItem);
+            if (!status.equals(ERepositoryStatus.LOCK_BY_USER) && !repFactory.getRepositoryContext().isEditableAsReadOnly()) {
+                MessageDialog.openWarning(getEditorSite().getShell(),
+                        Messages.getString("BusinessDiagramEditor.canNotSaveTitle"), //$NON-NLS-1$
+                        Messages.getString("BusinessDiagramEditor.canNotSaveMessage")); //$NON-NLS-1$
+                return;
+            }
+            super.doSave(progressMonitor);
+            DiagramResourceManager diagramResourceManager = new DiagramResourceManager();
             diagramResourceManager.updateFromResource(businessProcessItem, repositoryEditorInput.getFile());
             // remove the function of sve SVG file because the imported business model can't save SVG file.
             // saveSVG(businessProcessItem);
