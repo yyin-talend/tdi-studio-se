@@ -331,37 +331,21 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     private boolean isAnyComponentMissing() throws IOException {
-        Iterator it = ComponentManager.getInstance().getComponentEntryMap().entrySet().iterator();
-        List<String> componentsList = new ArrayList<String>();
-        while (it.hasNext()) {
-            Map.Entry<String, ComponentInfo> entry = (Map.Entry<String, ComponentInfo>) it.next();
-            componentsList.add(entry.getKey());
-        }
+        final Set<String> componentsList = ComponentManager.getInstance().getComponentEntryMap().keySet();
 
         ECodeLanguage currentLanguage = LanguageManager.getCurrentLanguage();
-        ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
-        for (AbstractComponentsProvider componentsProvider : componentsProviderManager.getProviders()) {
-            if (componentsProvider.getInstallationFolder().exists()) {
-                File source = componentsProvider.getInstallationFolder();
-                File[] childDirectories;
-
-                FileFilter fileFilter = new FileFilter() {
-
-                    @Override
-                    public boolean accept(final File file) {
-                        return file.isDirectory() && file.getName().charAt(0) != '.'
-                                && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER)
-                                && isComponentVisible(file.getName());
-                    }
-
-                };
-                if (source == null) {
-                    continue;
-                }
-
-                childDirectories = source.listFiles(fileFilter);
-
-                for (File component : childDirectories) {
+        final FileFilter fileFilter = new FileFilter() {
+            @Override
+            public boolean accept(final File file) {
+                return file.isDirectory() && file.getName().charAt(0) != '.'
+                        && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER)
+                        && isComponentVisible(file.getName());
+            }
+        };
+        for (AbstractComponentsProvider componentsProvider :  ComponentsProviderManager.getInstance().getProviders()) {
+            File source = componentsProvider.getInstallationFolder();
+            if (source != null && source.exists()) {
+                for (File component : source.listFiles(fileFilter)) {
                     if (!componentsList.contains(component.getName())) {
                         String mainXmlFileName = ComponentFilesNaming.getInstance().getMainXMLFileName(component.getName(),
                                 currentLanguage.getName());
