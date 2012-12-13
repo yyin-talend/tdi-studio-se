@@ -190,7 +190,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
                 ExceptionHandler.process(e);
             }
             ERepositoryStatus status = repFactory.getStatus(businessProcessItem);
-            if (!status.equals(ERepositoryStatus.LOCK_BY_USER) && !repFactory.getRepositoryContext().isEditableAsReadOnly()) {
+            if (!status.equals(ERepositoryStatus.LOCK_BY_USER)) {
                 MessageDialog.openWarning(getEditorSite().getShell(),
                         Messages.getString("BusinessDiagramEditor.canNotSaveTitle"), //$NON-NLS-1$
                         Messages.getString("BusinessDiagramEditor.canNotSaveMessage")); //$NON-NLS-1$

@@ -315,7 +315,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
             ExceptionHandler.process(e);
         }
         ERepositoryStatus status = repFactory.getStatus(item);
-        if (!status.equals(ERepositoryStatus.LOCK_BY_USER) && !repFactory.getRepositoryContext().isEditableAsReadOnly()) {
+        if (!status.equals(ERepositoryStatus.LOCK_BY_USER)) {
             MessageDialog.openWarning(getEditorSite().getShell(),
                     Messages.getString("AbstractMultiPageTalendEditor.canNotSaveTitle"),
                     Messages.getString("AbstractMultiPageTalendEditor.canNotSaveMessage.routine"));
