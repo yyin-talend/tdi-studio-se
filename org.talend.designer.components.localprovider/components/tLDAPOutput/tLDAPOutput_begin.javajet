@@ -15,6 +15,7 @@ class="LDAPInput"
 
 	String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 	String exConn= "conn_" + connection;
+	String exConnBaseDN = "connBaseDN_" + connection;
 	String useExistingConn = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__");
 	String insertMode =ElementParameterParser.getValue(node, "__INSERT_MODE__");
 
@@ -38,6 +39,7 @@ if(("false").equals(useExistingConn)){
     env_<%=cid%>.put(javax.naming.Context.SECURITY_CREDENTIALS, <%=passwd%>);
 	env_<%=cid%>.put(javax.naming.Context.REFERRAL, "<%=referrals%>");
 	env_<%=cid%>.put("java.naming.ldap.derefAliases","<%=aliases%>");
+	String baseDN_<%=cid %> = <%=baseDN%>;
 <%
 	if(baseDN == null || baseDN.length()<=2){
 %>
@@ -84,6 +86,7 @@ if(("false").equals(useExistingConn)){
 }else{
 %>
 	javax.naming.ldap.InitialLdapContext ctx_<%=cid%> = (javax.naming.ldap.InitialLdapContext)globalMap.get("<%=exConn%>");
+    String baseDN_<%=cid%> = (String)globalMap.get("<%=exConnBaseDN%>");
 <%
 }
 %>
