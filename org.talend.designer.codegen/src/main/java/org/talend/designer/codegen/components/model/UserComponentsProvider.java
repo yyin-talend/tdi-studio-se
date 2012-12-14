@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
@@ -48,6 +50,7 @@ public class UserComponentsProvider extends AbstractComponentsProvider {
     public UserComponentsProvider() {
     }
 
+    @Override
     protected File getExternalComponentsLocation() {
         IPreferenceStore prefStore = CodeGeneratorActivator.getDefault().getPreferenceStore();
         String path = prefStore.getString(IComponentPreferenceConstant.USER_COMPONENTS_FOLDER);
@@ -75,6 +78,7 @@ public class UserComponentsProvider extends AbstractComponentsProvider {
         return path.toString();
     }
 
+    @Override
     public void preComponentsLoad() throws IOException {
         File installationFolder = getInstallationFolder();
         if (installationFolder.exists()) {
@@ -83,6 +87,7 @@ public class UserComponentsProvider extends AbstractComponentsProvider {
         FilesUtils.createFoldersIfNotExists(installationFolder.getAbsolutePath(), false);
         FileFilter ff = new FileFilter() {
 
+            @Override
             public boolean accept(File pathname) {
                 if (pathname.getName().equals(".svn")) {
                     return false;
@@ -94,9 +99,11 @@ public class UserComponentsProvider extends AbstractComponentsProvider {
 
         // synchroniz shared custom component
         if (PluginChecker.isSVNProviderPluginLoaded()) {
-            Project currentProject = ProjectManager.getInstance().getCurrentProject();
-            if (currentProject != null) {
-                String projectLabel = currentProject.getTechnicalLabel();
+            Set<Project> allProjects = new HashSet<Project>();
+            allProjects.add(ProjectManager.getInstance().getCurrentProject());
+            allProjects.addAll(ProjectManager.getInstance().getReferencedProjects());
+            for (Project project : allProjects) {
+                String projectLabel = project.getTechnicalLabel();
                 String sourcePath = new Path(Platform.getInstanceLocation().getURL().getPath()).toFile().getPath()
                         + File.separatorChar + projectLabel + File.separatorChar
                         + ERepositoryObjectType.getFolderName(ERepositoryObjectType.COMPONENTS);
