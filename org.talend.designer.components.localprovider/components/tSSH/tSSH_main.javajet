@@ -27,7 +27,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
         List<IMetadataColumn> columns = metadata.getListColumns();
-        List<? extends IConnection> conns = node.getOutgoingConnections();
+        List<? extends IConnection> conns = node.getOutgoingSortedConnections();
        	String commandSeparator = ElementParameterParser.getValue(node,"__COMMANDSEPARATOR__");
         List<Map<String, String>> commands =(List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__COMMANDS__");
 %>

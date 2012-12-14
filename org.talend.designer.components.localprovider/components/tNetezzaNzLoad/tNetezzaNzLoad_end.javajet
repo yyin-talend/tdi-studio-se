@@ -48,7 +48,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	}
 	
 	List< ? extends IConnection> inputConns = node.getIncomingConnections();
-	List< ? extends IConnection> outputConns = node.getOutgoingConnections();
+	List< ? extends IConnection> outputConns = node.getOutgoingSortedConnections();
 	boolean hasInputRow = false;
 	boolean hasOutputRow = false;
 	if (inputConns != null || inputConns.size() > 0) {
@@ -65,8 +65,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 					hasOutputRow = true;
 		}
 	}
-	String inputRowName = (hasInputRow) ? inputConns.get(0).getName() : null;
-	String outputRowName = (hasOutputRow) ? outputConns.get(0).getName() : null;
 %>
 
 <%

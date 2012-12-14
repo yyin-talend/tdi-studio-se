@@ -29,7 +29,7 @@ if(metadataTables != null && metadataTables.size() > 0) {
     IMetadataTable metadataTable = metadataTables.get(0);
     columnList = metadataTable.getListColumns();
 }
-List<? extends IConnection> outgoingConns = node.getOutgoingConnections();
+List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
 
 
 if(incomingConnName != null && columnList != null && columnList.size() > 0) {

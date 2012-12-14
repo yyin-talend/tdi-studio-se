@@ -202,7 +202,7 @@ if(("NORMAL_OUTPUT").equals(outputAction)||("NORMAL_OUTPUT").equals(errorOuput))
     	IMetadataTable metadata = metadatas.get(0);
     	if (metadata!=null) {
     		List<IMetadataColumn> columns=metadata.getListColumns();
-    		List<? extends IConnection> conns = node.getOutgoingConnections();
+    		List<? extends IConnection> conns = node.getOutgoingSortedConnections();
     		if (conns!=null && conns.size()>0) {
 				IConnection conn = conns.get(0);  
 				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
