@@ -83,7 +83,7 @@ class DecodeString_<%=cid%> {
 	    int last = str.indexOf("?=");
 		if(first!=-1 && last!=-1){
 			try {
-				res = str.substring(0,first)+javax.mail.internet.MimeUtility.decodeText(str.substring(first,last+2))+str.substring(last+2);
+				res = str.substring(0,first)+javax.mail.internet.MimeUtility.decodeWord(str.substring(first,last+2))+str.substring(last+2);
 				if(res.equals(str)){
 					return res;
 				}else{
@@ -167,16 +167,12 @@ try{
      		    }
      		    String contentType_<%=cid%> = msg_<%=cid%>.getContentType();
      		    String charsetName_<%=cid%> = "";
-     		    if(contentType_<%=cid%>!=null){
-     		    	if(contentType_<%=cid%>.contains("charset")){
-     		    		charsetName_<%=cid%> = "charset";
-     		   		}else if(contentType_<%=cid%>.contains("CHARSET")){
-     		    		charsetName_<%=cid%> = "CHARSET";
-     		    	}
+     		    if(contentType_<%=cid%>!=null && contentType_<%=cid%>.trim().length()>0){
+     		    	javax.mail.internet.ContentType cy_<%=cid%>  = new javax.mail.internet.ContentType(contentType_<%=cid%>);
+     		    	charsetName_<%=cid%> = cy_<%=cid%>.getParameter("charset");
      		    }
-     		    if(charsetName_<%=cid%>.equalsIgnoreCase("charset")){
-     		    	String charset_<%=cid%> = contentType_<%=cid%>.substring(contentType_<%=cid%>.indexOf(charsetName_<%=cid%>)+8).replaceAll("\"","");
-     		    	list_<%=cid %>.add(baos_<%=cid %>.toString(charset_<%=cid%>));
+     		    if(charsetName_<%=cid%>!=null && charsetName_<%=cid%>.length()>0){
+     		    	list_<%=cid %>.add(baos_<%=cid %>.toString(charsetName_<%=cid%>));
      		    }else{
      		    	list_<%=cid %>.add(baos_<%=cid %>.toString());
      		    }
