@@ -459,6 +459,8 @@ public class ImportItemUtil {
                                     }
                                     importItemRecord(manager, itemRecord, overwrite, destinationPath, overwriteDeletedItems,
                                             idDeletedBeforeImport, contentType, monitor);
+                                    statAndLogsSettingsReloaded = false;
+                                    implicitSettingsReloaded = false;
 
                                     monitor.worked(1);
                                 }
