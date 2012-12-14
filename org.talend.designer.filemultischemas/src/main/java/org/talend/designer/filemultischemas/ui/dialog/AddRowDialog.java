@@ -132,7 +132,7 @@ public class AddRowDialog extends Dialog {
     private void getAllKeysNames(SchemasKeyData root) {
         if (root != null) {
             if (root.getUniqueRecord() != null) {
-                keyNames.add(root.getUniqueRecord());
+                keyNames.add(root.getUniqueRecord().toUpperCase());
             }
             if (root.getChildren() != null) {
                 List<SchemasKeyData> children = root.getChildren();
@@ -148,7 +148,7 @@ public class AddRowDialog extends Dialog {
         String msg = null;
         if (!Pattern.matches("^[a-zA-Z0-9\\_]+[a-zA-Z0-9\\_]*$", currentName)) { //$NON-NLS-1$
             msg = "Invalid value";
-        } else if (!keyNames.contains(currentName)) {
+        } else if (currentName != null && !keyNames.contains(currentName.toUpperCase())) {
             enabled = true;
             msg = TITLE;
         } else {
