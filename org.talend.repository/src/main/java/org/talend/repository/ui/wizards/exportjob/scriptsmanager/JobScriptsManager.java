@@ -52,6 +52,7 @@ import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.repository.constants.FileConstants;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
+import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -329,9 +330,14 @@ public abstract class JobScriptsManager {
             if (value == null) {
                 contextParameterValues += " " + CTX_PARAMETER_ARG + " " + name + "=" + null;//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
             } else if (value != null && !"".equals(value)) {//$NON-NLS-1$
-            // Changed by Marvin Wang on Nov.13, 2012 for bug TDI-23253 to add double quotation marks for value.
-                contextParameterValues += " " + CTX_PARAMETER_ARG + " " + name + "="//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
-                        + TalendQuoteUtils.addQuotes(value);
+                if (value.contains(" ") && !value.startsWith("\"")) { //$NON-NLS-1$ //$NON-NLS-2$
+                    // Changed by Marvin Wang on Nov.13, 2012 for bug TDI-23253 to add double quotation marks for value.
+                    contextParameterValues += " " + CTX_PARAMETER_ARG + " " + name + "="//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
+                            + TalendQuoteUtils.addQuotes(value);
+                } else {
+                    contextParameterValues += " " + CTX_PARAMETER_ARG + " " + name + "="//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ 
+                            + value;
+                }
             }
         }
         contextParameterValues = contextParameterValues + " ";//$NON-NLS-1$
@@ -596,8 +602,17 @@ public abstract class JobScriptsManager {
             boolean trace, boolean applyContextToChildren, boolean isExportAsOSGI, IProgressMonitor monitor)
             throws ProcessorException {
         LastGenerationInfo.getInstance().getUseDynamicMap().clear();
-        return ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren,
-                isExportAsOSGI, monitor).getProcess();
+        ProcessorUtilities.setExportAsOSGI(isExportAsOSGI);
+        IProcessor processor = null;
+        try {
+            processor = ProcessorUtilities.generateCode(process, contextName, version, statistics, trace, applyContextToChildren,
+                    isOptionChoosed(ExportChoice.needContext), monitor);
+            return processor.getProcess();
+        } catch (ProcessorException e) {
+            throw e;
+        } finally {
+            ProcessorUtilities.setExportAsOSGI(false);
+        }
     }
 
     protected IResource[] sourceResouces = null;
