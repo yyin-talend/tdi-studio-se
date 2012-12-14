@@ -661,7 +661,6 @@ skeleton="../templates/db_output_bulk.skeleton"
             if(rejectConnName == null ) {
     		%>
     		pstmt_<%=cid %>.addBatch();
-    		nb_line_<%=cid%>++;
     		<%if ( batchMode && !("").equals(batchSize) && !("0").equals(batchSize)) {
     		%>
     		batchSizeCounter_<%=cid%>++;
