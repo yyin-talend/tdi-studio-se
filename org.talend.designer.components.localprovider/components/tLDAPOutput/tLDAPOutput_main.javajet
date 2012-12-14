@@ -31,7 +31,6 @@ imports="
 	boolean advancedSeparator = (advancedSeparatorStr!=null&&!("").equals(advancedSeparatorStr))?("true").equals(advancedSeparatorStr):false;
 	String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
 	String decimalSeparator = ElementParameterParser.getValueWithJavaType(node, "__DECIMAL_SEPARATOR__", JavaTypesManager.CHARACTER);
-	String baseDN=ElementParameterParser.getValue(node, "__BASEDN__");
 	String separator = separatorText;
 	if(("\"|\"").equals(separatorText)){
 		separator="\"\\\\|\"";
@@ -276,7 +275,7 @@ imports="
 %>
 						//ctx_<%=cid%>.destroySubcontext(dn_<%=cid%>);
 						int nb_line = 0;
-						nb_line = ldap_<%=cid %>.delete(dn_<%=cid%>,"(objectclass=*)",ctx_<%=cid%>,<%=baseDN%>);
+						nb_line = ldap_<%=cid %>.delete(dn_<%=cid%>,"(objectclass=*)",ctx_<%=cid%>,baseDN_<%=cid%>);
 						nb_line_<%=cid %> = nb_line_<%=cid %> + nb_line;
 <%
 					}else if(("INSERT_UPDATA").equals(insertMode)){
