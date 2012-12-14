@@ -1757,6 +1757,15 @@
               name="RenametStandardizePhoneNumberColumnName"
               version="5.2.1">
         </projecttask>
+        <projecttask
+            beforeLogon="false"
+            breaks="5.2.1"
+            class="org.talend.repository.model.migration.ChangeELTHiveOutputPartitionValue"
+            description="Add double quotes for tELTHiveOutput Partition Name and Value to support context variable"
+            id="org.talend.repository.model.migration.ChangeELTHiveOutputPartitionValue"
+            name="ChangeELTHiveOutputPartitionValue"
+            version="5.2.2">
+      </projecttask>
    </extension>
    
    <extension
