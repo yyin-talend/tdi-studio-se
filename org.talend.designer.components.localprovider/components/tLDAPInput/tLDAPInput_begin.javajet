@@ -167,8 +167,7 @@ if(("false").equals(useExistingConn)){
     {
         aNaming_<%=cid%> =attrsNaming_<%=cid%>.get("namingcontexts");
     }
-    // String searchBase_<%=cid%> = (aNaming_<%=cid%>==null)|())?"":aNaming_<%=cid%>.get().toString();         
-	String searchBase_<%=cid%> = ((aNaming_<%=cid%> == null) || ((aNaming_<%=cid%> != null)
+		baseDN_<%=cid%> = ((aNaming_<%=cid%> == null) || ((aNaming_<%=cid%> != null)
                     && (aNaming_<%=cid%>.get().toString() != null)
                     && (aNaming_<%=cid%>.get().toString().length() > 0) && (Character
                     .isIdentifierIgnorable(aNaming_<%=cid%>.get().toString().charAt(0))))) ? ""
@@ -176,16 +175,11 @@ if(("false").equals(useExistingConn)){
 <%
 					}else{
 %>
-		String searchBase_<%=cid%> = <%=baseDN%>;
+		baseDN_<%=cid%> = <%=baseDN%>;
 <%
 					}
-				}else{
-%>
-					String searchBase_<%=cid%> = "";
-<%
 				}
 %>
-		baseDN_<%=cid%> = searchBase_<%=cid%>;
 <%if(paging){%>
     // Set the page size and initialize the cookie that we pass back in subsequent pages
     int pageSize_<%=cid%> = <%=pageSize %>;
@@ -197,7 +191,7 @@ if(("false").equals(useExistingConn)){
 do {
 <%}%>
 
-    javax.naming.NamingEnumeration answer_<%=cid%> = ctx_<%=cid%>.search(searchBase_<%=cid%>, <%=filter%>, searchCtls_<%=cid%>);
+    javax.naming.NamingEnumeration answer_<%=cid%> = ctx_<%=cid%>.search(<%if(("false").equals(useExistingConn)){%>baseDN_<%=cid%><%}else{%>""<%}%>, <%=filter%>, searchCtls_<%=cid%>);
     while (answer_<%=cid%> .hasMoreElements()) {//a
 <%
 	List< ? extends IConnection> conns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
