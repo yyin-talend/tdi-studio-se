@@ -237,15 +237,42 @@ if(outConns!=null){
 %>
 			try{
 <%
+		if(inConn!=null){
+			if(schemaOptNum < mapping.size()){
+				int unExtractColNo=0;
+				for (int i=0;i<mapping.size();i++) { 
+					if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
+						String query = mapping.get(i).get("QUERY");
+						if(query==null || query.trim().length() < 1 ){
+							for(IMetadataColumn inColumn:inColumns) {
+								if (inColumn.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
+									if(unExtractColNo%schemaOptNum==0){
+%>
+			xml_api_<%=cid%>.putUnExtractValue_<%=unExtractColNo/schemaOptNum%>(<%=firstConnName%>,<%=inConn.getName()%>);
+<%
+									}
+									unExtractColNo++;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 		//get the mapping column 
+		int extractColNo=0;
 		for (int i=0;i<mapping.size();i++) {  //for S_0
 			String query = mapping.get(i).get("QUERY");
 			String nodeCheck = mapping.get(i).get("NODECHECK");
 			if(schemaOptNum < mapping.size()){
-				if(i%schemaOptNum==0){
+				if(query!=null && query.trim().length()>0){  // if S_0_0
+					if(extractColNo%schemaOptNum==0){
 %>
-			xml_api_<%=cid%>.putValue_<%=i/schemaOptNum%>(<%=firstConnName%>,<%if(inConn!=null){%><%=inConn.getName()%>,<%}%>xmlStr_<%=cid%>,temp_<%=cid %>,nsTool_<%=cid%>,loopQuery_<%=cid %>,xmlNameSpaceMap_<%=cid%>,node_<%=cid %>,str_<%=cid %>,xml_api_<%=cid%>);
+			xml_api_<%=cid%>.putExtractValue_<%=extractColNo/schemaOptNum%>(<%=firstConnName%>,<%if(inConn!=null){%><%=inConn.getName()%>,<%}%>xmlStr_<%=cid%>,temp_<%=cid %>,nsTool_<%=cid%>,loopQuery_<%=cid %>,xmlNameSpaceMap_<%=cid%>,node_<%=cid %>,str_<%=cid %>,xml_api_<%=cid%>);
 <%
+					}
+					extractColNo++;
 				}
 			}else{
 			  if(query!=null && query.trim().length()>0){  // if S_0_0
