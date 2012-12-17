@@ -227,6 +227,12 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             openSQLEditorButton.setEnabled(ExtractMetaDataUtils.haveLoadMetadataNode());
         }
 
+        // Added by Marvin Wang on Dec.13, 2012 for bug TDI-7559.
+        IElementParameter typePara = elem.getElementParameter("TYPE"); //$NON-NLS-1$
+        if ("Hive".equalsIgnoreCase((String) typePara.getValue())) { //$NON-NLS-1$
+            openSQLEditorButton.setVisible(false);
+        }
+
         FormData data1 = new FormData();
         data1.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
         data1.left = new FormAttachment(100, -(ITabbedPropertyConstants.HSPACE + STANDARD_BUTTON_WIDTH));
