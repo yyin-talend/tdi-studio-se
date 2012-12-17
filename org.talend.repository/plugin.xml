@@ -1766,6 +1766,15 @@
             name="ChangeELTHiveOutputPartitionValue"
             version="5.2.2">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            breaks="5.2.1"
+            class="org.talend.repository.model.migration.ChangeVersionValue4HDFSComponents"
+            description="change the hadoop version value from jars"
+            id="org.talend.repository.model.migration.ChangeVersionValue4HDFSComponents"
+            name="ChangeVersionValue4HDFSComponents"
+            version="5.2.2">
+      </projecttask>      
    </extension>
    
    <extension
