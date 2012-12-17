@@ -301,7 +301,6 @@ public class LoginDialog extends TrayDialog {
         }
         // Save last used parameters
         PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-        prefManipulator.setLastConnection(connBean.getName());
         prefManipulator.setLastProject(project.getTechnicalLabel());
         saveLastConnBean(connBean);
         if (project.getLanguage().equals(ECodeLanguage.PERL)) {
