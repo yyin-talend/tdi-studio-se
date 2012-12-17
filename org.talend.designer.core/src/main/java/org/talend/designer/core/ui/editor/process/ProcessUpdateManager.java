@@ -168,6 +168,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         Map<ContextItem, List<IContext>> renameContextGroupMap = ((JobContextManager) contextManager).getRenameContextGroupMap();
 
         List<IContext> listContext = contextManager.getListContext();
+
+        List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
+
         for (ContextItem item : addContextGroupMap.keySet()) {
 
             List<IContext> existedContextGroup = new ArrayList<IContext>();
@@ -191,6 +194,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     UpdateCheckResult result = new UpdateCheckResult(context);
                     String remark = UpdateRepositoryUtils.getRepositorySourceName(item);
                     result.setResult(EUpdateItemType.CONTEXT_GROUP, EUpdateResult.ADD, item, remark);
+                    if (!openedProcesses.contains(getProcess())) {
+                        result.setFromItem(true);
+                    }
                     result.setJob(getProcess());
                     setConfigrationForReadOnlyJob(result);
                     contextResults.add(result);
@@ -225,6 +231,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     UpdateCheckResult result = new UpdateCheckResult(context);
                     String remark = UpdateRepositoryUtils.getRepositorySourceName(item);
                     result.setResult(EUpdateItemType.CONTEXT_GROUP, EUpdateResult.DELETE, item, remark);
+                    if (!openedProcesses.contains(getProcess())) {
+                        result.setFromItem(true);
+                    }
                     result.setJob(getProcess());
                     setConfigrationForReadOnlyJob(result);
                     contextResults.add(result);
@@ -258,6 +267,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     UpdateCheckResult result = new UpdateCheckResult(context);
                     String remark = UpdateRepositoryUtils.getRepositorySourceName(item);
                     result.setResult(EUpdateItemType.CONTEXT_GROUP, EUpdateResult.RENAME, item, remark);
+                    if (!openedProcesses.contains(getProcess())) {
+                        result.setFromItem(true);
+                    }
                     result.setJob(getProcess());
                     setConfigrationForReadOnlyJob(result);
                     contextResults.add(result);
@@ -290,6 +302,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         final List<ContextItem> allContextItem = ContextUtils.getAllContextItem();
 
         Set<String> refContextIds = new HashSet<String>();
+
+        List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
 
         for (IContext context : contextManager.getListContext()) {
             for (IContextParameter param : context.getContextParameterList()) {
@@ -356,6 +370,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         if (!builtInSet.isEmpty()) {
             UpdateCheckResult result = new UpdateCheckResult(builtInSet);
             result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.BUIL_IN);
+            if (!openedProcesses.contains(getProcess())) {
+                result.setFromItem(true);
+            }
             result.setJob(getProcess());
             setConfigrationForReadOnlyJob(result);
             contextResults.add(result);
@@ -367,6 +384,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     UpdateCheckResult result = new UpdateCheckResult(names);
                     result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.BUIL_IN, null,
                             UpdateRepositoryUtils.getRepositorySourceName(item));
+                    if (!openedProcesses.contains(getProcess())) {
+                        result.setFromItem(true);
+                    }
                     result.setJob(getProcess());
                     setConfigrationForReadOnlyJob(result);
                     contextResults.add(result);
@@ -407,6 +427,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         UpdateCheckResult result = new UpdateCheckResult(nameSet);
                         result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.RENAME, parameterList,
                                 UpdateRepositoryUtils.getRepositorySourceName(item));
+                        if (!openedProcesses.contains(getProcess())) {
+                            result.setFromItem(true);
+                        }
                         result.setJob(getProcess());
                         // if (!isOpenedProcess(getProcess())) {
                         // result.setItemProcess(getProcess());
@@ -469,6 +492,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             EUpdateResult resulstType, ContextItem contextItem, Object names) {
         UpdateCheckResult result = new UpdateCheckResult(names);
         result.setResult(itemType, resulstType, contextItem, UpdateRepositoryUtils.getRepositorySourceName(contextItem));
+        List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
+        if (!openedProcesses.contains(getProcess())) {
+            result.setFromItem(true);
+        }
         result.setJob(getProcess());
         setConfigrationForReadOnlyJob(result);
         contextResults.add(result);
@@ -529,6 +556,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             boolean onlySimpleShow) {
         List<UpdateResult> jobSettingsResults = new ArrayList<UpdateResult>();
         boolean sameValues = true;
+
+        List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
 
         final Process process2 = getProcess();
         UpdateCheckResult result = null;
@@ -591,6 +620,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             result = new UpdateCheckResult(getProcess());
                             result.setResult(type, EUpdateResult.UPDATE, repositoryConnection, source);
                             if (result != null) {
+                                if (!openedProcesses.contains(getProcess())) {
+                                    result.setFromItem(true);
+                                }
                                 result.setJob(getProcess());
                                 setConfigrationForReadOnlyJob(result);
                                 jobSettingsResults.add(result);
@@ -659,6 +691,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                 result = new UpdateCheckResult(getProcess());
                                 result.setResult(type, EUpdateResult.UPDATE, footerRepositoryConnection, footerSource);
                                 if (result != null) {
+                                    if (!openedProcesses.contains(getProcess())) {
+                                        result.setFromItem(true);
+                                    }
                                     result.setJob(getProcess());
                                     setConfigrationForReadOnlyJob(result);
                                     jobSettingsResults.add(result);
@@ -688,6 +723,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             if (childParameters == null) {
                 return Collections.emptyList();
             }
+
+            List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
+
             IElementParameter elementParameter = childParameters.get(EParameterName.PROPERTY_TYPE.getName());
             // is repository
             if (elementParameter != null && EmfComponent.REPOSITORY.equals(elementParameter.getValue())) {
@@ -774,6 +812,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     }
 
                     if (result != null) {
+                        if (!openedProcesses.contains(getProcess())) {
+                            result.setFromItem(true);
+                        }
                         result.setJob(getProcess());
                         setConfigrationForReadOnlyJob(result);
                         jobSettingsResults.add(result);
@@ -845,6 +886,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
                 UpdateCheckResult result = new UpdateCheckResult(node);
                 result.setResult(EUpdateItemType.NODE_VALIDATION_RULE, EUpdateResult.UPDATE, connection, source);
+                List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
+                if (!openedProcesses.contains(getProcess())) {
+                    result.setFromItem(true);
+                }
                 result.setJob(getProcess());
                 setConfigrationForReadOnlyJob(result);
                 queryResults.add(result);
@@ -1067,6 +1112,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         }
         List<UpdateResult> schemaResults = new ArrayList<UpdateResult>();
 
+        List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
+
         if (PluginChecker.isEBCDICPluginLoaded()) {
             List<UpdateResult> resultForEBCDIC = checkNodeSchemaFromRepositoryForEBCDIC(node, onlySimpleShow);
             if (resultForEBCDIC != null && !resultForEBCDIC.isEmpty()) {
@@ -1202,6 +1249,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                         // add the check result to resultList, hold the value.
                         if (result != null) {
+                            if (!openedProcesses.contains(getProcess())) {
+                                result.setFromItem(true);
+                            }
                             result.setJob(getProcess());
                             setConfigrationForReadOnlyJob(result);
                             schemaResults.add(result);
@@ -1233,6 +1283,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         if (service != null) {
             List<String> schemaIds = service.getRepositorySchemaIds(externalData);
             if (schemaIds.size() > 0) {
+                List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
                 for (String schemaId : schemaIds) {
                     UpdateCheckResult result = null;
                     String[] names = UpdateManagerUtils.getSourceIdAndChildName(schemaId);
@@ -1281,6 +1332,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     }
 
                     if (result != null) {
+                        if (!openedProcesses.contains(getProcess())) {
+                            result.setFromItem(true);
+                        }
                         result.setJob(getProcess());
                         setConfigrationForReadOnlyJob(result);
                         schemaResults.add(result);
@@ -1313,7 +1367,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 if (repositoryItem != null) {
                     IElementParameter schemasTableParam = node.getElementParameter(IEbcdicConstant.TABLE_SCHEMAS);
                     if (schemasTableParam != null) {
-
+                        List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
                         List<Map<String, Object>> paramValues = (List<Map<String, Object>>) schemasTableParam.getValue();
                         for (Map<String, Object> line : paramValues) {
                             if (service.isRepositorySchemaLine(node, line)) {
@@ -1395,6 +1449,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                                 // add the check result to resultList, hold the value.
                                 if (result != null) {
+                                    if (!openedProcesses.contains(getProcess())) {
+                                        result.setFromItem(true);
+                                    }
                                     result.setJob(getProcess());
                                     setConfigrationForReadOnlyJob(result);
                                     schemaResults.add(result);
@@ -1426,6 +1483,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         if (propertyType != null) {
             if (propertyType.equals(EmfComponent.REPOSITORY)) {
+                List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
 
                 String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
 
@@ -1876,6 +1934,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                 // add the check result to resultList, hold the value.
                 if (result != null) {
+                    if (!openedProcesses.contains(getProcess())) {
+                        result.setFromItem(true);
+                    }
                     result.setJob(getProcess());
                     setConfigrationForReadOnlyJob(result);
                     propertiesResults.add(result);
@@ -1911,6 +1972,10 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             String remark = UpdateRepositoryUtils.getRepositorySourceName(connItem);
                             result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.ADD, contextItem, remark
                                     + UpdatesConstants.CONTEXT_MODE);
+                            List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
+                            if (!openedProcesses.contains(getProcess())) {
+                                result.setFromItem(true);
+                            }
                             result.setJob(getProcess());
                             result.setContextModeConnectionItem(connItem);
                             setConfigrationForReadOnlyJob(result);
@@ -1936,6 +2001,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         String propertyType = (String) node.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
         if (propertyType != null) {
             if (propertyType.equals(EmfComponent.REPOSITORY)) {
+                List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
                 String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
 
                 ConnectionItem connectionItem = null;
@@ -1979,6 +2045,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 }
 
                 if (result != null) {
+                    if (!openedProcesses.contains(getProcess())) {
+                        result.setFromItem(true);
+                    }
                     result.setJob(getProcess());
                     setConfigrationForReadOnlyJob(result);
                     queryResults.add(result);
@@ -2071,7 +2140,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         if (getProcess() == null || jobletProcessProvider == null) {
             return Collections.emptyList();
         }
-
+        List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
         List<UpdateResult> nodeResults = new ArrayList<UpdateResult>();
         for (INode node : this.getProcess().getGraphicalNodes()) {
             final Item jobletItem = jobletProcessProvider.getJobletItem(node);
@@ -2089,7 +2158,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         String source = UpdatesConstants.JOBLET + UpdatesConstants.COLON + property.getLabel();
                         UpdateCheckResult result = new UpdateCheckResult(jobletNodes);
                         result.setResult(EUpdateItemType.RELOAD, EUpdateResult.RELOAD, jobletItem, source);
-
+                        if (!openedProcesses.contains(getProcess())) {
+                            result.setFromItem(true);
+                        }
                         result.setJob(getProcess());
                         setConfigrationForReadOnlyJob(result);
 
@@ -2115,6 +2186,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             return Collections.emptyList();
         }
         List<UpdateResult> nodeResults = new ArrayList<UpdateResult>();
+        List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
         for (PropertyChangeEvent event : getNodePropertyChanger()) {
             UpdateCheckResult result = null;
 
@@ -2165,6 +2237,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 // }
             }
             if (result != null) {
+                if (!openedProcesses.contains(getProcess())) {
+                    result.setFromItem(true);
+                }
                 result.setJob(getProcess());
                 setConfigrationForReadOnlyJob(result);
                 nodeResults.add(result);
