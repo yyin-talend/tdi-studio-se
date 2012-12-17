@@ -774,64 +774,6 @@ public class XmlMapUtil {
         }
     }
 
-    public static void getLoopFunctionData(TreeNode loopParentTreeNode, OutputTreeNode targetOutputNode) {
-        //
-        List<InputLoopNodesTable> listInputLoopNodesTablesEntry = null;
-        InputLoopNodesTable inputLoopNodesTable = null;
-        if (targetOutputNode == null || loopParentTreeNode == null) {
-            return;
-        }
-        AbstractInOutTree abstractTree = getAbstractInOutTree(targetOutputNode);
-        if (abstractTree != null && abstractTree instanceof OutputXmlTree) {
-            if (hasDocument(abstractTree)) {
-                OutputTreeNode loopParentNode = (OutputTreeNode) getLoopParentNode(targetOutputNode);
-                if (loopParentNode != null) {
-                    inputLoopNodesTable = loopParentNode.getInputLoopNodesTable();
-
-                }
-                if (inputLoopNodesTable != null) {
-                    for (TreeNode treeNode : inputLoopNodesTable.getInputloopnodes()) {
-                        if (treeNode.getXpath().equals(loopParentTreeNode.getXpath())) {
-                            inputLoopNodesTable.getInputloopnodes().remove(loopParentTreeNode);
-                            int i = inputLoopNodesTable.getInputloopnodes().size();
-                            if (i == 0) {
-                                List<InputLoopNodesTable> inputLoopNodesTables = ((OutputXmlTree) abstractTree)
-                                        .getInputLoopNodesTables();
-                                if (inputLoopNodesTables.contains(inputLoopNodesTable)) {
-                                    inputLoopNodesTables.remove(inputLoopNodesTable);
-                                }
-                            }
-                            break;
-                        }
-                    }
-                }
-            } else {
-                listInputLoopNodesTablesEntry = ((OutputXmlTree) abstractTree).getInputLoopNodesTables();
-                if (listInputLoopNodesTablesEntry != null && listInputLoopNodesTablesEntry.size() == 0) {
-                    return;
-                } else if (listInputLoopNodesTablesEntry != null && listInputLoopNodesTablesEntry.size() == 1) {
-                    inputLoopNodesTable = listInputLoopNodesTablesEntry.get(0);
-                    if (inputLoopNodesTable != null) {
-                        for (TreeNode treeNode : inputLoopNodesTable.getInputloopnodes()) {
-                            if (treeNode.getXpath().equals(loopParentTreeNode.getXpath())) {
-                                inputLoopNodesTable.getInputloopnodes().remove(loopParentTreeNode);
-                                int i = inputLoopNodesTable.getInputloopnodes().size();
-                                if (i == 0) {
-                                    List<InputLoopNodesTable> inputLoopNodesTables = ((OutputXmlTree) abstractTree)
-                                            .getInputLoopNodesTables();
-                                    if (inputLoopNodesTables.contains(inputLoopNodesTable)) {
-                                        inputLoopNodesTables.remove(inputLoopNodesTable);
-                                    }
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public static List<TreeNode> getMultiLoopsForXmlTree(AbstractInOutTree tree) {
         List<TreeNode> loopNodes = new ArrayList<TreeNode>();
         List<? extends TreeNode> children = new ArrayList<TreeNode>();
@@ -842,6 +784,31 @@ public class XmlMapUtil {
         }
         getChildLoops(loopNodes, children, false);
         return loopNodes;
+    }
+
+    public static boolean checkMultiLoopsStatus(AbstractInOutTree tree) {
+        // set multiloops to true only if one doc schema have more then one loops , if a table have two doc schema but
+        // each one only have one loop,multiloops should be false
+        List<? extends TreeNode> children = new ArrayList<TreeNode>();
+        if (tree instanceof InputXmlTree) {
+            children = ((InputXmlTree) tree).getNodes();
+        } else if (tree instanceof OutputXmlTree) {
+            children = ((OutputXmlTree) tree).getNodes();
+        }
+        List<TreeNode> docChildren = new ArrayList<TreeNode>();
+        for (TreeNode child : children) {
+            if (DOCUMENT.equals(child.getType())) {
+                docChildren.add(child);
+            }
+        }
+        List<TreeNode> loopNodes = new ArrayList<TreeNode>();
+        for (TreeNode doc : docChildren) {
+            getChildLoops(loopNodes, doc.getChildren(), false);
+            if (loopNodes.size() > 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void getChildLoops(List<TreeNode> loopNodes, List<? extends TreeNode> nodesToCheck, boolean onlyGetFirstLoop) {
@@ -927,6 +894,24 @@ public class XmlMapUtil {
                     }
                 }
                 mapperManager.getProblemsAnalyser().checkProblems(outputTree);
+            } else {
+                outputTree.getInputLoopNodesTables().clear();
+            }
+        }
+
+    }
+
+    public static void removeloopInOutputTree(XmlMapData mapData, InputXmlTree mainInput, List<TreeNode> oldLoops) {
+        boolean isMainInputMultiLoop = mainInput == null ? false : mainInput.isMultiLoops();
+        EList<OutputXmlTree> outputTrees = mapData.getOutputTrees();
+        for (OutputXmlTree outputTree : outputTrees) {
+            if (isMainInputMultiLoop) {
+                for (TreeNode oldLoop : oldLoops) {
+                    EList<InputLoopNodesTable> inputLoopNodesTables = outputTree.getInputLoopNodesTables();
+                    for (InputLoopNodesTable inputLoopTable : inputLoopNodesTables) {
+                        inputLoopTable.getInputloopnodes().remove(oldLoop);
+                    }
+                }
             } else {
                 outputTree.getInputLoopNodesTables().clear();
             }

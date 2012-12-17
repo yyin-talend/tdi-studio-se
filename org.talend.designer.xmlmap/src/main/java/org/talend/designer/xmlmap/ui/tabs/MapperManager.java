@@ -334,12 +334,24 @@ public class MapperManager implements ISelectionChangedListener {
                                 TreeNode treeNode = selectedInputTree.getNodes().get(event.index);
                                 if (treeNode != null) {
                                     if (treeNode.getType() != null && treeNode.getType().equals(XmlMapUtil.DOCUMENT)) {
+                                        List<TreeNode> oldLoops = new ArrayList<TreeNode>();
+                                        if (selectedInputTree == mainInputTree && mainInputTree.isMultiLoops()) {
+                                            oldLoops = XmlMapUtil.getMultiLoopsForXmlTree(selectedInputTree);
+                                        }
                                         XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
                                         treeNode.getChildren().clear();
-                                        if (selectedInputTree == mainInputTree) {
-                                            selectedInputTree.setMultiLoops(false);
-                                            for (OutputXmlTree outputTree : copyOfMapData.getOutputTrees()) {
-                                                outputTree.getInputLoopNodesTables().clear();
+                                        if (selectedInputTree == mainInputTree && mainInputTree.isMultiLoops()) {
+                                            selectedInputTree.setMultiLoops(XmlMapUtil.checkMultiLoopsStatus(selectedInputTree));
+                                            if (!selectedInputTree.isMultiLoops()) {
+                                                for (OutputXmlTree outputTree : copyOfMapData.getOutputTrees()) {
+                                                    outputTree.getInputLoopNodesTables().clear();
+                                                }
+                                            } else {
+                                                List<TreeNode> newLoops = XmlMapUtil.getMultiLoopsForXmlTree(selectedInputTree);
+                                                oldLoops.removeAll(newLoops);
+                                                if (!oldLoops.isEmpty()) {
+                                                    XmlMapUtil.removeloopInOutputTree(MapperManager.this, oldLoops);
+                                                }
                                             }
                                         }
                                     }
@@ -420,6 +432,14 @@ public class MapperManager implements ISelectionChangedListener {
                                 }
                             }
                             selectedInputTree.getNodes().removeAll(treeNodeToRemove);
+                            if (selectedInputTree == mainInputTree && mainInputTree.isMultiLoops()) {
+                                selectedInputTree.setMultiLoops(XmlMapUtil.checkMultiLoopsStatus(selectedInputTree));
+                                List<TreeNode> oldLoops = new ArrayList<TreeNode>();
+                                XmlMapUtil.getChildLoops(oldLoops, treeNodeToRemove, false);
+                                if (!oldLoops.isEmpty()) {
+                                    XmlMapUtil.removeloopInOutputTree(MapperManager.this, oldLoops);
+                                }
+                            }
 
                         } else if (event.type == TYPE.SWAPED) {
                             List<Integer> listIndexTarget = event.indicesTarget;
@@ -439,7 +459,12 @@ public class MapperManager implements ISelectionChangedListener {
                             List added = (List) event.addedObjects;
                             List removed = (List) event.removedObjects;
 
-                            List treeNodeToRemove = new ArrayList();
+                            boolean needCheckOutput = false;
+                            List<TreeNode> oldLoops = new ArrayList<TreeNode>();
+                            if (selectedInputTree == mainInputTree && mainInputTree.isMultiLoops()) {
+                                needCheckOutput = true;
+                            }
+
                             List<IMetadataColumn> removedColumn = new ArrayList<IMetadataColumn>();
                             List<IMetadataColumn> addedColumn = new ArrayList<IMetadataColumn>();
                             if (!added.isEmpty()) {
@@ -462,15 +487,14 @@ public class MapperManager implements ISelectionChangedListener {
                                 }
                                 if (!found) {
                                     XmlMapUtil.detachNodeConnections(node, copyOfMapData, true);
+                                    // get old loops if doc column need to be delete
+                                    if (needCheckOutput) {
+                                        XmlMapUtil.getChildLoops(oldLoops, node.getChildren(), false);
+                                    }
                                 }
                             }
-                            boolean needCheckOutput = false;
-                            List<TreeNode> oldLoops = new ArrayList<TreeNode>();
+
                             // remove all
-                            if (selectedInputTree == mainInputTree && mainInputTree.isMultiLoops()) {
-                                needCheckOutput = true;
-                                oldLoops.addAll(XmlMapUtil.getMultiLoopsForXmlTree(selectedInputTree));
-                            }
                             selectedInputTree.getNodes().clear();
                             // add all
                             for (IMetadataColumn column : addedColumn) {
@@ -499,12 +523,8 @@ public class MapperManager implements ISelectionChangedListener {
                                 selectedInputTree.getNodes().add(treeNode);
                             }
                             // for multi loops ,incase the doc node with multi loop is deleted
-                            if (needCheckOutput) {
-                                List<TreeNode> newloopNodes = XmlMapUtil.getMultiLoopsForXmlTree(selectedInputTree);
-                                if (newloopNodes.size() < 2) {
-                                    selectedInputTree.setMultiLoops(false);
-                                }
-                                oldLoops.removeAll(newloopNodes);
+                            selectedInputTree.setMultiLoops(XmlMapUtil.checkMultiLoopsStatus(selectedInputTree));
+                            if (!oldLoops.isEmpty()) {
                                 XmlMapUtil.removeloopInOutputTree(MapperManager.this, oldLoops);
                             }
                             mapperUI.updateStatusBar();
@@ -577,13 +597,27 @@ public class MapperManager implements ISelectionChangedListener {
                                 if (treeNode != null) {
                                     if (treeNode.getType() != null && treeNode.getType().equals(XmlMapUtil.DOCUMENT)) {
                                         XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
-                                        treeNode.getChildren().clear();
-                                        selectedOutputTree.setMultiLoops(false);
-                                        selectedOutputTree.getInputLoopNodesTables().clear();
+                                        List<TreeNode> removedLoops = new ArrayList<TreeNode>();
                                         if (mainInputTree != null && mainInputTree.isMultiLoops()) {
-                                            selectedOutputTree.getInputLoopNodesTables().add(
-                                                    XmlmapFactory.eINSTANCE.createInputLoopNodesTable());
+                                            XmlMapUtil.getChildLoops(removedLoops, treeNode.getChildren(), false);
                                         }
+                                        treeNode.getChildren().clear();
+                                        selectedOutputTree.setMultiLoops(XmlMapUtil.checkMultiLoopsStatus(selectedOutputTree));
+                                        if (mainInputTree != null && mainInputTree.isMultiLoops()) {
+                                            if (XmlMapUtil.hasDocument(selectedOutputTree)) {
+                                                for (TreeNode removedLoop : removedLoops) {
+                                                    if (selectedOutputTree.getInputLoopNodesTables() != null) {
+                                                        selectedOutputTree.getInputLoopNodesTables().remove(
+                                                                ((OutputTreeNode) removedLoop).getInputLoopNodesTable());
+                                                    }
+                                                }
+                                            } else {
+                                                selectedOutputTree.getInputLoopNodesTables().clear();
+                                                selectedOutputTree.getInputLoopNodesTables().add(
+                                                        XmlmapFactory.eINSTANCE.createInputLoopNodesTable());
+                                            }
+                                        }
+
                                     }
                                     treeNode.setType((String) event.newValue);
 
@@ -738,10 +772,7 @@ public class MapperManager implements ISelectionChangedListener {
                                 selectedOutputTree.getNodes().add(treeNode);
                             }
                             if (needCheck) {
-                                List<TreeNode> newloopNodes = XmlMapUtil.getMultiLoopsForXmlTree(selectedOutputTree);
-                                if (newloopNodes.size() < 2) {
-                                    selectedOutputTree.setMultiLoops(false);
-                                }
+                                selectedOutputTree.setMultiLoops(XmlMapUtil.checkMultiLoopsStatus(selectedOutputTree));
                             }
                             mapperUI.updateStatusBar();
                             mapperUI.updateStatusBar();
