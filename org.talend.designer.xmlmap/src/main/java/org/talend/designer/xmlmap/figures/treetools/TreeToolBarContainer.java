@@ -239,7 +239,7 @@ public class TreeToolBarContainer extends Figure {
                         }
                         List<TreeNode> loopNodes = new ArrayList<TreeNode>();
                         if (inputMainTable != null && inputMainTable.isMultiLoops()) {
-                            loopNodes.addAll(XmlMapUtil.getMultiLoopsForInputTree(inputMainTable));
+                            loopNodes.addAll(XmlMapUtil.getMultiLoopsForXmlTree(inputMainTable));
                         }
                         SetLoopFunctionDialog nsDialog = new SetLoopFunctionDialog(null, inputLoopNodesTable, loopNodes);
                         setLoopFunctionButton.setSelected(false);

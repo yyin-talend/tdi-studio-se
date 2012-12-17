@@ -42,6 +42,7 @@ import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.expressionutil.TableEntryLocation;
 import org.talend.designer.xmlmap.ui.expressionutil.XmlMapExpressionManager;
+import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 
 /**
@@ -831,9 +832,15 @@ public class XmlMapUtil {
         }
     }
 
-    public static List<TreeNode> getMultiLoopsForInputTree(InputXmlTree inputTree) {
+    public static List<TreeNode> getMultiLoopsForXmlTree(AbstractInOutTree tree) {
         List<TreeNode> loopNodes = new ArrayList<TreeNode>();
-        getChildLoops(loopNodes, inputTree.getNodes(), false);
+        List<? extends TreeNode> children = new ArrayList<TreeNode>();
+        if (tree instanceof InputXmlTree) {
+            children = ((InputXmlTree) tree).getNodes();
+        } else if (tree instanceof OutputXmlTree) {
+            children = ((OutputXmlTree) tree).getNodes();
+        }
+        getChildLoops(loopNodes, children, false);
         return loopNodes;
     }
 
@@ -848,6 +855,31 @@ public class XmlMapUtil {
                 loopNodes.add(node);
             } else if (!node.getChildren().isEmpty()) {
                 getChildLoops(loopNodes, node.getChildren(), onlyGetFirstLoop);
+            }
+
+        }
+
+    }
+
+    public static void getChildLoops(List<TreeNode> loopNodes, List<? extends TreeNode> nodesToCheck, boolean addRoot,
+            boolean onlyGetFirstLoop) {
+        if (onlyGetFirstLoop) {
+            if (!loopNodes.isEmpty()) {
+                return;
+            }
+        }
+        for (TreeNode node : nodesToCheck) {
+            if (node.isLoop()) {
+                loopNodes.add(node);
+            } else {
+                if (addRoot) {
+                    if (node.eContainer() != null && node.eContainer().eContainer() instanceof AbstractInOutTree) {
+                        loopNodes.add(node);
+                    }
+                }
+                if (!node.getChildren().isEmpty()) {
+                    getChildLoops(loopNodes, node.getChildren(), onlyGetFirstLoop);
+                }
             }
 
         }
@@ -879,6 +911,26 @@ public class XmlMapUtil {
             }
         }
         return null;
+
+    }
+
+    public static void removeloopInOutputTree(MapperManager mapperManager, List<TreeNode> oldLoops) {
+        boolean isMainInputMultiLoop = mapperManager.getMainInputTree() == null ? false : mapperManager.getMainInputTree()
+                .isMultiLoops();
+        EList<OutputXmlTree> outputTrees = mapperManager.getCopyOfMapData().getOutputTrees();
+        for (OutputXmlTree outputTree : outputTrees) {
+            if (isMainInputMultiLoop) {
+                for (TreeNode oldLoop : oldLoops) {
+                    EList<InputLoopNodesTable> inputLoopNodesTables = outputTree.getInputLoopNodesTables();
+                    for (InputLoopNodesTable inputLoopTable : inputLoopNodesTables) {
+                        inputLoopTable.getInputloopnodes().remove(oldLoop);
+                    }
+                }
+                mapperManager.getProblemsAnalyser().checkProblems(outputTree);
+            } else {
+                outputTree.getInputLoopNodesTables().clear();
+            }
+        }
 
     }
 
