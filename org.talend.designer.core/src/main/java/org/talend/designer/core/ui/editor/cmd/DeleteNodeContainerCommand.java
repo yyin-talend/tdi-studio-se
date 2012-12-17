@@ -175,7 +175,9 @@ public class DeleteNodeContainerCommand extends Command {
                     ((JobletContainer) jobletnode.getNodeContainer()).getOutputs().add(connection);
                 }
                 if (!nodeList.contains(prevNode)) {
-                    prevNode.addOutput(connection);
+                    if (!prevNode.getOutgoingConnections().contains(connection)) {
+                        prevNode.addOutput(connection);
+                    }
                     connection.reconnect();
                     boolean builtInPrevNode = prevNode.getConnectorFromType(EConnectionType.FLOW_MAIN).isMultiSchema()
                             | node.getConnectorFromType(EConnectionType.TABLE).isMultiSchema();
@@ -183,7 +185,13 @@ public class DeleteNodeContainerCommand extends Command {
                         // for bug 10024
                         // see 10583
                         String name = connection.getUniqueName();
-                        process.addUniqueConnectionName(name);
+                        if (connection.getConnectorName().startsWith("TRIGGER_OUTPUT")) {
+                            if (process.checkValidConnectionName(name)) {
+                                process.addUniqueConnectionName(name);
+                            }
+                        } else {
+                            process.addUniqueConnectionName(name);
+                        }
                     }
                 }
             }
@@ -194,7 +202,9 @@ public class DeleteNodeContainerCommand extends Command {
                     ((JobletContainer) jobletnode.getNodeContainer()).getInputs().add(connection);
                 }
                 if (!nodeList.contains(nextNode)) {
-                    nextNode.addInput(connection);
+                    if (!nextNode.getIncomingConnections().contains(connection)) {
+                        nextNode.addInput(connection);
+                    }
                     INodeConnector nodeConnector = nextNode.getConnectorFromType(connection.getLineStyle());
                     nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() + 1);
                     connection.reconnect();
