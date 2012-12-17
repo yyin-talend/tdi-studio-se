@@ -342,16 +342,10 @@ public class MapperManager implements ISelectionChangedListener {
                                         treeNode.getChildren().clear();
                                         if (selectedInputTree == mainInputTree && mainInputTree.isMultiLoops()) {
                                             selectedInputTree.setMultiLoops(XmlMapUtil.checkMultiLoopsStatus(selectedInputTree));
-                                            if (!selectedInputTree.isMultiLoops()) {
-                                                for (OutputXmlTree outputTree : copyOfMapData.getOutputTrees()) {
-                                                    outputTree.getInputLoopNodesTables().clear();
-                                                }
-                                            } else {
-                                                List<TreeNode> newLoops = XmlMapUtil.getMultiLoopsForXmlTree(selectedInputTree);
-                                                oldLoops.removeAll(newLoops);
-                                                if (!oldLoops.isEmpty()) {
-                                                    XmlMapUtil.removeloopInOutputTree(MapperManager.this, oldLoops);
-                                                }
+                                            List<TreeNode> newLoops = XmlMapUtil.getMultiLoopsForXmlTree(selectedInputTree);
+                                            oldLoops.removeAll(newLoops);
+                                            if (!oldLoops.isEmpty()) {
+                                                XmlMapUtil.removeloopInOutputTree(MapperManager.this, oldLoops);
                                             }
                                         }
                                     }
@@ -435,7 +429,7 @@ public class MapperManager implements ISelectionChangedListener {
                             if (selectedInputTree == mainInputTree && mainInputTree.isMultiLoops()) {
                                 selectedInputTree.setMultiLoops(XmlMapUtil.checkMultiLoopsStatus(selectedInputTree));
                                 List<TreeNode> oldLoops = new ArrayList<TreeNode>();
-                                XmlMapUtil.getChildLoops(oldLoops, treeNodeToRemove, false);
+                                XmlMapUtil.getChildLoops(oldLoops, treeNodeToRemove);
                                 if (!oldLoops.isEmpty()) {
                                     XmlMapUtil.removeloopInOutputTree(MapperManager.this, oldLoops);
                                 }
@@ -489,7 +483,7 @@ public class MapperManager implements ISelectionChangedListener {
                                     XmlMapUtil.detachNodeConnections(node, copyOfMapData, true);
                                     // get old loops if doc column need to be delete
                                     if (needCheckOutput) {
-                                        XmlMapUtil.getChildLoops(oldLoops, node.getChildren(), false);
+                                        XmlMapUtil.getChildLoops(oldLoops, node.getChildren());
                                     }
                                 }
                             }
@@ -593,24 +587,24 @@ public class MapperManager implements ISelectionChangedListener {
                             }
                         } else if (AbstractMetadataTableEditorView.ID_COLUMN_TYPE.equals(event.column.getId())) {
                             if (event.index < selectedOutputTree.getNodes().size()) {
-                                TreeNode treeNode = selectedOutputTree.getNodes().get(event.index);
+                                OutputTreeNode treeNode = selectedOutputTree.getNodes().get(event.index);
                                 if (treeNode != null) {
-                                    if (treeNode.getType() != null && treeNode.getType().equals(XmlMapUtil.DOCUMENT)) {
+                                    String oldValue = treeNode.getType();
+
+                                    treeNode.setType((String) event.newValue);
+
+                                    if (oldValue != null && oldValue.equals(XmlMapUtil.DOCUMENT)) {
                                         XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
                                         List<TreeNode> removedLoops = new ArrayList<TreeNode>();
                                         if (mainInputTree != null && mainInputTree.isMultiLoops()) {
-                                            XmlMapUtil.getChildLoops(removedLoops, treeNode.getChildren(), false);
+                                            XmlMapUtil.getChildLoops(removedLoops, treeNode.getChildren());
                                         }
                                         treeNode.getChildren().clear();
                                         selectedOutputTree.setMultiLoops(XmlMapUtil.checkMultiLoopsStatus(selectedOutputTree));
                                         if (mainInputTree != null && mainInputTree.isMultiLoops()) {
                                             if (XmlMapUtil.hasDocument(selectedOutputTree)) {
-                                                for (TreeNode removedLoop : removedLoops) {
-                                                    if (selectedOutputTree.getInputLoopNodesTables() != null) {
-                                                        selectedOutputTree.getInputLoopNodesTables().remove(
-                                                                ((OutputTreeNode) removedLoop).getInputLoopNodesTable());
-                                                    }
-                                                }
+                                                XmlMapUtil.removeLoopTableForOutput(selectedOutputTree, removedLoops,
+                                                        mainInputTree == null ? false : mainInputTree.isMultiLoops());
                                             } else {
                                                 selectedOutputTree.getInputLoopNodesTables().clear();
                                                 selectedOutputTree.getInputLoopNodesTables().add(
@@ -619,7 +613,6 @@ public class MapperManager implements ISelectionChangedListener {
                                         }
 
                                     }
-                                    treeNode.setType((String) event.newValue);
 
                                     if (XmlMapUtil.DOCUMENT.equals(event.newValue)) {
                                         XmlMapUtil.detachNodeConnections(treeNode, copyOfMapData, true);
