@@ -70,25 +70,26 @@ imports="
 %>                
 			try {
 				// when PreparedStatement execute "executeBatch" if have no any data to update that will throw "java.sql.SQLException: Method can be called only once."
-				if (pstmt_<%=cid %> != null) {
-					int[] updateCountArray_<%=cid%> = pstmt_<%=cid %>.executeBatch(); 
-					if (updateCountArray_<%=cid%>.length > 0) {               	
-		    	    	<%
-		    	    	if (("INSERT").equals(dataAction)) {
-		    	    	%>
-		    	    		insertedCount_<%=cid%> +=pstmt_<%=cid %>.getUpdateCount(); 
-		    	    	<%
-		    	    	}else if (("UPDATE").equals(dataAction)) {
-		    	    	%>
-		    	    		updatedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
-		    	    	<%
-		    	    	}else if (("DELETE").equals(dataAction)) {
-		    	    	%>
-		    	    	    deletedCount_<%=cid%> += pstmt_<%=cid %>.getUpdateCount();
-		    	    	<%
-		    	    	}
-		    	    	%>
-	    	    	}            	    
+				if (pstmt_<%=cid %> != null && batchSizeCounter_<%=cid%> > 0) {
+					int countSum_<%=cid%> = 0;
+					for(int countEach_<%=cid%>: pstmt_<%=cid %>.executeBatch()) {
+						countSum_<%=cid%> += (countEach_<%=cid%> < 0 ? 0 : countEach_<%=cid%>);
+					}
+	    	    	<%
+	    	    	if (("INSERT").equals(dataAction)) {
+	    	    	%>
+	    	    		insertedCount_<%=cid%> +=countSum_<%=cid%>; 
+	    	    	<%
+	    	    	}else if (("UPDATE").equals(dataAction)) {
+	    	    	%>
+	    	    		updatedCount_<%=cid%> += countSum_<%=cid%>;
+	    	    	<%
+	    	    	}else if (("DELETE").equals(dataAction)) {
+	    	    	%>
+	    	    	    deletedCount_<%=cid%> += countSum_<%=cid%>;
+	    	    	<%
+	    	    	}
+	    	    	%>
     	    	}
             }catch (java.sql.BatchUpdateException e){
             	<%
