@@ -154,7 +154,7 @@ public class MapDataHelper {
                         found.getChildren().clear();
                         if (!inputTree.isLookup() && inputTree.isMultiLoops()) {
                             List<TreeNode> oldLoops = new ArrayList<TreeNode>();
-                            XmlMapUtil.getChildLoops(oldLoops, copyOfChildren, false);
+                            XmlMapUtil.getChildLoops(oldLoops, copyOfChildren);
                             inputTree.setMultiLoops(XmlMapUtil.checkMultiLoopsStatus(inputTree));
                             XmlMapUtil.removeloopInOutputTree(mapData, inputTree, oldLoops);
                         }

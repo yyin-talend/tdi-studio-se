@@ -745,35 +745,6 @@ public class XmlMapUtil {
         return null;
     }
 
-    public static void findChildSourceLoop(TreeNode treeNode, List<TreeNode> sourceLoopNodes) {
-        if (treeNode == null) {
-            return;
-        }
-        if (treeNode.getExpression() != null) {
-            EList<Connection> incomingConnections = treeNode.getIncomingConnections();
-            for (Connection connection : incomingConnections) {
-                if (connection.getSource() instanceof TreeNode) {
-                    TreeNode source = (TreeNode) connection.getSource();
-                    TreeNode loopParentNode = XmlMapUtil.getLoopParentNode(source);
-                    // check related lookup node
-                    if (loopParentNode == null) {
-                        for (LookupConnection lookupConn : source.getLookupIncomingConnections()) {
-                            loopParentNode = XmlMapUtil.getLoopParentNode((TreeNode) lookupConn.getSource());
-                        }
-                    }
-                    if (loopParentNode != null && !sourceLoopNodes.contains(loopParentNode)) {
-                        sourceLoopNodes.add(loopParentNode);
-                    }
-                }
-            }
-        }
-        if (!treeNode.getChildren().isEmpty()) {
-            for (TreeNode child : treeNode.getChildren()) {
-                findChildSourceLoop(child, sourceLoopNodes);
-            }
-        }
-    }
-
     public static List<TreeNode> getMultiLoopsForXmlTree(AbstractInOutTree tree) {
         List<TreeNode> loopNodes = new ArrayList<TreeNode>();
         List<? extends TreeNode> children = new ArrayList<TreeNode>();
@@ -782,7 +753,7 @@ public class XmlMapUtil {
         } else if (tree instanceof OutputXmlTree) {
             children = ((OutputXmlTree) tree).getNodes();
         }
-        getChildLoops(loopNodes, children, false);
+        getChildLoops(loopNodes, children);
         return loopNodes;
     }
 
@@ -803,7 +774,7 @@ public class XmlMapUtil {
         }
         List<TreeNode> loopNodes = new ArrayList<TreeNode>();
         for (TreeNode doc : docChildren) {
-            getChildLoops(loopNodes, doc.getChildren(), false);
+            getChildLoops(loopNodes, doc.getChildren());
             if (loopNodes.size() > 1) {
                 return true;
             }
@@ -811,17 +782,17 @@ public class XmlMapUtil {
         return false;
     }
 
-    public static void getChildLoops(List<TreeNode> loopNodes, List<? extends TreeNode> nodesToCheck, boolean onlyGetFirstLoop) {
-        if (onlyGetFirstLoop) {
-            if (!loopNodes.isEmpty()) {
-                return;
-            }
-        }
+    public static void getChildLoops(List<TreeNode> loopNodes, List<? extends TreeNode> nodesToCheck) {
+        // if (onlyGetFirstLoop) {
+        // if (!loopNodes.isEmpty()) {
+        // return;
+        // }
+        // }
         for (TreeNode node : nodesToCheck) {
             if (node.isLoop()) {
                 loopNodes.add(node);
             } else if (!node.getChildren().isEmpty()) {
-                getChildLoops(loopNodes, node.getChildren(), onlyGetFirstLoop);
+                getChildLoops(loopNodes, node.getChildren());
             }
 
         }
@@ -845,7 +816,7 @@ public class XmlMapUtil {
                     }
                 }
                 if (!node.getChildren().isEmpty()) {
-                    getChildLoops(loopNodes, node.getChildren(), onlyGetFirstLoop);
+                    getChildLoops(loopNodes, node.getChildren());
                 }
             }
 
@@ -881,40 +852,58 @@ public class XmlMapUtil {
 
     }
 
-    public static void removeloopInOutputTree(MapperManager mapperManager, List<TreeNode> oldLoops) {
-        boolean isMainInputMultiLoop = mapperManager.getMainInputTree() == null ? false : mapperManager.getMainInputTree()
-                .isMultiLoops();
-        EList<OutputXmlTree> outputTrees = mapperManager.getCopyOfMapData().getOutputTrees();
+    public static void removeloopInOutputTree(MapperManager mapperManager, List<TreeNode> oldLoopsFromInput) {
+        removeloopInOutputTree(mapperManager.getCopyOfMapData(), mapperManager.getMainInputTree(), oldLoopsFromInput, true);
+    }
+
+    /**
+     * 
+     * DOC WCHEN Remove source loops refrenced from input main
+     * 
+     * @param mapData
+     * @param mainInput
+     * @param oldLoopsFromInput
+     * @param checkProblem
+     */
+    public static void removeloopInOutputTree(XmlMapData mapData, InputXmlTree mainInput, List<TreeNode> oldLoopsFromInput,
+            boolean checkProblem) {
+        boolean isMainInputMultiLoop = mainInput == null ? false : mainInput.isMultiLoops();
+        EList<OutputXmlTree> outputTrees = mapData.getOutputTrees();
         for (OutputXmlTree outputTree : outputTrees) {
             if (isMainInputMultiLoop) {
-                for (TreeNode oldLoop : oldLoops) {
+                for (TreeNode oldLoop : oldLoopsFromInput) {
                     EList<InputLoopNodesTable> inputLoopNodesTables = outputTree.getInputLoopNodesTables();
                     for (InputLoopNodesTable inputLoopTable : inputLoopNodesTables) {
                         inputLoopTable.getInputloopnodes().remove(oldLoop);
                     }
                 }
-                mapperManager.getProblemsAnalyser().checkProblems(outputTree);
             } else {
+                List<TreeNode> multiLoopsForXmlTree = getMultiLoopsForXmlTree(outputTree);
+                for (TreeNode loop : multiLoopsForXmlTree) {
+                    ((OutputTreeNode) loop).setInputLoopNodesTable(null);
+                }
                 outputTree.getInputLoopNodesTables().clear();
             }
         }
 
     }
 
-    public static void removeloopInOutputTree(XmlMapData mapData, InputXmlTree mainInput, List<TreeNode> oldLoops) {
-        boolean isMainInputMultiLoop = mainInput == null ? false : mainInput.isMultiLoops();
-        EList<OutputXmlTree> outputTrees = mapData.getOutputTrees();
-        for (OutputXmlTree outputTree : outputTrees) {
-            if (isMainInputMultiLoop) {
-                for (TreeNode oldLoop : oldLoops) {
-                    EList<InputLoopNodesTable> inputLoopNodesTables = outputTree.getInputLoopNodesTables();
-                    for (InputLoopNodesTable inputLoopTable : inputLoopNodesTables) {
-                        inputLoopTable.getInputloopnodes().remove(oldLoop);
-                    }
-                }
-            } else {
-                outputTree.getInputLoopNodesTables().clear();
+    public static void removeloopInOutputTree(XmlMapData mapData, InputXmlTree mainInput, List<TreeNode> oldLoopsFromInput) {
+        removeloopInOutputTree(mapData, mainInput, oldLoopsFromInput, false);
+    }
+
+    public static void removeLoopTableForOutput(OutputXmlTree outputTable2Check, List<TreeNode> reomvedOutputLoops,
+            boolean isMainMultiloops) {
+        for (TreeNode reomved : reomvedOutputLoops) {
+            OutputTreeNode outputNode = (OutputTreeNode) reomved;
+            if (outputNode.getInputLoopNodesTable() != null) {
+                outputTable2Check.getInputLoopNodesTables().remove(outputNode.getInputLoopNodesTable());
+                outputNode.setInputLoopNodesTable(null);
             }
+        }
+        // incase there are no used InputLoopNodesTables from previous version
+        if (!isMainMultiloops) {
+            outputTable2Check.getInputLoopNodesTables().clear();
         }
 
     }

@@ -13,6 +13,7 @@ import org.talend.designer.xmlmap.i18n.Messages;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
+import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -133,14 +134,9 @@ public class SetLoopAction extends SelectionAction {
 
             } else {
                 // clean the InputLoopNodesTable for the old loops
-                for (TreeNode treeNode : loopNodes) {
-                    InputLoopNodesTable inputLoopNodesTable = ((OutputTreeNode) treeNode).getInputLoopNodesTable();
-                    if (inputLoopNodesTable != null && abstractTree != null) {
-                        ((OutputXmlTree) abstractTree).getInputLoopNodesTables().remove(inputLoopNodesTable);
-                        inputLoopNodesTable.getInputloopnodes().clear();
-                    }
-                    ((OutputTreeNode) treeNode).setInputLoopNodesTable(null);
-                }
+                InputXmlTree mainInput = mapperManager.getMainInputTree();
+                XmlMapUtil.removeLoopTableForOutput((OutputXmlTree) abstractTree, loopNodes, mainInput == null ? false
+                        : mainInput.isMultiLoops());
 
             }
         } else {
