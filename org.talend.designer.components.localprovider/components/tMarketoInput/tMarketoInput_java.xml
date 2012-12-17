@@ -56,13 +56,13 @@
 	<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" NUM_ROW="40"
 			REQUIRED="true">
 		<TABLE IF="(OPERATION=='getLead') or (OPERATION=='getMutipleLeads')">
-			<COLUMN KEY="true" LENGTH="255" NAME="Id" TYPE="id_String" />
+			<COLUMN KEY="true" LENGTH="255" NAME="Id" TYPE="id_Integer" />
 			<COLUMN KEY="false" LENGTH="255" NAME="Email" TYPE="id_String" />
 			<COLUMN KEY="false" LENGTH="255" NAME="ForeignSysPersonId" TYPE="id_String" />
 			<COLUMN KEY="false" LENGTH="255" NAME="ForeignSysType" TYPE="id_String" />
 		</TABLE>
 		<TABLE IF="OPERATION=='getLeadChanges'">
-			<COLUMN KEY="true" LENGTH="255" NAME="Id" TYPE="id_String" />
+			<COLUMN KEY="true" LENGTH="255" NAME="Id" TYPE="id_Integer" />
 			<COLUMN KEY="false" LENGTH="255" NAME="ActivityDateTime" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;" />
 			<COLUMN KEY="false" LENGTH="255" NAME="ActivityType" TYPE="id_String" />
 			<COLUMN KEY="false" LENGTH="255" NAME="MktgAssetName" TYPE="id_String" />
@@ -70,7 +70,7 @@
 			<COLUMN KEY="false" LENGTH="255" NAME="Campaign" TYPE="id_String" />
 		</TABLE>
 		<TABLE IF="OPERATION=='getLeadActivity'">
-			<COLUMN KEY="true" LENGTH="255" NAME="Id" TYPE="id_String" />
+			<COLUMN KEY="true" LENGTH="255" NAME="Id" TYPE="id_Integer" />
 			<COLUMN KEY="false" LENGTH="255" NAME="ActivityDateTime" TYPE="id_Date" PATTERN="&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss&apos;.000Z&apos;&quot;" />
 			<COLUMN KEY="false" LENGTH="255" NAME="ActivityType" TYPE="id_String" />
 			<COLUMN KEY="false" LENGTH="255" NAME="MktgAssetName" TYPE="id_String" />
