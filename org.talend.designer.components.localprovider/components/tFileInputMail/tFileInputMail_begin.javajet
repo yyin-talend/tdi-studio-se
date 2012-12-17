@@ -75,6 +75,29 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	};
 java.io.FileInputStream fileInput<%=cid%>=null;	
 	
+class DecodeString_<%=cid%> {
+	<%//str is sth like : To:"=?ISO8859-1?B?**code**?=" <sb@company.com> , "=?ISO8859-1?B?**code**?=" <sb@company.com>%>
+	public String decode(String str){
+		String res = "";
+		int first = str.indexOf("=?");
+	    int last = str.indexOf("?=");
+		if(first!=-1 && last!=-1){
+			try {
+				res = str.substring(0,first)+javax.mail.internet.MimeUtility.decodeWord(str.substring(first,last+2))+str.substring(last+2);
+				if(res.equals(str)){
+					return res;
+				}else{
+					return decode(res);
+				}
+			} catch (Exception e) {
+				return str;
+			}
+		}else{
+			return str;
+		}
+	}
+}
+DecodeString_<%=cid%> decode_<%=cid%> = new DecodeString_<%=cid%>();
 try{
 	fileInput<%=cid%> = new java.io.FileInputStream(<%=filename %>);
 	javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(System.getProperties(), null);
@@ -142,7 +165,17 @@ try{
      		    while ((length_<%=cid %> = in_<%=cid %>.read(buffer_<%=cid %>, 0, 1024)) != -1) {
      		        baos_<%=cid %>.write(buffer_<%=cid %>, 0, length_<%=cid %>);
      		    }
-     		    list_<%=cid %>.add(baos_<%=cid %>.toString());
+     		    String contentType_<%=cid%> = msg_<%=cid%>.getContentType();
+     		    String charsetName_<%=cid%> = "";
+     		    if(contentType_<%=cid%>!=null && contentType_<%=cid%>.trim().length()>0){
+     		    	javax.mail.internet.ContentType cy_<%=cid%>  = new javax.mail.internet.ContentType(contentType_<%=cid%>);
+     		    	charsetName_<%=cid%> = cy_<%=cid%>.getParameter("charset");
+     		    }
+     		    if(charsetName_<%=cid%>!=null && charsetName_<%=cid%>.length()>0){
+     		    	list_<%=cid %>.add(baos_<%=cid %>.toString(charsetName_<%=cid%>));
+     		    }else{
+     		    	list_<%=cid %>.add(baos_<%=cid %>.toString());
+     		    }
      		    in_<%=cid %>.close();
      		    baos_<%=cid %>.close();
      		 }
@@ -155,7 +188,7 @@ try{
 			while (em.hasMoreElements()) {
 				tempStr_<%=cid %> = tempStr_<%=cid %> + (String) em.nextElement() + sep_<%=cid%> ;
 			}
-			list_<%=cid%>.add(tempStr_<%=cid %>);
+			list_<%=cid%>.add(decode_<%=cid%>.decode(tempStr_<%=cid%>));
         }else{
         	if(("true").equals(mailChecked_<%=cid %>[i_<%=cid%>])){   
 				String[] sa_<%=cid%> = msg_<%=cid %>.getHeader(part_<%=cid%>);
@@ -163,10 +196,10 @@ try{
 				for(int i=0;i<sa_<%=cid%>.length;i++){
 					tempStr_<%=cid%>=tempStr_<%=cid%>+sa_<%=cid%>[i] + sep_<%=cid%>;
 				}
-				list_<%=cid%>.add(tempStr_<%=cid%>);
+				list_<%=cid%>.add(decode_<%=cid%>.decode(tempStr_<%=cid%>));
         	}else{ 
 	           String content_<%=cid %> = msg_<%=cid %>.getHeader(part_<%=cid %>, null);
-	           list_<%=cid %>.add(content_<%=cid %>);
+	           list_<%=cid %>.add(decode_<%=cid%>.decode(content_<%=cid %>));
            	}    
         }   
  	}   
