@@ -328,9 +328,40 @@ public class QueryGuessCommand extends Command {
         if (isJdbc && conn != null) {
             schema = getDefaultSchema(realTableName);
         }
+        // Mssql query need add catalog before the table
+        if ((dbType.equals(EDatabaseTypeName.MSSQL.getDisplayName()) || dbType.equals(EDatabaseTypeName.MSSQL.name()))
+                && conn != null) {
+            schema = "";
+            realTableName = getMssqlCatalog(realTableName) + "." + realTableName;
+        }
         newQuery = TalendTextUtils.addSQLQuotes(QueryUtil.generateNewQuery(node, newOutputMetadataTable, isJdbc, dbType, schema,
                 realTableName));
         return newQuery;
+    }
+
+    private String getMssqlCatalog(String realTableName) {
+        String schema = "";
+        Set<Catalog> catalog = ConnectionHelper.getAllCatalogs(this.conn);
+        for (Catalog cata : catalog) {
+            for (ModelElement ele : cata.getOwnedElement()) {
+                if (ele instanceof Schema) {
+                    for (ModelElement child : ((Schema) ele).getOwnedElement()) {
+                        String childeleName = TalendTextUtils.addQuotesWithSpaceFieldForSQLStringForce(
+                                TalendTextUtils.declareString(child.getName()), dbType, true);
+                        if (childeleName.startsWith(TalendTextUtils.QUOTATION_MARK)
+                                && childeleName.endsWith(TalendTextUtils.QUOTATION_MARK) && childeleName.length() > 2) {
+                            childeleName = childeleName.substring(1, childeleName.length() - 1);
+                        }
+                        if (childeleName.equals(realTableName)) {
+                            return cata.getName() + "." + ele.getName();
+                        } else if (realTableName.endsWith("." + TalendTextUtils.removeQuotesIfExist(childeleName))) {
+                            return cata.getName();
+                        }
+                    }
+                }
+            }
+        }
+        return schema;
     }
 
     // get DatabaseConnection
