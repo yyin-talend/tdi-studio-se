@@ -21,8 +21,13 @@
 				} else {
 					dbschemaForSearch_<%=cid%> = schema_<%=cid%>.toUpperCase();
 				}
-				
-	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, dbschemaForSearch_<%=cid%>, (<%=dbtable%>).toUpperCase(), new String[]{"TABLE"});
+				String tableName4Search_<%=cid%> = <%=dbtable%>;
+            	if(tableName4Search_<%=cid%>.indexOf("\"")==-1){
+            		tableName4Search_<%=cid%> = tableName4Search_<%=cid%>.toUpperCase();
+            	}else{
+            		tableName4Search_<%=cid%> = tableName4Search_<%=cid%>.replaceAll("\"","");
+            	}
+	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, dbschemaForSearch_<%=cid%>, tableName4Search_<%=cid%>, new String[]{"TABLE"});
 	            boolean whetherExist_<%=cid%> = false;
 	            if(rsTable_<%=cid%>.next()) {
 	            	whetherExist_<%=cid%> = true;

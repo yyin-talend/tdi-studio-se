@@ -125,6 +125,11 @@ if (!isParallelize) {
 %>   
 				<%=manager.generateCode4TabelExist()%>
 				java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
+	            if(tableNameForSearch_<%=cid%>.indexOf("\"")==-1){
+            		tableNameForSearch_<%=cid%> = tableNameForSearch_<%=cid%>.toUpperCase();
+            	}else{
+            		tableNameForSearch_<%=cid%> = tableNameForSearch_<%=cid%>.replaceAll("\"","");
+            	}
 	            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, dbschemaForSearch_<%=cid%>, tableNameForSearch_<%=cid%>, new String[]{"TABLE"});
 	            boolean whetherExist_<%=cid%> = false;
 	            if(rsTable_<%=cid%>.next()) {
