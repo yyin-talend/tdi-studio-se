@@ -371,7 +371,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 display = site.getShell().getDisplay();
                 repFactory.addRepositoryWorkUnitListener(repositoryWorkListener);
                 repFactory.lock(currentProcess);
-                boolean locked = currentProcess.getProperty().getItem().getState().isLocked();
+                // do not work for svn project
+                // boolean locked = currentProcess.getProperty().getItem().getState().isLocked();
+                ERepositoryStatus status = repFactory.getStatus(currentProcess.getProperty().getItem());
+                boolean locked = status != ERepositoryStatus.DEFAULT;
                 if (!locked) {
                     setReadOnly(true);
                 }

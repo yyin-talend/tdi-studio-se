@@ -417,7 +417,15 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
         // EditPart ep = getTargetEditPart();
 
         if (fromPalette && getTargetRequest() instanceof CreateRequest) {
-            if (getTargetEditPart() instanceof ProcessPart) {
+            if (selectedConnectionPart != null) {
+                CreateRequest req = ((CreateRequest) getTargetRequest());
+                Object o = req.getNewObject();
+                Point location = req.getLocation();
+                if (o instanceof Node) {
+                    createComponentOnLink((Node) o, location);
+                }
+                return;
+            } else if (getTargetEditPart() instanceof ProcessPart) {
                 // for palette dnd, feature 6457
                 Object newObject = ((CreateRequest) getTargetRequest()).getNewObject();
                 if (newObject != null) {
@@ -425,14 +433,6 @@ public class TalendEditorDropTargetListener extends TemplateTransferDropTargetLi
                     if (command != null) {
                         execCommandStack(command);
                     }
-                }
-                return;
-            } else if (selectedConnectionPart != null) {
-                CreateRequest req = ((CreateRequest) getTargetRequest());
-                Object o = req.getNewObject();
-                Point location = req.getLocation();
-                if (o instanceof Node) {
-                    createComponentOnLink((Node) o, location);
                 }
                 return;
             } else if (getTargetEditPart() instanceof JobletContainerPart) {
