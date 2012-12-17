@@ -65,7 +65,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
-import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
@@ -508,6 +507,7 @@ public class TOSLoginComposite extends Composite {
     private void addListener() {
         createButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 Project project = null;
                 ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
@@ -523,6 +523,7 @@ public class TOSLoginComposite extends Composite {
 
         deleteButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 Shell activeShell = Display.getCurrent().getActiveShell();
                 SelectDeleteProjectDialog dialog = new SelectDeleteProjectDialog(activeShell, true);
@@ -561,6 +562,7 @@ public class TOSLoginComposite extends Composite {
 
         importButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 ImportDemoProjectAction.getInstance().setShell(getShell());
                 ImportProjectAsAction.getInstance().run();
@@ -577,9 +579,9 @@ public class TOSLoginComposite extends Composite {
                     }
                     if (!projectsMap.containsKey(newProject.toUpperCase())) {
 
-                        for (int i = 0; i < projects.length; i++) {
-                            if (projects[i].getLabel().toUpperCase().equals(newProject.toUpperCase())) {
-                                projectsMap.put(newProject.toUpperCase(), projects[i]);
+                        for (Project project : projects) {
+                            if (project.getLabel().toUpperCase().equals(newProject.toUpperCase())) {
+                                projectsMap.put(newProject.toUpperCase(), project);
                                 convertorMapper.put(newProject.toUpperCase(), newProject);
 
                                 enableOpenAndDelete(true);
@@ -616,6 +618,7 @@ public class TOSLoginComposite extends Composite {
         });
         changeButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 DirectoryDialog dirDialog = new DirectoryDialog(dialog.getShell());
                 String path = dirDialog.open();
@@ -636,10 +639,8 @@ public class TOSLoginComposite extends Composite {
                         changeButton.setEnabled(false);
                     }
                 }
-                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
                 java.util.List<ConnectionBean> list = new ArrayList<ConnectionBean>();
                 list.add(loginComposite.getConnection());
-                prefManipulator.saveConnections(list);
                 loginComposite.storedConnections = list;
                 perReader.saveConnections(loginComposite.storedConnections);
 
@@ -655,6 +656,7 @@ public class TOSLoginComposite extends Composite {
         });
         restartBut.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 LoginComposite.isRestart = true;
                 perReader.saveLastConnectionBean(loginComposite.getConnection());
@@ -663,6 +665,7 @@ public class TOSLoginComposite extends Composite {
         });
         openButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 Context ctx = CorePlugin.getContext();
                 ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, loginComposite.getRepositoryContext());
@@ -680,6 +683,7 @@ public class TOSLoginComposite extends Composite {
         });
         demoProjectButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 ImportDemoProjectAction action = ImportDemoProjectAction.getInstance();
                 action.setShell(getShell());
@@ -704,8 +708,7 @@ public class TOSLoginComposite extends Composite {
 
         projectsMap.clear();
         if (projects != null) {
-            for (int i = 0; i < projects.length; i++) {
-                Project pro = projects[i];
+            for (Project pro : projects) {
                 convertorMapper.put(pro.getTechnicalLabel(), pro.getLabel());
                 projectsMap.put(pro.getTechnicalLabel(), pro);
                 enableOpenAndDelete(true);
