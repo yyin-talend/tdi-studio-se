@@ -15,7 +15,7 @@ package org.talend.designer.xmlmap;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -358,6 +358,13 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
     public void connectionStatusChanged(EConnectionType newValue, String connectionToApply) {
         XmlMapData externalEmfData = (XmlMapData) getExternalEmfData();
         InputXmlTree mainTable = null;
+        InputXmlTree oldmainTable = null;
+        for (InputXmlTree inputTree : externalEmfData.getInputTrees()) {
+            if (!inputTree.isLookup()) {
+                oldmainTable = inputTree;
+                break;
+            }
+        }
         for (InputXmlTree inputTree : externalEmfData.getInputTrees()) {
             if (inputTree.getName() != null && inputTree.getName().equals(connectionToApply)) {
                 boolean value = EConnectionType.FLOW_MAIN != newValue;
@@ -374,6 +381,34 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
             externalEmfData.getInputTrees().remove(mainTable);
             externalEmfData.getInputTrees().add(0, mainTable);
         }
+
+        if (oldmainTable != null && oldmainTable != mainTable) {
+            boolean checkMultiLoopsStatus = XmlMapUtil.checkMultiLoopsStatus(oldmainTable);
+            if (checkMultiLoopsStatus) {
+                MessageDialog.openInformation(null, "Information",
+                        "Multiple loops in previous main table will be lost in tXmlMap");
+                // multipleloops status of the new main table will be false ,clean the InputLoopNodesTables for
+                // output will be ok
+                XmlMapUtil.removeloopInOutputTree(externalEmfData, mainTable, new ArrayList<TreeNode>());
+                // clean multipleloops and only keep the first loop of doc
+                for (TreeNode treeNode : oldmainTable.getNodes()) {
+                    if (XmlMapUtil.DOCUMENT.equals(treeNode.getType())) {
+                        List<TreeNode> oldLoops = new ArrayList<TreeNode>();
+                        XmlMapUtil.getChildLoops(oldLoops, treeNode.getChildren());
+                        if (oldLoops.size() > 1) {
+                            for (int i = 1; i < oldLoops.size(); i++) {
+                                oldLoops.get(i).setLoop(false);
+                            }
+                        }
+                    }
+                }
+                oldmainTable.setMultiLoops(false);
+            }
+        }
+
+        initMapperMain();
+        mapperMain.getMapperManager().getProblemsAnalyser().checkProblems();
+
     }
 
     /*
@@ -393,10 +428,8 @@ public class XmlMapComponent extends AbstractExternalNode implements IHashableIn
         }
         if (toRemove != null) {
             if (!toRemove.isLookup() && toRemove.isMultiLoops()) {
-                EList<OutputXmlTree> outputTrees = externalEmfData.getOutputTrees();
-                for (OutputXmlTree outputTree : outputTrees) {
-                    outputTree.getInputLoopNodesTables().clear();
-                }
+                // clean InputLoopTable in putput tree
+                XmlMapUtil.removeloopInOutputTree(externalEmfData, null, null);
             }
             for (TreeNode treeNode : toRemove.getNodes()) {
                 XmlMapUtil.detachNodeConnections(treeNode, externalEmfData, true);

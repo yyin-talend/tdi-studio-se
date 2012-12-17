@@ -95,7 +95,7 @@ public class ProblemsAnalyser {
                 }
             } else {
                 List<TreeNode> loopNodes = new ArrayList<TreeNode>();
-                XmlMapUtil.getChildLoops(loopNodes, outputTree.getNodes(), false);
+                XmlMapUtil.getChildLoops(loopNodes, outputTree.getNodes());
                 if (!loopNodes.isEmpty()) {
                     for (TreeNode node : loopNodes) {
                         InputLoopNodesTable inutLoopTable = ((OutputTreeNode) node).getInputLoopNodesTable();
