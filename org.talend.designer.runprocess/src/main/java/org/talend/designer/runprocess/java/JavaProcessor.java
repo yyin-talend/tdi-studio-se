@@ -1169,6 +1169,53 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
         updateContextCode(codeGen);
     }
+    
+    /*
+     * (non-Javadoc)
+     * generate spring file for RouteBuilder
+     * ADDED for TESB-7887 by GangLiu
+     */
+    @Override
+    public void generateSpringContent() throws ProcessorException {
+        try {
+        	ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
+        	ICodeGenerator codeGen = service.createCodeGenerator(process, false, false);
+        	
+        	if (codeGen == null) {
+        		return;
+        	}
+            String	content = codeGen.generateSpringContent();
+            if(content == null){
+            	return;
+            }
+
+            this.project.getFolder("src").refreshLocal(IResource.DEPTH_INFINITE, null);
+            IFolder folder = this.project.getFolder("src/META-INF");
+            if(!folder.exists()){
+            	folder.create(true, true, null);
+            }
+            folder = this.project.getFolder("src/META-INF/spring");
+            if(!folder.exists()){
+            	folder.create(true, true, null);
+            }
+            IFile camelContextFile = this.project.getProject().getFile("src/META-INF/spring/"+process.getName().toLowerCase()+".xml");
+            InputStream is = new ByteArrayInputStream(content.getBytes());
+
+            if (!camelContextFile.exists()) {
+                camelContextFile.create(is, true, null);
+            } else {
+                camelContextFile.setContents(is, true, false, null);
+            }
+            is.close();
+
+        }   catch (SystemException e) {
+            throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
+        }catch (CoreException e1) {
+            throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
+        } catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
 
     /*
      * (non-Javadoc)
