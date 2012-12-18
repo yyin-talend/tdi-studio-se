@@ -18,12 +18,9 @@ Require-Bundle: org.talend.core,
  org.apache.commons.httpclient
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/cxf-2.2.2.jar,
- lib/jaxrpc.jar,
  lib/wsdl4j-1.6.2.jar,
  lib/castor-xml.jar,
  lib/jdom.jar,
  lib/xerces-1.2.3.jar,
  lib/xercesImpl.jar,
- lib/XmlSchema-1.4.5.jar,
- lib/talend-ws-1.0.jar
+ lib/XmlSchema-1.4.5.jar
