@@ -2339,7 +2339,9 @@ public class Node extends Element implements IGraphicalNode {
                 for (IConnection iconn : this.getOutgoingConnections("REJECT")) {//$NON-NLS-1$
                     if (iconn instanceof Connection) {
                         Connection conn = (Connection) iconn;
-                        isShow = conn.getSourceNodeConnector().isShow();
+                        if (conn.getSourceNodeConnector() != null) {
+                            isShow = conn.getSourceNodeConnector().isShow();
+                        }
                         if (!isShow) {
                             break;
                         }
