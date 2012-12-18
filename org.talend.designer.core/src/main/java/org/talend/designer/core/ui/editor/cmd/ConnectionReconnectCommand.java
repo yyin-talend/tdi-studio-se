@@ -23,8 +23,10 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
@@ -251,7 +253,12 @@ public class ConnectionReconnectCommand extends Command {
                     // For the auto propagate.
                     if (!sameFlag && oldTarget.getComponent().isSchemaAutoPropagated()
                             && (oldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
-                        ChangeMetadataCommand changeMetadataCmd = new ChangeMetadataCommand(oldTarget, null, null,
+                        IElementParameter param = newTarget.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                        if (param != null && param.getContext() != null
+                                && !param.getContext().equals(connection.getLineStyle().getName())) {
+                            param = null;
+                        }
+                        ChangeMetadataCommand changeMetadataCmd = new ChangeMetadataCommand(oldTarget, param, null,
                                 sourceMetadataTable);
                         changeMetadataCmd.execute(true);
                         metadataChanges.add(changeMetadataCmd);
@@ -279,7 +286,12 @@ public class ConnectionReconnectCommand extends Command {
                         // For the auto propagate.
                         if (!sameFlag && newTarget.getComponent().isSchemaAutoPropagated()
                                 && (targetOldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
-                            ChangeMetadataCommand changeMetadataCmd = new ChangeMetadataCommand(newTarget, null, null,
+                            IElementParameter param = newTarget.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                            if (param != null && param.getContext() != null
+                                    && !param.getContext().equals(connection.getLineStyle().getName())) {
+                                param = null;
+                            }
+                            ChangeMetadataCommand changeMetadataCmd = new ChangeMetadataCommand(newTarget, param, null,
                                     oldMetadataTable);
                             changeMetadataCmd.execute(true);
                             metadataChanges.add(changeMetadataCmd);
