@@ -480,6 +480,43 @@ public class CodeGenerator implements ICodeGenerator {
         }
         return ""; //$NON-NLS-1$
     }
+    
+    /*
+     * ADDED for TESB-7887 By GangLiu(non-Javadoc)
+     * @see org.talend.designer.codegen.ICodeGenerator#generateSpringContent()
+     */
+    public String generateSpringContent() throws CodeGeneratorException {
+    	if (process == null || !( process instanceof IProcess2) ){
+    		return null;
+    	}
+    	IProcess2 process2 = (IProcess2) process;
+    	if(!process2.needsSpring() || process2.getSpringContent() == null){
+    		return null;
+    	}
+    	CodeGeneratorArgument codeGenArgument = new CodeGeneratorArgument();
+    	codeGenArgument.setJobName(jobName);
+
+    	codeGenArgument.setJobVersion(jobVersion);
+    	codeGenArgument.setNode(process);
+    	codeGenArgument.setIsRunInMultiThread(getRunInMultiThread());
+    	codeGenArgument.setPauseTime(CorePlugin.getDefault().getRunProcessService().getPauseTime());
+
+    	JetBean jetBean = initializeJetBean(codeGenArgument);
+
+    	jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP
+    			+ EInternalTemplate.SPRING + TemplateUtil.EXT_SEP + language.getExtension() + TemplateUtil.TEMPLATE_EXT);
+
+    	JetProxy proxy = new JetProxy(jetBean);
+    	try {
+    		return proxy.generate();
+    	} catch (JETException e) {
+    		log.error(e.getMessage(), e);
+    		throw new CodeGeneratorException(e);
+    	} catch (CoreException e) {
+    		log.error(e.getMessage(), e);
+    		throw new CodeGeneratorException(e);
+    	}
+    }
 
     /**
      * Generate Code for a given Component.
