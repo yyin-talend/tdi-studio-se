@@ -62,7 +62,7 @@
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
       NUM_ROW="6"
-      REQUIRED="true" SHOW_IF="NO_X2CJ_FILE =='true'"
+      REQUIRED="true"  REPOSITORY_VALUE="CODE_PAGE" SHOW_IF="NO_X2CJ_FILE =='true'"
     >
       <DEFAULT>"Cp037"</DEFAULT>
     </PARAMETER>
