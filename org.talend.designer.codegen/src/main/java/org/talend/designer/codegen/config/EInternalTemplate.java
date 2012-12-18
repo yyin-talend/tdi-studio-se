@@ -44,6 +44,8 @@ public enum EInternalTemplate {
     CAMEL_END_BLOCK("camel_end_block", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     CAMEL_TRYCATCH("camel_trycatch", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     CAMEL_SPECIALLINKS("camel_speciallinks", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    //ADDED for TESB-7887 By GangLiu
+    SPRING("spring", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     
     
     HEADER_ADDITIONAL("header_additional", "0.0.1"); //$NON-NLS-1$ //$NON-NLS-2$
