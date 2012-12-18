@@ -139,6 +139,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					isBase64 = "true".equals(line.get("BASE64"));
 					// Binary content --> always Base64 encoded
 					// Explicit base64 encoding : base64 checkbox checked for this column
+					if(isBinary && !isBase64){
+%>
+//////////////////////////////////////////////////
+Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
+//////////////////////////////////////////////////
+<%
+					}
 					if(isBinary || isBase64){
 						%>
 						// Convert binary or Base64 value to Base64 encoded string				
@@ -271,6 +278,13 @@ sb_<%=cid %>.append("-\n");
 					isBase64 = "true".equals(line.get("BASE64"));
 					// Binary content --> always Base64 encoded
 					// Explicit base64 encoding : base64 checkbox checked for this column
+                    if(isBinary && !isBase64){
+%>
+//////////////////////////////////////////////////
+Please check "isBase64" for column <%=columnName%> when "isBianry" is checked.
+//////////////////////////////////////////////////
+<%
+                    }
 					if(isBinary || isBase64){
 						%>
 						// Convert binary or Base64 value to Base64 encoded string				
