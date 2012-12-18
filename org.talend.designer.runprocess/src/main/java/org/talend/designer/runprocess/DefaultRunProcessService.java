@@ -12,17 +12,31 @@
 // ============================================================================
 package org.talend.designer.runprocess;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Level;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.osgi.framework.Bundle;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
@@ -49,6 +63,8 @@ import org.talend.runprocess.data.PerformanceData;
 public class DefaultRunProcessService implements IRunProcessService {
 
     private static final String ROUTINE_FILENAME_EXT = ".pm"; //$NON-NLS-1$
+
+    private static final String RESOURCE_FILE_PATH = "resources/"; //$NON-NLS-1$
 
     /*
      * (non-Javadoc)
@@ -313,4 +329,86 @@ public class DefaultRunProcessService implements IRunProcessService {
     public boolean checkExportProcess(IStructuredSelection selection, boolean isJob) {
         return JobErrorsChecker.checkExportErrors(selection, isJob);
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getResourceFile(java.lang.String)
+     */
+    @Override
+    public String getResourceFilePath(String filePath) {
+        Bundle b = Platform.getBundle(RunProcessPlugin.PLUGIN_ID);
+        URL url = null;
+        try {
+            url = FileLocator.toFileURL(FileLocator.find(b, new Path(RESOURCE_FILE_PATH + filePath), null));
+        } catch (IOException e) {
+            ExceptionHandler.process(e);
+        }
+
+        if (url != null) {
+            return url.getFile();
+        } else {
+            return null;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getTemplateStrFromPreferenceStore(java.lang.String)
+     */
+    @Override
+    public String getTemplateStrFromPreferenceStore(String templateType) {
+        return RunProcessPlugin.getDefault().getPreferenceStore().getString(templateType);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#updateLogFiles(org.eclipse.core.resources.IProject)
+     */
+    @Override
+    public void updateLogFiles(IProject project) {
+        if (project == null) {
+            return;
+        }
+        try {
+            Path path = new Path(JavaUtils.JAVA_SRC_DIRECTORY);
+            IFolder srcFolder = project.getFolder(path);
+            if (srcFolder == null) {
+                return;
+            }
+            IFile commonLogFile = srcFolder.getFile("common-logging.properties"); //$NON-NLS-1$
+            String commonLogStr = getTemplateStrFromPreferenceStore(RunProcessPrefsConstants.COMMON_LOGGING_PROPERTIES_TEMPLATE);
+            if (commonLogStr != null) {
+                File clFile = new File(commonLogFile.getLocation().toOSString());
+                if (!clFile.exists()) {// not support modify common-logging.properties template now.
+                    FileOutputStream clFileFileOutputStream = null;
+                    try {
+                        clFileFileOutputStream = new FileOutputStream(clFile);
+                        clFileFileOutputStream.write(commonLogStr.getBytes());
+                    } finally {
+                        clFileFileOutputStream.close();
+                    }
+                }
+            }
+            IFile log4jFile = srcFolder.getFile("log4j.properties"); //$NON-NLS-1$
+            String log4jStr = getTemplateStrFromPreferenceStore(RunProcessPrefsConstants.LOG4J_PROPERTIES_TEMPLATE);
+            if (log4jStr != null) {
+                File ljFile = new File(log4jFile.getLocation().toOSString());
+                FileOutputStream ljFileOutputStream = null;
+                try {
+                    ljFileOutputStream = new FileOutputStream(ljFile);
+                    ljFileOutputStream.write(log4jStr.getBytes());
+                } finally {
+                    ljFileOutputStream.close();
+                }
+            }
+            srcFolder.refreshLocal(IResource.DEPTH_ONE, null);
+            project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
 }

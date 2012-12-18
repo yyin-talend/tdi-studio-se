@@ -12,8 +12,15 @@
 // ============================================================================
 package org.talend.designer.runprocess.prefs;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.RunProcessPlugin;
 
 /**
@@ -22,6 +29,12 @@ import org.talend.designer.runprocess.RunProcessPlugin;
  * 
  */
 public class RunProcessPreferenceInitializer extends AbstractPreferenceInitializer {
+
+    protected static final String EMPTY_STR = ""; //$NON-NLS-1$
+
+    private static final String commonLogFilePath = "log/common-logging.properties_template"; //$NON-NLS-1$
+
+    private static final String log4jFilePath = "log/log4j.properties_template"; //$NON-NLS-1$
 
     public RunProcessPreferenceInitializer() {
         super();
@@ -41,6 +54,10 @@ public class RunProcessPreferenceInitializer extends AbstractPreferenceInitializ
         prefs.setDefault(RunProcessPrefsConstants.ISSTATISTICSRUN, true);
         prefs.setDefault(RunProcessPrefsConstants.STRACESTIME, 1000);
         prefs.setDefault(RunProcessPrefsConstants.VMARGUMENTS, " -Xms256M -Xmx1024M"); //$NON-NLS-1$
+
+        // for logs
+        prefs.setDefault(RunProcessPrefsConstants.COMMON_LOGGING_PROPERTIES_TEMPLATE, getLogTemplate(commonLogFilePath));
+        prefs.setDefault(RunProcessPrefsConstants.LOG4J_PROPERTIES_TEMPLATE, getLogTemplate(log4jFilePath));
     }
 
     /**
@@ -51,6 +68,34 @@ public class RunProcessPreferenceInitializer extends AbstractPreferenceInitializ
     public static IPreferenceStore getPluginPreferenceStore() {
         IPreferenceStore prefs = RunProcessPlugin.getDefault().getPreferenceStore();
         return prefs;
+    }
+
+    protected String getLogTemplate(String logPath) {
+        IRunProcessService service = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+            service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
+        }
+        if (service == null) {
+            return EMPTY_STR;
+        }
+
+        File templateFile = new File(service.getResourceFilePath(logPath));
+        if (!templateFile.exists()) {
+            return EMPTY_STR;
+        }
+
+        return getLogTemplateString(templateFile);
+    }
+
+    protected String getLogTemplateString(File templateScriptFile) {
+        if (templateScriptFile != null && templateScriptFile.exists()) {
+            try {
+                return new Scanner(templateScriptFile).useDelimiter("\\A").next(); //$NON-NLS-1$
+            } catch (FileNotFoundException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+        return EMPTY_STR;
     }
 
 }
