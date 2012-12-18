@@ -41,37 +41,45 @@ String limit = ElementParameterParser.getValue(node, "__LIMIT__");
 if (("").equals(limit)) {
 	limit = "-1";
 }
+int schemaOptNum=100;
+String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
+if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
+	schemaOptNum  = Integer.parseInt(schemaOptNumStr);
+}
 
 //get XML field content
 IConnection inConn = null;
 List< ? extends IConnection> inConns = node.getIncomingConnections();
 List<IMetadataColumn> inColumns = null;
+if (inConns!=null) {
+	for (IConnection incomingConn : inConns) {
+		if (incomingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+			inConn = incomingConn;
+			inColumns = inConn.getMetadataTable().getListColumns();
+			break;
+		}
+	}
+}
 if(useXMLField){
 %>
 	String xmlStr_<%=cid%> = <%=strXMLText %>;
 <%
-}else if (node.getIncomingConnections()!=null) {
-	for (IConnection incomingConn : node.getIncomingConnections()) {
-		if (incomingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-			inConn = incomingConn;
-			inConn.getMetadataTable();
-			inColumns = inConn.getMetadataTable().getListColumns();
-			if(("tMDMReadConf").equals(inConn.getSource().getComponent().getName())){
+}else if (inConns!=null) {
+	if (inConn!=null) {
+		if(("tMDMReadConf").equals(inConn.getSource().getComponent().getName())){
 %>
 	String xmlStr_<%=cid%> = <%=inConn.getName()%>_xml;
 <%
-			}else{
-    			for (IMetadataColumn inputCol : inColumns) {
-    				if(inputCol.getLabel().equals(xmlField))
-    				{
+		}else{
+			for (IMetadataColumn inputCol : inColumns) {
+				if(inputCol.getLabel().equals(xmlField))
+				{
 %>
 	String xmlStr_<%=cid%> = <%=inConn.getName()%>.<%=xmlField%><%="id_Document".equals(inputCol.getTalendType())?".toString()":""%>;
 <%
-    					break;
-    				}
-    			}
-    		}
-			break;
+					break;
+				}
+			}
 		}
 	}
 }
@@ -161,13 +169,23 @@ if (outConn!=null) {
 	<%=rejectConnName %> = new <%=rejectConnName %>Struct();
 <%
 			if(inConn!=null){
+				int columnNo=0;
 		 		for(IMetadataColumn column : outConn.getMetadataTable().getListColumns()) {
 	    	  		if(!xmlField.equals(column.getLabel())){
 	    	  			for(IMetadataColumn inColumn : inConn.getMetadataTable().getListColumns()){
 	    	  				if(inColumn.getLabel().equals(column.getLabel())){
+	    	  					if(schemaOptNum < mapping.size()){
+	    	  						if(columnNo%schemaOptNum==0){
+%>
+			xml_api_<%=cid%>.putRejectValueBeforeExtract_<%=columnNo/schemaOptNum%>(<%=rejectConnName%>,<%=inConn.getName()%>);
+<%
+		 							}
+		 							columnNo++;
+	    	  					}else{
 %>
     <%=rejectConnName%>.<%=column.getLabel()%> = <%=inConn.getName() %>.<%=column.getLabel()%>;
 <%
+								}
 								break;
 	    					}
 	    				}
@@ -219,11 +237,49 @@ if(outConns!=null){
 %>
 			try{
 <%
+		if(inConn!=null){
+			int unExtractColNo=0;
+			for (int i=0;i<mapping.size();i++) {
+				if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
+					String query = mapping.get(i).get("QUERY");
+					if(query==null || query.trim().length() < 1 ){
+						for(IMetadataColumn inColumn:inColumns) {
+							if (inColumn.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
+								if(schemaOptNum < mapping.size()){
+									if(unExtractColNo%schemaOptNum==0){
+%>
+			xml_api_<%=cid%>.putUnExtractValue_<%=unExtractColNo/schemaOptNum%>(<%=firstConnName%>,<%=inConn.getName()%>);
+<%
+									}
+									unExtractColNo++;
+								}else{
+%>
+			<%=firstConnName%>.<%=inColumn.getLabel()%> = <%=inConn.getName() %>.<%=inColumn.getLabel()%>;
+<%
+								}
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
 		//get the mapping column 
+		int extractColNo=0;
 		for (int i=0;i<mapping.size();i++) {  //for S_0
 			String query = mapping.get(i).get("QUERY");
 			String nodeCheck = mapping.get(i).get("NODECHECK");
-			if(query!=null && query.trim().length()>0){  // if S_0_0
+			if(schemaOptNum < mapping.size()){
+				if(query!=null && query.trim().length()>0){  // if S_0_0
+					if(extractColNo%schemaOptNum==0){
+%>
+			xml_api_<%=cid%>.putExtractValue_<%=extractColNo/schemaOptNum%>(<%=firstConnName%>,<%if(inConn!=null){%><%=inConn.getName()%>,<%}%>xmlStr_<%=cid%>,temp_<%=cid %>,nsTool_<%=cid%>,loopQuery_<%=cid %>,xmlNameSpaceMap_<%=cid%>,node_<%=cid %>,str_<%=cid %>,xml_api_<%=cid%>);
+<%
+					}
+					extractColNo++;
+				}
+			}else{
+			  if(query!=null && query.trim().length()>0){  // if S_0_0
 %>
 				org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>,loopQuery_<%=cid %>));
 			    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
@@ -334,18 +390,8 @@ if(outConns!=null){
 	        			} // if S_0_0_0_0_1
 					} // if S_0_0_0_1
 				} // for S_0_0_1
-			}else if(inConn!=null){
-				for(IMetadataColumn inColumn:inColumns) {
-					if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
-						if (inColumn.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
-%>
-		<%=firstConnName%>.<%=inColumn.getLabel()%> = <%=inConn.getName() %>.<%=inColumn.getLabel()%>;
-<%
-							break;
-						}
-					}
-				}
-			}// if S_0_1
+			  }// if S_0_1
+			}
 		} // for S_1
 		if(!("").equals(rejectConnName) && rejectConnName.equals(firstConnName)){
 %>
@@ -364,10 +410,20 @@ if(outConns!=null){
 %>
 	<%=rejectConnName %> = new <%=rejectConnName %>Struct();
 <%
+			int columnNo=0;
     	 	for(IMetadataColumn column : outConn.getMetadataTable().getListColumns()) {
+    	 		if(schemaOptNum < mapping.size()){
+	    	  		if(columnNo%schemaOptNum==0){
+%>
+			xml_api_<%=cid%>.putRejectValueAfterExtract_<%=columnNo/schemaOptNum%>(<%=rejectConnName%>,<%=firstConnName %>);
+<%
+		 			}
+		 			columnNo++;
+	    	  	}else{
 %>
      <%=rejectConnName%>.<%=column.getLabel()%> = <%=firstConnName %>.<%=column.getLabel() %>;
 <%
+				}
     	    }
 %>
 	<%=rejectConnName %>.errorXMLField = xmlStr_<%=cid%>;
