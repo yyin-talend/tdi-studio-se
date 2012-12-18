@@ -41,4 +41,9 @@ public class RunProcessPrefsConstants {
     public static final String VMARGUMENTS = "vmarguments"; //$NON-NLS-1$
 
     public static final String CONSOLE_FONT = "talendOutputConsoleFont"; //$NON-NLS-1$
+
+    public static final String COMMON_LOGGING_PROPERTIES_TEMPLATE = "COMMON_LOGGING_PROPERTIES_TEMPLATE"; //$NON-NLS-1$
+
+    public static final String LOG4J_PROPERTIES_TEMPLATE = "LOG4J_PROPERTIES_TEMPLATE"; //$NON-NLS-1$
+
 }

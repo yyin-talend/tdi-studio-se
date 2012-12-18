@@ -242,4 +242,35 @@ public class RunProcessService implements IRunProcessService {
     public boolean checkExportProcess(IStructuredSelection selection, boolean isJob) {
         return delegateService.checkExportProcess(selection, isJob);
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getResourceFile(java.lang.String)
+     */
+    @Override
+    public String getResourceFilePath(String filePath) {
+        return delegateService.getResourceFilePath(filePath);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getTemplateStrFromPreferenceStore(java.lang.String)
+     */
+    @Override
+    public String getTemplateStrFromPreferenceStore(String templateType) {
+        return delegateService.getTemplateStrFromPreferenceStore(templateType);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#updateLogFiles(org.eclipse.core.resources.IProject)
+     */
+    @Override
+    public void updateLogFiles(IProject project) {
+        delegateService.updateLogFiles(project);
+    }
+
 }

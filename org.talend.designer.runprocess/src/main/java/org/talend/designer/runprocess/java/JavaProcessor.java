@@ -868,10 +868,14 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 classPathSeparator = ":"; //$NON-NLS-1$
             }
         }
+        boolean exportingJob = ProcessorUtilities.isExportConfig();
+
         Set<String> neededLibraries = JavaProcessorUtilities.getNeededLibrariesForProcess(process);
+        if (!exportingJob) {
+            JavaProcessorUtilities.addLog4jToJarList(neededLibraries);
+        }
         JavaProcessorUtilities.checkJavaProjectLib(neededLibraries);
 
-        boolean exportingJob = ProcessorUtilities.isExportConfig();
         String unixRootPathVar = "$ROOT_PATH"; //$NON-NLS-1$
         String unixRootPath = unixRootPathVar + "/"; //$NON-NLS-1$
 
@@ -891,6 +895,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                     libPath.append(singleLibPath).append(classPathSeparator);
                 }
             }
+        }
+        if (!exportingJob) {
+            libPath.append(".").append(classPathSeparator);
         }
 
         // init project_path
