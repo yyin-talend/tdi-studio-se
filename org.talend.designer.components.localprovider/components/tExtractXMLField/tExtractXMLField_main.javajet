@@ -238,22 +238,26 @@ if(outConns!=null){
 			try{
 <%
 		if(inConn!=null){
-			if(schemaOptNum < mapping.size()){
-				int unExtractColNo=0;
-				for (int i=0;i<mapping.size();i++) { 
-					if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
-						String query = mapping.get(i).get("QUERY");
-						if(query==null || query.trim().length() < 1 ){
-							for(IMetadataColumn inColumn:inColumns) {
-								if (inColumn.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
+			int unExtractColNo=0;
+			for (int i=0;i<mapping.size();i++) {
+				if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
+					String query = mapping.get(i).get("QUERY");
+					if(query==null || query.trim().length() < 1 ){
+						for(IMetadataColumn inColumn:inColumns) {
+							if (inColumn.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
+								if(schemaOptNum < mapping.size()){
 									if(unExtractColNo%schemaOptNum==0){
 %>
 			xml_api_<%=cid%>.putUnExtractValue_<%=unExtractColNo/schemaOptNum%>(<%=firstConnName%>,<%=inConn.getName()%>);
 <%
 									}
 									unExtractColNo++;
-									break;
+								}else{
+%>
+			<%=firstConnName%>.<%=inColumn.getLabel()%> = <%=inConn.getName() %>.<%=inColumn.getLabel()%>;
+<%
 								}
+								break;
 							}
 						}
 					}
@@ -386,17 +390,6 @@ if(outConns!=null){
 	        			} // if S_0_0_0_0_1
 					} // if S_0_0_0_1
 				} // for S_0_0_1
-			  }else if(inConn!=null){
-				for(IMetadataColumn inColumn:inColumns) {
-					if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
-						if (inColumn.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
-%>
-		<%=firstConnName%>.<%=inColumn.getLabel()%> = <%=inConn.getName() %>.<%=inColumn.getLabel()%>;
-<%
-							break;
-						}
-					}
-				}
 			  }// if S_0_1
 			}
 		} // for S_1
