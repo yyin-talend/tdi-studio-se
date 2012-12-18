@@ -1,0 +1,18 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.IContextParameter
+		org.talend.designer.codegen.config.CodeGeneratorArgument 
+		java.util.List
+		java.util.Properties
+		java.io.ByteArrayOutputStream
+		org.talend.core.model.utils.TalendTextUtils
+		org.talend.core.model.process.IProcess2
+	" 
+	class="Context" 
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	IProcess2 p2 = (IProcess2) codeGenArgument.getArgument();
+%>
+<%=p2.getSpringContent() %>
