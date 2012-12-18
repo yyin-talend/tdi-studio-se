@@ -3975,4 +3975,15 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         return this.isProcessModified();
     }
 
+    //ADDED for TESB-7887 By GangLiu
+    @Override
+    public boolean needsSpring() {
+        return false;
+    }
+    
+    @Override
+    public String getSpringContent() {
+        return null;
+    }
+    //END TESB-7887
 }
