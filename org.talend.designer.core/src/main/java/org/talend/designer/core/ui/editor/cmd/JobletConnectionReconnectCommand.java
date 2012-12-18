@@ -179,9 +179,14 @@ public class JobletConnectionReconnectCommand extends Command {
         metadataChanges.clear();
         if (newSource != null) {
             INodeConnector connector = oldSource.getConnectorFromName(connectorName);
-            connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() - 1);
-            connector = newSource.getConnectorFromName(connectorName);
-            connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() + 1);
+            if (connector != null) {
+                connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() - 1);
+                connector = newSource.getConnectorFromName(connectorName);
+                if (connector != null) {
+                    connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() + 1);
+                }
+            }
+
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
                 newSourceSchemaType = (String) newSource.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
                 boolean builtInNewSource = newSource.getConnectorFromName(connectorName).isMultiSchema();
@@ -233,7 +238,8 @@ public class JobletConnectionReconnectCommand extends Command {
             connection.reconnect(newSource, oldTarget, newLineStyle);
             connection.updateName();
 
-            if (newSourceSchemaType != null && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+            if (newSourceSchemaType != null && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
+                    && connector != null) {
                 IMetadataTable sourceMetadataTable = newSource.getMetadataFromConnector(connector.getName());
                 // IMetadataTable targetMetadataTable = oldTarget.getMetadataFromConnector(connector.getName());
                 if (oldMetadataTable != null && sourceMetadataTable != null) {
