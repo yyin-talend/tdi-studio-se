@@ -2346,7 +2346,7 @@ public class Node extends Element implements IGraphicalNode {
             }
 
             for (IConnection connection : getOutgoingConnections()) {
-                if (!connection.getSourceNodeConnector().isShow()) {
+                if (connection.getSourceNodeConnector() != null && !connection.getSourceNodeConnector().isShow()) {
                     Problems.add(ProblemStatus.ERROR, this, "Please remove the "
                             + connection.getSourceNodeConnector().getLinkName() + " connections");
                 }
