@@ -295,9 +295,10 @@ public class CreateComponentOnLinkHelper {
                                     if (conn instanceof ConnectionPart
                                             && canCreateNodeOnLink((Connection) ((ConnectionPart) conn).getModel(), node)) {
                                         ConnectionPart connPart = (ConnectionPart) conn;
-                                        if (connPart.getFigure() != null && connPart.getFigure().getBounds().contains(point)) {
-                                            connectionParts.add((ConnectionPart) conn);
-                                        }
+                                        // if (connPart.getFigure() != null &&
+                                        // connPart.getFigure().getBounds().contains(point)) {
+                                        connectionParts.add((ConnectionPart) conn);
+                                        // }
                                     }
                                 }
                             }
