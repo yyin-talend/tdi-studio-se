@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.FigureCanvas;
@@ -964,6 +965,21 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         // create image from root figure
         int width = contentLayer.getSize().width;
         int height = contentLayer.getSize().height;
+
+        // Added by Marvin Wang on Dec. 18, 2012 for bug TDI-24038, due to large image caused out of memory, we have to
+        // limit the size of the image. For x86-based architecture, the momory is very easy to fill up, a suggested
+        // value 3000X3000 is a temporary solution.
+        if (Platform.ARCH_X86.equals(Platform.getOSArch())) {
+            if (width * height > 3000 * 3000) {
+                if (width > 3000) {
+                    width = 3000;
+                }
+
+                if (height > 3000) {
+                    height = 3000;
+                }
+            }
+        }
 
         Image img = new Image(null, width, height);
         GC gc = new GC(img);
