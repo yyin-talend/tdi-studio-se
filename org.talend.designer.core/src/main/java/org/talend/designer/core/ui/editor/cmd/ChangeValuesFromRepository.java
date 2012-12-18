@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.xml.XmlUtil;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -352,6 +353,23 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     dbType = param.getListItemsDisplayCodeName()[indexOfItemFromList];
                                 }
                             }
+                            // Some DB not need fill the schema parameter for the JobSetting View "Extra" ,"Stats&Logs"
+                            if (EDatabaseTypeName.GENERAL_JDBC.getProduct().equals(dbType)
+                                    || EDatabaseTypeName.GODBC.getProduct().equals(dbType)
+                                    || EDatabaseTypeName.MYSQL.getProduct().equals(dbType)
+                                    || EDatabaseTypeName.IBMDB2.getProduct().equals(dbType)
+                                    || EDatabaseTypeName.SYBASEASE.getProduct().equals(dbType)
+                                    || EDatabaseTypeName.SYBASEIQ.getProduct().equals(dbType)
+                                    || EDatabaseTypeName.INGRES.getProduct().equals(dbType)
+                                    || EDatabaseTypeName.INTERBASE.getProduct().equals(dbType)
+                                    || EDatabaseTypeName.SQLITE.getProduct().equals(dbType)
+                                    || EDatabaseTypeName.FIREBIRD.getProduct().equals(dbType)
+                                    || EDatabaseTypeName.ACCESS.getProduct().equals(dbType)
+                                    || EDatabaseTypeName.TERADATA.getProduct().equals(dbType)) {
+                                if (elementParameter2 != null && !elementParameter2.getValue().equals("")) {
+                                    elementParameter2.setValue("");
+                                }
+                            }
                             if (StatsAndLogsConstants.JDBC.equals(dbType)) {
                                 IElementParameter dbNameParm = elem.getElementParameter(EParameterName.DBNAME.getName());
                                 if (dbNameParm != null) {
@@ -630,10 +648,12 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     repositoryTable = (String) repositorySchemaTypeParameter.getValue();
                                 } else if (item != null) {
                                     if (item instanceof SAPConnectionItem) {
-                                        if (getCurrentTableName() != null)
+                                        if (getCurrentTableName() != null) {
                                             repositoryTable = item.getProperty().getId() + " - " + getCurrentTableName();
-                                    } else
+                                        }
+                                    } else {
                                         repositoryTable = item.getProperty().getId() + " - " + getFirstRepositoryTable(item); //$NON-NLS-1$
+                                    }
                                     repositorySchemaTypeParameter.setValue(repositoryTable);
                                 }
                                 if (isNotSim) {
