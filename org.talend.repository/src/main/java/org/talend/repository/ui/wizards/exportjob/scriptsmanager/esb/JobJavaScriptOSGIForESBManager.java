@@ -352,18 +352,20 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
      * @throws MalformedURLException
      */
     protected void addOSGIRouteResources(ExportFileResource osgiResource, ProcessItem processItem) throws Exception {
+    	IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(JavaUtils.JAVA_PROJECT_NAME);
+    	IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
+    	IPath srcPath = srcFolder.getLocation();
+    	
+    	// http://jira.talendforge.org/browse/TESB-6437
+    	//https://jira.talendforge.org/browse/TESB-7893
         ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                 ICamelDesignerCoreService.class);
-        List<IPath> paths = camelService.synchronizeRouteResource(processItem);
-
-        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(JavaUtils.JAVA_PROJECT_NAME);
-        IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
-        IPath srcPath = srcFolder.getLocation();
-
-        for (IPath path : paths) {
-            // http://jira.talendforge.org/browse/TESB-6437
-            osgiResource
-                    .addResource(path.removeLastSegments(1).makeRelativeTo(srcPath).toString(), path.toFile().toURI().toURL());
+        if(camelService != null){
+	        List<IPath> paths = camelService.synchronizeRouteResource(processItem);
+	        for (IPath path : paths) {
+	            osgiResource
+	                    .addResource(path.removeLastSegments(1).makeRelativeTo(srcPath).toString(), path.toFile().toURI().toURL());
+	        }
         }
     }
 
