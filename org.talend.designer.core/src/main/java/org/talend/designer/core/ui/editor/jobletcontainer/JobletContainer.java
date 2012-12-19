@@ -302,7 +302,9 @@ public class JobletContainer extends NodeContainer {
             // List<NodeContainer> temList = new ArrayList<NodeContainer>(nodeContainers);
             for (NodeContainer nc : nodeContainers) {
                 if (this.node.getProcess() instanceof IProcess2) {
-                    paraMap.put(nc.getNode().getJoblet_unique_name(), nc.getNode().getElementParameters());
+                    if (!update) {
+                        paraMap.put(nc.getNode().getJoblet_unique_name(), nc.getNode().getElementParameters());
+                    }
                     ((IProcess2) this.node.getProcess()).removeUniqueNodeName(nc.getNode().getUniqueName());
                 }
             }

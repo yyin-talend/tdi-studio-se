@@ -520,6 +520,9 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                                         refreshComboContent(AdvancedContextTableView.this, legalParameters);
                                         getExtendedToolbar().updateEnabledStateOfButtons();
                                         getTableViewerCreator().refresh();
+                                        if (parameter.getName().equals("CONNECTION")) {
+                                            parameter.setReadOnly(false);
+                                        }
                                     }
                                 }
                             };
@@ -550,7 +553,12 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                                 public void execute() {
                                     ISelection selection = getTableViewerCreator().getTableViewer().getSelection();
                                     List<IElementParameter> tableViewerInput = getTableViewerCreator().getInputList();
-
+                                    IElementParameter CONNECTION = null;
+                                    if (tableViewerInput != null && tableViewerInput.size() == 1) {
+                                        if (tableViewerInput.get(0).getName().equals("CONNECTION")) {
+                                            CONNECTION = tableViewerInput.get(0);
+                                        }
+                                    }
                                     boolean needRefresh = false;
                                     if (!selection.isEmpty() && selection instanceof StructuredSelection) {
                                         Object[] elements = ((StructuredSelection) selection).toArray();
@@ -574,6 +582,10 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                                         refreshComboContent(AdvancedContextTableView.this, legalParameters);
                                         getTableViewerCreator().refresh();
                                         getExtendedToolbar().updateEnabledStateOfButtons();
+                                        if (CONNECTION != null && (tableViewerInput.size() <= 0)) {
+                                            executeCommand(new PropertyChangeCommand((Element) node, CONNECTION.getName(), ""));
+                                            CONNECTION.setReadOnly(true);
+                                        }
                                     }
                                 }
 
