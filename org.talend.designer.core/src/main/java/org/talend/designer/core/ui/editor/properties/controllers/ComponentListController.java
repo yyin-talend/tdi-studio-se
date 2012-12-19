@@ -256,6 +256,15 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                     }
                 }
             }
+            List<INode> jobletnodeList = new ArrayList<INode>(nodeList);
+            if (((Node) elem).getJobletNode() != null) {
+                String jobletUniName = ((Node) elem).getJobletNode().getUniqueName();
+                for (INode node : jobletnodeList) {
+                    if (!node.getUniqueName().startsWith(jobletUniName)) {
+                        nodeList.remove(node);
+                    }
+                }
+            }
             List<String> componentDisplayNames = new ArrayList<String>();
             List<String> componentUniqueNames = new ArrayList<String>();
             for (INode node : nodeList) {

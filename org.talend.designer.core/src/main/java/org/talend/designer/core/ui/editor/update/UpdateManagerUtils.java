@@ -477,7 +477,6 @@ public final class UpdateManagerUtils {
         if (result.isReadOnlyProcess()) {
             return;
         }
-        boolean isJobletContext = false;
 
         // update
         Command command = null;
@@ -507,7 +506,6 @@ public final class UpdateManagerUtils {
             command = executeJobletNodesUpdates(result);
             break;
         case JOBLET_CONTEXT:
-            isJobletContext = true;
             command = new Command() { // have update in checking.
             };
             break;
@@ -525,12 +523,7 @@ public final class UpdateManagerUtils {
             if (job != null) {
                 if (job instanceof IProcess2) {
                     IProcess2 process = (IProcess2) job;
-                    if (updateAllJobs || isJobletContext) {
-                        process.getCommandStack().execute(command);
-                    } else {
-                        command.execute();
-                    }
-
+                    process.getCommandStack().execute(command);
                     executed = true;
                 }
             }
