@@ -33,8 +33,4 @@
 	boolean stat = codeGenArgument.isStatistics();
 %>
 
-/**
-* please initial uri map first before using the returned RouteBuilder
-* @return RouteBuilder
-*/
-public RouteBuilder route() {
+

@@ -34,7 +34,7 @@ protected void doStart() throws Exception {
 		initUriMap();
 		
 		//add route
-		addRouteBuilder(route());
+		addRouteBuilder(<%=process.getName()%>.this);
 
 		//prepare camel contexts
 		super.doStart();
@@ -93,7 +93,7 @@ if(librariesSb.length()>0){
 		runStat.setParams();
 
 		runStat.openSocket(true);
-		runStat.setAllPID(rootPid, fatherPid, pid, jobName);
+		runStat.setAllPID(pid, pid, pid, jobName);
 		runStat.startThreadStat(clientHost, portStats);
 		runStat.updateStatOnJob(routines.system.RunStat.JOBSTART, "");
 
@@ -110,14 +110,6 @@ if(librariesSb.length()>0){
 	protected ProducerTemplate findOrCreateCamelTemplate() {
 		return getCamelContexts().get(0).createProducerTemplate();
 	}
-		
-	public void stop() throws Exception {
-		super.stop();
-	}
-
-	public void shutdown() throws Exception {
-		super.shutdown();
-	}
 	
 	protected ModelFileGenerator createModelFileGenerator()
 		throws JAXBException {
@@ -128,7 +120,6 @@ if(librariesSb.length()>0){
 	class MyStatThread implements Runnable {
 
 		routines.system.CamelStat stats;
-		boolean isFinished;
 
 		public MyStatThread(routines.system.CamelStat stats) {
 			this.stats = stats;
@@ -157,7 +148,21 @@ if(librariesSb.length()>0){
 	}
 <% } //if stats %>
 
-
+};
+	mainSupport.run();
+}
+	public void stop() throws Exception{
+		if(mainSupport != null){
+			mainSupport.stop();
+		}
+	}
+	
+	public void shutdown() throws Exception{
+		if(mainSupport != null){
+			mainSupport.shutdown();
+		}
+	}
+	
 	private Properties defaultProps = new Properties();
 
 	public class ContextProperties extends Properties {
@@ -208,21 +213,12 @@ for (IContextParameter ctxParam : params) {
 	}
 
 	private ContextProperties context = new ContextProperties();
-	public ContextProperties getContext() {
-		return this.context;
-	}
 	
-	private final String jobVersion = "<%=process.getVersion() %>";
+	//private final String jobVersion = "<%=process.getVersion() %>";
 	private final String jobName = "<%=codeGenArgument.getJobName() %>";
-	private final String projectName = "<%=codeGenArgument.getCurrentProjectName() %>";
+	//private final String projectName = "<%=codeGenArgument.getCurrentProjectName() %>";
 	
 	public Integer errorCode = null;
-	public String resuming_logs_dir_path = null;
-	public String resuming_checkpoint_path = null;
-	public String parent_part_launcher = null;
-	private String resumeEntryMethodName = null;
-	private boolean globalResumeTicket = false;
-
 	
 	public boolean watch = false;
 	//portStats is null, it means don't execute the statistics
@@ -232,13 +228,7 @@ for (IContextParameter ctxParam : params) {
 	public String defaultClientHost = "localhost";
 	public String contextStr = "Default";
 	public String pid = "0";
-	public String rootPid = null;
-	public String fatherPid = null;
-	public String fatherNode = null;
 	public long startTime = 0;
-	public boolean isChildJob = false;
-	
-	private boolean execStat = true;
 	
 	private Properties context_param = new Properties();
     public Map<String, Object> parentContextMap = new HashMap<String, Object>();
@@ -282,31 +272,6 @@ for (IContextParameter ctxParam : params) {
 	    	pid = TalendString.getAsciiRandomString(6);
 	    }
 
-    	if (rootPid==null) {
-    		rootPid = pid;
-    	}
-    	if (fatherPid==null) {    	 	
-    		fatherPid = pid;    		
-    	}else{
-    		isChildJob = true;
-    	}
-
-<%
-		if (stats) {
-%>    	
-			if (portStats != null) {
-				// portStats = -1; //for testing
-				if (portStats < 0 || portStats > 65535) {
-					// issue:10869, the portStats is invalid, so this client socket can't open
-					System.err.println("The statistics socket port " + portStats + " is invalid.");
-					execStat = false;
-				}
-			}else{
-				execStat = false;
-			}            	
-<%
-		}
-%> 
 		//read context values
 		readContextValues(contextStr);
 		
@@ -418,13 +383,7 @@ for (IContextParameter ctxParam : params) {
 	}
 
 	private void evalParam(String arg) {
-		if (arg.startsWith("--resuming_logs_dir_path")) {
-			resuming_logs_dir_path = arg.substring(25);
-		} else if (arg.startsWith("--resuming_checkpoint_path")) {
-			resuming_checkpoint_path = arg.substring(27);
-		} else if (arg.startsWith("--parent_part_launcher")) {
-			parent_part_launcher = arg.substring(23);
-		} else if (arg.startsWith("--watch")) {
+	if (arg.startsWith("--watch")) {
     		watch = true;
     	} else if (arg.startsWith("--stat_port=")) {
 			String portStatsStr = arg.substring(12);
@@ -437,13 +396,7 @@ for (IContextParameter ctxParam : params) {
     		clientHost = arg.substring(14);
     	} else if (arg.startsWith("--context=")) {
     		contextStr = arg.substring(10);
-    	} else if (arg.startsWith("--father_pid=")) {
-    		fatherPid = arg.substring(13);
-    	} else if (arg.startsWith("--root_pid=")) {
-    		rootPid = arg.substring(11);
-    	} else if (arg.startsWith("--father_node=")) {
-    		fatherNode = arg.substring(14);
-    	} else if (arg.startsWith("--pid=")) {
+    	}if (arg.startsWith("--pid=")) {
     		pid = arg.substring(6);
     	} else if (arg.startsWith("--context_param")) {   		 
             String keyValue = arg.substring(16);           
@@ -455,17 +408,17 @@ for (IContextParameter ctxParam : params) {
 	}
 }
 
-class TalendRouteRegistry implements Registry {
+class <%=process.getName()%>_Registry implements Registry {
 
 	private Map<String, Object> map = new HashMap<String, Object>();
 
 	private Registry wrapped = null;
 
-	public TalendRouteRegistry() {
+	public <%=process.getName()%>_Registry() {
 		this(null);
 	}
 
-	public TalendRouteRegistry(Registry wrapped) {
+	public <%=process.getName()%>_Registry(Registry wrapped) {
 		this.wrapped = wrapped;
 	}
 

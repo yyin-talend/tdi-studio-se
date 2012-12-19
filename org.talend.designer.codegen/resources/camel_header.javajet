@@ -42,7 +42,9 @@
 
 	List< ? extends INode> processNodes = (List< ? extends INode>)process.getGeneratingNodes();
 %>
-		return new RouteBuilder() {
+			/**
+			* please initial uri map 
+			*/
 			public void configure() throws Exception {
 <%
 	for (INode node : processNodes) {

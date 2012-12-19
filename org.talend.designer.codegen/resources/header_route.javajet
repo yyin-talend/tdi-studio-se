@@ -67,7 +67,6 @@ package <%= packageName %>;
 	importsSet.add("import java.util.Map");
 	importsSet.add("import javax.xml.bind.JAXBException");
 	importsSet.add("import org.apache.camel.ProducerTemplate");
-	importsSet.add("import org.apache.camel.builder.RouteBuilder");
 	importsSet.add("import org.apache.camel.impl.DefaultCamelContext");
 	importsSet.add("import org.apache.camel.main.MainSupport");
 	importsSet.add("import routines.TalendString");
@@ -75,7 +74,9 @@ package <%= packageName %>;
 	importsSet.add("import org.apache.camel.view.ModelFileGenerator");
 	importsSet.add("import org.apache.camel.spi.Registry");
 	importsSet.add("import org.apache.camel.impl.DefaultCamelContext");
-	importsSet.add("import org.apache.camel.osgi.CamelContextFactory");
+	importsSet.add("import org.apache.camel.spring.SpringRouteBuilder");
+	importsSet.add("import org.apache.camel.osgi.SpringCamelContextFactory");
+	importsSet.add("import org.springframework.context.support.ClassPathXmlApplicationContext");
 	importsSet.add("import  org.apache.camel.CamelContext");
 	importsSet.add("import  java.util.Properties");
 	importsSet.add("import  org.apache.camel.management.JmxNotificationEventNotifier");
@@ -136,7 +137,7 @@ package <%= packageName %>;
  * @version <%=version %>
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %>
  */
- public class <%=process.getName()%> extends MainSupport implements TalendESBRoute {
+ public class <%=process.getName()%> extends SpringRouteBuilder implements TalendESBRoute {
 
 	public <%=process.getName()%>(){
 	}

@@ -24,12 +24,15 @@
 %>
 
 		}
-			};
-		}	
+		
+		private MainSupport mainSupport = null;
+		private void run() throws Exception{
+			
+			mainSupport = new MainSupport(){
 		
 		/**
 		* create a fully configured CameContext and add into map
-		* the Registry of it is #TalendRouteRegistry
+		* the Registry of it is #<%=process.getName()%>_Registry
 		* @return 
 		*		<code>key: <%=process.getName()%>-ctx<code>
 		*       <code>value: DefaultCamelContext<code>
@@ -37,7 +40,15 @@
 		*/
 		public Map<String, CamelContext> getCamelContextMap() {
 			Map<String,CamelContext> answer = new HashMap<String, CamelContext>();
-			DefaultCamelContext camelContext = camelContext();
+			SpringCamelContextFactory contextFactory = new SpringCamelContextFactory();
+			contextFactory.setApplicationContext(new ClassPathXmlApplicationContext("META-INF/spring/<%=process.getName().toLowerCase()%>.xml"));
+			if(bundleContext != null){
+				contextFactory.setBundleContext(bundleContext);
+			}
+			DefaultCamelContext camelContext = contextFactory.createContext();
+			if(bundleContext != null){
+				bundleContext.registerService(CamelContext.class.getName(), camelContext, null);
+			}
 <%		
 			//process cConfig components first 
 			List<? extends INode> camelContextNodes = process.getNodesOfType("cConfig");
@@ -47,8 +58,9 @@
 <%
 			} 
 %>
-			TalendRouteRegistry contextRegister = new TalendRouteRegistry(camelContext.getRegistry());
+			<%=process.getName()%>_Registry contextRegister = new <%=process.getName()%>_Registry(camelContext.getRegistry());
 			camelContext.setRegistry(contextRegister);
+
 <%
 			//then process cBeanRegister components
 			List<? extends INode> beanRegisterNodes = process.getNodesOfType("cBeanRegister");
@@ -270,41 +282,4 @@
 			answer.put("<%=process.getName() + "-ctx"%>", camelContext);
 			camelContext.setName("<%=process.getName() + "-ctx"%>");
 			return answer;
-		}
-		
-		/**
-		* create a simple DefaultCamelContext 
-		* please use #getCamelContextMap() to get a fully configured CamelContext
-		* @return DefaultCamelContext
-		*/
-		public DefaultCamelContext camelContext() {
-							DefaultCamelContext camelContext;
-<%
-			boolean startable = false;
-			for (INode node : (List< ? extends INode>)process.getGraphicalNodes()) {
-				Object value = node.getPropertyValue("STARTABLE");
-				startable = value == null? false:(Boolean)value;
-				if(startable){
-					break;
-				}
-			}
-			
-			if (startable) { 
-%>
-				if (bundleContext != null) {
-					CamelContextFactory factory = new CamelContextFactory();
-					factory.setBundleContext(bundleContext);
-					camelContext = factory.createContext();
-					bundleContext.registerService(CamelContext.class.getName(), camelContext, null);
-				} else {
-					camelContext = new DefaultCamelContext();
-				}
-<%
-			} else {
-%>
-				camelContext = new DefaultCamelContext();
-<%
-			}
-%>
-			return camelContext;
 		}
