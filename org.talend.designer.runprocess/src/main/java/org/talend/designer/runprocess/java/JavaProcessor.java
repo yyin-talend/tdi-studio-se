@@ -223,6 +223,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         this.context = context;
     }
 
+    @Override
     public void initPath() throws ProcessorException {
         initCodePath(context);
     }
@@ -370,10 +371,10 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                         List<? extends INode> allNodes = this.process.getGeneratingNodes();
                         for (int i = 0; i < allNodes.size(); i++) {
                             if (allNodes.get(i) instanceof INode) {
-                                INode node = (INode) allNodes.get(i);
+                                INode node = allNodes.get(i);
                                 if (rulesService.isRuleComponent(node)
                                         && !node.getElementParameter(EParameterName.PROPERTY_TYPE.getName()).getValue()
-                                                .toString().equals("BUILT_IN")) { //$NON-NLS-N$
+                                                .toString().equals("BUILT_IN")) {
                                     useGenerateRuleFiles = true;
                                     break;
                                 }
@@ -547,6 +548,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         return document.get();
     }
 
+    @Override
     public void setSyntaxCheckableEditor(ISyntaxCheckableEditor checkableEditor) {
         this.checkableEditor = checkableEditor;
     }
@@ -701,8 +703,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         final String javaLineBrekPointMarker = "org.eclipse.jdt.debug.javaLineBreakpointMarker"; //$NON-NLS-1$
         codeFile.deleteMarkers(javaLineBrekPointMarker, true, IResource.DEPTH_ZERO);
 
-        for (int lineNumber = 0; lineNumber < lines.length; lineNumber++) {
-            JDIDebugModel.createLineBreakpoint(codeFile, typeName, lines[lineNumber] + 1, -1, -1, 0, true, null);
+        for (int line : lines) {
+            JDIDebugModel.createLineBreakpoint(codeFile, typeName, line + 1, -1, -1, 0, true, null);
         }
     }
 
@@ -868,10 +870,14 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                 classPathSeparator = ":"; //$NON-NLS-1$
             }
         }
+        boolean exportingJob = ProcessorUtilities.isExportConfig();
+
         Set<String> neededLibraries = JavaProcessorUtilities.getNeededLibrariesForProcess(process);
+        if (!exportingJob) {
+            JavaProcessorUtilities.addLog4jToJarList(neededLibraries);
+        }
         JavaProcessorUtilities.checkJavaProjectLib(neededLibraries);
 
-        boolean exportingJob = ProcessorUtilities.isExportConfig();
         String unixRootPathVar = "$ROOT_PATH"; //$NON-NLS-1$
         String unixRootPath = unixRootPathVar + "/"; //$NON-NLS-1$
 
@@ -891,6 +897,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                     libPath.append(singleLibPath).append(classPathSeparator);
                 }
             }
+        }
+        if (!exportingJob) {
+            libPath.append(".").append(classPathSeparator); //$NON-NLS-1$
         }
 
         // init project_path
@@ -1023,8 +1032,8 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         String[] vmargs = replaceAll.split(" "); //$NON-NLS-1$
         /* check parameter won't happened on exportingJob */
         if (!exportingJob) {
-            String fileEncoding = System.getProperty("file.encoding"); //$NON-NLS-N$
-            String encodingFromIni = "-Dfile.encoding=" + fileEncoding; //$NON-NLS-N$
+            String fileEncoding = System.getProperty("file.encoding");
+            String encodingFromIni = "-Dfile.encoding=" + fileEncoding;
             List<String> asList = convertArgsToList(vmargs);
             boolean encodingSetInjob = false;
             for (String arg : asList) {
@@ -1123,6 +1132,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     }
 
     // generate the ILaunchConfiguration with the parameter string.
+    @Override
     public Object saveLaunchConfigurationWithParam(String parameterStr) throws CoreException {
 
         /*
@@ -1176,6 +1186,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#addingBreakpoint(org
      * .eclipse.jdt.debug.core.IJavaDebugTarget, org.eclipse.jdt.debug.core.IJavaBreakpoint)
      */
+    @Override
     public void addingBreakpoint(IJavaDebugTarget target, IJavaBreakpoint breakpoint) {
 
     }
@@ -1187,6 +1198,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      * breakpointHasCompilationErrors(org.eclipse.jdt.debug.core. IJavaLineBreakpoint,
      * org.eclipse.jdt.core.dom.Message[])
      */
+    @Override
     public void breakpointHasCompilationErrors(IJavaLineBreakpoint breakpoint, Message[] errors) {
         // TODO Auto-generated method stub
 
@@ -1198,6 +1210,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      * @seeorg.eclipse.jdt.debug.core.IJavaBreakpointListener# breakpointHasRuntimeException(org.eclipse.jdt.debug.core.
      * IJavaLineBreakpoint, org.eclipse.debug.core.DebugException)
      */
+    @Override
     public void breakpointHasRuntimeException(IJavaLineBreakpoint breakpoint, DebugException exception) {
         // TODO Auto-generated method stub
 
@@ -1209,6 +1222,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointHit(org. eclipse.jdt.debug.core.IJavaThread,
      * org.eclipse.jdt.debug.core.IJavaBreakpoint)
      */
+    @Override
     public int breakpointHit(IJavaThread thread, IJavaBreakpoint breakpoint) {
         // TODO Auto-generated method stub
         return 0;
@@ -1220,6 +1234,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointInstalled
      * (org.eclipse.jdt.debug.core.IJavaDebugTarget , org.eclipse.jdt.debug.core.IJavaBreakpoint)
      */
+    @Override
     public void breakpointInstalled(IJavaDebugTarget target, IJavaBreakpoint breakpoint) {
         updateGraphicalNodeBreaking(breakpoint, false);
     }
@@ -1230,6 +1245,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointRemoved(
      * org.eclipse.jdt.debug.core.IJavaDebugTarget, org.eclipse.jdt.debug.core.IJavaBreakpoint)
      */
+    @Override
     public void breakpointRemoved(IJavaDebugTarget target, IJavaBreakpoint breakpoint) {
         if (!target.isTerminated()) {
             updateGraphicalNodeBreaking(breakpoint, true);
@@ -1277,6 +1293,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                             final INode currentNode = node;
                             Display.getDefault().syncExec(new Runnable() {
 
+                                @Override
                                 public void run() {
                                     ((Node) currentNode).removeStatus(Process.BREAKPOINT_STATUS);
 
@@ -1290,6 +1307,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
                             final INode currentNode = node;
                             Display.getDefault().syncExec(new Runnable() {
 
+                                @Override
                                 public void run() {
                                     ((Node) currentNode).addStatus(Process.BREAKPOINT_STATUS);
 
@@ -1316,10 +1334,12 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
      * (org.eclipse.jdt.debug.core.IJavaDebugTarget , org.eclipse.jdt.debug.core.IJavaBreakpoint,
      * org.eclipse.jdt.debug.core.IJavaType)
      */
+    @Override
     public int installingBreakpoint(IJavaDebugTarget target, IJavaBreakpoint breakpoint, IJavaType type) {
         return 0;
     }
 
+    @Override
     public Property getProperty() {
         if (property == null) {
             property = ItemCacheManager.getProcessItem(process.getId(), process.getVersion()).getProperty();

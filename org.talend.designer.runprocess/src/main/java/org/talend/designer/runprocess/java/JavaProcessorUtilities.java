@@ -13,7 +13,6 @@
 package org.talend.designer.runprocess.java;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -71,6 +70,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.LastGenerationInfo;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
@@ -145,6 +145,25 @@ public class JavaProcessorUtilities {
                 prj.open(IResource.BACKGROUND_REFRESH, null);
                 prj.setDescription(description, null);
             }
+        }
+
+        initLogFiles(prj);
+    }
+
+    /**
+     * DOC ycbai Comment method "initLogFiles".
+     * 
+     * Create common-logging.properties and log4j.properties files if they are non-existent.
+     * 
+     * @param project
+     */
+    private static void initLogFiles(IProject project) {
+        IRunProcessService service = null;
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IRunProcessService.class)) {
+            service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
+        }
+        if (service != null) {
+            service.updateLogFiles(project);
         }
     }
 
@@ -488,8 +507,7 @@ public class JavaProcessorUtilities {
                 ExceptionHandler.process(be1);
             }
 
-            // http://jira.talendforge.org/browse/TESB-4089
-            synchronizeLog4jFile();
+            checkAndUpdateLog4jFile();
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
@@ -551,6 +569,8 @@ public class JavaProcessorUtilities {
         for (String jar : optionalJarsOnlyForRoutines) {
             listModulesReallyNeeded.add(jar);
         }
+
+        addLog4jToJarList(listModulesReallyNeeded);
 
         File libDir = getJavaProjectLibFolder();
         if ((libDir != null) && (libDir.isDirectory())) {
@@ -631,6 +651,30 @@ public class JavaProcessorUtilities {
         if (missingJars != null) {
             handleMissingJarsForProcess(missingJarsForRoutinesOnly, missingJarsForProcessOnly, missingJars);
         }
+    }
+
+    /**
+     * DOC ycbai Comment method "addLog4jToJarList".
+     * 
+     * Add log4j jar to jarList if it is non-existent.
+     * 
+     * @param jarList
+     * @return
+     */
+    public static boolean addLog4jToJarList(Collection<String> jarList) {
+        boolean added = false;
+        boolean foundLog4jJar = false;
+        for (String jar : jarList) {
+            if (jar.matches("log4j-\\d+\\.\\d+\\.\\d+\\.jar")) { //$NON-NLS-1$
+                foundLog4jJar = true;
+            }
+        }
+        if (!foundLog4jJar) {
+            jarList.add("log4j-1.2.15.jar"); //$NON-NLS-1$
+            added = true;
+        }
+
+        return added;
     }
 
     /**
@@ -735,13 +779,7 @@ public class JavaProcessorUtilities {
         return javaProject;
     }
 
-    /**
-     * Create default log4j.properties file in project src folder if it doesn't exist.
-     * 
-     * @param prj
-     * @throws CoreException
-     */
-    public static void synchronizeLog4jFile() {
+    public static void checkAndUpdateLog4jFile() {
         try {
             if (javaProject == null) {
                 initializeProject();
@@ -750,11 +788,11 @@ public class JavaProcessorUtilities {
             Path path = new Path(JavaUtils.JAVA_SRC_DIRECTORY);
             IFile logFile = javaProject.getProject().getFile(path.append("log4j.properties"));
             if (!logFile.exists()) {
-                InputStream source = JavaProcessorUtilities.class.getResourceAsStream("log4j.properties.src");
-                logFile.create(source, true, null);
+                initLogFiles(javaProject.getProject());
             }
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }
     }
+
 }
