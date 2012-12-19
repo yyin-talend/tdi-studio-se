@@ -3378,16 +3378,20 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         }
 
         // if there is any NodeContainer, need to reaffect them to an existing subjob
+        int n = 0;
         for (Element element : new ArrayList<Element>(elem)) {
             if (element instanceof NodeContainer) {
                 Node node = ((NodeContainer) element).getNode();
                 SubjobContainer sjc = mapSubjobStarts.get(node.getDesignSubjobStartNode());
                 if (sjc != null) {
                     sjc.addNodeContainer(node.getNodeContainer());
-                    elem.remove(node.getNodeContainer());
+                    if (!elem.remove(node.getNodeContainer())) {
+                        elem.remove(n);
+                    }
                     updatedSubjobContainers.add(sjc);
                 }
             }
+            n++;
         }
         fireStructureChange(NEED_UPDATE_JOB, elem);
         // update modified subjobs
