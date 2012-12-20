@@ -19,6 +19,7 @@ import java.util.Map;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.talend.core.model.components.IODataComponent;
+import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
@@ -79,27 +80,6 @@ public class ScdComponent extends AbstractExternalNode {
      * @see org.talend.core.model.process.IExternalNode#initialize()
      */
     public void initialize() {
-        // special handle scd's version columns ,set custom to be true
-        List<Object> listNames = getVertionColumnNames();
-        if (listNames.isEmpty()) {
-            return;
-        }
-        int customId = 0;
-        List<IMetadataTable> listTables = getScdNodeMetadataList();
-        for (IMetadataTable table : listTables) {
-            if (table instanceof MetadataTable) {
-                MetadataTable metable = (MetadataTable) table;
-                List<IMetadataColumn> metColumns = metable.getListColumns();
-                for (IMetadataColumn column : metColumns) {
-                    if (listNames.contains(column.getLabel())) {
-                        column.setCustomId(customId);
-                        column.setCustom(true);
-                        column.setReadOnly(true);
-                        customId++;
-                    }
-                }
-            }
-        }
     }
 
     /*
@@ -165,8 +145,12 @@ public class ScdComponent extends AbstractExternalNode {
 
     @Override
     public void metadataInputChanged(IODataComponent dataComponent, String connectionToApply) {
+    	List<ColumnNameChanged> columnNameList = dataComponent.getColumnNameChanged();
+        if (columnNameList != null && columnNameList.size() > 0) {
+            return;
+        }
         // when delete columns,synchronization filed type
-        IMetadataTable metadataTable = dataComponent.getConnMetadataTable();
+        IMetadataTable metadataTable = dataComponent.getTable();
         List<IMetadataColumn> listColumns = metadataTable.getListColumns();
         List<String> listNames = new ArrayList<String>();
         for (IMetadataColumn meta : listColumns) {
@@ -198,10 +182,6 @@ public class ScdComponent extends AbstractExternalNode {
             IElementParameter l2FieldsParam = getElementParameter(ScdParameterConstants.L2_FIELDS_PARAM_NAME);
             List<Map<String, String>> values = (List<Map<String, String>>) l2FieldsParam.getValue();
             updateFileds(listNames, list, values, l2FieldsParam, useL2);
-            // update ListColumns
-            if (useL2.getValue().equals(Boolean.FALSE)) {
-                updateScdNodeColumn(sorcevalues);
-            }
         }
         // update three filed type
         IElementParameter useL3 = getElementParameter(ScdParameterConstants.USE_L3);
@@ -211,32 +191,6 @@ public class ScdComponent extends AbstractExternalNode {
             updateFileds(listNames, list, values, l3FieldsParam, useL3);
         }
 
-    }
-
-    private void updateScdNodeColumn(List<Map<String, String>> sorcevalues) {
-        List<Object> versionColumns = getVertionColumnNames();
-        IElementParameter sourceKey = getElementParameter(ScdParameterConstants.SURROGATE_KEY);
-        versionColumns.remove(sourceKey.getValue());
-        List<IMetadataColumn> needRemoveColumns = new ArrayList<IMetadataColumn>();
-        List<IMetadataTable> listTables = getScdNodeMetadataList();
-        List<IMetadataColumn> needUpdataColumn = null;
-        for (IMetadataTable table : listTables) {
-            if (table instanceof MetadataTable) {
-                MetadataTable metable = (MetadataTable) table;
-                List<IMetadataColumn> metColumns = metable.getListColumns();
-                for (IMetadataColumn column : metColumns) {
-                    if (versionColumns.contains(column.getLabel())) {
-                        needRemoveColumns.add(column);
-                        if (needUpdataColumn == null) {
-                            needUpdataColumn = metColumns;
-                        }
-                    }
-                }
-            }
-        }
-        if (needUpdataColumn != null) {
-            needUpdataColumn.removeAll(needRemoveColumns);
-        }
     }
 
     private void updateFileds(List<String> listNames, List<? extends IElementParameter> list, List<Map<String, String>> values,
@@ -271,46 +225,5 @@ public class ScdComponent extends AbstractExternalNode {
         if (parameter2 != null && values != null && values.isEmpty()) {
             parameter2.setValue(false);
         }
-    }
-
-    private List<IMetadataTable> getScdNodeMetadataList() {
-        List<IMetadataTable> metadataTables = new ArrayList<IMetadataTable>();
-        IProcess process = this.getProcess();
-        List<? extends INode> nodeList = process.getGraphicalNodes();
-        for (INode node : nodeList) {
-            IExternalNode component = node.getExternalNode();
-            if (component != null && component instanceof ScdComponent && component.equals(this)) {
-                metadataTables = node.getMetadataList();
-                break;
-            }
-        }
-        return metadataTables;
-    }
-
-    private List<Object> getVertionColumnNames() {
-        IElementParameter sourceKey = getElementParameter(ScdParameterConstants.SURROGATE_KEY);
-        IElementParameter startData = getElementParameter(ScdParameterConstants.L2_STARTDATE_FIELD);
-        IElementParameter endData = getElementParameter(ScdParameterConstants.L2_ENDDATE_FIELD);
-        IElementParameter version = getElementParameter(ScdParameterConstants.L2_VERSION_FIELD);
-        IElementParameter active = getElementParameter(ScdParameterConstants.L2_ACTIVE_FIELD);
-        List<Object> list = new ArrayList<Object>();
-        if (sourceKey != null && startData != null && endData != null && version != null && active != null) {
-            if (!("").equals(sourceKey.getValue())) {
-                list.add(sourceKey.getValue());
-            }
-            if (!("").equals(startData.getValue())) {
-                list.add(startData.getValue());
-            }
-            if (!("").equals(endData.getValue())) {
-                list.add(endData.getValue());
-            }
-            if (!("").equals(version.getValue())) {
-                list.add(version.getValue());
-            }
-            if (!("").equals(active.getValue())) {
-                list.add(active.getValue());
-            }
-        }
-        return list;
     }
 }
