@@ -100,44 +100,31 @@ if (metadatas != null && metadatas.size()>0) {
 	  }
 	}
 
-	boolean docInput = false;
-
     if (outConnName != null && inputConnName!=null) {
     %>
       <%=outConnName %> = new <%=outConnName %>Struct();
     <%
-    	boolean docOutput = false;
-        if(inputColumnList!=null) {
+        for(IMetadataColumn outputColumn : outputColumnList) {
         	for(IMetadataColumn inputColumn : inputColumnList) {
-        		if(doc!=null && doc.equals(inputColumn.getLabel())) {
-        			if("id_Document".equals(inputColumn.getTalendType())) {
-        				docInput = true;
-        			}
-        			break;
-        		}
-        	}
-        }
-    
-        if(docInput && outputColumnList!=null) {
-        	for(IMetadataColumn outputColumn : outputColumnList) {
-        		if(doc!=null && doc.equals(outputColumn.getLabel())) {
-        			if("id_Document".equals(outputColumn.getTalendType())) {
-        				docOutput = true;
-        			}
-        			break;
-        		}
-        	}
-        }
-        
-        if(docInput && docOutput) {
-    %>
+        		if (outputColumn.getLabel().equals(inputColumn.getLabel())) {
+	        		if(doc!=null && doc.equals(outputColumn.getLabel())) {
+	        			if("id_Document".equals(outputColumn.getTalendType())) {
+%>
       <%=outConnName %>.<%=doc%> = <%=inputConnName%>.<%=doc%>;
-    <%
-        } else {
-    %>
+<%
+        				} else {
+%>
       <%=outConnName %>.<%=doc%> = <%=inputConnName%>.<%=doc%>.toString();
-    <% 
-    	}
+<% 
+    					}
+    				} else { // to those which do not match doc columns
+%>
+	<%=outConnName %>.<%=outputColumn.getLabel()%> = <%=inputConnName%>.<%=inputColumn.getLabel()%>;
+<%
+    				}
+    			} // if input column matches output column
+    		} // for input column
+    	} // for output column
     }%>
     input_<%=cid %> = <%=inputConnName%>.<%=doc%>.toString();
 
@@ -245,7 +232,7 @@ if (metadatas != null && metadatas.size()>0) {
           	<%
             for(IMetadataColumn column : columnList) {
 				if (!"xml".equals(column.getLabel()) && !"errorCode".equals(column.getLabel()) && !"errorMessage".equals(column.getLabel())) {
-					if(docInput && doc!=null && doc.equals(column.getLabel()) && "id_String".equals(column.getTalendType())) {
+					if(column.getLabel().equals(doc) && "id_String".equals(column.getTalendType())) {
 			%>
 		  <%=rejectConnName%>.<%=column.getLabel()%> = <%=inputConnName %>.<%=column.getLabel() %>.toString();
 			<%
