@@ -857,7 +857,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                 }
             }
             // found
-            if (theChanged != null) {
+            if (theChanged != null && param.getValue() != null) {
                 for (Map<String, Object> currentLine : (List<Map<String, Object>>) param.getValue()) {
                     if (currentLine.get(tmpParam.getName()).equals(componentUniqueName + theChanged.getOldName())) {
                         currentLine.put(tmpParam.getName(), componentUniqueName + theChanged.getNewName());
