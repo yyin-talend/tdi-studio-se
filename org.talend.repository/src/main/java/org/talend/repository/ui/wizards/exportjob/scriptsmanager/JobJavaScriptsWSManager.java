@@ -123,12 +123,24 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         // editor mode.
         ProcessorUtilities.setExportConfig("java", "", ""); //$NON-NLS-1$
 
+        for (ExportFileResource exportResource : process) {
+            ProcessItem processItem = (ProcessItem) exportResource.getItem();
+            String selectedJobVersion = processItem.getProperty().getVersion();
+            if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
+                selectedJobVersion = this.getSelectedJobVersion();
+            }
+            if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
+                generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
+                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren), progressMonitor);
+            }
+        }
+
         // Gets talend libraries
         List<URL> talendLibraries = getExternalLibraries(true, process);
         libResource.addResources(talendLibraries);
 
-        for (int i = 0; i < process.length; i++) {
-            ProcessItem processItem = (ProcessItem) process[i].getItem();
+        for (ExportFileResource proces : process) {
+            ProcessItem processItem = (ProcessItem) proces.getItem();
 
             String selectedJobVersion = processItem.getProperty().getVersion();
             if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
@@ -136,16 +148,16 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             }
 
             // generate the source files
-            String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
+            String libPath = calculateLibraryPathFromDirectory(proces.getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
             String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
                     + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
             ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
 
-            if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
-                generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren), progressMonitor);
-            }
+            // if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
+            // generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
+            // tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren), progressMonitor);
+            // }
             // generate the WSDL file
             ExportFileResource wsdlFile = getWSDLFile(processItem, isOptionChoosed(ExportChoice.needWSDL), talendLibraries);
             list.add(wsdlFile);
@@ -165,7 +177,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             libResource.addResources(getJobScripts(processItem, selectedJobVersion, needJob));
 
             // dynamic db xml mapping
-            addXmlMapping(process[i], isOptionChoosed(ExportChoice.needSourceCode));
+            addXmlMapping(proces, isOptionChoosed(ExportChoice.needSourceCode));
 
         }
 
@@ -224,8 +236,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             }
         }
 
-        for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
-            JobInfo jobInfo = iter.next();
+        for (JobInfo jobInfo : list) {
             libResource.addResources(getJobScripts(projectName, jobInfo.getJobName(), jobInfo.getJobVersion(),
                     isOptionChoosed(ExportChoice.needJobScript)));
             addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), contextResource,
@@ -529,6 +540,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
          * @param args String[] command-line arguments.
          * @return
          */
+        @Override
         protected int run(String[] args) {
 
             // Parse the arguments
