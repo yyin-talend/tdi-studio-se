@@ -1134,7 +1134,7 @@ public class StatsAndLogsManager {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(54);
         param.setRepositoryValue("SCHEMA"); //$NON-NLS-1$
-        param.setShowIf("(DB_TYPE=='OCLE' or DB_TYPE=='POSTGRESQL' or DB_TYPE=='POSTGRESPLUS' or DB_TYPE=='OCLE_OCI' or DB_TYPE=='MSSQL' or DB_TYPE=='INFORMIX' or DB_TYPE=='IBM_DB2' ) and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
+        param.setShowIf("(DB_TYPE=='OCLE' or DB_TYPE=='POSTGRESQL' or DB_TYPE=='POSTGRESPLUS' or DB_TYPE=='OCLE_OCI' or DB_TYPE=='MSSQL' or DB_TYPE=='INFORMIX' or DB_TYPE=='IBM_DB2' or DB_TYPE=='SYBASE' ) and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')"); //$NON-NLS-1$
         paramList.add(param);
 
         // username

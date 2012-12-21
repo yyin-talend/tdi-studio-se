@@ -550,19 +550,19 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         if (value.indexOf("Access") != -1) {//$NON-NLS-1$
             elementParameter.setValue(value);
             elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ACCESS_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.ACCESS_VERSION_DRIVER);
+            elementParameter.setListItemsValue(StatsAndLogsConstants.ACCESS_VERSION_CODE);
         } else if (value.indexOf("ORACLE") != -1) {//$NON-NLS-1$
             elementParameter.setValue(value);
             elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ORACLE_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER);
+            elementParameter.setListItemsValue(StatsAndLogsConstants.ORACLE_VERSION_CODE);
         } else if (value.indexOf("AS400") != -1) {//$NON-NLS-1$
             elementParameter.setValue(value);
             elementParameter.setListItemsDisplayName(StatsAndLogsConstants.AS400_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.AS400_VERSION_DRIVER);
+            elementParameter.setListItemsValue(StatsAndLogsConstants.AS400_VERSION_CODE);
         } else if (value.indexOf("MYSQL") != -1) {//$NON-NLS-1$
             elementParameter.setValue(value);
             elementParameter.setListItemsDisplayName(StatsAndLogsConstants.MYSQL_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER);
+            elementParameter.setListItemsValue(StatsAndLogsConstants.MYSQL_VERSION_CODE);
         }
     }
 
