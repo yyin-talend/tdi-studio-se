@@ -200,7 +200,7 @@ if(execStat){
 				for (IConnection inLineConn : allInLineJobConns) {
 %>
 if(execStat){				
-           			runStat.updateStatOnConnection("<%=inLineConn.getUniqueName() %>", 3, "exec" + NB_ITERATE_<%=iterateNodeName %>);
+           			runStat.updateStatOnConnection("<%=inLineConn.getUniqueName() %>", 3, 0);
 }           			
 <%        		
 				}
