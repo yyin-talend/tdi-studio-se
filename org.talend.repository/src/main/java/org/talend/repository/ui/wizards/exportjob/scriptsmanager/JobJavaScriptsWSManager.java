@@ -124,6 +124,18 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         // editor mode.
         ProcessorUtilities.setExportConfig("java", "", ""); //$NON-NLS-1$
 
+        for (ExportFileResource exportResource : process) {
+            ProcessItem processItem = (ProcessItem) exportResource.getItem();
+            String selectedJobVersion = processItem.getProperty().getVersion();
+            if (!isMultiNodes() && this.getSelectedJobVersion() != null) {
+                selectedJobVersion = this.getSelectedJobVersion();
+            }
+            if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
+                generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
+                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren), progressMonitor);
+            }
+        }
+
         // Gets talend libraries
         List<URL> talendLibraries = getExternalLibraries(true, process);
         libResource.addResources(talendLibraries);
@@ -143,10 +155,10 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
                     + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
             ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
 
-            if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
-                generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren), progressMonitor);
-            }
+            // if (!isOptionChoosed(ExportChoice.doNotCompileCode)) {
+            // generateJobFiles(processItem, contextName, selectedJobVersion, statisticPort != IProcessor.NO_STATISTICS,
+            // tracePort != IProcessor.NO_TRACES, isOptionChoosed(ExportChoice.applyToChildren), progressMonitor);
+            // }
             // generate the WSDL file
             ExportFileResource wsdlFile = getWSDLFile(processItem, isOptionChoosed(ExportChoice.needWSDL), talendLibraries);
             list.add(wsdlFile);
