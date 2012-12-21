@@ -288,7 +288,7 @@ public class JobSettingsManager {
         param = new ElementParameter(process);
         param.setName(EParameterName.IMPLICIT_TCONTEXTLOAD.getName());
         param.setValue(false);
-        param.setGroupDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName()); //$NON-NLS-1$
+        param.setGroupDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName());
         param.setDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName());
         param.setFieldType(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
@@ -640,7 +640,7 @@ public class JobSettingsManager {
         final String schemaCondition = JobSettingsConstants
                 .addBrackets(dbTypeName
                         + " =='OCLE' or " + dbTypeName //$NON-NLS-1$
-                        + " =='POSTGRESQL' or " + dbTypeName + " =='POSTGRESPLUS' or " + dbTypeName + " =='OCLE_OCI' or " + dbTypeName + " =='MSSQL' or " + dbTypeName + " =='INFORMIX'"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$//$NON-NLS-5$
+                        + " =='POSTGRESQL' or " + dbTypeName + " =='POSTGRESPLUS' or " + dbTypeName + " =='OCLE_OCI' or " + dbTypeName + " =='MSSQL' or " + dbTypeName + " =='INFORMIX' or " + dbTypeName + " =='IBM_DB2' or " + dbTypeName + " =='SYBASE'"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$//$NON-NLS-4$//$NON-NLS-5$
         param.setShowIf(schemaCondition + " and " + dbCondition); //$NON-NLS-1$
         param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
@@ -717,6 +717,7 @@ public class JobSettingsManager {
 
     private final static class IgnoreCaseComparator implements Comparator<String> {
 
+        @Override
         public int compare(String o1, String o2) {
             return o1.compareToIgnoreCase(o2);
         }
@@ -1170,9 +1171,9 @@ public class JobSettingsManager {
             }
         }
 
-        if (driverJarValue != null && driverJarValue.startsWith("[") && driverJarValue.endsWith("]")) { //$NON-NLS-N$ //$NON-NLS-N$
+        if (driverJarValue != null && driverJarValue.startsWith("[") && driverJarValue.endsWith("]")) {
             driverJarValue = driverJarValue.substring(1, driverJarValue.length() - 1);
-            if (driverJarValue != null && driverJarValue.startsWith("{") && driverJarValue.endsWith("}")) { //$NON-NLS-N$ //$NON-NLS-N$
+            if (driverJarValue != null && driverJarValue.startsWith("{") && driverJarValue.endsWith("}")) {
                 driverJarValue = driverJarValue.substring(1, driverJarValue.length() - 1);
             }
         }
