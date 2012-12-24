@@ -149,7 +149,7 @@ public class SettingValuesIntoHadoopPropertiesFortHiveConnection extends Abstrac
                     columnNameValueElement = TalendFileFactory.eINSTANCE.createElementValueType();
                     columnNameValueElement.setElementRef("VALUE"); //$NON-NLS-1$
                     columnNameValueElement.setValue(hadoopAdvancedProperties.get(i+1).getValue());
-                    hadoopAdvancedPropertiesParam2.getElementValue().add(columnNamePropertyElement);
+                    hadoopAdvancedPropertiesParam2.getElementValue().add(columnNameValueElement);
                 }
             }
         }
