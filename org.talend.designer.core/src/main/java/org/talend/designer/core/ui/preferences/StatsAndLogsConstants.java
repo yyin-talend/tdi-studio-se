@@ -126,7 +126,7 @@ public class StatsAndLogsConstants {
 
     public static final String[] ACCESS_VERSION_DISPLAY = new String[] { "Access 2003", "Access 2007" }; //$NON-NLS-1$ //$NON-NLS-2$
 
-    public static final String[] ACCESS_VERSION_CODE = new String[] { "ACCESS_2003", "ACCESS_2007" }; //$NON-NLS-1$ //$NON-NLS-2$ 
+    public static final String[] ACCESS_VERSION_CODE = new String[] { "Access_2003", "Access_2007" }; //$NON-NLS-1$ //$NON-NLS-2$ 
 
     public static final String[] ACCESS_VERSION_DRIVER = new String[] { "ACCESS_2003", "ACCESS_2007" }; //$NON-NLS-1$ 
 
