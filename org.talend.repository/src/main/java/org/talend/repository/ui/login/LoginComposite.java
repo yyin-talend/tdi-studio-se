@@ -2043,7 +2043,7 @@ public class LoginComposite extends Composite {
             restartBut.setVisible(false);
         } else if (!isWorkSpaceSame()) {
             manageViewer.getControl().setEnabled(false);
-            connectionsViewer.getControl().setEnabled(false);
+            connectionsViewer.getControl().setEnabled(true);
             manageProjectsButton.setEnabled(false);
             openProjectBtn.setEnabled(false);
             if (projectViewer != null) {
