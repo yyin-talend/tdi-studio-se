@@ -40,14 +40,16 @@
 		*/
 		public Map<String, CamelContext> getCamelContextMap() {
 			Map<String,CamelContext> answer = new HashMap<String, CamelContext>();
-			SpringCamelContextFactory contextFactory = new SpringCamelContextFactory();
-			contextFactory.setApplicationContext(new ClassPathXmlApplicationContext("META-INF/spring/<%=process.getName().toLowerCase()%>.xml"));
+			DefaultCamelContext camelContext = null;
 			if(bundleContext != null){
+				CamelContextFactoryBean contextFactory = new CamelContextFactoryBean();
+				contextFactory.setId("<%=process.getName()%>-ctx");
+				contextFactory.setApplicationContext(new ClassPathXmlApplicationContext("META-INF/spring/<%=process.getName().toLowerCase()%>.xml"));
 				contextFactory.setBundleContext(bundleContext);
-			}
-			DefaultCamelContext camelContext = contextFactory.createContext();
-			if(bundleContext != null){
+				camelContext = contextFactory.getContext(true);
 				bundleContext.registerService(CamelContext.class.getName(), camelContext, null);
+			}else{
+				camelContext = new DefaultCamelContext();
 			}
 <%		
 			//process cConfig components first 
@@ -279,7 +281,6 @@
 			//http://jira.talendforge.org/browse/TESB-4087: Change CamelContext name
 %>
 			//using Route name as CamelContext ID
-			answer.put("<%=process.getName() + "-ctx"%>", camelContext);
-			camelContext.setName("<%=process.getName() + "-ctx"%>");
+			answer.put(camelContext.getName(), camelContext);
 			return answer;
 		}
