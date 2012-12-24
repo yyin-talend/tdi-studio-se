@@ -121,7 +121,12 @@ java.sql.Connection conn_<%=cid%> = null;
 			
 			public Column(IMetadataColumn column){
 				this.column = column;
-				this.name = column.getLabel();
+				String columname = column.getOriginalDbColumnName();
+				if(columname!=null && columname.trim().length()>0){
+					this.name = columname;
+				}else{
+					this.name = column.getLabel();
+				}
 				this.sqlStmt = "=?";
 				this.value = "?";
 				this.addCol =false;
@@ -277,26 +282,7 @@ java.sql.Connection conn_<%=cid%> = null;
 <%
 	
 }
-		// MAIN
-	
-		String incomingConnName = null;
-		columnList = null;
-		
-		List< ? extends IConnection> conns = node.getIncomingConnections();
-		if(conns!=null && conns.size()>0){
-			IConnection conn = conns.get(0);
-			incomingConnName = conn.getName();
-		}
-		
-		metadatas = node.getMetadataList();
-		
-		if(metadatas != null && metadatas.size()>0){
-			IMetadataTable metadata = metadatas.get(0);
-			if(metadata != null){
-				columnList = metadata.getListColumns();
-			}
-		}
-		if(incomingConnName != null && columnList != null){
+		if(dbtable != null && columnList != null){
 			if(("INSERT").equals(dataAction)){
 %>
 		System.out.println("Inserting with : \n" + insertQuery + "\n");

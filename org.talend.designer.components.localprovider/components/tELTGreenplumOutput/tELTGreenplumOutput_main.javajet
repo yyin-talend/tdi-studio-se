@@ -47,15 +47,14 @@ imports="
 		<%
 	}
 	
-	if((dbschema != null) && (!"".equals(dbschema.trim()) && !"\"\"".equals(dbschema.replaceAll(" ", "").trim()))) {
 	%>
+	String dbschema_<%=cid%> = <%=dbschema%>;
+	if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0) {
 		tableName_<%=cid%> = "\""+<%=dbschema%> + "\".\"" + <%=useDifferentTable? differenttable:"\""+dbtable +"\""%> + "\"";
-	<%
 	}else {
-	%>
 		tableName_<%=cid%> = "\""+<%=useDifferentTable? differenttable:"\""+dbtable +"\""%> + "\"";
-	<%
 	}
+	<%
 	
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 
@@ -126,7 +125,12 @@ class Column{
 	
 	public Column(IMetadataColumn column){
 		this.column = column;
-		this.name = column.getLabel();
+		String columname = column.getOriginalDbColumnName();
+		if(columname!=null && columname.trim().length()>0){
+			this.name = columname;
+		}else{
+			this.name = column.getLabel();
+		}
 		this.sqlStmt = "=?";
 		this.value = "?";
 		this.addCol =false;
@@ -291,26 +295,7 @@ int nb_line_deleted_<%=cid%> = 0;
 	<%
 	
 }
-	String incomingConnName = null;
-	columnList = null;
-	
-	List< ? extends IConnection> conns = node.getIncomingConnections();
-	if(conns!=null && conns.size()>0){
-		IConnection conn = conns.get(0);
-		incomingConnName = conn.getName();
-	}
-	
-	metadatas = node.getMetadataList();
-	
-	if(metadatas != null && metadatas.size()>0){
-		IMetadataTable metadata = metadatas.get(0);
-		if(metadata != null){
-			columnList = metadata.getListColumns();
-		}
-	}
-	
-
-if(incomingConnName != null && columnList != null){
+if(dbtable != null && columnList != null){
 	if(("INSERT").equals(dataAction)){
 	%>
 

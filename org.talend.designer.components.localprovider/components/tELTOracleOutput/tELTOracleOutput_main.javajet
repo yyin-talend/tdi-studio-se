@@ -6,9 +6,8 @@ imports="
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.core.model.process.IConnection
-	 org.talend.commons.utils.generation.CodeGenerationUtils
-	 org.talend.core.model.metadata.MetadataToolHelper
-		
+	 	org.talend.commons.utils.generation.CodeGenerationUtils
+	 	org.talend.core.model.metadata.MetadataToolHelper
 		java.util.List
 		java.util.ArrayList
 		java.util.Map
@@ -49,20 +48,14 @@ imports="
 		<%
 	}
 	
-	if((dbschema != null) && (!"\"\"".equals(dbschema.replaceAll(" ", "").trim()))) {
 	%>
+	String dbschema_<%=cid%> = <%=dbschema%>;
+	if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0) {
 		tableName_<%=cid%> = <%=dbschema%> + "." + <%=useDifferentTable? differenttable:"\""+dbtable +"\""%>;
-	<%
 	}else {
-	%>
 		tableName_<%=cid%> = <%=useDifferentTable? differenttable:"\""+dbtable +"\""%>;
-	<%
 	}
-	
-	String dbtypeDefinition = ElementParameterParser.getValue(node, "__TYPE__");
-    
-	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
-	
+	<%
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 
         String dbhost = null;
@@ -143,8 +136,9 @@ if(useExistingConn) {
 List<IMetadataColumn> columnList = null;
 
 List<IMetadataTable> metadatas = node.getMetadataList();
+IMetadataTable metadata = null;
 if(metadatas !=null && metadatas.size()>0){
-	IMetadataTable metadata = metadatas.get(0);
+	metadata = metadatas.get(0);
 	if(metadata != null){
 		columnList = metadata.getListColumns();
 	}
@@ -173,79 +167,51 @@ class Column{
 	
 	List<Column> replacement = new ArrayList<Column>();
 	
-	public Column(String colName,String sqlStmt,boolean addCol){
-		this.column = null;
-		this.name = colName;
-		this.sqlStmt = sqlStmt;
-		this.value = "?";
-		this.addCol =addCol;
-		this.validateName=MetadataToolHelper.validateValue(colName);
-	}
-	
 	public Column(IMetadataColumn column){
 		this.column = column;
-		this.name = column.getLabel();
+		String columname = column.getOriginalDbColumnName();
+		if(columname!=null && columname.trim().length()>0){
+			this.name = columname;
+		}else{
+			this.name = column.getLabel();
+		}
 		this.sqlStmt = "=?";
 		this.value = "?";
 		this.addCol =false;
-		this.validateName=MetadataToolHelper.validateValue(column.getLabel());
+		this.validateName=MetadataToolHelper.validateValue(this.name);
+		if(!this.name.equals(this.validateName)){
+    		this.name = "\\\""+this.name+"\\\"";
+    	}
 	}
 	
 	public boolean isReplaced(){
 		return replacement.size()>0;
 	}
 	
-	public void replace(Column column){
-		this.replacement.add(column);
-	}
-	
 	public List<Column> getReplacement(){
 		return this.replacement;
-	}
-	
-	public void setColumn(IMetadataColumn column){
-		this.column = column;
 	}
 	
 	public IMetadataColumn getColumn(){
 		return this.column;
 	}
 	
-	public void setName(String name){
-		this.name = name;
-	}
-
 	public String getName(){
 		return this.name;
-	}
-	
-	public void setIsAddCol(boolean isadd){
-		this.addCol = isadd;
 	}
 	
 	public boolean isAddCol(){
 		return this.addCol;
 	}
 	
-	public void setSqlStmt(String sql){
-		this.sqlStmt = sql;
-	}
-	
 	public String getSqlStmt(){
 		return this.sqlStmt;
-	}
-	
-	public void setValue(String value){
-		this.value = value;
 	}
 	
 	public String getValue(){
 		return this.value;
 	}
 	
-	public String getValidateName(){
-		return this.validateName;
-	} 
 }
 
 StringBuilder insertColName = new StringBuilder();
@@ -273,9 +239,6 @@ boolean firstNoneKey = true;
 boolean isfirstKey = true;
 for(Column colStmt:stmtStructure){
 	String colName=colStmt.getName();
-    if(!colName.equals(colStmt.getValidateName())){
-    	colStmt.setName("\\\""+colName+"\\\"");
-    }
 	String suffix = ",";
 	
 	if (colStmt.getColumn().isKey()){
@@ -284,7 +247,7 @@ for(Column colStmt:stmtStructure){
 		}else {
 			mergeCondition.append(" AND ");
 		}
-		mergeCondition.append("target." + colStmt.getColumn().getLabel() + "=source." + colStmt.getColumn().getLabel());
+		mergeCondition.append("target." + colName + "=source." + colName);
 	}
 	if(colStmt.isReplaced()){		
 		List<Column> replacedColumns = colStmt.getReplacement();
@@ -493,10 +456,8 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
 						mergeUpdate.append(",");
 					}
 					keyColumnName=keyColumn.get("SCHEMA_COLUMN");
-					if(!(keyColumnName!=null && keyColumnName.equals(MetadataToolHelper.validateValue(keyColumnName)))){
-						keyColumnName="\\\""+keyColumnName+"\\\"";
-					}
-						mergeUpdate.append("target."  + keyColumnName + "=source." + keyColumnName);
+					keyColumnName=new Column(metadata.getColumn(keyColumnName)).getName();
+					mergeUpdate.append("target."  + keyColumnName + "=source." + keyColumnName);
 				}				
 			}
 		%>
@@ -542,9 +503,7 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(deleteQuery);
 				}
 				if (keyColumn.get("INSERT").equals("true")) {
 					keyColumnName=keyColumn.get("SCHEMA_COLUMN");
-					if(!(keyColumnName!=null && keyColumnName.equals(MetadataToolHelper.validateValue(keyColumnName)))){
-						keyColumnName="\\\""+keyColumnName+"\\\"";
-					}					
+					keyColumnName = new Column(metadata.getColumn(keyColumnName)).getName();
 					mergeInsertName.append(keyColumnName);
 					mergeInsertValue.append("source." + keyColumnName);
 				}				
@@ -575,46 +534,7 @@ int nb_line_deleted_<%=cid%> = 0;
 	<%
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// MAIN
-
-	String incomingConnName = null;
-	columnList = null;
-	
-	List< ? extends IConnection> conns = node.getIncomingConnections();
-	if(conns!=null && conns.size()>0){
-		IConnection conn = conns.get(0);
-		incomingConnName = conn.getName();
-	}
-	
-	metadatas = node.getMetadataList();
-	
-	if(metadatas != null && metadatas.size()>0){
-		IMetadataTable metadata = metadatas.get(0);
-		if(metadata != null){
-			columnList = metadata.getListColumns();
-		}
-	}
-
-if(incomingConnName != null && columnList != null){
+if(dbtable != null && columnList != null){
 	if(("INSERT").equals(dataAction)){
 	%>
 
@@ -643,25 +563,6 @@ nb_line_update_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
 	<%
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // END
 
 %>
