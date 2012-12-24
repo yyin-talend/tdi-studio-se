@@ -554,7 +554,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         } else if (value.indexOf("ORACLE") != -1) {//$NON-NLS-1$
             elementParameter.setValue(value);
             elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ORACLE_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.ORACLE_VERSION_CODE);
+            elementParameter.setListItemsValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER);
         } else if (value.indexOf("AS400") != -1) {//$NON-NLS-1$
             elementParameter.setValue(value);
             elementParameter.setListItemsDisplayName(StatsAndLogsConstants.AS400_VERSION_DISPLAY);
