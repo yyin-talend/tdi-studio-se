@@ -37,21 +37,22 @@
 		
 		String startDateString_<%=cid%> = <%=startDate.equals("")?null:startDate%>;
 		String endDateString_<%=cid%> = <%=endDate.equals("")?null:endDate%>;
-    	com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl startXMLGregorianCalendar_<%=cid%> = null;
-    	com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl endXMLGregorianCalendar_<%=cid%> = null;
+		javax.xml.datatype.DatatypeFactory factory_<%=cid%> = javax.xml.datatype.DatatypeFactory.newInstance();
+    	javax.xml.datatype.XMLGregorianCalendar startXMLGregorianCalendar_<%=cid%> = null;
+    	javax.xml.datatype.XMLGregorianCalendar endXMLGregorianCalendar_<%=cid%> = null;
     	if(startDateString_<%=cid%>!=null && !startDateString_<%=cid%>.equals("")){
     		java.text.SimpleDateFormat startdf_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			startdf_<%=cid%>.parse(startDateString_<%=cid%>);
 			java.util.Calendar startCal_<%=cid%> = startdf_<%=cid%>.getCalendar();
 			java.util.GregorianCalendar startDate_<%=cid%> = (java.util.GregorianCalendar) startCal_<%=cid%>;
-			startXMLGregorianCalendar_<%=cid%> = new com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl(startDate_<%=cid%>);
+			startXMLGregorianCalendar_<%=cid%> = factory_<%=cid%>.newXMLGregorianCalendar(startDate_<%=cid%>);
 		}
     	if(endDateString_<%=cid%>!=null && !endDateString_<%=cid%>.equals("")){
         	java.text.SimpleDateFormat enddf_<%=cid%> = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             enddf_<%=cid%>.parse(endDateString_<%=cid%>);
             java.util.Calendar endCal_<%=cid%> = enddf_<%=cid%>.getCalendar();
             java.util.GregorianCalendar endDate_<%=cid%> = (java.util.GregorianCalendar) endCal_<%=cid%>;
-			endXMLGregorianCalendar_<%=cid%> = new com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl(endDate_<%=cid%>);
+			endXMLGregorianCalendar_<%=cid%> = factory_<%=cid%>.newXMLGregorianCalendar(endDate_<%=cid%>);
 		}
 		
 		deleted_task_<%=cid%> = TDSCWS_<%=cid%>.deleteTasks(<%=taskType%>,<%=owner.equals("")?null:owner%>,<%=tag.equals("")?null:tag%>,startXMLGregorianCalendar_<%=cid%>,endXMLGregorianCalendar_<%=cid%>,<%=starRanking%>,<%=limit%>,<%=status.equals("null")?null:"\""+status+"\""%>);
