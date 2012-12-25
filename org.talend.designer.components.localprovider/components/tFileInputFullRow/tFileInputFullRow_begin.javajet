@@ -117,7 +117,7 @@ while (fid_<%=cid %>.nextRecord()) {
 
 <%if(rejectConnName.equals(firstConnName)) {%> <%=firstConnName %> = null; <%}%>
 				
-    } catch (Exception e) {
+    } catch (java.lang.Exception e) {
         whetherReject_<%=cid%> = true;
         <%
         if (dieOnError) {

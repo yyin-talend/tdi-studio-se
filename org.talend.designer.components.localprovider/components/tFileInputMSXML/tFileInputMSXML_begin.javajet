@@ -622,7 +622,7 @@ looper_<%=cid%>.parse(<%=filename %>);
 		}//if(conn) 
 	}	//for(IConnection)
 %>
-	} catch (Exception e) {
+	} catch (java.lang.Exception e) {
 <%
     if (dieOnError) {
 %>

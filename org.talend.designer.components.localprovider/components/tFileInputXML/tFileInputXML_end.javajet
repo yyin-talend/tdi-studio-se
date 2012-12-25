@@ -24,7 +24,7 @@ if(("Xerces").equals(mode) || ("Dom4j").equals(mode)){
 <%if(("SAX").equals(mode)){%>
 	try {
 		looper_<%=cid%>.handleTaskResponse();
-	} catch(Exception e) {
+	} catch(java.lang.Exception e) {
 	<% if(dieOnError) { %>
 		throw(e);
 	<% } else { %>

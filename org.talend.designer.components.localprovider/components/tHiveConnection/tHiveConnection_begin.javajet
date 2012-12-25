@@ -24,7 +24,7 @@ imports="
 			if(("HDP_1_0".equals(hiveVersion) && "STANDALONE".equals(connectionMode)) || ("APACHE_0_20_203".equals(hiveVersion) && "EMBEDDED".equals(connectionMode)) || ("MAPR1".equals(hiveVersion) && "EMBEDDED".equals(connectionMode)) || ("Cloudera_CDH3".equals(hiveVersion) && "EMBEDDED".equals(connectionMode))) {
 %>
 				if(true) {
-					throw new Exception("The Hive version and the connection mode are not compatible together. Please check your component configuration.");
+					throw new java.lang.Exception("The Hive version and the connection mode are not compatible together. Please check your component configuration.");
 				}
 <%
 			}

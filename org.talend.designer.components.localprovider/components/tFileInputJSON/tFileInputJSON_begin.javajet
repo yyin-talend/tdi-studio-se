@@ -56,7 +56,7 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 	               //add null to take a place in List(buffer)
 	               jsonResultList.add(null); 
                }
-          }catch(Exception e){
+          }catch(java.lang.Exception e){
               e.printStackTrace();
           }
           return recordMaxSize;

@@ -829,7 +829,7 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = String.value
 								}else{
 %>
 if(true){
-	throw new Exception("In column <%=column.getLabel() %>, the data type \"<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %>\" is not applicable for \"avg\" result.");
+	throw new java.lang.Exception("In column <%=column.getLabel() %>, the data type \"<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %>\" is not applicable for \"avg\" result.");
 }
 <%								}
 							}else if(("distinct").equals(functions[i])){
@@ -859,12 +859,12 @@ if(true){
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.toString();
 <%								} else if(javaType == JavaTypesManager.LIST){
 %>if(true){
-	throw new Exception("In column <%=column.getLabel() %>, data type \"List\" is not applicable for aggregate function \"list\" result. Please try aggregate function \"list(object)\"!");
+	throw new java.lang.Exception("In column <%=column.getLabel() %>, data type \"List\" is not applicable for aggregate function \"list\" result. Please try aggregate function \"list(object)\"!");
 }
 <%
 								}else{
 %>if(true){
-	throw new Exception("In column <%=column.getLabel() %>, the data type \"<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %>\" is not applicable for \"list\" result.");
+	throw new java.lang.Exception("In column <%=column.getLabel() %>, the data type \"<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %>\" is not applicable for \"list\" result.");
 }
 <%								}
 							}
@@ -1310,7 +1310,7 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = String.value
 									}
 								}else{
 %>if(true){
-	throw new Exception("In column <%=column.getLabel() %>, the data type \"<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %>\" is not applicable for \"avg\" result.");
+	throw new java.lang.Exception("In column <%=column.getLabel() %>, the data type \"<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %>\" is not applicable for \"avg\" result.");
 }
 <%								}
 							}else if(("distinct").equals(functions[i])){
@@ -1340,12 +1340,12 @@ emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = String.value
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=needTestForNull[i] %>_<%=cid %>.toString();
 <%								} else if(javaType == JavaTypesManager.LIST){
 %>if(true){
-	throw new Exception("In column <%=column.getLabel() %>, data type \"List\" is not applicable for aggregate function \"list\" result. Please try aggregate function \"list(object)\"!");
+	throw new java.lang.Exception("In column <%=column.getLabel() %>, data type \"List\" is not applicable for aggregate function \"list\" result. Please try aggregate function \"list(object)\"!");
 }
 <%
 								}else{
 %>if(true){
-	throw new Exception("In column <%=column.getLabel() %>, the data type \"<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %>\" is not applicable for \"list\" result.");
+	throw new java.lang.Exception("In column <%=column.getLabel() %>, the data type \"<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %>\" is not applicable for \"list\" result.");
 }
 <%								}
 							}

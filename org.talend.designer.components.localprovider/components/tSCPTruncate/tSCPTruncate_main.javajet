@@ -19,6 +19,6 @@ imports="
             nb_file_<%=cid%> ++;
             globalMap.put("<%=cid %>_STATUS", "File truncate OK.");
         }
-    }catch(Exception e){
+    }catch(java.lang.Exception e){
     		globalMap.put("<%=cid %>_STATUS", "File truncate fail.");
     }

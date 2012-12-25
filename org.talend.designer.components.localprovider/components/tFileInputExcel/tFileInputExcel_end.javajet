@@ -23,7 +23,7 @@
 				if(excelReader_<%=cid%>!=null) {
 					excelReader_<%=cid%>.handleException();
 				}
-			} catch(Exception e_<%=cid%>) {
+			} catch(java.lang.Exception e_<%=cid%>) {
 				if(!(e_<%=cid%>.getCause() instanceof com.talend.excel.xssf.event.EnoughDataException))
 				<% if(dieOnError) { %>
 				throw(e_<%=cid%>);

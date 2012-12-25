@@ -36,7 +36,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 				try{
 					client_<%=cid%>.listOperation("<%=operation%>",listTypeFlag_<%=cid%>,listValueFlag_<%=cid%>,leadKeyList_<%=cid%>.toArray(new com.marketo.www.mktows.LeadKey[leadKeyList_<%=cid%>.size()]),<%=strict%>);
 					globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);	
-				}catch(Exception ex_<%=cid%>){
+				}catch(java.lang.Exception ex_<%=cid%>){
 					if(ex_<%=cid%> instanceof org.apache.axis.AxisFault){
 		    			if(!client_<%=cid%>.isSystemError((org.apache.axis.AxisFault)ex_<%=cid%>)){
 							globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);		

@@ -84,21 +84,21 @@ imports="
 				<%
 				if(useV2C){
 				%>
-					public void valueToConn(<%=V2CSourceValueClass%> <%=V2CSourceValueName%>,<%=V2CTargetConnName%>Struct <%=V2CTargetConnName%>) throws Exception{
+					public void valueToConn(<%=V2CSourceValueClass%> <%=V2CSourceValueName%>,<%=V2CTargetConnName%>Struct <%=V2CTargetConnName%>) throws java.lang.Exception{
 						<%codeForValueToConn(node, V2CMetadata, V2CSourceValueClass, V2CSourceValueName, V2CTargetConnName);%>
 					}
 				<%	
 				}
 				if(useV2CWithD){
 				%>
-					public void valueToConnWithD(<%=V2CWithDSourceValueClass%> <%=V2CWithDSourceValueName%>,<%=V2CWithDTargetConnName%>Struct <%=V2CWithDTargetConnName%>, routines.system.Dynamic <%=V2CWithDDynamicName%>) throws Exception{
+					public void valueToConnWithD(<%=V2CWithDSourceValueClass%> <%=V2CWithDSourceValueName%>,<%=V2CWithDTargetConnName%>Struct <%=V2CWithDTargetConnName%>, routines.system.Dynamic <%=V2CWithDDynamicName%>) throws java.lang.Exception{
 						<%codeForValueToConnWithD(node, V2CWithDMetadata, V2CWithDSourceValueClass, V2CWithDSourceValueName, V2CWithDTargetConnName, V2CWithDDynamicName);%>
 					}
 				<%		
 				}
 				if(useC2C){
 				%>
-					public void connToConn(<%=C2CSourceConnName%>Struct <%=C2CSourceConnName%>,<%=C2CTargetConnName%>Struct <%=C2CTargetConnName%>) throws Exception{
+					public void connToConn(<%=C2CSourceConnName%>Struct <%=C2CSourceConnName%>,<%=C2CTargetConnName%>Struct <%=C2CTargetConnName%>) throws java.lang.Exception{
 						<%codeForConnToConn(node, C2CMetadata, C2CSourceConnName, C2CTargetConnName);%>
 					}
 				<%

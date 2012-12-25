@@ -104,7 +104,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 					try {
 						org.talend.mdm.webservice.WSItem item_<%=cid %>=xtentisWS_<%=cid %>.getItem(wsitem_<%=cid %>);
 						<%=outgoingConn.getName() %>_xml = item_<%=cid %>.getContent();
-					} catch(Exception e) {
+					} catch(java.lang.Exception e) {
 						<%if(dieOnError) {%>
 						throw e;
 						<% } else { %>
@@ -166,7 +166,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {//1
 						String[] items_<%=cid%> = {};
 						try {
 							items_<%=cid%> = xtentisWS_<%=cid%>.getItems(getitems_<%=cid%>);
-						} catch(Exception e) {
+						} catch(java.lang.Exception e) {
 							<%if(dieOnError) {%>
 							throw e;
 							<% } else { %>

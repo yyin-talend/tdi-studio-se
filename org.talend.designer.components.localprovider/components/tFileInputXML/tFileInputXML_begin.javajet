@@ -335,7 +335,7 @@ parser_<%=cid%>.setErrorHandler(null);
 Object filename_<%=cid %> = null;
 try {
 	filename_<%=cid %> = <%=filename %>;
-} catch(Exception e) {
+} catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
 	throw(e);
 	<%}else{%>
@@ -362,7 +362,7 @@ try{
     	org.xml.sax.InputSource xmlInputSource_<%=cid%> = new org.xml.sax.InputSource(unicodeReader_<%=cid%>);
     	parser_<%=cid%>.parse(xmlInputSource_<%=cid%>);
     }
-}catch(Exception e){
+}catch(java.lang.Exception e){
 <%if (dieOnError) {%>
 	throw(e);
 <%}else{%>
@@ -579,7 +579,7 @@ reader_<%=cid %>.setEntityResolver(new IgnoreDTDEntityResolver_<%=cid%>());
 Object filename_<%=cid %> = null;
 try {
 	filename_<%=cid %> = <%=filename %>;
-} catch(Exception e) {
+} catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
 	throw(e);
 	<%}else{%>
@@ -613,7 +613,7 @@ try {
 	org.dom4j.io.XMLWriter output_<%=cid %> = new org.dom4j.io.XMLWriter(stream_<%=cid %>, format_<%=cid %>);
 	output_<%=cid %>.write(doc_tmp_<%=cid %>);
 	output_<%=cid %>.close();
-} catch(Exception e) {
+} catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
 	throw(e);
 	<%}else{%>
@@ -642,7 +642,7 @@ try{
 		org.xml.sax.InputSource in_<%=cid %>= new org.xml.sax.InputSource(unicodeReader_<%=cid%>);
 		doc_<%=cid%> = reader_<%=cid %>.read(in_<%=cid %>);
 	}
-}catch(Exception e){
+}catch(java.lang.Exception e){
 <%if (dieOnError) {%>
 	throw(e);
 <%}else{%>
@@ -765,7 +765,7 @@ looper_<%=cid%>.setEncoding(<%=encoding %>);
 Object filename_<%=cid %> = null;
 try {
 	filename_<%=cid %> = <%=filename %>;
-} catch(Exception e) {
+} catch(java.lang.Exception e) {
 	<%if (dieOnError) {%>
 	throw(e);
 	<%}else{%>
@@ -1047,7 +1047,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 <%if(rejectConnName.equals(firstConnName)) {%> <%=firstConnName %> = null; <%}%>
 			
-    } catch (Exception e) {
+    } catch (java.lang.Exception e) {
         whetherReject_<%=cid%> = true;
 <%
         if (dieOnError) {

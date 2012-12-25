@@ -74,7 +74,7 @@
 	
 								try	{				
 									org.talend.FileCopy.copyFile(srcFilePath, desFilePath, false);
-								} catch (Exception e){ 
+								} catch (java.lang.Exception e){ 
 									e.printStackTrace();
 								}
 							}

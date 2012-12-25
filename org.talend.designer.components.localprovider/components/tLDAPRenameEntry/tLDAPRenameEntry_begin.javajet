@@ -88,14 +88,14 @@ class LDAPRenameEntryUtil_<%=cid%> {
 	private java.util.Map<String, javax.naming.directory.Attributes> childs = new java.util.HashMap();
 	private java.util.List<String> paths = new java.util.ArrayList();
 	
-	public void renameWithChilds(String oldName, String newName, javax.naming.ldap.InitialLdapContext ldapCtx) throws Exception {
+	public void renameWithChilds(String oldName, String newName, javax.naming.ldap.InitialLdapContext ldapCtx) throws java.lang.Exception {
 		this.list(oldName, ldapCtx);
 		
 		this.destroySubcontext(paths, ldapCtx);
 		
 		try {
 			ldapCtx.rename(oldName, newName);
-		} catch (Exception e) {
+		} catch (java.lang.Exception e) {
 			this.createSubcontext(paths, paths, childs, ldapCtx);
 			
 			throw e;
@@ -108,7 +108,7 @@ class LDAPRenameEntryUtil_<%=cid%> {
 		
 		this.createSubcontext(newPaths, paths, childs, ldapCtx);
 	}
-	public void list(String rootName, javax.naming.ldap.InitialLdapContext ldapCtx) throws Exception {
+	public void list(String rootName, javax.naming.ldap.InitialLdapContext ldapCtx) throws java.lang.Exception {
 		javax.naming.NamingEnumeration nern =ldapCtx.list(rootName);
 		while(nern.hasMore()){
 			javax.naming.NameClassPair nameCP= (javax.naming.NameClassPair)nern.next();
@@ -118,7 +118,7 @@ class LDAPRenameEntryUtil_<%=cid%> {
 		} 
 	}
 	
-	public void destroySubcontext(java.util.List<String> paths, javax.naming.ldap.InitialLdapContext ldapCtx)throws Exception {
+	public void destroySubcontext(java.util.List<String> paths, javax.naming.ldap.InitialLdapContext ldapCtx)throws java.lang.Exception {
 		for (String childName : paths) {
 			ldapCtx.destroySubcontext(childName);
 		}
@@ -126,7 +126,7 @@ class LDAPRenameEntryUtil_<%=cid%> {
 		
 	public void createSubcontext(java.util.List<String> newPaths, java.util.List<String> oldPaths,
 							 java.util.Map<String, javax.naming.directory.Attributes> childs, 
-							javax.naming.ldap.InitialLdapContext ldapCtx)throws Exception {
+							javax.naming.ldap.InitialLdapContext ldapCtx)throws java.lang.Exception {
 		for (int i=newPaths.size(); i>0; i-- ) {
 			ldapCtx.createSubcontext(newPaths.get(i-1), childs.get(oldPaths.get(i-1)));
 		}

@@ -75,7 +75,7 @@ parameters_<%=cid%>.append("</map>");
 	    
 	    if(responseCode_<%=cid %> != java.net.HttpURLConnection.HTTP_OK){
 	    	System.out.println("----------\nRequest failled: " + responseCode_<%=cid%>+ "----------");
-	      	throw new Exception("Request the url:" + url_<%=cid%> + " failed: " + responseCode_<%=cid%>);
+	      	throw new java.lang.Exception("Request the url:" + url_<%=cid%> + " failed: " + responseCode_<%=cid%>);
 	    } else {
 	      	java.io.InputStream is_<%=cid%> = httpConn_<%=cid %>.getInputStream();
 	      	javax.xml.xpath.XPath xPath_<%=cid%> = javax.xml.xpath.XPathFactory.newInstance().newXPath();

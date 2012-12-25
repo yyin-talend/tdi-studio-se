@@ -36,7 +36,7 @@ if (sftp) {
     if (c_<%=cid %>.stat(<%=remoteDir %> + "/" + <%=filename %>).getAtimeString() != null) {
       globalMap.put("<%=cid %>_EXISTS", true);
     }
-  } catch (Exception e) {
+  } catch (java.lang.Exception e) {
     globalMap.put("<%=cid %>_EXISTS", false);
   }
   globalMap.put("<%=cid %>_FILENAME", <%=filename %>);

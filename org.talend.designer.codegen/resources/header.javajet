@@ -307,30 +307,30 @@ public String getExceptionStackTrace() {
 	return null;
 }
 
-private Exception exception = null;
+private java.lang.Exception exception = null;
 
-public Exception getException() {
+public java.lang.Exception getException() {
 	if ("failure".equals(this.getStatus())) {
 		return this.exception;
 	}
 	return null;
 }
 
-private class TalendException extends Exception {
+private class TalendException extends java.lang.Exception {
 
 	private static final long serialVersionUID = 1L;
 
 	private java.util.Map<String, Object> globalMap = null;
-	private Exception e = null;
+	private java.lang.Exception e = null;
 	private String currentComponent = null;
 
-	private TalendException(Exception e, String errorComponent, final java.util.Map<String, Object> globalMap) {
+	private TalendException(java.lang.Exception e, String errorComponent, final java.util.Map<String, Object> globalMap) {
 		this.currentComponent= errorComponent;
 		this.globalMap = globalMap;
 		this.e = e;
 	}
 	
-	public Exception getException() {
+	public java.lang.Exception getException() {
 		return this.e;
 	}
 	
@@ -477,7 +477,7 @@ private class TalendException extends Exception {
 	for (INode node : processNodes) {
 		if (node.isActivate()) {
 			%>
-			public void <%=node.getUniqueName() %>_error(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+			public void <%=node.getUniqueName() %>_error(java.lang.Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
 				end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 				<%
 				boolean ifBeforRunError = NodeUtil.checkComponentErrorConnectionAfterNode(node);
@@ -540,7 +540,7 @@ private class TalendException extends Exception {
 							}
 							%>
 
-						} catch (Exception e) {
+						} catch (java.lang.Exception e) {
 							e.printStackTrace();
 						}
 						<%
@@ -611,7 +611,7 @@ private class TalendException extends Exception {
 	for (INode node : processNodes) {
 		if (node.isDesignSubjobStartNode()) {
 %>
-			public void <%=node.getUniqueName() %>_onSubJobError(Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
+			public void <%=node.getUniqueName() %>_onSubJobError(java.lang.Exception exception, String errorComponent, final java.util.Map<String, Object> globalMap) throws TalendException {
 <%
 			List< ? extends IConnection> conns = node.getOutgoingConnections();
 			int count = 0;
@@ -661,7 +661,7 @@ resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThrea
 <%
 					}
 %>
-				} catch (Exception e) {
+				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 				}
 <%

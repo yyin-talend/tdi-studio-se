@@ -61,7 +61,7 @@ if(isDropItem){
 	org.talend.mdm.webservice.WSDeleteItem item_<%=cid %> = new org.talend.mdm.webservice.WSDeleteItem(wsPK_<%=cid %>,false);
 	xtentisWS_<%=cid %>.deleteItem(item_<%=cid %>);
 <%}%>
-}catch(Exception e){
+}catch(java.lang.Exception e){
 <%
 if(dieOnError){
 %>
@@ -110,7 +110,7 @@ nb_line_<%=cid %>++;
 	try{
 		org.talend.mdm.webservice.WSDeleteItems items_<%=cid %> = new org.talend.mdm.webservice.WSDeleteItems(dataCluster_<%=cid %>,<%=dataModule %>,wsItem_<%=cid %>,<%=spellThrehold%>,false);
 		xtentisWS_<%=cid %>.deleteItems(items_<%=cid %>);
-	}catch(Exception e_<%=cid%>){
+	}catch(java.lang.Exception e_<%=cid%>){
 <%
 		if(dieOnError){
 %>

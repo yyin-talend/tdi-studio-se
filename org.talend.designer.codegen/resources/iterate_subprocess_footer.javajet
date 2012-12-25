@@ -58,7 +58,7 @@ if(execStat){
 <%
 				}
 %>
-			} catch (Exception e) {
+			} catch (java.lang.Exception e) {
 					this.status = "failure";
 					Integer localErrorCode = (Integer) (((java.util.Map) threadLocal.get()).get("errorCode"));
 					if (localErrorCode != null) {

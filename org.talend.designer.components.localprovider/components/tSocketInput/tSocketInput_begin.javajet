@@ -213,7 +213,7 @@ if (conns!=null) {
 <%          }%>
         }
         nb_line_<%=cid %>++;
-} catch (Exception e) {
+} catch (java.lang.Exception e) {
     whetherReject_<%=cid%> = true;
     <%
     if (dieOnError) {

@@ -190,7 +190,7 @@ while (fid_<%=cid %>.nextRecord()) {
 				String childRecord = schema2.get("RECORD");
 %>
 		if((count_<%=schemaNameChild %>_<%=cid %> < lowBound_<%=schemaNameChild %>_<%=cid %>)<%if(("false").equals(schema2.get("IS_INFINITUDE"))){%> || (count_<%=schemaNameChild %>_<%=cid %> > highBound_<%=schemaNameChild %>_<%=cid %>)<%}%>){
-			throw new Exception("Data error in file: The cardinality for " + <%=childRecord %> + " is <%=cardinality %>, but we have found " + count_<%=schemaNameChild %>_<%=cid %> + ".");//thow exception............
+			throw new java.lang.Exception("Data error in file: The cardinality for " + <%=childRecord %> + " is <%=cardinality %>, but we have found " + count_<%=schemaNameChild %>_<%=cid %> + ".");//thow exception............
 		}
 		count_<%=schemaNameChild %>_<%=cid %> = 0;
 <%
@@ -201,7 +201,7 @@ while (fid_<%=cid %>.nextRecord()) {
 %>
 		count_<%=schemaName %>_<%=cid %>++;
 		if((count_<%=schemaName %>_<%=cid %> < lowBound_<%=schemaName %>_<%=cid %>)<%if(("false").equals(schema.get("IS_INFINITUDE"))){%> || (count_<%=schemaName %>_<%=cid %> > highBound_<%=schemaName %>_<%=cid %>)<%}%>){
-			throw new Exception("Data error in file: The cardinality for " + <%=record %> + " is <%=cardinality %>, but we have found " + count_<%=schemaName %>_<%=cid %> + ".");//thow exception............
+			throw new java.lang.Exception("Data error in file: The cardinality for " + <%=record %> + " is <%=cardinality %>, but we have found " + count_<%=schemaName %>_<%=cid %> + ".");//thow exception............
 		}
 <%
 		}
@@ -299,7 +299,7 @@ while (fid_<%=cid %>.nextRecord()) {
 <%
 	}//FIN_002
 %>
-	} catch (Exception e) {
+	} catch (java.lang.Exception e) {
 <%
         if (dieOnError) {
  %>
@@ -577,7 +577,7 @@ if(useMulSeprators==false){
 				String childRecord = schema2.get("RECORD");
 %>
 		if((count_<%=schemaNameChild %>_<%=cid %> < lowBound_<%=schemaNameChild %>_<%=cid %>) || (count_<%=schemaNameChild %>_<%=cid %> > highBound_<%=schemaNameChild %>_<%=cid %>)){
-			throw new Exception("Data error in file: The cardinality for " + <%=childRecord %> + " is <%=cardinality %>, but we have found " + count_<%=schemaNameChild %>_<%=cid %> + ".");//thow exception............
+			throw new java.lang.Exception("Data error in file: The cardinality for " + <%=childRecord %> + " is <%=cardinality %>, but we have found " + count_<%=schemaNameChild %>_<%=cid %> + ".");//thow exception............
 		}
 		count_<%=schemaNameChild %>_<%=cid %> = 0;
 <%
@@ -588,7 +588,7 @@ if(useMulSeprators==false){
 %>
 		count_<%=schemaName %>_<%=cid %>++;
 		if((count_<%=schemaName %>_<%=cid %> < lowBound_<%=schemaName %>_<%=cid %>) || (count_<%=schemaName %>_<%=cid %> > highBound_<%=schemaName %>_<%=cid %>)){
-			throw new Exception("Data error in file: The cardinality for " + <%=record %> + " is <%=cardinality %>, but we have found " + count_<%=schemaName %>_<%=cid %> + ".");//thow exception............
+			throw new java.lang.Exception("Data error in file: The cardinality for " + <%=record %> + " is <%=cardinality %>, but we have found " + count_<%=schemaName %>_<%=cid %> + ".");//thow exception............
 		}
 <%
 		}
@@ -693,7 +693,7 @@ if(useMulSeprators==false){
 <%
 	}//FIN_002
 %>
-	} catch (Exception e) {
+	} catch (java.lang.Exception e) {
 <%
         if (dieOnError) {
  %>

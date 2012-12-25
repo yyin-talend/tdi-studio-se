@@ -117,7 +117,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 						globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);  
 					}
 					client_<%=cid%>.inputExceptionFilter(axisFault_<%=cid%>);
-				}catch(Exception ex_<%=cid%>){
+				}catch(java.lang.Exception ex_<%=cid%>){
 					<%
 			        if (dieOnError) {
 			        %>
@@ -130,7 +130,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 			        }
 			        %>
 				}
-			}catch(Exception ex_<%=cid%>){
+			}catch(java.lang.Exception ex_<%=cid%>){
 				<%
 		        if (dieOnError) {
 		        %>
@@ -163,7 +163,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
             	try{ 
             		leads_<%=cid%> = client_<%=cid%>.getMultipleLeads(includeAttributes_<%=cid%>, <%=batchSize%>, updatedAtCal_<%=cid%>, streamPosition_<%=cid%>);
             		globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);
-            	}catch(Exception ex_<%=cid%>){
+            	}catch(java.lang.Exception ex_<%=cid%>){
             		if(ex_<%=cid%> instanceof org.apache.axis.AxisFault){
             			if(!client_<%=cid%>.isSystemError((org.apache.axis.AxisFault)ex_<%=cid%>)){
 							globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);		
@@ -203,7 +203,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 							globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);		
 						}
 						client_<%=cid%>.inputExceptionFilter(axisFault_<%=cid%>);
-					}catch(Exception ex_<%=cid%>){
+					}catch(java.lang.Exception ex_<%=cid%>){
 						<%
 				        if (dieOnError) {
 				        %>
@@ -217,7 +217,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
 				        }
 				        %>
 					}
-				}catch(Exception ex_<%=cid%>){
+				}catch(java.lang.Exception ex_<%=cid%>){
 					<%
 			        if (dieOnError) {
 			        %>
@@ -243,7 +243,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) { //1
                 try{
                 	changes_<%=cid%> = client_<%=cid%>.getLeadChanges(<%=batchSize%>, includeTypes_<%=cid%>, excludeTypes_<%=cid%>, streamPosition_<%=cid%>);
                 	globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);
-                }catch(Exception ex_<%=cid%>){
+                }catch(java.lang.Exception ex_<%=cid%>){
                 	if(ex_<%=cid%> instanceof org.apache.axis.AxisFault){
             			if(!client_<%=cid%>.isSystemError((org.apache.axis.AxisFault)ex_<%=cid%>)){
 							globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);		

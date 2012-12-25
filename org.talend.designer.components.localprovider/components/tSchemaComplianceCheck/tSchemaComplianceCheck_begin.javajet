@@ -118,13 +118,13 @@
 				if(typeSelected.equals("Boolean") ) { //CONDITION_00120 START
 %>
 			if(!("true".equals(<%=_sInConnName%>.<%=colName%>) || "false".equals(<%=_sInConnName%>.<%=colName%>))){
-				throw new Exception("Wrong Boolean type!");
+				throw new java.lang.Exception("Wrong Boolean type!");
 			}
 <%
 				} else if(typeSelected.equals("Character")) { //CONDITION_00120 ELSE IF
 %>
 			if(<%=_sInConnName%>.<%=colName%>.toCharArray().length != 1){
-				throw new Exception("Wrong Character type!");
+				throw new java.lang.Exception("Wrong Character type!");
 			}
 <%
 				} else if(typeSelected.equals("BigDecimal")) { //CONDITION_00120 ELSE IF
@@ -142,7 +142,7 @@
 				} //CONDITION_00120 STOP
 %>
 		}
-	} catch(Exception e) {
+	} catch(java.lang.Exception e) {
 		ifPassedThrough = false;
 		errorCodeThrough += 2;
 		errorMessageThrough += "|wrong type";
@@ -331,7 +331,7 @@
 					} //CONDITION_001512 STOP
 %>
 		}
-	} catch(Exception e){
+	} catch(java.lang.Exception e){
 		ifPassedThrough = false;
 		errorCodeThrough += 2;
 		errorMessageThrough += "|wrong DATE pattern or wrong DATE data";

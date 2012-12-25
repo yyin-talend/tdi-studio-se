@@ -237,7 +237,7 @@ DB Type of the column:<%=column.getLabel()%> should be X, 1, 2, 3, 9, B, T
 %>
 	bbRecord_<%=cid %>.clear();
 	nb_line_<%=cid%>++;
-}catch(Exception ex_<%=cid %>){
+}catch(java.lang.Exception ex_<%=cid %>){
 <%
 	if(dieOnError){
 %>

@@ -467,7 +467,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         %>
     }
     
-	} catch (Exception e) {//catch
+	} catch (java.lang.Exception e) {//catch
   		<%
         if (dieOnError) {
             %>

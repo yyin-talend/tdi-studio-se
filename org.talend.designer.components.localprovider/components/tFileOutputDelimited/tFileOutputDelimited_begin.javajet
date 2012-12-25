@@ -63,7 +63,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
 	                        IMetadataColumn column = columns.get(i);
 	                       	if(i%schemaOptNum==0){
 %>
-		public void putHeaderVaule_<%=i/schemaOptNum%>(java.io.Writer out<%=cid %>,final String OUT_DELIM_<%=cid %>)throws Exception{
+		public void putHeaderVaule_<%=i/schemaOptNum%>(java.io.Writer out<%=cid %>,final String OUT_DELIM_<%=cid %>)throws java.lang.Exception{
 <%
 							}
 							if(!("id_Dynamic".equals(column.getTalendType()))) {
@@ -174,7 +174,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
 	                        IMetadataColumn column = columns.get(i);
 	                       	if(i%schemaOptNum==0){
 %>
-		public void putHeaderVaule_<%=i/schemaOptNum%>(String[] headColu<%=cid%>)throws Exception{
+		public void putHeaderVaule_<%=i/schemaOptNum%>(String[] headColu<%=cid%>)throws java.lang.Exception{
 <%
 							}
 							if(!("id_Dynamic".equals(column.getTalendType()))) {

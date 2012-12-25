@@ -89,7 +89,7 @@ class DecodeString_<%=cid%> {
 				}else{
 					return decode(res);
 				}
-			} catch (Exception e) {
+			} catch (java.lang.Exception e) {
 				return str;
 			}
 		}else{
@@ -346,7 +346,7 @@ try{
 }
 
 <% if(!dieOnError){ %>
-catch (Exception e){
+catch (java.lang.Exception e){
 //nothing to do, ignore the exception if don't die on error
 System.err.println("Exception in component <%=cid%>: " + e.getMessage());
 }

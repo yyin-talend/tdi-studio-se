@@ -33,7 +33,7 @@ if(useDynamicJob || useIndependentProcess){
 %>
 class DealChildJobLibrary_<%=cid%> {
 
-	public String replaceJarPathsFromCrcMap(String originalClassPathLine) throws Exception {
+	public String replaceJarPathsFromCrcMap(String originalClassPathLine) throws java.lang.Exception {
 		String classPathLine = "";
 		String crcMapPath = new java.io.File("../crcMap").getCanonicalPath();
 		if (isNeedAddLibsPath( crcMapPath)) {

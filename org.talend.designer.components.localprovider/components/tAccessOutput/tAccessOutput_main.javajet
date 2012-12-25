@@ -140,7 +140,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             try {
             	insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
             	nb_line_<%=cid%>++;
-            } catch(Exception e) {
+            } catch(java.lang.Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
                 if (("true").equals(dieOnError)) {
@@ -225,7 +225,7 @@ skeleton="../templates/db_output_bulk.skeleton"
             try {
             	updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
             	nb_line_<%=cid%>++;
-            } catch(Exception e) {
+            } catch(java.lang.Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
                 if (("true").equals(dieOnError)) {
@@ -336,7 +336,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     			%>
                 try {
     				updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmtUpdate_<%=cid %>.executeUpdate();
-                } catch(Exception e) {
+                } catch(java.lang.Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
                     if (("true").equals(dieOnError)) {
@@ -389,7 +389,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     			%>
                 try{
         			insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
-                } catch(Exception e) {
+                } catch(java.lang.Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
                     if (("true").equals(dieOnError)) {
@@ -478,7 +478,7 @@ skeleton="../templates/db_output_bulk.skeleton"
              try {
                  updateFlag_<%=cid%>=pstmtUpdate_<%=cid %>.executeUpdate();
                  updatedCount_<%=cid%> = updatedCount_<%=cid%>+updateFlag_<%=cid%>;
-             } catch(Exception e) {
+             } catch(java.lang.Exception e) {
                  whetherReject_<%=cid%> = true;
                  <%
                  if (("true").equals(dieOnError)) {
@@ -536,7 +536,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                  %>
                  try {
         			insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
-                 } catch(Exception e) {
+                 } catch(java.lang.Exception e) {
                      whetherReject_<%=cid%> = true;
                      <%
                      if (("true").equals(dieOnError)) {
@@ -607,7 +607,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     		%>
             try {
                 deletedCount_<%=cid%> = deletedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
-            } catch(Exception e) {
+            } catch(java.lang.Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
                 if (("true").equals(dieOnError)) {

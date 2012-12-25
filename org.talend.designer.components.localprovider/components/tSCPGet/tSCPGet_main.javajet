@@ -102,7 +102,7 @@ if(("append").equals(replaceOption)){%>
 }
 %>
 
-}catch(Exception e){
+}catch(java.lang.Exception e){
 		if(out_<%=cid %> != null){
 			out_<%=cid %>.close();
 		}

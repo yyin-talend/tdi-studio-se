@@ -155,7 +155,7 @@
 				}
 				else {
 					try { size = Integer.parseInt(patternSplit[i]); }
-					catch (Exception e) { throw new java.lang.RuntimeException("'" + patternSplit[i] + "' is not a valid integer value  in the pattern: " + pattern); }
+					catch (java.lang.Exception e) { throw new java.lang.RuntimeException("'" + patternSplit[i] + "' is not a valid integer value  in the pattern: " + pattern); }
 					if (size <= 0) {
 						throw new java.lang.RuntimeException("'" + patternSplit[i] + "' is not a valid integer value  in the pattern: " + pattern);
 					}
@@ -234,7 +234,7 @@
 	
 	String rowSeparator_<%=cid %> = <%=rowSeparator %>;
 	if(rowSeparator_<%=cid %>.length()< 1){
-		throw new Exception("Row Separator must include at least one character");
+		throw new java.lang.Exception("Row Separator must include at least one character");
 	}
 	
 	if (skipFooter_<%=cid %> > 0) {

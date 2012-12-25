@@ -64,7 +64,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
    		 try{
              //read existing Instances
    		    m_Data<%=cid%> = new weka.core.Instances(new java.io.BufferedReader(new java.io.FileReader(fileNewName_<%=cid%>)));
-         }catch(Exception e){
+         }catch(java.lang.Exception e){
                // Create vector of attributes.
                int numAtts<%=cid%>=<%=colDef.size()%>;
                weka.core.FastVector attributes<%=cid%> = new weka.core.FastVector(numAtts<%=cid%>);

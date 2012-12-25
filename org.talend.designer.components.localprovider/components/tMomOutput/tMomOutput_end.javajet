@@ -48,7 +48,7 @@ if(("JBoss").equals(serverType) || ("ActiveMQ").equals(serverType) || isUseShare
 		}
 		%>
 		<%if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
-		}catch(Exception ex){
+		}catch(java.lang.Exception ex){
 			System.out.println("A Active MQ error occurred :" + ex);
 	                ex.printStackTrace();
 			session_<%=cid%>.rollback();

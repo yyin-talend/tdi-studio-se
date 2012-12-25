@@ -132,7 +132,7 @@ Object val_<%=cid%> = null;
                 insertedCount_<%=cid%> = insertedCount_<%=cid%> + (Integer)cmd_<%=cid %>.invokeGeneric("ExecuteNonQuery");
                 cmd_<%=cid%>.accessProperty("Parameters",<%=oleDbParamCollClassName%>).invoke("Clear");
                 nb_line_<%=cid%>++;
-            } catch(Exception e) {                
+            } catch(java.lang.Exception e) {                
                         System.err.print(e.getMessage());
             }
             <%
@@ -189,7 +189,7 @@ Object val_<%=cid%> = null;
                 updatedCount_<%=cid%> = updatedCount_<%=cid%> + (Integer)cmd_<%=cid %>.invokeGeneric("ExecuteNonQuery");
                 cmd_<%=cid%>.accessProperty("Parameters",<%=oleDbParamCollClassName%>).invoke("Clear");
                 nb_line_<%=cid%>++;
-            } catch(Exception e) {
+            } catch(java.lang.Exception e) {
                         System.err.print(e.getMessage());
             }
             <%
@@ -267,7 +267,7 @@ Object val_<%=cid%> = null;
         			updatedCount_<%=cid%> = updatedCount_<%=cid%> + (Integer)cmdUpdate_<%=cid %>.invokeGeneric("ExecuteNonQuery");
         			cmdUpdate_<%=cid%>.accessProperty("Parameters",<%=oleDbParamCollClassName%>)
                     	.invoke("Clear");
-                } catch(Exception e) {                    
+                } catch(java.lang.Exception e) {                    
                             System.err.print(e.getMessage());
                 }
     		} else {
@@ -303,7 +303,7 @@ Object val_<%=cid%> = null;
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + (Integer)cmdInsert_<%=cid %>.invokeGeneric("ExecuteNonQuery");
                     cmdInsert_<%=cid%>.accessProperty("Parameters",<%=oleDbParamCollClassName%>)
                     	.invoke("Clear");
-                } catch(Exception e) {                    
+                } catch(java.lang.Exception e) {                    
                             System.err.print(e.getMessage());
                 }
     		}
@@ -366,7 +366,7 @@ Object val_<%=cid%> = null;
                     		.invoke("Clear");
                 updateFlag_<%=cid%>=tmp_uf_<%=cid%> != null ? tmp_uf_<%=cid%> : 0;
                 updatedCount_<%=cid%> = updatedCount_<%=cid%> + updateFlag_<%=cid%>;
-            } catch(Exception e) {                
+            } catch(java.lang.Exception e) {                
                         System.err.print(e.getMessage());
             }
             if(updateFlag_<%=cid%> == 0) {
@@ -407,7 +407,7 @@ Object val_<%=cid%> = null;
                 	cmdInsert_<%=cid%>.accessProperty("Parameters",<%=oleDbParamCollClassName%>)
                     		.invoke("Clear");
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + (tmp_ic_<%=cid%> == null ? 0 : tmp_ic_<%=cid%>.intValue());
-                } catch(Exception e) {                    
+                } catch(java.lang.Exception e) {                    
                             System.err.print(e.getMessage());
                 }
             }
@@ -445,7 +445,7 @@ Object val_<%=cid%> = null;
             	cmd_<%=cid%>.accessProperty("Parameters",<%=oleDbParamCollClassName%>)
                     	.invoke("Clear");
                deletedCount_<%=cid%> = deletedCount_<%=cid%> + (tmp_dc_<%=cid%> == null ? 0 : tmp_dc_<%=cid%>);
-            } catch(Exception e) {
+            } catch(java.lang.Exception e) {
                         System.err.print(e.getMessage());
             }
             nb_line_<%=cid%>++;

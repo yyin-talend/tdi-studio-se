@@ -208,7 +208,7 @@ IMetadataTable outputMetadataTable = outConn.getMetadataTable();
 	}
 %>
 	nb_line_<%=cid%>++;
-}catch(Exception ex_<%=cid %>){
+}catch(java.lang.Exception ex_<%=cid %>){
 <%
 	if(dieOnError){
 %>

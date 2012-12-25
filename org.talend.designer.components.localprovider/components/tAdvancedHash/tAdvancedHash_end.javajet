@@ -69,7 +69,7 @@ java.util.List<java.util.concurrent.ConcurrentHashMap<String,Object>> mapsList_<
 	}
 
 } 
-} catch (Exception ex) {
+} catch (java.lang.Exception ex) {
 	globalMap.put("THREADS_HAVE_ERROR",ex);
 	throw ex;
 } catch (Error er) {

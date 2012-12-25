@@ -36,7 +36,7 @@
 	if(isParallelize){
 %>
 
-					} catch (Exception e) {
+					} catch (java.lang.Exception e) {
 						this.status = "failure";
 						Integer localErrorCode = (Integer) (((java.util.Map) threadLocal.get()).get("errorCode"));
 						if (localErrorCode != null) {
@@ -84,7 +84,7 @@
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		} catch (Exception te) {
+		} catch (java.lang.Exception te) {
 			throw new TalendException(te, currentComponent, globalMap);
 		}
 <%
@@ -204,7 +204,7 @@
 %>
 
 	
-	} catch(Exception e) {	
+	} catch(java.lang.Exception e) {	
 
 		throw new TalendException(e, currentComponent, globalMap);
 	

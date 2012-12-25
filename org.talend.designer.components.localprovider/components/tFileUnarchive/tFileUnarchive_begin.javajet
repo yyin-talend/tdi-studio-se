@@ -62,7 +62,7 @@
                     repairDir(file);
                 }
             }
-            public void output(String path, String fileName, java.io.InputStream is) throws Exception{
+            public void output(String path, String fileName, java.io.InputStream is) throws java.lang.Exception{
                 <%
                 //deal with the path issue and get the outputstream
                 if (extractPath==true) {
@@ -93,7 +93,7 @@
                 fos.close();
                 unzippedFiles.add(new UnzippedFile_<%=cid %>(f.getName(), f.getAbsolutePath()));
             }
-            public void output(String path, String fileName, boolean isDirectory, java.io.InputStream is) throws Exception {
+            public void output(String path, String fileName, boolean isDirectory, java.io.InputStream is) throws java.lang.Exception {
                 <%
                 //deal with the path issue and get the outputstream
                 if (extractPath == true) {

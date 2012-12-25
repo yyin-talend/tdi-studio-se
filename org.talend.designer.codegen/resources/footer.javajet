@@ -387,7 +387,7 @@ this.globalResumeTicket = true;//to run tPreJob
 %>
         try {
             <%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
-        } catch (Exception e) {
+        } catch (java.lang.Exception e) {
             e.printStackTrace();
         }
 <%
@@ -449,7 +449,7 @@ this.globalResumeTicket = false;//to run others jobs
     while (runningThreadCount.getCount() > 0) {
         try {
             Thread.sleep(10);
-        } catch (Exception e) {
+        } catch (java.lang.Exception e) {
             e.printStackTrace();
         }
     }
@@ -512,7 +512,7 @@ this.globalResumeTicket = true;//to run tPostJob
         <%=statCatcherNode.getUniqueName() %>.addMessage(status==""?"end":status, (end-startTime));
         try {
             <%=statCatcherNode.getDesignSubjobStartNode().getUniqueName() %>Process(globalMap);
-        } catch (Exception e) {
+        } catch (java.lang.Exception e) {
             e.printStackTrace();
         }
 <%
@@ -573,7 +573,7 @@ if (execStat) {
 <%
             }
 %>
-        } catch (Exception e) {
+        } catch (java.lang.Exception e) {
         }
     }
 <%

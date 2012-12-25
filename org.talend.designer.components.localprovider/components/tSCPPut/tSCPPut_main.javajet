@@ -21,7 +21,7 @@ imports="
         }else{
         	globalMap.put("<%=cid %>_STATUS", "No file transfered.");
         }
-    }catch(Exception e){
+    }catch(java.lang.Exception e){
     		e.printStackTrace();
     		globalMap.put("<%=cid %>_STATUS", "File put fail.");
     }
