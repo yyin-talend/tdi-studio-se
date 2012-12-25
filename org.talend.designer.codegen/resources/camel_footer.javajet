@@ -24,7 +24,7 @@
 		}	
 		
 
-		protected void doStop() throws Exception {
+		protected void doStop() throws java.lang.Exception {
 			super.doStop();
 			getCamelContexts().get(0).stop();
 		}
@@ -240,11 +240,11 @@
 				return null;
 			}
 			
-			public void stop() throws Exception {
+			public void stop() throws java.lang.Exception {
 				camelImplementation.stop();
 			}
 			
-			public void shutdown() throws Exception {
+			public void shutdown() throws java.lang.Exception {
 				camelImplementation.shutdown();
 			}
 		};	

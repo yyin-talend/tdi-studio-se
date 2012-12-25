@@ -96,7 +96,7 @@ if ("pop3".equals(protocol)){
 
 try {
   folder_<%=cid %>.open(javax.mail.Folder.READ_WRITE);
-} catch (Exception e){
+} catch (java.lang.Exception e){
   folder_<%=cid %>.open(javax.mail.Folder.READ_ONLY);
 }
 javax.mail.Message[] msgs_<%=cid %> = folder_<%=cid %>.getMessages();
@@ -148,7 +148,7 @@ for (int counter_<%=cid %> = 0; counter_<%=cid %> < msgs_<%=cid %>.length; count
   
         try {
           date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(<%=filterptn%>, "dd-MM-yyyy HH:mm:ss");
-        } catch (Exception e){
+        } catch (java.lang.Exception e){
           date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(<%=filterptn%>, "dd-MM-yyyy");
         }
   

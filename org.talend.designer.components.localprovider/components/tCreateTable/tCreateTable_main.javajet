@@ -738,7 +738,7 @@ class JavaDBManager extends Manager {
         javaCode.append("timeOut_" + cid + "--;\r\n");
         javaCode.append("serverControl_" + cid + ".ping();\r\n");
         javaCode.append("isServerUp_" + cid + " = true;\r\n");
-        javaCode.append("} catch(Exception e) {\r\n");
+        javaCode.append("} catch(java.lang.Exception e) {\r\n");
         javaCode.append("Thread.currentThread().sleep(3000);\r\n");
         javaCode.append("}\r\n");
         javaCode.append("}\r\n");
@@ -1809,7 +1809,7 @@ if(columnList != null && columnList.size() > 0) {
         %>
         <%=manager.closeConnection()%>
         globalMap.put("<%=cid%>_QUERY", "<%=manager.getCreateTableSQL(columnList)%>");        
-    } catch(Exception e) {
+    } catch(java.lang.Exception e) {
         globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
         throw new RuntimeException("Creating table failed", e);
     }

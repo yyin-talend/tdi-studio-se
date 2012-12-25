@@ -33,7 +33,7 @@
 	boolean stat = codeGenArgument.isStatistics();
 %>
 
-public org.apache.camel.builder.RouteBuilder Route(final boolean start) throws Exception {
+public org.apache.camel.builder.RouteBuilder Route(final boolean start) throws java.lang.Exception {
 
 	String iterateId = "";
 	String currentComponent = "";

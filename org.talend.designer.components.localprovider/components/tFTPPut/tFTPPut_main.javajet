@@ -112,7 +112,7 @@ try{
 					<%
 						}
 					%>     
-		                }catch(Exception e_<%=cid%>){
+		                }catch(java.lang.Exception e_<%=cid%>){
 		                   if(!(e_<%=cid%> instanceof com.jcraft.jsch.SftpException)) {
 		                		msg_<%=cid%>.add("file " + listings<%=cid %>[m<%=cid %>].getAbsolutePath() + " not found?");
 		                   		
@@ -285,7 +285,7 @@ try{
     	globalMap.put("<%=cid %>_CURRENT_STATUS", currentStatus_<%=cid %>);
  
  <%}%>
- 	}catch(Exception e_<%=cid%>){
+ 	}catch(java.lang.Exception e_<%=cid%>){
 <%
         if(("true").equals(dieOnError)){
 %>

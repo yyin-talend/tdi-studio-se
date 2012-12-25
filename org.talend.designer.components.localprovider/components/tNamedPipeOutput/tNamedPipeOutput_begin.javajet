@@ -74,7 +74,7 @@ if (missConfiguration) {
 	boolean missConfiguration_<%=cid%> = true;
 	String missConfigurationMsg_<%=cid%> = "<%=missConfigurationMsg%>";
 	if (missConfiguration_<%=cid%>) {
-		throw new Exception(missConfigurationMsg_<%=cid%>);
+		throw new java.lang.Exception(missConfigurationMsg_<%=cid%>);
 	}
 	<%
 }

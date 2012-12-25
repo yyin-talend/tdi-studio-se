@@ -34,7 +34,7 @@ imports="
 	try {
 		pipe_<%=cid%>.disconnect();
 	} 
-	catch (Exception e) {}
+	catch (java.lang.Exception e) {}
 	finally {
 		pipe_<%=cid%> = null;
 	}

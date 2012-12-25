@@ -698,7 +698,7 @@ normal_<%=cid %>.interrupt();
 error_<%=cid %>.interrupt();
 
 if ("true".equals((String)globalMap.get("<%=cid%>_SQLLOAD_ERROR"))) {
-	throw new TalendException(new Exception() , "<%=cid%>" , globalMap);
+	throw new TalendException(new java.lang.Exception() , "<%=cid%>" , globalMap);
 } 
 	
 java.io.BufferedReader lr_<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(logf_<%=cid %>));

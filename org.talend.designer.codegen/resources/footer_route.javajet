@@ -209,7 +209,7 @@
 		try {
 			initUriMap();
 			Route(true);
-		} catch (Exception e) {
+		} catch (java.lang.Exception e) {
 			System.err.println(e.getMessage());
 			e.printStackTrace();
 			return 1;

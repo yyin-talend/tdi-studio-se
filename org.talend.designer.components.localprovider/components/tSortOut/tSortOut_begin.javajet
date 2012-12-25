@@ -86,7 +86,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				if("id_Dynamic".equals(columnType.getId()) || columnType == JavaTypesManager.LIST || columnType == JavaTypesManager.BYTE_ARRAY || columnType == JavaTypesManager.OBJECT || columnType == JavaTypesManager.STRING){
 %>
 if(true){
-	throw new Exception("Bad sort criteria: couldn't sort column \"<%=listCols.get(i) %>\" as num.");
+	throw new java.lang.Exception("Bad sort criteria: couldn't sort column \"<%=listCols.get(i) %>\" as num.");
 }
 <%
 					}
@@ -95,7 +95,7 @@ if(true){
 				if(columnType != JavaTypesManager.DATE){
 %>
 if(true){
-	throw new Exception("Bad sort criteria: couldn't sort column \"<%=listCols.get(i) %>\" as date.");
+	throw new java.lang.Exception("Bad sort criteria: couldn't sort column \"<%=listCols.get(i) %>\" as date.");
 }
 <%
 				}
@@ -710,7 +710,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
     	}
 %>
 
-		} catch (Exception e) {
+		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		} finally {
 			if (dis != null) {
@@ -801,7 +801,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 			}
     	}
     	%>
-    	} catch (Exception e) {
+    	} catch (java.lang.Exception e) {
      		throw new RuntimeException(e);
 		} finally {
      		if (dos != null) {

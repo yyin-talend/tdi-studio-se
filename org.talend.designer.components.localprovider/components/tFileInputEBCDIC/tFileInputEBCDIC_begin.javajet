@@ -244,7 +244,7 @@ the original size in the column:<%=column.getLabel()%> should be bigger than 0
 							Integer precision = column.getPrecision();
 							if(valueN%schemaOptNum==0){
 %>
-							public void getValue_<%=valueN/schemaOptNum%>(final <%=conn.getName()%>Struct <%=conn.getName() %>,java.nio.ByteBuffer bbRecord_<%=cid %>) throws Exception{
+							public void getValue_<%=valueN/schemaOptNum%>(final <%=conn.getName()%>Struct <%=conn.getName() %>,java.nio.ByteBuffer bbRecord_<%=cid %>) throws java.lang.Exception{
 <%
 							}
 							if(precision==null) precision = 0;

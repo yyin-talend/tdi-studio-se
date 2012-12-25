@@ -775,7 +775,7 @@ if(columnList != null && columnList.size() > 0) {
 	                try {
 	                    insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
 	                    nb_line_<%=cid%>++;
-	                } catch(Exception e) {
+	                } catch(java.lang.Exception e) {
 	                    whetherReject_<%=cid%> = true;
 	                    <%
 	                    if (("true").equals(dieOnError)) {
@@ -843,7 +843,7 @@ if(columnList != null && columnList.size() > 0) {
                 try {
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                     nb_line_<%=cid%>++;
-                } catch(Exception e) {
+                } catch(java.lang.Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
                     if (("true").equals(dieOnError)) {
@@ -952,7 +952,7 @@ if(columnList != null && columnList.size() > 0) {
             try {
                 updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                 nb_line_<%=cid%>++;
-            } catch(Exception e) {
+            } catch(java.lang.Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
                 if (("true").equals(dieOnError)) {
@@ -1075,7 +1075,7 @@ if(columnList != null && columnList.size() > 0) {
     			%>
                 try {
                     updatedCount_<%=cid%> = updatedCount_<%=cid%> + pstmtUpdate_<%=cid %>.executeUpdate();
-                } catch(Exception e) {
+                } catch(java.lang.Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
                     if (("true").equals(dieOnError)) {
@@ -1137,7 +1137,7 @@ if(columnList != null && columnList.size() > 0) {
     			%>
                 try {
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
-                } catch(Exception e) {
+                } catch(java.lang.Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
                     if (("true").equals(dieOnError)) {
@@ -1238,7 +1238,7 @@ if(columnList != null && columnList.size() > 0) {
                 updateFlag_<%=cid%>=pstmtUpdate_<%=cid %>.executeUpdate();
                 updatedCount_<%=cid%> = updatedCount_<%=cid%>+updateFlag_<%=cid%>;
                 
-            } catch(Exception e) {
+            } catch(java.lang.Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
                 if (("true").equals(dieOnError)) {
@@ -1306,7 +1306,7 @@ if(columnList != null && columnList.size() > 0) {
         		%>
                 try {
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmtInsert_<%=cid %>.executeUpdate();
-                } catch(Exception e) {
+                } catch(java.lang.Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
                     if (("true").equals(dieOnError)) {
@@ -1388,7 +1388,7 @@ if(columnList != null && columnList.size() > 0) {
     		%>
             try {
         	    deletedCount_<%=cid%> = deletedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
-            } catch(Exception e) {
+            } catch(java.lang.Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
                 if (("true").equals(dieOnError)) {
@@ -1450,7 +1450,7 @@ if(columnList != null && columnList.size() > 0) {
             int replaceCount_<%=cid%> = 0;
             try {
                 replaceCount_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
-            } catch(Exception e) {
+            } catch(java.lang.Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
                 if (("true").equals(dieOnError)) {
@@ -1526,7 +1526,7 @@ if(columnList != null && columnList.size() > 0) {
             int count_on_duplicate_key_<%=cid%> = 0;
             try {
                 count_on_duplicate_key_<%=cid%> = pstmt_<%=cid %>.executeUpdate();
-            } catch(Exception e) {
+            } catch(java.lang.Exception e) {
                 whetherReject_<%=cid%> = true;
                 <%
                 if (("true").equals(dieOnError)) {
@@ -1588,7 +1588,7 @@ if(columnList != null && columnList.size() > 0) {
                 try {
                     insertedCount_<%=cid%> = insertedCount_<%=cid%> + pstmt_<%=cid %>.executeUpdate();
                     nb_line_<%=cid%>++;
-                } catch(Exception e) {
+                } catch(java.lang.Exception e) {
                     whetherReject_<%=cid%> = true;
                     <%
                     if (("true").equals(dieOnError)) {

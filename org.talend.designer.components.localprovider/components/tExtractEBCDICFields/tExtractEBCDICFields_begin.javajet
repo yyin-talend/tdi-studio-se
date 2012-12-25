@@ -145,7 +145,7 @@ if(outConn!=null && inConn!=null){
 				if(precision==null) precision = 0;
 				if(valueN%schemaOptNum==0){
 %>
-			public void putValue_unOirginal_<%=valueN/schemaOptNum%>(final <%=outConn.getName() %>Struct <%=outConn.getName() %>,java.nio.ByteBuffer bbRecord_<%=cid %>)throws Exception{
+			public void putValue_unOirginal_<%=valueN/schemaOptNum%>(final <%=outConn.getName() %>Struct <%=outConn.getName() %>,java.nio.ByteBuffer bbRecord_<%=cid %>)throws java.lang.Exception{
 <%
 				}
 				if(orgainLength==null || orgainLength.intValue()==0 || orgainType==null || "".endsWith(orgainType.trim())) {

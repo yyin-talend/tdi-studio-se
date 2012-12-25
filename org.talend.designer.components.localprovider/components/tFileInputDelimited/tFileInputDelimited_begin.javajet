@@ -72,7 +72,7 @@
 		%>
 			int footer_value_<%=cid %> = <%=footer %>, random_value_<%=cid %> = <%=random %>;
 			if(footer_value_<%=cid %> >0 || random_value_<%=cid %> > 0){
-				throw new Exception("When the input source is a stream,footer and random shouldn't be bigger than 0.");				
+				throw new java.lang.Exception("When the input source is a stream,footer and random shouldn't be bigger than 0.");				
 			}
 		<%
 		}
@@ -81,7 +81,7 @@
 		%>
 			int footer_value_<%=cid %> = <%=footer %>;
 			if(footer_value_<%=cid%> > 0){
-				throw new Exception("When the input source is a stream,footer shouldn't be bigger than 0.");
+				throw new java.lang.Exception("When the input source is a stream,footer shouldn't be bigger than 0.");
 			}
 		<%	
 		}
@@ -348,7 +348,7 @@
 							}else{
 								zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>))));
 							}
-						} catch(Exception e) {
+						} catch(java.lang.Exception e) {
 							<% if(dieOnError) {%>
 								throw e;
 							<% } else { %>
@@ -360,7 +360,7 @@
 						while (true) {
 							try {
 								entry_<%=cid %> = zis_<%=cid %>.getNextEntry();
-							} catch(Exception e) {
+							} catch(java.lang.Exception e) {
 								<% if(dieOnError) {%>
 									throw e;
 								<% } else { %>
@@ -376,7 +376,7 @@
 							}
 							try {
 								fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(zis_<%=cid %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %><%=hasDynamic?"-1":""%>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
-							} catch(Exception e) {
+							} catch(java.lang.Exception e) {
 								<% if(dieOnError) {%>
 									throw e;
 								<% } else { %>
@@ -394,7 +394,7 @@
 						}
 						try {
 							fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(<%=filename %>, <%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %><%=hasDynamic?"-1":""%>,<%=footer %>,<%=limit %>,<%=random %>, <%= splitRecord%>);
-						} catch(Exception e) {
+						} catch(java.lang.Exception e) {
 							<% if(dieOnError) {%>
 								throw e;
 							<% } else { %>
@@ -443,7 +443,7 @@
 										}
 										%>
 							
-			    					} catch (Exception e) {
+			    					} catch (java.lang.Exception e) {
 			        					whetherReject_<%=cid%> = true;
 			        					<%
 			        					if (dieOnError) {
@@ -643,7 +643,7 @@
 				<%if(checkNum) {%>
  					int filedsum = <%=sourceValueName%>.length;
  					if(filedsum < <%=metadata.getListColumns().size() %>){
- 						throw new Exception("Column(s) missing");
+ 						throw new java.lang.Exception("Column(s) missing");
  					} else if(filedsum > <%=metadata.getListColumns().size() %>) {
  						throw new RuntimeException("Too many columns");
  					}     
@@ -787,7 +787,7 @@
 		        			}else{
 		        				zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>))));
 		        			}
-	        			} catch(Exception e) {
+	        			} catch(java.lang.Exception e) {
 	        				<% if(dieOnError) {%>
 								throw e;
 							<% } else { %>
@@ -799,7 +799,7 @@
 				        while (true) {
 			        		try {
 	        					entry_<%=cid %> = zis_<%=cid %>.getNextEntry();
-	        				} catch(Exception e) {
+	        				} catch(java.lang.Exception e) {
 	        					<% if(dieOnError) {%>
 									throw e;
 								<% } else { %>
@@ -980,7 +980,7 @@
 			        }
 			        csvReader<%=cid %>.setSkipEmptyRecords(<%=removeEmptyRow %>);
 	        
-	    		} catch(Exception e) {
+	    		} catch(java.lang.Exception e) {
 					<% if(dieOnError) {%>
 						throw e;
 					<% } else { %>
@@ -1049,7 +1049,7 @@
 									<%
 									}
 									%>
-	    						} catch (Exception e) {
+	    						} catch (java.lang.Exception e) {
 							        whetherReject_<%=cid%> = true;
         							<%
         							if (dieOnError) {

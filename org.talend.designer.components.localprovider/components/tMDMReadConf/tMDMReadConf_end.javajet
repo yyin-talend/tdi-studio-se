@@ -48,7 +48,7 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 				<%if(!useExistingConn){%>
 					try {
 						stub_<%=cid %>.logout(new org.talend.mdm.webservice.WSLogout());
-					} catch(Exception e) {
+					} catch(java.lang.Exception e) {
 						<%if(dieOnError) {%>
 						throw e;
 						<% } else { %>

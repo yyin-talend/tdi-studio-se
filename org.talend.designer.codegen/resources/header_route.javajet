@@ -115,11 +115,11 @@ import java.util.Comparator;
 		initUriMap();
 	}
 
-	public void stop() throws Exception {
+	public void stop() throws java.lang.Exception {
 		if (stopDelegate != null) stopDelegate.stop();
 	}
 
-	public void shutdown() throws Exception {
+	public void shutdown() throws java.lang.Exception {
 		if (stopDelegate != null) stopDelegate.shutdown();
 	}
 
@@ -654,7 +654,7 @@ for (IContextParameter ctxParam : params) {
 		}
 %>
 					Thread.sleep(1000);
-				} catch (Exception e) {
+				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 				}
 			}

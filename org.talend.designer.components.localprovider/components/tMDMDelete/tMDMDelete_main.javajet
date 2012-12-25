@@ -58,7 +58,7 @@ if(isDropItem){
 	org.talend.mdm.webservice.WSDeleteItem item_<%=cid %> = new org.talend.mdm.webservice.WSDeleteItem(wsPK_<%=cid %>,false);
 	xtentisWS_<%=cid %>.deleteItem(item_<%=cid %>);
 <%}%>
-}catch(Exception e){
+}catch(java.lang.Exception e){
 <%
 if(dieOnError){
 %>

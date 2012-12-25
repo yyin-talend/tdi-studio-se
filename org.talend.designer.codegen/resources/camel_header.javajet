@@ -50,7 +50,7 @@ class CamelImpl extends org.apache.camel.impl.MainSupport {
 		try {
 			postProcessContext();
 			initRoute();
-		} catch (Exception e) {
+		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -64,7 +64,7 @@ class CamelImpl extends org.apache.camel.impl.MainSupport {
 		return instance;
 	}
 
-	protected void doStart() throws Exception {
+	protected void doStart() throws java.lang.Exception {
 		super.doStart();
 
 		org.apache.camel.management.JmxNotificationEventNotifier notifier = new org.apache.camel.management.JmxNotificationEventNotifier();
@@ -123,9 +123,9 @@ for (INode node : processNodes) {
 
 	}
 
-	public void initRoute() throws Exception {
+	public void initRoute() throws java.lang.Exception {
 		routeBuilder = new org.apache.camel.builder.RouteBuilder() {
-			public void configure() throws Exception {
+			public void configure() throws java.lang.Exception {
 <%
 	for (INode node : processNodes) {
 		if (node.getComponent().getName().equals("cCXF")) {

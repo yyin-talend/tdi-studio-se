@@ -88,7 +88,7 @@ the original size in the column:<%=column.getLabel()%> in the schema should be b
 							if(orgainType.equals("X")){
 %>				
 							if (<%=length %> < <%=conn.getName() %>.<%=inColumn.getLabel()%>.length()) {
-                 		   		throw new Exception("Value length must be less than the length in schema.");
+                 		   		throw new java.lang.Exception("Value length must be less than the length in schema.");
                 			}
 							while(<%=length%> > <%=conn.getName() %>.<%=inColumn.getLabel()%>.length()){
 								<%=conn.getName() %>.<%=inColumn.getLabel()%> = <%=conn.getName() %>.<%=inColumn.getLabel()%> + " ";							

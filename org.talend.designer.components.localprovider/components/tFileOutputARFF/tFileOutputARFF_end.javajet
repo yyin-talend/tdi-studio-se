@@ -28,7 +28,7 @@ try {
            sb<%=cid%>.append(m_Data<%=cid%>.instance(i).toString());
        }
        out<%=cid%>.write(sb<%=cid%>.toString().getBytes(), 0, sb<%=cid%>.toString().getBytes().length);
-    }catch(Exception e){
+    }catch(java.lang.Exception e){
        out<%=cid%>.write(m_Data<%=cid%>.toString().getBytes(),0,m_Data<%=cid%>.toString().getBytes().length);
     }   
 <%}else{%>   

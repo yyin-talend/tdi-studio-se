@@ -34,7 +34,7 @@
     if(!overwrite){
     %>
     if(new java.io.File(zipFile_<%=cid %>).exists()){
-    	throw(new Exception("File already exist!"));
+    	throw(new java.lang.Exception("File already exist!"));
     }
     <%
     }

@@ -431,7 +431,7 @@ if(columnList != null && columnList.size()>0) {
 		  } catch( java.sql.SQLException sqlexp){
 		    tempClob.freeTemporary(); 
 		    sqlexp.printStackTrace();
-		  } catch(Exception exp){
+		  } catch(java.lang.Exception exp){
 		    tempClob.freeTemporary(); 
 		    exp.printStackTrace();
 		  }

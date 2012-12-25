@@ -139,7 +139,7 @@
             if (bOutputReject){%>    
               <%=rejectConnName %>.<%=outLabel %> = <%=outconnName %>.<%=outLabel %>;
             <%}%>            
-          } catch(Exception e){
+          } catch(java.lang.Exception e){
             bHasError_<%=cid%> = true;            
             <%if (bOutputReject){%>
               if (("").equals(errorMessage_<%=cid %>)){
@@ -218,7 +218,7 @@
         <%
         }
         %>
-      } catch (Exception e){
+      } catch (java.lang.Exception e){
         bHasError_<%=cid%> = true;        
         <%if (bOutputReject){%>
           if ("".equals(errorMessage_<%=cid %>)){

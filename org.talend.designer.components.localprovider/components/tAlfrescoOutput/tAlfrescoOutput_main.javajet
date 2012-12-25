@@ -176,7 +176,7 @@ imports="
          
          nbLine_<%=cid%>++;
 	        
-	    } catch (Exception mainEx_<%=cid%>) { // end reject exception handling
+	    } catch (java.lang.Exception mainEx_<%=cid%>) { // end reject exception handling
 	    
 	        <%
 	        // handling exception as reject connection or std err

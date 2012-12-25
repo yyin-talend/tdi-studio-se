@@ -59,7 +59,7 @@ boolean isDieOnError = "true".equals(ElementParameterParser.getValue(node, "__DI
 %>
         String smtpPort_<%=cid %> = "<%=smtpPort %>";
 <%
-    } catch (Exception e) {
+    } catch (java.lang.Exception e) {
 %>
         String smtpPort_<%=cid %> = <%=smtpPort %>;
 <%
@@ -198,7 +198,7 @@ try {
  javax.activation.CommandMap.setDefaultCommandMap(mc_<%=cid%>);
   // -- Send the message --
   javax.mail.Transport.send(msg_<%=cid %>);
-} catch(Exception e){
+} catch(java.lang.Exception e){
   <%if (isDieOnError){%>
     throw(e);
   <%}else{%>

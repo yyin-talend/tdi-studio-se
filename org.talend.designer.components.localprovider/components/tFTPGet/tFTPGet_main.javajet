@@ -63,7 +63,7 @@ try {
     }
   }
   getter_<%=cid %>.chdir(root_<%=cid %>);
-} catch(Exception e) {
+} catch(java.lang.Exception e) {
   <%if ("true".equals(dieOnError)){%>
     throw(e);
   <%}else{%>

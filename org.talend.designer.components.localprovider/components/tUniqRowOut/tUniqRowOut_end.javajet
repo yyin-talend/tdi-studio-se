@@ -92,7 +92,7 @@ if ((metadatas!=null)&&(metadatas.size()>0) && !("").equals(connName)) {//HSS___
 							tempRow = new rowStruct_<%=cid %>();
 							tempRow.readData(ois);
 						}
-                    } catch (Exception e) {
+                    } catch (java.lang.Exception e) {
 						if(e.getCause() instanceof java.io.EOFException){
 							this.isEndOfFile = true; // the EOFException
 							tempRow = null;

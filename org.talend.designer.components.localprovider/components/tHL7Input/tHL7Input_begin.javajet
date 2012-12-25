@@ -102,7 +102,7 @@ class TalendHL7Reader_<%=cid %> implements ca.uhn.hl7v2.llp.HL7Reader{
             do {
                 c = myReader.read();
             } while (c == ' ' || c == '\t' || c == '\r' || c == '\n');
-        } catch (Exception e) {
+        } catch (java.lang.Exception e) {
             return null;
         }
 

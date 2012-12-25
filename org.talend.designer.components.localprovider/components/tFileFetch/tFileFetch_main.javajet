@@ -269,7 +269,7 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 				} else if (status_<%=cid%> == org.apache.commons.httpclient.HttpStatus.SC_OK) {
 					redirect_<%=cid%> = false;
 				} else {
-					throw new Exception("Method failed: " + method_<%=cid%>.getStatusLine());
+					throw new java.lang.Exception("Method failed: " + method_<%=cid%>.getStatusLine());
 				}
 			}
 		<%} else {%>
@@ -294,12 +294,12 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 		if (!redirect) {
 		%>
 			if (status_<%=cid%> != org.apache.commons.httpclient.HttpStatus.SC_OK) {      
-				throw new Exception("Method failed: " + method_<%=cid%>.getStatusLine());
+				throw new java.lang.Exception("Method failed: " + method_<%=cid%>.getStatusLine());
 			}
 		<%
 		}
 		%>
-	} catch(Exception e) {
+	} catch(java.lang.Exception e) {
 		<%if (bDieOnError) {%>
 			throw(e);
 		<%} else {%>   
@@ -357,7 +357,7 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 				if (test_file_<%=cid%>.createNewFile()) {
 					test_file_<%=cid%>.delete();
 				}
-			} catch(Exception e) {
+			} catch(java.lang.Exception e) {
 				fileName_<%=cid %> = "defaultfilename.txt";
 			}
 			java.io.File file_<%=cid%> = new java.io.File(dir_<%=cid %>, fileName_<%=cid %>);
@@ -431,14 +431,14 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 			if (testfile_<%=cid%>.createNewFile()) {
 				testfile_<%=cid%>.delete();
 			}
-		} catch(Exception e) {
+		} catch(java.lang.Exception e) {
 			fileName_<%=cid %> = "defaultfilename.txt";
 		}
 
 		// copy file
 		try {
 			in_<%=cid%> = new java.io.DataInputStream(conn_<%=cid %>.getInputStream());
-		} catch(Exception e) {
+		} catch(java.lang.Exception e) {
 			<% if (bDieOnError) {%>    
 				throw(e);
 			<%} else {%>
@@ -507,7 +507,7 @@ if ("http".equals(protocol) || "https".equals(protocol)) {
 			} catch (java.io.FileNotFoundException ex) {
 				System.err.println(ex.getMessage());
 		<%}%> 
-	} catch (Exception e) {
+	} catch (java.lang.Exception e) {
 		System.err.println(e.getMessage());
 	}
 <%}%>

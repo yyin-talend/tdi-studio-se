@@ -94,7 +94,7 @@ if (incomingConnections != null && !incomingConnections.isEmpty()) {
 	 java.util.Map<String, Object> results_<%=cid%> = null;
 	 try{
 	 results_<%=cid%> = serviceInvokerHelper_<%=cid%>.invoke(serviceName_<%=cid%>, portName_<%=cid%>, "<%=method%>", inMap_<%=cid%>);
-	 }catch(Exception e){
+	 }catch(java.lang.Exception e){
 <%
 	 if (("true").equals(dieOnError)) {
 %>
