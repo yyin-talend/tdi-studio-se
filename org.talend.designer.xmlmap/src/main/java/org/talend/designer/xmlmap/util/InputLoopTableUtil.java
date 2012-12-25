@@ -28,7 +28,10 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 
 /**
  * DOC wchen class global comment. Detailled comment
+ * 
+ * @deprecated don't do any auto map for InputLoopTable
  */
+@Deprecated
 public class InputLoopTableUtil {
 
     public static void addSourceLoopToInputLoopTable(TreeNode connectionSource, OutputTreeNode targetOutputNode,
@@ -79,7 +82,7 @@ public class InputLoopTableUtil {
         TreeNode loopParentTreeNode = null;
 
         if (inputTree == mainInputTree) {
-            loopParentTreeNode = XmlMapUtil.getLoopParentNode((TreeNode) connectionSource);
+            loopParentTreeNode = XmlMapUtil.getLoopParentNode(connectionSource);
             if (loopParentTreeNode != null) {
                 soruceLoops.add(loopParentTreeNode);
             }
