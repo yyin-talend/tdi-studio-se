@@ -98,6 +98,10 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
 
     private Composite parent;
 
+    private SelectionListener compactListener;
+
+    private SelectionListener tableButtonListener;
+
     /**
      * Getter for parentMap.
      * 
@@ -313,66 +317,74 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         // ImageProvider.getImage(EImage.COMPOSITE_BACKGROUND).getBackground());
         tabFactory.getTabbedPropertyComposite().getCompactButton().setVisible(true);
         tabFactory.getTabbedPropertyComposite().getTableButton().setVisible(true);
+        if (compactListener == null) {
+            compactListener = new SelectionListener() {
 
-        tabFactory.getTabbedPropertyComposite().getCompactButton().addSelectionListener(new SelectionListener() {
+                @Override
+                public void widgetDefaultSelected(SelectionEvent e) {
+                    // TODO Auto-generated method stub
 
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // TODO Auto-generated method stub
+                }
 
-            }
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    // TODO Auto-generated method stub
+                    tabFactory.getTabbedPropertyComposite().setCompactView(true);
+                    getPreference().setValue(TalendDesignerPrefConstants.VIEW_OPTIONS, ComponentSettingsView.DEFAULT);
+                    tabFactory.getTabbedPropertyComposite().getCompactButton()
+                            .setImage(ImageProvider.getImage(EImage.COMPACT_VIEW));
+                    tabFactory.getTabbedPropertyComposite().getTableButton()
+                            .setImage(ImageProvider.getImage(EImage.NO_TABLE_VIEW));
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                // TODO Auto-generated method stub
-                tabFactory.getTabbedPropertyComposite().setCompactView(true);
-                getPreference().setValue(TalendDesignerPrefConstants.VIEW_OPTIONS, ComponentSettingsView.DEFAULT);
-                tabFactory.getTabbedPropertyComposite().getCompactButton().setImage(ImageProvider.getImage(EImage.COMPACT_VIEW));
-                tabFactory.getTabbedPropertyComposite().getTableButton().setImage(ImageProvider.getImage(EImage.NO_TABLE_VIEW));
-
-                if (getDc() != null) {
-                    // getDc().setCompactView(false);
-                    getDc().dispose();
-                    if (getParentMap().get(ComponentSettingsView.PARENT) != null
-                            && getCategoryMap().get(ComponentSettingsView.CATEGORY) != null) {
-                        dc = new MultipleThreadDynamicComposite(getParentMap().get(ComponentSettingsView.PARENT), SWT.H_SCROLL
-                                | SWT.V_SCROLL | SWT.NO_FOCUS, getCategoryMap().get(ComponentSettingsView.CATEGORY), element,
-                                true);
-                        dc.refresh();
+                    if (getDc() != null) {
+                        // getDc().setCompactView(false);
+                        getDc().dispose();
+                        if (getParentMap().get(ComponentSettingsView.PARENT) != null
+                                && getCategoryMap().get(ComponentSettingsView.CATEGORY) != null) {
+                            dc = new MultipleThreadDynamicComposite(getParentMap().get(ComponentSettingsView.PARENT),
+                                    SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, getCategoryMap().get(
+                                            ComponentSettingsView.CATEGORY), element, true);
+                            dc.refresh();
+                        }
                     }
                 }
-            }
-        });
+            };
+            tabFactory.getTabbedPropertyComposite().getCompactButton().addSelectionListener(compactListener);
+        }
 
-        tabFactory.getTabbedPropertyComposite().getTableButton().addSelectionListener(new SelectionListener() {
+        if (tableButtonListener == null) {
+            tableButtonListener = new SelectionListener() {
 
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
+                @Override
+                public void widgetDefaultSelected(SelectionEvent e) {
 
-            }
+                }
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                // TODO Auto-generated method stub
-                tabFactory.getTabbedPropertyComposite().setCompactView(false);
-                getPreference().setValue(TalendDesignerPrefConstants.VIEW_OPTIONS, ComponentSettingsView.TABLEVIEW);
-                tabFactory.getTabbedPropertyComposite().getCompactButton()
-                        .setImage(ImageProvider.getImage(EImage.NO_COMPACT_VIEW));
-                tabFactory.getTabbedPropertyComposite().getTableButton().setImage(ImageProvider.getImage(EImage.TABLE_VIEW));
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    // TODO Auto-generated method stub
+                    tabFactory.getTabbedPropertyComposite().setCompactView(false);
+                    getPreference().setValue(TalendDesignerPrefConstants.VIEW_OPTIONS, ComponentSettingsView.TABLEVIEW);
+                    tabFactory.getTabbedPropertyComposite().getCompactButton()
+                            .setImage(ImageProvider.getImage(EImage.NO_COMPACT_VIEW));
+                    tabFactory.getTabbedPropertyComposite().getTableButton().setImage(ImageProvider.getImage(EImage.TABLE_VIEW));
 
-                if (getDc() != null) {
-                    // getDc().setCompactView(false);
-                    getDc().dispose();
-                    if (getParentMap().get(ComponentSettingsView.PARENT) != null
-                            && getCategoryMap().get(ComponentSettingsView.CATEGORY) != null) {
-                        dc = new MultipleThreadDynamicComposite(getParentMap().get(ComponentSettingsView.PARENT), SWT.H_SCROLL
-                                | SWT.V_SCROLL | SWT.NO_FOCUS, getCategoryMap().get(ComponentSettingsView.CATEGORY), element,
-                                false);
-                        dc.refresh();
+                    if (getDc() != null) {
+                        // getDc().setCompactView(false);
+                        getDc().dispose();
+                        if (getParentMap().get(ComponentSettingsView.PARENT) != null
+                                && getCategoryMap().get(ComponentSettingsView.CATEGORY) != null) {
+                            dc = new MultipleThreadDynamicComposite(getParentMap().get(ComponentSettingsView.PARENT),
+                                    SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, getCategoryMap().get(
+                                            ComponentSettingsView.CATEGORY), element, false);
+                            dc.refresh();
+                        }
                     }
                 }
-            }
-        });
+            };
+            tabFactory.getTabbedPropertyComposite().getTableButton().addSelectionListener(tableButtonListener);
+        }
+
     }
 
     /*
