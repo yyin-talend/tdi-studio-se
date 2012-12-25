@@ -49,7 +49,10 @@
 				camelContext = contextFactory.getContext(true);
 				bundleContext.registerService(CamelContext.class.getName(), camelContext, null);
 			}else{
-				camelContext = new DefaultCamelContext();
+				SpringCamelContextFactory contextFactory = new SpringCamelContextFactory();
+				contextFactory.setApplicationContext(new ClassPathXmlApplicationContext("META-INF/spring/<%=process.getName().toLowerCase()%>.xml"));
+				camelContext = contextFactory.createContext();
+				camelContext.setName("<%=process.getName()%>-ctx");
 			}
 <%		
 			//process cConfig components first 

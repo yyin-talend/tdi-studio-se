@@ -76,6 +76,7 @@ package <%= packageName %>;
 	importsSet.add("import org.apache.camel.impl.DefaultCamelContext");
 	importsSet.add("import org.apache.camel.spring.SpringRouteBuilder");
 	importsSet.add("import org.apache.camel.osgi.CamelContextFactoryBean");
+	importsSet.add("import org.apache.camel.osgi.SpringCamelContextFactory");
 	importsSet.add("import org.springframework.context.support.ClassPathXmlApplicationContext");
 	importsSet.add("import  org.apache.camel.CamelContext");
 	importsSet.add("import  java.util.Properties");
