@@ -24,7 +24,7 @@ if(("PING").equals(protocol)) {
         } else {
             globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT",false);
         }
-    } catch(Exception e) {
+    } catch(java.lang.Exception e) {
         globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT",false);
     }
     <%
@@ -52,7 +52,7 @@ if(("PING").equals(protocol)) {
         server_<%=cid%>.connect(address_<%=cid%>, <%=timeoutInterval%> * 1000);
         server_<%=cid%>.close();
         globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT",true);
-    } catch(Exception e) {
+    } catch(java.lang.Exception e) {
         globalMap.put("<%=cid %>_SERVER_ALIVE_RESULT",false);
     }
     <%

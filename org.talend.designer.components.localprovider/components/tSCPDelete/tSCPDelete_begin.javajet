@@ -104,7 +104,7 @@ imports="
         		public String[] replyToChallenge(String name,
         				String instruction, int numPrompts,
         				String[] prompt, boolean[] echo)
-        				throws Exception {
+        				throws java.lang.Exception {
         			// TODO Auto-generated method stub
         			String[] reply = new String[numPrompts];
         			for (int i = 0; i < reply.length; i++) {

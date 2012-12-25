@@ -14,7 +14,7 @@ imports="
 	boolean dieOnError = ("true").equals(ElementParameterParser.getValue(node, "__DIE_ON_ERROR__"));
 	String clientMode = ElementParameterParser.getValue(node, "__CLIENT_MODE__");
 %>
-} catch (Exception lee_<%=cid%>) {
+} catch (java.lang.Exception lee_<%=cid%>) {
 <%
 	if (dieOnError) {
 %>

@@ -21,7 +21,7 @@
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     try {
         context.store(baos, "");
-    } catch (Exception e) {
+    } catch (java.lang.Exception e) {
         e.printStackTrace();
     }
 %>

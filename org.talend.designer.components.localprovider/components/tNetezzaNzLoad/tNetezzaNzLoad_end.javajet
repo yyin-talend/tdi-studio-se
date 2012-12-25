@@ -108,7 +108,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 							
 							in.close();
 						}
-						catch (Exception e) {
+						catch (java.lang.Exception e) {
 							// System.err.println("Error Reading Log File " + e.getMessage());
 							
 						}

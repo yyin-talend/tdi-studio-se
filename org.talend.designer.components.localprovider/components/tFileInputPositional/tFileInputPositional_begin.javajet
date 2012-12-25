@@ -164,7 +164,7 @@ if (conns!=null) {
     					if(valueN%100==0){
 %>
                   void setValue_<%=(valueN/100)%>(<%=firstConnName %>Struct <%=firstConnName %>,int[] begins_<%=cid %>,int[] ends_<%=cid %>,int rowLen_<%=cid %>,
-                  <% if(useByte){ %>byte[] byteArray_<%=cid %>,Arrays_<%=cid %> arrays_<%=cid %>,<% } %>String column_<%=cid %>,String row_<%=cid %>)throws Exception {             
+                  <% if(useByte){ %>byte[] byteArray_<%=cid %>,Arrays_<%=cid %> arrays_<%=cid %>,<% } %>String column_<%=cid %>,String row_<%=cid %>)throws java.lang.Exception {             
 <%
 }
     					if(valueN == sizeListColumns - 1 && useStar){ //last column
@@ -325,7 +325,7 @@ if (conns!=null) {
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {	
 				    if(valueN%100==0){
 %>
-                     void setValue_<%=(valueN/100)%>(<%=firstConnName %>Struct <%=firstConnName %>,String[] columnValue<%=cid %>)throws Exception{
+                     void setValue_<%=(valueN/100)%>(<%=firstConnName %>Struct <%=firstConnName %>,String[] columnValue<%=cid %>)throws java.lang.Exception{
 <%
                     }	
 %>
@@ -456,7 +456,7 @@ try {
 	}else{
 		zis_<%=cid %> = new java.util.zip.ZipInputStream(new java.io.BufferedInputStream(new java.io.FileInputStream(String.valueOf(filename_<%=cid %>))));
 	}
-} catch(Exception e) {
+} catch(java.lang.Exception e) {
 	<% if(dieOnError) {%>
 	throw e;
 	<% } else { %>
@@ -467,7 +467,7 @@ java.util.zip.ZipEntry entry_<%=cid %> = null;
 while (true) {
 	try {
 		entry_<%=cid %> = zis_<%=cid %>.getNextEntry();
-	} catch(Exception e) {
+	} catch(java.lang.Exception e) {
 		<% if(dieOnError) {%>
 		throw e;
 		<% } else { %>
@@ -599,7 +599,7 @@ if(footer_<%=cid %> > 0){
 	}
 }
 
-} catch(Exception e) {//TD110 end
+} catch(java.lang.Exception e) {//TD110 end
 	<% if(dieOnError) {%>
 	throw e;
 	<% } else { %>
@@ -912,7 +912,7 @@ while (nb_limit_<%=cid %> != 0 && reader_<%=cid %>!=null && reader_<%=cid %>.rea
         			
 <%if(rejectConnName.equals(firstConnName)) {%> <%=firstConnName %> = null; <%}%>        			
         			
-    } catch (Exception e) {
+    } catch (java.lang.Exception e) {
         whetherReject_<%=cid%> = true;
         <%
         if (dieOnError) {

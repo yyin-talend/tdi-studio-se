@@ -309,7 +309,7 @@ do {
 					}//5
 %>
 		}//b
-	} catch (Exception e) {
+	} catch (java.lang.Exception e) {
 
 <%
 		if (dieOnError) {

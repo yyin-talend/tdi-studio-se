@@ -82,7 +82,7 @@
 			if(iNbOfProcessedRows_<%=cid %>>=<%=sCommitSize%>){
 	            		try{
 					plDT_<%=cid %>.setData(pCB_<%=cid %>, org.talend.jpalo.palodata.<%=sSplashMode%>, <%=bAddValues%>,  <%=bUseEventprocessor%> );
-				}catch(Exception plE_<%=cid %>){
+				}catch(java.lang.Exception plE_<%=cid %>){
 					<%
 					if(bDieOnError){
 					%>

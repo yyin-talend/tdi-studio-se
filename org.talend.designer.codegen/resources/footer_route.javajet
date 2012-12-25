@@ -29,7 +29,7 @@
 	
 %>
 
-protected void doStart() throws Exception {
+protected void doStart() throws java.lang.Exception {
 		// init uriMap first
 		initUriMap();
 		
@@ -102,7 +102,7 @@ if(librariesSb.length()>0){
 
 	}
 
-	protected void doStop() throws Exception {
+	protected void doStop() throws java.lang.Exception {
 		super.doStop();
 		getCamelContexts().get(0).stop();
 	}
@@ -140,7 +140,7 @@ if(librariesSb.length()>0){
 		}
 %>
 					Thread.sleep(1000);
-				} catch (Exception e) {
+				} catch (java.lang.Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -151,13 +151,13 @@ if(librariesSb.length()>0){
 };
 	mainSupport.run();
 }
-	public void stop() throws Exception{
+	public void stop() throws java.lang.Exception{
 		if(mainSupport != null){
 			mainSupport.stop();
 		}
 	}
 	
-	public void shutdown() throws Exception{
+	public void shutdown() throws java.lang.Exception{
 		if(mainSupport != null){
 			mainSupport.shutdown();
 		}
@@ -277,7 +277,7 @@ for (IContextParameter ctxParam : params) {
 		
 		try {
 			run();
-		} catch (Exception e) {
+		} catch (java.lang.Exception e) {
 			System.err.println(e.getMessage());
 			e.printStackTrace();
 			return 1;

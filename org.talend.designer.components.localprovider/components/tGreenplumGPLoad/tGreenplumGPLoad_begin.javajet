@@ -115,7 +115,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 		boolean missConfiguration_<%=cid%> = true;
 		String missConfigurationMsg_<%=cid%> = "<%=missConfigurationMsg%>";
 		if (missConfiguration_<%=cid%>) {
-			throw new Exception(missConfigurationMsg_<%=cid%>);
+			throw new java.lang.Exception(missConfigurationMsg_<%=cid%>);
 		}
 		<%
 	}
@@ -385,7 +385,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					System.out.println(line);
 				}
 			}
-			catch (Exception e) {
+			catch (java.lang.Exception e) {
 				globalMap.put("<%=cid%>_GPLOAD_ERROR",e.getMessage());
 				throw new RuntimeException(e.getMessage(),e.getCause());
 			}

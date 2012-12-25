@@ -88,7 +88,7 @@ else
     			serverControl_<%=cid%>.ping();
     			isServerUp_<%=cid%> = true;
     		}
-    		catch(Exception e) {
+    		catch(java.lang.Exception e) {
     			//Unable to obtain a connection to network server, trying again after 3000 ms.
     			Thread.currentThread().sleep(3000);
     		}    				

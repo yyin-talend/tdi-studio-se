@@ -343,7 +343,7 @@ if(incomingConnName != null && columnList != null){
 	%>
         try{
 		pstmt_<%=cid %>.addBatch();
-        }catch(Exception e)
+        }catch(java.lang.Exception e)
         {
             <%
             if (("true").equals(dieOnError)) {
@@ -401,7 +401,7 @@ if(incomingConnName != null && columnList != null){
 	%>
         try{
 		pstmt_<%=cid %>.addBatch();
-        }catch(Exception e)
+        }catch(java.lang.Exception e)
         {
             <%
             if (("true").equals(dieOnError)) {
@@ -474,7 +474,7 @@ if(incomingConnName != null && columnList != null){
 			%>
             try{
 		pstmt_<%=cid %>.addBatch();
-			}catch(Exception e)
+			}catch(java.lang.Exception e)
 			{
 	            <%
 	            if (("true").equals(dieOnError)) {
@@ -513,7 +513,7 @@ if(incomingConnName != null && columnList != null){
 			%>
             try{
 		pstmt_<%=cid %>.addBatch();
-			}catch(Exception e)
+			}catch(java.lang.Exception e)
 			{
 	            <%
 	            if (("true").equals(dieOnError)) {
@@ -575,7 +575,7 @@ if(incomingConnName != null && columnList != null){
 
     try{
 		pstmt_<%=cid %>.addBatch();
-	}catch(Exception e)
+	}catch(java.lang.Exception e)
 	{
         <%
         if (("true").equals(dieOnError)) {
@@ -617,7 +617,7 @@ if(incomingConnName != null && columnList != null){
         try{
 		pstmt_<%=cid %>.addBatch();
             nb_line_inserted_<%=cid%>++;
-		}catch(Exception e)
+		}catch(java.lang.Exception e)
 		{
             <%
             if (("true").equals(dieOnError)) {
@@ -665,7 +665,7 @@ if(incomingConnName != null && columnList != null){
 	%>
     try{
 		pstmt_<%=cid %>.addBatch();
-		}catch(Exception e)
+		}catch(java.lang.Exception e)
 		{
             <%
             if (("true").equals(dieOnError)) {

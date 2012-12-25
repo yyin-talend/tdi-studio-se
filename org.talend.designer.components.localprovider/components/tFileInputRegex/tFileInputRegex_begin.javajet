@@ -45,7 +45,7 @@
         if(source_<%=cid %> instanceof String || source_<%=cid %> instanceof java.io.InputStream){
         	in<%=cid %> = new org.talend.fileprocess.TOSDelimitedReader(<%=filename %>, <%= encoding%>, "", <%=row_separator%>, removeEmptyRow<%=cid %>);
         }else{
-        	throw new Exception("The source data should be specified as File Path or InputStream or java.io.Reader!");
+        	throw new java.lang.Exception("The source data should be specified as File Path or InputStream or java.io.Reader!");
         }
         String str<%=cid %>;
         int totalLine<%=cid %>=0,currentLine<%=cid %>=0,beginLine<%=cid %>=0,lastLine<%=cid %>=-1,validRowCount<%=cid %>=0;
@@ -154,7 +154,7 @@
 			<%=firstConnName %> = new <%=conn.getName() %>Struct();
 			try {			
 			if(!isMatch<%=cid %>){//line data not matched with given regex parameter
-        		throw new Exception("Line doesn't match: " + str<%=cid %>);
+        		throw new java.lang.Exception("Line doesn't match: " + str<%=cid %>);
         	}
 			<%	
 				List<IMetadataColumn> listColumns = metadata.getListColumns();
@@ -209,7 +209,7 @@
 					
 <%if(rejectConnName.equals(firstConnName)) {%> <%=firstConnName %> = null; <%}%>					
 					
-    } catch (Exception e) {
+    } catch (java.lang.Exception e) {
         whetherReject_<%=cid%> = true;
         <%
         if (dieOnError) {

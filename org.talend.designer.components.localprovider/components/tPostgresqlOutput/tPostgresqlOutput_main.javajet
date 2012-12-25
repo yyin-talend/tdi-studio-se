@@ -306,7 +306,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                                                 String code_<%=cid %> = ((org.geotools.referencing.NamedIdentifier) ident_<%=cid %>.toArray()[0]).getCode();
                                                 SRID_<%=cid %> = Integer.parseInt(code_<%=cid %>);
                                             }
-                                        } catch (Exception e) {
+                                        } catch (java.lang.Exception e) {
                                             System.out.println("SRID_<%=cid %> could not be determined");
                                             SRID_<%=cid %> = -1;
                                         }
@@ -359,7 +359,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 	                conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
 				<%}%>
                 nb_line_<%=cid%>++;
-            } catch(Exception e) {
+            } catch(java.lang.Exception e) {
 				<%if(showSavePoint){%>
 	                conn_<%=cid%>.rollback(sp_<%=cid %>);
 	            <%}%>
@@ -487,7 +487,7 @@ skeleton="../templates/db_output_bulk.skeleton"
                 	conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
                 <%}%>	
                 nb_line_<%=cid%>++;
-            } catch(Exception e) {
+            } catch(java.lang.Exception e) {
 				<%if(showSavePoint){%>
 	                conn_<%=cid%>.rollback(sp_<%=cid %>);
 	            <%}%>
@@ -625,7 +625,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					<%if(showSavePoint){%>
     	                conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
     	            <%}%>
-                } catch(Exception e) {
+                } catch(java.lang.Exception e) {
 					<%if(showSavePoint){%>
     	                conn_<%=cid%>.rollback(sp_<%=cid %>);
     	            <%}%>
@@ -699,7 +699,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					<%if(showSavePoint){%>
     	                conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
     	            <%}%>
-                } catch(Exception e) {
+                } catch(java.lang.Exception e) {
 					<%if(showSavePoint){%>
     	                conn_<%=cid%>.rollback(sp_<%=cid %>);
     	            <%}%>
@@ -816,7 +816,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 				<%if(showSavePoint){%>
 	                conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
 	            <%}%>
-            } catch(Exception e) {
+            } catch(java.lang.Exception e) {
 				<%if(showSavePoint){%>
 	                conn_<%=cid%>.rollback(sp_<%=cid %>);
 	            <%}%> 
@@ -895,7 +895,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 					<%if(showSavePoint){%>
     	                conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
     	            <%}%>
-                } catch(Exception e) {
+                } catch(java.lang.Exception e) {
 					<%if(showSavePoint){%>
     	                conn_<%=cid%>.rollback(sp_<%=cid %>);
     	            <%}%>
@@ -992,7 +992,7 @@ skeleton="../templates/db_output_bulk.skeleton"
 				<%if(showSavePoint){%>
 	                conn_<%=cid%>.releaseSavepoint(sp_<%=cid %>);
 	            <%}%>
-            } catch(Exception e) {
+            } catch(java.lang.Exception e) {
 				<%if(showSavePoint){%>
 	                conn_<%=cid%>.rollback(sp_<%=cid %>);
 	            <%}%>

@@ -54,7 +54,7 @@ imports="
 		renameUtil<%=cid%>.renameWithChilds(<%=conn.getName() %>.<%=ElementParameterParser.getObjectValue(node, "__REMANE_DN_OLD__")%>.trim(),
 						<%=conn.getName() %>.<%=ElementParameterParser.getObjectValue(node, "__REMANE_DN_NEW__")%>.trim(),
 						ctx_<%=cid%>);
-	}catch(Exception e){
+	}catch(java.lang.Exception e){
         whetherReject_<%=cid%> = true;
 <%
         if (("true").equals(dieOnError)) {

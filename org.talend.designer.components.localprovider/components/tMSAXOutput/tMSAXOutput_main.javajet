@@ -273,7 +273,7 @@ if(incomingConnName != null && columnList != null){
         <%}%>
         insertedCount_<%=cid%>++;
         nb_line_<%=cid%>++;
-    }catch(Exception e){
+    }catch(java.lang.Exception e){
         whetherReject_<%=cid%> = true;
 <%
         if (("true").equals(dieOnError)) {
@@ -333,7 +333,7 @@ if(incomingConnName != null && columnList != null){
                 updatedCount_<%=cid%>++;
             }
             nb_line_<%=cid%>++;
-        }catch(Exception e){
+        }catch(java.lang.Exception e){
             whetherReject_<%=cid%> = true;
 <%
             if (("true").equals(dieOnError)) {
@@ -396,7 +396,7 @@ if(incomingConnName != null && columnList != null){
 		            <%}%>
                 	updatedCount_<%=cid%>++;
             	}
-            }catch(Exception e){
+            }catch(java.lang.Exception e){
                 whetherReject_<%=cid%> = true;
 <%
                 if (("true").equals(dieOnError)) {
@@ -443,7 +443,7 @@ if(incomingConnName != null && columnList != null){
 		        	dynRec_<%=cid%>.invoke("Insert");
 		        <%}%>
         		insertedCount_<%=cid%>++;
-            }catch(Exception e)
+            }catch(java.lang.Exception e)
             {
                 whetherReject_<%=cid%> = true;
 <%
@@ -508,7 +508,7 @@ if(incomingConnName != null && columnList != null){
                 updatedCount_<%=cid%>++;
             }
             nb_line_<%=cid%>++;
-        }catch(Exception e)
+        }catch(java.lang.Exception e)
         {
             whetherReject_<%=cid%> = true;
 <%
@@ -556,7 +556,7 @@ if(incomingConnName != null && columnList != null){
 		        	dynRec_<%=cid%>.invoke("Insert");
 		        <%}%>
         		insertedCount_<%=cid%>++;
-            }catch(Exception e){
+            }catch(java.lang.Exception e){
                 whetherReject_<%=cid%> = true;
 <%
                 if (("true").equals(dieOnError)) {
@@ -602,7 +602,7 @@ if(incomingConnName != null && columnList != null){
             updatedCount_<%=cid%>++;
         }	
         <%}%>
-    }catch(Exception e){
+    }catch(java.lang.Exception e){
         whetherReject_<%=cid%> = true;
 <%
         if (("true").equals(dieOnError)) {

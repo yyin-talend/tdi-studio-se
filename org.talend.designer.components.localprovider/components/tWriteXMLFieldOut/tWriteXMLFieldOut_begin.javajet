@@ -60,7 +60,7 @@ if(nextMergeConn == null || nextMergeConn.getInputId()==1){
 	class ThreadXMLField_<%=cid%> extends Thread {
 		java.util.Queue<String> queue;
 		java.util.List<java.util.Map<String,String>> flows;
-		Exception lastException;
+		java.lang.Exception lastException;
 		String currentComponent;
 		
 		ThreadXMLField_<%=cid%>(java.util.Queue q) {
@@ -77,7 +77,7 @@ if(nextMergeConn == null || nextMergeConn.getInputId()==1){
 			globalMap.put("flows_<%=virtualTargetCid%>", flows);
 		}
 		
-		public Exception getLastException() {
+		public java.lang.Exception getLastException() {
 			return this.lastException;
 		}
 		public String getCurrentComponent() {
@@ -132,7 +132,7 @@ class NestXMLTool_<%=cid%>{
 		try {
             org.dom4j.Document doc4Str = org.dom4j.DocumentHelper.parseText("<root>"+ value + "</root>");
     		nestRoot.setContent(doc4Str.getRootElement().content());
-    	} catch (Exception e) {
+    	} catch (java.lang.Exception e) {
     		e.printStackTrace();
     		nestRoot.setText(value);
         }

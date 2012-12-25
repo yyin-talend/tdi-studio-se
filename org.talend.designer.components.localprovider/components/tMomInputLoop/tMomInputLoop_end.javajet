@@ -69,7 +69,7 @@
 		}
                if(("ActiveMQ").equals(serverType) && !isCommitRollback && transacted){%>
 			if (session_<%=cid%> != null && connection_<%=cid %> != null) session_<%=cid%>.commit();
-		}catch(Exception ex){
+		}catch(java.lang.Exception ex){
 			System.out.println("A Active MQ error occurred :" + ex);
 	                ex.printStackTrace();
 			if (session_<%=cid%> != null  && connection_<%=cid %> != null) session_<%=cid%>.rollback();

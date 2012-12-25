@@ -356,7 +356,7 @@
 
 			out.write("sql " +  db_for_Copy<%=cid%> + " < " + sqlFileAndPath_<%=cid %> );
 			out.close();
-		} catch (Exception e) {
+		} catch (java.lang.Exception e) {
 			e.printStackTrace();
 		}	
 	/***********************************************************************/
@@ -527,7 +527,7 @@
                 if (!deletedOK )
                     throw new IllegalArgumentException("Failed to delete " + sqlFileAndPath_<%=cid %>);
                     
-                } catch (Exception e) {
+                } catch (java.lang.Exception e) {
 			e.printStackTrace();
 		    }
     <%    } %>

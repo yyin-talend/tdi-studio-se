@@ -130,7 +130,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         							source_<%=cid %>.toString())), workbookSettings_<%= cid %>);
         }else{
         	workbook_<%= cid %> = null;
-        	throw new Exception("The data source should be specified as Inputstream or File Path!");
+        	throw new java.lang.Exception("The data source should be specified as Inputstream or File Path!");
         }
         try {
 <%      
@@ -318,7 +318,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				try{
 					java.util.Date dateGMT_<%=cid %> = ((jxl.DateCell)row_<%= cid %>[<%=i%> + start_column_<%= cid %>]).getDate();
 					<%=firstConnName %>.<%=column.getLabel() %> = new java.util.Date(dateGMT_<%=cid %>.getTime() - java.util.TimeZone.getDefault().getOffset(dateGMT_<%=cid %>.getTime()));
-				}catch(Exception e){
+				}catch(java.lang.Exception e){
 					<% // for bug TDI-19404 %>
 					throw new RuntimeException("The cell format is not Date in ( Row. "+(nb_line_<%= cid %>+1)+ " and ColumnNum. " + curColNum_<%=cid %> + " )");
 				}
@@ -384,7 +384,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	}
 %>  
 					
-    } catch (Exception e) {
+    } catch (java.lang.Exception e) {
         whetherReject_<%=cid%> = true;
         <%
         if (dieOnError) {
@@ -499,7 +499,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			workbook_<%=cid%> = new org.apache.poi.xssf.usermodel.XSSFWorkbook(<%=fileName%>);
 		}else{
 			workbook_<%=cid%> = null;
-			throw new Exception("The data source should be specified as Inputstream or File Path!");
+			throw new java.lang.Exception("The data source should be specified as Inputstream or File Path!");
 		}
 		try {
 		
@@ -767,7 +767,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						else{
 							<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>);
 						}
-					}catch(Exception e){
+					}catch(java.lang.Exception e){
 						<% // for bug TDI-19404 %>
 						throw new RuntimeException("The cell format is not Date in ( Row. "+(nb_line_<%= cid %>+1)+ " and ColumnNum. " + curColNum_<%=cid %> + " )");
 					}
@@ -823,7 +823,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 	}
 %>  
-			}catch(Exception e){
+			}catch(java.lang.Exception e){
 			whetherReject_<%=cid%> = true;
 <%
 		        if (dieOnError) {
@@ -896,7 +896,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		if(source_<%=cid %> instanceof java.io.InputStream || source_<%=cid %> instanceof String){
 			excelReader_<%=cid%> = new com.talend.excel.xssf.event.ExcelReader();
 		}else{
-			throw new Exception("The data source should be specified as Inputstream or File Path!");
+			throw new java.lang.Exception("The data source should be specified as Inputstream or File Path!");
 		}
 		
 		try {
@@ -1031,7 +1031,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>		
 				try{
 					<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_row_<%=cid %>[<%=i%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>, <%= patternValue %>);
-				}catch(Exception e){
+				}catch(java.lang.Exception e){
 					<% // for bug TDI-19404 %>
 					throw new RuntimeException("The cell format is not Date in ( Row. "+(nb_line_<%= cid %>+1)+ " and ColumnNum. " + curColNum_<%=cid %> + " )");
 				}
@@ -1087,7 +1087,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 	}
 %>
-		} catch(Exception e) {
+		} catch(java.lang.Exception e) {
 			whetherReject_<%=cid%> = true;
 <%
 		        if (dieOnError) {

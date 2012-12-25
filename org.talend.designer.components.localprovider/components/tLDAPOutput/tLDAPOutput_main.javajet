@@ -297,7 +297,7 @@ imports="
 <%
 					}
 %>
-	}catch(Exception e){
+	}catch(java.lang.Exception e){
         whetherReject_<%=cid%> = true;
 <%
         if (("true").equals(dieOnError)) {

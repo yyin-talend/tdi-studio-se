@@ -175,7 +175,7 @@ try {
 	}//end feature 0010425
 %>
 
-    } catch (Exception e) {
+    } catch (java.lang.Exception e) {
         whetherReject_<%=cid%> = true;
         <%
         if (("true").equals(dieOnError)) {

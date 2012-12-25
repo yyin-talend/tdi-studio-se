@@ -44,7 +44,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					class ThreadXMLField_<%=cid%> extends Thread {
 						java.util.Queue<String> queue;
 						java.util.List<java.util.Map<String,String>> flows;
-						Exception lastException;
+						java.lang.Exception lastException;
 						String currentComponent;
 						
 						ThreadXMLField_<%=cid%>(java.util.Queue q) {
@@ -61,7 +61,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							globalMap.put("flows_<%=virtualSourceCid%>", flows);
 						}
 						
-						public Exception getLastException() {
+						public java.lang.Exception getLastException() {
 							return this.lastException;
 						}
 						public String getCurrentComponent() {

@@ -151,7 +151,7 @@ for(String item : arrayStr){
 String originalFileContent_<%=cid %> = "";
 try {
     originalFileContent_<%=cid %> = new String((new sun.misc.BASE64Decoder()).decodeBuffer(result_<%=cid %>.toString()), utf8Charset);
-} catch (Exception e) {
+} catch (java.lang.Exception e) {
     e.printStackTrace();
 }
 

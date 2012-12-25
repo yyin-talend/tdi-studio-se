@@ -118,7 +118,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 							errorMsg_<%=cid%> = syncStatus_<%=cid%>.getError();
 							marketoId_<%=cid%> = syncStatus_<%=cid%>.getLeadId();
 						}
-					}catch(Exception ex_<%=cid%>){
+					}catch(java.lang.Exception ex_<%=cid%>){
 						if(ex_<%=cid%> instanceof org.apache.axis.AxisFault){
 			    			if(!client_<%=cid%>.isSystemError((org.apache.axis.AxisFault)ex_<%=cid%>)){
 								globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);		
@@ -148,7 +148,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 						try{
 							com.marketo.www.mktows.ResultSyncMultipleLeads syncLeads_<%=cid%> = client_<%=cid%>.syncMultipleLeads(<%=deDupenabled%>,leadRecords_<%=cid%>);
 							globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);
-						 }catch(Exception ex_<%=cid%>){
+						 }catch(java.lang.Exception ex_<%=cid%>){
 						 	if(ex_<%=cid%> instanceof org.apache.axis.AxisFault){
 				    			if(!client_<%=cid%>.isSystemError((org.apache.axis.AxisFault)ex_<%=cid%>)){
 									globalMap.put("<%=cid %>_NB_CALL",++nb_call_<%=cid%>);		

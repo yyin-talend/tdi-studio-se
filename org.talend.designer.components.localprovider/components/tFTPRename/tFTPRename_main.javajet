@@ -124,7 +124,7 @@ try{
 	
 
 <%}%>
- 	}catch(Exception e){
+ 	}catch(java.lang.Exception e){
 <%
         if(("true").equals(dieOnError)){
 %>

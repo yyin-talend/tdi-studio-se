@@ -51,7 +51,7 @@ try {
 <%
 	}
 %>
-} catch (Exception dE_<%=cid%>) {
+} catch (java.lang.Exception dE_<%=cid%>) {
 <%
 	if ("true".equals(dieOnError)) {
 %>

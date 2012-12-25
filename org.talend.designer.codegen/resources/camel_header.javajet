@@ -45,7 +45,7 @@
 			/**
 			* please initial uri map 
 			*/
-			public void configure() throws Exception {
+			public void configure() throws java.lang.Exception {
 <%
 	for (INode node : processNodes) {
 		if (node.getComponent().getName().equals("cCXF")) {

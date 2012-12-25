@@ -17,7 +17,7 @@
 		Set<String> nodeNames = new HashSet<String>();
 		List<? extends INode> nodes = null;
 		//the parameter node is tHashInput/tHashOutput
-		public INode getOriginaltHashOutputNode(INode node) throws Exception{	
+		public INode getOriginaltHashOutputNode(INode node) throws java.lang.Exception{	
 			//initial it only once.
 			if(nodes == null){
 				nodes = node.getProcess().getGeneratingNodes();
@@ -27,7 +27,7 @@
 			if(nodeNames.contains(uniqueName)){
 				//happen the cycle problem!!!
 				//return null;
-				throw new Exception("happen the cycle problem!!!");
+				throw new java.lang.Exception("happen the cycle problem!!!");
 			}else{
 				nodeNames.add(uniqueName);
 				//1. get the tHashOuput node
@@ -47,12 +47,12 @@
 						}else{
 							//if go here, it means that user delete the original tHashOutput 
 							//return null;
-							throw new Exception("if go here, it means that user delete the original tHashOutput.");
+							throw new java.lang.Exception("if go here, it means that user delete the original tHashOutput.");
 						}
 					}else{
 						//if go here, it means there should link to a tHashOutput, but user doesn't it.
 						//return null;
-						throw new Exception("if go here, it means there should link to a tHashOutput, but user doesn't it.");
+						throw new java.lang.Exception("if go here, it means there should link to a tHashOutput, but user doesn't it.");
 					}
 				}else{
 					//get it!!! it can be a 1).tHashInput(read file directly), 2). tHashOuput (the original one)  
@@ -88,7 +88,7 @@
 			Util util = new Util();
 			tHashOutputNode = util.getOriginaltHashOutputNode(node);	
 			//System.out.println(tHashOutputNode.getUniqueName());
-		}catch(Exception e){%>
+		}catch(java.lang.Exception e){%>
 			<%=e.getMessage() %>
 		<%}
 	}

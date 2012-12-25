@@ -218,7 +218,7 @@ if (metadatas != null && metadatas.size()>0) {
 		      }
 		      %>
 	    <%}//end partial%>  
-    } catch (Exception e) {
+    } catch (java.lang.Exception e) {
       <%if (dieOnError) {%>
         throw(e);
       <%} else {

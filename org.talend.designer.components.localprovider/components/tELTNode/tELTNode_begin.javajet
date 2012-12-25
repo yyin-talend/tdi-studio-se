@@ -244,7 +244,7 @@
         	}
         }
 		
-		public abstract String run(SQL sql) throws Exception;
+		public abstract String run(SQL sql) throws java.lang.Exception;
 		
 		/**
 		 * only constructor. the layout node must be able to refer to the
@@ -515,7 +515,7 @@
 			}
 		}
 		
-		public String run(SQL sql) throws Exception {
+		public String run(SQL sql) throws java.lang.Exception {
 			if (this.previous() == null)
 				return "";
 			else if (columns == null || columns.size() == 0)
@@ -582,9 +582,9 @@
 			return ret;
 		}
 		
-		public String run(SQL sql) throws Exception {
+		public String run(SQL sql) throws java.lang.Exception {
 			if (this.previous() == null)
-				throw new Exception("ELTFilter must have an input connection.");
+				throw new java.lang.Exception("ELTFilter must have an input connection.");
 			else if (columns == null || columns.size() == 0)
 				return "";
 			else {
@@ -684,9 +684,9 @@
 			}
 		}
 		
-		public String run(SQL sql) throws Exception {
+		public String run(SQL sql) throws java.lang.Exception {
 			if (this.previous() == null)
-				throw new Exception("ELTAggregate must have an input connection.");
+				throw new java.lang.Exception("ELTAggregate must have an input connection.");
 			else if (columns == null || columns.size() == 0)
 				return "";
 			else {
@@ -819,7 +819,7 @@
 		 * @param sql
 		 * @return example: column1, COUNT(column2), column3 AS col3
 		 */
-		protected String getSelectColumns(SQL sql) throws Exception {
+		protected String getSelectColumns(SQL sql) throws java.lang.Exception {
 			String ret = "";
 			boolean firstColumnFlag = true;
 			
@@ -857,7 +857,7 @@
 				}
 				else {
 					String componentName = (String)getParameterByName("UNIQUE_NAME").getValue();
-					throw new Exception("Column " + physicalName + " is not defined in the " + componentName + " component");
+					throw new java.lang.Exception("Column " + physicalName + " is not defined in the " + componentName + " component");
 				}
 			}
 			if (sql.needs.size() > 0) {
@@ -874,7 +874,7 @@
 				}
 				if (hasAnyNeedsColumns) {
 					String componentName = (String)getParameterByName("UNIQUE_NAME").getValue();
-					throw new Exception("Column " + tmpName + " is not defined in the " + componentName + " component.");
+					throw new java.lang.Exception("Column " + tmpName + " is not defined in the " + componentName + " component.");
 				}
 			}
 			/*
@@ -938,9 +938,9 @@
 			return ret;
 		}
 		
-		public String run(SQL sql) throws Exception {
+		public String run(SQL sql) throws java.lang.Exception {
 			if (columns == null || columns.size() == 0)
-				throw new Exception("tELTPlusInput must have an shcema.");
+				throw new java.lang.Exception("tELTPlusInput must have an shcema.");
 			else {
 				return "SELECT " + getSelectColumns(sql) + " FROM " + getTable();
 			}
@@ -1030,7 +1030,7 @@
 	SQL sqlObject = new SQL();
 	try {
 		sql = tail.run(sqlObject);
-	} catch (Exception e) {
+	} catch (java.lang.Exception e) {
 		err = e.getMessage() + " ";
 		e.printStackTrace();
 	}
@@ -1058,5 +1058,5 @@
 	globalMap.put("<%=cid%>_QUERY", sql_<%=cid%>);
 	globalMap.put("<%=cid%>_NB_LINE", ret_<%=cid%>);
 	<% } else { %>
-	throw new Exception("<%=err%>");
+	throw new java.lang.Exception("<%=err%>");
 	<% } %>
