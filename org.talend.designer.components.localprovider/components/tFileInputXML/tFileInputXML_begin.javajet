@@ -76,7 +76,7 @@ class IgnoreDTDEntityResolver_<%=cid%> implements org.xml.sax.EntityResolver {
 // *** Xerces *** //
 if(("Xerces").equals(mode)){
 %>
-class TalendPrefixResolver_<%=cid%> implements com.sun.org.apache.xml.internal.utils.PrefixResolver {
+class TalendPrefixResolver_<%=cid%> implements org.apache.xml.utils.PrefixResolver {
 
     private java.util.Map<String, String> map = new java.util.HashMap<String, String>();
     
@@ -88,7 +88,7 @@ class TalendPrefixResolver_<%=cid%> implements com.sun.org.apache.xml.internal.u
 
     public String getNamespaceForPrefix(String prefix) {
         if (("xml").equals(prefix)) {
-            return com.sun.org.apache.xml.internal.utils.Constants.S_XMLNAMESPACEURI;
+            return org.apache.xml.utils.Constants.S_XMLNAMESPACEURI;
         } else {
             return map.get(prefix);
         }
@@ -189,30 +189,30 @@ class XML_API_<%=cid%>{
 	}
 
 //==============add for feature 10753 start================================
-	com.sun.org.apache.xpath.internal.objects.XObject obj = null;
+	org.apache.xpath.objects.XObject obj = null;
 	
 	public int getNodeType(org.w3c.dom.Node node, String xpath) throws javax.xml.transform.TransformerException{
-		obj = com.sun.org.apache.xpath.internal.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
+		obj = org.apache.xpath.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
 		return obj.getType();
 	}
 	
 	public String getNodeString(org.w3c.dom.Node node, String xpath) throws javax.xml.transform.TransformerException{
 		if(obj==null){
-			obj = com.sun.org.apache.xpath.internal.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
+			obj = org.apache.xpath.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
 		}
 		return obj.str();
 	}
 
     public org.w3c.dom.Node getSingleNode(org.w3c.dom.Node node, String xpath) throws javax.xml.transform.TransformerException {
     	if(obj==null){
-        	obj = com.sun.org.apache.xpath.internal.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
+        	obj = org.apache.xpath.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
         }
         return obj.nodelist().item(0);
     }
 //=====================end=================================================
 
     public org.w3c.dom.NodeList getNodeList(org.w3c.dom.Node node, String xpath) throws javax.xml.transform.TransformerException {
-        com.sun.org.apache.xpath.internal.objects.XObject obj = com.sun.org.apache.xpath.internal.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
+        org.apache.xpath.objects.XObject obj = org.apache.xpath.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
         return obj.nodelist();
     }
     
@@ -835,7 +835,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					String nodeCheck = mapping.get(i).get("NODECHECK");
 					if(("Xerces").equals(mode)){
 %>
-	if(xml_api_<%=cid%>.getNodeType(tmp_<%=cid %>,<%=query%>)==com.sun.org.apache.xpath.internal.objects.XObject.CLASS_NODESET){
+	if(xml_api_<%=cid%>.getNodeType(tmp_<%=cid %>,<%=query%>)==org.apache.xpath.objects.XObject.CLASS_NODESET){
 		node_<%=cid%> = xml_api_<%=cid%>.getSingleNode(tmp_<%=cid %>,<%=query%>);
 <%
 						if("true".equals(useSeparator)){
