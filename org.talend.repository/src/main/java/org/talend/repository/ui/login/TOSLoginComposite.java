@@ -62,7 +62,6 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
-import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
@@ -589,10 +588,8 @@ public class TOSLoginComposite extends Composite {
                         changeButton.setEnabled(false);
                     }
                 }
-                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
                 java.util.List<ConnectionBean> list = new ArrayList<ConnectionBean>();
                 list.add(loginComposite.getConnection());
-                prefManipulator.saveConnections(list);
                 loginComposite.storedConnections = list;
                 perReader.saveConnections(loginComposite.storedConnections);
 

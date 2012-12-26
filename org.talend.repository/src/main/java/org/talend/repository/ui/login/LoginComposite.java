@@ -1642,9 +1642,6 @@ public class LoginComposite extends Composite {
                     ConnectionsDialog connectionsDialog = new ConnectionsDialog(getShell());
                     int open = connectionsDialog.open();
                     if (open == Window.OK) {
-                        PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
-                                .getPreferenceStore());
-                        prefManipulator.saveConnections(connectionsDialog.getConnections());
 
                         LoginComposite.this.storedConnections = connectionsDialog.getConnections();
                         perReader.saveConnections(LoginComposite.this.storedConnections);
@@ -1921,8 +1918,6 @@ public class LoginComposite extends Composite {
             this.storedConnections = instance.forceReadConnections();
             this.lastConnection = sandboxDialog.getConnectionBean().getName();
 
-            PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-            prefManipulator.saveConnections(this.storedConnections);
             perReader.saveConnections(this.storedConnections);
 
             fillContents();
