@@ -204,6 +204,15 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 if (ROUTE.equals(itemType)) {
                     addOSGIRouteResources(osgiResource, processItem);
                 }
+
+                // add tESBConsumer WSDL
+                List<URL> wsdlUrls= WSDLExporter.exportWsdlsForProcess(processItem, getTmpFolder() + PATH_SEPARATOR);
+                if (!wsdlUrls.isEmpty()) {
+                    ExportFileResource wsdlResource = new ExportFileResource(null, "");
+                    wsdlResource.addResources(wsdlUrls);
+                    list.add(wsdlResource);
+                }
+
             }
             ExportFileResource libResource = getCompiledLibExportFileResource(processes);
             if (libResource != null) {
@@ -266,7 +275,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     }
 
     /**
-     * 
+     *
      * This should be same as @see isIncludedLib. But, there are some special jar to exclude temp.
      */
     @Override
@@ -274,9 +283,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         if (module != null) {
             /*
              * If null, will add the lib always.
-             * 
+             *
              * If empty, nothing will be added.
-             * 
+             *
              * Else, add the bundle id in "Require-Bundle", but don't add the lib.
              */
             if (isIncludedLib(module)) {
@@ -301,9 +310,9 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * If null, will add the lib always. @see isIncludedLib
-     * 
+     *
      * If empty, nothing will be added. @see isExcludedLib
-     * 
+     *
      * Else, add the bundle id in "Require-Bundle", but don't add the lib. @see isIncludedInRequireBundle
      */
     protected boolean isIncludedLib(ModuleNeeded module) {
@@ -346,7 +355,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Get all route resource needed.
-     * 
+     *
      * @param osgiResource
      * @param processItem
      * @throws MalformedURLException
@@ -355,7 +364,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     	IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(JavaUtils.JAVA_PROJECT_NAME);
     	IFolder srcFolder = project.getFolder(JavaUtils.JAVA_SRC_DIRECTORY);
     	IPath srcPath = srcFolder.getLocation();
-    	
+
     	// http://jira.talendforge.org/browse/TESB-6437
     	//https://jira.talendforge.org/browse/TESB-7893
         ICamelDesignerCoreService camelService = (ICamelDesignerCoreService) GlobalServiceRegister.getDefault().getService(
@@ -371,7 +380,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * DOC ycbai Comment method "getJobScriptsUncompressed".
-     * 
+     *
      * @param resource
      * @param process
      * @throws IOException
@@ -404,7 +413,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * This method will return <code>true</code> if given job contains tESBProviderRequest or tESBConsumer component
-     * 
+     *
      * @param processItem
      * @author rzubairov
      * @return
@@ -519,7 +528,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Created OSGi Blueprint configuration for job bundle.
-     * 
+     *
      * @param processItem
      * @param inputFile
      * @param targetFile
@@ -937,7 +946,7 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 
     /**
      * Getter for requireBundleModules.
-     * 
+     *
      * @return the requireBundleModules
      */
     protected MultiKeyMap getRequireBundleModules() {
