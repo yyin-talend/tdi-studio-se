@@ -30,7 +30,9 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.utils.ProcessStreamTrashReaderUtil;
@@ -82,6 +84,8 @@ public class GuessSchemaProcess {
 
     private DbInfo info;
 
+    private IProcess originalProcess;
+
     private static String LIB_NODE = "tLibraryLoad"; //$NON-NLS-1$
 
     private static String TEMPFILE_APPEND_NAME = "GuessSchemaDelimitedFile"; //$NON-NLS-1$
@@ -93,6 +97,18 @@ public class GuessSchemaProcess {
         this.memoSQL = memoSQL.replace("\n", " "); //$NON-NLS-1$ //$NON-NLS-2$
         this.info = info;
         this.conn = info.getConn();
+        initOutpath();
+    }
+
+    public GuessSchemaProcess(Property property, INode node, IContext selectContext, String memoSQL, DbInfo info,
+            IProcess originalProcess) {
+        this.property = property;
+        this.node = node;
+        this.selectContext = selectContext;
+        this.memoSQL = memoSQL.replace("\n", " "); //$NON-NLS-1$ //$NON-NLS-2$
+        this.info = info;
+        this.conn = info.getConn();
+        this.originalProcess = originalProcess;
         initOutpath();
     }
 
@@ -141,12 +157,41 @@ public class GuessSchemaProcess {
                 process.addNodeContainer(new NodeContainer(libNode1));
             }
         }
+
+        INode connectionNode = null;
+
+        IElementParameter existConnection = node.getElementParameter("USE_EXISTING_CONNECTION");
+        boolean useExistConnection = (existConnection == null ? false : (Boolean) existConnection.getValue());
+        if (useExistConnection) {
+            IElementParameter connector = node.getElementParameter("CONNECTION");
+            if (connector != null) {
+                String connectorValue = connector.getValue().toString();
+                List<? extends INode> graphicalNodes = originalProcess.getGraphicalNodes();
+                for (INode node : graphicalNodes) {
+                    if (node.getUniqueName().equals(connectorValue)) {
+                        connectionNode = node;
+                        break;
+                    }
+                }
+            }
+        }
+
         List<ModuleNeeded> neededLibraries = new ArrayList<ModuleNeeded>();
         JavaProcessUtil.addNodeRelatedModules(process, neededLibraries, node);
         for (ModuleNeeded module : neededLibraries) {
             Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
             libNode1.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             process.addNodeContainer(new NodeContainer(libNode1));
+        }
+
+        if (connectionNode != null) {
+            neededLibraries = new ArrayList<ModuleNeeded>();
+            JavaProcessUtil.addNodeRelatedModules(process, neededLibraries, connectionNode);
+            for (ModuleNeeded module : neededLibraries) {
+                Node libNode1 = new Node(ComponentsFactoryProvider.getInstance().get(LIB_NODE), process);
+                libNode1.setPropertyValue("LIBRARY", "\"" + module.getModuleName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                process.addNodeContainer(new NodeContainer(libNode1));
+            }
         }
 
         // create the tLibraryLoad for the output component which is "tFileOutputDelimited"

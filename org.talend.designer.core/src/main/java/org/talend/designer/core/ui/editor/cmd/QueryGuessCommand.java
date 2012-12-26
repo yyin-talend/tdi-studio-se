@@ -86,6 +86,7 @@ public class QueryGuessCommand extends Command {
 
     // Added TDQ-5616 yyin 20121206
     private String whereClause = null;
+
     /**
      * The property is defined in an element, which can be either a node or a connection.
      * 
@@ -219,10 +220,32 @@ public class QueryGuessCommand extends Command {
         // hywang add for bug 7575
         if (dbType != null && dbType.equals(EDatabaseTypeName.GENERAL_JDBC.getDisplayName())) {
             isJdbc = true;
-            String driverClassName = node.getElementParameter("DRIVER_CLASS").getValue().toString(); //$NON-NLS-N$
+            INode connectionNode = null;
+
+            IElementParameter existConnection = node.getElementParameter("USE_EXISTING_CONNECTION");
+            boolean useExistConnection = (existConnection == null ? false : (Boolean) existConnection.getValue());
+
+            String driverClassName = node.getElementParameter("DRIVER_CLASS").getValue().toString();
+            if (useExistConnection) {
+                IElementParameter connector = node.getElementParameter("CONNECTION");
+                if (connector != null) {
+                    String connectorValue = connector.getValue().toString();
+                    List<? extends INode> graphicalNodes = process.getGraphicalNodes();
+                    for (INode node : graphicalNodes) {
+                        if (node.getUniqueName().equals(connectorValue)) {
+                            connectionNode = node;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (connectionNode != null) {
+                driverClassName = connectionNode.getElementParameter("DRIVER_CLASS").getValue().toString();
+            }
+
             driverClassName = TalendTextUtils.removeQuotes(driverClassName);
             //
-            if (driverClassName != null && !"".equals(driverClassName)) { //$NON-NLS-N$
+            if (driverClassName != null && !"".equals(driverClassName)) {
                 boolean isContextModeDriverClass = ContextParameterUtils.containContextVariables(driverClassName);
                 if (isContextModeDriverClass) {
                     driverClassName = JavaProcessUtil.getContextOriginalValue(process, driverClassName);
@@ -236,14 +259,17 @@ public class QueryGuessCommand extends Command {
             }
 
             // DRIVER_JAR:
-            String driverJarName = node.getElementParameter("DRIVER_JAR").getValue().toString(); //$NON-NLS-N$
-            if (driverJarName != null && driverJarName.startsWith("[") && driverJarName.endsWith("]")) { //$NON-NLS-N$ //$NON-NLS-N$
+            String driverJarName = node.getElementParameter("DRIVER_JAR").getValue().toString();
+            if (connectionNode != null) {
+                driverJarName = connectionNode.getElementParameter("DRIVER_JAR").getValue().toString();
+            }
+            if (driverJarName != null && driverJarName.startsWith("[") && driverJarName.endsWith("]")) {
                 driverJarName = driverJarName.substring(1, driverJarName.length() - 1);
-                if (driverJarName != null && driverJarName.startsWith("{") && driverJarName.endsWith("}")) { //$NON-NLS-N$ //$NON-NLS-N$
+                if (driverJarName != null && driverJarName.startsWith("{") && driverJarName.endsWith("}")) {
                     driverJarName = driverJarName.substring(1, driverJarName.length() - 1);
                 }
             }
-            if (driverJarName != null && !"".equals(driverJarName)) { //$NON-NLS-N$
+            if (driverJarName != null && !"".equals(driverJarName)) {
                 boolean isContextMode = ContextParameterUtils.containContextVariables(driverJarName);
                 if (isContextMode) {
                     driverJarName = JavaProcessUtil.getContextOriginalValue(process, driverJarName);
