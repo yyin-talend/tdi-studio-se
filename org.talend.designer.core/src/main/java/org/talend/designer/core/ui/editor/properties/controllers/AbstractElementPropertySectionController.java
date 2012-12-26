@@ -1353,14 +1353,16 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
         // Get real hsqldb type
         if (type.equals(EDatabaseTypeName.HSQLDB.name())
-                && getValueFromRepositoryName(element, "RUNNING_MODE").equals("HSQLDB_INPROGRESS_PERSISTENT")) {//$NON-NLS-1$ //$NON-NLS-1$
+                && getValueFromRepositoryName(element, "RUNNING_MODE").equals("HSQLDB_INPROGRESS_PERSISTENT")) {//$NON-NLS-1$ 
             type = EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName();
         }
         // If the dbtype has been setted don't reset it again unless the dbtype of connParameters is null.
         if (StringUtils.trimToNull(type) == null && StringUtils.trimToNull(connParameters.getDbType()) == null) {
             type = EDatabaseTypeName.GENERAL_JDBC.getXmlName();
         }
-        connParameters.setDbType(type);
+        if (StringUtils.trimToNull(type) != null) {
+            connParameters.setDbType(type);
+        }
 
         String frameWorkKey = getValueFromRepositoryName(element, "FRAMEWORK_TYPE"); //$NON-NLS-1$
         connParameters.setFrameworkType(frameWorkKey);
@@ -1697,7 +1699,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
         // Get real hsqldb type
         if (type.equals(EDatabaseTypeName.HSQLDB.name())
-                && getValueFromRepositoryName(elem, "RUNNING_MODE").equals("HSQLDB_INPROGRESS_PERSISTENT")) {//$NON-NLS-1$ //$NON-NLS-1$
+                && getValueFromRepositoryName(elem, "RUNNING_MODE").equals("HSQLDB_INPROGRESS_PERSISTENT")) {//$NON-NLS-1$ 
             type = EDatabaseTypeName.HSQLDB_IN_PROGRESS.getDisplayName();
         }
         connParameters.setDbType(type);
