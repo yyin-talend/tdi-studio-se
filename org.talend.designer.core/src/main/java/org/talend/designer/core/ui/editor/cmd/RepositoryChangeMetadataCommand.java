@@ -21,6 +21,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.xml.XmlUtil;
 import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
@@ -32,6 +33,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.SalesforceSchemaConnectionItem;
 import org.talend.core.model.repository.DragAndDropManager;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.IDragAndDropServiceHandler;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.model.components.EParameterName;
@@ -42,6 +44,7 @@ import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -88,6 +91,15 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
                         parameter.setValue(new ArrayList<Map<String, Object>>());
                     }
                 }
+            }
+        }
+        // ELT Input/output component need add the schema conetxt in Context Mode
+        if (node.isELTComponent()) {
+            IElementParameter schemaParam = node.getElementParameter("ELT_SCHEMA_NAME");
+            if (schemaParam != null && schemaParam.getValue() != null && newPropValue != null && connection.isContextMode()
+                    && ContextParameterUtils.isContainContextParam(schemaParam.getValue().toString())) {
+                ConnectionItem connectionItem = MetadataToolHelper.getConnectionItemFromRepository(newPropValue.toString());
+                ConnectionContextHelper.addContextForNodeParameter((Node) node, connectionItem, false);
             }
         }
         // IElementParameter schemaTypeParameter =
