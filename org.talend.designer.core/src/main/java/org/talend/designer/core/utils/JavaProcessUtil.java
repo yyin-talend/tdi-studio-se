@@ -298,6 +298,37 @@ public class JavaProcessUtil {
         return new ModuleNeeded(null, TalendTextUtils.removeQuotes(moduleValue), null, true);
     }
 
+    public static void addNodeRelatedModules(final IProcess process, List<ModuleNeeded> modulesNeeded, INode node) {
+        if (!node.isActivate()) {
+            // if node is deactivated, we don't need at all its dependencies.
+            return;
+        }
+        List<ModuleNeeded> moduleList = node.getModulesNeeded();
+        for (ModuleNeeded needed : moduleList) {
+            if (needed.isRequired(node.getElementParameters())) {
+                modulesNeeded.add(needed);
+            }
+        }
+        for (IElementParameter curParam : node.getElementParameters()) {
+            if (curParam.getFieldType() == null) {
+                continue; // field can be null in some really specific cases, like for example when preview from
+                // wizard.
+            }
+            if (!curParam.isShow(node.getElementParameters())) {
+                continue;
+            }
+            if (curParam.getFieldType().equals(EParameterFieldType.MODULE_LIST)) {
+                if (curParam.getValue() != null && !"".equals(curParam.getValue())) { // if the parameter //$NON-NLS-1$
+                    // is not empty.
+                    modulesNeeded.add(getModuleValue(process, (String) curParam.getValue()));
+                }
+            } else if (curParam.getFieldType() == EParameterFieldType.TABLE) {
+                getModulesInTable(process, curParam, modulesNeeded);
+            }
+            findMoreLibraries(process, modulesNeeded, curParam, true);
+        }
+    }
+
     /**
      * DOC YeXiaowei Comment method "findMoreLibraries".
      * 
@@ -336,29 +367,18 @@ public class JavaProcessUtil {
             }
         } else if (name.equals("DB_VERSION")) { //$NON-NLS-1$
             String jdbcName = (String) value;
-            //
-            if (jdbcName != null && !jdbcName.equals("Access_2003") && !jdbcName.equals("Access_2007")) {
-                if (jdbcName.contains("11g")) { //$NON-NLS-1$
-                    if (System.getProperty("java.version").startsWith("1.6")) { //$NON-NLS-1$ //$NON-NLS-2$
-                        jdbcName = jdbcName.replace('5', '6');
-                    } else {
-                        jdbcName = jdbcName.replace('6', '5');
-                    }
-                }
-
-                if (flag == true) {
-                    String jars = (jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
-                            TalendTextUtils.SINGLE_QUOTE, "");
-                    String separator = ";"; //$NON-NLS-1$
-                    if (jars.contains(separator)) {
-                        for (String jar : jars.split(separator)) {
-                            ModuleNeeded module = new ModuleNeeded(null, jar, null, true);
-                            modulesNeeded.add(module);
-                        }
-                    } else {
-                        ModuleNeeded module = new ModuleNeeded(null, jars, null, true);
+            if (jdbcName != null) {
+                String jars = (jdbcName).replaceAll(TalendTextUtils.QUOTATION_MARK, "").replaceAll( //$NON-NLS-1$
+                        TalendTextUtils.SINGLE_QUOTE, ""); //$NON-NLS-1$
+                String separator = ";"; //$NON-NLS-1$
+                if (jars.contains(separator)) {
+                    for (String jar : jars.split(separator)) {
+                        ModuleNeeded module = new ModuleNeeded(null, jar, null, true);
                         modulesNeeded.add(module);
                     }
+                } else {
+                    ModuleNeeded module = new ModuleNeeded(null, jars, null, true);
+                    modulesNeeded.add(module);
                 }
             }
         } else if (name.equals("MQ_DERVIERS")) { //$NON-NLS-1$

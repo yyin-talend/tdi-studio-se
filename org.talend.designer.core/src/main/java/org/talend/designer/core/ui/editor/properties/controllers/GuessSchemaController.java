@@ -336,7 +336,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             dbmsId = dialog.getSelectId();
         }
 
-        GuessSchemaProcess gsp = new GuessSchemaProcess(property, inputNode, selectContext, memoSQL, info);
+        GuessSchemaProcess gsp = new GuessSchemaProcess(property, inputNode, selectContext, memoSQL, info, part.getProcess());
         try {
             List<Integer> indexsForSameNamedColumn = new ArrayList<Integer>();
             CsvArray array = gsp.run();
