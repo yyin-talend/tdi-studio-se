@@ -138,7 +138,7 @@
 			<IMPORT NAME="Java_JAXEN1.1" MODULE="jaxen-1.1.1.jar"
 				REQUIRED_IF="GENERATION_MODE == 'DOM4J'" />
 			<IMPORT NAME="Java_xercesImpl" MODULE="xercesImpl.jar"
-				REQUIRED_IF="GENERATION_MODE == 'XERCES'" />
+				REQUIRED_IF="(GENERATION_MODE == 'XERCES') OR (GENERATION_MODE == 'SAX')" />
 			<IMPORT NAME="Java_xalan" MODULE="xalan.jar"
                 REQUIRED_IF="GENERATION_MODE == 'XERCES'" />
 			<IMPORT NAME="Java_talendSAX" MODULE="TalendSAX.jar"
