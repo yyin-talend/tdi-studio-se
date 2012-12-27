@@ -3181,7 +3181,7 @@ public class Node extends Element implements IGraphicalNode {
                             // dbType compatible with this component
                             if (currentDbmsId != null && !TypesManager.checkDBType(currentDbmsId, typevalue, sourceType)) {
                                 String errorMessage = "the schema's dbType not correct for this component"; //$NON-NLS-1$
-                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                Problems.add(ProblemStatus.WARNING, this, errorMessage);
                             }
                         }
                     }
