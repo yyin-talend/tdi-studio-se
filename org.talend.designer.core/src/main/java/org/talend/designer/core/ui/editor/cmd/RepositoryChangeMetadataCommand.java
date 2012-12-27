@@ -92,7 +92,8 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         // ELT Input/output component need add the schema conetxt in Context Mode
         if (node.isELTComponent()) {
             IElementParameter schemaParam = node.getElementParameter("ELT_SCHEMA_NAME");
-            if (schemaParam != null && schemaParam.getValue() != null && newPropValue != null && connection.isContextMode()
+            if (schemaParam != null && schemaParam.getValue() != null && newPropValue != null && connection != null
+                    && connection.isContextMode()
                     && ContextParameterUtils.isContainContextParam(schemaParam.getValue().toString())) {
                 ConnectionItem connectionItem = MetadataToolHelper.getConnectionItemFromRepository(newPropValue.toString());
                 ConnectionContextHelper.addContextForNodeParameter(node, connectionItem, false);
