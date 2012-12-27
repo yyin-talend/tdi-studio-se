@@ -1195,7 +1195,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             if(content == null){
             	return;
             }
-
+            if(this.project == null || this.project.getFolder("src") == null){
+            	return;
+            }
             this.project.getFolder("src").refreshLocal(IResource.DEPTH_INFINITE, null);
             IFolder folder = this.project.getFolder("src/META-INF");
             if(!folder.exists()){
