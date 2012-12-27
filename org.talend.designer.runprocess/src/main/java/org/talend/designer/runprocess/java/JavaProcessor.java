@@ -25,7 +25,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.InflaterInputStream;
 
+import org.apache.commons.codec.binary.Base64InputStream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -118,16 +120,16 @@ import org.talend.repository.ProjectManager;
 
 /**
  * Creat the package folder for the java file, and put the generated file to the correct folder.
- * 
+ *
  * The creation for the java package should follow the pattern below:
- * 
+ *
  * 1)The name for the first grade folder should keep same with the T.O.S project name. 2)The folder name within the
  * project should be the job name.
- * 
+ *
  * <br/>
- * 
+ *
  * $Id: JavaProcessor.java 2007-1-22 上�?�10:53:24 yzhang $
- * 
+ *
  */
 public class JavaProcessor extends Processor implements IJavaBreakpointListener {
 
@@ -163,9 +165,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Set current status.
-     * 
+     *
      * DOC yzhang Comment method "setStatus".
-     * 
+     *
      * @param states
      */
     public void setStatus(IJavaProcessorStates states) {
@@ -174,7 +176,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Constructs a new JavaProcessor.
-     * 
+     *
      * @param process Process to be turned in Java code.
      * @param filenameFromLabel Tells if filename is based on id or label of the process.
      */
@@ -203,7 +205,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * Initialization of the variable codePath and contextPath.
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#initPaths(org.talend.core.model .process.IContext)
      */
     @Override
@@ -265,7 +267,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * DOC chuang Comment method "computeMethodSizeIfNeeded".
-     * 
+     *
      * @param processCode
      * @return
      */
@@ -307,7 +309,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     /*
      * Append the generated java code form context into java file wihtin the project. If the file not existed new one
      * will be created.
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core .model.process.IContext, boolean,
      * boolean, boolean, boolean)
      */
@@ -322,7 +324,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     /*
      * Append the generated java code form context into java file wihtin the project. If the file not existed new one
      * will be created.
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core .model.process.IContext, boolean,
      * boolean, boolean)
      */
@@ -486,7 +488,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * DOC nrousseau Comment method "formatCode".
-     * 
+     *
      * @param processCode
      * @return
      */
@@ -559,7 +561,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getCodeContext()
      */
     @Override
@@ -573,7 +575,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getCodePath()
      */
     @Override
@@ -583,7 +585,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getContextPath()
      */
     @Override
@@ -593,7 +595,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getCodeProject()
      */
     @Override
@@ -603,7 +605,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Find line numbers of the beginning of the code of process nodes.
-     * 
+     *
      * @param file Code file where we are searching node's code.
      * @param nodes List of nodes searched.
      * @return Line numbers where code of nodes appears.
@@ -658,7 +660,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Return line number where stands specific node in code generated.
-     * 
+     *
      * @param nodeName
      */
     @Override
@@ -681,7 +683,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Tells if a line is a line of perl code, not an empty or comment line.
-     * 
+     *
      * @param line The tested line of code.
      * @return true if the line is a line of code.
      */
@@ -692,7 +694,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Set java breakpoints in a java file.
-     * 
+     *
      * @param srcFile Java file in wich breakpoints are added.
      * @param lineNumbers Line numbers in the source file where breakpoints are installed.
      * @throws CoreException Breakpoint addition failed.
@@ -708,9 +710,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Get the required project package under java project, if not existed new one will be created.
-     * 
+     *
      * DOC yzhang Comment method "getProjectPackage".
-     * 
+     *
      * @param packageName The required package name, should keep same with the T.O.S project name.
      * @return The required packaged.
      * @throws JavaModelException
@@ -748,9 +750,9 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
     /**
      * Get the required job package under the project package within the tranfered project, if not existed new one will
      * be created.
-     * 
+     *
      * DOC yzhang Comment method "getJobPackage".
-     * 
+     *
      * @param projectPackage The project package within which the job package you need to get, can be getted by method
      * getProjectPackage().
      * @param jobName The required job package name.
@@ -771,7 +773,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * Get the interpreter of Java.
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getInterpreter()
      */
     @Override
@@ -808,7 +810,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Getter for compliedCodePath.
-     * 
+     *
      * @return the compliedCodePath
      */
     public IPath getCompiledCodePath() {
@@ -817,7 +819,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Getter for compiledContextPath.
-     * 
+     *
      * @return the compiledContextPath
      */
     public IPath getCompiledContextPath() {
@@ -826,7 +828,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Getter for codePath.
-     * 
+     *
      * @return the codePath
      */
     public IPath getSrcCodePath() {
@@ -835,7 +837,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * Getter for srcContextPath.
-     * 
+     *
      * @return the srcContextPath
      */
     public IPath getSrcContextPath() {
@@ -1066,7 +1068,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getProcessorType()
      */
     @Override
@@ -1076,7 +1078,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getProcessorStates()
      */
     @Override
@@ -1091,7 +1093,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * Get current class name, and it imported package structure.
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#getTypeName()
      */
     @Override
@@ -1101,7 +1103,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.IProcessor#saveLaunchConfiguration()
      */
     @Override
@@ -1156,7 +1158,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.talend.designer.runprocess.Processor#generateContextCode()
      */
     @Override
@@ -1176,7 +1178,50 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
         updateContextCode(codeGen);
     }
-    
+
+    /*
+     * (non-Javadoc)
+     * generate WSDL files on classpath for jobs with tESBConsumer components
+     */
+    public void generateWsdlFiles() throws ProcessorException {
+        try {
+            IPath jobPackagePath = this.codePath.removeLastSegments(1);
+            IFolder jobPackageFolder = this.project.getFolder(jobPackagePath);
+            IFolder wsdlsPackageFolder = jobPackageFolder.getFolder("wsdl"); //$NON-NLS-1$
+            if (wsdlsPackageFolder.exists()) {
+                wsdlsPackageFolder.delete(true, true, null);
+            }
+
+            List<? extends INode> graphicalNodes = process.getGraphicalNodes(); //process.getGeneratingNodes();
+            for (INode node : graphicalNodes) {
+                if ("tESBConsumer".equals(node.getComponent().getName()) && node.isActivate()) { //$NON-NLS-1$
+                    // retrieve WSDL content (compressed-n-encoded)
+                    Object wsdlContent = node.getPropertyValue("WSDL_CONTENT"); //$NON-NLS-1$
+                    String uniqueName = node.getUniqueName();
+                    if (null != wsdlContent && null != uniqueName) {
+
+                        // configure decoding and uncompressing
+                        InputStream wsdlStream = new InflaterInputStream(new Base64InputStream(
+                                new ByteArrayInputStream(((String) wsdlContent).getBytes())));
+
+                        if (!wsdlsPackageFolder.exists()) {
+                            wsdlsPackageFolder.create(true, true, null);
+                        }
+
+                        // generate WSDL file
+                        IFile wsdlFile = wsdlsPackageFolder.getFile(uniqueName + ".wsdl"); //$NON-NLS-1$
+                        wsdlFile.create(wsdlStream, true, null);
+                    }
+                }
+            }
+        } catch (CoreException e) {
+            if (e.getStatus() != null && e.getStatus().getException() != null) {
+                ExceptionHandler.process(e.getStatus().getException());
+            }
+            throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
+        }
+    }
+
     /*
      * (non-Javadoc)
      * generate spring file for RouteBuilder
@@ -1187,7 +1232,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
         try {
         	ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
         	ICodeGenerator codeGen = service.createCodeGenerator(process, false, false);
-        	
+
         	if (codeGen == null) {
         		return;
         	}
@@ -1228,7 +1273,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#addingBreakpoint(org
      * .eclipse.jdt.debug.core.IJavaDebugTarget, org.eclipse.jdt.debug.core.IJavaBreakpoint)
      */
@@ -1238,7 +1283,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seeorg.eclipse.jdt.debug.core.IJavaBreakpointListener#
      * breakpointHasCompilationErrors(org.eclipse.jdt.debug.core. IJavaLineBreakpoint,
      * org.eclipse.jdt.core.dom.Message[])
@@ -1250,7 +1295,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @seeorg.eclipse.jdt.debug.core.IJavaBreakpointListener# breakpointHasRuntimeException(org.eclipse.jdt.debug.core.
      * IJavaLineBreakpoint, org.eclipse.debug.core.DebugException)
      */
@@ -1261,7 +1306,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointHit(org. eclipse.jdt.debug.core.IJavaThread,
      * org.eclipse.jdt.debug.core.IJavaBreakpoint)
      */
@@ -1272,7 +1317,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointInstalled
      * (org.eclipse.jdt.debug.core.IJavaDebugTarget , org.eclipse.jdt.debug.core.IJavaBreakpoint)
      */
@@ -1282,7 +1327,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#breakpointRemoved(
      * org.eclipse.jdt.debug.core.IJavaDebugTarget, org.eclipse.jdt.debug.core.IJavaBreakpoint)
      */
@@ -1295,7 +1340,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /**
      * yzhang Comment method "updateGraphicalNodeBreaking".
-     * 
+     *
      * @param breakpoint
      */
     private void updateGraphicalNodeBreaking(IJavaBreakpoint breakpoint, boolean removed) {
@@ -1367,7 +1412,7 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jdt.debug.core.IJavaBreakpointListener#installingBreakpoint
      * (org.eclipse.jdt.debug.core.IJavaDebugTarget , org.eclipse.jdt.debug.core.IJavaBreakpoint,
      * org.eclipse.jdt.debug.core.IJavaType)
