@@ -499,10 +499,10 @@ class HSQLDBManager extends Manager {
         return "hsqldb_id";
     }
     protected String getLProtectedChar() {
-        return "\\\"";
+        return "";
     }
     protected String getRProtectedChar() {
-        return "\\\"";
+        return "";
     }
     public String closeConnection() {
         StringBuilder javaCode = new StringBuilder();
