@@ -1196,13 +1196,13 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             for (INode node : graphicalNodes) {
                 if ("tESBConsumer".equals(node.getComponent().getName()) && node.isActivate()) { //$NON-NLS-1$
                     // retrieve WSDL content (compressed-n-encoded)
-                    Object wsdlContent = node.getPropertyValue("WSDL_CONTENT"); //$NON-NLS-1$
+                    String wsdlContent = (String) node.getPropertyValue("WSDL_CONTENT"); //$NON-NLS-1$
                     String uniqueName = node.getUniqueName();
-                    if (null != wsdlContent && null != uniqueName) {
+                    if (null != uniqueName && null != wsdlContent && !wsdlContent.trim().isEmpty()) {
 
                         // configure decoding and uncompressing
                         InputStream wsdlStream = new InflaterInputStream(new Base64InputStream(
-                                new ByteArrayInputStream(((String) wsdlContent).getBytes())));
+                                new ByteArrayInputStream(wsdlContent.getBytes())));
 
                         if (!wsdlsPackageFolder.exists()) {
                             wsdlsPackageFolder.create(true, true, null);
