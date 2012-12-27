@@ -29,6 +29,7 @@
 	IProcess process = (IProcess) v.get(0);
 	String version = (String) v.get(1);
 
+/*
 	boolean startable = false;
 	for (INode node : (List< ? extends INode>)process.getGraphicalNodes()) {
 		Object value = node.getPropertyValue("STARTABLE");
@@ -37,18 +38,23 @@
 			break;
 		}
 	}
-
+*/
 	boolean stats = codeGenArgument.isStatistics();
 
-	List< ? extends INode> processNodes = (List< ? extends INode>)process.getGeneratingNodes();
 %>
 			/**
 			* please initial uri map 
 			*/
 			public void configure() throws java.lang.Exception {
 <%
+	List< ? extends INode> processNodes = (List< ? extends INode>)process.getGraphicalNodes();
+	List<? extends INode> cxfNodes = process.getNodesOfType("cCXF");
 	for (INode node : processNodes) {
-		if (node.getComponent().getName().equals("cCXF")) {
+			if (!node.isActivate()) {
+				continue;
+			}
+			String nodeComponentName = node.getComponent().getName();
+			if("cCXF".equals(nodeComponentName)){
 			IElementParameter param = node.getElementParameter("LABEL");
 		   	String cid = node.getUniqueName();
 		//  http://jira.talendforge.org/browse/TESB-5241
@@ -110,13 +116,7 @@
 				}
 <%
 			}
-		}
-	}
-%>
-<%
-	for (INode node : processNodes) {
-		if (node.isActivate()) {
-			if (node.getComponent().getName().equals("cAggregate")) {
+	}else if("cAggregate".equals(nodeComponentName)){
 				boolean usePersistence = "true".equals(ElementParameterParser.getValue(node, "__USE_PERSISTENCE__"));
 				String repository = ElementParameterParser.getValue(node, "__REPOSITORY__");
 				if (usePersistence) {
@@ -163,7 +163,154 @@
 						}
 					}
 				}
-			}
+				
+				String language = ElementParameterParser.getValue(node, "__LANGUAGES__");
+				String useNamespaces = ElementParameterParser.getValue(node, "__USE_NAMESPACES__");
+				List<Map<String, String>> namespaceValues = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__NAMESPACES__");
+				if("xpath".equals(language)&&"true".equals(useNamespaces)){
+					String cid = node.getUniqueName();
+				
+%>
+				Map<String, String> <%=cid%>NSMap = new HashMap<String, String>();
+				{
+<%
+					for(Map<String, String> m: namespaceValues){
+						String pre = m.get("PREFIX");
+						String uri = m.get("URI");
+%>
+						<%=cid%>NSMap.put(<%=pre%>, <%=uri%>);
+<%
+					}
+%>
+				}
+<%
+				}
+	}else if("cLoop".equals(nodeComponentName)){
+		String type = ElementParameterParser.getValue(node, "__LOOP_TYPE__");
+		if(!"EXPRESSION_TYPE".equals(type)){
+			continue;
 		}
+		String language = ElementParameterParser.getValue(node, "__LANGUAGES__");
+		if(!"xpath".equals(language)){
+			continue;
+		}
+		String useNamespaces = ElementParameterParser.getValue(node, "__USE_NAMESPACES__");
+		if(!"true".equals(useNamespaces)){
+			continue;
+		}
+		String cid = node.getUniqueName();
+		List<Map<String, String>> namespaceValues = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__NAMESPACES__");
+%>
+		Map<String, String> <%=cid%>NSMap = new HashMap<String, String>();
+		{
+<%
+			for(Map<String, String> m: namespaceValues){
+				String pre = m.get("PREFIX");
+				String uri = m.get("URI");
+%>
+				<%=cid%>NSMap.put(<%=pre%>, <%=uri%>);
+<%
+			}
+%>
+		}
+<%
+		
+	}else if("cMessageFilter".equals(nodeComponentName)){
+		String language = ElementParameterParser.getValue(node, "__LANGUAGES__");
+		if(!"xpath".equals(language)){
+			continue;
+		}
+		String useNamespaces = ElementParameterParser.getValue(node, "__USE_NAMESPACES__");
+		if(!"true".equals(useNamespaces)){
+			continue;
+		}
+		String cid = node.getUniqueName();
+		List<Map<String, String>> namespaceValues = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__NAMESPACES__");
+%>
+		Map<String, String> <%=cid%>NSMap = new HashMap<String, String>();
+		{
+<%
+			for(Map<String, String> m: namespaceValues){
+				String pre = m.get("PREFIX");
+				String uri = m.get("URI");
+%>
+				<%=cid%>NSMap.put(<%=pre%>, <%=uri%>);
+<%
+			}
+%>
+		}
+<%
+	}else if("cRecipientList".equals(nodeComponentName)){
+		String language = ElementParameterParser.getValue(node, "__LANGUAGES__");
+		if(!"xpath".equals(language)){
+			continue;
+		}
+		String useNamespaces = ElementParameterParser.getValue(node, "__USE_NAMESPACES__");
+		if(!"true".equals(useNamespaces)){
+			continue;
+		}
+		String cid = node.getUniqueName();
+		List<Map<String, String>> namespaceValues = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__NAMESPACES__");
+%>
+		Map<String, String> <%=cid%>NSMap = new HashMap<String, String>();
+		{
+<%
+			for(Map<String, String> m: namespaceValues){
+				String pre = m.get("PREFIX");
+				String uri = m.get("URI");
+%>
+				<%=cid%>NSMap.put(<%=pre%>, <%=uri%>);
+<%
+			}
+%>
+		}
+<%
+	}else if("cSetBody".equals(nodeComponentName)){
+		String language = ElementParameterParser.getValue(node, "__LANGUAGES__");
+		if(!"xpath".equals(language)){
+			continue;
+		}
+		String useNamespaces = ElementParameterParser.getValue(node, "__USE_NAMESPACES__");
+		if(!"true".equals(useNamespaces)){
+			continue;
+		}
+		String cid = node.getUniqueName();
+		List<Map<String, String>> namespaceValues = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__NAMESPACES__");
+%>
+		Map<String, String> <%=cid%>NSMap = new HashMap<String, String>();
+		{
+<%
+			for(Map<String, String> m: namespaceValues){
+				String pre = m.get("PREFIX");
+				String uri = m.get("URI");
+%>
+				<%=cid%>NSMap.put(<%=pre%>, <%=uri%>);
+<%
+			}
+%>
+		}
+<%
+	}else if("cSetHeader".equals(nodeComponentName)){
+		String useNamespaces = ElementParameterParser.getValue(node, "__USE_NAMESPACES__");
+		if(!"true".equals(useNamespaces)){
+			continue;
+		}
+		String cid = node.getUniqueName();
+		List<Map<String, String>> namespaceValues = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__NAMESPACES__");
+%>
+		Map<String, String> <%=cid%>NSMap = new HashMap<String, String>();
+		{
+<%
+			for(Map<String, String> m: namespaceValues){
+				String pre = m.get("PREFIX");
+				String uri = m.get("URI");
+%>
+				<%=cid%>NSMap.put(<%=pre%>, <%=uri%>);
+<%
+			}
+%>
+		}
+<%
+	}
 	}
 %>
