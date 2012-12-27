@@ -31,99 +31,114 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 /**
  * rdubois class global comment. Detailled comment
  */
-public class SetDefineRegisterJarToTrueForPigLoadMigrationTask extends AbstractJobMigrationTask {
+public class SetDefineRegisterJarToTrueForPigLoadMigrationTask extends
+		AbstractJobMigrationTask {
 
-    @Override
-    public ExecutionResult execute(Item item) {
-        try {
-            setDefineRegisterJar(item);
-            return ExecutionResult.SUCCESS_NO_ALERT;
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-            return ExecutionResult.FAILURE;
-        }
-    }
+	@Override
+	public ExecutionResult execute(Item item) {
+		try {
+			setDefineRegisterJar(item);
+			return ExecutionResult.SUCCESS_NO_ALERT;
+		} catch (Exception e) {
+			ExceptionHandler.process(e);
+			return ExecutionResult.FAILURE;
+		}
+	}
 
-    public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2012, 12, 24, 18, 0, 0);
-        return gc.getTime();
-    }
+	public Date getOrder() {
+		GregorianCalendar gc = new GregorianCalendar(2012, 12, 24, 18, 0, 0);
+		return gc.getTime();
+	}
 
-    private void setDefineRegisterJar(Item item) throws Exception {
-        ProcessType processType = getProcessType(item);
-        java.util.List<IComponentFilter> filters = new java.util.ArrayList<IComponentFilter>();
-        filters.add(new NameComponentFilter("tPigLoad"));
-        IComponentConversion addOption = new AddDefineJarOption();
-        java.util.Iterator<IComponentFilter> iter = filters.iterator();
-        while (iter.hasNext()) {
-            IComponentFilter filter = (IComponentFilter) iter.next();
-            ModifyComponentsAction.searchAndModify(item, processType, filter, Arrays.<IComponentConversion> asList(addOption));
-        }
-    }
+	private void setDefineRegisterJar(Item item) throws Exception {
+		ProcessType processType = getProcessType(item);
+		java.util.List<IComponentFilter> filters = new java.util.ArrayList<IComponentFilter>();
+		filters.add(new NameComponentFilter("tPigLoad"));
+		filters.add(new NameComponentFilter("tPigStoreResult"));
+		IComponentConversion addOption = new AddDefineJarOption();
+		java.util.Iterator<IComponentFilter> iter = filters.iterator();
+		while (iter.hasNext()) {
+			IComponentFilter filter = (IComponentFilter) iter.next();
+			ModifyComponentsAction.searchAndModify(item, processType, filter,
+					Arrays.<IComponentConversion> asList(addOption));
+		}
+	}
 
-    /**
-     * 
-     * rdubois AddConnectionMode class global comment. Detailled comment
-     */
-    private class AddDefineJarOption implements IComponentConversion {
+	/**
+	 * 
+	 * rdubois AddConnectionMode class global comment. Detailled comment
+	 */
+	private class AddDefineJarOption implements IComponentConversion {
 
-        private String field = "CHECK"; //$NON-NLS-1$
+		private String field = "CHECK"; //$NON-NLS-1$
 
-        private String name = "DEFINE_REGISTER_JAR"; //$NON-NLS-1$
+		private String name = "DEFINE_REGISTER_JAR"; //$NON-NLS-1$
 
-        public AddDefineJarOption() {
-            super();
-        }
+		public AddDefineJarOption() {
+			super();
+		}
 
-        public void transform(NodeType node) {
+		public void transform(NodeType node) {
 
-            if (ComponentUtilities.getNodeProperty(node, name) == null) {
-                ComponentUtilities.addNodeProperty(node, name, field);
-            }
+			if (ComponentUtilities.getNodeProperty(node, name) == null) {
+				ComponentUtilities.addNodeProperty(node, name, field);
+			}
+			if ("tPigLoad".equals(node.getComponentName())) {
+				int criteriaCount = 4;
+				int count = 0;
+				boolean doTheMigration = true;
+				for (Object o : node.getElementParameter()) {
+					ElementParameterType para = (ElementParameterType) o;
+					if ("LOCAL".equals(para.getName())) { //$NON-NLS-1$
+						if ("true".equals(para.getValue())) {
+							doTheMigration = false;
+							break;
+						} else {
+							criteriaCount++;
+						}
+					}
+					if ("DISTRIBUTION".equals(para.getName())) { //$NON-NLS-1$
+						if ("HORTONWORKS".equals(para.getValue())) {
+							criteriaCount++;
+						} else {
+							doTheMigration = false;
+							break;
+						}
+					}
+					if ("PIG_VERSION".equals(para.getName())) { //$NON-NLS-1$
+						if ("HDP_1_0".equals(para.getValue())) {
+							criteriaCount++;
+						} else {
+							doTheMigration = false;
+							break;
+						}
+					}
+					if ("LOAD".equals(para.getName())) { //$NON-NLS-1$
+						if ("HCatLoader".equals(para.getValue())) {
+							criteriaCount++;
+						} else {
+							doTheMigration = false;
+							break;
+						}
+					}
+					if (criteriaCount == count)
+						break;
+				}
+				if (doTheMigration) {
+					ComponentUtilities.setNodeValue(node, name, "true");
+				}
+			} else {
+				for (Object o : node.getElementParameter()) {
+					ElementParameterType para = (ElementParameterType) o;
+					if ("STORE".equals(para.getName())) { //$NON-NLS-1$
+						if ("HCatStorer".equals(para.getValue())) {
+							ComponentUtilities.setNodeValue(node, name, "true");
+							break;
+						}
+					}
+				}
+			}
 
-            int criteriaCount = 4;
-            int count=0;
-            boolean doTheMigration = true;
-            for (Object o : node.getElementParameter()) {
-                ElementParameterType para = (ElementParameterType) o;
-                if ("LOCAL".equals(para.getName())) { //$NON-NLS-1$
-                	if("true".equals(para.getValue())) {
-                		doTheMigration = false;
-                		break;
-                	} else {
-                		criteriaCount++;
-                	}
-                }
-                if ("DISTRIBUTION".equals(para.getName())) { //$NON-NLS-1$
-                	if("HORTONWORKS".equals(para.getValue())) {
-                		criteriaCount++;
-                	} else {
-                		doTheMigration = false;
-                		break;
-                	}
-                }
-                if ("PIG_VERSION".equals(para.getName())) { //$NON-NLS-1$
-                	if("HDP_1_0".equals(para.getValue())) {
-                		criteriaCount++;
-                	} else {
-                		doTheMigration = false;
-                		break;
-                	}
-                }
-                if ("LOAD".equals(para.getName())) { //$NON-NLS-1$
-                	if("HCatLoader".equals(para.getValue())) {
-                		criteriaCount++;
-                	} else {
-                		doTheMigration = false;
-                		break;
-                	}
-                }
-                if(criteriaCount==count) break;
-            }
-            if (doTheMigration) {
-                ComponentUtilities.setNodeValue(node, name, "true");
-            }
-
-        }
-    }
+		}
+	}
 }
