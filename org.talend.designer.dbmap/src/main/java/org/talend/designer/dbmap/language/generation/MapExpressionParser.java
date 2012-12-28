@@ -63,6 +63,44 @@ public class MapExpressionParser {
         return result;// .toArray(new TableEntryLocation[0]);
     }
 
+    /**
+     * 
+     * DOC parse to talbename and column map
+     * 
+     * @param expression
+     * @return
+     */
+    public List<Map<String, String>> parseInTableEntryLocations2(String expression) {
+        List<Map<String, String>> result = new ArrayList<Map<String, String>>();
+        if (expression != null) {
+            matcher.setMultiline(true);
+            if (patternMatcherInput == null) {
+                patternMatcherInput = new PatternMatcherInput(expression);
+            } else {
+                patternMatcherInput.setInput(expression);
+            }
+
+            recompilePatternIfNecessary(locationPattern);
+            while (matcher.contains(patternMatcherInput, pattern)) {
+                MatchResult matchResult = matcher.getMatch();
+                Map<String, String> map = new HashMap<String, String>();
+                String group1 = matchResult.group(1);
+                if (group1 != null && !"".equals(group1) && matchResult.group(matchResult.groups() - 1) != null) {
+                    map.put(matchResult.group(matchResult.groups() - 1).trim(), group1.substring(0, group1.length() - 1).trim());
+                } else {
+                    String string = matchResult.toString();
+                    int lastIndexOf = string.lastIndexOf(".");
+                    if (lastIndexOf != -1) {
+                        map.put(string.substring(lastIndexOf + 1, string.length()).trim(), string.substring(0, lastIndexOf)
+                                .trim());
+                    }
+                }
+                result.add(map);
+            }
+        }
+        return result;
+    }
+
     private void recompilePatternIfNecessary(String regexpPattern) {
         if (pattern == null || !regexpPattern.equals(pattern.getPattern())) {
             try {
@@ -92,8 +130,9 @@ public class MapExpressionParser {
         // Users have indicated that they expect the result to be the
         // original input string, rather than a copy, if no substitutions
         // are performed,
-        if (substitute(buffer, matcher, pattern, sub, pinput, numSubs) != 0)
+        if (substitute(buffer, matcher, pattern, sub, pinput, numSubs) != 0) {
             return buffer.toString();
+        }
         return input;
     }
 

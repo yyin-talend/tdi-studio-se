@@ -54,7 +54,8 @@ public class PostgresGenerationManager extends DbGenerationManager {
 
     @Override
     protected String initExpression(DbMapComponent component, ExternalDbMapEntry dbMapEntry) {
-        String expression = dbMapEntry.getExpression();
+        String expression = super.initExpression(component, dbMapEntry);
+        // String expression = dbMapEntry.getExpression();
         if (expression != null) {
             List<? extends IConnection> inputConnections = component.getIncomingConnections();
 
@@ -90,8 +91,9 @@ public class PostgresGenerationManager extends DbGenerationManager {
                     }
                 }
 
-                for (ExternalDbMapEntry co : inputTable.getMetadataTableEntries()) {
-                    String columnLabel = co.getName();
+                for (IMetadataColumn co : connection.getMetadataTable().getListColumns()) {
+                    // String columnLabel = co.getLabel();
+                    String columnLabel = co.getOriginalDbColumnName();
                     String[] patternSubs = getPattenSubs(schemaStr, tableNameStr, columnLabel);
                     MapExpressionParser parser = new MapExpressionParser(patternSubs[0]);
                     expression = parser.replaceLocation(expression, patternSubs[0], patternSubs[1]);
@@ -109,7 +111,8 @@ public class PostgresGenerationManager extends DbGenerationManager {
             for (IMetadataTable table : metadataList) {
                 String tableName = table.getLabel();
                 for (IMetadataColumn column : table.getListColumns()) {
-                    String columnLabel = column.getLabel();
+                    String columnLabel = column.getOriginalDbColumnName();
+                    // String columnLabel = column.getLabel();
                     String[] patternSubs = getPattenSubs("", tableName, columnLabel);
                     MapExpressionParser parser = new MapExpressionParser(patternSubs[0]);
                     expression = parser.replaceLocation(expression, patternSubs[0], patternSubs[1]);
@@ -182,6 +185,7 @@ public class PostgresGenerationManager extends DbGenerationManager {
 
     }
 
+    @Override
     protected String getHandledField(String field) {
         return getHandledField(field, false);
     }
