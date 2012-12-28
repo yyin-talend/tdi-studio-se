@@ -1240,28 +1240,33 @@ public class JavaProcessor extends Processor implements IJavaBreakpointListener 
             if(content == null){
             	return;
             }
-            if(this.project == null || this.project.getFolder("src") == null){
+            
+            IProject processorProject = this.project == null?JavaProcessorUtilities.getProcessorProject():this.project;
+            if(processorProject == null){
             	return;
             }
-            this.project.getFolder("src").refreshLocal(IResource.DEPTH_INFINITE, null);
-            IFolder folder = this.project.getFolder("src/META-INF");
-            if(!folder.exists()){
-            	folder.create(true, true, null);
+            processorProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+            IFolder srcFolder = processorProject.getFolder("src");//refreshLocal(IResource.DEPTH_INFINITE, null);
+            if(!srcFolder.exists()){
+            	srcFolder.create(true, true, null);
             }
-            folder = this.project.getFolder("src/META-INF/spring");
-            if(!folder.exists()){
-            	folder.create(true, true, null);
+            IFolder metainfFolder = srcFolder.getFolder("META-INF");
+            if(!metainfFolder.exists()){
+            	metainfFolder.create(true, true, null);
             }
-            IFile camelContextFile = this.project.getProject().getFile("src/META-INF/spring/"+process.getName().toLowerCase()+".xml");
+            IFolder springFolder = metainfFolder.getFolder("spring");
+            if(!springFolder.exists()){
+            	springFolder.create(true, true, null);
+            }
+            IFile springFile = springFolder.getFile(process.getName().toLowerCase()+".xml");
             InputStream is = new ByteArrayInputStream(content.getBytes());
 
-            if (!camelContextFile.exists()) {
-                camelContextFile.create(is, true, null);
+            if (!springFile.exists()) {
+            	springFile.create(is, true, null);
             } else {
-                camelContextFile.setContents(is, true, false, null);
+            	springFile.setContents(is, true, false, null);
             }
             is.close();
-
         }   catch (SystemException e) {
             throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
         }catch (CoreException e1) {
