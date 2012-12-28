@@ -75,7 +75,7 @@ public class OracleGenerationManager extends DbGenerationManager {
             if (metadataTable != null) {
                 List<IMetadataColumn> lColumn = metadataTable.getListColumns();
                 for (IMetadataColumn co : lColumn) {
-                    String columnLabel = co.getLabel();
+                    String columnLabel = co.getOriginalDbColumnName();
                     String exp = MetadataToolHelper.validateValueNoLengthLimit(columnLabel);
                     if (!exp.equals(columnLabel)) {
                         specialList.add(columnLabel);
