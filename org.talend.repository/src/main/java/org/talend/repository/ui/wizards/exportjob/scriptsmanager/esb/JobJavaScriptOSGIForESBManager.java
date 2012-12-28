@@ -204,15 +204,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 if (ROUTE.equals(itemType)) {
                     addOSGIRouteResources(osgiResource, processItem);
                 }
-
-                // add tESBConsumer WSDL
-                List<URL> wsdlUrls= WSDLExporter.exportWsdlsForProcess(processItem, getTmpFolder() + PATH_SEPARATOR);
-                if (!wsdlUrls.isEmpty()) {
-                    ExportFileResource wsdlResource = new ExportFileResource(null, "");
-                    wsdlResource.addResources(wsdlUrls);
-                    list.add(wsdlResource);
-                }
-
             }
             ExportFileResource libResource = getCompiledLibExportFileResource(processes);
             if (libResource != null) {

@@ -18,17 +18,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.InflaterInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.apache.commons.codec.binary.Base64InputStream;
-import org.apache.commons.codec.binary.Base64OutputStream;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 
 /**
@@ -37,14 +32,6 @@ import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 public class ZipFileUtils {
 
     private static int bufSize = 2048; // size of bytes
-
-    public static OutputStream compressAndEncode(OutputStream os) {
-        return new DeflaterOutputStream(new Base64OutputStream(os));
-    }
-
-    public static InputStream decodeAndUncompress(InputStream is) {
-        return new InflaterInputStream(new Base64InputStream(is));
-    }
 
     public static String zip(String zipDirectory) {
         File zipDir = new File(zipDirectory);

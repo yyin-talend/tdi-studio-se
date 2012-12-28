@@ -106,7 +106,6 @@ import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.preference.constants.IExportJobPrefConstants;
-import org.talend.repository.ui.wizards.exportjob.scriptsmanager.esb.WSDLExporter;
 import org.talend.resource.IExportJobResourcesService;
 import org.talend.resources.util.EMavenBuildScriptProperties;
 
@@ -648,12 +647,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             // Gets job designer resouce
             // List<URL> srcList = getSource(processItem, exportChoice.get(ExportChoice.needSource));
             // process[i].addResources(JOB_SOURCE_FOLDER_NAME, srcList);
-
-            // add tESBConsumer WSDL
-            List<URL> wsdlUrls = WSDLExporter.exportWsdlsForProcess(processItem, getTmpFolder() + PATH_SEPARATOR);
-            if (!wsdlUrls.isEmpty()) {
-                process[i].addResources(wsdlUrls);
-            }
         }
 
         // Exports the system libs
