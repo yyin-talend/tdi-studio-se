@@ -755,8 +755,20 @@ public abstract class DbGenerationManager {
         String expression = dbMapEntry.getExpression();
         if (expression != null) {
             List<Map<String, String>> itemNameList = null;
-            MapExpressionParser mapParser1 = new MapExpressionParser("\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*");
-            itemNameList = mapParser1.parseInTableEntryLocations(expression);
+
+            // MapExpressionParser mapParser = new MapExpressionParser("((\\s*(\\w+)\\s*\\.)*)(\\w+)");
+            // List<String> parseInTableEntryLocations = mapParser.parseInTableEntryLocations2(expression);
+            // for (String entryLocation : parseInTableEntryLocations) {
+            //
+            // }
+
+            // context.schema.context.table.column
+            // context.schema.table.column
+            // schema.context.table.column
+            // schema.table.column
+            // table.column
+            MapExpressionParser mapParser1 = new MapExpressionParser("((\\s*(\\w+)\\s*\\.)*)(\\w+)");
+            itemNameList = mapParser1.parseInTableEntryLocations2(expression);
 
             if (itemNameList == null || itemNameList.isEmpty()) {
                 MapExpressionParser mapParser2 = new MapExpressionParser("\\s*(\\w+)\\s*\\.\\s*(\\w+)\\s*");
@@ -811,6 +823,10 @@ public abstract class DbGenerationManager {
                             for (IMetadataColumn co : lColumn) {
                                 if (columnValue.equals(co.getLabel())) {
                                     String oriName = co.getOriginalDbColumnName();
+                                    // if OriginalDbColumn is empty , still use label to generate sql
+                                    if (oriName == null || "".equals(oriName)) { //$NON-NLS-1$
+                                        continue;
+                                    }
                                     oriName = oriName.replaceAll("\\$", "\\\\\\$");
                                     expression = expression.replaceFirst("\\." + co.getLabel(), //$NON-NLS-1$
                                             "\\." + oriName); //$NON-NLS-1$
