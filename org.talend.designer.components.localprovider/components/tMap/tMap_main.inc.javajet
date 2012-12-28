@@ -308,9 +308,9 @@
 			
 		        %>
 
-                    SortableRow_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%> rsc_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%> = fsi_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.getNextFreeRow();
+                    SortableRow_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%> sortableRow_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%> = fsi_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.getNextFreeRow();
 
-                    rsc_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.fillFrom(<%= mainInputTableName %><%
+                    sortableRow_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.fillFrom(<%= mainInputTableName %><%
                     
                     for (IMetadataColumn column : nextLookupColumnsKeys) {
                     	String columnName = column.getLabel();
@@ -318,7 +318,7 @@
                     }
                     %>);
 
-                    fsi_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.put(rsc_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>);
+                    fsi_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>.put(sortableRow_<%=componentNameForKeyProblem%>_<%=currentJoinedTableIndex%>);
 
 				<%
 
