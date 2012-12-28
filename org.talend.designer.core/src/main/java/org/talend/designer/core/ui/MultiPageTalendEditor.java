@@ -28,6 +28,7 @@ import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.ui.ISVNProviderService;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.core.ui.images.OverlayImageProvider;
@@ -125,7 +126,14 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
         super.setName();
 
         IProcess2 process2 = this.getProcess();
-        String label = process2.getProperty().getDisplayName();
+        if (process2 == null) {
+            return;
+        }
+        Property property = process2.getProperty();
+        if (property == null) {
+            return;
+        }
+        String label = property.getDisplayName();
         String jobVersion = "0.1"; //$NON-NLS-1$
         if (process2 != null) {
             jobVersion = process2.getVersion();
