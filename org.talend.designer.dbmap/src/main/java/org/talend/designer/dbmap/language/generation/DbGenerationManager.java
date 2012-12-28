@@ -823,6 +823,10 @@ public abstract class DbGenerationManager {
                             for (IMetadataColumn co : lColumn) {
                                 if (columnValue.equals(co.getLabel())) {
                                     String oriName = co.getOriginalDbColumnName();
+                                    // if OriginalDbColumn is empty , still use label to generate sql
+                                    if (oriName == null || "".equals(oriName)) {
+                                        continue;
+                                    }
                                     oriName = oriName.replaceAll("\\$", "\\\\\\$");
                                     expression = expression.replaceFirst("\\." + co.getLabel(), //$NON-NLS-1$
                                             "\\." + oriName); //$NON-NLS-1$
