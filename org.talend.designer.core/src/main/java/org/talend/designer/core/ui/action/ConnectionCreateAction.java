@@ -42,6 +42,7 @@ import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.utils.ConnectionUtil;
 
 /**
  * Action that manage to create a connection from the context menu. A connection type is used to know which kind of
@@ -638,6 +639,8 @@ public class ConnectionCreateAction extends SelectionAction {
             } else {
                 if (connecType.hasConnectionCategory(IConnectionCategory.FLOW)) {
                     connectionName = node.getProcess().generateUniqueConnectionName(Process.DEFAULT_ROW_CONNECTION_NAME);
+                } else if(connecType.hasConnectionCategory(IConnectionCategory.CAMEL)){
+                    connectionName = ConnectionUtil.generateUniqueConnectionName(connecType, node.getProcess());
                 } else {
                     connectionName = curNodeConnector.getLinkName();
                 }
