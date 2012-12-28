@@ -1962,5 +1962,18 @@
             name="TOS">
       </provider>
    </extension>
+   <extension
+         point="org.talend.core.repository.repoViewLinker">
+      <linker
+            class="org.talend.repository.ui.views.link.RoutineRepoViewLinker"
+            name="Routine"
+            priority="normal">
+      </linker>
+      <linker
+            class="org.talend.repository.ui.views.link.SQLTemplateRepoViewLinker"
+            name="SQL Template"
+            priority="normal">
+      </linker>
+   </extension>
 
 </plugin>

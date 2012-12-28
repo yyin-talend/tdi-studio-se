@@ -743,4 +743,12 @@
              validator="org.talend.designer.core.ui.preferences.ExchangeHidePreferencePageValidator">
        </preference_provider>
     </extension>
+    <extension
+          point="org.talend.core.repository.repoViewLinker">
+       <linker
+             class="org.talend.designer.core.ui.views.link.JobProcessRepoViewLinker"
+             name="Job(Process)"
+             priority="normal">
+       </linker>
+    </extension>
 </plugin>
