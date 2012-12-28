@@ -510,7 +510,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
 %>
 			public <%if(insertionColumn.getColumnName().equals(surrogateKeyField) && ("TABLE_MAX").equals(scdConfiger.getSurrogateKeyValueType())){%>int<%}else{%>void<%}%> genInsertType2SetStatment_<%=(paramIndex - 1)/schemaOptNum%>(java.sql.PreparedStatement insertionStatement_<%=cid%>,
 				<%=NodeUtil.getPrivateConnClassName(inConn)%>Struct <%=incomingConnName%><%if(insertionColumn.getColumnName().equals(surrogateKeyField) && ("TABLE_MAX").equals(scdConfiger.getSurrogateKeyValueType())){%>,<%=scdConfiger.getSurrogateKeyFieldType()%> nextSurrogateKey_<%=cid%><%}%>
-				<%if(insertionColumn.getColumnName().equals(scdConfiger.getDimensionType2Configer().getVersionField()) && !isEnableSaveMemMode){%>,SCDStruct_<%=cid%> lookUpValue_<%=cid%><%}%>)throws Exception{	
+					,SCDStruct_<%=cid%> lookUpValue_<%=cid%>)throws Exception{	
 <%
             	}
                 if(insertionColumn.getColumnName().equals(surrogateKeyField)) {

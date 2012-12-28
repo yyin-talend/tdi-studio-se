@@ -456,8 +456,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             		  if((paramIndex - 1) % schemaOptNum==0){
 %>
 					<%if(insertionColumn.getColumnName().equals(surrogateKeyField) && ("TABLE_MAX").equals(scdConfiger.getSurrogateKeyValueType())){%>nextSurrogateKey_<%=cid%>=<%}%>mssqlSCD_Util_<%=cid%>.genInsertType2SetStatment_<%=(paramIndex - 1)/schemaOptNum%>(
-						insertionStatement_<%=cid%>,<%=inConnectionName%><%if(insertionColumn.getColumnName().equals(surrogateKeyField) && ("TABLE_MAX").equals(scdConfiger.getSurrogateKeyValueType())){%>,nextSurrogateKey_<%=cid%><%}%>
-						<%if(insertionColumn.getColumnName().equals(scdConfiger.getDimensionType2Configer().getVersionField()) && !isEnableSaveMemMode){%>,lookUpValue_<%=cid%><%}%>);
+						insertionStatement_<%=cid%>,<%=inConnectionName%><%if(insertionColumn.getColumnName().equals(surrogateKeyField) && ("TABLE_MAX").equals(scdConfiger.getSurrogateKeyValueType())){%>,nextSurrogateKey_<%=cid%><%}%>,lookUpValue_<%=cid%>);
 <%
             		  }
                   }
