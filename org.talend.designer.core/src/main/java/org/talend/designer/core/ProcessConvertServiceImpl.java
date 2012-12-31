@@ -4,6 +4,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.impl.ProcessItemImpl;
 import org.talend.designer.core.ui.editor.process.Process;
 
 public class ProcessConvertServiceImpl implements IProcessConvertService {
@@ -14,7 +15,7 @@ public class ProcessConvertServiceImpl implements IProcessConvertService {
 
     @Override
     public IProcess getProcessFromItem(Item item, boolean loadScreenshots) {
-        if ("ProcessItem".equals(item.eClass().getName())) {
+        if (ProcessItemImpl.class == item.getClass()) {
             Process process = null;
             process = new Process(item.getProperty());
             process.loadXmlFile(loadScreenshots);
