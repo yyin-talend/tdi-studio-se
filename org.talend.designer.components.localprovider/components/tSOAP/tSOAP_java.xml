@@ -135,6 +135,7 @@
 			<IMPORT NAME="activation" MODULE="activation.jar" REQUIRED="true" BundleID="" />
 			<IMPORT NAME="jaxqname" MODULE="jax-qname.jar" REQUIRED="true" BundleID="" />
 			<IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" REQUIRED="true" BundleID="" />
+			<IMPORT NAME="jaxpri" MODULE="jaxp-ri.jar" REQUIRED="true" BundleID="" />
 			<IMPORT NAME="saajapi" MODULE="saaj-api.jar" REQUIRED="true" BundleID="" />
 			<IMPORT NAME="saajimpl" MODULE="saaj-impl.jar" REQUIRED="true" BundleID="" />
 			<IMPORT NAME="jdom" MODULE="jdom-1.1.jar" REQUIRED="true" BundleID="org.apache.servicemix.bundles.jdom" />
