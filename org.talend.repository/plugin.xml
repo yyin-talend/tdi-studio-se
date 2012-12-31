@@ -1775,6 +1775,15 @@
             name="ChangeVersionValue4HDFSComponents"
             version="5.2.2">
       </projecttask>      
+      <projecttask
+            beforeLogon="false"
+            breaks="5.2.1"
+            class="org.talend.repository.model.migration.AddCaseSensitiveToTCreateTableWithHSQLDB"
+            description="When tCreateTable do not have CASESENSITIVE property Then set it to true to keep old active"
+            id="org.talend.repository.model.migration.AddCaseSensitiveToTCreateTableWithHSQLDB"
+            name="AddCaseSensitiveToTCreateTableWithHSQLDB"
+            version="5.2.2">
+      </projecttask>
    </extension>
    
    <extension
