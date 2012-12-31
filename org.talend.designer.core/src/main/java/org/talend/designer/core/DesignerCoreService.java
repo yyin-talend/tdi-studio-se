@@ -127,28 +127,29 @@ public class DesignerCoreService implements IDesignerCoreService {
      */
     @Override
     public IProcess getProcessFromProcessItem(ProcessItem processItem) {
-        return getProcessFromProcessItem(processItem, false);
+        return getProcessFromItemByExtendion(processItem, false);
     }
 
     @Override
     public IProcess getProcessFromProcessItem(ProcessItem processItem, boolean loadScreenshots) {
-        Process process = null;
-        process = new Process(processItem.getProperty());
-        process.loadXmlFile(loadScreenshots);
-        return process;
+        return getProcessFromItemByExtendion(processItem, loadScreenshots);
     }
 
     @Override
     public IProcess getProcessFromItem(Item item) {
-        if (item instanceof ProcessItem) {
-            return getProcessFromProcessItem((ProcessItem) item);
-        } else if (item instanceof JobletProcessItem) {
-            AbstractProcessProvider processProvider = AbstractProcessProvider.findProcessProviderFromPID(IComponent.JOBLET_PID);
-            if (processProvider != null) {
-                return processProvider.buildNewGraphicProcess(item);
+        return getProcessFromItemByExtendion(item, false);
+    }
+    
+    public IProcess getProcessFromItemByExtendion(Item item, boolean loadScreenshots) {
+        IProcess process = null;
+        List<IProcessConvertService> processConvertServices = ProcessConvertManager.getProcessConvertService();
+        for (IProcessConvertService service : processConvertServices) {
+            process = service.getProcessFromItem(item, loadScreenshots);
+            if (process != null) {
+                break;
             }
         }
-        return null;
+        return process;
     }
 
     /*
@@ -160,12 +161,7 @@ public class DesignerCoreService implements IDesignerCoreService {
      */
     @Override
     public IProcess getProcessFromJobletProcessItem(JobletProcessItem jobletProcessItem) {
-        AbstractProcessProvider processProvider = AbstractProcessProvider.findProcessProviderFromPID(IComponent.JOBLET_PID);
-        if (processProvider != null) {
-            return processProvider.getProcessFromJobletProcessItem(jobletProcessItem);
-        }
-
-        return null;
+        return getProcessFromItemByExtendion(jobletProcessItem, false);
     }
 
     @Override
