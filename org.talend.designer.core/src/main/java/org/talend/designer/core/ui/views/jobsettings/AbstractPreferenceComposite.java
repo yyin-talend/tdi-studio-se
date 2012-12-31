@@ -100,6 +100,7 @@ import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProjectSettingNode;
 import org.talend.repository.preference.CustomComponentSettingPage;
+import org.talend.repository.ui.dialog.ProjectSettingDialog;
 import org.talend.repository.ui.dialog.ProjectSettingsPreferenceDialog;
 import java.util.*;
 
@@ -334,93 +335,14 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                     if (modelSelect.getOptionValue().equals("updateProjectSettings")) {//$NON-NLS-1$
                         useProjectSetting.setSelection(true);
                         useProjectSettingButtonClick();
-                        final PreferenceDialog dialog = new ProjectSettingsPreferenceDialog(PlatformUI.getWorkbench()
-                                .getActiveWorkbenchWindow().getShell(), getNodeManager());
-                        BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
-
-                            @Override
-                            public void run() {
-                                dialog.create();
-                                dialog.getShell().setText("Project Settings");
-                                dialog.getShell().setSize(DEFAULT_SIZE);
-                                dialog.open();
-                            }
-                        });
+                        ProjectSettingDialog dialog = new ProjectSettingDialog();
+                        dialog.open();
                     }
 
                 }
             }
         }
     };
-
-    private static final Point DEFAULT_SIZE = new Point(1000, 600);
-
-    private PreferenceManager getNodeManager() {
-        PreferenceManager manager = new PreferenceManager();
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IConfigurationElement[] configurationElements = registry
-                .getConfigurationElementsFor("org.talend.repository.projectsetting_page"); //$NON-NLS-1$
-        for (IConfigurationElement element : configurationElements) {
-            ProjectSettingNode node = new ProjectSettingNode(element);
-            try {
-                IPreferencePage page = (IPreferencePage) element.createExecutableExtension("class"); //$NON-NLS-1$
-                node.setPage(page);
-                String id = element.getAttribute("id");
-                if (id.equals("org.talend.repository.preference.VersionManagementPage")) {
-                    IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                            IBrandingService.class);
-                    boolean allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
-                    if (!allowVerchange) {
-                        continue;
-                    }
-                }
-                page.setDescription(element.getAttribute("description")); //$NON-NLS-1$
-                page.setTitle(element.getAttribute("title")); //$NON-NLS-1$
-            } catch (CoreException e) {
-                ExceptionHandler.process(e);
-            }
-            String category = node.getCategory();
-            if (category == null) {
-                if (node.getPage() instanceof CustomComponentSettingPage) {
-                    if (PluginChecker.isSVNProviderPluginLoaded() && !ProjectManager.getInstance().getCurrentProject().isLocal()) {
-                        manager.addToRoot(node);
-                    } else {
-                        continue;
-                    }
-                } else {
-                    manager.addToRoot(node);
-                }
-            } else {
-                IPreferenceNode parent = manager.find(category);
-                if (parent != null) {
-                    parent.add(node);
-                }
-            }
-        }
-        IPreferenceNode[] rootSubNodes = manager.getRootSubNodes();
-
-        // sort the rootSubNodes
-        Arrays.sort(rootSubNodes, new Comparator() {
-
-            @Override
-            public int compare(Object o1, Object o2) {
-                if (o1 instanceof ProjectSettingNode && o2 instanceof ProjectSettingNode) {
-                    ProjectSettingNode node1 = (ProjectSettingNode) o1;
-                    ProjectSettingNode node2 = (ProjectSettingNode) o2;
-                    if (node1.getOrder() != null && node2.getOrder() != null) {
-                        return node1.getOrder().compareTo(node2.getOrder());
-                    }
-                }
-                return -1;
-            }
-        });
-        manager.removeAll();
-        // add the sorted list to manager
-        for (IPreferenceNode rootSubNode : rootSubNodes) {
-            manager.addToRoot(rootSubNode);
-        }
-        return manager;
-    }
 
     private void addButtonListeners() {
         reloadBtn.addSelectionListener(new SelectionListener() {
