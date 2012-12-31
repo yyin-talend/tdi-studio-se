@@ -19,6 +19,7 @@ import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.IControlCreator;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -142,8 +143,8 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                             | SWT.H_SCROLL | SWT.WRAP, javaEditor, null, elem.getElementName(), context);
                     text = viewer.getTextWidget();
                     IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
-                    String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
-                    FontData fontData = new FontData(fontType);
+                    FontData fontData = PreferenceConverter.getFontData(preferenceStore,
+                            TalendDesignerPrefConstants.MEMO_TEXT_FONT);
                     Font font = new Font(text.getDisplay(), fontData);
                     addResourceDisposeListener(text, font);
                     text.setFont(font);
@@ -188,8 +189,8 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
                     text = viewer.getTextWidget();
                     IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
-                    String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
-                    FontData fontData = new FontData(fontType);
+                    FontData fontData = PreferenceConverter.getFontData(preferenceStore,
+                            TalendDesignerPrefConstants.MEMO_TEXT_FONT);
                     Font font = new Font(text.getDisplay(), fontData);
                     addResourceDisposeListener(text, font);
                     text.setFont(font);
@@ -225,8 +226,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                 }
                 text = viewer.getTextWidget();
                 IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
-                String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
-                FontData fontData = new FontData(fontType);
+                FontData fontData = PreferenceConverter.getFontData(preferenceStore, TalendDesignerPrefConstants.MEMO_TEXT_FONT);
                 Font font = new Font(text.getDisplay(), fontData);
                 addResourceDisposeListener(text, font);
                 text.setFont(font);
@@ -259,8 +259,8 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                             @Override
                             public void run() {
                                 IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
-                                String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
-                                FontData fontData = new FontData(fontType);
+                                FontData fontData = PreferenceConverter.getFontData(preferenceStore,
+                                        TalendDesignerPrefConstants.MEMO_TEXT_FONT);
                                 Font font = new Font(parent.getDisplay(), fontData);
                                 addResourceDisposeListener(control, font);
                                 control.setFont(font);
