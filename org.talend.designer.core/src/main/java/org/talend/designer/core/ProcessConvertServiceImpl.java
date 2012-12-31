@@ -14,7 +14,7 @@ public class ProcessConvertServiceImpl implements IProcessConvertService {
 
     @Override
     public IProcess getProcessFromItem(Item item, boolean loadScreenshots) {
-        if (ProcessItem.class.equals(item.getClass())) {
+        if ("ProcessItem".equals(item.eClass().getName())) {
             Process process = null;
             process = new Process(item.getProperty());
             process.loadXmlFile(loadScreenshots);
