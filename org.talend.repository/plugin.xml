@@ -1341,6 +1341,13 @@
             id="org.talend.repository.model.migration.RenametStandardizePhoneNumberColumnName"
             name="RenametStandardizePhoneNumberColumnName">
         </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.AddCaseSensitiveToTCreateTableWithHSQLDB"
+            description="When tCreateTable do not have CASESENSITIVE property Then set it to true to keep old active"
+            id="org.talend.repository.model.migration.AddCaseSensitiveToTCreateTableWithHSQLDB"
+            name="AddCaseSensitiveToTCreateTableWithHSQLDB">
+      </projecttask>
    </extension>
    
    <extension

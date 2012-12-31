@@ -506,9 +506,17 @@ class HSQLDBManager extends Manager {
         return "hsqldb_id";
     }
     protected String getLProtectedChar() {
+        boolean  tableNameCaseSensitive = "true".equals(ElementParameterParser.getValue(node,"__CASESENSITIVE__"));
+        if(tableNameCaseSensitive){
+            return "\\\"";
+        }
         return "";
     }
     protected String getRProtectedChar() {
+        boolean  tableNameCaseSensitive = "true".equals(ElementParameterParser.getValue(node,"__CASESENSITIVE__"));
+        if(tableNameCaseSensitive){
+            return "\\\"";
+        }
         return "";
     }
     public String closeConnection() {
@@ -1744,6 +1752,9 @@ if(columnList != null && columnList.size() > 0) {
  	if("DB2".equalsIgnoreCase(dbType)||"POSTGRE".equalsIgnoreCase(dbType)||"POSTGREPLUS".equalsIgnoreCase(dbType)||"GREENPLUM".equalsIgnoreCase(dbType)){ 
  	 	tableNameCaseSensitive=true; 
  	} 
+    if(("HSQLDB").equals(dbType)){
+        tableNameCaseSensitive = "true".equals(ElementParameterParser.getValue(node,"__CASESENSITIVE__")); 
+    }
     %>
     try{
         <%=manager.getConnection()%>
