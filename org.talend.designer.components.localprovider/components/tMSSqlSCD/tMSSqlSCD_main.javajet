@@ -1,7 +1,6 @@
 <%@ jet 
 imports="
     org.talend.core.model.process.INode 
-    org.talend.core.model.metadata.IMetadataColumn
     org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.core.model.process.IConnection
@@ -11,7 +10,6 @@ imports="
     org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.metadata.MetadataTalendType
     org.talend.core.model.metadata.MappingTypeRetriever    
-    java.util.List
     java.util.ArrayList
     java.util.Map
     java.util.HashMap
@@ -46,6 +44,17 @@ List<IMetadataColumn> outputSchema = getOutputSchema(node);
 if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outputSchema.size() > 0) {
     boolean isEnableSaveMemMode = ("true").equals(ElementParameterParser.getValue(node, "__USE_SAVE_MEM_MODE__"));
     boolean debug = ("true").equals(ElementParameterParser.getValue(node, "__DEBUG__"));
+    
+    int schemaOptNum=100;
+	String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
+	if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
+		schemaOptNum  = Integer.parseInt(schemaOptNumStr);
+	}
+	boolean isOptimizeCode = false;
+	if(schemaOptNum < inputSchema.size() || schemaOptNum < outputSchema.size()){
+		isOptimizeCode = true;
+	}
+	
     String inConnectionName = null;
     List<? extends IConnection> incomingConnections = node.getIncomingConnections();
     if (incomingConnections != null && !incomingConnections.isEmpty()) {
@@ -69,9 +78,17 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         <%
         int paramIndex = 1;
         for(Column sourceKey : sourceKeys) {
+        	if(!isOptimizeCode){
             %>
             <%=scdManager.genSetStatement("searchingStmt_" + cid, inConnectionName + "." + sourceKey.getLabelName(), paramIndex, sourceKey.getJavaType(),true)%>
             <%
+            }else{
+            	if((paramIndex/2)%schemaOptNum==0){
+%>
+            mssqlSCD_Util_<%=cid%>.genSearchSetStatment_<%=(paramIndex/2)/schemaOptNum%>(searchingStmt_<%=cid%>,<%=inConnectionName%>);
+<%
+				}
+            }
             paramIndex=paramIndex+2;
         }
         List<Column> searchingColumns = getSearchingColumnList(scdConfiger);
@@ -82,6 +99,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             <%
             int index = 1;
             for(Column searchingColumn : searchingColumns) {
+              if(!isOptimizeCode){
                 String generatedType = searchingColumn.getJavaType();
                 if(("byte[]").equals(generatedType)) {
                     generatedType = "Bytes";
@@ -130,6 +148,13 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                     }
                     <%
                 }
+              }else{
+		    	  if((index-1)%schemaOptNum==0){
+%>
+			 mssqlSCD_Util_<%=cid%>.getSearchResult_<%=(index-1)/schemaOptNum%>(searchingResult_<%=cid%>,lookUpValue_<%=cid%>,tmpValue_<%=cid%>,mssqlGTU_<%=cid%>);
+<%
+				  }
+              }
                 index++;
             }
             %>
@@ -170,6 +195,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         <%
         int paramIndex = 1;
         for(Column insertionColumn : insertionColumnList) {
+          if(!isOptimizeCode){
             if(insertionColumn.getColumnName().equals(surrogateKeyField)) {
                 if(("INPUT_FIELD").equals(scdConfiger.getSurrogateKeyValueType())) {
                     %>
@@ -204,6 +230,14 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                     <%
                 }
             }
+          }else{
+          	if((paramIndex - 1)%schemaOptNum==0){
+%>
+				<%if(insertionColumn.getColumnName().equals(surrogateKeyField) && ("TABLE_MAX").equals(scdConfiger.getSurrogateKeyValueType())){%>nextSurrogateKey_<%=cid%>=<%}%>mssqlSCD_Util_<%=cid%>.genInsertSetStatment_<%=(paramIndex-1)/schemaOptNum%>(insertionStatement_<%=cid%>,<%=inConnectionName%>
+				<%if(insertionColumn.getColumnName().equals(surrogateKeyField) && ("TABLE_MAX").equals(scdConfiger.getSurrogateKeyValueType())){%>,nextSurrogateKey_<%=cid%><%}%>);		
+<%
+			}
+          }
             paramIndex++;
         }
         %>
@@ -221,7 +255,9 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             List<Column> dimensionAttrbites = scdConfiger.getDimensionType1Configer().getDimensionAttributes();
             StringBuilder condition = new StringBuilder();
             boolean isFirstColumn = true;
+            int desAttrbiteCountNo=0;
             for(Column dimensionAttrbite : dimensionAttrbites) {
+	          if(!isOptimizeCode){
                 if(isFirstColumn) {
                     isFirstColumn = false;
                 } else {
@@ -239,22 +275,52 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 } else {
                     condition.append("lookUpValue_" + cid + "." + dimensionAttrbite.getColumnName() + " != " + inConnectionName + "." + dimensionAttrbite.getLabelName());
                 }
+              }else{
+              	if(desAttrbiteCountNo%schemaOptNum==0){
+              		if(isFirstColumn) {
+	                    isFirstColumn = false;
+	                } else {
+	                    condition.append(" || ");
+	                }
+					condition.append("mssqlSCD_Util_"+cid+".genType1Condition_"+(desAttrbiteCountNo/schemaOptNum)+"(lookUpValue_" + cid+","+inConnectionName+")");
+              	}
+              	desAttrbiteCountNo++;
+              }
             }
             %>
             if(<%=condition.toString()%>) {
                 <%
                 int index = 1;
+                int columnIndex = 0;
                 for(Column dimensionAttrbite : dimensionAttrbites) {
+                	if(!isOptimizeCode){
                     %>
                     <%=scdManager.genSetStatement("updateForType1_" + cid, inConnectionName + "." + dimensionAttrbite.getLabelName(), index, dimensionAttrbite.getJavaType())%>
                     <%
-                    index++;
+                    	index++;
+                    }else{
+                    	if(columnIndex%schemaOptNum==0){
+%>
+					mssqlSCD_Util_<%=cid%>.genUpdateType1SetStatment_<%=columnIndex/schemaOptNum%>(updateForType1_<%=cid%>,<%=inConnectionName%>);
+<%
+						}
+                    	columnIndex++;
+                    }
                 }
                 for(Column sourceKey : sourceKeys) {
+                	if(!isOptimizeCode){
                     %>
                     <%=scdManager.genSetStatement("updateForType1_" + cid, inConnectionName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),true)%>
                     <%
-                    index=index+2;
+                    	index=index+2;
+                    }else{
+                    	if(columnIndex%schemaOptNum==0){
+%>
+					mssqlSCD_Util_<%=cid%>.genUpdateType1SetStatment_<%=columnIndex/schemaOptNum%>(updateForType1_<%=cid%>,<%=inConnectionName%>);
+<%
+						}
+                    	columnIndex++;
+                    }
                 }
                 %>
                 nb_line_update_<%=cid%> += updateForType1_<%=cid%>.executeUpdate();
@@ -272,7 +338,9 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             List<Column> dimensionAttrbites = scdConfiger.getDimensionType2Configer().getDimensionAttributes();
             StringBuilder condition = new StringBuilder();
             boolean isFirstColumn = true;
+            int desAttrbiteCountNo=0;
             for(Column dimensionAttrbite : dimensionAttrbites) {
+	          if(!isOptimizeCode){
                 if(isFirstColumn) {
                     isFirstColumn = false;
                 } else {
@@ -290,30 +358,59 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 } else {
                     condition.append("lookUpValue_" + cid + "." + dimensionAttrbite.getColumnName() + " != " + inConnectionName + "." + dimensionAttrbite.getLabelName());
                 }
+              }else{
+              	if(desAttrbiteCountNo%schemaOptNum==0){
+              		if(isFirstColumn) {
+	                    isFirstColumn = false;
+	                } else {
+	                    condition.append(" || ");
+	                }
+					condition.append("mssqlSCD_Util_"+cid+".genType2Condition_"+(desAttrbiteCountNo/schemaOptNum)+"(lookUpValue_" + cid+","+inConnectionName+")");
+              	}
+              	desAttrbiteCountNo++;
+              }
             }
             %>
             if(<%=condition.toString()%>) {
                 <%
                 int index = 1;
+                int columnIndex = 0;
                 if(("INPUT_FIELD").equals(scdConfiger.getDimensionType2Configer().getStartDateValueType())) {                    
+                  if(!isOptimizeCode){
                     %>
                     <%=scdManager.genSetStatement("updateForType2_" + cid, inConnectionName + "." + scdConfiger.getDimensionType2Configer().getStartDateValue(), index, "java.util.Date")%>
-                    <%
+<%
                     index++;
+				  }else{
+%>
+                    mssqlSCD_Util_<%=cid%>.genUpdateType2SetStatment_0(updateForType2_<%=cid%>,<%=inConnectionName%>);
+                    <%
+                  }
+                  columnIndex++;
                 } else {
                     index = 2;
                 }
                 for(Column sourceKey : sourceKeys) {
+              	  if(!isOptimizeCode){
                     %>
                     <%=scdManager.genSetStatement("updateForType2_" + cid, inConnectionName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),true)%>
                     <%
                     index=index+2;
+                  }else{
+                  	  if(columnIndex%schemaOptNum==0){
+%>
+					mssqlSCD_Util_<%=cid%>.genUpdateType2SetStatment_<%=columnIndex/schemaOptNum%>(updateForType2_<%=cid%>,<%=inConnectionName%>);
+<%                  
+					  }
+					  columnIndex++;
+                  }
                 }
                 %>
                 nb_line_update_<%=cid%> += updateForType2_<%=cid%>.executeUpdate();
                 <%
                 paramIndex = 1;
                 for(Column insertionColumn : insertionColumnList) {
+                  if(!isOptimizeCode){
                     if(insertionColumn.getColumnName().equals(surrogateKeyField)) {
                         if(("INPUT_FIELD").equals(scdConfiger.getSurrogateKeyValueType())) {
                             %>
@@ -355,6 +452,14 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                             <%
                         }
                     }
+                  }else{
+            		  if((paramIndex - 1) % schemaOptNum==0){
+%>
+					<%if(insertionColumn.getColumnName().equals(surrogateKeyField) && ("TABLE_MAX").equals(scdConfiger.getSurrogateKeyValueType())){%>nextSurrogateKey_<%=cid%>=<%}%>mssqlSCD_Util_<%=cid%>.genInsertType2SetStatment_<%=(paramIndex - 1)/schemaOptNum%>(
+						insertionStatement_<%=cid%>,<%=inConnectionName%><%if(insertionColumn.getColumnName().equals(surrogateKeyField) && ("TABLE_MAX").equals(scdConfiger.getSurrogateKeyValueType())){%>,nextSurrogateKey_<%=cid%><%}%>,lookUpValue_<%=cid%>);
+<%
+            		  }
+                  }
                     paramIndex++;
                 }                
                 %>
@@ -373,7 +478,9 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             List<DimensionType3Attribute> dimensionAttrbites = scdConfiger.getDimensionType3Configer().getDimensionAttributes();
             StringBuilder condition = new StringBuilder();
             boolean isFirstColumn = true;
+            int desAttrbiteCountNo=0;
             for(DimensionType3Attribute dimensionAttrbite : dimensionAttrbites) {
+              if(!isOptimizeCode){
                 if(isFirstColumn) {
                     isFirstColumn = false;
                 } else {
@@ -391,18 +498,38 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 } else {
                     condition.append("lookUpValue_" + cid + "." + dimensionAttrbite.getCurrentColumn().getColumnName() + " != " + inConnectionName + "." + dimensionAttrbite.getCurrentColumn().getLabelName());
                 }                
+              }else{
+				  if(desAttrbiteCountNo%schemaOptNum==0){
+              		  if(isFirstColumn) {
+	                      isFirstColumn = false;
+	                  } else {
+	                      condition.append(" || ");
+	                  }
+					  condition.append("mssqlSCD_Util_"+cid+".genType3Condition_"+(desAttrbiteCountNo/schemaOptNum)+"(lookUpValue_" + cid+","+inConnectionName+")");
+              	  }
+              	  desAttrbiteCountNo++;
+              }
             }
             %>
             if(<%=condition.toString()%>) {
                 <%
                 int index = 1;
+                int columnIndex = 0;
                 for(DimensionType3Attribute dimensionAttrbite : dimensionAttrbites) {
+                  if(!isOptimizeCode){
                     %>
                     <%=scdManager.genSetStatement("updateForType3_" + cid, inConnectionName + "." + dimensionAttrbite.getCurrentColumn().getLabelName(), index, dimensionAttrbite.getCurrentColumn().getJavaType())%>
                     <%
                     index++;
+                  }else{
+                  	  if(columnIndex%schemaOptNum==0){
                     %>
+                    mssqlSCD_Util_<%=cid%>.genUpdateType3SetStatment_<%=columnIndex/schemaOptNum%>(lookUpValue_<%=cid%>,updateForType3_<%=cid%>,<%=inConnectionName%>);
                     <%
+                      }
+                      columnIndex++;
+                  }
+                  if(!isOptimizeCode){
                     if (dimensionAttrbites.size() > 1) {
                     condition = new StringBuilder();
                     String generatedType = dimensionAttrbite.getCurrentColumn().getJavaType();
@@ -428,12 +555,29 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                    	<%}%>
                     <%
                     index++;
+                  }else{
+                  	  if(columnIndex%schemaOptNum==0){
+%>
+                    mssqlSCD_Util_<%=cid%>.genUpdateType3SetStatment_<%=columnIndex/schemaOptNum%>(lookUpValue_<%=cid%>,updateForType3_<%=cid%>,<%=inConnectionName%>);
+<%
+                      }
+                      columnIndex++;
+                  }
                 }
                 for(Column sourceKey : sourceKeys) {
+                  if(!isOptimizeCode){
                     %>
                     <%=scdManager.genSetStatement("updateForType3_" + cid,  inConnectionName + "." + sourceKey.getLabelName(), index, sourceKey.getJavaType(),true)%>
                     <%
                     index=index+2;
+                  }else{
+                  	  if(columnIndex%schemaOptNum==0){
+%>
+                    mssqlSCD_Util_<%=cid%>.genUpdateType3SetStatment_<%=columnIndex/schemaOptNum%>(lookUpValue_<%=cid%>,updateForType3_<%=cid%>,<%=inConnectionName%>);
+<%
+                      }
+                      columnIndex++;
+                  }
                 }
                 %>
                 nb_line_update_<%=cid%> += updateForType3_<%=cid%>.executeUpdate();
@@ -461,7 +605,9 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 %>
                 <%=rejectConnName %> = new <%=rejectConnName %>Struct();
                 <%
+                int columnNo=0;
                 for(IMetadataColumn inColumn : inputSchema) {
+                  if(!isOptimizeCode){
                 	 for(IMetadataColumn outColumn : outputSchema) {
                 	 	if (inColumn.getLabel().equals(outColumn.getLabel())) {
                 %>
@@ -469,6 +615,14 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 <%
                 		}
                 	}
+                  }else{
+	            	if(columnNo %schemaOptNum==0){
+%>
+					mssqlSCD_Util_<%=cid%>.putFlowValueToReject_<%=columnNo/schemaOptNum%>(<%=inConnectionName%>, <%=rejectConnName%>);
+<%
+            		}
+            		columnNo++;
+                  }
                 }
                 %>
                 <%=rejectConnName%>.errorMessage = e.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
