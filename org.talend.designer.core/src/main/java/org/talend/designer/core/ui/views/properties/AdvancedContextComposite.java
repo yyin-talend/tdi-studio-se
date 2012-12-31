@@ -188,6 +188,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getComposite()
      */
+    @Override
     public Composite getComposite() {
         return null;
     }
@@ -197,6 +198,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getCurRowSize()
      */
+    @Override
     public int getCurRowSize() {
         return 0;
     }
@@ -206,6 +208,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getElement()
      */
+    @Override
     public Element getElement() {
         return null;
     }
@@ -215,6 +218,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getHashCurControls()
      */
+    @Override
     public BidiMap getHashCurControls() {
         return null;
     }
@@ -224,6 +228,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getPart()
      */
+    @Override
     public AbstractMultiPageTalendEditor getPart() {
         return null;
     }
@@ -244,6 +249,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
      * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getRepositoryAliasName(org
      * .talend.core.model.properties.ConnectionItem)
      */
+    @Override
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
         return null;
     }
@@ -287,6 +293,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getSection()
      */
+    @Override
     public EComponentCategory getSection() {
         return null;
     }
@@ -297,6 +304,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
      * @see
      * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTableIdAndDbSchemaMap()
      */
+    @Override
     public Map<String, String> getTableIdAndDbSchemaMap() {
         return null;
     }
@@ -307,6 +315,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
      * @see
      * org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#getTableIdAndDbTypeMap()
      */
+    @Override
     public Map<String, String> getTableIdAndDbTypeMap() {
         return null;
     }
@@ -325,6 +334,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#refresh()
      */
+    @Override
     public void refresh() {
         if (!isDisposed()) {
             getParent().layout();
@@ -336,6 +346,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#setCurRowSize(int)
      */
+    @Override
     public void setCurRowSize(int i) {
 
     }
@@ -382,10 +393,12 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
             column.setCellEditor(nameCellEditor);
             column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IElementParameter, Object>() {
 
+                @Override
                 public String get(IElementParameter bean) {
                     return bean.getDisplayName();
                 }
 
+                @Override
                 public void set(IElementParameter bean, Object value) {
                     if (value != null && value instanceof IElementParameter) {
                         List<IElementParameter> tableInput = getTableViewerCreator().getInputList();
@@ -448,14 +461,16 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
 
             column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IElementParameter, Object>() {
 
+                @Override
                 public Object get(IElementParameter bean) {
                     final Object value = bean.getValue();
                     return value == null ? "" : String.valueOf(value); //$NON-NLS-1$
                 }
 
+                @Override
                 public void set(IElementParameter bean, Object value) {
                     if (value != null && !value.equals(bean.getValue())) {
-                        executeCommand(new PropertyChangeCommand((Element) node, bean.getName(), value));
+                        executeCommand(new PropertyChangeCommand(node, bean.getName(), value));
                         getTableViewerCreator().refresh();
                     }
                 }
@@ -508,7 +523,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                                         IElementParameter parameter = comboContent.get(0);
                                         tableInput.add(parameter);
 
-                                        ((IElementParameter) parameter).setContextMode(true);
+                                        parameter.setContextMode(true);
 
                                         List<IElementParameter> associateParams = findRadioParamInSameGroup(comboContent,
                                                 parameter);
@@ -520,9 +535,6 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                                         refreshComboContent(AdvancedContextTableView.this, legalParameters);
                                         getExtendedToolbar().updateEnabledStateOfButtons();
                                         getTableViewerCreator().refresh();
-                                        if (parameter.getName().equals("CONNECTION")) {
-                                            parameter.setReadOnly(false);
-                                        }
                                     }
                                 }
                             };
@@ -553,12 +565,6 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                                 public void execute() {
                                     ISelection selection = getTableViewerCreator().getTableViewer().getSelection();
                                     List<IElementParameter> tableViewerInput = getTableViewerCreator().getInputList();
-                                    IElementParameter CONNECTION = null;
-                                    if (tableViewerInput != null && tableViewerInput.size() == 1) {
-                                        if (tableViewerInput.get(0).getName().equals("CONNECTION")) {
-                                            CONNECTION = tableViewerInput.get(0);
-                                        }
-                                    }
                                     boolean needRefresh = false;
                                     if (!selection.isEmpty() && selection instanceof StructuredSelection) {
                                         Object[] elements = ((StructuredSelection) selection).toArray();
@@ -570,8 +576,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                                         needRefresh = true;
                                     } else if (!tableViewerInput.isEmpty()) {
                                         int index = tableViewerInput.size() - 1;
-                                        final IElementParameter elementParameter = (IElementParameter) tableViewerInput
-                                                .get(index);
+                                        final IElementParameter elementParameter = tableViewerInput.get(index);
                                         elementParameter.setContextMode(false);
                                         tableViewerInput.remove(index);
                                         removeAssociateParams(tableViewerInput, elementParameter);
@@ -582,10 +587,6 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                                         refreshComboContent(AdvancedContextTableView.this, legalParameters);
                                         getTableViewerCreator().refresh();
                                         getExtendedToolbar().updateEnabledStateOfButtons();
-                                        if (CONNECTION != null && (tableViewerInput.size() <= 0)) {
-                                            executeCommand(new PropertyChangeCommand((Element) node, CONNECTION.getName(), ""));
-                                            CONNECTION.setReadOnly(true);
-                                        }
                                     }
                                 }
 
@@ -683,26 +684,32 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
 
         private ILabelProvider comboboxCellEditorLabelProvider = new ILabelProvider() {
 
+            @Override
             public Image getImage(Object element) {
                 return null;
             }
 
+            @Override
             public String getText(Object element) {
                 return ((IElementParameter) element).getDisplayName();
             }
 
+            @Override
             public void addListener(ILabelProviderListener listener) {
 
             }
 
+            @Override
             public void dispose() {
 
             }
 
+            @Override
             public boolean isLabelProperty(Object element, String property) {
                 return false;
             }
 
+            @Override
             public void removeListener(ILabelProviderListener listener) {
 
             }
