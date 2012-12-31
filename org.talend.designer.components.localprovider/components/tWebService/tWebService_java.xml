@@ -249,6 +249,9 @@
 			<IMPORT NAME="xalan" MODULE="xalan-2.7.1.jar" REQUIRED="true" />
 			<IMPORT NAME="serializer" MODULE="serializer-2.7.1.jar" REQUIRED="true" />
 			
+			<IMPORT NAME="jaxpapi" MODULE="jaxp-api.jar" REQUIRED="true"/>
+            <IMPORT NAME="jaxpri" MODULE="jaxp-ri.jar" REQUIRED="true"/>
+			
 		</IMPORTS>
 	</CODEGENERATION>
 
