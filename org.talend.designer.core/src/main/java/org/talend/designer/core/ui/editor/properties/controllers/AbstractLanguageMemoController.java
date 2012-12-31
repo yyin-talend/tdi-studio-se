@@ -110,33 +110,6 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         int nbLines = param.getNbLines();
         final String paramName = param.getName();
 
-        IControlCreator txtCtrl = new IControlCreator() {
-
-            public Control createControl(final Composite parent, final int style) {
-                final StyledText control = new ColorStyledText(parent, style, CorePlugin.getDefault().getPreferenceStore(),
-                        language);
-                Display display = Display.getCurrent();
-                if (display == null) {
-                    display = Display.getDefault();
-                }
-                if (display != null) {
-                    display.syncExec(new Runnable() {
-
-                        public void run() {
-                            IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
-                            String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
-                            FontData fontData = new FontData(fontType);
-                            Font font = new Font(parent.getDisplay(), fontData);
-                            addResourceDisposeListener(control, font);
-                            control.setFont(font);
-                        }
-                    });
-                }
-
-                return control;
-            }
-        };
-        DecoratedField dField = null;
         Control cLayout;
         StyledText text;
         FormData data;
@@ -163,12 +136,17 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                     } else if (elem instanceof Connection) {
                         process = (Process) ((Connection) elem).getSource().getProcess();
                     }
-                    TalendJavaEditor javaEditor = (TalendJavaEditor) ((AbstractMultiPageTalendEditor) process.getEditor())
-                            .getCodeEditor();
+                    TalendJavaEditor javaEditor = ((AbstractMultiPageTalendEditor) process.getEditor()).getCodeEditor();
 
-                    viewer = (TalendJavaSourceViewer) TalendJavaSourceViewer.createViewerForComponent(b, SWT.BORDER | SWT.MULTI
-                            | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, javaEditor, null, elem.getElementName(), context);
+                    viewer = TalendJavaSourceViewer.createViewerForComponent(b, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
+                            | SWT.H_SCROLL | SWT.WRAP, javaEditor, null, elem.getElementName(), context);
                     text = viewer.getTextWidget();
+                    IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
+                    String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
+                    FontData fontData = new FontData(fontType);
+                    Font font = new Font(text.getDisplay(), fontData);
+                    addResourceDisposeListener(text, font);
+                    text.setFont(font);
 
                     text.setData(PARAMETER_NAME, param.getName());
                     editionControlHelper.register(param.getName(), text);
@@ -198,17 +176,23 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                         process = (Process) connection.getSource().getProcess();
                         // see bug 0001645
                         if (connection.getLineStyle().equals(EConnectionType.RUN_IF)
-                                || connection.getLineStyle().equals(EConnectionType.ROUTE_WHEN) || connection.getLineStyle().equals(EConnectionType.ROUTE_CATCH)) {
-                            viewer = (TalendJavaSourceViewer) TalendJavaSourceViewer.createViewerForIfConnection(b);
+                                || connection.getLineStyle().equals(EConnectionType.ROUTE_WHEN)
+                                || connection.getLineStyle().equals(EConnectionType.ROUTE_CATCH)) {
+                            viewer = TalendJavaSourceViewer.createViewerForIfConnection(b);
                         }
                     }
                     if (viewer == null) {
-                        viewer = (TalendJavaSourceViewer) TalendJavaSourceViewer.createViewer(b, SWT.BORDER | SWT.MULTI
-                                | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, false);
+                        viewer = TalendJavaSourceViewer.createViewer(b, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL
+                                | SWT.WRAP, false);
                     }
 
                     text = viewer.getTextWidget();
-
+                    IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
+                    String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
+                    FontData fontData = new FontData(fontType);
+                    Font font = new Font(text.getDisplay(), fontData);
+                    addResourceDisposeListener(text, font);
+                    text.setFont(font);
                     text.setData(PARAMETER_NAME, param.getName());
                     editionControlHelper.register(param.getName(), text);
                     cLayout = a;
@@ -240,6 +224,12 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                     }
                 }
                 text = viewer.getTextWidget();
+                IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
+                String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
+                FontData fontData = new FontData(fontType);
+                Font font = new Font(text.getDisplay(), fontData);
+                addResourceDisposeListener(text, font);
+                text.setFont(font);
 
                 Process process = null;
 
@@ -253,6 +243,35 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                 cLayout = a;
             }
         } else {
+            IControlCreator txtCtrl = new IControlCreator() {
+
+                @Override
+                public Control createControl(final Composite parent, final int style) {
+                    final StyledText control = new ColorStyledText(parent, style, CorePlugin.getDefault().getPreferenceStore(),
+                            language);
+                    Display display = Display.getCurrent();
+                    if (display == null) {
+                        display = Display.getDefault();
+                    }
+                    if (display != null) {
+                        display.syncExec(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
+                                String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
+                                FontData fontData = new FontData(fontType);
+                                Font font = new Font(parent.getDisplay(), fontData);
+                                addResourceDisposeListener(control, font);
+                                control.setFont(font);
+                            }
+                        });
+                    }
+
+                    return control;
+                }
+            };
+            DecoratedField dField = null;
             dField = new DecoratedField(subComposite, SWT.BORDER | SWT.WRAP, txtCtrl);
             cLayout = dField.getLayoutControl();
             text = (StyledText) dField.getControl();
@@ -434,6 +453,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         if (!estimateInitialized) {
             IControlCreator txtCtrl = new IControlCreator() {
 
+                @Override
                 public Control createControl(final Composite parent, final int style) {
                     final ColorStyledText colorText = new ColorStyledText(parent, style, CorePlugin.getDefault()
                             .getPreferenceStore(), language);
@@ -444,6 +464,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                     if (display != null) {
                         display.syncExec(new Runnable() {
 
+                            @Override
                             public void run() {
                                 IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
                                 String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
@@ -497,6 +518,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // TODO Auto-generated method stub
 
