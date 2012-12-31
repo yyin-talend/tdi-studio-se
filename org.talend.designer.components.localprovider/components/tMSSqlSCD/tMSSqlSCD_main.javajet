@@ -614,7 +614,6 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                     <%=rejectConnName%>.<%=inColumn.getLabel()%> = <%=inConnectionName%>.<%=inColumn.getLabel()%>;
                 <%
                 		}
-                		break;
                 	}
                   }else{
 	            	if(columnNo %schemaOptNum==0){
