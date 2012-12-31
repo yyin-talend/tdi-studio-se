@@ -15,13 +15,24 @@ package org.talend.designer.core.ui.views.jobsettings;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceNode;
+import org.eclipse.jface.preference.IPreferencePage;
+import org.eclipse.jface.preference.PreferenceDialog;
+import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -45,9 +56,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
@@ -65,6 +79,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
@@ -81,8 +96,12 @@ import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.designer.runprocess.ItemCacheManager;
+import org.talend.repository.ProjectManager;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProjectSettingNode;
+import org.talend.repository.preference.CustomComponentSettingPage;
+import org.talend.repository.ui.dialog.ProjectSettingsPreferenceDialog;
 
 /**
  * Add buttons for loading and saving values between preference page and job view.
@@ -191,8 +210,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
      */
     protected void setMainCompositeEnable(boolean enabled) {
         Control[] controls = getComposite().getChildren();
-        for (int i = 0; i < controls.length; i++) {
-            Control control = controls[i];
+        for (Control control : controls) {
             if (control != topComposite) {
                 if (control instanceof Composite) {
                     setEditable((Composite) control, enabled);
@@ -236,11 +254,11 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
 
     private void setEditable(Composite parent, boolean editable) {
         Control[] children = parent.getChildren();
-        for (int i = 0; i < children.length; i++) {
-            if (children[i] instanceof Composite) {
-                setEditable((Composite) children[i], editable);
+        for (Control element : children) {
+            if (element instanceof Composite) {
+                setEditable((Composite) element, editable);
             } else {
-                setTextEnable(children[i], editable, true);
+                setTextEnable(element, editable, true);
             }
         }
     }
@@ -300,6 +318,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
 
     MouseListener listenerSelection = new MouseAdapter() {
 
+        @Override
         public void mouseDown(MouseEvent e) {
             if (inUseProjectSettingMode(elem, section, EParameterName.STATANDLOG_USE_PROJECT_SETTINGS)
                     || inUseProjectSettingMode(elem, section, EParameterName.IMPLICITCONTEXT_USE_PROJECT_SETTINGS)) {
@@ -315,6 +334,18 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                     if (modelSelect.getOptionValue().equals("updateProjectSettings")) {//$NON-NLS-1$
                         useProjectSetting.setSelection(true);
                         useProjectSettingButtonClick();
+                        final PreferenceDialog dialog = new ProjectSettingsPreferenceDialog(PlatformUI.getWorkbench()
+                                .getActiveWorkbenchWindow().getShell(), getNodeManager());
+                        BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
+
+                            @Override
+                            public void run() {
+                                dialog.create();
+                                dialog.getShell().setText("Project Settings");
+                                dialog.getShell().setSize(DEFAULT_SIZE);
+                                dialog.open();
+                            }
+                        });
                     }
 
                 }
@@ -322,13 +353,84 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
         }
     };
 
+    private static final Point DEFAULT_SIZE = new Point(1000, 600);
+
+    private PreferenceManager getNodeManager() {
+        PreferenceManager manager = new PreferenceManager();
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IConfigurationElement[] configurationElements = registry
+                .getConfigurationElementsFor("org.talend.repository.projectsetting_page"); //$NON-NLS-1$
+        for (IConfigurationElement element : configurationElements) {
+            ProjectSettingNode node = new ProjectSettingNode(element);
+            try {
+                IPreferencePage page = (IPreferencePage) element.createExecutableExtension("class"); //$NON-NLS-1$
+                node.setPage(page);
+                String id = element.getAttribute("id");
+                if (id.equals("org.talend.repository.preference.VersionManagementPage")) {
+                    IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                            IBrandingService.class);
+                    boolean allowVerchange = brandingService.getBrandingConfiguration().isAllowChengeVersion();
+                    if (!allowVerchange) {
+                        continue;
+                    }
+                }
+                page.setDescription(element.getAttribute("description")); //$NON-NLS-1$
+                page.setTitle(element.getAttribute("title")); //$NON-NLS-1$
+            } catch (CoreException e) {
+                ExceptionHandler.process(e);
+            }
+            String category = node.getCategory();
+            if (category == null) {
+                if (node.getPage() instanceof CustomComponentSettingPage) {
+                    if (PluginChecker.isSVNProviderPluginLoaded() && !ProjectManager.getInstance().getCurrentProject().isLocal()) {
+                        manager.addToRoot(node);
+                    } else {
+                        continue;
+                    }
+                } else {
+                    manager.addToRoot(node);
+                }
+            } else {
+                IPreferenceNode parent = manager.find(category);
+                if (parent != null) {
+                    parent.add(node);
+                }
+            }
+        }
+        IPreferenceNode[] rootSubNodes = manager.getRootSubNodes();
+
+        // sort the rootSubNodes
+        Arrays.sort(rootSubNodes, new Comparator() {
+
+            @Override
+            public int compare(Object o1, Object o2) {
+                if (o1 instanceof ProjectSettingNode && o2 instanceof ProjectSettingNode) {
+                    ProjectSettingNode node1 = (ProjectSettingNode) o1;
+                    ProjectSettingNode node2 = (ProjectSettingNode) o2;
+                    if (node1.getOrder() != null && node2.getOrder() != null) {
+                        return node1.getOrder().compareTo(node2.getOrder());
+                    }
+                }
+                return -1;
+            }
+        });
+        manager.removeAll();
+        // add the sorted list to manager
+        for (IPreferenceNode rootSubNode : rootSubNodes) {
+            manager.addToRoot(rootSubNode);
+        }
+        return manager;
+    }
+
     private void addButtonListeners() {
         reloadBtn.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 onReloadButtonClick();
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
@@ -336,10 +438,12 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
 
         saveBtn.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 onSaveButtonClick();
             }
 
+            @Override
             public void widgetDefaultSelected(SelectionEvent e) {
                 widgetSelected(e);
             }
@@ -356,6 +460,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                  * @see
                  * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
                  */
+                @Override
                 public void widgetDefaultSelected(SelectionEvent e) {
 
                 }
@@ -365,11 +470,13 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
                  * 
                  * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
                  */
+                @Override
                 public void widgetSelected(SelectionEvent e) {
                     // zli for bug 12335
                     final ProgressDialog progress = new ProgressDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                             .getShell()) {
 
+                        @Override
                         public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 
                             IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
@@ -585,7 +692,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
             message = Messages.getString("ReloadFromProjectSettingsMessages"); //$NON-NLS-1$
         }
 
-        boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), dialogTitle, message); //$NON-NLS-1$
+        boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), dialogTitle, message);
         if (isOK) {
             onReloadPreference();
 
@@ -627,7 +734,7 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
         } else {
             message = Messages.getString("SaveToProjectSettingsMessage"); //$NON-NLS-1$
         }
-        boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), dialogTitle, message); //$NON-NLS-1$       
+        boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), dialogTitle, message);
         if (isOK) {
             onSavePreference();
         }
@@ -750,10 +857,12 @@ public abstract class AbstractPreferenceComposite extends MultipleThreadDynamicC
 
         @Override
         protected void okPressed() {
-            if (noUseProjectSettingsButton.getSelection())
+            if (noUseProjectSettingsButton.getSelection()) {
                 setOptionValue("noUseProjectSettings"); //$NON-NLS-1$
-            if (updateProjectSettingsButton.getSelection())
+            }
+            if (updateProjectSettingsButton.getSelection()) {
                 setOptionValue("updateProjectSettings");//$NON-NLS-1$
+            }
 
             super.okPressed();
         }
