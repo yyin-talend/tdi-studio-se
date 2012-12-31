@@ -36,6 +36,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
@@ -106,6 +107,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
 
     IControlCreator cbCtrl = new IControlCreator() {
 
+        @Override
         public Control createControl(final Composite parent, final int style) {
             CCombo cb = new CCombo(parent, style);
             return cb;
@@ -209,9 +211,9 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                     }
                 } else if (curParam.getFieldType().equals(EParameterFieldType.TABLE)) {
                     final Object[] itemsValue = curParam.getListItemsValue();
-                    for (int i = 0; i < itemsValue.length; i++) {
-                        if (itemsValue[i] instanceof IElementParameter) {
-                            IElementParameter param = (IElementParameter) itemsValue[i];
+                    for (Object element : itemsValue) {
+                        if (element instanceof IElementParameter) {
+                            IElementParameter param = (IElementParameter) element;
                             if (param.getFieldType().equals(EParameterFieldType.COMPONENT_LIST)) {
                                 List<Map<String, Object>> tableValues = (List<Map<String, Object>>) curParam.getValue();
                                 for (Map<String, Object> curLine : tableValues) {
@@ -295,8 +297,8 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                 }
             }
 
-            String[] componentNameList = (String[]) componentDisplayNames.toArray(new String[0]);
-            String[] componentValueList = (String[]) componentUniqueNames.toArray(new String[0]);
+            String[] componentNameList = componentDisplayNames.toArray(new String[0]);
+            String[] componentValueList = componentUniqueNames.toArray(new String[0]);
 
             param.setListItemsDisplayName(componentNameList);
             param.setListItemsValue(componentValueList);
@@ -336,6 +338,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
 
     SelectionListener listenerSelection = new SelectionAdapter() {
 
+        @Override
         public void widgetSelected(SelectionEvent event) {
             Command cmd = createCommand(event);
             executeCommand(cmd);
@@ -373,6 +376,10 @@ public class ComponentListController extends AbstractElementPropertySectionContr
         } else {
             combo.setText(curComponentNameList[numValue]);
         }
+        if (param.isContextMode()) {
+            combo.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_YELLOW));
+            combo.setEnabled(false);
+        }
     }
 
     private static IJobletProviderService getJobletProviderService(IElementParameter param) {
@@ -396,6 +403,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
         }
     }
 
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // TODO Auto-generated method stub
 
