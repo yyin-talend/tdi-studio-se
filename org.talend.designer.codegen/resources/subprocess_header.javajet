@@ -134,8 +134,12 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 		if (metadata !=null) {
 			for (IMetadataColumn column: metadata.getListColumns()) {
    				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+   				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+   				if("id_Document".equals(javaType.getId())) {
+   					typeToGenerate = javaType.getNullableClass().getCanonicalName();
+   				}
 			    %>
-			    public <%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %><%
+			    public <%= typeToGenerate %> <%=column.getLabel() %><%
 			    	
 			    	if(javaType == JavaTypesManager.CHARACTER && !column.isNullable()) {
 			    		%> = ' '<%
@@ -143,7 +147,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 			    	
 			    	%>;
 
-				public <%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> get<%=column.getLabel().substring(0, 1).toUpperCase()%><%=column.getLabel().substring(1)%> () {
+				public <%= typeToGenerate %> get<%=column.getLabel().substring(0, 1).toUpperCase()%><%=column.getLabel().substring(1)%> () {
 					return this.<%=column.getLabel()%>;
 				}
 				<%
@@ -560,6 +564,9 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 					<%
 				} else if(javaType.isObjectBased() || typeToGenerate.equals("Geometry") || typeToGenerate.equals("Dynamic")) {
 			 		hasAtLeastOneObjectType = true;
+			 		if("id_Document".equals(javaType.getId())) {
+			 			typeToGenerate = javaType.getNullableClass().getCanonicalName();
+			 		}
 					%>
 						this.<%=column.getLabel() %> = (<%= typeToGenerate %>) dis.readObject();
 					<%
@@ -733,6 +740,9 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 					<%
 				} else if(typeToGenerate.equals("Object") || typeToGenerate.equals("Geometry") || typeToGenerate.equals("BigDecimal") || typeToGenerate.equals("List") || typeToGenerate.equals("Dynamic") || typeToGenerate.equals("Document")) {
 			 		hasAtLeastOneObjectType = true;
+			 		if("id_Document".equals(javaType.getId())) {
+			 			typeToGenerate = javaType.getNullableClass().getCanonicalName();
+			 		}
 					%>
        			    	this.<%=column.getLabel() %> = (<%= typeToGenerate %>) ois.readObject();
 					<%
