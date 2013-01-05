@@ -1784,6 +1784,24 @@
             name="AddCaseSensitiveToTCreateTableWithHSQLDB"
             version="5.2.2">
       </projecttask>
+       <projecttask
+            beforeLogon="false"
+            breaks="5.2.0"
+            class="org.talend.repository.model.migration.UpdateJobSettingsForMysqlMigrationTask"
+            description="change db version for mysql  in job setting "
+            id="org.talend.repository.model.migration.UpdateJobSettingsForMysqlMigrationTask"
+            name="UpdateJobSettingsForMysqlMigrationTask"
+            version="5.1.3">
+      </projecttask>
+      <projecttask
+            beforeLogon="false"
+            breaks="5.2.0"
+            class="org.talend.repository.model.migration.UpdateJobSettingsForOracleMigrationTask2"
+            description="change job setting value of DB_VERSION for oracle ,for exmpale : from oracle5.jar to ORACLE_11"
+            id="org.talend.repository.model.migration.UpdateJobSettingsForOracleMigrationTask2"
+            name="UpdateJobSettingsForOracleMigrationTask2"
+            version="5.2.1">
+      </projecttask>
    </extension>
    
    <extension
