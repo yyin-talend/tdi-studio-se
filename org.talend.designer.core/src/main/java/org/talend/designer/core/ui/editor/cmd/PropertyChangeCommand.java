@@ -42,11 +42,11 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.core.utils.DesignerUtilities;
+import org.talend.designer.core.utils.JobSettingVersionUtil;
 import org.talend.designer.core.utils.ValidationRulesUtil;
 import org.talend.designer.runprocess.ItemCacheManager;
 
@@ -259,14 +259,14 @@ public class PropertyChangeCommand extends Command {
         if (propName.equals(EParameterName.DB_TYPE.getName())) {
             IElementParameter elementParameter = elem.getElementParameter(EParameterName.DB_VERSION.getName());
             schemaParameter = elem.getElementParameter(EParameterName.SCHEMA_DB.getName());
-            setDbVersion(elementParameter, dbType);
+            JobSettingVersionUtil.setDbVersion(elementParameter, dbType, true);
             DesignerUtilities.setSchemaDB(schemaParameter, newValue);
         } else if (propName.equals(JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE.getName()))) {
             IElementParameter elementParameter = elem.getElementParameter(JobSettingsConstants
                     .getExtraParameterName(EParameterName.DB_VERSION.getName()));
             schemaParameter = elem.getElementParameter(JobSettingsConstants.getExtraParameterName(EParameterName.SCHEMA_DB
                     .getName()));
-            setDbVersion(elementParameter, dbType);
+            JobSettingVersionUtil.setDbVersion(elementParameter, dbType, true);
             DesignerUtilities.setSchemaDB(schemaParameter, newValue);
         }
         // Some DB not need fill the schema parameter for the JobSetting View "Extra" ,"Stats&Logs"
@@ -387,26 +387,6 @@ public class PropertyChangeCommand extends Command {
         // See feature 3902
         if (needUpdateMonitorConnection()) {
             ((Connection) elem).setMonitorConnection((Boolean) currentParam.getValue());
-        }
-    }
-
-    private void setDbVersion(IElementParameter elementParameter, String value) {
-        if (value.indexOf("Access") != -1) {//$NON-NLS-1$
-            elementParameter.setValue(StatsAndLogsConstants.ACCESS_VERSION_DRIVER[1]);
-            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ACCESS_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.ACCESS_VERSION_DRIVER);
-        } else if (value.indexOf("Oracle") != -1) {//$NON-NLS-1$
-            elementParameter.setValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER[1]);
-            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ORACLE_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER);
-        } else if (value.indexOf("AS400") != -1) {//$NON-NLS-1$
-            elementParameter.setValue(StatsAndLogsConstants.AS400_VERSION_DRIVER[1]);
-            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.AS400_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.AS400_VERSION_DRIVER);
-        } else if (value.indexOf("Mysql") != -1) {//$NON-NLS-1$
-            elementParameter.setValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER[1]);
-            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.MYSQL_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER);
         }
     }
 

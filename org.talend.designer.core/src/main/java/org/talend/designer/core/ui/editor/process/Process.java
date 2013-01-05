@@ -144,12 +144,12 @@ import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.editor.properties.controllers.ConnectionListController;
 import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
-import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.contexts.ContextsView;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.utils.DesignerUtilities;
 import org.talend.designer.core.utils.JavaProcessUtil;
+import org.talend.designer.core.utils.JobSettingVersionUtil;
 import org.talend.designer.core.utils.ValidationRulesUtil;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ItemCacheManager;
@@ -1026,7 +1026,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                         if (param.getName().equals(EParameterName.DB_TYPE.getName())) {
                             IElementParameter elementParameter = elemParam.getElementParameter(EParameterName.DB_VERSION
                                     .getName());
-                            setDbVersion(elementParameter, value);
+                            JobSettingVersionUtil.setDbVersion(elementParameter, value, true);
                             IElementParameter elementParameter2 = elemParam.getElementParameter(EParameterName.SCHEMA_DB
                                     .getName());
                             DesignerUtilities.setSchemaDB(elementParameter2, param.getValue());
@@ -1034,7 +1034,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                                 JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE.getName()))) {
                             IElementParameter elementParameter = elemParam.getElementParameter(JobSettingsConstants
                                     .getExtraParameterName(EParameterName.DB_VERSION.getName()));
-                            setDbVersion(elementParameter, value);
+                            JobSettingVersionUtil.setDbVersion(elementParameter, value, true);
                             IElementParameter elementParameter2 = elemParam.getElementParameter(JobSettingsConstants
                                     .getExtraParameterName(EParameterName.SCHEMA_DB.getName()));
                             DesignerUtilities.setSchemaDB(elementParameter2, param.getValue());
@@ -1129,30 +1129,6 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
                     UpdateTheJobsActionsOnTable.isClear = false;
                 }
             }
-        }
-    }
-
-    private void setDbVersion(IElementParameter elementParameter, String value) {
-        if (value == null) {
-            elementParameter.setValue(null);
-            return;
-        }
-        if (value.indexOf("Access") != -1) {//$NON-NLS-1$
-            elementParameter.setValue(StatsAndLogsConstants.ACCESS_VERSION_DRIVER[1]);
-            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ACCESS_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.ACCESS_VERSION_DRIVER);
-        } else if (value.indexOf("Oracle") != -1) {//$NON-NLS-1$
-            elementParameter.setValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER[1]);
-            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ORACLE_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER);
-        } else if (value.indexOf("AS400") != -1) {//$NON-NLS-1$
-            elementParameter.setValue(StatsAndLogsConstants.AS400_VERSION_DRIVER[1]);
-            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.AS400_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.AS400_VERSION_DRIVER);
-        } else if (value.indexOf("Mysql") != -1) {//$NON-NLS-1$
-            elementParameter.setValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER[1]);
-            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.MYSQL_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER);
         }
     }
 

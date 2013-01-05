@@ -1348,6 +1348,14 @@
             id="org.talend.repository.model.migration.AddCaseSensitiveToTCreateTableWithHSQLDB"
             name="AddCaseSensitiveToTCreateTableWithHSQLDB">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.UpdateJobSettingsForMysqlMigrationTask"
+            description="change db version for mysql  in job setting "
+            id="org.talend.repository.model.migration.UpdateJobSettingsForMysqlMigrationTask"
+            name="UpdateJobSettingsForMysqlMigrationTask"
+            >
+      </projecttask>
    </extension>
    
    <extension
