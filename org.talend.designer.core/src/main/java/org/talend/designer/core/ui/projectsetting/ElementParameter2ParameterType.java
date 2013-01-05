@@ -50,6 +50,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.utils.JobSettingVersionUtil;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.migration.UpdateTheJobsActionsOnTable;
 
@@ -154,12 +155,26 @@ public class ElementParameter2ParameterType {
                     + EParameterName.PROPERTY_TYPE.getName());
         }
 
+        IElementParameter statsDBType = null;
+        IElementParameter implicitDBType = null;
+        IElementParameter statsDBVersion = null;
+        IElementParameter implicitDBVersion = null;
+
         for (int j = 0; j < listParamType.size(); j++) {
             ElementParameterType pType = (ElementParameterType) listParamType.get(j);
             if (pType != null) {
                 String pTypeName = pType.getName();
                 if (pTypeName != null && !"".equals(pTypeName)) {
                     IElementParameter param = elemParam.getElementParameter(pTypeName);
+                    if (pTypeName.equals("DB_TYPE")) { //$NON-NLS-1$
+                        statsDBType = param;
+                    } else if (pTypeName.equals("DB_VERSION")) { //$NON-NLS-1$
+                        statsDBVersion = param;
+                    } else if (pTypeName.equals("DB_TYPE_IMPLICIT_CONTEXT")) { //$NON-NLS-1$
+                        implicitDBType = param;
+                    } else if (pTypeName.equals("DB_VERSION_IMPLICIT_CONTEXT")) { //$NON-NLS-1$
+                        implicitDBVersion = param;
+                    }
                     if (param != null) {
                         String name = param.getName();
                         param.setContextMode(pType.isContextMode());
@@ -289,6 +304,17 @@ public class ElementParameter2ParameterType {
                 }
             }
         }
+
+        // update combo list for dbversion
+        if (statsDBType != null && statsDBVersion != null) {
+            JobSettingVersionUtil.setDbVersion(statsDBVersion, String.valueOf(statsDBType.getValue()),
+                    String.valueOf(statsDBVersion.getValue()));
+        }
+        if (implicitDBType != null && implicitDBVersion != null) {
+            JobSettingVersionUtil.setDbVersion(implicitDBVersion, String.valueOf(implicitDBType.getValue()),
+                    String.valueOf(implicitDBVersion.getValue()));
+        }
+
     }
 
     /**
