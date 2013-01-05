@@ -356,63 +356,67 @@ public class SubjobContainer extends Element implements ISubjobContainer {
             // jNodeConRec.width = jNodeConRec.width + changewidth;
             // jNodeConRec.height = jNodeConRec.height + changeheight;
             if (!jobletCollapsed) {
-                Point origPoint = new Point(nodePoint.x, nodePoint.y);
-                pointMap.put(container.getNode().getUniqueName(), origPoint);
 
-                if (isJobletSubjob) {
-                    if (nodePoint.x > jobletRec.x) {
-                        nodePoint.x = nodePoint.x + rightChangewidth;
+                if (!nc.isUpdate()) {
+                    Point origPoint = new Point(nodePoint.x, nodePoint.y);
+                    pointMap.put(container.getNode().getUniqueName(), origPoint);
+                    if (isJobletSubjob) {
+                        if (nodePoint.x > jobletRec.x) {
+                            nodePoint.x = nodePoint.x + rightChangewidth;
+                        }
+
+                        if (nodePoint.y > jobletRec.y) {
+                            nodePoint.y = nodePoint.y + downChangeheight;
+                        }
+
+                        if (nodePoint.x < jobletRec.x) {
+                            nodePoint.x = nodePoint.x - leftChangewidth;
+                        }
+
+                        if (nodePoint.y < jobletRec.y) {
+                            nodePoint.y = nodePoint.y - upChangeheight;
+                        }
+                    } else {
+                        Rectangle jobletSubRec = nc.getSubjobContainer().getSubjobContainerRectangle();
+                        Rectangle currentRec = this.getSubjobContainerRectangle();
+
+                        if (nodePoint.x > jobletRec.x
+                                && !(currentRec.y < jobletSubRec.y
+                                        && currentRec.y + currentRec.height <= jobletSubRec.y + upChangeheight
+                                                + node.getSize().height || jobletSubRec.y + jobletSubRec.height <= currentRec.y
+                                        + downChangeheight + node.getSize().height
+                                        && currentRec.y > jobletSubRec.y)) {
+                            nodePoint.x = nodePoint.x + rightChangewidth;
+                        }
+
+                        if (nodePoint.y > jobletRec.y
+                                && !(currentRec.x < jobletSubRec.x
+                                        && currentRec.x + currentRec.width <= jobletSubRec.x + leftChangewidth
+                                                + node.getSize().width || jobletSubRec.x + jobletSubRec.width <= currentRec.x
+                                        + rightChangewidth + node.getSize().width
+                                        && currentRec.x > jobletSubRec.x)) {
+                            nodePoint.y = nodePoint.y + downChangeheight;
+                        }
+
+                        if (nodePoint.x < jobletRec.x
+                                && !(currentRec.y < jobletSubRec.y
+                                        && currentRec.y + currentRec.height <= jobletSubRec.y + upChangeheight
+                                                + node.getSize().height || jobletSubRec.y + jobletSubRec.height <= currentRec.y
+                                        + downChangeheight + node.getSize().height
+                                        && currentRec.y > jobletSubRec.y)) {
+                            nodePoint.x = nodePoint.x - leftChangewidth;
+                        }
+
+                        if (nodePoint.y < jobletRec.y
+                                && !(currentRec.x < jobletSubRec.x
+                                        && currentRec.x + currentRec.width <= jobletSubRec.x + leftChangewidth
+                                                + node.getSize().width || jobletSubRec.x + jobletSubRec.width <= currentRec.x
+                                        + rightChangewidth + node.getSize().width
+                                        && currentRec.x > jobletSubRec.x)) {
+                            nodePoint.y = nodePoint.y - upChangeheight;
+                        }
+
                     }
-
-                    if (nodePoint.y > jobletRec.y) {
-                        nodePoint.y = nodePoint.y + downChangeheight;
-                    }
-
-                    if (nodePoint.x < jobletRec.x) {
-                        nodePoint.x = nodePoint.x - leftChangewidth;
-                    }
-
-                    if (nodePoint.y < jobletRec.y) {
-                        nodePoint.y = nodePoint.y - upChangeheight;
-                    }
-                } else {
-                    Rectangle jobletSubRec = nc.getSubjobContainer().getSubjobContainerRectangle();
-                    Rectangle currentRec = this.getSubjobContainerRectangle();
-
-                    if (nodePoint.x > jobletRec.x
-                            && !(currentRec.y < jobletSubRec.y
-                                    && currentRec.y + currentRec.height <= jobletSubRec.y + upChangeheight
-                                            + node.getSize().height || jobletSubRec.y + jobletSubRec.height <= currentRec.y
-                                    + downChangeheight + node.getSize().height
-                                    && currentRec.y > jobletSubRec.y)) {
-                        nodePoint.x = nodePoint.x + rightChangewidth;
-                    }
-
-                    if (nodePoint.y > jobletRec.y
-                            && !(currentRec.x < jobletSubRec.x
-                                    && currentRec.x + currentRec.width <= jobletSubRec.x + leftChangewidth + node.getSize().width || jobletSubRec.x
-                                    + jobletSubRec.width <= currentRec.x + rightChangewidth + node.getSize().width
-                                    && currentRec.x > jobletSubRec.x)) {
-                        nodePoint.y = nodePoint.y + downChangeheight;
-                    }
-
-                    if (nodePoint.x < jobletRec.x
-                            && !(currentRec.y < jobletSubRec.y
-                                    && currentRec.y + currentRec.height <= jobletSubRec.y + upChangeheight
-                                            + node.getSize().height || jobletSubRec.y + jobletSubRec.height <= currentRec.y
-                                    + downChangeheight + node.getSize().height
-                                    && currentRec.y > jobletSubRec.y)) {
-                        nodePoint.x = nodePoint.x - leftChangewidth;
-                    }
-
-                    if (nodePoint.y < jobletRec.y
-                            && !(currentRec.x < jobletSubRec.x
-                                    && currentRec.x + currentRec.width <= jobletSubRec.x + leftChangewidth + node.getSize().width || jobletSubRec.x
-                                    + jobletSubRec.width <= currentRec.x + rightChangewidth + node.getSize().width
-                                    && currentRec.x > jobletSubRec.x)) {
-                        nodePoint.y = nodePoint.y - upChangeheight;
-                    }
-
                 }
 
             } else {

@@ -66,6 +66,8 @@ public class JobletContainer extends NodeContainer {
 
     private boolean hasChange;
 
+    private boolean update = false;
+
     private boolean needchangeLock = true;
 
     protected List<IElement> jobletElements = new ArrayList<IElement>();
@@ -282,8 +284,8 @@ public class JobletContainer extends NodeContainer {
         // TDI-18915:no need "if(!isCollapsed()){}" here since it is only called in UpdateJobletNodeCommand and can not
         // update the joblet NodeContainer in job when modify the joblet
         refreshJobletNodes(update, isCollapsed());
-        updateSubjobContainer();
         transferLocation(update);
+        updateSubjobContainer();
         refreshJobletConnections();
     }
 
@@ -385,8 +387,9 @@ public class JobletContainer extends NodeContainer {
     }
 
     private void transferLocation(boolean update) {
-        if (update) {
-            // do nothing
+        this.update = update;
+        if (update) { 
+             // do nothing       
         }
         if (this.isCollapsed() == true) {
             return;
@@ -416,6 +419,7 @@ public class JobletContainer extends NodeContainer {
     }
 
     public void transferLocation(Point oldPos) {
+        this.update = false;
         if (this.isCollapsed() == true) {
             return;
         }
@@ -569,6 +573,10 @@ public class JobletContainer extends NodeContainer {
             return false;
         }
         return true;// (Boolean) getPropertyValue(EParameterName.SUBJOB_DISPLAYED.getName());
+    }
+
+    public boolean isUpdate() {
+        return this.update;
     }
 
     /**
