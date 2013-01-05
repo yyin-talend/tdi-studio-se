@@ -1366,6 +1366,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 EbcdicConnectionItem repositoryItem = service.getRepositoryItem(node);
                 if (repositoryItem != null) {
                     IElementParameter schemasTableParam = node.getElementParameter(IEbcdicConstant.TABLE_SCHEMAS);
+                    IElementParameter schemaParam = node.getElementParameter(IEbcdicConstant.FIELD_SCHEMA);
                     if (schemasTableParam != null) {
                         List<IProcess2> openedProcesses = UpdateManagerUtils.getOpenedProcess();
                         List<Map<String, Object>> paramValues = (List<Map<String, Object>>) schemasTableParam.getValue();
@@ -1409,6 +1410,13 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             }
                                         }
                                     } else {
+                                        boolean isNeedUpdateSchemaFromRepo = true;
+                                        if (schemaParam.getChildParameters() != null
+                                                && schemaParam.getChildParameters().get("SCHEMA_TYPE") != null) {
+                                            boolean isBuildinSchemaType = schemaParam.getChildParameters().get("SCHEMA_TYPE")
+                                                    .getValue().equals("BUILT_IN");
+                                            isNeedUpdateSchemaFromRepo = !(schemaParam.isShow(node.getElementParameters()) && isBuildinSchemaType);
+                                        }
                                         IMetadataTable table = UpdateRepositoryUtils.getTableByName(repositoryItem, schemaName);
                                         if (table != null) {
                                             String source = UpdateRepositoryUtils.getRepositorySourceName(repositoryItem)
