@@ -121,8 +121,8 @@ public class StatsAndLogsConstants {
     public static final String[] DB_VERSION_CODE = new String[] { "ORACLE_11", "ORACLE_10", "ORACLE_9", "ORACLE_8", "MYSQL_5",
             "MYSQL_4", "ACCESS_2003", "ACCESS_2007" };
 
-    public static final String[] DB_VERSION_DRIVER = new String[] { "ojdbc6.jar", "ojdbc14.jar", "ojdbc14-9i.jar", "ojdbc12.jar",
-            "mysql-connector-java-5.1.22-bin.jar", "mysql-connector-java-3.1.14-bin.jar", "ACCESS_2003", "ACCESS_2007" };
+    public static final String[] DB_VERSION_DRIVER = new String[] { "ORACLE_11", "ORACLE_10", "ORACLE_9", "ORACLE_8", "MYSQL_5",
+            "MYSQL_4", "ACCESS_2003", "ACCESS_2007" };
 
     public static final String[] ACCESS_VERSION_DISPLAY = new String[] { "Access 2003", "Access 2007" }; //$NON-NLS-1$ //$NON-NLS-2$
 

@@ -42,11 +42,11 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.core.utils.DesignerUtilities;
+import org.talend.designer.core.utils.JobSettingVersionUtil;
 import org.talend.designer.core.utils.ValidationRulesUtil;
 import org.talend.designer.runprocess.ItemCacheManager;
 
@@ -162,7 +162,7 @@ public class PropertyChangeCommand extends Command {
             boolean isSelectUseDynamic = false;
             IElementParameter useDynamicJobParameter = elem.getElementParameter(EParameterName.USE_DYNAMIC_JOB.getName());
             if (useDynamicJobParameter != null && useDynamicJobParameter instanceof IElementParameter) {
-                Object useDynamicJobValue = (Object) useDynamicJobParameter.getValue();
+                Object useDynamicJobValue = useDynamicJobParameter.getValue();
                 if (useDynamicJobValue != null && useDynamicJobValue instanceof Boolean) {
                     isSelectUseDynamic = (Boolean) useDynamicJobValue;
                 }
@@ -174,7 +174,7 @@ public class PropertyChangeCommand extends Command {
                     for (int i = 0; i < strValues.length; i++) {
                         String strValue = strValues[i];
                         // newValue is the id of the job
-                        ProcessItem processItem = ItemCacheManager.getProcessItem((String) strValue);
+                        ProcessItem processItem = ItemCacheManager.getProcessItem(strValue);
                         if (processItem != null) {
                             String label = processItem.getProperty().getLabel();
                             if (i > 0) {
@@ -259,14 +259,14 @@ public class PropertyChangeCommand extends Command {
         if (propName.equals(EParameterName.DB_TYPE.getName())) {
             IElementParameter elementParameter = elem.getElementParameter(EParameterName.DB_VERSION.getName());
             schemaParameter = elem.getElementParameter(EParameterName.SCHEMA_DB.getName());
-            setDbVersion(elementParameter, dbType);
+            JobSettingVersionUtil.setDbVersion(elementParameter, dbType, true);
             DesignerUtilities.setSchemaDB(schemaParameter, newValue);
-        } else if (propName.equals(JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE.getName()))) {//$NON-NLS-1$
+        } else if (propName.equals(JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE.getName()))) {
             IElementParameter elementParameter = elem.getElementParameter(JobSettingsConstants
                     .getExtraParameterName(EParameterName.DB_VERSION.getName()));
             schemaParameter = elem.getElementParameter(JobSettingsConstants.getExtraParameterName(EParameterName.SCHEMA_DB
                     .getName()));
-            setDbVersion(elementParameter, dbType);
+            JobSettingVersionUtil.setDbVersion(elementParameter, dbType, true);
             DesignerUtilities.setSchemaDB(schemaParameter, newValue);
         }
         // Some DB not need fill the schema parameter for the JobSetting View "Extra" ,"Stats&Logs"
@@ -387,26 +387,6 @@ public class PropertyChangeCommand extends Command {
         // See feature 3902
         if (needUpdateMonitorConnection()) {
             ((Connection) elem).setMonitorConnection((Boolean) currentParam.getValue());
-        }
-    }
-
-    private void setDbVersion(IElementParameter elementParameter, String value) {
-        if (value.indexOf("Access") != -1) {//$NON-NLS-1$
-            elementParameter.setValue(StatsAndLogsConstants.ACCESS_VERSION_DRIVER[1]);
-            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ACCESS_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.ACCESS_VERSION_DRIVER);
-        } else if (value.indexOf("Oracle") != -1) {//$NON-NLS-1$
-            elementParameter.setValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER[1]);
-            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ORACLE_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER);
-        } else if (value.indexOf("AS400") != -1) {//$NON-NLS-1$
-            elementParameter.setValue(StatsAndLogsConstants.AS400_VERSION_DRIVER[1]);
-            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.AS400_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.AS400_VERSION_DRIVER);
-        } else if (value.indexOf("Mysql") != -1) {//$NON-NLS-1$
-            elementParameter.setValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER[1]);
-            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.MYSQL_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.MYSQL_VERSION_DRIVER);
         }
     }
 
@@ -673,16 +653,18 @@ public class PropertyChangeCommand extends Command {
     private void refreshTraceConnections() {
         if (propName.equals(EParameterName.TRACES_CONNECTION_ENABLE.getName()) || this.elem instanceof Connection) {
             // TDI-8003:if the connection's style is RunIf,its trace should be null here
-            if (((Connection) this.elem).getConnectionTrace() != null && !propName.equals(EParameterName.CONDITION))
+            if (((Connection) this.elem).getConnectionTrace() != null && !propName.equals(EParameterName.CONDITION)) {
                 ((Connection) this.elem).getConnectionTrace().setPropertyValue(EParameterName.TRACES_SHOW_ENABLE.getName(), true);
+            }
         }
     }
 
     private void refreshResumingConnections() {
         if (propName.equals(EParameterName.RESUMING_CHECKPOINT.getName()) || this.elem instanceof Connection) {
-            if (((Connection) this.elem).getConnectionTrace() != null && !propName.equals(EParameterName.CONDITION))
+            if (((Connection) this.elem).getConnectionTrace() != null && !propName.equals(EParameterName.CONDITION)) {
                 ((Connection) this.elem).getConnectionTrace()
                         .setPropertyValue(EParameterName.RESUMING_CHECKPOINT.getName(), true);
+            }
         }
     }
 

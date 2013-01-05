@@ -62,6 +62,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.utils.DesignerUtilities;
+import org.talend.designer.core.utils.JobSettingVersionUtil;
 import org.talend.designer.core.utils.SAPParametersUtils;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
@@ -377,7 +378,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                 }
                             }
 
-                            setDbVersion(elementParameter, dbVersion);
+                            JobSettingVersionUtil.setDbVersion(elementParameter, dbVersion, false);
                             DesignerUtilities.setSchemaDB(elementParameter2, param.getValue());
                         } else if (param.getFieldType().equals(EParameterFieldType.CLOSED_LIST)
                                 && param.getRepositoryValue().equals("FRAMEWORK_TYPE")) { //$NON-NLS-1$
@@ -543,29 +544,6 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         }
     }
 
-    private void setDbVersion(IElementParameter elementParameter, String value) {
-        if (elementParameter == null || value == null) {
-            return;
-        }
-        if (value.indexOf("Access") != -1) {//$NON-NLS-1$
-            elementParameter.setValue(value);
-            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ACCESS_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.ACCESS_VERSION_CODE);
-        } else if (value.indexOf("ORACLE") != -1) {//$NON-NLS-1$
-            elementParameter.setValue(value);
-            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ORACLE_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.ORACLE_VERSION_CODE);
-        } else if (value.indexOf("AS400") != -1) {//$NON-NLS-1$
-            elementParameter.setValue(value);
-            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.AS400_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.AS400_VERSION_CODE);
-        } else if (value.indexOf("MYSQL") != -1) {//$NON-NLS-1$
-            elementParameter.setValue(value);
-            elementParameter.setListItemsDisplayName(StatsAndLogsConstants.MYSQL_VERSION_DISPLAY);
-            elementParameter.setListItemsValue(StatsAndLogsConstants.MYSQL_VERSION_CODE);
-        }
-    }
-
     private String getFirstRepositoryTable(Item item) {
         if (isNotSim) {
             if (item != null) {
@@ -635,10 +613,12 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                     repositoryTable = (String) repositorySchemaTypeParameter.getValue();
                                 } else if (item != null) {
                                     if (item instanceof SAPConnectionItem) {
-                                        if (getCurrentTableName() != null)
+                                        if (getCurrentTableName() != null) {
                                             repositoryTable = item.getProperty().getId() + " - " + getCurrentTableName();
-                                    } else
+                                        }
+                                    } else {
                                         repositoryTable = item.getProperty().getId() + " - " + getFirstRepositoryTable(item); //$NON-NLS-1$
+                                    }
                                     repositorySchemaTypeParameter.setValue(repositoryTable);
                                 }
                                 if (isNotSim) {

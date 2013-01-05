@@ -684,6 +684,24 @@
              name="Add quotes for stats and logs preference page."
              version="5.1.2">
        </workspacetask>
+       <projecttask
+             beforeLogon="true"
+             breaks="5.2.0"
+             class="org.talend.designer.core.ui.preferences.migration.ChangeMysqlVersionForProjectSetting"
+             description="Change mysql version for stats&amp;log and implicit"
+             id="org.talend.designer.core.ui.preferences.migration.ChangeMysqlVersionForProjectSetting"
+             name="ChangeMysqlVersionForProjectSetting"
+             version="5.1.3">
+       </projecttask>
+       <projecttask
+             beforeLogon="true"
+             breaks="5.2.0"
+             class="org.talend.designer.core.ui.preferences.migration.ChangeOracleVersionForProjectSetting"
+             description="Change oracle version for stats&amp;log and implicit"
+             id="org.talend.designer.core.ui.preferences.migration.ChangeOracleVersionForProjectSetting"
+             name="ChangeOracleVersionForProjectSetting"
+             version="5.2.1">
+       </projecttask>
     </extension>
     <extension
           point="org.talend.repository.projectsetting_page">

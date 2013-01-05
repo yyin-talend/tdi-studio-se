@@ -37,8 +37,12 @@ public class UpdateJobSettingsForMysqlMigrationTask extends AbstractJobMigration
     private static final ProxyRepositoryFactory FACTORY = ProxyRepositoryFactory.getInstance();
 
     private boolean updateJarValue(ElementParameterType param) {
-        if ("mysql-connector-java-5.1.0-bin.jar".equalsIgnoreCase(param.getValue())) { //$NON-NLS-1$
-            param.setValue("mysql-connector-java-5.1.22-bin.jar"); //$NON-NLS-1$
+        if ("mysql-connector-java-5.1.0-bin.jar".equalsIgnoreCase(param.getValue())//$NON-NLS-1$ 
+                || "mysql-connector-java-5.1.22-bin.jar".equalsIgnoreCase(param.getValue())) { //$NON-NLS-1$
+            param.setValue("MYSQL_5"); //$NON-NLS-1$
+            return true;
+        } else if ("mysql-connector-java-3.1.14-bin.jar".equalsIgnoreCase(param.getValue())) {//$NON-NLS-1$
+            param.setValue("MYSQL_4"); //$NON-NLS-1$
             return true;
         }
         return false;
