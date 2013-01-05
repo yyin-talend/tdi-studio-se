@@ -1418,7 +1418,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                                             isNeedUpdateSchemaFromRepo = !(schemaParam.isShow(node.getElementParameters()) && isBuildinSchemaType);
                                         }
                                         IMetadataTable table = UpdateRepositoryUtils.getTableByName(repositoryItem, schemaName);
-                                        if (table != null) {
+                                        if (table != null && isNeedUpdateSchemaFromRepo) {
                                             String source = UpdateRepositoryUtils.getRepositorySourceName(repositoryItem)
                                                     + UpdatesConstants.SEGMENT_LINE + table.getLabel();
 
