@@ -367,18 +367,20 @@ public class ComponentListController extends AbstractElementPropertySectionContr
             }
         }
 
-        combo.setItems(curComponentNameList);
-        if (!listContainValue) {
-            if (curComponentNameList.length > 0) {
-                elem.setPropertyValue(getParameterName(param), curComponentValueList[0]);
-                combo.setText(curComponentNameList[0]);
-            }
-        } else {
-            combo.setText(curComponentNameList[numValue]);
-        }
         if (param.isContextMode()) {
             combo.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_YELLOW));
             combo.setEnabled(false);
+            combo.setText((String) value);
+        } else {
+            combo.setItems(curComponentNameList);
+            if (!listContainValue) {
+                if (curComponentNameList.length > 0) {
+                    elem.setPropertyValue(getParameterName(param), curComponentValueList[0]);
+                    combo.setText(curComponentNameList[0]);
+                }
+            } else {
+                combo.setText(curComponentNameList[numValue]);
+            }
         }
     }
 

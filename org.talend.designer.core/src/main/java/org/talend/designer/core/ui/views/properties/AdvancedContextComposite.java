@@ -571,7 +571,11 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                                         for (Object element : elements) {
                                             tableViewerInput.remove(element);
                                             removeAssociateParams(tableViewerInput, element);
-                                            ((IElementParameter) element).setContextMode(false);
+                                            IElementParameter elementParameter = (IElementParameter) element;
+                                            elementParameter.setContextMode(false);
+                                            if (elementParameter.getFieldType() == EParameterFieldType.COMPONENT_LIST) {
+                                                executeCommand(new PropertyChangeCommand(node, elementParameter.getName(), "")); //$NON-NLS-1$
+                                            }
                                         }
                                         needRefresh = true;
                                     } else if (!tableViewerInput.isEmpty()) {
@@ -580,6 +584,9 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
                                         elementParameter.setContextMode(false);
                                         tableViewerInput.remove(index);
                                         removeAssociateParams(tableViewerInput, elementParameter);
+                                        if (elementParameter.getFieldType() == EParameterFieldType.COMPONENT_LIST) {
+                                            executeCommand(new PropertyChangeCommand(node, elementParameter.getName(), "")); //$NON-NLS-1$
+                                        }
                                         needRefresh = true;
                                     }
 
