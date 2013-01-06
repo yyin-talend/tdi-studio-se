@@ -151,7 +151,7 @@ public static class <%=conn.getName() %>Struct<%=templateOrigin %> implements ro
 					return this.<%=column.getLabel()%>;
 				}
 				<%
-				if("id_Document".equals(javaType.getId())) {
+				if((conn.getLineStyle() == EConnectionType.FLOW_REF) && conn.getTarget().getUniqueName().startsWith("tXMLMap") && "id_Document".equals(javaType.getId())) {
 				%>
 				public java.util.Map<String,Object> documentLookupResult =  new java.util.HashMap<String,Object>();
 				<%
