@@ -1247,9 +1247,10 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         esbTypeLabel.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.esbExportTypeLabel")); //$NON-NLS-1$
 
         esbTypeCombo = new Combo(left, SWT.PUSH);
-        gd = new GridData();
-        gd.horizontalSpan = 2;
-        esbTypeCombo.setLayoutData(gd);
+        // commented by fwang on Jan 6,2013 for bug TDI-23827
+        // gd = new GridData();
+        // gd.horizontalSpan = 2;
+        // esbTypeCombo.setLayoutData(gd);
 
         esbTypeCombo.add(ESBTYPE_JBOSS_MQ);
         esbTypeCombo.add(ESBTYPE_JBOSS_MESSAGING);
