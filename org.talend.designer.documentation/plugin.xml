@@ -36,5 +36,13 @@
        </Action>
          
    </extension>
+   <extension
+         point="org.talend.core.repository.repoViewLinker">
+      <linker
+            class="org.talend.repository.viewer.link.DocumentationRepoViewLinker"
+            name="Documentation"
+            priority="normal">
+      </linker>
+   </extension>
 
 </plugin>

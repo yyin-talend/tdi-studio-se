@@ -34,6 +34,7 @@ import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkDocumentationItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.DocumentationUtil;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -67,6 +68,7 @@ public class OpenDocumentationAction extends AContextualAction {
      * @see org.talend.repository.ui.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
+    @Override
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         RepositoryNode node = (RepositoryNode) selection.getFirstElement();
@@ -89,6 +91,7 @@ public class OpenDocumentationAction extends AContextualAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
+    @Override
     protected void doRun() {
         RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
         Item item = node.getObject().getProperty().getItem();
@@ -244,13 +247,15 @@ public class OpenDocumentationAction extends AContextualAction {
             IWorkbenchPage page = getActivePage();
             IEditorReference[] iEditorReference = page.getEditorReferences();
             for (IEditorReference editors : iEditorReference) {
-                if ("org.eclipse.ui.browser.editor".equals(editors.getId())) {
+                if (WebBrowserEditor.WEB_BROWSER_EDITOR_ID.equals(editors.getId())) {
                     IEditorPart iEditorPart = editors.getEditor(true);
                     if (iEditorPart != null && iEditorPart instanceof WebBrowserEditor) {
                         WebBrowserEditorInput webBrowserEditorInput = (WebBrowserEditorInput) iEditorPart.getEditorInput();
                         if (webBrowserEditorInput != null && url.equals(webBrowserEditorInput.getURL())) {
                             // page.activate(iEditorPart);
                             iEditorPart.init(iEditorPart.getEditorSite(), webBrowserEditorInput);
+                            DocumentationUtil.setPartItemId((WebBrowserEditor) iEditorPart, item.getProperty().getId(),
+                                    ERepositoryObjectType.getItemType(item));
                             return;
                         }
                     }
@@ -262,6 +267,7 @@ public class OpenDocumentationAction extends AContextualAction {
 
         input.setName(item.getProperty().getLabel());
         input.setToolTipText(item.getProperty().getLabel() + " " + item.getProperty().getVersion()); //$NON-NLS-1$
+        DocumentationUtil.setPartItemId(browser, item.getProperty().getId(), ERepositoryObjectType.getItemType(item));
         browser.open(input);
     }
 }
