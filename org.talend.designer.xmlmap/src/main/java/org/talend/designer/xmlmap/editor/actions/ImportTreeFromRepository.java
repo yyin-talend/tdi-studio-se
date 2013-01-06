@@ -217,6 +217,11 @@ public class ImportTreeFromRepository extends SelectionAction {
                 String xsdFile = initFileContent(connection);
                 if (xsdFile != null && new File(xsdFile).exists()) {
                     list = TreeUtil.getFoxTreeNodesForXmlMap(xsdFile, rootXpath);
+                } else {
+                    // for manually created output
+                    prepareEmfTreeFromConnection(connection);
+                    return;
+
                 }
             } else {
                 throw new FileNotFoundException();
@@ -262,6 +267,216 @@ public class ImportTreeFromRepository extends SelectionAction {
             }
             schemaNode.getChildren().clear();
             prepareEmfTree(list, schemaNode);
+        }
+
+    }
+
+    private void prepareEmfTreeFromConnection(XmlFileConnection connection) {
+        schemaNode.getChildren().clear();
+        EList root = connection.getRoot();
+        EList loop = connection.getLoop();
+        EList group = connection.getGroup();
+
+        TreeNode rootNode = null;
+        TreeNode current = null;
+        TreeNode temp = null;
+        TreeNode mainNode = null;
+        // xpath in item file
+        String mainPath = null;
+        // xpath in item file
+        String currentPath = "";
+        String defaultValue = null;
+
+        // build root tree
+        for (int i = 0; i < root.size(); i++) {
+            XMLFileNode node = (XMLFileNode) root.get(i);
+            String newPath = node.getXMLPath();
+            defaultValue = node.getDefaultValue();
+            String type = node.getType();
+
+            if (node.getAttribute().equals("attri")) {
+                this.addAttributeNamespace(current, currentPath, newPath, type, NodeType.ATTRIBUT, defaultValue);
+            } else if (node.getAttribute().equals("ns")) {
+                this.addAttributeNamespace(current, currentPath, newPath, type, NodeType.NAME_SPACE, defaultValue);
+            } else {
+                temp = this.addElement(current, currentPath, newPath, type, NodeType.ELEMENT, node.getOrder());
+                if (rootNode == null) {
+                    rootNode = temp;
+                }
+                if (node.getAttribute().equals("main")) {
+                    temp.setMain(true);
+                    mainNode = temp;
+                    mainPath = newPath;
+                }
+                current = temp;
+                currentPath = newPath;
+            }
+
+        }
+
+        // build group tree
+        current = mainNode;
+        currentPath = mainPath;
+        boolean isFirst = true;
+        groupElements = new ArrayList<TreeNode>();
+        for (int i = 0; i < group.size(); i++) {
+            XMLFileNode node = (XMLFileNode) group.get(i);
+            String newPath = node.getXMLPath();
+            defaultValue = node.getDefaultValue();
+            String type = node.getType();
+            if (node.getAttribute().equals("attri")) {
+                this.addAttributeNamespace(current, currentPath, newPath, type, NodeType.ATTRIBUT, defaultValue);
+            } else if (node.getAttribute().equals("ns")) {
+                this.addAttributeNamespace(current, currentPath, newPath, type, NodeType.NAME_SPACE, defaultValue);
+            } else {
+                temp = this.addElement(current, currentPath, newPath, type, NodeType.ELEMENT, node.getOrder());
+                groupElements.add(temp);
+                if (node.getAttribute().equals("main")) {
+                    temp.setMain(true);
+                    mainNode = temp;
+                    mainPath = newPath;
+                }
+                current = temp;
+                currentPath = newPath;
+            }
+
+        }
+
+        // build loop tree
+        current = mainNode;
+        currentPath = mainPath;
+        isFirst = true;
+        for (int i = 0; i < loop.size(); i++) {
+            XMLFileNode node = (XMLFileNode) loop.get(i);
+            String newPath = node.getXMLPath();
+            defaultValue = node.getDefaultValue();
+            String type = node.getType();
+            if (node.getAttribute().equals("attri")) {
+                this.addAttributeNamespace(current, currentPath, newPath, type, NodeType.ATTRIBUT, defaultValue);
+            } else if (node.getAttribute().equals("ns")) {
+                this.addAttributeNamespace(current, currentPath, newPath, type, NodeType.NAME_SPACE, defaultValue);
+            } else {
+                temp = this.addElement(current, currentPath, newPath, type, NodeType.ELEMENT, node.getOrder());
+                // if root node is loop
+                if (rootNode == null) {
+                    rootNode = temp;
+                }
+                if (node.getAttribute().equals("main")) {
+                    temp.setMain(true);
+                    mainNode = temp;
+                    mainPath = newPath;
+                }
+                if (isFirst) {
+                    temp.setLoop(true);
+                    loopNode = temp;
+                    isFirst = false;
+                }
+                current = temp;
+                currentPath = newPath;
+            }
+        }
+
+        if (rootNode != null) {
+            schemaNode.getChildren().add(rootNode);
+        }
+        if (loopNode != null) {
+            fillGroup(loopNode, groupElements);
+        }
+
+    }
+
+    private void addAttributeNamespace(TreeNode current, String currentPath, String newPath, String type, NodeType nodeType,
+            String defaultValue) {
+        TreeNode temp = createModel();
+        String name = null;
+        name = newPath;
+        if (NodeType.NAME_SPACE.equals(nodeType)) {
+            if ("".endsWith(name)) {
+                name = XmlMapUtil.DEFAULT_NAME_SPACE_PREFIX;
+            }
+        }
+        temp.setName(name);
+
+        temp.setDefaultValue(defaultValue);
+        if (type == null) {
+            type = XmlMapUtil.DEFAULT_DATA_TYPE;
+        }
+        temp.setType(type);
+        temp.setNodeType(nodeType);
+        if (type.equals("id_Date")) {
+            temp.setPattern("\"dd-MM-yyyy\"");//$NON-NLS-1$
+        }
+        temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), name, nodeType));
+        current.getChildren().add(temp);
+    }
+
+    private TreeNode addElement(TreeNode current, String currentPath, String newPath, String type, NodeType nodeType, int order) {
+        TreeNode temp = createModel();
+        String name = newPath.substring(newPath.lastIndexOf("/") + 1); //$NON-NLS-1$
+        String parentPath = newPath.substring(0, newPath.lastIndexOf("/"));
+        temp.setName(name);
+        if (type == null) {
+            type = XmlMapUtil.DEFAULT_DATA_TYPE;
+        }
+        temp.setType(type);
+        temp.setNodeType(nodeType);
+        if (type.equals("id_Date")) {
+            temp.setPattern("\"dd-MM-yyyy\"");//$NON-NLS-1$
+        }
+
+        if (current == null) {// root node
+            temp.setXpath(XmlMapUtil.getXPath(schemaNode.getXpath(), name, nodeType));
+            return temp;
+        }
+
+        if (currentPath.equals(parentPath)) {
+            temp.setXpath(XmlMapUtil.getXPath(current.getXpath(), name, nodeType));
+            addChildInOrder(current, temp, order);
+        } else {
+            String[] nods = currentPath.split("/"); //$NON-NLS-1$
+            String[] newNods = parentPath.split("/"); //$NON-NLS-1$
+            int parentLevel = 0;
+            int checkLength = nods.length < newNods.length ? nods.length : newNods.length;
+            for (int i = 1; i < checkLength; i++) {
+                if (nods[i].equals(newNods[i])) {
+                    parentLevel = i;
+                }
+            }
+            TreeNode parent = current;
+            for (int i = 0; i < nods.length - (parentLevel + 1); i++) {
+                TreeNode tmpParent = (TreeNode) parent.eContainer();
+                if (tmpParent == null) {
+                    break;
+                }
+                parent = tmpParent;
+            }
+
+            if (parent != null) {
+                temp.setXpath(XmlMapUtil.getXPath(parent.getXpath(), name, nodeType));
+                addChildInOrder(parent, temp, order);
+            }
+        }
+
+        return temp;
+    }
+
+    private void addChildInOrder(TreeNode parent, TreeNode child, int childOrder) {
+        xpathAndOrder.put(child.getXpath(), childOrder);
+        Integer index = null;
+        List<TreeNode> children = parent.getChildren();
+        for (int i = 0; i < children.size(); i++) {
+            Integer order = xpathAndOrder.get(children.get(i).getXpath());
+            if (order == null) {
+                order = 0;
+            }
+            if (order < childOrder) {
+                index = i + 1;
+            }
+        }
+        if (index == null) {
+            parent.getChildren().add(0, child);
+        } else {
+            parent.getChildren().add(index, child);
         }
 
     }
@@ -544,6 +759,8 @@ public class ImportTreeFromRepository extends SelectionAction {
             fileName = StringUtil.TMP_XSD_FILE;
         } else if (pathStr.contains(".zip")) {
             fileName = new Path(pathStr).lastSegment();
+        } else {
+            return null;
         }
         File temfile = new File(temPath + File.separator + fileName);
         if (!temfile.exists()) {
@@ -628,21 +845,9 @@ public class ImportTreeFromRepository extends SelectionAction {
                 if (found == null) {
                     continue;
                 } else {
-                    xpathAndOrder.put(createTreeNode.getXpath(), found.getOrder());
-                    Integer index = null;
-                    List<TreeNode> children = parent.getChildren();
-                    for (int i = 0; i < children.size(); i++) {
-                        Integer order = xpathAndOrder.get(children.get(i).getXpath());
-                        if (found.getOrder() < order) {
-                            index = i;
-                        }
-                    }
-                    if (index == null) {
-                        parent.getChildren().add(createTreeNode);
-                    } else {
-                        parent.getChildren().add(index, createTreeNode);
-                    }
+                    addChildInOrder(parent, createTreeNode, found.getOrder());
                 }
+
             }
             prepareModelFromOutput(foxNode.getChildren(), createTreeNode);
         }
