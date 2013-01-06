@@ -21,38 +21,46 @@ import org.talend.designer.core.ui.preferences.StatsAndLogsConstants;
 public class JobSettingVersionUtil {
 
     public static void setDbVersion(IElementParameter elementParameter, String value, boolean withInitialValue) {
-        if (elementParameter == null || value == null) {
+        setDbVersion(elementParameter, value, value, withInitialValue);
+    }
+
+    public static void setDbVersion(IElementParameter elementParameter, String dbType, String dbVersion) {
+        setDbVersion(elementParameter, dbType, dbVersion, false);
+    }
+
+    public static void setDbVersion(IElementParameter elementParameter, String dbType, String dbVersion, boolean withInitialValue) {
+        if (elementParameter == null || dbType == null) {
             return;
         }
-        if (value.indexOf("Access") != -1) {//$NON-NLS-1$
+        if (dbType.indexOf("Access") != -1) {//$NON-NLS-1$
             if (withInitialValue) {
                 elementParameter.setValue(StatsAndLogsConstants.ACCESS_VERSION_CODE[0]);
             } else {
-                elementParameter.setValue(value);
+                elementParameter.setValue(dbVersion);
             }
             elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ACCESS_VERSION_DISPLAY);
             elementParameter.setListItemsValue(StatsAndLogsConstants.ACCESS_VERSION_CODE);
-        } else if (value.toUpperCase().indexOf("ORACLE") != -1) {//$NON-NLS-1$
+        } else if (dbType.toUpperCase().indexOf("ORACLE") != -1) {//$NON-NLS-1$
             if (withInitialValue) {
                 elementParameter.setValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER[0]);
             } else {
-                elementParameter.setValue(value);
+                elementParameter.setValue(dbVersion);
             }
             elementParameter.setListItemsDisplayName(StatsAndLogsConstants.ORACLE_VERSION_DISPLAY);
             elementParameter.setListItemsValue(StatsAndLogsConstants.ORACLE_VERSION_DRIVER);
-        } else if (value.toUpperCase().indexOf("AS400") != -1) {//$NON-NLS-1$
+        } else if (dbType.toUpperCase().indexOf("AS400") != -1) {//$NON-NLS-1$
             if (withInitialValue) {
                 elementParameter.setValue(StatsAndLogsConstants.AS400_VERSION_CODE[0]);
             } else {
-                elementParameter.setValue(value);
+                elementParameter.setValue(dbVersion);
             }
             elementParameter.setListItemsDisplayName(StatsAndLogsConstants.AS400_VERSION_DISPLAY);
             elementParameter.setListItemsValue(StatsAndLogsConstants.AS400_VERSION_CODE);
-        } else if (value.toUpperCase().indexOf("MYSQL") != -1) {//$NON-NLS-1$
+        } else if (dbType.toUpperCase().indexOf("MYSQL") != -1) {//$NON-NLS-1$
             if (withInitialValue) {
                 elementParameter.setValue(StatsAndLogsConstants.MYSQL_VERSION_CODE[0]);
             } else {
-                elementParameter.setValue(value);
+                elementParameter.setValue(dbVersion);
             }
             elementParameter.setListItemsDisplayName(StatsAndLogsConstants.MYSQL_VERSION_DISPLAY);
             elementParameter.setListItemsValue(StatsAndLogsConstants.MYSQL_VERSION_CODE);
