@@ -380,7 +380,8 @@ public abstract class AbstractSQLEditorComposite extends Composite implements IS
 
     protected void adaptWidgetToReadOnly() {
         this.clearTextAction.setEnabled(!isReadOnly());
-        this.saveSQLAction.setEnabled(!isReadOnly());
+     // remove for bug TDI-24318 by fwang on Jan 6,2013
+     // this.saveSQLAction.setEnabled(!isReadOnly());
         this.openFileAction.setEnabled(!isReadOnly());
         this.guiModificationQueryAction.setEnabled(!isReadOnly());
         this.contextModeAction.setEnabled(!isReadOnly());
