@@ -342,6 +342,14 @@
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
    </extension>
+   <extension
+         point="org.talend.core.repository.repositorySeeker">
+      <seeker
+            class="org.talend.repository.view.di.viewer.seeker.NormalRepoViewSeeker"
+            description="process Job, BM, Context, Routines, SQLTemplate"
+            name="Normal">
+      </seeker>
+   </extension>
 
 
 </plugin>
