@@ -245,8 +245,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         @Override
         public void partOpened(IWorkbenchPart part) {
-            IProcess2 process = getProcess();
-            ((Process) process).setEditor(AbstractMultiPageTalendEditor.this);
+            if (part == AbstractMultiPageTalendEditor.this) {
+                IProcess2 process = getProcess();
+                ((Process) process).setEditor(AbstractMultiPageTalendEditor.this);
+            }
         }
 
         @Override
