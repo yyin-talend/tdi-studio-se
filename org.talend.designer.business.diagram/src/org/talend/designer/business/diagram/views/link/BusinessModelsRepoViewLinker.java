@@ -50,11 +50,12 @@ public class BusinessModelsRepoViewLinker extends AbstractRepositoryEditorInputL
     }
 
     private RepositoryEditorInput getRealEditorInput(IEditorInput editorInput) {
+        IEditorInput repoEditorInput = editorInput;
         if (editorInput != null && editorInput instanceof FileEditorInputProxy) {
-            Object repoEditorInput = editorInput.getAdapter(getRepoEditorInputClass());
-            if (repoEditorInput != null && getRepoEditorInputClass().equals(repoEditorInput.getClass())) {
-                return (RepositoryEditorInput) repoEditorInput;
-            }
+            repoEditorInput = (IEditorInput) editorInput.getAdapter(getRepoEditorInputClass());
+        }
+        if (repoEditorInput != null && getRepoEditorInputClass().equals(repoEditorInput.getClass())) {
+            return (RepositoryEditorInput) repoEditorInput;
         }
         return null;
     }
