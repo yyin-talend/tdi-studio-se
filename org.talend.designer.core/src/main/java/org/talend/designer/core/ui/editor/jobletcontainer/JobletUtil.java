@@ -294,7 +294,7 @@ public class JobletUtil {
                 if (lockByOther) {
                     cloneElement.setReadOnly(true);
                 } else {
-                    cloneElement.setReadOnly(false);
+                    cloneElement.setReadOnly(elementPara.isReadOnly());
                 }
 
                 if (elementPara.getChildParameters() != null) {
@@ -321,7 +321,7 @@ public class JobletUtil {
                                 if (lockByOther) {
                                     cloneC.setReadOnly(true);
                                 } else {
-                                    cloneC.setReadOnly(false);
+                                    cloneC.setReadOnly(c.isReadOnly());
                                 }
                             }
                         }
