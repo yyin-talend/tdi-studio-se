@@ -239,8 +239,6 @@ public class OpenDocumentationAction extends AContextualAction {
             return;
         }
 
-        WebBrowserEditor browser = new WebBrowserEditor();
-
         WebBrowserEditorInput input = new WebBrowserEditorInput(url);
         // add for bug TDI-21189 at 2012-6-8,that a document exist is only opened one time in studio
         try {
@@ -261,13 +259,16 @@ public class OpenDocumentationAction extends AContextualAction {
                     }
                 }
             }
+            input.setName(item.getProperty().getLabel());
+            input.setToolTipText(item.getProperty().getLabel() + " " + item.getProperty().getVersion()); //$NON-NLS-1$
+            IEditorPart editorPart = page.openEditor(input, WebBrowserEditor.WEB_BROWSER_EDITOR_ID);
+            if (editorPart != null && editorPart instanceof WebBrowserEditor) {
+                DocumentationUtil.setPartItemId((WebBrowserEditor) editorPart, item.getProperty().getId(),
+                        ERepositoryObjectType.getItemType(item));
+            }
         } catch (PartInitException e) {
             MessageBoxExceptionHandler.process(e);
         }
 
-        input.setName(item.getProperty().getLabel());
-        input.setToolTipText(item.getProperty().getLabel() + " " + item.getProperty().getVersion()); //$NON-NLS-1$
-        DocumentationUtil.setPartItemId(browser, item.getProperty().getId(), ERepositoryObjectType.getItemType(item));
-        browser.open(input);
     }
 }

@@ -44,5 +44,12 @@
             priority="normal">
       </linker>
    </extension>
+   <extension
+         point="org.talend.core.repository.repositorySeeker">
+      <seeker
+            class="org.talend.repository.viewer.seeker.DocumentationRepositorySeeker"
+            name="Documentation">
+      </seeker>
+   </extension>
 
 </plugin>
