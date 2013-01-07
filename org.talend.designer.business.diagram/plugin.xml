@@ -568,5 +568,13 @@
          </not>
       </definition>
    </extension>
+   <extension
+         point="org.talend.core.repository.repoViewLinker">
+      <linker
+            class="org.talend.designer.business.diagram.views.link.BusinessModelsRepoViewLinker"
+            name="Business Models"
+            priority="normal">
+      </linker>
+   </extension>
    
 </plugin>
