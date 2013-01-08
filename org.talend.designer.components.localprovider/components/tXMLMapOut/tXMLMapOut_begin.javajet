@@ -972,7 +972,7 @@ class GenerateDocumentHelper_<%=tableName%> {
 	NestXMLTool_<%=cid%> nestXMLTool = new NestXMLTool_<%=cid%>();
 	
 	//do some work after document has been generated
-	void generateOk(Document doc) {
+	void generateOk(routines.system.Document doc) {
 		if(doc == null || doc.getDocument() == null) {
 			return;
 		}
