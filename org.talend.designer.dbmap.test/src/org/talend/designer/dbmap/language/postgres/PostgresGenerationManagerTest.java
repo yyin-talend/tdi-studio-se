@@ -1,9 +1,7 @@
 package org.talend.designer.dbmap.language.postgres;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +11,7 @@ import org.junit.Test;
 import org.talend.core.model.context.JobContext;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.context.JobContextParameter;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
@@ -37,8 +36,10 @@ public class PostgresGenerationManagerTest {
 
     private void init(String schema, String main_table, String lookup_table) {
         List<IConnection> incomingConnections = new ArrayList<IConnection>();
-        incomingConnections.add(mockConnection(schema, main_table));
-        incomingConnections.add(mockConnection(schema, lookup_table));
+        String[] mainTableEntities = new String[] { "id", "name", "classNum" };
+        String[] lookupEndtities = new String[] { "id", "score" };
+        incomingConnections.add(mockConnection(schema, main_table, mainTableEntities));
+        incomingConnections.add(mockConnection(schema, lookup_table, lookupEndtities));
         component.setIncomingConnections(incomingConnections);
 
         ExternalDbMapData externalData = new ExternalDbMapData();
@@ -47,13 +48,13 @@ public class PostgresGenerationManagerTest {
         // main table
         ExternalDbMapTable inputTable = new ExternalDbMapTable();
         inputTable.setTableName(schema + "." + main_table);
-        List<ExternalDbMapEntry> entities = getMetadataEntities(new String[] { "id", "name", "classNum" }, new String[3]);
+        List<ExternalDbMapEntry> entities = getMetadataEntities(mainTableEntities, new String[3]);
         inputTable.setMetadataTableEntries(entities);
         inputs.add(inputTable);
         // lookup table
         inputTable = new ExternalDbMapTable();
         inputTable.setTableName(schema + "." + lookup_table);
-        entities = getMetadataEntities(new String[] { "id", "score" }, new String[2]);
+        entities = getMetadataEntities(lookupEndtities, new String[2]);
         inputTable.setMetadataTableEntries(entities);
         inputs.add(inputTable);
 
@@ -84,9 +85,9 @@ public class PostgresGenerationManagerTest {
 
     private MetadataTable getMetadataTable(String[] entitiesName) {
         MetadataTable table = new MetadataTable();
-        for (int i = 0; i < entitiesName.length; i++) {
+        for (String element : entitiesName) {
             MetadataColumn column = new MetadataColumn();
-            column.setLabel(entitiesName[i]);
+            column.setLabel(element);
             table.getListColumns().add(column);
         }
         return table;
@@ -105,7 +106,7 @@ public class PostgresGenerationManagerTest {
         return entities;
     }
 
-    private IConnection mockConnection(String schemaName, String tableName) {
+    private IConnection mockConnection(String schemaName, String tableName, String[] columns) {
         Connection connection = mock(Connection.class);
         Node node = mock(Node.class);
         ElementParameter param = new ElementParameter(node);
@@ -118,6 +119,19 @@ public class PostgresGenerationManagerTest {
         when(node.getElementParameter("ELT_TABLE_NAME")).thenReturn(param);
         when(connection.getName()).thenReturn(schemaName + "." + tableName);
         when(connection.getSource()).thenReturn(node);
+        IMetadataTable table = new MetadataTable();
+        table.setLabel(tableName);
+        table.setTableName(tableName);
+        List<IMetadataColumn> listColumns = new ArrayList<IMetadataColumn>();
+        for (String columnName : columns) {
+            IMetadataColumn column = new MetadataColumn();
+            column.setLabel(columnName);
+            column.setOriginalDbColumnName(columnName);
+            listColumns.add(column);
+        }
+        table.setListColumns(listColumns);
+        when(connection.getMetadataTable()).thenReturn(table);
+
         return connection;
     }
 
