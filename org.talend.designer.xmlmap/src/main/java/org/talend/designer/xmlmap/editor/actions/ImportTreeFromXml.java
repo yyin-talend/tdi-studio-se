@@ -109,10 +109,10 @@ public class ImportTreeFromXml extends SelectionAction {
                 rootNode.setType(XmlMapUtil.DEFAULT_DATA_TYPE);
                 rootNode.setXpath(XmlMapUtil.getXPath(parentNode.getXpath(), "root", NodeType.ELEMENT));
                 parentNode.getChildren().add(rootNode);
-                // loop / main
-                parentNode.getChildren().get(0).setLoop(true);
-                parentNode.getChildren().get(0).setMain(true);
             }
+            // set a default loop
+            parentNode.getChildren().get(0).setLoop(true);
+            parentNode.getChildren().get(0).setMain(true);
             if (childrenEmpty || (detailedMessage != null && !"".equals(detailedMessage))) {
                 showError(detailedMessage);
             }
