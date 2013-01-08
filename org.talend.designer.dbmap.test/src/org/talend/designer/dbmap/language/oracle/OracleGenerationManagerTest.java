@@ -164,6 +164,7 @@ public class OracleGenerationManagerTest {
         // will be error, strange
         // when(column.getLabel()).thenReturn(label);
         column.setLabel(label);
+        column.setOriginalDbColumnName(label);
         return column;
     }
 }
