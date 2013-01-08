@@ -458,7 +458,7 @@ skeleton="tXMLMap_java.skeleton"
 								if (fromLookup_<%=tableName%> != null) {
 								<% if(findFromDocumentType || hasOutputFromLookupDoc) {%>
 									//begin to lookup Document Object (case 1:lookup doc key exists),(case 2:lookup doc key not exists but lookup line doc output exist)
-									Document lookupDoc_<%=cid%> = fromLookup_<%=tableName%>.<%=documentColumn%>;
+									routines.system.Document lookupDoc_<%=cid%> = fromLookup_<%=tableName%>.<%=documentColumn%>;
 									<% if("FIRST_MATCH".equals(matchingMode)) {%>
 									boolean quit<%=tableName%> = false;
 									<% } %>
@@ -572,7 +572,7 @@ skeleton="tXMLMap_java.skeleton"
 								fromLookup_<%=tableName%> = tHash_Lookup_<%=tableName%>.next();
 								if(fromLookup_<%=tableName%> != null) {
 								<% if(findFromDocumentType || hasOutputFromLookupDoc || isDocumentAllRows) {//TA110%>
-									Document lookupDoc_<%=cid%> = fromLookup_<%=tableName%>.<%=documentColumn%>;
+									routines.system.Document lookupDoc_<%=cid%> = fromLookup_<%=tableName%>.<%=documentColumn%>;
 									java.util.Map<String,String> xPathAsOutput_<%=cid%> = new java.util.HashMap<String,String>();
 									<%
 									for (Object key : outNodesXPath.keySet()) { 

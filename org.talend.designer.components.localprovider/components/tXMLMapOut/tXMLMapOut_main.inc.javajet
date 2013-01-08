@@ -96,7 +96,7 @@ skeleton="../tXMLMap/tXMLMap_java.skeleton"
 				String loopPath = xpathHelper.getLoopNodeXPath();
 				%>
 				//init document to flat tool
-				DocumentToFlat docToFlat_<%=cid%> = new DocumentToFlat();
+				routines.system.DocumentToFlat docToFlat_<%=cid%> = new routines.system.DocumentToFlat();
 				docToFlat_<%=cid%>.setOriginalLoop("<%=loopPath %>");
 				docToFlat_<%=cid%>.setIsOptional(<%=xpathHelper.isLoopOptional() %>);
 				if(<%=mainInputName %>.<%=tmpNode.getName() %> == null || <%=mainInputName %>.<%=tmpNode.getName() %>.getDocument() == null) {
@@ -472,7 +472,8 @@ for (VarTable varsTable : varsTables) {
 							if(("id_Document").equals(outputTableEntry.getType())){
 								hasDocument = true;
 								hasDocumentGlobal = true;
-								String typeToGenerate = JavaTypesManager.getTypeToGenerate(outputTableEntry.getType(), outputTableEntry.isNullable());
+								JavaType javaType = JavaTypesManager.getJavaTypeFromId(outputTableEntry.getType());
+								String typeToGenerate = javaType.getNullableClass().getCanonicalName();
 								
 								//get the document aggregation columns
 								List<String> xpaths = new ArrayList<String>();

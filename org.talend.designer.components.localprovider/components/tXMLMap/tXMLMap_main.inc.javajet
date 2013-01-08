@@ -565,7 +565,9 @@ skeleton="tXMLMap_java.skeleton"
 							if(("id_Document").equals(outputTableEntry.getType())){
 								hasDocument = true;
 								hasDocumentGlobal = true;
-								String typeToGenerate = JavaTypesManager.getTypeToGenerate(outputTableEntry.getType(), outputTableEntry.isNullable());
+								JavaType javaType = JavaTypesManager.getJavaTypeFromId(outputTableEntry.getType());
+								String typeToGenerate = javaType.getNullableClass().getCanonicalName();
+								
 								sb.append(cr + cr +"gen_Doc_"+outputTableName+"_"+uniqueNameComponent+".generateElements(");
 								if(hasDocumentInMainInputTable || hasDocumentInAnyLookupTable) {
 									sb.append("treeNodeAPI_"+uniqueNameComponent+",");

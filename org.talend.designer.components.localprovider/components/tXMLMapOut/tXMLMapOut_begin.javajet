@@ -1003,7 +1003,7 @@ class GenerateDocument_<%=tableName %> {
 %>
 	java.util.Map<String,Object> valueMap = null;
 	
-	DocumentGenerateOrderHelper orderHelper = new DocumentGenerateOrderHelper(<%=groupCount + 1%>);
+	routines.system.DocumentGenerateOrderHelper orderHelper = new routines.system.DocumentGenerateOrderHelper(<%=groupCount + 1%>);
 	
 	org.dom4j.Document doc = null;
 	
