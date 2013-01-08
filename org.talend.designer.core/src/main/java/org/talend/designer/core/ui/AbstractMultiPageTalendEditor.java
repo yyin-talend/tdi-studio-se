@@ -946,6 +946,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
+        if (getProcess().isReadOnly()) {
+            return;
+        }
         ERepositoryStatus status = repFactory.getStatus(curItem);
         if (!status.equals(ERepositoryStatus.LOCK_BY_USER) && !repFactory.getRepositoryContext().isEditableAsReadOnly()) {
             MessageDialog.openWarning(getEditor(0).getEditorSite().getShell(),
