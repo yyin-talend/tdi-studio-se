@@ -169,12 +169,13 @@ public class InputTreeSettingContainer extends AbstractTreeSettingContainer {
 
             Figure selectedFigure = null;
 
+            @Override
             public void mousePressed(MouseEvent me) {
                 boolean lookup = lookupModelRow.containsPoint(me.x, me.y);
                 if (lookup) {
                     if (selectedFigure != lookupModelRow) {
                         lookupModelRow.setOpaque(true);
-                        lookupModelRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTION));
+                        lookupModelRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_COLUMN_TREE_SETTING));
                         matchModelRow.setOpaque(false);
                         joinModelRow.setOpaque(false);
                         // persistentModelRow.setOpaque(false);
@@ -185,7 +186,7 @@ public class InputTreeSettingContainer extends AbstractTreeSettingContainer {
                 if (matchModel) {
                     if (selectedFigure != matchModelRow) {
                         matchModelRow.setOpaque(true);
-                        matchModelRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTION));
+                        matchModelRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_COLUMN_TREE_SETTING));
                         lookupModelRow.setOpaque(false);
                         joinModelRow.setOpaque(false);
                         // persistentModelRow.setOpaque(false);
@@ -196,7 +197,7 @@ public class InputTreeSettingContainer extends AbstractTreeSettingContainer {
                 if (joinModel) {
                     if (selectedFigure != joinModelRow) {
                         joinModelRow.setOpaque(true);
-                        joinModelRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTION));
+                        joinModelRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_COLUMN_TREE_SETTING));
                         lookupModelRow.setOpaque(false);
                         matchModelRow.setOpaque(false);
                         // persistentModelRow.setOpaque(false);
@@ -215,9 +216,11 @@ public class InputTreeSettingContainer extends AbstractTreeSettingContainer {
                 // }
             }
 
+            @Override
             public void mouseReleased(MouseEvent me) {
             }
 
+            @Override
             public void mouseDoubleClicked(MouseEvent me) {
             }
 
@@ -245,6 +248,7 @@ public class InputTreeSettingContainer extends AbstractTreeSettingContainer {
         return matcheModel;
     }
 
+    @Override
     public void update(int type) {
         switch (type) {
         case XmlmapPackage.INPUT_XML_TREE__LOOKUP_MODE:

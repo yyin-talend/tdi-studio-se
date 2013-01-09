@@ -297,6 +297,15 @@ public class XmlMapUtil {
 
     }
 
+    public static AbstractInOutTreeEditPart getAbstractInOutTreePart(TreeNodeEditPart nodepart) {
+        if (nodepart.getParent() instanceof AbstractInOutTreeEditPart) {
+            return (AbstractInOutTreeEditPart) nodepart.getParent();
+        } else if (nodepart.getParent() instanceof TreeNodeEditPart) {
+            return getAbstractInOutTreePart((TreeNodeEditPart) nodepart.getParent());
+        }
+        return null;
+    }
+
     public static XmlMapData getXmlMapData(AbstractNode treeNode) {
         AbstractNode rootNode = null;
         if (treeNode instanceof TreeNode) {
@@ -905,6 +914,32 @@ public class XmlMapUtil {
         if (!isMainMultiloops) {
             outputTable2Check.getInputLoopNodesTables().clear();
         }
+
+    }
+
+    public static List<EditPart> getFlatChildrenPartList(AbstractInOutTreeEditPart treePart) {
+        List<EditPart> partList = new ArrayList<EditPart>();
+        List children = treePart.getChildren();
+        for (int i = 0; i < children.size(); i++) {
+            partList.add((TreeNodeEditPart) children.get(i));
+            partList.addAll(XmlMapUtil.getFlatChildrenPartList((TreeNodeEditPart) children.get(i)));
+        }
+        return partList;
+    }
+
+    private static List<EditPart> getFlatChildrenPartList(EditPart treeNode) {
+        List<EditPart> list = new ArrayList<EditPart>();
+        List children = treeNode.getChildren();
+        for (int i = 0; i < children.size(); i++) {
+            if (children.get(i) instanceof TreeNodeEditPart) {
+                TreeNodeEditPart child = (TreeNodeEditPart) children.get(i);
+                list.add(child);
+                if (!child.getChildren().isEmpty()) {
+                    list.addAll(getFlatChildrenPartList(child));
+                }
+            }
+        }
+        return list;
 
     }
 
