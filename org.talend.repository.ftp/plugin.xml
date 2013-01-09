@@ -88,5 +88,12 @@
             type="org.talend.repository.model.RepositoryNode">
       </propertyTester>
    </extension>
+   <extension
+         point="org.talend.core.repository.repositorySeeker">
+      <seeker
+            class="org.talend.repository.ftp.ui.viewer.seeker.FtpRepositorySeeker"
+            name="FTP">
+      </seeker>
+   </extension>
 
 </plugin>

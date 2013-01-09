@@ -15,7 +15,7 @@ package org.talend.repository.view.di.viewer.seeker;
 import java.util.List;
 
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.repository.seeker.AbstractRepoViewSeeker;
+import org.talend.core.repository.seeker.AbstractCodeRepoViewSeeker;
 
 /**
  * DOC ggu class global comment. Detailled comment <br/>
@@ -23,7 +23,7 @@ import org.talend.core.repository.seeker.AbstractRepoViewSeeker;
  * $Id: talend.epf 55206 2011-02-15 17:32:14Z mhirt $
  * 
  */
-public class NormalRepoViewSeeker extends AbstractRepoViewSeeker {
+public class RoutinesRepositorySeeker extends AbstractCodeRepoViewSeeker {
 
     /*
      * (non-Javadoc)
@@ -33,11 +33,7 @@ public class NormalRepoViewSeeker extends AbstractRepoViewSeeker {
     @Override
     protected List<ERepositoryObjectType> getValidationTypes() {
         List<ERepositoryObjectType> validationTypes = super.getValidationTypes();
-        validationTypes.add(ERepositoryObjectType.PROCESS);
-        validationTypes.add(ERepositoryObjectType.BUSINESS_PROCESS);
-        validationTypes.add(ERepositoryObjectType.CONTEXT);
-        validationTypes.add(ERepositoryObjectType.SQLPATTERNS);
-
+        validationTypes.add(ERepositoryObjectType.ROUTINES);
         return validationTypes;
     }
 

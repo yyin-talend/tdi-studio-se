@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.viewer.seeker;
 
+import java.util.List;
+
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.seeker.AbstractRepoViewSeeker;
 
@@ -26,12 +28,13 @@ public class DocumentationRepositorySeeker extends AbstractRepoViewSeeker {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.repository.seeker.AbstractRepoViewSeeker#validType(org.talend.core.model.repository.
-     * ERepositoryObjectType)
+     * @see org.talend.core.repository.seeker.AbstractRepoViewSeeker#getValidationTypes()
      */
     @Override
-    protected boolean validType(ERepositoryObjectType itemType) {
-        return itemType != null && itemType.equals(ERepositoryObjectType.DOCUMENTATION);
+    protected List<ERepositoryObjectType> getValidationTypes() {
+        List<ERepositoryObjectType> validationTypes = super.getValidationTypes();
+        validationTypes.add(ERepositoryObjectType.DOCUMENTATION);
+        return validationTypes;
     }
 
 }

@@ -349,6 +349,10 @@
             description="process Job, BM, Context, Routines, SQLTemplate"
             name="Normal">
       </seeker>
+      <seeker
+            class="org.talend.repository.view.di.viewer.seeker.RoutinesRepositorySeeker"
+            name="Routines">
+      </seeker>
    </extension>
 
 
