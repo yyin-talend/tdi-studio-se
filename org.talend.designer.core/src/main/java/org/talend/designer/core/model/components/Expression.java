@@ -192,7 +192,7 @@ public final class Expression {
                     }
                     for (IMetadataTable table : node.getMetadataList()) {
                         for (IMetadataColumn column : table.getListColumns()) {
-                            if (column.getType().equals(value)) {
+                            if (column.getType() != null && column.getType().equals(value)) {
                                 return true;
                             }
                         }
@@ -310,21 +310,20 @@ public final class Expression {
                 }
             }
             /*
-             * TESB-6240 GangLiu
-             * Test the connection configuration.
+             * TESB-6240 GangLiu Test the connection configuration.
              */
-            else if("#LINK@CONNECTOR".equals(varNames[0])){
-                if(listParam != null && listParam.size()>0){
+            else if ("#LINK@CONNECTOR".equals(varNames[0])) {
+                if (listParam != null && listParam.size() > 0) {
                     IElement element = listParam.get(0).getElement();
-                    if(element != null && element instanceof INode){
+                    if (element != null && element instanceof INode) {
                         INode node = (INode) element;
-                        if(varNames.length>2 && varNames[1]!=null && varNames[2]!=null){
-                            IConnection[] allConnections = node.getProcess().getAllConnections("TYPE:"+varNames[1]);
-                            for(IConnection c: allConnections){
+                        if (varNames.length > 2 && varNames[1] != null && varNames[2] != null) {
+                            IConnection[] allConnections = node.getProcess().getAllConnections("TYPE:" + varNames[1]);
+                            for (IConnection c : allConnections) {
                                 IElementParameter elementParameter = c.getElementParameter(varNames[2]);
-                               if(variableValue.equals(elementParameter.getValue())){
-                                   return true;
-                               }
+                                if (variableValue.equals(elementParameter.getValue())) {
+                                    return true;
+                                }
                             }
                         }
                     }
