@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
@@ -359,6 +360,15 @@ public class TracesConnectionUtils {
 
         connection.setDBRootPath(parameters.getDirectory());
         connection.setDbVersionString(parameters.getDbVersion());
+
+        // Added by Marvin Wang to add other parameters.
+        Map<String, String> params = parameters.getParameters();
+        if (params != null && params.size() > 0) {
+            Set<Entry<String, String>> collection = params.entrySet();
+            for (Entry<String, String> para : collection) {
+                connection.getParameters().put(para.getKey(), para.getValue());
+            }
+        }
 
         return connection;
     }

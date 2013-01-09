@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -53,11 +54,13 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.database.conn.DatabaseConnStrUtil;
+import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
+import org.talend.core.model.metadata.builder.database.JavaSqlFactory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
@@ -83,6 +86,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.ui.utils.ManagerConnection;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -93,6 +97,8 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 public class DbTableController extends AbstractElementPropertySectionController {
 
     private static Logger log = Logger.getLogger(DbTableController.class);
+
+    private List<String> returnTablesFormConnection = null;
 
     /**
      * DOC yzhang TextController constructor comment.
@@ -105,10 +111,12 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
     SelectionListener openTablesListener = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
 
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             if (part == null) {
                 createListTablesCommand((Button) e.getSource(), new EmptyContextManager());
@@ -120,10 +128,12 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
     SelectionListener openSQLListener = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
 
         }
 
+        @Override
         public void widgetSelected(SelectionEvent e) {
             if (part == null) {
                 createOpenSQLCommand((Button) e.getSource(), new EmptyContextManager());
@@ -289,7 +299,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
             if (connection != null) {
                 String contextId = connection.getContextId();
-                if (contextId == null || "".equals(contextId)) {//$NON-NLS-N$
+                if (contextId == null || "".equals(contextId)) {
                     IMetadataConnection metadataConnection = null;
                     metadataConnection = ConvertionHelper.convert(connection);
                     isStatus = checkConnection(metadataConnection);
@@ -304,6 +314,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
         } else {
             Display.getDefault().asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     String pid = "org.talend.sqlbuilder"; //$NON-NLS-1$
                     String mainMsg = "Database connection is failed. "; //$NON-NLS-1$
@@ -392,6 +403,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
     private Control addOpenSqlBulderButton(Composite subComposite, IElementParameter param, int top, int numInRow, int nbInRow) {
         final DecoratedField dField1 = new DecoratedField(subComposite, SWT.PUSH, new IControlCreator() {
 
+            @Override
             public Control createControl(Composite parent, int style) {
                 return new Button(parent, style);
             }
@@ -482,22 +494,44 @@ public class DbTableController extends AbstractElementPropertySectionController 
                 if (existConnection != null) {
                     Display.getDefault().syncExec(new Runnable() {
 
+                        @Override
                         public void run() {
                             IMetadataConnection convert = ConvertionHelper.convert(con);
                             iMetadata[0] = convert;
                         }
                     });
                     iMetadataConnection = iMetadata[0];
-                    isStatus = checkConnection(iMetadataConnection);
+                    // Added by Marvin Wang for bug TDI-24288.
+                    if (EDatabaseTypeName.HIVE.getProduct().equalsIgnoreCase(con.getDatabaseType())) {
+                        if (EDatabaseVersion4Drivers.HIVE_EMBEDDED.getVersionValue().equalsIgnoreCase(con.getDbVersionString())) {
+                            isStatus = new ManagerConnection().checkForHive(iMetadataConnection);
+                        }
+                    } else {
+                        isStatus = checkConnection(iMetadataConnection);
+                    }
                 }
                 final String dbType = iMetadataConnection.getDbType();
                 if (!monitor.isCanceled()) {
+
                     try {
                         if (isStatus) {
-                            final List<String> returnTablesFormConnection = ExtractMetaDataFromDataBase
-                                    .returnTablesFormConnection(iMetadataConnection);
+                            // Added by Marvin Wang for bug TDI-24288.
+                            if (EDatabaseTypeName.HIVE.getProduct().equalsIgnoreCase(con.getDatabaseType())) {
+                                if (EDatabaseVersion4Drivers.HIVE_EMBEDDED.getVersionValue().equalsIgnoreCase(
+                                        con.getDbVersionString())) {
+                                    JavaSqlFactory.doHivePreSetup(con);
+                                    returnTablesFormConnection = ExtractMetaDataFromDataBase
+                                            .fetchAllTablesForHiveEmbeddedModel(iMetadataConnection);
+                                    JavaSqlFactory.doHiveConfigurationClear();
+                                }
+                            } else {
+                                returnTablesFormConnection = ExtractMetaDataFromDataBase
+                                        .returnTablesFormConnection(iMetadataConnection);
+
+                            }
                             Display.getDefault().asyncExec(new Runnable() {
 
+                                @Override
                                 public void run() {
                                     final DbTableSelectorObject object = new DbTableSelectorObject();
                                     DbTableSelectorObject connO = new DbTableSelectorObject();
@@ -551,6 +585,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
                         } else {
                             Display.getDefault().asyncExec(new Runnable() {
 
+                                @Override
                                 public void run() {
                                     String pid = "org.talend.sqlbuilder"; //$NON-NLS-1$
                                     String mainMsg = "Database connection is failed. "; //$NON-NLS-1$
@@ -563,8 +598,21 @@ public class DbTableController extends AbstractElementPropertySectionController 
                                 }
                             });
                         }
-                    } catch (Exception e) {
+                    } catch (SQLException e) {
+                        // Added by Marvin Wang for bug TDI-24288.
+                        JavaSqlFactory.doHiveConfigurationClear();
                         ExceptionHandler.process(e);
+
+                        Display.getDefault().asyncExec(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                MessageDialog.openError(openListTable.getShell(),
+                                        Messages.getString("DbTableController.dialog.title"), //$NON-NLS-1$
+                                        Messages.getString("DbTableController.dialog.contents.fetchTableFailed")); //$NON-NLS-1$
+                            }
+                        });
+
                     }
                 }
                 monitor.done();
@@ -696,6 +744,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         // TODO Auto-generated method stub
 
