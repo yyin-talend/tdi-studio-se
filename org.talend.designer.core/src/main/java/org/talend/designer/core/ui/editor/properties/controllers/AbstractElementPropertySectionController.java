@@ -73,6 +73,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.database.EDatabaseTypeName;
+import org.talend.core.database.conn.ConnParameterKeys;
 import org.talend.core.database.conn.version.EDatabaseVersion4Drivers;
 import org.talend.core.language.CodeProblemsChecker;
 import org.talend.core.language.ECodeLanguage;
@@ -84,6 +85,7 @@ import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
+import org.talend.core.model.metadata.designerproperties.EParameterNameForComponent;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -1683,6 +1685,20 @@ public abstract class AbstractElementPropertySectionController implements Proper
         return null;
     }
 
+    /**
+     * Sets the parameters, name node uri and job tracker uri, for connection parameters. Added by Marvin Wang on Jan 8,
+     * 2013.
+     * 
+     * @param element
+     */
+    private void setSpecialParamsForHiveEmbedded(IElement element) {
+        String nameNodeURI = getValueFromRepositoryName(element, EParameterNameForComponent.PARA_NAME_FS_DEFAULT_NAME.getName());
+        connParameters.getParameters().put(ConnParameterKeys.CONN_PARA_KEY_NAME_NODE_URL, nameNodeURI);
+
+        String jobTrackerURI = getValueFromRepositoryName(element, EParameterNameForComponent.PARA_NAME_MAPRED_JT.getName());
+        connParameters.getParameters().put(ConnParameterKeys.CONN_PARA_KEY_JOB_TRACKER_URL, jobTrackerURI);
+    }
+
     protected void initConnectionParameters() {
 
         connParameters = null;
@@ -1696,6 +1712,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
             } else {
                 type = "ORACLE_SID"; //$NON-NLS-1$
             }
+        } else if (EDatabaseTypeName.HIVE.getProduct().equalsIgnoreCase(type)) {
+            if (EDatabaseVersion4Drivers.HIVE_EMBEDDED.getVersionValue().equals(
+                    elem.getElementParameter("CONNECTION_MODE").getValue())) { //$NON-NLS-1$
+                setSpecialParamsForHiveEmbedded(elem);
+            }
         }
         // Get real hsqldb type
         if (type.equals(EDatabaseTypeName.HSQLDB.name())
@@ -1706,7 +1727,17 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         String driverName = getValueFromRepositoryName(elem, "DB_VERSION"); //$NON-NLS-1$ 
         String dbVersionName = EDatabaseVersion4Drivers.getDbVersionName(type, driverName);
-        connParameters.setDbVersion(dbVersionName);
+        // Changed by Marvin Wang on Jan. 8, 2012 for bug TDI-24288
+        if (EDatabaseTypeName.HIVE.getProduct().equalsIgnoreCase(type)) {
+            if (EDatabaseVersion4Drivers.HIVE_EMBEDDED.getVersionValue().equals(
+                    elem.getElementParameter("CONNECTION_MODE").getValue())) { //$NON-NLS-1$
+                connParameters.setDbVersion(EDatabaseVersion4Drivers.HIVE_EMBEDDED.getVersionValue());
+            } else {
+                connParameters.setDbVersion(EDatabaseVersion4Drivers.HIVE.getVersionValue());
+            }
+        } else {
+            connParameters.setDbVersion(dbVersionName);
+        }
 
         connParameters.setNode(elem);
         String selectedComponentName = (String) elem.getPropertyValue(EParameterName.UNIQUE_NAME.getName());
