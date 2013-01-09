@@ -283,8 +283,8 @@ public class DataProcess {
         }
         dataNode.setDesignSubjobStartNode(graphicalNode.getDesignSubjobStartNode());
 
-        addDataNode(dataNode);
-        buildCheckMap.put(graphicalNode, dataNode);
+        INode addedNode = addDataNode(dataNode);
+        buildCheckMap.put(graphicalNode, addedNode);
 
         List<IConnection> outgoingConnections = new ArrayList<IConnection>();
         List<IConnection> incomingConnections = new ArrayList<IConnection>();
@@ -2967,20 +2967,19 @@ public class DataProcess {
         }
     }
 
-    private void addDataNode(INode dataNode) {
+    private INode addDataNode(INode dataNode) {
         if (dataNode != null) {
             String addedUniqueName = dataNode.getUniqueName();
-            boolean found = false;
             for (INode node : getNodeList()) {
                 String uniqueName = node.getUniqueName();
                 if (addedUniqueName.equals(uniqueName)) {
-                    found = true;
+                    return node;
                 }
             }
-            if (!found) {
-                getNodeList().add(dataNode);
-            }
+            
+            getNodeList().add(dataNode);
         }
+        return dataNode;
     }
 
     public List<INode> getNodeList() {
