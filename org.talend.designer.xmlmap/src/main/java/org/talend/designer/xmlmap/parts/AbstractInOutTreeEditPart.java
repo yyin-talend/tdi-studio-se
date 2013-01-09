@@ -20,7 +20,6 @@ import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
-import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.talend.designer.xmlmap.figures.anchors.FilterTreeAnchor;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -62,11 +61,13 @@ public class AbstractInOutTreeEditPart extends BaseEditPart implements NodeEditP
         }
     }
 
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
         // TODO Auto-generated method stub
         return null;
     }
 
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
         if (connection instanceof FilterConnectionEditPart) {
             return new FilterTreeAnchor(getFigure(), connection, this);
@@ -74,11 +75,13 @@ public class AbstractInOutTreeEditPart extends BaseEditPart implements NodeEditP
         return null;
     }
 
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(Request request) {
         // TODO Auto-generated method stub
         return null;
     }
 
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(Request request) {
         // TODO Auto-generated method stub
         return null;
@@ -86,7 +89,7 @@ public class AbstractInOutTreeEditPart extends BaseEditPart implements NodeEditP
 
     @Override
     protected void createEditPolicies() {
-        installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
+        // installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
         installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new XmlDirectEditPolicy());
         installEditPolicy("Drag and Drop", new DragAndDropEditPolicy());
     }
@@ -95,7 +98,7 @@ public class AbstractInOutTreeEditPart extends BaseEditPart implements NodeEditP
     protected List getModelTargetConnections() {
         return ((AbstractInOutTree) getModel()).getFilterIncomingConnections();
     }
-    
+
     protected boolean cleanAggregateAndGroup(List<? extends TreeNode> nodes) {
         boolean changed = false;
         for (TreeNode obj : nodes) {

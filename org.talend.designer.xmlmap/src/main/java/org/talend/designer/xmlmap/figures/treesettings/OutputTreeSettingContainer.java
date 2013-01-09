@@ -162,11 +162,12 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
 
             Figure selectedFigure = null;
 
+            @Override
             public void mousePressed(MouseEvent me) {
                 boolean joinModel = rejectRow.containsPoint(me.x, me.y);
                 if (joinModel) {
                     if (selectedFigure != rejectRow) {
-                        rejectRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTION));
+                        rejectRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_COLUMN_TREE_SETTING));
                         rejectRow.setOpaque(true);
                         innerJoinRejectRow.setOpaque(false);
                         allInOneRow.setOpaque(false);
@@ -177,7 +178,7 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
                 boolean persistentModel = innerJoinRejectRow.containsPoint(me.x, me.y);
                 if (persistentModel) {
                     if (selectedFigure != innerJoinRejectRow) {
-                        innerJoinRejectRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTION));
+                        innerJoinRejectRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_COLUMN_TREE_SETTING));
                         innerJoinRejectRow.setOpaque(true);
                         rejectRow.setOpaque(false);
                         allInOneRow.setOpaque(false);
@@ -189,7 +190,7 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
                 boolean allInOne = allInOneRow.containsPoint(me.x, me.y);
                 if (allInOne) {
                     if (selectedFigure != allInOneRow) {
-                        allInOneRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTION));
+                        allInOneRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_COLUMN_TREE_SETTING));
                         allInOneRow.setOpaque(true);
                         rejectRow.setOpaque(false);
                         innerJoinRejectRow.setOpaque(false);
@@ -201,7 +202,8 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
                 boolean emptyElement = enableEmptyElementRow.containsPoint(me.x, me.y);
                 if (emptyElement) {
                     if (selectedFigure != enableEmptyElementRow) {
-                        enableEmptyElementRow.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTION));
+                        enableEmptyElementRow.setBackgroundColor(ColorProviderMapper
+                                .getColor(ColorInfo.COLOR_COLUMN_TREE_SETTING));
                         enableEmptyElementRow.setOpaque(true);
                         rejectRow.setOpaque(false);
                         innerJoinRejectRow.setOpaque(false);
@@ -210,9 +212,11 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
                 }
             }
 
+            @Override
             public void mouseReleased(MouseEvent me) {
             }
 
+            @Override
             public void mouseDoubleClicked(MouseEvent me) {
             }
 
@@ -241,6 +245,7 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
         }
     }
 
+    @Override
     public void update(int type) {
         switch (type) {
         case XmlmapPackage.OUTPUT_XML_TREE__REJECT:
@@ -260,6 +265,7 @@ public class OutputTreeSettingContainer extends AbstractTreeSettingContainer {
         }
     }
 
+    @Override
     public void deselectTreeSettingRows() {
         if (rejectRow.isOpaque()) {
             rejectRow.setOpaque(false);

@@ -13,10 +13,13 @@
 package org.talend.designer.xmlmap.dnd;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.dnd.AbstractTransferDragSourceListener;
@@ -25,9 +28,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.talend.designer.xmlmap.figures.sash.ISash;
-import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
-import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
-import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
+import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -41,6 +42,7 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
         super(viewer, TemplateTransfer.getInstance());
     }
 
+    @Override
     public void dragStart(DragSourceEvent event) {
         Object template = getTemplate(event);
         TemplateTransfer.getInstance().setTemplate(template);
@@ -63,60 +65,64 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
                 return findFigureAt;
             }
         }
+        List<EditPart> filtedSelection = new ArrayList<EditPart>();
+        for (Object part : getViewer().getSelectedEditParts()) {
+            if (part instanceof TreeNodeEditPart || part instanceof VarNodeEditPart) {
+                filtedSelection.add((EditPart) part);
+            }
+        }
 
-        List selection = getViewer().getSelectedEditParts();
-        if (selection == null || selection.isEmpty()) {
+        if (filtedSelection == null || filtedSelection.isEmpty()) {
             return null;
         }
-        TransferedObject object = null;
-
-        Object lastSelection = getViewer().getSelectedEditParts().get(getViewer().getSelectedEditParts().size() - 1);
-
-        TransferdType type = null;
-
         List toTransfer = new ArrayList();
-        for (Object o : selection) {
-            // all drag able parts should be in the same zone , if one selection in the last selected zone is not valid
-            // , clean toTransfer list can't drag
-            // do not clean toTransfer by node type ,in some case selection in other zones won't be cleaned
-            if (lastSelection instanceof OutputTreeNodeEditPart) {
-                toTransfer.clear();
-                break;
-            } else if (lastSelection instanceof TreeNodeEditPart) {
-                type = TransferdType.INPUT;
-                if (o instanceof InputXmlTreeEditPart) {
-                    toTransfer.clear();
-                    break;
+        TransferdType type = null;
+        List<EditPart> partList = new ArrayList<EditPart>();
+        EditPart lastSelection = filtedSelection.get(filtedSelection.size() - 1);
+        if (lastSelection instanceof TreeNodeEditPart) {
+            type = TransferdType.INPUT;
+        } else if (lastSelection instanceof VarNodeEditPart) {
+            type = TransferdType.VAR;
+        }
+
+        if (type != null) {
+            if (filtedSelection.size() > 1) {
+                partList.addAll(lastSelection.getParent().getChildren());
+                Map<EditPart, Integer> partAndIndex = new HashMap<EditPart, Integer>();
+                if (type == TransferdType.INPUT) {
+                    AbstractInOutTreeEditPart abstractInOutTreePart = XmlMapUtil
+                            .getAbstractInOutTreePart((TreeNodeEditPart) lastSelection);
+                    if (abstractInOutTreePart != null) {
+                        partList = XmlMapUtil.getFlatChildrenPartList(abstractInOutTreePart);
+                    }
+                } else {
+                    partList.addAll(lastSelection.getParent().getChildren());
                 }
-                if (o instanceof TreeNodeEditPart) {
-                    TreeNodeEditPart nodePart = (TreeNodeEditPart) o;
-                    if (XmlMapUtil.isDragable((TreeNode) nodePart.getModel())) {
-                        toTransfer.add(o);
-                    } else {
-                        toTransfer.clear();
-                        break;
+
+                for (EditPart selected : filtedSelection) {
+                    int indexOf = partList.indexOf(selected);
+                    if (indexOf != -1) {
+                        partAndIndex.put(selected, indexOf);
+                        int index = 0;
+                        for (int i = 0; i < toTransfer.size(); i++) {
+                            if (indexOf > partAndIndex.get(toTransfer.get(i))) {
+                                index = i + 1;
+                            }
+                        }
+                        toTransfer.add(index, selected);
                     }
                 }
 
-            } else if (lastSelection instanceof VarNodeEditPart) {
-                type = TransferdType.VAR;
-                if (o instanceof VarNodeEditPart) {
-                    toTransfer.add(o);
-                }
-
+            } else {
+                toTransfer.add(lastSelection);
             }
-
+            return new TransferedObject(toTransfer, type);
         }
+        return null;
 
-        if (toTransfer.isEmpty()) {
-            object = null;
-        } else {
-            object = new TransferedObject(toTransfer, type);
-        }
-
-        return object;
     }
 
+    @Override
     public void dragSetData(DragSourceEvent event) {
         event.data = getTemplate(event);
     }

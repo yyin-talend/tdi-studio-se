@@ -240,7 +240,6 @@ public class MapperManager implements ISelectionChangedListener {
                 }
             }
         }
-
         int selections[] = new int[selectionIndices.size()];
         for (int i = 0; i < selectionIndices.size(); i++) {
             selections[i] = selectionIndices.get(i);
@@ -252,10 +251,15 @@ public class MapperManager implements ISelectionChangedListener {
         } else {
             metaEditorView = mapperUI.getTabFolderEditors().getOutputMetaEditorView();
         }
-        if (metaEditorView != null) {
-            metaEditorView.getTableViewerCreator().refresh();
-        }
+        // fix the no more handler exception when select many columns
+        // if (metaEditorView != null) {
+        // metaEditorView.getTableViewerCreator().refresh();
+        // }
+        // metaEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(selections);
+        metaEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
         metaEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(selections);
+        metaEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
+        metaEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
 
     }
 
