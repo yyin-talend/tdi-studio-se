@@ -248,7 +248,7 @@ class XML_API_<%=cid %>{
 <%
       if(ignoreDTD){
 %>
-class IgnoreDTDEntityResolver implements org.xml.sax.EntityResolver {
+class IgnoreDTDEntityResolver_<%=cid%> implements org.xml.sax.EntityResolver {
 
  public org.xml.sax.InputSource resolveEntity(String publicId, String systemId)
    throws org.xml.sax.SAXException, java.io.IOException {
@@ -290,7 +290,7 @@ org.dom4j.io.SAXReader reader_<%=cid %> = new org.dom4j.io.SAXReader();
 <%
       if(ignoreDTD){
 %>
-reader_<%=cid %>.setEntityResolver(new IgnoreDTDEntityResolver());
+reader_<%=cid %>.setEntityResolver(new IgnoreDTDEntityResolver_<%=cid%>());
 <%
       }
 %>

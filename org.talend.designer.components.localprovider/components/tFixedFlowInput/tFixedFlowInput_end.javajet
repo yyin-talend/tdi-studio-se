@@ -53,12 +53,14 @@ imports="
             if(firstConnName!=null && !firstConnName.equals("")){
 %>
 		}
-	}
 	
 	cacheList_<%=cid %>.clear();
 	globalMap.put("<%=cid%>_NB_LINE", nb_line_<%=cid %>);
 <%
     	    }
+%>
+	}
+<%
     	}
 //********************the new part*****************************************************
     } else if(use_inlineContent){

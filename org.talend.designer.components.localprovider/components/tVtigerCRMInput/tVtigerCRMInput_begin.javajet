@@ -30,7 +30,9 @@ if(version_selection.equals("VTIGER_50")){
     List<? extends IConnection> conns = node.getOutgoingSortedConnections();
     if(conns != null && conns.size() > 0) {
         IConnection conn = conns.get(0);
-        outgoingConnName = conn.getName();
+        if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+        	outgoingConnName = conn.getName();
+        }
     }
     List<IMetadataColumn> metadataColumns = null;
     List<IMetadataTable> metadataTables = node.getMetadataList();
@@ -61,27 +63,31 @@ if(version_selection.equals("VTIGER_50")){
                     <%
                 }
                 %>
-                for(int i = 0 ; i < details_<%=cid%>.length ; i++) {
+                for(int i_<%=cid%> = 0 ; i_<%=cid%> < details_<%=cid%>.length ; i_<%=cid%>++) {
                     <%
                     for(IMetadataColumn metadataColumn : metadataColumns) {
+                      if(outgoingConnName!=null){
                         if(("searchContactsByEmail").equals(method) || ("getContacts").equals(method) || ("getTasks").equals(method) || ("getClndr").equals(method)) {
                             %>
-                            <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = details_<%=cid%>[i].get<%=metadataColumn.getLabel().substring(0,1).toUpperCase()%><%=metadataColumn.getLabel().substring(1)%>();
+                            <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = details_<%=cid%>[i_<%=cid%>].get<%=metadataColumn.getLabel().substring(0,1).toUpperCase()%><%=metadataColumn.getLabel().substring(1)%>();
                             <%
                         } else if(("get_KBase_details").equals(method)) {
                             %>
-                            <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = details_<%=cid%>[i];
+                            <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = details_<%=cid%>[i_<%=cid%>];
                             <%
                         }
+                      }
                     }
                     %>
                 //}
                 <%
             } else {
                 for(IMetadataColumn metadataColumn : metadataColumns) {
+                	if(outgoingConnName!=null){
                     %>
                     <%=outgoingConnName%>.<%=metadataColumn.getLabel()%> = vtigerManager_<%=cid%>.<%=method%>();
                     <%
+                    }
                 }
             }
         }
@@ -138,7 +144,7 @@ if(version_selection.equals("VTIGER_50")){
     	    }
     
     	    IConnection outgoingConn = outgoingConns.get(0);
-    	    if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { // start 1
+    	    if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA) || outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_ITERATE)) { // start 1
 %>
 		org.json.simple.JSONArray qr_<%=cid %> = vtMgr_<%=cid %>.doQuery(<%=sql %>);
 		if(vtMgr_<%=cid%>.hasError(qr_<%=cid%>)){

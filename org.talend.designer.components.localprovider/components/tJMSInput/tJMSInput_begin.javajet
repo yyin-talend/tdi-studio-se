@@ -73,7 +73,7 @@ if(advProps.size() > 0){
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 	List<IMetadataColumn> columnLists = metadata.getListColumns();
 	for(IConnection conn:conns){
-		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 			String firstConnName = conn.getName();
 			if("RAW".equals(processingMode)){
 %>
