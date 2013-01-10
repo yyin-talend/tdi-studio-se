@@ -260,6 +260,18 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setShow(true);
             param.setNumRow(2);
             addElementParameter(param);
+            //TESB-8043
+            if("cMessageRouter".equals(source.getComponent().getName())){
+                param = new ElementParameter(this);
+                param.setFieldType(EParameterFieldType.CHECK);
+                param.setCategory(EComponentCategory.BASIC);
+                param.setValue("false"); //$NON-NLS-1$
+                param.setName(EParameterName.ENDOFCHOICE.getName());
+                param.setDisplayName(EParameterName.ENDOFCHOICE.getDisplayName());
+                param.setShow(true);
+                param.setNumRow(1);
+                addElementParameter(param);
+            }
         }
 
         if (lineStyle.equals(EConnectionType.ROUTE_CATCH)) {
@@ -1176,6 +1188,16 @@ public class Connection extends Element implements IConnection, IPerformance {
     public String getRouteConnectionType() {
         if (lineStyle.equals(EConnectionType.ROUTE_WHEN)) {
             return (String) getPropertyValue(EParameterName.ROUTETYPE.getName());
+        } else {
+            return null;
+        }
+    }
+    
+    //TESB-8043
+    public String getEndChoice(){
+        if (lineStyle.equals(EConnectionType.ROUTE_WHEN)) {
+            Object propertyValue = getPropertyValue(EParameterName.ENDOFCHOICE.getName());
+            return propertyValue==null?"false":propertyValue.toString();
         } else {
             return null;
         }

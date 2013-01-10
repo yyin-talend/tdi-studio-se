@@ -32,20 +32,65 @@ INode node = (INode) codeGenArgument.getArgument();
 List< ? extends IConnection> connsIf = node.getIncomingConnections();
 if(connsIf.size()>0) {
 	if(connsIf.get(0).getLineStyle()==EConnectionType.ROUTE_WHEN) {
-		INode sourceNode = connsIf.get(0).getSource();
-		String languageType = connsIf.get(0).getRouteConnectionType();
-		String condition = connsIf.get(0).getCondition();
+		IConnection currentConnection = connsIf.get(0);
+		INode sourceNode = currentConnection.getSource();
+		String languageType = currentConnection.getRouteConnectionType();
+		String condition = currentConnection.getCondition();
 		String expression = "none".equals(languageType)?condition:languageType+"("+condition+")";
 		if("cIntercept".equals(sourceNode.getComponent().getName())){
 %>
 		.when(<%=expression%>)
+<%		
+		}else if("cMessageRouter".equals(sourceNode.getComponent().getName())){
+			/*
+			* if is cMessageRouter, we have to know the endChoice() is necessary or not
+			* according to the setting of very previous when connection setting
+			*/
+			int currentOrder = currentConnection.getOutputId();
+			int previousOrder = -1;
+			IConnection previousCon = null;
+			List<? extends IConnection> allWhenConnections = sourceNode.getOutgoingConnections(EConnectionType.ROUTE_WHEN);
+			for(IConnection c:allWhenConnections){
+				int tmp = c.getOutputId();
+				if(tmp < currentOrder && tmp >previousOrder){
+					previousCon = c;
+					previousOrder = tmp;
+				}
+			} 
+			if(previousCon != null && "true".equals(previousCon.getEndChoice())){
+%>
+				.endChoice()
 <%
-		}else{
+			}
+			
+		}
 %>
 		.when().<%=expression%>
 <%
-		}
 	} else if(connsIf.get(0).getLineStyle()==EConnectionType.ROUTE_OTHER) {
+			IConnection currentConnection = connsIf.get(0);
+			INode sourceNode = currentConnection.getSource();
+			if("cMessageRouter".equals(sourceNode.getComponent().getName())){
+				/*
+				* if is cMessageRouter, we have to know the endChoice() is necessary or not
+				* according to the setting of latest when connection setting
+				*/
+				int previousOrder = -1;
+				IConnection previousCon = null;
+				List<? extends IConnection> allWhenConnections = sourceNode.getOutgoingConnections(EConnectionType.ROUTE_WHEN);
+				for(IConnection c:allWhenConnections){
+					int tmp = c.getOutputId();
+					if(tmp >previousOrder){
+						previousCon = c;
+						previousOrder = tmp;
+					}
+				} 
+				if(previousCon != null && "true".equals(previousCon.getEndChoice())){
+%>
+				.endChoice()
+<%
+				}
+			}
 %>
 		.otherwise()
 <%
@@ -62,6 +107,32 @@ if(connsIf.size()>0) {
 		.doFinally()
 <%
 	} else if(connsIf.get(0).getLineStyle()==EConnectionType.ROUTE_ENDBLOCK) {
+		IConnection currentConnection = connsIf.get(0);
+		INode sourceNode = currentConnection.getSource();
+		if("cMessageRouter".equals(sourceNode.getComponent().getName())){
+			/*
+			* if is cMessageRouter, we have to know the endChoice() is necessary or not
+			* according to the setting of latest when connection setting (if no otherwise)
+			*/
+			List<? extends IConnection> allOtherCons = sourceNode.getOutgoingConnections(EConnectionType.ROUTE_OTHER);
+			if(allOtherCons == null || allOtherCons.size() == 0){
+				int previousOrder = -1;
+				IConnection previousCon = null;
+				List<? extends IConnection> allWhenConnections = sourceNode.getOutgoingConnections(EConnectionType.ROUTE_WHEN);
+				for(IConnection c:allWhenConnections){
+					int tmp = c.getOutputId();
+					if(tmp >previousOrder){
+						previousCon = c;
+						previousOrder = tmp;
+					}
+				} 
+				if(previousCon != null && "true".equals(previousCon.getEndChoice())){
+%>
+				.endChoice()
+<%
+				}
+			}	
+		}
 %>
 		.end()
 <%
