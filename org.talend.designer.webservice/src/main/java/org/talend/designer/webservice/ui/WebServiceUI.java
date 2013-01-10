@@ -2341,7 +2341,8 @@ public class WebServiceUI extends AbstractWebService {
                 }
 
                 // if select is list.
-                dialogInputList = new AddListDialog(shell, ((InputMappingData) items[0].getData()).getParameter(), "input");
+                dialogInputList = new AddListDialog(shell, ((InputMappingData) items[0].getData()).getParameter(), "input",
+                        URLValue, serverConfig);
                 dialogInputList.setTitle(Messages.getString("WebServiceUI.ParameterTree")); //$NON-NLS-1$
                 Rectangle boundsMapper = new Rectangle(50, 50, 100, 50);// ExternalWebServiceUIProperties.getBoundsMapper
                 // ();
@@ -2367,6 +2368,10 @@ public class WebServiceUI extends AbstractWebService {
                                 data.setParameter(paramet);
                                 if (paramet.getParent() != null) {
                                     String name = dialogInputList.getParaUtil().getArrayFullName(paramet);
+                                    if (name.contains(":anyType{") && name.contains(".simpletype:")) {
+                                        int index = name.indexOf(".simpletype:");
+                                        name = name.substring(0, index);
+                                    }
                                     data.setParameterName(name);
                                 } else {
                                     data.setParameterName(paramet.getName());
@@ -2914,7 +2919,8 @@ public class WebServiceUI extends AbstractWebService {
                 }
 
                 // if select is a list.
-                AddListDialog dialog = new AddListDialog(shell, ((OutPutMappingData) items[0].getData()).getParameter(), "output");
+                AddListDialog dialog = new AddListDialog(shell, ((OutPutMappingData) items[0].getData()).getParameter(),
+                        "output", URLValue, serverConfig);
                 dialog.setTitle(Messages.getString("WebServiceUI.ParameterTree")); //$NON-NLS-1$
                 Rectangle boundsMapper = new Rectangle(50, 50, 100, 50);// ExternalWebServiceUIProperties.getBoundsMapper
                 if (ExternalWebServiceUIProperties.isShellMaximized()) {
@@ -2939,6 +2945,10 @@ public class WebServiceUI extends AbstractWebService {
                                 data.setParameter(paramet);
                                 if (paramet.getParent() != null) {
                                     String name = dialog.getParaUtil().getArrayFullName(paramet);
+                                    if (name.contains(":anyType{") && name.contains(".simpletype:")) {
+                                        int index = name.indexOf(".simpletype:");
+                                        name = name.substring(0, index);
+                                    }
                                     data.setParameterName(name);
                                 } else {
                                     data.setParameterName(paramet.getName());

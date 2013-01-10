@@ -93,6 +93,24 @@ public class ComponentBuilder {
         }
     }
 
+    /**
+     * Getter for allXmlSchemaType.
+     * 
+     * @return the allXmlSchemaType
+     */
+    public List<XmlSchemaType> getAllXmlSchemaType() {
+        return this.allXmlSchemaType;
+    }
+
+    /**
+     * Getter for allXmlSchemaElement.
+     * 
+     * @return the allXmlSchemaElement
+     */
+    public List<XmlSchemaElement> getAllXmlSchemaElement() {
+        return this.allXmlSchemaElement;
+    }
+
     public ServiceInfo buildserviceinformation(ServiceInfo serviceinfo) throws Exception {
         // WSDLReader reader = wsdlFactory.newWSDLReader();
         // Definition def = reader.readWSDL(null, serviceinfo.getWsdlUri());
@@ -420,6 +438,7 @@ public class ComponentBuilder {
             Iterator opIter = operations.iterator();
 
             while (opIter.hasNext()) {
+                alldExtendtion.clear();
                 BindingOperation oper = (BindingOperation) opIter.next();
                 Vector operElems = findExtensibilityElement(oper.getExtensibilityElements(), "operation");
                 ExtensibilityElement operElem = (ExtensibilityElement) operElems.elementAt(0);
@@ -588,8 +607,13 @@ public class ComponentBuilder {
                         } else if (xmlSchemaElement.getSchemaType() instanceof XmlSchemaSimpleType) {
                             XmlSchemaSimpleType xmlSchemaSimpleType = (XmlSchemaSimpleType) xmlSchemaElement.getSchemaType();
                             String typeName = xmlSchemaSimpleType.getName();
+                            if (typeName != null && typeName.equals("anyType")) {
+                                ParameterInfo parameterSon = new ParameterInfo();
+                                parameterSon.setName(xmlSchemaElement.getName() + ":anyType");
+                                parameterSon.setParent(parameterRoot);
+                                parameterRoot.getParameterInfos().add(parameterSon);
+                            }
                             parameterRoot.setType(typeName);
-
                         }
 
                     } else if (xmlSchemaElement.getSchemaTypeName() != null) {
@@ -793,6 +817,12 @@ public class ComponentBuilder {
                     } else if (xmlSchemaElement.getSchemaType() instanceof XmlSchemaSimpleType) {
                         XmlSchemaSimpleType xmlSchemaSimpleType = (XmlSchemaSimpleType) xmlSchemaElement.getSchemaType();
                         String typeName = xmlSchemaSimpleType.getName();
+                        if (typeName != null && typeName.equals("anyType")) {
+                            ParameterInfo pSon = new ParameterInfo();
+                            pSon.setName(xmlSchemaElement.getName() + ":anyType");
+                            pSon.setParent(parameter);
+                            parameter.getParameterInfos().add(pSon);
+                        }
                         parameter.setType(typeName);
 
                     }
