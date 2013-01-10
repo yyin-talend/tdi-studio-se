@@ -109,10 +109,9 @@ if (outConn!=null) {
     
     java.io.ByteArrayInputStream bais_<%=cid %> = new ByteArrayInputStream(jsonStr_<%=cid%>.getBytes());
     java.io.ByteArrayOutputStream  baos_<%=cid %> = new java.io.ByteArrayOutputStream();
-    de.odysseus.staxon.json.JsonXMLConfig config_<%=cid %> = new de.odysseus.staxon.json.JsonXMLConfigBuilder().multiplePI(false).build();
     try {
-        javax.xml.stream.XMLEventReader xmlEventReader_<%=cid %> = new de.odysseus.staxon.json.JsonXMLInputFactory(config_<%=cid %>).createXMLEventReader(bais_<%=cid %>);
-        javax.xml.stream.XMLEventWriter xmLEventWriter_<%=cid %> = javax.xml.stream.XMLOutputFactory.newInstance().createXMLEventWriter(baos_<%=cid %>);
+        javax.xml.stream.XMLEventReader xmlEventReader_<%=cid %> = jsonXMLInputFactory_<%=cid %>.createXMLEventReader(bais_<%=cid %>);
+        javax.xml.stream.XMLEventWriter xmLEventWriter_<%=cid %> = xmlOutputFactory_<%=cid %>.createXMLEventWriter(baos_<%=cid %>);
         xmLEventWriter_<%=cid %>.add(xmlEventReader_<%=cid %>);
         //convert json string to xml
         xmlStr_<%=cid%> = baos_<%=cid %>.toString();  
@@ -353,7 +352,7 @@ if(outConns!=null){
 <%
         } else if(rejectConnName.equals(firstConnName)){
 %>
-    <%=rejectConnName %>.errorJSONField = xmlStr_<%=cid%>;
+    <%=rejectConnName %>.errorJSONField = oraginalJsonStr_<%=cid %>;
     <%=rejectConnName %>.errorMessage = ex_<%=cid %>.getMessage() + " - Line: " + tos_count_<%=node.getUniqueName() %>;
 <%
         }

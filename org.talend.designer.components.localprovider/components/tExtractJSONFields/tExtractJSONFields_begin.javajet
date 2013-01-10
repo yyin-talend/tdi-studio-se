@@ -359,3 +359,7 @@ class ConvertJSONString_<%=cid%>{
 }
 
 ConvertJSONString_<%=cid%> cjs_<%=cid %> = new ConvertJSONString_<%=cid%>();
+
+de.odysseus.staxon.json.JsonXMLConfig config_<%=cid %> = new de.odysseus.staxon.json.JsonXMLConfigBuilder().multiplePI(false).build();
+de.odysseus.staxon.json.JsonXMLInputFactory jsonXMLInputFactory_<%=cid %> = new de.odysseus.staxon.json.JsonXMLInputFactory(config_<%=cid %>);
+javax.xml.stream.XMLOutputFactory xmlOutputFactory_<%=cid %> = javax.xml.stream.XMLOutputFactory.newInstance();
