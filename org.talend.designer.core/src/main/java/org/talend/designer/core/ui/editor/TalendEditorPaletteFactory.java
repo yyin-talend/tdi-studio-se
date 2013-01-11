@@ -39,6 +39,7 @@ import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.components.TComponentsHandler;
 import org.talend.core.model.components.TalendPaletteGroup;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -81,6 +82,26 @@ public final class TalendEditorPaletteFactory {
 
     private static PaletteGroup paGroup = new PaletteGroup(""); //$NON-NLS-1$
 
+    private static TComponentsHandler talendComponentsDrawer;
+
+    /**
+     * Getter for talendComponentsDrawer.
+     * 
+     * @return the talendComponentsDrawer
+     */
+    public static TComponentsHandler getTalendComponentsDrawer() {
+        return talendComponentsDrawer;
+    }
+
+    /**
+     * Sets the talendComponentsDrawer.
+     * 
+     * @param talendComponentsDrawer the talendComponentsDrawer to set
+     */
+    public static void setTalendComponentsDrawer(TComponentsHandler talendComponentsDrawer) {
+        TalendEditorPaletteFactory.talendComponentsDrawer = talendComponentsDrawer;
+    }
+
     /** Create the "Shapes" drawer. */
     private static void createComponentsDrawer(final IComponentsFactory compFac, boolean needHiddenComponent, int a) {
         // clearGroup();
@@ -97,6 +118,12 @@ public final class TalendEditorPaletteFactory {
             componentsDrawer = new PaletteDrawer(Messages.getString("TalendEditorPaletteFactory.Default")); //$NON-NLS-1$
         }
         List<IComponent> componentList = new ArrayList<IComponent>(compFac.getComponents());
+
+        // Added by Marvin Wang on Jan. 10, 2012
+        if (talendComponentsDrawer != null) {
+            componentList = talendComponentsDrawer.filterComponents(compFac.getComponents());
+            talendComponentsDrawer.sortComponents(componentList);
+        }
 
         IProcess process = ActiveProcessTracker.getCurrentProcess();
         ERepositoryObjectType type = null;
@@ -307,6 +334,12 @@ public final class TalendEditorPaletteFactory {
             componentsDrawer = new PaletteDrawer(Messages.getString("TalendEditorPaletteFactory.Default")); //$NON-NLS-1$
         }
         List<IComponent> componentList = new ArrayList<IComponent>(compFac.getComponents());
+
+        // Added by Marvin Wang on Jan. 10, 2012
+        if (talendComponentsDrawer != null) {
+            componentList = talendComponentsDrawer.filterComponents(compFac.getComponents());
+            componentList = talendComponentsDrawer.sortComponents(componentList);
+        }
 
         IProcess process = ActiveProcessTracker.getCurrentProcess();
         ERepositoryObjectType type = null;
@@ -646,6 +679,14 @@ public final class TalendEditorPaletteFactory {
         palette = new PaletteRoot();
         AbstractProcessProvider.loadComponentsFromProviders();
         createComponentsDrawer(compFac, true, 0);
+        return palette;
+    }
+
+    public static PaletteRoot createPalletteForMapReduce(IComponentsFactory compFac, PaletteRoot root) {
+        palette = root;
+        int histate = DesignerPlugin.getDefault().getPreferenceStore().getInt("HiddenState"); //$NON-NLS-1$
+        AbstractProcessProvider.loadComponentsFromProviders();
+        createComponentsDrawer(compFac, false, histate);
         return palette;
     }
 

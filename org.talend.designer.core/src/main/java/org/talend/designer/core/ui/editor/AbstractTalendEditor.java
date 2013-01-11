@@ -139,6 +139,7 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.components.TComponentsHandler;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.Element;
@@ -440,7 +441,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     public AbstractTalendEditor() {
         this(false);
-
+        init();
     }
 
     public AbstractTalendEditor(boolean readOnly) {
@@ -460,6 +461,18 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         protectedJobs = new HashMap<String, JobResource>();
         initializeKeyBindingScopes();
     }
+
+    protected void init() {
+        IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
+        componentsFactory.setComponentsHandler(fetchComponentsHandler());
+    }
+
+    /**
+     * Added by Marvin Wang on Jan. 11, 2012 for creating a new component handler for editor with palette.
+     * 
+     * @return
+     */
+    protected abstract TComponentsHandler fetchComponentsHandler();
 
     @Override
     public void doSave(IProgressMonitor monitor) {

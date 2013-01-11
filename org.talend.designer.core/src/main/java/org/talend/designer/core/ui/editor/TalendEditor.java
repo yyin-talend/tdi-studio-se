@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
+import org.talend.core.model.components.TComponentsHandler;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.action.SaveAsProcessAction;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -33,6 +34,7 @@ public class TalendEditor extends AbstractTalendEditor implements ITalendJobEdit
         super(readOnly);
     }
 
+    @Override
     public Process getProcess() {
         return (Process) super.getProcess();
     }
@@ -46,6 +48,7 @@ public class TalendEditor extends AbstractTalendEditor implements ITalendJobEdit
         super.setParent(multiPageTalendEditor);
     }
 
+    @Override
     public MultiPageTalendEditor getParent() {
         return (MultiPageTalendEditor) super.getParent();
     }
@@ -54,6 +57,16 @@ public class TalendEditor extends AbstractTalendEditor implements ITalendJobEdit
     public void doSaveAs() {
         SaveAsProcessAction saveAsAction = new SaveAsProcessAction(this);
         saveAsAction.run();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.AbstractTalendEditor#fetchComponentsHandler()
+     */
+    @Override
+    protected TComponentsHandler fetchComponentsHandler() {
+        return null;
     }
 
 }
