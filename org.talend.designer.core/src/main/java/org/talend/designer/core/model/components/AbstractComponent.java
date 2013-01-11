@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.model.components;
 
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 
 /**
@@ -53,15 +54,34 @@ public abstract class AbstractComponent implements IComponent {
         return true;
     }
 
+    @Override
     public String getPaletteType() {
         return paletteType;
     }
 
+    @Override
     public void setPaletteType(String paletteType) {
         this.paletteType = paletteType;
     }
 
+    @Override
     public String getRepositoryType() {
         return null;
+    }
+
+    /**
+     * This is just added in <code>HEADER</code>, it is used to present the component belongs to common process, M/R
+     * process and etc. The {@link ComponentCategory#CATEGORY_4_DI} is as the default value. Added by Marvin Wang on Jan
+     * 11, 2013.
+     * 
+     */
+    @Override
+    public String getType() {
+        return ComponentCategory.CATEGORY_4_DI.getName();
+    }
+
+    @Override
+    public boolean isReduce() {
+        return false;
     }
 }

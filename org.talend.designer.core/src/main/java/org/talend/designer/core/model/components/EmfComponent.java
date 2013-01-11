@@ -204,6 +204,10 @@ public class EmfComponent extends AbstractComponent {
     // weak ref used so that memory is not used by a static HashMap instance
     private static SoftReference<Map> optionMapSoftRef;
 
+    private String type;
+
+    private boolean reduce = false;
+
     public EmfComponent(String uriString, String bundleId, String name, String pathSource, ComponentsCache cache, boolean isload)
             throws BusinessException {
         this.uriString = uriString;
@@ -2739,8 +2743,8 @@ public class EmfComponent extends AbstractComponent {
                         ITEMType itemType = (ITEMType) itemsList.get(j);
                         if (itemType.getVALUE().contains(".jar")) {
                             String[] values = itemType.getVALUE().split(";");
-                            for (int x = 0; x < values.length; x++) {
-                                String valueIndex = values[x];
+                            for (String value : values) {
+                                String valueIndex = value;
                                 if (!moduleNames.contains(valueIndex)) {
                                     moduleNames.add(valueIndex);
                                     String msg = getTranslatedValue(itemType.getNAME() + ".INFO"); //$NON-NLS-1$
@@ -3568,5 +3572,25 @@ public class EmfComponent extends AbstractComponent {
 
     public String getSourceBundleName() {
         return bundleName;
+    }
+
+    /**
+     * Getter for type.
+     * 
+     * @return the type
+     */
+    @Override
+    public String getType() {
+        return compType.getHEADER().getTYPE();
+    }
+
+    /**
+     * Getter for reduce.
+     * 
+     * @return the reduce
+     */
+    @Override
+    public boolean isReduce() {
+        return compType.getHEADER().isREDUCE();
     }
 }

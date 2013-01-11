@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.utils.VersionUtils;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentItem;
@@ -100,46 +101,57 @@ public class JobContextLoadComponent implements IComponent {
     }
 
     // no use for virtual component
+    @Override
     public List<? extends INodeConnector> createConnectors(INode node) {
         return null;
     }
 
+    @Override
     public List<? extends INodeReturn> createReturns() {
         return null;
     }
 
+    @Override
     public List<ECodePart> getAvailableCodeParts() {
         return null;
     }
 
+    @Override
     public ImageDescriptor getIcon16() {
         return null;
     }
 
+    @Override
     public ImageDescriptor getIcon24() {
         return null;
     }
 
+    @Override
     public ImageDescriptor getIcon32() {
         return null;
     }
 
+    @Override
     public String getLongName() {
         return null;
     }
 
+    @Override
     public List<ModuleNeeded> getModulesNeeded() {
         return null;
     }
 
+    @Override
     public String getPathSource() {
         return null;
     }
 
+    @Override
     public List<String> getPluginDependencies() {
         return null;
     }
 
+    @Override
     public String getPluginExtension() {
         return null;
     }
@@ -148,22 +160,27 @@ public class JobContextLoadComponent implements IComponent {
         return null;
     }
 
+    @Override
     public boolean hasConditionalOutputs() {
         return false;
     }
 
+    @Override
     public boolean isMultiplyingOutputs() {
         return false;
     }
 
+    @Override
     public boolean isDataAutoPropagated() {
         return false;
     }
 
+    @Override
     public boolean isLoaded() {
         return true;
     }
 
+    @Override
     public boolean isSchemaAutoPropagated() {
         return false;
     }
@@ -173,10 +190,12 @@ public class JobContextLoadComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isVisible(java.lang.String)
      */
+    @Override
     public boolean isVisible(String family) {
         return false;
     }
 
+    @Override
     public boolean isVisible() {
         return false;
     }
@@ -190,27 +209,33 @@ public class JobContextLoadComponent implements IComponent {
     public void setIcon32(ImageDescriptor icon32) {
     }
 
+    @Override
     public boolean useMerge() {
         return false;
     }
 
     // set name
+    @Override
     public String getName() {
         return this.getClass().getName();
     }
 
+    @Override
     public String getOriginalFamilyName() {
         return "Virtual"; //$NON-NLS-1$
     }
 
+    @Override
     public String getTranslatedFamilyName() {
         return "Virtual"; //$NON-NLS-1$
     }
 
+    @Override
     public String getVersion() {
         return VersionUtils.DEFAULT_VERSION;
     }
 
+    @Override
     public List<IMultipleComponentManager> getMultipleComponentManagers() {
         return multipleComponentManagers;
     }
@@ -274,7 +299,7 @@ public class JobContextLoadComponent implements IComponent {
                 multipleComponentManager.addParam(source, DB_INPUT + ".CONNECTION_TYPE"); //$NON-NLS-1$ 
 
                 source = self + JobSettingsConstants.QUERY;
-                multipleComponentManager.addParam(source, DB_INPUT + "." + JobSettingsConstants.QUERY); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam(source, DB_INPUT + "." + JobSettingsConstants.QUERY); //$NON-NLS-1$ 
 
             }
             // context parameter
@@ -307,6 +332,7 @@ public class JobContextLoadComponent implements IComponent {
 
     }
 
+    @Override
     public List<? extends IElementParameter> createElementParameters(INode node) {
 
         List<IElementParameter> elemParamList = new ArrayList<IElementParameter>();
@@ -365,7 +391,7 @@ public class JobContextLoadComponent implements IComponent {
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.CONNECTION_TYPE.getName())); //$NON-NLS-1$
+        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.CONNECTION_TYPE.getName()));
         newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
@@ -380,7 +406,7 @@ public class JobContextLoadComponent implements IComponent {
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PORT.getName())); //$NON-NLS-1$
+        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PORT.getName()));
         newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
@@ -415,7 +441,7 @@ public class JobContextLoadComponent implements IComponent {
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBTABLE.getName())); //$NON-NLS-1$
+        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBTABLE.getName()));
         newParam.setFieldType(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
@@ -470,6 +496,7 @@ public class JobContextLoadComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getComponentType()
      */
+    @Override
     public boolean isMultipleOutput() {
         return false;
     }
@@ -479,6 +506,7 @@ public class JobContextLoadComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#useLookup()
      */
+    @Override
     public boolean useLookup() {
         return false;
     }
@@ -488,6 +516,7 @@ public class JobContextLoadComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#useImport()
      */
+    @Override
     public boolean useImport() {
         return false;
     }
@@ -497,6 +526,7 @@ public class JobContextLoadComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getComponentType()
      */
+    @Override
     public EComponentType getComponentType() {
         return EComponentType.JOB_CONTEXT_LOAD;
     }
@@ -506,6 +536,7 @@ public class JobContextLoadComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isHashComponent()
      */
+    @Override
     public boolean isHashComponent() {
         return false;
     }
@@ -515,6 +546,7 @@ public class JobContextLoadComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isTechnical()
      */
+    @Override
     public boolean isTechnical() {
         return false;
     }
@@ -524,10 +556,12 @@ public class JobContextLoadComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isVisibleInComponentDefinition()
      */
+    @Override
     public boolean isVisibleInComponentDefinition() {
         return false;
     }
 
+    @Override
     public boolean isSingleton() {
         return false;
     }
@@ -537,6 +571,7 @@ public class JobContextLoadComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#isMainCodeCalled()
      */
+    @Override
     public boolean isMainCodeCalled() {
         return true;
     }
@@ -546,6 +581,7 @@ public class JobContextLoadComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#canParallelize()
      */
+    @Override
     public boolean canParallelize() {
         return false;
     }
@@ -555,14 +591,17 @@ public class JobContextLoadComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getShortName()
      */
+    @Override
     public String getShortName() {
         return "icl";
     }
 
+    @Override
     public String getCombine() {
         return null;
     }
 
+    @Override
     public IProcess getProcess() {
         // TODO Auto-generated method stub
         return null;
@@ -573,6 +612,7 @@ public class JobContextLoadComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getPaletteType()
      */
+    @Override
     public String getPaletteType() {
         return "HIDDEN";
     }
@@ -582,17 +622,40 @@ public class JobContextLoadComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#setPaletteType(java.lang.String)
      */
+    @Override
     public void setPaletteType(String paletteType) {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void setImageRegistry(Map<String, ImageDescriptor> imageRegistry) {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public String getRepositoryType() {
         return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getType()
+     */
+    @Override
+    public String getType() {
+        return ComponentCategory.CATEGORY_4_DI.getName();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#isReduce()
+     */
+    @Override
+    public boolean isReduce() {
+        return false;
     }
 }
