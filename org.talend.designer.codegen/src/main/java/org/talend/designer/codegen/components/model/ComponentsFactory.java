@@ -66,6 +66,7 @@ import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.components.TComponentsHandler;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.ui.branding.IBrandingService;
@@ -138,6 +139,8 @@ public class ComponentsFactory implements IComponentsFactory {
     private boolean isCreated = false;
 
     private boolean isReset = false;
+
+    private TComponentsHandler componentsHandler;// Added by Marvin Wang on Jan. 11, 2012 for M/R.
 
     // public XmiResourceManager xmiResourceManager = new XmiResourceManager();
 
@@ -335,6 +338,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
         ECodeLanguage currentLanguage = LanguageManager.getCurrentLanguage();
         final FileFilter fileFilter = new FileFilter() {
+
             @Override
             public boolean accept(final File file) {
                 return file.isDirectory() && file.getName().charAt(0) != '.'
@@ -342,7 +346,7 @@ public class ComponentsFactory implements IComponentsFactory {
                         && isComponentVisible(file.getName());
             }
         };
-        for (AbstractComponentsProvider componentsProvider :  ComponentsProviderManager.getInstance().getProviders()) {
+        for (AbstractComponentsProvider componentsProvider : ComponentsProviderManager.getInstance().getProviders()) {
             File source = componentsProvider.getInstallationFolder();
             if (source != null && source.exists()) {
                 for (File component : source.listFiles(fileFilter)) {
@@ -1220,5 +1224,26 @@ public class ComponentsFactory implements IComponentsFactory {
     @Override
     public Map<String, ImageDescriptor> getComponentsImageRegistry() {
         return componentsImageRegistry;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponentsFactory#getComponentsHandler()
+     */
+    @Override
+    public TComponentsHandler getComponentsHandler() {
+        return componentsHandler;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponentsFactory#setComponentsHandler(org.talend.core.model.components.
+     * TComponentsHandler)
+     */
+    @Override
+    public void setComponentsHandler(TComponentsHandler componentsHandler) {
+        this.componentsHandler = componentsHandler;
     }
 }
