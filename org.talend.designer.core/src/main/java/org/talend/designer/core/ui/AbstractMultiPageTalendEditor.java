@@ -169,6 +169,7 @@ import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.editor.JobEditorInput;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.job.deletion.JobResourceManager;
+import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
@@ -244,6 +245,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     public boolean revisionChanged = false;
 
     public String revisionNumStr = null;
+
+    public void changePaletteComponentHandler() {
+        ComponentsFactoryProvider.getInstance().setComponentsHandler(designerEditor.getComponenentsHandler());
+    }
 
     private final IPartListener partListener = new IPartListener() {
 

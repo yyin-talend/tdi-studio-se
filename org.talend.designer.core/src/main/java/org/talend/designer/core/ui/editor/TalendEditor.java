@@ -65,8 +65,8 @@ public class TalendEditor extends AbstractTalendEditor implements ITalendJobEdit
      * @see org.talend.designer.core.ui.editor.AbstractTalendEditor#fetchComponentsHandler()
      */
     @Override
-    protected TComponentsHandler fetchComponentsHandler() {
-        return null;
+    protected TComponentsHandler initComponentsHandler() {
+        return new ProcessComponentsHandler();
     }
 
 }

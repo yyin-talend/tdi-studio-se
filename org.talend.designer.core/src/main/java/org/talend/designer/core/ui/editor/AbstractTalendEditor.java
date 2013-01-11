@@ -436,6 +436,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     protected final Map<String, JobResource> protectedJobs;
 
+    private TComponentsHandler componenentsHandler;
+
     /** The verify key listener for activation code triggering. */
     public ActivationCodeTrigger fActivationCodeTrigger = new ActivationCodeTrigger();
 
@@ -460,11 +462,14 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         currentJobResource = new JobResource();
         protectedJobs = new HashMap<String, JobResource>();
         initializeKeyBindingScopes();
+
+        init();
     }
 
     protected void init() {
         IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
-        componentsFactory.setComponentsHandler(fetchComponentsHandler());
+        this.componenentsHandler = initComponentsHandler();
+        componentsFactory.setComponentsHandler(componenentsHandler);
     }
 
     /**
@@ -472,7 +477,25 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * 
      * @return
      */
-    protected abstract TComponentsHandler fetchComponentsHandler();
+    protected abstract TComponentsHandler initComponentsHandler();
+
+    /**
+     * Getter for componenentsHandler.
+     * 
+     * @return the componenentsHandler
+     */
+    public TComponentsHandler getComponenentsHandler() {
+        return this.componenentsHandler;
+    }
+
+    /**
+     * Sets the componenentsHandler.
+     * 
+     * @param componenentsHandler the componenentsHandler to set
+     */
+    public void setComponenentsHandler(TComponentsHandler componenentsHandler) {
+        this.componenentsHandler = componenentsHandler;
+    }
 
     @Override
     public void doSave(IProgressMonitor monitor) {

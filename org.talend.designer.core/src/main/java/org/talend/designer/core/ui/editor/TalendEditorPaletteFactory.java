@@ -39,7 +39,6 @@ import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
-import org.talend.core.model.components.TComponentsHandler;
 import org.talend.core.model.components.TalendPaletteGroup;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -82,26 +81,6 @@ public final class TalendEditorPaletteFactory {
 
     private static PaletteGroup paGroup = new PaletteGroup(""); //$NON-NLS-1$
 
-    private static TComponentsHandler talendComponentsDrawer;
-
-    /**
-     * Getter for talendComponentsDrawer.
-     * 
-     * @return the talendComponentsDrawer
-     */
-    public static TComponentsHandler getTalendComponentsDrawer() {
-        return talendComponentsDrawer;
-    }
-
-    /**
-     * Sets the talendComponentsDrawer.
-     * 
-     * @param talendComponentsDrawer the talendComponentsDrawer to set
-     */
-    public static void setTalendComponentsDrawer(TComponentsHandler talendComponentsDrawer) {
-        TalendEditorPaletteFactory.talendComponentsDrawer = talendComponentsDrawer;
-    }
-
     /** Create the "Shapes" drawer. */
     private static void createComponentsDrawer(final IComponentsFactory compFac, boolean needHiddenComponent, int a) {
         // clearGroup();
@@ -120,9 +99,9 @@ public final class TalendEditorPaletteFactory {
         List<IComponent> componentList = new ArrayList<IComponent>(compFac.getComponents());
 
         // Added by Marvin Wang on Jan. 10, 2012
-        if (talendComponentsDrawer != null) {
-            componentList = talendComponentsDrawer.filterComponents(compFac.getComponents());
-            talendComponentsDrawer.sortComponents(componentList);
+        if (compFac.getComponentsHandler() != null) {
+            componentList = compFac.getComponentsHandler().filterComponents(compFac.getComponents());
+            compFac.getComponentsHandler().sortComponents(componentList);
         }
 
         IProcess process = ActiveProcessTracker.getCurrentProcess();
@@ -336,9 +315,9 @@ public final class TalendEditorPaletteFactory {
         List<IComponent> componentList = new ArrayList<IComponent>(compFac.getComponents());
 
         // Added by Marvin Wang on Jan. 10, 2012
-        if (talendComponentsDrawer != null) {
-            componentList = talendComponentsDrawer.filterComponents(compFac.getComponents());
-            componentList = talendComponentsDrawer.sortComponents(componentList);
+        if (compFac.getComponentsHandler() != null) {
+            componentList = compFac.getComponentsHandler().filterComponents(compFac.getComponents());
+            componentList = compFac.getComponentsHandler().sortComponents(componentList);
         }
 
         IProcess process = ActiveProcessTracker.getCurrentProcess();

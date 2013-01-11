@@ -98,9 +98,12 @@ public class ActiveProcessTracker implements IPartListener {
      * 
      * @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IWorkbenchPart)
      */
+    @Override
     public void partActivated(final IWorkbenchPart part) {
         if (changedProcess) {
             if (part instanceof AbstractMultiPageTalendEditor) {
+                AbstractMultiPageTalendEditor multiPageTEditor = (AbstractMultiPageTalendEditor) part;
+                multiPageTEditor.changePaletteComponentHandler();
                 ComponentUtilities.updateFromRepositoryType(ERepositoryObjectType
                         .getItemType(((AbstractMultiPageTalendEditor) part).getProcess().getProperty().getItem()));
                 changedProcess = false;
@@ -114,6 +117,7 @@ public class ActiveProcessTracker implements IPartListener {
      * 
      * @see org.eclipse.ui.IPartListener#partBroughtToTop(org.eclipse.ui.IWorkbenchPart)
      */
+    @Override
     public void partBroughtToTop(IWorkbenchPart part) {
         IProcess2 process = getJobFromActivatedEditor(part);
         if (process != null && currentProcess != process) {
@@ -183,6 +187,7 @@ public class ActiveProcessTracker implements IPartListener {
      * 
      * @see org.eclipse.ui.IPartListener#partClosed(org.eclipse.ui.IWorkbenchPart)
      */
+    @Override
     public void partClosed(IWorkbenchPart part) {
 
         if (part instanceof AbstractMultiPageTalendEditor && currentProcess != null) {
@@ -247,6 +252,7 @@ public class ActiveProcessTracker implements IPartListener {
      * 
      * @see org.eclipse.ui.IPartListener#partDeactivated(org.eclipse.ui.IWorkbenchPart)
      */
+    @Override
     public void partDeactivated(IWorkbenchPart part) {
         IProcess process = getJobFromActivatedEditor(part);
         if (process != null && (part instanceof AbstractMultiPageTalendEditor)) {
@@ -260,6 +266,7 @@ public class ActiveProcessTracker implements IPartListener {
      * 
      * @see org.eclipse.ui.IPartListener#partOpened(org.eclipse.ui.IWorkbenchPart)
      */
+    @Override
     public void partOpened(IWorkbenchPart part) {
         boolean existedJobOpened = false;
         if (part instanceof AbstractMultiPageTalendEditor) {
