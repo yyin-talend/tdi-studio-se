@@ -159,7 +159,7 @@ imports="
 			String columnType = column.getType();
 			if(columnType != null && ("CLOB").equals(columnType)) {
 %>
-				java.io.Reader reader_<%=cid%> = rs_<%=cid %>.getCharacterStream(<%=currentColNo%>);
+				java.io.Reader reader_<%=cid%> = rs_<%=cid %>.getCharacterStream(column_index_<%=cid%>);
 				java.io.BufferedReader br_<%=cid%> = null;
 				if(reader_<%=cid%> != null) {
 					br_<%=cid%> = new java.io.BufferedReader(reader_<%=cid%>);                 	                        
@@ -176,7 +176,7 @@ imports="
 <%
 			} else {
 %>
-			 	    tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
+			 	    tmpContent_<%=cid%> = rs_<%=cid %>.getString(column_index_<%=cid%>);
 			        if(tmpContent_<%=cid%> != null) {
 			            <%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%><%=trimMethod%>;
 			        } else {
@@ -188,7 +188,7 @@ imports="
 	    
 	   	public void generateBytesResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
 %>
-			byte [] tmpBytes_<%=cid%> = rs_<%=cid %>.getBytes(<%=currentColNo%>);
+			byte [] tmpBytes_<%=cid%> = rs_<%=cid %>.getBytes(column_index_<%=cid%>);
 			if(tmpBytes_<%=cid%> != null) {
 				<%=firstConnName%>.<%=column.getLabel()%> = tmpBytes_<%=cid%>;
 			} else {
@@ -223,8 +223,8 @@ imports="
 	    	if(isTSWithTZ && supportTSTZ){
 	    	%>
     			TalendTimestampWithTZ talendTimestampWithTZ = null;
-    			if(((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(<%=currentColNo%>) != null){
-    				talendTimestampWithTZ = org.talend.oracle.OracleTSTZUtil.toTalendTSTZ(((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(<%=currentColNo%>).toBytes());
+    			if(((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(column_index_<%=cid%>) != null){
+    				talendTimestampWithTZ = org.talend.oracle.OracleTSTZUtil.toTalendTSTZ(((oracle.jdbc.OracleResultSet) rs_<%=cid%>).getTIMESTAMPTZ(column_index_<%=cid%>).toBytes());
                 }
                 if(talendTimestampWithTZ != null){
                 	<%=firstConnName%>.<%=column.getLabel()%> = talendTimestampWithTZ;
@@ -235,7 +235,7 @@ imports="
     		}else{
 	    		if(noNullValues){
 				%>
-					java.sql.Timestamp timestamp = rs_<%=cid %>.getTimestamp(<%=currentColNo%>);
+					java.sql.Timestamp timestamp = rs_<%=cid %>.getTimestamp(column_index_<%=cid%>);
 					if(timestamp != null) {
 					    <%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(timestamp.getTime());
 					} else {
@@ -245,8 +245,8 @@ imports="
 				}else{
 				//super.generateTimestampResultSet(firstConnName,column,currentColNo);
 				%>
-					if(rs_<%=cid %>.getTimestamp(<%=currentColNo%>) != null) {
-					    <%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(rs_<%=cid %>.getTimestamp(<%=currentColNo%>).getTime());
+					if(rs_<%=cid %>.getTimestamp(column_index_<%=cid%>) != null) {
+					    <%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(rs_<%=cid %>.getTimestamp(column_index_<%=cid%>).getTime());
 					} else {
 					    <%=firstConnName%>.<%=column.getLabel()%> =  null;
 					}
@@ -274,12 +274,12 @@ imports="
 				} 
 				
 %>
-				Object tmpObj_<%=currentColNo%>_<%=cid %> = rs_<%=cid %>.getObject(<%=currentColNo%>);
+				Object tmpObj_<%=currentColNo%>_<%=cid %> = rs_<%=cid %>.getObject(column_index_<%=cid%>);
 				if(tmpObj_<%=currentColNo%>_<%=cid %> != null) {
 <%
 				if (needConvert && "String".equals(convertToJavaType)) {
 %>
-					<%=firstConnName%>.<%=column.getLabel()%> = oracle.xdb.XMLType.createXML((oracle.sql.OPAQUE) tmpObj_<%=currentColNo%>_<%=cid %>).getStringVal();
+					<%=firstConnName%>.<%=column.getLabel()%> = oracle.xdb.XMLType.createXML((oracle.sql.OPAQUE) tmpObj_column_index_<%=cid%>_<%=cid %>).getStringVal();
 <%
 				} else {
 %>
@@ -304,11 +304,11 @@ imports="
 			} else {
 				if(noNullValues){
 %>
-					<%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
+					<%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(column_index_<%=cid%>);
 					<%
 					if(("Boolean").equals(typeToGenerate)){
 					%>
-						if(!<%=firstConnName%>.<%=column.getLabel()%> && rs_<%=cid %>.getObject(<%=currentColNo%>) == null){
+						if(!<%=firstConnName%>.<%=column.getLabel()%> && rs_<%=cid %>.getObject(column_index_<%=cid%>) == null){
 					<%
 					}else if(("Bytes").equals(typeToGenerate) || ("BigDecimal").equals(typeToGenerate)){
 					%>
@@ -316,19 +316,19 @@ imports="
 					<%
 					}else if(("Byte").equals(typeToGenerate) || ("Double").equals(typeToGenerate) || ("Float").equals(typeToGenerate) || ("Int").equals(typeToGenerate) || ("Long").equals(typeToGenerate) || ("Short").equals(typeToGenerate)){
 					%>
-						if(<%=firstConnName%>.<%=column.getLabel()%> == 0 && rs_<%=cid %>.getObject(<%=currentColNo%>) == null){
+						if(<%=firstConnName%>.<%=column.getLabel()%> == 0 && rs_<%=cid %>.getObject(column_index_<%=cid%>) == null){
 					<%
 					}else{
 					%>
-						if(rs_<%=cid %>.getObject(<%=currentColNo%>) == null){
+						if(rs_<%=cid %>.getObject(column_index_<%=cid%>) == null){
 					<%
 					}
 					%>
 				<%
 				}else{
 				%>
-					if(rs_<%=cid %>.getObject(<%=currentColNo%>) != null) {
-						<%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
+					if(rs_<%=cid %>.getObject(column_index_<%=cid%>) != null) {
+						<%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(column_index_<%=cid%>);
 					} else {
 				<%
 				}

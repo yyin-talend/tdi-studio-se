@@ -233,7 +233,7 @@ if (conns!=null) {
 							routines.system.Dynamic dynamic_<%=cid %> = (routines.system.Dynamic)globalMap.get("<%=dyn%>");
 							dynamic_<%=cid %>.clearColumnValues();
 							int maxColumnCount_<%=cid %> = dynamic_<%=cid %>.getColumnCount();
-							int substringBegin<%=cid %> = begins_<%=cid %>[begins_<%=cid %>.length-1]; int substringEnd<%=cid %> =0;
+							int substringBegin<%=cid %> = begins_<%=cid %>[<%=valueN%>]; int substringEnd<%=cid %> =0;
 							for (int i=0;i<maxColumnCount_<%=cid %>;i++) {
 								routines.system.DynamicMetadata dynamicMetadataColumn_<%=cid%> = dynamic_<%=cid %>.getColumnMetadata(i);
 								int currentFieldLength_<%=cid%> = dynamicMetadataColumn_<%=cid%>.getLength();

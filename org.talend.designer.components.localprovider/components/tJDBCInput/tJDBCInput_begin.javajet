@@ -71,9 +71,9 @@ imports="
 %>
             java.util.Date date_<%=cid%> = null;
             try{
-            	date_<%=cid%> = rs_<%=cid %>.getTimestamp(<%=currentColNo%>);
+            	date_<%=cid%> = rs_<%=cid %>.getTimestamp(column_index_<%=cid%>);
             }catch(java.lang.Exception e){
-            	date_<%=cid%> = rs_<%=cid %>.getDate(<%=currentColNo%>);
+            	date_<%=cid%> = rs_<%=cid %>.getDate(column_index_<%=cid%>);
             }
             <%=firstConnName%>.<%=column.getLabel()%> = date_<%=cid%>;
 <%

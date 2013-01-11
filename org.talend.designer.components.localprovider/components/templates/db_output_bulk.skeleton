@@ -3556,7 +3556,21 @@ public class CLASS {
         if(metadatas != null && metadatas.size() > 0) {
             IMetadataTable metadata = metadatas.get(0);
             if(metadata != null) {
-                columnList = metadata.getListColumns();
+                List<IMetadataColumn> columnList2 = metadata.getListColumns();
+                if( columnList2 == null || columnList2.size()<2 ||!metadata.isDynamicSchema() || "id_Dynamic".equals(columnList2.get(columnList2.size()-1).getTalendType())){
+                    return columnList2;
+                }else{
+                    columnList = new java.util.ArrayList<IMetadataColumn>();
+                    IMetadataColumn dyncolumn = null;
+                    for(IMetadataColumn column:columnList2){
+                        if(column.getTalendType().equals("id_Dynamic")){
+                            dyncolumn = column;
+                        }else{
+                            columnList.add(column);
+                        }
+                    }
+                    columnList.add(dyncolumn);
+                }
             }
         }
         return columnList;

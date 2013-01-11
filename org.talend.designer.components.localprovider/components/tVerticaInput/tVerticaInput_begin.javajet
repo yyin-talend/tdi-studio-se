@@ -39,6 +39,7 @@ imports="
 	}//end class
 	
 	dbInputBeginUtil = new DBInputBeginUtil();
+	
 %>
     
 	<%@ include file="../templates/DB/Input/AbstractDBInputBegin.javajet"%>

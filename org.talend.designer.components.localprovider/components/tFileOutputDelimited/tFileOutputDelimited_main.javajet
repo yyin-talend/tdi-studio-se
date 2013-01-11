@@ -24,7 +24,7 @@ String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__
 if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
 	schemaOptNum  = Integer.parseInt(schemaOptNumStr);
 }
-
+int dynamic_column_index=-1;
 if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     %>
@@ -36,17 +36,6 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
         IMetadataTable metadata = metadatas.get(0);
         if (metadata!=null) {
                         
-            String fieldSeparator = ElementParameterParser.getValueWithUIFieldKey(
-                node,
-                "__FIELDSEPARATOR__",
-                "FIELDSEPARATOR"
-            );
-            
-            String rowSeparator = ElementParameterParser.getValueWithUIFieldKey(
-                node,
-                "__ROWSEPARATOR__",
-                "ROWSEPARATOR"
-            );
             
             String encoding = ElementParameterParser.getValue(
                 node,
@@ -56,12 +45,10 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
             boolean isAppend = ("true").equals(ElementParameterParser.getValue(node,"__APPEND__"));
             
             boolean isIncludeHeader = ("true").equals(ElementParameterParser.getValue(node,"__INCLUDEHEADER__"));
-    		String fileNewname = ElementParameterParser.getValue(node,"__FILENAME__");
     		
     		boolean isInRowMode = ("true").equals(ElementParameterParser.getValue(node,"__ROW_MODE__"));
     		
     		boolean split = ("true").equals(ElementParameterParser.getValue(node, "__SPLIT__"));
-            String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
             
             boolean flushOnRow = ("true").equals(ElementParameterParser.getValue(node, "__FLUSHONROW__"));
             String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
@@ -178,8 +165,10 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
         				    <%
     				    } 
     				    if(column.getTalendType().equals("id_Dynamic")){
+    				    	dynamic_column_index = i;
     				    %>
     				    routines.system.DynamicUtils.writeValuesToStringBuilder(<%=conn.getName() %>.<%=column.getLabel() %>, sb_<%=cid %>, OUT_DELIM_<%=cid %>);
+    				    dynamic_column_count_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel() %>.getColumnCount();
     				    <%
     				    }else{
     				    %>
@@ -451,12 +440,20 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                             		}
                             	}else{//DD
                                 if(!("id_Dynamic".equals(column.getTalendType()))) {
+                                	if(i>dynamic_column_index&& dynamic_column_index != -1){
+            		         %>
+        		        	headColu<%=cid%>[<%=i-1%>+dynamic_column_count_<%=cid%>]="<%=column.getLabel() %>";
+            		         <%
+            		         		}else{
             		         %>
         		        	headColu<%=cid%>[<%=i%>]="<%=column.getLabel() %>";
             		         <%
+            		         		}
             		            }else{
+            		            dynamic_column_index = i;
         	    		     %>
-        	    		     for(int mi=0;mi<<%=conn.getName()%>.<%=dynamicCol.getLabel()%>.getColumnCount();mi++){
+        	    		     dynamic_column_count_<%=cid%> = <%=conn.getName()%>.<%=dynamicCol.getLabel()%>.getColumnCount();
+        	    		     for(int mi=0;mi<dynamic_column_count_<%=cid%>;mi++){
         	    		     	headColu<%=cid%>[<%=i%>+mi]=<%=conn.getName()%>.<%=dynamicCol.getLabel()%>.getColumnMetadata(mi).getName();
         	    		     }
         	    		     <%
@@ -515,12 +512,17 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 			if(("id_Dynamic").equals(column.getTalendType())) {
                 			%>
                             if (<%=conn.getName()%>.<%=column.getLabel()%> != null) {
-                            	routines.system.DynamicUtils.writeValuesToStringArray(<%=conn.getName()%>.<%=column.getLabel()%>, row<%=cid%>, <%=i%>);
+                            	routines.system.DynamicUtils.writeValuesToStringArray(<%=conn.getName()%>.<%=column.getLabel()%>, row<%=cid%>, <%=dynamic_column_index%>);
                             }
                 			<%
                 			}else{
+                				if(i>dynamic_column_index && dynamic_column_index !=-1){
                 			%> 
+                			row<%=cid%>[<%=i-1%>+dynamic_column_count_<%=cid%>]=<%=isPrimitive? "":conn.getName()+"."+column.getLabel()+ "==null?\"\":"%><%					
+                				}else{
+                			%>
                 			row<%=cid%>[<%=i%>]=<%=isPrimitive? "":conn.getName()+"."+column.getLabel()+ "==null?\"\":"%><%					
+                				}
                 				if(javaType == JavaTypesManager.STRING ){
                 			%><%=conn.getName() %>.<%=column.getLabel() %>;
                 			<%

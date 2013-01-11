@@ -48,6 +48,11 @@ List< ? extends IConnection> conns = node.getIncomingConnections();
 if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
 	IMetadataTable metadata = metadatas.get(0);
 	boolean hasDynamic = metadata.isDynamicSchema();
+	if(hasDynamic){
+%>
+        int dynamic_column_count_<%=cid%> = 1;
+<%
+	}
 	IMetadataColumn dynamicCol = metadata.getDynamicColumn();
 	for (IConnection conn : conns) {//B1
 		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//C1
@@ -317,10 +322,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     if ((metadatas!=null)&&(metadatas.size()>0)) {
         IMetadataTable metadata = metadatas.get(0);
         if (metadata!=null) {
-            String fullName = null;
-            String extensionName = null;
-            String directoryName = null;    
-            
+           
             String fieldSeparator = ElementParameterParser.getValueWithUIFieldKey(
                 node,
                 "__FIELDSEPARATOR__",
@@ -333,7 +335,6 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                 "ROWSEPARATOR"
             );
             
-    		String fileNewname = ElementParameterParser.getValue(node,"__FILENAME__");
     		
     		boolean isInRowMode = ("true").equals(ElementParameterParser.getValue(node,"__ROW_MODE__"));
     		

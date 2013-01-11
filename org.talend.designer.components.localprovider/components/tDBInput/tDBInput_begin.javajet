@@ -63,7 +63,7 @@
 		public void generateTimestampResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
 		
 %>
-            java.sql.Timestamp timestamp_<%=cid%> = rs_<%=cid %>.getTimestamp(<%=currentColNo%>);
+            java.sql.Timestamp timestamp_<%=cid%> = rs_<%=cid %>.getTimestamp(column_index_<%=cid%>);
             if(timestamp_<%=cid%> != null) {
                 <%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(timestamp_<%=cid%>.getTime());
             } else {
@@ -75,7 +75,7 @@
 	   	public void generateOthersResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String typeToGenerate) {
 	   		String javaType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), true);
 %>
-			Object value_<%=cid%> = rs_<%=cid %>.get<%="BigDecimal".equals(javaType)? "BigDecimal":"Object"%>(<%=currentColNo%>);
+			Object value_<%=cid%> = rs_<%=cid %>.get<%="BigDecimal".equals(javaType)? "BigDecimal":"Object"%>(column_index_<%=cid%>);
 			if(value_<%=cid%> != null) {
 <%
 				if(("Integer").equals(javaType)) {

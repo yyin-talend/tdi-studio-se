@@ -118,7 +118,7 @@ imports="
 			String columnType = column.getType();
 			if(columnType != null && ("CLOB").equals(columnType)) {
 %>
-				java.io.Reader reader_<%=cid%> = rs_<%=cid %>.getCharacterStream(<%=currentColNo%>);
+				java.io.Reader reader_<%=cid%> = rs_<%=cid %>.getCharacterStream(column_index_<%=cid%>);
 				java.io.BufferedReader br_<%=cid%> = null;
 				if(reader_<%=cid%> != null) {
 					br_<%=cid%> = new java.io.BufferedReader(reader_<%=cid%>);                 	                        
@@ -135,7 +135,7 @@ imports="
 <%
 			} else {
 %>
-			 	    tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
+			 	    tmpContent_<%=cid%> = rs_<%=cid %>.getString(column_index_<%=cid%>);
 			        if(tmpContent_<%=cid%> != null) {
 			            <%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%><%=trimMethod%>;
 			        } else {
@@ -147,7 +147,7 @@ imports="
 	    
 	   	public void generateBytesResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
 %>
-			byte [] tmpBytes_<%=cid%> = rs_<%=cid %>.getBytes(<%=currentColNo%>);
+			byte [] tmpBytes_<%=cid%> = rs_<%=cid %>.getBytes(column_index_<%=cid%>);
 			if(tmpBytes_<%=cid%> != null) {
 				<%=firstConnName%>.<%=column.getLabel()%> = tmpBytes_<%=cid%>;
 			} else {
@@ -174,7 +174,7 @@ imports="
 				} 
 				
 %>
-				Object tmpObj_<%=currentColNo%>_<%=cid %> = rs_<%=cid %>.getObject(<%=currentColNo%>);
+				Object tmpObj_<%=currentColNo%>_<%=cid %> = rs_<%=cid %>.getObject(column_index_<%=cid%>);
 				if(tmpObj_<%=currentColNo%>_<%=cid %> != null) {
 <%
 				if (needConvert && "String".equals(convertToJavaType)) {
@@ -203,8 +203,8 @@ imports="
 <%
 			} else {
 %>
-				if(rs_<%=cid %>.getObject(<%=currentColNo%>) != null) {
-					<%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
+				if(rs_<%=cid %>.getObject(column_index_<%=cid%>) != null) {
+					<%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(column_index_<%=cid%>);
 				} else {
 <%
 					if(column.isNullable()) {
