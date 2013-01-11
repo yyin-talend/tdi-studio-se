@@ -28,6 +28,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.talend.designer.xmlmap.figures.sash.ISash;
+import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
@@ -90,6 +91,12 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
                 partList.addAll(lastSelection.getParent().getChildren());
                 Map<EditPart, Integer> partAndIndex = new HashMap<EditPart, Integer>();
                 if (type == TransferdType.INPUT) {
+                    for (EditPart treePart : filtedSelection) {
+                        if (!XmlMapUtil.isDragable((TreeNode) treePart.getModel())) {
+                            return null;
+                        }
+                    }
+
                     AbstractInOutTreeEditPart abstractInOutTreePart = XmlMapUtil
                             .getAbstractInOutTreePart((TreeNodeEditPart) lastSelection);
                     if (abstractInOutTreePart != null) {
