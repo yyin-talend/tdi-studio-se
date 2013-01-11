@@ -1552,8 +1552,23 @@ public class Node extends Element implements IGraphicalNode {
         this.outputs.remove(connection);
         // update the order wehn remove the connection
         ((Connection) connection).updateAllId();
+        removeSourceMatadata(connection);
         removeTargetMetaData(connection);
         fireStructureChange(OUTPUTS, connection);
+    }
+
+    private void removeSourceMatadata(IConnection connection) {
+        Node source = (Node) connection.getSource();
+        if (source.isELTMapComponent()) {
+            IMetadataTable table = connection.getMetadataTable();
+            if (table != null) { // hywang add for bug 0009593
+                String label = table.getLabel();
+                IMetadataTable metadataTable = MetadataTool.getMetadataTableFromNode(source, label);
+                if (metadataTable != null) {
+                    source.metadataList.remove(metadataTable);
+                }
+            }
+        }
     }
 
     private int getIndex(List<Map<String, String>> vlist, String label) {
