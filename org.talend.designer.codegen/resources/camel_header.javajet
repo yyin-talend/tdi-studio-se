@@ -240,7 +240,7 @@
 %>
 		}
 <%
-	}else if("cRecipientList".equals(nodeComponentName)){
+	}else if("cRecipientList".equals(nodeComponentName)||"cSplitter".equals(nodeComponentName)){
 		String language = ElementParameterParser.getValue(node, "__LANGUAGES__");
 		if(!"xpath".equals(language)){
 			continue;
