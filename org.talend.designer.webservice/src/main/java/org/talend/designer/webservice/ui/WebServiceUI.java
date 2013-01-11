@@ -116,7 +116,7 @@ import org.talend.repository.ui.utils.ConnectionContextHelper;
 /**
  * gcui class global comment. Detailled comment
  */
-public class WebServiceUI extends AbstractWebService {
+public class WebServiceUI implements AbstractWebService {
 
     protected int maximumRowsToPreview = CorePlugin.getDefault().getPreferenceStore()
             .getInt(ITalendCorePrefConstants.PREVIEW_LIMIT);

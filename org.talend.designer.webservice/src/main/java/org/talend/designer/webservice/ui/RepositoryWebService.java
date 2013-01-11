@@ -69,7 +69,7 @@ import org.talend.repository.ui.utils.ConnectionContextHelper;
 /**
  * DOC Administrator class global comment. Detailled comment
  */
-public class RepositoryWebService extends AbstractWebService {
+public class RepositoryWebService implements AbstractWebService {
 
     private Composite uiParent;
 
