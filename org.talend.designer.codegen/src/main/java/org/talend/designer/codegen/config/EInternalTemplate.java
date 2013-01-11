@@ -44,10 +44,14 @@ public enum EInternalTemplate {
     CAMEL_END_BLOCK("camel_end_block", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     CAMEL_TRYCATCH("camel_trycatch", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
     CAMEL_SPECIALLINKS("camel_speciallinks", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
-    //ADDED for TESB-7887 By GangLiu
+    // ADDED for TESB-7887 By GangLiu
     SPRING("spring", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
-    
-    
+
+    MR_HEADER("mr_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    MR_FOOTER("mr_footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    MR_SUBPROCESS_HEADER("mr_subprocess_header", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+    MR_SUBPROCESS_FOOTER("mr_subprocess_footer", "0.0.1"), //$NON-NLS-1$ //$NON-NLS-2$
+
     HEADER_ADDITIONAL("header_additional", "0.0.1"); //$NON-NLS-1$ //$NON-NLS-2$
 
     private String templateName;

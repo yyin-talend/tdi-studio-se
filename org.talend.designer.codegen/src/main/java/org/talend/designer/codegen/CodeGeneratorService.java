@@ -39,6 +39,7 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      * 
      * @see org.talend.designer.codegen.ICodeGeneratorFactory#getCodeGenerator()
      */
+    @Override
     public ICodeGenerator createCodeGenerator() {
         return new CodeGenerator();
     }
@@ -49,7 +50,16 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      * @see org.talend.designer.codegen.ICodeGeneratorFactory#getCodeGenerator(org.talend.core.model.process.IProcess,
      * boolean, boolean, boolean, java.lang.String)
      */
+    @Override
     public ICodeGenerator createCodeGenerator(IProcess process, boolean statistics, boolean trace, String... options) {
+        if (GlobalServiceRegister.getDefault().isServiceRegistered(IMRCodeGeneratorService.class)) {
+            IMRCodeGeneratorService service = (IMRCodeGeneratorService) GlobalServiceRegister.getDefault().getService(
+                    IMRCodeGeneratorService.class);
+            if (service.validProcess(process)) {
+                return service.createCodeGenerator(process, statistics, trace, options);
+            }
+        }
+
         return new CodeGenerator(process, statistics, trace, options);
     }
 
@@ -58,6 +68,7 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      * 
      * @see org.talend.designer.codegen.ICodeGeneratorService#getRoutineSynchronizer()
      */
+    @Override
     public ITalendSynchronizer createPerlRoutineSynchronizer() {
         return new PerlRoutineSynchronizer();
     }
@@ -67,11 +78,13 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      * 
      * @see org.talend.designer.codegen.ICodeGeneratorService#createJavaRoutineSynchronizer()
      */
+    @Override
     public ITalendSynchronizer createJavaRoutineSynchronizer() {
         // TODO Auto-generated method stub
         return new JavaRoutineSynchronizer();
     }
 
+    @Override
     public ITalendSynchronizer createRoutineSynchronizer() {
         ECodeLanguage lan = LanguageManager.getCurrentLanguage();
         if (lan.equals(ECodeLanguage.PERL)) {
@@ -82,6 +95,7 @@ public class CodeGeneratorService implements ICodeGeneratorService {
         throw new IllegalArgumentException(Messages.getString("CodeGeneratorService.invalidLanguage1")); //$NON-NLS-1$
     }
 
+    @Override
     public ITalendSynchronizer createCamelBeanSynchronizer() {
         ECodeLanguage lan = LanguageManager.getCurrentLanguage();
         if (GlobalServiceRegister.getDefault().isServiceRegistered(ICamelDesignerCoreService.class)) {
@@ -94,6 +108,7 @@ public class CodeGeneratorService implements ICodeGeneratorService {
         return null;
     }
 
+    @Override
     public ISQLPatternSynchronizer getSQLPatternSynchronizer() {
         ECodeLanguage lan = LanguageManager.getCurrentLanguage();
         if (lan.equals(ECodeLanguage.PERL)) {
@@ -110,6 +125,7 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      * @see
      * org.talend.designer.codegen.ICodeGeneratorService#initializeTemplates(org.eclipse.core.runtime.IProgressMonitor)
      */
+    @Override
     public Job initializeTemplates() {
         return CodeGeneratorEmittersPoolFactory.initialize();
     }
@@ -119,6 +135,7 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      * 
      * @see org.talend.designer.codegen.ICodeGeneratorService#refreshTemplates()
      */
+    @Override
     public Job refreshTemplates() {
         // this will force to refresh all components libs when install run ctrl+f3
         ILibraryManagerService librairesManagerService = (ILibraryManagerService) GlobalServiceRegister.getDefault().getService(
@@ -131,7 +148,7 @@ public class CodeGeneratorService implements ICodeGeneratorService {
         IDesignerCoreService designerCoreService = (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(
                 IDesignerCoreService.class);
         designerCoreService.getLastGeneratedJobsDateMap().clear();
-        
+
         return job;
     }
 }

@@ -66,6 +66,7 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.designer.core.IReplaceNodeInProcess;
 import org.talend.designer.core.ReplaceNodesInProcessProvider;
 import org.talend.designer.core.i18n.Messages;
@@ -103,6 +104,10 @@ public class DataProcess {
 
     private static final String ELTNODE_COMPONENT_NAME = "tELTNode"; //$NON-NLS-1$
 
+    private static final String MRINPUT_COMPONENT_NAME = "tMRInput"; //$NON-NLS-1$
+
+    private static final String MROUTPUT_COMPONENT_NAME = "tMROutput"; //$NON-NLS-1$
+
     private Map<INode, INode> buildCheckMap = null;
 
     private Map<String, INode> parallCheckMap = null;
@@ -114,6 +119,8 @@ public class DataProcess {
     private List<INode> checkValidationList = null;
 
     private Map<INode, INode> checkMultipleMap = null;
+
+    private Map<INode, INode> checkMapReduceMap = null;
 
     private Map<INode, INode> checkFileScaleMap = null;
 
@@ -141,6 +148,7 @@ public class DataProcess {
         checkRefList = new ArrayList<INode>();
         checkValidationList = new ArrayList<INode>();
         checkMultipleMap = new HashMap<INode, INode>();
+        checkMapReduceMap = new HashMap<INode, INode>();
         checktUniteMap = new HashMap<INode, INode>();
         dataNodeList = new ArrayList<INode>();
         checkFileScaleMap = new HashMap<INode, INode>();
@@ -335,7 +343,7 @@ public class DataProcess {
                 dataConnec.setSource(dataNode);
                 dataConnec.setCondition(connection.getCondition());
                 dataConnec.setRouteConnectionType(connection.getRouteConnectionType());
-                dataConnec.setEndChoice(connection.getEndChoice());//TESB-8043
+                dataConnec.setEndChoice(connection.getEndChoice());// TESB-8043
                 dataConnec.setExceptionList(connection.getExceptionList());
                 dataConnec.setConnectorName(connection.getConnectorName());
                 dataConnec.setInputId(connection.getInputId());
@@ -1044,8 +1052,8 @@ public class DataProcess {
                 if (runAfter) {
                     boolean isParall = false;
                     for (IConnection conn : graphicalNode.getOutgoingConnections()) {
-                        if (conn.getTarget().getComponent().getName().equals("tMap")) {
-                            IElementParameter elePara = conn.getTarget().getElementParameter("LKUP_PARALLELIZE");
+                        if (conn.getTarget().getComponent().getName().equals("tMap")) {//$NON-NLS-1$
+                            IElementParameter elePara = conn.getTarget().getElementParameter("LKUP_PARALLELIZE");//$NON-NLS-1$
                             isParall = (Boolean) elePara.getValue();
                             break;
                         }
@@ -1127,7 +1135,7 @@ public class DataProcess {
                         if (mcm.isLookupMode()) {
                             Map<IMultipleComponentItem, AbstractNode> itemsMap = new HashMap<IMultipleComponentItem, AbstractNode>();
                             mcm.getItemList().clear();
-                            mcm.addItem("LOOKUP", hashComponent);
+                            mcm.addItem("LOOKUP", hashComponent);//$NON-NLS-1$
                             itemsMap.put(mcm.getItemList().get(0), hashNode);
                             setMultipleComponentParameters(mcm, itemsMap, connection.getTarget());
                         }
@@ -1218,6 +1226,166 @@ public class DataProcess {
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
             if (connection.isActivate()) {
                 replaceMultipleComponents(connection.getTarget());
+            }
+        }
+    }
+
+    private void replaceMapReduceComponents(INode graphicalNode) {
+        if (checkMapReduceMap.containsKey(graphicalNode)) {
+            return;
+        }
+        if (graphicalNode.isDummy() && !graphicalNode.isActivate()) {
+            //
+        } else {
+            INode currentComponent = graphicalNode;
+            AbstractNode dataNode;
+
+            dataNode = (AbstractNode) buildCheckMap.get(graphicalNode);
+            checkMapReduceMap.put(graphicalNode, dataNode);
+
+            boolean needReduce = currentComponent.getComponent().isReduce();
+
+            if (!currentComponent.getComponent().getName().equals(MRINPUT_COMPONENT_NAME)
+                    && !currentComponent.getComponent().getName().equals(MROUTPUT_COMPONENT_NAME)) {
+                List<? extends IConnection> outConns = dataNode.getOutgoingSortedConnections();
+                if (outConns != null && outConns.size() > 0) {
+                    IConnection conn = outConns.get(0);
+                    if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
+                            && !conn.getTarget().getComponent().getName().equals(MROUTPUT_COMPONENT_NAME) && needReduce) {
+                        // get metadata from connection
+                        IMetadataTable connMetadataTable = conn.getMetadataTable();
+
+                        // get the start node
+                        INode startNode = dataNode.getDesignSubjobStartNode();
+                        // TODO assign properly
+                        String folder = "\"" + TalendQuoteUtils.removeQuotes(startNode.getElementParameter("TEMP_FOLDER").getValue().toString()) + "/tmp/" + "tMROutput_" + dataNode.getUniqueName() + "\"";//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ 
+
+                        // get next node
+                        DataNode nextNode = (DataNode) conn.getTarget();
+
+                        List<IConnection> nextNodeInConns = (List<IConnection>) nextNode.getIncomingConnections();
+                        nextNodeInConns.remove(conn);
+
+                        // new hidden tMROutput
+                        IComponent mrOutComponent = ComponentsFactoryProvider.getInstance().get(MROUTPUT_COMPONENT_NAME);
+                        AbstractNode mrOutNode = new DataNode(mrOutComponent, "tMROutput_" + dataNode.getUniqueName());//$NON-NLS-1$
+                        mrOutNode.getElementParameter("FOLDER").setValue( //$NON-NLS-1$
+                                folder);
+                        mrOutNode.setActivate(true);
+                        mrOutNode.setStart(false);
+                        mrOutNode.setSubProcessStart(false);
+                        mrOutNode.setDesignSubjobStartNode(startNode);
+                        List<IMetadataTable> tMROutputMetadataList = new ArrayList<IMetadataTable>();
+                        IMetadataTable tMROutputMetadataTable = new MetadataTable();
+                        MetadataToolHelper.copyTable(connMetadataTable, tMROutputMetadataTable);
+                        tMROutputMetadataList.add(tMROutputMetadataTable);
+                        mrOutNode.setMetadataList(tMROutputMetadataList);
+                        mrOutNode.setProcess(dataNode.getProcess());
+                        List<IConnection> mrOutNodeOutConnections = new ArrayList<IConnection>();
+                        List<IConnection> mrOutNodeInConnections = new ArrayList<IConnection>();
+                        mrOutNodeInConnections.add(conn);
+                        mrOutNode.setIncomingConnections(mrOutNodeInConnections);
+                        mrOutNode.setOutgoingConnections(mrOutNodeOutConnections);
+                        mrOutNode.setProcess(dataNode.getProcess());
+                        addDataNode(mrOutNode);
+
+                        // set target to tMROutput
+                        ((DataConnection) conn).setTarget(mrOutNode);
+
+                        // new hidden tMRInput
+                        IComponent mrInComponent = ComponentsFactoryProvider.getInstance().get(MRINPUT_COMPONENT_NAME);
+                        AbstractNode mrInNode = new DataNode(mrInComponent, "tMRInput_" + nextNode.getUniqueName());//$NON-NLS-1$
+                        mrInNode.getElementParameter("FOLDER").setValue( //$NON-NLS-1$
+                                folder);
+                        mrInNode.getElementParameter("TEMP_FOLDER").setValue( //$NON-NLS-1$
+                                startNode.getElementParameter("TEMP_FOLDER").getValue()); //$NON-NLS-1$
+                        mrInNode.setActivate(dataNode.isActivate());
+                        mrInNode.setStart(false);
+                        mrInNode.setSubProcessStart(true);
+                        mrInNode.setDesignSubjobStartNode(mrInNode);
+                        List<IMetadataTable> tMRInputMetadataList = new ArrayList<IMetadataTable>();
+                        IMetadataTable tMRInputMetadataTable = new MetadataTable();
+                        MetadataToolHelper.copyTable(connMetadataTable, tMRInputMetadataTable);
+                        tMRInputMetadataList.add(tMRInputMetadataTable);
+                        mrInNode.setMetadataList(tMRInputMetadataList);
+                        mrInNode.setProcess(dataNode.getProcess());
+                        List<IConnection> mrInNodeOutConnections = new ArrayList<IConnection>();
+                        List<IConnection> mrInNodeInConnections = new ArrayList<IConnection>();
+                        mrInNode.setIncomingConnections(mrInNodeInConnections);
+                        mrInNode.setOutgoingConnections(mrInNodeOutConnections);
+                        addDataNode(mrInNode);
+
+                        // new output connection for tMRInput
+                        DataConnection out4tMRInput = new DataConnection();
+                        out4tMRInput.setName("tMRInput_" + nextNode.getUniqueName());//$NON-NLS-1$
+                        out4tMRInput.setLineStyle(EConnectionType.FLOW_MAIN);
+                        out4tMRInput.setSource(mrInNode);
+                        out4tMRInput.setTarget(nextNode);
+                        out4tMRInput.setActivate(true);
+                        IMetadataTable connMRInputMetadataTable = new MetadataTable();
+                        MetadataToolHelper.copyTable(connMetadataTable, connMRInputMetadataTable);
+                        out4tMRInput.setMetadataTable(connMRInputMetadataTable);
+
+                        nextNodeInConns.add(out4tMRInput);
+
+                        mrInNodeOutConnections.add(out4tMRInput);
+                        // new onSubjobOk
+                        DataConnection onSubjobOK = new DataConnection();
+                        onSubjobOK.setName("tMRInput_onSubJobOK_" + dataNode.getUniqueName());//$NON-NLS-1$
+                        onSubjobOK.setLineStyle(EConnectionType.ON_SUBJOB_OK);
+                        onSubjobOK.setSource(startNode);
+                        onSubjobOK.setTarget(mrInNode);
+
+                        mrInNodeInConnections.add(onSubjobOK);
+
+                        // add onSubjobOk for start node
+                        // FIXME the hidden subjobOk should be in front of other subjob connection. but will behind of
+                        // the previous hidden subjobOK. now use name to distinguish, new connection type maybe better
+                        boolean find = false;
+                        boolean findSameConn = false;
+                        int index = 0;
+                        int outputID = 1;
+                        List<DataConnection> outgoingSortedConns = (List<DataConnection>) startNode
+                                .getOutgoingSortedConnections();
+                        if (outgoingSortedConns != null) {
+                            for (DataConnection outgoingSortedConn : outgoingSortedConns) {
+                                if (outgoingSortedConn.getLineStyle() == EConnectionType.ON_SUBJOB_OK) {
+                                    if (!outgoingSortedConn.getName().startsWith("tMRInput_onSubJobOK")) { //$NON-NLS-1$
+                                        outgoingSortedConn.setOutputId(outgoingSortedConn.getOutputId() + 1);
+                                    } else {
+                                        findSameConn = true;
+                                        if (outgoingSortedConn.getOutputId() == -1) {
+                                            outgoingSortedConn.setOutputId(1);
+                                        }
+                                        outputID = outgoingSortedConn.getOutputId() + 1;
+                                        index++;
+                                    }
+                                    find = true;
+                                } else if (outgoingSortedConn.getLineStyle() == EConnectionType.FLOW_MAIN) {
+                                    index++;
+                                }
+                            }
+                        } else {
+                            outgoingSortedConns = new ArrayList<DataConnection>();
+                        }
+                        if (findSameConn) {
+                            onSubjobOK.setOutputId(outputID);
+                        } else {
+                            if (find) {
+                                onSubjobOK.setOutputId(1);
+                            } else {
+                                onSubjobOK.setOutputId(-1);
+                            }
+                        }
+                        outgoingSortedConns.add(index, onSubjobOK);
+                        startNode.setOutgoingConnections(outgoingSortedConns);
+                    }
+                }
+            }
+        }
+        for (IConnection connection : graphicalNode.getOutgoingConnections()) {
+            if (connection.isActivate()) {
+                replaceMapReduceComponents(connection.getTarget());
             }
         }
     }
@@ -1533,6 +1701,7 @@ public class DataProcess {
         replaceNodeFromProviders(newGraphicalNodeList);
 
         // job settings extra (feature 2710)
+        // TODO for mapreduce codegen, ignore multiple components
         if (JobSettingsManager.isImplicittContextLoadActived(duplicatedProcess)) {
             List<DataNode> contextLoadNodes = JobSettingsManager.createExtraContextLoadNodes(duplicatedProcess);
             for (DataNode node : contextLoadNodes) {
@@ -1627,6 +1796,8 @@ public class DataProcess {
                 replaceForValidationRules(node);
             }
         }
+        // TODO for mapreduce codegen, ignore multiple components, but should be set this component not multiple rather
+        // than ignore this code
         for (INode node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 replaceMultipleComponents(node);
@@ -1641,6 +1812,11 @@ public class DataProcess {
         for (INode node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 replaceEltComponents(node);
+            }
+        }
+        for (INode node : newGraphicalNodeList) {
+            if (node.isSubProcessStart() && node.isActivate()) {
+                replaceMapReduceComponents(node);
             }
         }
 
@@ -1679,7 +1855,7 @@ public class DataProcess {
             }
 
             List<DataNode> statsAndLogsNodeList = JobSettingsManager.createStatsAndLogsNodes(duplicatedProcess);
-
+            // TODO for mapreduce codegen, ignore multiple components
             for (DataNode node : statsAndLogsNodeList) {
                 buildCheckMap.put(node, node);
                 addDataNode(node);
@@ -1716,6 +1892,7 @@ public class DataProcess {
         }
         checkRefList = null;
         checkMultipleMap = null;
+        checkMapReduceMap = null;
         checktUniteMap = null;
         buildCheckMap = null;
         buildGraphicalMap = null;
@@ -1992,7 +2169,7 @@ public class DataProcess {
         ref_dataConnec.setActivate(connection.isActivate());
         ref_dataConnec.setLineStyle(EConnectionType.FLOW_REF);
         ref_dataConnec.setMetadataTable(refMetadataTable);
-        ref_dataConnec.setName(joinNode.getUniqueName() + "_" + connection.getName());
+        ref_dataConnec.setName(joinNode.getUniqueName() + "_" + connection.getName());//$NON-NLS-1$
         ref_dataConnec.setSource(inputNode);
         ref_dataConnec.setTarget(joinNode);
         ref_dataConnec.setConnectorName("FLOW"); //$NON-NLS-1$
@@ -2142,10 +2319,10 @@ public class DataProcess {
         DataConnection dataConnection = null;
         if (isOutput) {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getIncomingConnections();
-            mainConnections = nodeUseValidationRule.getIncomingConnections("FLOW");
+            mainConnections = nodeUseValidationRule.getIncomingConnections("FLOW");//$NON-NLS-1$
         } else {
             validRuleConnections = (List<IConnection>) nodeUseValidationRule.getOutgoingConnections();
-            mainConnections = nodeUseValidationRule.getOutgoingConnections("FLOW");
+            mainConnections = nodeUseValidationRule.getOutgoingConnections("FLOW");//$NON-NLS-1$
         }
 
         if (validRuleConnections == null || validRuleConnections.size() == 0) {
@@ -2330,13 +2507,13 @@ public class DataProcess {
             boolean isDeleteEnable = true;
             if (action != null && action.getValue() != null) {
                 String value = String.valueOf(action.getValue());
-                if (!value.contains("INSERT")) {
+                if (!value.contains("INSERT")) {//$NON-NLS-1$
                     isInsertEnable = false;
                 }
-                if (!value.contains("UPDATE")) {
+                if (!value.contains("UPDATE")) {//$NON-NLS-1$
                     isUpdateEnable = false;
                 }
-                if (!value.contains("DELETE")) {
+                if (!value.contains("DELETE")) {//$NON-NLS-1$
                     isDeleteEnable = false;
                 }
                 if (!isInsertSelect && isInsertEnable) {
@@ -2412,7 +2589,7 @@ public class DataProcess {
             tabMap.put("LOOKUP_COLUMN", entry.getValue()); //$NON-NLS-1$
             list.add(tabMap);
         }
-        node.getElementParameter("JOIN_KEY").setValue(list);
+        node.getElementParameter("JOIN_KEY").setValue(list);//$NON-NLS-1$
     }
 
     private void updateInputParametersWithDBConnection(INode node, DatabaseConnection dbConnection) {
@@ -2498,8 +2675,8 @@ public class DataProcess {
     }
 
     private void changeForMultipleMergeComponents(INode graphicalNode) {
-        String hashMergeOutput = "tHashOutput";
-        String hashMergeInput = "tHashInput";
+        String hashMergeOutput = "tHashOutput";//$NON-NLS-1$
+        String hashMergeInput = "tHashInput";//$NON-NLS-1$
 
         INode mergeDataNode = buildCheckMap.get(graphicalNode);
 
@@ -2509,7 +2686,7 @@ public class DataProcess {
         if (hashMergeOutputComponent == null || hashMergeInputComponent == null) {
             return;
         }
-        String hashOutputUniqueName = hashMergeOutput + "_" + mergeDataNode.getUniqueName();
+        String hashOutputUniqueName = hashMergeOutput + "_" + mergeDataNode.getUniqueName();//$NON-NLS-1$
 
         // Merge components should have only one output row MAIN in all case, but can have a lookup row also in case of
         // tMap just after.
@@ -2977,7 +3154,7 @@ public class DataProcess {
                     return node;
                 }
             }
-            
+
             getNodeList().add(dataNode);
         }
         return dataNode;
