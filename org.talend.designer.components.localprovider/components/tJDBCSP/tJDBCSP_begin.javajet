@@ -25,7 +25,7 @@ List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterPa
 %>
 <%
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-	if(("true").equals(useExistingConn)){
+if(("true").equals(useExistingConn)){
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 		String conn = "conn_" + connection;
 %>
@@ -43,9 +43,9 @@ List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterPa
 %> 
 		java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES); 
 		connection_<%=cid %> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
-	
+	}
 <%
-	}else{       
+}else{       
 %>
 		java.sql.Connection connection_<%=cid %> = null;
 		java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
@@ -60,7 +60,7 @@ List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterPa
 			connection_<%=cid %> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser %>, <%=dbpwd %>);
 		}
 <%
-	}
+}
 %>
 
 java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{<%=isFunction ? "? = " : ""%>call " + <%=spName%> + "(
