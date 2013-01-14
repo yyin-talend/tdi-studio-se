@@ -328,7 +328,6 @@ public final class UpdateManagerUtils {
                                     continue;
                                 }
                                 item = currentObj.getProperty().getItem();
-
                                 IDesignerCoreService designerCoreService = CorePlugin.getDefault().getDesignerCoreService();
                                 if (item instanceof ProcessItem) {
                                     process = designerCoreService.getProcessFromProcessItem((ProcessItem) item);
@@ -345,7 +344,13 @@ public final class UpdateManagerUtils {
                                     continue; // not the current job we need to update
                                 }
                                 if (closedItem) {
-                                    result.setJob(process);
+                                    if (result.getUpdateType() == EUpdateItemType.JOBLET_RENAMED) {
+                                        if (result.getJob() == null) {
+                                            result.setJob(process);
+                                        } else {
+                                            process = (IProcess) result.getJob();
+                                        }
+                                    }
 
                                     if (process != null && (result.getUpdateType() == EUpdateItemType.JOBLET_CONTEXT)) {
                                         if ((result.getParameter() instanceof List) && process.getContextManager() != null) {
