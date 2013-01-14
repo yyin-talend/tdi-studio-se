@@ -21,6 +21,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.talend.commons.ui.runtime.image.ECoreImage;
+import org.talend.commons.ui.runtime.image.IImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
@@ -89,16 +90,20 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
                 if (getProcess() == null) {
                     return;
                 }
-                InformationLevel level = getProcess().getProperty().getMaxInformationLevel();
+                Property property = getProcess().getProperty();
+                InformationLevel level = property.getMaxInformationLevel();
+                image = ImageProvider.getImage(getEditorTitleImage());
                 if (level.equals(InformationLevel.ERROR_LITERAL)) {
-                    image = OverlayImageProvider.getImageWithError(ImageProvider.getImage(ECoreImage.PROCESS_ICON)).createImage();
-                } else {
-                    image = ImageProvider.getImage(ECoreImage.PROCESS_ICON);
+                    image = OverlayImageProvider.getImageWithError(image).createImage();
                 }
                 setTitleImage(image);
             }
 
         });
+    }
+
+    protected IImage getEditorTitleImage() {
+        return ECoreImage.PROCESS_ICON;
     }
 
     /**
