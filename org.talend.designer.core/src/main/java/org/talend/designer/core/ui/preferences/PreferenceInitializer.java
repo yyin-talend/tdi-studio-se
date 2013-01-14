@@ -77,7 +77,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         // see feature 7758 add project dir to COMP_DEFAULT_PROJECT_DIR.
         if (ProjectManager.getInstance().getCurrentProject() != null) {
             store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_PROJECT_DIR, Platform.getLocation().toPortableString()
-                    + "/" + ProjectManager.getInstance().getCurrentProject().getLabel());
+                    + "/" + ProjectManager.getInstance().getCurrentProject().getTechnicalLabel());
         }
         store.setDefault(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, false);
         store.setDefault(TalendDesignerPrefConstants.LARGE_ICONS_SIZE, "24"); //$NON-NLS-1$
