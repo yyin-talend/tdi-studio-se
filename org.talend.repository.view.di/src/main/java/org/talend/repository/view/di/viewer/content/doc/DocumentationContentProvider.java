@@ -39,13 +39,14 @@ public class DocumentationContentProvider extends ProjectRepoDirectChildrenNodeC
         return ERepositoryObjectType.DOCUMENTATION;
     }
 
+    @Override
     protected void resetTopLevelNode(RepositoryNode topLevelNode) {
         super.resetTopLevelNode(topLevelNode);
 
         if (topLevelNode != null) {
             IRepositoryNode generatedNode = topLevelNode.getRoot().getRootRepositoryNode(ERepositoryObjectType.GENERATED);
             if (generatedNode != null) {
-                if (!topLevelNode.getChildren().contains(topLevelNode)) {
+                if (!topLevelNode.getChildren().contains(generatedNode)) {
                     topLevelNode.getChildren().add(generatedNode); // add back
                 }
                 // add for bug TDI-21013
