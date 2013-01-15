@@ -108,6 +108,8 @@ public class DataProcess {
 
     private static final String MROUTPUT_COMPONENT_NAME = "tMROutput"; //$NON-NLS-1$
 
+    private static final String MRCONFIG_COMPONENT_NAME = "tMRConfiguration"; //$NON-NLS-1$
+
     private Map<INode, INode> buildCheckMap = null;
 
     private Map<String, INode> parallCheckMap = null;
@@ -1230,7 +1232,7 @@ public class DataProcess {
         }
     }
 
-    private void replaceMapReduceComponents(INode graphicalNode) {
+    private void replaceMapReduceComponents(INode graphicalNode, INode configNode) {
         if (checkMapReduceMap.containsKey(graphicalNode)) {
             return;
         }
@@ -1258,7 +1260,12 @@ public class DataProcess {
                         // get the start node
                         INode startNode = dataNode.getDesignSubjobStartNode();
                         // TODO assign properly
-                        String folder = "\"" + TalendQuoteUtils.removeQuotes(startNode.getElementParameter("TEMP_FOLDER").getValue().toString()) + "/tmp/" + "tMROutput_" + dataNode.getUniqueName() + "\"";//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ 
+                        String folderTemp = ""; //$NON-NLS-1$
+                        if (configNode != null) {
+                            folderTemp = TalendQuoteUtils.removeQuotes(configNode.getElementParameter("TEMP_FOLDER").getValue() //$NON-NLS-1$
+                                    .toString());
+                        }
+                        String folder = "\"" + folderTemp + "/tmp/" + "tMROutput_" + dataNode.getUniqueName() + "\"";//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
 
                         // get next node
                         DataNode nextNode = (DataNode) conn.getTarget();
@@ -1297,8 +1304,6 @@ public class DataProcess {
                         AbstractNode mrInNode = new DataNode(mrInComponent, "tMRInput_" + nextNode.getUniqueName());//$NON-NLS-1$
                         mrInNode.getElementParameter("FOLDER").setValue( //$NON-NLS-1$
                                 folder);
-                        mrInNode.getElementParameter("TEMP_FOLDER").setValue( //$NON-NLS-1$
-                                startNode.getElementParameter("TEMP_FOLDER").getValue()); //$NON-NLS-1$
                         mrInNode.setActivate(dataNode.isActivate());
                         mrInNode.setStart(false);
                         mrInNode.setSubProcessStart(true);
@@ -1385,7 +1390,7 @@ public class DataProcess {
         }
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
             if (connection.isActivate()) {
-                replaceMapReduceComponents(connection.getTarget());
+                replaceMapReduceComponents(connection.getTarget(), configNode);
             }
         }
     }
@@ -1803,6 +1808,23 @@ public class DataProcess {
                 replaceMultipleComponents(node);
             }
         }
+        INode configNode = null;
+        for (INode node : newGraphicalNodeList) {
+            if (node.isSubProcessStart() && node.isActivate()) {
+                if (node.getComponent().getName().equals(MRCONFIG_COMPONENT_NAME)) {
+                    configNode = node;
+                    break;
+                }
+            }
+        }
+
+        for (INode node : newGraphicalNodeList) {
+            if (node.isSubProcessStart() && node.isActivate()) {
+                if (!node.getComponent().getName().equals(MRCONFIG_COMPONENT_NAME)) {
+                    replaceMapReduceComponents(node, configNode);
+                }
+            }
+        }
         for (INode node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 replaceFileScalesComponents(node);
@@ -1812,11 +1834,6 @@ public class DataProcess {
         for (INode node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 replaceEltComponents(node);
-            }
-        }
-        for (INode node : newGraphicalNodeList) {
-            if (node.isSubProcessStart() && node.isActivate()) {
-                replaceMapReduceComponents(node);
             }
         }
 
