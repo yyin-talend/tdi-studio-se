@@ -792,11 +792,13 @@ public class ComponentBuilder {
                 // }
                 if (xmlSchemaElement.getSchemaTypeName() != null) {
                     String elementTypeName = xmlSchemaElement.getSchemaTypeName().getLocalPart();
+                    if (elementTypeName != null && elementTypeName.equals("anyType")) {
+                        parameterSon.setName(xmlSchemaElement.getName() + ":anyType");
+                    }
                     parameterSon.setType(elementTypeName);
                     if (!isHave && !WsdlTypeUtil.isJavaBasicType(elementTypeName)) {
                         buileParameterFromTypes(elementTypeName, parameterSon, ioOrRecursion);
                     }
-
                 } else if (xmlSchemaElement.getSchemaType() != null) {
                     if (xmlSchemaElement.getSchemaType() instanceof XmlSchemaComplexType) {
                         XmlSchemaComplexType xmlElementComplexType = (XmlSchemaComplexType) xmlSchemaElement.getSchemaType();
