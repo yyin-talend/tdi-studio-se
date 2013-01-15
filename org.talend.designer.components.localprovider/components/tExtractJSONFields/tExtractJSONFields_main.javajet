@@ -103,13 +103,13 @@ if (outConn!=null) {
     String oraginalJsonStr_<%=cid %> = jsonStr_<%=cid%>;
     cjs_<%=cid %>.setJsonString(jsonStr_<%=cid %>);
     cjs_<%=cid %>.setLoopString(loopQuery_<%=cid %>);
-    cjs_<%=cid %>.generate();
-    jsonStr_<%=cid %> = cjs_<%=cid %>.getJsonString4XML();
-    loopQuery_<%=cid %> = cjs_<%=cid %>.getLoopString4XML();
-    
-    java.io.ByteArrayInputStream bais_<%=cid %> = new ByteArrayInputStream(jsonStr_<%=cid%>.getBytes());
+    java.io.ByteArrayInputStream bais_<%=cid %> = null;
     java.io.ByteArrayOutputStream  baos_<%=cid %> = new java.io.ByteArrayOutputStream();
     try {
+        cjs_<%=cid %>.generate();
+        jsonStr_<%=cid %> = cjs_<%=cid %>.getJsonString4XML();
+        loopQuery_<%=cid %> = cjs_<%=cid %>.getLoopString4XML();
+        bais_<%=cid %> = new ByteArrayInputStream(jsonStr_<%=cid%>.getBytes());
         javax.xml.stream.XMLEventReader xmlEventReader_<%=cid %> = jsonXMLInputFactory_<%=cid %>.createXMLEventReader(bais_<%=cid %>);
         javax.xml.stream.XMLEventWriter xmLEventWriter_<%=cid %> = xmlOutputFactory_<%=cid %>.createXMLEventWriter(baos_<%=cid %>);
         xmLEventWriter_<%=cid %>.add(xmlEventReader_<%=cid %>);
@@ -172,7 +172,9 @@ if (outConn!=null) {
 %>
     }finally {
         baos_<%=cid %>.close();
-        bais_<%=cid %>.close();
+        if(bais_<%=cid %>!=null){
+            bais_<%=cid %>.close();
+        }
     }
     
     org.dom4j.Node node_<%=cid %> = null;
