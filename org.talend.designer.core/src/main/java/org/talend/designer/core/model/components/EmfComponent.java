@@ -3581,6 +3581,15 @@ public class EmfComponent extends AbstractComponent {
      */
     @Override
     public String getType() {
+        if (compType == null) {
+            isLoaded = false;
+            try {
+                load();
+            } catch (BusinessException e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+        }
         return compType.getHEADER().getTYPE();
     }
 
