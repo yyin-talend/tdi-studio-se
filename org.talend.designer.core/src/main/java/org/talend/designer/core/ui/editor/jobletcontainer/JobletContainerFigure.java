@@ -136,18 +136,6 @@ public class JobletContainerFigure extends Figure {
             if (startNode != null && editor != null) {
                 editor.selectNode(startNode);
             }
-        } else {
-            if (!jobletContainer.getNode().isActivate()) {
-                if (jobletContainer.getNode().getIncomingConnections() != null
-                        && jobletContainer.getNode().getIncomingConnections().size() > 0
-                        && (jobletContainer.getNode().getOutgoingConnections() == null || jobletContainer.getNode()
-                                .getOutgoingConnections().size() == 0)) {
-                    for (int i = 0; i < jobletContainer.getNode().getIncomingConnections().size(); i++) {
-                        jobletContainer.getNode().getIncomingConnections().get(i)
-                                .setPropertyValue(EParameterName.ACTIVATE.getName(), jobletContainer.getNode().isActivate());
-                    }
-                }
-            }
         }
     }
 
