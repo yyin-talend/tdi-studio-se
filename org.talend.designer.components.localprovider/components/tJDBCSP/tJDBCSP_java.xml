@@ -74,7 +74,7 @@
     <PARAMETER
       NAME="DRIVER_JAR"
       FIELD="TABLE"
-      NUM_ROW="25"
+      NUM_ROW="22"
       NB_LINES="2"
       REPOSITORY_VALUE="DRIVER_JAR"
       REQUIRED="true"
