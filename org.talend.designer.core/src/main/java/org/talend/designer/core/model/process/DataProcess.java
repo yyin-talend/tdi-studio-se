@@ -1247,13 +1247,13 @@ public class DataProcess {
 
             boolean needReduce = currentComponent.getComponent().isReduce();
 
-            if (!currentComponent.getComponent().getName().equals(MRINPUT_COMPONENT_NAME)
-                    && !currentComponent.getComponent().getName().equals(MROUTPUT_COMPONENT_NAME)) {
+            if (!currentComponent.getIncomingConnections(EConnectionType.FLOW_MAIN).isEmpty()
+                    && !currentComponent.getOutgoingConnections(EConnectionType.FLOW_MAIN).isEmpty()) {
                 List<? extends IConnection> outConns = dataNode.getOutgoingSortedConnections();
                 if (outConns != null && outConns.size() > 0) {
                     IConnection conn = outConns.get(0);
                     if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
-                            && !conn.getTarget().getComponent().getName().equals(MROUTPUT_COMPONENT_NAME) && needReduce) {
+                            && !conn.getTarget().getOutgoingConnections(EConnectionType.FLOW_MAIN).isEmpty() && needReduce) {
                         // get metadata from connection
                         IMetadataTable connMetadataTable = conn.getMetadataTable();
 
