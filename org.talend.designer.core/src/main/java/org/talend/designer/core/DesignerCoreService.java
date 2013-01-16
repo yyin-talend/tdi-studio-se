@@ -80,7 +80,6 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
 import org.talend.designer.core.ui.editor.process.ConvertRepositoryNodeToProcessNode;
 import org.talend.designer.core.ui.editor.process.JobTemplateViewsAndProcessUtil;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.GefEditorLabelProvider;
 import org.talend.designer.core.ui.editor.properties.RepositoryValueUtils;
 import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
@@ -366,6 +365,7 @@ public class DesignerCoreService implements IDesignerCoreService {
      * 
      * @see org.talend.designer.core.IDesignerCoreService#executeUpdatesManager(java.util.List)
      */
+    @Override
     public boolean executeUpdatesManager(List<UpdateResult> results, boolean onlySimpleShow) {
         return UpdateManagerUtils.executeUpdates(results, onlySimpleShow, true);
     }

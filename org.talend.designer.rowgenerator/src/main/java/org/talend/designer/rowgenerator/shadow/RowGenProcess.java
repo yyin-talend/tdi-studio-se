@@ -21,6 +21,7 @@ import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
@@ -220,10 +221,12 @@ public class RowGenProcess extends Element implements IProcess {
         return this.elem;
     }
 
+    @Override
     public List<? extends INode> getGraphicalNodes() {
         return nodes;
     }
 
+    @Override
     public List<? extends INode> getGeneratingNodes() {
         return nodes;
     }
@@ -273,6 +276,7 @@ public class RowGenProcess extends Element implements IProcess {
 
     }
 
+    @Override
     public boolean isReadOnly() {
         return readOnly;
     }
@@ -281,11 +285,13 @@ public class RowGenProcess extends Element implements IProcess {
         this.setReadOnly(false);
     }
 
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @Override
+    @SuppressWarnings("unchecked")
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
     }
 
+    @Override
     public String getName() {
         return this.getProperty().getLabel();
     }
@@ -304,6 +310,7 @@ public class RowGenProcess extends Element implements IProcess {
      * 
      * @see org.talend.core.model.process.IRepositoryProcess#getId()
      */
+    @Override
     public String getId() {
         return getProperty().getId();
     }
@@ -331,6 +338,7 @@ public class RowGenProcess extends Element implements IProcess {
      * 
      * @see org.talend.core.model.process.IRepositoryProcess#getVersion()
      */
+    @Override
     public String getVersion() {
         return getProperty().getVersion();
     }
@@ -384,6 +392,7 @@ public class RowGenProcess extends Element implements IProcess {
         return activate;
     }
 
+    @Override
     public void setActivate(boolean activate) {
         this.activate = activate;
     }
@@ -396,6 +405,7 @@ public class RowGenProcess extends Element implements IProcess {
      * @param checkEsists
      * @return true if the name is unique
      */
+    @Override
     public boolean checkValidConnectionName(String connectionName, boolean checkExists) {
         return true;
     }
@@ -407,6 +417,7 @@ public class RowGenProcess extends Element implements IProcess {
      * @param uniqueName
      * @return true if the name is unique
      */
+    @Override
     public boolean checkValidConnectionName(String connectionName) {
         return checkValidConnectionName(connectionName, true);
     }
@@ -416,6 +427,7 @@ public class RowGenProcess extends Element implements IProcess {
      * 
      * @param titleName
      */
+    @Override
     public String generateUniqueConnectionName(String baseName) {
         if (baseName == null) {
             throw new IllegalArgumentException(Messages.getString("RowGenProcess.BeseName.BeNull")); //$NON-NLS-1$
@@ -434,6 +446,7 @@ public class RowGenProcess extends Element implements IProcess {
         return uniqueName;
     }
 
+    @Override
     public void addUniqueConnectionName(String uniqueConnectionName) {
         if (uniqueConnectionName != null) {
             if (checkValidConnectionName(uniqueConnectionName)) {
@@ -445,6 +458,7 @@ public class RowGenProcess extends Element implements IProcess {
         }
     }
 
+    @Override
     public void removeUniqueConnectionName(String uniqueConnectionName) {
         if (uniqueConnectionName != null) {
             uniqueConnectionNameList.remove(uniqueConnectionName);
@@ -494,6 +508,7 @@ public class RowGenProcess extends Element implements IProcess {
      * @param propagate
      */
 
+    @Override
     public String toString() {
         return "Process:" + getLabel(); //$NON-NLS-1$
     }
@@ -502,6 +517,7 @@ public class RowGenProcess extends Element implements IProcess {
         return ERepositoryObjectType.PROCESS;
     }
 
+    @Override
     public IContextManager getContextManager() {
         return contextManager;
     }
@@ -558,6 +574,7 @@ public class RowGenProcess extends Element implements IProcess {
      * @param componentName the component name
      * @return all the activated matching nodes in the process
      */
+    @Override
     public List<? extends INode> getNodesOfType(String componentName) {
         return new ArrayList<INode>();
     }
@@ -567,6 +584,7 @@ public class RowGenProcess extends Element implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#getAllConnections(java.lang.String)
      */
+    @Override
     public IConnection[] getAllConnections(String filter) {
         return new IConnection[0];
     }
@@ -596,6 +614,7 @@ public class RowGenProcess extends Element implements IProcess {
 
     }
 
+    @Override
     public Set<String> getNeededLibraries(boolean withChildrens) {
         // TODO Auto-generated method stub
         return null;
@@ -606,6 +625,7 @@ public class RowGenProcess extends Element implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#getMergelinkOrder(org.talend.core.model.process.INode)
      */
+    @Override
     public int getMergelinkOrder(INode node) {
         // TODO Auto-generated method stub
         return 0;
@@ -616,6 +636,7 @@ public class RowGenProcess extends Element implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#isThereLinkWithHash(org.talend.core.model.process.INode)
      */
+    @Override
     public boolean isThereLinkWithHash(INode node) {
         // TODO Auto-generated method stub
         return false;
@@ -636,6 +657,7 @@ public class RowGenProcess extends Element implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#getNodesWithImport()
      */
+    @Override
     public List<INode> getNodesWithImport() {
         // TODO Auto-generated method stub
         return null;
@@ -687,6 +709,7 @@ public class RowGenProcess extends Element implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#isNeedRegenerateCode()
      */
+    @Override
     public boolean isNeedRegenerateCode() {
         // TODO Auto-generated method stub
         return false;
@@ -697,6 +720,7 @@ public class RowGenProcess extends Element implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#setNeedRegenerateCode(boolean)
      */
+    @Override
     public void setNeedRegenerateCode(boolean regenerateCode) {
         // TODO Auto-generated method stub
 
@@ -707,6 +731,7 @@ public class RowGenProcess extends Element implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#getOutputMetadataTable()
      */
+    @Override
     public IMetadataTable getOutputMetadataTable() {
         // TODO Auto-generated method stub
         return null;
@@ -762,21 +787,25 @@ public class RowGenProcess extends Element implements IProcess {
         return false;
     }
 
+    @Override
     public void checkStartNodes() {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public boolean isDuplicate() {
         // TODO Auto-generated method stub
         return false;
     }
 
+    @Override
     public void setContextManager(IContextManager contextManager) {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void setDuplicate(boolean duplicate) {
         // TODO Auto-generated method stub
 
@@ -787,7 +816,18 @@ public class RowGenProcess extends Element implements IProcess {
 
     }
 
+    @Override
     public Set<String> getNeededRoutines() {
         return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#getComponentsType()
+     */
+    @Override
+    public String getComponentsType() {
+        return ComponentCategory.CATEGORY_4_DI.getName();
     }
 }

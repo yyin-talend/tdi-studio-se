@@ -67,6 +67,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContextManager;
@@ -228,13 +229,15 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
 
     private Set<String> neededRoutines;
 
+    private String componentsType;
+
     public Process(Property property) {
         this.property = property;
         contextManager = new JobContextManager();
         updateManager = new ProcessUpdateManager(this);
         createProcessParameters();
         init();
-        //
+        componentsType = ComponentCategory.CATEGORY_4_DI.getName();
     }
 
     @Override
@@ -1804,7 +1807,7 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         for (int i = 0; i < nodeList.size(); i++) {
             nType = (NodeType) nodeList.get(i);
             listParamType = nType.getElementParameter();
-            IComponent component = ComponentsFactoryProvider.getInstance().get(nType.getComponentName());
+            IComponent component = ComponentsFactoryProvider.getInstance().get(nType.getComponentName(), componentsType);
             if (component == null) {
                 unloadedNode.add(nType);
                 continue;
@@ -3966,5 +3969,25 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
     public String getSpringContent() {
         return null;
     }
+
     // END TESB-7887
+
+    /**
+     * Getter for componentsType.
+     * 
+     * @return the componentsType
+     */
+    public String getComponentsType() {
+        return this.componentsType;
+    }
+
+    /**
+     * Sets the componentsType.
+     * 
+     * @param componentsType the componentsType to set
+     */
+    public void setComponentsType(String componentsType) {
+        this.componentsType = componentsType;
+    }
+
 }

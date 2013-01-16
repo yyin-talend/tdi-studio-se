@@ -3098,6 +3098,7 @@ public class DataProcess {
             property.setId(graphicalNodeList.get(0).getProcess().getId() + "_generated");
         }
         duplicatedProcess = new Process(property);
+        ((Process) duplicatedProcess).setComponentsType(process.getComponentsType());
         duplicatedProcess.setDuplicate(true);
         duplicatedProcess.setActivate(false);
         ((Process) duplicatedProcess).setGeneratingProcess(this);

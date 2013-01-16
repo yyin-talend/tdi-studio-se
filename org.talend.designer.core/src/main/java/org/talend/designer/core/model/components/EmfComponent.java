@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -91,7 +92,6 @@ import org.talend.designer.components.IComponentsLocalProviderService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.model.components.manager.ComponentManager;
 import org.talend.designer.core.model.utils.emf.component.ADVANCEDPARAMETERSType;
 import org.talend.designer.core.model.utils.emf.component.ARGType;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
@@ -226,13 +226,29 @@ public class EmfComponent extends AbstractComponent {
             getPluginDependencies();
             getTranslatedFamilyName();
             getRepositoryType();
+            getType();
             info.setUriString(uriString);
             info.setSourceBundleName(bundleId);
             info.setPathSource(pathSource);
-            cache.getComponentEntryMap().put(getName(), info);
+
+            if (!cache.getComponentEntryMap().containsKey(getName())) {
+                cache.getComponentEntryMap().put(getName(), new BasicEList<ComponentInfo>());
+            }
+            EList<ComponentInfo> componentsInfo = cache.getComponentEntryMap().get(getName());
+            componentsInfo.add(info);
             isAlreadyLoad = true;
         } else {
-            info = cache.getComponentEntryMap().get(getName());
+            EList<ComponentInfo> componentsInfo = cache.getComponentEntryMap().get(getName());
+            for (ComponentInfo cInfo : componentsInfo) {
+                if (cInfo.getSourceBundleName().equals(bundleId)) {
+                    info = cInfo;
+                    break;
+                }
+            }
+            if (info == null) {
+                throw new BusinessException("Component " + name + " not found in cache for bundle " + bundleId //$NON-NLS-1$ //$NON-NLS-2$
+                        + ". Please reinitalize the cache."); //$NON-NLS-1$
+            }
             isLoaded = true;
         }
     }
@@ -2223,9 +2239,7 @@ public class EmfComponent extends AbstractComponent {
             if (info != null) {
                 originalFamilyName = info.getOriginalFamilyName();
             } else {
-                if (ComponentManager.getInstance().getComponentEntryMap().get(getName()) != null) {
-                    ComponentManager.getInstance().getComponentEntryMap().get(getName()).getOriginalFamilyName();
-                }
+                System.out.println("bug?"); //$NON-NLS-1$
             }
         }
         return originalFamilyName;
@@ -2675,9 +2689,7 @@ public class EmfComponent extends AbstractComponent {
             info.setVersion(version);
         } else {
             if (info == null) {
-                if (ComponentManager.getInstance().getComponentEntryMap().get(getName()) != null) {
-                    ComponentManager.getInstance().getComponentEntryMap().get(getName()).getVersion();
-                }
+                System.out.println("bug?"); //$NON-NLS-1$
             } else {
                 version = info.getVersion();
             }
@@ -3110,9 +3122,7 @@ public class EmfComponent extends AbstractComponent {
             if (info != null) {
                 pluginDependencyList = info.getPluginDependencies();
             } else {
-                if (ComponentManager.getInstance().getComponentEntryMap().get(getName()) != null) {
-                    ComponentManager.getInstance().getComponentEntryMap().get(getName()).getPluginDependencies();
-                }
+                System.out.println("bug?"); //$NON-NLS-1$
             }
         }
         return pluginDependencyList;
@@ -3581,16 +3591,25 @@ public class EmfComponent extends AbstractComponent {
      */
     @Override
     public String getType() {
-        if (compType == null) {
+        String type = null;
+        if (!isAlreadyLoad) {
             isLoaded = false;
             try {
                 load();
             } catch (BusinessException e) {
-                // TODO Auto-generated catch block
                 ExceptionHandler.process(e);
             }
+            info.setType(compType.getHEADER().getTYPE());
+            type = compType.getHEADER().getTYPE();
+        } else {
+            if (info != null) {
+                type = info.getType();
+            }
         }
-        return compType.getHEADER().getTYPE();
+        if (type == null) {
+            return super.getType();
+        }
+        return type;
     }
 
     /**

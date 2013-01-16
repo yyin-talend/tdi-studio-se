@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
 import org.eclipse.gef.palette.CreationToolEntry;
 import org.eclipse.gef.palette.PaletteContainer;
@@ -40,14 +39,10 @@ import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.TalendPaletteGroup;
-import org.talend.core.model.process.IProcess;
-import org.talend.core.model.process.IProcess2;
-import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.IPaletteFilter;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
-import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.NoteCreationFactory;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
@@ -100,26 +95,8 @@ public final class TalendEditorPaletteFactory {
 
         // Added by Marvin Wang on Jan. 10, 2012
         if (compFac.getComponentsHandler() != null) {
-            componentList = compFac.getComponentsHandler().filterComponents(compFac.getComponents());
+            componentList = compFac.getComponentsHandler().filterComponents(componentList);
             compFac.getComponentsHandler().sortComponents(componentList);
-        }
-
-        IProcess process = ActiveProcessTracker.getCurrentProcess();
-        ERepositoryObjectType type = null;
-        if (process != null && process instanceof IProcess2 && ((IProcess2) process).getProperty() != null) {
-            type = ERepositoryObjectType.getItemType(((IProcess2) process).getProperty().getItem());
-        }
-
-        if (type == null) {
-            return;
-        }
-
-        Iterator<IComponent> iterator = componentList.iterator();
-        while (iterator.hasNext()) {
-            IComponent comp = iterator.next();
-            if (!ArrayUtils.contains(type.getProducts(), comp.getPaletteType())) {
-                iterator.remove();
-            }
         }
 
         Collections.sort(componentList, new Comparator<IComponent>() {
@@ -316,26 +293,8 @@ public final class TalendEditorPaletteFactory {
 
         // Added by Marvin Wang on Jan. 10, 2012
         if (compFac.getComponentsHandler() != null) {
-            componentList = compFac.getComponentsHandler().filterComponents(compFac.getComponents());
+            componentList = compFac.getComponentsHandler().filterComponents(componentList);
             componentList = compFac.getComponentsHandler().sortComponents(componentList);
-        }
-
-        IProcess process = ActiveProcessTracker.getCurrentProcess();
-        ERepositoryObjectType type = null;
-        if (process != null && process instanceof IProcess2 && ((IProcess2) process).getProperty() != null) {
-            type = ERepositoryObjectType.getItemType(((IProcess2) process).getProperty().getItem());
-        }
-
-        if (type == null) {
-            return;
-        }
-
-        Iterator<IComponent> iterator = componentList.iterator();
-        while (iterator.hasNext()) {
-            IComponent comp = iterator.next();
-            if (!ArrayUtils.contains(type.getProducts(), comp.getPaletteType())) {
-                iterator.remove();
-            }
         }
 
         Collections.sort(componentList, new Comparator<IComponent>() {

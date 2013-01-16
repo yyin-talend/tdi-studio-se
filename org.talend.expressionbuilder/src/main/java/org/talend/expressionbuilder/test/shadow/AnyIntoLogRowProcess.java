@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
@@ -81,6 +82,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#addUniqueConnectionName(java.lang.String)
      */
+    @Override
     public void addUniqueConnectionName(String uniqueConnectionName) {
         // TODO Auto-generated method stub
 
@@ -91,6 +93,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#checkValidConnectionName(java.lang.String)
      */
+    @Override
     public boolean checkValidConnectionName(String connectionName) {
         // TODO Auto-generated method stub
         return false;
@@ -101,6 +104,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#checkValidConnectionName(java.lang.String, boolean)
      */
+    @Override
     public boolean checkValidConnectionName(String connectionName, boolean checkExists) {
         // TODO Auto-generated method stub
         return false;
@@ -111,6 +115,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#generateUniqueConnectionName(java.lang.String)
      */
+    @Override
     public String generateUniqueConnectionName(String baseName) {
         // TODO Auto-generated method stub
         return null;
@@ -121,6 +126,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#getAllConnections(java.lang.String)
      */
+    @Override
     public IConnection[] getAllConnections(String filter) {
         return null;
     }
@@ -130,6 +136,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#getContextManager()
      */
+    @Override
     public IContextManager getContextManager() {
         return contextManager;
     }
@@ -139,6 +146,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#getGeneratingNodes()
      */
+    @Override
     public List<? extends INode> getGeneratingNodes() {
         return getGraphicalNodes();
     }
@@ -148,6 +156,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#getGraphicalNodes()
      */
+    @Override
     public List<? extends INode> getGraphicalNodes() {
 
         return Arrays.asList(new INode[] { inNode, outNode });
@@ -159,6 +168,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#getName()
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -168,6 +178,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#getNeededLibraries(boolean)
      */
+    @Override
     public Set<String> getNeededLibraries(boolean withChildrens) {
         // TODO Auto-generated method stub
         return null;
@@ -178,6 +189,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#getNodesOfType(java.lang.String)
      */
+    @Override
     public List<? extends INode> getNodesOfType(String componentName) {
         List<INode> matchingNodes = new ArrayList<INode>();
         if ((inNode != null) && (inNode.getComponentName() != null) && (inNode.getComponentName().compareTo(componentName) == 0)) {
@@ -205,6 +217,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#removeUniqueConnectionName(java.lang.String)
      */
+    @Override
     public void removeUniqueConnectionName(String uniqueConnectionName) {
         // TODO Auto-generated method stub
 
@@ -265,6 +278,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.repository.IRepositoryObject#getId()
      */
+    @Override
     public String getId() {
         return ""; //$NON-NLS-1$
     }
@@ -333,6 +347,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.repository.IRepositoryObject#getVersion()
      */
+    @Override
     public String getVersion() {
         // TODO Auto-generated method stub
         return null;
@@ -443,6 +458,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IElement#getElementParameter(java.lang.String)
      */
+    @Override
     public IElementParameter getElementParameter(String name) {
         // TODO Auto-generated method stub
         return null;
@@ -453,6 +469,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IElement#getElementParameters()
      */
+    @Override
     public List<? extends IElementParameter> getElementParameters() {
         return new ArrayList<IElementParameter>();
     }
@@ -462,6 +479,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IElement#isReadOnly()
      */
+    @Override
     public boolean isReadOnly() {
         // TODO Auto-generated method stub
         return false;
@@ -472,6 +490,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IElement#setElementParameters(java.util.List)
      */
+    @Override
     public void setElementParameters(List<? extends IElementParameter> elementsParameters) {
         // TODO Auto-generated method stub
 
@@ -482,6 +501,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IElement#setReadOnly(boolean)
      */
+    @Override
     public void setReadOnly(boolean readOnly) {
         // TODO Auto-generated method stub
 
@@ -492,6 +512,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#getMergelinkOrder(org.talend.core.model.process.INode)
      */
+    @Override
     public int getMergelinkOrder(INode node) {
         // TODO Auto-generated method stub
         return 0;
@@ -502,6 +523,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#isThereLinkWithHash(org.talend.core.model.process.INode)
      */
+    @Override
     public boolean isThereLinkWithHash(INode node) {
         // TODO Auto-generated method stub
         return false;
@@ -522,11 +544,13 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#getNodesWithImport()
      */
+    @Override
     public List<INode> getNodesWithImport() {
         // TODO Auto-generated method stub
         return null;
     }
 
+    @Override
     public List<? extends IElementParameter> getElementParametersWithChildrens() {
         return getElementParameters();
     }
@@ -577,6 +601,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#isNeedRegenerateCode()
      */
+    @Override
     public boolean isNeedRegenerateCode() {
         // TODO Auto-generated method stub
         return false;
@@ -587,6 +612,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#setNeedRegenerateCode(boolean)
      */
+    @Override
     public void setNeedRegenerateCode(boolean regenerateCode) {
         // TODO Auto-generated method stub
 
@@ -597,6 +623,7 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IProcess#getOutputMetadataTable()
      */
+    @Override
     public IMetadataTable getOutputMetadataTable() {
         // TODO Auto-generated method stub
         return null;
@@ -669,30 +696,36 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
      * 
      * @see org.talend.core.model.process.IElement#getElementName()
      */
+    @Override
     public String getElementName() {
         return getLabel();
     }
 
+    @Override
     public void checkStartNodes() {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public boolean isDuplicate() {
         // TODO Auto-generated method stub
         return false;
     }
 
+    @Override
     public void setActivate(boolean activate) {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void setContextManager(IContextManager contextManager) {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void setDuplicate(boolean duplicate) {
         // TODO Auto-generated method stub
 
@@ -703,33 +736,49 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
 
     }
 
+    @Override
     public IElementParameter getElementParameterFromField(EParameterFieldType dbtable) {
         // TODO Auto-generated method stub
         return null;
     }
 
+    @Override
     public IElementParameter getElementParameterFromField(EParameterFieldType propertyType, EComponentCategory category) {
         // TODO Auto-generated method stub
         return null;
     }
 
+    @Override
     public Object getPropertyValue(String name) {
         // TODO Auto-generated method stub
         return null;
     }
 
+    @Override
     public Object getPropertyValue(String name, String paramName) {
         // TODO Auto-generated method stub
         return null;
     }
 
+    @Override
     public void setPropertyValue(String name, Object value) {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public Set<String> getNeededRoutines() {
         return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#getComponentsType()
+     */
+    @Override
+    public String getComponentsType() {
+        return ComponentCategory.CATEGORY_4_DI.getName();
     }
 
 }

@@ -139,7 +139,7 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
-import org.talend.core.model.components.TComponentsHandler;
+import org.talend.core.model.components.IComponentsHandler;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.Element;
@@ -436,7 +436,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     protected final Map<String, JobResource> protectedJobs;
 
-    private TComponentsHandler componenentsHandler;
+    private IComponentsHandler componenentsHandler;
 
     /** The verify key listener for activation code triggering. */
     public ActivationCodeTrigger fActivationCodeTrigger = new ActivationCodeTrigger();
@@ -477,14 +477,14 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * 
      * @return
      */
-    protected abstract TComponentsHandler initComponentsHandler();
+    protected abstract IComponentsHandler initComponentsHandler();
 
     /**
      * Getter for componenentsHandler.
      * 
      * @return the componenentsHandler
      */
-    public TComponentsHandler getComponenentsHandler() {
+    public IComponentsHandler getComponenentsHandler() {
         return this.componenentsHandler;
     }
 
@@ -493,7 +493,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * 
      * @param componenentsHandler the componenentsHandler to set
      */
-    public void setComponenentsHandler(TComponentsHandler componenentsHandler) {
+    public void setComponenentsHandler(IComponentsHandler componenentsHandler) {
         this.componenentsHandler = componenentsHandler;
     }
 

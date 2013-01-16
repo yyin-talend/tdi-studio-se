@@ -24,6 +24,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -778,5 +779,13 @@ public class FileinToDelimitedProcess<K extends FileInputNode> extends Repositor
 
     public Set<String> getNeededRoutines() {
         return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#getComponentsType()
+     */
+    @Override
+    public String getComponentsType() {
+        return ComponentCategory.CATEGORY_4_DI.getName();
     }
 }

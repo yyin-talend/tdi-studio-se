@@ -63,10 +63,11 @@ import org.talend.core.model.component_cache.ComponentInfo;
 import org.talend.core.model.component_cache.ComponentsCache;
 import org.talend.core.model.component_cache.util.ComponentCacheResourceFactoryImpl;
 import org.talend.core.model.components.AbstractComponentsProvider;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
-import org.talend.core.model.components.TComponentsHandler;
+import org.talend.core.model.components.IComponentsHandler;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.ui.branding.IBrandingService;
@@ -116,7 +117,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private SubMonitor subMonitor;
 
-    private static Map<String, IComponent> componentsCache = new HashMap<String, IComponent>();
+    private static Map<String, Map<String, IComponent>> componentsCache = new HashMap<String, Map<String, IComponent>>();
 
     // keep a list of the current provider for the selected component, to have the family translation
     // only for components that are loaded
@@ -140,7 +141,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private boolean isReset = false;
 
-    private TComponentsHandler componentsHandler;// Added by Marvin Wang on Jan. 11, 2012 for M/R.
+    private IComponentsHandler componentsHandler;// Added by Marvin Wang on Jan. 11, 2012 for M/R.
 
     // public XmiResourceManager xmiResourceManager = new XmiResourceManager();
 
@@ -404,11 +405,7 @@ public class ComponentsFactory implements IComponentsFactory {
                 currentComp.setVisible(false);
                 currentComp.setTechnical(true);
             }
-            if (currentComp.getSourceBundleName().contains("camel")) {
-                currentComp.setPaletteType("CAMEL");
-            } else {
-                currentComp.setPaletteType("DI");
-            }
+            currentComp.setPaletteType(currentComp.getType());
             String applicationPath = bundleIdToPath.get(info.getSourceBundleName());
             if (applicationPath == null) {
                 try {
@@ -646,22 +643,32 @@ public class ComponentsFactory implements IComponentsFactory {
                         File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
                                 currentFolder.getName(), getCodeLanguageSuffix()));
 
-                        if (CommonsPlugin.isHeadless() && componentsCache.containsKey(xmlMainFile.getAbsolutePath())) {
-                            // In headless mode, we assume the components won't change and we will use a cache
-                            componentList.add(componentsCache.get(xmlMainFile.getAbsolutePath()));
-                            if (isCustom) {
-                                customComponentList.add(componentsCache.get(xmlMainFile.getAbsolutePath()));
-                            }
-                            continue;
-                        }
-                        String pathName = xmlMainFile.getAbsolutePath();
-
                         String bundleName;
                         if (!isCustom) {
                             bundleName = admin.getBundle(provider.getClass()).getSymbolicName();
                         } else {
                             bundleName = IComponentsFactory.COMPONENTS_LOCATION;
                         }
+                        if (CommonsPlugin.isHeadless() && componentsCache.containsKey(xmlMainFile.getAbsolutePath())) {
+                            IComponent componentFromThisProvider = null;
+                            for (IComponent component : componentsCache.get(xmlMainFile.getAbsolutePath()).values()) {
+                                if (component instanceof EmfComponent) {
+                                    if (bundleName.equals(((EmfComponent) component).getSourceBundleName())) {
+                                        componentFromThisProvider = component;
+                                    }
+                                }
+                            }
+                            if (componentFromThisProvider != null) {
+                                // In headless mode, we assume the components won't change and we will use a cache
+                                componentList.add(componentFromThisProvider);
+                                if (isCustom) {
+                                    customComponentList.add(componentFromThisProvider);
+                                }
+                                continue;
+                            }
+                        }
+                        String pathName = xmlMainFile.getAbsolutePath();
+
                         String applicationPath;
                         try {
                             applicationPath = FileLocator.getBundleFile(Platform.getBundle(bundleName)).getPath();
@@ -716,9 +723,9 @@ public class ComponentsFactory implements IComponentsFactory {
                             currentComp.setTechnical(true);
                         }
                         if (provider.getId().contains("Camel")) {
-                            currentComp.setPaletteType("CAMEL");
+                            currentComp.setPaletteType(ComponentCategory.CATEGORY_4_CAMEL.getName());
                         } else {
-                            currentComp.setPaletteType("DI");
+                            currentComp.setPaletteType(currentComp.getType());
                         }
 
                         if (componentList.contains(currentComp)) {
@@ -743,7 +750,11 @@ public class ComponentsFactory implements IComponentsFactory {
                         }
 
                         if (CommonsPlugin.isHeadless()) {
-                            componentsCache.put(xmlMainFile.getAbsolutePath(), currentComp);
+                            String componentName = xmlMainFile.getAbsolutePath();
+                            if (!componentsCache.containsKey(componentName)) {
+                                componentsCache.put(componentName, new HashMap<String, IComponent>());
+                            }
+                            componentsCache.get(xmlMainFile.getAbsolutePath()).put(currentComp.getPaletteType(), currentComp);
                         }
                     } catch (MissingMainXMLComponentFileException e) {
                         log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component", e); //$NON-NLS-1$ //$NON-NLS-2$
@@ -914,7 +925,27 @@ public class ComponentsFactory implements IComponentsFactory {
         }
 
         for (IComponent comp : componentList) {
-            if (comp != null && comp.getName().equals(name)) {
+            if (comp != null && comp.getName().equals(name)
+                    && !ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(comp.getPaletteType())) {
+                return comp;
+            }// else keep looking
+        }
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponentsFactory#get(java.lang.String, java.lang.String)
+     */
+    @Override
+    public IComponent get(String name, String paletteType) {
+        if (componentList == null) {
+            init(false);
+        }
+
+        for (IComponent comp : componentList) {
+            if (comp != null && comp.getName().equals(name) && paletteType.equals(comp.getPaletteType())) {
                 return comp;
             }// else keep looking
         }
@@ -1232,7 +1263,7 @@ public class ComponentsFactory implements IComponentsFactory {
      * @see org.talend.core.model.components.IComponentsFactory#getComponentsHandler()
      */
     @Override
-    public TComponentsHandler getComponentsHandler() {
+    public IComponentsHandler getComponentsHandler() {
         return componentsHandler;
     }
 
@@ -1243,7 +1274,8 @@ public class ComponentsFactory implements IComponentsFactory {
      * TComponentsHandler)
      */
     @Override
-    public void setComponentsHandler(TComponentsHandler componentsHandler) {
+    public void setComponentsHandler(IComponentsHandler componentsHandler) {
         this.componentsHandler = componentsHandler;
     }
+
 }

@@ -53,8 +53,14 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
     public static final String ID = "org.talend.designer.core.ui.MultiPageTalendEditor"; //$NON-NLS-1$
 
     public MultiPageTalendEditor() {
+        this(true);
+    }
+
+    protected MultiPageTalendEditor(boolean withDefaultEditor) {
         super();
-        designerEditor = new TalendEditor();
+        if (withDefaultEditor) {
+            designerEditor = new TalendEditor();
+        }
     }
 
     /**

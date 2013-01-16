@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
-import org.talend.core.model.components.TComponentsHandler;
+import org.talend.core.model.components.IComponentsHandler;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.action.SaveAsProcessAction;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -65,7 +65,7 @@ public class TalendEditor extends AbstractTalendEditor implements ITalendJobEdit
      * @see org.talend.designer.core.ui.editor.AbstractTalendEditor#fetchComponentsHandler()
      */
     @Override
-    protected TComponentsHandler initComponentsHandler() {
+    protected IComponentsHandler initComponentsHandler() {
         return new ProcessComponentsHandler();
     }
 

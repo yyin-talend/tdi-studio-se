@@ -12,38 +12,36 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
-import org.talend.core.model.components.TComponentsHandler;
+import org.talend.core.model.components.IComponentsHandler;
 
 /**
  * DOC marvin class global comment. Detailled comment
  */
-public class ProcessComponentsHandler implements TComponentsHandler {
+public class ProcessComponentsHandler implements IComponentsHandler {
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.model.components.TComponentsHandler#filterComponents(java.util.Set)
+     * @see org.talend.core.model.components.TComponentsHandler#filterComponents(java.util.List)
      */
     @Override
-    public List<IComponent> filterComponents(Set<IComponent> allComponents) {
-        List<IComponent> filteredComponents = new ArrayList<IComponent>();
+    public List<IComponent> filterComponents(List<IComponent> allComponents) {
         if (allComponents != null && allComponents.size() > 0) {
-            for (IComponent component : allComponents) {
-                String compType = component.getType();
-                if (compType == null) {
-                    filteredComponents.add(component);
-                } else if (compType != null && ComponentCategory.CATEGORY_4_DI.getName().equals(compType)) {
-                    filteredComponents.add(component);
+            Iterator<IComponent> componentsIterator = allComponents.iterator();
+            while (componentsIterator.hasNext()) {
+                IComponent component = componentsIterator.next();
+                String compType = component.getPaletteType();
+                if (compType != null && !ComponentCategory.CATEGORY_4_DI.getName().equals(compType)) {
+                    componentsIterator.remove();
                 }
             }
         }
-        return filteredComponents;
+        return allComponents;
     }
 
     /*

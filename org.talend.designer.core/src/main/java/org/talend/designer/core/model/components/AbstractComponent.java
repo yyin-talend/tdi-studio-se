@@ -26,7 +26,8 @@ public abstract class AbstractComponent implements IComponent {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.getName() == null) ? 0 : this.getName().hashCode());
+        result = prime * result + ((this.getName() == null) ? 0 : this.getName().hashCode())
+                + ((this.getPaletteType() == null) ? 0 : this.getPaletteType().hashCode());
         return result;
     }
 
@@ -49,6 +50,12 @@ public abstract class AbstractComponent implements IComponent {
                 return false;
             }
         } else if (!thisName.equals(otherName)) {
+            return false;
+        } else if (paletteType == null) {
+            if (other.getPaletteType() != null) {
+                return false;
+            }
+        } else if (!paletteType.equals(other.getPaletteType())) {
             return false;
         }
         return true;
