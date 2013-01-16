@@ -28,6 +28,7 @@ import org.eclipse.emf.common.util.EMap;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.PluginChecker;
+import org.talend.core.model.components.ComponentCategory;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentConnection;
 import org.talend.core.model.components.IMultipleComponentItem;
@@ -1274,7 +1275,8 @@ public class DataProcess {
                         nextNodeInConns.remove(conn);
 
                         // new hidden tMROutput
-                        IComponent mrOutComponent = ComponentsFactoryProvider.getInstance().get(MROUTPUT_COMPONENT_NAME);
+                        IComponent mrOutComponent = ComponentsFactoryProvider.getInstance().get(MROUTPUT_COMPONENT_NAME,
+                                ComponentCategory.CATEGORY_4_MAPREDUCE.getName());
                         AbstractNode mrOutNode = new DataNode(mrOutComponent, "tMROutput_" + dataNode.getUniqueName());//$NON-NLS-1$
                         mrOutNode.getElementParameter("FOLDER").setValue( //$NON-NLS-1$
                                 folder);
@@ -1300,7 +1302,8 @@ public class DataProcess {
                         ((DataConnection) conn).setTarget(mrOutNode);
 
                         // new hidden tMRInput
-                        IComponent mrInComponent = ComponentsFactoryProvider.getInstance().get(MRINPUT_COMPONENT_NAME);
+                        IComponent mrInComponent = ComponentsFactoryProvider.getInstance().get(MRINPUT_COMPONENT_NAME,
+                                ComponentCategory.CATEGORY_4_MAPREDUCE.getName());
                         AbstractNode mrInNode = new DataNode(mrInComponent, "tMRInput_" + nextNode.getUniqueName());//$NON-NLS-1$
                         mrInNode.getElementParameter("FOLDER").setValue( //$NON-NLS-1$
                                 folder);
