@@ -353,6 +353,9 @@ public class AllTypeDialog extends Dialog {
                 parameter.getParameterInfos().add(parameterSon);
                 if (xmlSchemaElement.getSchemaTypeName() != null) {
                     String elementTypeName = xmlSchemaElement.getSchemaTypeName().getLocalPart();
+                    if (elementTypeName != null && elementTypeName.equals("anyType")) {
+                        parameterSon.setName(xmlSchemaElement.getName() + ":anyType");
+                    }
                     parameterSon.setType(elementTypeName);
                     if (!WsdlTypeUtil.isJavaBasicType(elementTypeName)) {
                         buileParameterFromTypes(elementTypeName, parameterSon);
