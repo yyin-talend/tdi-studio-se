@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.swt.SWT;
@@ -38,6 +40,8 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumnNotModifiab
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.ITDQPatternService;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
@@ -72,6 +76,8 @@ public class TableController extends AbstractElementPropertySectionController {
     private static final int MIN_NUMBER_ROWS = 1;
 
     private static final String TOOLBAR_NAME = "_TABLE_VIEW_TOOLBAR_NAME_"; //$NON-NLS-1$
+
+    private ITDQPatternService dqPatternService = null;
 
     /**
      * DOC yzhang TableController constructor comment.
@@ -299,10 +305,67 @@ public class TableController extends AbstractElementPropertySectionController {
                                 }
                             }
                         }
+
+                        if (columnParam.getFieldType() == EParameterFieldType.CLOSED_LIST) {
+                            overideDQPatternList(columnParam);
+                        }
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Overide default pattern list value by them which comes from DQ repository view
+     * 
+     * @param param the element parameter
+     * @param dqPatternService extended service for DQ pattern retrievement.
+     * @return
+     */
+    private void overideDQPatternList(IElementParameter param) {
+        // For dq patterns
+        if (isDQPatternList(param)) {
+            if (dqPatternService == null) { // get pattern service
+                dqPatternService = getDQPatternService();
+            }
+            if (dqPatternService != null && elem instanceof Node) {
+                Node node = (Node) elem;
+                IElementParameter typeParam = node.getElementParameter("TYPE"); //$NON-NLS-1$
+                // Customized value
+                Object[] customizedValue = param.getListItemsValue();
+                String[] customizedDisplayCodeName = param.getListItemsDisplayCodeName();
+                String[] customizedDisplayName = param.getListItemsDisplayName();
+                String[] customizedNotShowIfs = param.getListItemsNotShowIf();
+                String[] customizedShowIfs = param.getListItemsShowIf();
+                dqPatternService.overridePatternList(typeParam, param);
+                // Add the customized value:
+                param.setListItemsValue(ArrayUtils.addAll(param.getListItemsValue(), customizedValue));
+                param.setListItemsDisplayCodeName((String[]) ArrayUtils.addAll(param.getListItemsDisplayCodeName(),
+                        customizedDisplayCodeName));
+                param.setListItemsDisplayName((String[]) ArrayUtils.addAll(param.getListItemsDisplayName(), customizedDisplayName));
+                param.setListItemsNotShowIf((String[]) ArrayUtils.addAll(new String[param.getListItemsShowIf().length],
+                        customizedNotShowIfs));
+                param.setListItemsShowIf((String[]) ArrayUtils.addAll(new String[param.getListItemsShowIf().length],
+                        customizedShowIfs));
+            }
+        }
+    }
+
+    private boolean isDQPatternList(IElementParameter param) {
+        String paramName = param.getName();
+        boolean isPatternList = StringUtils.equals(paramName, "DEFAULT_PATTERN"); //$NON-NLS-1$
+        return isPatternList;
+
+    }
+
+    private ITDQPatternService getDQPatternService() {
+        ITDQPatternService service = null;
+        try {
+            service = (ITDQPatternService) GlobalServiceRegister.getDefault().getService(ITDQPatternService.class);
+        } catch (RuntimeException e) {
+            // nothing to do
+        }
+        return service;
     }
 
     private void updateTableValues(IElementParameter param) {
