@@ -3621,4 +3621,17 @@ public class EmfComponent extends AbstractComponent {
     public boolean isReduce() {
         return compType.getHEADER().isREDUCE();
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.model.components.AbstractComponent#setPaletteType(java.lang.String)
+     */
+    @Override
+    public void setPaletteType(String paletteType) {
+        super.setPaletteType(paletteType);
+        if (info != null) {
+            info.setType(paletteType);
+        }
+    }
 }

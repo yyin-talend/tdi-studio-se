@@ -41,6 +41,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -376,55 +377,58 @@ public class ComponentsFactory implements IComponentsFactory {
         ComponentsCache cache = ComponentManager.getInstance();
         Iterator it = cache.getComponentEntryMap().entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry<String, ComponentInfo> entry = (Map.Entry<String, ComponentInfo>) it.next();
-            ComponentInfo info = entry.getValue();
+            Map.Entry<String, EList<ComponentInfo>> entry = (Map.Entry<String, EList<ComponentInfo>>) it.next();
+            EList<ComponentInfo> infoList = entry.getValue();
             String name = entry.getKey();
             if (!isComponentVisible(name)) {
                 continue;
             }
-            IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(IBrandingService.class);
-            String[] availableComponents = service.getBrandingConfiguration().getAvailableComponents();
-            EmfComponent currentComp = new EmfComponent(info.getUriString(), info.getSourceBundleName(), name,
-                    info.getPathSource(), cache, true);
-            // if the component is not needed in the current branding,
-            // and that this one IS NOT a specific component for code generation
-            // just don't load it
-            if (availableComponents != null
-                    && !ArrayUtils.contains(availableComponents, currentComp.getName())
-                    && !(ArrayUtils.contains(COMPONENTS_ALWAYS_NEEDED, currentComp.getName())
-                            || currentComp.getOriginalFamilyName().contains("Technical") || currentComp.isTechnical())) {
-                continue;
-            }
-            // if the component is not needed in the current branding,
-            // and that this one IS a specific component for code generation,
-            // hide it
-            if (availableComponents != null
-                    && !ArrayUtils.contains(availableComponents, currentComp.getName())
-                    && (ArrayUtils.contains(COMPONENTS_ALWAYS_NEEDED, currentComp.getName())
-                            || currentComp.getOriginalFamilyName().contains("Technical") || currentComp.isTechnical())) {
-                currentComp.setVisible(false);
-                currentComp.setTechnical(true);
-            }
-            currentComp.setPaletteType(currentComp.getType());
-            String applicationPath = bundleIdToPath.get(info.getSourceBundleName());
-            if (applicationPath == null) {
-                try {
-                    applicationPath = FileLocator.getBundleFile(Platform.getBundle(info.getSourceBundleName())).getPath();
-                    applicationPath = (new Path(applicationPath)).toPortableString();
-                } catch (IOException e2) {
-                    ExceptionHandler.process(e2);
-                    return;
+            for (ComponentInfo info : infoList) {
+                IBrandingService service = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                        IBrandingService.class);
+                String[] availableComponents = service.getBrandingConfiguration().getAvailableComponents();
+                EmfComponent currentComp = new EmfComponent(info.getUriString(), info.getSourceBundleName(), name,
+                        info.getPathSource(), cache, true);
+                // if the component is not needed in the current branding,
+                // and that this one IS NOT a specific component for code generation
+                // just don't load it
+                if (availableComponents != null
+                        && !ArrayUtils.contains(availableComponents, currentComp.getName())
+                        && !(ArrayUtils.contains(COMPONENTS_ALWAYS_NEEDED, currentComp.getName())
+                                || currentComp.getOriginalFamilyName().contains("Technical") || currentComp.isTechnical())) { //$NON-NLS-1$
+                    continue;
                 }
-                bundleIdToPath.put(info.getSourceBundleName(), applicationPath);
-            }
+                // if the component is not needed in the current branding,
+                // and that this one IS a specific component for code generation,
+                // hide it
+                if (availableComponents != null
+                        && !ArrayUtils.contains(availableComponents, currentComp.getName())
+                        && (ArrayUtils.contains(COMPONENTS_ALWAYS_NEEDED, currentComp.getName())
+                                || currentComp.getOriginalFamilyName().contains("Technical") || currentComp.isTechnical())) { //$NON-NLS-1$
+                    currentComp.setVisible(false);
+                    currentComp.setTechnical(true);
+                }
+                currentComp.setPaletteType(currentComp.getType());
+                String applicationPath = bundleIdToPath.get(info.getSourceBundleName());
+                if (applicationPath == null) {
+                    try {
+                        applicationPath = FileLocator.getBundleFile(Platform.getBundle(info.getSourceBundleName())).getPath();
+                        applicationPath = (new Path(applicationPath)).toPortableString();
+                    } catch (IOException e2) {
+                        ExceptionHandler.process(e2);
+                        return;
+                    }
+                    bundleIdToPath.put(info.getSourceBundleName(), applicationPath);
+                }
 
-            if (!componentList.contains(currentComp)) {
-                currentComp.setResourceBundle(getComponentResourceBundle(currentComp, applicationPath + info.getUriString(),
-                        info.getPathSource(), null));
+                if (!componentList.contains(currentComp)) {
+                    currentComp.setResourceBundle(getComponentResourceBundle(currentComp, applicationPath + info.getUriString(),
+                            info.getPathSource(), null));
 
-                File currentFile = new File(applicationPath + info.getUriString());
-                loadIcons(currentFile.getParentFile(), currentComp);
-                componentList.add(currentComp);
+                    File currentFile = new File(applicationPath + info.getUriString());
+                    loadIcons(currentFile.getParentFile(), currentComp);
+                    componentList.add(currentComp);
+                }
             }
         }
     }
