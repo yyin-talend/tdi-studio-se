@@ -362,6 +362,10 @@
             mapping="CLOSED_LIST"
             name="Combo"/>
       <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.RouteExpressionGenerator"
+            mapping="ROUTE_EXPRESSION"
+            name="Route Expression"/>
+      <generator
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.OpenedListGenerator"
             mapping="OPENED_LIST"
             name="Opened List"/>

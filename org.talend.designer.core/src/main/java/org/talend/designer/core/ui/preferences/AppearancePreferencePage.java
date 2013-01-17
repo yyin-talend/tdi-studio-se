@@ -55,6 +55,11 @@ public class AppearancePreferencePage extends FieldEditorPreferencePage implemen
                 getFieldEditorParent()));
         Composite parent = getFieldEditorParent();
         addFields(parent);
+        
+        //add on-off for TESB-8061.
+        addField(new BooleanFieldEditor(ITalendCorePrefConstants.PERSPECTIVE_LINK_WITH_EDITOR,
+        		Messages.getString("AppearancePreferencePage.perspectiveLinkWithEditor"), 
+        		getFieldEditorParent()));
     }
 
     protected void addFields(Composite parent) {
