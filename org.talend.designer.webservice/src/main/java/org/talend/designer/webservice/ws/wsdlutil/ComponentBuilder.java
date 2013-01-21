@@ -609,7 +609,7 @@ public class ComponentBuilder {
                             String typeName = xmlSchemaSimpleType.getName();
                             if (typeName != null && typeName.equals("anyType")) {
                                 ParameterInfo parameterSon = new ParameterInfo();
-                                parameterSon.setName(xmlSchemaElement.getName() + ":anyType");
+                                parameterSon.setName("anyType");
                                 parameterSon.setParent(parameterRoot);
                                 parameterRoot.getParameterInfos().add(parameterSon);
                             }
@@ -822,7 +822,7 @@ public class ComponentBuilder {
                         String typeName = xmlSchemaSimpleType.getName();
                         if (typeName != null && typeName.equals("anyType")) {
                             ParameterInfo pSon = new ParameterInfo();
-                            pSon.setName(xmlSchemaElement.getName() + ":anyType");
+                            pSon.setName("anyType");
                             pSon.setParent(parameter);
                             parameter.getParameterInfos().add(pSon);
                         }
