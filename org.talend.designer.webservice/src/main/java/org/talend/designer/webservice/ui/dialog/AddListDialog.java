@@ -248,14 +248,16 @@ public class AddListDialog extends Dialog {
                                 String namespace = labelAndNameSpaceMap.get(selectedName);
                                 String[] ret = getNameSpaceAndType(namespace);
                                 ParameterInfo selectParameterInfo = alltype.getSelectedParaInfo();
-                                selectParameterInfo.setArraySize(-1);
-                                selectParameterInfo.setParent(info);
                                 info.getParameterInfos().clear();
                                 if (info.getName().indexOf("{") > 0) {
                                     info.setName(info.getName().substring(0, info.getName().indexOf("{")));
                                 }
                                 info.setName(info.getName() + "{" + ret[0] + "," + ret[1] + "}");
-                                info.getParameterInfos().add(selectParameterInfo);
+                                List<ParameterInfo> childAttributes = selectParameterInfo.getParameterInfos();
+                                for (ParameterInfo child : childAttributes) {
+                                    info.getParameterInfos().add(child);
+                                    child.setParent(info);
+                                }
                                 treeViewer.refresh();
                             }
                         }
