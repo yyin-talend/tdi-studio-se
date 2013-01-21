@@ -654,7 +654,8 @@ public class ComponentBuilder {
                     }
                     if (xmlSchemaObjectCollection != null && xmlSchemaObjectCollection.getCount() > 0) {
                         buildParameterFromCollection(xmlSchemaObjectCollection, parameter, 3);
-                    } else if (xmlSchemaObjectCollection.getCount() == 0 && xmlSchemaComplexType.isAbstract()) {
+                    } else if (xmlSchemaObjectCollection != null && xmlSchemaObjectCollection.getCount() == 0
+                            && xmlSchemaComplexType.isAbstract()) {
                         findExtendtion(xmlSchemaComplexType, parameter, 3);
                     }
                 } else if (type instanceof XmlSchemaSimpleType) {
