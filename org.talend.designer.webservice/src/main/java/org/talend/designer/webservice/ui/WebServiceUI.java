@@ -2368,9 +2368,12 @@ public class WebServiceUI implements AbstractWebService {
                                 data.setParameter(paramet);
                                 if (paramet.getParent() != null) {
                                     String name = dialogInputList.getParaUtil().getArrayFullName(paramet);
-                                    if (name.contains(":anyType{") && name.contains(".simpletype:")) {
+                                    if (name.contains("anyType{") && name.contains(".simpletype:")) {
                                         int index = name.indexOf(".simpletype:");
                                         name = name.substring(0, index);
+                                    }
+                                    if (name.contains("parameters.anyType{")) {
+                                        name = name.substring(0, 10) + ":" + name.substring(11, name.length());
                                     }
                                     data.setParameterName(name);
                                 } else {
@@ -2945,9 +2948,12 @@ public class WebServiceUI implements AbstractWebService {
                                 data.setParameter(paramet);
                                 if (paramet.getParent() != null) {
                                     String name = dialog.getParaUtil().getArrayFullName(paramet);
-                                    if (name.contains(":anyType{") && name.contains(".simpletype:")) {
+                                    if (name.contains("anyType{") && name.contains(".simpletype:")) {
                                         int index = name.indexOf(".simpletype:");
                                         name = name.substring(0, index);
+                                    }
+                                    if (name.contains("parameters.anyType{")) {
+                                        name = name.substring(0, 10) + ":" + name.substring(11, name.length());
                                     }
                                     data.setParameterName(name);
                                 } else {
