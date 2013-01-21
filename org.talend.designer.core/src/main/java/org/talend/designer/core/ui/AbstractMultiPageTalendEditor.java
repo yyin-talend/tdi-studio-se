@@ -74,7 +74,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.internal.WorkbenchPage;
 import org.eclipse.ui.part.FileEditorInput;
@@ -121,7 +120,6 @@ import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.model.repository.IRepositoryWorkUnitListener;
 import org.talend.core.model.repository.RepositoryManager;
 import org.talend.core.model.routines.RoutinesUtil;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.properties.tab.IDynamicProperty;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.core.repository.constants.Constant;
@@ -296,17 +294,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         @Override
         public void partActivated(IWorkbenchPart part) {
-            if (CorePlugin.getDefault().getPreferenceStore().getBoolean(ITalendCorePrefConstants.PERSPECTIVE_LINK_WITH_EDITOR)) {
-                if (part == AbstractMultiPageTalendEditor.this.getEditorSite().getPart()) {
-                    try {
-                        PlatformUI.getWorkbench().showPerspective(getContextPerspectiveID(),
-                                PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-                    } catch (WorkbenchException e) {
-                        ExceptionHandler.process(e);
-                    }
-
-                }
-            }
         }
 
         @Override
