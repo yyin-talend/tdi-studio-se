@@ -23,6 +23,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.repository.DynaEnum;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -122,7 +123,7 @@ public class TosTokenCollector extends AbstractTokenCollector {
 
         for (IRepositoryViewObject rvo : all) {
             Item item = rvo.getProperty().getItem();
-            if (item instanceof ProcessItem) {
+            if (item.eClass() == PropertiesPackage.Literals.PROCESS_ITEM) {
                 ProcessType processType = ((ProcessItem) item).getProcess();
 
                 componentsNum += processType.getNode().size();
