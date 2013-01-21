@@ -36,10 +36,12 @@
 	List<IMetadataColumn> columnList = null;
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	IMetadataTable metadata = null;
+	int sizeListColumns = 0;
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		metadata = metadatas.get(0);
 		if (metadata!=null) {
 			columnList = metadata.getListColumns();
+			sizeListColumns = columnList.size();
 		}
 	}
 	for(int i=0; columnList!=null && i< columnList.size(); i++) {
@@ -48,6 +50,11 @@
             hasDynamic = true;
             break;
         }
+	}
+	int schemaOptNum=100;
+	String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
+	if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
+		schemaOptNum  = Integer.parseInt(schemaOptNumStr);
 	}
 		
 		
@@ -110,11 +117,11 @@
 	if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		class RowUtil extends DefaultRowUtil{
-			public void codeForValueToConn(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName){
-				codeForValueToConnWithD(node, metadata, sourceValueClass, sourceValueName, targetConnName, null);
+			public void codeForValueToConn(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName, int start , int end){
+				codeForValueToConnWithD(node, metadata, sourceValueClass, sourceValueName, targetConnName, null, start ,end);
 			}
-			public void codeForValueToConnWithD(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName, String dynamicName){
-				
+			public boolean codeForValueToConnWithD(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName, String dynamicName, int start , int end){
+				cid = node.getUniqueName();
 				String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 				
 				List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
@@ -137,7 +144,7 @@
 				boolean noStringTypeExist = false;
 				int dynamic_index = -1;
 				%>
-				int dynamic_column_count_<%=cid%>=1;
+				int dynamic_column_count_<%=cid%>=<%if(this.isBehindDynamic){%><%=dynamicName%>.getColumnCount()<%}else{%>1<%}%>;
 				<%
 				for (int valueN=0; valueN<sizeListColumns; valueN++) {
 					IMetadataColumn column = listColumns.get(valueN);
@@ -164,7 +171,7 @@
 					String temp = ""; 
 				<%
 				}
-				for (int valueN=0; valueN<sizeListColumns; valueN++) {
+				for (int valueN=start; valueN<end; valueN++) {
 					IMetadataColumn column = listColumns.get(valueN);
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
@@ -186,6 +193,7 @@
 						<%
 						}
 					}else if(column.getTalendType().equals("id_Dynamic")){
+						this.isBehindDynamic=true;
 						dynamic_index = valueN;
 					%>
 						<%=dynamicName%>.clearColumnValues();
@@ -258,10 +266,12 @@
 					 }     
 				<%
 				}
+				return this.isBehindDynamic;
 			}
 			
-			public void codeForConnToConn(INode node, IMetadataTable metadata, String sourceConnName, String targetConnName){
-    			for(IMetadataColumn column : metadata.getListColumns()) {
+			public void codeForConnToConn(INode node, IMetadataTable metadata, String sourceConnName, String targetConnName, int start , int end){
+    			for(int colNum=start;colNum<end;colNum++) {
+    				IMetadataColumn column=metadata.getListColumns().get(colNum);
     			%>
     				<%=targetConnName%>.<%=column.getLabel()%> = <%=sourceConnName%>.<%=column.getLabel()%>;
 				<%
@@ -332,26 +342,28 @@
 				if (conns!=null) {
 					if (conns.size()>0) {
 						IConnection conn = conns.get(0);
-						firstConnName = conn.getName();		
+						if(conn!=null && conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+							firstConnName = conn.getName();
+						}
 					}
 				}			    
 				
 				RowUtil rowUtil = new RowUtil(); 
 				if (conns!=null) {
-				    if (conns.size()>0) {
+				    if (conns.size()>0 && firstConnName != null && firstConnName.length()>0) {
 						if(hasDynamic){
-							rowUtil.prepareValueToConnWithD(metadata, "org.talend.fileprocess.FileInputDelimited", "fid", firstConnName, "dynamic");
+							rowUtil.prepareValueToConnWithD(node, metadata, "org.talend.fileprocess.FileInputDelimited", "fid_"+cid, firstConnName, "dynamic_"+cid, schemaOptNum);
 							%>
 							boolean isFirstCheckDyn_<%=cid %> = true;
 							routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
 						<%
 						}else{
-							rowUtil.prepareValueToConn(metadata, "org.talend.fileprocess.FileInputDelimited", "fid", firstConnName);
+							rowUtil.prepareValueToConn(node, metadata, "org.talend.fileprocess.FileInputDelimited", "fid_"+cid, firstConnName, schemaOptNum);
 						}
 						if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 							rowUtil.prepareConnToConn(metadata, firstConnName, rejectConnName);
 						}
-						rowUtil.generateClass(node);
+						rowUtil.generateClass();
 					}
 				}
 				%>
@@ -428,7 +440,7 @@
 					while (fid_<%=cid %>!=null && fid_<%=cid %>.nextRecord()) {
 						<%
 				    	if (conns!=null) {
-				    		if (conns.size()>0) {
+				    		if (conns.size()>0 && firstConnName != null && firstConnName.length()>0) {
 				    			for (int i=0;i<conns.size();i++) {
 				    				IConnection connTemp = conns.get(i);
 				    				if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -445,8 +457,6 @@
 									<%=firstConnName %> = new <%=conn.getName() %>Struct();
 									try {
 										<%
-										List<IMetadataColumn> listColumns = metadata.getListColumns();
-										int sizeListColumns = listColumns.size();
 										if(hasDynamic){// generate the dynamic schema code
 											generateCode.colLen = sizeListColumns;
 											generateCode.dynamic_index = dynamic_index;
@@ -495,7 +505,7 @@
 								<%
 								}
 							}
-							if (conns.size()>0) {
+							if (conns.size()>0 && firstConnName != null && firstConnName.length()>0) {//no use code, we can link only one main line now.
 								boolean isFirstEnter = true;
 								for (int i=0;i<conns.size();i++) {
 									IConnection conn = conns.get(i);
@@ -531,11 +541,11 @@
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		class RowUtil extends DefaultRowUtil{
-			public void codeForValueToConn(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName){
-				codeForValueToConnWithD(node, metadata, sourceValueClass, sourceValueName, targetConnName, null);
+			public void codeForValueToConn(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName, int start , int end){
+				codeForValueToConnWithD(node, metadata, sourceValueClass, sourceValueName, targetConnName, null, start ,end);
 			}
-			public void codeForValueToConnWithD(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName, String dynamicName){
-				
+			public boolean codeForValueToConnWithD(INode node, IMetadataTable metadata, String sourceValueClass, String sourceValueName, String targetConnName, String dynamicName, int start , int end){
+				cid = node.getUniqueName();
 				String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 				
 				List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
@@ -558,7 +568,8 @@
 				%>				
 				if(<%=sourceValueName%>.length == 1 && ("\015").equals(<%=sourceValueName%>[0])){//empty line when row separator is '\n'
 					<%
-					for (IMetadataColumn column1: metadata.getListColumns()) {
+					for(int colNo=start;colNo<end;colNo++) {
+						IMetadataColumn column1 =metadata.getListColumns().get(colNo);
 					%>
 						<%=targetConnName %>.<%=column1.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaIdType(column1.getTalendType(), column1.isNullable())%>;
 					<%
@@ -585,15 +596,15 @@
 					}
 					int dynamic_index = 1;
 	                %>
-	                int dynamic_column_count_<%=cid%>=1;
+	                int dynamic_column_count_<%=cid%>=<%if(this.isBehindDynamic){%><%=dynamicName%>.getColumnCount()<%}else{%>1<%}%>;
 	                <%
-					for (int i=0;i<columnSize;i++) {
+					for (int i=start;i<end;i++) {
 						IMetadataColumn column=columns.get(i);
 						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 						%>
-						if(<%=i %> < <%=sourceValueName%>.length){				
+						if(<%=i-1 %> + dynamic_column_count_<%=cid%> < <%=sourceValueName%>.length){				
 							<%
 							if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 								String defaultValue = column.getDefault();
@@ -634,6 +645,7 @@
 		    							<%=targetConnName %>.<%=column.getLabel() %> = <%=sourceValueName%>[<%=i-1 %> + dynamic_column_count_<%=cid%>]<%=(isTrimAll || (!trimSelects.isEmpty() && ("true").equals(trimSelects.get(i).get("TRIM"))))?".trim()":"" %>.getBytes(<%=encoding %>);
 									<%
 									}else if(column.getTalendType().equals("id_Dynamic")){
+										this.isBehindDynamic=true;
 										dynamic_index = i;
 									%>
 									    dynamic_column_count_<%=cid%> = <%=dynamicName%>.getColumnCount();
@@ -677,10 +689,12 @@
  					}     
 				<%
 				}
+				return this.isBehindDynamic;
 			}
 			
-			public void codeForConnToConn(INode node, IMetadataTable metadata, String sourceConnName, String targetConnName){
-    			for(IMetadataColumn column : metadata.getListColumns()) {
+			public void codeForConnToConn(INode node, IMetadataTable metadata, String sourceConnName, String targetConnName, int start , int end){
+    			for(int colNum=start;colNum<end;colNum++) {
+    				IMetadataColumn column=metadata.getListColumns().get(colNum);
     			%>
     				<%=targetConnName%>.<%=column.getLabel()%> = <%=sourceConnName%>.<%=column.getLabel()%>;
 				<%
@@ -751,26 +765,28 @@
 				if (conns!=null) {
 					if (conns.size()>0) {
 						IConnection conn = conns.get(0);
-						firstConnName = conn.getName();		
+						if(conn!=null && conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
+							firstConnName = conn.getName();		
+						}
 					}
 				}
 				
 				RowUtil rowUtil = new RowUtil(); 
 				if (conns!=null) {
-				    if (conns.size()>0) {
+				    if (conns.size()>0 && firstConnName != null && firstConnName.length()>0) {
 						if(hasDynamic){
-							rowUtil.prepareValueToConnWithD(metadata, "String[]", "row", firstConnName, "dynamic");
+							rowUtil.prepareValueToConnWithD(node, metadata, "String[]", "row"+cid, firstConnName, "dynamic_"+cid, schemaOptNum);
 							%>
 							boolean isFirstCheckDyn_<%=cid %> = true;
 							routines.system.Dynamic dynamic_<%=cid %> = new routines.system.Dynamic();
 						<%
 						}else{
-							rowUtil.prepareValueToConn(metadata, "String[]", "row", firstConnName);
+							rowUtil.prepareValueToConn(node, metadata, "String[]", "row"+cid, firstConnName, schemaOptNum);
 						}
 						if(!("").equals(rejectConnName)&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 							rowUtil.prepareConnToConn(metadata, firstConnName, rejectConnName);
 						}
-						rowUtil.generateClass(node);
+						rowUtil.generateClass();
 					}
 				}	
 				%>
@@ -1050,7 +1066,7 @@
 	                                                                      
 					<%
 			    	if (conns!=null) {
-	    				if (conns.size()>0) {
+	    				if (conns.size()>0 && firstConnName != null && firstConnName.length()>0) {
 	    					for (int i=0;i<conns.size();i++) {
 	    						IConnection connTemp = conns.get(i);
 	    						if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
