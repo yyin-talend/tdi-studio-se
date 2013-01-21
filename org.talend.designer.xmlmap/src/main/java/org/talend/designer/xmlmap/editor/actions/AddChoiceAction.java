@@ -72,7 +72,7 @@ public class AddChoiceAction extends SelectionAction {
         }
 
         if (canContinue) {
-            XmlMapUtil.detachNodeConnections(parent, mapperManager.getCopyOfMapData(), false);
+            XmlMapUtil.detachNodeConnections(parent, mapperManager.getExternalData(), false);
             treeNode.setName(parent.getName() + XSDPopulationUtil2.CHOICE);
             treeNode.setNodeType(NodeType.ELEMENT);
             treeNode.setXpath(XmlMapUtil.getXPath(this.parent.getXpath(), treeNode.getName(), treeNode.getNodeType()));

@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.draw2d.Clickable;
-import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
@@ -27,59 +25,61 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
-import org.talend.designer.xmlmap.figures.layout.TreeToolBarLayout;
-import org.talend.designer.xmlmap.figures.treesettings.TreeSettingsManager;
+import org.talend.designer.gefabstractmap.figures.treetools.ToolBarButtonImageFigure;
+import org.talend.designer.gefabstractmap.figures.treetools.ToolBarContainer;
+import org.talend.designer.gefabstractmap.resource.ImageInfo;
+import org.talend.designer.gefabstractmap.resource.ImageProviderMapper;
+import org.talend.designer.xmlmap.figures.table.XmlMapTableManager;
+import org.talend.designer.xmlmap.figures.treesettings.TreeSettingsConstant;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
-import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 import org.talend.designer.xmlmap.ui.dialog.SetLoopFunctionDialog;
-import org.talend.designer.xmlmap.ui.resource.ImageInfo;
-import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
+import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class TreeToolBarContainer extends Figure {
+public class TreeToolBarContainer extends ToolBarContainer {
 
     private ToolBarButtonImageFigure setLoopFunctionButton;
 
-    private ToolBarButtonImageFigure condensedButton;
-
-    private ToolBarButtonImageFigure expressionFilterButton;
-
-    private ToolBarButtonImageFigure min_size;
-
-    private AbstractInOutTree abstractTree;
-
-    private AbstractInOutTreeEditPart abstractTreePart;
-
     private Map<String, Object> defaultSettingMap = new HashMap<String, Object>();
-
-    private Image restorImage = ImageProviderMapper.getImage(ImageInfo.RESTORE_ICON);
-
-    private Image miniImage = ImageProviderMapper.getImage(ImageInfo.MINIMIZE_ICON);
 
     private InputXmlTree inputMainTable;
 
-    public TreeToolBarContainer(AbstractInOutTreeEditPart treePart) {
-        this.abstractTreePart = treePart;
-        this.abstractTree = (AbstractInOutTree) treePart.getModel();
-        inputMainTable = ((XmlMapGraphicViewer) treePart.getViewer()).getMapperManager().getMainInputTree();
+    private AbstractInOutTree abstractTree;
+
+    protected ToolBarButtonImageFigure condensedButton;
+
+    protected ToolBarButtonImageFigure expressionFilterButton;
+
+    public TreeToolBarContainer(XmlMapTableManager tableManager) {
+        super(tableManager);
         createToolbar();
     }
 
-    private void createToolbar() {
-        TreeToolBarLayout manager = new TreeToolBarLayout();
-        manager.setVertical(false);
-        manager.setSpacing(5);
-        this.setLayoutManager(manager);
+    @Override
+    public XmlMapTableManager getTableManager() {
+        return (XmlMapTableManager) super.getTableManager();
+    }
 
+    @Override
+    protected void createToolbar() {
+        super.createToolbar();
+        condensedButton = new CondensedButton(ImageProviderMapper.getImage(ImageInfo.CONDENSED_TOOL_ICON));
+        condensedButton.setSelected(getTableManager().isActivateCondensedTool());
+        setTooltips(condensedButton, "tXmlMap settings");
+        expressionFilterButton = new ExpressionFilterButton(ImageProviderMapper.getImage(ImageInfo.ACTIVATE_FILTER_ICON));
+        expressionFilterButton.setSelected(getTableManager().isActivateExpressionFilter());
+        setTooltips(expressionFilterButton, "Enable/disable expression filter");
+
+        inputMainTable = ((MapperManager) getTableManager().getGraphicalViewer().getMapperManager()).getMainInputTree();
+        abstractTree = getTableManager().getModel();
         if (abstractTree instanceof OutputXmlTree) {
             ImageInfo info = ImageInfo.SETLOOPFUNCTION_BUTTON;
             EList<InputLoopNodesTable> inputLoopNodesTables = ((OutputXmlTree) abstractTree).getInputLoopNodesTables();
@@ -89,6 +89,7 @@ public class TreeToolBarContainer extends Figure {
                 }
             }
             setLoopFunctionButton = new SetLoopFunctionButton(ImageProviderMapper.getImage(info));
+            setTooltips(setLoopFunctionButton, "set Loop Function");
             this.add(setLoopFunctionButton);
             if (inputMainTable == null || !inputMainTable.isMultiLoops()) {
                 setLoopFunctionButton.setVisible(false);
@@ -98,12 +99,9 @@ public class TreeToolBarContainer extends Figure {
         // TDI-22087
         if (abstractTree instanceof OutputXmlTree
                 || (abstractTree instanceof InputXmlTree && ((InputXmlTree) abstractTree).isLookup())) {
-            condensedButton = new CondensedButton(ImageProviderMapper.getImage(ImageInfo.CONDENSED_TOOL_ICON));
-            condensedButton.setSelected(abstractTree.isActivateCondensedTool());
+
             this.add(condensedButton);
 
-            expressionFilterButton = new ExpressionFilterButton(ImageProviderMapper.getImage(ImageInfo.ACTIVATE_FILTER_ICON));
-            expressionFilterButton.setSelected(abstractTree.isActivateExpressionFilter());
             this.add(expressionFilterButton);
         }
 
@@ -116,48 +114,7 @@ public class TreeToolBarContainer extends Figure {
             expressionFilterButton.setEnabled(false);
         }
 
-        Image image = null;
-        if (abstractTree.isMinimized()) {
-            image = restorImage;
-        } else {
-            image = miniImage;
-        }
-        min_size = new MinSizeButton(image);
         this.add(min_size);
-        setTooltips();
-    }
-
-    private void setTooltips() {
-        Label tooltip = new Label();
-        if (setLoopFunctionButton != null) {
-            tooltip.setText("set Loop Function");
-            setLoopFunctionButton.setToolTip(tooltip);
-        }
-
-        tooltip = new Label();
-        if (condensedButton != null) {
-            tooltip.setText("tXmlMap settings");
-            condensedButton.setToolTip(tooltip);
-        }
-
-        tooltip = new Label();
-        if (expressionFilterButton != null) {
-            tooltip.setText("Enable/disable expression filter");
-            expressionFilterButton.setToolTip(tooltip);
-        }
-
-        tooltip = new Label();
-        tooltip.setText("Minimize");
-        min_size.setToolTip(tooltip);
-
-    }
-
-    public void updateMinSizeImage() {
-        if (abstractTree.isMinimized()) {
-            min_size.setImage(restorImage);
-        } else {
-            min_size.setImage(miniImage);
-        }
     }
 
     public void updateLoopFunctionButton() {
@@ -183,13 +140,9 @@ public class TreeToolBarContainer extends Figure {
         }
     }
 
+    @Override
     public void updateButtonsColor(Color color) {
-        if (setLoopFunctionButton != null) {
-            updateLoopFunctionButton();
-            if (!setLoopFunctionButton.isSelected()) {
-                setLoopFunctionButton.setBackgroundColor(color);
-            }
-        }
+        super.updateButtonsColor(color);
         if (condensedButton != null) {
             if (!condensedButton.isSelected()) {
                 condensedButton.setBackgroundColor(color);
@@ -200,16 +153,51 @@ public class TreeToolBarContainer extends Figure {
                 expressionFilterButton.setBackgroundColor(color);
             }
         }
-        min_size.setBackgroundColor(color);
+        if (setLoopFunctionButton != null) {
+            updateLoopFunctionButton();
+            if (!setLoopFunctionButton.isSelected()) {
+                setLoopFunctionButton.setBackgroundColor(color);
+            }
+        }
 
     }
 
     public Map<String, Object> getDefaultSetting() {
         if (defaultSettingMap.isEmpty()) {
-            defaultSettingMap.put(TreeSettingsManager.OUTPUT_REJECT, false);
-            defaultSettingMap.put(TreeSettingsManager.LOOK_UP_INNER_JOIN_REJECT, false);
+            defaultSettingMap.put(TreeSettingsConstant.OUTPUT_REJECT, false);
+            defaultSettingMap.put(TreeSettingsConstant.LOOK_UP_INNER_JOIN_REJECT, false);
         }
         return defaultSettingMap;
+    }
+
+    class CondensedButton extends ToolBarButtonImageFigure {
+
+        public CondensedButton(Image image) {
+            super(image);
+            setStyle(Clickable.STYLE_TOGGLE);
+        }
+
+        @Override
+        public void toolBarButtonPressed(MouseEvent me) {
+            super.toolBarButtonPressed(me);
+            getTableManager().setActivateCondensedTool(this.isSelected());
+            revalidate();
+        }
+    }
+
+    class ExpressionFilterButton extends ToolBarButtonImageFigure {
+
+        public ExpressionFilterButton(Image image) {
+            super(image);
+            setStyle(Clickable.STYLE_TOGGLE);
+        }
+
+        @Override
+        public void toolBarButtonPressed(MouseEvent me) {
+            super.toolBarButtonPressed(me);
+            getTableManager().setActivateExpressionFilter(this.isSelected());
+            revalidate();
+        }
     }
 
     class SetLoopFunctionButton extends ToolBarButtonImageFigure {
@@ -222,7 +210,7 @@ public class TreeToolBarContainer extends Figure {
         @Override
         public void toolBarButtonPressed(MouseEvent me) {
             super.toolBarButtonPressed(me);
-            CommandStack commandStack = abstractTreePart.getViewer().getEditDomain().getCommandStack();
+            CommandStack commandStack = getTableManager().getGraphicalViewer().getEditDomain().getCommandStack();
             commandStack.execute(new Command() {
 
                 @Override
@@ -244,67 +232,15 @@ public class TreeToolBarContainer extends Figure {
                         SetLoopFunctionDialog nsDialog = new SetLoopFunctionDialog(null, inputLoopNodesTable, loopNodes);
                         setLoopFunctionButton.setSelected(false);
                         if (nsDialog.open() == Window.OK) {
-                            ((XmlMapGraphicViewer) abstractTreePart.getViewer()).getMapperManager().getProblemsAnalyser()
+                            ((MapperManager) getTableManager().getGraphicalViewer().getMapperManager()).getProblemsAnalyser()
                                     .checkProblems(abstractTree);
-                            ((XmlMapGraphicViewer) abstractTreePart.getViewer()).getMapperManager().getMapperUI()
+                            ((MapperManager) getTableManager().getGraphicalViewer().getMapperManager()).getMapperUI()
                                     .updateStatusBar();
                         }
                     }
                 }
             });
             revalidate();
-        }
-    }
-
-    class CondensedButton extends ToolBarButtonImageFigure {
-
-        public CondensedButton(Image image) {
-            super(image);
-            setStyle(Clickable.STYLE_TOGGLE);
-        }
-
-        @Override
-        public void toolBarButtonPressed(MouseEvent me) {
-            super.toolBarButtonPressed(me);
-            abstractTree.setActivateCondensedTool(this.isSelected());
-            revalidate();
-        }
-    }
-
-    class ExpressionFilterButton extends ToolBarButtonImageFigure {
-
-        public ExpressionFilterButton(Image image) {
-            super(image);
-            setStyle(Clickable.STYLE_TOGGLE);
-        }
-
-        @Override
-        public void toolBarButtonPressed(MouseEvent me) {
-            super.toolBarButtonPressed(me);
-            abstractTree.setActivateExpressionFilter(this.isSelected());
-            revalidate();
-        }
-    }
-
-    class MinSizeButton extends ToolBarButtonImageFigure {
-
-        public MinSizeButton(Image image) {
-            super(image);
-        }
-
-        @Override
-        public void toolBarButtonPressed(MouseEvent me) {
-            super.toolBarButtonPressed(me);
-            CommandStack commandStack = abstractTreePart.getViewer().getEditDomain().getCommandStack();
-            commandStack.execute(new Command() {
-
-                @Override
-                public void execute() {
-                    abstractTree.setMinimized(!abstractTree.isMinimized());
-                    abstractTreePart.getViewer().deselectAll();
-                }
-            });
-
         }
     }
 

@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.emf.common.util.EList;
-import org.talend.designer.xmlmap.figures.treesettings.TreeSettingsManager;
+import org.talend.designer.gefabstractmap.part.directedit.DirectEditType;
+import org.talend.designer.xmlmap.figures.treesettings.TreeSettingsConstant;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
@@ -32,7 +33,6 @@ import org.talend.designer.xmlmap.model.tree.IUILookupMode;
 import org.talend.designer.xmlmap.model.tree.IUIMatchingMode;
 import org.talend.designer.xmlmap.model.tree.XML_MAP_LOOKUP_MODE;
 import org.talend.designer.xmlmap.model.tree.XML_MAP_MATCHING_MODE;
-import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 import org.talend.designer.xmlmap.ui.expressionutil.TableEntryLocation;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
@@ -67,7 +67,7 @@ public class TreeSettingDirectEditCommand extends DirectEditCommand {
                         inputTree.setMatchingMode(getMatchModelByLabel((String) newValue));
                         break;
                     case JOIN_MODEL:
-                        if (TreeSettingsManager.INNER_JOIN.equals(newValue)) {
+                        if (TreeSettingsConstant.INNER_JOIN.equals(newValue)) {
                             inputTree.setInnerJoin(true);
                         } else {
                             inputTree.setInnerJoin(false);

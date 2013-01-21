@@ -37,7 +37,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
-import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.expressionutil.TableEntryLocation;
@@ -297,15 +296,6 @@ public class XmlMapUtil {
 
     }
 
-    public static AbstractInOutTreeEditPart getAbstractInOutTreePart(TreeNodeEditPart nodepart) {
-        if (nodepart.getParent() instanceof AbstractInOutTreeEditPart) {
-            return (AbstractInOutTreeEditPart) nodepart.getParent();
-        } else if (nodepart.getParent() instanceof TreeNodeEditPart) {
-            return getAbstractInOutTreePart((TreeNodeEditPart) nodepart.getParent());
-        }
-        return null;
-    }
-
     public static XmlMapData getXmlMapData(AbstractNode treeNode) {
         AbstractNode rootNode = null;
         if (treeNode instanceof TreeNode) {
@@ -315,16 +305,6 @@ public class XmlMapUtil {
         }
         if (rootNode != null && rootNode.eContainer() != null && rootNode.eContainer().eContainer() instanceof XmlMapData) {
             return (XmlMapData) rootNode.eContainer().eContainer();
-        }
-        return null;
-    }
-
-    public static AbstractInOutTreeEditPart findTreePart(TreeNodeEditPart treeNodePart) {
-        EditPart parent = treeNodePart.getParent();
-        if (parent instanceof AbstractInOutTreeEditPart) {
-            return (AbstractInOutTreeEditPart) parent;
-        } else if (parent instanceof TreeNodeEditPart) {
-            return findTreePart((TreeNodeEditPart) parent);
         }
         return null;
     }
@@ -862,7 +842,7 @@ public class XmlMapUtil {
     }
 
     public static void removeloopInOutputTree(MapperManager mapperManager, List<TreeNode> oldLoopsFromInput) {
-        removeloopInOutputTree(mapperManager.getCopyOfMapData(), mapperManager.getMainInputTree(), oldLoopsFromInput, true);
+        removeloopInOutputTree(mapperManager.getExternalData(), mapperManager.getMainInputTree(), oldLoopsFromInput, true);
     }
 
     /**
@@ -917,16 +897,6 @@ public class XmlMapUtil {
 
     }
 
-    public static List<EditPart> getFlatChildrenPartList(AbstractInOutTreeEditPart treePart) {
-        List<EditPart> partList = new ArrayList<EditPart>();
-        List children = treePart.getChildren();
-        for (int i = 0; i < children.size(); i++) {
-            partList.add((TreeNodeEditPart) children.get(i));
-            partList.addAll(XmlMapUtil.getFlatChildrenPartList((TreeNodeEditPart) children.get(i)));
-        }
-        return partList;
-    }
-
     private static List<EditPart> getFlatChildrenPartList(EditPart treeNode) {
         List<EditPart> list = new ArrayList<EditPart>();
         List children = treeNode.getChildren();
@@ -941,6 +911,38 @@ public class XmlMapUtil {
         }
         return list;
 
+    }
+
+    public static boolean cleanGroup(List<? extends TreeNode> nodes) {
+        boolean changed = false;
+        for (TreeNode obj : nodes) {
+            OutputTreeNode outputNode = (OutputTreeNode) obj;
+            if (outputNode.isGroup()) {
+                outputNode.setGroup(false);
+                changed = true;
+            }
+            if (!outputNode.getChildren().isEmpty()) {
+                changed = cleanGroup(outputNode.getChildren()) || changed;
+            }
+        }
+
+        return changed;
+    }
+
+    public static boolean cleanAggregate(List<? extends TreeNode> nodes) {
+        boolean changed = false;
+        for (TreeNode obj : nodes) {
+            OutputTreeNode outputNode = (OutputTreeNode) obj;
+            if (outputNode.isAggregate()) {
+                outputNode.setAggregate(false);
+                changed = true;
+            }
+            if (!outputNode.getChildren().isEmpty()) {
+                changed = cleanAggregate(outputNode.getChildren()) || changed;
+            }
+        }
+
+        return changed;
     }
 
 }

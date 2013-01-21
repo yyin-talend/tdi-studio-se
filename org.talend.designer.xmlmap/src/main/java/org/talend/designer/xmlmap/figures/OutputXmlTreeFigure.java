@@ -14,18 +14,18 @@ package org.talend.designer.xmlmap.figures;
 
 import org.eclipse.draw2d.Figure;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
+import org.talend.designer.xmlmap.figures.table.XmlMapTableManager;
 import org.talend.designer.xmlmap.figures.treesettings.OutputTreeSettingContainer;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
-import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
+import org.talend.designer.xmlmap.figures.treesettings.XmlMapFilterContainer;
+import org.talend.designer.xmlmap.figures.treetools.TreeToolBarContainer;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class OutputXmlTreeFigure extends AbstractInOutTreeFigure {
+public class OutputXmlTreeFigure extends XmlmapInOutTreeFigure {
 
-    public OutputXmlTreeFigure(OutputXmlTreeEditPart treePart) {
-        super(treePart);
+    public OutputXmlTreeFigure(XmlMapTableManager tableModelManager) {
+        super(tableModelManager);
         createContents();
     }
 
@@ -36,7 +36,7 @@ public class OutputXmlTreeFigure extends AbstractInOutTreeFigure {
      */
     @Override
     protected String getTreeDisplayName() {
-        return xmlTree.getName();
+        return getTableManager().getModel().getName();
     }
 
     /*
@@ -46,22 +46,20 @@ public class OutputXmlTreeFigure extends AbstractInOutTreeFigure {
      */
     @Override
     protected void createTreeSettings(Figure parent) {
-        settingContainer = new OutputTreeSettingContainer(getOutputXmlTree());
+        settingContainer = new OutputTreeSettingContainer(getTableManager());
         parent.add(settingContainer);
 
-        filterFigure = new FilterContainer(xmlTreePart, (Composite) xmlTreePart.getViewer().getControl());
+        filterFigure = new XmlMapFilterContainer(getTableManager(), (Composite) getTableManager().getEditPart().getViewer()
+                .getControl());
         parent.add(filterFigure);
 
     }
 
     public void update(int type) {
         settingContainer.update(type);
-        filterFigure.update(type);
-        imageButtonsFigure.updateMinSizeImage();
-        imageButtonsFigure.updateLoopFunctionButton();
+        filterFigure.update();
+        toolBarContainer.updateMinSizeImage();
+        ((TreeToolBarContainer) toolBarContainer).updateLoopFunctionButton();
     }
 
-    private OutputXmlTree getOutputXmlTree() {
-        return (OutputXmlTree) xmlTree;
-    }
 }

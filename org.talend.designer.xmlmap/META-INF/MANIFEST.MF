@@ -29,5 +29,6 @@ Require-Bundle: org.eclipse.ui,
  org.talend.designer.codegen,
  org.talend.designer.components.localprovider,
  org.talend.repository,
- org.talend.datatools.xml
+ org.talend.datatools.xml,
+ org.talend.designer.gefabstractmap
 Bundle-ActivationPolicy: lazy

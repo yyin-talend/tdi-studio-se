@@ -40,6 +40,7 @@ import org.talend.commons.ui.swt.tableviewer.celleditor.ExtendedTextCellEditor;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.threading.AsynchronousThreading;
 import org.talend.core.ui.proposal.TalendProposalProvider;
+import org.talend.designer.gefabstractmap.part.directedit.DirectEditType;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;

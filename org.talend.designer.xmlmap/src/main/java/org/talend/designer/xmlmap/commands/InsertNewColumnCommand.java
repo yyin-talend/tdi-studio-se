@@ -12,10 +12,10 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataToolHelper;
+import org.talend.designer.gefabstractmap.dnd.TransferdType;
+import org.talend.designer.gefabstractmap.dnd.TransferedObject;
 import org.talend.designer.xmlmap.dnd.CreateNodeConnectionRequest;
 import org.talend.designer.xmlmap.dnd.DropType;
-import org.talend.designer.xmlmap.dnd.TransferdType;
-import org.talend.designer.xmlmap.dnd.TransferedObject;
 import org.talend.designer.xmlmap.i18n.Messages;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
@@ -55,7 +55,7 @@ public class InsertNewColumnCommand extends Command {
         this.targetEditPart = targetEditPart;
         this.rq = rq;
         this.manager = manager;
-        this.xmlMapData = manager.getCopyOfMapData();
+        this.xmlMapData = manager.getExternalData();
         this.dropType = dropType;
     }
 

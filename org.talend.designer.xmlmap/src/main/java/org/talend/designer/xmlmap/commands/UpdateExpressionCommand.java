@@ -1,8 +1,9 @@
 package org.talend.designer.xmlmap.commands;
 
 import org.eclipse.gef.commands.Command;
-import org.talend.designer.xmlmap.dnd.TransferdType;
-import org.talend.designer.xmlmap.dnd.TransferedObject;
+import org.talend.designer.gefabstractmap.dnd.TransferdType;
+import org.talend.designer.gefabstractmap.dnd.TransferedObject;
+import org.talend.designer.gefabstractmap.part.TableEntityPart;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection;
@@ -13,7 +14,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
-import org.talend.designer.xmlmap.parts.AbstractNodePart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
@@ -23,17 +23,17 @@ public class UpdateExpressionCommand extends Command {
 
     TransferedObject objects;
 
-    private AbstractNodePart targetEditPart;
+    private TableEntityPart targetEditPart;
 
     private XmlMapData xmlMapData;
 
     private MapperManager manager;
 
-    public UpdateExpressionCommand(TransferedObject objects, AbstractNodePart targetEditPart, MapperManager manager) {
+    public UpdateExpressionCommand(TransferedObject objects, TableEntityPart targetEditPart, MapperManager manager) {
         this.objects = objects;
         this.targetEditPart = targetEditPart;
         this.manager = manager;
-        this.xmlMapData = manager.getCopyOfMapData();
+        this.xmlMapData = manager.getExternalData();
     }
 
     @Override

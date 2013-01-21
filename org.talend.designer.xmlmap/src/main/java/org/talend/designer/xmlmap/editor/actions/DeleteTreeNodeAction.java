@@ -107,7 +107,7 @@ public class DeleteTreeNodeAction extends SelectionAction {
                             if (docRoot == null) {
                                 docRoot = XmlMapUtil.getTreeNodeRoot(parent);
                             }
-                            XmlMapUtil.detachNodeConnections(treeNode, mapperManager.getCopyOfMapData(), true);
+                            XmlMapUtil.detachNodeConnections(treeNode, mapperManager.getExternalData(), true);
                             // if delete loop , clean group and main
                             if (treeNode.isLoop()) {
                                 if (treeNode instanceof OutputTreeNode

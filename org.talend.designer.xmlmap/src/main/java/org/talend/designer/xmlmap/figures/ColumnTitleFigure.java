@@ -24,18 +24,18 @@ import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.talend.designer.gefabstractmap.part.MapperTablePart;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
-import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 
 /**
  * WCHEN talend class global comment. Detailled comment
  */
 public class ColumnTitleFigure extends Figure {
 
-    private AbstractInOutTreeEditPart xmlTreePart;
+    private MapperTablePart xmlTreePart;
 
-    public ColumnTitleFigure(AbstractInOutTreeEditPart xmlTreePart) {
+    public ColumnTitleFigure(MapperTablePart xmlTreePart) {
         this.xmlTreePart = xmlTreePart;
         AbstractInOutTree xmlTree = (AbstractInOutTree) xmlTreePart.getModel();
         if (xmlTree instanceof InputXmlTree) {

@@ -91,13 +91,13 @@ public interface XmlmapFactory extends EFactory {
     /**
      * Returns a new object of class '<em>Connection</em>'.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @return a new object of class '<em>Connection</em>'.
      * @generated
      */
-	Connection createConnection();
+    Connection createConnection();
 
-				/**
+    /**
      * Returns a new object of class '<em>Lookup Connection</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -106,7 +106,7 @@ public interface XmlmapFactory extends EFactory {
      */
     LookupConnection createLookupConnection();
 
-                /**
+    /**
      * Returns a new object of class '<em>Filter Connection</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -115,7 +115,7 @@ public interface XmlmapFactory extends EFactory {
      */
     FilterConnection createFilterConnection();
 
-                /**
+    /**
      * Returns a new object of class '<em>Input Loop Nodes Table</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -124,7 +124,7 @@ public interface XmlmapFactory extends EFactory {
      */
     InputLoopNodesTable createInputLoopNodesTable();
 
-                /**
+    /**
      * Returns the package supported by this factory.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

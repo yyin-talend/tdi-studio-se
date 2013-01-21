@@ -13,6 +13,9 @@ import org.eclipse.emf.ecore.EObject;
 
 import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
 
+import org.talend.designer.gefabstractmap.model.abstractmap.MapperTable;
+import org.talend.designer.gefabstractmap.model.abstractmap.MapperTableEntity;
+
 import org.talend.designer.xmlmap.model.emf.xmlmap.*;
 
 /**
@@ -99,6 +102,7 @@ public class XmlmapSwitch<T> {
             case XmlmapPackage.ABSTRACT_IN_OUT_TREE: {
                 AbstractInOutTree abstractInOutTree = (AbstractInOutTree)theEObject;
                 T result = caseAbstractInOutTree(abstractInOutTree);
+                if (result == null) result = caseMapperTable(abstractInOutTree);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -106,6 +110,7 @@ public class XmlmapSwitch<T> {
                 InputXmlTree inputXmlTree = (InputXmlTree)theEObject;
                 T result = caseInputXmlTree(inputXmlTree);
                 if (result == null) result = caseAbstractInOutTree(inputXmlTree);
+                if (result == null) result = caseMapperTable(inputXmlTree);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -113,18 +118,21 @@ public class XmlmapSwitch<T> {
                 OutputXmlTree outputXmlTree = (OutputXmlTree)theEObject;
                 T result = caseOutputXmlTree(outputXmlTree);
                 if (result == null) result = caseAbstractInOutTree(outputXmlTree);
+                if (result == null) result = caseMapperTable(outputXmlTree);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
             case XmlmapPackage.VAR_TABLE: {
                 VarTable varTable = (VarTable)theEObject;
                 T result = caseVarTable(varTable);
+                if (result == null) result = caseMapperTable(varTable);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
             case XmlmapPackage.ABSTRACT_NODE: {
                 AbstractNode abstractNode = (AbstractNode)theEObject;
                 T result = caseAbstractNode(abstractNode);
+                if (result == null) result = caseMapperTableEntity(abstractNode);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -132,6 +140,7 @@ public class XmlmapSwitch<T> {
                 TreeNode treeNode = (TreeNode)theEObject;
                 T result = caseTreeNode(treeNode);
                 if (result == null) result = caseAbstractNode(treeNode);
+                if (result == null) result = caseMapperTableEntity(treeNode);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -140,6 +149,7 @@ public class XmlmapSwitch<T> {
                 T result = caseOutputTreeNode(outputTreeNode);
                 if (result == null) result = caseTreeNode(outputTreeNode);
                 if (result == null) result = caseAbstractNode(outputTreeNode);
+                if (result == null) result = caseMapperTableEntity(outputTreeNode);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -147,6 +157,7 @@ public class XmlmapSwitch<T> {
                 VarNode varNode = (VarNode)theEObject;
                 T result = caseVarNode(varNode);
                 if (result == null) result = caseAbstractNode(varNode);
+                if (result == null) result = caseMapperTableEntity(varNode);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -208,6 +219,21 @@ public class XmlmapSwitch<T> {
      * @generated
      */
     public T caseXmlMapData(XmlMapData object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Abstract In Out Tree</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Abstract In Out Tree</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseAbstractInOutTree(AbstractInOutTree object) {
         return null;
     }
 
@@ -317,21 +343,51 @@ public class XmlmapSwitch<T> {
     }
 
     /**
+     * Returns the result of interpreting the object as an instance of '<em>IConnection</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>IConnection</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseIConnection(IConnection object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>INode Connection</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>INode Connection</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseINodeConnection(INodeConnection object) {
+        return null;
+    }
+
+    /**
      * Returns the result of interpreting the object as an instance of '<em>Connection</em>'.
      * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
      * @param object the target of the switch.
      * @return the result of interpreting the object as an instance of '<em>Connection</em>'.
      * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
      * @generated
      */
-	public T caseConnection(Connection object) {
+    public T caseConnection(Connection object) {
         return null;
     }
 
-				/**
+    /**
      * Returns the result of interpreting the object as an instance of '<em>Lookup Connection</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
@@ -377,51 +433,6 @@ public class XmlmapSwitch<T> {
     }
 
     /**
-     * Returns the result of interpreting the object as an instance of '<em>IConnection</em>'.
-     * <!-- begin-user-doc -->
-     * This implementation returns null;
-     * returning a non-null result will terminate the switch.
-     * <!-- end-user-doc -->
-     * @param object the target of the switch.
-     * @return the result of interpreting the object as an instance of '<em>IConnection</em>'.
-     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-     * @generated
-     */
-    public T caseIConnection(IConnection object) {
-        return null;
-    }
-
-                /**
-     * Returns the result of interpreting the object as an instance of '<em>INode Connection</em>'.
-     * <!-- begin-user-doc -->
-     * This implementation returns null;
-     * returning a non-null result will terminate the switch.
-     * <!-- end-user-doc -->
-     * @param object the target of the switch.
-     * @return the result of interpreting the object as an instance of '<em>INode Connection</em>'.
-     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-     * @generated
-     */
-    public T caseINodeConnection(INodeConnection object) {
-        return null;
-    }
-
-                /**
-     * Returns the result of interpreting the object as an instance of '<em>Abstract In Out Tree</em>'.
-     * <!-- begin-user-doc -->
-     * This implementation returns null;
-     * returning a non-null result will terminate the switch.
-     * <!-- end-user-doc -->
-     * @param object the target of the switch.
-     * @return the result of interpreting the object as an instance of '<em>Abstract In Out Tree</em>'.
-     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-     * @generated
-     */
-    public T caseAbstractInOutTree(AbstractInOutTree object) {
-        return null;
-    }
-
-                /**
      * Returns the result of interpreting the object as an instance of '<em>Abstract External Data</em>'.
      * <!-- begin-user-doc -->
      * This implementation returns null;
@@ -433,6 +444,36 @@ public class XmlmapSwitch<T> {
      * @generated
      */
     public T caseAbstractExternalData(AbstractExternalData object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Mapper Table</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Mapper Table</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseMapperTable(MapperTable object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Mapper Table Entity</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Mapper Table Entity</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseMapperTableEntity(MapperTableEntity object) {
         return null;
     }
 

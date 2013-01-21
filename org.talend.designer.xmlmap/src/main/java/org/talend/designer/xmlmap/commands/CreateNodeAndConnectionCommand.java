@@ -19,8 +19,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.designer.gefabstractmap.dnd.TransferedObject;
+import org.talend.designer.gefabstractmap.part.TableEntityPart;
 import org.talend.designer.xmlmap.dnd.DragAndDrogDialog;
-import org.talend.designer.xmlmap.dnd.TransferedObject;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
@@ -33,7 +34,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
-import org.talend.designer.xmlmap.parts.AbstractNodePart;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
@@ -139,10 +139,10 @@ public class CreateNodeAndConnectionCommand extends Command {
             }
 
             for (Object o : (tranceferedObj.getToTransfer())) {
-                if (!(o instanceof AbstractNodePart)) {
+                if (!(o instanceof TableEntityPart)) {
                     continue;
                 }
-                AbstractNode sourceNode = (AbstractNode) ((AbstractNodePart) o).getModel();
+                AbstractNode sourceNode = (AbstractNode) ((TableEntityPart) o).getModel();
                 if (update) {
                     doUpdate(sourceNode);
                 } else {

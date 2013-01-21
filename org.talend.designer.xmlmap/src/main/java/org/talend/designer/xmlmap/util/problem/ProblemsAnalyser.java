@@ -59,7 +59,7 @@ public class ProblemsAnalyser {
     public List<Problem> checkProblems() {
         treeAndProblems.clear();
 
-        final XmlMapData copyOfMapData = mapperManager.getCopyOfMapData();
+        final XmlMapData copyOfMapData = mapperManager.getExternalData();
         if (copyOfMapData != null) {
 
             // check problems for InputLoopTable in output
@@ -150,7 +150,7 @@ public class ProblemsAnalyser {
             treeAndProblems.get(abstractTree).clear();
         }
         // check problems for InputLoopTable in output
-        final XmlMapData copyOfMapData = mapperManager.getCopyOfMapData();
+        final XmlMapData copyOfMapData = mapperManager.getExternalData();
         // check problems for InputLoopTable in output
         InputXmlTree mainInputTree = mapperManager.getMainInputTree();
         if (abstractTree instanceof OutputXmlTree) {

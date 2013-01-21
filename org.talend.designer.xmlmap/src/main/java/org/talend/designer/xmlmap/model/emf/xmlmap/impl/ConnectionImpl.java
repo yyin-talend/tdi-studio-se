@@ -1,21 +1,26 @@
 /**
- * <copyright> </copyright>
- * 
+ * <copyright>
+ * </copyright>
+ *
  * $Id$
  */
 package org.talend.designer.xmlmap.model.emf.xmlmap.impl;
 
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.ecore.EClass;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
-import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Connection</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc -->
+ * An implementation of the model object '<em><b>Connection</b></em>'.
+ * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
@@ -28,11 +33,10 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
  * @generated
  */
 public class ConnectionImpl extends EObjectImpl implements Connection {
-
     /**
-     * The default value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-     * -->
-     * 
+     * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @see #getName()
      * @generated
      * @ordered
@@ -41,8 +45,8 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
 
     /**
      * The cached value of the '{@link #getSource() <em>Source</em>}' reference.
-     * <!-- begin-user-doc --> <!--
-     * end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @see #getSource()
      * @generated
      * @ordered
@@ -51,8 +55,8 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
 
     /**
      * The cached value of the '{@link #getTarget() <em>Target</em>}' reference.
-     * <!-- begin-user-doc --> <!--
-     * end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @see #getTarget()
      * @generated
      * @ordered
@@ -60,7 +64,8 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
     protected AbstractNode target;
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
     protected ConnectionImpl() {
@@ -68,7 +73,8 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
     @Override
@@ -77,32 +83,30 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     * 
-     * @generated NOT
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
      */
-    @Override
     public String getName() {
-        if (eContainer() != null && eContainer() instanceof XmlMapData) {
-            return "Connection_" + ((XmlMapData) eContainer()).getConnections().indexOf(this);
-        }
-        return null;
+        // TODO: implement this method to return the 'Name' attribute
+        // Ensure that you remove @generated or mark it @generated NOT
+        throw new UnsupportedOperationException();
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-    @Override
     public AbstractNode getSource() {
         return source;
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-    @Override
     public void setSource(AbstractNode newSource) {
         AbstractNode oldSource = source;
         source = newSource;
@@ -111,19 +115,19 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-    @Override
     public AbstractNode getTarget() {
         return target;
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-    @Override
     public void setTarget(AbstractNode newTarget) {
         AbstractNode oldTarget = target;
         target = newTarget;
@@ -132,7 +136,8 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
     @Override
@@ -149,7 +154,8 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
     @Override
@@ -166,7 +172,8 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
     @Override
@@ -183,7 +190,8 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
     @Override
@@ -199,4 +207,4 @@ public class ConnectionImpl extends EObjectImpl implements Connection {
         return super.eIsSet(featureID);
     }
 
-} // ConnectionImpl
+} //ConnectionImpl

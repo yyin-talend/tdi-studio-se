@@ -137,7 +137,7 @@ public class ImportTreeFromRepository extends SelectionAction {
         if (reviewDialog.open() == Window.OK) {
             TreeNode treeNodeRoot = XmlMapUtil.getTreeNodeRoot(schemaNode);
 
-            XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getCopyOfMapData(), true);
+            XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getExternalData(), true);
             RepositoryNode repositoryNode = reviewDialog.getResult();
 
             Item item = repositoryNode.getObject().getProperty().getItem();
@@ -185,7 +185,7 @@ public class ImportTreeFromRepository extends SelectionAction {
 
             AbstractInOutTree tree = null;
             if (schemaNode.eContainer() instanceof InputXmlTree) {
-                XmlMapConnectionBuilder.rebuildLinks(schemaNode, mapperManager.getCopyOfMapData());
+                XmlMapConnectionBuilder.rebuildLinks(schemaNode, mapperManager.getExternalData());
                 mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) schemaNode.eContainer());
                 tree = (InputXmlTree) schemaNode.eContainer();
             } else if (schemaNode.eContainer() instanceof OutputXmlTree) {

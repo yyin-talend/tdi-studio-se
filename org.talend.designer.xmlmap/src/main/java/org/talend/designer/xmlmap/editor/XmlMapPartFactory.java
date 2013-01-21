@@ -14,6 +14,7 @@ package org.talend.designer.xmlmap.editor;
 
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
+import org.talend.designer.gefabstractmap.part.ConnectionEditPart;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
@@ -24,15 +25,14 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
-import org.talend.designer.xmlmap.parts.ConnectionEditPart;
-import org.talend.designer.xmlmap.parts.FilterConnectionEditPart;
+import org.talend.designer.xmlmap.parts.XmlMapFilterConnectionPart;
 import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
-import org.talend.designer.xmlmap.parts.LookupConnectionEditPart;
+import org.talend.designer.xmlmap.parts.XmlMapLookupConnectionPart;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.OutputXmlTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
-import org.talend.designer.xmlmap.parts.VarTableEditPart;
+import org.talend.designer.xmlmap.parts.XmlMapVarTablePart;
 import org.talend.designer.xmlmap.parts.XmlMapDataEditPart;
 
 /**
@@ -49,7 +49,7 @@ public class XmlMapPartFactory implements EditPartFactory {
         } else if (model instanceof OutputXmlTree) {
             part = new OutputXmlTreeEditPart();
         } else if (model instanceof VarTable) {
-            part = new VarTableEditPart();
+            part = new XmlMapVarTablePart();
         } else if (model instanceof OutputTreeNode) {
             part = new OutputTreeNodeEditPart();
         } else if (model instanceof TreeNode) {
@@ -59,9 +59,9 @@ public class XmlMapPartFactory implements EditPartFactory {
         } else if (model instanceof Connection) {
             part = new ConnectionEditPart();
         } else if (model instanceof LookupConnection) {
-            part = new LookupConnectionEditPart();
+            part = new XmlMapLookupConnectionPart();
         } else if (model instanceof FilterConnection) {
-            part = new FilterConnectionEditPart();
+            part = new XmlMapFilterConnectionPart();
         }
         if (part != null) {
             part.setModel(model);

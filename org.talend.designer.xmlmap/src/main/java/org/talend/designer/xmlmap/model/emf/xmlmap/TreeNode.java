@@ -8,8 +8,6 @@ package org.talend.designer.xmlmap.model.emf.xmlmap;
 
 import org.eclipse.emf.common.util.EList;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Tree Node</b></em>'.

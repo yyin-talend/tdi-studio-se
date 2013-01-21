@@ -14,14 +14,13 @@ package org.talend.designer.xmlmap.parts;
 
 import java.util.List;
 
-import org.eclipse.draw2d.IFigure;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.EditPart;
+import org.talend.designer.gefabstractmap.part.MapperTablePart;
+import org.talend.designer.gefabstractmap.utils.MapperUtils;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.OutputXmlTreeFigure;
-import org.talend.designer.xmlmap.figures.treeNode.RootTreeNodeFigure;
-import org.talend.designer.xmlmap.figures.treeNode.RowFigure;
-import org.talend.designer.xmlmap.figures.treeNode.TreeNodeFigure;
+import org.talend.designer.xmlmap.figures.treeNode.XmlmapTreeNodeFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
@@ -32,25 +31,6 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
  * wchen class global comment. Detailled comment
  */
 public class OutputTreeNodeEditPart extends TreeNodeEditPart {
-
-    @Override
-    protected IFigure createFigure() {
-        OutputTreeNode model = (OutputTreeNode) getModel();
-        boolean isRoot = false;
-        if (model.eContainer() instanceof AbstractInOutTree) {
-            isRoot = true;
-        }
-
-        final RowFigure testRow = new RowFigure(this, !isRoot);
-        TreeNodeFigure treeNodeFigure = null;
-        if (isRoot) {
-            treeNodeFigure = new RootTreeNodeFigure(testRow);
-        } else {
-            treeNodeFigure = new TreeNodeFigure(testRow);
-        }
-
-        return treeNodeFigure;
-    }
 
     @Override
     public List getModelChildren() {
@@ -81,14 +61,14 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
                 if (XmlMapUtil.DOCUMENT.equals(notification.getOldValue())
                         || !XmlMapUtil.DOCUMENT.equals(notification.getOldValue())
                         && XmlMapUtil.DOCUMENT.equals(notification.getNewValue())) {
-                    AbstractInOutTreeEditPart inOutTreeEditPart = getInOutTreeEditPart(this);
-                    if (inOutTreeEditPart.getFigure() instanceof OutputXmlTreeFigure) {
-                        ((OutputXmlTreeFigure) inOutTreeEditPart.getFigure()).update(XmlmapPackage.TREE_NODE__TYPE);
+                    MapperTablePart mapperTablePart = MapperUtils.getMapperTablePart(this);
+                    if (mapperTablePart.getFigure() instanceof OutputXmlTreeFigure) {
+                        ((OutputXmlTreeFigure) mapperTablePart.getFigure()).update(XmlmapPackage.TREE_NODE__TYPE);
                     }
                 }
                 break;
             case XmlmapPackage.TREE_NODE__LOOP:
-                ((TreeNodeFigure) getFigure()).getElement().getBranchContent().updateLoopButtonFigure();
+                ((XmlmapTreeNodeFigure) getFigure()).getBranchContent().updateLoopButtonFigure();
                 AbstractInOutTree abstractInOutTree = XmlMapUtil.getAbstractInOutTree((OutputTreeNode) getModel());
                 if (abstractInOutTree != null) {
                     ((XmlMapGraphicViewer) getViewer()).getMapperManager().getProblemsAnalyser().checkProblems(abstractInOutTree);
@@ -121,11 +101,9 @@ public class OutputTreeNodeEditPart extends TreeNodeEditPart {
             switch (featureId) {
             case XmlmapPackage.INPUT_LOOP_NODES_TABLE__INPUTLOOPNODES:
             case XmlmapPackage.OUTPUT_TREE_NODE__INPUT_LOOP_NODES_TABLE:
-                if (getFigure() instanceof TreeNodeFigure) {
-                    TreeNodeFigure outputFigure = (TreeNodeFigure) getFigure();
-                    if (outputFigure.getElement() != null) {
-                        outputFigure.getElement().getBranchContent().updateLoopButtonFigure();
-                    }
+                XmlmapTreeNodeFigure outputFigure = (XmlmapTreeNodeFigure) getFigure();
+                if (outputFigure.getElement() != null) {
+                    outputFigure.getBranchContent().updateLoopButtonFigure();
                 }
                 break;
             default:

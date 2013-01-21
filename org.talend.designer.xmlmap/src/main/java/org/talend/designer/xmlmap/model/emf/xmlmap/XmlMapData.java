@@ -51,7 +51,7 @@ public interface XmlMapData extends AbstractExternalData {
      * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree}.
      * <!-- begin-user-doc -->
      * <p>
-     * If the meaning of the '<em>Output Trees</em>' reference list isn't clear,
+     * If the meaning of the '<em>Output Trees</em>' containment reference list isn't clear,
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
@@ -83,7 +83,7 @@ public interface XmlMapData extends AbstractExternalData {
      * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection}.
      * <!-- begin-user-doc -->
      * <p>
-     * If the meaning of the '<em>Connections</em>' reference list isn't clear,
+     * If the meaning of the '<em>Connections</em>' containment reference list isn't clear,
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->

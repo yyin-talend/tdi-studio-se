@@ -3,9 +3,9 @@ package org.talend.designer.xmlmap.commands;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.designer.gefabstractmap.dnd.TransferdType;
+import org.talend.designer.gefabstractmap.dnd.TransferedObject;
 import org.talend.designer.xmlmap.dnd.CreateNodeConnectionRequest;
-import org.talend.designer.xmlmap.dnd.TransferdType;
-import org.talend.designer.xmlmap.dnd.TransferedObject;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
@@ -40,7 +40,7 @@ public class CreateDocChildrenCommand extends Command {
         this.targetEditPart = targetEditPart;
         this.rq = rq;
         this.manager = manager;
-        this.xmlMapData = manager.getCopyOfMapData();
+        this.xmlMapData = manager.getExternalData();
     }
 
     @Override

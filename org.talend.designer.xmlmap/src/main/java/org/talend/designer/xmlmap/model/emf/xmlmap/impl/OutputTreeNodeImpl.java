@@ -6,24 +6,14 @@
  */
 package org.talend.designer.xmlmap.model.emf.xmlmap.impl;
 
-import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
-import org.eclipse.emf.ecore.util.EObjectResolvingEList;
-import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
-import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
-import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
-import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 
@@ -51,6 +41,7 @@ public class OutputTreeNodeImpl extends TreeNodeImpl implements OutputTreeNode {
      * @ordered
      */
     protected static final boolean AGGREGATE_EDEFAULT = false;
+
     /**
      * The cached value of the '{@link #isAggregate() <em>Aggregate</em>}' attribute.
      * <!-- begin-user-doc -->

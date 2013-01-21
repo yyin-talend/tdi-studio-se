@@ -15,22 +15,23 @@ package org.talend.designer.xmlmap.figures;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.designer.xmlmap.figures.treesettings.FilterContainer;
+import org.talend.designer.xmlmap.figures.table.XmlMapTableManager;
 import org.talend.designer.xmlmap.figures.treesettings.InputTreeSettingContainer;
+import org.talend.designer.xmlmap.figures.treesettings.XmlMapFilterContainer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
-import org.talend.designer.xmlmap.parts.InputXmlTreeEditPart;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class InputXmlTreeFigure extends AbstractInOutTreeFigure {
+public class InputXmlTreeFigure extends XmlmapInOutTreeFigure {
 
-    public InputXmlTreeFigure(InputXmlTreeEditPart xmlTreePart) {
-        super(xmlTreePart);
+    public InputXmlTreeFigure(XmlMapTableManager tableModelManager) {
+        super(tableModelManager);
         createContents();
 
     }
 
+    @Override
     protected String getTreeDisplayName() {
         return (getInputXmlTree().isLookup() ? "lookup : " : "main :") + getInputXmlTree().getName();
     }
@@ -40,19 +41,23 @@ public class InputXmlTreeFigure extends AbstractInOutTreeFigure {
         super.setBounds(rect);
     }
 
+    public InputXmlTree getInputXmlTree() {
+        return (InputXmlTree) getMappManager().getModel();
+    }
+
+    protected XmlMapTableManager getMappManager() {
+        return super.getTableManager();
+    }
+
     public void update(int type) {
         if (settingContainer != null) {
             settingContainer.update(type);
         }
         if (filterFigure != null) {
-            filterFigure.update(type);
+            filterFigure.update();
         }
-        imageButtonsFigure.updateMinSizeImage();
+        toolBarContainer.updateMinSizeImage();
 
-    }
-
-    public InputXmlTree getInputXmlTree() {
-        return (InputXmlTree) xmlTree;
     }
 
     /*
@@ -63,9 +68,10 @@ public class InputXmlTreeFigure extends AbstractInOutTreeFigure {
     @Override
     protected void createTreeSettings(Figure parent) {
         if (getInputXmlTree().isLookup()) {
-            settingContainer = new InputTreeSettingContainer(getInputXmlTree());
+            settingContainer = new InputTreeSettingContainer(getMappManager());
             parent.add(settingContainer);
-            filterFigure = new FilterContainer(xmlTreePart, (Composite) xmlTreePart.getViewer().getControl());
+            filterFigure = new XmlMapFilterContainer(getMappManager(), (Composite) getMappManager().getEditPart().getViewer()
+                    .getControl());
             parent.add(filterFigure);
 
         }

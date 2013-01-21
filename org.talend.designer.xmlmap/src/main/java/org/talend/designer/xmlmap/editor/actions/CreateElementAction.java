@@ -113,7 +113,7 @@ public class CreateElementAction extends SelectionAction {
                 }
             }
             if (open == Window.OK) {
-                XmlMapUtil.detachNodeConnections(parent, mapperManager.getCopyOfMapData(), false);
+                XmlMapUtil.detachNodeConnections(parent, mapperManager.getExternalData(), false);
                 treeNode.setName(label);
                 treeNode.setNodeType(NodeType.ELEMENT);
                 String parentXpath = parent.getXpath();

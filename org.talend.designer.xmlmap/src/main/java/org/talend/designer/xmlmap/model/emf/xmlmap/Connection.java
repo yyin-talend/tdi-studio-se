@@ -6,7 +6,6 @@
  */
 package org.talend.designer.xmlmap.model.emf.xmlmap;
 
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -19,5 +18,4 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface Connection extends INodeConnection {
-
 } // Connection

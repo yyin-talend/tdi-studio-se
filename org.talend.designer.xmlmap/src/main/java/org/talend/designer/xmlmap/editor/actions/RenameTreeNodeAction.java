@@ -96,7 +96,7 @@ public class RenameTreeNodeAction extends SelectionAction {
                                 selectedNode.getNodeType()));
                     }
                 } else {
-                    XmlMapData externalEmfData = (XmlMapData) mapperManager.getCopyOfMapData();
+                    XmlMapData externalEmfData = (XmlMapData) mapperManager.getExternalData();
                     XmlMapUtil.updateXPathAndExpression(externalEmfData, mapperManager.getMapperComponent()
                             .getExpressionManager(), selectedNode, dialog.getValue(), XmlMapUtil.getXPathLength(selectedNode
                             .getXpath()), true);

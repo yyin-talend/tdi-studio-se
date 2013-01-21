@@ -15,13 +15,11 @@ package org.talend.designer.xmlmap.parts;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ImageFigure;
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPolicy;
@@ -31,32 +29,41 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
+import org.talend.designer.gefabstractmap.figures.anchors.VarColumnAnchor;
+import org.talend.designer.gefabstractmap.figures.var.VarEntityFigure;
+import org.talend.designer.gefabstractmap.part.TableEntityPart;
+import org.talend.designer.gefabstractmap.part.directedit.XmlMapNodeCellEditorLocator;
+import org.talend.designer.gefabstractmap.policy.RowSelectionEditPolicy;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
-import org.talend.designer.xmlmap.figures.VarNodeFigure;
-import org.talend.designer.xmlmap.figures.VariableContainerFigure;
-import org.talend.designer.xmlmap.figures.treeNode.TreeNodeFigure;
+import org.talend.designer.xmlmap.figures.varnode.VarEntityManager;
+import org.talend.designer.xmlmap.figures.varnode.VarNodeFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
-import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
-import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeCellEditorLocator;
 import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeDirectEditManager;
 import org.talend.designer.xmlmap.policy.DragAndDropEditPolicy;
-import org.talend.designer.xmlmap.policy.RowSelectionEditPolicy;
 import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 
 /**
  * DOC hywang class global comment. Detailled comment
  */
-public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
+public class VarNodeEditPart extends TableEntityPart implements NodeEditPart {
 
-    private VarNodeFigure varNodeFigure;
+    private VarEntityFigure varNodeFigure;
 
     private XmlMapNodeDirectEditManager directEditManager;
 
+    private VarEntityManager manager;
+
     @Override
     protected IFigure createFigure() {
-        varNodeFigure = new VarNodeFigure((VarNode) getModel());
+        varNodeFigure = new VarNodeFigure(manager);
         return varNodeFigure;
+    }
+
+    @Override
+    public void setModel(Object model) {
+        super.setModel(model);
+        manager = new VarEntityManager((VarNode) model, this);
     }
 
     @Override
@@ -73,14 +80,15 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
         if (RequestConstants.REQ_DIRECT_EDIT.equals(req.getType())) {
             DirectEditRequest drequest = (DirectEditRequest) req;
             Point figureLocation = drequest.getLocation();
-            if (getFigure() instanceof VarNodeFigure) {
-                figure = ((VarNodeFigure) getFigure()).findFigureAt(figureLocation);
+            if (getFigure() instanceof VarEntityFigure) {
+                figure = ((VarEntityFigure) getFigure()).findFigureAt(figureLocation);
             }
             // if (directEditManager == null) {
+            // if (figure != null ) {
             if (figure != null) {
-                if (figure instanceof VariableContainerFigure) {
-                    figure = ((VariableContainerFigure) figure).getVariableLabel();
-                }
+                // if (figure instanceof VariableContainerFigure) {
+                // figure = ((VariableContainerFigure) figure).getVariableLabel();
+                // }
                 selectedFigure = (Figure) figure;
                 directEditManager = new XmlMapNodeDirectEditManager(this, new XmlMapNodeCellEditorLocator(selectedFigure));
             }
@@ -107,22 +115,22 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
 
     @Override
     public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
-        return new ColumnAnchor(this, getFigure(), true);
+        return new VarColumnAnchor(manager, getFigure(), true);
     }
 
     @Override
     public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
-        return new ColumnAnchor(this, getFigure(), false);
+        return new VarColumnAnchor(manager, getFigure(), false);
     }
 
     @Override
     public ConnectionAnchor getSourceConnectionAnchor(Request request) {
-        return new ColumnAnchor(this, getFigure(), true);
+        return new VarColumnAnchor(manager, getFigure(), true);
     }
 
     @Override
     public ConnectionAnchor getTargetConnectionAnchor(Request request) {
-        return new ColumnAnchor(this, getFigure(), false);
+        return new VarColumnAnchor(manager, getFigure(), false);
     }
 
     @Override
@@ -133,11 +141,11 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
         case Notification.SET:
             switch (featureId) {
             case XmlmapPackage.VAR_NODE__EXPRESSION:
-                ((VarNodeFigure) getFigure()).getExpression().setText(((VarNode) getModel()).getExpression());
+                ((VarEntityFigure) getFigure()).getExpression().setText(((VarNode) getModel()).getExpression());
                 break;
             case XmlmapPackage.VAR_NODE__NULLABLE:
                 boolean newBoolean = notification.getNewBooleanValue();
-                ImageFigure checkImage = ((VarNodeFigure) getFigure()).getVariable().getCheckImage();
+                ImageFigure checkImage = ((VarEntityFigure) getFigure()).getCheckImage();
                 if (newBoolean) {
                     checkImage.setImage(ImageProvider.getImage(EImage.CHECKED_ICON));
                 } else if (!newBoolean) {
@@ -145,10 +153,11 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 }
                 break;
             case XmlmapPackage.VAR_NODE__NAME:
-                ((VarNodeFigure) getFigure()).getVariable().getVariableLabel().setText(((VarNode) getModel()).getName());
+                ((VarEntityFigure) getFigure()).getVariableLabel().setText(((VarNode) getModel()).getName());
                 break;
             case XmlmapPackage.VAR_NODE__TYPE:
-                ((VarNodeFigure) getFigure()).updateVarNodeType();
+                ((VarEntityFigure) getFigure()).updateVarNodeType(((VarNode) getModel()).getType(),
+                        ((VarNode) getModel()).isNullable());
                 // refreshChildren();
                 // refreshVisuals();
                 break;
@@ -179,92 +188,6 @@ public class VarNodeEditPart extends AbstractNodePart implements NodeEditPart {
             }
         }
 
-    }
-
-    class ColumnAnchor extends ChopboxAnchor {
-
-        private boolean isSource;
-
-        private VarNodeEditPart varNodePart;
-
-        public ColumnAnchor(VarNodeEditPart varNodePart, IFigure owner, boolean isSource) {
-            super(owner);
-            this.isSource = isSource;
-            this.varNodePart = varNodePart;
-        }
-
-        @Override
-        public IFigure getOwner() {
-            return super.getOwner();
-        }
-
-        @Override
-        public Point getReferencePoint() {
-            Point ref = null;
-
-            final VarTableEditPart varTablePart = (VarTableEditPart) varNodePart.getParent();
-
-            if (((VarTable) varTablePart.getModel()).isMinimized()) {
-                if (isSource) {
-                    ref = varTablePart.getFigure().getBounds().getRight();
-                } else {
-                    ref = varTablePart.getFigure().getBounds().getLeft();
-                }
-            } else if (getOwner() instanceof TreeNodeFigure) {
-                TreeNodeFigure nodeFigure = (TreeNodeFigure) getOwner();
-                // normal column
-                if (nodeFigure.getTreeBranch() == null) {
-                    if (isSource) {
-                        ref = getOwner().getBounds().getRight();
-                    } else {
-                        if (nodeFigure.getElement() != null) {
-                            ref = nodeFigure.getElement().getBounds().getLeft();
-                        } else {
-                            ref = getOwner().getBounds().getLeft();
-                        }
-                    }
-                    getOwner().translateToAbsolute(ref);
-
-                }
-            } else if (getOwner() instanceof VarNodeFigure) {
-                VarNodeFigure varNodeFigure = (VarNodeFigure) getOwner();
-                if (isSource) {
-                    ref = getOwner().getBounds().getRight();
-                } else {
-                    if (varNodeFigure.getExpression() != null) {
-                        ref = varNodeFigure.getExpression().getBounds().getLeft();
-                    } else {
-                        ref = getOwner().getBounds().getLeft();
-                    }
-                }
-                getOwner().translateToAbsolute(ref);
-
-            } else {
-                ref = getOwner().getBounds().getCenter();
-                getOwner().translateToAbsolute(ref);
-            }
-            return ref;
-
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.draw2d.ChopboxAnchor#getLocation(org.eclipse.draw2d.geometry.Point)
-         */
-        @Override
-        public Point getLocation(Point reference) {
-            Point referencePoint = getReferencePoint();
-            return new Point(referencePoint.x, referencePoint.y);
-
-        }
-
-        @Override
-        protected Rectangle getBox() {
-            Rectangle copy = getOwner().getBounds().getCopy();
-
-            return super.getBox();
-        }
     }
 
 }

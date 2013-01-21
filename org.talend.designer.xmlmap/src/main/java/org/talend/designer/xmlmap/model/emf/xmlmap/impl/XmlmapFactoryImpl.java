@@ -179,15 +179,15 @@ public class XmlmapFactoryImpl extends EFactoryImpl implements XmlmapFactory {
 
     /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	public Connection createConnection() {
+    public Connection createConnection() {
         ConnectionImpl connection = new ConnectionImpl();
         return connection;
     }
 
-				/**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -197,7 +197,7 @@ public class XmlmapFactoryImpl extends EFactoryImpl implements XmlmapFactory {
         return lookupConnection;
     }
 
-                /**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -207,7 +207,7 @@ public class XmlmapFactoryImpl extends EFactoryImpl implements XmlmapFactory {
         return filterConnection;
     }
 
-                /**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -217,7 +217,7 @@ public class XmlmapFactoryImpl extends EFactoryImpl implements XmlmapFactory {
         return inputLoopNodesTable;
     }
 
-                /**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated

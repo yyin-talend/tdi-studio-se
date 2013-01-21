@@ -6,7 +6,6 @@
  */
 package org.talend.designer.xmlmap.model.emf.xmlmap;
 
-import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -19,5 +18,4 @@ import org.eclipse.emf.common.util.EList;
  * @generated
  */
 public interface LookupConnection extends INodeConnection {
-
 } // LookupConnection

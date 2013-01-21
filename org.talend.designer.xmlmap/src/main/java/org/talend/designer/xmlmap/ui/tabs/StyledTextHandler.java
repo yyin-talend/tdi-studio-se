@@ -39,14 +39,14 @@ import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.ProposalUtils;
 import org.talend.core.ui.proposal.TalendProposalProvider;
+import org.talend.designer.gefabstractmap.part.TableEntityPart;
+import org.talend.designer.gefabstractmap.part.directedit.DirectEditType;
+import org.talend.designer.gefabstractmap.resource.ColorInfo;
+import org.talend.designer.gefabstractmap.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.commands.DirectEditCommand;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
-import org.talend.designer.xmlmap.parts.AbstractNodePart;
-import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 import org.talend.designer.xmlmap.parts.directedit.proposal.ExpressionProposalProvider;
-import org.talend.designer.xmlmap.ui.resource.ColorInfo;
-import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -62,7 +62,7 @@ public class StyledTextHandler {
 
     private AbstractNode selectedNode;
 
-    private AbstractNodePart selectedNodePart;
+    private TableEntityPart selectedNodePart;
 
     private ContentProposalAdapterExtended contentProposalAdapter;
 
@@ -246,7 +246,7 @@ public class StyledTextHandler {
         return selectedNode;
     }
 
-    public void setSelectedNodePart(AbstractNodePart selectedNode) {
+    public void setSelectedNodePart(TableEntityPart selectedNode) {
         this.selectedNodePart = selectedNode;
         this.selectedNode = (AbstractNode) selectedNodePart.getModel();
         IContentProposalProvider[] contentProposalProviders = new IContentProposalProvider[0];

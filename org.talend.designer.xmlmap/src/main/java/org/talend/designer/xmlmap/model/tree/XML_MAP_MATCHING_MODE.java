@@ -13,7 +13,7 @@
 package org.talend.designer.xmlmap.model.tree;
 
 import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
-import org.talend.designer.xmlmap.ui.resource.ImageInfo;
+import org.talend.designer.gefabstractmap.resource.ImageInfo;
 
 /**
  * 

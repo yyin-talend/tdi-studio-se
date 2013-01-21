@@ -37,11 +37,13 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.core.model.metadata.types.JavaType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
-import org.talend.designer.xmlmap.figures.cells.IComboCell;
-import org.talend.designer.xmlmap.figures.cells.IExpressionBuilderCell;
-import org.talend.designer.xmlmap.figures.cells.ITextAreaCell;
-import org.talend.designer.xmlmap.figures.cells.ITextCell;
-import org.talend.designer.xmlmap.figures.treesettings.TreeSettingsManager;
+import org.talend.designer.gefabstractmap.figures.cells.IComboCell;
+import org.talend.designer.gefabstractmap.figures.cells.IExpressionBuilderCell;
+import org.talend.designer.gefabstractmap.figures.cells.ITextAreaCell;
+import org.talend.designer.gefabstractmap.figures.cells.ITextCell;
+import org.talend.designer.gefabstractmap.part.directedit.DirectEditType;
+import org.talend.designer.gefabstractmap.part.directedit.XmlMapNodeCellEditorLocator;
+import org.talend.designer.xmlmap.figures.treesettings.TreeSettingsConstant;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
@@ -71,7 +73,7 @@ public class XmlMapNodeDirectEditManager extends DirectEditManager {
 
     private Map<CellEditor, DirectEditType> cellAndType = new HashMap<CellEditor, DirectEditType>();
 
-    private final String[] joinModel = new String[] { TreeSettingsManager.INNER_JOIN, TreeSettingsManager.LEFT_OUTER_JOIN };
+    private final String[] joinModel = new String[] { TreeSettingsConstant.INNER_JOIN, TreeSettingsConstant.LEFT_OUTER_JOIN };
 
     public XmlMapNodeDirectEditManager(GraphicalEditPart source, CellEditorLocator locator) {
         super(source, null, locator);

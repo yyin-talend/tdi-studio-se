@@ -1,8 +1,9 @@
 package org.talend.designer.xmlmap.commands;
 
 import org.eclipse.gef.commands.Command;
-import org.talend.designer.xmlmap.dnd.TransferdType;
-import org.talend.designer.xmlmap.dnd.TransferedObject;
+import org.talend.designer.gefabstractmap.dnd.TransferdType;
+import org.talend.designer.gefabstractmap.dnd.TransferedObject;
+import org.talend.designer.gefabstractmap.part.MapperTablePart;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection;
@@ -11,7 +12,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
-import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -20,11 +20,11 @@ public class UpdateFilterExpressionCommand extends Command {
 
     TransferedObject objects;
 
-    protected AbstractInOutTreeEditPart targetEditPart;
+    protected MapperTablePart targetEditPart;
 
     protected XmlMapData xmlMapData;
 
-    public UpdateFilterExpressionCommand(TransferedObject objects, AbstractInOutTreeEditPart targetEditPart, XmlMapData xmlMapData) {
+    public UpdateFilterExpressionCommand(TransferedObject objects, MapperTablePart targetEditPart, XmlMapData xmlMapData) {
         this.objects = objects;
         this.targetEditPart = targetEditPart;
         this.xmlMapData = xmlMapData;

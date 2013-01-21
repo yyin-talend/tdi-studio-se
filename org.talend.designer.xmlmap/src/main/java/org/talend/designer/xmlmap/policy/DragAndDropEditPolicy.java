@@ -25,21 +25,21 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.GraphicalEditPolicy;
 import org.eclipse.swt.graphics.Color;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
+import org.talend.designer.gefabstractmap.dnd.TransferedObject;
+import org.talend.designer.gefabstractmap.part.MapperTablePart;
+import org.talend.designer.gefabstractmap.part.TableEntityPart;
+import org.talend.designer.gefabstractmap.resource.ColorInfo;
+import org.talend.designer.gefabstractmap.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.commands.CreateDocChildrenCommand;
 import org.talend.designer.xmlmap.commands.InsertNewColumnCommand;
 import org.talend.designer.xmlmap.commands.UpdateExpressionCommand;
 import org.talend.designer.xmlmap.commands.UpdateFilterExpressionCommand;
 import org.talend.designer.xmlmap.dnd.CreateNodeConnectionRequest;
 import org.talend.designer.xmlmap.dnd.DropType;
-import org.talend.designer.xmlmap.dnd.TransferedObject;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
-import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
-import org.talend.designer.xmlmap.parts.AbstractNodePart;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
-import org.talend.designer.xmlmap.ui.resource.ColorInfo;
-import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 
 /**
@@ -67,19 +67,20 @@ public class DragAndDropEditPolicy extends GraphicalEditPolicy {
             if (targetEditPart != null && TemplateTransfer.getInstance().getObject() instanceof TransferedObject) {
                 TransferedObject toDrop = (TransferedObject) TemplateTransfer.getInstance().getObject();
                 MapperManager manager = ((XmlMapGraphicViewer) targetEditPart.getViewer()).getMapperManager();
-                if (manager != null && manager.getCopyOfMapData() != null) {
+                if (manager != null && manager.getExternalData() != null) {
                     DropType dropType = rq.getNewObjectType();
                     if (dropType != null) {
                         switch (dropType) {
                         case DROP_FILTER:
-                            if (targetEditPart instanceof AbstractInOutTreeEditPart) {
-                                command = new UpdateFilterExpressionCommand(toDrop, (AbstractInOutTreeEditPart) targetEditPart,
-                                        manager.getCopyOfMapData());
+                            if (targetEditPart instanceof MapperTablePart) {
+                                command = new UpdateFilterExpressionCommand(toDrop, (MapperTablePart) targetEditPart,
+                                        manager.getExternalData());
                             }
                             break;
                         case DROP_EXPRESSION:
-                            if (targetEditPart instanceof AbstractNodePart)
-                                command = new UpdateExpressionCommand(toDrop, (AbstractNodePart) targetEditPart, manager);
+                            if (targetEditPart instanceof TableEntityPart) {
+                                command = new UpdateExpressionCommand(toDrop, (TableEntityPart) targetEditPart, manager);
+                            }
                             break;
                         case DROP_OUTPUT_DOC_CHILD:
                             if (targetEditPart instanceof OutputTreeNodeEditPart && rq.getNewObject() instanceof OutputTreeNode) {

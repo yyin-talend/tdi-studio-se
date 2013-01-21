@@ -6,7 +6,6 @@
  */
 package org.talend.designer.xmlmap.model.emf.xmlmap;
 
-import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -25,7 +24,6 @@ import org.eclipse.emf.common.util.EList;
  * @generated
  */
 public interface VarNode extends AbstractNode {
-
     /**
      * Returns the value of the '<em><b>Nullable</b></em>' attribute.
      * <!-- begin-user-doc -->

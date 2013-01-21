@@ -15,6 +15,9 @@ import org.eclipse.emf.ecore.EObject;
 
 import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
 
+import org.talend.designer.gefabstractmap.model.abstractmap.MapperTable;
+import org.talend.designer.gefabstractmap.model.abstractmap.MapperTableEntity;
+
 import org.talend.designer.xmlmap.model.emf.xmlmap.*;
 
 /**
@@ -138,6 +141,14 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
                 return createAbstractExternalDataAdapter();
             }
             @Override
+            public Adapter caseMapperTable(MapperTable object) {
+                return createMapperTableAdapter();
+            }
+            @Override
+            public Adapter caseMapperTableEntity(MapperTableEntity object) {
+                return createMapperTableEntityAdapter();
+            }
+            @Override
             public Adapter defaultCase(EObject object) {
                 return createEObjectAdapter();
             }
@@ -168,6 +179,20 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     public Adapter createXmlMapDataAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree <em>Abstract In Out Tree</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree
+     * @generated
+     */
+    public Adapter createAbstractInOutTreeAdapter() {
         return null;
     }
 
@@ -270,20 +295,48 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
     }
 
     /**
+     * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection <em>IConnection</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.IConnection
+     * @generated
+     */
+    public Adapter createIConnectionAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection <em>INode Connection</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection
+     * @generated
+     */
+    public Adapter createINodeConnectionAdapter() {
+        return null;
+    }
+
+    /**
      * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection <em>Connection</em>}'.
      * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
      * @return the new adapter.
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.Connection
      * @generated
      */
-	public Adapter createConnectionAdapter() {
+    public Adapter createConnectionAdapter() {
         return null;
     }
 
-				/**
+    /**
      * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection <em>Lookup Connection</em>}'.
      * <!-- begin-user-doc -->
      * This default implementation returns null so that we can easily ignore cases;
@@ -326,48 +379,6 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
     }
 
     /**
-     * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection <em>IConnection</em>}'.
-     * <!-- begin-user-doc -->
-     * This default implementation returns null so that we can easily ignore cases;
-     * it's useful to ignore a case when inheritance will catch all the cases anyway.
-     * <!-- end-user-doc -->
-     * @return the new adapter.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.IConnection
-     * @generated
-     */
-    public Adapter createIConnectionAdapter() {
-        return null;
-    }
-
-                /**
-     * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection <em>INode Connection</em>}'.
-     * <!-- begin-user-doc -->
-     * This default implementation returns null so that we can easily ignore cases;
-     * it's useful to ignore a case when inheritance will catch all the cases anyway.
-     * <!-- end-user-doc -->
-     * @return the new adapter.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection
-     * @generated
-     */
-    public Adapter createINodeConnectionAdapter() {
-        return null;
-    }
-
-                /**
-     * Creates a new adapter for an object of class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree <em>Abstract In Out Tree</em>}'.
-     * <!-- begin-user-doc -->
-     * This default implementation returns null so that we can easily ignore cases;
-     * it's useful to ignore a case when inheritance will catch all the cases anyway.
-     * <!-- end-user-doc -->
-     * @return the new adapter.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree
-     * @generated
-     */
-    public Adapter createAbstractInOutTreeAdapter() {
-        return null;
-    }
-
-                /**
      * Creates a new adapter for an object of class '{@link org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData <em>Abstract External Data</em>}'.
      * <!-- begin-user-doc -->
      * This default implementation returns null so that we can easily ignore cases;
@@ -378,6 +389,34 @@ public class XmlmapAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     public Adapter createAbstractExternalDataAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link org.talend.designer.gefabstractmap.model.abstractmap.MapperTable <em>Mapper Table</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.talend.designer.gefabstractmap.model.abstractmap.MapperTable
+     * @generated
+     */
+    public Adapter createMapperTableAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link org.talend.designer.gefabstractmap.model.abstractmap.MapperTableEntity <em>Mapper Table Entity</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.talend.designer.gefabstractmap.model.abstractmap.MapperTableEntity
+     * @generated
+     */
+    public Adapter createMapperTableEntityAdapter() {
         return null;
     }
 

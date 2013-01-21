@@ -7,16 +7,11 @@
 package org.talend.designer.xmlmap.model.emf.xmlmap.impl;
 
 import org.eclipse.emf.common.notify.Notification;
-import java.util.Collection;
-
-import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
-import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
 
@@ -43,6 +38,7 @@ public class VarNodeImpl extends AbstractNodeImpl implements VarNode {
      * @ordered
      */
     protected static final boolean NULLABLE_EDEFAULT = false;
+
     /**
      * The cached value of the '{@link #isNullable() <em>Nullable</em>}' attribute.
      * <!-- begin-user-doc -->

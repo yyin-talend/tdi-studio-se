@@ -15,48 +15,98 @@ package org.talend.designer.xmlmap.parts;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPartViewer;
+import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.requests.DirectEditRequest;
+import org.talend.designer.gefabstractmap.figures.anchors.FilterTreeAnchor;
+import org.talend.designer.gefabstractmap.figures.cells.IWidgetCell;
+import org.talend.designer.gefabstractmap.part.OutputTablePart;
+import org.talend.designer.gefabstractmap.part.directedit.XmlMapNodeCellEditorLocator;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
 import org.talend.designer.xmlmap.figures.OutputXmlTreeFigure;
-import org.talend.designer.xmlmap.figures.cells.IWidgetCell;
-import org.talend.designer.xmlmap.figures.treeNode.TreeNodeFigure;
+import org.talend.designer.xmlmap.figures.table.XmlMapTableManager;
+import org.talend.designer.xmlmap.figures.treeNode.XmlmapTreeNodeFigure;
+import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
-import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeCellEditorLocator;
 import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeDirectEditManager;
+import org.talend.designer.xmlmap.policy.DragAndDropEditPolicy;
+import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class OutputXmlTreeEditPart extends AbstractInOutTreeEditPart {
+public class OutputXmlTreeEditPart extends OutputTablePart implements NodeEditPart {
 
     private OutputXmlTreeFigure figure;
 
     private XmlMapNodeDirectEditManager directEditManager;
 
+    XmlMapTableManager manager;
+
     @Override
     protected IFigure createFigure() {
-        figure = new OutputXmlTreeFigure(this);
+        figure = new OutputXmlTreeFigure(manager);
         return figure;
     }
 
     @Override
     public IFigure getContentPane() {
         return ((OutputXmlTreeFigure) getFigure()).getColumnContainer();
+    }
+
+    @Override
+    public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
+        if (connection instanceof XmlMapFilterConnectionPart) {
+            return new FilterTreeAnchor(getFigure(), connection, manager);
+        }
+        return null;
+    }
+
+    @Override
+    public ConnectionAnchor getSourceConnectionAnchor(Request request) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ConnectionAnchor getTargetConnectionAnchor(Request request) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected void createEditPolicies() {
+        // installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
+        installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new XmlDirectEditPolicy());
+        installEditPolicy("Drag and Drop", new DragAndDropEditPolicy());
+    }
+
+    @Override
+    protected List getModelTargetConnections() {
+        return ((AbstractInOutTree) getModel()).getFilterIncomingConnections();
     }
 
     @Override
@@ -101,7 +151,7 @@ public class OutputXmlTreeEditPart extends AbstractInOutTreeEditPart {
                 OutputXmlTree model = (OutputXmlTree) getModel();
                 boolean changed = false;
                 if (model.isMultiLoops()) {
-                    changed = cleanGroup(model.getNodes());
+                    changed = XmlMapUtil.cleanGroup(model.getNodes());
 
                 }
                 if (model.isMultiLoops() && getParent() instanceof XmlMapDataEditPart) {
@@ -110,7 +160,7 @@ public class OutputXmlTreeEditPart extends AbstractInOutTreeEditPart {
                         if (o instanceof InputXmlTreeEditPart) {
                             InputXmlTree inputTree = (InputXmlTree) ((InputXmlTreeEditPart) o).getModel();
                             if (inputTree.isMultiLoops() && !inputTree.isLookup()) {
-                                changed = cleanAggregate(model.getNodes()) || changed;
+                                changed = XmlMapUtil.cleanAggregate(model.getNodes()) || changed;
                                 break;
                             }
                         }
@@ -153,8 +203,8 @@ public class OutputXmlTreeEditPart extends AbstractInOutTreeEditPart {
                                     OutputTreeNode outputNode = (OutputTreeNode) childPart.getModel();
                                     if (outputNode.getInputLoopNodesTable() == loopNodeTable) {
                                         if (childPart.getFigure() != null) {
-                                            TreeNodeFigure nodefigure = (TreeNodeFigure) childPart.getFigure();
-                                            nodefigure.getElement().getBranchContent().updateLoopButtonFigure();
+                                            XmlmapTreeNodeFigure nodefigure = (XmlmapTreeNodeFigure) childPart.getFigure();
+                                            nodefigure.getBranchContent().updateLoopButtonFigure();
                                         }
                                     }
                                 }
@@ -225,9 +275,19 @@ public class OutputXmlTreeEditPart extends AbstractInOutTreeEditPart {
     public void setModel(Object model) {
         super.setModel(model);
         OutputXmlTree outputTree = (OutputXmlTree) getModel();
+        manager = new XmlMapTableManager(outputTree, this);
         for (InputLoopNodesTable sourceLoopTable : outputTree.getInputLoopNodesTables()) {
             addListenerForInputLoopNodeTable(sourceLoopTable);
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.newabstractmap.part.MapperTablePart#highLightHeader()
+     */
+    @Override
+    public void highLightHeader(boolean highLight) {
+        ((OutputXmlTreeFigure) getFigure()).highLightHeader(highLight);
+    }
 }

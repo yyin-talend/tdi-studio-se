@@ -6,10 +6,10 @@ import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.talend.designer.gefabstractmap.part.directedit.DirectEditType;
 import org.talend.designer.xmlmap.commands.DirectEditCommand;
 import org.talend.designer.xmlmap.commands.TreeSettingDirectEditCommand;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
-import org.talend.designer.xmlmap.parts.directedit.DirectEditType;
 
 public class XmlDirectEditPolicy extends DirectEditPolicy {
 

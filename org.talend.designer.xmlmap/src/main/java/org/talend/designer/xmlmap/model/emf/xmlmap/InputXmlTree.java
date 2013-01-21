@@ -7,7 +7,6 @@
 package org.talend.designer.xmlmap.model.emf.xmlmap;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -36,7 +35,7 @@ public interface InputXmlTree extends AbstractInOutTree {
      * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode}.
      * <!-- begin-user-doc -->
      * <p>
-     * If the meaning of the '<em>Nodes</em>' reference isn't clear,
+     * If the meaning of the '<em>Nodes</em>' containment reference list isn't clear,
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->

@@ -8,8 +8,6 @@ package org.talend.designer.xmlmap.model.emf.xmlmap;
 
 import org.eclipse.emf.common.util.EList;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Output Xml Tree</b></em>'.
@@ -185,7 +183,7 @@ public interface OutputXmlTree extends AbstractInOutTree {
      * The list contents are of type {@link org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable}.
      * <!-- begin-user-doc -->
      * <p>
-     * If the meaning of the '<em>Input Loop Nodes Tables</em>' reference list isn't clear,
+     * If the meaning of the '<em>Input Loop Nodes Tables</em>' containment reference list isn't clear,
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->

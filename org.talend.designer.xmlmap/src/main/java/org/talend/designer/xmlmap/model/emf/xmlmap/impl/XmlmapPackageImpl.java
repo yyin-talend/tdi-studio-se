@@ -18,6 +18,8 @@ import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFilePackage;
 
+import org.talend.designer.gefabstractmap.model.abstractmap.AbstractmapPackage;
+
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
@@ -50,6 +52,13 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      * @generated
      */
     private EClass xmlMapDataEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass abstractInOutTreeEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -102,12 +111,26 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
 
     /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
-	private EClass connectionEClass = null;
+    private EClass iConnectionEClass = null;
 
-				/**
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass iNodeConnectionEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass connectionEClass = null;
+
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -129,27 +152,6 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
     private EClass inputLoopNodesTableEClass = null;
 
     /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    private EClass iConnectionEClass = null;
-
-                /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    private EClass iNodeConnectionEClass = null;
-
-                /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    private EClass abstractInOutTreeEClass = null;
-
-                /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -203,6 +205,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         isInited = true;
 
         // Initialize simple dependencies
+        AbstractmapPackage.eINSTANCE.eClass();
         TalendFilePackage.eINSTANCE.eClass();
         XMLTypePackage.eINSTANCE.eClass();
 
@@ -264,6 +267,78 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
      */
     public EReference getXmlMapData_Connections() {
         return (EReference)xmlMapDataEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EClass getAbstractInOutTree() {
+        return abstractInOutTreeEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractInOutTree_ExpressionFilter() {
+        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractInOutTree_ActivateExpressionFilter() {
+        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractInOutTree_ActivateCondensedTool() {
+        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractInOutTree_Minimized() {
+        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(3);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractInOutTree_Name() {
+        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(4);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EReference getAbstractInOutTree_FilterIncomingConnections() {
+        return (EReference)abstractInOutTreeEClass.getEStructuralFeatures().get(5);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getAbstractInOutTree_MultiLoops() {
+        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(6);
     }
 
     /**
@@ -691,78 +766,6 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
 
     /**
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @generated
-     */
-	public EClass getConnection() {
-        return connectionEClass;
-    }
-
-				/**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public EClass getLookupConnection() {
-        return lookupConnectionEClass;
-    }
-
-                /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public EClass getFilterConnection() {
-        return filterConnectionEClass;
-    }
-
-                /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public EAttribute getFilterConnection_Name() {
-        return (EAttribute)filterConnectionEClass.getEStructuralFeatures().get(0);
-    }
-
-                /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public EReference getFilterConnection_Source() {
-        return (EReference)filterConnectionEClass.getEStructuralFeatures().get(1);
-    }
-
-                /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public EReference getFilterConnection_Target() {
-        return (EReference)filterConnectionEClass.getEStructuralFeatures().get(2);
-    }
-
-                /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public EClass getInputLoopNodesTable() {
-        return inputLoopNodesTableEClass;
-    }
-
-                /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public EReference getInputLoopNodesTable_Inputloopnodes() {
-        return (EReference)inputLoopNodesTableEClass.getEStructuralFeatures().get(0);
-    }
-
-                /**
-     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
@@ -770,7 +773,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         return iConnectionEClass;
     }
 
-                /**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -779,7 +782,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         return iNodeConnectionEClass;
     }
 
-                /**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -788,7 +791,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         return (EAttribute)iNodeConnectionEClass.getEStructuralFeatures().get(0);
     }
 
-                /**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -797,7 +800,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         return (EReference)iNodeConnectionEClass.getEStructuralFeatures().get(1);
     }
 
-                /**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -806,79 +809,79 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
         return (EReference)iNodeConnectionEClass.getEStructuralFeatures().get(2);
     }
 
-                /**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    public EClass getAbstractInOutTree() {
-        return abstractInOutTreeEClass;
+    public EClass getConnection() {
+        return connectionEClass;
     }
 
-                /**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getAbstractInOutTree_ExpressionFilter() {
-        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(0);
+    public EClass getLookupConnection() {
+        return lookupConnectionEClass;
     }
 
-                /**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getAbstractInOutTree_ActivateExpressionFilter() {
-        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(1);
+    public EClass getFilterConnection() {
+        return filterConnectionEClass;
     }
 
-                /**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getAbstractInOutTree_ActivateCondensedTool() {
-        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(2);
+    public EAttribute getFilterConnection_Name() {
+        return (EAttribute)filterConnectionEClass.getEStructuralFeatures().get(0);
     }
 
-                /**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getAbstractInOutTree_Minimized() {
-        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(3);
+    public EReference getFilterConnection_Source() {
+        return (EReference)filterConnectionEClass.getEStructuralFeatures().get(1);
     }
 
-                /**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getAbstractInOutTree_Name() {
-        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(4);
+    public EReference getFilterConnection_Target() {
+        return (EReference)filterConnectionEClass.getEStructuralFeatures().get(2);
     }
 
-                /**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    public EReference getAbstractInOutTree_FilterIncomingConnections() {
-        return (EReference)abstractInOutTreeEClass.getEStructuralFeatures().get(5);
+    public EClass getInputLoopNodesTable() {
+        return inputLoopNodesTableEClass;
     }
 
-                /**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getAbstractInOutTree_MultiLoops() {
-        return (EAttribute)abstractInOutTreeEClass.getEStructuralFeatures().get(6);
+    public EReference getInputLoopNodesTable_Inputloopnodes() {
+        return (EReference)inputLoopNodesTableEClass.getEStructuralFeatures().get(0);
     }
 
-                /**
+    /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -1032,6 +1035,7 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
 
         // Obtain other dependent packages
         TalendFilePackage theTalendFilePackage = (TalendFilePackage)EPackage.Registry.INSTANCE.getEPackage(TalendFilePackage.eNS_URI);
+        AbstractmapPackage theAbstractmapPackage = (AbstractmapPackage)EPackage.Registry.INSTANCE.getEPackage(AbstractmapPackage.eNS_URI);
         XMLTypePackage theXMLTypePackage = (XMLTypePackage)EPackage.Registry.INSTANCE.getEPackage(XMLTypePackage.eNS_URI);
 
         // Create type parameters
@@ -1040,8 +1044,11 @@ public class XmlmapPackageImpl extends EPackageImpl implements XmlmapPackage {
 
         // Add supertypes to classes
         xmlMapDataEClass.getESuperTypes().add(theTalendFilePackage.getAbstractExternalData());
+        abstractInOutTreeEClass.getESuperTypes().add(theAbstractmapPackage.getMapperTable());
         inputXmlTreeEClass.getESuperTypes().add(this.getAbstractInOutTree());
         outputXmlTreeEClass.getESuperTypes().add(this.getAbstractInOutTree());
+        varTableEClass.getESuperTypes().add(theAbstractmapPackage.getMapperTable());
+        abstractNodeEClass.getESuperTypes().add(theAbstractmapPackage.getMapperTableEntity());
         treeNodeEClass.getESuperTypes().add(this.getAbstractNode());
         outputTreeNodeEClass.getESuperTypes().add(this.getTreeNode());
         varNodeEClass.getESuperTypes().add(this.getAbstractNode());

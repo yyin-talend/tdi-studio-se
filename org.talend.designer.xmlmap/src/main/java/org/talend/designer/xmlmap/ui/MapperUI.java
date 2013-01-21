@@ -49,6 +49,9 @@ import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.gefabstractmap.resource.ColorProviderMapper;
+import org.talend.designer.gefabstractmap.resource.FontProviderMapper;
+import org.talend.designer.gefabstractmap.resource.ImageProviderMapper;
 import org.talend.designer.xmlmap.XmlMapComponent;
 import org.talend.designer.xmlmap.editor.XmlMapEditor;
 import org.talend.designer.xmlmap.i18n.Messages;
@@ -59,9 +62,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.ui.footer.FooterComposite;
 import org.talend.designer.xmlmap.ui.footer.StatusBar.STATUS;
-import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
-import org.talend.designer.xmlmap.ui.resource.FontProviderMapper;
-import org.talend.designer.xmlmap.ui.resource.ImageProviderMapper;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
 import org.talend.designer.xmlmap.ui.tabs.TabFolderEditors;
 
@@ -95,7 +95,7 @@ public class MapperUI {
     public MapperUI(MapperManager mapperManager) {
         this.mapperManager = mapperManager;
         this.mapperComponent = mapperManager.getMapperComponent();
-        this.copyOfMapData = mapperManager.getCopyOfMapData();
+        this.copyOfMapData = mapperManager.getExternalData();
         mapperManager.setMapperUI(this);
 
     }
@@ -112,9 +112,11 @@ public class MapperUI {
 
         mapperShell.addShellListener(new ShellListener() {
 
+            @Override
             public void shellActivated(ShellEvent e) {
             }
 
+            @Override
             public void shellClosed(ShellEvent e) {
                 if (editor != null && editor.isDirty() && !closeWithoutPrompt) {
                     boolean closeWindow = MessageDialog.openConfirm(mapperShell, "Close without save",
@@ -129,12 +131,15 @@ public class MapperUI {
 
             }
 
+            @Override
             public void shellDeactivated(ShellEvent e) {
             }
 
+            @Override
             public void shellDeiconified(ShellEvent e) {
             }
 
+            @Override
             public void shellIconified(ShellEvent e) {
             }
 
@@ -165,7 +170,7 @@ public class MapperUI {
 
         if (copyOfMapData.getVarTables().isEmpty()) {
             VarTable varTable1 = XmlmapFactory.eINSTANCE.createVarTable();
-            varTable1.setName("Var"); //$NON-NLS-N$
+            varTable1.setName("Var");
             varTable1.setMinimized(true);
             copyOfMapData.getVarTables().add(varTable1);
         }
@@ -180,6 +185,7 @@ public class MapperUI {
 
         mapperShell.addDisposeListener(new DisposeListener() {
 
+            @Override
             public void widgetDisposed(DisposeEvent e) {
                 ColorProviderMapper.releaseColors();
                 FontProviderMapper.releaseFonts();
@@ -308,6 +314,7 @@ public class MapperUI {
         String outputName = process.generateUniqueConnectionName("out"); //$NON-NLS-1$
         InputDialog id = new InputDialog(mapperShell, "Add a output", "New Output :", outputName, new IInputValidator() {
 
+            @Override
             public String isValid(String newText) {
                 if (!process.checkValidConnectionName(newText)) {
                     return "Output is invalid.";

@@ -109,7 +109,7 @@ public class SetSubstitutionAction extends SelectionAction {
                 }
             }
 
-            XmlMapUtil.detachNodeConnections(selectedNode, mapperManager.getCopyOfMapData(), false);
+            XmlMapUtil.detachNodeConnections(selectedNode, mapperManager.getExternalData(), false);
             treeNode.setName(selectedNode.getName() + XSDPopulationUtil2.SUBS);
             treeNode.setNodeType(NodeType.ELEMENT);
             treeNode.setXpath(selectedNode.getXpath() + XmlMapUtil.XPATH_SEPARATOR + treeNode.getName());

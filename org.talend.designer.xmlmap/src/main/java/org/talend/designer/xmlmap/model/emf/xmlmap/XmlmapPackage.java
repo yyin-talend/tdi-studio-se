@@ -14,6 +14,8 @@ import org.eclipse.emf.ecore.EReference;
 
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFilePackage;
 
+import org.talend.designer.gefabstractmap.model.abstractmap.AbstractmapPackage;
+
 /**
  * <!-- begin-user-doc -->
  * The <b>Package</b> for the model.
@@ -134,7 +136,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_IN_OUT_TREE__EXPRESSION_FILTER = 0;
+    int ABSTRACT_IN_OUT_TREE__EXPRESSION_FILTER = AbstractmapPackage.MAPPER_TABLE_FEATURE_COUNT + 0;
 
     /**
      * The feature id for the '<em><b>Activate Expression Filter</b></em>' attribute.
@@ -143,7 +145,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_IN_OUT_TREE__ACTIVATE_EXPRESSION_FILTER = 1;
+    int ABSTRACT_IN_OUT_TREE__ACTIVATE_EXPRESSION_FILTER = AbstractmapPackage.MAPPER_TABLE_FEATURE_COUNT + 1;
 
     /**
      * The feature id for the '<em><b>Activate Condensed Tool</b></em>' attribute.
@@ -152,7 +154,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_IN_OUT_TREE__ACTIVATE_CONDENSED_TOOL = 2;
+    int ABSTRACT_IN_OUT_TREE__ACTIVATE_CONDENSED_TOOL = AbstractmapPackage.MAPPER_TABLE_FEATURE_COUNT + 2;
 
     /**
      * The feature id for the '<em><b>Minimized</b></em>' attribute.
@@ -161,7 +163,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_IN_OUT_TREE__MINIMIZED = 3;
+    int ABSTRACT_IN_OUT_TREE__MINIMIZED = AbstractmapPackage.MAPPER_TABLE_FEATURE_COUNT + 3;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -170,7 +172,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_IN_OUT_TREE__NAME = 4;
+    int ABSTRACT_IN_OUT_TREE__NAME = AbstractmapPackage.MAPPER_TABLE_FEATURE_COUNT + 4;
 
     /**
      * The feature id for the '<em><b>Filter Incoming Connections</b></em>' reference list.
@@ -179,7 +181,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS = 5;
+    int ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS = AbstractmapPackage.MAPPER_TABLE_FEATURE_COUNT + 5;
 
     /**
      * The feature id for the '<em><b>Multi Loops</b></em>' attribute.
@@ -188,7 +190,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_IN_OUT_TREE__MULTI_LOOPS = 6;
+    int ABSTRACT_IN_OUT_TREE__MULTI_LOOPS = AbstractmapPackage.MAPPER_TABLE_FEATURE_COUNT + 6;
 
     /**
      * The number of structural features of the '<em>Abstract In Out Tree</em>' class.
@@ -197,7 +199,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_IN_OUT_TREE_FEATURE_COUNT = 7;
+    int ABSTRACT_IN_OUT_TREE_FEATURE_COUNT = AbstractmapPackage.MAPPER_TABLE_FEATURE_COUNT + 7;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputXmlTreeImpl <em>Input Xml Tree</em>}' class.
@@ -497,7 +499,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int VAR_TABLE__NAME = 0;
+    int VAR_TABLE__NAME = AbstractmapPackage.MAPPER_TABLE_FEATURE_COUNT + 0;
 
     /**
      * The feature id for the '<em><b>Nodes</b></em>' containment reference list.
@@ -506,7 +508,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int VAR_TABLE__NODES = 1;
+    int VAR_TABLE__NODES = AbstractmapPackage.MAPPER_TABLE_FEATURE_COUNT + 1;
 
     /**
      * The feature id for the '<em><b>Minimized</b></em>' attribute.
@@ -515,7 +517,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int VAR_TABLE__MINIMIZED = 2;
+    int VAR_TABLE__MINIMIZED = AbstractmapPackage.MAPPER_TABLE_FEATURE_COUNT + 2;
 
     /**
      * The number of structural features of the '<em>Var Table</em>' class.
@@ -524,7 +526,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int VAR_TABLE_FEATURE_COUNT = 3;
+    int VAR_TABLE_FEATURE_COUNT = AbstractmapPackage.MAPPER_TABLE_FEATURE_COUNT + 3;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractNodeImpl <em>Abstract Node</em>}' class.
@@ -543,7 +545,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_NODE__NAME = 0;
+    int ABSTRACT_NODE__NAME = AbstractmapPackage.MAPPER_TABLE_ENTITY_FEATURE_COUNT + 0;
 
     /**
      * The feature id for the '<em><b>Expression</b></em>' attribute.
@@ -552,7 +554,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_NODE__EXPRESSION = 1;
+    int ABSTRACT_NODE__EXPRESSION = AbstractmapPackage.MAPPER_TABLE_ENTITY_FEATURE_COUNT + 1;
 
     /**
      * The feature id for the '<em><b>Type</b></em>' attribute.
@@ -561,7 +563,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_NODE__TYPE = 2;
+    int ABSTRACT_NODE__TYPE = AbstractmapPackage.MAPPER_TABLE_ENTITY_FEATURE_COUNT + 2;
 
     /**
      * The feature id for the '<em><b>Outgoing Connections</b></em>' reference list.
@@ -570,7 +572,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_NODE__OUTGOING_CONNECTIONS = 3;
+    int ABSTRACT_NODE__OUTGOING_CONNECTIONS = AbstractmapPackage.MAPPER_TABLE_ENTITY_FEATURE_COUNT + 3;
 
     /**
      * The feature id for the '<em><b>Incoming Connections</b></em>' reference list.
@@ -579,7 +581,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_NODE__INCOMING_CONNECTIONS = 4;
+    int ABSTRACT_NODE__INCOMING_CONNECTIONS = AbstractmapPackage.MAPPER_TABLE_ENTITY_FEATURE_COUNT + 4;
 
     /**
      * The feature id for the '<em><b>Filter Out Going Connections</b></em>' reference list.
@@ -588,7 +590,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_NODE__FILTER_OUT_GOING_CONNECTIONS = 5;
+    int ABSTRACT_NODE__FILTER_OUT_GOING_CONNECTIONS = AbstractmapPackage.MAPPER_TABLE_ENTITY_FEATURE_COUNT + 5;
 
     /**
      * The number of structural features of the '<em>Abstract Node</em>' class.
@@ -597,7 +599,7 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int ABSTRACT_NODE_FEATURE_COUNT = 6;
+    int ABSTRACT_NODE_FEATURE_COUNT = AbstractmapPackage.MAPPER_TABLE_ENTITY_FEATURE_COUNT + 6;
 
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.TreeNodeImpl <em>Tree Node</em>}' class.
@@ -1183,14 +1185,14 @@ public interface XmlmapPackage extends EPackage {
     /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.ConnectionImpl <em>Connection</em>}' class.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.ConnectionImpl
      * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getConnection()
      * @generated
      */
-	int CONNECTION = 11;
+    int CONNECTION = 11;
 
-				/**
+    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1199,34 +1201,34 @@ public interface XmlmapPackage extends EPackage {
      */
     int CONNECTION__NAME = INODE_CONNECTION__NAME;
 
-                /**
+    /**
      * The feature id for the '<em><b>Source</b></em>' reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-	int CONNECTION__SOURCE = INODE_CONNECTION__SOURCE;
+    int CONNECTION__SOURCE = INODE_CONNECTION__SOURCE;
 
-				/**
+    /**
      * The feature id for the '<em><b>Target</b></em>' reference.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-	int CONNECTION__TARGET = INODE_CONNECTION__TARGET;
+    int CONNECTION__TARGET = INODE_CONNECTION__TARGET;
 
-				/**
+    /**
      * The number of structural features of the '<em>Connection</em>' class.
      * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-	int CONNECTION_FEATURE_COUNT = INODE_CONNECTION_FEATURE_COUNT + 0;
+    int CONNECTION_FEATURE_COUNT = INODE_CONNECTION_FEATURE_COUNT + 0;
 
-				/**
+    /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.LookupConnectionImpl <em>Lookup Connection</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1236,7 +1238,7 @@ public interface XmlmapPackage extends EPackage {
      */
     int LOOKUP_CONNECTION = 12;
 
-                /**
+    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1245,7 +1247,7 @@ public interface XmlmapPackage extends EPackage {
      */
     int LOOKUP_CONNECTION__NAME = INODE_CONNECTION__NAME;
 
-                /**
+    /**
      * The feature id for the '<em><b>Source</b></em>' reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1254,7 +1256,7 @@ public interface XmlmapPackage extends EPackage {
      */
     int LOOKUP_CONNECTION__SOURCE = INODE_CONNECTION__SOURCE;
 
-                /**
+    /**
      * The feature id for the '<em><b>Target</b></em>' reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1263,7 +1265,7 @@ public interface XmlmapPackage extends EPackage {
      */
     int LOOKUP_CONNECTION__TARGET = INODE_CONNECTION__TARGET;
 
-                /**
+    /**
      * The number of structural features of the '<em>Lookup Connection</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1272,7 +1274,7 @@ public interface XmlmapPackage extends EPackage {
      */
     int LOOKUP_CONNECTION_FEATURE_COUNT = INODE_CONNECTION_FEATURE_COUNT + 0;
 
-                /**
+    /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.FilterConnectionImpl <em>Filter Connection</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1282,7 +1284,7 @@ public interface XmlmapPackage extends EPackage {
      */
     int FILTER_CONNECTION = 13;
 
-                /**
+    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1291,7 +1293,7 @@ public interface XmlmapPackage extends EPackage {
      */
     int FILTER_CONNECTION__NAME = ICONNECTION_FEATURE_COUNT + 0;
 
-                /**
+    /**
      * The feature id for the '<em><b>Source</b></em>' reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1300,7 +1302,7 @@ public interface XmlmapPackage extends EPackage {
      */
     int FILTER_CONNECTION__SOURCE = ICONNECTION_FEATURE_COUNT + 1;
 
-                /**
+    /**
      * The feature id for the '<em><b>Target</b></em>' reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1309,7 +1311,7 @@ public interface XmlmapPackage extends EPackage {
      */
     int FILTER_CONNECTION__TARGET = ICONNECTION_FEATURE_COUNT + 2;
 
-                /**
+    /**
      * The number of structural features of the '<em>Filter Connection</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1318,7 +1320,7 @@ public interface XmlmapPackage extends EPackage {
      */
     int FILTER_CONNECTION_FEATURE_COUNT = ICONNECTION_FEATURE_COUNT + 3;
 
-                /**
+    /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputLoopNodesTableImpl <em>Input Loop Nodes Table</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1328,7 +1330,7 @@ public interface XmlmapPackage extends EPackage {
      */
     int INPUT_LOOP_NODES_TABLE = 14;
 
-                /**
+    /**
      * The feature id for the '<em><b>Inputloopnodes</b></em>' reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1337,7 +1339,7 @@ public interface XmlmapPackage extends EPackage {
      */
     int INPUT_LOOP_NODES_TABLE__INPUTLOOPNODES = 0;
 
-                /**
+    /**
      * The number of structural features of the '<em>Input Loop Nodes Table</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1346,7 +1348,7 @@ public interface XmlmapPackage extends EPackage {
      */
     int INPUT_LOOP_NODES_TABLE_FEATURE_COUNT = 1;
 
-                /**
+    /**
      * The meta object id for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.NodeType <em>Node Type</em>}' enum.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1410,6 +1412,93 @@ public interface XmlmapPackage extends EPackage {
      * @generated
      */
     EReference getXmlMapData_Connections();
+
+    /**
+     * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree <em>Abstract In Out Tree</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Abstract In Out Tree</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree
+     * @generated
+     */
+    EClass getAbstractInOutTree();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getExpressionFilter <em>Expression Filter</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Expression Filter</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getExpressionFilter()
+     * @see #getAbstractInOutTree()
+     * @generated
+     */
+    EAttribute getAbstractInOutTree_ExpressionFilter();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isActivateExpressionFilter <em>Activate Expression Filter</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Activate Expression Filter</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isActivateExpressionFilter()
+     * @see #getAbstractInOutTree()
+     * @generated
+     */
+    EAttribute getAbstractInOutTree_ActivateExpressionFilter();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isActivateCondensedTool <em>Activate Condensed Tool</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Activate Condensed Tool</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isActivateCondensedTool()
+     * @see #getAbstractInOutTree()
+     * @generated
+     */
+    EAttribute getAbstractInOutTree_ActivateCondensedTool();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isMinimized <em>Minimized</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Minimized</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isMinimized()
+     * @see #getAbstractInOutTree()
+     * @generated
+     */
+    EAttribute getAbstractInOutTree_Minimized();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getName <em>Name</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Name</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getName()
+     * @see #getAbstractInOutTree()
+     * @generated
+     */
+    EAttribute getAbstractInOutTree_Name();
+
+    /**
+     * Returns the meta object for the reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getFilterIncomingConnections <em>Filter Incoming Connections</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the reference list '<em>Filter Incoming Connections</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getFilterIncomingConnections()
+     * @see #getAbstractInOutTree()
+     * @generated
+     */
+    EReference getAbstractInOutTree_FilterIncomingConnections();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isMultiLoops <em>Multi Loops</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Multi Loops</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isMultiLoops()
+     * @see #getAbstractInOutTree()
+     * @generated
+     */
+    EAttribute getAbstractInOutTree_MultiLoops();
 
     /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree <em>Input Xml Tree</em>}'.
@@ -1922,90 +2011,6 @@ public interface XmlmapPackage extends EPackage {
     EAttribute getVarNode_Nullable();
 
     /**
-     * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection <em>Connection</em>}'.
-     * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-     * @return the meta object for class '<em>Connection</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.Connection
-     * @generated
-     */
-	EClass getConnection();
-
-				/**
-     * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection <em>Lookup Connection</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for class '<em>Lookup Connection</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection
-     * @generated
-     */
-    EClass getLookupConnection();
-
-                /**
-     * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection <em>Filter Connection</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for class '<em>Filter Connection</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection
-     * @generated
-     */
-    EClass getFilterConnection();
-
-                /**
-     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getName <em>Name</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Name</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getName()
-     * @see #getFilterConnection()
-     * @generated
-     */
-    EAttribute getFilterConnection_Name();
-
-                /**
-     * Returns the meta object for the reference '{@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getSource <em>Source</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the reference '<em>Source</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getSource()
-     * @see #getFilterConnection()
-     * @generated
-     */
-    EReference getFilterConnection_Source();
-
-                /**
-     * Returns the meta object for the reference '{@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getTarget <em>Target</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the reference '<em>Target</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getTarget()
-     * @see #getFilterConnection()
-     * @generated
-     */
-    EReference getFilterConnection_Target();
-
-                /**
-     * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable <em>Input Loop Nodes Table</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for class '<em>Input Loop Nodes Table</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable
-     * @generated
-     */
-    EClass getInputLoopNodesTable();
-
-                /**
-     * Returns the meta object for the reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable#getInputloopnodes <em>Inputloopnodes</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the reference list '<em>Inputloopnodes</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable#getInputloopnodes()
-     * @see #getInputLoopNodesTable()
-     * @generated
-     */
-    EReference getInputLoopNodesTable_Inputloopnodes();
-
-                /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection <em>IConnection</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2015,7 +2020,7 @@ public interface XmlmapPackage extends EPackage {
      */
     EClass getIConnection();
 
-                /**
+    /**
      * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection <em>INode Connection</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2025,7 +2030,7 @@ public interface XmlmapPackage extends EPackage {
      */
     EClass getINodeConnection();
 
-                /**
+    /**
      * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection#getName <em>Name</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2036,7 +2041,7 @@ public interface XmlmapPackage extends EPackage {
      */
     EAttribute getINodeConnection_Name();
 
-                /**
+    /**
      * Returns the meta object for the reference '{@link org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection#getSource <em>Source</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2047,7 +2052,7 @@ public interface XmlmapPackage extends EPackage {
      */
     EReference getINodeConnection_Source();
 
-                /**
+    /**
      * Returns the meta object for the reference '{@link org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection#getTarget <em>Target</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2058,94 +2063,91 @@ public interface XmlmapPackage extends EPackage {
      */
     EReference getINodeConnection_Target();
 
-                /**
-     * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree <em>Abstract In Out Tree</em>}'.
+    /**
+     * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.Connection <em>Connection</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for class '<em>Abstract In Out Tree</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree
+     * @return the meta object for class '<em>Connection</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.Connection
      * @generated
      */
-    EClass getAbstractInOutTree();
+    EClass getConnection();
 
-                /**
-     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getExpressionFilter <em>Expression Filter</em>}'.
+    /**
+     * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection <em>Lookup Connection</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Expression Filter</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getExpressionFilter()
-     * @see #getAbstractInOutTree()
+     * @return the meta object for class '<em>Lookup Connection</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.LookupConnection
      * @generated
      */
-    EAttribute getAbstractInOutTree_ExpressionFilter();
+    EClass getLookupConnection();
 
-                /**
-     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isActivateExpressionFilter <em>Activate Expression Filter</em>}'.
+    /**
+     * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection <em>Filter Connection</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Activate Expression Filter</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isActivateExpressionFilter()
-     * @see #getAbstractInOutTree()
+     * @return the meta object for class '<em>Filter Connection</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection
      * @generated
      */
-    EAttribute getAbstractInOutTree_ActivateExpressionFilter();
+    EClass getFilterConnection();
 
-                /**
-     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isActivateCondensedTool <em>Activate Condensed Tool</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Activate Condensed Tool</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isActivateCondensedTool()
-     * @see #getAbstractInOutTree()
-     * @generated
-     */
-    EAttribute getAbstractInOutTree_ActivateCondensedTool();
-
-                /**
-     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isMinimized <em>Minimized</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Minimized</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isMinimized()
-     * @see #getAbstractInOutTree()
-     * @generated
-     */
-    EAttribute getAbstractInOutTree_Minimized();
-
-                /**
-     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getName <em>Name</em>}'.
+    /**
+     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getName <em>Name</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @return the meta object for the attribute '<em>Name</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getName()
-     * @see #getAbstractInOutTree()
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getName()
+     * @see #getFilterConnection()
      * @generated
      */
-    EAttribute getAbstractInOutTree_Name();
+    EAttribute getFilterConnection_Name();
 
-                /**
-     * Returns the meta object for the reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getFilterIncomingConnections <em>Filter Incoming Connections</em>}'.
+    /**
+     * Returns the meta object for the reference '{@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getSource <em>Source</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the reference list '<em>Filter Incoming Connections</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#getFilterIncomingConnections()
-     * @see #getAbstractInOutTree()
+     * @return the meta object for the reference '<em>Source</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getSource()
+     * @see #getFilterConnection()
      * @generated
      */
-    EReference getAbstractInOutTree_FilterIncomingConnections();
+    EReference getFilterConnection_Source();
 
-                /**
-     * Returns the meta object for the attribute '{@link org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isMultiLoops <em>Multi Loops</em>}'.
+    /**
+     * Returns the meta object for the reference '{@link org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getTarget <em>Target</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Multi Loops</em>'.
-     * @see org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree#isMultiLoops()
-     * @see #getAbstractInOutTree()
+     * @return the meta object for the reference '<em>Target</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.FilterConnection#getTarget()
+     * @see #getFilterConnection()
      * @generated
      */
-    EAttribute getAbstractInOutTree_MultiLoops();
+    EReference getFilterConnection_Target();
 
-                /**
+    /**
+     * Returns the meta object for class '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable <em>Input Loop Nodes Table</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Input Loop Nodes Table</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable
+     * @generated
+     */
+    EClass getInputLoopNodesTable();
+
+    /**
+     * Returns the meta object for the reference list '{@link org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable#getInputloopnodes <em>Inputloopnodes</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the reference list '<em>Inputloopnodes</em>'.
+     * @see org.talend.designer.xmlmap.model.emf.xmlmap.InputLoopNodesTable#getInputloopnodes()
+     * @see #getInputLoopNodesTable()
+     * @generated
+     */
+    EReference getInputLoopNodesTable_Inputloopnodes();
+
+    /**
      * Returns the meta object for enum '{@link org.talend.designer.xmlmap.model.emf.xmlmap.NodeType <em>Node Type</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2218,6 +2220,72 @@ public interface XmlmapPackage extends EPackage {
          * @generated
          */
         EReference XML_MAP_DATA__CONNECTIONS = eINSTANCE.getXmlMapData_Connections();
+
+        /**
+         * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractInOutTreeImpl <em>Abstract In Out Tree</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractInOutTreeImpl
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getAbstractInOutTree()
+         * @generated
+         */
+        EClass ABSTRACT_IN_OUT_TREE = eINSTANCE.getAbstractInOutTree();
+
+        /**
+         * The meta object literal for the '<em><b>Expression Filter</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_IN_OUT_TREE__EXPRESSION_FILTER = eINSTANCE.getAbstractInOutTree_ExpressionFilter();
+
+        /**
+         * The meta object literal for the '<em><b>Activate Expression Filter</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_IN_OUT_TREE__ACTIVATE_EXPRESSION_FILTER = eINSTANCE.getAbstractInOutTree_ActivateExpressionFilter();
+
+        /**
+         * The meta object literal for the '<em><b>Activate Condensed Tool</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_IN_OUT_TREE__ACTIVATE_CONDENSED_TOOL = eINSTANCE.getAbstractInOutTree_ActivateCondensedTool();
+
+        /**
+         * The meta object literal for the '<em><b>Minimized</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_IN_OUT_TREE__MINIMIZED = eINSTANCE.getAbstractInOutTree_Minimized();
+
+        /**
+         * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_IN_OUT_TREE__NAME = eINSTANCE.getAbstractInOutTree_Name();
+
+        /**
+         * The meta object literal for the '<em><b>Filter Incoming Connections</b></em>' reference list feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS = eINSTANCE.getAbstractInOutTree_FilterIncomingConnections();
+
+        /**
+         * The meta object literal for the '<em><b>Multi Loops</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute ABSTRACT_IN_OUT_TREE__MULTI_LOOPS = eINSTANCE.getAbstractInOutTree_MultiLoops();
 
         /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputXmlTreeImpl <em>Input Xml Tree</em>}' class.
@@ -2610,78 +2678,6 @@ public interface XmlmapPackage extends EPackage {
         EAttribute VAR_NODE__NULLABLE = eINSTANCE.getVarNode_Nullable();
 
         /**
-         * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.ConnectionImpl <em>Connection</em>}' class.
-         * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.ConnectionImpl
-         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getConnection()
-         * @generated
-         */
-		EClass CONNECTION = eINSTANCE.getConnection();
-
-								/**
-         * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.LookupConnectionImpl <em>Lookup Connection</em>}' class.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.LookupConnectionImpl
-         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getLookupConnection()
-         * @generated
-         */
-        EClass LOOKUP_CONNECTION = eINSTANCE.getLookupConnection();
-
-                                /**
-         * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.FilterConnectionImpl <em>Filter Connection</em>}' class.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.FilterConnectionImpl
-         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getFilterConnection()
-         * @generated
-         */
-        EClass FILTER_CONNECTION = eINSTANCE.getFilterConnection();
-
-                                /**
-         * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EAttribute FILTER_CONNECTION__NAME = eINSTANCE.getFilterConnection_Name();
-
-                                /**
-         * The meta object literal for the '<em><b>Source</b></em>' reference feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EReference FILTER_CONNECTION__SOURCE = eINSTANCE.getFilterConnection_Source();
-
-                                /**
-         * The meta object literal for the '<em><b>Target</b></em>' reference feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EReference FILTER_CONNECTION__TARGET = eINSTANCE.getFilterConnection_Target();
-
-                                /**
-         * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputLoopNodesTableImpl <em>Input Loop Nodes Table</em>}' class.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputLoopNodesTableImpl
-         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getInputLoopNodesTable()
-         * @generated
-         */
-        EClass INPUT_LOOP_NODES_TABLE = eINSTANCE.getInputLoopNodesTable();
-
-                                /**
-         * The meta object literal for the '<em><b>Inputloopnodes</b></em>' reference list feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EReference INPUT_LOOP_NODES_TABLE__INPUTLOOPNODES = eINSTANCE.getInputLoopNodesTable_Inputloopnodes();
-
-                                /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.IConnection <em>IConnection</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -2691,7 +2687,7 @@ public interface XmlmapPackage extends EPackage {
          */
         EClass ICONNECTION = eINSTANCE.getIConnection();
 
-                                /**
+        /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.INodeConnection <em>INode Connection</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -2701,7 +2697,7 @@ public interface XmlmapPackage extends EPackage {
          */
         EClass INODE_CONNECTION = eINSTANCE.getINodeConnection();
 
-                                /**
+        /**
          * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -2709,7 +2705,7 @@ public interface XmlmapPackage extends EPackage {
          */
         EAttribute INODE_CONNECTION__NAME = eINSTANCE.getINodeConnection_Name();
 
-                                /**
+        /**
          * The meta object literal for the '<em><b>Source</b></em>' reference feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -2717,7 +2713,7 @@ public interface XmlmapPackage extends EPackage {
          */
         EReference INODE_CONNECTION__SOURCE = eINSTANCE.getINodeConnection_Source();
 
-                                /**
+        /**
          * The meta object literal for the '<em><b>Target</b></em>' reference feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -2725,73 +2721,79 @@ public interface XmlmapPackage extends EPackage {
          */
         EReference INODE_CONNECTION__TARGET = eINSTANCE.getINodeConnection_Target();
 
-                                /**
-         * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractInOutTreeImpl <em>Abstract In Out Tree</em>}' class.
+        /**
+         * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.ConnectionImpl <em>Connection</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
-         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.AbstractInOutTreeImpl
-         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getAbstractInOutTree()
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.ConnectionImpl
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getConnection()
          * @generated
          */
-        EClass ABSTRACT_IN_OUT_TREE = eINSTANCE.getAbstractInOutTree();
+        EClass CONNECTION = eINSTANCE.getConnection();
 
-                                /**
-         * The meta object literal for the '<em><b>Expression Filter</b></em>' attribute feature.
+        /**
+         * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.LookupConnectionImpl <em>Lookup Connection</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.LookupConnectionImpl
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getLookupConnection()
          * @generated
          */
-        EAttribute ABSTRACT_IN_OUT_TREE__EXPRESSION_FILTER = eINSTANCE.getAbstractInOutTree_ExpressionFilter();
+        EClass LOOKUP_CONNECTION = eINSTANCE.getLookupConnection();
 
-                                /**
-         * The meta object literal for the '<em><b>Activate Expression Filter</b></em>' attribute feature.
+        /**
+         * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.FilterConnectionImpl <em>Filter Connection</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.FilterConnectionImpl
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getFilterConnection()
          * @generated
          */
-        EAttribute ABSTRACT_IN_OUT_TREE__ACTIVATE_EXPRESSION_FILTER = eINSTANCE.getAbstractInOutTree_ActivateExpressionFilter();
+        EClass FILTER_CONNECTION = eINSTANCE.getFilterConnection();
 
-                                /**
-         * The meta object literal for the '<em><b>Activate Condensed Tool</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EAttribute ABSTRACT_IN_OUT_TREE__ACTIVATE_CONDENSED_TOOL = eINSTANCE.getAbstractInOutTree_ActivateCondensedTool();
-
-                                /**
-         * The meta object literal for the '<em><b>Minimized</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EAttribute ABSTRACT_IN_OUT_TREE__MINIMIZED = eINSTANCE.getAbstractInOutTree_Minimized();
-
-                                /**
+        /**
          * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute ABSTRACT_IN_OUT_TREE__NAME = eINSTANCE.getAbstractInOutTree_Name();
+        EAttribute FILTER_CONNECTION__NAME = eINSTANCE.getFilterConnection_Name();
 
-                                /**
-         * The meta object literal for the '<em><b>Filter Incoming Connections</b></em>' reference list feature.
+        /**
+         * The meta object literal for the '<em><b>Source</b></em>' reference feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference ABSTRACT_IN_OUT_TREE__FILTER_INCOMING_CONNECTIONS = eINSTANCE.getAbstractInOutTree_FilterIncomingConnections();
+        EReference FILTER_CONNECTION__SOURCE = eINSTANCE.getFilterConnection_Source();
 
-                                /**
-         * The meta object literal for the '<em><b>Multi Loops</b></em>' attribute feature.
+        /**
+         * The meta object literal for the '<em><b>Target</b></em>' reference feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute ABSTRACT_IN_OUT_TREE__MULTI_LOOPS = eINSTANCE.getAbstractInOutTree_MultiLoops();
+        EReference FILTER_CONNECTION__TARGET = eINSTANCE.getFilterConnection_Target();
 
-                                /**
+        /**
+         * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputLoopNodesTableImpl <em>Input Loop Nodes Table</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.InputLoopNodesTableImpl
+         * @see org.talend.designer.xmlmap.model.emf.xmlmap.impl.XmlmapPackageImpl#getInputLoopNodesTable()
+         * @generated
+         */
+        EClass INPUT_LOOP_NODES_TABLE = eINSTANCE.getInputLoopNodesTable();
+
+        /**
+         * The meta object literal for the '<em><b>Inputloopnodes</b></em>' reference list feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference INPUT_LOOP_NODES_TABLE__INPUTLOOPNODES = eINSTANCE.getInputLoopNodesTable_Inputloopnodes();
+
+        /**
          * The meta object literal for the '{@link org.talend.designer.xmlmap.model.emf.xmlmap.NodeType <em>Node Type</em>}' enum.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->

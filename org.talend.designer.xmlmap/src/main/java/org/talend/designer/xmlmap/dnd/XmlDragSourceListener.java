@@ -22,14 +22,16 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.RootEditPart;
-import org.eclipse.gef.dnd.AbstractTransferDragSourceListener;
-import org.eclipse.gef.dnd.TemplateTransfer;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.Transfer;
-import org.talend.designer.xmlmap.figures.sash.ISash;
+import org.talend.designer.gefabstractmap.dnd.MapperDragSourceListener;
+import org.talend.designer.gefabstractmap.dnd.TransferdType;
+import org.talend.designer.gefabstractmap.dnd.TransferedObject;
+import org.talend.designer.gefabstractmap.figures.sash.ISash;
+import org.talend.designer.gefabstractmap.part.MapperTablePart;
+import org.talend.designer.gefabstractmap.part.TableEntityPart;
+import org.talend.designer.gefabstractmap.utils.MapperUtils;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
-import org.talend.designer.xmlmap.parts.AbstractInOutTreeEditPart;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.VarNodeEditPart;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -37,16 +39,10 @@ import org.talend.designer.xmlmap.util.XmlMapUtil;
 /**
  * wchen class global comment. Detailled comment
  */
-public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
+public class XmlDragSourceListener extends MapperDragSourceListener {
 
     public XmlDragSourceListener(EditPartViewer viewer) {
-        super(viewer, TemplateTransfer.getInstance());
-    }
-
-    @Override
-    public void dragStart(DragSourceEvent event) {
-        Object template = getTemplate(event);
-        TemplateTransfer.getInstance().setTemplate(template);
+        super(viewer);
     }
 
     /**
@@ -56,6 +52,7 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
      * @param event
      * @return the validate drag able node list
      */
+    @Override
     protected Object getTemplate(DragSourceEvent event) {
         final RootEditPart rootEditPart = getViewer().getRootEditPart();
         if (rootEditPart instanceof AbstractGraphicalEditPart) {
@@ -78,7 +75,7 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
         }
         List toTransfer = new ArrayList();
         TransferdType type = null;
-        List<EditPart> partList = new ArrayList<EditPart>();
+        List<TableEntityPart> partList = new ArrayList<TableEntityPart>();
         EditPart lastSelection = filtedSelection.get(filtedSelection.size() - 1);
         if (lastSelection instanceof TreeNodeEditPart) {
             type = TransferdType.INPUT;
@@ -97,10 +94,9 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
                         }
                     }
 
-                    AbstractInOutTreeEditPart abstractInOutTreePart = XmlMapUtil
-                            .getAbstractInOutTreePart((TreeNodeEditPart) lastSelection);
+                    MapperTablePart abstractInOutTreePart = MapperUtils.getMapperTablePart((TableEntityPart) lastSelection);
                     if (abstractInOutTreePart != null) {
-                        partList = XmlMapUtil.getFlatChildrenPartList(abstractInOutTreePart);
+                        partList = MapperUtils.getFlatChildrenPartList(abstractInOutTreePart);
                     }
                 } else {
                     partList.addAll(lastSelection.getParent().getChildren());
@@ -128,16 +124,4 @@ public class XmlDragSourceListener extends AbstractTransferDragSourceListener {
         return null;
 
     }
-
-    @Override
-    public void dragSetData(DragSourceEvent event) {
-        event.data = getTemplate(event);
-    }
-
-    @Override
-    protected void setTransfer(Transfer xfer) {
-        // TODO Auto-generated method stub
-        super.setTransfer(xfer);
-    }
-
 }

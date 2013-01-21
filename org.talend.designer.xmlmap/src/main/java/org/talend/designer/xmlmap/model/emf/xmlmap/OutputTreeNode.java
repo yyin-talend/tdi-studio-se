@@ -6,8 +6,6 @@
  */
 package org.talend.designer.xmlmap.model.emf.xmlmap;
 
-import org.eclipse.emf.common.util.EList;
-
 
 /**
  * <!-- begin-user-doc -->
@@ -27,7 +25,6 @@ import org.eclipse.emf.common.util.EList;
  * @generated
  */
 public interface OutputTreeNode extends TreeNode {
-
     /**
      * Returns the value of the '<em><b>Aggregate</b></em>' attribute.
      * <!-- begin-user-doc -->

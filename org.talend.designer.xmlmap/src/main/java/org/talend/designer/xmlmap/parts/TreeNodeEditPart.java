@@ -34,41 +34,41 @@ import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.swt.SWT;
 import org.talend.designer.components.lookup.common.ICommonLookup.MATCHING_MODE;
+import org.talend.designer.gefabstractmap.figures.ExpressionFigure;
+import org.talend.designer.gefabstractmap.figures.anchors.ConnectionColumnAnchor;
+import org.talend.designer.gefabstractmap.figures.anchors.FilterColumnAnchor;
+import org.talend.designer.gefabstractmap.figures.anchors.LookupColumnAnchor;
+import org.talend.designer.gefabstractmap.figures.cells.IWidgetCell;
+import org.talend.designer.gefabstractmap.figures.table.entity.TableTreeEntityFigure;
+import org.talend.designer.gefabstractmap.part.BaseConnectionEditPart;
+import org.talend.designer.gefabstractmap.part.TableEntityPart;
+import org.talend.designer.gefabstractmap.part.directedit.XmlMapNodeCellEditorLocator;
+import org.talend.designer.gefabstractmap.policy.RowSelectionEditPolicy;
+import org.talend.designer.gefabstractmap.policy.TreeExpandSupportEditPolicy;
+import org.talend.designer.gefabstractmap.resource.ColorInfo;
+import org.talend.designer.gefabstractmap.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.editor.XmlMapGraphicViewer;
-import org.talend.designer.xmlmap.figures.ExpressionFigure;
-import org.talend.designer.xmlmap.figures.OutputXmlTreeFigure;
-import org.talend.designer.xmlmap.figures.anchors.ConnectionColumnAnchor;
-import org.talend.designer.xmlmap.figures.anchors.FilterColumnAnchor;
-import org.talend.designer.xmlmap.figures.anchors.LookupColumnAnchor;
-import org.talend.designer.xmlmap.figures.cells.IWidgetCell;
-import org.talend.designer.xmlmap.figures.treeNode.RootTreeNodeFigure;
-import org.talend.designer.xmlmap.figures.treeNode.RowFigure;
-import org.talend.designer.xmlmap.figures.treeNode.TreeNodeFigure;
+import org.talend.designer.xmlmap.figures.treeNode.TreeNodeEntityManager;
+import org.talend.designer.xmlmap.figures.treeNode.XmlmapTreeNodeFigure;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapPackage;
-import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeCellEditorLocator;
 import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeDirectEditManager;
 import org.talend.designer.xmlmap.policy.DragAndDropEditPolicy;
-import org.talend.designer.xmlmap.policy.RowSelectionEditPolicy;
-import org.talend.designer.xmlmap.policy.TreeExpandSupportEditPolicy;
 import org.talend.designer.xmlmap.policy.XmlDirectEditPolicy;
-import org.talend.designer.xmlmap.ui.resource.ColorInfo;
-import org.talend.designer.xmlmap.ui.resource.ColorProviderMapper;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 
 /**
  * wchen class global comment. Detailled comment
  */
-public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
-
-    // for expand and collapse
-    protected IFigure rootAnchor;
+public class TreeNodeEditPart extends TableEntityPart implements NodeEditPart {
 
     protected XmlMapNodeDirectEditManager directEditManager;
+
+    private TreeNodeEntityManager entityManger;
 
     @Override
     protected IFigure createFigure() {
@@ -77,16 +77,15 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
         if (model.eContainer() instanceof AbstractInOutTree) {
             isRoot = true;
         }
-
-        final RowFigure testRow = new RowFigure(this, !isRoot);
-        TreeNodeFigure treeNodeFigure = null;
-        if (isRoot) {
-            treeNodeFigure = new RootTreeNodeFigure(testRow);
-        } else {
-            treeNodeFigure = new TreeNodeFigure(testRow);
-        }
+        XmlmapTreeNodeFigure treeNodeFigure = new XmlmapTreeNodeFigure(entityManger, isRoot);
 
         return treeNodeFigure;
+    }
+
+    @Override
+    public void setModel(Object model) {
+        super.setModel(model);
+        entityManger = new TreeNodeEntityManager((TreeNode) model, this);
     }
 
     protected String getTreeBranchName(TreeNode model) {
@@ -140,9 +139,10 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
 
     @Override
     public IFigure getContentPane() {
-        return ((TreeNodeFigure) getFigure()).getContents();
+        return ((TableTreeEntityFigure) getFigure()).getContents();
     }
 
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connection) {
         IFigure figure = null;
         boolean forceDarshDot = false;
@@ -152,15 +152,16 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
         } else {
             figure = getFigure();
         }
-        if (connection instanceof LookupConnectionEditPart) {
-            return new LookupColumnAnchor(figure, connection, this);
+        if (connection instanceof XmlMapLookupConnectionPart) {
+            return new LookupColumnAnchor(figure, connection, entityManger);
         }
-        if (connection instanceof FilterConnectionEditPart) {
-            return new FilterColumnAnchor(figure, connection, this);
+        if (connection instanceof XmlMapFilterConnectionPart) {
+            return new FilterColumnAnchor(figure, connection, entityManger);
         }
-        return new ConnectionColumnAnchor(figure, connection, this, forceDarshDot);
+        return new ConnectionColumnAnchor(figure, connection, entityManger, forceDarshDot);
     }
 
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
         IFigure figure = null;
         boolean forceDarshDot = false;
@@ -170,16 +171,18 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
         } else {
             figure = getFigure();
         }
-        if (connection instanceof LookupConnectionEditPart) {
-            return new LookupColumnAnchor(figure, connection, this);
+        if (connection instanceof XmlMapLookupConnectionPart) {
+            return new LookupColumnAnchor(figure, connection, entityManger);
         }
-        return new ConnectionColumnAnchor(figure, connection, this, forceDarshDot);
+        return new ConnectionColumnAnchor(figure, connection, entityManger, forceDarshDot);
     }
 
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(Request request) {
         return null;
     }
 
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(Request request) {
         return null;
     }
@@ -194,12 +197,13 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
         super.removeChildVisual(childEditPart);
     }
 
-    protected TreeNodeFigure findRootTreeNodeFigure(IFigure parentFigure) {
-        TreeNodeFigure rootTreeNodeFigure = null;
-        if (parentFigure instanceof TreeNodeFigure) {
-            rootTreeNodeFigure = (TreeNodeFigure) parentFigure;
-        } else
+    protected TableTreeEntityFigure findRootTreeNodeFigure(IFigure parentFigure) {
+        TableTreeEntityFigure rootTreeNodeFigure = null;
+        if (parentFigure instanceof TableTreeEntityFigure) {
+            rootTreeNodeFigure = (TableTreeEntityFigure) parentFigure;
+        } else {
             rootTreeNodeFigure = findRootTreeNodeFigure(parentFigure.getParent());
+        }
         return rootTreeNodeFigure;
     }
 
@@ -211,7 +215,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
             if (treeNode == treeNode2) {
                 return index;
             } else if (!treeNode2.getChildren().isEmpty()) {
-                index = getExpressionIndex(treeNode, (TreeNode) treeNode2, index, nodeAndIndex);
+                index = getExpressionIndex(treeNode, treeNode2, index, nodeAndIndex);
                 if (nodeAndIndex.get(treeNode) != null) {
                     return index;
                 }
@@ -291,10 +295,11 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
         }
     }
 
+    @Override
     public void notifyChanged(Notification notification) {
         int type = notification.getEventType();
         int featureId = notification.getFeatureID(XmlmapPackage.class);
-        TreeNodeFigure treeNodeFigure = (TreeNodeFigure) getFigure();
+        XmlmapTreeNodeFigure treeNodeFigure = (XmlmapTreeNodeFigure) getFigure();
 
         switch (type) {
         case Notification.SET:
@@ -303,13 +308,13 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
             case XmlmapPackage.OUTPUT_TREE_NODE__GROUP:
             case XmlmapPackage.OUTPUT_TREE_NODE__AGGREGATE:
             case XmlmapPackage.TREE_NODE__OPTIONAL:
-                treeNodeFigure.getElement().getBranchContent().updateStatus();
+                treeNodeFigure.getBranchContent().updateStatus();
                 break;
             case XmlmapPackage.TREE_NODE__NAME:
-                treeNodeFigure.getElement().getBranchContent().updataNameFigure();
+                treeNodeFigure.getBranchContent().updataNameFigure();
                 break;
             case XmlmapPackage.TREE_NODE__DEFAULT_VALUE:
-                treeNodeFigure.getElement().getBranchContent().updateDefaultValueFigure();
+                treeNodeFigure.getBranchContent().updateDefaultValueFigure();
                 break;
             case XmlmapPackage.TREE_NODE__TYPE:
                 refreshChildren();
@@ -336,17 +341,9 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                         }
                     }
                 }
-                if (getFigure() instanceof TreeNodeFigure) {
-                    TreeNodeFigure outputFigure = (TreeNodeFigure) getFigure();
-                    if (outputFigure.getElement() != null) {
-                        outputFigure.getElement().updateExpression();
-                    }
-                }
-
-                if (((AbstractInOutTreeEditPart) XmlMapUtil.findTreePart(this)).getFigure() instanceof OutputXmlTreeFigure) {
-                    OutputXmlTreeFigure outputXmlTreeFigure = (OutputXmlTreeFigure) ((AbstractInOutTreeEditPart) XmlMapUtil
-                            .findTreePart(this)).getFigure();
-                    outputXmlTreeFigure.update(XmlmapPackage.TREE_NODE__TYPE);
+                if (getFigure() instanceof TableTreeEntityFigure) {
+                    XmlmapTreeNodeFigure outputFigure = (XmlmapTreeNodeFigure) getFigure();
+                    outputFigure.updateExpression();
                 }
                 break;
             case XmlmapPackage.INPUT_XML_TREE__MINIMIZED:
@@ -354,7 +351,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 refreshTargetConnections();
                 break;
             case XmlmapPackage.ABSTRACT_IN_OUT_TREE__MULTI_LOOPS:
-                
+
                 break;
             }
             break;
@@ -366,7 +363,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
                 refreshChildren();
                 boolean expressionEditable = XmlMapUtil.isExpressionEditable((TreeNode) getModel());
                 if (!expressionEditable) {
-                    ExpressionFigure expression = treeNodeFigure.getElement().getExpressionFigure();
+                    ExpressionFigure expression = treeNodeFigure.getExpressionFigure();
                     if (expression != null) {
                         expression.setOpaque(true);
                         expression.setBackgroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_EXPREESION_DISABLE));
@@ -391,7 +388,7 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
             switch (featureId) {
             case XmlmapPackage.TREE_NODE__CHILDREN:
                 refreshChildren();
-                ExpressionFigure expression = treeNodeFigure.getElement().getExpressionFigure();
+                ExpressionFigure expression = treeNodeFigure.getExpressionFigure();
                 if (expression != null) {
                     if (XmlMapUtil.isExpressionEditable((TreeNode) getModel())) {
                         expression.setOpaque(false);
@@ -418,11 +415,11 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
             Figure figure = null;
             DirectEditRequest drequest = (DirectEditRequest) req;
             Point figureLocation = drequest.getLocation();
-            if (getFigure() instanceof TreeNodeFigure) {
-                TreeNodeFigure treeNodeFigure = (TreeNodeFigure) getFigure();
+            if (getFigure() instanceof TableTreeEntityFigure) {
+                XmlmapTreeNodeFigure treeNodeFigure = (XmlmapTreeNodeFigure) getFigure();
                 ArrayList collection = new ArrayList();
-                collection.add(treeNodeFigure.getElement().getExpressionFigure());
-                collection.add(treeNodeFigure.getElement().getBranchContent());
+                collection.add(treeNodeFigure.getExpressionFigure());
+                collection.add(treeNodeFigure.getBranchContent());
                 figure = (Figure) treeNodeFigure.findFigureAt(figureLocation.x, figureLocation.y, new FigureSearch(collection));
             }
             if (figure instanceof IWidgetCell) {
@@ -457,24 +454,6 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
         return null;
     }
 
-    public AbstractInOutTreeEditPart getInOutTreeEditPart(EditPart part) {
-        if (part.getParent() instanceof AbstractInOutTreeEditPart) {
-            return (AbstractInOutTreeEditPart) part.getParent();
-        } else if (part.getParent() instanceof TreeNodeEditPart) {
-            return getInOutTreeEditPart(part.getParent());
-        }
-
-        return null;
-    }
-
-    protected IFigure getRootAnchor() {
-        return rootAnchor;
-    }
-
-    protected void setRootAnchor(IFigure rootAnchor) {
-        this.rootAnchor = rootAnchor;
-    }
-
     class FigureSearch implements TreeSearch {
 
         final Collection collection;
@@ -483,10 +462,12 @@ public class TreeNodeEditPart extends AbstractNodePart implements NodeEditPart {
             this.collection = collection;
         }
 
+        @Override
         public boolean accept(IFigure figure) {
             return collection.contains(figure);
         }
 
+        @Override
         public boolean prune(IFigure figure) {
             // TODO Auto-generated method stub
             return false;

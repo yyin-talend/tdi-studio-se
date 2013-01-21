@@ -7,7 +7,8 @@
 package org.talend.designer.xmlmap.model.emf.xmlmap;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
+
+import org.talend.designer.gefabstractmap.model.abstractmap.MapperTable;
 
 /**
  * <!-- begin-user-doc -->
@@ -31,7 +32,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model abstract="true"
  * @generated
  */
-public interface AbstractInOutTree extends EObject {
+public interface AbstractInOutTree extends MapperTable {
     /**
      * Returns the value of the '<em><b>Expression Filter</b></em>' attribute.
      * <!-- begin-user-doc -->

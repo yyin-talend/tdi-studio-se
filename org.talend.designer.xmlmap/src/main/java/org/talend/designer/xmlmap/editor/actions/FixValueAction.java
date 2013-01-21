@@ -61,7 +61,7 @@ public class FixValueAction extends SelectionAction {
                     prefix = XmlMapUtil.DEFAULT_NAME_SPACE_PREFIX;
                 }
                 selectedNode.setName(prefix);
-                XmlMapData externalEmfData = (XmlMapData) mapperManager.getCopyOfMapData();
+                XmlMapData externalEmfData = (XmlMapData) mapperManager.getExternalData();
                 XmlMapUtil.updateXPathAndExpression(externalEmfData, mapperManager.getMapperComponent().getExpressionManager(),
                         selectedNode, prefix, XmlMapUtil.getXPathLength(selectedNode.getXpath()), true);
             }

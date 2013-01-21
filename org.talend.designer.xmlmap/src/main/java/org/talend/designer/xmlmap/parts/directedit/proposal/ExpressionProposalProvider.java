@@ -36,7 +36,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     }
 
     public void init(Object source) {
-        XmlMapData mapData = mapperManager.getCopyOfMapData();
+        XmlMapData mapData = mapperManager.getExternalData();
         int index = 0;
         boolean needVar = false;
         if (source instanceof OutputTreeNode || source instanceof OutputXmlTree) {

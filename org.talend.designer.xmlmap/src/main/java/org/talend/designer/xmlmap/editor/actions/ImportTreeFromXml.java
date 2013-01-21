@@ -77,7 +77,7 @@ public class ImportTreeFromXml extends SelectionAction {
                     return;
                 }
                 treeNodeRoot = XmlMapUtil.getTreeNodeRoot(parentNode);
-                XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getCopyOfMapData(), true);
+                XmlMapUtil.detachNodeConnections(treeNodeRoot, mapperManager.getExternalData(), true);
                 parentNode.getChildren().clear();
                 prepareEmfTreeNode(list, parentNode);
             } catch (Exception e) {
@@ -118,7 +118,7 @@ public class ImportTreeFromXml extends SelectionAction {
             }
 
             if (parentNode.eContainer() instanceof InputXmlTree) {
-                XmlMapConnectionBuilder.rebuildLinks(parentNode, mapperManager.getCopyOfMapData());
+                XmlMapConnectionBuilder.rebuildLinks(parentNode, mapperManager.getExternalData());
                 mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
             } else if (parentNode.eContainer() instanceof OutputXmlTree) {
                 mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) parentNode.eContainer());

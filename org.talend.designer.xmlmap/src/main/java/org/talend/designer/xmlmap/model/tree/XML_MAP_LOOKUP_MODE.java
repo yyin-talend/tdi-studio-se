@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.designer.xmlmap.model.tree;
 
-import org.talend.designer.xmlmap.ui.resource.ImageInfo;
+import org.talend.designer.gefabstractmap.resource.ImageInfo;
 
 /**
  * 
