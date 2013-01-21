@@ -63,7 +63,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
 	                        IMetadataColumn column = columns.get(i);
 	                       	if(i%schemaOptNum==0){
 %>
-		public void putHeaderVaule_<%=i/schemaOptNum%>(java.io.Writer out<%=cid %>,final String OUT_DELIM_<%=cid %>)throws java.lang.Exception{
+		public void putHeaderValue_<%=i/schemaOptNum%>(java.io.Writer out<%=cid %>,final String OUT_DELIM_<%=cid %>)throws java.lang.Exception{
 <%
 							}
 							if(!("id_Dynamic".equals(column.getTalendType()))) {
@@ -98,7 +98,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
     					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
 	                    if(i%schemaOptNum==0){
 %>
-		public void putVaule_<%=i/schemaOptNum%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,StringBuilder sb_<%=cid %>,final String OUT_DELIM_<%=cid %>){
+		public void putValue_<%=i/schemaOptNum%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,StringBuilder sb_<%=cid %>,final String OUT_DELIM_<%=cid %>){
 <%
 						}
     					if(!isPrimitive) {
@@ -174,7 +174,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
 	                        IMetadataColumn column = columns.get(i);
 	                       	if(i%schemaOptNum==0){
 %>
-		public void putHeaderVaule_<%=i/schemaOptNum%>(String[] headColu<%=cid%>)throws java.lang.Exception{
+		public void putHeaderValue_<%=i/schemaOptNum%>(String[] headColu<%=cid%>)throws java.lang.Exception{
 <%
 							}
 							if(!("id_Dynamic".equals(column.getTalendType()))) {
@@ -207,7 +207,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
     					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
 	                    if(i%schemaOptNum==0){
 %>
-		public void putVaule_<%=i/schemaOptNum%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,String[] row<%=cid%>){
+		public void putValue_<%=i/schemaOptNum%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,String[] row<%=cid%>){
 <%
 						}
     					if(("id_Dynamic").equals(column.getTalendType())) {
@@ -450,7 +450,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                             if(sizeColumns > schemaOptNum){
                             	if(i%schemaOptNum==0){
 %>
-                            		fileOutputDelimitedUtil_<%=cid%>.putHeaderVaule_<%=i/schemaOptNum%>(out<%=cid %>,OUT_DELIM_<%=cid %>);
+                            		fileOutputDelimitedUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(out<%=cid %>,OUT_DELIM_<%=cid %>);
 <%
                             	}
                             }else{//AA
@@ -527,7 +527,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
   						if(sizeColumns > schemaOptNum){
                             if(i%schemaOptNum==0){
 %>
-                            		fileOutputDelimitedUtil_<%=cid%>.putHeaderVaule_<%=i/schemaOptNum%>(out<%=cid %>,OUT_DELIM_<%=cid %>);
+                            		fileOutputDelimitedUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(out<%=cid %>,OUT_DELIM_<%=cid %>);
 <%
                             }
                         }else{//BB
@@ -847,7 +847,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 							if(sizeColumns> schemaOptNum){
                             	if(i%schemaOptNum==0){
 %>
-                        fileOutputDelimitedUtil_<%=cid%>.putHeaderVaule_<%=i/schemaOptNum%>(headColu<%=cid%>);
+                        fileOutputDelimitedUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(headColu<%=cid%>);
 <%
                             	}
                            	}else{//CC
@@ -970,7 +970,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 						if(sizeColumns> schemaOptNum){
                             if(i%schemaOptNum==0){
 %>
-                     fileOutputDelimitedUtil_<%=cid%>.putHeaderVaule_<%=i/schemaOptNum%>(headColu<%=cid%>);
+                     fileOutputDelimitedUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(headColu<%=cid%>);
 <%
                             }
                        	}else{//DD
