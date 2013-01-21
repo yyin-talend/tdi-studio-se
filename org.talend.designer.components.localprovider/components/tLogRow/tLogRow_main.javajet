@@ -42,6 +42,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%  
     			List<IMetadataColumn> columns = metadata.getListColumns();
     			int sizeColumns = columns.size();
+    			int schemaOptNum=100;
+				String schemaOptNumStr=ElementParameterParser.getValue(node, "__SCHEMA_OPT_NUM__");
+				if(schemaOptNumStr!=null && !"".equals(schemaOptNumStr) && !"\"\"".equals(schemaOptNumStr)){
+					schemaOptNum  = Integer.parseInt(schemaOptNumStr);
+				}
+    			boolean isOptimizeCode = false;
+				if(schemaOptNum < sizeColumns){
+					isOptimizeCode = true;
+				}
 %>
 
 <%
@@ -64,10 +73,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
   			
     				IMetadataColumn column = columns.get(i);
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					if(isOptimizeCode){
+						if(i%schemaOptNum == 0){
 %>
-
-
+						logRowUtil_<%=cid%>.putBasicVerticalValue_<%=i/schemaOptNum%>(<%=conn.getName() %>,strBuffer_<%=cid%>);
 <% 
+						}
+					}else{
    if (("true").equals(useFixedLength)) {//fix the column length
 %>
 				java.util.Formatter formatter_<%=column.getLabel() %>_<%=cid%> = new java.util.Formatter(new StringBuilder());
@@ -173,6 +185,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     			strBuffer_<%=cid%>.append(<%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>);
     			
 <%
+					}
 				}//5	
 }
 
@@ -197,7 +210,7 @@ if (basic) {
 	} 
 	
 	
-	if(tablePrint) { //print the table form//***
+	if(tablePrint || vertical) { //print the table and vertical model//***
 %>
 				
 				String[] row_<%=cid%> = new String[<%=sizeColumns %>];
@@ -207,9 +220,13 @@ if (basic) {
   			
     				IMetadataColumn column = columns.get(i);
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					if(isOptimizeCode){
+						if(i%schemaOptNum == 0){
 %>
-
+						logRowUtil_<%=cid%>.putTableVerticalValue_<%=i/schemaOptNum%>(<%=conn.getName() %>,row_<%=cid%>);
 <%
+						}
+					}else{
 					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
 					if(!isPrimitive) { //begin
 %>   				
@@ -253,77 +270,22 @@ if (basic) {
 %>			
     			
 <%
+					}
 				}//5	
+				if(tablePrint){
 %> 
 
 				util_<%=cid %>.addRow(row_<%=cid%>);	
 				nb_line_<%=cid %>++;
 <%
-  }	//***
-  
-  
-  if (vertical) {
+				}else{
 %>
-				
-				String[] row_<%=cid%> = new String[<%=sizeColumns %>];
-
-<%    			
-    			for (int i = 0; i < sizeColumns; i++) {//5
-  			
-    				IMetadataColumn column = columns.get(i);
-					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-%>
-
+				nb_line_<%=cid %>++;
+                consoleOut_<%=cid%>.println(util_<%=cid %>.print(row_<%=cid%>,nb_line_<%=cid%>));
+                consoleOut_<%=cid%>.flush();
 <%
-					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
-					if(!isPrimitive) { //begin
-%>   				
-	    		if(<%=conn.getName() %>.<%=column.getLabel() %> != null) { //
-<%
-    				} 
-%>              
-                 row_<%=cid%>[<%=i %>]=    						
-<%
-    				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-    				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
-%>
-								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
-<%				
-					} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
-%>
-								java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString()
-<%
-					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
-%>
-								<%=column.getPrecision() == null? conn.getName() + "." + column.getLabel() : conn.getName() + "." + column.getLabel() + ".setScale(" + column.getPrecision() + ", java.math.RoundingMode.HALF_UP)" %>.toPlainString()
-<%
-					} else if (javaType == JavaTypesManager.DOUBLE || javaType == JavaTypesManager.FLOAT ) {
-%>
-								FormatterUtils.formatUnwithE(<%=conn.getName() %>.<%=column.getLabel() %>)
-<%
-					} else {//others
-%>    
-				                String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)			
-<%				
-					}
-%>
-					          ;	
-							
-<%
-					if(!isPrimitive) {//end
-%>
-	    		} //
-<%
-					} 
-				}//5	
-%> 
-
-  
-                    nb_line_<%=cid %>++;
-                    consoleOut_<%=cid%>.println(util_<%=cid %>.print(row_<%=cid%>,nb_line_<%=cid%>));
-                    consoleOut_<%=cid%>.flush();
-<%
-}
+				}
+	}//***
 %>
 //////
 
