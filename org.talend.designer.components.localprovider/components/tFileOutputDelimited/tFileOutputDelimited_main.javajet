@@ -104,7 +104,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                             if(sizeColumns> schemaOptNum){
                             	if(i%schemaOptNum==0){
 %>
-                            		fileOutputDelimitedUtil_<%=cid%>.putHeaderVaule_<%=i/schemaOptNum%>(out<%=cid %>,OUT_DELIM_<%=cid %>);
+                            		fileOutputDelimitedUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(out<%=cid %>,OUT_DELIM_<%=cid %>);
 <%
                             	}
                             }else{//AA
@@ -155,7 +155,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
     					if(sizeColumns> schemaOptNum){
                             if(i%schemaOptNum==0){
 %>
-                            fileOutputDelimitedUtil_<%=cid%>.putVaule_<%=i/schemaOptNum%>(<%=conn.getName() %>,sb_<%=cid %>,OUT_DELIM_<%=cid %>);
+                            fileOutputDelimitedUtil_<%=cid%>.putValue_<%=i/schemaOptNum%>(<%=conn.getName() %>,sb_<%=cid %>,OUT_DELIM_<%=cid %>);
 <%
                             }
                         }else{//BB
@@ -263,7 +263,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 										if(sizeColumns> schemaOptNum){
                             				if(i%schemaOptNum==0){
 %>
-                            			fileOutputDelimitedUtil_<%=cid%>.putHeaderVaule_<%=i/schemaOptNum%>(out<%=cid %>,OUT_DELIM_<%=cid %>);
+                            			fileOutputDelimitedUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(out<%=cid %>,OUT_DELIM_<%=cid %>);
 <%
                             				}
                            			 	}else{//CC
@@ -435,7 +435,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 								if(sizeColumns> schemaOptNum){
                             		if(i%schemaOptNum==0){
 %>
-                            		fileOutputDelimitedUtil_<%=cid%>.putHeaderVaule_<%=i/schemaOptNum%>(headColu<%=cid%>);
+                            		fileOutputDelimitedUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(headColu<%=cid%>);
 <%
                             		}
                             	}else{//DD
@@ -505,7 +505,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 							if(sizeColumns> schemaOptNum){
                             	if(i%schemaOptNum==0){
 %>
-                            	fileOutputDelimitedUtil_<%=cid%>.putVaule_<%=i/schemaOptNum%>(<%=conn.getName() %>,row<%=cid%>);
+                            	fileOutputDelimitedUtil_<%=cid%>.putValue_<%=i/schemaOptNum%>(<%=conn.getName() %>,row<%=cid%>);
 <%
                             	}
                             }else{//EE
