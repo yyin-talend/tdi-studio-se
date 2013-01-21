@@ -67,6 +67,8 @@ import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.ICamelDesignerCoreService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ItemCacheManager;
@@ -486,7 +488,21 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
         // OSGi DataSource
         additionalJobBeanParams += DataSourceConfig.getAdditionalJobBeanParams(processItem, true);
+        
+        String serviceLocatorFeature = getRESTServiceLocatorConfig(restRequestComponent, processItem);
 
+        String serviceNamespace = "";
+        String serviceName = "";
+        if(!"".equals(serviceLocatorFeature)){
+        	String projectName = ProjectManager.getInstance().getCurrentProject().getTechnicalLabel().toLowerCase();
+        	String processName = processItem.getProperty().getLabel();
+        	String processVersion = processItem.getProperty().getVersion();
+        	serviceNamespace = "xmlns:tns=\"http://"+			//give default service namespace
+        			processName.toLowerCase()+"."+projectName.toLowerCase()
+        			+"/"+ processVersion+"/\"";
+        	serviceName = "serviceName=\"tns:"+processName+"\"";	//give default service name
+        }
+        
         BufferedReader br = null;
         BufferedWriter bw = null;
         try {
@@ -500,7 +516,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         .replace("@JOBCLASSNAME@", jobClassName) //$NON-NLS-1$
                         .replace("@JAXRS_SERVICE_PROVIDERS@", jaxrsServiceProviders) //$NON-NLS-1$
                         .replace("@ADDITIONAL_BEANS_CONFIG@", additionalBeansConfig) //$NON-NLS-1$
-                        .replace("@ADDITIONAL_JOB_BEAN_PARAMS@", additionalJobBeanParams); //$NON-NLS-1$
+                        .replace("@ADDITIONAL_JOB_BEAN_PARAMS@", additionalJobBeanParams) //$NON-NLS-1$
+                		.replace("@JAXRS_SERVICE_LOCATOR@", serviceLocatorFeature) //$NON-NLS-1$
+                		.replace("@LOCATOR_SERVICE_NS@", serviceNamespace) //$NON-NLS-1$
+                		.replace("@LOCATOR_SERVICE_NAME@", serviceName); //$NON-NLS-1$
 
                 bw.write(line);
                 bw.newLine();
@@ -517,6 +536,52 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
     }
 
+    private String getRESTServiceLocatorConfig(NodeType component, ProcessItem processItem){
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("<jaxrs:features>\n\t\t\t<bean id=\"");
+    	sb.append(processItem.getProperty().getLabel().toLowerCase());
+    	sb.append("\" class=\"org.talend.esb.servicelocator.cxf.LocatorFeature\">");
+    	boolean useServiceLocator = false;
+        for (Object obj : component.getElementParameter()) {
+            ElementParameterType cpType = (ElementParameterType) obj;
+            if ("SERVICE_LOCATOR".equals(cpType.getName())) {
+                useServiceLocator = Boolean.parseBoolean(cpType.getValue());
+            }else if("SL_META_DATA".equals(cpType.getName())){
+            	EList<?> elementValue = cpType.getElementValue();
+            	int size = elementValue.size();
+            	if(size>0){
+            		sb.append("\n\t\t\t\t<property name=\"availableEndpointProperties\">");
+            		sb.append("\n\t\t\t\t\t<map>");
+            	}
+            	for(int i = 0;i<size;i+=2){
+            		if(size <= i+1 ){
+            			break;
+            		}
+            		ElementValueType name = (ElementValueType) elementValue.get(i);
+            		ElementValueType value = (ElementValueType) elementValue.get(i+1);
+            		sb.append("\n\t\t\t\t\t\t<entry>");
+            		sb.append("\n\t\t\t\t\t\t\t<key><value>");
+            		sb.append(name.getValue()==null?"":name.getValue());
+            		sb.append("</value></key>");
+            		sb.append("\n\t\t\t\t\t\t\t<value>");
+            		sb.append(value.getValue() == null?"":value.getValue());
+            		sb.append("</value>");
+            		sb.append("\n\t\t\t\t\t\t</entry>");
+            	}
+            	if(elementValue.size()>0){
+            		sb.append("\n\t\t\t\t\t</map>");
+            		sb.append("\n\t\t\t\t</property>");
+            	}
+            }
+        }
+        sb.append("\n\t\t\t</bean>\n\t\t</jaxrs:features>");
+        if(useServiceLocator){
+        	return sb.toString();
+        }
+        
+        return "";
+    }
+    
     /**
      * Created OSGi Blueprint configuration for job bundle.
      *
@@ -666,9 +731,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 }
             } else { // JOB
                 NodeType restRequestComponent = getRESTRequestComponent(pi);
-                if (null != restRequestComponent && "".equals(importPackages)
-                        && EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent)) {
-                    importPackages = "org.apache.cxf.jaxrs.security,";
+                if (null != restRequestComponent && "".equals(importPackages)){
+                	if(EmfModelUtils.computeCheckElementValue("HTTP_BASIC_AUTH", restRequestComponent)) {
+                		importPackages = "org.apache.cxf.jaxrs.security,";
+                	}
+                	if(EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR", restRequestComponent)) {
+                		importPackages += "org.talend.esb.servicelocator.cxf,";
+                	}
                 }
             }
         }
