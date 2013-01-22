@@ -286,6 +286,12 @@ public abstract class MapperRootEditPart extends BaseEditPart {
             super.invalidate();
         }
 
+        @Override
+        protected Dimension calculatePreferredSize(IFigure container, int wHint, int hHint) {
+            // TODO Auto-generated method stub
+            return super.calculatePreferredSize(container, wHint, hHint);
+        }
+
         /*
          * (non-Javadoc)
          * 

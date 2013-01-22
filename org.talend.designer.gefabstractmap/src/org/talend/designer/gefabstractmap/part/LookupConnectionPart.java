@@ -54,6 +54,7 @@ public abstract class LookupConnectionPart extends BaseConnectionEditPart {
         return figure;
     }
 
+    @Override
     public void updateForegroundColor(boolean selected) {
         if (selected) {
             getFigure().setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTED_LOOKUP_LINKS));

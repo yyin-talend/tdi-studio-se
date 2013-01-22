@@ -74,6 +74,7 @@ public class VarColumnAnchor extends ChopboxAnchor {
             VarEntityFigure varNodeFigure = (VarEntityFigure) getOwner();
             if (isSource) {
                 ref = getOwner().getBounds().getRight();
+                ref.x = varTablePart.getFigure().getBounds().getRight().x;
             } else {
                 if (varNodeFigure.getExpression() != null) {
                     ref = varNodeFigure.getExpression().getBounds().getLeft();

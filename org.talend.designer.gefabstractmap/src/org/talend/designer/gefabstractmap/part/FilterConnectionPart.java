@@ -35,17 +35,6 @@ public abstract class FilterConnectionPart extends BaseConnectionEditPart {
         connection.setTargetDecoration(new PolygonDecoration());
         connection.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_FILTER_LINK));
         connection.setLineWidth(2);
-        if (getTarget() instanceof OutputTablePart) {
-            if (curvrRouter == null) {
-                curvrRouter = new CurveConnectionRouter();
-                connection.setConnectionRouter(curvrRouter);
-            }
-        } else if (getTarget() instanceof InputTablePart) {
-            if (cr == null) {
-                cr = new LookupConnectionRouter();
-                connection.setConnectionRouter(cr);
-            }
-        }
 
         return connection;
     }
@@ -55,6 +44,17 @@ public abstract class FilterConnectionPart extends BaseConnectionEditPart {
     @Override
     public IFigure getFigure() {
         PolylineConnection figure = (PolylineConnection) super.getFigure();
+        if (getTarget() instanceof OutputTablePart) {
+            if (curvrRouter == null) {
+                curvrRouter = new CurveConnectionRouter();
+                figure.setConnectionRouter(curvrRouter);
+            }
+        } else if (getTarget() instanceof InputTablePart) {
+            if (cr == null) {
+                cr = new LookupConnectionRouter();
+                figure.setConnectionRouter(cr);
+            }
+        }
         if (cr != null) {
             cr.setOffset(calculateConnOffset());
         }

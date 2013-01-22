@@ -44,6 +44,8 @@ public class TableLayout extends AbstractHintLayout {
         this.tableItemContainer = tableItemContainer;
     }
 
+    private boolean ajustToDefaultWidth = true;
+
     /*
      * the percentage =columnWidth/tableWidth , the sum of all percentages will be 1
      */
@@ -60,7 +62,12 @@ public class TableLayout extends AbstractHintLayout {
         Rectangle clientArea = container.getClientArea();
         IFigure tableContainer = getTableContainer(container);
         int containerWidth = tableContainer.getBounds().width;
-        initColumnPercentage(clientArea.width, containerWidth);
+        int clientWidth = clientArea.width;
+        if (ajustToDefaultWidth) {
+            clientWidth = containerWidth;
+        }
+
+        initColumnPercentage(clientWidth, containerWidth);
         int columnNum = columns.size();
 
         int toltalWidth = 0;
@@ -83,7 +90,7 @@ public class TableLayout extends AbstractHintLayout {
                 sash = separators.get(i);
             }
             Double percent = keyAndPercentage.get(currentColumn.getColumnKey());
-            int width = (int) Math.round(clientArea.width * percent);
+            int width = (int) Math.round(clientWidth * percent);
             if (sash != null) {
                 int halfSashWidth = sash.getSashWidth() / 2;
                 toltalWidth += width;
@@ -108,7 +115,7 @@ public class TableLayout extends AbstractHintLayout {
 
         // in case some blank width
         if (toltalWidth != 0) {
-            int diff = clientArea.width - toltalWidth;
+            int diff = clientWidth - toltalWidth;
             if (diff < 0) {
                 diff = 0;
             }
@@ -143,7 +150,7 @@ public class TableLayout extends AbstractHintLayout {
         }
 
         Dimension itemContainerSize = tableItemContainer.getPreferredSize();
-        Rectangle newBounds = new Rectangle(clientArea.x, clientArea.y + titleHeight, clientArea.width, itemContainerSize.height);
+        Rectangle newBounds = new Rectangle(clientArea.x, clientArea.y + titleHeight, clientWidth, itemContainerSize.height);
         tableItemContainer.setBounds(newBounds);
 
     }
@@ -285,4 +292,12 @@ public class TableLayout extends AbstractHintLayout {
         return weight;
     }
 
+    /**
+     * Sets the ajustToTableWidth.
+     * 
+     * @param ajustToTableWidth the ajustToTableWidth to set
+     */
+    public void setAjustToTableWidth(boolean ajustToTableWidth) {
+        this.ajustToDefaultWidth = ajustToTableWidth;
+    }
 }

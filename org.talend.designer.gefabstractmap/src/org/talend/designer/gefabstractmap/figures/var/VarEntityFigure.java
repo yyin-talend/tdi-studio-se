@@ -76,7 +76,7 @@ public abstract class VarEntityFigure extends TableEntityFigure {
 
     protected Figure createVariableContainer() {
         Figure container = new Figure();
-        container.setBorder(new RowBorder());
+        // container.setBorder(new RowBorder());
         ToolbarLayout manager = new ToolbarLayout() {
 
             @Override
@@ -129,7 +129,7 @@ public abstract class VarEntityFigure extends TableEntityFigure {
 
             @Override
             public void mousePressed(MouseEvent me) {
-                boolean isCheck = checkImage.getImage().equals(ImageProvider.getImage(EImage.CHECKED_ICON)) ? true : false;
+                boolean isCheck = checkImage.getImage().equals(ImageProvider.getImage(EImage.CHECKED_ICON)) ? false : true;
                 setNullable(isCheck);
                 // varNode.setNUllable();
                 checkImage.setBackgroundColor(ColorConstants.buttonDarkest);
