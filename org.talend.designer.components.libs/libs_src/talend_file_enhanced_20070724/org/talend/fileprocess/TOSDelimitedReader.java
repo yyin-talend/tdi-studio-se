@@ -565,6 +565,14 @@ public class TOSDelimitedReader {
             if (readCount < maxReadLength) {
                 if (readCount == -1) {
                     streamEndMeet = true;
+                } else {
+                    if(inputStream.markSupported()) {
+                        inputStream.mark(1);
+                        if(inputStream.read() == -1) {
+                            streamEndMeet = true;
+                        }
+                        inputStream.reset();
+                    }
                 }
             }
 
