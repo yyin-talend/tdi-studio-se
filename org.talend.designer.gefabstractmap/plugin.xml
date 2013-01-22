@@ -13,7 +13,7 @@
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
             uri="http://www.talend.org/TalendAbstractMapper"
-            class="abstractmapper.AbstractmapperPackage"
+            class="org.talend.designer.gefabstractmap.model.abstractmap.AbstractmapPackage"
             genModel="model/abstractMapper.genmodel"/>
    </extension>
 
