@@ -489,11 +489,11 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // OSGi DataSource
         additionalJobBeanParams += DataSourceConfig.getAdditionalJobBeanParams(processItem, true);
         
-        String serviceLocatorFeature = getRESTServiceLocatorConfig(restRequestComponent, processItem);
-
+        String jaxrsFeature = getJaxrsFeatureConfig(restRequestComponent, processItem);
+        String jaxrsSamImport=isSAMEnable(restRequestComponent)?"<import resource=\"classpath:META-INF/tesb/agent-osgi.xml\" />":"";
         String serviceNamespace = "";
         String serviceName = "";
-        if(!"".equals(serviceLocatorFeature)){
+        if(!"".equals(jaxrsFeature)){
         	String projectName = ProjectManager.getInstance().getCurrentProject().getTechnicalLabel().toLowerCase();
         	String processName = processItem.getProperty().getLabel();
         	String processVersion = processItem.getProperty().getVersion();
@@ -517,10 +517,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                         .replace("@JAXRS_SERVICE_PROVIDERS@", jaxrsServiceProviders) //$NON-NLS-1$
                         .replace("@ADDITIONAL_BEANS_CONFIG@", additionalBeansConfig) //$NON-NLS-1$
                         .replace("@ADDITIONAL_JOB_BEAN_PARAMS@", additionalJobBeanParams) //$NON-NLS-1$
-                		.replace("@JAXRS_SERVICE_LOCATOR@", serviceLocatorFeature) //$NON-NLS-1$
+                		.replace("@JAXRS_FEATURES@", jaxrsFeature) //$NON-NLS-1$
                 		.replace("@LOCATOR_SERVICE_NS@", serviceNamespace) //$NON-NLS-1$
-                		.replace("@LOCATOR_SERVICE_NAME@", serviceName); //$NON-NLS-1$
-
+                		.replace("@LOCATOR_SERVICE_NAME@", serviceName) //$NON-NLS-1$
+                		.replace("@JAXRS_SAM_IMPORT@",jaxrsSamImport); //$NON-NLS-1$
                 bw.write(line);
                 bw.newLine();
                 line = br.readLine();
@@ -536,52 +536,95 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         }
     }
 
-    private String getRESTServiceLocatorConfig(NodeType component, ProcessItem processItem){
-    	StringBuilder sb = new StringBuilder();
-    	sb.append("<jaxrs:features>\n\t\t\t<bean id=\"");
-    	sb.append(processItem.getProperty().getLabel().toLowerCase());
-    	sb.append("\" class=\"org.talend.esb.servicelocator.cxf.LocatorFeature\">");
-    	boolean useServiceLocator = false;
-        for (Object obj : component.getElementParameter()) {
-            ElementParameterType cpType = (ElementParameterType) obj;
-            if ("SERVICE_LOCATOR".equals(cpType.getName())) {
-                useServiceLocator = Boolean.parseBoolean(cpType.getValue());
-            }else if("SL_META_DATA".equals(cpType.getName())){
-            	EList<?> elementValue = cpType.getElementValue();
-            	int size = elementValue.size();
-            	if(size>0){
-            		sb.append("\n\t\t\t\t<property name=\"availableEndpointProperties\">");
-            		sb.append("\n\t\t\t\t\t<map>");
-            	}
-            	for(int i = 0;i<size;i+=2){
-            		if(size <= i+1 ){
-            			break;
-            		}
-            		ElementValueType name = (ElementValueType) elementValue.get(i);
-            		ElementValueType value = (ElementValueType) elementValue.get(i+1);
-            		sb.append("\n\t\t\t\t\t\t<entry>");
-            		sb.append("\n\t\t\t\t\t\t\t<key><value>");
-            		sb.append(name.getValue()==null?"":name.getValue());
-            		sb.append("</value></key>");
-            		sb.append("\n\t\t\t\t\t\t\t<value>");
-            		sb.append(value.getValue() == null?"":value.getValue());
-            		sb.append("</value>");
-            		sb.append("\n\t\t\t\t\t\t</entry>");
-            	}
-            	if(elementValue.size()>0){
-            		sb.append("\n\t\t\t\t\t</map>");
-            		sb.append("\n\t\t\t\t</property>");
-            	}
-            }
-        }
-        sb.append("\n\t\t\t</bean>\n\t\t</jaxrs:features>");
-        if(useServiceLocator){
-        	return sb.toString();
-        }
-        
-        return "";
-    }
+	/**
+	 * Gets the jaxrs feature config.
+	 * Currently, support SL&SAM feature config.
+	 * @param component the component
+	 * @param processItem the process item
+	 * @return the jaxrs feature config
+	 */
+	private String getJaxrsFeatureConfig(NodeType component,
+			ProcessItem processItem) {
+		boolean isSlEnable = isSLEnable(component);
+		boolean isSamEnable = isSAMEnable(component);
+		if (isSamEnable | isSlEnable) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("<jaxrs:features>\n");
+			if (isSlEnable) {
+				//add SL support
+				sb.append("\t\t\t<bean id=\"");
+				sb.append(processItem.getProperty().getLabel().toLowerCase());
+				sb.append("\" class=\"org.talend.esb.servicelocator.cxf.LocatorFeature\">");
+				for (Object obj : component.getElementParameter()) {
+					ElementParameterType cpType = (ElementParameterType) obj;
+					if ("SL_META_DATA".equals(cpType.getName())) {
+						EList<?> elementValue = cpType.getElementValue();
+						int size = elementValue.size();
+						if (size > 0) {
+							sb.append("\n\t\t\t\t<property name=\"availableEndpointProperties\">");
+							sb.append("\n\t\t\t\t\t<map>");
+						}
+						for (int i = 0; i < size; i += 2) {
+							if (size <= i + 1) {
+								break;
+							}
+							ElementValueType name = (ElementValueType) elementValue
+									.get(i);
+							ElementValueType value = (ElementValueType) elementValue
+									.get(i + 1);
+							sb.append("\n\t\t\t\t\t\t<entry>");
+							sb.append("\n\t\t\t\t\t\t\t<key><value>");
+							sb.append(name.getValue() == null ? "" : name
+									.getValue());
+							sb.append("</value></key>");
+							sb.append("\n\t\t\t\t\t\t\t<value>");
+							sb.append(value.getValue() == null ? "" : value
+									.getValue());
+							sb.append("</value>");
+							sb.append("\n\t\t\t\t\t\t</entry>");
+						}
+						if (elementValue.size() > 0) {
+							sb.append("\n\t\t\t\t\t</map>");
+							sb.append("\n\t\t\t\t</property>");
+						}
+					}
+				}
+				sb.append("\n\t\t\t</bean>\n");
+			}
+			
+			if(isSamEnable) {
+				//add sam support
+				sb.append("\t\t\t<ref bean=\"eventFeature\"/>\n");
+			}
+			sb.append("\t\t</jaxrs:features>");
+			return sb.toString();
+		} else {
+			return "";
+		}
     
+        
+    }
+	
+	private boolean isSLEnable(NodeType restRequestComponent) {
+		for (Object obj : restRequestComponent.getElementParameter()) {
+			ElementParameterType cpType = (ElementParameterType) obj;
+			if ("SERVICE_LOCATOR".equals(cpType.getName())) {
+				return Boolean.parseBoolean(cpType.getValue());
+			}
+		}
+		return false;
+	}
+
+	private boolean isSAMEnable(NodeType restRequestComponent) {
+		for (Object obj : restRequestComponent.getElementParameter()) {
+			ElementParameterType cpType = (ElementParameterType) obj;
+			if ("SERVICE_ACTIVITY_MONITOR".equals(cpType.getName())) {
+				return Boolean.parseBoolean(cpType.getValue());
+			}
+		}
+		return false;
+	}
+
     /**
      * Created OSGi Blueprint configuration for job bundle.
      *
@@ -738,6 +781,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 	if(EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR", restRequestComponent)) {
                 		importPackages += "org.talend.esb.servicelocator.cxf,";
                 	}
+                	if(EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", restRequestComponent)) {
+                		importPackages += "org.talend.esb.sam.agent.feature,";
+                		analyzer.setProperty(Analyzer.REQUIRE_BUNDLE, "org.apache.cxf.bundle,org.springframework.beans,org.springframework.context,org.springframework.osgi.core,sam-agent,sam-common");
+                	}
                 }
             }
         }
@@ -763,6 +810,8 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
             }
         }
         analyzer.setProperty(Analyzer.BUNDLE_CLASSPATH, bundleClasspath.toString());
+        
+
 
         // } else {
         //            String additionalImports = ""; //$NON-NLS-1$

@@ -9,7 +9,7 @@
 			http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
 	<!--import resource="classpath:META-INF/cxf/cxf.xml"/-->
-
+	@JAXRS_SAM_IMPORT@
 	<jaxrs:server id="service" address="@ENDPOINT_URI@"
 			 @LOCATOR_SERVICE_NS@
          	 @LOCATOR_SERVICE_NAME@>
@@ -22,7 +22,7 @@
 			<ref bean="dom4jProvider"/>
 			@JAXRS_SERVICE_PROVIDERS@
 		</jaxrs:providers>
-		@JAXRS_SERVICE_LOCATOR@
+		@JAXRS_FEATURES@
 	</jaxrs:server>
 
 @ADDITIONAL_BEANS_CONFIG@
