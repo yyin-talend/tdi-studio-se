@@ -37,7 +37,6 @@ public class VarTable extends AbstractTable {
         TableColumn column = new TableColumn(ColumnKeyConstant.KEY_EXPRESSION);
         column.setText("Expression");
         addColumn(column);
-        layoutManager.setWeight(0, 0.333333);
 
         ColumnSash sash = new ColumnSash(this);
         sash.setLeftColumn(column);
@@ -47,7 +46,6 @@ public class VarTable extends AbstractTable {
         column.setText("Type");
         sash.setRightColumn(column);
         addColumn(column);
-        layoutManager.setWeight(1, 0.333333);
 
         sash = new ColumnSash(this);
         sash.setLeftColumn(column);
@@ -57,7 +55,6 @@ public class VarTable extends AbstractTable {
         column.setText("Variable");
         sash.setRightColumn(column);
         addColumn(column);
-        layoutManager.setWeight(2, 0.333333);
     }
 
 }

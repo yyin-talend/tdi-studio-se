@@ -37,6 +37,7 @@ public class XmlMapTableTree extends AbstractTable {
 
     @Override
     protected void createColumns() {
+        layoutManager.setAjustToTableWidth(false);
         // table column title
         MapperTable xmlTree = tableModelManager.getModel();
         boolean hasExpression = false;
