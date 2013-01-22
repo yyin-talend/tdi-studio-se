@@ -106,35 +106,43 @@ imports="
 		
 		
 		public void generateClass(){
-		  if(isOptimizeCode){
-			cid = node.getUniqueName();
-			int methodNum=(columnListSize%schemaOptNum==0?columnListSize/schemaOptNum:(columnListSize/schemaOptNum)+1);
-			%>
-			class RowHelper_<%=cid%>{
-				<%
-			for(int i=0;i<methodNum;i++){
-				if(useV2C){
+		  	if(isOptimizeCode){
+				cid = node.getUniqueName();
+				int methodNum=(columnListSize%schemaOptNum==0?columnListSize/schemaOptNum:(columnListSize/schemaOptNum)+1);
 				%>
+				class RowHelper_<%=cid%>{
+				<%
+				int start=0;
+				int end=0;
+				for(int i=0;i<methodNum;i++){
+					start=i*schemaOptNum;
+					if(i==(methodNum-1)){
+						end=columnListSize;
+					}else{
+						end=(i+1)*schemaOptNum;
+					}
+					if(useV2C){
+					%>
 					public void valueToConn_<%=i%>(<%=V2CSourceValueClass%> <%=V2CSourceValueName%>,<%=V2CTargetConnName%>Struct <%=V2CTargetConnName%>) throws java.lang.Exception{
-						<%codeForValueToConn(node, V2CMetadata, V2CSourceValueClass, V2CSourceValueName, V2CTargetConnName, i*schemaOptNum, (i==methodNum?columnListSize:(i+1)*schemaOptNum));%>
+						<%codeForValueToConn(node, V2CMetadata, V2CSourceValueClass, V2CSourceValueName, V2CTargetConnName, start, end);%>
 					}
-				<%	
-				}
-				if(useV2CWithD){
-				%>
+					<%	
+					}
+					if(useV2CWithD){
+					%>
 					public void valueToConnWithD_<%=i%>(<%=V2CWithDSourceValueClass%> <%=V2CWithDSourceValueName%>,<%=V2CWithDTargetConnName%>Struct <%=V2CWithDTargetConnName%>, routines.system.Dynamic <%=V2CWithDDynamicName%>) throws java.lang.Exception{
-						<%this.isBehindDynamic = codeForValueToConnWithD(node, V2CWithDMetadata, V2CWithDSourceValueClass, V2CWithDSourceValueName, V2CWithDTargetConnName, V2CWithDDynamicName, i*schemaOptNum, (i==methodNum?columnListSize:(i+1)*schemaOptNum));%>
+						<%this.isBehindDynamic = codeForValueToConnWithD(node, V2CWithDMetadata, V2CWithDSourceValueClass, V2CWithDSourceValueName, V2CWithDTargetConnName, V2CWithDDynamicName, start, end);%>
 					}
-				<%		
-				}
-				if(useC2C){
-				%>
+					<%		
+					}
+					if(useC2C){
+					%>
 					public void connToConn_<%=i%>(<%=C2CSourceConnName%>Struct <%=C2CSourceConnName%>,<%=C2CTargetConnName%>Struct <%=C2CTargetConnName%>) throws java.lang.Exception{
-						<%codeForConnToConn(node, C2CMetadata, C2CSourceConnName, C2CTargetConnName, i*schemaOptNum, (i==methodNum?columnListSize:(i+1)*schemaOptNum));%>
+						<%codeForConnToConn(node, C2CMetadata, C2CSourceConnName, C2CTargetConnName, start, end);%>
 					}
-				<%
+					<%
+					}
 				}
-			}
 				if(useV2C){//Call all split methods in one method
 				%>
 					public void valueToConn(<%=V2CSourceValueClass%> <%=V2CSourceValueName%>,<%=V2CTargetConnName%>Struct <%=V2CTargetConnName%>) throws java.lang.Exception{
@@ -145,18 +153,18 @@ imports="
 					public void valueToConnWithD(<%=V2CWithDSourceValueClass%> <%=V2CWithDSourceValueName%>,<%=V2CWithDTargetConnName%>Struct <%=V2CWithDTargetConnName%>, routines.system.Dynamic <%=V2CWithDDynamicName%>) throws java.lang.Exception{
 				<%
 				}
-			for(int i=0;i<methodNum;i++){
-				if(useV2C){
-				%>
+				for(int i=0;i<methodNum;i++){
+					if(useV2C){
+					%>
 						valueToConn_<%=i%>(<%=V2CSourceValueName%>,<%=V2CTargetConnName%>);
-				<%
-				}
-				if(useV2CWithD){
-				%>
+					<%
+					}
+					if(useV2CWithD){
+					%>
 						valueToConnWithD_<%=i%>(<%=V2CWithDSourceValueName%>,<%=V2CWithDTargetConnName%>,<%=V2CWithDDynamicName%>);
-				<%
+					<%
+					}
 				}
-			}
 				if(useV2C || useV2CWithD){
 				%>
 					}
@@ -165,24 +173,23 @@ imports="
 				if(useC2C){
 				%>
 					public void connToConn(<%=C2CSourceConnName%>Struct <%=C2CSourceConnName%>,<%=C2CTargetConnName%>Struct <%=C2CTargetConnName%>) throws java.lang.Exception{
-				<%
-			for(int i=0;i<methodNum;i++){
-				if(useC2C){
-				%>
+					<%
+					for(int i=0;i<methodNum;i++){
+						if(useC2C){
+						%>
 						connToConn_<%=i%>(<%=C2CSourceConnName%>,<%=C2CTargetConnName%>);
-				<%
-				}
-			}
-				%>
+						<%
+						}
+					}
+					%>
 					}
 				<%
 				}
 				%>
-				
-			}
-			RowHelper_<%=cid%> rowHelper_<%=cid%>  = new RowHelper_<%=cid%>();
-		<%
-		  }
+				}
+				RowHelper_<%=cid%> rowHelper_<%=cid%>  = new RowHelper_<%=cid%>();
+			<%
+		  	}
 		}
 	}
 	%>
