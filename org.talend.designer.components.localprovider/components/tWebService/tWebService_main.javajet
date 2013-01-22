@@ -49,13 +49,11 @@ if (incomingConnections != null && !incomingConnections.isEmpty()) {
 		int elementNum = 0;
 		java.util.regex.Pattern normalizePattern = java.util.regex.Pattern.compile("^normalize\\(.*,\".*\"\\)$"); // normalize(row1.col1,";")
         java.util.regex.Pattern denormalizePattern = java.util.regex.Pattern.compile("^denormalize\\(.*,\".*\"\\)$"); // denormalize(row1.col1,";")
-		java.util.regex.Pattern anyTypePattern = java.util.regex.Pattern.compile("(.*[\\.])?anyType(\\[\\d+\\])?$"); // anyType or anyType[1]
 		
 		for(Map<String,String> inputParam:inputParams){
     		elementNum++;
     		expression = inputParam.get("EXPRESSION");
         	element = inputParam.get("ELEMENT").trim();
-  			namespace = inputParam.get("NAMESPACE");
 			if(expression!=null&&!"".equals(expression)&&element!=null&&!"".equals(element)){
 				    		
         		if(normalizePattern.matcher(expression).matches()||denormalizePattern.matcher(expression).matches()){
@@ -70,12 +68,6 @@ if (incomingConnections != null && !incomingConnections.isEmpty()) {
 %>
 				paramMap_<%=cid%>.put(util_<%=cid%>.removePunctuation("<%=element%>"),inputValueObject_<%=cid%>);
 <%
-        		if(anyTypePattern.matcher(element).matches()){
-%>		
-					anyTypeQName_<%=cid%> = new javax.xml.namespace.QName("<%=namespace%>","anyType"); 
-					paramMap_<%=cid%>.put(util_<%=cid%>.removePunctuation("<%=element%>"+"_type"),anyTypeQName_<%=cid%>);	
-<%
-				}
 			}
     	}
 %>
