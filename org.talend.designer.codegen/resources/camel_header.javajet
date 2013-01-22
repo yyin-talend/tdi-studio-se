@@ -21,12 +21,7 @@
 		org.talend.designer.runprocess.CodeGeneratorRoutine
 		org.talend.designer.codegen.i18n.Messages
 		org.talend.designer.codegen.ITalendSynchronizer
-        org.talend.designer.runprocess.ItemCacheManager
-		org.talend.core.CorePlugin
-		org.talend.core.model.properties.ProcessItem
-		org.talend.designer.runprocess.IProcessor
-		org.talend.designer.runprocess.ProcessorUtilities
-		java.util.HashMap
+		org.talend.designer.runprocess.ItemCacheManager
 	"
 %>
 <%
@@ -331,37 +326,40 @@
 		org.apache.camel.Endpoint endpoint_<%=cid%> = endpoint("talend:"+ <%=typeName%>+ "?context=" + <%=context%>);
 <%
         }else{
-            String typeName = "";
-            String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue();
-            IElementParameter processIdparam = node.getElementParameter("PROCESS_TYPE_PROCESS");
-            contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
-            String id = (String)processIdparam.getValue();
-            if(id != null){
-                String versionJob = (String) node.getElementParameter("PROCESS_TYPE_VERSION").getValue();
-                ProcessItem processItem = ItemCacheManager.getProcessItem(id, versionJob);
-                IProcess jobProcess = CorePlugin.getDefault().getDesignerCoreService().getProcessFromItem(processItem);
-                IProcessor jobProcessor = ProcessorUtilities.getProcessor(jobProcess,
-                        processItem.getProperty());
-                jobProcessor.setContext(ProcessorUtilities.getContext(jobProcess, context.toString()));
-                try{
-                    jobProcessor.initPath();
-                    typeName = jobProcessor.getTypeName();
-                }catch(Exception e){
-                    e.printStackTrace();
+           String typeName = "";
+           contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
+           String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue();
+           String id = (String) node.getElementParameter("PROCESS_TYPE_PROCESS").getValue();
+           if(id != null){
+           String jobName = (String) node.getElementParameter("SELECTED_JOB_NAME").getValue();
+           String jobVersion = (String) node.getElementParameter("PROCESS_TYPE_VERSION").getValue();
+            if("Latest".equals(jobVersion)){
+                try {
+                    jobVersion = ItemCacheManager.getProcessItem(id, jobVersion).getProperty().getVersion();
+                } catch (Exception e) {
+                    jobVersion = null;
                 }
             }
+            String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
+            typeName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + jobFolderName + "." + jobName;
+        }
 %>
 		org.apache.camel.Endpoint endpoint_<%=cid%> = endpoint("talend:"+<%=typeName%>.class.getName()+"?context="+"<%=context%>");
 <%
         }
-    }
-
 %>
         Map <String, String> propertiesMap = new HashMap<String, String>();
 <%		for (int i=0; i<contextParams.size(); i++) {
 				Map<String, String> contextParam = contextParams.get(i);
-				String paramName = contextParam.get("PARAM_NAME_COLUMN");
-				String paramValue = contextParam.get("PARAM_VALUE_COLUMN");
+				String paramName;
+				String paramValue;
+		        if("true".equals(useJar)){
+					paramName = contextParam.get("EXTERNAL_JAR_PARAM_NAME_COLUMN");
+					paramValue = contextParam.get("EXTERNAL_JAR_PARAM_VALUE_COLUMN");
+				} else {
+					paramName = contextParam.get("PARAM_NAME_COLUMN");
+					paramValue = contextParam.get("PARAM_VALUE_COLUMN");
+				}
 %>
 				propertiesMap.put("<%=paramName%>", <%=paramValue%>);
 <%
@@ -371,4 +369,5 @@
 	<%
     }
 	}
+}
 %>
