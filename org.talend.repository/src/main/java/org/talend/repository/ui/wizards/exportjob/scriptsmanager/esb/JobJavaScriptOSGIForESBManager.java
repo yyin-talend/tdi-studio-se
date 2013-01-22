@@ -489,11 +489,13 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         // OSGi DataSource
         additionalJobBeanParams += DataSourceConfig.getAdditionalJobBeanParams(processItem, true);
         
-        String jaxrsFeature = getJaxrsFeatureConfig(restRequestComponent, processItem);
-        String jaxrsSamImport=isSAMEnable(restRequestComponent)?"<import resource=\"classpath:META-INF/tesb/agent-osgi.xml\" />":"";
+		boolean isSlEnable = EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR",restRequestComponent);
+		boolean isSamEnable = EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR",restRequestComponent);
+        String jaxrsFeature = getJaxrsFeatureConfig(restRequestComponent, processItem,isSlEnable,isSamEnable);
+        String jaxrsSamImport=isSamEnable?"<import resource=\"classpath:META-INF/tesb/agent-osgi.xml\" />":"";
         String serviceNamespace = "";
         String serviceName = "";
-        if(!"".equals(jaxrsFeature)){
+        if(isSlEnable){
         	String projectName = ProjectManager.getInstance().getCurrentProject().getTechnicalLabel().toLowerCase();
         	String processName = processItem.getProperty().getLabel();
         	String processVersion = processItem.getProperty().getVersion();
@@ -541,12 +543,12 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
 	 * Currently, support SL&SAM feature config.
 	 * @param component the component
 	 * @param processItem the process item
+	 * @param isSamEnable 
+	 * @param isSlEnable 
 	 * @return the jaxrs feature config
 	 */
 	private String getJaxrsFeatureConfig(NodeType component,
-			ProcessItem processItem) {
-		boolean isSlEnable = isSLEnable(component);
-		boolean isSamEnable = isSAMEnable(component);
+			ProcessItem processItem, boolean isSlEnable, boolean isSamEnable) {
 		if (isSamEnable | isSlEnable) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("<jaxrs:features>\n");
@@ -604,27 +606,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
     
         
     }
-	
-	private boolean isSLEnable(NodeType restRequestComponent) {
-		for (Object obj : restRequestComponent.getElementParameter()) {
-			ElementParameterType cpType = (ElementParameterType) obj;
-			if ("SERVICE_LOCATOR".equals(cpType.getName())) {
-				return Boolean.parseBoolean(cpType.getValue());
-			}
-		}
-		return false;
-	}
-
-	private boolean isSAMEnable(NodeType restRequestComponent) {
-		for (Object obj : restRequestComponent.getElementParameter()) {
-			ElementParameterType cpType = (ElementParameterType) obj;
-			if ("SERVICE_ACTIVITY_MONITOR".equals(cpType.getName())) {
-				return Boolean.parseBoolean(cpType.getValue());
-			}
-		}
-		return false;
-	}
-
     /**
      * Created OSGi Blueprint configuration for job bundle.
      *
