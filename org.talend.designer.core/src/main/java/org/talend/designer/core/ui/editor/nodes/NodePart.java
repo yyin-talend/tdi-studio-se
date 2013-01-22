@@ -107,7 +107,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * @see org.eclipse.gef.editparts.AbstractEditPart#setSelected(int)
      */
     @Override
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     public void setSelected(final int value) {
         if (value == SELECTED) {
             super.setSelected(SELECTED_PRIMARY);
@@ -116,11 +116,11 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         }
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         if (value == SELECTED_NONE) {
-            ComponentSettingsView viewer = (ComponentSettingsView) page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
+            ComponentSettingsView viewer = (ComponentSettingsView) page.findView(ComponentSettingsView.ID);
             if (viewer == null) {
                 return;
             }
-            ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
+            ComponentSettingsView compSettings = viewer;
             compSettings.cleanDisplay();
             return;
         }
@@ -144,13 +144,13 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             }
             TalendSelectionManager selectionManager = (TalendSelectionManager) designerViewer.getSelectionManager();
             if (value == SELECTED || value == SELECTED_PRIMARY) {
-                ComponentSettingsView viewer = (ComponentSettingsView) page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
+                ComponentSettingsView viewer = (ComponentSettingsView) page.findView(ComponentSettingsView.ID);
                 if (viewer == null) {
                     return;
                 }
 
                 if (selectionManager.getSelectionType() == ETalendSelectionType.SINGLE) {
-                    ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
+                    ComponentSettingsView compSettings = viewer;
                     compSettings.setElement((Node) getModel());
                     if (((Node) getModel()).getComponent() instanceof DummyComponent) {
                         MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Warning",
@@ -160,11 +160,11 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
 
                     CodeView.refreshCodeView((Node) getModel());
                 } else if (!viewer.isCleaned() && selectionManager.getSelectionType() == ETalendSelectionType.MULTIPLE) {
-                    ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
+                    ComponentSettingsView compSettings = viewer;
                     compSettings.cleanDisplay();
                 } else if (isDrop()) {
                     if (value == SELECTED || value == SELECTED_PRIMARY) {
-                        ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
+                        ComponentSettingsView compSettings = viewer;
                         compSettings.setElement((Node) getModel());
                         if (((Node) getModel()).getComponent() instanceof DummyComponent) {
                             MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Warning",
@@ -209,8 +209,9 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
 
     @Override
     protected void unregisterVisuals() {
-        if (((NodeFigure) getFigure()).connection != null)
+        if (((NodeFigure) getFigure()).connection != null) {
             ((NodeFigure) getFigure()).connection.disposeColors();
+        }
         if (getRoot() != null) {
             super.unregisterVisuals();
         }
@@ -242,7 +243,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * @see org.eclipse.gef.editparts.AbstractEditPart#refreshVisuals()
      */
     @Override
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    @SuppressWarnings("unchecked")
     protected void refreshVisuals() {
         Node node = (Node) this.getModel();
         Point loc = node.getLocation();
@@ -305,6 +306,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(final PropertyChangeEvent changeEvent) {
         boolean needUpdateSubjob = false;
 
@@ -411,6 +413,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * 
      * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(final ConnectionEditPart connection) {
         // return new ChopboxAnchor(getFigure());
         if (connection.getModel() instanceof Connection) {
@@ -430,6 +433,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * 
      * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(final ConnectionEditPart connection) {
         // return new ChopboxAnchor(getFigure());
 
@@ -453,6 +457,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * 
      * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.Request)
      */
+    @Override
     public ConnectionAnchor getSourceConnectionAnchor(final Request request) {
         return new ChopboxAnchor(getFigure());
         // CreateConnectionRequest connReq = (CreateConnectionRequest) request;
@@ -471,6 +476,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * 
      * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.Request)
      */
+    @Override
     public ConnectionAnchor getTargetConnectionAnchor(final Request request) {
         return new ChopboxAnchor(getFigure());
         // CreateConnectionRequest connReq = (CreateConnectionRequest) request;
@@ -495,6 +501,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             if (node.isExternalNode()) {
                 IElementParameter externalParam = node.getElementParameterFromField(EParameterFieldType.EXTERNAL);
                 if (externalParam != null && externalParam.isShow(node.getElementParameters())) {
+                    externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
+                } else if (externalParam != null && node.getComponent().getName().equals("tMatchGroup")) { //$NON-NLS-1$
                     externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
                 }
             }
@@ -540,7 +548,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                             .isAvoidToShowJobAfterDoubleClick();
                     // bug 20796
                     boolean isSelectUseDynamic = false;
-                    Object useDynamicJobValue = (Object) node.getPropertyValue(EParameterName.USE_DYNAMIC_JOB.getName());
+                    Object useDynamicJobValue = node.getPropertyValue(EParameterName.USE_DYNAMIC_JOB.getName());
                     if (useDynamicJobValue != null && useDynamicJobValue instanceof Boolean) {
                         isSelectUseDynamic = (Boolean) useDynamicJobValue;
                     }
@@ -610,8 +618,9 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         List modelObjects = getModelSourceConnections();
 
         // List<? extends INodeConnector> connList = node.getListConnector();
-        if (modelObjects == null)
+        if (modelObjects == null) {
             modelObjects = new ArrayList();
+        }
         for (i = 0; i < modelObjects.size(); i++) {
             model = modelObjects.get(i);
 
@@ -624,13 +633,14 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     return;
                 }
             }
-            if (i < editParts.size() && ((EditPart) editParts.get(i)).getModel() == model)
+            if (i < editParts.size() && ((EditPart) editParts.get(i)).getModel() == model) {
                 continue;
+            }
 
             editPart = (ConnectionEditPart) modelToEditPart.get(model);
-            if (editPart != null)
+            if (editPart != null) {
                 reorderSourceConnection(editPart, i);
-            else {
+            } else {
                 editPart = createOrFindConnection(model);
                 addSourceConnection(editPart, i);
             }
@@ -638,10 +648,12 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
 
         // Remove the remaining EditParts
         List trash = new ArrayList();
-        for (; i < editParts.size(); i++)
+        for (; i < editParts.size(); i++) {
             trash.add(editParts.get(i));
-        for (i = 0; i < trash.size(); i++)
+        }
+        for (i = 0; i < trash.size(); i++) {
             removeSourceConnection((ConnectionEditPart) trash.get(i));
+        }
     }
 
     @Override
@@ -659,8 +671,9 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         }
 
         List modelObjects = getModelTargetConnections();
-        if (modelObjects == null)
+        if (modelObjects == null) {
             modelObjects = new ArrayList();
+        }
 
         for (i = 0; i < modelObjects.size(); i++) {
             model = modelObjects.get(i);
@@ -673,13 +686,14 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     return;
                 }
             }
-            if (i < connections.size() && ((EditPart) connections.get(i)).getModel() == model)
+            if (i < connections.size() && ((EditPart) connections.get(i)).getModel() == model) {
                 continue;
+            }
 
             editPart = (ConnectionEditPart) mapModelToEditPart.get(model);
-            if (editPart != null)
+            if (editPart != null) {
                 reorderTargetConnection(editPart, i);
-            else {
+            } else {
                 editPart = createOrFindConnection(model);
                 addTargetConnection(editPart, i);
             }
@@ -687,10 +701,12 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
 
         // Remove the remaining Connection EditParts
         List trash = new ArrayList();
-        for (; i < connections.size(); i++)
+        for (; i < connections.size(); i++) {
             trash.add(connections.get(i));
-        for (i = 0; i < trash.size(); i++)
+        }
+        for (i = 0; i < trash.size(); i++) {
             removeTargetConnection((ConnectionEditPart) trash.get(i));
+        }
     }
 
     /**
