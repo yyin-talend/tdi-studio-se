@@ -201,6 +201,10 @@ imports="
 	    	boolean noNullValues = ("true").equals(ElementParameterParser.getValue(node, "__NO_NULL_VALUES__"));
 
 	    	String dbType = column.getType();
+	    	if(dbType==null){
+                super.generateTimestampResultSet(firstConnName,column,currentColNo);
+                return;
+            }
 	    	boolean isTSWithTZ = dbType.matches("TIMESTAMP WITH TIME ZONE");
 	    	
 	    	String dbVersion = "";
