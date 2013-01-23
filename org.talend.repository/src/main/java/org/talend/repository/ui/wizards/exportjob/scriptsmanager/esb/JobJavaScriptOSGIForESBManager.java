@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -650,6 +651,16 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     additionalServiceProps = "<entry key=\"multithreading\" value=\"true\" />"; //$NON-NLS-1$
                 }
             }
+            for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "tRESTClient")) { //$NON-NLS-1$
+            	// https://jira.talendforge.org/browse/TESB-8066
+            	if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
+            		// SAM
+            		additionalJobBeanParams = "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
+            		additionalJobBundleConfig = "<reference id=\"eventFeature\"  xmlns:ext=\"http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0\" "
+            				+ "ext:proxy-method=\"classes\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>";
+            		break;
+            	}
+            }
         }
 
         // OSGi DataSource
@@ -762,10 +773,20 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                 	if(EmfModelUtils.computeCheckElementValue("SERVICE_LOCATOR", restRequestComponent)) {
                 		importPackages += "org.talend.esb.servicelocator.cxf,";
                 	}
-                	if(EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", restRequestComponent)) {
-                		importPackages += "org.talend.esb.sam.agent.feature,";
-                		analyzer.setProperty(Analyzer.REQUIRE_BUNDLE, "org.apache.cxf.bundle,org.springframework.beans,org.springframework.context,org.springframework.osgi.core,sam-agent,sam-common");
-                	}
+                }
+                if(null != restRequestComponent && "".equals(importPackages) && EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", restRequestComponent)) {
+                	importPackages += "org.talend.esb.sam.agent.feature,";
+                	analyzer.setProperty(Analyzer.REQUIRE_BUNDLE, "org.apache.cxf.bundle,org.springframework.beans,org.springframework.context,org.springframework.osgi.core,sam-agent,sam-common");
+                }else{
+	                Collection<NodeType> tRESTClientComps = EmfModelUtils.getComponentsByName(pi, "tRESTClient");
+	                for (NodeType node : tRESTClientComps) { //$NON-NLS-1$
+	                	// https://jira.talendforge.org/browse/TESB-8066
+	                	if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
+	                		importPackages += "org.talend.esb.sam.agent.feature,";
+	                		analyzer.setProperty(Analyzer.REQUIRE_BUNDLE, "org.apache.cxf.bundle,org.springframework.beans,org.springframework.context,org.springframework.osgi.core,sam-agent,sam-common");
+	                		break;
+	                	}
+	                }
                 }
             }
         }
