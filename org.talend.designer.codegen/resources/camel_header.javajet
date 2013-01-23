@@ -331,18 +331,11 @@
            String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue();
            String id = (String) node.getElementParameter("PROCESS_TYPE_PROCESS").getValue();
            if(id != null){
-           String jobName = (String) node.getElementParameter("SELECTED_JOB_NAME").getValue();
-           String jobVersion = (String) node.getElementParameter("PROCESS_TYPE_VERSION").getValue();
-            if("Latest".equals(jobVersion)){
-                try {
-                    jobVersion = ItemCacheManager.getProcessItem(id, jobVersion).getProperty().getVersion();
-                } catch (Exception e) {
-                    jobVersion = null;
-                }
-            }
-            String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
-            typeName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + jobFolderName + "." + jobName;
-        }
+              String jobName = (String) node.getElementParameter("SELECTED_JOB_NAME").getValue();
+              String jobVersion = (String) ElementParameterParser.parse(node,"PROCESS_TYPE_VERSION");
+              String jobFolderName = JavaResourcesHelper.getJobFolderName(jobName, jobVersion);
+              typeName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + jobFolderName + "." + jobName;
+           }
 %>
 		org.apache.camel.Endpoint endpoint_<%=cid%> = endpoint("talend:"+<%=typeName%>.class.getName()+"?context="+"<%=context%>");
 <%
