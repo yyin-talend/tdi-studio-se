@@ -63,12 +63,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
 	class FileOutputDelimitedUtil_<%=cid%>{
 <%
 				if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {//E1 not use CSV Option
-					if(isIncludeHeader && ((!useStream && split)||(hasDynamic))){//F1
+					if(isIncludeHeader){//F1
 						for (int i = 0; i < sizeColumns; i++) {//H1
 	                        IMetadataColumn column = columns.get(i);
 	                       	if(i%schemaOptNum==0){
 %>
-		public void putHeaderValue_<%=i/schemaOptNum%>(java.io.Writer out<%=cid %>,final String OUT_DELIM_<%=cid %>)throws java.lang.Exception{
+		public void putHeaderValue_<%=i/schemaOptNum%>(java.io.Writer out<%=cid %>,final String OUT_DELIM_<%=cid %><%if(hasDynamic){%>,final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %><%}%>)throws java.lang.Exception{
 <%
 							}
 							if(!("id_Dynamic".equals(column.getTalendType()))) {
@@ -103,7 +103,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
     					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
 	                    if(i%schemaOptNum==0){
 %>
-		public void putValue_<%=i/schemaOptNum%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,StringBuilder sb_<%=cid %>,final String OUT_DELIM_<%=cid %>){
+		public void putValue_<%=i/schemaOptNum%>(final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %>,StringBuilder sb_<%=cid %>,final String OUT_DELIM_<%=cid %>)throws java.lang.Exception {
 <%
 						}
     					if(!isPrimitive) {
@@ -174,12 +174,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//A1
 					}
 				}else{
 					//E2 use CSV Option
-					if(isIncludeHeader && hasDynamic){//F3
+					if(isIncludeHeader){//F3
 						for (int i = 0; i < sizeColumns; i++) {//H3
 	                        IMetadataColumn column = columns.get(i);
 	                       	if(i%schemaOptNum==0){
 %>
-		public void putHeaderValue_<%=i/schemaOptNum%>(String[] headColu<%=cid%>)throws java.lang.Exception{
+		public void putHeaderValue_<%=i/schemaOptNum%>(String[] headColu<%=cid%><%if(hasDynamic){%>,final <%=NodeUtil.getPrivateConnClassName(conn) %>Struct <%=conn.getName() %><%}%>)throws java.lang.Exception{
 <%
 							}
 							if(!("id_Dynamic".equals(column.getTalendType()))) {

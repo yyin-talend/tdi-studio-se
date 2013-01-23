@@ -104,7 +104,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
                             if(sizeColumns> schemaOptNum){
                             	if(i%schemaOptNum==0){
 %>
-                            		fileOutputDelimitedUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(out<%=cid %>,OUT_DELIM_<%=cid %>);
+                            		fileOutputDelimitedUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(out<%=cid %>,OUT_DELIM_<%=cid %>, <%=conn.getName() %>);
 <%
                             	}
                             }else{//AA
@@ -263,7 +263,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 										if(sizeColumns> schemaOptNum){
                             				if(i%schemaOptNum==0){
 %>
-                            			fileOutputDelimitedUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(out<%=cid %>,OUT_DELIM_<%=cid %>);
+                            			fileOutputDelimitedUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(out<%=cid %>,OUT_DELIM_<%=cid %><%if(hasDynamic){%>, <%=conn.getName() %><%}%>);
 <%
                             				}
                            			 	}else{//CC
@@ -435,7 +435,7 @@ if(("false").equals(ElementParameterParser.getValue(node,"__CSV_OPTION__"))) {
 								if(sizeColumns> schemaOptNum){
                             		if(i%schemaOptNum==0){
 %>
-                            		fileOutputDelimitedUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(headColu<%=cid%>);
+                            		fileOutputDelimitedUtil_<%=cid%>.putHeaderValue_<%=i/schemaOptNum%>(headColu<%=cid%>, <%=conn.getName() %>);
 <%
                             		}
                             	}else{//DD
