@@ -31,6 +31,7 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
+import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
@@ -40,7 +41,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
@@ -138,10 +138,12 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             if (ctrl != null) {
                 PlatformUI.getWorkbench().getHelpSystem().setHelp(ctrl, helpLink);
             }
-            IViewPart view = page.findView("org.eclipse.help.ui.HelpView"); //$NON-NLS-1$
-            if (view != null) {
-                PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpLink);
-            }
+            // This code was to update automatically the help view, to set the documentation of the selected component
+            // remove for TDI-24396
+            //            IViewPart view = page.findView("org.eclipse.help.ui.HelpView"); //$NON-NLS-1$
+            // if (view != null) {
+            // PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpLink);
+            // }
             TalendSelectionManager selectionManager = (TalendSelectionManager) designerViewer.getSelectionManager();
             if (value == SELECTED || value == SELECTED_PRIMARY) {
                 ComponentSettingsView viewer = (ComponentSettingsView) page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
@@ -490,7 +492,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
     public void performRequest(Request req) {
         Node node = (Node) getModel();
         IExternalData oldExternalData = node.getExternalData();
-        if (req.getType().equals("open")) { //$NON-NLS-1$
+        if (req.getType().equals(RequestConstants.REQ_OPEN)) {
             IExternalNode externalNode = null;
             if (node.isExternalNode()) {
                 IElementParameter externalParam = node.getElementParameterFromField(EParameterFieldType.EXTERNAL);
