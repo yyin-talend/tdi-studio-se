@@ -103,7 +103,7 @@ public class ReadQueriesAction extends AContextualAction {
 
         if (connection instanceof DatabaseConnection) {
             IMetadataConnection imetadataConnection = ConvertionHelper.convert(connection, true);
-            connParameters.setSchema(imetadataConnection.getSchema());
+            connParameters.setSchema(imetadataConnection.getSchema() == null ? "" : imetadataConnection.getSchema());
         }
         connParameters.setNodeReadOnly(true);
         connParameters.setFromRepository(true);
