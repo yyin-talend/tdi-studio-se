@@ -497,13 +497,10 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
         String serviceNamespace = "";
         String serviceName = "";
         if(isSlEnable){
-        	String projectName = ProjectManager.getInstance().getCurrentProject().getTechnicalLabel().toLowerCase();
-        	String processName = processItem.getProperty().getLabel();
-        	String processVersion = processItem.getProperty().getVersion();
-        	serviceNamespace = "xmlns:tns=\"http://"+			//give default service namespace
-        			processName.toLowerCase()+"."+projectName.toLowerCase()
-        			+"/"+ processVersion+"/\"";
-        	serviceName = "serviceName=\"tns:"+processName+"\"";	//give default service name
+        	serviceNamespace = "xmlns:tns=\""+			//give default service namespace
+        			EmfModelUtils.computeTextElementValue("SERVICE_NAMESPACE", restRequestComponent)
+        			+"\"";
+        	serviceName = "serviceName=\"tns:"+EmfModelUtils.computeTextElementValue("SERVICE_NAME", restRequestComponent)+"\"";	//give default service name
         }
         
         BufferedReader br = null;
