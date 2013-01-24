@@ -21,6 +21,7 @@ import org.talend.designer.core.i18n.Messages;
  * 
  */
 public enum EParameterName {
+    PROJECT_TECHNICAL_NAME(Messages.getString("EParameterName.Project_Technical_Name")), //$NON-NLS-1$
     NAME(Messages.getString("EParameterName.Name")), //$NON-NLS-1$
     UNIQUE_NAME(Messages.getString("EParameterName.uniqueName")), //$NON-NLS-1$    
     TRANSLATED_UNIQUE_NAME("Translated Unique Name"), //$NON-NLS-1$

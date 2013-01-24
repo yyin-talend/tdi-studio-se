@@ -500,6 +500,19 @@ public class Process extends Element implements IProcess2, ILastVersionChecker {
         param.setValue("");
         param.setReadOnly(false);
         addElementParameter(param);
+        
+        // TDI-24548
+        param = new ElementParameter(this);
+        param.setName(EParameterName.PROJECT_TECHNICAL_NAME.getName());
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setFieldType(EParameterFieldType.TEXT);
+        param.setDisplayName(EParameterName.PROJECT_TECHNICAL_NAME.getDisplayName());
+        param.setValue(getProject().getTechnicalLabel());
+        param.setShow(false);
+        param.setReadOnly(true);
+        addElementParameter(param);
+        
+        
     }
 
     /**
