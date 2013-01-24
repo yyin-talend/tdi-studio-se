@@ -1246,147 +1246,155 @@ public class DataProcess {
             dataNode = (AbstractNode) buildCheckMap.get(graphicalNode);
             checkMapReduceMap.put(graphicalNode, dataNode);
 
-            boolean needReduce = currentComponent.getComponent().isReduce();
+            // if the component not the first one and the last one means it is processing component, it need to check,
+            // but the better way is use an sign to indicate it's dataformat components
 
-            if (!currentComponent.getIncomingConnections(EConnectionType.FLOW_MAIN).isEmpty()
-                    && !currentComponent.getOutgoingConnections(EConnectionType.FLOW_MAIN).isEmpty()) {
-                List<? extends IConnection> outConns = dataNode.getOutgoingSortedConnections();
-                if (outConns != null && outConns.size() > 0) {
-                    IConnection conn = outConns.get(0);
-                    if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
-                            && !conn.getTarget().getOutgoingConnections(EConnectionType.FLOW_MAIN).isEmpty() && needReduce) {
-                        // get metadata from connection
-                        IMetadataTable connMetadataTable = conn.getMetadataTable();
+            // then if 1) the component contains reduce part or 2) it has multiple outputs and 3) the target components
+            // is not dataformat components
+            List<? extends IConnection> inConns = dataNode.getIncomingConnections(EConnectionType.FLOW_MAIN);
+            List<? extends IConnection> outConns = dataNode.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+            if (inConns != null && inConns.size() > 0 && outConns != null && outConns.size() > 0) {
+                boolean needReduce = dataNode.getComponent().isReduce();
+                boolean hasMultipleOutputs = outConns.size() > 1;
+                if (needReduce || hasMultipleOutputs) {
+                    for (IConnection conn : outConns) {
+                        if (!conn.getTarget().getOutgoingConnections(EConnectionType.FLOW_MAIN).isEmpty()) {
+                            // get metadata from connection
+                            IMetadataTable connMetadataTable = conn.getMetadataTable();
 
-                        // get the start node
-                        INode startNode = dataNode.getDesignSubjobStartNode();
-                        // TODO assign properly
-                        String folderTemp = ""; //$NON-NLS-1$
-                        if (configNode != null) {
-                            folderTemp = TalendQuoteUtils.removeQuotes(configNode.getElementParameter("TEMP_FOLDER").getValue() //$NON-NLS-1$
-                                    .toString());
-                        }
-                        String folder = "\"" + folderTemp + "/tmp/" + "tMROutput_" + dataNode.getUniqueName() + "\"";//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
+                            // get the start node
+                            INode startNode = dataNode.getDesignSubjobStartNode();
+                            // TODO assign properly
+                            String folderTemp = ""; //$NON-NLS-1$
+                            if (configNode != null) {
+                                folderTemp = TalendQuoteUtils.removeQuotes(configNode
+                                        .getElementParameter("TEMP_FOLDER").getValue() //$NON-NLS-1$
+                                        .toString());
+                            }
+                            String folder = "\"" + folderTemp + "/" + "tMROutput_" + dataNode.getUniqueName() + "/" + conn.getName() + "\"";//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ 
 
-                        // get next node
-                        DataNode nextNode = (DataNode) conn.getTarget();
+                            // get next node
+                            DataNode nextNode = (DataNode) conn.getTarget();
 
-                        List<IConnection> nextNodeInConns = (List<IConnection>) nextNode.getIncomingConnections();
-                        nextNodeInConns.remove(conn);
+                            List<IConnection> nextNodeInConns = (List<IConnection>) nextNode.getIncomingConnections();
+                            nextNodeInConns.remove(conn);
 
-                        // new hidden tMROutput
-                        IComponent mrOutComponent = ComponentsFactoryProvider.getInstance().get(MROUTPUT_COMPONENT_NAME,
-                                ComponentCategory.CATEGORY_4_MAPREDUCE.getName());
-                        AbstractNode mrOutNode = new DataNode(mrOutComponent, "tMROutput_" + dataNode.getUniqueName());//$NON-NLS-1$
-                        mrOutNode.getElementParameter("FOLDER").setValue( //$NON-NLS-1$
-                                folder);
-                        mrOutNode.setActivate(true);
-                        mrOutNode.setStart(false);
-                        mrOutNode.setSubProcessStart(false);
-                        mrOutNode.setDesignSubjobStartNode(startNode);
-                        List<IMetadataTable> tMROutputMetadataList = new ArrayList<IMetadataTable>();
-                        IMetadataTable tMROutputMetadataTable = new MetadataTable();
-                        MetadataToolHelper.copyTable(connMetadataTable, tMROutputMetadataTable);
-                        tMROutputMetadataList.add(tMROutputMetadataTable);
-                        mrOutNode.setMetadataList(tMROutputMetadataList);
-                        mrOutNode.setProcess(dataNode.getProcess());
-                        List<IConnection> mrOutNodeOutConnections = new ArrayList<IConnection>();
-                        List<IConnection> mrOutNodeInConnections = new ArrayList<IConnection>();
-                        mrOutNodeInConnections.add(conn);
-                        mrOutNode.setIncomingConnections(mrOutNodeInConnections);
-                        mrOutNode.setOutgoingConnections(mrOutNodeOutConnections);
-                        mrOutNode.setProcess(dataNode.getProcess());
-                        addDataNode(mrOutNode);
+                            // new hidden tMROutput
+                            IComponent mrOutComponent = ComponentsFactoryProvider.getInstance().get(MROUTPUT_COMPONENT_NAME,
+                                    ComponentCategory.CATEGORY_4_MAPREDUCE.getName());
+                            AbstractNode mrOutNode = new DataNode(mrOutComponent, "tMROutput_" + dataNode.getUniqueName());//$NON-NLS-1$
+                            mrOutNode.getElementParameter("FOLDER").setValue( //$NON-NLS-1$
+                                    folder);
+                            mrOutNode.setActivate(true);
+                            mrOutNode.setStart(false);
+                            mrOutNode.setSubProcessStart(false);
+                            mrOutNode.setDesignSubjobStartNode(startNode);
+                            List<IMetadataTable> tMROutputMetadataList = new ArrayList<IMetadataTable>();
+                            IMetadataTable tMROutputMetadataTable = new MetadataTable();
+                            MetadataToolHelper.copyTable(connMetadataTable, tMROutputMetadataTable);
+                            tMROutputMetadataList.add(tMROutputMetadataTable);
+                            mrOutNode.setMetadataList(tMROutputMetadataList);
+                            mrOutNode.setProcess(dataNode.getProcess());
+                            List<IConnection> mrOutNodeOutConnections = new ArrayList<IConnection>();
+                            List<IConnection> mrOutNodeInConnections = new ArrayList<IConnection>();
+                            mrOutNodeInConnections.add(conn);
+                            mrOutNode.setIncomingConnections(mrOutNodeInConnections);
+                            mrOutNode.setOutgoingConnections(mrOutNodeOutConnections);
+                            mrOutNode.setProcess(dataNode.getProcess());
+                            addDataNode(mrOutNode);
 
-                        // set target to tMROutput
-                        ((DataConnection) conn).setTarget(mrOutNode);
+                            // set target to tMROutput
+                            ((DataConnection) conn).setTarget(mrOutNode);
 
-                        // new hidden tMRInput
-                        IComponent mrInComponent = ComponentsFactoryProvider.getInstance().get(MRINPUT_COMPONENT_NAME,
-                                ComponentCategory.CATEGORY_4_MAPREDUCE.getName());
-                        AbstractNode mrInNode = new DataNode(mrInComponent, "tMRInput_" + nextNode.getUniqueName());//$NON-NLS-1$
-                        mrInNode.getElementParameter("FOLDER").setValue( //$NON-NLS-1$
-                                folder);
-                        mrInNode.setActivate(dataNode.isActivate());
-                        mrInNode.setStart(false);
-                        mrInNode.setSubProcessStart(true);
-                        mrInNode.setDesignSubjobStartNode(mrInNode);
-                        List<IMetadataTable> tMRInputMetadataList = new ArrayList<IMetadataTable>();
-                        IMetadataTable tMRInputMetadataTable = new MetadataTable();
-                        MetadataToolHelper.copyTable(connMetadataTable, tMRInputMetadataTable);
-                        tMRInputMetadataList.add(tMRInputMetadataTable);
-                        mrInNode.setMetadataList(tMRInputMetadataList);
-                        mrInNode.setProcess(dataNode.getProcess());
-                        List<IConnection> mrInNodeOutConnections = new ArrayList<IConnection>();
-                        List<IConnection> mrInNodeInConnections = new ArrayList<IConnection>();
-                        mrInNode.setIncomingConnections(mrInNodeInConnections);
-                        mrInNode.setOutgoingConnections(mrInNodeOutConnections);
-                        addDataNode(mrInNode);
+                            // new hidden tMRInput
+                            IComponent mrInComponent = ComponentsFactoryProvider.getInstance().get(MRINPUT_COMPONENT_NAME,
+                                    ComponentCategory.CATEGORY_4_MAPREDUCE.getName());
+                            AbstractNode mrInNode = new DataNode(mrInComponent, "tMRInput_" + nextNode.getUniqueName());//$NON-NLS-1$
+                            mrInNode.getElementParameter("FOLDER").setValue( //$NON-NLS-1$
+                                    folder);
+                            mrInNode.setActivate(dataNode.isActivate());
+                            mrInNode.setStart(false);
+                            mrInNode.setSubProcessStart(true);
+                            mrInNode.setDesignSubjobStartNode(mrInNode);
+                            List<IMetadataTable> tMRInputMetadataList = new ArrayList<IMetadataTable>();
+                            IMetadataTable tMRInputMetadataTable = new MetadataTable();
+                            MetadataToolHelper.copyTable(connMetadataTable, tMRInputMetadataTable);
+                            tMRInputMetadataList.add(tMRInputMetadataTable);
+                            mrInNode.setMetadataList(tMRInputMetadataList);
+                            mrInNode.setProcess(dataNode.getProcess());
+                            List<IConnection> mrInNodeOutConnections = new ArrayList<IConnection>();
+                            List<IConnection> mrInNodeInConnections = new ArrayList<IConnection>();
+                            mrInNode.setIncomingConnections(mrInNodeInConnections);
+                            mrInNode.setOutgoingConnections(mrInNodeOutConnections);
+                            addDataNode(mrInNode);
 
-                        // new output connection for tMRInput
-                        DataConnection out4tMRInput = new DataConnection();
-                        out4tMRInput.setName("tMRInput_" + nextNode.getUniqueName());//$NON-NLS-1$
-                        out4tMRInput.setLineStyle(EConnectionType.FLOW_MAIN);
-                        out4tMRInput.setSource(mrInNode);
-                        out4tMRInput.setTarget(nextNode);
-                        out4tMRInput.setActivate(true);
-                        IMetadataTable connMRInputMetadataTable = new MetadataTable();
-                        MetadataToolHelper.copyTable(connMetadataTable, connMRInputMetadataTable);
-                        out4tMRInput.setMetadataTable(connMRInputMetadataTable);
+                            // new output connection for tMRInput
+                            DataConnection out4tMRInput = new DataConnection();
+                            out4tMRInput.setName("tMRInput_" + nextNode.getUniqueName());//$NON-NLS-1$
+                            out4tMRInput.setLineStyle(EConnectionType.FLOW_MAIN);
+                            out4tMRInput.setSource(mrInNode);
+                            out4tMRInput.setTarget(nextNode);
+                            out4tMRInput.setActivate(true);
+                            IMetadataTable connMRInputMetadataTable = new MetadataTable();
+                            MetadataToolHelper.copyTable(connMetadataTable, connMRInputMetadataTable);
+                            out4tMRInput.setMetadataTable(connMRInputMetadataTable);
 
-                        nextNodeInConns.add(out4tMRInput);
+                            nextNodeInConns.add(out4tMRInput);
 
-                        mrInNodeOutConnections.add(out4tMRInput);
-                        // new onSubjobOk
-                        DataConnection onSubjobOK = new DataConnection();
-                        onSubjobOK.setName("tMRInput_onSubJobOK_" + dataNode.getUniqueName());//$NON-NLS-1$
-                        onSubjobOK.setLineStyle(EConnectionType.ON_SUBJOB_OK);
-                        onSubjobOK.setSource(startNode);
-                        onSubjobOK.setTarget(mrInNode);
+                            mrInNodeOutConnections.add(out4tMRInput);
+                            // new onSubjobOk
+                            DataConnection onSubjobOK = new DataConnection();
+                            onSubjobOK.setName("tMRInput_onSubJobOK_" + dataNode.getUniqueName());//$NON-NLS-1$
+                            onSubjobOK.setLineStyle(EConnectionType.ON_SUBJOB_OK);
+                            onSubjobOK.setSource(startNode);
+                            onSubjobOK.setTarget(mrInNode);
 
-                        mrInNodeInConnections.add(onSubjobOK);
+                            mrInNodeInConnections.add(onSubjobOK);
 
-                        // add onSubjobOk for start node
-                        // FIXME the hidden subjobOk should be in front of other subjob connection. but will behind of
-                        // the previous hidden subjobOK. now use name to distinguish, new connection type maybe better
-                        boolean find = false;
-                        boolean findSameConn = false;
-                        int index = 0;
-                        int outputID = 1;
-                        List<DataConnection> outgoingSortedConns = (List<DataConnection>) startNode
-                                .getOutgoingSortedConnections();
-                        if (outgoingSortedConns != null) {
-                            for (DataConnection outgoingSortedConn : outgoingSortedConns) {
-                                if (outgoingSortedConn.getLineStyle() == EConnectionType.ON_SUBJOB_OK) {
-                                    if (!outgoingSortedConn.getName().startsWith("tMRInput_onSubJobOK")) { //$NON-NLS-1$
-                                        outgoingSortedConn.setOutputId(outgoingSortedConn.getOutputId() + 1);
-                                    } else {
-                                        findSameConn = true;
-                                        if (outgoingSortedConn.getOutputId() == -1) {
-                                            outgoingSortedConn.setOutputId(1);
+                            // add onSubjobOk for start node
+                            // FIXME the hidden subjobOk should be in front of other subjob connection. but will behind
+                            // of
+                            // the previous hidden subjobOK. now use name to distinguish, new connection type maybe
+                            // better
+                            boolean find = false;
+                            boolean findSameConn = false;
+                            int index = 0;
+                            int outputID = 1;
+                            List<DataConnection> outgoingSortedConns = (List<DataConnection>) startNode
+                                    .getOutgoingSortedConnections();
+                            if (outgoingSortedConns != null) {
+                                for (DataConnection outgoingSortedConn : outgoingSortedConns) {
+                                    if (outgoingSortedConn.getLineStyle() == EConnectionType.ON_SUBJOB_OK) {
+                                        if (!outgoingSortedConn.getName().startsWith("tMRInput_onSubJobOK")) { //$NON-NLS-1$
+                                            outgoingSortedConn.setOutputId(outgoingSortedConn.getOutputId() + 1);
+                                        } else {
+                                            findSameConn = true;
+                                            if (outgoingSortedConn.getOutputId() == -1) {
+                                                outgoingSortedConn.setOutputId(1);
+                                            }
+                                            outputID = outgoingSortedConn.getOutputId() + 1;
+                                            index++;
                                         }
-                                        outputID = outgoingSortedConn.getOutputId() + 1;
+                                        find = true;
+                                    } else if (outgoingSortedConn.getLineStyle() == EConnectionType.FLOW_MAIN) {
                                         index++;
                                     }
-                                    find = true;
-                                } else if (outgoingSortedConn.getLineStyle() == EConnectionType.FLOW_MAIN) {
-                                    index++;
+                                }
+                            } else {
+                                outgoingSortedConns = new ArrayList<DataConnection>();
+                            }
+                            if (findSameConn) {
+                                onSubjobOK.setOutputId(outputID);
+                            } else {
+                                if (find) {
+                                    onSubjobOK.setOutputId(1);
+                                } else {
+                                    onSubjobOK.setOutputId(-1);
                                 }
                             }
-                        } else {
-                            outgoingSortedConns = new ArrayList<DataConnection>();
+                            outgoingSortedConns.add(index, onSubjobOK);
+                            startNode.setOutgoingConnections(outgoingSortedConns);
                         }
-                        if (findSameConn) {
-                            onSubjobOK.setOutputId(outputID);
-                        } else {
-                            if (find) {
-                                onSubjobOK.setOutputId(1);
-                            } else {
-                                onSubjobOK.setOutputId(-1);
-                            }
-                        }
-                        outgoingSortedConns.add(index, onSubjobOK);
-                        startNode.setOutgoingConnections(outgoingSortedConns);
                     }
                 }
             }
