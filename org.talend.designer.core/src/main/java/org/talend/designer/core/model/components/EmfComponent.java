@@ -2724,6 +2724,7 @@ public class EmfComponent extends AbstractComponent {
                     initBundleID(importType, componentImportNeeds);
                     moduleNames.add(importType.getMODULE());
                     componentImportNeeds.setShow(importType.isSHOW());
+                    componentImportNeeds.setModuleLocaion(importType.getUrlPath());
                     componentImportNeedsList.add(componentImportNeeds);
                 }
                 info.getImportType().addAll(emfImportList);
@@ -2740,6 +2741,7 @@ public class EmfComponent extends AbstractComponent {
                                 ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(),
                                         moduleNeeded.getModuleName(), moduleNeeded.getInformationMsg(),
                                         moduleNeeded.isRequired(), moduleNeeded.getInstallURL(), moduleNeeded.getRequiredIf());
+                                componentImportNeeds.setModuleLocaion(moduleNeeded.getModuleLocaion());
                                 componentImportNeedsList.add(componentImportNeeds);
                             }
                         }
@@ -2788,6 +2790,7 @@ public class EmfComponent extends AbstractComponent {
                     initBundleID(importType, componentImportNeeds);
                     moduleNames.add(importType.getMODULE());
                     componentImportNeeds.setShow(importType.isSHOW());
+                    componentImportNeeds.setModuleLocaion(importType.getUrlPath());
                     componentImportNeedsList.add(componentImportNeeds);
                 }
                 for (String name : info.getComponentNames()) {
@@ -2800,6 +2803,7 @@ public class EmfComponent extends AbstractComponent {
                             ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), moduleNeeded.getModuleName(),
                                     moduleNeeded.getInformationMsg(), moduleNeeded.isRequired(), moduleNeeded.getInstallURL(),
                                     moduleNeeded.getRequiredIf());
+                            componentImportNeeds.setModuleLocaion(moduleNeeded.getModuleLocaion());
                             componentImportNeedsList.add(componentImportNeeds);
                         }
                     }
