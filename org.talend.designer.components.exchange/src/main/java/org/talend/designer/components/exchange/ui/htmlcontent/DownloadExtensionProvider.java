@@ -234,7 +234,7 @@ public class DownloadExtensionProvider implements IIntroXHTMLContentProvider {
                             String url = "http://org.eclipse.ui.intro/runAction?pluginId=org.talend.designer.components.exchange&"
                                     + "class=org.talend.designer.components.exchange.ui.actions.UpdateAction&"
                                     + "id=org.talend.designer.components.exchange.ui.actions.UpdateAction&"
-                                    + AvailableCompositeProvider.NUMBER + count;
+                                    + AvailableCompositeProvider.NUMBER + "=" + count;
                             ;
                             hyperlink.setAttribute("href", url);
                             Text view = dom.createTextNode(Messages
