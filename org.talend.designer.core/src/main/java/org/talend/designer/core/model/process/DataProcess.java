@@ -1282,7 +1282,8 @@ public class DataProcess {
                             // new hidden tMROutput
                             IComponent mrOutComponent = ComponentsFactoryProvider.getInstance().get(MROUTPUT_COMPONENT_NAME,
                                     ComponentCategory.CATEGORY_4_MAPREDUCE.getName());
-                            AbstractNode mrOutNode = new DataNode(mrOutComponent, "tMROutput_" + dataNode.getUniqueName());//$NON-NLS-1$
+                            AbstractNode mrOutNode = new DataNode(mrOutComponent,
+                                    "tMROutput_" + dataNode.getUniqueName() + "_" + conn.getName());//$NON-NLS-1$ //$NON-NLS-2$
                             mrOutNode.getElementParameter("FOLDER").setValue( //$NON-NLS-1$
                                     folder);
                             mrOutNode.setActivate(true);
@@ -1309,7 +1310,8 @@ public class DataProcess {
                             // new hidden tMRInput
                             IComponent mrInComponent = ComponentsFactoryProvider.getInstance().get(MRINPUT_COMPONENT_NAME,
                                     ComponentCategory.CATEGORY_4_MAPREDUCE.getName());
-                            AbstractNode mrInNode = new DataNode(mrInComponent, "tMRInput_" + nextNode.getUniqueName());//$NON-NLS-1$
+                            AbstractNode mrInNode = new DataNode(mrInComponent,
+                                    "tMRInput_" + nextNode.getUniqueName() + "_" + conn.getName());//$NON-NLS-1$ //$NON-NLS-2$
                             mrInNode.getElementParameter("FOLDER").setValue( //$NON-NLS-1$
                                     folder);
                             mrInNode.setActivate(dataNode.isActivate());
@@ -1330,7 +1332,7 @@ public class DataProcess {
 
                             // new output connection for tMRInput
                             DataConnection out4tMRInput = new DataConnection();
-                            out4tMRInput.setName("tMRInput_" + nextNode.getUniqueName());//$NON-NLS-1$
+                            out4tMRInput.setName("tMRInput_" + nextNode.getUniqueName() + "_" + conn.getName());//$NON-NLS-1$ //$NON-NLS-2$
                             out4tMRInput.setLineStyle(EConnectionType.FLOW_MAIN);
                             out4tMRInput.setSource(mrInNode);
                             out4tMRInput.setTarget(nextNode);
@@ -1825,7 +1827,7 @@ public class DataProcess {
         // for mapreduce
         boolean isMapreduceComponent = false;
         for (INode node : newGraphicalNodeList) {
-            if (ComponentCategory.CATEGORY_4_MAPREDUCE.equals(node.getComponent().getType())) {
+            if (ComponentCategory.CATEGORY_4_MAPREDUCE.getName().equals(node.getComponent().getType())) {
                 isMapreduceComponent = true;
             }
             break;
