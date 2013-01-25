@@ -1819,23 +1819,36 @@ public class DataProcess {
                 replaceMultipleComponents(node);
             }
         }
-        INode configNode = null;
+
+        // now I use the TYPE to indicate only mapreduce components need to be replaced by next two method
+        // FIXME need to extract these to a new MapreduceDataProcess
+        // for mapreduce
+        boolean isMapreduceComponent = false;
         for (INode node : newGraphicalNodeList) {
-            if (node.isSubProcessStart() && node.isActivate()) {
-                if (node.getComponent().getName().equals(MRCONFIG_COMPONENT_NAME)) {
-                    configNode = node;
-                    break;
+            if (ComponentCategory.CATEGORY_4_MAPREDUCE.equals(node.getComponent().getType())) {
+                isMapreduceComponent = true;
+            }
+            break;
+        }
+        if (isMapreduceComponent) {
+            INode configNode = null;
+            for (INode node : newGraphicalNodeList) {
+                if (node.isSubProcessStart() && node.isActivate()) {
+                    if (node.getComponent().getName().equals(MRCONFIG_COMPONENT_NAME)) {
+                        configNode = node;
+                        break;
+                    }
+                }
+            }
+            for (INode node : newGraphicalNodeList) {
+                if (node.isSubProcessStart() && node.isActivate()) {
+                    if (!node.getComponent().getName().equals(MRCONFIG_COMPONENT_NAME)) {
+                        replaceMapReduceComponents(node, configNode);
+                    }
                 }
             }
         }
 
-        for (INode node : newGraphicalNodeList) {
-            if (node.isSubProcessStart() && node.isActivate()) {
-                if (!node.getComponent().getName().equals(MRCONFIG_COMPONENT_NAME)) {
-                    replaceMapReduceComponents(node, configNode);
-                }
-            }
-        }
         for (INode node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 replaceFileScalesComponents(node);
