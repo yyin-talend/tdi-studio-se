@@ -353,7 +353,7 @@
 					paramValue = contextParam.get("PARAM_VALUE_COLUMN");
 				}
 %>
-				propertiesMap.put("<%=paramName%>", <%=paramValue%>);
+				propertiesMap.put(<%=paramName%>, <%=paramValue%>);
 <%
 			}
 %>
