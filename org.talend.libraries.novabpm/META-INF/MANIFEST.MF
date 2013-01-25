@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Novabpm
+Bundle-SymbolicName: org.talend.libraries.novabpm
+Bundle-Version: 1.0.0.qualifier
