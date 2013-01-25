@@ -2,7 +2,7 @@
 <feature
       id="org.talend.spagic_feature"
       label="SPAGIC Feature"
-      version="2.1.0.qualifier"
+      version="1.0.0.qualifier"
       provider-name=".Talend SA.">
 
    <description url="http://www.talend.com/online/featuresdescription.html#spagic-feature">
@@ -265,7 +265,7 @@
          id="com.ibm.icu"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="4.2.1.v20100412"
          unpack="false"/>
 
    <plugin
