@@ -2,7 +2,7 @@
 <feature
       id="org.talend.designer.business_feature"
       label="Business Feature"
-      version="2.2.0.qualifier"
+      version="1.0.0.qualifier"
       provider-name=".Talend SA.">
 
    <description url="http://www.talend.com/online/featuresdescription.html#business-feature">
@@ -514,7 +514,7 @@
          id="com.ibm.icu"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="4.2.1.v20100412"
          unpack="false"/>
 
    <plugin
