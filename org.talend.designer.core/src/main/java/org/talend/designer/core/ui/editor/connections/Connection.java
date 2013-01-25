@@ -46,6 +46,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.editor.properties.controllers.TableController;
+import org.talend.designer.core.utils.ConnectionUtil;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
@@ -881,41 +882,10 @@ public class Connection extends Element implements IConnection, IPerformance {
                 if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_ITERATE_CONNECTION_NAME)) {
                     uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_ITERATE_CONNECTION_NAME);
                 }
-            } else if (lineStyle.equals(EConnectionType.ROUTE) || lineStyle.equals(EConnectionType.ROUTE_ENDBLOCK)) {
+            } else if (lineStyle.hasConnectionCategory(EConnectionType.CAMEL)) {
                 // see 3680, the iterate link must have a unique name.
-                if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_ROUTE_CONNECTION_NAME)
-                        || !source.getProcess().checkValidConnectionName(uniqueName)) {
-                    uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_ROUTE_CONNECTION_NAME);
-                }
-            } else if (lineStyle.equals(EConnectionType.ROUTE_WHEN)) {
-                // see 3680, the iterate link must have a unique name.
-                if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_WHEN_CONNECTION_NAME)
-                        || !source.getProcess().checkValidConnectionName(uniqueName)) {
-                    uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_WHEN_CONNECTION_NAME);
-                }
-            } else if (lineStyle.equals(EConnectionType.ROUTE_OTHER)) {
-                // see 3680, the iterate link must have a unique name.
-                if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_OTHER_CONNECTION_NAME)
-                        || !source.getProcess().checkValidConnectionName(uniqueName)) {
-                    uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_OTHER_CONNECTION_NAME);
-                }
-            } else if (lineStyle.equals(EConnectionType.ROUTE_CATCH)) {
-                // see 3680, the iterate link must have a unique name.
-                if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_CATCH_CONNECTION_NAME)
-                        || !source.getProcess().checkValidConnectionName(uniqueName)) {
-                    uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_CATCH_CONNECTION_NAME);
-                }
-            } else if (lineStyle.equals(EConnectionType.ROUTE_FINALLY)) {
-                // see 3680, the iterate link must have a unique name.
-                if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_FINALLY_CONNECTION_NAME)
-                        || !source.getProcess().checkValidConnectionName(uniqueName)) {
-                    uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_FINALLY_CONNECTION_NAME);
-                }
-            } else if (lineStyle.equals(EConnectionType.ROUTE_TRY)) {
-                // see 3680, the iterate link must have a unique name.
-                if (uniqueName == null || !uniqueName.startsWith(Process.DEFAULT_TRY_CONNECTION_NAME)
-                        || !source.getProcess().checkValidConnectionName(uniqueName)) {
-                    uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_TRY_CONNECTION_NAME);
+                if (uniqueName == null || !source.getProcess().checkValidConnectionName(uniqueName)) {
+                    uniqueName = ConnectionUtil.generateUniqueConnectionName(lineStyle, source.getProcess());
                 }
             } else if (isInTypes(lineStyle, EConnectionType.ON_COMPONENT_OK, EConnectionType.ON_COMPONENT_ERROR,
                     EConnectionType.ON_SUBJOB_OK, EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF, EConnectionType.STARTS)) {
