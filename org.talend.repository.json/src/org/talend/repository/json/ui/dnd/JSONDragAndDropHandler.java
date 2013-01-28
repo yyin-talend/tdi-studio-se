@@ -13,13 +13,18 @@
 package org.talend.repository.json.ui.dnd;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.EList;
 import org.talend.commons.ui.runtime.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsService;
+import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.IElement;
@@ -27,6 +32,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.IComponentName;
 import org.talend.core.model.utils.IDragAndDropServiceHandler;
 import org.talend.core.repository.RepositoryComponentSetting;
@@ -36,6 +42,8 @@ import org.talend.repository.json.util.EJSONRepositoryToComponent;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.json.JSONFileConnection;
 import org.talend.repository.model.json.JSONFileConnectionItem;
+import org.talend.repository.model.json.JSONFileNode;
+import org.talend.repository.model.json.JSONXPathLoopDescriptor;
 
 /**
  * DOC wanghong class global comment. Detailled comment
@@ -64,8 +72,93 @@ public class JSONDragAndDropHandler implements IDragAndDropServiceHandler {
     }
 
     private Object getJSONRepositoryValue(JSONFileConnection connection, String value, IMetadataTable table) {
+        boolean isInputModel = connection.isInputModel();
+        EList list;
+        JSONXPathLoopDescriptor xmlDesc = null;
+        if (isInputModel) {
+            list = connection.getSchema();
+            xmlDesc = (JSONXPathLoopDescriptor) list.get(0);
+        }
+        if (value.equals("FILE_PATH")) { //$NON-NLS-1$//USE_URL  JSON_MAPPING JSON   URL_PATH VALIDATIONRULES
+            if (isContextMode(connection, connection.getJSONFilePath())) {
+                return connection.getJSONFilePath();
+            } else {
+                Path p = new Path(connection.getJSONFilePath());
+                return TalendQuoteUtils.addQuotes(p.toPortableString());
+            }
+        }
+        if (value.equals("OUT_FILE_PATH")) {
+            if (connection.getOutputFilePath() == null) {
+                return "";
+            }
+            if (isContextMode(connection, connection.getOutputFilePath())) {
+                return connection.getOutputFilePath();
+            } else {
+                Path p = new Path(connection.getOutputFilePath());
+                return TalendQuoteUtils.addQuotes(p.toPortableString());
+            }
+        }
+        if (value.equals("LIMIT")) { //$NON-NLS-1$
+            if ((xmlDesc == null) || (xmlDesc.getLimitBoucle() == null)) {
+                return ""; //$NON-NLS-1$
+            } else {
+                return xmlDesc.getLimitBoucle().toString();
+            }
+        }
+        if (value.equals("XPATH_QUERY")) { //$NON-NLS-1$
+            if (xmlDesc == null) {
+                return ""; //$NON-NLS-1$
+            } else {
+                if (isContextMode(connection, xmlDesc.getAbsoluteXPathQuery())) {
+                    return xmlDesc.getAbsoluteXPathQuery();
+                } else {
+                    return TalendQuoteUtils.addQuotes(xmlDesc.getAbsoluteXPathQuery());
+                }
+            }
+        }
+        if (value.equals("ENCODING")) { //$NON-NLS-1$
+            if (isContextMode(connection, connection.getEncoding())) {
+                return connection.getEncoding();
+            } else {
+                if (connection.getEncoding() == null) {
+                    // get the default encoding
+                    return TalendQuoteUtils.addQuotes(EMetadataEncoding.getMetadataEncoding("").getName()); //$NON-NLS-1$
+                } else {
+                    return TalendQuoteUtils.addQuotes(connection.getEncoding());
+                }
+            }
+        }
+        if (value.equals("ROOT")) {
+            return getOutputXmlValue(connection.getRoot());
+        }
+        if (value.equals("GROUP")) {
+            return getOutputXmlValue(connection.getGroup());
+        }
+        if (value.equals("LOOP")) {
+            return getOutputXmlValue(connection.getLoop());
+        }
 
         return null;
+    }
+
+    private List<Map<String, String>> getOutputXmlValue(EList list) {
+        List<Map<String, String>> newList = new ArrayList<Map<String, String>>();
+        for (int i = 0; i < list.size(); i++) {
+            Map<String, String> map = new HashMap<String, String>();
+            JSONFileNode node = (JSONFileNode) list.get(i);
+            String defaultValue = node.getDefaultValue();
+            if (defaultValue == null) {
+                defaultValue = ""; //$NON-NLS-1$
+            }
+            map.put("VALUE", defaultValue);
+            map.put("ORDER", String.valueOf(node.getOrder()));
+            map.put("PATH", node.getJSONPath());
+            map.put("ATTRIBUTE", node.getAttribute());
+            map.put("COLUMN", node.getRelatedColumn());
+            newList.add(map);
+        }
+        return newList;
+
     }
 
     @Override
@@ -90,10 +183,11 @@ public class JSONDragAndDropHandler implements IDragAndDropServiceHandler {
         if (component == null || repositoryType == null) {
             return false;
         }
-
         String componentProductname = component.getRepositoryType();
-        if (componentProductname != null && repositoryType.endsWith(componentProductname)
+        if (componentProductname != null && repositoryType.contains(componentProductname)
                 && isSubValid(item, type, seletetedNode, component, repositoryType)) {
+            return true;
+        } else if (component.getName() != null && component.getName().contains(repositoryType)) {
             return true;
         }
         return false;
@@ -166,5 +260,16 @@ public class JSONDragAndDropHandler implements IDragAndDropServiceHandler {
         if (node != null && canHandle(connection)) {
             setJSONRepositoryValue((JSONFileConnection) connection, node, repositoryValue);
         }
+    }
+
+    private boolean isContextMode(Connection connection, String value) {
+        if (connection == null || value == null) {
+            return false;
+        }
+
+        if (connection.isContextMode() && ContextParameterUtils.isContainContextParam(value)) {
+            return true;
+        }
+        return false;
     }
 }
