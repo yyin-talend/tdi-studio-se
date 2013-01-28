@@ -479,7 +479,7 @@ public interface JsonPackage extends EPackage {
     int JSON_FILE_CONNECTION__MASK_XPATTERN = ConnectionPackage.CONNECTION_FEATURE_COUNT + 2;
 
     /**
-     * The feature id for the '<em><b>Schema</b></em>' reference list.
+     * The feature id for the '<em><b>Schema</b></em>' containment reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -662,7 +662,7 @@ public interface JsonPackage extends EPackage {
     int JSONX_PATH_LOOP_DESCRIPTOR__ABSOLUTE_XPATH_QUERY = 1;
 
     /**
-     * The feature id for the '<em><b>Connection</b></em>' reference.
+     * The feature id for the '<em><b>Connection</b></em>' container reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -853,10 +853,10 @@ public interface JsonPackage extends EPackage {
     EAttribute getJSONFileConnection_MaskXPattern();
 
     /**
-     * Returns the meta object for the reference list '{@link org.talend.repository.model.json.JSONFileConnection#getSchema <em>Schema</em>}'.
+     * Returns the meta object for the containment reference list '{@link org.talend.repository.model.json.JSONFileConnection#getSchema <em>Schema</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the reference list '<em>Schema</em>'.
+     * @return the meta object for the containment reference list '<em>Schema</em>'.
      * @see org.talend.repository.model.json.JSONFileConnection#getSchema()
      * @see #getJSONFileConnection()
      * @generated
@@ -983,10 +983,10 @@ public interface JsonPackage extends EPackage {
     EAttribute getJSONXPathLoopDescriptor_AbsoluteXPathQuery();
 
     /**
-     * Returns the meta object for the reference '{@link org.talend.repository.model.json.JSONXPathLoopDescriptor#getConnection <em>Connection</em>}'.
+     * Returns the meta object for the container reference '{@link org.talend.repository.model.json.JSONXPathLoopDescriptor#getConnection <em>Connection</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the reference '<em>Connection</em>'.
+     * @return the meta object for the container reference '<em>Connection</em>'.
      * @see org.talend.repository.model.json.JSONXPathLoopDescriptor#getConnection()
      * @see #getJSONXPathLoopDescriptor()
      * @generated
@@ -1180,7 +1180,7 @@ public interface JsonPackage extends EPackage {
         EAttribute JSON_FILE_CONNECTION__MASK_XPATTERN = eINSTANCE.getJSONFileConnection_MaskXPattern();
 
         /**
-         * The meta object literal for the '<em><b>Schema</b></em>' reference list feature.
+         * The meta object literal for the '<em><b>Schema</b></em>' containment reference list feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
          * @generated
@@ -1280,7 +1280,7 @@ public interface JsonPackage extends EPackage {
         EAttribute JSONX_PATH_LOOP_DESCRIPTOR__ABSOLUTE_XPATH_QUERY = eINSTANCE.getJSONXPathLoopDescriptor_AbsoluteXPathQuery();
 
         /**
-         * The meta object literal for the '<em><b>Connection</b></em>' reference feature.
+         * The meta object literal for the '<em><b>Connection</b></em>' container reference feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
          * @generated

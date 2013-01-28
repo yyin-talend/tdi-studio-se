@@ -14,6 +14,9 @@ package org.talend.repository.json.ui.shadow;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
@@ -31,7 +34,9 @@ import org.talend.designer.runprocess.ProcessStreamTrashReader;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.designer.runprocess.shadow.FileInputXmlNode;
 import org.talend.designer.runprocess.shadow.FileOutputDelimitedNode;
+import org.talend.designer.runprocess.shadow.FileinToDelimitedProcess;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.preview.IProcessDescription;
@@ -67,8 +72,7 @@ public class JSONShadowProcess<T extends IProcessDescription> {
      * 
      */
     public static enum EJSONShadowProcessType {
-        // FILE_JSON
-        ;
+        FILE_XML;
 
         private EJSONShadowProcessType() {
 
@@ -150,20 +154,18 @@ public class JSONShadowProcess<T extends IProcessDescription> {
                 TalendTextUtils.addQuotes("" + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding()); //$NON-NLS-1$ 
         switch (type) {
 
-        // case FILE_JSON:
-        // List<Map<String, String>> jsonnewmappings = new ArrayList<Map<String, String>>();
-        // List<Map<String, String>> jsonoldmappings = description.getMapping();
-        // for (int i = 0; i < jsonoldmappings.size(); i++) {
-        // Map<String, String> map = jsonoldmappings.get(i);
-        //                map.put("SCHEMA_COLUMN", "row" + i); //$NON-NLS-1$ //$NON-NLS-2$
-        // jsonnewmappings.add(map);
-        // }
-        // FileInputJsonNode inJsonNode = new FileInputJsonNode(inPath, description.getLoopQuery(),
-        // description.getMapping(),
-        // description.getLoopLimit(), description.getEncoding());
-        // ps = new FileinToDelimitedProcess<FileInputJsonNode>(inJsonNode, outNode);
-        // break;
-
+        case FILE_XML:
+            List<Map<String, String>> newmappings = new ArrayList<Map<String, String>>();
+            List<Map<String, String>> oldmappings = description.getMapping();
+            for (int i = 0; i < oldmappings.size(); i++) {
+                Map<String, String> map = oldmappings.get(i);
+                map.put("SCHEMA_COLUMN", "row" + i); //$NON-NLS-1$ //$NON-NLS-2$
+                newmappings.add(map);
+            }
+            FileInputXmlNode inXmlNode = new FileInputXmlNode(inPath, description.getLoopQuery(), description.getMapping(),
+                    description.getLoopLimit(), description.getEncoding());
+            ps = new FileinToDelimitedProcess<FileInputXmlNode>(inXmlNode, outNode);
+            break;
         default:
             break;
         }

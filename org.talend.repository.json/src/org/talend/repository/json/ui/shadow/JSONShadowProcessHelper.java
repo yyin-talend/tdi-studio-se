@@ -20,10 +20,16 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.talend.commons.ui.utils.PathUtils;
+import org.talend.commons.utils.platform.PluginChecker;
 import org.talend.core.utils.CsvArray;
 import org.talend.core.utils.TalendQuoteUtils;
+import org.talend.metadata.managment.ui.i18n.Messages;
 import org.talend.repository.model.json.JSONFileConnection;
+import org.talend.repository.model.json.SchemaTarget;
 import org.talend.repository.preview.AsynchronousPreviewHandler;
 import org.talend.repository.preview.IPreview;
 import org.talend.repository.preview.ProcessDescription;
@@ -102,12 +108,12 @@ public class JSONShadowProcessHelper {
 
         List<Map<String, String>> mapping = new ArrayList<Map<String, String>>();
 
-        List<org.talend.repository.model.json.SchemaTarget> schemaTargets = connection.getSchema().get(0).getSchemaTargets();
+        List<SchemaTarget> schemaTargets = connection.getSchema().get(0).getSchemaTargets();
 
         if (schemaTargets != null && !schemaTargets.isEmpty()) {
-            Iterator<org.talend.repository.model.json.SchemaTarget> iterate = schemaTargets.iterator();
+            Iterator<SchemaTarget> iterate = schemaTargets.iterator();
             while (iterate.hasNext()) {
-                org.talend.repository.model.json.SchemaTarget schemaTarget = iterate.next();
+                SchemaTarget schemaTarget = iterate.next();
                 Map<String, String> lineMapping = new HashMap<String, String>();
                 lineMapping.put("QUERY", TalendQuoteUtils.addQuotes(schemaTarget.getRelativeXPathQuery())); //$NON-NLS-1$ 
                 mapping.add(lineMapping);
@@ -168,47 +174,37 @@ public class JSONShadowProcessHelper {
      * @throws CoreException
      */
     private static IPreview createPreview() throws CoreException {
-        // IExtensionRegistry registry = Platform.getExtensionRegistry();
-        //
-        // // use the org.talend.repository.filepreview_provider
-        // IConfigurationElement[] configurationElements = registry
-        //                .getConfigurationElementsFor("org.talend.core.runtime.filepreview_provider"); //$NON-NLS-1$
-        // // When start a new preview. need stop before preview.
-        // forceStopPreview();
-        //
-        // IPreview preview = null;
-        // if (configurationElements.length > 0) {
-        //            preview = (IPreview) configurationElements[0].createExecutableExtension("class"); //$NON-NLS-1$
-        // }
-        //
-        // for (IConfigurationElement configurationElement : configurationElements) {
-        //            IPreview pre = (IPreview) configurationElement.createExecutableExtension("class"); //$NON-NLS-1$
-        // if (!PluginChecker.isOnlyTopLoaded() && !pre.isTopPreview()) {
-        // preview = pre;
-        // }
-        // }
-        //
-        // if (preview == null) {
-        // log.error("\\nThe ShadowProcess use to extract data or metadata on a File don't run."
-        // + "\\nConfigurationElementsFor(\"org.talend.repository.filepreview_provider\").length \\=\\= 0 ??");
-        // }
-        // currentPreview = preview;
-        if (currentPreview == null) {
-            currentPreview = new JSONShadowFilePreview();
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+
+        // use the org.talend.repository.filepreview_provider
+        IConfigurationElement[] configurationElements = registry
+                .getConfigurationElementsFor("org.talend.core.runtime.filepreview_provider"); //$NON-NLS-1$
+        // When start a new preview. need stop before preview.
+        forceStopPreview();
+
+        IPreview preview = null;
+        if (configurationElements.length > 0) {
+            preview = (IPreview) configurationElements[0].createExecutableExtension("class"); //$NON-NLS-1$
         }
-        return currentPreview;
+
+        for (IConfigurationElement configurationElement : configurationElements) {
+            IPreview pre = (IPreview) configurationElement.createExecutableExtension("class"); //$NON-NLS-1$
+            if (!PluginChecker.isOnlyTopLoaded() && !pre.isTopPreview()) {
+                preview = pre;
+            }
+        }
+
+        if (preview == null) {
+            log.error(Messages.getString("ShadowProcessHelper.logError.previewIsNull01") //$NON-NLS-1$
+                    + Messages.getString("ShadowProcessHelper.logError.previewIsNull02")); //$NON-NLS-1$
+        }
+        currentPreview = preview;
+        return preview;
     }
 
     public static AsynchronousPreviewHandler<CsvArray> createPreviewHandler() throws CoreException {
         IPreview preview = createPreview();
         return new AsynchronousPreviewHandler<CsvArray>(preview);
     }
-
-    /**
-     * Administrator Comment method "getProcessDescription".
-     * 
-     * @param connection
-     * @return
-     */
 
 }

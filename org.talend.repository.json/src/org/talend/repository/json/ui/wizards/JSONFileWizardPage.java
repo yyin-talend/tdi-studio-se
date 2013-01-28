@@ -86,8 +86,8 @@ public class JSONFileWizardPage extends WizardPage {
         } else if (step == 3) {
             MetadataTable metadataTable = ConnectionHelper.getTables(connectionItem.getConnection())
                     .toArray(new MetadataTable[0])[0];
-            currentComposite = new JSONFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
-                    ((JSONFileConnection) connectionItem.getConnection()), metadataTable.getLabel()));
+            currentComposite = new JSONFileStep3Form(parent, connectionItem, metadataTable, (JSONWizard) getWizard(),
+                    TableHelper.getTableNames(((JSONFileConnection) connectionItem.getConnection()), metadataTable.getLabel()));
         }
 
         currentComposite.setReadOnly(!isRepositoryObjectEditable);

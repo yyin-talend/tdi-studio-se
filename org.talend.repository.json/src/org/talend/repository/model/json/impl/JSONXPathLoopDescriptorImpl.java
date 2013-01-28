@@ -80,16 +80,6 @@ public class JSONXPathLoopDescriptorImpl extends EObjectImpl implements JSONXPat
     protected String absoluteXPathQuery = ABSOLUTE_XPATH_QUERY_EDEFAULT;
 
     /**
-     * The cached value of the '{@link #getConnection() <em>Connection</em>}' reference.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getConnection()
-     * @generated
-     * @ordered
-     */
-    protected JSONFileConnection connection;
-
-    /**
      * The cached value of the '{@link #getSchemaTargets() <em>Schema Targets</em>}' containment reference list. <!--
      * begin-user-doc --> <!-- end-user-doc -->
      * 
@@ -159,24 +149,8 @@ public class JSONXPathLoopDescriptorImpl extends EObjectImpl implements JSONXPat
      * @generated
      */
     public JSONFileConnection getConnection() {
-        if (connection != null && connection.eIsProxy()) {
-            InternalEObject oldConnection = (InternalEObject)connection;
-            connection = (JSONFileConnection)eResolveProxy(oldConnection);
-            if (connection != oldConnection) {
-                if (eNotificationRequired())
-                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__CONNECTION, oldConnection, connection));
-            }
-        }
-        return connection;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public JSONFileConnection basicGetConnection() {
-        return connection;
+        if (eContainerFeatureID() != JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__CONNECTION) return null;
+        return (JSONFileConnection)eContainer();
     }
 
     /**
@@ -185,12 +159,7 @@ public class JSONXPathLoopDescriptorImpl extends EObjectImpl implements JSONXPat
      * @generated
      */
     public NotificationChain basicSetConnection(JSONFileConnection newConnection, NotificationChain msgs) {
-        JSONFileConnection oldConnection = connection;
-        connection = newConnection;
-        if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__CONNECTION, oldConnection, newConnection);
-            if (msgs == null) msgs = notification; else msgs.add(notification);
-        }
+        msgs = eBasicSetContainer((InternalEObject)newConnection, JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__CONNECTION, msgs);
         return msgs;
     }
 
@@ -199,10 +168,12 @@ public class JSONXPathLoopDescriptorImpl extends EObjectImpl implements JSONXPat
      * @generated
      */
     public void setConnection(JSONFileConnection newConnection) {
-        if (newConnection != connection) {
+        if (newConnection != eInternalContainer() || (eContainerFeatureID() != JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__CONNECTION && newConnection != null)) {
+            if (EcoreUtil.isAncestor(this, newConnection))
+                throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
             NotificationChain msgs = null;
-            if (connection != null)
-                msgs = ((InternalEObject)connection).eInverseRemove(this, JsonPackage.JSON_FILE_CONNECTION__SCHEMA, JSONFileConnection.class, msgs);
+            if (eInternalContainer() != null)
+                msgs = eBasicRemoveFromContainer(msgs);
             if (newConnection != null)
                 msgs = ((InternalEObject)newConnection).eInverseAdd(this, JsonPackage.JSON_FILE_CONNECTION__SCHEMA, JSONFileConnection.class, msgs);
             msgs = basicSetConnection(newConnection, msgs);
@@ -232,8 +203,8 @@ public class JSONXPathLoopDescriptorImpl extends EObjectImpl implements JSONXPat
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__CONNECTION:
-                if (connection != null)
-                    msgs = ((InternalEObject)connection).eInverseRemove(this, JsonPackage.JSON_FILE_CONNECTION__SCHEMA, JSONFileConnection.class, msgs);
+                if (eInternalContainer() != null)
+                    msgs = eBasicRemoveFromContainer(msgs);
                 return basicSetConnection((JSONFileConnection)otherEnd, msgs);
             case JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__SCHEMA_TARGETS:
                 return ((InternalEList<InternalEObject>)(InternalEList<?>)getSchemaTargets()).basicAdd(otherEnd, msgs);
@@ -257,6 +228,20 @@ public class JSONXPathLoopDescriptorImpl extends EObjectImpl implements JSONXPat
     }
 
     /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+        switch (eContainerFeatureID()) {
+            case JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__CONNECTION:
+                return eInternalContainer().eInverseRemove(this, JsonPackage.JSON_FILE_CONNECTION__SCHEMA, JSONFileConnection.class, msgs);
+        }
+        return super.eBasicRemoveFromContainerFeature(msgs);
+    }
+
+    /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
@@ -268,8 +253,7 @@ public class JSONXPathLoopDescriptorImpl extends EObjectImpl implements JSONXPat
             case JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__ABSOLUTE_XPATH_QUERY:
                 return getAbsoluteXPathQuery();
             case JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__CONNECTION:
-                if (resolve) return getConnection();
-                return basicGetConnection();
+                return getConnection();
             case JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__SCHEMA_TARGETS:
                 return getSchemaTargets();
         }
@@ -336,7 +320,7 @@ public class JSONXPathLoopDescriptorImpl extends EObjectImpl implements JSONXPat
             case JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__ABSOLUTE_XPATH_QUERY:
                 return ABSOLUTE_XPATH_QUERY_EDEFAULT == null ? absoluteXPathQuery != null : !ABSOLUTE_XPATH_QUERY_EDEFAULT.equals(absoluteXPathQuery);
             case JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__CONNECTION:
-                return connection != null;
+                return getConnection() != null;
             case JsonPackage.JSONX_PATH_LOOP_DESCRIPTOR__SCHEMA_TARGETS:
                 return schemaTargets != null && !schemaTargets.isEmpty();
         }

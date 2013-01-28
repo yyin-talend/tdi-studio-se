@@ -89,7 +89,6 @@ import org.talend.repository.model.json.JsonFactory;
 import org.talend.repository.model.json.SchemaTarget;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
-import org.talend.repository.ui.utils.ShadowProcessHelper;
 import org.talend.repository.ui.wizards.CheckLastVersionRepositoryWizard;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
@@ -314,7 +313,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
             }
         }
         if (creation) {
-            setWindowTitle("New Xml File");
+            setWindowTitle("New JSON File");
 
             propertiesWizardPage.setTitle("File - Step" + " 1 " + "of" + " 5");
             propertiesWizardPage.setDescription("Add a Metadata File on repository\\nDefine the properties");
@@ -599,7 +598,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
         ProcessDescription processDescription = JSONShadowProcessHelper.getProcessDescription(connection2);
         CsvArray csvArray = null;
         try {
-            csvArray = ShadowProcessHelper.getCsvArray(processDescription, "FILE_json");//$NON-NLS-1$
+            csvArray = JSONShadowProcessHelper.getCsvArray(processDescription, "FILE_XML");//$NON-NLS-1$
         } catch (CoreException e) {
             ExceptionHandler.process(e);
         }

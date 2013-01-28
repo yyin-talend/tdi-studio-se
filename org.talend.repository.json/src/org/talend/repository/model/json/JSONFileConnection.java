@@ -115,7 +115,7 @@ public interface JSONFileConnection extends Connection {
     void setMaskXPattern(String value);
 
     /**
-     * Returns the value of the '<em><b>Schema</b></em>' reference list.
+     * Returns the value of the '<em><b>Schema</b></em>' containment reference list.
      * The list contents are of type {@link org.talend.repository.model.json.JSONXPathLoopDescriptor}.
      * It is bidirectional and its opposite is '{@link org.talend.repository.model.json.JSONXPathLoopDescriptor#getConnection <em>Connection</em>}'.
      * <!-- begin-user-doc -->
@@ -124,10 +124,10 @@ public interface JSONFileConnection extends Connection {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * @return the value of the '<em>Schema</em>' reference list.
+     * @return the value of the '<em>Schema</em>' containment reference list.
      * @see org.talend.repository.model.json.JsonPackage#getJSONFileConnection_Schema()
      * @see org.talend.repository.model.json.JSONXPathLoopDescriptor#getConnection
-     * @model opposite="connection"
+     * @model opposite="connection" containment="true"
      * @generated
      */
     EList<JSONXPathLoopDescriptor> getSchema();

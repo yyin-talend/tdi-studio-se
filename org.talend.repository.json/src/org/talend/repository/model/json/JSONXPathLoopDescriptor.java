@@ -82,7 +82,7 @@ public interface JSONXPathLoopDescriptor extends EObject {
     void setAbsoluteXPathQuery(String value);
 
     /**
-     * Returns the value of the '<em><b>Connection</b></em>' reference.
+     * Returns the value of the '<em><b>Connection</b></em>' container reference.
      * It is bidirectional and its opposite is '{@link org.talend.repository.model.json.JSONFileConnection#getSchema <em>Schema</em>}'.
      * <!-- begin-user-doc -->
      * <p>
@@ -90,20 +90,20 @@ public interface JSONXPathLoopDescriptor extends EObject {
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * @return the value of the '<em>Connection</em>' reference.
+     * @return the value of the '<em>Connection</em>' container reference.
      * @see #setConnection(JSONFileConnection)
      * @see org.talend.repository.model.json.JsonPackage#getJSONXPathLoopDescriptor_Connection()
      * @see org.talend.repository.model.json.JSONFileConnection#getSchema
-     * @model opposite="schema"
+     * @model opposite="schema" transient="false"
      * @generated
      */
     JSONFileConnection getConnection();
 
     /**
-     * Sets the value of the '{@link org.talend.repository.model.json.JSONXPathLoopDescriptor#getConnection <em>Connection</em>}' reference.
+     * Sets the value of the '{@link org.talend.repository.model.json.JSONXPathLoopDescriptor#getConnection <em>Connection</em>}' container reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @param value the new value of the '<em>Connection</em>' reference.
+     * @param value the new value of the '<em>Connection</em>' container reference.
      * @see #getConnection()
      * @generated
      */

@@ -96,15 +96,19 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
 
     private boolean readOnly;
 
+    private JSONWizard wizard;
+
     /**
      * Constructor to use by RCP Wizard.
      * 
      * @param Composite
      */
-    public JSONFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] existingNames) {
+    public JSONFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, JSONWizard wizard,
+            String[] existingNames) {
         super(parent, connectionItem, metadataTable, existingNames);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
+        this.wizard = wizard;
         setupForm();
     }
 
@@ -339,7 +343,7 @@ public class JSONFileStep3Form extends AbstractJSONFileStepForm {
         try {
             informationLabel.setText("   " + "Guess in progress...");
 
-            CsvArray csvArray = JSONShadowProcessHelper.getCsvArray(getProcessDescription(false), "FILE_JSON"); //$NON-NLS-1$
+            CsvArray csvArray = JSONShadowProcessHelper.getCsvArray(getProcessDescription(false), "FILE_XML"); //$NON-NLS-1$
             if (csvArray == null) {
                 informationLabel.setText("   " + "Guess failure");
 
