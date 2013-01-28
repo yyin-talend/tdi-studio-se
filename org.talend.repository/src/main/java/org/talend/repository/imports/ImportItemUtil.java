@@ -13,6 +13,8 @@
 package org.talend.repository.imports;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -1351,7 +1353,21 @@ public class ImportItemUtil {
             stream = manager.getStream(itemPath);
             Resource resource = createResource(itemRecord.getResourceSet(), itemPath, byteArray);
 
-            resource.load(stream, null);
+            if (byteArray) {
+                // TDI-24612
+                // This part fixes a problem of import of routines from .tar.gz.
+                // Seems either the Tar stream or emf got problems to read this.
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                byte[] buf = new byte[1024];
+                int i = 0;
+                while ((i = stream.read(buf)) != -1) {
+                    baos.write(buf, 0, i);
+                }
+                ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+                resource.load(bais, null);
+            } else {
+                resource.load(stream, null);
+            }
 
             for (ReferenceFileItem rfItem : (List<ReferenceFileItem>) item.getReferenceResources()) {
                 itemPath = getReferenceItemPath(itemRecord.getPath(), rfItem.getExtension());
