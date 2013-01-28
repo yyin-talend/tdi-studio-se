@@ -260,7 +260,6 @@ public class JSONFileConnectionImpl extends ConnectionImpl implements JSONFileCo
      * @generated
      */
     public void setJSONFilePath(String newJSONFilePath) {
-        newJSONFilePath = "D:/CLOUD1.xml";
         String oldJSONFilePath = jsonFilePath;
         jsonFilePath = newJSONFilePath;
         if (eNotificationRequired())

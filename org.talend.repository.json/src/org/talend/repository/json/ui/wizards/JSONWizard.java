@@ -595,7 +595,7 @@ public class JSONWizard extends CheckLastVersionRepositoryWizard implements INew
     private void resetMetadata(List<SchemaTarget> schemaTarget, boolean flag) {
         JSONFileConnection connection2 = JSONConnectionContextUtils.getJSONOriginalValueConnection(connection,
                 this.connectionItem, connection.isContextMode(), true);
-        ProcessDescription processDescription = JSONShadowProcessHelper.getProcessDescription(connection2);
+        ProcessDescription processDescription = JSONShadowProcessHelper.getProcessDescription(connection2, tempJsonPath);
         CsvArray csvArray = null;
         try {
             csvArray = JSONShadowProcessHelper.getCsvArray(processDescription, "FILE_XML");//$NON-NLS-1$

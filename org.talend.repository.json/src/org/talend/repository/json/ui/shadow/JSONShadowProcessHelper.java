@@ -96,9 +96,9 @@ public class JSONShadowProcessHelper {
      * 
      * @return ProcessDescription
      */
-    public static ProcessDescription getProcessDescription(final JSONFileConnection connection) {
+    public static ProcessDescription getProcessDescription(final JSONFileConnection connection, String tempJsonFile) {
         ProcessDescription processDescription = new ProcessDescription();
-        processDescription.setFilepath(TalendQuoteUtils.addQuotes(PathUtils.getPortablePath(connection.getJSONFilePath())));
+        processDescription.setFilepath(TalendQuoteUtils.addQuotes(PathUtils.getPortablePath(tempJsonFile)));
         processDescription.setLoopQuery(TalendQuoteUtils.addQuotes(connection.getSchema().get(0).getAbsoluteXPathQuery()));
         if (connection.getSchema().get(0).getLimitBoucle() != null
                 && !("").equals(connection.getSchema().get(0).getLimitBoucle()) //$NON-NLS-1$

@@ -459,7 +459,8 @@ public class JSONFileStep2Form extends AbstractJSONFileStepForm implements IRefr
     private ProcessDescription getProcessDescription(boolean defaultContext) {
         JSONFileConnection connection2 = JSONConnectionContextUtils.getJSONOriginalValueConnection(getConnection(),
                 this.connectionItem, isContextMode(), defaultContext);
-        ProcessDescription processDescription = JSONShadowProcessHelper.getProcessDescription(connection2);
+        ProcessDescription processDescription = JSONShadowProcessHelper.getProcessDescription(connection2,
+                wizard.getTempJsonPath());
         return processDescription;
     }
 
