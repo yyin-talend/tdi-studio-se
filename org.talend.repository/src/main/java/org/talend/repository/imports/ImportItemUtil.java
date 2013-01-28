@@ -13,6 +13,8 @@
 package org.talend.repository.imports;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -1430,7 +1432,21 @@ public class ImportItemUtil {
             stream = manager.getStream(itemPath);
             Resource resource = createResource(itemRecord.getResourceSet(), itemPath, byteArray);
 
-            resource.load(stream, null);
+            if (byteArray) {
+                // TDI-24612
+                // This part fixes a problem of import of routines from .tar.gz.
+                // Seems either the Tar stream or emf got problems to read this.
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                byte[] buf = new byte[1024];
+                int i = 0;
+                while ((i = stream.read(buf)) != -1) {
+                    baos.write(buf, 0, i);
+                }
+                ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+                resource.load(bais, null);
+            } else {
+                resource.load(stream, null);
+            }
 
             for (ReferenceFileItem rfItem : (List<ReferenceFileItem>) item.getReferenceResources()) {
                 itemPath = getReferenceItemPath(itemRecord.getPath(), rfItem.getExtension());
@@ -1684,8 +1700,8 @@ public class ImportItemUtil {
             return;
         }
 
-        for (Iterator iterator = manager.getPaths().iterator(); iterator.hasNext();) {
-            String value = iterator.next().toString();
+        for (Object element : manager.getPaths()) {
+            String value = element.toString();
             file = new File(value);
             if (extRoutines.contains(file.getName())) {
                 try {
@@ -1705,11 +1721,10 @@ public class ImportItemUtil {
         if (extRoutines.isEmpty()) {
             return;
         }
-        IPath tmpDir = new Path(System.getProperty("user.dir") + File.separatorChar + "tmpJar"); //$NON-NLS-1$  //$NON-NLS-1$
+        IPath tmpDir = new Path(System.getProperty("user.dir") + File.separatorChar + "tmpJar"); //$NON-NLS-1$  
 
         File dirFile = tmpDir.toFile();
-        for (Iterator<IPath> iterator = manager.getPaths().iterator(); iterator.hasNext();) {
-            IPath path = iterator.next();
+        for (IPath path : manager.getPaths()) {
             String fileName = path.lastSegment();
             if (extRoutines.contains(fileName)) {
                 try {
