@@ -208,7 +208,13 @@ public class JobExportAction implements IRunnableWithProgress {
             MessageBoxExceptionHandler.process(e);
             return false;
         }
-        if (isMultiNodes()) {
+        boolean addClasspathJar = true;
+        IDesignerCoreService designerCoreService = CoreRuntimePlugin.getInstance().getDesignerCoreService();
+        if (designerCoreService != null) {
+            addClasspathJar = designerCoreService.getDesignerCorePreferenceStore().getBoolean(
+                    IRepositoryPrefConstants.ADD_CLASSPATH_JAR);
+        }
+        if (isMultiNodes() || addClasspathJar) {
             manager.setTopFolder(resourcesToExport);
         }
 
@@ -223,12 +229,6 @@ public class JobExportAction implements IRunnableWithProgress {
         }
 
         monitor.subTask(Messages.getString("JobScriptsExportWizardPage.newExportSuccess", type)); //$NON-NLS-1$
-        boolean addClasspathJar = true;
-        IDesignerCoreService designerCoreService = CoreRuntimePlugin.getInstance().getDesignerCoreService();
-        if (designerCoreService != null) {
-            addClasspathJar = designerCoreService.getDesignerCorePreferenceStore().getBoolean(
-                    IRepositoryPrefConstants.ADD_CLASSPATH_JAR);
-        }
         if (addClasspathJar) {
             reBuildJobZipFile(processes);
         } else {
