@@ -103,10 +103,7 @@ public class MapperUI {
     public Shell createWindow(final Display display) {
 
         Shell activeShell = display.getActiveShell();
-        // /////////////////////test
-        // int style = SWT.DIALOG_TRIM | SWT.MIN | SWT.MAX | SWT.APPLICATION_MODAL | SWT.RESIZE;
-
-        int style = SWT.DIALOG_TRIM | SWT.MIN | SWT.MAX | SWT.RESIZE;
+        int style = SWT.DIALOG_TRIM | SWT.MIN | SWT.MAX | SWT.APPLICATION_MODAL | SWT.RESIZE;
 
         if (activeShell == null) {
             mapperShell = new Shell(mapperShell, style);
