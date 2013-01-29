@@ -155,7 +155,7 @@
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT NAME="Talend_CSV" MODULE="talendcsv.jar"
-				REQUIRED="true" />
+				REQUIRED="true" UrlPath="platform:/plugin/org.talend.libraries.javacsv/lib/talendcsv.jar"/>
 		</IMPORTS>
 	</CODEGENERATION>
 
