@@ -348,8 +348,9 @@
 		        if("true".equals(useJar)){
 					paramName = contextParam.get("EXTERNAL_JAR_PARAM_NAME_COLUMN");
 					paramValue = contextParam.get("EXTERNAL_JAR_PARAM_VALUE_COLUMN");
+					
 				} else {
-					paramName = contextParam.get("PARAM_NAME_COLUMN");
+					paramName = "\"" + contextParam.get("PARAM_NAME_COLUMN") + "\"";
 					paramValue = contextParam.get("PARAM_VALUE_COLUMN");
 				}
 %>
