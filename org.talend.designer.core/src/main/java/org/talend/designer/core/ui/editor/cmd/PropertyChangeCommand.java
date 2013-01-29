@@ -251,6 +251,20 @@ public class PropertyChangeCommand extends Command {
                 }
             }
         }
+        if (propName.equals("DISTRIBUTION")) {
+            if (elem instanceof INode) {
+                if (((INode) elem).getComponent().getRepositoryType().equals("HDFS")) {
+                    String[] dbVers = elem.getElementParameter(EParameterName.DB_VERSION.getName()).getListItemsShowIf();
+                    for (int i = 0; i < dbVers.length; i++) {
+                        if (dbVers[i].contains((CharSequence) elem.getElementParameter(propName).getValue())) {
+                            elem.getElementParameter(EParameterName.DB_VERSION.getName()).setValue(
+                                    elem.getElementParameter(EParameterName.DB_VERSION.getName()).getListItemsValue()[i]);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
         String dbType = "";
         if (newValue instanceof String) {
             dbType = (String) newValue;
