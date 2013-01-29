@@ -13,21 +13,21 @@
 package org.talend.designer.xmlmap.ui.tabs.table;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.talend.commons.ui.swt.extended.table.AbstractExtendedControlModel;
-import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
-import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
+import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
+import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
+import org.talend.designer.xmlmap.ui.tabs.table.toolbar.XmlMapExtendedToolbarView;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.util.StringUtil;
 
 /**
  * WCHEN talend class global comment. Detailled comment
  */
-public abstract class AbstractXmlTreeSchemaTableView extends AbstractExtendedTableViewer<TreeSchemaTableEntry> {
+public abstract class AbstractXmlTreeSchemaTableView extends AbstractDataTableEditorView<TreeNode> {
 
     public static final String ID_COLUMN_XPATH = "xpath";
 
@@ -39,48 +39,8 @@ public abstract class AbstractXmlTreeSchemaTableView extends AbstractExtendedTab
 
     private Label titleLabel;
 
-    public AbstractXmlTreeSchemaTableView(ExtendedTableModel<TreeSchemaTableEntry> extendedTableModel, Composite parent,
-            boolean readOnly, boolean initTable) {
-        super(extendedTableModel, parent, readOnly, initTable);
-        this.parentComposite = parent;
-    }
-
-    public void initGraphicComponents() {
-        mainComposite = new Composite(parentComposite, SWT.NONE);
-        if (parentComposite.getBackground() != null && !parentComposite.getBackground().equals(mainComposite.getBackground())) {
-            mainComposite.setBackground(parentComposite.getBackground());
-        }
-        GridLayout layout = new GridLayout();
-        mainComposite.setLayout(layout);
-        titleLabel = new Label(mainComposite, SWT.NONE);
-        titleLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        if (parentComposite.getBackground() != null && !parentComposite.getBackground().equals(titleLabel.getBackground())) {
-            titleLabel.setBackground(parentComposite.getBackground());
-        }
-        if (getExtendedTableModel() != null) {
-            titleLabel.setText(getExtendedTableModel().getName());
-        }
-
-        initTable();
-        if (getExtendedControlModel() != null) {
-            initModelListeners();
-        }
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.talend.commons.ui.swt.extended.table.AbstractExtendedControlViewer#setExtendedControlModel(org.talend.commons
-     * .ui.swt.extended.table.AbstractExtendedControlModel)
-     */
-    @Override
-    public void setExtendedControlModel(AbstractExtendedControlModel model) {
-        super.setExtendedControlModel(model);
-        if (titleLabel != null) {
-            titleLabel.setText(model.getName());
-        }
+    public AbstractXmlTreeSchemaTableView(Composite parentComposite, int mainCompositeStyle) {
+        super(parentComposite, mainCompositeStyle, false);
     }
 
     protected String validateXPath(String newValue, int beanPosition) {
@@ -92,9 +52,9 @@ public abstract class AbstractXmlTreeSchemaTableView extends AbstractExtendedTab
             isValidName = false;
             return "Name can't be null";
         }
-        TreeSchemaTableEntry bean = getExtendedTableModel().getBeansList().get(beanPosition);
+        TreeNode bean = getExtendedTableModel().getBeansList().get(beanPosition);
 
-        if (NodeType.NAME_SPACE == bean.getTreeNode().getNodeType()) {
+        if (NodeType.NAME_SPACE == bean.getNodeType()) {
             final String validateNameSpace = validateNameSpace(newValue, beanPosition);
             if (validateNameSpace != null) {
                 return validateNameSpace;
@@ -102,10 +62,10 @@ public abstract class AbstractXmlTreeSchemaTableView extends AbstractExtendedTab
         }
 
         if (!StringUtil.validateLabelForXML(newValue)) {
-            if (NodeType.ELEMENT == bean.getTreeNode().getNodeType()) {
+            if (NodeType.ELEMENT == bean.getNodeType()) {
                 isValidName = false;
                 return "Element name is invalid";
-            } else if (NodeType.ATTRIBUT == bean.getTreeNode().getNodeType()) {
+            } else if (NodeType.ATTRIBUT == bean.getNodeType()) {
                 isValidName = false;
                 return "Attribute name is invalid";
             }
@@ -114,8 +74,8 @@ public abstract class AbstractXmlTreeSchemaTableView extends AbstractExtendedTab
         return validateEntry(newValue, bean, beanPosition);
     }
 
-    protected String validateEntry(String newValue, TreeSchemaTableEntry bean, int beanPosition) {
-        String newXPath = bean.getXPath();
+    protected String validateEntry(String newValue, TreeNode bean, int beanPosition) {
+        String newXPath = bean.getXpath();
         newXPath = newXPath.substring(0, newXPath.lastIndexOf(bean.getName()));
         newXPath = newXPath + newValue;
         if (getExtendedTableModel() != null) {
@@ -123,8 +83,8 @@ public abstract class AbstractXmlTreeSchemaTableView extends AbstractExtendedTab
                 if (i == beanPosition) {
                     continue;
                 }
-                TreeSchemaTableEntry entry = getExtendedTableModel().getBeansList().get(i);
-                if (newXPath.equals(entry.getXPath())) {
+                TreeNode entry = getExtendedTableModel().getBeansList().get(i);
+                if (newXPath.equals(entry.getXpath())) {
                     isValidName = false;
                     return "Name alrady existed";
                 }
@@ -136,16 +96,6 @@ public abstract class AbstractXmlTreeSchemaTableView extends AbstractExtendedTab
 
     public void refresh() {
         this.getTableViewerCreator().getTableViewer().refresh();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.commons.ui.swt.extended.table.AbstractExtendedControlViewer#getParentComposite()
-     */
-    @Override
-    public Composite getParentComposite() {
-        return mainComposite;
     }
 
     protected String validateNameSpace(String newValue, int beanPosition) {
@@ -160,8 +110,8 @@ public abstract class AbstractXmlTreeSchemaTableView extends AbstractExtendedTab
                 if (i == beanPosition) {
                     continue;
                 }
-                TreeSchemaTableEntry entry = getExtendedTableModel().getBeansList().get(i);
-                if (NodeType.NAME_SPACE == entry.getTreeNode().getNodeType() && newValue.equals(entry.getName())) {
+                TreeNode entry = getExtendedTableModel().getBeansList().get(i);
+                if (NodeType.NAME_SPACE == entry.getNodeType() && newValue.equals(entry.getName())) {
                     isValidName = false;
                     return "Namespace Prefix already exist";
                 }
@@ -172,4 +122,39 @@ public abstract class AbstractXmlTreeSchemaTableView extends AbstractExtendedTab
         return null;
 
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#getExtendedTableModel()
+     */
+    @Override
+    public TreeSchemaTableEditor getExtendedTableModel() {
+        // TODO Auto-generated method stub
+        return (TreeSchemaTableEditor) super.getExtendedTableModel();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#setTableViewerCreatorOptions(org.talend
+     * .commons.ui.swt.tableviewer.TableViewerCreator)
+     */
+    @Override
+    protected void setTableViewerCreatorOptions(TableViewerCreator<TreeNode> newTableViewerCreator) {
+        super.setTableViewerCreatorOptions(newTableViewerCreator);
+        // newTableViewerCreator.setLazyLoad(true);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#initToolBar()
+     */
+    @Override
+    protected ExtendedToolbarView initToolBar() {
+        return new XmlMapExtendedToolbarView(getMainComposite(), SWT.NONE, getExtendedTableViewer());
+    }
+
 }

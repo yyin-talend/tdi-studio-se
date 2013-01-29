@@ -25,7 +25,6 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
-import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.talend.designer.gefabstractmap.figures.anchors.FilterTreeAnchor;
 import org.talend.designer.gefabstractmap.figures.cells.IWidgetCell;
@@ -97,7 +96,7 @@ public class InputXmlTreeEditPart extends InputTablePart implements NodeEditPart
 
     @Override
     protected void createEditPolicies() {
-        installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
+        // installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new NonResizableEditPolicy());
         installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new XmlDirectEditPolicy());
         installEditPolicy("Drag and Drop", new DragAndDropEditPolicy());
     }

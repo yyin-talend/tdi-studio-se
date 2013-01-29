@@ -18,7 +18,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.gef.EditPart;
 import org.talend.core.model.metadata.MetadataToolHelper;
 import org.talend.designer.xmlmap.i18n.Messages;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
@@ -38,7 +37,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.parts.OutputTreeNodeEditPart;
-import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.expressionutil.TableEntryLocation;
 import org.talend.designer.xmlmap.ui.expressionutil.XmlMapExpressionManager;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
@@ -897,16 +895,14 @@ public class XmlMapUtil {
 
     }
 
-    private static List<EditPart> getFlatChildrenPartList(EditPart treeNode) {
-        List<EditPart> list = new ArrayList<EditPart>();
-        List children = treeNode.getChildren();
+    public static List<TreeNode> getFlatChildrenList(TreeNode treeNode) {
+        List<TreeNode> list = new ArrayList<TreeNode>();
+        List<TreeNode> children = treeNode.getChildren();
         for (int i = 0; i < children.size(); i++) {
-            if (children.get(i) instanceof TreeNodeEditPart) {
-                TreeNodeEditPart child = (TreeNodeEditPart) children.get(i);
-                list.add(child);
-                if (!child.getChildren().isEmpty()) {
-                    list.addAll(getFlatChildrenPartList(child));
-                }
+            TreeNode child = children.get(i);
+            list.add(child);
+            if (!child.getChildren().isEmpty()) {
+                list.addAll(getFlatChildrenList(child));
             }
         }
         return list;

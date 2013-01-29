@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.talend.commons.ui.runtime.image.EImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
-import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.CellEditorValueAdapterFactory;
@@ -38,6 +37,7 @@ import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorCont
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.ui.proposal.JavaSimpleDateFormatProposalProvider;
+import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlMapData;
 import org.talend.designer.xmlmap.ui.expressionutil.XmlMapExpressionManager;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
@@ -59,24 +59,26 @@ public class XmlTreeSchemaTableView extends AbstractXmlTreeSchemaTableView {
 
     public static final Color READONLY_CELL_BG_COLOR = Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);
 
-    public XmlTreeSchemaTableView(ExtendedTableModel<TreeSchemaTableEntry> extendedTableModel, Composite parent) {
-        super(extendedTableModel, parent, false, false);
+    public XmlTreeSchemaTableView(Composite parentComposite, int mainCompositeStyle) {
+        super(parentComposite, mainCompositeStyle);
     }
 
     @Override
-    protected void createColumns(final TableViewerCreator<TreeSchemaTableEntry> tableViewerCreator, Table table) {
+    protected void createColumns(final TableViewerCreator<TreeNode> tableViewerCreator, Table table) {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("XPath");
         column.setId(ID_COLUMN_XPATH);
         column.setWeight(20);
         column.setModifiable(true);
-        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<TreeSchemaTableEntry, Object>() {
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<TreeNode, Object>() {
 
-            public Object get(TreeSchemaTableEntry bean) {
-                return bean.getXPath();
+            @Override
+            public Object get(TreeNode bean) {
+                return bean.getXpath();
             }
 
-            public void set(TreeSchemaTableEntry bean, Object value) {
+            @Override
+            public void set(TreeNode bean, Object value) {
                 if (isValidName) {
                     bean.setName((String) value);
                     // String xPath = bean.getXPath();
@@ -91,11 +93,11 @@ public class XmlTreeSchemaTableView extends AbstractXmlTreeSchemaTableView {
                     // typedValue = xPath + bean.getName();
                     // }
                     // bean.setXPath(typedValue);
-                    XmlMapData mapperData = XmlMapUtil.getXmlMapData(bean.getTreeNode());
+                    XmlMapData mapperData = XmlMapUtil.getXmlMapData(bean);
                     XmlMapExpressionManager expressionManager = new XmlMapExpressionManager();
-                    XmlMapUtil.updateXPathAndExpression(mapperData, expressionManager, bean.getTreeNode(), bean.getName(),
-                            XmlMapUtil.getXPathLength(bean.getXPath()), true);
-                    if (!bean.getTreeNode().getChildren().isEmpty()) {
+                    XmlMapUtil.updateXPathAndExpression(mapperData, expressionManager, bean, bean.getName(),
+                            XmlMapUtil.getXPathLength(bean.getXpath()), true);
+                    if (!bean.getChildren().isEmpty()) {
                         refresh();
                     }
                 }
@@ -119,7 +121,7 @@ public class XmlTreeSchemaTableView extends AbstractXmlTreeSchemaTableView {
 
             @Override
             public Object getValue(Object bean) {
-                TreeSchemaTableEntry entry = (TreeSchemaTableEntry) bean;
+                TreeNode entry = (TreeNode) bean;
                 return entry.getName();
             }
 
@@ -138,13 +140,15 @@ public class XmlTreeSchemaTableView extends AbstractXmlTreeSchemaTableView {
         column.setModifiable(true);
         CheckboxTableEditorContent checkbox = new CheckboxTableEditorContent();
         column.setTableEditorContent(checkbox);
-        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<TreeSchemaTableEntry, Boolean>() {
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<TreeNode, Boolean>() {
 
-            public Boolean get(TreeSchemaTableEntry bean) {
+            @Override
+            public Boolean get(TreeNode bean) {
                 return bean.isKey();
             }
 
-            public void set(TreeSchemaTableEntry bean, Boolean value) {
+            @Override
+            public void set(TreeNode bean, Boolean value) {
                 bean.setKey(value);
             }
         });
@@ -157,7 +161,7 @@ public class XmlTreeSchemaTableView extends AbstractXmlTreeSchemaTableView {
         column.setModifiable(true);
         column.setWeight(20);
 
-        TreeSchemaJavaTypeComboValueAdapter comboValueAdapter = new TreeSchemaJavaTypeComboValueAdapter<TreeSchemaTableEntry>(
+        TreeSchemaJavaTypeComboValueAdapter comboValueAdapter = new TreeSchemaJavaTypeComboValueAdapter<TreeNode>(
                 JavaTypesManager.getDefaultJavaType(), getNullableAccessor());
 
         ComboBoxCellEditor typeComboEditor = new ComboBoxCellEditor(tableViewerCreator.getTable(),
@@ -183,18 +187,21 @@ public class XmlTreeSchemaTableView extends AbstractXmlTreeSchemaTableView {
         column.setTitle("Pattern");
         column.setId(ID_COLUMN_PATTERN);
         column.setWeight(20);
-        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<TreeSchemaTableEntry, String>() {
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<TreeNode, String>() {
 
-            public String get(TreeSchemaTableEntry bean) {
+            @Override
+            public String get(TreeNode bean) {
                 return bean.getPattern();
             }
 
-            public void set(TreeSchemaTableEntry bean, String value) {
+            @Override
+            public void set(TreeNode bean, String value) {
                 bean.setPattern(value);
             }
         });
         final ColumnCellModifier columnCellModifier = new ColumnCellModifier(column) {
 
+            @Override
             public boolean canModify(Object bean) {
                 boolean typeIsDate = currentBeanHasJavaDateType(bean) && !isReadOnly();
                 return typeIsDate;
@@ -203,6 +210,7 @@ public class XmlTreeSchemaTableView extends AbstractXmlTreeSchemaTableView {
         };
         column.setColorProvider(new IColumnColorProvider() {
 
+            @Override
             public Color getBackgroundColor(Object bean) {
                 if (!columnCellModifier.canModify(bean)) {
                     return READONLY_CELL_BG_COLOR;
@@ -210,6 +218,7 @@ public class XmlTreeSchemaTableView extends AbstractXmlTreeSchemaTableView {
                 return null;
             }
 
+            @Override
             public Color getForegroundColor(Object bean) {
                 return null;
             }
@@ -222,6 +231,7 @@ public class XmlTreeSchemaTableView extends AbstractXmlTreeSchemaTableView {
              * 
              * @see org.talend.commons.ui.swt.tableviewer.behavior.IColumnLabelProvider#getLabel(java.lang.Object)
              */
+            @Override
             public String getLabel(Object bean) {
                 if (!currentBeanHasJavaDateType(bean)) {
                     return ""; //$NON-NLS-1$
@@ -243,19 +253,21 @@ public class XmlTreeSchemaTableView extends AbstractXmlTreeSchemaTableView {
     }
 
     private boolean currentBeanHasJavaDateType(Object element) {
-        String talendType = getTalendTypeAccessor().get((TreeSchemaTableEntry) element);
+        String talendType = getTalendTypeAccessor().get((TreeNode) element);
         boolean typeIsDate = JavaTypesManager.DATE.getId().equals(talendType);
         return typeIsDate;
     }
 
-    private IBeanPropertyAccessors<TreeSchemaTableEntry, String> getTalendTypeAccessor() {
-        return new IBeanPropertyAccessors<TreeSchemaTableEntry, String>() {
+    private IBeanPropertyAccessors<TreeNode, String> getTalendTypeAccessor() {
+        return new IBeanPropertyAccessors<TreeNode, String>() {
 
-            public String get(TreeSchemaTableEntry bean) {
+            @Override
+            public String get(TreeNode bean) {
                 return bean.getType();
             }
 
-            public void set(TreeSchemaTableEntry bean, String value) {
+            @Override
+            public void set(TreeNode bean, String value) {
                 bean.setType(value);
                 if (currentBeanHasJavaDateType(bean)) {
                     bean.setPattern(new JavaSimpleDateFormatProposalProvider().getProposals(null, 0)[0].getContent());
@@ -264,14 +276,16 @@ public class XmlTreeSchemaTableView extends AbstractXmlTreeSchemaTableView {
         };
     }
 
-    private IBeanPropertyAccessors<TreeSchemaTableEntry, Boolean> getNullableAccessor() {
-        return new IBeanPropertyAccessors<TreeSchemaTableEntry, Boolean>() {
+    private IBeanPropertyAccessors<TreeNode, Boolean> getNullableAccessor() {
+        return new IBeanPropertyAccessors<TreeNode, Boolean>() {
 
-            public Boolean get(TreeSchemaTableEntry bean) {
+            @Override
+            public Boolean get(TreeNode bean) {
                 return bean.isNullable();
             }
 
-            public void set(TreeSchemaTableEntry bean, Boolean value) {
+            @Override
+            public void set(TreeNode bean, Boolean value) {
                 bean.setNullable(value);
             }
         };

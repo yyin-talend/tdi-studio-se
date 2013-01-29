@@ -221,13 +221,13 @@ public class XmlDropTargetListener extends MapperDropTargetListener {
     }
 
     private void selectAddedObject() {
+        boolean added = false;
         List newObjects = getCreateRequest().getNewObjects();
         for (int i = 0; i < newObjects.size(); i++) {
             Object model = newObjects.get(i);
             EditPartViewer viewer = getViewer();
             viewer.getControl().forceFocus();
             Object editpart = viewer.getEditPartRegistry().get(model);
-            boolean added = false;
             if (editpart instanceof EditPart) {
                 if (!added) {
                     // Force a layout first.

@@ -186,10 +186,12 @@ public class ImportTreeFromRepository extends SelectionAction {
             AbstractInOutTree tree = null;
             if (schemaNode.eContainer() instanceof InputXmlTree) {
                 XmlMapConnectionBuilder.rebuildLinks(schemaNode, mapperManager.getExternalData());
-                mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) schemaNode.eContainer());
+                mapperManager.refreshTreeSchemaEditor((InputXmlTree) schemaNode.eContainer());
+                // mapperManager.inputTreeSchemaBeanListModified();
                 tree = (InputXmlTree) schemaNode.eContainer();
             } else if (schemaNode.eContainer() instanceof OutputXmlTree) {
-                mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) schemaNode.eContainer());
+                // mapperManager.outputTreeSchemaBeanListModified();
+                mapperManager.refreshTreeSchemaEditor((OutputXmlTree) schemaNode.eContainer());
                 tree = (OutputXmlTree) schemaNode.eContainer();
             }
             if (tree != null) {

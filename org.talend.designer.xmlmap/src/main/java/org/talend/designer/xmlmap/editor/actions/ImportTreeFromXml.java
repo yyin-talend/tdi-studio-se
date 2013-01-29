@@ -119,9 +119,11 @@ public class ImportTreeFromXml extends SelectionAction {
 
             if (parentNode.eContainer() instanceof InputXmlTree) {
                 XmlMapConnectionBuilder.rebuildLinks(parentNode, mapperManager.getExternalData());
-                mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
+                mapperManager.refreshTreeSchemaEditor((InputXmlTree) parentNode.eContainer());
+                // mapperManager.inputTreeSchemaBeanListModified();
             } else if (parentNode.eContainer() instanceof OutputXmlTree) {
-                mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) parentNode.eContainer());
+                mapperManager.refreshTreeSchemaEditor((OutputXmlTree) parentNode.eContainer());
+                // mapperManager.outputTreeSchemaBeanListModified();
             }
             if (treeNodeRoot != null && treeNodeRoot.eContainer() instanceof AbstractInOutTree) {
                 mapperManager.getProblemsAnalyser().checkProblems((AbstractInOutTree) treeNodeRoot.eContainer());

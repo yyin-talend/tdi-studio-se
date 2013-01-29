@@ -110,15 +110,50 @@ public class TabFolderEditors extends CTabFolder {
         inOutMetaEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
         item.setControl(inOutMetaEditorContainer);
 
+        // input metadata table view
         inputMetaEditor = new XmlMapMetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
         inputMetaEditor.initGraphicComponents();
         // inputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
+        ILineSelectionListener metadataEditorViewerSelectionChangedListener = new ILineSelectionListener() {
+
+            @Override
+            public void handle(LineSelectionEvent e) {
+                if (inputMetaEditor.getTableViewerCreator() == e.source && mapperManage.getGraphicalViewer() != null) {
+                    if (inputMetaEditor.getExtendedTableViewer().isExecuteSelectionEvent()) {
+                        mapperManage.selectLinkedInputTableEntries(inputMetaEditor.getTableViewerCreator().getTable()
+                                .getSelectionIndices(), false);
+
+                    }
+                }
+            }
+
+        };
+
+        inputMetaEditor.getTableViewerCreator().getSelectionHelper()
+                .addAfterSelectionListener(metadataEditorViewerSelectionChangedListener);
 
         addListenersToInputButtons();
 
+        // output metadata table view
         outputMetaEditor = new XmlMapMetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
         outputMetaEditor.initGraphicComponents();
         // outputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
+        metadataEditorViewerSelectionChangedListener = new ILineSelectionListener() {
+
+            @Override
+            public void handle(LineSelectionEvent e) {
+                if (outputMetaEditor.getTableViewerCreator() == e.source && mapperManage.getGraphicalViewer() != null) {
+                    if (outputMetaEditor.getExtendedTableViewer().isExecuteSelectionEvent()) {
+                        mapperManage.selectLinkedOutputTableEntries(outputMetaEditor.getTableViewerCreator().getTable()
+                                .getSelectionIndices(), false);
+
+                    }
+                }
+            }
+
+        };
+        outputMetaEditor.getTableViewerCreator().getSelectionHelper()
+                .addAfterSelectionListener(metadataEditorViewerSelectionChangedListener);
 
         addListenersToOutputButtons();
 
@@ -128,13 +163,47 @@ public class TabFolderEditors extends CTabFolder {
         SashForm xmlTreeEditorContainer = new SashForm(tabFolderEditors, SWT.SMOOTH | SWT.HORIZONTAL | SWT.SHADOW_OUT);
         xmlTreeEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
         item.setControl(xmlTreeEditorContainer);
-        inputTreeSchemaEditor = new XmlTreeSchemaTableView(mapperManage.getSelectedInputTreeSchemaModel(null),
-                xmlTreeEditorContainer);
+        // input tree schema table view
+        inputTreeSchemaEditor = new XmlTreeSchemaTableView(xmlTreeEditorContainer, SWT.BORDER);
         inputTreeSchemaEditor.initGraphicComponents();
 
-        outputTreeSchemaEditor = new OutputXmlTreeSchemaTableView(mapperManage.getSelectedOutputTreeSchemaModel(null),
-                xmlTreeEditorContainer);
+        metadataEditorViewerSelectionChangedListener = new ILineSelectionListener() {
+
+            @Override
+            public void handle(LineSelectionEvent e) {
+                if (inputTreeSchemaEditor.getTableViewerCreator() == e.source && mapperManage.getGraphicalViewer() != null) {
+                    if (inputTreeSchemaEditor.getExtendedTableViewer().isExecuteSelectionEvent()) {
+                        mapperManage.selectLinkedInputTableEntries(inputTreeSchemaEditor.getTableViewerCreator().getTable()
+                                .getSelectionIndices(), true);
+
+                    }
+                }
+            }
+
+        };
+        inputTreeSchemaEditor.getTableViewerCreator().getSelectionHelper()
+                .addAfterSelectionListener(metadataEditorViewerSelectionChangedListener);
+
+        // output tree schema table view
+        outputTreeSchemaEditor = new OutputXmlTreeSchemaTableView(xmlTreeEditorContainer, SWT.BORDER);
         outputTreeSchemaEditor.initGraphicComponents();
+
+        metadataEditorViewerSelectionChangedListener = new ILineSelectionListener() {
+
+            @Override
+            public void handle(LineSelectionEvent e) {
+                if (outputTreeSchemaEditor.getTableViewerCreator() == e.source && mapperManage.getGraphicalViewer() != null) {
+                    if (outputTreeSchemaEditor.getExtendedTableViewer().isExecuteSelectionEvent()) {
+                        mapperManage.selectLinkedOutputTableEntries(outputTreeSchemaEditor.getTableViewerCreator().getTable()
+                                .getSelectionIndices(), true);
+
+                    }
+                }
+            }
+
+        };
+        outputTreeSchemaEditor.getTableViewerCreator().getSelectionHelper()
+                .addAfterSelectionListener(metadataEditorViewerSelectionChangedListener);
 
         item = new CTabItem(tabFolderEditors, SWT.BORDER);
         item.setText(Messages.getString("TabFolderEditors.ExpressionEditor.Title")); //$NON-NLS-1$
@@ -302,6 +371,10 @@ public class TabFolderEditors extends CTabFolder {
 
     public StyledTextHandler getStyledTextHandler() {
         return this.styledTextHandler;
+    }
+
+    public int getLastSelectedTab() {
+        return this.lastSelectedTab;
     }
 
 }

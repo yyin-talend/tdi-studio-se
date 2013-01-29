@@ -20,9 +20,7 @@ import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractInOutTree;
-import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.ui.tabs.MapperManager;
@@ -138,16 +136,12 @@ public class DeleteTreeNodeAction extends SelectionAction {
             }
 
             if (mapperManager != null) {
-                if (input) {
-                    if (docRoot != null && docRoot.eContainer() instanceof InputXmlTree) {
-                        mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) docRoot.eContainer());
-                    }
-                } else {
-                    if (docRoot != null && docRoot.eContainer() instanceof OutputXmlTree) {
-                        mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) docRoot.eContainer());
-                    }
-                }
-
+                mapperManager.beanListModified(input);
+                // if (input) {
+                // mapperManager.inputTreeSchemaBeanListModified();
+                // } else {
+                // mapperManager.outputTreeSchemaBeanListModified();
+                // }
                 if (docRoot != null && docRoot.eContainer() instanceof AbstractInOutTree) {
                     mapperManager.getProblemsAnalyser().checkProblems((AbstractInOutTree) docRoot.eContainer());
                     mapperManager.getMapperUI().updateStatusBar();

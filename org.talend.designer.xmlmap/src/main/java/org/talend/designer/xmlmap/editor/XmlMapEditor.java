@@ -64,12 +64,12 @@ public class XmlMapEditor extends MapperGraphicalEditor {
         getActionRegistry().registerAction(importAction);
         getSelectionActions().add(importAction.getId());
 
-        CreateAttributeAction createAttribute = new CreateAttributeAction(this);
+        CreateAttributeAction createAttribute = new CreateAttributeAction(this, getGraphicalViewer());
         createAttribute.setMapperManager(getMapperManager());
         getActionRegistry().registerAction(createAttribute);
         getSelectionActions().add(createAttribute.getId());
 
-        CreateElementAction createElement = new CreateElementAction(this);
+        CreateElementAction createElement = new CreateElementAction(this, getGraphicalViewer());
         createElement.setMapperManager(getMapperManager());
         getActionRegistry().registerAction(createElement);
         getSelectionActions().add(createElement.getId());
@@ -94,7 +94,7 @@ public class XmlMapEditor extends MapperGraphicalEditor {
         getActionRegistry().registerAction(importFromRepository);
         getSelectionActions().add(importFromRepository.getId());
 
-        CreateNameSpaceAction createNameSpaceInput = new CreateNameSpaceAction(this);
+        CreateNameSpaceAction createNameSpaceInput = new CreateNameSpaceAction(this, getGraphicalViewer());
         createNameSpaceInput.setMapperManager(getMapperManager());
         getActionRegistry().registerAction(createNameSpaceInput);
         getSelectionActions().add(createNameSpaceInput.getId());
@@ -145,6 +145,7 @@ public class XmlMapEditor extends MapperGraphicalEditor {
         return (MapperManager) super.getMapperManager();
     }
 
+    @Override
     public void buildContextMenu(IMenuManager menu) {
         // context menu should only display in the document tree
         List selectedEditParts = getGraphicalViewer().getSelectedEditParts();
