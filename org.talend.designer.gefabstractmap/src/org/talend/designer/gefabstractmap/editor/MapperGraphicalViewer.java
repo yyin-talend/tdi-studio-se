@@ -129,6 +129,10 @@ public abstract class MapperGraphicalViewer extends GraphicalViewerImpl {
 
     public void setMapperManager(AbstractMapperManager mapperManager) {
         this.mapperManager = mapperManager;
+        if (!selectionListeners.contains(mapperManager)) {
+            mapperManager.setGraphicalViewer(this);
+            addSelectionChangedListener(mapperManager);
+        }
     }
 
     public FiguresManager getFiguresManager() {

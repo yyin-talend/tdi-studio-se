@@ -29,7 +29,6 @@ import org.eclipse.draw2d.TextUtilities;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.talend.designer.gefabstractmap.resource.ColorInfo;
@@ -72,10 +71,7 @@ public class ToolBarButtonImageFigure extends ImageFigure {
         setBorder(new MarginBorder(2));
         if (image != null) {
             this.enabledImage = image;
-            this.disabledImage = new Image(image.getDevice(), image, SWT.IMAGE_DISABLE);
-            ImageProviderMapper.cacheDisabledImage(disabledImage);
         }
-
     }
 
     /**
@@ -192,6 +188,7 @@ public class ToolBarButtonImageFigure extends ImageFigure {
                 setImage(enabledImage);
             }
         } else {
+            this.disabledImage = ImageProviderMapper.getDisabledImage(enabledImage);
             if (getImage() != disabledImage) {
                 setImage(disabledImage);
             }

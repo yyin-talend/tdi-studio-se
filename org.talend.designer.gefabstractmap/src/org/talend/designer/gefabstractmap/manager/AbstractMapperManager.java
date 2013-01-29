@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.gefabstractmap.manager;
 
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.designer.core.model.utils.emf.talendfile.AbstractExternalData;
@@ -25,6 +26,8 @@ public abstract class AbstractMapperManager implements ISelectionChangedListener
     private AbstractExternalNode component;
 
     private AbstractExternalData externalData;
+
+    private GraphicalViewer graphicalViewer;
 
     /**
      * DOC Administrator AbstractMapperManager constructor comment.
@@ -42,4 +45,21 @@ public abstract class AbstractMapperManager implements ISelectionChangedListener
         return this.externalData;
     }
 
+    /**
+     * Getter for graphicalViewer.
+     * 
+     * @return the graphicalViewer
+     */
+    public GraphicalViewer getGraphicalViewer() {
+        return this.graphicalViewer;
+    }
+
+    /**
+     * Sets the graphicalViewer.
+     * 
+     * @param graphicalViewer the graphicalViewer to set
+     */
+    public void setGraphicalViewer(GraphicalViewer graphicalViewer) {
+        this.graphicalViewer = graphicalViewer;
+    }
 }

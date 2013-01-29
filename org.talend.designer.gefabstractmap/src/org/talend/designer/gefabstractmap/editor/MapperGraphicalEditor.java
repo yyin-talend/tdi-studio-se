@@ -104,8 +104,6 @@ public abstract class MapperGraphicalEditor extends GraphicalEditor {
 
         getGraphicalViewer().addDropTargetListener(createDropTargetListener());
 
-        getGraphicalViewer().addSelectionChangedListener(mapperManager);
-
         getGraphicalViewer().setContextMenu(new MenueProvider(getGraphicalViewer()));
         initializeActionRegistry();
     }
