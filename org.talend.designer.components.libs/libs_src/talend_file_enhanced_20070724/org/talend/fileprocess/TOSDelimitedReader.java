@@ -2,7 +2,7 @@
 //
 // Talend Community Edition
 //
-// Copyright (C) 2006-2012 Talend - www.talend.com
+// Copyright (C) 2006-2013 Talend - www.talend.com
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -565,6 +565,14 @@ public class TOSDelimitedReader {
             if (readCount < maxReadLength) {
                 if (readCount == -1) {
                     streamEndMeet = true;
+                } else {
+                    if(inputStream.markSupported()) {
+                        inputStream.mark(1);
+                        if(inputStream.read() == -1) {
+                            streamEndMeet = true;
+                        }
+                        inputStream.reset();
+                    }
                 }
             }
 
