@@ -648,16 +648,6 @@ public class JobJavaScriptOSGIForESBManager extends JobJavaScriptsManager {
                     additionalServiceProps = "<entry key=\"multithreading\" value=\"true\" />"; //$NON-NLS-1$
                 }
             }
-            for (NodeType node : EmfModelUtils.getComponentsByName(processItem, "tRESTClient")) { //$NON-NLS-1$
-            	// https://jira.talendforge.org/browse/TESB-8066
-            	if (EmfModelUtils.computeCheckElementValue("SERVICE_ACTIVITY_MONITOR", node)) { //$NON-NLS-1$
-            		// SAM
-            		additionalJobBeanParams = "<property name=\"eventFeature\" ref=\"eventFeature\"/>";
-            		additionalJobBundleConfig = "<reference id=\"eventFeature\"  xmlns:ext=\"http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0\" "
-            				+ "ext:proxy-method=\"classes\" interface=\"org.talend.esb.sam.agent.feature.EventFeature\"/>";
-            		break;
-            	}
-            }
         }
 
         // OSGi DataSource
