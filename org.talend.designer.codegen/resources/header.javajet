@@ -99,7 +99,7 @@ import java.util.Comparator;
 String talendJobInterfaces = "TalendJob";
 
 boolean talendMdmJob = !process.getNodesOfType("tMDMTriggerInput").isEmpty() || !process.getNodesOfType("tMDMTriggerOutput").isEmpty();
-boolean talendEsbJob = !process.getNodesOfType("tESBProviderRequest").isEmpty() || !process.getNodesOfType("tESBConsumer").isEmpty() || !process.getNodesOfType("tRouteInput").isEmpty();
+boolean talendEsbJob = !process.getNodesOfType("tESBProviderRequest").isEmpty() || !process.getNodesOfType("tESBConsumer").isEmpty();
 boolean talendEsbJobFactory = !process.getNodesOfType("tESBProviderRequest").isEmpty() || !process.getNodesOfType("tRouteInput").isEmpty();
 
 if (talendMdmJob) {
@@ -117,14 +117,14 @@ public class <%=process.getName()%> implements <%=talendJobInterfaces%> {
 <% if (talendEsbJobFactory) { %>
 	public TalendESBJob newTalendESBJob() {
 		<%=process.getName()%> talendESBJob = new <%=process.getName()%>();
-		java.util.Map<String, routines.system.TalendDataSource> talendDataSources = 
+		java.util.Map<String, routines.system.TalendDataSource> talendDataSources =
 			(java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
 		if (null != talendDataSources) {
-            java.util.Map<String, javax.sql.DataSource> dataSources = new java.util.HashMap<String, javax.sql.DataSource>();
-            for (java.util.Map.Entry<String, routines.system.TalendDataSource> talendDataSourceEntry : talendDataSources.entrySet()) {
-                dataSources.put(talendDataSourceEntry.getKey(), talendDataSourceEntry.getValue().getRawDataSource());
-            }
-            talendESBJob.setDataSources(dataSources);
+			java.util.Map<String, javax.sql.DataSource> dataSources = new java.util.HashMap<String, javax.sql.DataSource>();
+			for (java.util.Map.Entry<String, routines.system.TalendDataSource> talendDataSourceEntry : talendDataSources.entrySet()) {
+				dataSources.put(talendDataSourceEntry.getKey(), talendDataSourceEntry.getValue().getRawDataSource());
+			}
+			talendESBJob.setDataSources(dataSources);
 		}
 		// fix for TESB-7714
 		talendESBJob.setEndpointRegistry(registry);
@@ -163,7 +163,7 @@ if(isRunInMultiThread){
 	public class ContextProperties extends java.util.Properties {
 
 		private static final long serialVersionUID = 1L;
-	
+
 		public ContextProperties(java.util.Properties properties){
 			super(properties);
 		}
@@ -329,11 +329,11 @@ private class TalendException extends java.lang.Exception {
 		this.globalMap = globalMap;
 		this.e = e;
 	}
-	
+
 	public java.lang.Exception getException() {
 		return this.e;
 	}
-	
+
 	public String getCurrentComponent() {
 		return this.currentComponent;
 	}
@@ -517,7 +517,7 @@ private class TalendException extends java.lang.Exception {
 						try {
 							<%if (stats) {%>
 								if(this.execStat){
-						    		runStat.updateStatOnConnection("<%=conn.getUniqueName() %>", 0, "error");
+									runStat.updateStatOnConnection("<%=conn.getUniqueName() %>", 0, "error");
 								}
 							<%}%>
 							<%
@@ -583,13 +583,13 @@ private class TalendException extends java.lang.Exception {
 					}
 				}
 				//end
-				
+
 				/*
 				This part of code has been added in order to call the correct onComponentError and onSubjobError for the specific components (like tWriteXMLField, tWriteJSONField, tMDMOutput, tBRMS, ...).
 				*/
 				INode subjob_start_node = node;
 				boolean hasBeenChanged = true;
-				
+
 				while(subjob_start_node.getDesignSubjobStartNode().isVirtualGenerateNode() && hasBeenChanged) {
 					hasBeenChanged = false;
 					if(subjob_start_node.getDesignSubjobStartNode().getIncomingConnections(EConnectionType.ON_COMPONENT_OK) != null) {
@@ -601,7 +601,7 @@ private class TalendException extends java.lang.Exception {
 						}
 					}
 				}
-				
+
 				%>
 					<%=subjob_start_node.getDesignSubjobStartNode().getUniqueName() %>_onSubJobError(exception, errorComponent, globalMap);
 			}
@@ -639,7 +639,7 @@ resumeUtil.addLog("SYSTEM_LOG", "NODE:"+ errorComponent, "", Thread.currentThrea
 				try {
 					<%if (stats) {%>
 						if(this.execStat){
-				    		runStat.updateStatOnConnection("<%=conn.getUniqueName() %>", 0, "error");
+							runStat.updateStatOnConnection("<%=conn.getUniqueName() %>", 0, "error");
 						}
 					<%}%>
 <%
