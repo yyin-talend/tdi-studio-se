@@ -25,11 +25,9 @@ import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.EditPolicy;
-import org.eclipse.gef.MouseWheelHelper;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
-import org.eclipse.gef.editparts.ViewportMouseWheelHelper;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.talend.designer.gefabstractmap.figures.anchors.FilterTreeAnchor;
 import org.talend.designer.gefabstractmap.figures.cells.IWidgetCell;
@@ -291,14 +289,6 @@ public class OutputXmlTreeEditPart extends OutputTablePart implements NodeEditPa
     @Override
     public void highLightHeader(boolean highLight) {
         ((OutputXmlTreeFigure) getFigure()).highLightHeader(highLight);
-    }
-
-    @Override
-    public Object getAdapter(Class key) {
-        if (key == MouseWheelHelper.class) {
-            return new ViewportMouseWheelHelper(this);
-        }
-        return super.getAdapter(key);
     }
 
 }
