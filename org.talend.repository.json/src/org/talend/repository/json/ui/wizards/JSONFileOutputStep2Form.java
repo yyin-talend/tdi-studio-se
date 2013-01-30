@@ -64,6 +64,7 @@ import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.datatools.xml.utils.ATreeNode;
@@ -225,7 +226,8 @@ public class JSONFileOutputStep2Form extends AbstractJSONFileStepForm {
     }
 
     public void redrawLinkers() {
-        int maxColumnsNumber = CoreRuntimePlugin.getInstance().getPreferenceStore().getInt("maximum_amount_of_columns_for_json");
+        int maxColumnsNumber = CoreRuntimePlugin.getInstance().getPreferenceStore()
+                .getInt(ITalendCorePrefConstants.MAXIMUM_AMOUNT_OF_COLUMNS_FOR_XML);
         if (schemaViewer.getTable().getItems().length <= maxColumnsNumber + 1) {
             linker.removeAllLinks();
             TreeItem root = JSONViewer.getTree().getItem(0);
