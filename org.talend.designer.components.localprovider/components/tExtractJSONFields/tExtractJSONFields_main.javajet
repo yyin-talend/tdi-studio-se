@@ -22,6 +22,7 @@ String cid = node.getUniqueName();
 String jsonField = ElementParameterParser.getValue(node, "__JSONFIELD__");
 String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 boolean dieOnError = (dieOnErrorStr!=null&&!("").equals(dieOnErrorStr))?("true").equals(dieOnErrorStr):false;
+String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 
 List<Map<String, String>> mapping = (List<Map<String,String>>)ElementParameterParser.getObjectValueXML(node, "__MAPPING__");
 String loopQuery = ElementParameterParser.getValue(node, "__LOOP_QUERY__"); 
@@ -109,7 +110,7 @@ if (outConn!=null) {
         cjs_<%=cid %>.generate();
         jsonStr_<%=cid %> = cjs_<%=cid %>.getJsonString4XML();
         loopQuery_<%=cid %> = cjs_<%=cid %>.getLoopString4XML();
-        bais_<%=cid %> = new ByteArrayInputStream(jsonStr_<%=cid%>.getBytes());
+        bais_<%=cid %> = new ByteArrayInputStream(jsonStr_<%=cid%>.getBytes(<%=encoding%>));
         javax.xml.stream.XMLEventReader xmlEventReader_<%=cid %> = jsonXMLInputFactory_<%=cid %>.createXMLEventReader(bais_<%=cid %>);
         javax.xml.stream.XMLEventWriter xmLEventWriter_<%=cid %> = xmlOutputFactory_<%=cid %>.createXMLEventWriter(baos_<%=cid %>);
         xmLEventWriter_<%=cid %>.add(xmlEventReader_<%=cid %>);
@@ -231,11 +232,19 @@ if(outConns!=null){
         int extractColNo=0;
         for (int i=0;i<mapping.size();i++) {  //for S_0
             String query = mapping.get(i).get("QUERY");
+            String nodeCheck = mapping.get(i).get("NODECHECK");
+            if("true".equals(nodeCheck) && query!=null){
+				if((".").equals(query.substring(1,query.length()-1)) && ("/").equals(loopQuery.substring(1,loopQuery.length()-1))){
+%>
+					isGetWholeJson_<%=cid %>  = true;
+<%
+				}
+			}
             if(schemaOptNum < mapping.size()){
                 if(query!=null && query.trim().length()>0){  // if S_0_0
                     if(extractColNo%schemaOptNum==0){
 %>
-            xml_api_<%=cid%>.putExtractValue_<%=extractColNo/schemaOptNum%>(<%=firstConnName%>,<%if(inConn!=null){%><%=inConn.getName()%>,<%}%>xmlStr_<%=cid%>,temp_<%=cid %>,loopQuery_<%=cid %>,xmlNameSpaceMap_<%=cid%>,node_<%=cid %>,str_<%=cid %>,xml_api_<%=cid%>);
+            xml_api_<%=cid%>.putExtractValue_<%=extractColNo/schemaOptNum%>(<%=firstConnName%>,<%if(inConn!=null){%><%=inConn.getName()%>,<%}%>xmlStr_<%=cid%>,temp_<%=cid %>,loopQuery_<%=cid %>,xmlNameSpaceMap_<%=cid%>,node_<%=cid %>,str_<%=cid %>,xml_api_<%=cid%><%if("true".equals(nodeCheck)){%> ,originalJSONString_<%=cid %>,cjs_<%=cid %>,isGetWholeJson_<%=cid %><%}%>);
 <%
                     }
                     extractColNo++;
@@ -251,7 +260,22 @@ if(outConns!=null){
                     str_<%=cid %> = String.valueOf(obj<%=i%>_<%=cid%>);
                 }else{
                     node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
-                    str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid %>);
+<%
+                    if(("true").equals(nodeCheck)){
+%>
+						if(node_<%=cid %>==null){
+	 						str_<%=cid %> = null;
+						}else{
+							str_<%=cid %> = originalJSONString_<%=cid %>.getOriginalJSONString(node_<%=cid %>.asXML(),cjs_<%=cid %>.getAdditionRoot(),<%=encoding%>,isGetWholeJson_<%=cid %>);
+						}
+						isGetWholeJson_<%=cid%> = false;
+<%
+                    }else{
+%>
+                        str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid %>);
+<%
+                    }
+%>
                 }
 <%
                 for(IMetadataColumn column:outConn.getMetadataTable().getListColumns()) { // for S_0_0_0
@@ -270,6 +294,12 @@ if(outConns!=null){
                                 isNotSetDefault=true;
                             }
                             
+                            if(("true").equals(nodeCheck)){
+%>
+                                    <%=firstConnName %>.<%=column.getLabel() %> = str_<%=cid %>;
+<%
+                                continue;
+                            }
                             if(javaType == JavaTypesManager.STRING){
 %>
                                     if(xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){
