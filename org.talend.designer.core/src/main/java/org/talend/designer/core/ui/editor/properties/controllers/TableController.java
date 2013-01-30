@@ -598,6 +598,19 @@ public class TableController extends AbstractElementPropertySectionController {
         if (processTypeParam == null) {
             return;
         }
+        boolean haveContextParamList = false;
+        for (Object valueParam : param.getListItemsValue()) {
+            if (valueParam instanceof IElementParameter) {
+                IElementParameter vParam = (IElementParameter) valueParam;
+                if (vParam.getFieldType() == EParameterFieldType.CONTEXT_PARAM_NAME_LIST) {
+                    haveContextParamList = true;
+                    break;
+                }
+            }
+        }
+        if (!haveContextParamList) {
+            return;
+        }
         IElementParameter jobElemParam = processTypeParam.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
         IElementParameter jobVersionParam = processTypeParam.getChildParameters().get(
                 EParameterName.PROCESS_TYPE_VERSION.getName());
