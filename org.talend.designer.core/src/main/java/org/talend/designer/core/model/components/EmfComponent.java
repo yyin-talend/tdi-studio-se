@@ -2723,6 +2723,7 @@ public class EmfComponent extends AbstractComponent {
                             importType.isREQUIRED(), list, importType.getREQUIREDIF());
                     initBundleID(importType, componentImportNeeds);
                     moduleNames.add(importType.getMODULE());
+                    componentImportNeeds.setMrRequired(importType.isMRREQUIRED());
                     componentImportNeeds.setShow(importType.isSHOW());
                     componentImportNeeds.setModuleLocaion(importType.getUrlPath());
                     componentImportNeedsList.add(componentImportNeeds);
