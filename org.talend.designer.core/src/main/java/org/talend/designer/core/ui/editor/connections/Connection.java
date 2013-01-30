@@ -222,14 +222,14 @@ public class Connection extends Element implements IConnection, IPerformance {
             String[] strList = { "constant", "el", "groovy", "header", "javaScript", "jxpath", "mvel", "ognl", "php", "property",
                     "python", "ruby", "simple", "spel", "sql", "xpath", "xquery" };
             IElementParameter supportedLanguages = source.getElementParameter("ROUTE_WHEN_LANGUAGES");
-            if(supportedLanguages != null){
+            if (supportedLanguages != null) {
                 Object[] values = supportedLanguages.getListItemsValue();
-                if(values != null){
+                if (values != null) {
                     strList = new String[values.length];
                     System.arraycopy(values, 0, strList, 0, values.length);
                 }
             }
-            
+
             IElementParameter param = new ElementParameter(this);
             param.setCategory(EComponentCategory.BASIC);
             param.setName(EParameterName.ROUTETYPE.getName());
@@ -260,8 +260,8 @@ public class Connection extends Element implements IConnection, IPerformance {
             param.setShow(true);
             param.setNumRow(2);
             addElementParameter(param);
-            //TESB-8043
-            if("cMessageRouter".equals(source.getComponent().getName())){
+            // TESB-8043
+            if ("cMessageRouter".equals(source.getComponent().getName())) {
                 param = new ElementParameter(this);
                 param.setFieldType(EParameterFieldType.CHECK);
                 param.setCategory(EComponentCategory.BASIC);
@@ -956,7 +956,8 @@ public class Connection extends Element implements IConnection, IPerformance {
                                 EConnectionType.ON_COMPONENT_ERROR, EConnectionType.ON_SUBJOB_OK,
                                 EConnectionType.ON_SUBJOB_ERROR, EConnectionType.RUN_IF, EConnectionType.ROUTE,
                                 EConnectionType.ROUTE_TRY, EConnectionType.ROUTE_CATCH, EConnectionType.ROUTE_FINALLY,
-                                EConnectionType.ROUTE_ENDBLOCK, EConnectionType.ROUTE_WHEN, EConnectionType.ROUTE_OTHER, EConnectionType.STARTS)) {
+                                EConnectionType.ROUTE_ENDBLOCK, EConnectionType.ROUTE_WHEN, EConnectionType.ROUTE_OTHER,
+                                EConnectionType.STARTS)) {
                     source.getProcess().removeUniqueConnectionName(uniqueName);
                 }
             }
@@ -1171,7 +1172,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         return this.activate;
     }
 
-    private void setActivate(boolean activate) {
+    public void setActivate(boolean activate) {
         this.activate = activate;
         firePropertyChange(EParameterName.ACTIVATE.getName(), null, null);
     }
@@ -1192,12 +1193,12 @@ public class Connection extends Element implements IConnection, IPerformance {
             return null;
         }
     }
-    
-    //TESB-8043
-    public String getEndChoice(){
+
+    // TESB-8043
+    public String getEndChoice() {
         if (lineStyle.equals(EConnectionType.ROUTE_WHEN)) {
             Object propertyValue = getPropertyValue(EParameterName.ENDOFCHOICE.getName());
-            return propertyValue==null?"false":propertyValue.toString();
+            return propertyValue == null ? "false" : propertyValue.toString();
         } else {
             return null;
         }

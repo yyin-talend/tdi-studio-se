@@ -323,6 +323,9 @@ public class JobletContainer extends NodeContainer {
                     conns.addAll(temNode.getIncomingConnections());
                     conns.addAll(temNode.getOutgoingConnections());
                     Node jnode = util.cloneNode(temNode, this.node.getProcess(), paraMap, lockByOther);
+                    if (!this.node.isActivate()) {
+                        jnode.setActivate(this.node.isActivate());
+                    }
                     NodeContainer nodeContainer = util.cloneNodeContainer(temNode.getNodeContainer(), jnode);
                     jnode.setJobletnode(this.node);
                     jnode.setJoblet_unique_name(temNode.getUniqueName());
@@ -388,8 +391,8 @@ public class JobletContainer extends NodeContainer {
 
     private void transferLocation(boolean update) {
         this.update = update;
-        if (update) { 
-             // do nothing       
+        if (update) {
+            // do nothing
         }
         if (this.isCollapsed() == true) {
             return;
@@ -543,7 +546,7 @@ public class JobletContainer extends NodeContainer {
                 for (INode n : jobletNodes) {
                     if (connNode.getJoblet_unique_name().equals(n.getUniqueName())) {
                         connNode.setDummy(n.isDummy());
-                        connNode.setActivate(n.isActivate());
+                        // connNode.setActivate(n.isActivate());
                     }
                 }
             }
