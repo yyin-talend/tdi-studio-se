@@ -10,7 +10,6 @@ import org.talend.designer.xmlmap.model.emf.xmlmap.AbstractNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.Connection;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
 import org.talend.designer.xmlmap.model.emf.xmlmap.OutputTreeNode;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.VarTable;
@@ -126,7 +125,6 @@ public class CreateDocChildrenCommand extends Command {
                 }
             }
         }
-        manager.refreshOutputTreeSchemaEditor((OutputXmlTree) XmlMapUtil.getAbstractInOutTree(targetOutputNode));
     }
 
     private void createConnection(AbstractNode sourceNode, AbstractNode targetNode) {

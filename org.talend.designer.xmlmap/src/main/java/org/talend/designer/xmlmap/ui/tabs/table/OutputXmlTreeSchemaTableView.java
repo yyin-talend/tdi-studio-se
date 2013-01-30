@@ -13,7 +13,7 @@
 package org.talend.designer.xmlmap.ui.tabs.table;
 
 import org.eclipse.swt.widgets.Composite;
-import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 
 /**
  * created by talend2 on 2012-8-8 Detailled comment
@@ -27,13 +27,13 @@ public class OutputXmlTreeSchemaTableView extends XmlTreeSchemaTableView {
      * @param extendedTableModel
      * @param parent
      */
-    public OutputXmlTreeSchemaTableView(ExtendedTableModel<TreeSchemaTableEntry> extendedTableModel, Composite parent) {
-        super(extendedTableModel, parent);
+    public OutputXmlTreeSchemaTableView(Composite parentComposite, int mainCompositeStyle) {
+        super(parentComposite, mainCompositeStyle);
         // TODO Auto-generated constructor stub
     }
 
     @Override
-    protected String validateEntry(String newValue, TreeSchemaTableEntry bean, int beanPosition) {
+    protected String validateEntry(String newValue, TreeNode bean, int beanPosition) {
         return null;
     }
 

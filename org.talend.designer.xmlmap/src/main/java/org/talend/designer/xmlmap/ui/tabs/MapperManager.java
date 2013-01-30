@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -26,6 +28,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
@@ -53,7 +56,10 @@ import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
 import org.talend.designer.xmlmap.parts.directedit.ExpressionCellEditor;
 import org.talend.designer.xmlmap.parts.directedit.XmlMapNodeDirectEditManager;
 import org.talend.designer.xmlmap.ui.MapperUI;
+import org.talend.designer.xmlmap.ui.tabs.table.TreeSchemaTableEditor;
 import org.talend.designer.xmlmap.ui.tabs.table.TreeSchemaTableEntry;
+import org.talend.designer.xmlmap.ui.tabs.table.XmlTreeSchemaTableView;
+import org.talend.designer.xmlmap.ui.tabs.table.utils.SchemaTableUtils;
 import org.talend.designer.xmlmap.util.XmlMapUtil;
 import org.talend.designer.xmlmap.util.problem.ProblemsAnalyser;
 
@@ -77,6 +83,8 @@ public class MapperManager implements ISelectionChangedListener {
     private ProblemsAnalyser problemsAnalyser;
 
     private XmlMapNodeDirectEditManager currentDirectEditManager;
+
+    private GraphicalViewer graphicalViewer;
 
     private boolean isDieOnError;
 
@@ -207,15 +215,16 @@ public class MapperManager implements ISelectionChangedListener {
                 }
             }
         } else {
-            ExtendedTableModel<TreeSchemaTableEntry> oldModel = mapperUI.getTabFolderEditors().getInputTreeSchemaEditor()
-                    .getExtendedTableModel();
-            if (oldModel != null && oldModel.getBeanCount() != 0) {
-                List<TreeSchemaTableEntry> treeSchemaEntrys = new ArrayList<TreeSchemaTableEntry>();
-                mapperUI.getTabFolderEditors().getInputTreeSchemaEditor()
-                        .setExtendedControlModel(new ExtendedTableModel<TreeSchemaTableEntry>("Tree Schema", treeSchemaEntrys));
-                mapperUI.getTabFolderEditors().getInputTreeSchemaEditor().getTableViewerCreator().refresh();
-            }
-            refreshStyledTextEditor(null);
+            // ExtendedTableModel<TreeSchemaTableEntry> oldModel =
+            // mapperUI.getTabFolderEditors().getInputTreeSchemaEditor()
+            // .getExtendedTableModel();
+            // if (oldModel != null && oldModel.getBeanCount() != 0) {
+            // List<TreeSchemaTableEntry> treeSchemaEntrys = new ArrayList<TreeSchemaTableEntry>();
+            // mapperUI.getTabFolderEditors().getInputTreeSchemaEditor()
+            // .setExtendedControlModel(new ExtendedTableModel<TreeSchemaTableEntry>("Tree Schema", treeSchemaEntrys));
+            // mapperUI.getTabFolderEditors().getInputTreeSchemaEditor().getTableViewerCreator().refresh();
+            // }
+            // refreshStyledTextEditor(null);
         }
 
     }
@@ -230,6 +239,7 @@ public class MapperManager implements ISelectionChangedListener {
         }
         List<Integer> selectionIndices = new ArrayList<Integer>();
 
+        List<TreeNode> selectedDocChild = new ArrayList<TreeNode>();
         Iterator iterator = selection.iterator();
         while (iterator.hasNext()) {
             Object obj = iterator.next();
@@ -237,6 +247,11 @@ public class MapperManager implements ISelectionChangedListener {
                 TreeNode model = (TreeNode) ((TreeNodeEditPart) obj).getModel();
                 if (model.eContainer() == selectedTree) {
                     selectionIndices.add(nodes.indexOf(model));
+                } else {
+                    AbstractInOutTree abstractInOutTree = XmlMapUtil.getAbstractInOutTree(model);
+                    if (abstractInOutTree == selectedTree) {
+                        selectedDocChild.add(model);
+                    }
                 }
             }
         }
@@ -246,21 +261,108 @@ public class MapperManager implements ISelectionChangedListener {
         }
 
         MetadataTableEditorView metaEditorView = null;
+        XmlTreeSchemaTableView treeEditorView = null;
         if (selectedTree instanceof InputXmlTree) {
             metaEditorView = mapperUI.getTabFolderEditors().getInputMetaEditorView();
+            treeEditorView = mapperUI.getTabFolderEditors().getInputTreeSchemaEditor();
         } else {
             metaEditorView = mapperUI.getTabFolderEditors().getOutputMetaEditorView();
+            treeEditorView = mapperUI.getTabFolderEditors().getOutputTreeSchemaEditor();
         }
-        // fix the no more handler exception when select many columns
-        // if (metaEditorView != null) {
-        // metaEditorView.getTableViewerCreator().refresh();
-        // }
-        // metaEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(selections);
         metaEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
         metaEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(selections);
         metaEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
         metaEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
 
+        // tree schema editor
+        // check if the first selection in selectedTree is displayed in current page ,if yes , select this record in
+        // tree schema editor,
+        // if no, change page
+        if (!selectedDocChild.isEmpty()) {
+            treeEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
+            TreeNode firstSelection = null;
+            if (selectedDocChild.size() > 1) {
+                selectionIndices = new ArrayList<Integer>();
+                List<TreeNode> allList = new ArrayList<TreeNode>();
+                for (TreeNode schemaNodes : nodes) {
+                    if (XmlMapUtil.DOCUMENT.equals(schemaNodes.getType())) {
+                        allList.addAll(SchemaTableUtils.getTreeSchemaEnties(schemaNodes));
+                    }
+                }
+                int minIndex = allList.size();
+
+                for (TreeNode selected : selectedDocChild) {
+                    int indexOf = allList.indexOf(selected);
+                    if (indexOf != -1 && indexOf < minIndex) {
+                        firstSelection = selected;
+                    }
+                }
+            } else {
+                firstSelection = selectedDocChild.get(0);
+            }
+            treeEditorView.getExtendedTableModel().changePageIfNeeded(firstSelection);
+
+            // update selection
+            selectionIndices = new ArrayList<Integer>();
+            for (TreeNode selected : selectedDocChild) {
+                int indexOf = treeEditorView.getExtendedTableModel().getBeansList().indexOf(selected);
+                if (indexOf != -1) {
+                    selectionIndices.add(indexOf);
+                }
+            }
+            selections = new int[selectionIndices.size()];
+            for (int i = 0; i < selectionIndices.size(); i++) {
+                selections[i] = selectionIndices.get(i);
+            }
+
+            treeEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(selections);
+            treeEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
+            treeEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
+        }
+    }
+
+    public void selectLinkedInputTableEntries(int[] selectionIndices, boolean isDoc) {
+        if (selectedInputTree != null) {
+            List nodes = null;
+            if (!isDoc) {
+                nodes = selectedInputTree.getNodes();
+            } else {
+                nodes = mapperUI.getTabFolderEditors().getInputTreeSchemaEditor().getExtendedTableModel().getBeansList();
+            }
+
+            selectLinkedTableEntries(nodes, selectionIndices);
+        }
+    }
+
+    public void selectLinkedOutputTableEntries(int[] selectionIndices, boolean isDoc) {
+        if (selectedOutputTree != null) {
+            List nodes = null;
+            if (!isDoc) {
+                nodes = selectedOutputTree.getNodes();
+            } else {
+                nodes = mapperUI.getTabFolderEditors().getOutputTreeSchemaEditor().getExtendedTableModel().getBeansList();
+            }
+            selectLinkedTableEntries(nodes, selectionIndices);
+        }
+    }
+
+    private void selectLinkedTableEntries(List nodes, int[] selectionIndices) {
+        if (getGraphicalViewer() != null) {
+            boolean select = false;
+            for (int selectionIndice : selectionIndices) {
+                if (selectionIndice < nodes.size()) {
+                    Object object = getGraphicalViewer().getEditPartRegistry().get(nodes.get(selectionIndice));
+                    if (object instanceof EditPart) {
+                        if (!select) {
+                            getGraphicalViewer().select((EditPart) object);
+                            select = true;
+                        } else {
+                            getGraphicalViewer().appendSelection((EditPart) object);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void refreshStyledTextEditor(AbstractNodePart nodePart) {
@@ -288,20 +390,6 @@ public class MapperManager implements ISelectionChangedListener {
         mapperUI.getTabFolderEditors().getStyledTextHandler().getStyledText().setEnabled(true);
         mapperUI.getTabFolderEditors().getStyledTextHandler().getStyledText().setEditable(true);
         mapperUI.getTabFolderEditors().getStyledTextHandler().setSelectedNodePart(nodePart);
-    }
-
-    public void refreshInputTreeSchemaEditor(InputXmlTree tree) {
-        ExtendedTableModel<TreeSchemaTableEntry> selectedInputTreeSchemaModel = getSelectedInputTreeSchemaModel(tree);
-        mapperUI.getTabFolderEditors().getInputTreeSchemaEditor().setExtendedControlModel(selectedInputTreeSchemaModel);
-        mapperUI.getTabFolderEditors().getInputTreeSchemaEditor().getTableViewerCreator().refresh();
-    }
-
-    public void refreshOutputTreeSchemaEditor(OutputXmlTree tree) {
-        ExtendedTableModel<TreeSchemaTableEntry> selectedInputTreeSchemaModel = getSelectedOutputTreeSchemaModel(tree);
-        if (mapperUI.getTabFolderEditors().getOutputTreeSchemaEditor() != null) {
-            mapperUI.getTabFolderEditors().getOutputTreeSchemaEditor().setExtendedControlModel(selectedInputTreeSchemaModel);
-            mapperUI.getTabFolderEditors().getOutputTreeSchemaEditor().getTableViewerCreator().refresh();
-        }
     }
 
     public void selectInputXmlTree(InputXmlTree inputTree) {
@@ -370,7 +458,7 @@ public class MapperManager implements ISelectionChangedListener {
                                     }
                                     problemsAnalyser.checkProblems(selectedInputTree);
                                     mapperUI.updateStatusBar();
-                                    refreshInputTreeSchemaEditor(selectedInputTree);
+                                    inputTreeSchemaBeanListModified();
                                 }
                             }
                         } else if (AbstractMetadataTableEditorView.ID_COLUMN_KEY.equals(event.column.getId())) {
@@ -534,7 +622,7 @@ public class MapperManager implements ISelectionChangedListener {
                 inputMetaEditorView.setMetadataTableEditor(editor);
             }
 
-            refreshInputTreeSchemaEditor(inputTree);
+            refreshTreeSchemaEditor(inputTree);
         }
 
     }
@@ -542,11 +630,11 @@ public class MapperManager implements ISelectionChangedListener {
     private void processColumnNameChanged(final TreeNode treeNode) {
         XmlMapUtil.updateXPathAndExpression(copyOfMapData, getMapperComponent().getExpressionManager(), treeNode,
                 treeNode.getName(), XmlMapUtil.getXPathLength(treeNode.getXpath()), true);
-        if (treeNode instanceof OutputTreeNode) {
-            getMapperUI().getTabFolderEditors().getOutputTreeSchemaEditor().refresh();
-        } else {
-            getMapperUI().getTabFolderEditors().getInputTreeSchemaEditor().refresh();
-        }
+        // if (treeNode instanceof OutputTreeNode) {
+        // getMapperUI().getTabFolderEditors().getOutputTreeSchemaEditor().refresh();
+        // } else {
+        // getMapperUI().getTabFolderEditors().getInputTreeSchemaEditor().refresh();
+        // }
     }
 
     public void selectOutputXmlTree(OutputXmlTree outputTree) {
@@ -633,7 +721,7 @@ public class MapperManager implements ISelectionChangedListener {
                                     }
                                     problemsAnalyser.checkProblems(selectedOutputTree);
                                     mapperUI.updateStatusBar();
-                                    refreshOutputTreeSchemaEditor(selectedOutputTree);
+                                    outputTreeSchemaBeanListModified();
                                 }
                             }
                         } else if (AbstractMetadataTableEditorView.ID_COLUMN_KEY.equals(event.column.getId())) {
@@ -779,7 +867,7 @@ public class MapperManager implements ISelectionChangedListener {
 
                 });
             }
-            refreshOutputTreeSchemaEditor(outputTree);
+            refreshTreeSchemaEditor(outputTree);
         }
 
     }
@@ -812,5 +900,91 @@ public class MapperManager implements ISelectionChangedListener {
 
     public InputXmlTree getMainInputTree() {
         return mainInputTree;
+    }
+
+    /**
+     * Getter for graphicalViewer.
+     * 
+     * @return the graphicalViewer
+     */
+    public GraphicalViewer getGraphicalViewer() {
+        return this.graphicalViewer;
+    }
+
+    /**
+     * Sets the graphicalViewer.
+     * 
+     * @param graphicalViewer the graphicalViewer to set
+     */
+    public void setGraphicalViewer(GraphicalViewer graphicalViewer) {
+        this.graphicalViewer = graphicalViewer;
+    }
+
+    /**
+     * 
+     * DOC refresh column when property of treenode is changed
+     * 
+     * @param treeNode
+     */
+    public void refreshTreeSchemaColumn(TreeNode treeNode) {
+        TableViewerCreator<TreeNode> tableViewerCreator = null;
+        if (treeNode instanceof OutputTreeNode) {
+            tableViewerCreator = mapperUI.getTabFolderEditors().getOutputTreeSchemaEditor().getTableViewerCreator();
+
+        } else {
+            tableViewerCreator = mapperUI.getTabFolderEditors().getInputTreeSchemaEditor().getTableViewerCreator();
+
+        }
+        if (tableViewerCreator != null && tableViewerCreator.getTable() != null && !tableViewerCreator.getTable().isDisposed()) {
+            tableViewerCreator.getTableViewer().refresh(treeNode);
+        }
+
+    }
+
+    private void outputTreeSchemaBeanListModified() {
+        ExtendedTableModel<TreeNode> extendedTableModel = mapperUI.getTabFolderEditors().getOutputTreeSchemaEditor()
+                .getExtendedTableModel();
+        if (extendedTableModel != null) {
+            ((TreeSchemaTableEditor) extendedTableModel).beanListModified();
+        }
+    }
+
+    private void inputTreeSchemaBeanListModified() {
+        ExtendedTableModel<TreeNode> extendedTableModel = mapperUI.getTabFolderEditors().getInputTreeSchemaEditor()
+                .getExtendedTableModel();
+        if (extendedTableModel != null) {
+            ((TreeSchemaTableEditor) extendedTableModel).beanListModified();
+        }
+    }
+
+    /**
+     * 
+     * DOC Administrator Comment method "refreshTreeSchemaEditor".
+     * 
+     * @param outputTree
+     */
+    public void refreshTreeSchemaEditor(AbstractInOutTree outputTree) {
+        XmlTreeSchemaTableView outputTreeSchemaEditor = null;
+        if (outputTree instanceof InputXmlTree) {
+            outputTreeSchemaEditor = mapperUI.getTabFolderEditors().getInputTreeSchemaEditor();
+        } else {
+            outputTreeSchemaEditor = mapperUI.getTabFolderEditors().getOutputTreeSchemaEditor();
+        }
+
+        TreeSchemaTableEditor editor = new TreeSchemaTableEditor(outputTree);
+        outputTreeSchemaEditor.setExtendedTableModel(editor);
+        // editor.setModifiedBeanListenable(outputTreeSchemaEditor.getTableViewerCreator());
+
+    }
+
+    public void beanListModified(boolean input) {
+        XmlTreeSchemaTableView outputTreeSchemaEditor = null;
+        if (input) {
+            outputTreeSchemaEditor = mapperUI.getTabFolderEditors().getInputTreeSchemaEditor();
+        } else {
+            outputTreeSchemaEditor = mapperUI.getTabFolderEditors().getOutputTreeSchemaEditor();
+        }
+
+        outputTreeSchemaEditor.getExtendedTableModel().beanListModified();
     }
 }

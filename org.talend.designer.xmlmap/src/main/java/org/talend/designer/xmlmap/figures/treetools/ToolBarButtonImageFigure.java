@@ -29,7 +29,6 @@ import org.eclipse.draw2d.TextUtilities;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.talend.designer.xmlmap.ui.resource.ColorInfo;
@@ -72,10 +71,7 @@ public class ToolBarButtonImageFigure extends ImageFigure {
         setBorder(new MarginBorder(2));
         if (image != null) {
             this.enabledImage = image;
-            this.disabledImage = new Image(image.getDevice(), image, SWT.IMAGE_DISABLE);
-            ImageProviderMapper.cacheDisabledImage(disabledImage);
         }
-
     }
 
     /**
@@ -84,15 +80,18 @@ public class ToolBarButtonImageFigure extends ImageFigure {
     protected void initlistener() {
         listener = new MouseMotionListener() {
 
+            @Override
             public void mouseMoved(MouseEvent me) {
 
             }
 
+            @Override
             public void mouseHover(MouseEvent me) {
                 addLineBorder();
                 setHoverColor();
             }
 
+            @Override
             public void mouseExited(MouseEvent me) {
                 if (Clickable.STYLE_TOGGLE == getStyle()) {
                     if (!isSelected()) {
@@ -105,10 +104,12 @@ public class ToolBarButtonImageFigure extends ImageFigure {
                 }
             }
 
+            @Override
             public void mouseEntered(MouseEvent me) {
 
             }
 
+            @Override
             public void mouseDragged(MouseEvent me) {
 
             }
@@ -117,14 +118,17 @@ public class ToolBarButtonImageFigure extends ImageFigure {
 
         this.addMouseListener(new MouseListener() {
 
+            @Override
             public void mousePressed(MouseEvent me) {
                 toolBarButtonPressed(me);
             }
 
+            @Override
             public void mouseReleased(MouseEvent me) {
                 // TODO Auto-generated method stub
             }
 
+            @Override
             public void mouseDoubleClicked(MouseEvent me) {
                 // TODO Auto-generated method stub
 
@@ -172,6 +176,7 @@ public class ToolBarButtonImageFigure extends ImageFigure {
 
     }
 
+    @Override
     public void setEnabled(boolean value) {
         super.setEnabled(value);
         changeImage();
@@ -183,6 +188,7 @@ public class ToolBarButtonImageFigure extends ImageFigure {
                 setImage(enabledImage);
             }
         } else {
+            this.disabledImage = ImageProviderMapper.getDisabledImage(enabledImage);
             if (getImage() != disabledImage) {
                 setImage(disabledImage);
             }
@@ -213,6 +219,7 @@ public class ToolBarButtonImageFigure extends ImageFigure {
     /**
      * @return The Image that this Figure displays
      */
+    @Override
     public Image getImage() {
         return img;
     }
@@ -222,6 +229,7 @@ public class ToolBarButtonImageFigure extends ImageFigure {
      * 
      * @see org.eclipse.draw2d.Figure#getPreferredSize(int, int)
      */
+    @Override
     public Dimension getPreferredSize(int wHint, int hHint) {
 
         Insets i = getInsets();
@@ -236,8 +244,9 @@ public class ToolBarButtonImageFigure extends ImageFigure {
 
     protected Dimension calculateLabelSize(Dimension txtSize) {
         int gap = getIconTextGap();
-        if (getText().equals("")) //$NON-NLS-1$
+        if (getText().equals("")) {
             gap = 0;
+        }
         Dimension d = new Dimension(0, 0);
         d.width = gap + txtSize.width;
         d.height = txtSize.height;
@@ -248,11 +257,14 @@ public class ToolBarButtonImageFigure extends ImageFigure {
     /**
      * @see org.eclipse.draw2d.Figure#paintFigure(Graphics)
      */
+    @Override
     protected void paintFigure(Graphics graphics) {
-        if (isOpaque())
+        if (isOpaque()) {
             graphics.fillRectangle(getBounds());
-        if (getBorder() instanceof AbstractBackground)
+        }
+        if (getBorder() instanceof AbstractBackground) {
             ((AbstractBackground) getBorder()).paintBackground(this, graphics, NO_INSETS);
+        }
 
         int x, y;
         Rectangle area = getClientArea();
@@ -302,6 +314,7 @@ public class ToolBarButtonImageFigure extends ImageFigure {
      * 
      * @param flag A constant indicating the alignment
      */
+    @Override
     public void setAlignment(int flag) {
         alignment = flag;
     }
@@ -313,22 +326,26 @@ public class ToolBarButtonImageFigure extends ImageFigure {
      * 
      * @param image The Image to be displayed. It can be <code>null</code>.
      */
+    @Override
     public void setImage(Image image) {
-        if (img == image)
+        if (img == image) {
             return;
+        }
         img = image;
-        if (img != null)
+        if (img != null) {
             size = new Rectangle(image.getBounds()).getSize();
-        else
+        } else {
             size = new Dimension();
+        }
         revalidate();
         notifyImageChanged();
         repaint();
     }
 
     public void setIconTextGap(int gap) {
-        if (iconTextGap == gap)
+        if (iconTextGap == gap) {
             return;
+        }
         iconTextGap = gap;
         repaint();
         revalidate();
@@ -339,8 +356,9 @@ public class ToolBarButtonImageFigure extends ImageFigure {
     }
 
     protected Dimension getTextSize() {
-        if (textSize == null)
+        if (textSize == null) {
             textSize = calculateTextSize();
+        }
         return textSize;
     }
 
@@ -362,6 +380,7 @@ public class ToolBarButtonImageFigure extends ImageFigure {
             super(outer, inner);
         }
 
+        @Override
         public Insets getInsets(IFigure figure) {
             Insets insets = null;
             if (inner != null) {

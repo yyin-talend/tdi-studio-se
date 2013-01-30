@@ -68,6 +68,7 @@ public class XmlMapEditor extends GraphicalEditor {
         this.mapperManager = mapperManager;
     }
 
+    @Override
     protected void createGraphicalViewer(final Composite parent) {
         // rulerComp = new RulerComposite(parent, SWT.BORDER);
         XmlMapGraphicViewer viewer = new XmlMapGraphicViewer();
@@ -84,6 +85,7 @@ public class XmlMapEditor extends GraphicalEditor {
     /**
      * @see org.eclipse.gef.commands.CommandStackListener#commandStackChanged(java.util.EventObject)
      */
+    @Override
     public void commandStackChanged(EventObject event) {
         firePropertyChange(IEditorPart.PROP_DIRTY);
         super.commandStackChanged(event);
@@ -92,6 +94,7 @@ public class XmlMapEditor extends GraphicalEditor {
     /**
      * @see org.eclipse.gef.ui.parts.GraphicalEditor#createActions()
      */
+    @Override
     protected void createActions() {
 
         ImportTreeFromXml importAction = new ImportTreeFromXml(this, getGraphicalViewer().getControl().getShell());
@@ -99,12 +102,12 @@ public class XmlMapEditor extends GraphicalEditor {
         getActionRegistry().registerAction(importAction);
         getSelectionActions().add(importAction.getId());
 
-        CreateAttributeAction createAttribute = new CreateAttributeAction(this);
+        CreateAttributeAction createAttribute = new CreateAttributeAction(this, getGraphicalViewer());
         createAttribute.setMapperManager(mapperManager);
         getActionRegistry().registerAction(createAttribute);
         getSelectionActions().add(createAttribute.getId());
 
-        CreateElementAction createElement = new CreateElementAction(this);
+        CreateElementAction createElement = new CreateElementAction(this, getGraphicalViewer());
         createElement.setMapperManager(mapperManager);
         getActionRegistry().registerAction(createElement);
         getSelectionActions().add(createElement.getId());
@@ -129,7 +132,7 @@ public class XmlMapEditor extends GraphicalEditor {
         getActionRegistry().registerAction(importFromRepository);
         getSelectionActions().add(importFromRepository.getId());
 
-        CreateNameSpaceAction createNameSpaceInput = new CreateNameSpaceAction(this);
+        CreateNameSpaceAction createNameSpaceInput = new CreateNameSpaceAction(this, getGraphicalViewer());
         createNameSpaceInput.setMapperManager(mapperManager);
         getActionRegistry().registerAction(createNameSpaceInput);
         getSelectionActions().add(createNameSpaceInput.getId());
@@ -168,6 +171,7 @@ public class XmlMapEditor extends GraphicalEditor {
     /**
      * @see org.eclipse.gef.ui.parts.GraphicalEditor#configureGraphicalViewer()
      */
+    @Override
     protected void configureGraphicalViewer() {
         super.configureGraphicalViewer();
         getGraphicalViewer().setRootEditPart(new XmlMapScalableRootEditPart());
@@ -179,6 +183,7 @@ public class XmlMapEditor extends GraphicalEditor {
     /**
      * @see org.eclipse.gef.ui.parts.GraphicalEditor#initializeGraphicalViewer()
      */
+    @Override
     protected void initializeGraphicalViewer() {
 
         // getGraphicalViewer().setContents(getContents());
@@ -186,8 +191,6 @@ public class XmlMapEditor extends GraphicalEditor {
         getGraphicalViewer().addDragSourceListener(new XmlDragSourceListener(getGraphicalViewer()));
 
         getGraphicalViewer().addDropTargetListener(new XmlDropTargetListener(getGraphicalViewer()));
-
-        getGraphicalViewer().addSelectionChangedListener(mapperManager);
 
         getGraphicalViewer().setContextMenu(new MenueProvider(getGraphicalViewer()));
         initializeActionRegistry();

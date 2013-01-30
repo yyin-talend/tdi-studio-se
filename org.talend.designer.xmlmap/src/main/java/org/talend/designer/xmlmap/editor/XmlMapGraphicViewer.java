@@ -50,6 +50,7 @@ public class XmlMapGraphicViewer extends GraphicalViewerImpl {
                 super(coll);
             }
 
+            @Override
             public boolean accept(IFigure figure) {
                 EditPart editpart = null;
                 while (editpart == null && figure != null) {
@@ -62,6 +63,7 @@ public class XmlMapGraphicViewer extends GraphicalViewerImpl {
         return getLightweightSystem().getRootFigure().findFigureAt(x, y, new ConditionalTreeSearch(exclude));
     }
 
+    @Override
     public void select(EditPart editpart) {
         if (editpart instanceof VarTableEditPart) {
             return;
@@ -74,8 +76,9 @@ public class XmlMapGraphicViewer extends GraphicalViewerImpl {
         // set false to dispatch mouse release event ??? need or not mouseListeners is executed before selection change
         // setRouteEventsToEditDomain(false);
 
-        if ((getSelectedEditParts().size() == 1) && (getSelectedEditParts().get(0) == editpart))
+        if ((getSelectedEditParts().size() == 1) && (getSelectedEditParts().get(0) == editpart)) {
             return;
+        }
 
         primDeselectAll(editpart);
         appendSelection(editpart); // fireSelectionChanged() is called here
@@ -122,6 +125,10 @@ public class XmlMapGraphicViewer extends GraphicalViewerImpl {
 
     public void setMapperManager(MapperManager mapperManager) {
         this.mapperManager = mapperManager;
+        if (!selectionListeners.contains(mapperManager)) {
+            mapperManager.setGraphicalViewer(this);
+            addSelectionChangedListener(mapperManager);
+        }
     }
 
     public FiguresManager getFiguresManager() {

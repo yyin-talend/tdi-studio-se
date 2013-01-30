@@ -186,10 +186,12 @@ public class ImportTreeFromRepository extends SelectionAction {
             AbstractInOutTree tree = null;
             if (schemaNode.eContainer() instanceof InputXmlTree) {
                 XmlMapConnectionBuilder.rebuildLinks(schemaNode, mapperManager.getCopyOfMapData());
-                mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) schemaNode.eContainer());
+                mapperManager.refreshTreeSchemaEditor((InputXmlTree) schemaNode.eContainer());
+                // mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) schemaNode.eContainer());
                 tree = (InputXmlTree) schemaNode.eContainer();
             } else if (schemaNode.eContainer() instanceof OutputXmlTree) {
-                mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) schemaNode.eContainer());
+                // mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) schemaNode.eContainer());
+                mapperManager.refreshTreeSchemaEditor((OutputXmlTree) schemaNode.eContainer());
                 tree = (OutputXmlTree) schemaNode.eContainer();
             }
             if (tree != null) {
@@ -681,7 +683,7 @@ public class ImportTreeFromRepository extends SelectionAction {
         if (targetAbsolutePath == null) {
             targetAbsolutePath = new ArrayList<String>();
             targetAbsolutePath.add(absoluteXPathQuery);
-            Pattern regex = Pattern.compile(RELATIVE_PATH_PATTERN, Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE //$NON-NLS-1$
+            Pattern regex = Pattern.compile(RELATIVE_PATH_PATTERN, Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE
                     | Pattern.MULTILINE);
             for (Object obj : schemaTargets) {
                 String relativeXPathQuery = "";
@@ -777,7 +779,7 @@ public class ImportTreeFromRepository extends SelectionAction {
     }
 
     private File getTempTemplateXSDFile() {
-        IPath tempPath = new Path(System.getProperty("user.dir")).append("temp"); //$NON-NLS-1$ //$NON-NLS-1$ //$NON-NLS-2$
+        IPath tempPath = new Path(System.getProperty("user.dir")).append("temp"); //$NON-NLS-1$ //$NON-NLS-2$
         File tempFile = tempPath.toFile();
         if (!tempFile.exists()) {
             tempFile.mkdirs();

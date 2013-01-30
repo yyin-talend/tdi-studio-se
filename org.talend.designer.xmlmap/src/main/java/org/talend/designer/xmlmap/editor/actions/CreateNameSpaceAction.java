@@ -15,12 +15,11 @@ package org.talend.designer.xmlmap.editor.actions;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
-import org.talend.designer.xmlmap.model.emf.xmlmap.InputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.NodeType;
-import org.talend.designer.xmlmap.model.emf.xmlmap.OutputXmlTree;
 import org.talend.designer.xmlmap.model.emf.xmlmap.TreeNode;
 import org.talend.designer.xmlmap.model.emf.xmlmap.XmlmapFactory;
 import org.talend.designer.xmlmap.parts.TreeNodeEditPart;
@@ -41,8 +40,11 @@ public class CreateNameSpaceAction extends SelectionAction {
 
     public static final String ID = "org.talend.designer.xmlmap.editor.actions.CreateNameSapceInput";
 
-    public CreateNameSpaceAction(IWorkbenchPart part) {
+    private GraphicalViewer graphicViewer;
+
+    public CreateNameSpaceAction(IWorkbenchPart part, GraphicalViewer graphicViewer) {
         super(part);
+        this.graphicViewer = graphicViewer;
         setText("Set A Namespace");
         setId(ID);
     }
@@ -109,11 +111,15 @@ public class CreateNameSpaceAction extends SelectionAction {
 
         // children.add(createdNode);
 
-        TreeNode docRoot = XmlMapUtil.getTreeNodeRoot(parent);
-        if (docRoot != null && docRoot.eContainer() instanceof OutputXmlTree) {
-            mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) docRoot.eContainer());
-        } else if (docRoot != null && docRoot.eContainer() instanceof InputXmlTree) {
-            mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) docRoot.eContainer());
+        // TreeNode docRoot = XmlMapUtil.getTreeNodeRoot(parent);
+        // if (docRoot != null && docRoot.eContainer() instanceof OutputXmlTree) {
+        // mapperManager.refreshOutputTreeSchemaEditor((OutputXmlTree) docRoot.eContainer());
+        // } else if (docRoot != null && docRoot.eContainer() instanceof InputXmlTree) {
+        // mapperManager.refreshInputTreeSchemaEditor((InputXmlTree) docRoot.eContainer());
+        // }
+        Object object = graphicViewer.getEditPartRegistry().get(createdNode);
+        if (object instanceof TreeNodeEditPart) {
+            graphicViewer.select((TreeNodeEditPart) object);
         }
     }
 

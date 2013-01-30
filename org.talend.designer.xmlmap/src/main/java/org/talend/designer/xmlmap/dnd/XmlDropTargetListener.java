@@ -75,13 +75,16 @@ public class XmlDropTargetListener extends AbstractTransferDropTargetListener {
         }
     }
 
+    @Override
     public void dragEnter(DropTargetEvent event) {
     }
 
+    @Override
     public void dragLeave(DropTargetEvent event) {
 
     }
 
+    @Override
     public void dragOperationChanged(DropTargetEvent event) {
 
     }
@@ -226,6 +229,7 @@ public class XmlDropTargetListener extends AbstractTransferDropTargetListener {
         showTargetFeedback();
     }
 
+    @Override
     public void drop(DropTargetEvent event) {
         setCurrentEvent(event);
         eraseTargetFeedback();
@@ -314,24 +318,27 @@ public class XmlDropTargetListener extends AbstractTransferDropTargetListener {
 
         if (getTargetEditPart() != null) {
             Command command = getCommand();
-            if (command != null && command.canExecute())
+            if (command != null && command.canExecute()) {
                 getViewer().getEditDomain().getCommandStack().execute(command);
-            else
+            } else {
                 getCurrentEvent().detail = DND.DROP_NONE;
-        } else
+            }
+        } else {
             getCurrentEvent().detail = DND.DROP_NONE;
+        }
 
         selectAddedObject();
     }
 
     private void selectAddedObject() {
+        boolean added = false;
         List newObjects = getCreateRequest().getNewObjects();
         for (int i = 0; i < newObjects.size(); i++) {
             Object model = newObjects.get(i);
             EditPartViewer viewer = getViewer();
             viewer.getControl().forceFocus();
             Object editpart = viewer.getEditPartRegistry().get(model);
-            boolean added = false;
+
             if (editpart instanceof EditPart) {
                 if (!added) {
                     // Force a layout first.
