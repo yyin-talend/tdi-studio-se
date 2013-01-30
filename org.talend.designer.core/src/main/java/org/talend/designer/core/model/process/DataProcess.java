@@ -82,10 +82,12 @@ import org.talend.designer.core.ui.editor.jobletcontainer.JobletContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.utils.JavaProcessUtil;
 import org.talend.designer.core.utils.ValidationRulesUtil;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 
 /**
  * This class will create the list of nodes that will be used to generate the code.
@@ -1271,7 +1273,7 @@ public class DataProcess {
                                         .getElementParameter("TEMP_FOLDER").getValue() //$NON-NLS-1$
                                         .toString());
                             }
-                            String folder = "\"" + folderTemp + "/" + "tMROutput_" + dataNode.getUniqueName() + "/" + conn.getName() + "\"";//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ 
+                            String folder = "\"" + folderTemp + "/" + duplicatedProcess.getName() + "/" + "tMROutput_" + dataNode.getUniqueName() + "/" + conn.getName() + "\"";//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ 
 
                             // get next node
                             DataNode nextNode = (DataNode) conn.getTarget();
@@ -1284,8 +1286,7 @@ public class DataProcess {
                                     ComponentCategory.CATEGORY_4_MAPREDUCE.getName());
                             AbstractNode mrOutNode = new DataNode(mrOutComponent,
                                     "tMROutput_" + dataNode.getUniqueName() + "_" + conn.getName());//$NON-NLS-1$ //$NON-NLS-2$
-                            mrOutNode.getElementParameter("FOLDER").setValue( //$NON-NLS-1$
-                                    folder);
+                            mrOutNode.getElementParameter("FOLDER").setValue(folder); //$NON-NLS-1$
                             mrOutNode.setActivate(true);
                             mrOutNode.setStart(false);
                             mrOutNode.setSubProcessStart(false);
@@ -1837,11 +1838,26 @@ public class DataProcess {
             for (INode node : newGraphicalNodeList) {
                 if (node.isSubProcessStart() && node.isActivate()) {
                     if (node.getComponent().getName().equals(MRCONFIG_COMPONENT_NAME)) {
-                        configNode = node;
+                        configNode = buildCheckMap.get(node);
                         break;
                     }
                 }
             }
+            List<Map<String, String>> libs = new ArrayList<Map<String, String>>();
+            Map<String, String> lib = null;
+            for (String libName : JavaProcessUtil.getNeededLibraries(duplicatedProcess, true, true)) {
+                lib = new HashMap<String, String>();
+                lib.put("NAME", libName); //$NON-NLS-1$
+                libs.add(lib);
+            }
+            // FIXME systemRoutine.jar and userRoutine.jar need to added by manul
+            lib = new HashMap<String, String>();
+            lib.put("NAME", JobJavaScriptsManager.SYSTEMROUTINE_JAR); //$NON-NLS-1$ 
+            libs.add(lib);
+            lib = new HashMap<String, String>();
+            lib.put("NAME", JobJavaScriptsManager.USERROUTINE_JAR); //$NON-NLS-1$ 
+            libs.add(lib);
+            configNode.getElementParameter("JARS").setValue(libs); //$NON-NLS-1$
             for (INode node : newGraphicalNodeList) {
                 if (node.isSubProcessStart() && node.isActivate()) {
                     if (!node.getComponent().getName().equals(MRCONFIG_COMPONENT_NAME)) {

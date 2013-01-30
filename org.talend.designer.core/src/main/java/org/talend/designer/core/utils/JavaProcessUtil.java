@@ -49,6 +49,10 @@ import org.talend.librariesmanager.model.ModulesNeededProvider;
 public class JavaProcessUtil {
 
     public static Set<ModuleNeeded> getNeededModules(final IProcess process, boolean withChildrens) {
+        return getNeededModules(process, withChildrens, false);
+    }
+
+    public static Set<ModuleNeeded> getNeededModules(final IProcess process, boolean withChildrens, boolean forMR) {
         List<ModuleNeeded> modulesNeeded = new ArrayList<ModuleNeeded>();
         // see bug 4939: making tRunjobs work loop will cause a error of "out of memory"
         Set<ProcessItem> searchItems = new HashSet<ProcessItem>();
@@ -65,7 +69,7 @@ public class JavaProcessUtil {
         }
 
         // call recursive function to get all dependencies from job & subjobs
-        getNeededModules(process, withChildrens, searchItems, modulesNeeded);
+        getNeededModules(process, withChildrens, searchItems, modulesNeeded, forMR);
 
         // remove duplicates, and keep by priority the one got bundle dependency setup
         Collections.sort(modulesNeeded, new Comparator<ModuleNeeded>() {
@@ -103,8 +107,14 @@ public class JavaProcessUtil {
     }
 
     public static Set<String> getNeededLibraries(final IProcess process, boolean withChildrens) {
+        return getNeededLibraries(process, withChildrens, false);
+    }
+
+    // for MapReduce job, if the jar on Xml don't set MRREQUIRED="true", shouldn't add it to
+    // DistributedCache
+    public static Set<String> getNeededLibraries(final IProcess process, boolean withChildrens, boolean forMR) {
         Set<String> libsNeeded = new HashSet<String>();
-        for (ModuleNeeded module : getNeededModules(process, withChildrens)) {
+        for (ModuleNeeded module : getNeededModules(process, withChildrens, forMR)) {
             libsNeeded.add(module.getModuleName());
         }
 
@@ -112,7 +122,7 @@ public class JavaProcessUtil {
     }
 
     private static void getNeededModules(final IProcess process, boolean withChildrens, Set<ProcessItem> searchItems,
-            List<ModuleNeeded> modulesNeeded) {
+            List<ModuleNeeded> modulesNeeded, boolean forMR) {
         IElementParameter headerParameter = process.getElementParameter(EParameterName.HEADER_LIBRARY.getName());
         if (headerParameter != null) {
             Object value = headerParameter.getValue();
@@ -160,7 +170,7 @@ public class JavaProcessUtil {
 
         List<? extends INode> nodeList = process.getGeneratingNodes();
         for (INode node : nodeList) {
-            addNodeRelatedModules(process, modulesNeeded, node);
+            addNodeRelatedModules(process, modulesNeeded, node, forMR);
 
             if (withChildrens) {
                 if (node.getComponent().getName().equals("tRunJob")) { //$NON-NLS-1$
@@ -186,7 +196,7 @@ public class JavaProcessUtil {
                         IProcess child = service.getProcessFromItem(subJobInfo.getProcessItem());
                         // Process child = new Process(subJobInfo.getProcessItem().getProperty());
                         // child.loadXmlFile();
-                        JavaProcessUtil.getNeededModules(child, true, searchItems, modulesNeeded);
+                        JavaProcessUtil.getNeededModules(child, true, searchItems, modulesNeeded, forMR);
                     }
                 }
             }
@@ -201,6 +211,10 @@ public class JavaProcessUtil {
      * @param node
      */
     public static void addNodeRelatedModules(final IProcess process, List<ModuleNeeded> modulesNeeded, INode node) {
+        addNodeRelatedModules(process, modulesNeeded, node, false);
+    }
+
+    public static void addNodeRelatedModules(final IProcess process, List<ModuleNeeded> modulesNeeded, INode node, boolean onlyMR) {
         if (!node.isActivate()) {
             // if node is deactivated, we don't need at all its dependencies.
             return;
@@ -208,6 +222,11 @@ public class JavaProcessUtil {
         List<ModuleNeeded> moduleList = node.getModulesNeeded();
         for (ModuleNeeded needed : moduleList) {
             if (needed.isRequired(node.getElementParameters())) {
+                // for MapReduce job, if the jar on Xml don't set MRREQUIRED="true", shouldn't add it to
+                // DistributedCache
+                if (onlyMR && !needed.isMrRequired()) {
+                    continue;
+                }
                 modulesNeeded.add(needed);
             }
         }
