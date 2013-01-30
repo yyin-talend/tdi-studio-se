@@ -62,11 +62,10 @@ if(connsIf.size()>0) {
 				.endChoice()
 <%
 			}
-			
-		}
 %>
-		.when().<%=expression%>
+			.when().<%=expression%>
 <%
+		}
 	} else if(connsIf.get(0).getLineStyle()==EConnectionType.ROUTE_OTHER) {
 			IConnection currentConnection = connsIf.get(0);
 			INode sourceNode = currentConnection.getSource();
