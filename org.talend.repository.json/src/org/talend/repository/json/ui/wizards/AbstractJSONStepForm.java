@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ContextItem;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.json.util.JSONConnectionContextHelper;
 import org.talend.repository.model.IConnParamName;
 import org.talend.repository.ui.swt.utils.AbstractForm;
@@ -108,8 +109,18 @@ public abstract class AbstractJSONStepForm extends AbstractForm {
      */
     @Override
     protected void revertContext() {
-        // TODO Auto-generated method stub
-        super.revertContext();
+        if (hasContextBtn() && connectionItem != null) {
+            if (isContextMode()) {
+                ContextType contextType = JSONConnectionContextHelper.getContextTypeForContextMode(getShell(),
+                        connectionItem.getConnection(), true);
+                if (contextType != null) { // choose
+                    JSONConnectionContextHelper.revertPropertiesForContextMode(connectionItem, contextType);
+                    adaptContextModeToReversion();
+                }
+            } else {
+                JSONConnectionContextHelper.openOutConetxtModeDialog();
+            }
+        }
     }
 
     /*
