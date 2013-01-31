@@ -72,3 +72,4 @@ Export-Package: ca.uhn.hl7v2,
  ca.uhn.hl7v3.rim.datatype,
  ca.uhn.hl7v3.sourcegen,
  ca.uhn.log
+Require-Bundle: org.talend.libraries.apache
