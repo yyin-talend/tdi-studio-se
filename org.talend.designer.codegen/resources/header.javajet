@@ -99,8 +99,12 @@ import java.util.Comparator;
 String talendJobInterfaces = "TalendJob";
 
 boolean talendMdmJob = !process.getNodesOfType("tMDMTriggerInput").isEmpty() || !process.getNodesOfType("tMDMTriggerOutput").isEmpty();
-boolean talendEsbJob = !process.getNodesOfType("tESBProviderRequest").isEmpty() || !process.getNodesOfType("tESBConsumer").isEmpty();
-boolean talendEsbJobFactory = !process.getNodesOfType("tESBProviderRequest").isEmpty() || !process.getNodesOfType("tRouteInput").isEmpty();
+
+boolean actAsProvider = !process.getNodesOfType("tESBProviderRequest").isEmpty();
+boolean actAsConsumer = !process.getNodesOfType("tESBConsumer").isEmpty();
+
+boolean talendEsbJob = actAsProvider || actAsConsumer || !process.getNodesOfType("tRouteInput").isEmpty();
+boolean talendEsbJobFactory = actAsProvider || !process.getNodesOfType("tRouteInput").isEmpty();
 
 if (talendMdmJob) {
 	talendJobInterfaces += ", TalendMDMJob"; // Talend MDM job
@@ -113,6 +117,26 @@ if (talendEsbJobFactory) {
 }
 %>
 public class <%=process.getName()%> implements <%=talendJobInterfaces%> {
+
+<% if (talendEsbJob) { %>
+	private ESBEndpointRegistry registry = null;
+
+	public void setEndpointRegistry(ESBEndpointRegistry registry) {
+		this.registry = registry;
+	}
+
+	private ESBProviderCallback callback = null;
+
+	public void setProviderCallback(ESBProviderCallback callback) {
+		<% if (actAsProvider) { %>
+			this.callback = callback;
+		<% } %>
+	}
+
+	<% if (!actAsProvider) { %>
+		public ESBEndpointInfo getEndpoint() { return null; }
+	<% } %>
+<% } %>
 
 <% if (talendEsbJobFactory) { %>
 	public TalendESBJob newTalendESBJob() {
