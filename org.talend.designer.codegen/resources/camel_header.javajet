@@ -341,7 +341,16 @@
         }
 %>
         Map <String, String> propertiesMap = new HashMap<String, String>();
-<%		for (int i=0; i<contextParams.size(); i++) {
+
+<%	
+    String propagateHeader = "true".equals(ElementParameterParser.getValue(node, "__PROPAGATE_HEADER__")) ?  "\"" +"1"+ "\"":"\"" +"0"+ "\"";	
+
+    // when propagateHeader parameter will be removed the https://github.com/Talend/tesb-rt-se/blob/master/camel-talendjob/src/main/java/org/talend/camel/TalendProducer.java
+	// have to be changed - remove populateTalendContextParamsWithCamelHeaders(exchange, args); 
+%>
+	propertiesMap.put("##propagateheader##", <%=propagateHeader%>);      
+<%
+	for (int i=0; i<contextParams.size(); i++) {
 				Map<String, String> contextParam = contextParams.get(i);
 				String paramName;
 				String paramValue;
